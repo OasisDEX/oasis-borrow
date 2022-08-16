@@ -7,6 +7,7 @@ import {
   extractBasicBSData,
 } from 'features/automation/common/basicBSTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, from, Observable, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
@@ -20,6 +21,58 @@ import { fetchWithOperationId, flatEvents } from './vaultHistory'
 import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 const query = gql`
+  query vaultsMultiplyHistories($urns: [String!], $cdpIds: [BigFloat!]) {
+    allVaultMultiplyHistories(
+      filter: { urn: { in: $urns } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
+      nodes {
+        kind
+        hash
+        timestamp
+        id
+        transferFrom
+        transferTo
+        collateralAmount
+        daiAmount
+        vaultCreator
+        cdpId
+        txId
+        blockId
+        rate
+        urn
+      }
+    }
+
+    allTriggerEvents(
+      filter: { cdpId: { in: $cdpIds } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
+      nodes {
+        id
+        triggerId
+        cdpId
+        hash
+        number
+        timestamp
+        eventType
+        kind
+        commandAddress
+      }
+    }
+
+    allActiveTriggers(filter: { cdpId: { in: $cdpIds } }, orderBy: [BLOCK_ID_ASC]) {
+      nodes {
+        cdpId
+        triggerId
+        commandAddress
+        triggerData
+      }
+    }
+  }
+`
+
+const constantMultipleQuery = gql`
   query vaultsMultiplyHistories($urns: [String!], $cdpIds: [BigFloat!]) {
     allVaultMultiplyHistories(
       filter: { urn: { in: $urns } }
@@ -71,6 +124,7 @@ const query = gql`
     }
   }
 `
+
 interface ActiveTrigger {
   cdpId: string
   triggerId: number
@@ -89,7 +143,13 @@ async function getDataFromCache(
   urns: string[],
   cdpIds: BigNumber[],
 ): Promise<CacheResult> {
-  const data = await client.request(query, { urns, cdpIds: cdpIds.map((id) => id.toNumber()) })
+  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  const resolvedQuery = constantMultipleEnabled ? constantMultipleQuery : query
+
+  const data = await client.request(resolvedQuery, {
+    urns,
+    cdpIds: cdpIds.map((id) => id.toNumber()),
+  })
 
   return {
     events: data.allVaultMultiplyHistories.nodes,
