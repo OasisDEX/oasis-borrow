@@ -6,7 +6,6 @@ import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
 import { ADDRESSES } from '@oasisdex/oasis-actions/src/helpers/addresses'
-import { amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 export interface ActionCall {
   targetHash: string

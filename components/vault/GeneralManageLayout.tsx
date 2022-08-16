@@ -1,7 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import { AggregtedTriggersData } from 'features/automation/protection/triggers/aggregatedTriggersData'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useBasicBSstateInitialization } from 'features/automation/protection/useBasicSellStateInitializator'
 import { useConstantMultipleStateInitialization } from 'features/automation/protection/useConstantMultipleStateInitialization'
@@ -44,12 +43,10 @@ export function GeneralManageLayout({
     autoTriggersData,
     TriggerType.BasicBuy,
   )
-
   const isConstantMultipleEnabled = useConstantMultipleStateInitialization(
     ilkData,
     vault,
     autoTriggersData,
-    {} as AggregtedTriggersData,
   )
 
   const headlineElement =

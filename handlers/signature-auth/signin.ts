@@ -4,8 +4,9 @@ import { NextApiHandler } from 'next'
 import Web3 from 'web3'
 import * as z from 'zod'
 
-import { isArgentWallet, isValidSignature } from './argent'
+import { checkIfArgentWallet, isValidSignature } from './argent'
 import { ChallengeJWT } from './challenge'
+import { checkIfGnosisOwner } from './gnosis'
 
 export interface signInOptions {
   challengeJWTSecret: string
@@ -14,6 +15,9 @@ export interface signInOptions {
 
 export interface UserJwtPayload {
   address: string
+  signature: string
+  challenge: string
+  chainId: number
 }
 
 class SignatureAuthError {
@@ -23,7 +27,13 @@ class SignatureAuthError {
 const inputSchema = z.object({
   challenge: z.string(),
   signature: z.string(),
+  chainId: z.number(),
 })
+
+const networkMap: Record<number, string> = {
+  1: 'mainnet',
+  5: 'goerli',
+}
 
 export function makeSignIn(options: signInOptions): NextApiHandler {
   return async (req, res) => {
@@ -39,23 +49,40 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       throw new SignatureAuthError('Challenge not correct')
     }
 
-    const infuraUrlBackend = `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID_BACKEND}`
+    const infuraUrlBackend = `https://${networkMap[body.chainId]}.infura.io/v3/${
+      process.env.INFURA_PROJECT_ID_BACKEND
+    }`
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
+    let isArgentWallet = false
 
-    if (await isArgentWallet(web3, challenge.address)) {
+    try {
+      isArgentWallet = await checkIfArgentWallet(web3, challenge.address)
+    } catch {
+      console.error('Check if argent wallet failed')
+    }
+
+    if (isArgentWallet) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
         throw new SignatureAuthError('Signature not correct')
       }
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, sig: body.signature })
-
       if (signedAddress.toLowerCase() !== challenge.address) {
-        throw new SignatureAuthError('Signature not correct')
+        const isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
+
+        if (!isOwner) {
+          throw new SignatureAuthError('Signature not correct')
+        }
       }
     }
 
-    const userJwtPayload: UserJwtPayload = { address: challenge.address }
+    const userJwtPayload: UserJwtPayload = {
+      address: challenge.address,
+      signature: body.signature,
+      challenge: body.challenge,
+      chainId: body.chainId,
+    }
     const token = jwt.sign(userJwtPayload, options.userJWTSecret, { algorithm: 'HS512' })
 
     res.status(200).json({ jwt: token })

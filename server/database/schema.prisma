@@ -17,6 +17,9 @@ model migrations {
 model TosApproval {
     id          Int      @id @default(autoincrement())
     address     String
+    signature   String
+    message     String
+    chain_id     Int
     doc_version String
     sign_date   DateTime
 
@@ -69,4 +72,13 @@ model MerkleTree {
     week_number Int    @unique
     tree_root   String
     @@map("merkle_tree")
+}
+
+model WalletRisk {
+  address     String
+  last_check  DateTime
+  is_risky    Boolean
+
+  @@unique([address], name: "wallet_risk_unique_index")
+  @@map("wallet_risk")
 }

@@ -1,7 +1,7 @@
 import { Vault } from 'blockchain/vaults'
 import { GasEstimationStatus } from 'helpers/form'
+import { zero } from 'helpers/zero'
 
-import { zero } from '../../../../../helpers/zero'
 import {
   defaultMutableManageVaultState,
   ManageStandardBorrowVaultState,
@@ -103,6 +103,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       stopLossData: undefined,
       basicBuyData: undefined,
       basicSellData: undefined,
+      constantMultipleData: undefined,
       injectStateOverride,
     }
     return initialState

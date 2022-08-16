@@ -125,7 +125,7 @@ export function getBasicBSVaultChange({
     : { debtDelta: zero, collateralDelta: zero }
 }
 
-export function calculateCollRatioForMultiply(multiplier: number) {
+export function calculateCollRatioFromMultiple(multiplier: number) {
   return new BigNumber(multiplier / (multiplier - 1))
     .decimalPlaces(2, BigNumber.ROUND_DOWN)
     .times(100)

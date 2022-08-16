@@ -6,6 +6,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { getBasicBuyMinMaxValues } from 'features/automation/optimization/helpers'
 import {
@@ -14,6 +15,7 @@ import {
 } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -25,7 +27,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyCreationStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 
@@ -36,7 +37,7 @@ interface SidebarSetupAutoBuyProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -175,7 +176,8 @@ export function SidebarSetupAutoBuy({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoBuyCreationStage
+            <SidebarAutomationFeatureCreationStage
+              featureName="Auto-Buy"
               stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}

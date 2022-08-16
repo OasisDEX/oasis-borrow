@@ -7,13 +7,19 @@ import { AutomationBotAggregator, DsProxy } from 'types/ethers-contracts'
 
 import { TxMetaKind } from './txMeta'
 
-export type AutomationBotAggregatorBaseTriggerData = {}
+export type AutomationBotAggregatorBaseTriggerData = {
+  proxyAddress: string
+}
 export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseTriggerData & {
   groupTypeId: number
   replacedTriggerIds: any // TODO ŁW replace any https://app.shortcut.com/oazo-apps/story/5388/change-types-in-transactiondef
   triggersData: any //AutomationBotAddTriggerData[],
-  proxyAddress: string
   kind: TxMetaKind.addTriggerGroup
+}
+export type AutomationBotRemoveTriggersData = AutomationBotAggregatorBaseTriggerData & {
+  triggersId: any // Property 'triggersId' is incompatible with index signature. Type 'number[]' is not assignable to type 'string | number | boolean | BigNumber | undefined'.
+  removeAllowance: boolean
+  kind: TxMetaKind.removeTriggers
 }
 
 export const addAutomationBotAggregatorTrigger: TransactionDef<AutomationBotAddAggregatorTriggerData> = {
@@ -33,8 +39,30 @@ function getAddAutomationAggregatotTriggerCallData(
   const { contract, automationBotAggregator } = context
 
   return contract<AutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
-    CONSTANT_MULTIPLE_GROUP_TYPE, // groupTypeId
-    [0, 0], // replacedTriggerId
-    data.triggersData, // triggersData
+    CONSTANT_MULTIPLE_GROUP_TYPE,
+    data.replacedTriggerIds,
+    data.triggersData,
+  )
+}
+
+export const removeAutomationBotAggregatorTriggers: TransactionDef<AutomationBotRemoveTriggersData> = {
+  call: ({ proxyAddress }, { contract }) => {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+  prepareArgs: (data, context) => [
+    context.automationBotAggregator.address,
+    getRemoveAutomationBotAggregatorTriggersCallData(data, context).encodeABI(),
+  ],
+}
+
+function getRemoveAutomationBotAggregatorTriggersCallData(
+  data: AutomationBotRemoveTriggersData,
+  context: ContextConnected,
+) {
+  const { contract, automationBotAggregator } = context
+
+  return contract<AutomationBotAggregator>(automationBotAggregator).methods.removeTriggers(
+    data.triggersId,
+    data.removeAllowance,
   )
 }

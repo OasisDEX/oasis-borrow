@@ -12,10 +12,6 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
-} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -32,6 +28,9 @@ export interface ConstantMultipleDetailsLayoutProps {
   nextBuyPrice?: BigNumber
   triggerColRatioToSell?: BigNumber
   nextSellPrice?: BigNumber
+  afterTargetMultiple?: number
+  triggerColRatioToBuyToBuy?: BigNumber
+  afterTriggerColRatioToSell?: BigNumber
 }
 
 export function ConstantMultipleDetailsLayout({
@@ -45,12 +44,14 @@ export function ConstantMultipleDetailsLayout({
   nextBuyPrice,
   triggerColRatioToSell,
   nextSellPrice,
+  afterTargetMultiple,
+  triggerColRatioToBuyToBuy,
+  afterTriggerColRatioToSell,
 }: ConstantMultipleDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
-  const [uiState] = useUIChanges<ConstantMultipleFormChange>(CONSTANT_MULTIPLE_FORM_CHANGE)
 
   return (
     <Grid>
@@ -62,7 +63,7 @@ export function ConstantMultipleDetailsLayout({
             <DetailsSectionContentCardWrapper>
               <ContentCardTargetMultiple
                 targetMultiple={targetMultiple}
-                afterTargetMultiple={uiState.multiplier}
+                afterTargetMultiple={afterTargetMultiple}
                 targetColRatio={targetColRatio}
                 changeVariant="positive"
               />
@@ -73,14 +74,14 @@ export function ConstantMultipleDetailsLayout({
               <ContentCardTriggerColRatioToBuy
                 token={token}
                 triggerColRatio={triggerColRatioToBuy}
-                afterTriggerColRatio={uiState.buyExecutionCollRatio}
+                afterTriggerColRatio={triggerColRatioToBuyToBuy}
                 nextBuyPrice={nextBuyPrice}
                 changeVariant="positive"
               />
               <ContentCardTriggerColRatioToSell
                 token={token}
                 triggerColRatio={triggerColRatioToSell}
-                afterTriggerColRatio={uiState.sellExecutionCollRatio}
+                afterTriggerColRatio={afterTriggerColRatioToSell}
                 nextSellPrice={nextSellPrice}
                 changeVariant="positive"
               />

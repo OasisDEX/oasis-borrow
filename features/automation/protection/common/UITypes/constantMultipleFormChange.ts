@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { calculateCollRatioForMultiply } from 'features/automation/common/helpers'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 
 import { AutomationChangeAction, AutomationFormChange } from './basicBSFormChange'
 
@@ -14,6 +14,15 @@ export type ConstantMultipleChangeAction =
   | { type: 'multiplier'; multiplier: number }
   | { type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
   | { type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
+  | { type: 'is-editing'; isEditing: boolean }
+  | {
+      type: 'form-defaults'
+      acceptableMultipliers: number[]
+      defaultMultiplier: number
+      defaultCollRatio: BigNumber
+      minTargetRatio: BigNumber
+      maxTargetRatio: BigNumber
+    }
 
 export type ConstantMultipleFormChange = AutomationFormChange & {
   maxBuyPrice?: BigNumber
@@ -22,7 +31,13 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   sellExecutionCollRatio: BigNumber
   buyWithThreshold: boolean
   sellWithThreshold: boolean
-  multiplier: number // Multiplier is not used in Smart Contract, it specifies target coll ratio
+  acceptableMultipliers: number[]
+  defaultMultiplier: number
+  defaultCollRatio: BigNumber
+  multiplier: number
+  minTargetRatio: BigNumber
+  maxTargetRatio: BigNumber
+  isEditing: boolean
 }
 
 export function constantMultipleFormChangeReducer(
@@ -60,8 +75,19 @@ export function constantMultipleFormChangeReducer(
       return {
         ...state,
         multiplier: action.multiplier,
-        targetCollRatio: calculateCollRatioForMultiply(action.multiplier),
+        targetCollRatio: calculateCollRatioFromMultiple(action.multiplier),
       }
+    case 'form-defaults':
+      return {
+        ...state,
+        acceptableMultipliers: action.acceptableMultipliers,
+        defaultMultiplier: action.defaultMultiplier,
+        defaultCollRatio: action.defaultCollRatio,
+        minTargetRatio: action.minTargetRatio,
+        maxTargetRatio: action.maxTargetRatio,
+      }
+    case 'is-editing':
+      return { ...state, isEditing: action.isEditing }
     default:
       return state
   }

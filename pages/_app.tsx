@@ -46,7 +46,6 @@ const FTPolarFontMedium = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTr
 const globalStyles = `
   html,
   body,
-  body > div:first-of-type,
   div#__next {
     height: 100%;
   }

@@ -4,7 +4,14 @@ import {
   BasicBSTriggerData,
   extractBasicBSData,
 } from 'features/automation/common/basicBSTriggerData'
+import {
+  calculateCollRatioFromMultiple,
+  calculateMultipleFromTargetCollRatio,
+  resolveMaxBuyOrMinSellPrice,
+  resolveWithThreshold,
+} from 'features/automation/common/helpers'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { DEFAULT_TARGET_OFFSET } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { zero } from 'helpers/zero'
 
 const DEFAULT_MAX_BASE_FEE_IN_GWEI = 300
@@ -26,6 +33,12 @@ export interface ConstantMultipleTriggerData {
   deviation: BigNumber
   maxBaseFeeInGwei: BigNumber
   isTriggerEnabled: boolean
+}
+
+interface PrepareConstantMultipleResetDataProps {
+  defaultMultiplier: number
+  defaultCollRatio: BigNumber
+  constantMultipleTriggerData: ConstantMultipleTriggerData
 }
 
 const defaultConstantMultipleData: ConstantMultipleTriggerData = {
@@ -80,4 +93,47 @@ export function extractConstantMultipleData(triggersData: TriggersData) {
   }
 
   return defaultConstantMultipleData
+}
+
+export function prepareConstantMultipleResetData({
+  defaultMultiplier,
+  defaultCollRatio,
+  constantMultipleTriggerData,
+}: PrepareConstantMultipleResetDataProps) {
+  const {
+    triggersId,
+    targetCollRatio,
+    buyExecutionCollRatio,
+    sellExecutionCollRatio,
+    minSellPrice,
+    maxBuyPrice,
+    maxBaseFeeInGwei,
+  } = constantMultipleTriggerData
+  const multiplier = targetCollRatio.gt(zero)
+    ? calculateMultipleFromTargetCollRatio(targetCollRatio).decimalPlaces(2).toNumber()
+    : defaultMultiplier
+
+  return {
+    multiplier: multiplier,
+    targetCollRatio: calculateCollRatioFromMultiple(multiplier),
+    buyExecutionCollRatio: targetCollRatio.gt(zero)
+      ? buyExecutionCollRatio
+      : defaultCollRatio.plus(DEFAULT_TARGET_OFFSET),
+    sellExecutionCollRatio: targetCollRatio.gt(zero)
+      ? sellExecutionCollRatio
+      : defaultCollRatio.minus(DEFAULT_TARGET_OFFSET),
+    minSellPrice: resolveMaxBuyOrMinSellPrice(minSellPrice),
+    maxBuyPrice: resolveMaxBuyOrMinSellPrice(maxBuyPrice),
+    maxBaseFeeInGwei,
+    buyWithThreshold: resolveWithThreshold({
+      maxBuyOrMinSellPrice: maxBuyPrice,
+      triggerId: triggersId[0],
+    }),
+    sellWithThreshold: resolveWithThreshold({
+      maxBuyOrMinSellPrice: minSellPrice,
+      triggerId: triggersId[1],
+    }),
+    isEditing: false,
+    txDetails: {},
+  }
 }
