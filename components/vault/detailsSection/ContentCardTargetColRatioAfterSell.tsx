@@ -46,7 +46,7 @@ export function ContentCardTargetColRatioAfterSell({
     value: formatted.targetColRatio,
   }
 
-  if (afterTargetColRatio && !targetColRatio?.isEqualTo(afterTargetColRatio) && changeVariant)
+  if (afterTargetColRatio && changeVariant)
     contentCardSettings.change = {
       value: `${formatted.afterTargetColRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
