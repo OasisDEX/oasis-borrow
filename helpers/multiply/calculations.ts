@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
+import { getAddConstantMultipleHistoryEventIndex } from 'features/vaultHistory/vaultHistory'
 import { VaultEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import { zero } from 'helpers/zero'
 
@@ -99,6 +100,24 @@ export function getCumulativeOasisFeeUSD(total: BigNumber, event: VaultEvent) {
   }
 }
 
+export function getCumulativeConstantMultipleFeeUSD(total: BigNumber, event: VaultEvent) {
+  switch (event.kind) {
+    case 'INCREASE_MULTIPLE':
+    case 'DECREASE_MULTIPLE':
+      if ('eventType' in event && event.eventType === 'executed') {
+        return total
+          .plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
+          .plus(event.oazoFee)
+      }
+      return total
+    case 'basic-buy':
+    case 'basic-sell':
+      return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+    default:
+      return total
+  }
+}
+
 export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber) {
   const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
@@ -137,4 +156,23 @@ export function calculateNetEarnings(events: VaultEvent[], currentNetValueUSD: B
     .minus(cumulativeDepositUSD)
     .plus(cumulativeWithdrawnUSD)
     .minus(cumulativeFeesUSD)
+}
+
+export function calculatePNLFromAddConstantMultipleEvent(
+  events: VaultEvent[],
+  currentNetValueUSD: BigNumber,
+) {
+  const addConstantMultipleIndex = getAddConstantMultipleHistoryEventIndex(events)
+  const totalPnL = calculatePNL(events, currentNetValueUSD)
+  const eventsTillConstantMultiple = events.slice(addConstantMultipleIndex)
+  const PnLTillConstantMultiple = calculatePNL(eventsTillConstantMultiple, currentNetValueUSD)
+
+  return totalPnL.minus(PnLTillConstantMultiple)
+}
+
+export function calculateTotalCostOfConstantMultiple(events: VaultEvent[]) {
+  const addConstantMultipleIndex = getAddConstantMultipleHistoryEventIndex(events)
+  const eventsSinceConstantMultiple = events.slice(0, addConstantMultipleIndex)
+
+  return eventsSinceConstantMultiple.reduce(getCumulativeConstantMultipleFeeUSD, zero)
 }

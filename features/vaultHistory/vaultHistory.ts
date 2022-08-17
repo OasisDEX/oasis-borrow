@@ -19,6 +19,52 @@ import {
   VaultEvent,
 } from './vaultHistoryEvents'
 
+export function groupHistoryEventsByHash(events: VaultHistoryEvent[]) {
+  return events.reduce((acc, curr) => {
+    return {
+      ...acc,
+      [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
+    }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+}
+
+export function getAddConstantMultipleHistoryEventIndex(events: VaultEvent[]) {
+  const groupedByHash = groupHistoryEventsByHash(events)
+
+  const mostRecentConstantMultipleAddEvents = Object.keys(groupedByHash)
+    .map((hash) => {
+      const groupedEvents = groupedByHash[hash]
+
+      const addAutoBuy = groupedEvents.find(
+        (event) => event.kind === 'basic-buy' && event.eventType === 'added',
+      )
+      const addAutoSell = groupedEvents.find(
+        (event) => event.kind === 'basic-sell' && event.eventType === 'added',
+      )
+      const removedAutoBuy = groupedEvents.find(
+        (event) => event.kind === 'basic-buy' && event.eventType === 'removed' && event.groupId,
+      )
+      const removedAutoSell = groupedEvents.find(
+        (event) => event.kind === 'basic-sell' && event.eventType === 'removed' && event.groupId,
+      )
+
+      if (addAutoBuy && addAutoSell && !(removedAutoBuy || removedAutoSell)) {
+        return groupedEvents
+      }
+
+      return null
+    })
+    .filter((item) => item)[0] as AutomationEvent[]
+
+  const triggerIdOfAddCMEvent = mostRecentConstantMultipleAddEvents[0]?.triggerId
+
+  const index = events.findIndex(
+    (item) => 'triggerId' in item && item.triggerId === triggerIdOfAddCMEvent,
+  )
+
+  return index === -1 ? 0 : index
+}
+
 export function unpackTriggerDataForHistory(event: AutomationEvent) {
   switch (event.kind) {
     case 'basic-buy':
@@ -200,12 +246,7 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
 }
 
 export function mapAutomationEvents(events: VaultHistoryEvent[]) {
-  const groupedByHash = events.reduce((acc, curr) => {
-    return {
-      ...acc,
-      [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
-    }
-  }, {} as Record<string, VaultHistoryEvent[]>)
+  const groupedByHash = groupHistoryEventsByHash(events)
 
   const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
     const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
