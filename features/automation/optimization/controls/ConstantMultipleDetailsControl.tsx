@@ -37,6 +37,7 @@ export function ConstantMultipleDetailsControl({
   const isEditing = checkIfEditingConstantMultiple({
     triggerData: constantMultipleTriggerData,
     state: constantMultipleState,
+    isRemoveForm: constantMultipleState.currentForm === 'remove',
   })
   const {
     isTriggerEnabled,

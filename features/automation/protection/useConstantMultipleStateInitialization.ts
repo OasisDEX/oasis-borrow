@@ -48,7 +48,7 @@ export function useConstantMultipleStateInitialization(
     minColRatio: min,
     maxColRatio: max,
   })
-  const defaultMultiplier = acceptableMultipliers[Math.floor(acceptableMultipliers.length / 2) - 1]
+  const defaultMultiplier = acceptableMultipliers[Math.ceil(acceptableMultipliers.length / 2) - 1]
   const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiplier)
 
   useEffect(() => {

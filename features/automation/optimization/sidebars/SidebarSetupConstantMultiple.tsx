@@ -181,13 +181,14 @@ export function SidebarSetupConstantMultiple({
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },
-      ...(stage !== 'txInProgress' && {
-        textButton: {
-          label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: isFirstSetup,
-          action: () => textButtonHandler(),
-        },
-      }),
+      ...(stage !== 'txInProgress' &&
+        stage !== 'txSuccess' && {
+          textButton: {
+            label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
+            hidden: isFirstSetup,
+            action: () => textButtonHandler(),
+          },
+        }),
       status: sidebarStatus,
     }
 
