@@ -59,6 +59,7 @@ export function useConstantMultipleStateInitialization(
       defaultCollRatio,
       minTargetRatio: min,
       maxTargetRatio: max,
+      isResetAction: false,
     })
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'reset',
