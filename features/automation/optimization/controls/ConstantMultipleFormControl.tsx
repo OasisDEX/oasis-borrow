@@ -143,6 +143,14 @@ export function ConstantMultipleFormControl({
     if (txHelpers) {
       if (stage === 'txSuccess') {
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+          type: 'reset',
+          resetData: prepareConstantMultipleResetData({
+            defaultMultiplier: constantMultipleState.defaultMultiplier,
+            defaultCollRatio: constantMultipleState.defaultCollRatio,
+            constantMultipleTriggerData,
+          }),
+        })
+        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
           type: 'tx-details',
           txDetails: {},
         })
@@ -166,14 +174,29 @@ export function ConstantMultipleFormControl({
       type: 'current-form',
       currentForm: isAddForm ? 'remove' : 'add',
     })
-    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-      type: 'reset',
-      resetData: prepareConstantMultipleResetData({
-        defaultMultiplier: constantMultipleState.defaultMultiplier,
-        defaultCollRatio: constantMultipleState.defaultCollRatio,
-        constantMultipleTriggerData,
-      }),
-    })
+    if (isAddForm) {
+      uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+        type: 'multiplier',
+        multiplier: 0,
+      })
+      uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+        type: 'sell-execution-coll-ratio',
+        sellExecutionCollRatio: zero,
+      })
+      uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+        type: 'buy-execution-coll-ratio',
+        buyExecutionCollRatio: zero,
+      })
+    } else {
+      uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+        type: 'reset',
+        resetData: prepareConstantMultipleResetData({
+          defaultMultiplier: constantMultipleState.defaultMultiplier,
+          defaultCollRatio: constantMultipleState.defaultCollRatio,
+          constantMultipleTriggerData,
+        }),
+      })
+    }
   }
 
   const isAddForm = constantMultipleState.currentForm === 'add'
