@@ -186,7 +186,7 @@ export function createTransactionServices<T extends TxMeta>(
     return combineLatest(context$, txHelpers$).pipe(
       first(),
       switchMap(([{ safeConfirmations }, { sendWithGasEstimation }]) => {
-        console.log('t/x params: ', context.transactionParameters)
+        console.log('context: ', context)
         if (context.transactionParameters === undefined) {
           throw new Error('transactionParameters not set')
         }

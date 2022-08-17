@@ -100,7 +100,12 @@ export function createPositionsOverviewSummary$(
         })
         .filter((token) => {
           const valueUsd = getPositionOrAssetValue(token)
-          return valueUsd.decimalPlaces(2).gt(zero) || (token as WalletAssets)?.missingPriceData // only care about meaningful dollar values
+          console.log('token:', token)
+          console.log('valueUsd:', valueUsd.toString())
+          return (
+            valueUsd.decimalPlaces(2).gt(zero) ||
+            ((token as WalletAssets)?.missingPriceData && valueUsd.decimalPlaces(2).gt(zero))
+          ) // only care about meaningful dollar values
         }),
     ),
   )

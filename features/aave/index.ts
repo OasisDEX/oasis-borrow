@@ -5,8 +5,9 @@ import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
-import { oneInchCallMock } from '../../helpers/swap'
+import { getOneInchRealCall, oneInchCallMock } from '../../helpers/swap'
 import { ADDRESSES } from '@oasisdex/oasis-actions/src/helpers/addresses'
+import { amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 export interface ActionCall {
   targetHash: string
@@ -89,17 +90,21 @@ export async function getOpenAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
+  // const depositAmount = amountToWei(new BigNumber(60))
+  // const _multiply = new BigNumber(2)
+  // const _slippage = new BigNumber(0.1)
+  // console.log('addresses', addresses)
   const strategyReturn = await strategy.openStEth(
     {
       depositAmount: amount,
-      slippage,
+      slippage: slippage,
       multiply: new BigNumber(multiply),
     },
     {
       addresses,
       provider: provider,
-      getSwapData: oneInchCallMock,
-      // getSwapData: getOneInchRealCall('0x3C1Cb427D20F15563aDa8C249E71db76d7183B6c'),
+      // getSwapData: oneInchCallMock,
+      getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
     },
   )
   console.log('strategyReturn:', strategyReturn)

@@ -211,7 +211,10 @@ const protoMain = {
     '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
   ),
   // TODO: Replace with mainnet address (current val has been used for testing only)
-  operationExecutor: contractDesc(operationExecutor, '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c'),
+  operationExecutor: contractDesc(
+    operationExecutor,
+    getConfig()?.publicRuntimeConfig.operationExecutorTemp,
+  ),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -297,7 +300,6 @@ const kovan: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x3c73a5e5785cac854d468f727c606c07488a29d6',
   ),
-  operationExecutor: contractDesc(operationExecutor, '0xe70f935c32dA4dB13e7876795f1e175465e6458e'),
 }
 
 const goerli: NetworkConfig = {
@@ -384,9 +386,6 @@ const goerli: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
-
-  // TODO: Temporary local address until deployed
-  operationExecutor: contractDesc(operationExecutor, '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c'),
 }
 
 const hardhat: NetworkConfig = {
