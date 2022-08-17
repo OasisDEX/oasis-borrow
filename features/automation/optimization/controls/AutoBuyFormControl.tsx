@@ -237,7 +237,7 @@ export function AutoBuyFormControl({
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
       isAutoBuyActive={isAutoBuyActive}
-      flowState={basicBuyState.flowState}
+      isConfirmation={basicBuyState.isConfirmation}
     />
   )
 }

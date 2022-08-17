@@ -54,7 +54,7 @@ interface SidebarSetupAutoBuyProps {
   debtDelta: BigNumber
   collateralDelta: BigNumber
   isAutoBuyActive: boolean
-  flowState: AUTOMATION_FORM_FLOW_STATE;
+  isConfirmation: boolean;
 }
 
 export function SidebarSetupAutoBuy({
@@ -84,7 +84,7 @@ export function SidebarSetupAutoBuy({
   collateralDelta,
   isAutoBuyActive,
 
-  flowState
+  isConfirmation
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
@@ -108,7 +108,7 @@ export function SidebarSetupAutoBuy({
     etherscan: context.etherscan.url,
   })
 
-  console.log(flowState, 'status');
+  console.log(isConfirmation, 'status');
   console.log(stage, 'stage')
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
@@ -158,7 +158,7 @@ export function SidebarSetupAutoBuy({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && flowState !== 'confirmation' && (
+              {isAddForm && !isConfirmation  && (
                 <SidebarAutoBuyEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -173,7 +173,7 @@ export function SidebarSetupAutoBuy({
                   sliderMax={max}
                 />
               )}
-              {flowState === 'confirmation' && (
+              {isConfirmation && (
                 <SidebarAutoBuyConfirmationStage
                   vault={vault}
                   basicBuyState={basicBuyState}
@@ -206,11 +206,10 @@ export function SidebarSetupAutoBuy({
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if(flowState === 'editing') {
-            console.log('hello')
+          if(!isConfirmation) {
             uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-              type: 'flow-state',
-              flowState: 'confirmation'
+              type: 'is-confirmation',
+              isConfirmation: true
             })
           } else {
             txHandler()

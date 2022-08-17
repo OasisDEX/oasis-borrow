@@ -44,8 +44,8 @@ export function useBasicBSstateInitialization(
       triggerId,
     })
     uiChanges.publish(publishKey, {
-      type: 'flow-state',
-      flowState: 'editing',
+      type: 'is-confirmation',
+      isConfirmation: false,
     })
     uiChanges.publish(publishKey, {
       type: 'execution-coll-ratio',

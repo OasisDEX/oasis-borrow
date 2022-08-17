@@ -33,7 +33,7 @@ export type AutomationChangeAction =
       txCost?: BigNumber
     }
   }
-  | { type: 'flow-state'; flowState: AUTOMATION_FORM_FLOW_STATE }
+  | { type: 'is-confirmation'; isConfirmation: boolean }
 
 export type BasicBSChangeAction =
   | AutomationChangeAction
@@ -70,8 +70,8 @@ export function basicBSFormChangeReducer(
       return { ...state, withThreshold: action.withThreshold }
     case 'tx-details':
       return { ...state, txDetails: action.txDetails }
-    case 'flow-state':
-      return { ...state, flowState: action.flowState }
+    case 'is-confirmation':
+      return { ...state, isConfirmation: action.isConfirmation }
     case 'reset':
       return { ...state, ...action.resetData }
     default:
@@ -93,7 +93,7 @@ export type AutomationFormChange = {
     txHash?: string
     txCost?: BigNumber
   }
-  flowState: AUTOMATION_FORM_FLOW_STATE
+  isConfirmation: boolean
 }
 
 export type BasicBSFormChange = AutomationFormChange & {
