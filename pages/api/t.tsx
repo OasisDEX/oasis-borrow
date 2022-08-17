@@ -11,13 +11,21 @@ mixpanel = enableMixpanelDevelopmentMode(mixpanel)
 
 const handler = async function (req: NextApiRequest, res: NextApiResponse<{ status: number }>) {
   try {
-    const { eventName, eventBody, distinctId, currentUrl, referrer } = req.body
+    const {
+      eventName,
+      eventBody,
+      distinctId,
+      currentUrl,
+      initialReferrer,
+      initialReferrerHost,
+    } = req.body
 
     mixpanel.track(`${eventName}`, {
       ...eventBody,
       distinct_id: distinctId,
-      current_url: currentUrl,
-      referrer: referrer,
+      $current_url: currentUrl,
+      $initial_referrer: initialReferrer,
+      $initial_referring_domain: initialReferrerHost,
     })
 
     res.json({ status: 200 })

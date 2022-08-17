@@ -7,6 +7,7 @@ export type MixpanelDevelopmentType = {
   track: (eventType: string, payload: any) => void
   get_distinct_id: () => string
   has_opted_out_tracking: () => boolean
+  get_property: (propertyName: string) => any
 }
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
@@ -19,6 +20,14 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
       },
       get_distinct_id: () => 'test_id',
       has_opted_out_tracking: () => false,
+      get_property: (propertyName: any) => {
+        switch (propertyName) {
+          case '$initial_referrer':
+            return '$direct'
+          default:
+            return null
+        }
+      },
     }
   }
 
@@ -69,8 +78,12 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
 
   const distinctId = mixpanel.get_distinct_id()
   const currentUrl = win.location.href
-  const referrer = win.document.referrer
-
+  const initialReferrer = mixpanel.get_property('$initial_referrer')
+  const initialReferrerHost = initialReferrer
+    ? initialReferrer === '$direct'
+      ? '$direct'
+      : new URL(initialReferrer).hostname
+    : ''
   // eslint-disable-next-line
   fetch(`/api/t`, {
     method: 'POST',
@@ -83,7 +96,8 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       eventBody,
       distinctId,
       currentUrl,
-      referrer,
+      initialReferrer,
+      initialReferrerHost,
     }),
   })
 }
@@ -96,7 +110,7 @@ export const trackingEvents = {
       id: location,
     }
 
-     mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   accountChange: (account: string, network: string, walletType: string) => {
