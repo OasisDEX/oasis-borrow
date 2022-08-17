@@ -154,6 +154,7 @@ export function SidebarConstantMultipleEditingStage({
           text: `${constantMultipleState.multiplier}x`,
           value: constantMultipleState.targetCollRatio.toNumber(),
         }}
+        isResetAction={constantMultipleState.isResetAction}
       />
       <VaultWarnings
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
@@ -255,6 +256,10 @@ export function SidebarConstantMultipleEditingStage({
         <>
           <SidebarResetButton
             clear={() => {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-reset-action',
+                isResetAction: true,
+              })
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'reset',
                 resetData: prepareConstantMultipleResetData({

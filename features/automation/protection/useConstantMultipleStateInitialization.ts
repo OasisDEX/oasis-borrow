@@ -61,6 +61,10 @@ export function useConstantMultipleStateInitialization(
       maxTargetRatio: max,
     })
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'is-reset-action',
+      isResetAction: false,
+    })
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'reset',
       resetData: prepareConstantMultipleResetData({
         defaultMultiplier,

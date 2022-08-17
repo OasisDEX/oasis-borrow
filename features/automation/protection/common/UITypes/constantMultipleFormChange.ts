@@ -23,6 +23,7 @@ export type ConstantMultipleChangeAction =
       minTargetRatio: BigNumber
       maxTargetRatio: BigNumber
     }
+  | { type: 'is-reset-action'; isResetAction: boolean }
 
 export type ConstantMultipleFormChange = AutomationFormChange & {
   maxBuyPrice?: BigNumber
@@ -38,6 +39,7 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   minTargetRatio: BigNumber
   maxTargetRatio: BigNumber
   isEditing: boolean
+  isResetAction: boolean
 }
 
 export function constantMultipleFormChangeReducer(
@@ -87,7 +89,9 @@ export function constantMultipleFormChangeReducer(
         maxTargetRatio: action.maxTargetRatio,
       }
     case 'is-editing':
-      return { ...state, isEditing: action.isEditing }
+      return { ...state, isEditing: action.isEditing, isResetAction: false }
+    case 'is-reset-action':
+      return { ...state, isResetAction: action.isResetAction }
     default:
       return state
   }
