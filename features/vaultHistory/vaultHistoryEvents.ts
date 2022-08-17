@@ -220,11 +220,12 @@ interface AutomationBaseEvent {
   timestamp: string
   triggerData: string
   commandAddress: string
-  addTriggerData: BasicBSTriggerData | StopLossTriggerData
-  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
+  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
   kind: 'basic-sell' | 'basic-buy' | 'stop-loss'
   eventType: 'added' | 'updated' | 'removed'
   token: string
+  groupId?: string
 }
 
 type StopLossCloseEvent = CloseVaultExitDaiMultipleEvent | CloseVaultExitCollateralMultipleEvent
@@ -233,24 +234,24 @@ type StopLossExecutedEvent = StopLossCloseEvent & {
   eventType: 'executed'
   triggerId: string
   triggerData: string
-  addTriggerData: BasicBSTriggerData | StopLossTriggerData
-  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
+  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
 }
 
 export interface BasicBuyExecutedEvent extends IncreaseMultipleEvent {
   eventType: 'executed'
   triggerId: string
   triggerData: string
-  addTriggerData: BasicBSTriggerData | StopLossTriggerData
-  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
+  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
 }
 
 export interface BasicSellExecutedEvent extends DecreaseMultipleEvent {
   eventType: 'executed'
   triggerId: string
   triggerData: string
-  addTriggerData: BasicBSTriggerData | StopLossTriggerData
-  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
+  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
 }
 
 export type MultiplyEvent =

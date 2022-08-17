@@ -96,6 +96,7 @@ export function GeneralManageTabBar({
                 content: (
                   <OptimizationControl
                     vault={vault}
+                    vaultType={generalManageVault.type}
                     ilkData={ilkData}
                     balanceInfo={balanceInfo}
                     vaultHistory={vaultHistory}

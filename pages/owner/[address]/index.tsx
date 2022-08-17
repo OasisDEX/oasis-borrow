@@ -5,7 +5,6 @@ import { VaultsOverviewView } from 'features/vaultsOverview/VaultOverviewView'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithWalletAssociatedRisk } from '../../../features/walletAssociatedRisk/WalletAssociatedRisk'
 
@@ -23,7 +22,6 @@ function VaultsSummary({ address }: { address: string }) {
     <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
-          <BackgroundLight />
           <VaultsOverviewView address={address} />
         </WithWalletAssociatedRisk>
       </WithTermsOfService>

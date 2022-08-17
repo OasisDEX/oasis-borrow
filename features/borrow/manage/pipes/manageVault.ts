@@ -1,10 +1,18 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import {
@@ -14,18 +22,11 @@ import {
 } from 'features/generalManageVault/vaultType'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { HasGasEstimation } from 'helpers/form'
+import { TxError } from 'helpers/types'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import {
-  vaultActionsLogic,
-  VaultActionsLogicInterface,
-} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
-import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { TxError } from '../../../../helpers/types'
 import {
   createAutomationTriggersChange$,
   TriggersData,
@@ -172,6 +173,7 @@ export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultS
     stopLossData?: StopLossTriggerData
     basicBuyData?: BasicBSTriggerData
     basicSellData?: BasicBSTriggerData
+    constantMultipleData?: ConstantMultipleTriggerData
   } & HasGasEstimation
 
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>

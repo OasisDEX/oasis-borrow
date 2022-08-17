@@ -22,7 +22,9 @@ export function WithWalletAssociatedRisk({ children }: WithWalletAssociatedRiskP
     }
 
     if (walletAssociatedRisk?.isRisky && shouldUseTrm) {
-      alert('Your wallet address is associated with risk. You have been disconnected.')
+      alert(
+        'Your wallet has been flagged by our automated risk tools, and as such your access to oasis.app restricted. If you believe this to be incorrect, please reach out to support@oasis.app',
+      )
       disconnect(web3Context)
     }
   }, [walletAssociatedRisk, web3Context])

@@ -2,38 +2,46 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
+import { AddConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/AddConstantMultipleInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
+import {
+  ACCEPTABLE_FEE_DIFF,
+  calculateMultipleFromTargetCollRatio,
+} from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
 import {
+  extractConstantMultipleCommonErrors,
   extractConstantMultipleCommonWarnings,
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 interface SidebaConstantMultiplerEditingStageProps {
   ilkData: IlkData
   isEditing: boolean
   autoBuyTriggerData: BasicBSTriggerData
-  //   errors: VaultErrorMessage[]
+  errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   token: string
   constantMultipleState: ConstantMultipleFormChange
@@ -48,11 +56,11 @@ interface SidebaConstantMultiplerEditingStageProps {
   estimatedSellFee: BigNumber
 }
 
-export function ConstantMultipleEditingStage({
+export function SidebarConstantMultipleEditingStage({
   ilkData,
   isEditing,
   autoBuyTriggerData,
-  //   errors,
+  errors,
   warnings,
   token,
   constantMultipleState,
@@ -68,9 +76,29 @@ export function ConstantMultipleEditingStage({
 }: SidebaConstantMultiplerEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const maxMultiplier = calculateMultipleFromTargetCollRatio(
+    constantMultipleState.minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+  const minMultiplier = calculateMultipleFromTargetCollRatio(
+    constantMultipleState.maxTargetRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
 
   return (
     <>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('constant-multiple.set-trigger-description', {
+          token,
+          buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio.toNumber(),
+          sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio.toNumber(),
+          targetCollRatio: constantMultipleState.targetCollRatio.toNumber(),
+        })}
+      </Text>
+      <Text as="p" variant="boldParagraph3" sx={{ color: 'neutral80' }}>
+        {t('constant-multiple.set-trigger-risk')}
+        <AppLink href="https://kb.oasis.app/help/" sx={{ fontSize: 2 }}>
+          {t('here')}.
+        </AppLink>
+      </Text>
       <Box sx={{ mb: 2 }}>
         <ActionPills
           active={constantMultipleState.multiplier.toString()}
@@ -78,6 +106,7 @@ export function ConstantMultipleEditingStage({
           items={constantMultipleState.acceptableMultipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
+            disabled: multiplier < minMultiplier || multiplier > maxMultiplier,
             action: () => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'is-editing',
@@ -125,6 +154,7 @@ export function ConstantMultipleEditingStage({
           text: `${constantMultipleState.multiplier}x`,
           value: constantMultipleState.targetCollRatio.toNumber(),
         }}
+        isResetAction={constantMultipleState.isResetAction}
       />
       <VaultWarnings
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
@@ -162,6 +192,10 @@ export function ConstantMultipleEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={constantMultipleState?.buyWithThreshold}
       />
+      <VaultErrors
+        errorMessages={errors.filter((item) => item === 'autoBuyMaxBuyPriceNotSpecified')}
+        ilkData={ilkData}
+      />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
         amount={constantMultipleState?.minSellPrice}
@@ -194,12 +228,17 @@ export function ConstantMultipleEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
+      <VaultErrors
+        errorMessages={errors.filter((item) => item === 'minimumSellPriceNotProvided')}
+        ilkData={ilkData}
+      />
       <VaultWarnings
         warningMessages={extractConstantMultipleCommonWarnings(warnings)}
         ilkData={ilkData}
         isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
         isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
       />
+      <VaultErrors errorMessages={extractConstantMultipleCommonErrors(errors)} ilkData={ilkData} />
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
@@ -217,6 +256,10 @@ export function ConstantMultipleEditingStage({
         <>
           <SidebarResetButton
             clear={() => {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-reset-action',
+                isResetAction: true,
+              })
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'reset',
                 resetData: prepareConstantMultipleResetData({
@@ -273,7 +316,7 @@ function ConstantMultipleInfoSectionControl({
     : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
 
   return (
-    <ConstantMultipleInfoSection
+    <AddConstantMultipleInfoSection
       token={token}
       targetColRatio={constantMultipleState.targetCollRatio}
       multiplier={constantMultipleState.multiplier}

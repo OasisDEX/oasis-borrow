@@ -6,6 +6,7 @@ import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
@@ -263,6 +264,7 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     stopLossData?: StopLossTriggerData
     basicBuyData?: BasicBSTriggerData
     basicSellData?: BasicBSTriggerData
+    constantMultipleData?: ConstantMultipleTriggerData
   } & HasGasEstimation
 
 function addTransitions(
@@ -548,6 +550,7 @@ export function createManageMultiplyVault$(
                     stopLossData: undefined,
                     basicBuyData: undefined,
                     basicSellData: undefined,
+                    constantMultipleData: undefined,
                     balanceInfo,
                     ilkData,
                     account,

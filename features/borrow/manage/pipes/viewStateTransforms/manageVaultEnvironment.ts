@@ -60,6 +60,7 @@ export function applyManageVaultEnvironment<VaultState extends ManageStandardBor
       stopLossData: change.stopLossData,
       basicSellData: change.basicSellData,
       basicBuyData: change.basicBuyData,
+      constantMultipleData: change.constantMultipleData,
     }
   }
 

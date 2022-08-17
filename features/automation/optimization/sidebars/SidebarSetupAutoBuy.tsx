@@ -14,7 +14,8 @@ import {
   warningsBasicBuyValidation,
 } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import { AUTOMATION_FORM_FLOW_STATE, BasicBSFormChange, BASIC_BUY_FORM_CHANGE, BASIC_BUY_SELL_FLOW_STATE_CHANGE, BASIC_SELL_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { BasicBSFormChange, BASIC_BUY_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -26,7 +27,6 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyCreationStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 import { SidebarAutoBuyConfirmationStage } from './SidebarAutoBuyConfirmationStage';
@@ -193,7 +193,8 @@ export function SidebarSetupAutoBuy({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoBuyCreationStage
+            <SidebarAutomationFeatureCreationStage
+              featureName="Auto-Buy"
               stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}

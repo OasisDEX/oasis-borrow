@@ -8,28 +8,27 @@ interface GetConstantMultipleMultipliersProps {
 }
 
 const AMOUNT_OF_MULTIPLIERS_TO_GENERATE = 5
-const MIX_MAX_COL_RATIO_TRIGGER_OFFSET = 5
+export const MIX_MAX_COL_RATIO_TRIGGER_OFFSET = 5
 
 const multipliersPresets = {
-  '1.25-2': [1.25, 1.5, 1.75, 2],
-  '1.5-2.25': [1.5, 1.75, 2, 2.25],
-  '1.5-3': [1.5, 2, 2.5, 2.75, 3],
-  '2-4': [2, 2.5, 3, 3.5, 4],
+  '1.3-2': [1.3, 1.5, 1.75, 2],
+  '1.3-2.25': [1.3, 1.5, 1.75, 2, 2.25],
+  '1.5-2.75': [1.5, 2, 2.25, 2.5, 2.75],
+  '1.5-3.5': [1.5, 2, 2.5, 3, 3.5],
 }
 
 const ilksMultipliers: { [key: string]: number[] } = {
-  'ETH-A': multipliersPresets['1.5-3'],
-  'ETH-B': multipliersPresets['2-4'],
-  'ETH-C': multipliersPresets['1.5-2.25'],
-  'LINK-A': multipliersPresets['1.5-2.25'],
-  'MATIC-A': multipliersPresets['1.25-2'],
-  'RENBTC-A': multipliersPresets['1.5-2.25'],
-  'WBTC-A': multipliersPresets['1.5-3'],
-  'WBTC-B': multipliersPresets['2-4'],
-  'WBTC-C': multipliersPresets['1.5-2.25'],
-  'WSTETH-A': multipliersPresets['1.5-2.25'],
-  'WSTETH-B': multipliersPresets['1.25-2'],
-  'YFI-A': multipliersPresets['1.5-2.25'],
+  'ETH-A': multipliersPresets['1.5-2.75'],
+  'ETH-B': multipliersPresets['1.5-3.5'],
+  'ETH-C': multipliersPresets['1.3-2.25'],
+  'LINK-A': multipliersPresets['1.3-2.25'],
+  'RENBTC-A': multipliersPresets['1.3-2.25'],
+  'WBTC-A': multipliersPresets['1.3-2.25'],
+  'WBTC-B': multipliersPresets['1.5-3.5'],
+  'WBTC-C': multipliersPresets['1.3-2.25'],
+  'WSTETH-A': multipliersPresets['1.3-2.25'],
+  'WSTETH-B': multipliersPresets['1.3-2'],
+  'YFI-A': multipliersPresets['1.3-2.25'],
 }
 
 function generateMultipliers({

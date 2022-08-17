@@ -1,8 +1,3 @@
-import { isNullish } from 'helpers/functions'
-import { STOP_LOSS_MARGIN } from 'helpers/multiply/calculations'
-import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { zero } from 'helpers/zero'
-
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
@@ -33,7 +28,12 @@ import {
   withdrawAmountExceedsFreeCollateralAtNextPriceValidator,
   withdrawAmountExceedsFreeCollateralValidator,
   withdrawCollateralOnVaultUnderDebtFloorValidator,
-} from '../../../../form/commonValidators'
+} from 'features/form/commonValidators'
+import { isNullish } from 'helpers/functions'
+import { STOP_LOSS_MARGIN } from 'helpers/multiply/calculations'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
+
 import { ManageBorrowVaultStage, ManageStandardBorrowVaultState } from '../manageVault'
 
 const defaultManageVaultStageCategories = {
@@ -217,6 +217,8 @@ export interface ManageVaultConditions {
   afterCollRatioBelowStopLossRatio: boolean
   afterCollRatioBelowBasicSellRatio: boolean
   afterCollRatioAboveBasicBuyRatio: boolean
+  afterCollRatioBelowConstantMultipleSellRatio: boolean
+  afterCollRatioAboveConstantMultipleBuyRatio: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
@@ -277,6 +279,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   afterCollRatioBelowStopLossRatio: false,
   afterCollRatioBelowBasicSellRatio: false,
   afterCollRatioAboveBasicBuyRatio: false,
+  afterCollRatioBelowConstantMultipleSellRatio: false,
+  afterCollRatioAboveConstantMultipleBuyRatio: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -324,6 +328,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     stopLossData,
     basicSellData,
     basicBuyData,
+    constantMultipleData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -534,6 +539,24 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
       type: 'above',
     })
 
+  const afterCollRatioBelowConstantMultipleSellRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: constantMultipleData.sellExecutionCollRatio.div(100),
+      type: 'below',
+    })
+
+  const afterCollRatioAboveConstantMultipleBuyRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: constantMultipleData.buyExecutionCollRatio.div(100),
+      type: 'above',
+    })
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -554,7 +577,9 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
       depositCollateralOnVaultUnderDebtFloor ||
       afterCollRatioBelowStopLossRatio ||
       afterCollRatioBelowBasicSellRatio ||
-      afterCollRatioAboveBasicBuyRatio)
+      afterCollRatioAboveBasicBuyRatio ||
+      afterCollRatioBelowConstantMultipleSellRatio ||
+      afterCollRatioAboveConstantMultipleBuyRatio)
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
@@ -657,5 +682,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowBasicSellRatio,
     afterCollRatioAboveBasicBuyRatio,
+    afterCollRatioBelowConstantMultipleSellRatio,
+    afterCollRatioAboveConstantMultipleBuyRatio,
   }
 }

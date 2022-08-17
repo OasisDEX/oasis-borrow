@@ -5,7 +5,7 @@ import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ConstantMultipleInfoSectionProps {
+interface AddConstantMultipleInfoSectionProps {
   token: string
   targetColRatio: BigNumber
   multiplier: number
@@ -21,7 +21,7 @@ interface ConstantMultipleInfoSectionProps {
   estimatedGasCostOnTrigger?: BigNumber
 }
 
-export function ConstantMultipleInfoSection({
+export function AddConstantMultipleInfoSection({
   token,
   targetColRatio,
   multiplier,
@@ -35,7 +35,7 @@ export function ConstantMultipleInfoSection({
   minPriceToSell,
   estimatedOasisFee,
   estimatedGasCostOnTrigger,
-}: ConstantMultipleInfoSectionProps) {
+}: AddConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
 
   return (

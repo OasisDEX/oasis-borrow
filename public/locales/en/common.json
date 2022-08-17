@@ -257,12 +257,18 @@
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
     "basic-sell": "Auto-Sell trigger",
+    "constant-multiple": "Constant-Multiple trigger",
+    "constant-multiple-buy": "Constant-Multiple Buy trigger",
+    "constant-multiple-sell": "Constant-Multiple Sell trigger",
     "close-to": "Close to",
     "trigger-col-ratio": "Trigger Col. Ratio",
+    "buy-trigger-col-ratio": "Buy Trigger Col. Ratio",
+    "sell-trigger-col-ratio": "Sell Trigger Col. Ratio",
     "target-col-ratio": "Target Col. Ratio",
     "max-gas-fee-in-gwei": "Max gas fee in Gwei",
     "minimum-sell-price": "Minimum sell price",
-    "maximum-buy-price": "Maximum buy price"
+    "maximum-buy-price": "Maximum buy price",
+    "target-multiple": "Target multiple"
   },
   "triggers": {
     "added": "added",
@@ -792,10 +798,10 @@
   "token-depositing": "{{token}} depositing {{amount}}",
   "tos": "Terms of Service",
   "tos-accept-message": "Before you can get started, you’ll need to read and accept our terms of service.",
-  "tos-accept-message-updated": "Before you can continue, you’ll need to read and accept our updated terms of service.",
+  "tos-accept-message-updated": "We have recently updated our Terms of Service. For security please accept our terms of service to continue.",
   "tos-acceptance-check-in-progress": "Acceptance check in progress...",
   "tos-desc": "By creating a Savings pot, I accept Oasis",
-  "tos-jwt-signature-message": "It looks like you're new to Oasis.app, are using a new device to connect or have not provided a signature in line with our compliance requirements. For security please accept our Terms of Service and sign a message with your wallet to continue.",
+  "tos-jwt-signature-message": "It looks like you're new to Oasis.app or are using a new device to connect. For Security please accept our Terms of Service and sign a message with your wallet to continue.",
   "tos-read": "I have read and accept the Terms of Service.",
   "tos-view": "View Terms of Service",
   "tos-wallet-connection-in-progress": "Wallet connection in progress...",
@@ -853,7 +859,9 @@
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop-Loss Col. Ratio at current or next collateral price",
     "after-coll-ratio-below-basic-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
+    "after-coll-ratio-below-constant-multiple-sell-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Sell Trigger ratio first",
     "after-coll-ratio-above-basic-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
+    "after-coll-ratio-above-constant-multiple-buy-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Buy Trigger ratio first",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault",
     "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI",
@@ -886,8 +894,8 @@
     "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
     "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@oasis.app</0>",
-    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "You cannot set your Constant Multiple Sell trigger below your stop loss trigger. Find out more about how this works <0>here</0>",
-    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "You cannot set your Stop Loss Trigger above the existing Constant Multiple Trigger. Find out more about how this works <0>here</0>",
+    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first",
+    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
     "constant-multiple-auto-sell-triggered-immediately": "Setting your Sell Trigger at this ratio would result in it being executed immediately",
     "constant-multiple-auto-buy-triggered-immediately": "Setting your Buy Trigger at this ratio would result in it being executed immediately"
@@ -1413,12 +1421,18 @@
     "learn-more-heading": "Want to know more?",
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   },
+  "automation-creation": {
+    "add-content": "Your vault is currently being updated to add your {{featureName}}. {{featureName}} will not be active until this completes.",
+    "remove-content": "Your {{featureName}} cancellation is in progress. Once the transaction is complete. Your {{featureName}} trigger will be removed.",
+    "add-complete-content": "You have successfully set up an {{featureName}} on your vault. Find out more about how this works",
+    "remove-complete-content":  "Your {{featureName}} has been successfully cancelled."
+  },
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend in Gwei per transaction."
   },
   "auto-sell": {
-    "sell-title": "Basic Auto Sell Summary",
+    "sell-title": "Basic Auto-Sell Summary",
     "cancel-summary-title": "Cancel Auto-Sell order summary",
     "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
@@ -1438,9 +1452,9 @@
     "setting-form-title": "Setting Auto-Sell",
     "cancelling-form-title": "Cancelling Auto-Sell",
     "cancel-form-title": "Cancellation confirmation",
-    "trigger-added": "Basic-Sell Protection Enabled",
-    "trigger-cancelled": "Basic-Sell cancellation completed",
-    "trigger-updated": "Basic-Sell Protection Updated",
+    "trigger-added": "Auto-Sell Protection Enabled",
+    "trigger-cancelled": "Auto-Sell cancellation completed",
+    "trigger-updated": "Auto-Sell Protection Updated",
     "next-sell-price": "Next sell price: {{amount}}",
     "continual-sell-threshold": "Recurring sell order down to {{amount}}/{{token}}",
     "continual-sell-no-threshold": "Recurring sell order with no min",
@@ -1517,17 +1531,24 @@
   },
   "constant-multiple": {
     "title": "Constant Multiple",
+    "set-trigger-description": "The Constant Multiple Automation will sell {{token}} at a col. ratio of {{sellExecutionCollRatio}}% and will buy {{token}} at a col. ratio of {{buyExecutionCollRatio}}% returning your vault's multiple to {{targetCollRatio}}%.",
+    "set-trigger-risk": "Please Note - Constant Multiple is an advanced strategy, with risks that should be well understood before set-up. Find out more ",
     "target-multiple": "Target Multiple",
     "target-col-ratio": "Target Col. Ratio {{amount}}",
     "total-cost-of-feature": "Total cost of feature",
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
+    "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
       "header": "Set up Constant Multiple",
-      "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
-      "button": "Setup Constant Multiple"
+      "header-no-multiply": "Want to Set Up Constant Multiple?",
+      "content": "Constant Multiple maintains your vault at a multiple that you select - find out more",
+      "content-no-multiply": "Constant Multiple maintains your vault at a multiple that you select. It is only available on Multiply Vaults, but you can change your vault type from your Vault Overview tab. Find out more",
+      "button": "Setup Constant Multiple",
+      "button-no-multiply": "Go to vault overview"
     },
     "vault-changes": {
-      "general-summary": "General Summary",
+      "general-summary": "General summary",
+      "cancel-summary": "Cancel summary",
       "buy-sell-trigger-summary": "Buy and Sell Trigger Summary",
       "target-col-ratio-after-buy-sell": "Target Col. Ratio after each buy/sell",
       "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
@@ -1536,7 +1557,12 @@
       "max-price-sell": "Min price to perform auto sell",
       "estimated-oasis-fee": "Estimated Oasis fee",
       "estimated-max-gas-fee": "Estimated max gas fee"
-    }
+    },
+    "adding-constant-multiple": "Adding Constant Multiple trigger",
+    "adjusting-constant-multiple": "Adjusting Constant Multiple trigger",
+    "removing-constant-multiple": "Removing Constant Multiple trigger",
+    "setting-constant-multiple": "Setting up your Constant Multiple",
+    "cancelling-constant-multiple": "Cancelling your Constant Multiple"
   },
   "ref": {
     "banner": "Refer a Friend. Earn DAI today",

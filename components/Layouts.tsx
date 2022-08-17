@@ -18,13 +18,14 @@ interface BasicLayoutProps extends WithChildren {
   footer?: JSX.Element
   sx?: SxStyleProp
   variant?: string
+  bg: JSX.Element | null
 }
 
 interface WithAnnouncementLayoutProps extends BasicLayoutProps {
   showAnnouncement: boolean
 }
 
-export function BasicLayout({ header, footer, children, sx, variant }: BasicLayoutProps) {
+export function BasicLayout({ header, footer, children, sx, variant, bg }: BasicLayoutProps) {
   return (
     <Flex
       sx={{
@@ -34,6 +35,7 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
         ...sx,
       }}
     >
+      {bg}
       {header}
       <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
@@ -50,6 +52,7 @@ export function WithAnnouncementLayout({
   showAnnouncement,
   sx,
   variant,
+  bg,
 }: WithAnnouncementLayoutProps) {
   return (
     <Flex
@@ -60,6 +63,7 @@ export function WithAnnouncementLayout({
         ...sx,
       }}
     >
+      {bg}
       {header}
       {showAnnouncement && (
         <Container variant="announcement">
@@ -87,10 +91,11 @@ export function AppLayout({ children }: WithChildren) {
   return (
     <>
       <WithAnnouncementLayout
-        sx={{ zIndex: 2 }}
+        sx={{ zIndex: 2, position: 'relative' }}
         showAnnouncement={false}
         footer={<Footer />}
         header={<AppHeader />}
+        bg={<BackgroundLight />}
       >
         {children}
         <ModalTrezorMetamaskEIP1559 />
@@ -113,13 +118,13 @@ export function LandingPageLayout({ children }: WithChildren) {
 
   return (
     <>
-      {marketingBackgrounds['default']}
       <WithAnnouncementLayout
         header={<AppHeader />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
         sx={{ position: 'relative' }}
+        bg={marketingBackgrounds['default']}
       >
         {children}
       </WithAnnouncementLayout>
@@ -134,13 +139,13 @@ export function ProductPagesLayout({ children }: WithChildren) {
 
   return (
     <>
-      <ProductBackground />
       <WithAnnouncementLayout
         header={<AppHeader />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
         sx={{ position: 'relative' }}
+        bg={<ProductBackground />}
       >
         {children}
       </WithAnnouncementLayout>
@@ -164,12 +169,12 @@ export function MarketingLayout({
 
   return (
     <>
-      {marketingBackgrounds[topBackground]}
       <BasicLayout
         header={<AppHeader />}
         footer={<Footer />}
         variant={variant || 'marketingContainer'}
         sx={{ position: 'relative' }}
+        bg={marketingBackgrounds[topBackground]}
       >
         {children}
       </BasicLayout>
@@ -181,5 +186,9 @@ export function ConnectPageLayout({ children }: WithChildren & { backLink: AppLi
   if (!isAppContextAvailable()) {
     return null
   }
-  return <BasicLayout header={<ConnectPageHeader />}>{children}</BasicLayout>
+  return (
+    <BasicLayout header={<ConnectPageHeader />} bg={null}>
+      {children}
+    </BasicLayout>
+  )
 }
