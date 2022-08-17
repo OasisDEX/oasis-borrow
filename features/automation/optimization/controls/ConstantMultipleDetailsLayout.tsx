@@ -18,7 +18,7 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 export interface ConstantMultipleDetailsLayoutProps {
   token: string
@@ -98,16 +98,21 @@ export function ConstantMultipleDetailsLayout({
       ) : (
         <>
           <Banner
-            title={t('constant-multiple.banner.header')}
+            title={t(
+              isMultiplyVault
+                ? 'constant-multiple.banner.header'
+                : 'constant-multiple.banner.header-no-multiply',
+            )}
             description={
               <>
-                {t('constant-multiple.banner.content')}{' '}
+                {t(
+                  isMultiplyVault
+                    ? 'constant-multiple.banner.content'
+                    : 'constant-multiple.banner.content-no-multiply',
+                )}{' '}
                 <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
                   {t('here')}.
                 </AppLink>
-                <Text as="span" sx={{ display: 'block', mt: 3 }}>
-                  {t('constant-multiple.banner.content-no-multiply')}
-                </Text>
               </>
             }
             image={{
