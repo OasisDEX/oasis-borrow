@@ -5,6 +5,7 @@ import { extractBasicBSData } from 'features/automation/common/basicBSTriggerDat
 import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { BasicBuyDetailsControl } from 'features/automation/optimization/controls/BasicBuyDetailsControl'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -14,6 +15,7 @@ import { ConstantMultipleDetailsControl } from './ConstantMultipleDetailsControl
 interface OptimizationDetailsControlProps {
   automationTriggersData: TriggersData
   vault: Vault
+  vaultType: VaultType
   vaultHistory: VaultHistoryEvent[]
   tokenMarketPrice: BigNumber
 }
@@ -21,6 +23,7 @@ interface OptimizationDetailsControlProps {
 export function OptimizationDetailsControl({
   automationTriggersData,
   vault,
+  vaultType,
   vaultHistory,
   tokenMarketPrice,
 }: OptimizationDetailsControlProps) {
@@ -37,6 +40,7 @@ export function OptimizationDetailsControl({
       {constantMultipleEnabled && (
         <ConstantMultipleDetailsControl
           vault={vault}
+          vaultType={vaultType}
           vaultHistory={vaultHistory}
           tokenMarketPrice={tokenMarketPrice}
           constantMultipleTriggerData={constantMultipleTriggerData}
