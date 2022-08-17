@@ -18,6 +18,7 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse<{ stat
       currentUrl,
       initialReferrer,
       initialReferrerHost,
+      userId,
     } = req.body
 
     mixpanel.track(`${eventName}`, {
@@ -26,6 +27,7 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse<{ stat
       $current_url: currentUrl,
       $initial_referrer: initialReferrer,
       $initial_referring_domain: initialReferrerHost,
+      $user_id: userId,
     })
 
     res.json({ status: 200 })

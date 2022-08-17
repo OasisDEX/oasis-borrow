@@ -24,6 +24,8 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
         switch (propertyName) {
           case '$initial_referrer':
             return '$direct'
+          case '$user_id':
+            return 'test_user_id'
           default:
             return null
         }
@@ -84,6 +86,7 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       ? '$direct'
       : new URL(initialReferrer).hostname
     : ''
+  const userId = mixpanel.get_property('$user_id')
   // eslint-disable-next-line
   fetch(`/api/t`, {
     method: 'POST',
@@ -98,6 +101,7 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       currentUrl,
       initialReferrer,
       initialReferrerHost,
+      userId,
     }),
   })
 }
