@@ -6,7 +6,7 @@ import getConfig from 'next/config'
 export type MixpanelDevelopmentType = {
   track: (eventType: string, payload: any) => void
   get_distinct_id: () => string
-  has_opted_out_tracking: boolean
+  has_opted_out_tracking: () => boolean
 }
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
@@ -18,7 +18,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
         console.info('Mixpanel Event: ', eventType, payload)
       },
       get_distinct_id: () => 'test_id',
-      has_opted_out_tracking: false,
+      has_opted_out_tracking: () => false,
     }
   }
 
@@ -29,8 +29,6 @@ type MixpanelType = MixpanelDevelopmentType | typeof mixpanelBrowser
 let mixpanel: MixpanelType = mixpanelBrowser
 
 mixpanel = enableMixpanelDevelopmentMode<MixpanelType>(mixpanel)
-
-const optedOut = mixpanel.has_opted_out_tracking
 
 const product = 'borrow'
 export const INPUT_DEBOUNCE_TIME = 800
@@ -98,7 +96,7 @@ export const trackingEvents = {
       id: location,
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+     mixpanelInternalAPI(eventName, eventBody)
   },
 
   accountChange: (account: string, network: string, walletType: string) => {
@@ -127,7 +125,7 @@ export const trackingEvents = {
       section: 'SelectCollateral',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   openVault: (page: Pages.LandingPage | Pages.OpenVaultOverview, ilk: string) => {
@@ -154,7 +152,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createVaultGenerate: (firstCDP: boolean | undefined, amount: string) => {
@@ -168,7 +166,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createVaultSetupProxy: (
@@ -187,7 +185,7 @@ export const trackingEvents = {
       section: 'Configure',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createProxy: (firstCDP: boolean | undefined) => {
@@ -200,7 +198,7 @@ export const trackingEvents = {
       section: 'ProxyDeploy',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   pickAllowance: (firstCDP: boolean | undefined, type: string, amount: string) => {
@@ -215,7 +213,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   setTokenAllowance: (firstCDP: boolean | undefined) => {
@@ -228,7 +226,7 @@ export const trackingEvents = {
       section: 'Configure',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   approveAllowance: (firstCDP: boolean | undefined) => {
@@ -241,7 +239,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createVaultConfirm: (firstCDP: boolean | undefined) => {
@@ -254,7 +252,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   confirmVaultConfirm: (
@@ -275,7 +273,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   confirmVaultConfirmTransaction: (
@@ -315,7 +313,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   overviewManage: (vaultId: string, ilk: string) => {
@@ -329,7 +327,7 @@ export const trackingEvents = {
       section: 'Table',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createNewVault: (firstCDP: boolean | undefined) => {
@@ -341,7 +339,7 @@ export const trackingEvents = {
       section: 'NavBar',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   yourVaults: () => {
@@ -352,7 +350,7 @@ export const trackingEvents = {
       section: 'NavBar',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   switchToDai: (ControllerIsConnected: boolean) => {
@@ -365,7 +363,7 @@ export const trackingEvents = {
       section: 'Dai',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   switchToCollateral: (ControllerIsConnected: boolean) => {
@@ -378,7 +376,7 @@ export const trackingEvents = {
       section: 'Collateral',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultDepositAmount: (
@@ -395,7 +393,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultGenerateAmount: (
@@ -412,7 +410,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultWithdrawAmount: (
@@ -429,7 +427,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultPaybackAmount: (
@@ -446,7 +444,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultConfirmVaultEdit: () => {
@@ -457,7 +455,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // Can we distinguish if went through collateral/daiEditing?
@@ -478,7 +476,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultConfirmTransaction: (
@@ -518,7 +516,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageCollateralApproveAllowance: () => {
@@ -530,7 +528,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageDaiPickAllowance: (type: string, amount: string) => {
@@ -544,7 +542,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageDaiApproveAllowance: () => {
@@ -556,7 +554,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // First Confirm button when the user is on Collateral and type into Deposit
@@ -569,7 +567,7 @@ export const trackingEvents = {
       section: 'Deposit',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // Confirm button when the user is on Collateral and type into Withdraw
@@ -582,7 +580,7 @@ export const trackingEvents = {
       section: 'Withdraw',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // First Confirm button when the user is on Dai and type into Generate
@@ -595,7 +593,7 @@ export const trackingEvents = {
       section: 'Generate',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // Confirm button when the user is on Dai and type into Payback
@@ -608,7 +606,7 @@ export const trackingEvents = {
       section: 'Payback',
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   newsletterSubscribe: (section: 'Footer' | 'Homepage') => {
@@ -619,7 +617,7 @@ export const trackingEvents = {
       section,
     }
 
-    !optedOut && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
   },
 
   multiply: {
@@ -641,7 +639,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !optedOut && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
     },
 
     confirmOpenMultiplyConfirmTransaction: (
@@ -682,7 +680,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !optedOut && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
     },
 
     adjustPositionConfirmTransaction: (
@@ -720,7 +718,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !optedOut && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
     },
 
     otherActionsConfirmTransaction: (
@@ -760,7 +758,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !optedOut && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
     },
 
     closeVaultConfirmTransaction: (

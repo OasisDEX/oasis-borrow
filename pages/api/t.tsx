@@ -13,7 +13,7 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse<{ stat
   try {
     const { eventName, eventBody, distinctId, currentUrl, referrer } = req.body
 
-    mixpanel.track(`be-${eventName}`, {
+    mixpanel.track(`${eventName}`, {
       ...eventBody,
       distinct_id: distinctId,
       current_url: currentUrl,
