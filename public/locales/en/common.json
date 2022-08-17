@@ -1540,8 +1540,11 @@
     "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
       "header": "Set up Constant Multiple",
-      "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
-      "button": "Setup Constant Multiple"
+      "header-no-multiply": "Want to Set Up Constant Multiple?",
+      "content": "Constant Multiple maintains your vault at a multiple that you select - find out more",
+      "content-no-multiply": "Constant Multiple maintains your vault at a multiple that you select. It is only available on Multiply Vaults, but you can change your vault type from your Vault Overview tab. Find out more",
+      "button": "Setup Constant Multiple",
+      "button-no-multiply": "Go to vault overview"
     },
     "vault-changes": {
       "general-summary": "General summary",

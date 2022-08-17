@@ -8,6 +8,7 @@ import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -18,6 +19,7 @@ import { ConstantMultipleDetailsLayout } from './ConstantMultipleDetailsLayout'
 
 interface ConstantMultipleDetailsControlProps {
   vault: Vault
+  vaultType: VaultType
   vaultHistory: VaultHistoryEvent[]
   tokenMarketPrice: BigNumber
   constantMultipleTriggerData: ConstantMultipleTriggerData
@@ -25,6 +27,7 @@ interface ConstantMultipleDetailsControlProps {
 
 export function ConstantMultipleDetailsControl({
   vault,
+  vaultType,
   vaultHistory,
   tokenMarketPrice,
   constantMultipleTriggerData,
@@ -77,6 +80,7 @@ export function ConstantMultipleDetailsControl({
   return (
     <Grid>
       <ConstantMultipleDetailsLayout
+        vaultType={vaultType}
         token={token}
         isTriggerEnabled={isTriggerEnabled}
         {...constantMultipleDetailsLayoutOptionalParams}
