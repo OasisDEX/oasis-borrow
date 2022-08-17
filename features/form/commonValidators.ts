@@ -493,3 +493,22 @@ export function stopLossTriggeredValidator({
       vaultHistory[0].kind === 'CLOSE_VAULT_TO_DAI')
   )
 }
+
+export function ratioGreaterOrLowerThanThresholdValidator({
+  ratio,
+  threshold,
+  type,
+}: {
+  ratio: BigNumber
+  threshold: BigNumber
+  type: 'greater' | 'lower'
+}) {
+  switch (type) {
+    case 'greater':
+      return ratio.gt(threshold)
+    case 'lower':
+      return ratio.lt(threshold)
+    default:
+      return false
+  }
+}

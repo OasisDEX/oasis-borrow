@@ -88,6 +88,8 @@ const commonWarnings = [
   'vaultWillRemainUnderMinActiveColRatio',
   'potentialInsufficientEthFundsForTx',
   'nextCollRatioCloseToCurrentSl',
+  'afterCollRatioBelowConstantMultipleBuyRatio',
+  'afterCollRatioBelowAutoBuyRatio',
 ]
 
 export function extractCommonWarnings(warningMessages: VaultWarningMessage[]) {

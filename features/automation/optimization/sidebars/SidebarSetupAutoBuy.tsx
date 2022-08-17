@@ -112,6 +112,7 @@ export function SidebarSetupAutoBuy({
   })
 
   const { min, max } = getBasicBuyMinMaxValues({
+    lockedCollateralUSD: vault.lockedCollateralUSD,
     autoSellTriggerData,
     stopLossTriggerData,
     ilkData,

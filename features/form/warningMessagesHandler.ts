@@ -26,6 +26,8 @@ export type VaultWarningMessage =
   | 'addingConstantMultipleWhenAutoSellOrBuyEnabled'
   | 'constantMultipleAutoSellTriggeredImmediately'
   | 'constantMultipleAutoBuyTriggeredImmediately'
+  | 'afterCollRatioBelowConstantMultipleBuyRatio'
+  | 'afterCollRatioBelowAutoBuyRatio'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -52,6 +54,8 @@ interface WarningMessagesHandler {
   addingConstantMultipleWhenAutoSellOrBuyEnabled?: boolean
   constantMultipleAutoSellTriggeredImmediately?: boolean
   constantMultipleAutoBuyTriggeredImmediately?: boolean
+  afterCollRatioBelowConstantMultipleBuyRatio?: boolean
+  afterCollRatioBelowAutoBuyRatio?: boolean
 }
 
 export function warningMessagesHandler({
@@ -77,6 +81,8 @@ export function warningMessagesHandler({
   addingConstantMultipleWhenAutoSellOrBuyEnabled,
   constantMultipleAutoSellTriggeredImmediately,
   constantMultipleAutoBuyTriggeredImmediately,
+  afterCollRatioBelowConstantMultipleBuyRatio,
+  afterCollRatioBelowAutoBuyRatio,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -165,6 +171,14 @@ export function warningMessagesHandler({
 
   if (constantMultipleAutoBuyTriggeredImmediately) {
     warningMessages.push('constantMultipleAutoBuyTriggeredImmediately')
+  }
+
+  if (afterCollRatioBelowConstantMultipleBuyRatio) {
+    warningMessages.push('afterCollRatioBelowConstantMultipleBuyRatio')
+  }
+
+  if (afterCollRatioBelowAutoBuyRatio) {
+    warningMessages.push('afterCollRatioBelowAutoBuyRatio')
   }
 
   return warningMessages

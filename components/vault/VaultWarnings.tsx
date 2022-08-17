@@ -85,6 +85,10 @@ export function VaultWarnings({
         return translate('constant-multiple-auto-sell-triggered-immediately')
       case 'constantMultipleAutoBuyTriggeredImmediately':
         return translate('constant-multiple-auto-buy-triggered-immediately')
+      case 'afterCollRatioBelowConstantMultipleBuyRatio':
+        return translate('after-coll-ratio-below-constant-multiple-buy-ratio')
+      case 'afterCollRatioBelowAutoBuyRatio':
+        return translate('after-coll-ratio-below-auto-buy-ratio')
       case 'constantMultipleSellTriggerCloseToStopLossTrigger':
         return (
           <Trans

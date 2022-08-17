@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { isNullish } from 'helpers/functions'
@@ -27,6 +28,7 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
+  ratioGreaterOrLowerThanThresholdValidator,
   stopLossTriggeredValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
@@ -236,6 +238,8 @@ export interface ManageVaultConditions {
   afterCollRatioAboveBasicBuyRatio: boolean
   afterCollRatioBelowConstantMultipleSellRatio: boolean
   afterCollRatioAboveConstantMultipleBuyRatio: boolean
+  afterCollRatioBelowConstantMultipleBuyRatio: boolean
+  afterCollRatioBelowAutoBuyRatio: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
@@ -306,6 +310,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   afterCollRatioAboveBasicBuyRatio: false,
   afterCollRatioBelowConstantMultipleSellRatio: false,
   afterCollRatioAboveConstantMultipleBuyRatio: false,
+  afterCollRatioBelowConstantMultipleBuyRatio: false,
+  afterCollRatioBelowAutoBuyRatio: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -368,6 +374,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     basicSellData,
     basicBuyData,
     constantMultipleData,
+    afterLockedCollateralUSD,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -627,6 +634,27 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       type: 'above',
     })
 
+  const afterMaxAutoBuySliderRatio = afterLockedCollateralUSD
+    .div(debtFloor)
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+
+  const afterCollRatioBelowConstantMultipleBuyRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    ratioGreaterOrLowerThanThresholdValidator({
+      ratio: constantMultipleData.buyExecutionCollRatio,
+      threshold: afterMaxAutoBuySliderRatio,
+      type: 'greater',
+    })
+
+  const afterCollRatioBelowAutoBuyRatio =
+    !!basicBuyData?.isTriggerEnabled &&
+    ratioGreaterOrLowerThanThresholdValidator({
+      ratio: basicBuyData.execCollRatio,
+      threshold: afterMaxAutoBuySliderRatio,
+      type: 'greater',
+    })
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -774,6 +802,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     afterCollRatioAboveBasicBuyRatio,
     afterCollRatioBelowConstantMultipleSellRatio,
     afterCollRatioAboveConstantMultipleBuyRatio,
+    afterCollRatioBelowConstantMultipleBuyRatio,
+    afterCollRatioBelowAutoBuyRatio,
 
     insufficientEthFundsForTx,
   }

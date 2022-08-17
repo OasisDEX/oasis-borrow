@@ -114,6 +114,8 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     highSlippage,
+    afterCollRatioBelowConstantMultipleBuyRatio,
+    afterCollRatioBelowAutoBuyRatio,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -130,6 +132,8 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
         vaultWillBeAtRiskLevelWarning,
         vaultWillBeAtRiskLevelWarningAtNextPrice,
         highSlippage,
+        afterCollRatioBelowConstantMultipleBuyRatio,
+        afterCollRatioBelowAutoBuyRatio,
       }),
     )
   }

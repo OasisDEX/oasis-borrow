@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
@@ -20,6 +21,7 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
+  ratioGreaterOrLowerThanThresholdValidator,
   stopLossTriggeredValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
@@ -219,6 +221,8 @@ export interface ManageVaultConditions {
   afterCollRatioAboveBasicBuyRatio: boolean
   afterCollRatioBelowConstantMultipleSellRatio: boolean
   afterCollRatioAboveConstantMultipleBuyRatio: boolean
+  afterCollRatioBelowConstantMultipleBuyRatio: boolean
+  afterCollRatioBelowAutoBuyRatio: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
@@ -281,6 +285,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   afterCollRatioAboveBasicBuyRatio: false,
   afterCollRatioBelowConstantMultipleSellRatio: false,
   afterCollRatioAboveConstantMultipleBuyRatio: false,
+  afterCollRatioBelowConstantMultipleBuyRatio: false,
+  afterCollRatioBelowAutoBuyRatio: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -329,6 +335,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     basicSellData,
     basicBuyData,
     constantMultipleData,
+    afterLockedCollateralUSD,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -407,7 +414,11 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   })
 
   const withdrawAmountExceedsFreeCollateralAtNextPrice = withdrawAmountExceedsFreeCollateralAtNextPriceValidator(
-    { withdrawAmount, withdrawAmountExceedsFreeCollateral, maxWithdrawAmountAtNextPrice },
+    {
+      withdrawAmount,
+      withdrawAmountExceedsFreeCollateral,
+      maxWithdrawAmountAtNextPrice,
+    },
   )
 
   const generateAmountExceedsDebtCeiling = !!generateAmount?.gt(ilkDebtAvailable)
@@ -474,7 +485,9 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     collateralAllowance,
   })
 
-  const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
+  const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({
+    txError,
+  })
 
   const insufficientDaiAllowance = insufficientDaiAllowanceValidator({
     paybackAmount,
@@ -557,6 +570,27 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
       type: 'above',
     })
 
+  const afterMaxAutoBuySliderRatio = afterLockedCollateralUSD
+    .div(debtFloor)
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+
+  const afterCollRatioBelowConstantMultipleBuyRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    ratioGreaterOrLowerThanThresholdValidator({
+      ratio: constantMultipleData.buyExecutionCollRatio,
+      threshold: afterMaxAutoBuySliderRatio,
+      type: 'greater',
+    })
+
+  const afterCollRatioBelowAutoBuyRatio =
+    !!basicBuyData?.isTriggerEnabled &&
+    ratioGreaterOrLowerThanThresholdValidator({
+      ratio: basicBuyData.execCollRatio,
+      threshold: afterMaxAutoBuySliderRatio,
+      type: 'greater',
+    })
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -598,7 +632,10 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   const potentialGenerateAmountLessThanDebtFloor =
     !isNullish(depositAmount) && state.daiYieldFromTotalCollateralWithoutDebt.lt(debtFloor)
 
-  const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
+  const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({
+    debtFloor,
+    debt,
+  })
 
   const multiplyTransitionDisabled = isMultiplyTransitionStage && !accountIsController
 
@@ -684,5 +721,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     afterCollRatioAboveBasicBuyRatio,
     afterCollRatioBelowConstantMultipleSellRatio,
     afterCollRatioAboveConstantMultipleBuyRatio,
+    afterCollRatioBelowConstantMultipleBuyRatio,
+    afterCollRatioBelowAutoBuyRatio,
   }
 }

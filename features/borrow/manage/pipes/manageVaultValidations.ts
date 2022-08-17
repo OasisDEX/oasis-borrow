@@ -109,6 +109,8 @@ export function validateWarnings(
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     debtIsLessThanDebtFloor,
     potentialGenerateAmountLessThanDebtFloor,
+    afterCollRatioBelowConstantMultipleBuyRatio,
+    afterCollRatioBelowAutoBuyRatio,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -124,6 +126,8 @@ export function validateWarnings(
         vaultWillBeAtRiskLevelDangerAtNextPrice,
         vaultWillBeAtRiskLevelWarning,
         vaultWillBeAtRiskLevelWarningAtNextPrice,
+        afterCollRatioBelowConstantMultipleBuyRatio,
+        afterCollRatioBelowAutoBuyRatio,
       }),
     )
   }
