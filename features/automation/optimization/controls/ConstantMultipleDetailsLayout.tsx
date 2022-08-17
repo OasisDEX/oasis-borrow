@@ -56,7 +56,7 @@ export function ConstantMultipleDetailsLayout({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
-  const setHash = useHash()[1]
+  const [, setHash] = useHash()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isMultiplyVault = vaultType === VaultType.Multiply
 
