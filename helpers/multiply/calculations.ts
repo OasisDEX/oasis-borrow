@@ -79,6 +79,9 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
     case 'WITHDRAW':
     case 'PAYBACK':
     case 'WITHDRAW-PAYBACK':
+    case 'basic-buy':
+    case 'basic-sell':
+    case 'stop-loss':
       return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
     default:
       return total
@@ -100,7 +103,7 @@ export function getCumulativeOasisFeeUSD(total: BigNumber, event: VaultEvent) {
   }
 }
 
-export function getCumulativeConstantMultipleFeeUSD(total: BigNumber, event: VaultEvent) {
+function getCumulativeConstantMultipleFeeUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
     case 'INCREASE_MULTIPLE':
     case 'DECREASE_MULTIPLE':
@@ -112,7 +115,7 @@ export function getCumulativeConstantMultipleFeeUSD(total: BigNumber, event: Vau
       return total
     case 'basic-buy':
     case 'basic-sell':
-      return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+      return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
     default:
       return total
   }

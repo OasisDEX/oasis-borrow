@@ -447,6 +447,9 @@ const triggerEventsQueryConstantMultiple = gql`
         triggerData
         commandAddress
         groupId
+        groupType
+        gasFee
+        ethPrice
       }
     }
   }
