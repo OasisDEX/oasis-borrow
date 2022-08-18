@@ -99,6 +99,6 @@ export function getDefaultMultiplier({
       if (acceptableMultipliers[i] >= minMultiplier && acceptableMultipliers[i] <= maxMultiplier)
         return acceptableMultipliers[i]
     }
-    return 0
+    return acceptableMultipliers[midIndex]
   }
 }
