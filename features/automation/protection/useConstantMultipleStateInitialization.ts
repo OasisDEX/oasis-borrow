@@ -10,7 +10,10 @@ import {
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
-import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
+import {
+  getConstantMultipleMultipliers,
+  getDefaultMultiplier,
+} from 'features/automation/optimization/common/multipliers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useEffect } from 'react'
 
@@ -48,7 +51,11 @@ export function useConstantMultipleStateInitialization(
     minColRatio: min,
     maxColRatio: max,
   })
-  const defaultMultiplier = acceptableMultipliers[Math.ceil(acceptableMultipliers.length / 2) - 1]
+  const defaultMultiplier = getDefaultMultiplier({
+    acceptableMultipliers,
+    minColRatio: min,
+    maxColRatio: max,
+  })
   const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiplier)
 
   useEffect(() => {
@@ -84,7 +91,7 @@ export function useConstantMultipleStateInitialization(
       type: 'current-form',
       currentForm: 'add',
     })
-  }, [collateralizationRatio])
+  }, [collateralizationRatio, stopLossTriggerData.triggerId])
 
   return constantMultipleTriggerData.isTriggerEnabled
 }

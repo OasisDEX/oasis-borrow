@@ -7,6 +7,12 @@ interface GetConstantMultipleMultipliersProps {
   maxColRatio: BigNumber
 }
 
+interface GetDefaultMultiplierProps {
+  acceptableMultipliers: number[]
+  minColRatio: BigNumber
+  maxColRatio: BigNumber
+}
+
 const AMOUNT_OF_MULTIPLIERS_TO_GENERATE = 5
 export const MIX_MAX_COL_RATIO_TRIGGER_OFFSET = 5
 
@@ -64,4 +70,35 @@ export function getConstantMultipleMultipliers({
   return Object.keys(ilksMultipliers).includes(ilk)
     ? ilksMultipliers[ilk]
     : generateMultipliers({ minColRatio, maxColRatio })
+}
+
+export function getDefaultMultiplier({
+  acceptableMultipliers,
+  minColRatio,
+  maxColRatio,
+}: GetDefaultMultiplierProps): number {
+  const midIndex = Math.ceil(acceptableMultipliers.length / 2) - 1
+  const minMultiplier = calculateMultipleFromTargetCollRatio(
+    maxColRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+  const maxMultiplier = calculateMultipleFromTargetCollRatio(
+    minColRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+
+  if (
+    acceptableMultipliers[midIndex] >= minMultiplier &&
+    acceptableMultipliers[midIndex] <= maxMultiplier
+  )
+    return acceptableMultipliers[midIndex]
+  else {
+    for (let i = midIndex; i >= 0; i--) {
+      if (acceptableMultipliers[i] >= minMultiplier && acceptableMultipliers[i] <= maxMultiplier)
+        return acceptableMultipliers[i]
+    }
+    for (let i = midIndex; i < acceptableMultipliers.length; i++) {
+      if (acceptableMultipliers[i] >= minMultiplier && acceptableMultipliers[i] <= maxMultiplier)
+        return acceptableMultipliers[i]
+    }
+    return acceptableMultipliers[midIndex]
+  }
 }
