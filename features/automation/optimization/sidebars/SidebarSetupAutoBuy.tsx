@@ -14,7 +14,10 @@ import {
   warningsBasicBuyValidation,
 } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import { BasicBSFormChange, BASIC_BUY_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
+  BASIC_BUY_FORM_CHANGE,
+  BasicBSFormChange,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
@@ -24,12 +27,12 @@ import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLa
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarAutoBuyConfirmationStage } from './SidebarAutoBuyConfirmationStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
-import { SidebarAutoBuyConfirmationStage } from './SidebarAutoBuyConfirmationStage';
 
 interface SidebarSetupAutoBuyProps {
   vault: Vault
@@ -54,7 +57,7 @@ interface SidebarSetupAutoBuyProps {
   debtDelta: BigNumber
   collateralDelta: BigNumber
   isAutoBuyActive: boolean
-  isConfirmation: boolean;
+  isConfirmation: boolean
 }
 
 export function SidebarSetupAutoBuy({
@@ -84,11 +87,9 @@ export function SidebarSetupAutoBuy({
   collateralDelta,
   isAutoBuyActive,
 
-  isConfirmation
+  isConfirmation,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
-
-  const [showConfirmationScreen, setShowconfirmationScreen] = useState(false);
 
   const gasEstimation = useGasEstimationContext()
 
@@ -98,8 +99,8 @@ export function SidebarSetupAutoBuy({
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicBuy'
     : isFirstSetup
-      ? 'addBasicBuy'
-      : 'editBasicBuy'
+    ? 'addBasicBuy'
+    : 'editBasicBuy'
 
   const sidebarStatus = getSidebarStatus({
     stage,
@@ -107,9 +108,6 @@ export function SidebarSetupAutoBuy({
     flow,
     etherscan: context.etherscan.url,
   })
-
-  console.log(isConfirmation, 'status');
-  console.log(stage, 'stage')
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
@@ -158,7 +156,7 @@ export function SidebarSetupAutoBuy({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && !isConfirmation  && (
+              {isAddForm && !isConfirmation && (
                 <SidebarAutoBuyEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -207,21 +205,30 @@ export function SidebarSetupAutoBuy({
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if(!isConfirmation) {
+          if (!isConfirmation) {
             uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
               type: 'is-confirmation',
-              isConfirmation: true
+              isConfirmation: true,
             })
           } else {
             txHandler()
           }
         },
       },
-      ...(stage !== 'txInProgress' && {
+      ...((stage !== 'txInProgress' || isConfirmation) && {
         textButton: {
           label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
           hidden: basicBuyState.triggerId.isZero(),
-          action: () => textButtonHandler(),
+          action: () => {
+            if (isConfirmation) {
+              uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+                type: 'is-confirmation',
+                isConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

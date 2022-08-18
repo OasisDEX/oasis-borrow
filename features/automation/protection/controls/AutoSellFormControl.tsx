@@ -232,6 +232,7 @@ export function AutoSellFormControl({
       isFirstSetup={isFirstSetup}
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
+      isConfirmation={basicSellState.isConfirmation}
     />
   )
 }

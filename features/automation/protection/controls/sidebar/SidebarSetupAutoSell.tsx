@@ -11,10 +11,14 @@ import {
   warningsBasicSellValidation,
 } from 'features/automation/common/validators'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
+import { SidebarAutoBuyConfirmationStage } from 'features/automation/optimization/sidebars/SidebarAutoBuyConfirmationStage'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
+  BASIC_SELL_FORM_CHANGE,
+  BasicBSFormChange,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
@@ -24,6 +28,7 @@ import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { selectSideBarTextBtnLabel } from 'helpers/functions'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -51,6 +56,7 @@ interface SidebarSetupAutoSellProps {
   isFirstSetup: boolean
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  isConfirmation: boolean
 }
 
 export function SidebarSetupAutoSell({
@@ -76,6 +82,7 @@ export function SidebarSetupAutoSell({
   isEditing,
   isDisabled,
   isFirstSetup,
+  isConfirmation,
 
   debtDelta,
   collateralDelta,
@@ -132,7 +139,6 @@ export function SidebarSetupAutoSell({
 
   const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
   const cancelAutoSellErrors = extractCancelBSErrors(errors)
-
   const validationErrors = isAddForm ? errors : cancelAutoSellErrors
 
   if (isAutoSellActive) {
@@ -147,7 +153,7 @@ export function SidebarSetupAutoSell({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isConfirmation && (
                 <SidebarAutoSellAddEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -160,6 +166,14 @@ export function SidebarSetupAutoSell({
                   collateralDelta={collateralDelta}
                   sliderMin={min}
                   sliderMax={max}
+                />
+              )}
+              {isConfirmation && (
+                <SidebarAutoBuyConfirmationStage
+                  vault={vault}
+                  basicBuyState={basicSellState}
+                  debtDelta={debtDelta}
+                  collateralDelta={collateralDelta}
                 />
               )}
               {isRemoveForm && (
@@ -187,13 +201,31 @@ export function SidebarSetupAutoSell({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isConfirmation) {
+            uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+              type: 'is-confirmation',
+              isConfirmation: true,
+            })
+          } else {
+            txHandler()
+          }
+        },
       },
-      ...(stage !== 'txInProgress' && {
+      ...((stage !== 'txInProgress' || isConfirmation) && {
         textButton: {
-          label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
+          label: selectSideBarTextBtnLabel(isConfirmation, isAddForm, t),
           hidden: basicSellState.triggerId.isZero(),
-          action: () => textButtonHandler(),
+          action: () => {
+            if (isConfirmation) {
+              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                type: 'is-confirmation',
+                isConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

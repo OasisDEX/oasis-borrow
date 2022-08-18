@@ -21,7 +21,6 @@ import {
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -187,7 +186,6 @@ export function SidebarAutoBuyEditingStage({
         }}
         value={basicBuyState.maxBaseFeeInGwei.toNumber()}
       />
-
       {isEditing && (
         <AutoBuyInfoSectionControl
           executionPrice={executionPrice}

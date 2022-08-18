@@ -25,14 +25,14 @@ export type AutomationChangeAction =
   | { type: 'current-form'; currentForm: CurrentBSForm }
   | { type: 'reset'; resetData: BasicBSTriggerResetData }
   | {
-    type: 'tx-details'
-    txDetails: {
-      txStatus?: TxStatus
-      txError?: TxError
-      txHash?: string
-      txCost?: BigNumber
+      type: 'tx-details'
+      txDetails: {
+        txStatus?: TxStatus
+        txError?: TxError
+        txHash?: string
+        txCost?: BigNumber
+      }
     }
-  }
   | { type: 'is-confirmation'; isConfirmation: boolean }
 
 export type BasicBSChangeAction =
@@ -42,13 +42,10 @@ export type BasicBSChangeAction =
   | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
 
-
 export function basicBSFormChangeReducer(
   state: BasicBSFormChange,
   action: BasicBSChangeAction,
 ): BasicBSFormChange {
-  console.log(state, 'state in reducer', state)
-  console.log(action, 'action')
   switch (action.type) {
     case 'trigger-id':
       return { ...state, triggerId: action.triggerId }
