@@ -30,11 +30,13 @@ export function getManageAaveParametersStateMachineServices$(
     map(([contextConnected, txHelpers, userSettings]) => {
       return {
         getParameters: async (context) => {
+          if (!context.proxyAddress) return Promise.resolve()
           return await getOpenAaveParameters(
             contextConnected,
             context.amount || zero,
             context.multiply || 2,
             userSettings.slippage,
+            context.proxyAddress,
           )
         },
         estimateGas: async (context) => {

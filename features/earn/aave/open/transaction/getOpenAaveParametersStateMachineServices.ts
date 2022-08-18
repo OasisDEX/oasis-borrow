@@ -38,10 +38,18 @@ export function getOpenAaveParametersStateMachineServices$(
           )
         },
         estimateGas: async (context) => {
+          console.log('estimating gas')
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
             return Promise.resolve(0)
           }
-
+          console.log('estimating gas with:', {
+            kind: TxMetaKind.operationExecutor,
+            calls: context.transactionParameters!.calls as any,
+            operationName: context.transactionParameters!.operationName,
+            token: context.token!,
+            amount: context.amount!,
+            proxyAddress: context.proxyAddress!,
+          })
           const gas = await txHelpers
             .estimateGas(openAavePosition, {
               kind: TxMetaKind.operationExecutor,

@@ -72,6 +72,7 @@ export async function getOpenAaveParameters(
   amount: BigNumber,
   multiply: number,
   slippage: BigNumber,
+  proxyAddress: string,
 ): Promise<OpenPositionResult> {
   const mainnetAddresses = {
     DAI: ADDRESSES.main.DAI,
@@ -90,10 +91,6 @@ export async function getOpenAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  // const depositAmount = amountToWei(new BigNumber(60))
-  // const _multiply = new BigNumber(2)
-  // const _slippage = new BigNumber(0.1)
-  // console.log('addresses', addresses)
   const strategyReturn = await strategy.openStEth(
     {
       depositAmount: amount,
@@ -103,8 +100,9 @@ export async function getOpenAaveParameters(
     {
       addresses,
       provider: provider,
-      // getSwapData: oneInchCallMock,
-      getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
+      getSwapData: oneInchCallMock,
+      dsProxy: proxyAddress,
+      // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
     },
   )
   console.log('strategyReturn:', strategyReturn)
