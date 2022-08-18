@@ -90,7 +90,7 @@ export function SidebarConstantMultipleEditingStage({
           token,
           buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio.toNumber(),
           sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio.toNumber(),
-          targetCollRatio: constantMultipleState.targetCollRatio.toNumber(),
+          multiplier: constantMultipleState.multiplier,
         })}
       </Text>
       <Text as="p" variant="boldParagraph3" sx={{ color: 'neutral80' }}>

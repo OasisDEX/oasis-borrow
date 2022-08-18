@@ -1531,7 +1531,7 @@
   },
   "constant-multiple": {
     "title": "Constant Multiple",
-    "set-trigger-description": "The Constant Multiple Automation will sell {{token}} at a col. ratio of {{sellExecutionCollRatio}}% and will buy {{token}} at a col. ratio of {{buyExecutionCollRatio}}% returning your vault's multiple to {{targetCollRatio}}%.",
+    "set-trigger-description": "The Constant Multiple Automation will sell {{token}} at a col. ratio of {{sellExecutionCollRatio}}% and will buy {{token}} at a col. ratio of {{buyExecutionCollRatio}}% returning your vault's multiple to {{multiplier}}x.",
     "set-trigger-risk": "Please Note - Constant Multiple is an advanced strategy, with risks that should be well understood before set-up. Find out more ",
     "target-multiple": "Target Multiple",
     "target-col-ratio": "Target Col. Ratio {{amount}}",
