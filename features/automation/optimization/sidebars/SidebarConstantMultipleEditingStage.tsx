@@ -196,6 +196,10 @@ export function SidebarConstantMultipleEditingStage({
         errorMessages={errors.filter((item) => item === 'autoBuyMaxBuyPriceNotSpecified')}
         ilkData={ilkData}
       />
+      <VaultWarnings
+        warningMessages={warnings.filter((item) => item === 'settingAutoBuyTriggerWithNoThreshold')}
+        ilkData={ilkData}
+      />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
         amount={constantMultipleState?.minSellPrice}
