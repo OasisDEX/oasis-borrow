@@ -56,13 +56,11 @@ export function getAddConstantMultipleHistoryEventIndex(events: VaultEvent[]) {
     })
     .filter((item) => item)[0] as AutomationEvent[]
 
-  const triggerIdOfAddCMEvent = mostRecentConstantMultipleAddEvents.slice(-1)[0].triggerId
+  const triggerIdOfAddCMEvent = mostRecentConstantMultipleAddEvents[0].id
 
-  const index = events.findIndex(
-    (item) => 'triggerId' in item && item.triggerId === triggerIdOfAddCMEvent,
-  )
+  const index = events.findIndex((item) => 'triggerId' in item && item.id === triggerIdOfAddCMEvent)
 
-  return index === -1 ? 0 : index
+  return index === -1 ? 0 : index + 1
 }
 
 export function unpackTriggerDataForHistory(event: AutomationEvent) {
