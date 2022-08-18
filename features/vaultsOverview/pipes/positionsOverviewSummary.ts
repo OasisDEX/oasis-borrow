@@ -100,8 +100,6 @@ export function createPositionsOverviewSummary$(
         })
         .filter((token) => {
           const valueUsd = getPositionOrAssetValue(token)
-          console.log('token:', token)
-          console.log('valueUsd:', valueUsd.toString())
           return (
             valueUsd.decimalPlaces(2).gt(zero) ||
             ((token as WalletAssets)?.missingPriceData && valueUsd.decimalPlaces(2).gt(zero))
@@ -114,7 +112,6 @@ export function createPositionsOverviewSummary$(
   const assetsAndPositions$: Observable<Array<PositionView>> = flattenedTokensAndPositions$.pipe(
     map((flattenedTokenBalances) =>
       flattenedTokenBalances.map((assetOrPosition) => {
-        console.log('assetOrPosition:', assetOrPosition)
         if (isPosition(assetOrPosition)) {
           return {
             missingPriceData: false,

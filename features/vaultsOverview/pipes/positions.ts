@@ -1,9 +1,10 @@
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, switchMap, tap } from 'rxjs/operators'
 
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { Position } from './positionsOverviewSummary'
 import BigNumber from 'bignumber.js'
+import { ExchangeAction, ExchangeType, Quote } from "../../exchange/exchange";
 
 function makerPositionName(vault: VaultWithType): string {
   if (isMakerEarnPosition(vault)) {
@@ -49,6 +50,13 @@ export function createAavePositions$(
     proxyAddress: string
   }) => Observable<{ currentATokenBalance: BigNumber }>,
   collateralTokens$: Observable<string[]>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+    exchangeType: ExchangeType,
+  ) => Observable<Quote>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
 ): Observable<Position[]> {
@@ -62,16 +70,28 @@ export function createAavePositions$(
             proxyAddress,
           }).pipe(
             map((userReserve) => {
-              console.log('userReserve', userReserve)
-              return {
-                token: token,
-                contentsUsd: new BigNumber(userReserve.currentATokenBalance),
-                title: `${token} Aave `,
-                url: `/earn/steth/${address}`,
-              }
+              return exchangeQuote$(
+                token,
+                new BigNumber(0.005),
+                new BigNumber(userReserve.currentATokenBalance),
+                'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
+                'defaultExchange'
+              ).pipe(
+                switchMap((quote) => {
+                  return of({
+                    token: token,
+                    contentsUsd: quote.status === 'SUCCESS' ? new BigNumber(userReserve.currentATokenBalance).times(quote.tokenPrice) : new BigNumber(0),
+                    title: `${token} Aave `,
+                    url: `/earn/steth/${address}`,
+                  })
+                })
+              )
             }),
+          switchMap((input) => {
+            return input
+          }),
           )
-        }),
+        })
       )
     }),
     switchMap((input) => {

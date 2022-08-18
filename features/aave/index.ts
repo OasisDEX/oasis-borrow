@@ -99,11 +99,11 @@ export async function getOpenAaveParameters(
       addresses,
       provider: provider,
       getSwapData: oneInchCallMock,
-      // dsProxy: proxyAddress,
+      dsProxy: proxyAddress,
       // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
     },
   )
-  console.log('strategyReturn:', strategyReturn)
+
   return {
     calls: strategyReturn.calls,
     operationName: 'CustomOperation',

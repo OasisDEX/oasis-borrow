@@ -69,7 +69,13 @@ export async function oneInchCallMock(
   amount: BigNumber,
   slippage: BigNumber,
 ) {
-  const marketPrice = 0.979
+  const marketPrice = 1.01
+  console.log('slippage')
+  console.log(slippage.toString())
+  console.log('minToTokenAmount')
+  console.log(amount
+    .div(marketPrice)
+    .times(new BigNumber(1).minus(slippage)).toString())
   return {
     fromTokenAddress: from,
     toTokenAddress: to,
