@@ -75,6 +75,9 @@ function mapConstantMultipleTriggerData(
 }
 
 export function extractConstantMultipleData(triggersData: TriggersData) {
+  console.log("triggersData.triggers")
+  console.log(triggersData.triggers)
+  
   if (triggersData.triggers && triggersData.triggers.length > 0) {
     const constantMultipleTriggers = {
       [TriggerType.BasicBuy]: extractBasicBSData({
