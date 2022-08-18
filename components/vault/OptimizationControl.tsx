@@ -60,14 +60,16 @@ function ZeroDebtOptimizationBanner({
 }
 function getZeroDebtOptimizationBannerProps({
   readOnlyBasicBSEnabled,
+  constantMultipleReadOnlyEnabled,
   isVaultDebtZero,
   vaultHasNoActiveTrigger,
 }: {
   readOnlyBasicBSEnabled: boolean
+  constantMultipleReadOnlyEnabled: boolean
   isVaultDebtZero: boolean
   vaultHasNoActiveTrigger?: boolean
 }): ZeroDebtOptimizationBannerProps {
-  if (!readOnlyBasicBSEnabled) {
+  if (!readOnlyBasicBSEnabled || !constantMultipleReadOnlyEnabled) {
     if (isVaultDebtZero && vaultHasNoActiveTrigger) {
       return {
         header: 'optimization.zero-debt-heading',
@@ -75,7 +77,7 @@ function getZeroDebtOptimizationBannerProps({
       }
     } else
       return {
-        header: 'optimization.unable-to-access-auto-buy',
+        header: 'optimization.unable-to-access-optimization',
         description: 'please-try-again-later',
         showLink: false,
       }
@@ -111,6 +113,7 @@ export function OptimizationControl({
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   const basicBuyData = automationTriggersData
     ? extractBasicBSData({
@@ -123,13 +126,14 @@ export function OptimizationControl({
 
   if (
     (!vaultHasActiveTrigger && vault.debt.isZero()) ||
-    (!vaultHasActiveTrigger && readOnlyBasicBSEnabled)
+    (!vaultHasActiveTrigger && (readOnlyBasicBSEnabled || constantMultipleReadOnlyEnabled))
   ) {
     return (
       <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
         <ZeroDebtOptimizationBanner
           {...getZeroDebtOptimizationBannerProps({
             readOnlyBasicBSEnabled,
+            constantMultipleReadOnlyEnabled,
             isVaultDebtZero: vault.debt.isZero(),
             vaultHasNoActiveTrigger: !vaultHasActiveTrigger,
           })}

@@ -18,7 +18,6 @@ import {
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
 
 import { ConstantMultipleFormControl } from './ConstantMultipleFormControl'
@@ -78,7 +77,7 @@ export function OptimizationFormControl({
       })
     }
   }, [])
-  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  // const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   return (
     <>
@@ -97,22 +96,20 @@ export function OptimizationFormControl({
         isAutoBuyActive={isAutoBuyActive}
         shouldRemoveAllowance={shouldRemoveAllowance}
       />
-      {constantMultipleEnabled && (
-        <ConstantMultipleFormControl
-          context={context}
-          isConstantMultipleActive={isConstantMultipleActive}
-          txHelpers={txHelpers}
-          vault={vault}
-          ethMarketPrice={ethMarketPrice}
-          ilkData={ilkData}
-          autoSellTriggerData={autoSellTriggerData}
-          autoBuyTriggerData={autoBuyTriggerData}
-          stopLossTriggerData={stopLossTriggerData}
-          constantMultipleTriggerData={constantMultipleTriggerData}
-          balanceInfo={balanceInfo}
-          shouldRemoveAllowance={shouldRemoveAllowance}
-        />
-      )}
+      <ConstantMultipleFormControl
+        context={context}
+        isConstantMultipleActive={isConstantMultipleActive}
+        txHelpers={txHelpers}
+        vault={vault}
+        ethMarketPrice={ethMarketPrice}
+        ilkData={ilkData}
+        autoSellTriggerData={autoSellTriggerData}
+        autoBuyTriggerData={autoBuyTriggerData}
+        stopLossTriggerData={stopLossTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
+        balanceInfo={balanceInfo}
+        shouldRemoveAllowance={shouldRemoveAllowance}
+      />
     </>
   )
 }

@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -32,12 +34,14 @@ import {
   extractConstantMultipleCommonWarnings,
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
 interface SidebaConstantMultiplerEditingStageProps {
+  vault: Vault
   ilkData: IlkData
   isEditing: boolean
   autoBuyTriggerData: BasicBSTriggerData
@@ -57,6 +61,7 @@ interface SidebaConstantMultiplerEditingStageProps {
 }
 
 export function SidebarConstantMultipleEditingStage({
+  vault,
   ilkData,
   isEditing,
   autoBuyTriggerData,
@@ -82,6 +87,17 @@ export function SidebarConstantMultipleEditingStage({
   const minMultiplier = calculateMultipleFromTargetCollRatio(
     constantMultipleState.maxTargetRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
   ).toNumber()
+  const isVaultEmpty = vault.debt.isZero()
+  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
+
+  if (constantMultipleReadOnlyEnabled && !isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('constant-multiple.adding-new-triggers-disabled')}
+        description={t('constant-multiple.adding-new-triggers-disabled-description')}
+      />
+    )
+  }
 
   return (
     <>

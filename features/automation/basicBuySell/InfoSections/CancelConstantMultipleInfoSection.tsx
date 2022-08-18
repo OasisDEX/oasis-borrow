@@ -3,6 +3,7 @@ import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -20,12 +21,13 @@ export function CancelConstantMultipleInfoSection({
   liquidationPrice,
 }: CancelConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
+  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   return (
     <InfoSection
       title={t('constant-multiple.vault-changes.general-summary')}
       items={[
-        ...(debt.isZero()
+        ...(debt.isZero() || constantMultipleReadOnlyEnabled
           ? [
               {
                 label: t('constant-multiple.vault-changes.target-col-ratio-after-buy-sell'),
