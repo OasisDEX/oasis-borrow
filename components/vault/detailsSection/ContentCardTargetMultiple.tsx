@@ -39,7 +39,7 @@ export function ContentCardTargetMultiple({
   }
 
   if (targetMultiple) contentCardSettings.value = formatted.targetMultiple
-  if (afterTargetMultiple && changeVariant)
+  if (afterTargetMultiple !== undefined && changeVariant)
     contentCardSettings.change = {
       value: `${formatted.afterTargetMultiple} ${t('system.cards.common.after')}`,
       variant: changeVariant,

@@ -4,8 +4,14 @@ import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { checkIfEditingBasicBS } from 'features/automation/common/helpers'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import {
+  BASIC_SELL_FORM_CHANGE,
+  BasicBSFormChange,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { BasicSellDetailsLayout } from 'features/automation/protection/controls/BasicSellDetailsLayout'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -22,8 +28,9 @@ export function BasicSellDetailsControl({
   basicSellTriggerData,
   isAutoSellActive,
 }: BasicSellDetailsControlProps) {
-  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const { t } = useTranslation()
+  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { uiChanges } = useAppContext()
   const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice } = basicSellTriggerData
   const isDebtZero = vault.debt.isZero()
@@ -33,6 +40,19 @@ export function BasicSellDetailsControl({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
+
+  const isEditing = checkIfEditingBasicBS({
+    basicBSTriggerData: basicSellTriggerData,
+    basicBSState: basicSellState,
+    isRemoveForm: basicSellState.currentForm === 'remove',
+  })
+
+  const basicSellDetailsLayoutOptionalParams = {
+    ...(isEditing && {
+      afterTriggerColRatio: basicSellState.execCollRatio,
+      afterTargetColRatio: basicSellState.targetCollRatio,
+    }),
+  }
 
   if (readOnlyBasicBSEnabled) {
     return null
@@ -52,6 +72,7 @@ export function BasicSellDetailsControl({
           targetColRatio={targetCollRatio}
           threshold={maxBuyOrMinSellPrice}
           basicSellTriggerData={basicSellTriggerData}
+          {...basicSellDetailsLayoutOptionalParams}
         />
       ) : (
         <Banner

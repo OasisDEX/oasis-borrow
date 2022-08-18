@@ -6,7 +6,6 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -21,10 +20,7 @@ function ReferralsPage() {
 
   return (
     <>
-      <WithConnection>
-        <BackgroundLight />
-        {referralsEnabled ? <ReferralLandingSummary /> : null}
-      </WithConnection>
+      <WithConnection>{referralsEnabled ? <ReferralLandingSummary /> : null}</WithConnection>
     </>
   )
 }

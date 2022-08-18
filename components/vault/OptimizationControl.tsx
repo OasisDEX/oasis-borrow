@@ -7,6 +7,7 @@ import { AppLink } from 'components/Links'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
@@ -89,6 +90,7 @@ function getZeroDebtOptimizationBannerProps({
 
 interface OptimizationControlProps {
   vault: Vault
+  vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
   vaultHistory: VaultHistoryEvent[]
@@ -96,6 +98,7 @@ interface OptimizationControlProps {
 
 export function OptimizationControl({
   vault,
+  vaultType,
   ilkData,
   balanceInfo,
   vaultHistory,
@@ -148,6 +151,7 @@ export function OptimizationControl({
             detailsViewControl={
               <OptimizationDetailsControl
                 vault={vault}
+                vaultType={vaultType}
                 vaultHistory={vaultHistory}
                 automationTriggersData={automationTriggers}
                 tokenMarketPrice={ethAndTokenPrices[vault.token]}

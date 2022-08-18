@@ -111,6 +111,8 @@ export function warningsConstantMultipleValidation({
   isAutoSellEnabled: boolean
   constantMultipleState: ConstantMultipleFormChange
 }) {
+  const { sellExecutionCollRatio, buyExecutionCollRatio, sellWithThreshold } = constantMultipleState
+
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token: vault.token,
     gasEstimationUsd,
@@ -119,17 +121,19 @@ export function warningsConstantMultipleValidation({
   })
 
   const constantMultipleSellTriggerCloseToStopLossTrigger =
-    isStopLossEnabled && constantMultipleState.sellExecutionCollRatio.isEqualTo(sliderMin)
+    isStopLossEnabled && sellExecutionCollRatio.isEqualTo(sliderMin)
 
   const addingConstantMultipleWhenAutoSellOrBuyEnabled = isAutoBuyEnabled || isAutoSellEnabled
 
-  const constantMultipleAutoSellTriggeredImmediately = constantMultipleState.sellExecutionCollRatio
+  const constantMultipleAutoSellTriggeredImmediately = sellExecutionCollRatio
     .div(100)
     .gte(vault.collateralizationRatioAtNextPrice)
 
-  const constantMultipleAutoBuyTriggeredImmediately = constantMultipleState.buyExecutionCollRatio
+  const constantMultipleAutoBuyTriggeredImmediately = buyExecutionCollRatio
     .div(100)
     .lte(vault.collateralizationRatioAtNextPrice)
+
+  const noMinSellPriceWhenStopLossEnabled = !sellWithThreshold && isStopLossEnabled
 
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
@@ -137,5 +141,35 @@ export function warningsConstantMultipleValidation({
     addingConstantMultipleWhenAutoSellOrBuyEnabled,
     constantMultipleAutoSellTriggeredImmediately,
     constantMultipleAutoBuyTriggeredImmediately,
+    noMinSellPriceWhenStopLossEnabled,
+  })
+}
+
+export function errorsConstantMultipleValidation({
+  constantMultipleState,
+  isRemoveForm,
+}: {
+  constantMultipleState: ConstantMultipleFormChange
+  isRemoveForm: boolean
+}) {
+  const {
+    minSellPrice,
+    maxBuyPrice,
+    txDetails,
+    buyWithThreshold,
+    sellWithThreshold,
+  } = constantMultipleState
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError: txDetails?.txError })
+
+  const autoBuyMaxBuyPriceNotSpecified =
+    !isRemoveForm && buyWithThreshold && (!maxBuyPrice || maxBuyPrice.isZero())
+
+  const minimumSellPriceNotProvided =
+    !isRemoveForm && sellWithThreshold && (!minSellPrice || minSellPrice.isZero())
+
+  return errorMessagesHandler({
+    insufficientEthFundsForTx,
+    autoBuyMaxBuyPriceNotSpecified,
+    minimumSellPriceNotProvided,
   })
 }

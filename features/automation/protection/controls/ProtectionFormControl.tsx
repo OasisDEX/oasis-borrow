@@ -7,6 +7,7 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -53,7 +54,7 @@ export function ProtectionFormControl({
     triggersData: automationTriggersData,
     triggerType: TriggerType.BasicSell,
   })
-  const constantMultipleTriggerData = {} as any
+  const constantMultipleTriggerData = extractConstantMultipleData(automationTriggersData)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
 

@@ -11,10 +11,6 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import {
-  BASIC_BUY_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -27,6 +23,8 @@ export interface BasicBuyDetailsLayoutProps {
   targetColRatio: BigNumber
   threshold: BigNumber
   basicBuyTriggerData: BasicBSTriggerData
+  afterTriggerColRatio?: BigNumber
+  afterTargetColRatio?: BigNumber
 }
 
 export function BasicBuyDetailsLayout({
@@ -36,12 +34,13 @@ export function BasicBuyDetailsLayout({
   nextBuyPrice,
   threshold,
   targetColRatio,
+  afterTriggerColRatio,
+  afterTargetColRatio,
 }: BasicBuyDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoBuyOn = basicBuyTriggerData.isTriggerEnabled
-  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
   return (
     <Grid>
@@ -54,13 +53,13 @@ export function BasicBuyDetailsLayout({
               <ContentCardTriggerColRatioToBuy
                 token={token}
                 triggerColRatio={triggerColRatio}
-                afterTriggerColRatio={uiState.execCollRatio}
+                afterTriggerColRatio={afterTriggerColRatio}
                 nextBuyPrice={nextBuyPrice}
                 changeVariant="positive"
               />
               <ContentCardTargetColRatioAfterBuy
                 targetColRatio={targetColRatio}
-                afterTargetColRatio={uiState.targetCollRatio}
+                afterTargetColRatio={afterTargetColRatio}
                 threshold={threshold}
                 changeVariant="positive"
                 token={token}

@@ -108,7 +108,6 @@ export function extractCancelBSErrors(errorMessages: VaultErrorMessage[]) {
 
 const constantMultipleSliderWarnings = [
   'constantMultipleSellTriggerCloseToStopLossTrigger',
-  'stopLossTriggerCloseToConstantMultipleSellTrigger',
   'constantMultipleAutoSellTriggeredImmediately',
   'constantMultipleAutoBuyTriggeredImmediately',
 ]
@@ -120,8 +119,15 @@ export function extractConstantMultipleSliderWarnings(warningMessages: VaultWarn
 const constantMultipleCommonWarnings = [
   'potentialInsufficientEthFundsForTx',
   'addingConstantMultipleWhenAutoSellOrBuyEnabled',
+  'noMinSellPriceWhenStopLossEnabled',
 ]
 
 export function extractConstantMultipleCommonWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => constantMultipleCommonWarnings.includes(message))
+}
+
+const constantMultipleCommonErrors = ['insufficientEthFundsForTx']
+
+export function extractConstantMultipleCommonErrors(errorMessages: VaultErrorMessage[]) {
+  return errorMessages.filter((message) => constantMultipleCommonErrors.includes(message))
 }

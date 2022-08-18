@@ -7,6 +7,7 @@ interface ActionPillsProps {
   items: {
     id: string
     label: string
+    disabled?: boolean
     action: () => void
   }[]
 }
@@ -34,6 +35,10 @@ export function ActionPills({ active, items, variant }: ActionPillsProps) {
             sx={{
               mx: 1,
               ...(variant === 'secondary' && secondaryVarientStyles),
+              ...(item.disabled && {
+                opacity: 0.5,
+                pointerEvents: 'none',
+              }),
             }}
           >
             {item.label}

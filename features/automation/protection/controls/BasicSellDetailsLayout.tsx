@@ -4,11 +4,6 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { ContentCardTargetColRatioAfterSell } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterSell'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import {
-  BASIC_SELL_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -19,6 +14,8 @@ interface BasicSellDetailsLayoutProps {
   targetColRatio: BigNumber
   threshold: BigNumber
   basicSellTriggerData: BasicBSTriggerData
+  afterTriggerColRatio?: BigNumber
+  afterTargetColRatio?: BigNumber
 }
 
 export function BasicSellDetailsLayout({
@@ -28,9 +25,10 @@ export function BasicSellDetailsLayout({
   targetColRatio,
   threshold,
   basicSellTriggerData,
+  afterTriggerColRatio,
+  afterTargetColRatio,
 }: BasicSellDetailsLayoutProps) {
   const { t } = useTranslation()
-  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
 
   return (
     <DetailsSection
@@ -41,13 +39,13 @@ export function BasicSellDetailsLayout({
           <ContentCardTriggerColRatioToSell
             token={token}
             triggerColRatio={triggerColRatio}
-            afterTriggerColRatio={uiState.execCollRatio}
+            afterTriggerColRatio={afterTriggerColRatio}
             nextSellPrice={nextSellPrice}
             changeVariant="positive"
           />
           <ContentCardTargetColRatioAfterSell
             targetColRatio={targetColRatio}
-            afterTargetColRatio={uiState.targetCollRatio}
+            afterTargetColRatio={afterTargetColRatio}
             threshold={threshold}
             changeVariant="positive"
             token={token}
