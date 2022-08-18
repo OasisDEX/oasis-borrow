@@ -236,6 +236,11 @@ export function ConstantMultipleFormControl({
   const isFirstSetup =
     constantMultipleTriggerData.triggersId[0].isZero() &&
     constantMultipleTriggerData.triggersId[1].isZero()
+  console.log('isFirstSetup', isFirstSetup)
+  console.log('constantMultipleTriggerData.triggersId')
+  console.log(constantMultipleTriggerData.triggersId)
+  console.log('constantMultipleTriggerData')
+  console.log(constantMultipleTriggerData)
 
   const nextBuyPrice = collateralPriceAtRatio({
     colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
