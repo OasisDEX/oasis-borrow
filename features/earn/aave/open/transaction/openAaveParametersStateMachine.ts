@@ -68,7 +68,7 @@ enum actions {
 }
 
 export interface PreTransactionSequenceMachineServices {
-  [services.getParameters]: PromiseService<OpenPositionResult>
+  [services.getParameters]: PromiseService<OpenPositionResult | void>
   [services.estimateGas]: PromiseService<number>
   [services.estimateGasPrice]: PromiseService<HasGasEstimation>
 }

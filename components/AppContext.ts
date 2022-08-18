@@ -168,9 +168,10 @@ import {
 } from 'helpers/gasEstimate'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
+import { getAaveUserReserveData } from '../blockchain/calls/aaveProtocolDataProvider'
 import {
   cropperBonusTokenAddress,
   cropperCrops,
@@ -257,10 +258,7 @@ import {
   createPositions$,
 } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
-import {
-  createPositionsOverviewSummary$,
-  Position,
-} from '../features/vaultsOverview/pipes/positionsOverviewSummary'
+import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
@@ -271,7 +269,6 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { getAaveUserReserveData } from '../blockchain/calls/aaveProtocolDataProvider'
 export type TxData =
   | OpenData
   | DepositAndGenerateData

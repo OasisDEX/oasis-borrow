@@ -17,7 +17,7 @@ import {
 
 export enum services {
   getProxyAddress = 'getProxyAddress',
-  getBalance = 'getBalance',
+  // getBalance = 'getBalance',
   // createPosition = 'createPosition',
 }
 
@@ -32,18 +32,18 @@ export function getManageAavePositionStateMachineServices(
   proxyAddress$: Observable<string | undefined>,
 ): ManageAaveStateMachineServices {
   return {
-    [services.getBalance]: (context, _): Observable<ManageAaveEvent> => {
-      return tokenBalances$.pipe(
-        map((balances) => {
-          return balances[context.token!]
-        }),
-        map(({ balance, price }) => ({
-          type: 'SET_BALANCE',
-          balance: balance,
-          tokenPrice: price,
-        })),
-      )
-    },
+    // [services.getBalance]: (context, _): Observable<ManageAaveEvent> => {
+    //   return tokenBalances$.pipe(
+    //     map((balances) => {
+    //       return balances[context.token!]
+    //     }),
+    //     map(({ balance, price }) => ({
+    //       type: 'SET_BALANCE',
+    //       balance: balance,
+    //       tokenPrice: price,
+    //     })),
+    //   )
+    // },
     [services.getProxyAddress]: (): Observable<ManageAaveEvent> => {
       return proxyAddress$.pipe(
         map((address) => ({

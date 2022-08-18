@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { strategy } from '@oasisdex/oasis-actions'
+import { strategy, ADDRESSES } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
 import { getOneInchRealCall, oneInchCallMock } from '../../helpers/swap'
-import { ADDRESSES } from '@oasisdex/oasis-actions/src/helpers/addresses'
-import { amountToWei } from '@oasisdex/utils/lib/src/utils'
 
 export interface ActionCall {
   targetHash: string
@@ -101,7 +99,7 @@ export async function getOpenAaveParameters(
       addresses,
       provider: provider,
       getSwapData: oneInchCallMock,
-      dsProxy: proxyAddress,
+      // dsProxy: proxyAddress,
       // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
     },
   )

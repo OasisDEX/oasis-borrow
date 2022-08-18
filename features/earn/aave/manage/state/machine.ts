@@ -28,19 +28,19 @@ export const createManageAaveStateMachine = Machine<
       editing: {
         entry: [actions.initContextValues, actions.spawnParametersMachine],
         invoke: [
-          {
-            src: services.getBalance,
-            id: services.getBalance,
-          },
+          // {
+          //   src: services.getBalance,
+          //   id: services.getBalance,
+          // },
           {
             src: services.getProxyAddress,
             id: services.getProxyAddress,
           },
         ],
         on: {
-          SET_BALANCE: {
-            actions: [actions.setTokenBalanceFromEvent],
-          },
+          // SET_BALANCE: {
+          //   actions: [actions.setTokenBalanceFromEvent],
+          // },
           PROXY_ADDRESS_RECEIVED: {
             actions: [
               actions.setReceivedProxyAddress,
@@ -114,9 +114,9 @@ export const createManageAaveStateMachine = Machine<
       [services.getProxyAddress]: () => {
         throw new Error('getProxyAddress not implemented. Pass it via config')
       },
-      [services.getBalance]: () => {
-        throw new Error('getBalance not implemented. Pass it via config')
-      },
+      // [services.getBalance]: () => {
+      //   throw new Error('getBalance not implemented. Pass it via config')
+      // },
     },
   },
 )

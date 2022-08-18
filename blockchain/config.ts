@@ -294,7 +294,6 @@ const kovan: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
-  aaveTokens: {},
   aaveProtocolDataProvider: contractDesc(
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts

@@ -1,10 +1,10 @@
-import { OpenPositionResult } from '@oasis-borrow/aave'
-import { assertErrorEvent, assertEventType } from '@oasis-borrow/xstate'
 import BigNumber from 'bignumber.js'
 import { assign, Machine, sendUpdate } from 'xstate'
 import { choose, log } from 'xstate/lib/actions'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { assertErrorEvent, assertEventType } from '../../../../../utils/xstate/index'
+import { OpenPositionResult } from '../../../../aave/index'
 enum services {
   getParameters = 'getParameters',
   estimateGas = 'estimateGas',
