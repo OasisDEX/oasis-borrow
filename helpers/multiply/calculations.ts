@@ -64,7 +64,12 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
   }
 }
 
-export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
+export function getCumulativeFeesUSD(
+  total: BigNumber,
+  event: VaultEvent,
+  currentIndex: number,
+  events: VaultEvent[],
+) {
   switch (event.kind) {
     case 'OPEN_MULTIPLY_VAULT':
     case 'OPEN_MULTIPLY_GUNI_VAULT':
@@ -82,7 +87,13 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
     case 'basic-buy':
     case 'basic-sell':
     case 'stop-loss':
-      return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+      const potentialEventWithSameHash = events[currentIndex - 1]
+
+      if (!potentialEventWithSameHash || event.hash !== potentialEventWithSameHash?.hash) {
+        return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+      }
+
+      return total
     default:
       return total
   }
@@ -126,7 +137,13 @@ function getCumulativeConstantMultipleFeeUSD(
       return total
     case 'basic-buy':
     case 'basic-sell':
-      return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+      const potentialEventWithSameHash = events[currentIndex - 1]
+
+      if (!potentialEventWithSameHash || event.hash !== potentialEventWithSameHash?.hash) {
+        return total.plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice || zero))
+      }
+
+      return total
     default:
       return total
   }
