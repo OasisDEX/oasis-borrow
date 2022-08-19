@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Tickers } from 'blockchain/prices'
 import { tokenList } from 'components/uniswapWidget/tokenList'
-import { one, zero } from 'helpers/zero'
+import {  zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'

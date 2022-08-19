@@ -1,10 +1,10 @@
+import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap, tap } from 'rxjs/operators'
+import { map, switchMap } from 'rxjs/operators'
 
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
-import { Position } from './positionsOverviewSummary'
-import BigNumber from 'bignumber.js'
 import { ExchangeAction, ExchangeType, Quote } from "../../exchange/exchange";
+import { Position } from './positionsOverviewSummary'
 
 function makerPositionName(vault: VaultWithType): string {
   if (isMakerEarnPosition(vault)) {

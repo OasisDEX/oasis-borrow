@@ -22,7 +22,6 @@ export interface ManageAaveContext {
     readonly parametersStateMachine: ManageAaveParametersStateMachineType
     readonly transactionStateMachine: TransactionStateMachine<ManageAavePositionData>
   }
-  multiply: number
   token: string
 
   refProxyStateMachine?: ActorRefFrom<ProxyStateMachine>

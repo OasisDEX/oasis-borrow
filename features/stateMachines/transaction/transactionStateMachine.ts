@@ -186,7 +186,6 @@ export function createTransactionServices<T extends TxMeta>(
     return combineLatest(context$, txHelpers$).pipe(
       first(),
       switchMap(([{ safeConfirmations }, { sendWithGasEstimation }]) => {
-        console.log('context: ', context)
         if (context.transactionParameters === undefined) {
           throw new Error('transactionParameters not set')
         }
@@ -196,14 +195,12 @@ export function createTransactionServices<T extends TxMeta>(
               type: 'WAITING_FOR_APPROVAL',
             },
             (txState) => {
-              console.log('t/x in progress')
               return of({
                 type: 'IN_PROGRESS',
                 txHash: (txState as any).txHash as string,
               })
             },
             (txState) => {
-              console.log('tx failed')
               return of({
                 type: 'FAILURE',
                 txError:

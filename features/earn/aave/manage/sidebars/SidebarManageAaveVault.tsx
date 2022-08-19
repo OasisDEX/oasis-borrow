@@ -156,32 +156,6 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
     },
   }
 
-  // const sidebarSectionProps: SidebarSectionProps = {
-  //   title: t('manage-earn.aave.vault-form.title'),
-  //   content: (
-  //     <Grid gap={3}>
-  //       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-  //         {t('manage-earn.aave.vault-form.close-position')}
-  //       </Text>
-  //       {/*<SidebarManageAaveVaultEditingState state={state} send={send} />*/}
-  //       <ManageAaveInformationContainer state={state} send={send} />
-  //     </Grid>
-  //   ),
-  //   primaryButton: {
-  //     isLoading: false,
-  //     disabled: false,
-  //     label: t('manage-earn.aave.vault-form.close'),
-  //     action: () => {
-  //       send('POSITION_CLOSED')
-  //     },
-  //   },
-  //   textButton: {
-  //     isLoading: false,
-  //     disabled: false,
-  //     label: t,
-  //   },
-  // }
-
   return <SidebarSection {...sidebarSectionProps} />
 }
 
