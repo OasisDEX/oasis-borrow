@@ -13,12 +13,10 @@ export function getConstantMutliplyMinMaxValues({
   ilkData,
   autoBuyTriggerData,
   stopLossTriggerData,
-  lockedCollateralUSD,
 }: {
   ilkData: IlkData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-  lockedCollateralUSD: BigNumber
 }) {
   return {
     min: getBasicSellMinMaxValues({
@@ -26,12 +24,7 @@ export function getConstantMutliplyMinMaxValues({
       stopLossTriggerData,
       ilkData,
     }).min,
-    max: BigNumber.minimum(
-      lockedCollateralUSD.div(ilkData.debtFloor),
-      DEFAULT_BASIC_BS_MAX_SLIDER_VALUE,
-    )
-      .times(100)
-      .decimalPlaces(0, BigNumber.ROUND_DOWN),
+    max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
   }
 }
 

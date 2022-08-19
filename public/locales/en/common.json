@@ -1563,7 +1563,8 @@
     "adjusting-constant-multiple": "Adjusting Constant Multiple trigger",
     "removing-constant-multiple": "Removing Constant Multiple trigger",
     "setting-constant-multiple": "Setting up your Constant Multiple",
-    "cancelling-constant-multiple": "Cancelling your Constant Multiple"
+    "cancelling-constant-multiple": "Cancelling your Constant Multiple",
+    "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple."
   },
   "ref": {
     "banner": "Refer a Friend. Earn DAI today",
