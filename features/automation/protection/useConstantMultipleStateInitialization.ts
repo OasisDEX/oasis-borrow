@@ -43,16 +43,15 @@ export function useConstantMultipleStateInitialization(
     autoBuyTriggerData,
     stopLossTriggerData,
     ilkData,
-    lockedCollateralUSD: vault.lockedCollateralUSD,
   })
 
-  const acceptableMultipliers = getConstantMultipleMultipliers({
+  const multipliers = getConstantMultipleMultipliers({
     ilk: ilkData.ilk,
     minColRatio: min,
     maxColRatio: max,
   })
   const defaultMultiplier = getDefaultMultiplier({
-    acceptableMultipliers,
+    multipliers,
     minColRatio: min,
     maxColRatio: max,
   })
@@ -61,7 +60,7 @@ export function useConstantMultipleStateInitialization(
   useEffect(() => {
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'form-defaults',
-      acceptableMultipliers,
+      multipliers,
       defaultMultiplier,
       defaultCollRatio,
       minTargetRatio: min,
