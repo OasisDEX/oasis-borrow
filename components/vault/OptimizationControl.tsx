@@ -5,6 +5,7 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -113,7 +114,7 @@ export function OptimizationControl({
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
-  // const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
+  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   const basicBuyData = automationTriggersData
     ? extractBasicBSData({
@@ -121,12 +122,15 @@ export function OptimizationControl({
         triggerType: TriggerType.BasicBuy,
       })
     : undefined
+  const constantMultipleTriggerData = automationTriggersData? extractConstantMultipleData(automationTriggersData) : undefined
 
-  const vaultHasActiveTrigger = basicBuyData?.isTriggerEnabled
+  const vaultHasActiveAutoBuyTrigger = basicBuyData?.isTriggerEnabled
+  const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData?.isTriggerEnabled
 
   if (
-    (!vaultHasActiveTrigger && vault.debt.isZero()) ||
-    (!vaultHasActiveTrigger && readOnlyBasicBSEnabled)
+    (!vaultHasActiveAutoBuyTrigger && vault.debt.isZero()) ||
+    (!vaultHasActiveAutoBuyTrigger && readOnlyBasicBSEnabled) &&
+    (!vaultHasActiveConstantMultipleTrigger && constantMultipleReadOnlyEnabled)
   ) {
     return (
       <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
@@ -134,7 +138,7 @@ export function OptimizationControl({
           {...getZeroDebtOptimizationBannerProps({
             readOnlyBasicBSEnabled,
             isVaultDebtZero: vault.debt.isZero(),
-            vaultHasNoActiveTrigger: !vaultHasActiveTrigger,
+            vaultHasNoActiveTrigger: !vaultHasActiveAutoBuyTrigger,
           })}
         />
       </Container>
