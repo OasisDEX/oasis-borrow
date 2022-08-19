@@ -114,7 +114,11 @@ function getCumulativeConstantMultipleFeeUSD(
     case 'DECREASE_MULTIPLE':
       const potentialExecuteEvent = events[currentIndex + 1]
 
-      if ('eventType' in potentialExecuteEvent && potentialExecuteEvent.eventType === 'executed') {
+      if (
+        'eventType' in potentialExecuteEvent &&
+        potentialExecuteEvent.eventType === 'executed' &&
+        event.hash === potentialExecuteEvent.hash
+      ) {
         return total
           .plus(amountFromWei(event.gasFee || zero, 'ETH').times(event.ethPrice))
           .plus(event.oazoFee)
