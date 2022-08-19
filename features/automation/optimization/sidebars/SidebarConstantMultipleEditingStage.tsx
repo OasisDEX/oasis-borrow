@@ -99,6 +99,15 @@ export function SidebarConstantMultipleEditingStage({
     )
   }
 
+  if (isVaultEmpty && constantMultipleTriggerData.isTriggerEnabled) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-buy.closed-vault-existing-trigger-header')}
+        description={t('auto-buy.closed-vault-existing-trigger-description')}
+      />
+    )
+  }
+
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>

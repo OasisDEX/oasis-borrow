@@ -73,7 +73,7 @@ export function SidebarAutoBuyEditingStage({
     )
   }
 
-  if (isVaultEmpty) {
+  if (isVaultEmpty && autoBuyTriggerData.isTriggerEnabled) {
     return (
       <SidebarFormInfo
         title={t('auto-buy.closed-vault-existing-trigger-header')}

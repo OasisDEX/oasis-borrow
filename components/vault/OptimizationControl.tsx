@@ -129,8 +129,8 @@ export function OptimizationControl({
 
   if (
     (!vaultHasActiveAutoBuyTrigger && vault.debt.isZero()) ||
-    (!vaultHasActiveAutoBuyTrigger && readOnlyBasicBSEnabled) &&
-    (!vaultHasActiveConstantMultipleTrigger && constantMultipleReadOnlyEnabled)
+    (!vaultHasActiveConstantMultipleTrigger && vault.debt.isZero()) ||
+    (!vaultHasActiveAutoBuyTrigger && !vaultHasActiveConstantMultipleTrigger && readOnlyBasicBSEnabled && constantMultipleReadOnlyEnabled)
   ) {
     return (
       <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
