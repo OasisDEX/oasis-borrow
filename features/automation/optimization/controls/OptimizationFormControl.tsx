@@ -50,11 +50,8 @@ export function OptimizationFormControl({
     triggersData: automationTriggersData,
     triggerType: TriggerType.BasicSell,
   })
-  console.log("automationTriggersData")
-  console.log(automationTriggersData)
+
   const constantMultipleTriggerData = extractConstantMultipleData(automationTriggersData)
-  console.log('constantMultipleTriggerData')
-  console.log(constantMultipleTriggerData)
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 

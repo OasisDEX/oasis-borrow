@@ -126,7 +126,7 @@ export function OptimizationControl({
 
   if (
     (!vaultHasActiveTrigger && vault.debt.isZero()) ||
-    (!vaultHasActiveTrigger && (readOnlyBasicBSEnabled ))
+    (!vaultHasActiveTrigger && readOnlyBasicBSEnabled)
   ) {
     return (
       <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
