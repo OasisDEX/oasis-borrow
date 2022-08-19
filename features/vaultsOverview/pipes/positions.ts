@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
@@ -41,62 +41,66 @@ export function createMakerPositions$(
   )
 }
 
+export function decorateAaveTokensPrice$(collateralTokens$: Observable<string[]>, exchangeQuote$: (
+  token: string,
+  slippage: BigNumber,
+  amount: BigNumber,
+  action: ExchangeAction,
+  exchangeType: ExchangeType,
+) => Observable<Quote>): Observable<{token: string, tokenPrice: BigNumber}[]> {
+  return collateralTokens$.pipe(
+    map(tokens => {
+      return combineLatest(
+        tokens.map(token => {
+          const defaultQuoteAmount  = new BigNumber(100);
+          return exchangeQuote$(
+            token,
+            new BigNumber(0.005),
+            defaultQuoteAmount,
+            'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
+            'defaultExchange'
+          ).pipe(map((quote) => {
+            return { token, tokenPrice: quote.status === 'SUCCESS' ? quote.tokenPrice : new BigNumber(0) }
+          }))
+        })
+      )
+    }),
+    switchMap(tokenWithPrice => {
+      return tokenWithPrice
+    })
+  )
+}
+
 export function createAavePositions$(
-  userReserveData$: ({
-    token,
-    proxyAddress,
-  }: {
+  userReserveData$: ({ token,proxyAddress }: {
     token: string
     proxyAddress: string
   }) => Observable<{ currentATokenBalance: BigNumber }>,
-  collateralTokens$: Observable<string[]>,
-  exchangeQuote$: (
-    token: string,
-    slippage: BigNumber,
-    amount: BigNumber,
-    action: ExchangeAction,
-    exchangeType: ExchangeType,
-  ) => Observable<Quote>,
+  tokenWithValue$: Observable<{token: string, tokenPrice: BigNumber}[]>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
-): Observable<Position[]> {
-  return combineLatest(collateralTokens$, getUserProxyAddress$(address)).pipe(
-    map(([tokens, proxyAddress]) => {
-      if (!proxyAddress) return []
+) {
+  return combineLatest(getUserProxyAddress$(address), tokenWithValue$).pipe(
+    switchMap(([proxyAddress, tokens]) => {
+      if (!proxyAddress) return [];
       return combineLatest(
-        tokens.map((token) => {
+        tokens.map(({ token, tokenPrice }) => {
           return userReserveData$({
             token,
             proxyAddress,
           }).pipe(
             map((userReserve) => {
-              return exchangeQuote$(
-                token,
-                new BigNumber(0.005),
-                new BigNumber(userReserve.currentATokenBalance),
-                'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
-                'defaultExchange'
-              ).pipe(
-                switchMap((quote) => {
-                  return of({
+                  return {
                     token: token,
-                    contentsUsd: quote.status === 'SUCCESS' ? new BigNumber(userReserve.currentATokenBalance).times(quote.tokenPrice) : new BigNumber(0),
+                    contentsUsd: new BigNumber(userReserve.currentATokenBalance).times(tokenPrice),
                     title: `${token} Aave `,
                     url: `/earn/steth/${address}`,
-                  })
-                })
-              )
+                  }
             }),
-          switchMap((input) => {
-            return input
-          }),
           )
         })
       )
-    }),
-    switchMap((input) => {
-      return input
-    }),
+    })
   )
 }
 

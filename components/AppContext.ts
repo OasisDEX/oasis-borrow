@@ -255,7 +255,7 @@ import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActio
 import {
   createAavePositions$,
   createMakerPositions$,
-  createPositions$,
+  createPositions$, decorateAaveTokensPrice$,
 } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
@@ -789,13 +789,13 @@ export function setupAppContext() {
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
 
+  const tokensWithValue$ = decorateAaveTokensPrice$(aaveCollateralTokens$, exchangeQuote$)
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
 
-  const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
   const aavePositions$ = memoize(
-    curry(createAavePositions$)(aaveUserReserveData$, aaveCollateralTokens$, exchangeQuote$, proxyAddress$),
+    curry(createAavePositions$)(aaveUserReserveData$, tokensWithValue$, proxyAddress$),
   )
-
+  const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
   const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
