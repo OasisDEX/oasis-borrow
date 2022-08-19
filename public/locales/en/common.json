@@ -1535,7 +1535,8 @@
     "set-trigger-risk": "Please Note - Constant Multiple is an advanced strategy, with risks that should be well understood before set-up. Find out more ",
     "target-multiple": "Target Multiple",
     "target-col-ratio": "Target Col. Ratio {{amount}}",
-    "total-cost-of-feature": "Total cost of feature",
+    "operating-cost": "Operating Cost",
+    "operating-cost-desc": "The cost of setting up and running your Constant Multiple.\nSet up cost + execution costs = Operating Cost",
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {

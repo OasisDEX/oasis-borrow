@@ -4,8 +4,8 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
+import { ContentCardOperatingCost } from 'components/vault/detailsSection/ContentCardOperatingCost'
 import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
-import { ContentCardTotalCostOfFeature } from 'components/vault/detailsSection/ContentCardTotalCostOfFeature'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
@@ -74,10 +74,7 @@ export function ConstantMultipleDetailsLayout({
                 targetColRatio={targetColRatio}
                 changeVariant="positive"
               />
-              <ContentCardTotalCostOfFeature
-                totalCost={totalCost}
-                PnLSinceEnabled={PnLSinceEnabled}
-              />
+              <ContentCardOperatingCost totalCost={totalCost} PnLSinceEnabled={PnLSinceEnabled} />
               <ContentCardTriggerColRatioToBuy
                 token={token}
                 triggerColRatio={triggerColRatioToBuy}

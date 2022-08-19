@@ -225,6 +225,8 @@ interface AutomationBaseEvent {
   kind: 'basic-sell' | 'basic-buy' | 'stop-loss'
   eventType: 'added' | 'updated' | 'removed'
   token: string
+  gasFee: BigNumber
+  ethPrice: BigNumber
   groupId?: string
 }
 

@@ -111,6 +111,9 @@ const constantMultipleQuery = gql`
         kind
         commandAddress
         groupId
+        groupType
+        gasFee
+        ethPrice
       }
     }
 
