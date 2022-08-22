@@ -39,7 +39,7 @@ export function CancelConstantMultipleInfoSection({
               },
               {
                 label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
-                value: `${constantMultipleTriggerData.sellExecutionCollRatio}$`,
+                value: `${constantMultipleTriggerData.sellExecutionCollRatio}%`,
                 secondaryValue: '0%',
               },
             ]
