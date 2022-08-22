@@ -122,7 +122,9 @@ export function OptimizationControl({
         triggerType: TriggerType.BasicBuy,
       })
     : undefined
-  const constantMultipleTriggerData = automationTriggersData? extractConstantMultipleData(automationTriggersData) : undefined
+  const constantMultipleTriggerData = automationTriggersData
+    ? extractConstantMultipleData(automationTriggersData)
+    : undefined
 
   const vaultHasActiveAutoBuyTrigger = basicBuyData?.isTriggerEnabled
   const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData?.isTriggerEnabled
@@ -130,7 +132,10 @@ export function OptimizationControl({
   if (
     (!vaultHasActiveAutoBuyTrigger && vault.debt.isZero()) ||
     (!vaultHasActiveConstantMultipleTrigger && vault.debt.isZero()) ||
-    (!vaultHasActiveAutoBuyTrigger && !vaultHasActiveConstantMultipleTrigger && readOnlyBasicBSEnabled && constantMultipleReadOnlyEnabled)
+    (!vaultHasActiveAutoBuyTrigger &&
+      !vaultHasActiveConstantMultipleTrigger &&
+      readOnlyBasicBSEnabled &&
+      constantMultipleReadOnlyEnabled)
   ) {
     return (
       <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
