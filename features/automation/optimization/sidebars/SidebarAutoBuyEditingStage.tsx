@@ -99,8 +99,10 @@ export function SidebarAutoBuyEditingStage({
               execCollRatio: basicBuyState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
             })}{' '}
-        {/* TODO ŁW link to article in kb */}
-        <AppLink href="https://kb.oasis.app/help/" sx={{ fontSize: 2 }}>
+        <AppLink
+          href="https://kb.oasis.app/help/setting-up-auto-buy-for-your-vault"
+          sx={{ fontSize: 2 }}
+        >
           {t('here')}.
         </AppLink>
       </Text>{' '}

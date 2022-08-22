@@ -4,6 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
@@ -15,6 +16,7 @@ import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPrice
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   ACCEPTABLE_FEE_DIFF,
+  calculateCollRatioFromMultiple,
   calculateMultipleFromTargetCollRatio,
 } from 'features/automation/common/helpers'
 import {
@@ -22,6 +24,7 @@ import {
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -35,8 +38,9 @@ import {
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useHash } from 'helpers/useHash'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
@@ -79,8 +83,10 @@ export function SidebarConstantMultipleEditingStage({
   estimatedBuyFee,
   estimatedSellFee,
 }: SidebaConstantMultiplerEditingStageProps) {
-  const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const { uiChanges } = useAppContext()
+  const [, setHash] = useHash()
+
   const maxMultiplier = calculateMultipleFromTargetCollRatio(
     constantMultipleState.minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
   ).toNumber()
@@ -107,15 +113,18 @@ export function SidebarConstantMultipleEditingStage({
       />
     )
   }
+  const eligibleMultipliers = constantMultipleState.multipliers.filter((item) => {
+    return item >= minMultiplier && item <= maxMultiplier
+  })
 
-  return (
+  return eligibleMultipliers.length ? (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('constant-multiple.set-trigger-description', {
           token,
           buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio.toNumber(),
           sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio.toNumber(),
-          targetCollRatio: constantMultipleState.targetCollRatio.toNumber(),
+          multiplier: constantMultipleState.multiplier,
         })}
       </Text>
       <Text as="p" variant="boldParagraph3" sx={{ color: 'neutral80' }}>
@@ -128,10 +137,10 @@ export function SidebarConstantMultipleEditingStage({
         <ActionPills
           active={constantMultipleState.multiplier.toString()}
           variant="secondary"
-          items={constantMultipleState.acceptableMultipliers.map((multiplier) => ({
+          items={constantMultipleState.multipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
-            disabled: multiplier < minMultiplier || multiplier > maxMultiplier,
+            disabled: !eligibleMultipliers.includes(multiplier),
             action: () => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'is-editing',
@@ -219,6 +228,10 @@ export function SidebarConstantMultipleEditingStage({
       />
       <VaultErrors
         errorMessages={errors.filter((item) => item === 'autoBuyMaxBuyPriceNotSpecified')}
+        ilkData={ilkData}
+      />
+      <VaultWarnings
+        warningMessages={warnings.filter((item) => item === 'settingAutoBuyTriggerWithNoThreshold')}
         ilkData={ilkData}
       />
       <VaultActionInput
@@ -309,6 +322,30 @@ export function SidebarConstantMultipleEditingStage({
         </>
       )}
     </>
+  ) : (
+    <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+      <Trans
+        i18nKey="constant-multiple.sl-too-high"
+        components={[
+          <Text
+            as="span"
+            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+            onClick={() => {
+              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                type: 'Protection',
+                currentProtectionFeature: 'stopLoss',
+              })
+              setHash(VaultViewMode.Protection)
+            }}
+          />,
+        ]}
+        values={{
+          maxStopLoss: calculateCollRatioFromMultiple(constantMultipleState.multipliers[0]).minus(
+            MIX_MAX_COL_RATIO_TRIGGER_OFFSET * 2,
+          ),
+        }}
+      />
+    </Text>
   )
 }
 
