@@ -3,23 +3,24 @@ import { Vault } from 'blockchain/vaults'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { CancelConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/CancelConstantMultipleInfoSection'
-import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
+import { ConstantMultipleTriggerData } from '../common/constantMultipleTriggerData'
+
 interface SidebarConstantMultipleRemovalEditingStageProps {
-  constantMultipleState: ConstantMultipleFormChange
   errors: VaultErrorMessage[]
   ilkData: IlkData
   vault: Vault
   warnings: VaultWarningMessage[]
+  constantMultipleTriggerData: ConstantMultipleTriggerData
 }
 
 export function SidebarConstantMultipleRemovalEditingStage({
-  constantMultipleState,
+  constantMultipleTriggerData,
   errors,
   ilkData,
   vault,
@@ -36,26 +37,26 @@ export function SidebarConstantMultipleRemovalEditingStage({
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
       <ConstantMultipleInfoSectionControl
         vault={vault}
-        constantMultipleState={constantMultipleState}
+        constantMultipleTriggerData={constantMultipleTriggerData}
       />
     </>
   )
 }
 
 interface ConstantMultipleInfoSectionControlProps {
-  constantMultipleState: ConstantMultipleFormChange
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   vault: Vault
 }
 
 function ConstantMultipleInfoSectionControl({
-  constantMultipleState,
+  constantMultipleTriggerData,
   vault,
 }: ConstantMultipleInfoSectionControlProps) {
   return (
     <CancelConstantMultipleInfoSection
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
-      constantMultipleState={constantMultipleState}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       debt={vault.debt}
     />
   )

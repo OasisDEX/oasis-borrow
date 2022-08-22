@@ -161,7 +161,7 @@ export function SidebarSetupConstantMultiple({
                   ilkData={ilkData}
                   errors={cancelConstantMultipleErrors}
                   warnings={cancelConstantMultipleWarnings}
-                  constantMultipleState={constantMultipleState}
+                  constantMultipleTriggerData={constantMultipleTriggerData}
                 />
               )}
             </>
