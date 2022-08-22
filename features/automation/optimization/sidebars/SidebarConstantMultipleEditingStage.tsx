@@ -48,6 +48,7 @@ interface SidebaConstantMultiplerEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   token: string
+  lockedCollateralUSD: BigNumber
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
@@ -67,6 +68,7 @@ export function SidebarConstantMultipleEditingStage({
   errors,
   warnings,
   token,
+  lockedCollateralUSD,
   constantMultipleState,
   autoSellTriggerData,
   constantMultipleTriggerData,
@@ -82,11 +84,16 @@ export function SidebarConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
 
+  const maxTargetRatioInVault = lockedCollateralUSD
+    .div(ilkData.debtFloor)
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+
   const maxMultiplier = calculateMultipleFromTargetCollRatio(
     constantMultipleState.minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
   ).toNumber()
   const minMultiplier = calculateMultipleFromTargetCollRatio(
-    constantMultipleState.maxTargetRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+    maxTargetRatioInVault.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
   ).toNumber()
   const eligibleMultipliers = constantMultipleState.multipliers.filter((item) => {
     return item >= minMultiplier && item <= maxMultiplier
