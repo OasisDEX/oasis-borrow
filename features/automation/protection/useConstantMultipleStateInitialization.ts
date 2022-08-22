@@ -10,7 +10,10 @@ import {
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
-import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
+import {
+  getConstantMultipleMultipliers,
+  getDefaultMultiplier,
+} from 'features/automation/optimization/common/multipliers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useEffect } from 'react'
 
@@ -40,21 +43,24 @@ export function useConstantMultipleStateInitialization(
     autoBuyTriggerData,
     stopLossTriggerData,
     ilkData,
-    lockedCollateralUSD: vault.lockedCollateralUSD,
   })
 
-  const acceptableMultipliers = getConstantMultipleMultipliers({
+  const multipliers = getConstantMultipleMultipliers({
     ilk: ilkData.ilk,
     minColRatio: min,
     maxColRatio: max,
   })
-  const defaultMultiplier = acceptableMultipliers[Math.ceil(acceptableMultipliers.length / 2) - 1]
+  const defaultMultiplier = getDefaultMultiplier({
+    multipliers,
+    minColRatio: min,
+    maxColRatio: max,
+  })
   const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiplier)
 
   useEffect(() => {
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'form-defaults',
-      acceptableMultipliers,
+      multipliers,
       defaultMultiplier,
       defaultCollRatio,
       minTargetRatio: min,
@@ -84,7 +90,7 @@ export function useConstantMultipleStateInitialization(
       type: 'current-form',
       currentForm: 'add',
     })
-  }, [collateralizationRatio])
+  }, [collateralizationRatio, stopLossTriggerData.triggerId])
 
   return constantMultipleTriggerData.isTriggerEnabled
 }

@@ -3,16 +3,27 @@ import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsS
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Grid, Heading, Text } from 'theme-ui'
 
-interface ContentCardTotalCostOfFeatureProps {
+function ContentCardOperatingCostModal() {
+  const { t } = useTranslation()
+  return (
+    <Grid gap={2}>
+      <Heading variant="header3">{t('constant-multiple.operating-cost')}</Heading>
+      <Text variant="paragraph2">{t('constant-multiple.operating-cost-desc')}</Text>
+    </Grid>
+  )
+}
+
+interface ContentCardOperatingCostProps {
   totalCost?: BigNumber
   PnLSinceEnabled?: BigNumber
 }
 
-export function ContentCardTotalCostOfFeature({
+export function ContentCardOperatingCost({
   totalCost,
   PnLSinceEnabled,
-}: ContentCardTotalCostOfFeatureProps) {
+}: ContentCardOperatingCostProps) {
   const { t } = useTranslation()
 
   const formatted = {
@@ -26,7 +37,8 @@ export function ContentCardTotalCostOfFeature({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('constant-multiple.total-cost-of-feature'),
+    title: t('constant-multiple.operating-cost'),
+    modal: <ContentCardOperatingCostModal />,
   }
 
   if (totalCost) contentCardSettings.value = formatted.totalCost
