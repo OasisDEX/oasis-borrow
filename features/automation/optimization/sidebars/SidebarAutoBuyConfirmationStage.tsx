@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
-import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { useTranslation } from 'next-i18next'
 import { Text } from 'theme-ui'
@@ -52,17 +51,13 @@ export function SidebarAutoBuyConfirmationStage({
           {t('here')}.
         </AppLink>
       </Text>{' '}
-      <MaxGasPriceSection
-        value={basicBuyState.maxBaseFeeInGwei.toNumber()}
-        onChange={() => {}}
-        isPreviewOnly
-      />
       <AutoBuyInfoSectionControl
         executionPrice={executionPrice}
         basicBuyState={basicBuyState}
         vault={vault}
         debtDelta={debtDelta}
         collateralDelta={collateralDelta}
+        maxGasFee={basicBuyState.maxBaseFeeInGwei.toNumber()}
       />
     </>
   )

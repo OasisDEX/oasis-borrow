@@ -24,6 +24,7 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { selectSideBarTextBtnLabel } from 'helpers/functions'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -217,7 +218,7 @@ export function SidebarSetupAutoBuy({
       },
       ...((stage !== 'txInProgress' || isConfirmation) && {
         textButton: {
-          label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
+          label: selectSideBarTextBtnLabel(isConfirmation, isAddForm, t),
           hidden: basicBuyState.triggerId.isZero(),
           action: () => {
             if (isConfirmation) {

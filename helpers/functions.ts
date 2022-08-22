@@ -28,6 +28,6 @@ export function selectSideBarTextBtnLabel(
   t: TFunction,
 ) {
   if (isAddForm) return t('system.remove-trigger')
-  if (isConfirmation) return 'Edit Order'
+  if (isConfirmation) return t('auto-buy.edit-order-btn')
   return t('system.add-trigger')
 }

@@ -205,6 +205,7 @@ interface AutoBuyInfoSectionControlProps {
   basicBuyState: BasicBSFormChange
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  maxGasFee?: number
 }
 
 export function AutoBuyInfoSectionControl({
@@ -213,6 +214,7 @@ export function AutoBuyInfoSectionControl({
   basicBuyState,
   debtDelta,
   collateralDelta,
+  maxGasFee,
 }: AutoBuyInfoSectionControlProps) {
   const deviationPercent = basicBuyState.deviation.div(100)
 
@@ -241,6 +243,7 @@ export function AutoBuyInfoSectionControl({
       collateralToBePurchased={collateralDelta.abs()}
       targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
       targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
+      maxGasFee={maxGasFee}
     />
   )
 }

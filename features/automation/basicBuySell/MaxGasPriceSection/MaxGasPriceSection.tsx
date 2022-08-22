@@ -7,15 +7,14 @@ import React, { useCallback } from 'react'
 interface MaxGasPriceSectionProps {
   onChange: (item: number) => void
   value: number
-  isPreviewOnly?: boolean
 }
 
-export function MaxGasPriceSection({ onChange, value, isPreviewOnly }: MaxGasPriceSectionProps) {
+export function MaxGasPriceSection({ onChange, value }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
 
   const handleChange = useCallback(
     (item: number) => {
-      isPreviewOnly && onChange(item)
+      onChange(item)
     },
     [onChange],
   )

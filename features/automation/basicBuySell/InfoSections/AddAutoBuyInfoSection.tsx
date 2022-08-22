@@ -23,6 +23,7 @@ interface BuyInfoSectionProps {
   collateralToBePurchased: BigNumber
   targetRatioWithDeviationFloor: BigNumber
   targetRatioWithDeviationCeiling: BigNumber
+  maxGasFee?: number
 }
 
 export function AddAutoBuyInfoSection({
@@ -36,6 +37,7 @@ export function AddAutoBuyInfoSection({
   token,
   targetRatioWithDeviationFloor,
   targetRatioWithDeviationCeiling,
+  maxGasFee,
 }: BuyInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -88,6 +90,10 @@ export function AddAutoBuyInfoSection({
         {
           label: t('auto-buy.col-to-be-purchased', { token }),
           value: `${collateralToBePurchasedFormatted} ${token}`,
+        },
+        {
+          label: 'Max Gas Fee',
+          value: `${maxGasFee}`,
         },
         {
           label: t('auto-sell.estimated-transaction-cost'),

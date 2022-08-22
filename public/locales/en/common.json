@@ -1517,6 +1517,7 @@
       "content": "Set up an Auto-Buy to keep your vault’s collateralization ratio below a certain level. This may be beneficial, for example, in a bull market where the value of your collateral is increasing. Find out more about how this works",
       "button": "Setup Auto Buy"
     },
+    "edit-order-btn": "Edit Order",
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
     "set-trigger-description": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a Max Buy price of ${{minBuyPrice}}/{{token}}. Learn More ",
