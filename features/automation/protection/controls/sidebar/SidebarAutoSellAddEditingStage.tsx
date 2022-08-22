@@ -154,8 +154,10 @@ export function SidebarAutoSellAddEditingStage({
               execCollRatio: basicSellState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
             })}{' '}
-        {/* TODO ŁW link to article in kb */}
-        <AppLink href="https://kb.oasis.app/help/" sx={{ fontSize: 2 }}>
+        <AppLink
+          href="https://kb.oasis.app/help/setting-up-auto-sell-for-your-vault"
+          sx={{ fontSize: 2 }}
+        >
           {t('here')}.
         </AppLink>
       </Text>{' '}
