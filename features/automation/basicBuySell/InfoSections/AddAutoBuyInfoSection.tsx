@@ -93,7 +93,7 @@ export function AddAutoBuyInfoSection({
         },
         {
           label: 'Max Gas Fee',
-          value: `${maxGasFee}`,
+          value: `${maxGasFee} Gwei`,
         },
         {
           label: t('auto-sell.estimated-transaction-cost'),

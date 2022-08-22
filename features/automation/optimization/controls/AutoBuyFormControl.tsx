@@ -132,6 +132,10 @@ export function AutoBuyFormControl({
           type: 'current-form',
           currentForm: 'add',
         })
+        uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+          type: 'is-confirmation',
+          isConfirmation: false,
+        })
       } else {
         if (isAddForm) {
           addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, BASIC_BUY_FORM_CHANGE)
