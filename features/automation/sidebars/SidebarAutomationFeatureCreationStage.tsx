@@ -25,8 +25,7 @@ export function SidebarAutomationFeatureCreationStage({
   const linkMap = {
     'Auto-Buy': 'setting-up-auto-buy-for-your-vault',
     'Auto-Sell': 'setting-up-auto-sell-for-your-vault',
-    // TODO update link when article available
-    'Constant Multiple': '',
+    'Constant Multiple': 'what-is-constant-multiple',
   }
 
   switch (stage) {
