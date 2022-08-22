@@ -3,11 +3,13 @@ import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
+type PropertyNameType = '$initial_referrer' | '$user_id'
+
 export type MixpanelDevelopmentType = {
   track: (eventType: string, payload: any) => void
   get_distinct_id: () => string
   has_opted_out_tracking: () => boolean
-  get_property: (propertyName: string) => any
+  get_property: (propertyName: PropertyNameType) => string | null
 }
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
@@ -20,7 +22,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
       },
       get_distinct_id: () => 'test_id',
       has_opted_out_tracking: () => false,
-      get_property: (propertyName: any) => {
+      get_property: (propertyName: PropertyNameType) => {
         switch (propertyName) {
           case '$initial_referrer':
             return '$direct'
