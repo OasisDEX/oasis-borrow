@@ -108,8 +108,8 @@ export function SidebarConstantMultipleEditingStage({
   if (isVaultEmpty && constantMultipleTriggerData.isTriggerEnabled) {
     return (
       <SidebarFormInfo
-        title={t('auto-buy.closed-vault-existing-trigger-header')}
-        description={t('auto-buy.closed-vault-existing-trigger-description')}
+        title={t('constant-multiple.closed-vault-existing-trigger-header')}
+        description={t('constant-multiple.closed-vault-existing-trigger-description')}
       />
     )
   }

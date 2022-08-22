@@ -88,7 +88,6 @@ export function SidebarSetupAutoBuy({
 
   const { uiChanges } = useAppContext()
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
-  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicBuy'
@@ -139,7 +138,7 @@ export function SidebarSetupAutoBuy({
 
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
-      ...((constantMultipleEnabled || constantMultipleReadOnlyEnabled) && {
+      ...(constantMultipleEnabled && {
         dropdown: {
           forcePanel: 'autoBuy',
           disabled: isDropdownDisabled({ stage }),

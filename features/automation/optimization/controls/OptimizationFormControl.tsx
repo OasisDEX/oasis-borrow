@@ -78,7 +78,6 @@ export function OptimizationFormControl({
       })
     }
   }, [])
-  // const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   return (
     <>
