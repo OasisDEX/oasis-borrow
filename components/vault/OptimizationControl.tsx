@@ -61,17 +61,19 @@ function ZeroDebtOptimizationBanner({
 }
 function getZeroDebtOptimizationBannerProps({
   readOnlyBasicBSEnabled,
-  // constantMultipleReadOnlyEnabled,
+  constantMultipleReadOnlyEnabled,
   isVaultDebtZero,
-  vaultHasNoActiveTrigger,
+  vaultHasNoActiveBuyTrigger,
+  vaultHasNoActiveConstantMultipleTriggers,
 }: {
   readOnlyBasicBSEnabled: boolean
-  // constantMultipleReadOnlyEnabled: boolean
+  constantMultipleReadOnlyEnabled: boolean
   isVaultDebtZero: boolean
-  vaultHasNoActiveTrigger?: boolean
+  vaultHasNoActiveBuyTrigger?: boolean
+  vaultHasNoActiveConstantMultipleTriggers?: boolean
 }): ZeroDebtOptimizationBannerProps {
-  if (!readOnlyBasicBSEnabled) {
-    if (isVaultDebtZero && vaultHasNoActiveTrigger) {
+  if (!readOnlyBasicBSEnabled && !constantMultipleReadOnlyEnabled) {
+    if (isVaultDebtZero && vaultHasNoActiveBuyTrigger && vaultHasNoActiveConstantMultipleTriggers) {
       return {
         header: 'optimization.zero-debt-heading',
         description: 'optimization.zero-debt-description',
@@ -130,8 +132,9 @@ export function OptimizationControl({
   const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData?.isTriggerEnabled
 
   if (
-    (!vaultHasActiveAutoBuyTrigger && vault.debt.isZero()) ||
-    (!vaultHasActiveConstantMultipleTrigger && vault.debt.isZero()) ||
+    (!vaultHasActiveAutoBuyTrigger &&
+      !vaultHasActiveConstantMultipleTrigger &&
+      vault.debt.isZero()) ||
     (!vaultHasActiveAutoBuyTrigger &&
       !vaultHasActiveConstantMultipleTrigger &&
       readOnlyBasicBSEnabled &&
@@ -143,7 +146,9 @@ export function OptimizationControl({
           {...getZeroDebtOptimizationBannerProps({
             readOnlyBasicBSEnabled,
             isVaultDebtZero: vault.debt.isZero(),
-            vaultHasNoActiveTrigger: !vaultHasActiveAutoBuyTrigger,
+            vaultHasNoActiveBuyTrigger: !vaultHasActiveAutoBuyTrigger,
+            constantMultipleReadOnlyEnabled,
+            vaultHasNoActiveConstantMultipleTriggers: !vaultHasActiveConstantMultipleTrigger,
           })}
         />
       </Container>
