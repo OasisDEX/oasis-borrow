@@ -80,7 +80,7 @@ export function BasicSellDetailsControl({
           description={
             <>
               {t('auto-sell.banner.content')}{' '}
-              <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+              <AppLink href="https://kb.oasis.app/help/auto-buy-and-auto-sell" sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
             </>

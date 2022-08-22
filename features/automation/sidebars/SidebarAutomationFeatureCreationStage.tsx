@@ -8,7 +8,7 @@ import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
 interface SidebarAutomationFeatureCreationStageProps {
-  featureName: string
+  featureName: 'Auto-Buy' | 'Auto-Sell' | 'Constant Multiple'
   stage: SidebarVaultStages
   isAddForm: boolean
   isRemoveForm: boolean
@@ -21,6 +21,13 @@ export function SidebarAutomationFeatureCreationStage({
   isRemoveForm,
 }: SidebarAutomationFeatureCreationStageProps) {
   const { t } = useTranslation()
+
+  const linkMap = {
+    'Auto-Buy': 'setting-up-auto-buy-for-your-vault',
+    'Auto-Sell': 'setting-up-auto-sell-for-your-vault',
+    // TODO update link when article available
+    'Constant Multiple': '',
+  }
 
   switch (stage) {
     case 'txInProgress':
@@ -45,7 +52,10 @@ export function SidebarAutomationFeatureCreationStage({
             {isAddForm && (
               <>
                 {t('automation-creation.add-complete-content', { featureName })}{' '}
-                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                <AppLink
+                  href={`https://kb.oasis.app/help/${linkMap[featureName]}`}
+                  sx={{ fontSize: 2 }}
+                >
                   {t('here')}.
                 </AppLink>
               </>
