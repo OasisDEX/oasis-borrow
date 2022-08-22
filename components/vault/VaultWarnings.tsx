@@ -10,7 +10,10 @@ import { Dictionary } from 'ts-essentials'
 
 const SupportLink = <AppLink sx={{ color: 'warning100' }} href="mailto:support@oasis.app" />
 const ConstantMultipleKBLink = (
-  <AppLink sx={{ color: 'warning100' }} href="https://kb.oasis.app/help/" />
+  <AppLink
+    sx={{ color: 'warning100' }}
+    href="https://kb.oasis.app/help/what-is-constant-multiple"
+  />
 )
 
 interface VaultWarningsProps {

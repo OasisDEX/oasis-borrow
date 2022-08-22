@@ -107,7 +107,10 @@ export function ConstantMultipleDetailsLayout({
                     ? 'constant-multiple.banner.content'
                     : 'constant-multiple.banner.content-no-multiply',
                 )}{' '}
-                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                <AppLink
+                  href="https://kb.oasis.app/help/what-is-constant-multiple"
+                  sx={{ fontSize: 2 }}
+                >
                   {t('here')}.
                 </AppLink>
               </>
