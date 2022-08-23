@@ -35,7 +35,7 @@ function VaultDetailsCardCollateralLockedModal({
         <Card variant="vaultDetailsCardModal">
           {collateralLockedUSD && `$${formatAmount(collateralLockedUSD, 'USD')}`}
         </Card>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-vault.card.collateral-locked-oracles')}
         </Text>
       </Grid>

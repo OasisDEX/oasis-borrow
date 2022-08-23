@@ -30,6 +30,8 @@ export function validateErrors(
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowBasicSellRatio,
     afterCollRatioAboveBasicBuyRatio,
+    afterCollRatioBelowConstantMultipleSellRatio,
+    afterCollRatioAboveConstantMultipleBuyRatio,
     insufficientEthFundsForTx,
   } = state
 
@@ -54,6 +56,8 @@ export function validateErrors(
         afterCollRatioBelowStopLossRatio,
         afterCollRatioBelowBasicSellRatio,
         afterCollRatioAboveBasicBuyRatio,
+        afterCollRatioBelowConstantMultipleSellRatio,
+        afterCollRatioAboveConstantMultipleBuyRatio,
       }),
     )
   }

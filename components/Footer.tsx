@@ -150,7 +150,10 @@ export function TemporaryFooter() {
 function SocialWithLogo() {
   return (
     <Grid gap={3}>
-      <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} sx={{ height: '27px' }} />
+      <Image
+        src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')}
+        sx={{ height: '34px', position: 'relative', top: '-2px' }}
+      />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
         <AppLink href={ROUTES.TWITTER}>
           <Icon name="twitter" size="auto" width="18px" height="16px" />
@@ -189,7 +192,7 @@ export function Footer() {
           </Box>
           {FOOTER_SECTIONS.map(({ titleKey, links }) => (
             <Grid key={titleKey} as="ul" pl={0}>
-              <Text sx={{ fontSize: 4, fontWeight: 'semiBold' }}>{t(titleKey)}</Text>
+              <Text variant="boldParagraph1">{t(titleKey)}</Text>
               {links.map(({ labelKey, url, target }) => (
                 <Box key={labelKey} as="li" sx={{ listStyle: 'none' }}>
                   <AppLink variant="navFooter" href={url} target={target}>

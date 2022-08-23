@@ -7,9 +7,11 @@ import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProx
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
 import { CookieBanner } from 'components/CookieBanner'
+import { GasEstimationContextProvider } from 'components/GasEstimationContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
+import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
@@ -44,7 +46,6 @@ const FTPolarFontMedium = staticFilesRuntimeUrl('/static/fonts/FTPolar/FTPolarTr
 const globalStyles = `
   html,
   body,
-  body > div:first-of-type,
   div#__next {
     height: 100%;
   }
@@ -166,10 +167,14 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                   {seoTags}
                   <SetupWeb3Context>
                     <SharedUIProvider>
-                      <Layout {...layoutProps}>
-                        <Component {...pageProps} />
-                        <CookieBanner setValue={setValue} value={value} />
-                      </Layout>
+                      <GasEstimationContextProvider>
+                        <NotificationSocketProvider>
+                          <Layout {...layoutProps}>
+                            <Component {...pageProps} />
+                            <CookieBanner setValue={setValue} value={value} />
+                          </Layout>
+                        </NotificationSocketProvider>
+                      </GasEstimationContextProvider>
                     </SharedUIProvider>
                   </SetupWeb3Context>
                 </ModalProvider>

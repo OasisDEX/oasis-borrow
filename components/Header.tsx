@@ -1,11 +1,21 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
+import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
+import { LANDING_PILLS } from 'content/landing'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  SwapWidgetState,
+} from 'features/automation/protection/common/UITypes/SwapWidgetChange'
+import { getUnreadNotificationCount } from 'features/notifications/helpers'
+import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
@@ -14,24 +24,16 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
-import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
-import { ContextConnected } from '../blockchain/network'
-import { LANDING_PILLS } from '../content/landing'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-  SwapWidgetState,
-} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
-export function Logo({ sx }: { sx?: SxStyleProp }) {
+function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
     <AppLink
       withAccountPrefix={false}
@@ -42,6 +44,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
         fontSize: '0px',
         cursor: 'pointer',
         zIndex: 1,
+        height: '22px',
         ...sx,
       }}
     >
@@ -50,7 +53,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-export function BasicHeader({
+function BasicHeader({
   variant,
   children,
   sx,
@@ -72,24 +75,6 @@ export function BasicHeader({
       >
         {children}
       </Container>
-    </Box>
-  )
-}
-
-export function BackArrow() {
-  return (
-    <Box
-      sx={{
-        cursor: 'pointer',
-        color: 'neutral70',
-        fontSize: '0',
-        transition: TRANSITIONS.global,
-        '&:hover': {
-          color: 'neutral80',
-        },
-      }}
-    >
-      <Icon name="arrow_left" size="auto" width="32" height="47" />
     </Box>
   )
 }
@@ -248,6 +233,7 @@ function UserDesktopMenu() {
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
+  const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
   // TODO: Update this once the the notifications pannel is available
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
@@ -263,6 +249,8 @@ function UserDesktopMenu() {
     context.status === 'connectedReadonly' ||
     !accountData ||
     web3Context?.status !== 'connected'
+
+  const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
   return (
     <Flex
@@ -345,9 +333,9 @@ function UserDesktopMenu() {
           <NotificationsIconButton
             notificationsRef={notificationsRef}
             onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
-            // TODO: Update to real vairable
-            notificationsCount="13"
+            notificationsCount={unreadNotificationCount}
             notificationsPanelOpen={notificationsPanelOpen}
+            disabled={!notificationsState}
           />
         )}
       </Flex>
@@ -632,7 +620,7 @@ function AssetsDropdown() {
           <AppLink
             href={asset.link}
             key={asset.label}
-            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'body', fontSize: 3 }}
+            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular', fontSize: 3 }}
             variant="links.nav"
           >
             <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
@@ -685,7 +673,7 @@ function MobileMenuLink({ isActive, children }: { isActive: boolean } & WithChil
   )
 }
 
-export function MobileMenu() {
+function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
@@ -694,6 +682,7 @@ export function MobileMenu() {
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
+  const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
@@ -702,6 +691,8 @@ export function MobileMenu() {
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
+
+  const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
   return (
     <>
@@ -787,9 +778,9 @@ export function MobileMenu() {
         <NotificationsIconButton
           notificationsRef={notificationsRef}
           onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
-          // TODO: Update to real vairable
-          notificationsCount="13"
+          notificationsCount={unreadNotificationCount}
           notificationsPanelOpen={notificationsPanelOpen}
+          disabled={!notificationsState}
         />
       )}
       <Button variant="menuButtonRound">
@@ -854,7 +845,7 @@ function DisconnectedHeader() {
                 flexShrink: 0,
               }}
             >
-              <Text variant="strong">{t('connect-wallet-button')}</Text>
+              <Text variant="boldParagraph2">{t('connect-wallet-button')}</Text>
               <Icon
                 name="arrow_right"
                 size="15px"

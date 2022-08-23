@@ -20,6 +20,7 @@ interface VaultErrorsProps {
   maxGenerateAmount?: BigNumber
   ilkData: IlkData
   maxWithdrawAmount?: BigNumber
+  autoType?: 'Auto-Buy' | 'Auto-Sell'
 }
 
 export function VaultErrors({
@@ -27,6 +28,7 @@ export function VaultErrors({
   maxGenerateAmount = zero,
   maxWithdrawAmount = zero,
   ilkData: { debtFloor, token },
+  autoType,
 }: VaultErrorsProps) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
@@ -130,6 +132,10 @@ export function VaultErrors({
         return translate('after-coll-ratio-below-basic-sell-ratio')
       case 'afterCollRatioAboveBasicBuyRatio':
         return translate('after-coll-ratio-above-basic-buy-ratio')
+      case 'afterCollRatioBelowConstantMultipleSellRatio':
+        return translate('after-coll-ratio-below-constant-multiple-sell-ratio')
+      case 'afterCollRatioAboveConstantMultipleBuyRatio':
+        return translate('after-coll-ratio-above-constant-multiple-buy-ratio')
       case 'vaultWillBeTakenUnderMinActiveColRatio':
         return translate('vault-will-be-taken-under-min-active-col-ratio')
       case 'stopLossOnNearLiquidationRatio':
@@ -146,6 +152,8 @@ export function VaultErrors({
         return translate('auto-buy-trigger-lower-than-auto-sell-target')
       case 'stopLossTriggerHigherThanAutoBuyTarget':
         return translate('stop-loss-trigger-higher-than-auto-buy-target')
+      case 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled':
+        return translate('cant-setup-auto-buy-or-sell-when-constant-multiple-enabled', { autoType })
       case 'autoBuyMaxBuyPriceNotSpecified':
         return (
           <Trans

@@ -26,6 +26,10 @@ export function funcSigTopic(v: string): string {
   return padEnd(((ethAbi as unknown) as AbiCoder).encodeFunctionSignature(v), 66, '0')
 }
 
+export function encodeArray(array: string[]): string {
+  return ((ethAbi as unknown) as AbiCoder).encodeParameter('bytes[]', array)
+}
+
 export function amountToWei(amount: BigNumber, token: string): BigNumber {
   const { precision } = getToken(token)
   return amount.times(new BigNumber(10).pow(precision))

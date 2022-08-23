@@ -32,6 +32,11 @@ function getSidebarProgressTxInProgressKey({
     case 'addBasicBuy':
     case 'editBasicBuy':
       return 'auto-buy.setting-auto-buy'
+    case 'cancelConstantMultiple':
+      return 'constant-multiple.cancelling-constant-multiple'
+    case 'addConstantMultiple':
+    case 'editConstantMultiple':
+      return 'constant-multiple.setting-constant-multiple'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -52,6 +57,9 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'addBasicBuy':
     case 'editBasicBuy':
     case 'cancelBasicBuy':
+    case 'addConstantMultiple':
+    case 'editConstantMultiple':
+    case 'cancelConstantMultiple':
       return 'vault-changed'
     default:
       throw new UnreachableCaseError(flow)

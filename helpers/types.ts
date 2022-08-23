@@ -65,3 +65,7 @@ export type Abi = Omit<AbiItem, 'type' | 'stateMutability' | 'inputs'> & {
 }
 
 export type Unbox<T> = T extends Promise<infer U> ? U : T extends Array<infer Y> ? Y : never
+
+export interface PriceServiceResponse {
+  [id: string]: string
+}

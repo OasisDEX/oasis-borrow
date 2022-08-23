@@ -25,7 +25,7 @@ function ContentCardBuyingPowerModal() {
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('manage-multiply-vault.card.buying-power')}</Heading>
-      <Text variant="subheader" as="p" sx={{ fontSize: 2, pb: 2 }}>
+      <Text variant="paragraph2" as="p" sx={{ pb: 2 }}>
         {t('manage-multiply-vault.card.buying-power-description')}
       </Text>
     </Grid>

@@ -3,20 +3,12 @@ import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, Observable, of, timer } from 'rxjs'
-import { ajax, AjaxResponse } from 'rxjs/ajax'
-import {
-  catchError,
-  distinctUntilChanged,
-  first,
-  map,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { ajax } from 'rxjs/ajax'
+import { distinctUntilChanged, first, map, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { getToken } from './tokensMetadata'
 
-export interface Ticker {
+export interface Tickers {
   [label: string]: BigNumber
 }
 
@@ -82,25 +74,7 @@ export function createGasPrice$(
   )
 }
 
-type CoinbaseOrderBook = {
-  bids: [string][]
-  asks: [string][]
-}
-
-export function coinbaseOrderBook$(ticker: string): Observable<AjaxResponse['response']> {
-  return ajax({
-    url: `https://api.pro.coinbase.com/products/${ticker}/book`,
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  }).pipe(
-    map(({ response }) => response),
-    shareReplay(1),
-  )
-}
-
-export const coinPaprikaTicker$: Observable<Ticker> = timer(0, 1000 * 60).pipe(
+export const tokenPrices$: Observable<Tickers> = timer(0, 1000 * 60).pipe(
   switchMap(() =>
     ajax({
       url: `${window.location.origin}/api/tokensPrices`,
@@ -114,61 +88,40 @@ export const coinPaprikaTicker$: Observable<Ticker> = timer(0, 1000 * 60).pipe(
   shareReplay(1),
 )
 
-export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
-  return ajax({
-    url: `https://api.coingecko.com/api/v3/simple/price?ids=${ticker}&vs_currencies=usd`,
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  }).pipe(
-    map(({ response }) => new BigNumber(response[ticker].usd)),
-    shareReplay(1),
-  )
+function getPrice(tickers: Tickers, tickerServiceLabels: Array<string | undefined>) {
+  for (const label of tickerServiceLabels) {
+    if (label && tickers[label]) {
+      return tickers[label]
+    }
+  }
+
+  throw new Error(`No price data for given token`)
 }
 
 export function createTokenPriceInUSD$(
   every10Seconds$: Observable<any>,
-  coinbaseOrderBook$: (ticker: string) => Observable<CoinbaseOrderBook>,
-  coinpaprikaTicker$: Observable<Ticker>,
-  coinGeckoTicker$: (ticker: string) => Observable<BigNumber>,
+  tokenTicker$: Observable<Tickers>,
   tokens: Array<string>,
-): Observable<Ticker> {
-  return combineLatest(every10Seconds$, coinpaprikaTicker$).pipe(
-    switchMap(([, ticker]) =>
+): Observable<Tickers> {
+  return combineLatest(every10Seconds$, tokenTicker$).pipe(
+    switchMap(([_, tickers]) =>
       forkJoin(
         tokens.map((token) => {
-          const { coinbaseTicker, coinpaprikaTicker, coinGeckoTicker } = getToken(token)
-          if (coinbaseTicker) {
-            return coinbaseOrderBook$(coinbaseTicker).pipe(
-              map((response) => {
-                const bid = new BigNumber(response.bids[0][0])
-                const ask = new BigNumber(response.asks[0][0])
-                return {
-                  [token]: bid.plus(ask).div(2),
-                }
-              }),
-              catchError((error) => {
-                console.log(error)
-                return of({})
-              }),
-            )
-          } else if (coinpaprikaTicker) {
+          try {
+            const { coinpaprikaTicker, coinbaseTicker, coinGeckoTicker } = getToken(token)
+
+            const tokenPrice = getPrice(tickers, [
+              coinbaseTicker,
+              coinpaprikaTicker,
+              coinGeckoTicker,
+            ])
+
             return of({
-              [token]: ticker[coinpaprikaTicker],
+              [token]: new BigNumber(tokenPrice),
             })
-          } else if (coinGeckoTicker) {
-            return coinGeckoTicker$(coinGeckoTicker).pipe(
-              map((price) => ({
-                [token]: price,
-              })),
-              catchError((error) => {
-                console.log(error)
-                return of({})
-              }),
-            )
-          } else {
+          } catch (err) {
             console.log(`could not find price for ${token} - no ticker configured`)
+
             return of({})
           }
         }),

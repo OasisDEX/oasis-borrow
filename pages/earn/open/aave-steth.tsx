@@ -6,7 +6,8 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
+
+import { AaveContextProvider } from '../../../features/earn/aave/AaveContextProvider'
 
 export async function getStaticProps(ctx: GetServerSidePropsContext) {
   return {
@@ -18,13 +19,15 @@ export async function getStaticProps(ctx: GetServerSidePropsContext) {
 
 function OpenVault() {
   return (
-    <WithWalletConnection>
-      <WithTermsOfService>
-        <BackgroundLight />
-        <AaveOpenView />
-        <Survey for="earn" />
-      </WithTermsOfService>
-    </WithWalletConnection>
+    <AaveContextProvider>
+      <WithWalletConnection>
+        <WithTermsOfService>
+          <AaveOpenView />
+
+          <Survey for="earn" />
+        </WithTermsOfService>
+      </WithWalletConnection>
+    </AaveContextProvider>
   )
 }
 

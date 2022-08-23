@@ -76,11 +76,12 @@ export function GuniOpenMultiplyVaultDetails(
     props.gasEstimationDai,
   )
 
-  if (depositAmount.gt(zero) && apy7.gt(zero)) {
+  const useApy30ForBreakeven = apy30?.gt(zero)
+  if (depositAmount.gt(zero) && (apy30.gt(zero) || apy7.gt(zero))) {
     breakeven = calculateBreakeven({
       depositAmount,
       entryFees: entryFees,
-      apy: apy7,
+      apy: useApy30ForBreakeven ? apy30 : apy7,
     })
   }
 

@@ -46,13 +46,23 @@ function CareerPage({ career }: { career: Career }) {
             mb: 3,
             mt: 5,
           },
-          'p, ul': { variant: 'text.light', my: 2 },
-          ul: { pl: 4 },
-          li: { mb: 3 },
-          strong: {
-            fontWeight: 'body',
-            color: 'primary100',
+          'p, ul': { variant: 'text.paragraph2', my: 2, color: 'neutral80' },
+          ul: { pl: 4, color: 'neutral80' },
+          li: { mb: 3, color: 'neutral80' },
+          p: {
+            color: 'neutral80',
             a: {
+              variant: 'text.paragraph2',
+              fontWeight: 'semiBold',
+            },
+          },
+          strong: {
+            variant: 'text.paragraph2',
+            fontWeight: 'semiBold',
+            color: 'neutral80',
+
+            a: {
+              variant: 'text.paragraph2',
               fontWeight: 'semiBold',
             },
           },

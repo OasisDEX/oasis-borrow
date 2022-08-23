@@ -13,6 +13,9 @@ const flowsWithoutProxy = [
   'cancelBasicBuy',
   'editBasicSell',
   'editBasicBuy',
+  'addConstantMultiple',
+  'cancelConstantMultiple',
+  'editConstantMultiple',
 ]
 const UNREACHABLE_CASE_MESSAGE = ''
 
@@ -45,6 +48,9 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'cancelBasicBuy':
     case 'editBasicSell':
     case 'editBasicBuy':
+    case 'addConstantMultiple':
+    case 'editConstantMultiple':
+    case 'cancelConstantMultiple':
       return 'confirm'
     case 'manageGuni':
       return 'close-vault'
@@ -82,6 +88,12 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
       return 'adding-auto-buy'
     case 'cancelBasicBuy':
       return 'cancelling-auto-buy'
+    case 'addConstantMultiple':
+      return 'constant-multiple.adding-constant-multiple'
+    case 'editConstantMultiple':
+      return 'constant-multiple.adjusting-constant-multiple'
+    case 'cancelConstantMultiple':
+      return 'constant-multiple.removing-constant-multiple'
     default:
       return UNREACHABLE_CASE_MESSAGE
   }
@@ -103,6 +115,9 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'cancelBasicBuy':
     case 'editBasicSell':
     case 'editBasicBuy':
+    case 'addConstantMultiple':
+    case 'cancelConstantMultiple':
+    case 'editConstantMultiple':
       return 'finished'
     default:
       return UNREACHABLE_CASE_MESSAGE

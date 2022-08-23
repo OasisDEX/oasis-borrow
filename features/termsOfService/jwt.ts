@@ -1,3 +1,4 @@
+import { getNetworkId } from '@oasisdex/web3-context'
 import { decode } from 'jsonwebtoken'
 import getConfig from 'next/config'
 import { Observable, of } from 'rxjs'
@@ -12,24 +13,40 @@ export type JWToken = string
 
 export function jwtAuthGetToken(address: string): JWToken | undefined {
   const token = localStorage.getItem(`token-b/${address}`)
+  if (token && token !== 'xxx') {
+    const parsedToken = JSON.parse(atob(token.split('.')[1]))
+    // remove old tokens
+    if (!parsedToken.chainId) {
+      localStorage.removeItem(`token-b/${address}`)
+      return undefined
+    }
+  }
   return token === null ? undefined : token
 }
 
-export function jwtAuthSetupToken$(web3: Web3, account: string): Observable<JWToken> {
+export function jwtAuthSetupToken$(
+  web3: Web3,
+  account: string,
+  isGnosisSafe: boolean,
+): Observable<JWToken> {
   const token = jwtAuthGetToken(account)
   if (token === undefined) {
-    return fromPromise(requestJWT(web3, account))
+    return fromPromise(requestJWT(web3, account, isGnosisSafe))
   }
   return of(token)
 }
 
-async function requestJWT(web3: Web3, account: string): Promise<string> {
+async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
+  const web3Instance = isGnosisSafe ? new Web3(web3.givenProvider) : web3
+  const addressForSignature = isGnosisSafe ? web3Instance.givenProvider.selectedAddress : account
   const challenge = await requestChallenge(account).toPromise()
 
   console.log('Signing challenge: ', challenge)
 
-  const signature = await signTypedPayload(challenge, web3, account)
-  const jwt = await requestSignin({ challenge, signature }).toPromise()
+  const chainId = getNetworkId()
+
+  const signature = await signTypedPayload(challenge, web3Instance, addressForSignature)
+  const jwt = await requestSignin({ challenge, signature, chainId }).toPromise()
 
   localStorage.setItem(`token-b/${account}`, jwt)
 
@@ -56,9 +73,11 @@ function requestChallenge(address: string): Observable<string> {
 function requestSignin({
   signature,
   challenge,
+  chainId,
 }: {
   signature: string
   challenge: string
+  chainId: number
 }): Observable<string> {
   return ajax({
     url: `${basePath}/api/auth/signin`,
@@ -66,7 +85,7 @@ function requestSignin({
     headers: {
       'Content-Type': 'application/json',
     },
-    body: { signature, challenge },
+    body: { signature, challenge, chainId },
   }).pipe(map((resp) => resp.response.jwt))
 }
 

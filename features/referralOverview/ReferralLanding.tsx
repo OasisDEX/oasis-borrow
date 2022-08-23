@@ -12,7 +12,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
 import { useModal } from '../../helpers/modalHook'
 import { UpsertUser } from './FeesView'
@@ -89,10 +89,10 @@ export function ReferralLanding({ context, userReferral }: Props) {
           py="58px"
         />
 
-        <Text variant="text.headerSettings" pt="0px" pb="12px">
+        <Text as="p" variant="boldParagraph1" pt="0px" pb="12px">
           {t('ref.how')}
         </Text>
-        <Text variant="text.subheader" pt="12px">
+        <Text variant="paragraph2" sx={{ color: 'neutral80' }} pt="12px">
           {isConnected ? (
             <Trans i18nKey="ref.how-p1-connected">
               1. Click <span style={{ fontWeight: 600 }}>‘Get Started’</span> below
@@ -101,110 +101,112 @@ export function ReferralLanding({ context, userReferral }: Props) {
             t('ref.how-p1-not-connected')
           )}
         </Text>
-        <Text variant="text.subheader" pt="12px">
+        <Text variant="paragraph2" sx={{ color: 'neutral80' }} pt="12px">
           {t('ref.how-p2')}
         </Text>
-        <Text variant="text.subheader" pt="12px">
+        <Text variant="paragraph2" sx={{ color: 'neutral80' }} pt="12px">
           {t('ref.how-p3')}
         </Text>
       </Flex>
-      {context?.status !== 'connected' ? (
-        <AppLink
-          variant="primary"
-          href="/connect"
-          sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            color: 'offWhite',
-            alignItems: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
-          }}
-        >
-          {t('connect-wallet-button')}
-          <Icon
-            name="arrow_right"
+      <Box mt={`16px`}>
+        {context?.status !== 'connected' ? (
+          <AppLink
+            variant="primary"
+            href="/connect"
             sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
+              display: 'flex',
+              margin: '0 auto',
+              px: '40px',
+              py: 2,
+              color: 'offWhite',
+              alignItems: 'center',
+              '&:hover svg': {
+                transform: 'translateX(10px)',
+              },
             }}
-          />
-        </AppLink>
-      ) : null}
-      {userReferral.state === 'newUser' && (
-        <Button
-          variant="primary"
-          sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            color: 'offWhite',
-            alignItems: 'center',
-            justifyContent: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
-            width: '274px',
-          }}
-          // if new user witohut refereal - write to db on click and redirect to dashboard
-          onClick={
-            userReferral.referrer
-              ? () =>
-                  openModal(NewReferralModal, {
-                    userReferral,
-                    account: connectedAccount,
-                  })
-              : () => createUser({ hasAccepted: true, isReferred: false })
-          }
-        >
-          {t('ref.get-started')}
-          <Icon
-            name="arrow_right"
+          >
+            {t('connect-wallet-button')}
+            <Icon
+              name="arrow_right"
+              sx={{
+                ml: 2,
+                position: 'relative',
+                left: 2,
+                transition: '0.2s',
+              }}
+            />
+          </AppLink>
+        ) : null}
+        {userReferral.state === 'newUser' && (
+          <Button
+            variant="primary"
             sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
+              display: 'flex',
+              margin: '0 auto',
+              px: '40px',
+              py: 2,
+              color: 'offWhite',
+              alignItems: 'center',
+              justifyContent: 'center',
+              '&:hover svg': {
+                transform: 'translateX(10px)',
+              },
+              width: '274px',
             }}
-          />
-        </Button>
-      )}{' '}
-      {userReferral.state === 'currentUser' && (
-        <AppLink
-          variant="primary"
-          href={`/referrals/${connectedAccount}`}
-          sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            color: 'offWhite',
-            alignItems: 'center',
-            justifyContent: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
-            width: '274px',
-          }}
-        >
-          {t('ref.get-started')}
-          <Icon
-            name="arrow_right"
+            // if new user witohut refereal - write to db on click and redirect to dashboard
+            onClick={
+              userReferral.referrer
+                ? () =>
+                    openModal(NewReferralModal, {
+                      userReferral,
+                      account: connectedAccount,
+                    })
+                : () => createUser({ hasAccepted: true, isReferred: false })
+            }
+          >
+            {t('ref.get-started')}
+            <Icon
+              name="arrow_right"
+              sx={{
+                ml: 2,
+                position: 'relative',
+                left: 2,
+                transition: '0.2s',
+              }}
+            />
+          </Button>
+        )}{' '}
+        {userReferral.state === 'currentUser' && (
+          <AppLink
+            variant="primary"
+            href={`/referrals/${connectedAccount}`}
             sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
+              display: 'flex',
+              margin: '0 auto',
+              px: '40px',
+              py: 2,
+              color: 'offWhite',
+              alignItems: 'center',
+              justifyContent: 'center',
+              '&:hover svg': {
+                transform: 'translateX(10px)',
+              },
+              width: '274px',
             }}
-          />
-        </AppLink>
-      )}
+          >
+            {t('ref.get-started')}
+            <Icon
+              name="arrow_right"
+              sx={{
+                ml: 2,
+                position: 'relative',
+                left: 2,
+                transition: '0.2s',
+              }}
+            />
+          </AppLink>
+        )}
+      </Box>
     </ReferralLayout>
   )
 }

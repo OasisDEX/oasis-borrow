@@ -32,6 +32,8 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowBasicSellRatio,
     afterCollRatioAboveBasicBuyRatio,
+    afterCollRatioBelowConstantMultipleSellRatio,
+    afterCollRatioAboveConstantMultipleBuyRatio,
     insufficientEthFundsForTx,
   } = state
 
@@ -60,6 +62,8 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
         afterCollRatioBelowStopLossRatio,
         afterCollRatioBelowBasicSellRatio,
         afterCollRatioAboveBasicBuyRatio,
+        afterCollRatioBelowConstantMultipleSellRatio,
+        afterCollRatioAboveConstantMultipleBuyRatio,
       }),
     )
   }

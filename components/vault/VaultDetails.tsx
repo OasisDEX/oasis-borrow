@@ -143,12 +143,10 @@ export function VaultDetailsCard({
       >
         <Box>
           <Flex sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text variant="subheader" sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}>
-              {title}
-            </Text>
+            <Text variant="paragraph2">{title}</Text>
             {openModal && <Icon name="question_o" size="auto" width="20px" height="20px" />}
           </Flex>
-          <Heading variant="header2" sx={{ fontWeight: 'semiBold', mt: openModal ? 0 : 1 }}>
+          <Heading variant="header2" sx={{ mt: openModal ? 0 : 1 }}>
             {value}
           </Heading>
           {valueAfter && (

@@ -1,10 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
+import { getAddress } from 'ethers/lib/utils'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
 import { PieChart } from '../../../components/dumb/PieChart'
@@ -21,13 +26,57 @@ function tokenColor(symbol: string) {
 }
 
 function AssetRow(props: PositionView) {
+  if (props.missingPriceData) {
+    return (
+      <Flex
+        sx={{
+          alignItems: 'center',
+          color: 'neutral60',
+          cursor: 'pointer',
+          pt: '11px',
+          pb: '11px',
+          pl: '12px',
+          pr: '14px',
+          borderRadius: '12px',
+        }}
+        title={`${props.title}  |  We were unable to fetch the price data for this token`}
+      >
+        <Icon
+          name={getToken(props.token).iconCircle}
+          size="32px"
+          sx={{ verticalAlign: 'sub', flexShrink: 0 }}
+        />
+        <Text
+          variant="paragraph2"
+          sx={{
+            fontWeight: 'semiBold',
+            ml: '8px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {props.title}
+        </Text>
+        <Text
+          variant="paragraph3"
+          sx={{
+            ml: '8px',
+          }}
+        >
+          {`No price data`}
+        </Text>
+      </Flex>
+    )
+  }
+
   return (
     <Flex
       sx={{
         alignItems: 'center',
-        color: '#708390',
+        color: 'neutral60',
         '&:hover': {
-          backgroundColor: '#F1F3F4',
+          backgroundColor: 'neutral30',
         },
         cursor: 'pointer',
         pt: '11px',
@@ -91,10 +140,12 @@ function LinkedRow(props: PositionView) {
 
   if (props.url) {
     return (
-      <AppLink href={props.url}>
+      <AppLink href={props.url} sx={{ fontWeight: 'unset' }}>
         <AssetRow {...props} />
       </AppLink>
     )
+  } else if (props.missingPriceData) {
+    return <AssetRow {...props} />
   } else {
     return (
       <Box
@@ -138,7 +189,7 @@ function MenuRowDisplay(props: AssetAction) {
 function MenuRow(props: AssetAction & { close: () => void }) {
   if (isUrlAction(props)) {
     return (
-      <AppLink href={props.path} hash={props.hash}>
+      <AppLink href={props.path} hash={props.hash} sx={{ fontWeight: 'unset' }}>
         <MenuRowDisplay {...props} />
       </AppLink>
     )
@@ -150,6 +201,7 @@ function MenuRow(props: AssetAction & { close: () => void }) {
           props.close()
           props.onClick()
         }}
+        sx={{ fontWeight: 'unset' }}
       >
         <MenuRowDisplay {...props} />
       </Link>
@@ -205,19 +257,19 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
             <AppLink
               href="https://kb.oasis.app/help/curated-token-list"
               target="_blank"
-              sx={{ fontWeight: 'body', fontSize: 3 }}
+              sx={{ fontWeight: 'regular', fontSize: 3 }}
             />,
           ]}
         />
       </Text>
-      <Text sx={{ fontWeight: 'medium', fontSize: 7, mt: '4px' }}>
+      <Heading variant="header3" sx={{ mt: '4px' }}>
         ${formatAmount(props.totalValueUsd, 'USD')}
-      </Text>
+      </Heading>
     </Box>
   )
 }
 
-export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal) {
+function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
   const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
   const topAssetsAndPositions = props.assetsAndPositions.slice(0, 5)
@@ -228,6 +280,11 @@ export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal
     })),
     { value: props.percentageOther, color: '#999' },
   ]
+
+  if (props.totalValueUsd.lte(zero)) {
+    return null
+  }
+
   return (
     <>
       {breakpointIndex === 0 && <TotalAssetsContent totalValueUsd={props.totalValueUsd} />}
@@ -236,7 +293,14 @@ export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal
           {breakpointIndex !== 0 && (
             <>
               <TotalAssetsContent totalValueUsd={props.totalValueUsd} />
-              <Box sx={{ borderLeft: 'solid 1px #EAEAEA', ml: '45px', mr: '45px' }} />
+              <Box
+                sx={{
+                  borderLeft: 'solid 1px',
+                  borderLeftColor: 'neutral20',
+                  ml: '45px',
+                  mr: '45px',
+                }}
+              />
             </>
           )}
           <Box sx={{ flexGrow: 1 }}>
@@ -261,5 +325,22 @@ export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal
         </Flex>
       </Card>
     </>
+  )
+}
+
+export function AssetsAndPositionsOverview({ address }: { address: string }) {
+  const { positionsOverviewSummary$ } = useAppContext()
+  const checksumAddress = getAddress(address.toLocaleLowerCase())
+
+  const [positionsOverviewSummary, positionOverviewSummaryError] = useObservable(
+    positionsOverviewSummary$(checksumAddress),
+  )
+
+  return (
+    <WithErrorHandler error={[positionOverviewSummaryError]}>
+      <WithLoadingIndicator value={[positionsOverviewSummary]}>
+        {([_positionsOverviewSummary]) => <AssetsAndPositionsView {..._positionsOverviewSummary} />}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }

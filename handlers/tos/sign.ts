@@ -13,6 +13,9 @@ export async function sign(req: NextApiRequest, res: NextApiResponse) {
   const user = getUserFromRequest(req)
   const approvalData = {
     address: user.address,
+    signature: user.signature,
+    message: user.challenge,
+    chain_id: user.chainId,
     doc_version: docVersion,
     sign_date: new Date(),
   }

@@ -1,6 +1,19 @@
 import { TriggerRecord } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { gql, GraphQLClient } from 'graphql-request'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
+const queryWithConstantMultiple = gql`
+  query activeTriggersForVault($vaultId: BigFloat) {
+    allActiveTriggers(filter: { cdpId: { equalTo: $vaultId } }, orderBy: [BLOCK_ID_ASC]) {
+      nodes {
+        triggerId
+        groupId
+        commandAddress
+        triggerData
+      }
+    }
+  }
+`
 const query = gql`
   query activeTriggersForVault($vaultId: BigFloat) {
     allActiveTriggers(filter: { cdpId: { equalTo: $vaultId } }, orderBy: [BLOCK_ID_ASC]) {
@@ -15,6 +28,7 @@ const query = gql`
 
 interface ActiveTrigger {
   triggerId: number
+  groupId?: number
   commandAddress: string
   triggerData: string
 }
@@ -24,12 +38,15 @@ export async function getAllActiveTriggers(
   client: GraphQLClient,
   vaultId: string,
 ): Promise<TriggerRecord[]> {
-  const data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(query, {
-    vaultId,
-  })
+  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  const data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(
+    constantMultipleEnabled ? queryWithConstantMultiple : query,
+    { vaultId },
+  )
 
   const returnedRecords = data.allActiveTriggers.nodes.map((record) => ({
     triggerId: record.triggerId,
+    groupId: record.groupId,
     commandAddress: record.commandAddress,
     executionParams: record.triggerData,
   }))

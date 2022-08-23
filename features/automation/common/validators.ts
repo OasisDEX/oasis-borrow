@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
@@ -64,6 +65,7 @@ export function errorsBasicSellValidation({
   isRemoveForm,
   basicSellState,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
 }: {
   vault: Vault
   ilkData: IlkData
@@ -71,6 +73,7 @@ export function errorsBasicSellValidation({
   isRemoveForm: boolean
   basicSellState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
+  constantMultipleTriggerData: ConstantMultipleTriggerData
 }) {
   const {
     execCollRatio,
@@ -92,10 +95,14 @@ export function errorsBasicSellValidation({
     autoBuyTriggerData.isTriggerEnabled &&
     execCollRatio.plus(5).gt(autoBuyTriggerData.targetCollRatio)
 
+  const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
+    constantMultipleTriggerData.isTriggerEnabled
+
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
     minimumSellPriceNotProvided,
     autoSellTriggerHigherThanAutoBuyTarget,
+    cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
   })
 }

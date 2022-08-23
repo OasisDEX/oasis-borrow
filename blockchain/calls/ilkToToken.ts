@@ -21,7 +21,7 @@ export function createIlkToToken$(context$: Observable<Context>, ilk: string): O
       defer(() => call(context, ilkTokenAddress)(ilk)).pipe(
         map((tokenAddress) => {
           const tokenDescription = Object.entries(context.tokens).find(
-            ([_, desc]) => desc.address === tokenAddress,
+            ([_, desc]) => desc.address.toLowerCase() === tokenAddress.toLowerCase(),
           )
 
           if (tokenDescription === undefined) {

@@ -6,8 +6,8 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
+import { WithWalletAssociatedRisk } from '../../../features/walletAssociatedRisk/WalletAssociatedRisk'
 import { supportedMultiplyIlks } from '../../../helpers/productCards'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
@@ -31,9 +31,10 @@ function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <WithTermsOfService>
-        <BackgroundLight />
-        <OpenMultiplyVaultView ilk={ilk} />
-        <Survey for="multiply" />
+        <WithWalletAssociatedRisk>
+          <OpenMultiplyVaultView ilk={ilk} />
+          <Survey for="multiply" />
+        </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithWalletConnection>
   )

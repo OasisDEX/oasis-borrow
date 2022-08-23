@@ -1,10 +1,10 @@
 import { withSentry } from '@sentry/nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getTickers } from 'server/services/coinPaprica'
 
-import { cacheObject } from '../../helpers/cacheObject'
+import { cacheObject } from '../../helpers/api/cacheObject'
+import { tokenTickers } from '../../helpers/api/tokenTickers'
 
-const getTicker = cacheObject(getTickers, 2 * 60)
+const getTicker = cacheObject(tokenTickers, 2 * 60)
 
 async function tokensPricesHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {

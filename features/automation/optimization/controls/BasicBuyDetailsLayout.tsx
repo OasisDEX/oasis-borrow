@@ -4,17 +4,13 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
-import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
-import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
+import { ContentCardTargetColRatioAfterBuy } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterBuy'
+import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import {
-  BASIC_BUY_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -27,6 +23,8 @@ export interface BasicBuyDetailsLayoutProps {
   targetColRatio: BigNumber
   threshold: BigNumber
   basicBuyTriggerData: BasicBSTriggerData
+  afterTriggerColRatio?: BigNumber
+  afterTargetColRatio?: BigNumber
 }
 
 export function BasicBuyDetailsLayout({
@@ -36,12 +34,13 @@ export function BasicBuyDetailsLayout({
   nextBuyPrice,
   threshold,
   targetColRatio,
+  afterTriggerColRatio,
+  afterTargetColRatio,
 }: BasicBuyDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoBuyOn = basicBuyTriggerData.isTriggerEnabled
-  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
   return (
     <Grid>
@@ -51,16 +50,16 @@ export function BasicBuyDetailsLayout({
           badge={isAutoBuyOn}
           content={
             <DetailsSectionContentCardWrapper>
-              <ContentCardTriggerColRatio
+              <ContentCardTriggerColRatioToBuy
                 token={token}
                 triggerColRatio={triggerColRatio}
-                afterTriggerColRatio={uiState.execCollRatio}
+                afterTriggerColRatio={afterTriggerColRatio}
                 nextBuyPrice={nextBuyPrice}
                 changeVariant="positive"
               />
-              <ContentCardTargetColRatio
+              <ContentCardTargetColRatioAfterBuy
                 targetColRatio={targetColRatio}
-                afterTargetColRatio={uiState.targetCollRatio}
+                afterTargetColRatio={afterTargetColRatio}
                 threshold={threshold}
                 changeVariant="positive"
                 token={token}
@@ -74,7 +73,7 @@ export function BasicBuyDetailsLayout({
           description={
             <>
               {t('auto-buy.banner.content')}{' '}
-              <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+              <AppLink href="https://kb.oasis.app/help/auto-buy-and-auto-sell" sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
             </>

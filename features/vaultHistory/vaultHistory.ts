@@ -5,6 +5,7 @@ import { Vault } from 'blockchain/vaults'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { equals } from 'ramda'
@@ -18,12 +19,56 @@ import {
   VaultEvent,
 } from './vaultHistoryEvents'
 
+export function groupHistoryEventsByHash(events: VaultHistoryEvent[]) {
+  return events.reduce((acc, curr) => {
+    return {
+      ...acc,
+      [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
+    }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+}
+
+export function getAddConstantMultipleHistoryEventIndex(events: VaultEvent[]) {
+  const groupedByHash = groupHistoryEventsByHash(events)
+
+  const mostRecentConstantMultipleAddEvents = Object.keys(groupedByHash)
+    .map((hash) => {
+      const groupedEvents = groupedByHash[hash]
+
+      const addAutoBuy = groupedEvents.find(
+        (event) => event.kind === 'basic-buy' && event.eventType === 'added',
+      )
+      const addAutoSell = groupedEvents.find(
+        (event) => event.kind === 'basic-sell' && event.eventType === 'added',
+      )
+      const removedAutoBuy = groupedEvents.find(
+        (event) => event.kind === 'basic-buy' && event.eventType === 'removed' && event.groupId,
+      )
+      const removedAutoSell = groupedEvents.find(
+        (event) => event.kind === 'basic-sell' && event.eventType === 'removed' && event.groupId,
+      )
+
+      if (addAutoBuy && addAutoSell && !(removedAutoBuy || removedAutoSell)) {
+        return groupedEvents
+      }
+
+      return null
+    })
+    .filter((item) => item)[0] as AutomationEvent[]
+
+  const triggerIdOfAddCMEvent = mostRecentConstantMultipleAddEvents[0].id
+
+  const index = events.findIndex((item) => 'triggerId' in item && item.id === triggerIdOfAddCMEvent)
+
+  return index === -1 ? 0 : index + 1
+}
+
 export function unpackTriggerDataForHistory(event: AutomationEvent) {
   switch (event.kind) {
     case 'basic-buy':
     case 'basic-sell': {
-      const basicBuyData = extractBasicBSData(
-        {
+      const basicBuyData = extractBasicBSData({
+        triggersData: {
           isAutomationEnabled: false,
           triggers: [
             {
@@ -33,8 +78,8 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
             },
           ],
         },
-        event.kind === 'basic-buy' ? TriggerType.BasicBuy : TriggerType.BasicSell,
-      )
+        triggerType: event.kind === 'basic-buy' ? TriggerType.BasicBuy : TriggerType.BasicSell,
+      })
 
       return {
         execCollRatio: basicBuyData.execCollRatio,
@@ -65,19 +110,27 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
 }
 
 export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
-  const addOrRemoveEvents = ['added', 'removed']
+  const addOrRemove = ['added', 'removed']
+  const addCombination = ['added']
 
-  const addOrRemoveEvent = events.find(
-    (item) => 'triggerId' in item && addOrRemoveEvents.includes(item.eventType),
-  ) as AutomationEvent
+  const eventTypes = events.reduce((acc, curr) => {
+    if (acc.includes((curr as AutomationEvent).eventType)) {
+      return acc
+    }
 
-  if (addOrRemoveEvent && events.length === 1) {
-    const historyKey =
-      addOrRemoveEvent.eventType === 'added' ? 'addTriggerData' : 'removeTriggerData'
+    return [...acc, (curr as AutomationEvent).eventType]
+  }, [] as string[])
+
+  const addOrRemoveEvents = events.filter(
+    (item) => 'triggerId' in item && addOrRemove.includes(item.eventType),
+  ) as AutomationEvent[]
+
+  if (addOrRemoveEvents.length) {
+    const historyKey = equals(eventTypes, addCombination) ? 'addTriggerData' : 'removeTriggerData'
 
     return {
-      ...addOrRemoveEvent,
-      [historyKey]: unpackTriggerDataForHistory(addOrRemoveEvent),
+      ...addOrRemoveEvents[0],
+      [historyKey]: addOrRemoveEvents.map((item) => unpackTriggerDataForHistory(item)),
     } as VaultHistoryEvent
   }
 
@@ -86,10 +139,17 @@ export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
 
 export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   const updateCombination = ['added', 'removed']
-  const eventTypes = events.reduce(
-    (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
-    [] as string[],
-  )
+
+  const eventTypes = events
+    .reduce((acc, curr) => {
+      if (acc.includes((curr as AutomationEvent).eventType)) {
+        return acc
+      }
+
+      return [...acc, (curr as AutomationEvent).eventType]
+    }, [] as string[])
+    .sort()
+
   const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
 
   const autoEvent = events.find(
@@ -97,15 +157,63 @@ export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   ) as AutomationEvent
 
   if (autoEvent && isUpdateTriggerEvent) {
-    const addEvent = events[0] as AutomationEvent
-    const removeEvent = events[1] as AutomationEvent
+    const addEvents = events.filter(
+      (item) => 'triggerId' in item && item.eventType === 'added',
+    ) as AutomationEvent[]
+
+    const removeEvents = events.filter(
+      (item) => 'triggerId' in item && item.eventType === 'removed',
+    ) as AutomationEvent[]
 
     return {
       ...autoEvent,
-      addTriggerData: unpackTriggerDataForHistory(addEvent),
-      removeTriggerData: unpackTriggerDataForHistory(removeEvent),
+      addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
+      removeTriggerData: removeEvents.map((item) => unpackTriggerDataForHistory(item)),
       eventType: 'updated',
     } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function getOverrideTriggers(events: VaultHistoryEvent[]) {
+  const overrideCombinationV1 = ['added', 'added', 'removed']
+  const overrideCombinationV2 = ['added', 'added', 'removed', 'removed']
+
+  const eventTypes = events
+    .reduce((acc, curr) => [...acc, (curr as AutomationEvent).eventType], [] as string[])
+    .sort()
+  const isOverrideTriggerEvent =
+    equals(eventTypes, overrideCombinationV1) || equals(eventTypes, overrideCombinationV2)
+
+  const standaloneEvents = events.filter(
+    (item) => 'triggerId' in item && !('groupId' in item),
+  ) as AutomationEvent[]
+
+  const groupEvent = events.find(
+    (item) => 'triggerId' in item && 'groupId' in item && item.groupId,
+  ) as AutomationEvent
+
+  if (standaloneEvents.length && groupEvent && isOverrideTriggerEvent) {
+    const addEvents = events.filter(
+      (item) => 'triggerId' in item && item.eventType === 'added',
+    ) as AutomationEvent[]
+
+    return [
+      {
+        ...groupEvent,
+        addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
+        eventType: 'added',
+      } as VaultHistoryEvent,
+      ...standaloneEvents.map(
+        (item) =>
+          ({
+            ...item,
+            removeTriggerData: [unpackTriggerDataForHistory(item)],
+            eventType: 'removed',
+          } as VaultHistoryEvent),
+      ),
+    ]
   }
 
   return undefined
@@ -127,6 +235,7 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
     return {
       ...postExecutionEvent,
       triggerId: autoEvent.triggerId,
+      groupId: 'groupId' in autoEvent && autoEvent.groupId,
       eventType: 'executed',
     } as VaultHistoryEvent
   }
@@ -135,17 +244,17 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
 }
 
 export function mapAutomationEvents(events: VaultHistoryEvent[]) {
-  const groupedByHash = events.reduce((acc, curr) => {
-    return {
-      ...acc,
-      [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
-    }
-  }, {} as Record<string, VaultHistoryEvent[]>)
+  const groupedByHash = groupHistoryEventsByHash(events)
 
   const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
     const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
     const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
     const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
+    const overrideEvents = getOverrideTriggers(groupedByHash[key])
+
+    if (overrideEvents) {
+      return { ...acc, [key]: overrideEvents }
+    }
 
     if (updateTriggerEvent) {
       return { ...acc, [key]: [updateTriggerEvent] }
@@ -317,6 +426,32 @@ const triggerEventsQuery = gql`
     }
   }
 `
+// TODO to be used eventually as default when CM cache will be released
+const triggerEventsQueryConstantMultiple = gql`
+  query triggerEvents($cdpId: BigFloat) {
+    allTriggerEvents(
+      filter: { cdpId: { equalTo: $cdpId } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
+      nodes {
+        id
+        triggerId
+        cdpId
+        number
+        kind
+        eventType
+        hash
+        timestamp
+        triggerData
+        commandAddress
+        groupId
+        groupType
+        gasFee
+        ethPrice
+      }
+    }
+  }
+`
 
 function parseBigNumbersFields(
   event: Partial<ReturnedEvent & ReturnedAutomationEvent>,
@@ -380,7 +515,12 @@ async function getVaultAutomationHistory(
   client: GraphQLClient,
   id: BigNumber,
 ): Promise<ReturnedAutomationEvent[]> {
-  const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
+  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  const resolvedQuery = constantMultipleEnabled
+    ? triggerEventsQueryConstantMultiple
+    : triggerEventsQuery
+
+  const triggersData = await client.request(resolvedQuery, { cdpId: id.toNumber() })
   return triggersData.allTriggerEvents.nodes
 }
 

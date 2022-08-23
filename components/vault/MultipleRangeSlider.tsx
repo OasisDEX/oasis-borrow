@@ -54,7 +54,7 @@ function getSliderBackgroundGradient({
 }) {
   const { colors } = theme
   return `linear-gradient(to right, ${colors.neutral60}  0%, ${colors.neutral60} ${value0InPercent}%,
-    ${colors.sliderTrackFill} ${value0InPercent}%,  ${colors.sliderTrackFill} ${value1InPercent}%,
+    ${colors.interactive50} ${value0InPercent}%,  ${colors.interactive50} ${value1InPercent}%,
     ${colors.neutral60} ${value1InPercent}%, ${colors.neutral60} 100%)`
 }
 
@@ -78,10 +78,12 @@ interface MultipleRangeSliderProps {
   rightDescription: ReactNode
   middleMark?: { text: string; value: number }
   step?: number
+  middleMarkOffset?: number
   leftThumbColor?: string
   rightThumbColor?: string
   minDescription?: ReactNode
   maxDescription?: ReactNode
+  isResetAction?: boolean
 }
 
 export function MultipleRangeSlider({
@@ -92,18 +94,21 @@ export function MultipleRangeSlider({
   valueColors,
   middleMark,
   step = 5,
+  middleMarkOffset = 10,
   leftThumbColor = 'warning100',
   rightThumbColor = 'success100',
   leftDescription,
   rightDescription,
   minDescription = '',
   maxDescription = '',
+  isResetAction = false,
 }: MultipleRangeSliderProps) {
   const [side, setSide] = useState('')
   const [sliderBoxBoundaries, setSliderBoxBoundaries] = useState(sliderDefaultBoundaries)
   const sliderBoxRef = useRef<HTMLDivElement>(null)
   const { theme } = useTheme()
   const breakpoint = useBreakpointIndex()
+  const middleMarkDidMount = useRef(false)
 
   const { value0, value1 } = value
   const mobile = breakpoint === 0
@@ -123,13 +128,13 @@ export function MultipleRangeSlider({
   }, [])
 
   useEffect(() => {
-    if (middleMark) {
+    if (middleMark && middleMarkDidMount.current && !isResetAction) {
       const newValue = {
-        value0: middleMark.value - step,
-        value1: middleMark.value + step,
+        value0: Math.max(middleMark.value - middleMarkOffset, min),
+        value1: Math.min(middleMark.value + middleMarkOffset, max),
       }
-      onChange(newValue)
-    }
+      if (value0 !== newValue.value0 || value1 !== newValue.value1) onChange(newValue)
+    } else middleMarkDidMount.current = true
   }, [middleMark?.value])
 
   const dotsSpace = 5
@@ -266,11 +271,11 @@ export function MultipleRangeSlider({
           <Box
             sx={{
               position: 'absolute',
-              top: '-13px',
+              top: '-8px',
               left: `50%`,
               transform: 'translateX(-50%)',
               width: 'calc(100% - 20px)',
-              height: '30px',
+              height: '20px',
               pointerEvents: 'none',
             }}
           >
@@ -279,10 +284,11 @@ export function MultipleRangeSlider({
                 sx={{
                   position: 'absolute',
                   width: '3px',
-                  height: '30px',
+                  height: '20px',
                   transform: 'translateX(-50%)',
                   backgroundColor: 'interactive50',
                   left: `${middleMarkPercentagePosition}%`,
+                  borderRadius: 'small',
                 }}
               />
               <Box

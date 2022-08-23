@@ -36,7 +36,7 @@ function VaultDetailsLiquidationModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-multiply-vault.card.liquidation-price-description')}
         </Text>
         <Heading variant="header3">
@@ -44,7 +44,7 @@ function VaultDetailsLiquidationModal({
         </Heading>
         <Card variant="vaultDetailsCardModal">{`$${formatAmount(liquidationPrice, 'USD')}`}</Card>
         {liquidationPriceCurrentPriceDifference && (
-          <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          <Text variant="paragraph3" sx={{ pb: 2 }}>
             {t(
               'manage-multiply-vault.card.liquidation-percentage-below',
               formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
@@ -60,7 +60,7 @@ function VaultDetailsLiquidationModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-multiply-vault.card.liquidation-price-description-AUTO')}
         </Text>
         <Card variant="vaultDetailsCardModal" sx={{ mb: 3 }}>{`$${formatAmount(
@@ -70,7 +70,7 @@ function VaultDetailsLiquidationModal({
         {isStopLossEnabled && vaultId && (
           <>
             <Heading variant="header3">{`${t('system.vault-protection')}`}</Heading>
-            <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+            <Text variant="paragraph3" sx={{ pb: 2 }}>
               {t('protection.modal-description')}
             </Text>
             <StopLossBannerControl

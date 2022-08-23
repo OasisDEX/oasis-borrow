@@ -25,7 +25,9 @@ function AboutPage({ members }: { members: TeamMember[] }) {
         >
           {t('about.heading')}
         </Heading>
-        <Text variant="light">{t('about.description')}</Text>
+        <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
+          {t('about.description')}
+        </Text>
       </Box>
       <AppLink
         href="/careers"

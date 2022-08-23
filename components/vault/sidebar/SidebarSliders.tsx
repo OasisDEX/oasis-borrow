@@ -47,8 +47,8 @@ export function SidebarSliderAdjustMultiply({
   const collRatioColor = getCollRatioColor(state, afterCollateralizationRatio)
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
-      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-          colors?.sliderTrackFill
+      ? `linear-gradient(to right, ${colors?.interactive50} 0%, ${
+          colors?.interactive50
         } ${slider.toNumber()}%, ${colors?.neutral60} ${slider.toNumber()}%, ${
           colors?.neutral60
         } 100%)`

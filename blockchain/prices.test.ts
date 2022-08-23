@@ -9,85 +9,48 @@ import { getStateUnpacker } from '../helpers/testHelpers'
 import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from './prices'
 
 describe('createTokenPriceInUSD$', () => {
-  function coinbaseOrderBook$() {
-    return of({
-      bids: [['1']] as [string][],
-      asks: [['2']] as [string][],
-    })
-  }
-
-  const coinPaprikaTicker$ = of({ 'steth-lido-staked-ether': new BigNumber('31605.56989258439') })
-
-  function coinGeckoTicker$() {
-    return of(new BigNumber('1947.78'))
-  }
-
-  it('maps token price from coinbase', () => {
-    const tokenPrice$ = createTokenPriceInUSD$(
-      of(null),
-      coinbaseOrderBook$,
-      coinPaprikaTicker$,
-      coinGeckoTicker$,
-      ['MKR'],
-    )
-
-    const tokenPrice = getStateUnpacker(tokenPrice$)
-
-    expect(tokenPrice().MKR.toString()).eq('1.5')
+  const tokenTickers$ = of({
+    'mkr-usd': new BigNumber('929.26'),
+    'steth-lido-staked-ether': new BigNumber('1462.87'),
+    'wrapped-steth': new BigNumber('1573.93'),
   })
 
-  it('maps token price from coinpaprika', () => {
-    const tokenPrice$ = createTokenPriceInUSD$(
-      of(null),
-      coinbaseOrderBook$,
-      coinPaprikaTicker$,
-      coinGeckoTicker$,
-      ['STETH'],
-    )
+  it('maps token price to coinbase ticker', () => {
+    const tokenPrice$ = createTokenPriceInUSD$(of(null), tokenTickers$, ['MKR'])
 
     const tokenPrice = getStateUnpacker(tokenPrice$)
 
-    expect(tokenPrice().STETH.toString()).eq('31605.56989258439')
+    expect(tokenPrice().MKR.toString()).eq('929.26')
   })
 
-  it('maps token price from coingecko', () => {
-    const tokenPrice$ = createTokenPriceInUSD$(
-      of(null),
-      coinbaseOrderBook$,
-      coinPaprikaTicker$,
-      coinGeckoTicker$,
-      ['WSTETH'],
-    )
+  it('maps token price to coin paprika ticker', () => {
+    const tokenPrice$ = createTokenPriceInUSD$(of(null), tokenTickers$, ['STETH'])
 
     const tokenPrice = getStateUnpacker(tokenPrice$)
 
-    expect(tokenPrice().WSTETH.toString()).eq('1947.78')
+    expect(tokenPrice().STETH.toString()).eq('1462.87')
+  })
+
+  it('maps token price to coingecko ticker', () => {
+    const tokenPrice$ = createTokenPriceInUSD$(of(null), tokenTickers$, ['WSTETH'])
+
+    const tokenPrice = getStateUnpacker(tokenPrice$)
+
+    expect(tokenPrice().WSTETH.toString()).eq('1573.93')
   })
 
   it('handles concurrent token price requests', () => {
-    const tokenPrice$ = createTokenPriceInUSD$(
-      of(null),
-      coinbaseOrderBook$,
-      coinPaprikaTicker$,
-      coinGeckoTicker$,
-      ['MKR', 'STETH'],
-    )
+    const tokenPrice$ = createTokenPriceInUSD$(of(null), tokenTickers$, ['MKR', 'STETH'])
 
     const tokenPrice = getStateUnpacker(tokenPrice$)
 
-    expect(tokenPrice().MKR.toString()).eq('1.5')
-    expect(tokenPrice().STETH.toString()).eq('31605.56989258439')
+    expect(tokenPrice().MKR.toString()).eq('929.26')
+    expect(tokenPrice().STETH.toString()).eq('1462.87')
   })
 
-  describe('mapping unknown quantities to undefined', () => {
+  describe('maps unknown quantities to undefined', () => {
     it('handles token with no ticker configured', () => {
-      const tokenPrice$ = createTokenPriceInUSD$(
-        of(null),
-        coinbaseOrderBook$,
-        coinPaprikaTicker$,
-        coinGeckoTicker$,
-        ['BAT'],
-      )
+      const tokenPrice$ = createTokenPriceInUSD$(of(null), tokenTickers$, ['BAT'])
 
       const tokenPrice = getStateUnpacker(tokenPrice$)
 
@@ -95,13 +58,7 @@ describe('createTokenPriceInUSD$', () => {
     })
 
     it('handles no response from service', () => {
-      const tokenPrice$ = createTokenPriceInUSD$(
-        of(null),
-        () => throwError('some error'),
-        throwError('some error'),
-        coinGeckoTicker$,
-        ['MKR'],
-      )
+      const tokenPrice$ = createTokenPriceInUSD$(of(null), throwError('some error'), ['MKR'])
 
       const tokenPrice = getStateUnpacker(tokenPrice$)
 

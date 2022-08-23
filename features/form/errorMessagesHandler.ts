@@ -31,6 +31,8 @@ export type VaultErrorMessage =
   | 'afterCollRatioBelowStopLossRatio'
   | 'afterCollRatioBelowBasicSellRatio'
   | 'afterCollRatioAboveBasicBuyRatio'
+  | 'afterCollRatioBelowConstantMultipleSellRatio'
+  | 'afterCollRatioAboveConstantMultipleBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
   | 'stopLossOnNearLiquidationRatio'
   | 'stopLossHigherThanCurrentOrNext'
@@ -41,6 +43,7 @@ export type VaultErrorMessage =
   | 'autoSellTriggerHigherThanAutoBuyTarget'
   | 'autoBuyTriggerLowerThanAutoSellTarget'
   | 'stopLossTriggerHigherThanAutoBuyTarget'
+  | 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -75,6 +78,8 @@ interface ErrorMessagesHandler {
   afterCollRatioBelowStopLossRatio?: boolean
   afterCollRatioBelowBasicSellRatio?: boolean
   afterCollRatioAboveBasicBuyRatio?: boolean
+  afterCollRatioBelowConstantMultipleSellRatio?: boolean
+  afterCollRatioAboveConstantMultipleBuyRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
   stopLossHigherThanCurrentOrNext?: boolean
   maxDebtForSettingStopLoss?: boolean
@@ -84,6 +89,7 @@ interface ErrorMessagesHandler {
   autoSellTriggerHigherThanAutoBuyTarget?: boolean
   autoBuyTriggerLowerThanAutoSellTarget?: boolean
   stopLossTriggerHigherThanAutoBuyTarget?: boolean
+  cantSetupAutoBuyOrSellWhenConstantMultipleEnabled?: boolean
 }
 
 export function errorMessagesHandler({
@@ -119,6 +125,8 @@ export function errorMessagesHandler({
   afterCollRatioBelowStopLossRatio,
   afterCollRatioBelowBasicSellRatio,
   afterCollRatioAboveBasicBuyRatio,
+  afterCollRatioBelowConstantMultipleSellRatio,
+  afterCollRatioAboveConstantMultipleBuyRatio,
   stopLossOnNearLiquidationRatio,
   stopLossHigherThanCurrentOrNext,
   maxDebtForSettingStopLoss,
@@ -128,6 +136,7 @@ export function errorMessagesHandler({
   autoSellTriggerHigherThanAutoBuyTarget,
   autoBuyTriggerLowerThanAutoSellTarget,
   stopLossTriggerHigherThanAutoBuyTarget,
+  cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -255,6 +264,14 @@ export function errorMessagesHandler({
     errorMessages.push('afterCollRatioAboveBasicBuyRatio')
   }
 
+  if (afterCollRatioBelowConstantMultipleSellRatio) {
+    errorMessages.push('afterCollRatioBelowConstantMultipleSellRatio')
+  }
+
+  if (afterCollRatioAboveConstantMultipleBuyRatio) {
+    errorMessages.push('afterCollRatioAboveConstantMultipleBuyRatio')
+  }
+
   if (insufficientEthFundsForTx) {
     errorMessages.push('insufficientEthFundsForTx')
   }
@@ -292,6 +309,10 @@ export function errorMessagesHandler({
 
   if (stopLossTriggerHigherThanAutoBuyTarget) {
     errorMessages.push('stopLossTriggerHigherThanAutoBuyTarget')
+  }
+
+  if (cantSetupAutoBuyOrSellWhenConstantMultipleEnabled) {
+    errorMessages.push('cantSetupAutoBuyOrSellWhenConstantMultipleEnabled')
   }
 
   return errorMessages

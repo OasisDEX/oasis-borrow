@@ -3,6 +3,7 @@ import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useBasicBSstateInitialization } from 'features/automation/protection/useBasicSellStateInitializator'
+import { useConstantMultipleStateInitialization } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
@@ -42,6 +43,11 @@ export function GeneralManageLayout({
     autoTriggersData,
     TriggerType.BasicBuy,
   )
+  const isConstantMultipleEnabled = useConstantMultipleStateInitialization(
+    ilkData,
+    vault,
+    autoTriggersData,
+  )
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
@@ -55,7 +61,7 @@ export function GeneralManageLayout({
     )
 
   const protectionEnabled = isStopLossEnabled || isBasicSellEnabled
-  const optimizationEnabled = isBasicBuyEnabled
+  const optimizationEnabled = isBasicBuyEnabled || isConstantMultipleEnabled
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 

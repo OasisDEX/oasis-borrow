@@ -2291,6 +2291,19 @@ const userWalletIcons = {
     ),
     viewBox: '0 0 16 16',
   },
+  tick_green: {
+    path: (
+      <>
+        <path
+          fill="#1AAB9B"
+          fillRule="evenodd"
+          d="M13.648.238a1 1 0 01.114 1.41l-8.5 10a1 1 0 01-1.515.01l-3.5-4a1 1 0 111.506-1.316l2.736 3.127L12.238.352a1 1 0 011.41-.114z"
+          clipRule="evenodd"
+        ></path>
+      </>
+    ),
+    viewBox: '0 0 14 12',
+  },
   circle_exchange: {
     path: (
       <>

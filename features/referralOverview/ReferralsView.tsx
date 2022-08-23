@@ -85,8 +85,8 @@ export function ReferralsView({ address }: Props) {
                 readOnly
               />
               <Text
+                variant="boldParagraph1"
                 sx={{
-                  fontSize: 3,
                   pr: '24px',
                   display: 'flex',
                   flexDirection: 'row',
@@ -95,7 +95,6 @@ export function ReferralsView({ address }: Props) {
                   cursor: 'pointer',
                   my: '12px',
                 }}
-                variant="inText"
                 onClick={() => copyToClipboard()}
               >
                 {copied ? (
@@ -107,7 +106,9 @@ export function ReferralsView({ address }: Props) {
               </Text>
             </Flex>
             <Box sx={{ pt: '12px' }}>
-              <Text variant="text.label">{t('ref.explanation')}</Text>
+              <Text variant="paragraph4" sx={{ color: 'neutral80' }}>
+                {t('ref.explanation')}
+              </Text>
             </Box>
           </Box>
         </Flex>
