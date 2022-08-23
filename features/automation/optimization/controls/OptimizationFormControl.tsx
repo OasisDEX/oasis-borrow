@@ -16,6 +16,7 @@ import {
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
@@ -25,6 +26,7 @@ import { ConstantMultipleFormControl } from './ConstantMultipleFormControl'
 interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
   vault: Vault
+  vaultType: VaultType
   ilkData: IlkData
   txHelpers?: TxHelpers
   context: Context
@@ -35,6 +37,7 @@ interface OptimizationFormControlProps {
 export function OptimizationFormControl({
   automationTriggersData,
   vault,
+  vaultType,
   ilkData,
   txHelpers,
   context,
@@ -83,6 +86,7 @@ export function OptimizationFormControl({
     <>
       <AutoBuyFormControl
         vault={vault}
+        vaultType={vaultType}
         ilkData={ilkData}
         balanceInfo={balanceInfo}
         autoSellTriggerData={autoSellTriggerData}
