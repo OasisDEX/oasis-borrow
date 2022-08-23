@@ -653,7 +653,7 @@ export function applyEstimateGas(
           swap?.status === 'SUCCESS'
             ? exchangeAction === 'BUY_COLLATERAL'
               ? swap.daiAmount.div(one.minus(OAZO_FEE))
-              : swap.daiAmount.times(one.minus(OAZO_FEE)).times(one.minus(SLIPPAGE))
+              : swap.daiAmount.times(one.minus(OAZO_FEE)).times(one.minus(SLIPPAGE)) // accounts for proxy actions
             : zero
 
         const collateralAmount =
