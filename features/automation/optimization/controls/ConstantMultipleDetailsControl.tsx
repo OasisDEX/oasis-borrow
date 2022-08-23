@@ -15,6 +15,7 @@ import {
   calculateTotalCostOfConstantMultiple,
 } from 'helpers/multiply/calculations'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -51,6 +52,7 @@ export function ConstantMultipleDetailsControl({
     buyExecutionCollRatio,
     sellExecutionCollRatio,
   } = constantMultipleTriggerData
+  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   const constantMultipleDetailsLayoutOptionalParams = {
     ...(isTriggerEnabled && {
@@ -76,6 +78,14 @@ export function ConstantMultipleDetailsControl({
       triggerColRatioToBuyToBuy: constantMultipleState.buyExecutionCollRatio,
       afterTriggerColRatioToSell: constantMultipleState.sellExecutionCollRatio,
     }),
+  }
+
+  if (constantMultipleReadOnlyEnabled) {
+    return null
+  }
+  const isDebtZero = vault.debt.isZero()
+  if (isDebtZero) {
+    return null
   }
 
   return (

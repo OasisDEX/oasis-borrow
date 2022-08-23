@@ -62,7 +62,8 @@ export function ConstantMultipleDetailsLayout({
 
   return (
     <Grid>
-      {activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple' ? (
+      {isTriggerEnabled ||
+      activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple' ? (
         <DetailsSection
           title={t('constant-multiple.title')}
           badge={isTriggerEnabled}
