@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'

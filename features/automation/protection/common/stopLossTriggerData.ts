@@ -8,7 +8,7 @@ import {
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
-import { getTriggersByType } from 'features/automation/common/filterTriggersByType'
+import { getTriggersByType } from 'features/automation/common/helpers'
 import { zero } from 'helpers/zero'
 
 import { TriggersData } from '../triggers/AutomationTriggersData'

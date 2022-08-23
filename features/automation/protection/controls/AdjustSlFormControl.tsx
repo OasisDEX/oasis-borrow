@@ -16,6 +16,11 @@ import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingBut
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import {
+  MAX_DEBT_FOR_SETTING_STOP_LOSS,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  NEXT_COLL_RATIO_OFFSET,
+} from 'features/automation/common/consts'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
@@ -36,11 +41,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import { failedStatuses, progressStatuses } from '../../common/txStatues'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import {
-  DEFAULT_SL_SLIDER_BOUNDARY,
-  MAX_DEBT_FOR_SETTING_STOP_LOSS,
-  MAX_SL_SLIDER_VALUE_OFFSET,
-} from '../common/consts/automationDefaults'
 import { getIsEditingProtection, getSliderPercentageFill } from '../common/helpers'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
@@ -153,14 +153,16 @@ export function AdjustSlFormControl({
   }
 
   const max = autoSellTriggerData.isTriggerEnabled
-    ? autoSellTriggerData.execCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
+    ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
-    ? constantMultipleTriggerData.sellExecutionCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
-    : vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET)
+    ? constantMultipleTriggerData.sellExecutionCollRatio
+        .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
+        .div(100)
+    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
 
   const sliderPercentageFill = getSliderPercentageFill({
     value: uiState.selectedSLValue,
-    min: ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY),
+    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
     max,
   })
 
@@ -178,7 +180,7 @@ export function AdjustSlFormControl({
     rightBoundry: afterNewLiquidationPrice,
     lastValue: uiState.selectedSLValue,
     maxBoundry,
-    minBoundry: liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).multipliedBy(100),
+    minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
     onChange: (slCollRatio) => {
       if (uiState.collateralActive === undefined) {
         uiChanges.publish(ADD_FORM_CHANGE, {

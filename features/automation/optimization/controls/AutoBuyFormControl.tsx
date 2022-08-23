@@ -9,7 +9,6 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import {
   BasicBSTriggerData,
-  maxUint256,
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
@@ -17,6 +16,7 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
+import { maxUint256 } from 'features/automation/common/consts'
 import {
   checkIfDisabledBasicBS,
   checkIfEditingBasicBS,

@@ -7,11 +7,12 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   addConstantMultipleTrigger,
   removeConstantMultipleTrigger,
 } from 'features/automation/common/constanMultipleHandlers'
+import { maxUint256 } from 'features/automation/common/consts'
 import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
