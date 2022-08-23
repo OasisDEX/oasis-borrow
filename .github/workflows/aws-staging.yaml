@@ -39,6 +39,12 @@ jobs:
       with:
         registry: ${{ env.ECR_REGISTRY }}
 
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
     - name: Extract commit hash
       id: vars
       shell: bash
@@ -52,7 +58,7 @@ jobs:
         install: true
 
 
-    - name: Build, tag, and push image to Amazon ECR and Dockerhub
+    - name: Build, tag, and push image to Amazon ECR
       id: build-image
       uses: docker/build-push-action@v3
       env:
@@ -84,19 +90,5 @@ jobs:
           SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
         tags: |
           ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.SHA_TAG }}
-        cache-from: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache
-        cache-to: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache,mode=max
-
-    - name: Update ECS service with latest Docker image
-      id: service-update
-      run: |
-        aws ecs update-service --cluster $CLUSTER_NAME --service ${{ env.SERVICE_NAME }} --force-new-deployment --region $AWS_REGION
-
-    - name: Wait for all services to become stable
-      uses: oryanmoshe/ecs-wait-action@v1.3
-      with:
-        ecs-cluster: ${{ env.CLUSTER_NAME }}
-        ecs-services: '["${{ env.SERVICE_NAME }}"]'
-
-    - name: Invalidate CloudFront
-      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }} --paths "/*"
+        cache-from: type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache # https://github.com/aws/containers-roadmap/issues/876 we need cache on dockerhub...
+        cache-to: type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache,mode=max
