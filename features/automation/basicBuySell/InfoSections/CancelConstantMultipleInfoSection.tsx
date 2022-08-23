@@ -1,21 +1,21 @@
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface CancelConstantMultipleInfoSectionProps {
   collateralizationRatio: BigNumber
-  constantMultipleState: ConstantMultipleFormChange
   debt: BigNumber
   liquidationPrice: BigNumber
+  constantMultipleTriggerData: ConstantMultipleTriggerData
 }
 
 export function CancelConstantMultipleInfoSection({
   collateralizationRatio,
-  constantMultipleState,
+  constantMultipleTriggerData,
   debt,
   liquidationPrice,
 }: CancelConstantMultipleInfoSectionProps) {
@@ -29,17 +29,17 @@ export function CancelConstantMultipleInfoSection({
           ? [
               {
                 label: t('constant-multiple.vault-changes.target-col-ratio-after-buy-sell'),
-                value: `${constantMultipleState.targetCollRatio}$`,
+                value: `${constantMultipleTriggerData.targetCollRatio}%`,
                 secondaryValue: '0%',
               },
               {
                 label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
-                value: `${constantMultipleState.buyExecutionCollRatio}%`,
+                value: `${constantMultipleTriggerData.buyExecutionCollRatio}%`,
                 secondaryValue: '0%',
               },
               {
                 label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
-                value: `${constantMultipleState.sellExecutionCollRatio}$`,
+                value: `${constantMultipleTriggerData.sellExecutionCollRatio}%`,
                 secondaryValue: '0%',
               },
             ]

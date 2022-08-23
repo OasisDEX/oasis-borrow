@@ -7,7 +7,6 @@ export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
   | 'Automation'
-  | 'AutomationBasicBuyAndSell'
   | 'StopLossRead'
   | 'StopLossWrite'
   | 'StopLossOpenFlow'
@@ -17,12 +16,12 @@ export type Feature =
   | 'Notifications'
   | 'Referrals'
   | 'ConstantMultiple'
+  | 'ConstantMultipleReadOnly'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
   Automation: true,
-  AutomationBasicBuyAndSell: false,
   StopLossRead: true,
   StopLossWrite: true,
   BatchCache: false,
@@ -32,6 +31,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   Notifications: false,
   Referrals: true,
   ConstantMultiple: false,
+  ConstantMultipleReadOnly: false,
   // your feature here....
 }
 
