@@ -1524,10 +1524,10 @@
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
-    "zero-debt-description": "Oasis.app Optimization allows you to set up a dynamic Auto-Buy Strategy on your vault based on the collateralization ratio. This will increase your exposure to the collateral asset as the price increased. Learn more about how it works",
+    "zero-debt-description": "Oasis.app Optimization allows you to set up a dynamic Auto-Buy and Constant Multiple Strategies on your vault based on the collateralization ratio. This will increase or decrease your exposure to the collateral asset as the price changed. Learn more about how it works",
     "adding-new-triggers-disabled": "Creation of the new Optimization triggers is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Optimization triggers",
-    "unable-to-access-auto-buy": "Unable to access Optimization"
+    "unable-to-access-optimization": "Unable to access Optimization"
   },
   "constant-multiple": {
     "title": "Constant Multiple",
@@ -1564,7 +1564,11 @@
     "removing-constant-multiple": "Removing Constant Multiple trigger",
     "setting-constant-multiple": "Setting up your Constant Multiple",
     "cancelling-constant-multiple": "Cancelling your Constant Multiple",
-    "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple."
+    "adding-new-triggers-disabled": "Creation of the new Constant Multiple trigger is currently disabled.",
+    "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Constant Multiple triggers",
+    "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple.",
+    "closed-vault-existing-trigger-header": "Your vault is closed but Constant Multiple is still active",
+    "closed-vault-existing-trigger-description":"You can cancel your existing Constant Multiple here or deposit into your vault in overview tab"
   },
   "ref": {
     "banner": "Refer a Friend. Earn DAI today",

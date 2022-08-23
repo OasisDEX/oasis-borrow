@@ -136,6 +136,7 @@ export function SidebarSetupConstantMultiple({
             <>
               {isAddForm && (
                 <SidebarConstantMultipleEditingStage
+                  vault={vault}
                   ilkData={ilkData}
                   isEditing={isEditing}
                   autoBuyTriggerData={autoBuyTriggerData}
@@ -161,7 +162,7 @@ export function SidebarSetupConstantMultiple({
                   ilkData={ilkData}
                   errors={cancelConstantMultipleErrors}
                   warnings={cancelConstantMultipleWarnings}
-                  constantMultipleState={constantMultipleState}
+                  constantMultipleTriggerData={constantMultipleTriggerData}
                 />
               )}
             </>
