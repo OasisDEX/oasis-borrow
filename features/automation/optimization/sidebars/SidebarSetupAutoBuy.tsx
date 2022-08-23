@@ -24,7 +24,7 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { selectSideBarTextBtnLabel } from 'helpers/functions'
+import { calculateStepNumber, selectSideBarTextBtnLabel } from 'helpers/functions'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -59,6 +59,7 @@ interface SidebarSetupAutoBuyProps {
   collateralDelta: BigNumber
   isAutoBuyActive: boolean
   isConfirmation: boolean
+  isProgressStage: boolean;
 }
 
 export function SidebarSetupAutoBuy({
@@ -83,6 +84,7 @@ export function SidebarSetupAutoBuy({
   isEditing,
   isDisabled,
   isFirstSetup,
+  isProgressStage,
 
   debtDelta,
   collateralDelta,
@@ -202,7 +204,7 @@ export function SidebarSetupAutoBuy({
         </Grid>
       ),
       primaryButton: {
-        label: primaryButtonLabel,
+        label: `${primaryButtonLabel} ${calculateStepNumber(isConfirmation, isAddForm, isProgressStage)}`,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {

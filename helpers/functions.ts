@@ -31,3 +31,10 @@ export function selectSideBarTextBtnLabel(
   if (isConfirmation) return t('auto-buy.edit-order-btn')
   return t('system.add-trigger')
 }
+
+export function calculateStepNumber (isConfirmation: boolean, isAddForm: boolean, isProgressStage: boolean) {
+  console.log(isProgressStage, 'prog')
+  if(isConfirmation && !isProgressStage) return '(2 / 3)'
+  if(isProgressStage) return '(3 / 3)'
+  return '(1 / 3)'
+}
