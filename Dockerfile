@@ -47,6 +47,9 @@ ENV COMMIT_SHA=$COMMIT_SHA \
 
 COPY . .
 
+# Workaround for yarn workspaces. Other solutions can be found here: https://stackoverflow.com/questions/49939960/docker-copy-files-using-glob-pattern
+RUN yarn --no-progress --non-interactive --frozen-lockfile
+
 RUN chmod +x ./scripts/wait-for-it.sh \
     && npm run build
 
