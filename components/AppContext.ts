@@ -255,7 +255,8 @@ import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActio
 import {
   createAavePositions$,
   createMakerPositions$,
-  createPositions$, decorateAaveTokensPrice$,
+  createPositions$,
+  decorateAaveTokensPrice$,
 } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'

@@ -37,6 +37,7 @@ export function getManageAaveStateMachine$(
             }),
           },
           token: 'ETH',
+          multiply: 2,
         })
     }),
   )

@@ -14,7 +14,7 @@ export interface ManageAaveEditingStateProps {
 }
 
 export function SidebarManageAaveVaultEditingState(props: ManageAaveEditingStateProps) {
-  const { state, send } = props
+  const { state } = props
   const { t } = useTranslation()
 
   return (
@@ -28,10 +28,10 @@ export function SidebarManageAaveVaultEditingState(props: ManageAaveEditingState
         maxAmount={state.context.tokenBalance}
         showMax={true}
         maxAmountLabel={t('balance')}
-        onChange={handleNumericInput((amount) => {
-          if (amount) {
-            send({ type: 'SET_AMOUNT', amount })
-          }
+        onChange={handleNumericInput(() => {
+          // if (amount) {
+          //   send({ type: 'SET_AMOUNT', amount })
+          // }
         })}
         currencyCode={state.context.token!}
         disabled={false}

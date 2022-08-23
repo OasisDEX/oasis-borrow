@@ -7,7 +7,6 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { ManagePositionResult } from '../../../../aave'
 import {
   machineConfig,
   manageAaveParametersStateMachine,
@@ -22,10 +21,6 @@ function delay() {
 
 const machine = manageAaveParametersStateMachine.withConfig({
   services: {
-    [machineConfig.services.getParameters]: async () => {
-      await delay()
-      return {} as ManagePositionResult
-    },
     [machineConfig.services.estimateGas]: async () => {
       await delay()
       return 10

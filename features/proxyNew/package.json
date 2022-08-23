@@ -1,0 +1,10 @@
+{
+  "name": "@oasis-borrow/proxy",
+  "version": "1.0.0",
+  "main": "./index.tx",
+  "files": [
+    "index.ts",
+    "pipelines/index.ts",
+    "state/index.ts"
+  ]
+}

@@ -3,7 +3,7 @@ import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
-import { ExchangeAction, ExchangeType, Quote } from "../../exchange/exchange";
+import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
 
 function makerPositionName(vault: VaultWithType): string {
@@ -41,48 +41,59 @@ export function createMakerPositions$(
   )
 }
 
-export function decorateAaveTokensPrice$(collateralTokens$: Observable<string[]>, exchangeQuote$: (
-  token: string,
-  slippage: BigNumber,
-  amount: BigNumber,
-  action: ExchangeAction,
-  exchangeType: ExchangeType,
-) => Observable<Quote>): Observable<{token: string, tokenPrice: BigNumber}[]> {
+export function decorateAaveTokensPrice$(
+  collateralTokens$: Observable<string[]>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+    exchangeType: ExchangeType,
+  ) => Observable<Quote>,
+): Observable<{ token: string; tokenPrice: BigNumber }[]> {
   return collateralTokens$.pipe(
-    map(tokens => {
+    map((tokens) => {
       return combineLatest(
-        tokens.map(token => {
-          const defaultQuoteAmount  = new BigNumber(100);
+        tokens.map((token) => {
+          const defaultQuoteAmount = new BigNumber(100)
           return exchangeQuote$(
             token,
             new BigNumber(0.005),
             defaultQuoteAmount,
             'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
-            'defaultExchange'
-          ).pipe(map((quote) => {
-            return { token, tokenPrice: quote.status === 'SUCCESS' ? quote.tokenPrice : new BigNumber(0) }
-          }))
-        })
+            'defaultExchange',
+          ).pipe(
+            map((quote) => {
+              return {
+                token,
+                tokenPrice: quote.status === 'SUCCESS' ? quote.tokenPrice : new BigNumber(0),
+              }
+            }),
+          )
+        }),
       )
     }),
-    switchMap(tokenWithPrice => {
+    switchMap((tokenWithPrice) => {
       return tokenWithPrice
-    })
+    }),
   )
 }
 
 export function createAavePositions$(
-  userReserveData$: ({ token,proxyAddress }: {
+  userReserveData$: ({
+    token,
+    proxyAddress,
+  }: {
     token: string
     proxyAddress: string
   }) => Observable<{ currentATokenBalance: BigNumber }>,
-  tokenWithValue$: Observable<{token: string, tokenPrice: BigNumber}[]>,
+  tokenWithValue$: Observable<{ token: string; tokenPrice: BigNumber }[]>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
 ) {
   return combineLatest(getUserProxyAddress$(address), tokenWithValue$).pipe(
     switchMap(([proxyAddress, tokens]) => {
-      if (!proxyAddress) return [];
+      if (!proxyAddress) return []
       return combineLatest(
         tokens.map(({ token, tokenPrice }) => {
           return userReserveData$({
@@ -90,17 +101,17 @@ export function createAavePositions$(
             proxyAddress,
           }).pipe(
             map((userReserve) => {
-                  return {
-                    token: token,
-                    contentsUsd: new BigNumber(userReserve.currentATokenBalance).times(tokenPrice),
-                    title: `${token} Aave `,
-                    url: `/earn/steth/${address}`,
-                  }
+              return {
+                token: token,
+                contentsUsd: new BigNumber(userReserve.currentATokenBalance).times(tokenPrice),
+                title: `${token} Aave `,
+                url: `/earn/steth/${address}`,
+              }
             }),
           )
-        })
+        }),
       )
-    })
+    }),
   )
 }
 

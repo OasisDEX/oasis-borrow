@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { ADDRESSES,strategy } from '@oasisdex/oasis-actions'
+import { ADDRESSES, strategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
-import {  oneInchCallMock } from '../../helpers/swap'
+import { oneInchCallMock } from '../../helpers/swap'
 
 export interface ActionCall {
   targetHash: string

@@ -37,6 +37,7 @@ export interface ManageAaveContext {
   proxyAddress?: string
   vaultNumber?: BigNumber
   strategyName?: string
+  multiply: number
 
   transactionParameters?: OpenPositionResult
   estimatedGasPrice?: HasGasEstimation

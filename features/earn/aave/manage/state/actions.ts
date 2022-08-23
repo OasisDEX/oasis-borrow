@@ -14,13 +14,14 @@ const initContextValues = assign<ManageAaveContext, ManageAaveEvent>(() => ({
   totalSteps: 2,
 }))
 
-const setTokenBalanceFromEvent = assign<ManageAaveContext, ManageAaveEvent>((_, event) => {
-  if (event.type !== 'SET_BALANCE') return {}
-
-  return {
-    tokenBalance: event.balance,
-    tokenPrice: event.tokenPrice,
-  }
+const setTokenBalanceFromEvent = assign<ManageAaveContext, ManageAaveEvent>((_) => {
+  return {}
+  // if (event.type !== 'SET_BALANCE') return {}
+  //
+  // return {
+  //   tokenBalance: event.balance,
+  //   tokenPrice: event.tokenPrice,
+  // }
 })
 
 const setReceivedProxyAddress = assign<ManageAaveContext, ManageAaveEvent>((_, event) => {
@@ -54,10 +55,10 @@ const updateTotalSteps = assign<ManageAaveContext, ManageAaveEvent>((context) =>
   totalSteps: context.proxyAddress ? 2 : 3,
 }))
 
-const setAmount = assign<ManageAaveContext, ManageAaveEvent>((_, event) => {
-  if (event.type !== 'SET_AMOUNT') return {}
+const setAmount = assign<ManageAaveContext, ManageAaveEvent>((_) => {
+  // if (event.type !== 'SET_AMOUNT') return {}
   return {
-    amount: event.amount,
+    // amount: event.amount,
   }
 })
 

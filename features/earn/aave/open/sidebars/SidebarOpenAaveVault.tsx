@@ -1,3 +1,4 @@
+import { ProxyView } from '@oasis-borrow/proxy'
 import { useMachine } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -12,7 +13,6 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
-import { ProxyView } from '../../../../proxyNew'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/types'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 

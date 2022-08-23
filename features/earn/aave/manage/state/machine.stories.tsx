@@ -7,7 +7,6 @@ import {
 import { TxMeta } from '@oasisdex/transactions'
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
-import BigNumber from 'bignumber.js'
 import React from 'react'
 import { interval, of } from 'rxjs'
 import { first } from 'rxjs/operators'
@@ -83,7 +82,6 @@ const transactionMachine = createTransactionStateMachine(manageAavePosition, tru
 
 const manageAaveServices: ManageAaveStateMachineServices = {
   [services.getProxyAddress]: (() => {}) as any,
-  [services.getBalance]: (() => {}) as any,
 }
 
 const manageAaveStateMachine = createManageAaveStateMachine
@@ -186,12 +184,6 @@ const Machine = () => {
   return (
     <Grid columns={1} gap={10} sx={{ width: '75%' }}>
       <Grid columns={3} gap={10}>
-        <ManageAaveButton
-          type={'SET_BALANCE'}
-          balance={new BigNumber(1000)}
-          tokenPrice={new BigNumber(100)}
-        />
-        <ManageAaveButton type={'SET_AMOUNT'} amount={new BigNumber(100)} />
         <ManageAaveButton type={'PROXY_ADDRESS_RECEIVED'} proxyAddress={'0x00000'} />
         <ManageAaveButton type={'CONFIRM_DEPOSIT'} />
         <ManageAaveButton type={'START_CLOSING_POSITION'} />

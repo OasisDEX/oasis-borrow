@@ -45,6 +45,7 @@ function CloseAaveInformationContainer({ state, send }: ManageAaveStateProps) {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EthBalanceAfterClose({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
   return (

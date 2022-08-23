@@ -297,10 +297,17 @@ const kovan: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
+  aaveTokens: {
+    STETH: mainnetAddresses['STETH'],
+  },
   aaveProtocolDataProvider: contractDesc(
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    '0x3c73a5e5785cac854d468f727c606c07488a29d6',
+    '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+  ),
+  operationExecutor: contractDesc(
+    operationExecutor,
+    getConfig()?.publicRuntimeConfig.operationExecutorTemp,
   ),
 }
 
@@ -378,9 +385,6 @@ const goerli: NetworkConfig = {
   ethtx: {
     url: 'https://ethtx.info/goerli',
   },
-  aaveTokens: {
-    STETH: goerliAddresses['STETH'],
-  },
   taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
@@ -388,6 +392,18 @@ const goerli: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
+  aaveTokens: {
+    STETH: mainnetAddresses['STETH'],
+  },
+  aaveProtocolDataProvider: contractDesc(
+    aaveProtocolDataProvider,
+    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
+    '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+  ),
+  operationExecutor: contractDesc(
+    operationExecutor,
+    getConfig()?.publicRuntimeConfig.operationExecutorTemp,
+  ),
 }
 
 const hardhat: NetworkConfig = {

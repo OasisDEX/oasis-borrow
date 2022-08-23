@@ -11,6 +11,7 @@ import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function AaveManagePositionView({ proxy }: { proxy: string }) {
   const { aaveManageStateMachine$ } = useAaveContext()
   const [stateMachine, stateMachineError] = useObservable(aaveManageStateMachine$)
