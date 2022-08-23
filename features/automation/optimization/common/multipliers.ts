@@ -7,6 +7,12 @@ interface GetConstantMultipleMultipliersProps {
   maxColRatio: BigNumber
 }
 
+interface GetDefaultMultiplierProps {
+  multipliers: number[]
+  minColRatio: BigNumber
+  maxColRatio: BigNumber
+}
+
 const AMOUNT_OF_MULTIPLIERS_TO_GENERATE = 5
 export const MIX_MAX_COL_RATIO_TRIGGER_OFFSET = 5
 
@@ -64,4 +70,30 @@ export function getConstantMultipleMultipliers({
   return Object.keys(ilksMultipliers).includes(ilk)
     ? ilksMultipliers[ilk]
     : generateMultipliers({ minColRatio, maxColRatio })
+}
+
+export function getDefaultMultiplier({
+  multipliers,
+  minColRatio,
+  maxColRatio,
+}: GetDefaultMultiplierProps): number {
+  const midIndex = Math.ceil(multipliers.length / 2) - 1
+  const minMultiplier = calculateMultipleFromTargetCollRatio(
+    maxColRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+  const maxMultiplier = calculateMultipleFromTargetCollRatio(
+    minColRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+
+  if (multipliers[midIndex] >= minMultiplier && multipliers[midIndex] <= maxMultiplier)
+    return multipliers[midIndex]
+  else {
+    for (let i = midIndex; i >= 0; i--) {
+      if (multipliers[i] >= minMultiplier && multipliers[i] <= maxMultiplier) return multipliers[i]
+    }
+    for (let i = midIndex; i < multipliers.length; i++) {
+      if (multipliers[i] >= minMultiplier && multipliers[i] <= maxMultiplier) return multipliers[i]
+    }
+    return multipliers[midIndex]
+  }
 }

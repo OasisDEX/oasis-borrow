@@ -136,12 +136,14 @@ export function SidebarSetupConstantMultiple({
             <>
               {isAddForm && (
                 <SidebarConstantMultipleEditingStage
+                  vault={vault}
                   ilkData={ilkData}
                   isEditing={isEditing}
                   autoBuyTriggerData={autoBuyTriggerData}
                   errors={errors}
                   warnings={warnings}
                   token={vault.token}
+                  lockedCollateralUSD={vault.lockedCollateralUSD}
                   constantMultipleState={constantMultipleState}
                   autoSellTriggerData={autoSellTriggerData}
                   constantMultipleTriggerData={constantMultipleTriggerData}
@@ -160,7 +162,7 @@ export function SidebarSetupConstantMultiple({
                   ilkData={ilkData}
                   errors={cancelConstantMultipleErrors}
                   warnings={cancelConstantMultipleWarnings}
-                  constantMultipleState={constantMultipleState}
+                  constantMultipleTriggerData={constantMultipleTriggerData}
                 />
               )}
             </>

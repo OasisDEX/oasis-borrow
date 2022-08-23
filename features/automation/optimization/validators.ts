@@ -111,7 +111,12 @@ export function warningsConstantMultipleValidation({
   isAutoSellEnabled: boolean
   constantMultipleState: ConstantMultipleFormChange
 }) {
-  const { sellExecutionCollRatio, buyExecutionCollRatio, sellWithThreshold } = constantMultipleState
+  const {
+    sellExecutionCollRatio,
+    buyExecutionCollRatio,
+    sellWithThreshold,
+    buyWithThreshold,
+  } = constantMultipleState
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token: vault.token,
@@ -135,8 +140,11 @@ export function warningsConstantMultipleValidation({
 
   const noMinSellPriceWhenStopLossEnabled = !sellWithThreshold && isStopLossEnabled
 
+  const settingAutoBuyTriggerWithNoThreshold = !buyWithThreshold
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
+    settingAutoBuyTriggerWithNoThreshold,
     constantMultipleSellTriggerCloseToStopLossTrigger,
     addingConstantMultipleWhenAutoSellOrBuyEnabled,
     constantMultipleAutoSellTriggeredImmediately,

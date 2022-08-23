@@ -10,8 +10,12 @@ import {
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { calculatePNL } from 'helpers/multiply/calculations'
+import {
+  calculatePNLFromAddConstantMultipleEvent,
+  calculateTotalCostOfConstantMultiple,
+} from 'helpers/multiply/calculations'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -48,15 +52,14 @@ export function ConstantMultipleDetailsControl({
     buyExecutionCollRatio,
     sellExecutionCollRatio,
   } = constantMultipleTriggerData
+  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   const constantMultipleDetailsLayoutOptionalParams = {
     ...(isTriggerEnabled && {
       targetMultiple: calculateMultipleFromTargetCollRatio(targetCollRatio),
       targetColRatio: targetCollRatio,
-      // TODO: PK calculate based on history entry
-      totalCost: new BigNumber(3000),
-      // TODO: PK vaultHistory should be cut down right after first found set up multiply event
-      PnLSinceEnabled: calculatePNL(vaultHistory, netValueUSD),
+      totalCost: calculateTotalCostOfConstantMultiple(vaultHistory),
+      PnLSinceEnabled: calculatePNLFromAddConstantMultipleEvent(vaultHistory, netValueUSD),
       triggerColRatioToBuy: buyExecutionCollRatio,
       triggerColRatioToSell: sellExecutionCollRatio,
       nextBuyPrice: collateralPriceAtRatio({
@@ -75,6 +78,14 @@ export function ConstantMultipleDetailsControl({
       triggerColRatioToBuyToBuy: constantMultipleState.buyExecutionCollRatio,
       afterTriggerColRatioToSell: constantMultipleState.sellExecutionCollRatio,
     }),
+  }
+
+  if (constantMultipleReadOnlyEnabled) {
+    return null
+  }
+  const isDebtZero = vault.debt.isZero()
+  if (isDebtZero) {
+    return null
   }
 
   return (
