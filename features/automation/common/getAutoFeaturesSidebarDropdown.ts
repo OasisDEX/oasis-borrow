@@ -58,6 +58,8 @@ export function getAutoFeaturesSidebarDropdown({
   type,
   forcePanel,
   disabled,
+  isStopLossEnabled,
+  isAutoSellEnabled,
   isAutoBuyEnabled,
   isAutoConstantMultipleEnabled,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown {
@@ -65,6 +67,22 @@ export function getAutoFeaturesSidebarDropdown({
     forcePanel,
     disabled,
     items: [
+      ...(type === 'Protection'
+        ? [
+            getAutoFeaturesSidebarDropdownItem({
+              translationKey: 'system.stop-loss',
+              type: 'Protection',
+              panel: 'stopLoss',
+              isFeatureEnabled: isStopLossEnabled,
+            }),
+            getAutoFeaturesSidebarDropdownItem({
+              translationKey: 'system.basic-sell',
+              type: 'Protection',
+              panel: 'autoSell',
+              isFeatureEnabled: isAutoSellEnabled,
+            }),
+          ]
+        : []),
       ...(type === 'Optimization'
         ? [
             getAutoFeaturesSidebarDropdownItem({

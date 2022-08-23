@@ -1,7 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
+import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
 import {
   errorsStopLossValidation,
@@ -67,15 +67,17 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     isConstantMultipleEnabled,
   })
 
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Protection',
+    forcePanel: 'stopLoss',
+    disabled: isDropdownDisabled({ stage }),
+    isStopLossEnabled: isStopLossEnabled,
+    isAutoSellEnabled: isAutoSellEnabled,
+  })
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, isStopLossEnabled }),
-    ...(basicBSEnabled && {
-      dropdown: {
-        forcePanel: 'stopLoss',
-        disabled: isDropdownDisabled({ stage }),
-        items: commonProtectionDropdownItems(uiChanges, t),
-      },
-    }),
+    ...(basicBSEnabled && { dropdown }),
     content: (
       <Grid gap={3}>
         {stopLossWriteEnabled ? (

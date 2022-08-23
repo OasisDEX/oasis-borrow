@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
+import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
 import { CancelSlFormLayoutProps } from 'features/automation/protection/controls/CancelSlFormLayout'
 import { SidebarCancelStopLossCancelStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossCancelStage'
@@ -20,21 +20,31 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
-  const { isProgressDisabled, removeTriggerConfig, stage, toggleForms, token } = props
+  const {
+    isProgressDisabled,
+    removeTriggerConfig,
+    stage,
+    toggleForms,
+    token,
+    isStopLossEnabled,
+    isAutoSellEnabled,
+  } = props
 
   const flow: SidebarFlow = 'cancelSl'
   const sidebarTxData = extractSidebarTxData(props)
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Protection',
+    forcePanel: 'stopLoss',
+    disabled: isDropdownDisabled({ stage }),
+    isStopLossEnabled: isStopLossEnabled,
+    isAutoSellEnabled: isAutoSellEnabled,
+  })
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
-    ...(basicBSEnabled && {
-      dropdown: {
-        forcePanel: 'stopLoss',
-        disabled: isDropdownDisabled({ stage }),
-        items: commonProtectionDropdownItems(uiChanges, t),
-      },
-    }),
+    ...(basicBSEnabled && { dropdown }),
     content: (
       <Grid gap={3}>
         {(stage === 'editing' || stage === 'txFailure') && (

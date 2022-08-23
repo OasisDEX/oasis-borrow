@@ -63,6 +63,7 @@ function StopLossForms({
       vault={vault}
       ilkData={ilkData}
       triggerData={stopLossTriggerData}
+      autoSellTriggerData={autoSellTriggerData}
       tx={txHelpers}
       ctx={context}
       accountIsController={accountIsController}
