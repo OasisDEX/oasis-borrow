@@ -171,14 +171,6 @@ export function SidebarAutoBuyEditingStage({
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
-      <SidebarResetButton
-        clear={() => {
-          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-            type: 'reset',
-            resetData: prepareBasicBSResetData(autoBuyTriggerData),
-          })
-        }}
-      />
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
@@ -189,13 +181,23 @@ export function SidebarAutoBuyEditingStage({
         value={basicBuyState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
-        <AutoBuyInfoSectionControl
-          executionPrice={executionPrice}
-          basicBuyState={basicBuyState}
-          vault={vault}
-          debtDelta={debtDelta}
-          collateralDelta={collateralDelta}
-        />
+        <>
+          <SidebarResetButton
+            clear={() => {
+              uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+                type: 'reset',
+                resetData: prepareBasicBSResetData(autoBuyTriggerData),
+              })
+            }}
+          />
+          <AutoBuyInfoSectionControl
+            executionPrice={executionPrice}
+            basicBuyState={basicBuyState}
+            vault={vault}
+            debtDelta={debtDelta}
+            collateralDelta={collateralDelta}
+          />
+        </>
       )}
     </>
   )
