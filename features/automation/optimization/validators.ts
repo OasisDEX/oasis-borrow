@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
@@ -77,7 +78,7 @@ export function errorsBasicBuyValidation({
 
   const autoBuyTriggerLowerThanAutoSellTarget =
     autoSellTriggerData.isTriggerEnabled &&
-    execCollRatio.minus(5).lt(autoSellTriggerData.targetCollRatio)
+    execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).lt(autoSellTriggerData.targetCollRatio)
 
   const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
     constantMultipleTriggerData.isTriggerEnabled
