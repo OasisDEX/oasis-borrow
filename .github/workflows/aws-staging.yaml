@@ -83,8 +83,6 @@ jobs:
           NEXT_PUBLIC_SENTRY_ENV=staging
           SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
         tags: |
-#          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.ENVIRONMENT_TAG }}
-#          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.LATEST_TAG }}
           ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.SHA_TAG }}
         cache-from: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache
         cache-to: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache,mode=max
