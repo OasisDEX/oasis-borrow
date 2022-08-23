@@ -542,6 +542,7 @@
   },
   "field-from": "From",
   "max": "Max",
+  "manage": "Manage",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "minimum": "Minimum",
   "moving-into-vault": "Moving into Vault",
@@ -1104,6 +1105,7 @@
       "button": "Borrow against {{token}}"
     }
   },
+  "setup": "Setup",
   "protection": {
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",

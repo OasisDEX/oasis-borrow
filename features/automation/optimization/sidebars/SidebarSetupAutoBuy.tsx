@@ -2,12 +2,11 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { getBasicBuyMinMaxValues } from 'features/automation/optimization/helpers'
 import {
   errorsBasicBuyValidation,
@@ -86,7 +85,6 @@ export function SidebarSetupAutoBuy({
 
   const gasEstimation = useGasEstimationContext()
 
-  const { uiChanges } = useAppContext()
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   const flow: SidebarFlow = isRemoveForm
@@ -133,18 +131,20 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyWarnings = extractCancelBSWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelBSErrors(errors)
 
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Optimization',
+    forcePanel: 'autoBuy',
+    disabled: isDropdownDisabled({ stage }),
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+  })
+
   if (isAutoBuyActive) {
     const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
-      ...(constantMultipleEnabled && {
-        dropdown: {
-          forcePanel: 'autoBuy',
-          disabled: isDropdownDisabled({ stage }),
-          items: commonOptimizationDropdownItems(uiChanges, t),
-        },
-      }),
+      ...(constantMultipleEnabled && { dropdown }),
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
