@@ -66,6 +66,7 @@ jobs:
         LATEST_TAG: latest
         ENVIRONMENT_TAG: staging
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        DOCKERHUB_ORG: "oasisdexorg"
       with:
         context: .
         file: ./Dockerfile
