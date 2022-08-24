@@ -17,7 +17,6 @@ import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerDat
 import {
   ACCEPTABLE_FEE_DIFF,
   calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
 } from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
@@ -52,7 +51,6 @@ interface SidebaConstantMultiplerEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   token: string
-  lockedCollateralUSD: BigNumber
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
@@ -73,7 +71,6 @@ export function SidebarConstantMultipleEditingStage({
   errors,
   warnings,
   token,
-  lockedCollateralUSD,
   constantMultipleState,
   autoSellTriggerData,
   constantMultipleTriggerData,
@@ -89,17 +86,6 @@ export function SidebarConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
 
-  const maxTargetRatioInVault = lockedCollateralUSD
-    .div(ilkData.debtFloor)
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-
-  const maxMultiplier = calculateMultipleFromTargetCollRatio(
-    constantMultipleState.minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
-  const minMultiplier = calculateMultipleFromTargetCollRatio(
-    maxTargetRatioInVault.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
   const isVaultEmpty = vault.debt.isZero()
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
@@ -120,11 +106,8 @@ export function SidebarConstantMultipleEditingStage({
       />
     )
   }
-  const eligibleMultipliers = constantMultipleState.multipliers.filter((item) => {
-    return item >= minMultiplier && item <= maxMultiplier
-  })
 
-  return eligibleMultipliers.length ? (
+  return constantMultipleState.eligibleMultipliers.length ? (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('constant-multiple.set-trigger-description', {
@@ -150,7 +133,7 @@ export function SidebarConstantMultipleEditingStage({
           items={constantMultipleState.multipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
-            disabled: !eligibleMultipliers.includes(multiplier),
+            disabled: !constantMultipleState.eligibleMultipliers.includes(multiplier),
             action: () => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'is-editing',
@@ -202,6 +185,12 @@ export function SidebarConstantMultipleEditingStage({
       />
       <VaultWarnings
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
+        ilkData={ilkData}
+      />
+      <VaultErrors
+        errorMessages={errors.filter(
+          (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
+        )}
         ilkData={ilkData}
       />
       <VaultActionInput

@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
@@ -137,4 +139,54 @@ export function calculateMultipleFromTargetCollRatio(targetCollRatio: BigNumber)
 
 export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
   return automationTriggersData.triggers?.length === 1
+}
+
+export function getEligibleMultipliers({
+  multipliers,
+  collateralizationRatio,
+  lockedCollateral,
+  debt,
+  debtFloor,
+  deviation,
+  minTargetRatio,
+  maxTargetRatio,
+}: {
+  multipliers: number[]
+  collateralizationRatio: BigNumber
+  lockedCollateral: BigNumber
+  debt: BigNumber
+  debtFloor: BigNumber
+  deviation: BigNumber
+  minTargetRatio: BigNumber
+  maxTargetRatio: BigNumber
+}) {
+  const maxMultiplier = calculateMultipleFromTargetCollRatio(
+    minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+
+  const minMultiplier = calculateMultipleFromTargetCollRatio(
+    maxTargetRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+
+  return multipliers
+    .filter((multiplier) => {
+      const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
+
+      const executionPrice = collateralPriceAtRatio({
+        colRatio: collateralizationRatio,
+        collateral: lockedCollateral,
+        vaultDebt: debt,
+      })
+
+      const { debtDelta } = getBasicBSVaultChange({
+        targetCollRatio,
+        execCollRatio: collateralizationRatio.times(100),
+        deviation,
+        executionPrice,
+        lockedCollateral,
+        debt: debt,
+      })
+      return !debtFloor.gt(debt.plus(debtDelta))
+    })
+    .filter((item) => item >= minMultiplier && item <= maxMultiplier)
 }

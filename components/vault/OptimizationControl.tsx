@@ -177,6 +177,7 @@ export function OptimizationControl({
             editForm={
               <OptimizationFormControl
                 vault={vault}
+                vaultType={vaultType}
                 automationTriggersData={automationTriggers}
                 ilkData={ilkData}
                 txHelpers={txHelpersData}

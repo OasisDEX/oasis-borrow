@@ -16,6 +16,7 @@ import {
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -32,6 +33,7 @@ import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditin
 
 interface SidebarSetupAutoBuyProps {
   vault: Vault
+  vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
@@ -57,6 +59,7 @@ interface SidebarSetupAutoBuyProps {
 
 export function SidebarSetupAutoBuy({
   vault,
+  vaultType,
   ilkData,
   balanceInfo,
   context,
@@ -88,6 +91,7 @@ export function SidebarSetupAutoBuy({
 
   const { uiChanges } = useAppContext()
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  const isMultiplyVault = vaultType === VaultType.Multiply
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicBuy'
@@ -138,13 +142,14 @@ export function SidebarSetupAutoBuy({
 
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
-      ...(constantMultipleEnabled && {
-        dropdown: {
-          forcePanel: 'autoBuy',
-          disabled: isDropdownDisabled({ stage }),
-          items: commonOptimizationDropdownItems(uiChanges, t),
-        },
-      }),
+      ...(constantMultipleEnabled &&
+        isMultiplyVault && {
+          dropdown: {
+            forcePanel: 'autoBuy',
+            disabled: isDropdownDisabled({ stage }),
+            items: commonOptimizationDropdownItems(uiChanges, t),
+          },
+        }),
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (

@@ -50,6 +50,8 @@ interface SidebarSetupConstantMultipleProps {
   isRemoveForm: boolean
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
+  debtDeltaWhenSellAtCurrentCollRatio: BigNumber
+  debtDeltaAfterSell: BigNumber
   stage: SidebarVaultStages
   stopLossTriggerData: StopLossTriggerData
   textButtonHandler: () => void
@@ -84,6 +86,8 @@ export function SidebarSetupConstantMultiple({
   textButtonHandler,
   txHandler,
   vault,
+  debtDeltaWhenSellAtCurrentCollRatio,
+  debtDeltaAfterSell,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
 
@@ -105,9 +109,17 @@ export function SidebarSetupConstantMultiple({
   })
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-  const errors = errorsConstantMultipleValidation({ constantMultipleState, isRemoveForm })
+  const errors = errorsConstantMultipleValidation({
+    constantMultipleState,
+    isRemoveForm,
+    debtDeltaWhenSellAtCurrentCollRatio,
+    debtDeltaAfterSell,
+    debtFloor: ilkData.debtFloor,
+    debt: vault.debt,
+  })
   const warnings = warningsConstantMultipleValidation({
     vault,
+    debtFloor: ilkData.debtFloor,
     gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
@@ -116,6 +128,7 @@ export function SidebarSetupConstantMultiple({
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     constantMultipleState,
+    debtDeltaWhenSellAtCurrentCollRatio,
   })
 
   const cancelConstantMultipleErrors = extractCancelBSErrors(errors)
@@ -143,7 +156,6 @@ export function SidebarSetupConstantMultiple({
                   errors={errors}
                   warnings={warnings}
                   token={vault.token}
-                  lockedCollateralUSD={vault.lockedCollateralUSD}
                   constantMultipleState={constantMultipleState}
                   autoSellTriggerData={autoSellTriggerData}
                   constantMultipleTriggerData={constantMultipleTriggerData}

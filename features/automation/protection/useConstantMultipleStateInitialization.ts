@@ -4,7 +4,10 @@ import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
-import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
+import {
+  calculateCollRatioFromMultiple,
+  getEligibleMultipliers,
+} from 'features/automation/common/helpers'
 import {
   extractConstantMultipleData,
   prepareConstantMultipleResetData,
@@ -50,11 +53,25 @@ export function useConstantMultipleStateInitialization(
     minColRatio: min,
     maxColRatio: max,
   })
-  const defaultMultiplier = getDefaultMultiplier({
+
+  const eligibleMultipliers = getEligibleMultipliers({
     multipliers,
-    minColRatio: min,
-    maxColRatio: max,
+    collateralizationRatio: vault.collateralizationRatio,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
+    debtFloor: ilkData.debtFloor,
+    deviation: constantMultipleTriggerData.deviation,
+    minTargetRatio: min,
+    maxTargetRatio: max,
   })
+
+  const defaultMultiplier =
+    getDefaultMultiplier({
+      multipliers: eligibleMultipliers,
+      minColRatio: min,
+      maxColRatio: max,
+    }) || multipliers[0] // fallback to not break data preparation
+
   const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiplier)
 
   useEffect(() => {
@@ -62,6 +79,7 @@ export function useConstantMultipleStateInitialization(
       type: 'form-defaults',
       multipliers,
       defaultMultiplier,
+      eligibleMultipliers,
       defaultCollRatio,
       minTargetRatio: min,
       maxTargetRatio: max,
