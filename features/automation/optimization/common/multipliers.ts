@@ -76,7 +76,7 @@ export function getDefaultMultiplier({
   multipliers,
   minColRatio,
   maxColRatio,
-}: GetDefaultMultiplierProps): number {
+}: GetDefaultMultiplierProps): number | undefined {
   const midIndex = Math.ceil(multipliers.length / 2) - 1
   const minMultiplier = calculateMultipleFromTargetCollRatio(
     maxColRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),

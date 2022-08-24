@@ -65,11 +65,12 @@ export function useConstantMultipleStateInitialization(
     maxTargetRatio: max,
   })
 
-  const defaultMultiplier = getDefaultMultiplier({
-    multipliers: eligibleMultipliers,
-    minColRatio: min,
-    maxColRatio: max,
-  })
+  const defaultMultiplier =
+    getDefaultMultiplier({
+      multipliers: eligibleMultipliers,
+      minColRatio: min,
+      maxColRatio: max,
+    }) || multipliers[0] // fallback to not break data preparation
 
   const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiplier)
 
