@@ -73,6 +73,6 @@ jobs:
                        --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
                        --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                        -t $DOCKERHUB_ORG/$REPO_NAME:$SHA_TAG \
+                     .
 
-          docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
           docker push $DOCKERHUB_ORG/$REPO_NAME --all-tags
