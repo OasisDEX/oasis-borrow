@@ -5,10 +5,10 @@ import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
 import { AppLink } from 'components/Links'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { WithArrow } from 'components/WithArrow'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,

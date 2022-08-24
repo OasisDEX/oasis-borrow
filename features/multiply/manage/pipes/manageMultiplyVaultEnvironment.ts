@@ -1,9 +1,9 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
+import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { SlippageChange } from 'features/userSettings/userSettings'
 
-import { AutomationTriggersChange } from '../../../automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfoChange } from '../../../shared/balanceInfo'
 import { VaultHistoryChange } from '../../../vaultHistory/vaultHistory'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'

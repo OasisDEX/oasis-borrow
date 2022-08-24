@@ -4,10 +4,10 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
-import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
-import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
+import { extractAutoBSData } from 'features/automation/common/state/basicBSTriggerData'
+import { OptimizationDetailsControl } from 'features/automation/optimization/common/controls/OptimizationDetailsControl'
+import { OptimizationFormControl } from 'features/automation/optimization/common/controls/OptimizationFormControl'
+import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -119,7 +119,7 @@ export function OptimizationControl({
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   const basicBuyData = automationTriggersData
-    ? extractBasicBSData({
+    ? extractAutoBSData({
         triggersData: automationTriggersData,
         triggerType: TriggerType.BasicBuy,
       })

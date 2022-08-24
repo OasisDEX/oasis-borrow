@@ -4,6 +4,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   createManageVault$,
   ManageStandardBorrowVaultState,
@@ -18,7 +19,6 @@ import { switchMap } from 'rxjs/operators'
 import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
 import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { InstiVault } from '../../blockchain/instiVault'
-import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import {
   InstitutionalBorrowManageAdapter,
   ManageInstiVaultState,

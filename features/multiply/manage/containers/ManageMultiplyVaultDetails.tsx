@@ -15,8 +15,9 @@ import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/Cont
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { overrideWarningAutoSellTriggerIds } from 'features/automation/common/consts'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
-import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
+import { GetProtectionBannerControl } from 'features/automation/protection/common/controls/GetProtectionBannerControl'
+import { StopLossTriggeredBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBannerControl'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
@@ -24,7 +25,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {

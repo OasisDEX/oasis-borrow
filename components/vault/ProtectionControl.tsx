@@ -2,10 +2,10 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
-import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
-import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
+import { extractAutoBSData } from 'features/automation/common/state/basicBSTriggerData'
+import { ProtectionDetailsControl } from 'features/automation/protection/common/controls/ProtectionDetailsControl'
+import { ProtectionFormControl } from 'features/automation/protection/common/controls/ProtectionFormControl'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -132,7 +132,7 @@ export function ProtectionControl({
     ? extractStopLossData(automationTriggersData)
     : undefined
   const basicSellData = automationTriggersData
-    ? extractBasicBSData({
+    ? extractAutoBSData({
         triggersData: automationTriggersData,
         triggerType: TriggerType.BasicSell,
       })

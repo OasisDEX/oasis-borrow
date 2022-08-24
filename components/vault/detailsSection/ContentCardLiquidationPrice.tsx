@@ -5,8 +5,8 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
-import { StopLossBannerControl } from 'features/automation/protection/controls/StopLossBannerControl'
+import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'

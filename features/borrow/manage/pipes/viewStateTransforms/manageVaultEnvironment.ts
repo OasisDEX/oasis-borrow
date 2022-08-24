@@ -1,6 +1,6 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
-import { AutomationTriggersChange } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
 import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'

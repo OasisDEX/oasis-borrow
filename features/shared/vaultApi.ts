@@ -1,7 +1,7 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { MultiplyPillChange } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import getConfig from 'next/config'
 import { of } from 'ramda'

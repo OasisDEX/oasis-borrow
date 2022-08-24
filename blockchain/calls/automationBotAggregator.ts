@@ -2,7 +2,7 @@ import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
-import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/useConstantMultipleStateInitialization'
+import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import { AutomationBotAggregator, DsProxy } from 'types/ethers-contracts'
 
 import { TxMetaKind } from './txMeta'

@@ -2,13 +2,10 @@ import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import { maxUint256 } from 'features/automation/common/consts'
-import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import {
-  TriggerRecord,
-  TriggersData,
-} from 'features/automation/protection/triggers/AutomationTriggersData'
+import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
+import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'

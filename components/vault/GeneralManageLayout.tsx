@@ -1,10 +1,10 @@
 import { TriggerType } from '@oasisdex/automation'
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
-import { useBasicBSstateInitialization } from 'features/automation/protection/useBasicSellStateInitializator'
-import { useConstantMultipleStateInitialization } from 'features/automation/protection/useConstantMultipleStateInitialization'
-import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
+import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
+import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
+import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
@@ -31,13 +31,13 @@ export function GeneralManageLayout({
 
   const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
-  const isBasicSellEnabled = useBasicBSstateInitialization(
+  const isBasicSellEnabled = useAutoBSstateInitialization(
     ilkData,
     vault,
     autoTriggersData,
     TriggerType.BasicSell,
   )
-  const isBasicBuyEnabled = useBasicBSstateInitialization(
+  const isBasicBuyEnabled = useAutoBSstateInitialization(
     ilkData,
     vault,
     autoTriggersData,

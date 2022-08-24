@@ -4,8 +4,12 @@ import { Context } from 'blockchain/network'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import {
   BasicBSTriggerData,
-  extractBasicBSData,
-} from 'features/automation/common/basicBSTriggerData'
+  extractAutoBSData,
+} from 'features/automation/common/state/basicBSTriggerData'
+import {
+  extractStopLossData,
+  StopLossTriggerData,
+} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { isEqual, memoize } from 'lodash'
@@ -13,10 +17,6 @@ import { combineLatest, from, Observable, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 
-import {
-  extractStopLossData,
-  StopLossTriggerData,
-} from '../automation/protection/common/stopLossTriggerData'
 import { fetchWithOperationId, flatEvents } from './vaultHistory'
 import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
@@ -190,7 +190,7 @@ function mapToVaultWithHistory(
       isAutomationEnabled,
       triggers,
     })
-    const basicSellData = extractBasicBSData({
+    const basicSellData = extractAutoBSData({
       triggersData: {
         isAutomationEnabled,
         triggers,

@@ -1,5 +1,5 @@
 import { UIChanges } from 'components/AppContext'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { TFunction } from 'next-i18next'
 
 export function commonOptimizationDropdownItems(uiChanges: UIChanges, t: TFunction) {

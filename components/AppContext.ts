@@ -68,54 +68,48 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
-import {
-  ADD_FORM_CHANGE,
-  AddFormChange,
-  AddFormChangeAction,
-  formChangeReducer,
-} from 'features/automation/protection/common/UITypes/AddFormChange'
+import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
   AutomationChangeFeatureAction,
   automationChangeFeatureReducer,
-} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+} from 'features/automation/common/state/automationFeatureChange'
 import {
-  BASIC_BUY_FORM_CHANGE,
-  BASIC_SELL_FORM_CHANGE,
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
   BasicBSChangeAction,
   basicBSFormChangeReducer,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
+} from 'features/automation/common/state/basicBSFormChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleChangeAction,
   constantMultipleFormChangeReducer,
-} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import {
+  ADD_FORM_CHANGE,
+  AddFormChange,
+  AddFormChangeAction,
+  formChangeReducer,
+} from 'features/automation/protection/stopLoss/state/addFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
   MultiplyPillChangeAction,
   multiplyPillChangeReducer,
-} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
   ProtectionModeChangeAction,
   protectionModeChangeReducer,
-} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
+} from 'features/automation/protection/stopLoss/state/protectionFormModeChange'
 import {
   REMOVE_FORM_CHANGE,
   RemoveFormChange,
   RemoveFormChangeAction,
   removeFormReducer,
-} from 'features/automation/protection/common/UITypes/RemoveFormChange'
-import {
-  TAB_CHANGE_SUBJECT,
-  TabChange,
-  TabChangeAction,
-  tabChangeReducer,
-} from 'features/automation/protection/common/UITypes/TabChange'
-import { createAutomationTriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+} from 'features/automation/protection/stopLoss/state/removeFormChange'
 import {
   createManageVault$,
   ManageStandardBorrowVaultState,
@@ -126,6 +120,12 @@ import { currentContent } from 'features/content'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import {
+  TAB_CHANGE_SUBJECT,
+  TabChange,
+  TabChangeAction,
+  tabChangeReducer,
+} from 'features/generalManageVault/tabChange'
 import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -152,6 +152,12 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  swapWidgetChangeReducer,
+  SwapWidgetState,
+} from 'features/uniswapWidget/swapWidgetChange'
 import { createUserSettings$ } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
@@ -215,12 +221,6 @@ import {
   every10Seconds$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-  swapWidgetChangeReducer,
-  SwapWidgetState,
-} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { createBonusPipe$ } from '../features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
@@ -425,8 +425,8 @@ function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
-  uiChangesSubject.configureSubject(BASIC_SELL_FORM_CHANGE, basicBSFormChangeReducer)
-  uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
+  uiChangesSubject.configureSubject(AUTO_SELL_FORM_CHANGE, basicBSFormChangeReducer)
+  uiChangesSubject.configureSubject(AUTO_BUY_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)

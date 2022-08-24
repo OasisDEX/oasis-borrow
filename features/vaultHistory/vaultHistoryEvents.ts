@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
 interface HistoryEventBase {
   hash: string
