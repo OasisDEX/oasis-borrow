@@ -17,7 +17,6 @@ import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerDat
 import {
   ACCEPTABLE_FEE_DIFF,
   calculateCollRatioFromMultiple,
-  getEligibleMultipliers,
 } from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
@@ -108,18 +107,7 @@ export function SidebarConstantMultipleEditingStage({
     )
   }
 
-  const eligibleMultipliers = getEligibleMultipliers({
-    multipliers: constantMultipleState.multipliers,
-    collateralizationRatio: vault.collateralizationRatio,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
-    debtFloor: ilkData.debtFloor,
-    deviation: constantMultipleState.deviation,
-    minTargetRatio: constantMultipleState.minTargetRatio,
-    maxTargetRatio: constantMultipleState.maxTargetRatio,
-  })
-
-  return eligibleMultipliers.length ? (
+  return constantMultipleState.eligibleMultipliers.length ? (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('constant-multiple.set-trigger-description', {
@@ -145,7 +133,7 @@ export function SidebarConstantMultipleEditingStage({
           items={constantMultipleState.multipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
-            disabled: !eligibleMultipliers.includes(multiplier),
+            disabled: !constantMultipleState.eligibleMultipliers.includes(multiplier),
             action: () => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'is-editing',

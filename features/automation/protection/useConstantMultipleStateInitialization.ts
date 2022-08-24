@@ -78,6 +78,7 @@ export function useConstantMultipleStateInitialization(
       type: 'form-defaults',
       multipliers,
       defaultMultiplier,
+      eligibleMultipliers,
       defaultCollRatio,
       minTargetRatio: min,
       maxTargetRatio: max,
