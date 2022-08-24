@@ -200,11 +200,27 @@ export function AutoSellFormControl({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
+
+  const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
+    colRatio: vault.collateralizationRatio,
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
+
   const { debtDelta, collateralDelta } = getBasicBSVaultChange({
     targetCollRatio: basicSellState.targetCollRatio,
     execCollRatio: basicSellState.execCollRatio,
     deviation: basicSellState.deviation,
     executionPrice,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
+  })
+
+  const { debtDelta: debtDeltaAtCurrentCollRatio } = getBasicBSVaultChange({
+    targetCollRatio: basicSellState.targetCollRatio,
+    execCollRatio: vault.collateralizationRatio.times(100),
+    deviation: basicSellState.deviation,
+    executionPrice: executionPriceAtCurrentCollRatio,
     lockedCollateral: vault.lockedCollateral,
     debt: vault.debt,
   })
@@ -231,6 +247,7 @@ export function AutoSellFormControl({
       isDisabled={isDisabled}
       isFirstSetup={isFirstSetup}
       debtDelta={debtDelta}
+      debtDeltaAtCurrentCollRatio={debtDeltaAtCurrentCollRatio}
       collateralDelta={collateralDelta}
     />
   )

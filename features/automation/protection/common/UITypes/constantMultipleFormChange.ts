@@ -18,6 +18,7 @@ export type ConstantMultipleChangeAction =
   | {
       type: 'form-defaults'
       multipliers: number[]
+      eligibleMultipliers: number[]
       defaultMultiplier: number
       defaultCollRatio: BigNumber
       minTargetRatio: BigNumber
@@ -33,6 +34,7 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   buyWithThreshold: boolean
   sellWithThreshold: boolean
   multipliers: number[]
+  eligibleMultipliers: number[]
   defaultMultiplier: number
   defaultCollRatio: BigNumber
   multiplier: number
@@ -84,6 +86,7 @@ export function constantMultipleFormChangeReducer(
         ...state,
         multipliers: action.multipliers,
         defaultMultiplier: action.defaultMultiplier,
+        eligibleMultipliers: action.eligibleMultipliers,
         defaultCollRatio: action.defaultCollRatio,
         minTargetRatio: action.minTargetRatio,
         maxTargetRatio: action.maxTargetRatio,
