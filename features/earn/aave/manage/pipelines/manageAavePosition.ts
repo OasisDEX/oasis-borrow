@@ -1,5 +1,3 @@
-import { DsProxy } from '@oasis-borrow/types/web3-v1-contracts/ds-proxy'
-import { OperationExecutor } from '@oasis-borrow/types/web3-v1-contracts/operation-executor'
 import { TxMeta } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
@@ -9,6 +7,8 @@ import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { contractDesc } from '../../../../../blockchain/config'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { amountToWei } from '../../../../../blockchain/utils'
+import { DsProxy } from '../../../../../types/web3-v1-contracts/ds-proxy'
+import { OperationExecutor } from '../../../../../types/web3-v1-contracts/operation-executor'
 import { ActionCall } from '../../../../aave'
 
 export interface ManageAavePositionData extends TxMeta {
