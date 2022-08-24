@@ -61,7 +61,6 @@ jobs:
       env:
         SHA_TAG: ${{ steps.vars.outputs.sha_short }}
         LATEST_TAG: latest
-        ENVIRONMENT_TAG: prod
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPO_NAME: ${{ github.event.repository.name }}
         DOCKERHUB_ORG: "oasisdexorg"
@@ -88,7 +87,6 @@ jobs:
           NEXT_PUBLIC_SENTRY_ENV=production
           SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
         tags: |
-          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.ENVIRONMENT_TAG }}
           ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.LATEST_TAG }}
           ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.SHA_TAG }}
         cache-from: type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache
