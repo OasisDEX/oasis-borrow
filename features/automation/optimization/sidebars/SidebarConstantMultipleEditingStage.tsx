@@ -204,6 +204,12 @@ export function SidebarConstantMultipleEditingStage({
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
         ilkData={ilkData}
       />
+      <VaultErrors
+        errorMessages={errors.filter(
+          (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
+        )}
+        ilkData={ilkData}
+      />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
         amount={constantMultipleState?.maxBuyPrice}
