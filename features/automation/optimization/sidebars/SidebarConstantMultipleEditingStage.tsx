@@ -17,7 +17,7 @@ import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerDat
 import {
   ACCEPTABLE_FEE_DIFF,
   calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
+  getEligibleMultipliers,
 } from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
@@ -52,7 +52,6 @@ interface SidebaConstantMultiplerEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   token: string
-  lockedCollateralUSD: BigNumber
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
@@ -73,7 +72,6 @@ export function SidebarConstantMultipleEditingStage({
   errors,
   warnings,
   token,
-  lockedCollateralUSD,
   constantMultipleState,
   autoSellTriggerData,
   constantMultipleTriggerData,
@@ -89,17 +87,6 @@ export function SidebarConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
 
-  const maxTargetRatioInVault = lockedCollateralUSD
-    .div(ilkData.debtFloor)
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-
-  const maxMultiplier = calculateMultipleFromTargetCollRatio(
-    constantMultipleState.minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
-  const minMultiplier = calculateMultipleFromTargetCollRatio(
-    maxTargetRatioInVault.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
   const isVaultEmpty = vault.debt.isZero()
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
@@ -120,8 +107,16 @@ export function SidebarConstantMultipleEditingStage({
       />
     )
   }
-  const eligibleMultipliers = constantMultipleState.multipliers.filter((item) => {
-    return item >= minMultiplier && item <= maxMultiplier
+
+  const eligibleMultipliers = getEligibleMultipliers({
+    multipliers: constantMultipleState.multipliers,
+    collateralizationRatio: vault.collateralizationRatio,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
+    debtFloor: ilkData.debtFloor,
+    deviation: constantMultipleState.deviation,
+    minTargetRatio: constantMultipleState.minTargetRatio,
+    maxTargetRatio: constantMultipleState.maxTargetRatio,
   })
 
   return eligibleMultipliers.length ? (

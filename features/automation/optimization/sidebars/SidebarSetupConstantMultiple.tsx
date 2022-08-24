@@ -156,7 +156,6 @@ export function SidebarSetupConstantMultiple({
                   errors={errors}
                   warnings={warnings}
                   token={vault.token}
-                  lockedCollateralUSD={vault.lockedCollateralUSD}
                   constantMultipleState={constantMultipleState}
                   autoSellTriggerData={autoSellTriggerData}
                   constantMultipleTriggerData={constantMultipleTriggerData}
