@@ -172,12 +172,11 @@ export function getEligibleMultipliers({
     .filter((multiplier) => {
       const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
       const sellExecutionExtremes = [
-        minTargetRatio.toNumber(),
-        targetCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).toNumber(),
+        minTargetRatio,
+        targetCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
       ]
 
-      const verifiedSellExtremes = sellExecutionExtremes.map((exec) => {
-        const sellExecutionCollRatio = new BigNumber(exec)
+      const verifiedSellExtremes = sellExecutionExtremes.map((sellExecutionCollRatio) => {
         const sellExecutionPrice = collateralPriceAtRatio({
           colRatio: sellExecutionCollRatio.div(100),
           collateral: lockedCollateral,
