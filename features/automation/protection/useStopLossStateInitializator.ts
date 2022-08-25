@@ -7,6 +7,7 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
+import { DEFAULT_SL_SLIDER_BOUNDARY } from './common/consts/automationDefaults'
 import { getStartingSlRatio } from './common/helpers'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
@@ -25,14 +26,16 @@ export function useStopLossStateInitializator(
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
+  const sliderMin = ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY)
 
-  const initialVaultCollRatio = zero
+  const initialVaultSlCollRatio = vault.collateralizationRatio.isZero() ? zero : sliderMin
 
+  const defaultThresholdFromLowestPossibleValue = 0.05
   const startingSlRatio = getStartingSlRatio({
     stopLossLevel,
     isStopLossEnabled,
-    initialVaultCollRatio,
-  })
+    initialVaultCollRatio: initialVaultSlCollRatio,
+  }).plus(defaultThresholdFromLowestPossibleValue)
 
   useEffect(() => {
     uiChanges.publish(ADD_FORM_CHANGE, {
@@ -41,7 +44,7 @@ export function useStopLossStateInitializator(
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
+      stopLoss: startingSlRatio,
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'tx-details',
