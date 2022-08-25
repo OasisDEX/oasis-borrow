@@ -207,4 +207,5 @@ export interface AdjustSlFormLayoutProps {
   isAutoSellEnabled: boolean
   isConstantMultipleEnabled: boolean
   autoBuyTriggerData: BasicBSTriggerData
+  isConfirming?: boolean
 }

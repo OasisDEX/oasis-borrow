@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 
 import { getStartingSlRatio } from './common/helpers'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
+import { PROTECTION_STATE_UPDATE } from './common/UITypes/ProtectionFlowState'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
@@ -33,6 +34,13 @@ export function useStopLossStateInitializator(
     isStopLossEnabled,
     initialVaultCollRatio,
   })
+
+  useEffect(() => {
+    uiChanges.publish(PROTECTION_STATE_UPDATE, {
+      type: 'is-confirmation',
+      isConfirmation: false,
+    })
+  }, [])
 
   useEffect(() => {
     uiChanges.publish(ADD_FORM_CHANGE, {

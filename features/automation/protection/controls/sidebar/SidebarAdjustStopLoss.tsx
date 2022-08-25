@@ -13,11 +13,14 @@ import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
+import { calculateStepNumber } from 'helpers/functions'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
+import { PROTECTION_STATE_UPDATE, ProtectionState } from '../../common/UITypes/ProtectionFlowState'
 import { SidebarAdjustStopLossAddStage } from './SidebarAdjustStopLossAddStage'
 import { SidebarAdjustStopLossEditingStage } from './SidebarAdjustStopLossEditingStage'
 
@@ -26,6 +29,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const { uiChanges } = useAppContext()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const gasEstimationContext = useGasEstimationContext()
+  const [protectionState] = useUIChanges<ProtectionState>(PROTECTION_STATE_UPDATE)
 
   const {
     addTriggerConfig,
@@ -49,6 +53,36 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
   const sidebarTxData = extractSidebarTxData(props)
   const basicBSEnabled = useFeatureToggle('BasicBS')
+
+  // TODO: Extract this at a later date and configure to parse some action functions in
+  function createTextBtnConfig(
+    stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure',
+    isConfirmation: boolean,
+  ) {
+    if (stage !== 'txInProgress' && !isConfirmation) {
+      return {
+        textButton: {
+          label: t('protection.navigate-cancel'),
+          hidden: firstStopLossSetup,
+          action: () => toggleForms(),
+        },
+      }
+    }
+    if (isConfirmation && stage !== 'txInProgress') {
+      return {
+        textButton: {
+          label: t('protection.navigate-cancel'),
+          hidden: firstStopLossSetup,
+          action: () =>
+            uiChanges.publish(PROTECTION_STATE_UPDATE, {
+              type: 'is-confirmation',
+              isConfirmation: false,
+            }),
+        },
+      }
+    }
+    return {}
+  }
 
   const errors = errorsStopLossValidation({
     txError,
@@ -81,7 +115,12 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
         {stopLossWriteEnabled ? (
           <>
             {(stage === 'stopLossEditing' || stage === 'txFailure') && (
-              <SidebarAdjustStopLossEditingStage {...props} errors={errors} warnings={warnings} />
+              <SidebarAdjustStopLossEditingStage
+                {...props}
+                errors={errors}
+                warnings={warnings}
+                isConfirming={protectionState.isConfirmation}
+              />
             )}
           </>
         ) : (
@@ -97,22 +136,34 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, stage, token }),
+      // TODO: Refactor this when implementing the new sidebar
+      label: `${
+        protectionState.isConfirmation && stage !== 'txSuccess' ? 'Confirm' : ''
+      } ${getPrimaryButtonLabel({ flow, stage, token })} ${calculateStepNumber(
+        protectionState.isConfirmation,
+        stage,
+        false,
+      )}`,
       disabled: isProgressDisabled || !!errors.length,
       isLoading: stage === 'txInProgress',
       action: () => {
-        if (stage !== 'txSuccess') addTriggerConfig.onClick(() => null)
-        else backToVaultOverview(uiChanges)
+        if (stage !== 'txSuccess' && protectionState.isConfirmation)
+          addTriggerConfig.onClick(() => null)
+        if (!protectionState.isConfirmation) {
+          uiChanges.publish(PROTECTION_STATE_UPDATE, {
+            type: 'is-confirmation',
+            isConfirmation: true,
+          })
+        } else if (protectionState.isConfirmation && stage === 'txSuccess') {
+          backToVaultOverview(uiChanges)
+          uiChanges.publish(PROTECTION_STATE_UPDATE, {
+            type: 'is-confirmation',
+            isConfirmation: false,
+          })
+        }
       },
     },
-    ...(!firstStopLossSetup &&
-      stage !== 'txInProgress' && {
-        textButton: {
-          label: t('protection.navigate-cancel'),
-          hidden: firstStopLossSetup,
-          action: () => toggleForms(),
-        },
-      }),
+    ...(!firstStopLossSetup && createTextBtnConfig(stage, protectionState.isConfirmation)),
     status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 

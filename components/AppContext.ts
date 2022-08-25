@@ -98,6 +98,12 @@ import {
   multiplyPillChangeReducer,
 } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 import {
+  PROTECTION_STATE_UPDATE,
+  ProtectionState,
+  protectionStateReducer,
+  ProtectionStateUpdateAction,
+} from 'features/automation/protection/common/UITypes/ProtectionFlowState'
+import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
   ProtectionModeChangeAction,
@@ -331,6 +337,7 @@ export type SupportedUIChangeType =
   | AutomationChangeFeature
   | NotificationChange
   | TxPayloadChange
+  | ProtectionState
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -338,6 +345,7 @@ export type LegalUiChanges = {
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
+  ProtectionStateUpdate: ProtectionStateUpdateAction
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
@@ -431,6 +439,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
+  uiChangesSubject.configureSubject(PROTECTION_STATE_UPDATE, protectionStateReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
   uiChangesSubject.configureSubject(

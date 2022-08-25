@@ -28,7 +28,7 @@ import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { selectSideBarTextBtnLabel } from 'helpers/functions'
+import { calculateStepNumber, selectSideBarTextBtnLabel } from 'helpers/functions'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -57,6 +57,7 @@ interface SidebarSetupAutoSellProps {
   debtDelta: BigNumber
   collateralDelta: BigNumber
   isConfirmation: boolean
+  isProgressStage: boolean
 }
 
 export function SidebarSetupAutoSell({
@@ -83,6 +84,7 @@ export function SidebarSetupAutoSell({
   isDisabled,
   isFirstSetup,
   isConfirmation,
+  isProgressStage,
 
   debtDelta,
   collateralDelta,
@@ -198,7 +200,11 @@ export function SidebarSetupAutoSell({
         </Grid>
       ),
       primaryButton: {
-        label: primaryButtonLabel,
+        label: `${primaryButtonLabel} ${calculateStepNumber(
+          isConfirmation,
+          stage,
+          isProgressStage,
+        )}`,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {

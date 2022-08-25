@@ -32,9 +32,12 @@ export function selectSideBarTextBtnLabel(
   return t('system.add-trigger')
 }
 
-export function calculateStepNumber (isConfirmation: boolean, isAddForm: boolean, isProgressStage: boolean) {
-  console.log(isProgressStage, 'prog')
-  if(isConfirmation && !isProgressStage) return '(2 / 3)'
-  if(isProgressStage) return '(3 / 3)'
+export function calculateStepNumber(
+  isConfirmation: boolean,
+  stage: string,
+  isProgressStage: boolean,
+) {
+  if (isConfirmation && !isProgressStage && stage !== 'txSuccess') return '(2 / 3)'
+  if (isProgressStage || stage === 'txSuccess') return '(3 / 3)'
   return '(1 / 3)'
 }

@@ -5,7 +5,10 @@ export enum AutomationFromKind {
   CANCEL,
 }
 
-export type ProtectionModeChangeAction = { type: 'change-mode'; currentMode: AutomationFromKind }
+export type ProtectionModeChangeAction = {
+  type: 'change-mode'
+  currentMode: AutomationFromKind
+}
 
 export type ProtectionModeChange = {
   currentMode: AutomationFromKind

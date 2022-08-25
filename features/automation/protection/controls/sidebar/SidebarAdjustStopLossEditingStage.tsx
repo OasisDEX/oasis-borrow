@@ -29,6 +29,7 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'vault'
   | 'isAutoSellEnabled'
   | 'isStopLossEnabled'
+  | 'isConfirming'
 > & { errors: VaultErrorMessage[]; warnings: VaultWarningMessage[] }
 export function SidebarAdjustStopLossEditingStage({
   closePickerConfig,
@@ -47,6 +48,7 @@ export function SidebarAdjustStopLossEditingStage({
   isStopLossEnabled,
   errors,
   warnings,
+  isConfirming,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
@@ -65,14 +67,14 @@ export function SidebarAdjustStopLossEditingStage({
     <>
       {!vault.debt.isZero() ? (
         <Grid>
-          <PickCloseState {...closePickerConfig} />
+          {!isConfirming && <PickCloseState {...closePickerConfig} />}
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('protection.set-downside-protection-desc')}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
           </Text>
-          <SliderValuePicker {...slValuePickerConfig} />
+          {!isConfirming && <SliderValuePicker {...slValuePickerConfig} />}
         </Grid>
       ) : (
         <SidebarFormInfo

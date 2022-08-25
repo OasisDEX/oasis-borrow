@@ -110,9 +110,8 @@ export function AutoBuyFormControl({
 
   const txStatus = basicBuyState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
-  const isProgressStage = txStatus && progressStatuses.includes(txStatus) || false
+  const isProgressStage = (txStatus && progressStatuses.includes(txStatus)) || false
   const isSuccessStage = txStatus === TxStatus.Success
-
 
   const stage = isSuccessStage
     ? 'txSuccess'

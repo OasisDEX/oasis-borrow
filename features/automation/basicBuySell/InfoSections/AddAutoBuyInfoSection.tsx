@@ -91,10 +91,14 @@ export function AddAutoBuyInfoSection({
           label: t('auto-buy.col-to-be-purchased', { token }),
           value: `${collateralToBePurchasedFormatted} ${token}`,
         },
-        {
-          label: 'Max Gas Fee',
-          value: `${maxGasFee} Gwei`,
-        },
+        ...(maxGasFee
+          ? [
+              {
+                label: 'Max Gas Fee',
+                value: `${maxGasFee} Gwei`,
+              },
+            ]
+          : []),
         {
           label: t('auto-sell.estimated-transaction-cost'),
           value: <GasEstimation />,

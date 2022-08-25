@@ -66,9 +66,8 @@ export function AutoSellFormControl({
   shouldRemoveAllowance,
 }: AutoSellFormControlProps) {
   const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
+
   const { uiChanges } = useAppContext()
-  // const [txData] = useUIChanges<TxPayloadChangeBase>(TX_DATA_CHANGE)
-  // console.log('txData', txData)
   const isOwner = context.status === 'connected' && context.account === vault.controller
 
   const addTxData = useMemo(
@@ -135,7 +134,7 @@ export function AutoSellFormControl({
   const txStatus = basicSellState.txDetails?.txStatus
   const isSuccessStage = txStatus === TxStatus.Success
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
-  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isProgressStage = (txStatus && progressStatuses.includes(txStatus)) || false
 
   const stage = isSuccessStage
     ? 'txSuccess'
@@ -148,6 +147,7 @@ export function AutoSellFormControl({
   function txHandler() {
     if (txHelpers) {
       if (stage === 'txSuccess') {
+        console.log('hello there ')
         uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
           type: 'tx-details',
           txDetails: {},
@@ -155,6 +155,10 @@ export function AutoSellFormControl({
         uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
           type: 'current-form',
           currentForm: 'add',
+        })
+        uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+          type: 'is-confirmation',
+          isConfirmation: false,
         })
       } else {
         if (isAddForm) {
@@ -233,6 +237,7 @@ export function AutoSellFormControl({
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
       isConfirmation={basicSellState.isConfirmation}
+      isProgressStage={isProgressStage}
     />
   )
 }

@@ -59,7 +59,7 @@ interface SidebarSetupAutoBuyProps {
   collateralDelta: BigNumber
   isAutoBuyActive: boolean
   isConfirmation: boolean
-  isProgressStage: boolean;
+  isProgressStage: boolean
 }
 
 export function SidebarSetupAutoBuy({
@@ -204,7 +204,11 @@ export function SidebarSetupAutoBuy({
         </Grid>
       ),
       primaryButton: {
-        label: `${primaryButtonLabel} ${calculateStepNumber(isConfirmation, isAddForm, isProgressStage)}`,
+        label: `${primaryButtonLabel} ${calculateStepNumber(
+          isConfirmation,
+          stage,
+          isProgressStage,
+        )}`,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
