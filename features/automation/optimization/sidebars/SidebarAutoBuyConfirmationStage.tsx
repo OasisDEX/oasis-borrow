@@ -4,6 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 import { AutoBuyInfoSectionControl } from './SidebarAutoBuyEditingStage'

@@ -61,7 +61,7 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'cancelSl':
       return 'cancel-stop-loss'
     default:
-      throw new UnreachableCaseError(flow)
+      throw new UnreachableCaseError(flow as never)
   }
 }
 
