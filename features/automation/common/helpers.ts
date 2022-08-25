@@ -6,7 +6,6 @@ import { BasicBSFormChange } from 'features/automation/protection/common/UITypes
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { arrayRange } from 'helpers/arrayRange'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
@@ -172,12 +171,12 @@ export function getEligibleMultipliers({
   return multipliers
     .filter((multiplier) => {
       const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
-      const sellExecutionRange = arrayRange(
+      const sellExecutionExtremes = [
         minTargetRatio.toNumber(),
         targetCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).toNumber(),
-      )
+      ]
 
-      const verifiedSellRange = sellExecutionRange.map((exec) => {
+      const verifiedSellExtremes = sellExecutionExtremes.map((exec) => {
         const sellExecutionCollRatio = new BigNumber(exec)
         const sellExecutionPrice = collateralPriceAtRatio({
           colRatio: sellExecutionCollRatio.div(100),
@@ -199,7 +198,7 @@ export function getEligibleMultipliers({
 
       // IF following array is equal to [false] it means that whole range of sell execution coll ratio would lead
       // to dust limit issue and therefore multiplier should be disabled
-      const deduplicatedVerifiedSellRange = [...new Set(verifiedSellRange)]
+      const deduplicatedVerifiedSellExtremes = [...new Set(verifiedSellExtremes)]
 
       const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
         colRatio: collateralizationRatio,
@@ -218,7 +217,7 @@ export function getEligibleMultipliers({
 
       return !(
         debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio)) ||
-        (deduplicatedVerifiedSellRange.length === 1 && !deduplicatedVerifiedSellRange[0])
+        (deduplicatedVerifiedSellExtremes.length === 1 && !deduplicatedVerifiedSellExtremes[0])
       )
     })
     .filter((item) => item >= minMultiplier && item <= maxMultiplier)
