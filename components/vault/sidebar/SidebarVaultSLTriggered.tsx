@@ -54,7 +54,6 @@ export function SidebarVaultSLTriggered({ closeEvent }: SidebarVaultSLTriggeredP
         tokensSold={sold}
         totalFee={fee}
         collRatio={beforeCollateralizationRatio}
-        slippage={new BigNumber(2)} // TODO missing info in cache
       />
     </>
   )

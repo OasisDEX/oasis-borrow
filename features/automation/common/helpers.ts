@@ -171,22 +171,53 @@ export function getEligibleMultipliers({
   return multipliers
     .filter((multiplier) => {
       const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
+      const sellExecutionExtremes = [
+        minTargetRatio,
+        targetCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+      ]
 
-      const executionPrice = collateralPriceAtRatio({
+      const verifiedSellExtremes = sellExecutionExtremes.map((sellExecutionCollRatio) => {
+        const sellExecutionPrice = collateralPriceAtRatio({
+          colRatio: sellExecutionCollRatio.div(100),
+          collateral: lockedCollateral,
+          vaultDebt: debt,
+        })
+
+        const { debtDelta } = getBasicBSVaultChange({
+          targetCollRatio,
+          execCollRatio: sellExecutionCollRatio,
+          deviation,
+          executionPrice: sellExecutionPrice,
+          lockedCollateral,
+          debt,
+        })
+
+        return !debtFloor.gt(debt.plus(debtDelta))
+      })
+
+      // IF following array is equal to [false] it means that whole range of sell execution coll ratio would lead
+      // to dust limit issue and therefore multiplier should be disabled
+      const deduplicatedVerifiedSellExtremes = [...new Set(verifiedSellExtremes)]
+
+      const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
         colRatio: collateralizationRatio,
         collateral: lockedCollateral,
         vaultDebt: debt,
       })
 
-      const { debtDelta } = getBasicBSVaultChange({
+      const { debtDelta: debtDeltaAtCurrentCollRatio } = getBasicBSVaultChange({
         targetCollRatio,
         execCollRatio: collateralizationRatio.times(100),
         deviation,
-        executionPrice,
+        executionPrice: executionPriceAtCurrentCollRatio,
         lockedCollateral,
-        debt: debt,
+        debt,
       })
-      return !debtFloor.gt(debt.plus(debtDelta))
+
+      return !(
+        debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio)) ||
+        (deduplicatedVerifiedSellExtremes.length === 1 && !deduplicatedVerifiedSellExtremes[0])
+      )
     })
     .filter((item) => item >= minMultiplier && item <= maxMultiplier)
 }

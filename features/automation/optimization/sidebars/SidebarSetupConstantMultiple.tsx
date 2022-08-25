@@ -166,6 +166,7 @@ export function SidebarSetupConstantMultiple({
                   estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
                   estimatedBuyFee={estimatedBuyFee}
                   estimatedSellFee={estimatedSellFee}
+                  stopLossTriggerData={stopLossTriggerData}
                 />
               )}
               {isRemoveForm && (

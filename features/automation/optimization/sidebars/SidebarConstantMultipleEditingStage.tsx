@@ -23,11 +23,13 @@ import {
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
@@ -54,6 +56,7 @@ interface SidebaConstantMultiplerEditingStageProps {
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
+  stopLossTriggerData: StopLossTriggerData
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -74,6 +77,7 @@ export function SidebarConstantMultipleEditingStage({
   constantMultipleState,
   autoSellTriggerData,
   constantMultipleTriggerData,
+  stopLossTriggerData,
   nextBuyPrice,
   nextSellPrice,
   collateralToBePurchased,
@@ -323,27 +327,46 @@ export function SidebarConstantMultipleEditingStage({
     </>
   ) : (
     <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-      <Trans
-        i18nKey="constant-multiple.sl-too-high"
-        components={[
-          <Text
-            as="span"
-            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
-            onClick={() => {
-              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-                type: 'Protection',
-                currentProtectionFeature: 'stopLoss',
-              })
-              setHash(VaultViewMode.Protection)
-            }}
-          />,
-        ]}
-        values={{
-          maxStopLoss: calculateCollRatioFromMultiple(constantMultipleState.multipliers[0]).minus(
-            MIX_MAX_COL_RATIO_TRIGGER_OFFSET * 2,
-          ),
-        }}
-      />
+      {stopLossTriggerData?.isStopLossEnabled ? (
+        <Trans
+          i18nKey="constant-multiple.sl-too-high"
+          components={[
+            <Text
+              as="span"
+              sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+              onClick={() => {
+                uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                  type: 'Protection',
+                  currentProtectionFeature: 'stopLoss',
+                })
+                setHash(VaultViewMode.Protection)
+              }}
+            />,
+          ]}
+          values={{
+            maxStopLoss: calculateCollRatioFromMultiple(
+              constantMultipleState.eligibleMultipliers[0] || constantMultipleState.multipliers[0],
+            ).minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET * 2),
+          }}
+        />
+      ) : (
+        <Trans
+          i18nKey="constant-multiple.coll-ratio-too-close-to-dust-limit"
+          components={[
+            <Text
+              as="span"
+              sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+              onClick={() => {
+                uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                  type: 'change-tab',
+                  currentMode: VaultViewMode.Overview,
+                })
+                setHash(VaultViewMode.Protection)
+              }}
+            />,
+          ]}
+        />
+      )}
     </Text>
   )
 }
