@@ -45,7 +45,6 @@ export function StopLossTriggeredFormControl({
   )
 
   const token = closeEvent.token
-  const slippage = new BigNumber(2) // TODO missing info in cache
   const date = closeEvent.timestamp
   const tokensSold = closeEvent.sold
   const collRatio = closeEvent.beforeCollateralizationRatio
@@ -62,7 +61,6 @@ export function StopLossTriggeredFormControl({
       date={date}
       totalFee={totalFee}
       collRatio={collRatio}
-      slippage={slippage}
       isToCollateral={isToCollateral}
     />
   )

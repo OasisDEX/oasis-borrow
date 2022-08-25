@@ -865,7 +865,7 @@
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault",
     "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI",
-    "target-coll-ratio-exceeded-dust-limit-coll-ratio": "You cannot select a higher Target Collateralization Ratio, as it would result in the vault hitting the dust limit",
+    "target-coll-ratio-exceeded-dust-limit-coll-ratio": "Your selected parameters would result in your vault hitting the dust limit. Please adjust the parameters in order to continue",
     "auto-buy-max-price-requred": "Please enter a maximum buy price or select <1>Set No Threshold<1>",
     "minimum-sell-price-not-provided": "Please enter a minimum sell price or select <1>Set No Threshold<1>",
     "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
@@ -1567,6 +1567,7 @@
     "adding-new-triggers-disabled": "Creation of the new Constant Multiple trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Constant Multiple triggers",
     "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple.",
+    "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple.",
     "closed-vault-existing-trigger-header": "Your vault is closed but Constant Multiple is still active",
     "closed-vault-existing-trigger-description":"You can cancel your existing Constant Multiple here or deposit into your vault in overview tab"
   },

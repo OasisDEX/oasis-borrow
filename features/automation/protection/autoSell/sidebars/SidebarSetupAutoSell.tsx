@@ -50,6 +50,7 @@ interface SidebarSetupAutoSellProps {
   isDisabled: boolean
   isFirstSetup: boolean
   debtDelta: BigNumber
+  debtDeltaAtCurrentCollRatio: BigNumber
   collateralDelta: BigNumber
 }
 
@@ -78,6 +79,7 @@ export function SidebarSetupAutoSell({
   isFirstSetup,
 
   debtDelta,
+  debtDeltaAtCurrentCollRatio,
   collateralDelta,
 }: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
@@ -105,6 +107,7 @@ export function SidebarSetupAutoSell({
     ilkData,
     vault,
     debtDelta,
+    debtDeltaAtCurrentCollRatio,
     basicSellState,
     autoBuyTriggerData,
     constantMultipleTriggerData,
@@ -128,6 +131,8 @@ export function SidebarSetupAutoSell({
     basicSellState,
     sliderMin: min,
     sliderMax: max,
+    debtDeltaAtCurrentCollRatio,
+    debtFloor: ilkData.debtFloor,
   })
 
   const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
