@@ -18,15 +18,13 @@ import {
   ACCEPTABLE_FEE_DIFF,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import {
-  calculateCollRatioFromMultiple,
-} from 'features/automation/common/helpers'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,

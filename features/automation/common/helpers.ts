@@ -2,9 +2,9 @@ import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import {
   TriggerRecord,
