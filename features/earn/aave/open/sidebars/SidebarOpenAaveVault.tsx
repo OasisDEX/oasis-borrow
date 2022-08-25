@@ -2,7 +2,7 @@ import { useMachine } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
 
 import {
@@ -10,6 +10,8 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
+import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/types'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
@@ -43,6 +45,7 @@ function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStatePr
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
+        <OpenVaultAnimation />
         <OpenAaveInformationContainer state={state} send={send} />
       </Grid>
     ),
@@ -50,7 +53,7 @@ function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStatePr
       steps: [1, state.context.totalSteps!],
       isLoading: true,
       disabled: true,
-      label: t('confirm-btn'),
+      label: t('open-earn.aave.vault-form.confirm-btn'),
     },
   }
 
@@ -132,6 +135,30 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
+function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('open-earn.aave.vault-form.success-title'),
+    content: (
+      <Grid gap={3}>
+        <Box>
+          <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
+          </Flex>
+        </Box>
+        <OpenAaveInformationContainer state={state} send={send} />
+      </Grid>
+    ),
+    primaryButton: {
+      label: t('open-earn.aave.vault-form.go-to-position'),
+      url: `/earn/${state.context.strategyName}/${state.context.proxyAddress}`,
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
 export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
   const [state, send] = useMachine(aaveStateMachine)
 
@@ -146,6 +173,8 @@ export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
       return <OpenAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('txFailure'):
       return <OpenAaveFailureStateView state={state} send={send} />
+    case state.matches('txSuccess'):
+      return <OpenAaveSuccessStateView state={state} send={send} />
     default: {
       return <></>
     }

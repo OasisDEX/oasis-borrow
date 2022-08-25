@@ -9,23 +9,18 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
+import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 
-interface Props {
-  strategyName: string
-}
-
-export function AaveOpenView({ strategyName }: Props) {
-  const { aaveStateMachine$ } = useAaveContext()
-  const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function AaveManagePositionView({ proxy }: { proxy: string }) {
+  const { aaveManageStateMachine$ } = useAaveContext()
+  const [stateMachine, stateMachineError] = useObservable(aaveManageStateMachine$)
 
   const { t } = useTranslation()
-
   return (
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
         {([_stateMachine]) => {
-          _stateMachine.context.strategyName = strategyName
           return (
             <Container variant="vaultPageContainer">
               [HEADER]
@@ -33,12 +28,12 @@ export function AaveOpenView({ strategyName }: Props) {
                 variant="underline"
                 sections={[
                   {
-                    value: 'simulate',
-                    label: t('open-vault.simulate'),
+                    value: 'overview',
+                    label: t('system.overview'),
                     content: (
                       <Grid variant="vaultContainer">
-                        <Box>[OPEN AAVE DETAILS]</Box>
-                        <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
+                        <Box>[MANAGE AAVE DETAILS]</Box>
+                        <Box>{<SidebarManageAaveVault aaveStateMachine={_stateMachine} />}</Box>
                       </Grid>
                     ),
                   },

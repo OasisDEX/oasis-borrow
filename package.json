@@ -5,13 +5,6 @@
   "engines": {
     "node": ">=14.x <=16.x"
   },
-  "private": true,
-  "workspaces": [
-    "utils",
-    "utils/**",
-    "features/**",
-    "types"
-  ],
   "scripts": {
     "start": "next dev",
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
@@ -220,6 +213,7 @@
     "buffer": "^4.3.0",
     "chai": "^4.2.0",
     "chai-subset": "^1.6.0",
+    "circular-dependency-plugin": "^5.2.2",
     "codecov": "^3.7.2",
     "crypto-browserify": "^3.12.0",
     "earljs": "^0.0.11",

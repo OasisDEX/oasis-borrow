@@ -5,6 +5,13 @@ import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
+import { getManageAaveStateMachine$ } from './manage/state/getManageAaveStateMachine'
+import { getManageAavePositionStateMachineServices } from './manage/state/services'
+import {
+  getManageAaveParametersStateMachine$,
+  getManageAaveParametersStateMachineServices$,
+} from './manage/transaction'
+import { getManageAaveTransactionMachine } from './manage/transaction/getTransactionMachine'
 import { getOpenAaveStateMachine$ } from './open/state/getOpenAaveStateMachine'
 import { getOpenAavePositionStateMachineServices } from './open/state/services'
 import {
@@ -14,6 +21,7 @@ import {
 import { getOpenAaveTransactionMachine } from './open/transaction/getTransactionMachine'
 
 export function setupAaveContext({
+  userSettings$,
   connectedContext$,
   proxyAddress$,
   txHelpers$,
@@ -35,10 +43,22 @@ export function setupAaveContext({
     contextForAddress$,
     txHelpers$,
     gasEstimation$,
+    userSettings$,
+  )
+
+  const manageAaveParametersStateMachineServices$ = getManageAaveParametersStateMachineServices$(
+    contextForAddress$,
+    txHelpers$,
+    gasEstimation$,
+    userSettings$,
   )
 
   const openAaveParametersStateMachine$ = getOpenAaveParametersStateMachine$(
     openAaveParametersStateMachineServices$,
+  )
+
+  const manageAaveParametersStateMachine$ = getManageAaveParametersStateMachine$(
+    manageAaveParametersStateMachineServices$,
   )
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
@@ -55,7 +75,15 @@ export function setupAaveContext({
     proxyForAccount$,
   )
 
+  const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
+    contextForAddress$,
+    txHelpers$,
+    tokenBalances$,
+    proxyForAccount$,
+  )
+
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
+  const manageTransactionMachine = getManageAaveTransactionMachine(txHelpers$, contextForAddress$)
 
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
@@ -64,8 +92,16 @@ export function setupAaveContext({
     transactionMachine,
   )
 
+  const aaveManageStateMachine$ = getManageAaveStateMachine$(
+    manageAaveStateMachineServices,
+    manageAaveParametersStateMachine$,
+    proxyStateMachine$,
+    manageTransactionMachine,
+  )
+
   return {
     aaveStateMachine$,
+    aaveManageStateMachine$,
   }
 }
 

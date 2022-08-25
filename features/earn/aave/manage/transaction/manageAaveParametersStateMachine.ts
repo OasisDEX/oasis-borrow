@@ -3,15 +3,15 @@ import { assign, Machine, sendUpdate } from 'xstate'
 import { choose, log } from 'xstate/lib/actions'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { assertErrorEvent, assertEventType } from '../../../../../utils/xstate'
-import { OpenPositionResult } from '../../../../aave'
+import { assertErrorEvent, assertEventType } from '../../../../../utils/xstate/index'
+import { OpenPositionResult } from '../../../../aave/index'
 enum services {
   getParameters = 'getParameters',
   estimateGas = 'estimateGas',
   estimateGasPrice = 'estimateGasPrice',
 }
 
-type OpenAaveParametersStateMachineContext = {
+type ManageAaveParametersStateMachineContext = {
   readonly hasParent: boolean | false
 
   token?: string
@@ -23,7 +23,7 @@ type OpenAaveParametersStateMachineContext = {
   gasPriceEstimation?: HasGasEstimation
 }
 
-export type OpenAaveParametersStateMachineEvents =
+export type ManageAaveParametersStateMachineEvents =
   | {
       type: 'VARIABLES_RECEIVED'
       readonly token: string
@@ -44,7 +44,7 @@ export type OpenAaveParametersStateMachineEvents =
       data: HasGasEstimation
     }
 
-type OpenAaveParametersStateMachineSchema = {
+type ManageAaveParametersStateMachineSchema = {
   states: {
     idle: {}
     gettingParameters: {}
@@ -54,8 +54,8 @@ type OpenAaveParametersStateMachineSchema = {
 }
 
 type PromiseService<T> = (
-  context: OpenAaveParametersStateMachineContext,
-  event: OpenAaveParametersStateMachineEvents,
+  context: ManageAaveParametersStateMachineContext,
+  event: ManageAaveParametersStateMachineEvents,
 ) => Promise<T>
 
 enum actions {
@@ -73,20 +73,20 @@ export interface PreTransactionSequenceMachineServices {
   [services.estimateGasPrice]: PromiseService<HasGasEstimation>
 }
 
-export type OpenAaveParametersStateMachineType = typeof openAaveParametersStateMachine
+export type ManageAaveParametersStateMachineType = typeof manageAaveParametersStateMachine
 
 /*
   Machine based on the following pattern: https://xstate.js.org/docs/patterns/sequence.html#async-sequences
  */
-export const openAaveParametersStateMachine = Machine<
-  OpenAaveParametersStateMachineContext,
-  OpenAaveParametersStateMachineSchema,
-  OpenAaveParametersStateMachineEvents
+export const manageAaveParametersStateMachine = Machine<
+  ManageAaveParametersStateMachineContext,
+  ManageAaveParametersStateMachineSchema,
+  ManageAaveParametersStateMachineEvents
 >(
   {
-    id: 'openAaveParameters',
+    id: 'manageAaveParameters',
     initial: 'idle',
-    context: {} as OpenAaveParametersStateMachineContext,
+    context: {} as ManageAaveParametersStateMachineContext,
     schema: {
       services: {} as {
         [services.getParameters]: {
@@ -175,8 +175,8 @@ export const openAaveParametersStateMachine = Machine<
     actions: {
       [actions.assignReceivedParameters]: assign(
         (
-          context: OpenAaveParametersStateMachineContext,
-          event: OpenAaveParametersStateMachineEvents,
+          context: ManageAaveParametersStateMachineContext,
+          event: ManageAaveParametersStateMachineEvents,
         ) => {
           assertEventType(event, 'VARIABLES_RECEIVED')
 
@@ -190,8 +190,8 @@ export const openAaveParametersStateMachine = Machine<
       ),
       [actions.assignTransactionParameters]: assign(
         (
-          context: OpenAaveParametersStateMachineContext,
-          event: OpenAaveParametersStateMachineEvents,
+          context: ManageAaveParametersStateMachineContext,
+          event: ManageAaveParametersStateMachineEvents,
         ) => {
           assertEventType(event, `done.invoke.${services.getParameters}`)
           return {
@@ -218,8 +218,8 @@ export const openAaveParametersStateMachine = Machine<
         }
       }),
       [actions.notifyParent]: choose<
-        OpenAaveParametersStateMachineContext,
-        OpenAaveParametersStateMachineEvents
+        ManageAaveParametersStateMachineContext,
+        ManageAaveParametersStateMachineEvents
       >([
         {
           cond: (context) => context.hasParent, // If you know better way to check parent please tell me

@@ -1,15 +1,14 @@
 import { Machine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 
-import { actions, openAaveMachineActions } from './actions'
-import { emptyProxyAddress, enoughBalance, validTransactionParameters } from './guards'
+import { actions, manageAaveMachineActions } from './actions'
+import { validCloseTransactionParameters, validTransactionParameters } from './guards'
 import { services } from './services'
-import { OpenAaveContext, OpenAaveEvent } from './types'
+import { ManageAaveContext, ManageAaveEvent } from './types'
 
-export interface OpenAaveStateMachineSchema {
+export interface ManageAaveStateMachineSchema {
   states: {
     editing: {}
-    proxyCreating: {}
     reviewing: {}
     txInProgress: {}
     txFailure: {}
@@ -17,31 +16,31 @@ export interface OpenAaveStateMachineSchema {
   }
 }
 
-export const createOpenAaveStateMachine = Machine<
-  OpenAaveContext,
-  OpenAaveStateMachineSchema,
-  OpenAaveEvent
+export const createManageAaveStateMachine = Machine<
+  ManageAaveContext,
+  ManageAaveStateMachineSchema,
+  ManageAaveEvent
 >(
   {
-    key: 'aaveOpen',
+    key: 'aaveManage',
     initial: 'editing',
     states: {
       editing: {
         entry: [actions.initContextValues, actions.spawnParametersMachine],
         invoke: [
-          {
-            src: services.getBalance,
-            id: services.getBalance,
-          },
+          // {
+          //   src: services.getBalance,
+          //   id: services.getBalance,
+          // },
           {
             src: services.getProxyAddress,
             id: services.getProxyAddress,
           },
         ],
         on: {
-          SET_BALANCE: {
-            actions: [actions.setTokenBalanceFromEvent],
-          },
+          // SET_BALANCE: {
+          //   actions: [actions.setTokenBalanceFromEvent],
+          // },
           PROXY_ADDRESS_RECEIVED: {
             actions: [
               actions.setReceivedProxyAddress,
@@ -49,21 +48,8 @@ export const createOpenAaveStateMachine = Machine<
               actions.sendUpdateToParametersMachine,
             ],
           },
-          SET_AMOUNT: {
-            actions: [
-              actions.setAmount,
-              actions.calculateAuxiliaryAmount,
-              actions.sendUpdateToParametersMachine,
-            ],
-          },
-          CREATE_PROXY: {
-            target: 'proxyCreating',
-            actions: [actions.spawnProxyMachine],
-            cond: emptyProxyAddress,
-          },
-          CONFIRM_DEPOSIT: {
+          POSITION_CLOSED: {
             target: 'reviewing',
-            cond: enoughBalance,
           },
           'xstate.update': {
             actions: [
@@ -73,27 +59,16 @@ export const createOpenAaveStateMachine = Machine<
           },
         },
       },
-      proxyCreating: {
-        on: {
-          'done.invoke.proxy': {
-            target: 'editing',
-            actions: [actions.getProxyAddressFromProxyMachine],
-          },
-          'error.platform.proxy': {
-            target: 'editing',
-          },
-        },
-      },
       reviewing: {
-        entry: [
-          actions.setCurrentStepToTwo,
-          actions.sendUpdateToParametersMachine,
-          actions.spawnTransactionMachine,
-        ],
+        entry: [actions.sendUpdateToParametersMachine, actions.spawnTransactionMachine],
         on: {
-          START_CREATING_POSITION: {
+          START_ADJUSTING_POSITION: {
             target: 'txInProgress',
             cond: validTransactionParameters,
+          },
+          START_CLOSING_POSITION: {
+            target: 'txInProgress',
+            cond: validCloseTransactionParameters,
           },
           BACK_TO_EDITING: {
             target: 'editing',
@@ -107,7 +82,6 @@ export const createOpenAaveStateMachine = Machine<
           },
         },
       },
-
       txInProgress: {
         entry: [actions.updateTransactionParameters, actions.startTransaction],
         on: {
@@ -134,15 +108,15 @@ export const createOpenAaveStateMachine = Machine<
   {
     guards: {},
     actions: {
-      ...openAaveMachineActions,
+      ...manageAaveMachineActions,
     },
     services: {
       [services.getProxyAddress]: () => {
         throw new Error('getProxyAddress not implemented. Pass it via config')
       },
-      [services.getBalance]: () => {
-        throw new Error('getBalance not implemented. Pass it via config')
-      },
+      // [services.getBalance]: () => {
+      //   throw new Error('getBalance not implemented. Pass it via config')
+      // },
     },
   },
 )
