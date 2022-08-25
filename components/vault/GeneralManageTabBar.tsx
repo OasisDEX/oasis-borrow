@@ -45,7 +45,7 @@ export function GeneralManageTabBar({
   const [mode, setMode] = useState<VaultViewMode>(initialMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('AutoBS')
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -84,7 +84,7 @@ export function GeneralManageTabBar({
               },
             ]
           : []),
-        ...(basicBSEnabled && showAutomationTabs
+        ...(autoBSEnabled && showAutomationTabs
           ? [
               {
                 label: t('system.optimization'),

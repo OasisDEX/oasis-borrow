@@ -2,11 +2,11 @@ import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
-import { extractAutoBSData } from 'features/automation/common/state/basicBSTriggerData'
 import { BasicSellDetailsControl } from 'features/automation/protection/autoSell/controls/BasicSellDetailsControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossDetailsControl } from 'features/automation/protection/stopLoss/controls/StopLossDetailsControl'
@@ -35,7 +35,7 @@ export function ProtectionDetailsControl({
     triggerType: TriggerType.BasicSell,
   })
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('AutoBS')
 
   const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
     currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
@@ -53,7 +53,7 @@ export function ProtectionDetailsControl({
         ilkData={ilkData}
         isStopLossActive={isStopLossActive}
       />
-      {basicBSEnabled && (
+      {autoBSEnabled && (
         <BasicSellDetailsControl
           vault={vault}
           basicSellTriggerData={basicSellTriggerData}

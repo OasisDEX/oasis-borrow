@@ -3,9 +3,9 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import {
-  BasicBSTriggerData,
+  AutoBSTriggerData,
   extractAutoBSData,
-} from 'features/automation/common/state/basicBSTriggerData'
+} from 'features/automation/common/state/autoBSTriggerData'
 import {
   extractStopLossData,
   StopLossTriggerData,
@@ -164,7 +164,7 @@ async function getDataFromCache(
 export type VaultWithHistory = VaultWithValue<VaultWithType> & {
   history: VaultEvent[]
   stopLossData: StopLossTriggerData
-  basicSellData: BasicBSTriggerData
+  basicSellData: AutoBSTriggerData
 }
 
 function mapToVaultWithHistory(

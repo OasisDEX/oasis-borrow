@@ -3,7 +3,7 @@ import { calculateCollRatioFromMultiple } from 'features/automation/common/helpe
 import {
   AutomationChangeAction,
   AutomationFormChange,
-} from 'features/automation/common/state/basicBSFormChange'
+} from 'features/automation/common/state/autoBSFormChange'
 
 export const CONSTANT_MULTIPLE_FORM_CHANGE = 'CONSTANT_MULTIPLE_FORM_CHANGE'
 

@@ -24,11 +24,11 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
 
   const flow: SidebarFlow = 'cancelSl'
   const sidebarTxData = extractSidebarTxData(props)
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('AutoBS')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
-    ...(basicBSEnabled && {
+    ...(autoBSEnabled && {
       dropdown: {
         forcePanel: 'stopLoss',
         disabled: isDropdownDisabled({ stage }),

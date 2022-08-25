@@ -8,24 +8,24 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import {
-  checkIfDisabledBasicBS,
-  checkIfEditingBasicBS,
-  getBasicBSVaultChange,
-  prepareBasicBSResetData,
+  checkIfDisabledAutoBS,
+  checkIfEditingAutoBS,
+  getAutoBSVaultChange,
+  prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
 import {
   AUTO_SELL_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/common/state/basicBSFormChange'
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import {
-  BasicBSTriggerData,
-  prepareAddBasicBSTriggerData,
-  prepareRemoveBasicBSTriggerData,
-} from 'features/automation/common/state/basicBSTriggerData'
+  AutoBSTriggerData,
+  prepareAddAutoBSTriggerData,
+  prepareRemoveAutoBSTriggerData,
+} from 'features/automation/common/state/autoBSTriggerData'
 import {
-  addBasicBSTrigger,
-  removeBasicBSTrigger,
-} from 'features/automation/common/state/basicBStxHandlers'
+  addAutoBSTrigger,
+  removeAutoBSTrigger,
+} from 'features/automation/common/state/autoBStxHandlers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
@@ -40,8 +40,8 @@ interface AutoSellFormControlProps {
   vault: Vault
   ilkData: IlkData
   balanceInfo: BalanceInfo
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoSellActive: boolean
@@ -65,53 +65,53 @@ export function AutoSellFormControl({
   ethMarketPrice,
   shouldRemoveAllowance,
 }: AutoSellFormControlProps) {
-  const [basicSellState] = useUIChanges<BasicBSFormChange>(AUTO_SELL_FORM_CHANGE)
+  const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
   const { uiChanges } = useAppContext()
 
   const isOwner = context.status === 'connected' && context.account === vault.controller
 
   const addTxData = useMemo(
     () =>
-      prepareAddBasicBSTriggerData({
+      prepareAddAutoBSTriggerData({
         vaultData: vault,
         triggerType: TriggerType.BasicSell,
-        execCollRatio: basicSellState.execCollRatio,
-        targetCollRatio: basicSellState.targetCollRatio,
-        maxBuyOrMinSellPrice: basicSellState.withThreshold
-          ? basicSellState.maxBuyOrMinSellPrice || zero
+        execCollRatio: autoSellState.execCollRatio,
+        targetCollRatio: autoSellState.targetCollRatio,
+        maxBuyOrMinSellPrice: autoSellState.withThreshold
+          ? autoSellState.maxBuyOrMinSellPrice || zero
           : zero,
-        continuous: basicSellState.continuous,
-        deviation: basicSellState.deviation,
-        replacedTriggerId: basicSellState.triggerId,
-        maxBaseFeeInGwei: basicSellState.maxBaseFeeInGwei,
+        continuous: autoSellState.continuous,
+        deviation: autoSellState.deviation,
+        replacedTriggerId: autoSellState.triggerId,
+        maxBaseFeeInGwei: autoSellState.maxBaseFeeInGwei,
       }),
     [
-      basicSellState.execCollRatio.toNumber(),
-      basicSellState.targetCollRatio.toNumber(),
-      basicSellState.maxBuyOrMinSellPrice?.toNumber(),
-      basicSellState.triggerId.toNumber(),
-      basicSellState.maxBaseFeeInGwei.toNumber(),
+      autoSellState.execCollRatio.toNumber(),
+      autoSellState.targetCollRatio.toNumber(),
+      autoSellState.maxBuyOrMinSellPrice?.toNumber(),
+      autoSellState.triggerId.toNumber(),
+      autoSellState.maxBaseFeeInGwei.toNumber(),
       vault.collateralizationRatio.toNumber(),
     ],
   )
 
   const cancelTxData = useMemo(
     () =>
-      prepareRemoveBasicBSTriggerData({
+      prepareRemoveAutoBSTriggerData({
         vaultData: vault,
         triggerType: TriggerType.BasicSell,
-        triggerId: basicSellState.triggerId,
+        triggerId: autoSellState.triggerId,
         shouldRemoveAllowance,
       }),
-    [basicSellState.triggerId.toNumber(), shouldRemoveAllowance],
+    [autoSellState.triggerId.toNumber(), shouldRemoveAllowance],
   )
 
-  const isAddForm = basicSellState.currentForm === 'add'
-  const isRemoveForm = basicSellState.currentForm === 'remove'
+  const isAddForm = autoSellState.currentForm === 'add'
+  const isRemoveForm = autoSellState.currentForm === 'remove'
 
-  const isEditing = checkIfEditingBasicBS({
-    basicBSTriggerData: autoSellTriggerData,
-    basicBSState: basicSellState,
+  const isEditing = checkIfEditingAutoBS({
+    autoBSTriggerData: autoSellTriggerData,
+    autoBSState: autoSellState,
     isRemoveForm,
   })
   useEffect(() => {
@@ -131,7 +131,7 @@ export function AutoSellFormControl({
     }
   }, [addTxData, cancelTxData, isAutoSellActive])
 
-  const txStatus = basicSellState.txDetails?.txStatus
+  const txStatus = autoSellState.txDetails?.txStatus
   const isSuccessStage = txStatus === TxStatus.Success
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
@@ -157,10 +157,10 @@ export function AutoSellFormControl({
         })
       } else {
         if (isAddForm) {
-          addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, AUTO_SELL_FORM_CHANGE)
+          addAutoBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, AUTO_SELL_FORM_CHANGE)
         }
         if (isRemoveForm) {
-          removeBasicBSTrigger(
+          removeAutoBSTrigger(
             txHelpers,
             cancelTxData,
             uiChanges,
@@ -179,23 +179,23 @@ export function AutoSellFormControl({
     })
     uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
       type: 'reset',
-      resetData: prepareBasicBSResetData(autoSellTriggerData),
+      resetData: prepareAutoBSResetData(autoSellTriggerData),
     })
   }
 
-  const isDisabled = checkIfDisabledBasicBS({
+  const isDisabled = checkIfDisabledAutoBS({
     isProgressStage,
     isOwner,
     isEditing,
     isAddForm,
-    basicBSState: basicSellState,
+    autoBSState: autoSellState,
     stage,
   })
 
   const isFirstSetup = autoSellTriggerData.triggerId.isZero()
 
   const executionPrice = collateralPriceAtRatio({
-    colRatio: basicSellState.execCollRatio.div(100),
+    colRatio: autoSellState.execCollRatio.div(100),
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
@@ -206,19 +206,19 @@ export function AutoSellFormControl({
     vaultDebt: vault.debt,
   })
 
-  const { debtDelta, collateralDelta } = getBasicBSVaultChange({
-    targetCollRatio: basicSellState.targetCollRatio,
-    execCollRatio: basicSellState.execCollRatio,
-    deviation: basicSellState.deviation,
+  const { debtDelta, collateralDelta } = getAutoBSVaultChange({
+    targetCollRatio: autoSellState.targetCollRatio,
+    execCollRatio: autoSellState.execCollRatio,
+    deviation: autoSellState.deviation,
     executionPrice,
     lockedCollateral: vault.lockedCollateral,
     debt: vault.debt,
   })
 
-  const { debtDelta: debtDeltaAtCurrentCollRatio } = getBasicBSVaultChange({
-    targetCollRatio: basicSellState.targetCollRatio,
+  const { debtDelta: debtDeltaAtCurrentCollRatio } = getAutoBSVaultChange({
+    targetCollRatio: autoSellState.targetCollRatio,
     execCollRatio: vault.collateralizationRatio.times(100),
-    deviation: basicSellState.deviation,
+    deviation: autoSellState.deviation,
     executionPrice: executionPriceAtCurrentCollRatio,
     lockedCollateral: vault.lockedCollateral,
     debt: vault.debt,
@@ -236,7 +236,7 @@ export function AutoSellFormControl({
       isAutoSellActive={isAutoSellActive}
       context={context}
       ethMarketPrice={ethMarketPrice}
-      basicSellState={basicSellState}
+      autoSellState={autoSellState}
       txHandler={txHandler}
       textButtonHandler={textButtonHandler}
       stage={stage}

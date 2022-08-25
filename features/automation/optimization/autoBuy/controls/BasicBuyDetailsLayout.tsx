@@ -6,11 +6,11 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { AppLink } from 'components/Links'
 import { ContentCardTargetColRatioAfterBuy } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterBuy'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -22,7 +22,7 @@ export interface BasicBuyDetailsLayoutProps {
   nextBuyPrice: BigNumber
   targetColRatio: BigNumber
   threshold: BigNumber
-  basicBuyTriggerData: BasicBSTriggerData
+  basicBuyTriggerData: AutoBSTriggerData
   afterTriggerColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
 }

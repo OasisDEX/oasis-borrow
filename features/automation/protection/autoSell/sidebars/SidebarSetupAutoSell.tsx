@@ -5,15 +5,15 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAutoSellAddEditingStage'
 import {
-  errorsBasicSellValidation,
-  warningsBasicSellValidation,
+  errorsAutoSellValidation,
+  warningsAutoSellValidation,
 } from 'features/automation/protection/autoSell/validators'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
@@ -33,14 +33,14 @@ interface SidebarSetupAutoSellProps {
   vault: Vault
   ilkData: IlkData
   balanceInfo: BalanceInfo
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
-  basicSellState: BasicBSFormChange
+  autoSellState: AutoBSFormChange
   txHandler: () => void
   textButtonHandler: () => void
   stage: SidebarVaultStages
@@ -67,7 +67,7 @@ export function SidebarSetupAutoSell({
   constantMultipleTriggerData,
 
   isAutoSellActive,
-  basicSellState,
+  autoSellState,
   txHandler,
   textButtonHandler,
   stage,
@@ -95,7 +95,7 @@ export function SidebarSetupAutoSell({
 
   const sidebarStatus = getSidebarStatus({
     stage,
-    txHash: basicSellState.txDetails?.txHash,
+    txHash: autoSellState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
   })
@@ -103,12 +103,12 @@ export function SidebarSetupAutoSell({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
   const sidebarTitle = getSidebarTitle({ flow, stage, token: vault.token })
 
-  const errors = errorsBasicSellValidation({
+  const errors = errorsAutoSellValidation({
     ilkData,
     vault,
     debtDelta,
     debtDeltaAtCurrentCollRatio,
-    basicSellState,
+    autoSellState,
     autoBuyTriggerData,
     constantMultipleTriggerData,
     isRemoveForm,
@@ -120,15 +120,15 @@ export function SidebarSetupAutoSell({
     ilkData,
   })
 
-  const warnings = warningsBasicSellValidation({
+  const warnings = warningsAutoSellValidation({
     vault,
     gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
-    minSellPrice: basicSellState.maxBuyOrMinSellPrice,
+    minSellPrice: autoSellState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
-    basicSellState,
+    autoSellState,
     sliderMin: min,
     sliderMax: max,
     debtDeltaAtCurrentCollRatio,
@@ -157,7 +157,7 @@ export function SidebarSetupAutoSell({
                   vault={vault}
                   ilkData={ilkData}
                   isEditing={isEditing}
-                  basicSellState={basicSellState}
+                  autoSellState={autoSellState}
                   autoSellTriggerData={autoSellTriggerData}
                   errors={errors}
                   warnings={warnings}
@@ -173,7 +173,7 @@ export function SidebarSetupAutoSell({
                   ilkData={ilkData}
                   errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
-                  basicSellState={basicSellState}
+                  autoSellState={autoSellState}
                 />
               )}
             </>
@@ -197,7 +197,7 @@ export function SidebarSetupAutoSell({
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: basicSellState.triggerId.isZero(),
+          hidden: autoSellState.triggerId.isZero(),
           action: () => textButtonHandler(),
         },
       }),

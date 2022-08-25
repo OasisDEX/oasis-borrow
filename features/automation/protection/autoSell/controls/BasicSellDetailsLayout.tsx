@@ -3,7 +3,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardTargetColRatioAfterSell } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterSell'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -13,7 +13,7 @@ interface BasicSellDetailsLayoutProps {
   nextSellPrice: BigNumber
   targetColRatio: BigNumber
   threshold: BigNumber
-  basicSellTriggerData: BasicBSTriggerData
+  basicSellTriggerData: AutoBSTriggerData
   afterTriggerColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
 }

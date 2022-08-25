@@ -17,9 +17,8 @@ import {
 } from 'features/automation/common/consts'
 import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/MaxGasPriceSection'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
 import { AddConstantMultipleInfoSection } from 'features/automation/optimization/constantMultiple/controls/AddConstantMultipleInfoSection'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -29,9 +28,10 @@ import {
   ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/tabChange'
 import { handleNumericInput } from 'helpers/input'
 import {
   extractConstantMultipleCommonErrors,
@@ -49,12 +49,12 @@ interface SidebaConstantMultiplerEditingStageProps {
   vault: Vault
   ilkData: IlkData
   isEditing: boolean
-  autoBuyTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   token: string
   constantMultipleState: ConstantMultipleFormChange
-  autoSellTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   stopLossTriggerData: StopLossTriggerData
   nextBuyPrice: BigNumber

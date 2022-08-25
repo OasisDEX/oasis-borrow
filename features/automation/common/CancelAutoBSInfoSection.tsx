@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -12,7 +12,7 @@ interface CancelAutoBSInfoSectionProps {
   liquidationPrice: BigNumber
   debt: BigNumber
   title: string
-  basicBSState: BasicBSFormChange
+  autoBSState: AutoBSFormChange
 }
 
 export function CancelAutoBSInfoSection({
@@ -20,24 +20,24 @@ export function CancelAutoBSInfoSection({
   liquidationPrice,
   debt,
   title,
-  basicBSState,
+  autoBSState,
 }: CancelAutoBSInfoSectionProps) {
   const { t } = useTranslation()
   const isDebtZero = debt.isZero()
-  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyAutoBS')
 
   const liquidationPriceFormatted = formatAmount(liquidationPrice, 'USD')
   const collateralizationRatioFormatted = formatPercent(collateralizationRatio.times(100), {
     precision: 2,
   })
-  const ratioToPerformSellFormatted = formatPercent(basicBSState.execCollRatio, { precision: 2 })
-  const colRatioAfterSellFormatted = formatPercent(basicBSState.targetCollRatio, { precision: 2 })
+  const ratioToPerformSellFormatted = formatPercent(autoBSState.execCollRatio, { precision: 2 })
+  const colRatioAfterSellFormatted = formatPercent(autoBSState.targetCollRatio, { precision: 2 })
 
   return (
     <InfoSection
       title={title}
       items={[
-        ...(isDebtZero || readOnlyBasicBSEnabled
+        ...(isDebtZero || readOnlyAutoBSEnabled
           ? [
               {
                 label: t('auto-sell.target-col-ratio-each-sell'),

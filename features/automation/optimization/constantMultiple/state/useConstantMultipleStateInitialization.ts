@@ -8,7 +8,7 @@ import {
   calculateCollRatioFromMultiple,
   getEligibleMultipliers,
 } from 'features/automation/common/helpers'
-import { extractAutoBSData } from 'features/automation/common/state/basicBSTriggerData'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/constantMultiple/helpers'
 import {
   getConstantMultipleMultipliers,

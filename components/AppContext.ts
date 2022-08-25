@@ -70,17 +70,17 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSChangeAction,
+  autoBSFormChangeReducer,
+} from 'features/automation/common/state/autoBSFormChange'
+import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
   AutomationChangeFeatureAction,
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-  BasicBSChangeAction,
-  basicBSFormChangeReducer,
-} from 'features/automation/common/state/basicBSFormChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleChangeAction,
@@ -334,7 +334,7 @@ export type SupportedUIChangeType =
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
-  BasicBSChange: BasicBSChangeAction
+  AutoBSChange: AutoBSChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
@@ -425,8 +425,8 @@ function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
-  uiChangesSubject.configureSubject(AUTO_SELL_FORM_CHANGE, basicBSFormChangeReducer)
-  uiChangesSubject.configureSubject(AUTO_BUY_FORM_CHANGE, basicBSFormChangeReducer)
+  uiChangesSubject.configureSubject(AUTO_SELL_FORM_CHANGE, autoBSFormChangeReducer)
+  uiChangesSubject.configureSubject(AUTO_BUY_FORM_CHANGE, autoBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)

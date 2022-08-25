@@ -1,7 +1,7 @@
 import { IlkData } from 'blockchain/ilks'
 import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/common/consts'
 import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
@@ -14,7 +14,7 @@ export function getConstantMutliplyMinMaxValues({
   stopLossTriggerData,
 }: {
   ilkData: IlkData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
 }) {
   return {

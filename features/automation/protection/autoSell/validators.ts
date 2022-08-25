@@ -2,14 +2,14 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 
-export function warningsBasicSellValidation({
+export function warningsAutoSellValidation({
   vault,
   gasEstimationUsd,
   ethBalance,
@@ -19,7 +19,7 @@ export function warningsBasicSellValidation({
   minSellPrice,
   isStopLossEnabled,
   isAutoBuyEnabled,
-  basicSellState,
+  autoSellState,
   debtDeltaAtCurrentCollRatio,
   debtFloor,
 }: {
@@ -31,7 +31,7 @@ export function warningsBasicSellValidation({
   gasEstimationUsd?: BigNumber
   isStopLossEnabled: boolean
   isAutoBuyEnabled: boolean
-  basicSellState: BasicBSFormChange
+  autoSellState: AutoBSFormChange
   minSellPrice?: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
   debtFloor: BigNumber
@@ -46,12 +46,12 @@ export function warningsBasicSellValidation({
     (minSellPrice?.isZero() || !minSellPrice) && isStopLossEnabled
 
   const basicSellTriggerCloseToStopLossTrigger =
-    isStopLossEnabled && basicSellState.execCollRatio.isEqualTo(sliderMin)
+    isStopLossEnabled && autoSellState.execCollRatio.isEqualTo(sliderMin)
   const basicSellTargetCloseToAutoBuyTrigger =
-    isAutoBuyEnabled && basicSellState.targetCollRatio.isEqualTo(sliderMax)
+    isAutoBuyEnabled && autoSellState.targetCollRatio.isEqualTo(sliderMax)
 
   const autoSellTriggeredImmediately =
-    basicSellState.execCollRatio.div(100).gte(vault.collateralizationRatioAtNextPrice) &&
+    autoSellState.execCollRatio.div(100).gte(vault.collateralizationRatioAtNextPrice) &&
     !debtFloor.gt(vault.debt.plus(debtDeltaAtCurrentCollRatio))
 
   return warningMessagesHandler({
@@ -63,13 +63,13 @@ export function warningsBasicSellValidation({
   })
 }
 
-export function errorsBasicSellValidation({
+export function errorsAutoSellValidation({
   vault,
   ilkData,
   debtDelta,
   debtDeltaAtCurrentCollRatio,
   isRemoveForm,
-  basicSellState,
+  autoSellState,
   autoBuyTriggerData,
   constantMultipleTriggerData,
 }: {
@@ -78,8 +78,8 @@ export function errorsBasicSellValidation({
   debtDelta: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
   isRemoveForm: boolean
-  basicSellState: BasicBSFormChange
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellState: AutoBSFormChange
+  autoBuyTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
 }) {
   const {
@@ -88,7 +88,7 @@ export function errorsBasicSellValidation({
     withThreshold,
     maxBuyOrMinSellPrice,
     txDetails,
-  } = basicSellState
+  } = autoSellState
   const insufficientEthFundsForTx = ethFundsForTxValidator({
     txError: txDetails?.txError,
   })

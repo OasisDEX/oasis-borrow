@@ -6,7 +6,7 @@ import {
 } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
-import { prepareAddBasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 
 export function prepareAddConstantMultipleTriggerData({
@@ -38,7 +38,7 @@ export function prepareAddConstantMultipleTriggerData({
 }): AutomationBotAddAggregatorTriggerData {
   const buyTriggerId = triggersId[0].isZero() ? autoBuyTriggerId : triggersId[0]
   const sellTriggerId = triggersId[1].isZero() ? autoSellTriggerId : triggersId[1]
-  const buyTriggerData = prepareAddBasicBSTriggerData({
+  const buyTriggerData = prepareAddAutoBSTriggerData({
     vaultData,
     triggerType: TriggerType.BasicBuy,
     execCollRatio: buyExecutionCollRatio,
@@ -49,7 +49,7 @@ export function prepareAddConstantMultipleTriggerData({
     replacedTriggerId: buyTriggerId,
     maxBaseFeeInGwei,
   })
-  const sellTriggerData = prepareAddBasicBSTriggerData({
+  const sellTriggerData = prepareAddAutoBSTriggerData({
     vaultData,
     triggerType: TriggerType.BasicSell,
     execCollRatio: sellExecutionCollRatio,

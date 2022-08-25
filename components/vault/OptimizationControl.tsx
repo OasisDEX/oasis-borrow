@@ -4,7 +4,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { extractAutoBSData } from 'features/automation/common/state/basicBSTriggerData'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { OptimizationDetailsControl } from 'features/automation/optimization/common/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/common/controls/OptimizationFormControl'
 import { extractConstantMultipleData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
@@ -60,19 +60,19 @@ function ZeroDebtOptimizationBanner({
   )
 }
 function getZeroDebtOptimizationBannerProps({
-  readOnlyBasicBSEnabled,
+  readOnlyAutoBSEnabled,
   constantMultipleReadOnlyEnabled,
   isVaultDebtZero,
   vaultHasNoActiveBuyTrigger,
   vaultHasNoActiveConstantMultipleTriggers,
 }: {
-  readOnlyBasicBSEnabled: boolean
+  readOnlyAutoBSEnabled: boolean
   constantMultipleReadOnlyEnabled: boolean
   isVaultDebtZero: boolean
   vaultHasNoActiveBuyTrigger?: boolean
   vaultHasNoActiveConstantMultipleTriggers?: boolean
 }): ZeroDebtOptimizationBannerProps {
-  if (!readOnlyBasicBSEnabled && !constantMultipleReadOnlyEnabled) {
+  if (!readOnlyAutoBSEnabled && !constantMultipleReadOnlyEnabled) {
     if (isVaultDebtZero && vaultHasNoActiveBuyTrigger && vaultHasNoActiveConstantMultipleTriggers) {
       return {
         header: 'optimization.zero-debt-heading',
@@ -115,7 +115,7 @@ export function OptimizationControl({
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
-  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyAutoBS')
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   const basicBuyData = automationTriggersData
@@ -137,14 +137,14 @@ export function OptimizationControl({
       vault.debt.isZero()) ||
     (!vaultHasActiveAutoBuyTrigger &&
       !vaultHasActiveConstantMultipleTrigger &&
-      readOnlyBasicBSEnabled &&
+      readOnlyAutoBSEnabled &&
       constantMultipleReadOnlyEnabled)
   ) {
     return (
       <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
         <ZeroDebtOptimizationBanner
           {...getZeroDebtOptimizationBannerProps({
-            readOnlyBasicBSEnabled,
+            readOnlyAutoBSEnabled,
             isVaultDebtZero: vault.debt.isZero(),
             vaultHasNoActiveBuyTrigger: !vaultHasActiveAutoBuyTrigger,
             constantMultipleReadOnlyEnabled,

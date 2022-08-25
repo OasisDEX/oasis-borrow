@@ -5,8 +5,8 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutoBuyMinMaxValues } from 'features/automation/optimization/autoBuy/helpers'
 import { SidebarAutoBuyEditingStage } from 'features/automation/optimization/autoBuy/sidebars/SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from 'features/automation/optimization/autoBuy/sidebars/SidebarAutoBuyRemovalEditingStage'
@@ -35,14 +35,14 @@ interface SidebarSetupAutoBuyProps {
   vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
-  basicBuyState: BasicBSFormChange
+  autoBuyState: AutoBSFormChange
   txHandler: () => void
   textButtonHandler: () => void
   stage: SidebarVaultStages
@@ -69,7 +69,7 @@ export function SidebarSetupAutoBuy({
   stopLossTriggerData,
   constantMultipleTriggerData,
 
-  basicBuyState,
+  autoBuyState,
   txHandler,
   textButtonHandler,
   stage,
@@ -100,7 +100,7 @@ export function SidebarSetupAutoBuy({
 
   const sidebarStatus = getSidebarStatus({
     stage,
-    txHash: basicBuyState.txDetails?.txHash,
+    txHash: autoBuyState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
   })
@@ -108,7 +108,7 @@ export function SidebarSetupAutoBuy({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
   const errors = errorsBasicBuyValidation({
-    basicBuyState,
+    autoBuyState,
     autoSellTriggerData,
     constantMultipleTriggerData,
     isRemoveForm,
@@ -125,12 +125,12 @@ export function SidebarSetupAutoBuy({
     gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
-    minSellPrice: basicBuyState.maxBuyOrMinSellPrice,
+    minSellPrice: autoBuyState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
-    basicBuyState,
+    autoBuyState,
     sliderMin: min,
-    withThreshold: basicBuyState.withThreshold,
+    withThreshold: autoBuyState.withThreshold,
   })
 
   const cancelAutoBuyWarnings = extractCancelBSWarnings(warnings)
@@ -157,7 +157,7 @@ export function SidebarSetupAutoBuy({
                 <SidebarAutoBuyEditingStage
                   vault={vault}
                   ilkData={ilkData}
-                  basicBuyState={basicBuyState}
+                  autoBuyState={autoBuyState}
                   isEditing={isEditing}
                   autoBuyTriggerData={autoBuyTriggerData}
                   errors={errors}
@@ -174,7 +174,7 @@ export function SidebarSetupAutoBuy({
                   ilkData={ilkData}
                   errors={cancelAutoBuyErrors}
                   warnings={cancelAutoBuyWarnings}
-                  basicBuyState={basicBuyState}
+                  autoBuyState={autoBuyState}
                 />
               )}
             </>
@@ -198,7 +198,7 @@ export function SidebarSetupAutoBuy({
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: basicBuyState.triggerId.isZero(),
+          hidden: autoBuyState.triggerId.isZero(),
           action: () => textButtonHandler(),
         },
       }),

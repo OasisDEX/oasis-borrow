@@ -47,7 +47,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
   const sidebarTxData = extractSidebarTxData(props)
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('AutoBS')
 
   const errors = errorsStopLossValidation({
     txError,
@@ -68,7 +68,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, isStopLossEnabled }),
-    ...(basicBSEnabled && {
+    ...(autoBSEnabled && {
       dropdown: {
         forcePanel: 'stopLoss',
         disabled: isDropdownDisabled({ stage }),

@@ -9,15 +9,15 @@ import {
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
 import {
-  BasicBSTriggerData,
+  AutoBSTriggerData,
   extractAutoBSData,
-} from 'features/automation/common/state/basicBSTriggerData'
+} from 'features/automation/common/state/autoBSTriggerData'
 import { DEFAULT_TARGET_OFFSET } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import { zero } from 'helpers/zero'
 
 interface ConstantMultipleAggregatedTriggers {
-  [TriggerType.BasicBuy]: BasicBSTriggerData
-  [TriggerType.BasicSell]: BasicBSTriggerData
+  [TriggerType.BasicBuy]: AutoBSTriggerData
+  [TriggerType.BasicSell]: AutoBSTriggerData
 }
 
 export interface ConstantMultipleTriggerData {

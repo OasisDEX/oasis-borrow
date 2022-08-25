@@ -3,7 +3,7 @@ import { Vault } from 'blockchain/vaults'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { CancelAutoBSInfoSection } from 'features/automation/common/CancelAutoBSInfoSection'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
@@ -12,10 +12,10 @@ import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
   vault: Vault
-  basicSellState: BasicBSFormChange
+  autoSellState: AutoBSFormChange
 }
 
-function AutoSellInfoSectionControl({ vault, basicSellState }: AutoSellInfoSectionControlProps) {
+function AutoSellInfoSectionControl({ vault, autoSellState }: AutoSellInfoSectionControlProps) {
   const { t } = useTranslation()
   return (
     <CancelAutoBSInfoSection
@@ -23,7 +23,7 @@ function AutoSellInfoSectionControl({ vault, basicSellState }: AutoSellInfoSecti
       liquidationPrice={vault.liquidationPrice}
       debt={vault.debt}
       title={t('auto-sell.cancel-summary-title')}
-      basicBSState={basicSellState}
+      autoBSState={autoSellState}
     />
   )
 }
@@ -33,7 +33,7 @@ interface SidebarAutoSellCancelEditingStageProps {
   ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  basicSellState: BasicBSFormChange
+  autoSellState: AutoBSFormChange
 }
 
 export function SidebarAutoSellCancelEditingStage({
@@ -41,7 +41,7 @@ export function SidebarAutoSellCancelEditingStage({
   ilkData,
   errors,
   warnings,
-  basicSellState,
+  autoSellState,
 }: SidebarAutoSellCancelEditingStageProps) {
   const { t } = useTranslation()
 
@@ -52,7 +52,7 @@ export function SidebarAutoSellCancelEditingStage({
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-      <AutoSellInfoSectionControl vault={vault} basicSellState={basicSellState} />
+      <AutoSellInfoSectionControl vault={vault} autoSellState={autoSellState} />
     </>
   )
 }

@@ -12,7 +12,7 @@ export function getActiveProtectionFeature({
   section: 'form' | 'details'
   currentProtectionFeature?: AutomationProtectionFeatures
 }) {
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('AutoBS')
 
   if (section === 'form') {
     return {
@@ -28,7 +28,7 @@ export function getActiveProtectionFeature({
   if (section === 'details') {
     return {
       isAutoSellActive: isAutoSellOn || currentProtectionFeature === 'autoSell',
-      isStopLossActive: isStopLossOn || currentProtectionFeature === 'stopLoss' || !basicBSEnabled,
+      isStopLossActive: isStopLossOn || currentProtectionFeature === 'stopLoss' || !autoBSEnabled,
     }
   }
 

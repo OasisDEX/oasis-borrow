@@ -11,8 +11,8 @@ import {
 import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
-} from 'features/automation/common/state/basicBSFormChange'
-import { extractAutoBSData } from 'features/automation/common/state/basicBSTriggerData'
+} from 'features/automation/common/state/autoBSFormChange'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import { useEffect } from 'react'
 
 export function useAutoBSstateInitialization(

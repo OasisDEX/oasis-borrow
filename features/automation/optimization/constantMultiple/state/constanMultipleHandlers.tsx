@@ -8,7 +8,7 @@ import {
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TxHelpers, UIChanges } from 'components/AppContext'
-import { takeUntilTxState } from 'features/automation/common/state/basicBStxHandlers'
+import { takeUntilTxState } from 'features/automation/common/state/autoBStxHandlers'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'

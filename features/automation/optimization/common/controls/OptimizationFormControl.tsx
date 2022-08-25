@@ -7,11 +7,11 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
-import { extractAutoBSData } from 'features/automation/common/state/basicBSTriggerData'
 import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'

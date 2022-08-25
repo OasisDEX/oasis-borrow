@@ -3,13 +3,13 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
-import { checkIfEditingBasicBS } from 'features/automation/common/helpers'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { checkIfEditingAutoBS } from 'features/automation/common/helpers'
 import {
   AUTO_SELL_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { BasicSellDetailsLayout } from 'features/automation/protection/autoSell/controls/BasicSellDetailsLayout'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -19,7 +19,7 @@ import { Grid } from 'theme-ui'
 
 interface BasicSellDetailsControlProps {
   vault: Vault
-  basicSellTriggerData: BasicBSTriggerData
+  basicSellTriggerData: AutoBSTriggerData
   isAutoSellActive: boolean
 }
 
@@ -29,8 +29,8 @@ export function BasicSellDetailsControl({
   isAutoSellActive,
 }: BasicSellDetailsControlProps) {
   const { t } = useTranslation()
-  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
-  const [basicSellState] = useUIChanges<BasicBSFormChange>(AUTO_SELL_FORM_CHANGE)
+  const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyAutoBS')
+  const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
   const { uiChanges } = useAppContext()
   const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice } = basicSellTriggerData
   const isDebtZero = vault.debt.isZero()
@@ -41,20 +41,20 @@ export function BasicSellDetailsControl({
     vaultDebt: vault.debt,
   })
 
-  const isEditing = checkIfEditingBasicBS({
-    basicBSTriggerData: basicSellTriggerData,
-    basicBSState: basicSellState,
-    isRemoveForm: basicSellState.currentForm === 'remove',
+  const isEditing = checkIfEditingAutoBS({
+    autoBSTriggerData: basicSellTriggerData,
+    autoBSState: autoSellState,
+    isRemoveForm: autoSellState.currentForm === 'remove',
   })
 
   const basicSellDetailsLayoutOptionalParams = {
     ...(isEditing && {
-      afterTriggerColRatio: basicSellState.execCollRatio,
-      afterTargetColRatio: basicSellState.targetCollRatio,
+      afterTriggerColRatio: autoSellState.execCollRatio,
+      afterTargetColRatio: autoSellState.targetCollRatio,
     }),
   }
 
-  if (readOnlyBasicBSEnabled) {
+  if (readOnlyAutoBSEnabled) {
     return null
   }
 

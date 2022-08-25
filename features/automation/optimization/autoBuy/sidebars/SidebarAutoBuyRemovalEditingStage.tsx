@@ -3,7 +3,7 @@ import { Vault } from 'blockchain/vaults'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { CancelAutoBSInfoSection } from 'features/automation/common/CancelAutoBSInfoSection'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
@@ -15,7 +15,7 @@ interface SidebarAutoBuyRemovalEditingStageProps {
   ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  basicBuyState: BasicBSFormChange
+  autoBuyState: AutoBSFormChange
 }
 
 export function SidebarAutoBuyRemovalEditingStage({
@@ -23,7 +23,7 @@ export function SidebarAutoBuyRemovalEditingStage({
   ilkData,
   errors,
   warnings,
-  basicBuyState,
+  autoBuyState,
 }: SidebarAutoBuyRemovalEditingStageProps) {
   return (
     <>
@@ -32,24 +32,24 @@ export function SidebarAutoBuyRemovalEditingStage({
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-      <AutoBuyInfoSectionControl vault={vault} basicBuyState={basicBuyState} />
+      <AutoBuyInfoSectionControl vault={vault} autoBuyState={autoBuyState} />
     </>
   )
 }
 
 interface AutoBuyInfoSectionControlProps {
   vault: Vault
-  basicBuyState: BasicBSFormChange
+  autoBuyState: AutoBSFormChange
 }
 
-function AutoBuyInfoSectionControl({ vault, basicBuyState }: AutoBuyInfoSectionControlProps) {
+function AutoBuyInfoSectionControl({ vault, autoBuyState }: AutoBuyInfoSectionControlProps) {
   const { t } = useTranslation()
   return (
     <CancelAutoBSInfoSection
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
       title={t('auto-buy.cancel-summary-title')}
-      basicBSState={basicBuyState}
+      autoBSState={autoBuyState}
       debt={vault.debt}
     />
   )

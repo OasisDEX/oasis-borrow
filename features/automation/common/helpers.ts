@@ -5,8 +5,8 @@ import { NetworkIds } from 'blockchain/network'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -53,54 +53,54 @@ export function resolveWithThreshold({
   )
 }
 
-export function prepareBasicBSResetData(basicBSTriggersData: BasicBSTriggerData) {
+export function prepareAutoBSResetData(autoBSTriggersData: AutoBSTriggerData) {
   return {
-    targetCollRatio: basicBSTriggersData.targetCollRatio,
-    execCollRatio: basicBSTriggersData.execCollRatio,
-    maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(basicBSTriggersData.maxBuyOrMinSellPrice),
-    maxBaseFeeInGwei: basicBSTriggersData.maxBaseFeeInGwei,
+    targetCollRatio: autoBSTriggersData.targetCollRatio,
+    execCollRatio: autoBSTriggersData.execCollRatio,
+    maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(autoBSTriggersData.maxBuyOrMinSellPrice),
+    maxBaseFeeInGwei: autoBSTriggersData.maxBaseFeeInGwei,
     withThreshold: resolveWithThreshold({
-      maxBuyOrMinSellPrice: basicBSTriggersData.maxBuyOrMinSellPrice,
-      triggerId: basicBSTriggersData.triggerId,
+      maxBuyOrMinSellPrice: autoBSTriggersData.maxBuyOrMinSellPrice,
+      triggerId: autoBSTriggersData.triggerId,
     }),
     txDetails: {},
   }
 }
 
-export function checkIfEditingBasicBS({
-  basicBSTriggerData,
-  basicBSState,
+export function checkIfEditingAutoBS({
+  autoBSTriggerData,
+  autoBSState,
   isRemoveForm,
 }: {
-  basicBSTriggerData: BasicBSTriggerData
-  basicBSState: BasicBSFormChange
+  autoBSTriggerData: AutoBSTriggerData
+  autoBSState: AutoBSFormChange
   isRemoveForm: boolean
 }) {
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(basicBSTriggerData.maxBuyOrMinSellPrice)
+  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoBSTriggerData.maxBuyOrMinSellPrice)
 
   return (
-    !basicBSTriggerData.targetCollRatio.isEqualTo(basicBSState.targetCollRatio) ||
-    !basicBSTriggerData.execCollRatio.isEqualTo(basicBSState.execCollRatio) ||
-    !basicBSTriggerData.maxBaseFeeInGwei.isEqualTo(basicBSState.maxBaseFeeInGwei) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== basicBSState.maxBuyOrMinSellPrice?.toNumber() &&
-      !basicBSTriggerData.triggerId.isZero()) ||
+    !autoBSTriggerData.targetCollRatio.isEqualTo(autoBSState.targetCollRatio) ||
+    !autoBSTriggerData.execCollRatio.isEqualTo(autoBSState.execCollRatio) ||
+    !autoBSTriggerData.maxBaseFeeInGwei.isEqualTo(autoBSState.maxBaseFeeInGwei) ||
+    (maxBuyOrMinSellPrice?.toNumber() !== autoBSState.maxBuyOrMinSellPrice?.toNumber() &&
+      !autoBSTriggerData.triggerId.isZero()) ||
     isRemoveForm
   )
 }
 
-export function checkIfDisabledBasicBS({
+export function checkIfDisabledAutoBS({
   isProgressStage,
   isOwner,
   isEditing,
   isAddForm,
-  basicBSState,
+  autoBSState,
   stage,
 }: {
   isProgressStage?: boolean
   isOwner: boolean
   isEditing: boolean
   isAddForm: boolean
-  basicBSState: BasicBSFormChange
+  autoBSState: AutoBSFormChange
   stage: SidebarVaultStages
 }) {
   return (
@@ -108,16 +108,16 @@ export function checkIfDisabledBasicBS({
       !isOwner ||
       !isEditing ||
       (isAddForm &&
-        (basicBSState.execCollRatio.isZero() ||
-          basicBSState.targetCollRatio.isZero() ||
-          (basicBSState.withThreshold &&
-            (basicBSState.maxBuyOrMinSellPrice === undefined ||
-              basicBSState.maxBuyOrMinSellPrice?.isZero()))))) &&
+        (autoBSState.execCollRatio.isZero() ||
+          autoBSState.targetCollRatio.isZero() ||
+          (autoBSState.withThreshold &&
+            (autoBSState.maxBuyOrMinSellPrice === undefined ||
+              autoBSState.maxBuyOrMinSellPrice?.isZero()))))) &&
     stage !== 'txSuccess'
   )
 }
 
-export function getBasicBSVaultChange({
+export function getAutoBSVaultChange({
   targetCollRatio,
   execCollRatio,
   deviation,
@@ -206,7 +206,7 @@ export function getEligibleMultipliers({
           vaultDebt: debt,
         })
 
-        const { debtDelta } = getBasicBSVaultChange({
+        const { debtDelta } = getAutoBSVaultChange({
           targetCollRatio,
           execCollRatio: sellExecutionCollRatio,
           deviation,
@@ -228,7 +228,7 @@ export function getEligibleMultipliers({
         vaultDebt: debt,
       })
 
-      const { debtDelta: debtDeltaAtCurrentCollRatio } = getBasicBSVaultChange({
+      const { debtDelta: debtDeltaAtCurrentCollRatio } = getAutoBSVaultChange({
         targetCollRatio,
         execCollRatio: collateralizationRatio.times(100),
         deviation,

@@ -21,7 +21,7 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { transactionStateHandler } from 'features/automation/protection/stopLoss/automationTransactionPlunger'
@@ -58,8 +58,8 @@ interface AdjustSlFormControlProps {
   priceInfo: PriceInfo
   ilkData: IlkData
   triggerData: StopLossTriggerData
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   // TODO best way to handle it would be to map this triggerData to the same key-value pairs as we have on ui
   constantMultipleTriggerData: ConstantMultipleTriggerData
   ctx: Context

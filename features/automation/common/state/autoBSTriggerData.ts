@@ -17,7 +17,7 @@ import {
 import { getTriggersByType } from 'features/automation/common/helpers'
 import { zero } from 'helpers/zero'
 
-export interface BasicBSTriggerData {
+export interface AutoBSTriggerData {
   triggerId: BigNumber
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
@@ -28,16 +28,16 @@ export interface BasicBSTriggerData {
   isTriggerEnabled: boolean
 }
 
-type BasicBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
+type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
 
-interface ExtractBasicBSDataProps {
+interface ExtractAutoBSDataProps {
   triggersData: TriggersData
   triggerType: TriggerType
   isInGroup?: boolean
 }
 
-function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {
-  return basicSellTriggers.map((trigger) => {
+function mapAutoBSTriggerData(autoBSTriggers: { triggerId: number; result: Result }[]) {
+  return autoBSTriggers.map((trigger) => {
     const [
       ,
       ,
@@ -71,11 +71,11 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
         ? new BigNumber(maxBaseFeeInGwei.toString())
         : DEFAULT_MAX_BASE_FEE_IN_GWEI, // handling for old command address
       isTriggerEnabled: true,
-    } as BasicBSTriggerData
+    } as AutoBSTriggerData
   })
 }
 
-const defaultBasicBSData = {
+const defaultAutoBSData = {
   triggerId: zero,
   execCollRatio: zero,
   targetCollRatio: zero,
@@ -90,20 +90,20 @@ export function extractAutoBSData({
   triggersData,
   triggerType,
   isInGroup = false,
-}: ExtractBasicBSDataProps): BasicBSTriggerData {
+}: ExtractAutoBSDataProps): AutoBSTriggerData {
   if (triggersData.triggers && triggersData.triggers.length > 0) {
     const triggersList = triggersData.triggers.filter((item) => !!item.groupId === isInGroup)
-    const basicBSTriggers = getTriggersByType(triggersList, [triggerType])
+    const autoBSTriggers = getTriggersByType(triggersList, [triggerType])
 
-    if (basicBSTriggers.length) {
-      return mapBasicBSTriggerData(basicBSTriggers)[0]
+    if (autoBSTriggers.length) {
+      return mapAutoBSTriggerData(autoBSTriggers)[0]
     }
   }
 
-  return defaultBasicBSData
+  return defaultAutoBSData
 }
 
-export function prepareBasicBSTriggerData({
+export function prepareAutoBSTriggerData({
   vaultData,
   triggerType,
   execCollRatio,
@@ -114,7 +114,7 @@ export function prepareBasicBSTriggerData({
   maxBaseFeeInGwei,
 }: {
   vaultData: Vault
-  triggerType: BasicBSTriggerTypes
+  triggerType: AutoBSTriggerTypes
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
   maxBuyOrMinSellPrice: BigNumber
@@ -148,7 +148,7 @@ export function prepareBasicBSTriggerData({
   }
 }
 
-export function prepareAddBasicBSTriggerData({
+export function prepareAddAutoBSTriggerData({
   vaultData,
   triggerType,
   execCollRatio,
@@ -160,7 +160,7 @@ export function prepareAddBasicBSTriggerData({
   maxBaseFeeInGwei,
 }: {
   vaultData: Vault
-  triggerType: BasicBSTriggerTypes
+  triggerType: AutoBSTriggerTypes
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
   maxBuyOrMinSellPrice: BigNumber
@@ -169,7 +169,7 @@ export function prepareAddBasicBSTriggerData({
   replacedTriggerId: BigNumber
   maxBaseFeeInGwei: BigNumber
 }): AutomationBotAddTriggerData {
-  const baseTriggerData = prepareBasicBSTriggerData({
+  const baseTriggerData = prepareAutoBSTriggerData({
     vaultData,
     triggerType,
     execCollRatio,
@@ -187,18 +187,18 @@ export function prepareAddBasicBSTriggerData({
   }
 }
 
-export function prepareRemoveBasicBSTriggerData({
+export function prepareRemoveAutoBSTriggerData({
   vaultData,
   triggerType,
   triggerId,
   shouldRemoveAllowance,
 }: {
   vaultData: Vault
-  triggerType: BasicBSTriggerTypes
+  triggerType: AutoBSTriggerTypes
   triggerId: BigNumber
   shouldRemoveAllowance: boolean
 }): AutomationBotRemoveTriggerData {
-  const baseTriggerData = prepareBasicBSTriggerData({
+  const baseTriggerData = prepareAutoBSTriggerData({
     vaultData,
     triggerType,
     execCollRatio: zero,

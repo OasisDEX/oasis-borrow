@@ -3,7 +3,7 @@ import {
   DEFAULT_BASIC_BS_MAX_SLIDER_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
 export function getAutoSellMinMaxValues({
@@ -12,7 +12,7 @@ export function getAutoSellMinMaxValues({
   stopLossTriggerData,
 }: {
   ilkData: IlkData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
 }) {
   if (autoBuyTriggerData.isTriggerEnabled && stopLossTriggerData.isStopLossEnabled) {

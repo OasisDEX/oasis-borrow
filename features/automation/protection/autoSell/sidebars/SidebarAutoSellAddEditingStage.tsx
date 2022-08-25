@@ -10,13 +10,13 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { prepareBasicBSResetData } from 'features/automation/common/helpers'
+import { prepareAutoBSResetData } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/MaxGasPriceSection'
 import {
   AUTO_SELL_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AddAutoSellInfoSection } from 'features/automation/protection/autoSell/controls/AddAutoSellInfoSection'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -29,7 +29,7 @@ import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
   vault: Vault
-  basicSellState: BasicBSFormChange
+  autoSellState: AutoBSFormChange
   debtDelta: BigNumber
   collateralDelta: BigNumber
   executionPrice: BigNumber
@@ -37,25 +37,25 @@ interface AutoSellInfoSectionControlProps {
 
 function AutoSellInfoSectionControl({
   vault,
-  basicSellState,
+  autoSellState,
   debtDelta,
   collateralDelta,
   executionPrice,
 }: AutoSellInfoSectionControlProps) {
-  const deviationPercent = basicSellState.deviation.div(100)
+  const deviationPercent = autoSellState.deviation.div(100)
 
   const targetRatioWithDeviationFloor = one
     .minus(deviationPercent)
-    .times(basicSellState.targetCollRatio)
+    .times(autoSellState.targetCollRatio)
   const targetRatioWithDeviationCeiling = one
     .plus(deviationPercent)
-    .times(basicSellState.targetCollRatio)
+    .times(autoSellState.targetCollRatio)
 
   return (
     <AddAutoSellInfoSection
-      targetCollRatio={basicSellState.targetCollRatio}
-      multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
-      execCollRatio={basicSellState.execCollRatio}
+      targetCollRatio={autoSellState.targetCollRatio}
+      multipleAfterSell={one.div(autoSellState.targetCollRatio.div(100).minus(one)).plus(one)}
+      execCollRatio={autoSellState.execCollRatio}
       nextSellPrice={executionPrice}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
@@ -77,8 +77,8 @@ interface SidebarAutoSellAddEditingStageProps {
   vault: Vault
   ilkData: IlkData
   isEditing: boolean
-  basicSellState: BasicBSFormChange
-  autoSellTriggerData: BasicBSTriggerData
+  autoSellState: AutoBSFormChange
+  autoSellTriggerData: AutoBSTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   debtDelta: BigNumber
@@ -91,7 +91,7 @@ export function SidebarAutoSellAddEditingStage({
   vault,
   ilkData,
   isEditing,
-  basicSellState,
+  autoSellState,
   autoSellTriggerData,
   errors,
   warnings,
@@ -103,14 +103,14 @@ export function SidebarAutoSellAddEditingStage({
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const executionPrice = collateralPriceAtRatio({
-    colRatio: basicSellState.execCollRatio.div(100),
+    colRatio: autoSellState.execCollRatio.div(100),
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
-  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyAutoBS')
   const isVaultEmpty = vault.debt.isZero()
 
-  if (readOnlyBasicBSEnabled && !isVaultEmpty) {
+  if (readOnlyAutoBSEnabled && !isVaultEmpty) {
     return (
       <SidebarFormInfo
         title={t('auto-sell.adding-new-triggers-disabled')}
@@ -140,18 +140,18 @@ export function SidebarAutoSellAddEditingStage({
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {basicSellState.maxBuyOrMinSellPrice !== undefined
+        {autoSellState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-sell.set-trigger-description', {
-              targetCollRatio: basicSellState.targetCollRatio.toNumber(),
+              targetCollRatio: autoSellState.targetCollRatio.toNumber(),
               token: vault.token,
-              execCollRatio: basicSellState.execCollRatio,
+              execCollRatio: autoSellState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
-              minSellPrice: basicSellState.maxBuyOrMinSellPrice,
+              minSellPrice: autoSellState.maxBuyOrMinSellPrice,
             })
           : t('auto-sell.set-trigger-description-no-threshold', {
-              targetCollRatio: basicSellState.targetCollRatio.toNumber(),
+              targetCollRatio: autoSellState.targetCollRatio.toNumber(),
               token: vault.token,
-              execCollRatio: basicSellState.execCollRatio,
+              execCollRatio: autoSellState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
             })}{' '}
         <AppLink
@@ -175,8 +175,8 @@ export function SidebarAutoSellAddEditingStage({
           })
         }}
         value={{
-          value0: basicSellState.execCollRatio.toNumber(),
-          value1: basicSellState.targetCollRatio.toNumber(),
+          value0: autoSellState.execCollRatio.toNumber(),
+          value1: autoSellState.targetCollRatio.toNumber(),
         }}
         valueColors={{
           value0: 'warning100',
@@ -190,7 +190,7 @@ export function SidebarAutoSellAddEditingStage({
       />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
-        amount={basicSellState.maxBuyOrMinSellPrice}
+        amount={autoSellState.maxBuyOrMinSellPrice}
         hasAuxiliary={false}
         hasError={false}
         currencyCode="USD"
@@ -212,7 +212,7 @@ export function SidebarAutoSellAddEditingStage({
               : autoSellTriggerData.maxBuyOrMinSellPrice,
           })
         }}
-        defaultToggle={basicSellState.withThreshold}
+        defaultToggle={autoSellState.withThreshold}
         showToggle={true}
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}
@@ -228,7 +228,7 @@ export function SidebarAutoSellAddEditingStage({
         clear={() => {
           uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
             type: 'reset',
-            resetData: prepareBasicBSResetData(autoSellTriggerData),
+            resetData: prepareAutoBSResetData(autoSellTriggerData),
           })
         }}
       />
@@ -239,11 +239,11 @@ export function SidebarAutoSellAddEditingStage({
             maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
           })
         }}
-        value={basicSellState.maxBaseFeeInGwei.toNumber()}
+        value={autoSellState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
         <AutoSellInfoSectionControl
-          basicSellState={basicSellState}
+          autoSellState={autoSellState}
           vault={vault}
           debtDelta={debtDelta}
           collateralDelta={collateralDelta}

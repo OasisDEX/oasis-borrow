@@ -5,7 +5,7 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers, UIChanges } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useSharedUI } from 'components/SharedUIProvider'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { AdjustSlFormControl } from 'features/automation/protection/stopLoss/controls/AdjustSlFormControl'
 import { CancelSlFormControl } from 'features/automation/protection/stopLoss/controls/CancelSlFormControl'
@@ -32,8 +32,8 @@ interface StopLossFormsProps {
   balanceInfo: BalanceInfo
   accountIsController: boolean
   stopLossTriggerData: StopLossTriggerData
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   ethMarketPrice: BigNumber
   shouldRemoveAllowance: boolean
@@ -103,8 +103,8 @@ function StopLossForms({
 interface StopLossFormControlProps {
   ilkData: IlkData
   stopLossTriggerData: StopLossTriggerData
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   priceInfo: PriceInfo
   vault: Vault
@@ -137,7 +137,7 @@ export function StopLossFormControl({
   const { setVaultFormOpened } = useSharedUI()
   const isTouchDevice = window && 'ontouchstart' in window
 
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('AutoBS')
 
   useEffect(() => {
     if (isTouchDevice && !stopLossTriggerData.isStopLossEnabled) {
@@ -150,7 +150,7 @@ export function StopLossFormControl({
   const accountIsConnected = accountIsConnectedValidator({ account })
   const accountIsController = accountIsConnected && account === vault.controller
 
-  return basicBSEnabled ? (
+  return autoBSEnabled ? (
     isStopLossActive ? (
       <StopLossForms
         currentForm={currentForm}

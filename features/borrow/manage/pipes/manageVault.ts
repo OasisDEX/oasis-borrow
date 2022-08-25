@@ -15,7 +15,7 @@ import {
   createAutomationTriggersChange$,
   TriggersData,
 } from 'features/automation/api/automationTriggersData'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
@@ -171,8 +171,8 @@ export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultS
     totalSteps: number
     currentStep: number
     stopLossData?: StopLossTriggerData
-    basicBuyData?: BasicBSTriggerData
-    basicSellData?: BasicBSTriggerData
+    basicBuyData?: AutoBSTriggerData
+    basicSellData?: AutoBSTriggerData
     constantMultipleData?: ConstantMultipleTriggerData
   } & HasGasEstimation
 

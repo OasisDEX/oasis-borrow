@@ -1,11 +1,11 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
-import { checkIfEditingBasicBS } from 'features/automation/common/helpers'
+import { checkIfEditingAutoBS } from 'features/automation/common/helpers'
 import {
   AUTO_BUY_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { BasicBuyDetailsLayout } from 'features/automation/optimization/autoBuy/controls/BasicBuyDetailsLayout'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -14,15 +14,15 @@ import { Grid } from 'theme-ui'
 
 interface BasicBuyDetailsControlProps {
   vault: Vault
-  basicBuyTriggerData: BasicBSTriggerData
+  basicBuyTriggerData: AutoBSTriggerData
 }
 
 export function BasicBuyDetailsControl({
   vault,
   basicBuyTriggerData,
 }: BasicBuyDetailsControlProps) {
-  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
-  const [basicBuyState] = useUIChanges<BasicBSFormChange>(AUTO_BUY_FORM_CHANGE)
+  const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyAutoBS')
+  const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice } = basicBuyTriggerData
   const isDebtZero = vault.debt.isZero()
 
@@ -32,20 +32,20 @@ export function BasicBuyDetailsControl({
     vaultDebt: vault.debt,
   })
 
-  const isEditing = checkIfEditingBasicBS({
-    basicBSTriggerData: basicBuyTriggerData,
-    basicBSState: basicBuyState,
-    isRemoveForm: basicBuyState.currentForm === 'remove',
+  const isEditing = checkIfEditingAutoBS({
+    autoBSTriggerData: basicBuyTriggerData,
+    autoBSState: autoBuyState,
+    isRemoveForm: autoBuyState.currentForm === 'remove',
   })
 
   const basicBuyDetailsLayoutOptionalParams = {
     ...(isEditing && {
-      afterTriggerColRatio: basicBuyState.execCollRatio,
-      afterTargetColRatio: basicBuyState.targetCollRatio,
+      afterTriggerColRatio: autoBuyState.execCollRatio,
+      afterTargetColRatio: autoBuyState.targetCollRatio,
     }),
   }
 
-  if (readOnlyBasicBSEnabled) {
+  if (readOnlyAutoBSEnabled) {
     return null
   }
 

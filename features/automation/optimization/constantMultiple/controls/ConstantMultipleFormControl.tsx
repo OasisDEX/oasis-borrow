@@ -8,8 +8,8 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { maxUint256 } from 'features/automation/common/consts'
-import { getBasicBSVaultChange } from 'features/automation/common/helpers'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { getAutoBSVaultChange } from 'features/automation/common/helpers'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
   checkIfDisabledConstantMultiple,
@@ -42,8 +42,8 @@ import { zero } from 'helpers/zero'
 import React, { useEffect, useMemo } from 'react'
 
 interface ConstantMultipleFormControlProps {
-  autoBuyTriggerData: BasicBSTriggerData
-  autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
   balanceInfo: BalanceInfo
   constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
@@ -257,7 +257,7 @@ export function ConstantMultipleFormControl({
   const {
     collateralDelta: collateralToBePurchased,
     debtDelta: debtDeltaAfterBuy,
-  } = getBasicBSVaultChange({
+  } = getAutoBSVaultChange({
     targetCollRatio: constantMultipleState.targetCollRatio,
     execCollRatio: constantMultipleState.buyExecutionCollRatio,
     deviation: constantMultipleState.deviation,
@@ -268,7 +268,7 @@ export function ConstantMultipleFormControl({
   const {
     collateralDelta: collateralToBeSold,
     debtDelta: debtDeltaAfterSell,
-  } = getBasicBSVaultChange({
+  } = getAutoBSVaultChange({
     targetCollRatio: constantMultipleState.targetCollRatio,
     execCollRatio: constantMultipleState.sellExecutionCollRatio,
     deviation: constantMultipleState.deviation,
@@ -277,7 +277,7 @@ export function ConstantMultipleFormControl({
     debt,
   })
 
-  const { debtDelta: debtDeltaWhenSellAtCurrentCollRatio } = getBasicBSVaultChange({
+  const { debtDelta: debtDeltaWhenSellAtCurrentCollRatio } = getAutoBSVaultChange({
     targetCollRatio: constantMultipleState.targetCollRatio,
     execCollRatio: vault.collateralizationRatio.times(100),
     deviation: constantMultipleState.deviation,

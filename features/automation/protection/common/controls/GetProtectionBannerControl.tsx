@@ -31,7 +31,7 @@ export function GetProtectionBannerControl({
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('AutoBS')
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
@@ -39,12 +39,12 @@ export function GetProtectionBannerControl({
     <>
       <Banner
         title={
-          !basicBSEnabled
+          !autoBSEnabled
             ? t('vault-banners.setup-stop-loss.header')
             : t('vault-banners.get-protection.header')
         }
         description={
-          !basicBSEnabled
+          !autoBSEnabled
             ? t('vault-banners.setup-stop-loss.content', { token })
             : t('vault-banners.get-protection.content', { token })
         }
@@ -55,7 +55,7 @@ export function GetProtectionBannerControl({
         }}
         button={{
           action: () => setHash(VaultViewMode.Protection),
-          text: !basicBSEnabled
+          text: !autoBSEnabled
             ? t('vault-banners.setup-stop-loss.button')
             : t('vault-banners.get-protection.button'),
         }}

@@ -10,9 +10,9 @@ export type Feature =
   | 'StopLossRead'
   | 'StopLossWrite'
   | 'StopLossOpenFlow'
-  | 'BasicBS'
+  | 'AutoBS'
   | 'BatchCache'
-  | 'ReadOnlyBasicBS'
+  | 'ReadOnlyAutoBS'
   | 'Notifications'
   | 'Referrals'
   | 'ConstantMultiple'
@@ -26,8 +26,8 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossWrite: true,
   BatchCache: false,
   StopLossOpenFlow: false,
-  BasicBS: true,
-  ReadOnlyBasicBS: false,
+  AutoBS: true,
+  ReadOnlyAutoBS: false,
   Notifications: false,
   Referrals: true,
   ConstantMultiple: true,

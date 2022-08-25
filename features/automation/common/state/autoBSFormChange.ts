@@ -2,13 +2,13 @@ import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { TxError } from 'helpers/types'
 
-export const AUTO_SELL_FORM_CHANGE = 'BASIC_SELL_FORM_CHANGE'
-export const AUTO_BUY_FORM_CHANGE = 'BASIC_BUY_FORM_CHANGE'
+export const AUTO_SELL_FORM_CHANGE = 'AUTO_SELL_FORM_CHANGE'
+export const AUTO_BUY_FORM_CHANGE = 'AUTO_BUY_FORM_CHANGE'
 
 export type CurrentBSForm = 'add' | 'remove'
 
-export type BasicBSTriggerResetData = Pick<
-  BasicBSFormChange,
+type AutoBSTriggerResetData = Pick<
+  AutoBSFormChange,
   'execCollRatio' | 'targetCollRatio' | 'maxBuyOrMinSellPrice' | 'maxBaseFeeInGwei'
 > & {
   withThreshold: boolean
@@ -20,7 +20,7 @@ export type AutomationChangeAction =
   | { type: 'deviation'; deviation: BigNumber }
   | { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
   | { type: 'current-form'; currentForm: CurrentBSForm }
-  | { type: 'reset'; resetData: BasicBSTriggerResetData }
+  | { type: 'reset'; resetData: AutoBSTriggerResetData }
   | {
       type: 'tx-details'
       txDetails: {
@@ -31,17 +31,17 @@ export type AutomationChangeAction =
       }
     }
 
-export type BasicBSChangeAction =
+export type AutoBSChangeAction =
   | AutomationChangeAction
   | { type: 'trigger-id'; triggerId: BigNumber }
   | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
   | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
 
-export function basicBSFormChangeReducer(
-  state: BasicBSFormChange,
-  action: BasicBSChangeAction,
-): BasicBSFormChange {
+export function autoBSFormChangeReducer(
+  state: AutoBSFormChange,
+  action: AutoBSChangeAction,
+): AutoBSFormChange {
   switch (action.type) {
     case 'trigger-id':
       return { ...state, triggerId: action.triggerId }
@@ -77,7 +77,7 @@ export type AutomationFormChange = {
   deviation: BigNumber
   maxBaseFeeInGwei: BigNumber
   currentForm: CurrentBSForm
-  resetData: BasicBSTriggerResetData
+  resetData: AutoBSTriggerResetData
   txDetails?: {
     txStatus?: TxStatus
     txError?: TxError
@@ -86,7 +86,7 @@ export type AutomationFormChange = {
   }
 }
 
-export type BasicBSFormChange = AutomationFormChange & {
+export type AutoBSFormChange = AutomationFormChange & {
   maxBuyOrMinSellPrice?: BigNumber
   withThreshold: boolean
   execCollRatio: BigNumber

@@ -8,6 +8,10 @@ import {
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
 import { TxHelpers, UIChanges } from 'components/AppContext'
+import {
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
+} from 'features/automation/common/state/autoBSFormChange'
 import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
@@ -27,7 +31,7 @@ function handleTriggerTx({
   txState: TxState<TxMeta>
   ethPrice: BigNumber
   uiChanges: UIChanges
-  formChanged: 'BASIC_BUY_FORM_CHANGE' | 'BASIC_SELL_FORM_CHANGE'
+  formChanged: typeof AUTO_BUY_FORM_CHANGE | typeof AUTO_SELL_FORM_CHANGE
 }) {
   const gasUsed =
     txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
@@ -51,24 +55,24 @@ function handleTriggerTx({
   })
 }
 
-export function addBasicBSTrigger(
+export function addAutoBSTrigger(
   { sendWithGasEstimation }: TxHelpers,
   txData: AutomationBotAddTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
-  formChanged: 'BASIC_BUY_FORM_CHANGE' | 'BASIC_SELL_FORM_CHANGE',
+  formChanged: typeof AUTO_BUY_FORM_CHANGE | typeof AUTO_SELL_FORM_CHANGE,
 ) {
   sendWithGasEstimation(addAutomationBotTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
     .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, formChanged }))
 }
 
-export function removeBasicBSTrigger(
+export function removeAutoBSTrigger(
   { sendWithGasEstimation }: TxHelpers,
   txData: AutomationBotRemoveTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
-  formChanged: 'BASIC_BUY_FORM_CHANGE' | 'BASIC_SELL_FORM_CHANGE',
+  formChanged: typeof AUTO_BUY_FORM_CHANGE | typeof AUTO_SELL_FORM_CHANGE,
 ) {
   sendWithGasEstimation(removeAutomationBotTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))

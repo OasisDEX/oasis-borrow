@@ -9,24 +9,24 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { maxUint256 } from 'features/automation/common/consts'
 import {
-  checkIfDisabledBasicBS,
-  checkIfEditingBasicBS,
-  getBasicBSVaultChange,
-  prepareBasicBSResetData,
+  checkIfDisabledAutoBS,
+  checkIfEditingAutoBS,
+  getAutoBSVaultChange,
+  prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
 import {
   AUTO_BUY_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/common/state/basicBSFormChange'
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import {
-  BasicBSTriggerData,
-  prepareAddBasicBSTriggerData,
-  prepareRemoveBasicBSTriggerData,
-} from 'features/automation/common/state/basicBSTriggerData'
+  AutoBSTriggerData,
+  prepareAddAutoBSTriggerData,
+  prepareRemoveAutoBSTriggerData,
+} from 'features/automation/common/state/autoBSTriggerData'
 import {
-  addBasicBSTrigger,
-  removeBasicBSTrigger,
-} from 'features/automation/common/state/basicBStxHandlers'
+  addAutoBSTrigger,
+  removeAutoBSTrigger,
+} from 'features/automation/common/state/autoBStxHandlers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/autoBuy/sidebars/SidebarSetupAutoBuy'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
@@ -42,8 +42,8 @@ interface AutoBuyFormControlProps {
   vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoBuyOn: boolean
@@ -70,48 +70,48 @@ export function AutoBuyFormControl({
   isAutoBuyActive,
   shouldRemoveAllowance,
 }: AutoBuyFormControlProps) {
-  const [basicBuyState] = useUIChanges<BasicBSFormChange>(AUTO_BUY_FORM_CHANGE)
+  const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const { uiChanges } = useAppContext()
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
 
   const addTxData = useMemo(
     () =>
-      prepareAddBasicBSTriggerData({
+      prepareAddAutoBSTriggerData({
         vaultData: vault,
         triggerType: TriggerType.BasicBuy,
-        execCollRatio: basicBuyState.execCollRatio,
-        targetCollRatio: basicBuyState.targetCollRatio,
-        maxBuyOrMinSellPrice: basicBuyState.withThreshold
-          ? basicBuyState.maxBuyOrMinSellPrice || maxUint256
+        execCollRatio: autoBuyState.execCollRatio,
+        targetCollRatio: autoBuyState.targetCollRatio,
+        maxBuyOrMinSellPrice: autoBuyState.withThreshold
+          ? autoBuyState.maxBuyOrMinSellPrice || maxUint256
           : maxUint256,
-        continuous: basicBuyState.continuous, // leave as default
-        deviation: basicBuyState.deviation,
-        replacedTriggerId: basicBuyState.triggerId,
-        maxBaseFeeInGwei: basicBuyState.maxBaseFeeInGwei,
+        continuous: autoBuyState.continuous, // leave as default
+        deviation: autoBuyState.deviation,
+        replacedTriggerId: autoBuyState.triggerId,
+        maxBaseFeeInGwei: autoBuyState.maxBaseFeeInGwei,
       }),
     [
-      basicBuyState.execCollRatio.toNumber(),
-      basicBuyState.targetCollRatio.toNumber(),
-      basicBuyState.maxBuyOrMinSellPrice?.toNumber(),
-      basicBuyState.triggerId.toNumber(),
-      basicBuyState.maxBaseFeeInGwei.toNumber(),
+      autoBuyState.execCollRatio.toNumber(),
+      autoBuyState.targetCollRatio.toNumber(),
+      autoBuyState.maxBuyOrMinSellPrice?.toNumber(),
+      autoBuyState.triggerId.toNumber(),
+      autoBuyState.maxBaseFeeInGwei.toNumber(),
       vault.collateralizationRatio.toNumber(),
     ],
   )
 
   const cancelTxData = useMemo(
     () =>
-      prepareRemoveBasicBSTriggerData({
+      prepareRemoveAutoBSTriggerData({
         vaultData: vault,
         triggerType: TriggerType.BasicBuy,
-        triggerId: basicBuyState.triggerId,
+        triggerId: autoBuyState.triggerId,
         shouldRemoveAllowance,
       }),
-    [basicBuyState.triggerId.toNumber(), shouldRemoveAllowance],
+    [autoBuyState.triggerId.toNumber(), shouldRemoveAllowance],
   )
 
-  const txStatus = basicBuyState?.txDetails?.txStatus
+  const txStatus = autoBuyState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
   const isSuccessStage = txStatus === TxStatus.Success
@@ -137,10 +137,10 @@ export function AutoBuyFormControl({
         })
       } else {
         if (isAddForm) {
-          addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, AUTO_BUY_FORM_CHANGE)
+          addAutoBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, AUTO_BUY_FORM_CHANGE)
         }
         if (isRemoveForm) {
-          removeBasicBSTrigger(
+          removeAutoBSTrigger(
             txHelpers,
             cancelTxData,
             uiChanges,
@@ -159,16 +159,16 @@ export function AutoBuyFormControl({
     })
     uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
       type: 'reset',
-      resetData: prepareBasicBSResetData(autoBuyTriggerData),
+      resetData: prepareAutoBSResetData(autoBuyTriggerData),
     })
   }
 
-  const isAddForm = basicBuyState.currentForm === 'add'
-  const isRemoveForm = basicBuyState.currentForm === 'remove'
+  const isAddForm = autoBuyState.currentForm === 'add'
+  const isRemoveForm = autoBuyState.currentForm === 'remove'
 
-  const isEditing = checkIfEditingBasicBS({
-    basicBSTriggerData: autoBuyTriggerData,
-    basicBSState: basicBuyState,
+  const isEditing = checkIfEditingAutoBS({
+    autoBSTriggerData: autoBuyTriggerData,
+    autoBSState: autoBuyState,
     isRemoveForm,
   })
 
@@ -189,27 +189,27 @@ export function AutoBuyFormControl({
     }
   }, [addTxData, cancelTxData, isEditing, isAutoBuyActive])
 
-  const isDisabled = checkIfDisabledBasicBS({
+  const isDisabled = checkIfDisabledAutoBS({
     isProgressStage,
     isOwner,
     isEditing,
     isAddForm,
-    basicBSState: basicBuyState,
+    autoBSState: autoBuyState,
     stage,
   })
 
   const isFirstSetup = autoBuyTriggerData.triggerId.isZero()
 
   const executionPrice = collateralPriceAtRatio({
-    colRatio: basicBuyState.execCollRatio.div(100),
+    colRatio: autoBuyState.execCollRatio.div(100),
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
 
-  const { debtDelta, collateralDelta } = getBasicBSVaultChange({
-    targetCollRatio: basicBuyState.targetCollRatio,
-    execCollRatio: basicBuyState.execCollRatio,
-    deviation: basicBuyState.deviation,
+  const { debtDelta, collateralDelta } = getAutoBSVaultChange({
+    targetCollRatio: autoBuyState.targetCollRatio,
+    execCollRatio: autoBuyState.execCollRatio,
+    deviation: autoBuyState.deviation,
     executionPrice,
     lockedCollateral: vault.lockedCollateral,
     debt: vault.debt,
@@ -228,7 +228,7 @@ export function AutoBuyFormControl({
       isAutoBuyOn={isAutoBuyOn}
       context={context}
       ethMarketPrice={ethMarketPrice}
-      basicBuyState={basicBuyState}
+      autoBuyState={autoBuyState}
       txHandler={txHandler}
       textButtonHandler={textButtonHandler}
       stage={stage}

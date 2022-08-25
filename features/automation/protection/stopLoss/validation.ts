@@ -3,7 +3,7 @@ import {
   MAX_DEBT_FOR_SETTING_STOP_LOSS,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -55,7 +55,7 @@ export function errorsStopLossValidation({
   txError?: TxError
   debt: BigNumber
   stopLossLevel?: BigNumber
-  autoBuyTriggerData?: BasicBSTriggerData
+  autoBuyTriggerData?: AutoBSTriggerData
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
   const maxDebtForSettingStopLoss = debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)

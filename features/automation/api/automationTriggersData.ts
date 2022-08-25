@@ -5,9 +5,9 @@ import { Context, every5Seconds$ } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
 import {
-  BasicBSTriggerData,
+  AutoBSTriggerData,
   extractAutoBSData,
-} from 'features/automation/common/state/basicBSTriggerData'
+} from 'features/automation/common/state/autoBSTriggerData'
 import {
   ConstantMultipleTriggerData,
   extractConstantMultipleData,
@@ -94,7 +94,7 @@ export function createAutomationTriggersChange$(
 export interface AutomationTriggersChange {
   kind: 'automationTriggersData'
   stopLossData: StopLossTriggerData
-  basicSellData: BasicBSTriggerData
-  basicBuyData: BasicBSTriggerData
+  basicSellData: AutoBSTriggerData
+  basicBuyData: AutoBSTriggerData
   constantMultipleData: ConstantMultipleTriggerData
 }

@@ -5,7 +5,7 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
@@ -28,8 +28,8 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupConstantMultipleProps {
-  autoBuyTriggerData: BasicBSTriggerData
-  autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
   balanceInfo: BalanceInfo
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber

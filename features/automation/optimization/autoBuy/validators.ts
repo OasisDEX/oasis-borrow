@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
-import { BasicBSFormChange } from 'features/automation/common/state/basicBSFormChange'
-import { BasicBSTriggerData } from 'features/automation/common/state/basicBSTriggerData'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
@@ -16,7 +16,7 @@ export function warningsBasicBuyValidation({
   sliderMin,
   isStopLossEnabled,
   isAutoSellEnabled,
-  basicBuyState,
+  autoBuyState,
   withThreshold,
 }: {
   vault: Vault
@@ -26,7 +26,7 @@ export function warningsBasicBuyValidation({
   gasEstimationUsd?: BigNumber
   isStopLossEnabled: boolean
   isAutoSellEnabled: boolean
-  basicBuyState: BasicBSFormChange
+  autoBuyState: AutoBSFormChange
   minSellPrice?: BigNumber
   withThreshold: boolean
 }) {
@@ -38,14 +38,14 @@ export function warningsBasicBuyValidation({
   })
 
   const autoBuyTargetCloseToStopLossTrigger =
-    isStopLossEnabled && !isAutoSellEnabled && basicBuyState.targetCollRatio.isEqualTo(sliderMin)
+    isStopLossEnabled && !isAutoSellEnabled && autoBuyState.targetCollRatio.isEqualTo(sliderMin)
 
   const autoBuyTargetCloseToAutoSellTrigger =
-    isAutoSellEnabled && basicBuyState.targetCollRatio.isEqualTo(sliderMin)
+    isAutoSellEnabled && autoBuyState.targetCollRatio.isEqualTo(sliderMin)
 
   const settingAutoBuyTriggerWithNoThreshold = !withThreshold
 
-  const autoBuyTriggeredImmediately = basicBuyState.execCollRatio
+  const autoBuyTriggeredImmediately = autoBuyState.execCollRatio
     .div(100)
     .lte(vault.collateralizationRatioAtNextPrice)
 
@@ -59,17 +59,17 @@ export function warningsBasicBuyValidation({
 }
 
 export function errorsBasicBuyValidation({
-  basicBuyState,
+  autoBuyState,
   autoSellTriggerData,
   constantMultipleTriggerData,
   isRemoveForm,
 }: {
-  basicBuyState: BasicBSFormChange
-  autoSellTriggerData: BasicBSTriggerData
+  autoBuyState: AutoBSFormChange
+  autoSellTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isRemoveForm: boolean
 }) {
-  const { maxBuyOrMinSellPrice, txDetails, withThreshold, execCollRatio } = basicBuyState
+  const { maxBuyOrMinSellPrice, txDetails, withThreshold, execCollRatio } = autoBuyState
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError: txDetails?.txError })
 
   const autoBuyMaxBuyPriceNotSpecified =
