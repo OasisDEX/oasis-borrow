@@ -6,6 +6,7 @@ import { BasicBSFormChange } from 'features/automation/protection/common/UITypes
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { arrayRange } from 'helpers/arrayRange'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
@@ -141,10 +142,6 @@ export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
   return automationTriggersData.triggers?.length === 1
 }
 
-function range(start: number, end: number) {
-  return [...Array(end + 1).keys()].filter((value) => end >= value && start <= value)
-}
-
 export function getEligibleMultipliers({
   multipliers,
   collateralizationRatio,
@@ -175,9 +172,9 @@ export function getEligibleMultipliers({
   return multipliers
     .filter((multiplier) => {
       const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
-      const sellExecutionRange = range(
+      const sellExecutionRange = arrayRange(
         minTargetRatio.toNumber(),
-        targetCollRatio.minus(5).toNumber(),
+        targetCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).toNumber(),
       )
 
       const verifiedSellRange = sellExecutionRange.map((exec) => {
