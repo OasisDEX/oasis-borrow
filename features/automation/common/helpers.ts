@@ -141,6 +141,10 @@ export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
   return automationTriggersData.triggers?.length === 1
 }
 
+function range(start: number, end: number) {
+  return [...Array(end + 1).keys()].filter((value) => end >= value && start <= value)
+}
+
 export function getEligibleMultipliers({
   multipliers,
   collateralizationRatio,
@@ -171,22 +175,54 @@ export function getEligibleMultipliers({
   return multipliers
     .filter((multiplier) => {
       const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
+      const sellExecutionRange = range(
+        minTargetRatio.toNumber(),
+        targetCollRatio.minus(5).toNumber(),
+      )
 
-      const executionPrice = collateralPriceAtRatio({
+      const verifiedSellRange = sellExecutionRange.map((exec) => {
+        const sellExecutionCollRatio = new BigNumber(exec)
+        const sellExecutionPrice = collateralPriceAtRatio({
+          colRatio: sellExecutionCollRatio.div(100),
+          collateral: lockedCollateral,
+          vaultDebt: debt,
+        })
+
+        const { debtDelta } = getBasicBSVaultChange({
+          targetCollRatio,
+          execCollRatio: sellExecutionCollRatio,
+          deviation,
+          executionPrice: sellExecutionPrice,
+          lockedCollateral,
+          debt,
+        })
+
+        return !debtFloor.gt(debt.plus(debtDelta))
+      })
+
+      // IF following array is equal to [false] it means that whole range of sell execution coll ratio would lead
+      // to dust limit issue and therefore multiplier should be disabled
+      const deduplicatedVerifiedSellRange = [...new Set(verifiedSellRange)]
+
+      const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
         colRatio: collateralizationRatio,
         collateral: lockedCollateral,
         vaultDebt: debt,
       })
 
-      const { debtDelta } = getBasicBSVaultChange({
+      const { debtDelta: debtDeltaAtCurrentCollRatio } = getBasicBSVaultChange({
         targetCollRatio,
         execCollRatio: collateralizationRatio.times(100),
         deviation,
-        executionPrice,
+        executionPrice: executionPriceAtCurrentCollRatio,
         lockedCollateral,
-        debt: debt,
+        debt,
       })
-      return !debtFloor.gt(debt.plus(debtDelta))
+
+      return !(
+        debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio)) ||
+        (deduplicatedVerifiedSellRange.length === 1 && !deduplicatedVerifiedSellRange[0])
+      )
     })
     .filter((item) => item >= minMultiplier && item <= maxMultiplier)
 }

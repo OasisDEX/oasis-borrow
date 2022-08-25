@@ -1567,6 +1567,7 @@
     "adding-new-triggers-disabled": "Creation of the new Constant Multiple trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Constant Multiple triggers",
     "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple.",
+    "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple.",
     "closed-vault-existing-trigger-header": "Your vault is closed but Constant Multiple is still active",
     "closed-vault-existing-trigger-description":"You can cancel your existing Constant Multiple here or deposit into your vault in overview tab"
   },
