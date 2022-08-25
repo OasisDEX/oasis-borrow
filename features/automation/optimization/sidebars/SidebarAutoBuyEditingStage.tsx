@@ -175,7 +175,11 @@ export function SidebarAutoBuyEditingStage({
         clear={() => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
             type: 'reset',
-            resetData: prepareBasicBSResetData(autoBuyTriggerData),
+            resetData: prepareBasicBSResetData(
+              autoBuyTriggerData,
+              vault.collateralizationRatio,
+              BASIC_BUY_FORM_CHANGE,
+            ),
           })
         }}
       />

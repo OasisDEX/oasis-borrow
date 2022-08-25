@@ -228,7 +228,11 @@ export function SidebarAutoSellAddEditingStage({
         clear={() => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'reset',
-            resetData: prepareBasicBSResetData(autoSellTriggerData),
+            resetData: prepareBasicBSResetData(
+              autoSellTriggerData,
+              vault.collateralizationRatio,
+              BASIC_SELL_FORM_CHANGE,
+            ),
           })
         }}
       />

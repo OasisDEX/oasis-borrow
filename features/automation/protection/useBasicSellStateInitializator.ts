@@ -6,6 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import {
+  DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
   resolveMaxBuyOrMinSellPrice,
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
@@ -72,20 +73,20 @@ export function useBasicBSstateInitialization(
       type: 'with-threshold',
       withThreshold: withThresholdResolved,
     })
-    const defaultDistanceFromTriggerToTarget = 0.2
+    const defaultTriggerForSell = new BigNumber(
+      collateralizationRatio - DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+    )
+    const defaultTriggerForBuy = new BigNumber(
+      collateralizationRatio + DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+    )
+    const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
     uiChanges.publish(publishKey, {
       type: 'form-defaults',
       execCollRatio:
         publishKey === 'BASIC_SELL_FORM_CHANGE'
-          ? new BigNumber(collateralizationRatio - defaultDistanceFromTriggerToTarget)
-              .times(100)
-              .decimalPlaces(0, BigNumber.ROUND_DOWN)
-          : new BigNumber(collateralizationRatio + defaultDistanceFromTriggerToTarget)
-              .times(100)
-              .decimalPlaces(0, BigNumber.ROUND_DOWN),
-      targetCollRatio: new BigNumber(collateralizationRatio)
-        .times(100)
-        .decimalPlaces(0, BigNumber.ROUND_DOWN),
+          ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+          : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
+      targetCollRatio: defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
     })
   }, [triggerId.toNumber(), collateralizationRatio])
 
