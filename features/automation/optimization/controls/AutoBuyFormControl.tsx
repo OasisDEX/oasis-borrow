@@ -31,6 +31,7 @@ import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -38,6 +39,7 @@ import React, { useEffect, useMemo } from 'react'
 
 interface AutoBuyFormControlProps {
   vault: Vault
+  vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
@@ -54,6 +56,7 @@ interface AutoBuyFormControlProps {
 
 export function AutoBuyFormControl({
   vault,
+  vaultType,
   ilkData,
   balanceInfo,
   autoSellTriggerData,
@@ -215,6 +218,7 @@ export function AutoBuyFormControl({
   return (
     <SidebarSetupAutoBuy
       vault={vault}
+      vaultType={vaultType}
       ilkData={ilkData}
       balanceInfo={balanceInfo}
       autoSellTriggerData={autoSellTriggerData}

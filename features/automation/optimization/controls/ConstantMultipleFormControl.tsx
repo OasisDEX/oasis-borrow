@@ -248,6 +248,13 @@ export function ConstantMultipleFormControl({
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
+
+  const sellPriceAtCurrentCollRatio = collateralPriceAtRatio({
+    colRatio: vault.collateralizationRatio,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
+  })
+
   const {
     collateralDelta: collateralToBePurchased,
     debtDelta: debtDeltaAfterBuy,
@@ -267,6 +274,15 @@ export function ConstantMultipleFormControl({
     execCollRatio: constantMultipleState.sellExecutionCollRatio,
     deviation: constantMultipleState.deviation,
     executionPrice: nextSellPrice,
+    lockedCollateral,
+    debt,
+  })
+
+  const { debtDelta: debtDeltaWhenSellAtCurrentCollRatio } = getBasicBSVaultChange({
+    targetCollRatio: constantMultipleState.targetCollRatio,
+    execCollRatio: vault.collateralizationRatio.times(100),
+    deviation: constantMultipleState.deviation,
+    executionPrice: sellPriceAtCurrentCollRatio,
     lockedCollateral,
     debt,
   })
@@ -310,6 +326,8 @@ export function ConstantMultipleFormControl({
       textButtonHandler={textButtonHandler}
       txHandler={txHandler}
       vault={vault}
+      debtDeltaWhenSellAtCurrentCollRatio={debtDeltaWhenSellAtCurrentCollRatio}
+      debtDeltaAfterSell={debtDeltaAfterSell}
     />
   )
 }

@@ -3,7 +3,8 @@ import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { maxUint256 } from 'features/automation/common/consts'
+import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import {
   TriggerRecord,
@@ -164,4 +165,85 @@ export function calculateMultipleFromTargetCollRatio(targetCollRatio: BigNumber)
 
 export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
   return automationTriggersData.triggers?.length === 1
+}
+
+export function getEligibleMultipliers({
+  multipliers,
+  collateralizationRatio,
+  lockedCollateral,
+  debt,
+  debtFloor,
+  deviation,
+  minTargetRatio,
+  maxTargetRatio,
+}: {
+  multipliers: number[]
+  collateralizationRatio: BigNumber
+  lockedCollateral: BigNumber
+  debt: BigNumber
+  debtFloor: BigNumber
+  deviation: BigNumber
+  minTargetRatio: BigNumber
+  maxTargetRatio: BigNumber
+}) {
+  const maxMultiplier = calculateMultipleFromTargetCollRatio(
+    minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+
+  const minMultiplier = calculateMultipleFromTargetCollRatio(
+    maxTargetRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+
+  return multipliers
+    .filter((multiplier) => {
+      const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
+      const sellExecutionExtremes = [
+        minTargetRatio,
+        targetCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+      ]
+
+      const verifiedSellExtremes = sellExecutionExtremes.map((sellExecutionCollRatio) => {
+        const sellExecutionPrice = collateralPriceAtRatio({
+          colRatio: sellExecutionCollRatio.div(100),
+          collateral: lockedCollateral,
+          vaultDebt: debt,
+        })
+
+        const { debtDelta } = getBasicBSVaultChange({
+          targetCollRatio,
+          execCollRatio: sellExecutionCollRatio,
+          deviation,
+          executionPrice: sellExecutionPrice,
+          lockedCollateral,
+          debt,
+        })
+
+        return !debtFloor.gt(debt.plus(debtDelta))
+      })
+
+      // IF following array is equal to [false] it means that whole range of sell execution coll ratio would lead
+      // to dust limit issue and therefore multiplier should be disabled
+      const deduplicatedVerifiedSellExtremes = [...new Set(verifiedSellExtremes)]
+
+      const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
+        colRatio: collateralizationRatio,
+        collateral: lockedCollateral,
+        vaultDebt: debt,
+      })
+
+      const { debtDelta: debtDeltaAtCurrentCollRatio } = getBasicBSVaultChange({
+        targetCollRatio,
+        execCollRatio: collateralizationRatio.times(100),
+        deviation,
+        executionPrice: executionPriceAtCurrentCollRatio,
+        lockedCollateral,
+        debt,
+      })
+
+      return !(
+        debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio)) ||
+        (deduplicatedVerifiedSellExtremes.length === 1 && !deduplicatedVerifiedSellExtremes[0])
+      )
+    })
+    .filter((item) => item >= minMultiplier && item <= maxMultiplier)
 }

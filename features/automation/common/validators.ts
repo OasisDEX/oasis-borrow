@@ -20,6 +20,8 @@ export function warningsBasicSellValidation({
   isStopLossEnabled,
   isAutoBuyEnabled,
   basicSellState,
+  debtDeltaAtCurrentCollRatio,
+  debtFloor,
 }: {
   vault: Vault
   ethBalance: BigNumber
@@ -31,6 +33,8 @@ export function warningsBasicSellValidation({
   isAutoBuyEnabled: boolean
   basicSellState: BasicBSFormChange
   minSellPrice?: BigNumber
+  debtDeltaAtCurrentCollRatio: BigNumber
+  debtFloor: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token: vault.token,
@@ -46,9 +50,9 @@ export function warningsBasicSellValidation({
   const basicSellTargetCloseToAutoBuyTrigger =
     isAutoBuyEnabled && basicSellState.targetCollRatio.isEqualTo(sliderMax)
 
-  const autoSellTriggeredImmediately = basicSellState.execCollRatio
-    .div(100)
-    .gte(vault.collateralizationRatioAtNextPrice)
+  const autoSellTriggeredImmediately =
+    basicSellState.execCollRatio.div(100).gte(vault.collateralizationRatioAtNextPrice) &&
+    !debtFloor.gt(vault.debt.plus(debtDeltaAtCurrentCollRatio))
 
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
@@ -63,6 +67,7 @@ export function errorsBasicSellValidation({
   vault,
   ilkData,
   debtDelta,
+  debtDeltaAtCurrentCollRatio,
   isRemoveForm,
   basicSellState,
   autoBuyTriggerData,
@@ -71,6 +76,7 @@ export function errorsBasicSellValidation({
   vault: Vault
   ilkData: IlkData
   debtDelta: BigNumber
+  debtDeltaAtCurrentCollRatio: BigNumber
   isRemoveForm: boolean
   basicSellState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
@@ -87,7 +93,9 @@ export function errorsBasicSellValidation({
     txError: txDetails?.txError,
   })
   const targetCollRatioExceededDustLimitCollRatio =
-    !targetCollRatio.isZero() && ilkData.debtFloor.gt(vault.debt.plus(debtDelta))
+    !targetCollRatio.isZero() &&
+    (ilkData.debtFloor.gt(vault.debt.plus(debtDelta)) ||
+      ilkData.debtFloor.gt(vault.debt.plus(debtDeltaAtCurrentCollRatio)))
 
   const minimumSellPriceNotProvided =
     !isRemoveForm && withThreshold && (!maxBuyOrMinSellPrice || maxBuyOrMinSellPrice.isZero())
