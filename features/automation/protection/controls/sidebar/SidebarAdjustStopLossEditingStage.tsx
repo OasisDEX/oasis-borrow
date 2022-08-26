@@ -1,9 +1,12 @@
+import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { ADD_FORM_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
@@ -29,6 +32,9 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'vault'
   | 'isAutoSellEnabled'
   | 'isStopLossEnabled'
+  | 'isToCollateral'
+  | 'stopLossLevel'
+  | 'isOpenFlow'
 > & { errors: VaultErrorMessage[]; warnings: VaultWarningMessage[] }
 export function SidebarAdjustStopLossEditingStage({
   closePickerConfig,
@@ -47,8 +53,12 @@ export function SidebarAdjustStopLossEditingStage({
   isStopLossEnabled,
   errors,
   warnings,
+  isToCollateral,
+  stopLossLevel,
+  isOpenFlow,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
+  const { uiChanges } = useAppContext()
 
   const isVaultEmpty = vault.debt.isZero()
 
@@ -81,40 +91,57 @@ export function SidebarAdjustStopLossEditingStage({
         />
       )}
       {isEditing && (
-        <Grid>
-          {!selectedSLValue.isZero() && (
-            <>
-              <VaultErrors errorMessages={errors} ilkData={ilkData} />
-              <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-            </>
+        <>
+          {!isOpenFlow && (
+            <SidebarResetButton
+              clear={() => {
+                uiChanges.publish(ADD_FORM_CHANGE, {
+                  type: 'close-type',
+                  toCollateral: isToCollateral,
+                })
+                uiChanges.publish(ADD_FORM_CHANGE, {
+                  type: 'stop-loss',
+                  stopLoss: stopLossLevel.times(100),
+                })
+              }}
+            />
           )}
-          <SetDownsideProtectionInformation
-            token={token}
-            vault={vault}
-            ilkData={ilkData}
-            afterStopLossRatio={selectedSLValue}
-            tokenPrice={tokenPrice}
-            ethPrice={ethPrice}
-            isCollateralActive={closePickerConfig.isCollateralActive}
-            collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-            selectedSLValue={selectedSLValue}
-            ethBalance={ethBalance}
-            txError={txError}
-            currentCollateralRatio={currentCollateralRatio}
-          />
-          <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
-            {t('protection.not-guaranteed')}
-          </Text>
-          <Text as="p" variant="paragraph3">
-            {t('protection.guarantee-factors')}{' '}
-            <AppLink
-              href="https://kb.oasis.app/help/stop-loss-protection"
-              sx={{ fontWeight: 'body' }}
-            >
-              {t('protection.learn-more-about-automation')}
-            </AppLink>
-          </Text>
-        </Grid>
+          <Grid>
+            {!selectedSLValue.isZero() && (
+              <>
+                <VaultErrors errorMessages={errors} ilkData={ilkData} />
+                <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+              </>
+            )}
+            <SetDownsideProtectionInformation
+              token={token}
+              vault={vault}
+              ilkData={ilkData}
+              afterStopLossRatio={selectedSLValue}
+              tokenPrice={tokenPrice}
+              ethPrice={ethPrice}
+              isCollateralActive={closePickerConfig.isCollateralActive}
+              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+              selectedSLValue={selectedSLValue}
+              ethBalance={ethBalance}
+              txError={txError}
+              currentCollateralRatio={currentCollateralRatio}
+              isOpenFlow={isOpenFlow}
+            />
+            <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+              {t('protection.not-guaranteed')}
+            </Text>
+            <Text as="p" variant="paragraph3">
+              {t('protection.guarantee-factors')}{' '}
+              <AppLink
+                href="https://kb.oasis.app/help/stop-loss-protection"
+                sx={{ fontWeight: 'body' }}
+              >
+                {t('protection.learn-more-about-automation')}
+              </AppLink>
+            </Text>
+          </Grid>
+        </>
       )}
     </>
   )

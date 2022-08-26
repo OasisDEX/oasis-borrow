@@ -140,6 +140,9 @@ export function getDataForStopLoss(
     isStopLossEnabled: false,
     warnings: [],
     errors: [],
+    stopLossLevel,
+    isToCollateral: false,
+    isOpenFlow: true,
   }
 
   return sidebarProps
