@@ -28,14 +28,14 @@ export function useStopLossStateInitializator(
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
   const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
 
-  const initialVaultSlCollRatio = vault.collateralizationRatio.isZero() ? zero : sliderMin
-
   const defaultThresholdFromLowestPossibleValue = 0.05
-  const startingSlRatio = getStartingSlRatio({
+  const selectedStopLossCollRatioIfTriggerDoesntExist = vault.collateralizationRatio.isZero() ? zero : sliderMin.plus(defaultThresholdFromLowestPossibleValue)
+
+  const initialSlRatio = getStartingSlRatio({
     stopLossLevel,
     isStopLossEnabled,
-    initialVaultCollRatio: initialVaultSlCollRatio,
-  }).plus(defaultThresholdFromLowestPossibleValue)
+    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
+  })
 
   useEffect(() => {
     uiChanges.publish(ADD_FORM_CHANGE, {
@@ -44,7 +44,7 @@ export function useStopLossStateInitializator(
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'stop-loss',
-      stopLoss: startingSlRatio,
+      stopLoss: initialSlRatio,
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'tx-details',
@@ -63,9 +63,9 @@ export function useStopLossStateInitializator(
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
+      stopLoss: initialSlRatio.multipliedBy(100),
     })
-  }, [isStopLossEnabled, startingSlRatio.toNumber()])
+  }, [isStopLossEnabled, initialSlRatio.toNumber()])
 
   return isStopLossEnabled
 }
