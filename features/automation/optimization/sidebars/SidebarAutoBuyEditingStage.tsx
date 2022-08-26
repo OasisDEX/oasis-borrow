@@ -12,7 +12,8 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoBuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
-import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { maxUint256 } from 'features/automation/common/consts'
 import { prepareBasicBSResetData } from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,

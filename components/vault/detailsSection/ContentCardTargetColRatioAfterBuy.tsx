@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { maxUint256 } from 'features/automation/common/consts'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

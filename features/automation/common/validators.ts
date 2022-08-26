@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
@@ -101,7 +102,7 @@ export function errorsBasicSellValidation({
 
   const autoSellTriggerHigherThanAutoBuyTarget =
     autoBuyTriggerData.isTriggerEnabled &&
-    execCollRatio.plus(5).gt(autoBuyTriggerData.targetCollRatio)
+    execCollRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).gt(autoBuyTriggerData.targetCollRatio)
 
   const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
     constantMultipleTriggerData.isTriggerEnabled

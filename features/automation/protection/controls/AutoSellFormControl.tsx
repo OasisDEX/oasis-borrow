@@ -67,8 +67,7 @@ export function AutoSellFormControl({
 }: AutoSellFormControlProps) {
   const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { uiChanges } = useAppContext()
-  // const [txData] = useUIChanges<TxPayloadChangeBase>(TX_DATA_CHANGE)
-  // console.log('txData', txData)
+
   const isOwner = context.status === 'connected' && context.account === vault.controller
 
   const addTxData = useMemo(

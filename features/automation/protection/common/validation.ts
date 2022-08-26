@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
+import {
+  MAX_DEBT_FOR_SETTING_STOP_LOSS,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+} from 'features/automation/common/consts'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -58,7 +61,7 @@ export function errorsStopLossValidation({
   const maxDebtForSettingStopLoss = debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
   const stopLossTriggerHigherThanAutoBuyTarget =
     stopLossLevel && autoBuyTriggerData?.isTriggerEnabled
-      ? stopLossLevel.plus(5).gt(autoBuyTriggerData.targetCollRatio)
+      ? stopLossLevel.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).gt(autoBuyTriggerData.targetCollRatio)
       : false
 
   return errorMessagesHandler({

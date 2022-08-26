@@ -1,15 +1,41 @@
+import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
+import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
+import { NetworkIds } from 'blockchain/network'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
-import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import {
+  TriggerRecord,
+  TriggersData,
+} from 'features/automation/protection/triggers/AutomationTriggersData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
-export const ACCEPTABLE_FEE_DIFF = new BigNumber(3)
+export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
+  const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
+
+  try {
+    const decodedTriggers = triggers.map((trigger) => {
+      return {
+        triggerId: trigger.triggerId,
+        result: decodeTriggerData(trigger.commandAddress, networkId, trigger.executionParams),
+      }
+    })
+
+    return decodedTriggers.filter((decodedTrigger) => {
+      const triggerType = decodedTrigger.result[1]
+
+      return triggerTypes.includes(triggerType)
+    })
+  } catch (e) {
+    console.error(e)
+    return []
+  }
+}
 
 export function resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice: BigNumber) {
   return maxBuyOrMinSellPrice.isZero() || maxBuyOrMinSellPrice.isEqualTo(maxUint256)

@@ -1,9 +1,8 @@
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/common/consts'
 import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
 import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
@@ -24,7 +23,7 @@ export function getConstantMutliplyMinMaxValues({
       stopLossTriggerData,
       ilkData,
     }).min,
-    max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
+    max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE,
   }
 }
 
