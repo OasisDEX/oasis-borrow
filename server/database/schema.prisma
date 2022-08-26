@@ -58,7 +58,7 @@ model User {
 
 model WeeklyClaim {
     id           Int      @id @default(autoincrement())
-    timestamp    DateTime @default(now())
+    timestamp    DateTime? @default(now())
     week_number  Int
     user_address String
     proof        String[]
@@ -70,10 +70,10 @@ model WeeklyClaim {
 }
 
 model MerkleTree {
-    week_number Int      @unique
-    start_block Int
-    end_block   Int
-    timestamp   DateTime @default(now())
+    week_number Int       @unique
+    start_block Int?
+    end_block   Int?
+    timestamp   DateTime? @default(now())
     tree_root   String
     snapshot    String?
 
