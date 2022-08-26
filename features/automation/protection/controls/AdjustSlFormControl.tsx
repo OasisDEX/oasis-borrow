@@ -338,6 +338,8 @@ export function AdjustSlFormControl({
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     autoBuyTriggerData,
+    isToCollateral,
+    stopLossLevel,
   }
 
   return <SidebarAdjustStopLoss {...props} />

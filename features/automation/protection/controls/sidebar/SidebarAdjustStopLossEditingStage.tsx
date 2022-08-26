@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -33,6 +32,9 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'vault'
   | 'isAutoSellEnabled'
   | 'isStopLossEnabled'
+  | 'isToCollateral'
+  | 'stopLossLevel'
+  | 'isOpenFlow'
 > & { errors: VaultErrorMessage[]; warnings: VaultWarningMessage[] }
 export function SidebarAdjustStopLossEditingStage({
   closePickerConfig,
@@ -51,6 +53,9 @@ export function SidebarAdjustStopLossEditingStage({
   isStopLossEnabled,
   errors,
   warnings,
+  isToCollateral,
+  stopLossLevel,
+  isOpenFlow,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -87,18 +92,20 @@ export function SidebarAdjustStopLossEditingStage({
       )}
       {isEditing && (
         <>
-          <SidebarResetButton
-            clear={() => {
-              uiChanges.publish(ADD_FORM_CHANGE, {
-                type: 'close-type',
-                toCollateral: true,
-              })
-              uiChanges.publish(ADD_FORM_CHANGE, {
-                type: 'stop-loss',
-                stopLoss: new BigNumber(200),
-              })
-            }}
-          />
+          {!isOpenFlow && (
+            <SidebarResetButton
+              clear={() => {
+                uiChanges.publish(ADD_FORM_CHANGE, {
+                  type: 'close-type',
+                  toCollateral: isToCollateral,
+                })
+                uiChanges.publish(ADD_FORM_CHANGE, {
+                  type: 'stop-loss',
+                  stopLoss: stopLossLevel.times(100),
+                })
+              }}
+            />
+          )}
           <Grid>
             {!selectedSLValue.isZero() && (
               <>
@@ -119,6 +126,7 @@ export function SidebarAdjustStopLossEditingStage({
               ethBalance={ethBalance}
               txError={txError}
               currentCollateralRatio={currentCollateralRatio}
+              isOpenFlow={isOpenFlow}
             />
             <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
               {t('protection.not-guaranteed')}
