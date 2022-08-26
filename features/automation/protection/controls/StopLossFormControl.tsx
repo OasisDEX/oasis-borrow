@@ -15,7 +15,6 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
 
-import { PROTECTION_STATE_UPDATE } from '../common/UITypes/ProtectionFlowState'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,
@@ -147,9 +146,8 @@ export function StopLossFormControl({
     }
   }, [])
 
-  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_STATE_UPDATE)
+  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
-  console.log(currentForm, 'form in StopLossFormContrl')
   const accountIsConnected = accountIsConnectedValidator({ account })
   const accountIsController = accountIsConnected && account === vault.controller
 

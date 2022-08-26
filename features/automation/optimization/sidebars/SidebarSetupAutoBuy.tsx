@@ -222,10 +222,10 @@ export function SidebarSetupAutoBuy({
           }
         },
       },
-      ...((stage !== 'txInProgress' || isConfirmation) && {
+      ...(stage !== 'txInProgress' && {
         textButton: {
           label: selectSideBarTextBtnLabel(isConfirmation, isAddForm, t),
-          hidden: basicBuyState.triggerId.isZero(),
+          hidden: basicBuyState.triggerId.isZero() && !isConfirmation,
           action: () => {
             if (isConfirmation) {
               uiChanges.publish(BASIC_BUY_FORM_CHANGE, {

@@ -27,7 +27,9 @@ export function selectSideBarTextBtnLabel(
   isAddForm: boolean,
   t: TFunction,
 ) {
-  if (isAddForm) return t('system.remove-trigger')
+  console.log('hello from selectSideBarTextBtnLabel')
+  console.log(isConfirmation, 'isConfirmation')
+  if (isAddForm && !isConfirmation) return t('system.remove-trigger')
   if (isConfirmation) return t('auto-buy.edit-order-btn')
   return t('system.add-trigger')
 }
@@ -37,7 +39,7 @@ export function calculateStepNumber(
   stage: string,
   isProgressStage: boolean,
 ) {
-  if (isConfirmation && !isProgressStage && stage !== 'txSuccess') return '(2 / 3)'
-  if (isProgressStage || stage === 'txSuccess') return '(3 / 3)'
-  return '(1 / 3)'
+  if (isConfirmation && !isProgressStage && stage !== 'txSuccess') return '(2/3)'
+  if (isProgressStage || stage === 'txSuccess') return '(3/3)'
+  return '(1/3)'
 }

@@ -23,7 +23,7 @@ interface BuyInfoSectionProps {
   collateralToBePurchased: BigNumber
   targetRatioWithDeviationFloor: BigNumber
   targetRatioWithDeviationCeiling: BigNumber
-  maxGasFee?: number
+  maxGasFee: number
 }
 
 export function AddAutoBuyInfoSection({

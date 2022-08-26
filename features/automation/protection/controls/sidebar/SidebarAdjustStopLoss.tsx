@@ -71,7 +71,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     if (isConfirmation && stage !== 'txInProgress') {
       return {
         textButton: {
-          label: t('protection.navigate-cancel'),
+          label: t('protection.edit-order-btn'),
           hidden: firstStopLossSetup,
           action: () =>
             uiChanges.publish(PROTECTION_STATE_UPDATE, {
@@ -138,7 +138,9 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     primaryButton: {
       // TODO: Refactor this when implementing the new sidebar
       label: `${
-        protectionState.isConfirmation && stage !== 'txSuccess' ? 'Confirm' : ''
+        protectionState.isConfirmation && !['txSuccess', 'txFailure'].includes(stage)
+          ? 'Confirm'
+          : ''
       } ${getPrimaryButtonLabel({ flow, stage, token })} ${calculateStepNumber(
         protectionState.isConfirmation,
         stage,
@@ -163,7 +165,8 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
         }
       },
     },
-    ...(!firstStopLossSetup && createTextBtnConfig(stage, protectionState.isConfirmation)),
+    ...((!firstStopLossSetup || protectionState.isConfirmation) &&
+      createTextBtnConfig(stage, protectionState.isConfirmation)),
     status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 

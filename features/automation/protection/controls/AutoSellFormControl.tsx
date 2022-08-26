@@ -147,7 +147,6 @@ export function AutoSellFormControl({
   function txHandler() {
     if (txHelpers) {
       if (stage === 'txSuccess') {
-        console.log('hello there ')
         uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
           type: 'tx-details',
           txDetails: {},
