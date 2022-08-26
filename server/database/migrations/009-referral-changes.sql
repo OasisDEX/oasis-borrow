@@ -1,5 +1,5 @@
 ALTER TABLE public.merkle_tree
-ADD COLUMN start_block decimal(78, 0);
+ADD COLUMN start_block decimal(78, 0),
 ADD COLUMN end_block decimal(78, 0);
 ALTER TABLE public.user
     RENAME COLUMN "createdAt" TO timestamp;
