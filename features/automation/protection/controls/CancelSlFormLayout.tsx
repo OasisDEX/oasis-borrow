@@ -146,4 +146,6 @@ export interface CancelSlFormLayoutProps {
   currentCollateralRatio: BigNumber
   selectedSLValue: BigNumber
   vault: Vault
+  isStopLossEnabled: boolean
+  isAutoSellEnabled: boolean
 }

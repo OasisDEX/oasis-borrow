@@ -11,6 +11,7 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
   prepareRemoveStopLossTriggerData,
@@ -40,6 +41,7 @@ interface CancelSlFormControlProps {
   vault: Vault
   ilkData: IlkData
   triggerData: StopLossTriggerData
+  autoSellTriggerData: BasicBSTriggerData
   ctx: Context
   toggleForms: () => void
   accountIsController: boolean
@@ -53,6 +55,7 @@ interface CancelSlFormControlProps {
 export function CancelSlFormControl({
   vault,
   triggerData,
+  autoSellTriggerData,
   ctx,
   toggleForms,
   accountIsController,
@@ -177,6 +180,8 @@ export function CancelSlFormControl({
     currentCollateralRatio: vault.collateralizationRatio,
     selectedSLValue: addSlUiState.selectedSLValue,
     isProgressDisabled,
+    isStopLossEnabled: triggerData.isStopLossEnabled,
+    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     vault,
   }
 

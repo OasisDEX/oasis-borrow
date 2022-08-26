@@ -2,12 +2,11 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/sidebars/SidebarConstantMultipleRemovalEditingStage'
 import {
   errorsConstantMultipleValidation,
@@ -93,8 +92,6 @@ export function SidebarSetupConstantMultiple({
 
   const gasEstimation = useGasEstimationContext()
 
-  const { uiChanges } = useAppContext()
-
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelConstantMultiple'
     : isFirstSetup
@@ -135,14 +132,18 @@ export function SidebarSetupConstantMultiple({
   const cancelConstantMultipleWarnings = extractCancelBSWarnings(warnings)
   const validationErrors = isAddForm ? errors : cancelConstantMultipleErrors
 
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Optimization',
+    forcePanel: 'constantMultiple',
+    disabled: isDropdownDisabled({ stage }),
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+  })
+
   if (isConstantMultipleActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('constant-multiple.title'),
-      dropdown: {
-        forcePanel: 'constantMultiple',
-        disabled: isDropdownDisabled({ stage }),
-        items: commonOptimizationDropdownItems(uiChanges, t),
-      },
+      dropdown,
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
