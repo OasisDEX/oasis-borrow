@@ -8,15 +8,14 @@ import {
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
-import { getTriggersByType } from 'features/automation/common/filterTriggersByType'
+import {
+  DEFAULT_DEVIATION,
+  DEFAULT_MAX_BASE_FEE_IN_GWEI,
+  maxUint256,
+} from 'features/automation/common/consts'
+import { getTriggersByType } from 'features/automation/common/helpers'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { zero } from 'helpers/zero'
-
-export const maxUint32 = new BigNumber('0xFFFFFFFF')
-export const maxUint256 = new BigNumber(
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-  16,
-)
 
 export interface BasicBSTriggerData {
   triggerId: BigNumber
@@ -70,20 +69,20 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
       deviation: new BigNumber(deviation.toString()).div(100),
       maxBaseFeeInGwei: maxBaseFeeInGwei
         ? new BigNumber(maxBaseFeeInGwei.toString())
-        : new BigNumber(300), // handling for old command address
+        : DEFAULT_MAX_BASE_FEE_IN_GWEI, // handling for old command address
       isTriggerEnabled: true,
     } as BasicBSTriggerData
   })
 }
 
-const defaultBasicSellData = {
+const defaultBasicBSData = {
   triggerId: zero,
   execCollRatio: zero,
   targetCollRatio: zero,
   maxBuyOrMinSellPrice: zero,
   continuous: false,
-  deviation: new BigNumber(1),
-  maxBaseFeeInGwei: new BigNumber(300),
+  deviation: DEFAULT_DEVIATION,
+  maxBaseFeeInGwei: DEFAULT_MAX_BASE_FEE_IN_GWEI,
   isTriggerEnabled: false,
 }
 
@@ -101,7 +100,7 @@ export function extractBasicBSData({
     }
   }
 
-  return defaultBasicSellData
+  return defaultBasicBSData
 }
 
 export function prepareBasicBSTriggerData({

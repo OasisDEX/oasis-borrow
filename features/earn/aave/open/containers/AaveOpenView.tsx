@@ -11,7 +11,11 @@ import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 
-export function AaveOpenView() {
+interface Props {
+  strategyName: string
+}
+
+export function AaveOpenView({ strategyName }: Props) {
   const { aaveStateMachine$ } = useAaveContext()
   const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
 
@@ -20,32 +24,35 @@ export function AaveOpenView() {
   return (
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
-        {([_stateMachine]) => (
-          <Container variant="vaultPageContainer">
-            [HEADER]
-            <TabBar
-              variant="underline"
-              sections={[
-                {
-                  value: 'simulate',
-                  label: t('open-vault.simulate'),
-                  content: (
-                    <Grid variant="vaultContainer">
-                      <Box>[OPEN AAVE DETAILS]</Box>
-                      <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
-                    </Grid>
-                  ),
-                },
-                {
-                  value: 'position-info',
-                  label: t('system.position-info'),
-                  content: <Card variant="faq">{aaveFaq}</Card>,
-                },
-              ]}
-            />
-            <Survey for="earn" />
-          </Container>
-        )}
+        {([_stateMachine]) => {
+          _stateMachine.context.strategyName = strategyName
+          return (
+            <Container variant="vaultPageContainer">
+              [HEADER]
+              <TabBar
+                variant="underline"
+                sections={[
+                  {
+                    value: 'simulate',
+                    label: t('open-vault.simulate'),
+                    content: (
+                      <Grid variant="vaultContainer">
+                        <Box>[OPEN AAVE DETAILS]</Box>
+                        <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
+                      </Grid>
+                    ),
+                  },
+                  {
+                    value: 'faq',
+                    label: t('system.faq'),
+                    content: <Card variant="faq">{aaveFaq}</Card>,
+                  },
+                ]}
+              />
+              <Survey for="earn" />
+            </Container>
+          )
+        }}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )

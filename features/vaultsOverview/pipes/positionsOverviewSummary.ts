@@ -85,8 +85,8 @@ export function createPositionsOverviewSummary$(
 
   // merge and sort
   const flattenedTokensAndPositions$ = combineLatest(tokenBalances$, positions$).pipe(
-    map(([tokensAndBalances, makerPositions]) =>
-      [...tokensAndBalances, ...makerPositions]
+    map(([tokensAndBalances, positions]) =>
+      [...tokensAndBalances, ...positions]
         .sort((tokenA, tokenB) => {
           const tokenAUsdAmount = getPositionOrAssetValue(tokenA)
           const tokenBUsdAmount = getPositionOrAssetValue(tokenB)
@@ -100,7 +100,10 @@ export function createPositionsOverviewSummary$(
         })
         .filter((token) => {
           const valueUsd = getPositionOrAssetValue(token)
-          return valueUsd.decimalPlaces(2).gt(zero) || (token as WalletAssets)?.missingPriceData // only care about meaningful dollar values
+          return (
+            valueUsd.decimalPlaces(2).gt(zero) ||
+            ((token as WalletAssets)?.missingPriceData && valueUsd.decimalPlaces(2).gt(zero))
+          ) // only care about meaningful dollar values
         }),
     ),
   )

@@ -4,6 +4,7 @@ import {
   BasicBSTriggerData,
   extractBasicBSData,
 } from 'features/automation/common/basicBSTriggerData'
+import { DEFAULT_DEVIATION, DEFAULT_MAX_BASE_FEE_IN_GWEI } from 'features/automation/common/consts'
 import {
   calculateCollRatioFromMultiple,
   calculateMultipleFromTargetCollRatio,
@@ -13,9 +14,6 @@ import {
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { DEFAULT_TARGET_OFFSET } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { zero } from 'helpers/zero'
-
-const DEFAULT_MAX_BASE_FEE_IN_GWEI = 300
-const DEFAULT_DEVIATION = 1
 
 interface ConstantMultipleAggregatedTriggers {
   [TriggerType.BasicBuy]: BasicBSTriggerData
@@ -49,8 +47,8 @@ const defaultConstantMultipleData: ConstantMultipleTriggerData = {
   maxBuyPrice: zero,
   minSellPrice: zero,
   continuous: false,
-  deviation: new BigNumber(DEFAULT_DEVIATION),
-  maxBaseFeeInGwei: new BigNumber(DEFAULT_MAX_BASE_FEE_IN_GWEI),
+  deviation: DEFAULT_DEVIATION,
+  maxBaseFeeInGwei: DEFAULT_MAX_BASE_FEE_IN_GWEI,
   isTriggerEnabled: false,
 }
 

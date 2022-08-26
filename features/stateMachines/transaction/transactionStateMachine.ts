@@ -107,6 +107,7 @@ export function createTransactionStateMachine<T extends TxMeta>(
               actions: [actions.assignTxError],
             },
             CONFIRMED: {
+              // Maybe here we want to notify the parent of its success
               target: 'success',
               actions: [actions.assignConfirmations],
             },
@@ -193,25 +194,28 @@ export function createTransactionServices<T extends TxMeta>(
             {
               type: 'WAITING_FOR_APPROVAL',
             },
-            (txState) =>
-              of({
+            (txState) => {
+              return of({
                 type: 'IN_PROGRESS',
                 txHash: (txState as any).txHash as string,
-              }),
-            (txState) =>
-              of({
+              })
+            },
+            (txState) => {
+              return of({
                 type: 'FAILURE',
                 txError:
                   txState.status === TxStatus.Error ||
                   txState.status === TxStatus.CancelledByTheUser
                     ? txState.error
                     : undefined,
-              }),
-            (txState) =>
-              of({
+              })
+            },
+            (txState) => {
+              return of({
                 type: 'CONFIRMED',
                 confirmations: (txState as any).confirmations,
-              }),
+              })
+            },
             safeConfirmations,
           ),
         )

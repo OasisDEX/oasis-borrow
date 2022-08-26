@@ -61,7 +61,7 @@ export function VaultChangesInformationItem({
         </Tooltip>
       )}
       <Box sx={{ color: 'primary100' }}>
-        <Text as="p" variant="paragraph4">
+        <Text as="div" variant="paragraph4">
           {value}
         </Text>
       </Box>
@@ -98,7 +98,11 @@ export function VaultChangesInformationArrow() {
 
 export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
-  return <Text sx={{ color: 'critical100' }}>{withBrackets ? `(${textError})` : textError}</Text>
+  return (
+    <Text as="div" sx={{ color: 'critical100' }}>
+      {withBrackets ? `(${textError})` : textError}
+    </Text>
+  )
 }
 
 export function getEstimatedGasFeeTextOld(gasEstimation?: HasGasEstimation, withBrackets = false) {

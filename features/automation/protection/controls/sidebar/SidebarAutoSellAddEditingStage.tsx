@@ -246,13 +246,27 @@ export function SidebarAutoSellAddEditingStage({
         value={basicSellState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
-        <AutoSellInfoSectionControl
-          basicSellState={basicSellState}
-          vault={vault}
-          debtDelta={debtDelta}
-          collateralDelta={collateralDelta}
-          executionPrice={executionPrice}
-        />
+        <>
+          <SidebarResetButton
+            clear={() => {
+              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                type: 'reset',
+                resetData: prepareBasicBSResetData(
+                  autoSellTriggerData,
+                  vault.collateralizationRatio,
+                  BASIC_SELL_FORM_CHANGE,
+                ),
+              })
+            }}
+          />
+          <AutoSellInfoSectionControl
+            basicSellState={basicSellState}
+            vault={vault}
+            debtDelta={debtDelta}
+            collateralDelta={collateralDelta}
+            executionPrice={executionPrice}
+          />
+        </>
       )}
     </>
   )

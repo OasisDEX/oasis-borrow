@@ -138,6 +138,7 @@ export function getQuote$(
         fromToken.decimals,
       )
       const normalizedToTokenAmount = amountFromWei(new BigNumber(toTokenAmount), toToken.decimals)
+
       return {
         ...responseBase,
         collateralAmount: amountFromWei(

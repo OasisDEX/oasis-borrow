@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 
 interface GetConstantMultipleMultipliersProps {
@@ -14,7 +15,6 @@ interface GetDefaultMultiplierProps {
 }
 
 const AMOUNT_OF_MULTIPLIERS_TO_GENERATE = 5
-export const MIX_MAX_COL_RATIO_TRIGGER_OFFSET = 5
 
 const multipliersPresets = {
   '1.3-2': [1.3, 1.5, 1.75, 2],

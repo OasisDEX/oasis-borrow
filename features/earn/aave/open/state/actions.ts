@@ -63,6 +63,7 @@ const setAmount = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
 
 const setVaultNumber = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
   if (event.type !== 'TRANSACTION_SUCCESS') return {}
+
   return {
     vaultNumber: event.vaultNumber,
   }

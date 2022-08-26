@@ -87,6 +87,18 @@ const conf = withBundleAnalyzer(
           }
         }
 
+        if (!isServer) {
+          const CircularDependencyPlugin = require('circular-dependency-plugin')
+          config.plugins.push(
+            new CircularDependencyPlugin({
+              exclude: /node_modules/,
+              failOnError: false,
+              allowAsyncCycles: false,
+              cwd: process.cwd(),
+            }),
+          )
+        }
+
         return config
       },
       pwa: {

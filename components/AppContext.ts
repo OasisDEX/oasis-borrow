@@ -54,6 +54,7 @@ import {
   tokenPrices$,
 } from 'blockchain/prices'
 import {
+  createAaveCollateralTokens$,
   createAccountBalance$,
   createAllowance$,
   createBalance$,
@@ -170,6 +171,7 @@ import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
+import { getAaveUserReserveData } from '../blockchain/calls/aaveProtocolDataProvider'
 import {
   cropperBonusTokenAddress,
   cropperCrops,
@@ -250,7 +252,12 @@ import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptan
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from '../features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
-import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
+import {
+  createAavePositions$,
+  createMakerPositions$,
+  createPositions$,
+  decorateAaveTokensPrice$,
+} from '../features/vaultsOverview/pipes/positions'
 import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
@@ -715,6 +722,7 @@ export function setupAppContext() {
   const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
+  const aaveCollateralTokens$ = createAaveCollateralTokens$(context$)
 
   const accountBalances$ = curry(createAccountBalance$)(
     balanceLean$,
@@ -781,7 +789,15 @@ export function setupAppContext() {
   const vaultWithValue$ = memoize(
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
-  const positions$ = memoize(curry(createPositions$)(vaultWithValue$))
+
+  const tokensWithValue$ = decorateAaveTokensPrice$(aaveCollateralTokens$, exchangeQuote$)
+  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
+
+  const aavePositions$ = memoize(
+    curry(createAavePositions$)(aaveUserReserveData$, tokensWithValue$, proxyAddress$),
+  )
+  const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
+  const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(

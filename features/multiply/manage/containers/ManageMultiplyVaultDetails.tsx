@@ -1,29 +1,29 @@
 import { Box } from '@theme-ui/components'
 import { IlkData } from 'blockchain/ilks'
 import { useAppContext } from 'components/AppContextProvider'
+import { DetailsSection } from 'components/DetailsSection'
+import {
+  DetailsSectionContentCardWrapper,
+  getChangeVariant,
+} from 'components/DetailsSectionContentCard'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentCardBuyingPower } from 'components/vault/detailsSection/ContentCardBuyingPower'
 import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
+import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
+import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { overrideWarningAutoSellTriggerIds } from 'features/automation/protection/common/consts/automationDefaults'
+import { overrideWarningAutoSellTriggerIds } from 'features/automation/common/consts'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { DetailsSection } from '../../../../components/DetailsSection'
-import {
-  DetailsSectionContentCardWrapper,
-  getChangeVariant,
-} from '../../../../components/DetailsSectionContentCard'
-import { DetailsSectionFooterItemWrapper } from '../../../../components/DetailsSectionFooterItem'
-import { ContentCardBuyingPower } from '../../../../components/vault/detailsSection/ContentCardBuyingPower'
-import { ContentCardLiquidationPrice } from '../../../../components/vault/detailsSection/ContentCardLiquidationPrice'
-import { ContentCardNetValue } from '../../../../components/vault/detailsSection/ContentCardNetValue'
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 

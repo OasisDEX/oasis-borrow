@@ -3,7 +3,7 @@ import { Machine } from 'xstate'
 
 import { TxHelpers } from '../../../components/AppContext'
 import { HasGasEstimation } from '../../../helpers/form'
-import { nameofFactory } from '../../../utils/index'
+import { nameofFactory } from '../../../utils'
 import { actions } from './actions'
 import { services } from './services'
 import { ProxyContext, ProxyEvent } from './types'

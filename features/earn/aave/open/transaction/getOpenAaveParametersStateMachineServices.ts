@@ -7,6 +7,7 @@ import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { one, zero } from '../../../../../helpers/zero'
 import { getOpenAaveParameters } from '../../../../aave'
+import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { openAavePosition } from '../pipelines/openAavePosition'
 import {
   openAaveParametersStateMachine,
@@ -22,24 +23,27 @@ export function getOpenAaveParametersStateMachineServices$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
+  userSettings$: Observable<UserSettingsState>,
 ): Observable<PreTransactionSequenceMachineServices> {
-  return combineLatest(context$, txHelpers$).pipe(
+  return combineLatest(context$, txHelpers$, userSettings$).pipe(
     first(), // We only need the first one (for an account, per refresh)
-    map(([{ account }, txHelpers]) => {
+    map(([contextConnected, txHelpers, userSettings]) => {
       return {
         getParameters: async (context) => {
+          if (!context.proxyAddress) return Promise.resolve()
           return await getOpenAaveParameters(
-            account,
+            contextConnected,
             context.amount || zero,
             context.multiply || 2,
-            context.token,
+            userSettings.slippage,
+            context.proxyAddress,
           )
         },
         estimateGas: async (context) => {
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
             return Promise.resolve(0)
           }
-          return await txHelpers
+          const gas = await txHelpers
             .estimateGas(openAavePosition, {
               kind: TxMetaKind.operationExecutor,
               calls: context.transactionParameters!.calls as any,
@@ -50,6 +54,8 @@ export function getOpenAaveParametersStateMachineServices$(
             })
             .pipe(first())
             .toPromise()
+
+          return gas
         },
         estimateGasPrice: async (context) => {
           return await gasEstimation$(context.estimatedGas!).pipe(first()).toPromise()

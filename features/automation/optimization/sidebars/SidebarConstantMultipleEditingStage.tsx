@@ -16,13 +16,13 @@ import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPrice
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   ACCEPTABLE_FEE_DIFF,
-  calculateCollRatioFromMultiple,
-} from 'features/automation/common/helpers'
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+} from 'features/automation/common/consts'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
@@ -346,7 +346,7 @@ export function SidebarConstantMultipleEditingStage({
           values={{
             maxStopLoss: calculateCollRatioFromMultiple(
               constantMultipleState.eligibleMultipliers[0] || constantMultipleState.multipliers[0],
-            ).minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET * 2),
+            ).minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
           }}
         />
       ) : (

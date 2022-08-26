@@ -98,6 +98,7 @@ interface SetDownsideProtectionInformationProps {
   ethBalance: BigNumber
   txError?: TxError
   currentCollateralRatio: BigNumber
+  isOpenFlow?: boolean
 }
 
 export function SetDownsideProtectionInformation({
@@ -108,6 +109,7 @@ export function SetDownsideProtectionInformation({
   tokenPrice,
   ethPrice,
   isCollateralActive,
+  isOpenFlow,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
 
@@ -167,10 +169,12 @@ export function SetDownsideProtectionInformation({
         value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
         tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
-      <VaultChangesInformationItem
-        label={`${t('protection.max-cost')}`}
-        value={<GasEstimation />}
-      />
+      {!isOpenFlow && (
+        <VaultChangesInformationItem
+          label={`${t('protection.max-cost')}`}
+          value={<GasEstimation />}
+        />
+      )}
     </VaultChangesInformationContainer>
   )
 }
@@ -207,4 +211,7 @@ export interface AdjustSlFormLayoutProps {
   isAutoSellEnabled: boolean
   isConstantMultipleEnabled: boolean
   autoBuyTriggerData: BasicBSTriggerData
+  isToCollateral: boolean
+  stopLossLevel: BigNumber
+  isOpenFlow?: boolean
 }
