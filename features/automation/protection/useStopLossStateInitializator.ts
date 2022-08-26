@@ -7,7 +7,7 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
-import { DEFAULT_SL_SLIDER_BOUNDARY } from './common/consts/automationDefaults'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from '../common/consts'
 import { getStartingSlRatio } from './common/helpers'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
@@ -26,7 +26,7 @@ export function useStopLossStateInitializator(
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
-  const sliderMin = ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY)
+  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
 
   const initialVaultSlCollRatio = vault.collateralizationRatio.isZero() ? zero : sliderMin
 
