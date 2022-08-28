@@ -76,6 +76,68 @@ function TOSWaiting4Signature({
   )
 }
 
+function TOSRecentlyUpdated({
+  stage,
+  acceptJwtAuth,
+  disconnect,
+}: TermsAcceptanceState & { disconnect: () => void }) {
+  const { t } = useTranslation()
+
+  return (
+    <Grid gap={3}>
+      <Box px={2}>
+        <Heading variant="header4" sx={{ textAlign: 'center', pb: 1, pt: 3 }}>
+          {t(`tos-jwt-signature-expired-title`)}
+        </Heading>
+        <Text mt={3} variant="paragraph3">
+          {t('tos-jwt-signature-expired-message')}
+        </Text>
+      </Box>
+      <Button
+        sx={{ width: '80%', justifySelf: 'center' }}
+        disabled={stage !== 'jwtAuthWaiting4Acceptance'}
+        onClick={acceptJwtAuth}
+      >
+        {t(getButtonMessage(stage))}
+      </Button>
+      <Button variant="textual" sx={{ width: '80%', justifySelf: 'center' }} onClick={disconnect}>
+        {t('disconnect')}
+      </Button>
+    </Grid>
+  )
+}
+
+function TOSExpiredSigniture({
+  stage,
+  acceptJwtAuth,
+  disconnect,
+}: TermsAcceptanceState & { disconnect: () => void }) {
+  const { t } = useTranslation()
+
+  return (
+    <Grid gap={3}>
+      <Box px={2}>
+        <Heading variant="header4" sx={{ textAlign: 'center', pb: 1, pt: 3 }}>
+          {t(`tos-jwt-signature-expired-title`)}
+        </Heading>
+        <Text mt={3} variant="paragraph3">
+          {t('tos-jwt-signature-expired-message')}
+        </Text>
+      </Box>
+      <Button
+        sx={{ width: '80%', justifySelf: 'center' }}
+        disabled={stage !== 'jwtAuthWaiting4Acceptance'}
+        onClick={acceptJwtAuth}
+      >
+        {t(getButtonMessage(stage))}
+      </Button>
+      <Button variant="textual" sx={{ width: '80%', justifySelf: 'center' }} onClick={disconnect}>
+        {t('disconnect')}
+      </Button>
+    </Grid>
+  )
+}
+
 function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceState) {
   const [checked, setChecked] = useState(false)
   const { t } = useTranslation()
@@ -180,7 +242,7 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
   function disconnectHandler() {
     disconnect(web3Context)
   }
-
+  
   if (
     userReferral?.state === 'newUser' &&
     userReferral?.referrer &&
@@ -235,10 +297,12 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
 }
 
 export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
-  const { web3ContextConnected$, userReferral$ } = useAppContext()
+  const { web3ContextConnected$, userReferral$, userSettings$ } = useAppContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
   const [userReferral] = useObservable(userReferral$)
 
+  console.log(userSettings$, 'userRefferal')
+  console.log(getConfig()?.publicRuntimeConfig, 'Use')
   const shouldUseTermsOfService = getConfig()?.publicRuntimeConfig?.useTermsOfService
 
   if (!web3ContextConnected) {
