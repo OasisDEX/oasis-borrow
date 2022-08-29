@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { UIChanges } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -87,6 +88,8 @@ export function SidebarAdjustStopLossEditingStage({
     isStopLossEnabled,
     initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
   })
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
   return (
     <>
       {!vault.debt.isZero() ? (
@@ -111,18 +114,12 @@ export function SidebarAdjustStopLossEditingStage({
           {!isOpenFlow && (
             <SidebarResetButton
               clear={() => {
-                uiChanges.publish(ADD_FORM_CHANGE, {
-                  type: 'close-type',
-                  toCollateral: isToCollateral,
-                })
-                uiChanges.publish(ADD_FORM_CHANGE, {
-                  type: 'stop-loss',
-                  stopLoss: stopLossLevel.isZero()
-                    ? initialSlRatioWhenTriggerDoesntExist
-                        .times(100)
-                        .decimalPlaces(0, BigNumber.ROUND_DOWN)
-                    : stopLossLevel.times(100),
-                })
+                handleReset(
+                  uiChanges,
+                  isToCollateral,
+                  stopLossLevel,
+                  initialSlRatioWhenTriggerDoesntExist,
+                )
               }}
             />
           )}
@@ -165,4 +162,19 @@ export function SidebarAdjustStopLossEditingStage({
       )}
     </>
   )
+}
+function handleReset(
+  uiChanges: UIChanges,
+  isToCollateral: boolean,
+  stopLossLevel: BigNumber,
+  initialSlRatioWhenTriggerDoesntExist: BigNumber,
+) {
+  uiChanges.publish(ADD_FORM_CHANGE, {
+    type: 'close-type',
+    toCollateral: isToCollateral,
+  })
+  uiChanges.publish(ADD_FORM_CHANGE, {
+    type: 'stop-loss',
+    stopLoss: stopLossLevel.isZero() ? initialSlRatioWhenTriggerDoesntExist : stopLossLevel,
+  })
 }

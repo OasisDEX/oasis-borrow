@@ -49,7 +49,7 @@ export function SidebarCancelStopLossEditingStage({
         gasEstimationUsd={gasEstimation?.usdValue}
         ethBalance={ethBalance}
         txError={txError}
-        selectedSLValue={selectedSLValue}
+        selectedSLValue={selectedSLValue.times(100)}
       />
       <MessageCard
         messages={[

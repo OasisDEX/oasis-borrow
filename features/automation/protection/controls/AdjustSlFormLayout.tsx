@@ -54,6 +54,9 @@ export function ProtectionCompleteInformation({
     ? `${formatAmount(maxToken, token)} ${token}`
     : `${formatAmount(maxToken.multipliedBy(tokenPrice), 'USD')} DAI`
 
+  console.log('afterStopLossRatio.toString()')
+  console.log(afterStopLossRatio.toString())
+
   return (
     <VaultChangesInformationContainer title={t('protection.summary-of-protection')}>
       <VaultChangesInformationItem
