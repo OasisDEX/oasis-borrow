@@ -9,6 +9,7 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
+import { SimulateSectionComponent } from '../components/simulate/SimulateSectionComponent'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 
 interface Props {
@@ -37,7 +38,7 @@ export function AaveOpenView({ strategyName }: Props) {
                     label: t('open-vault.simulate'),
                     content: (
                       <Grid variant="vaultContainer">
-                        <Box>[OPEN AAVE DETAILS]</Box>
+                        <Box><SimulateSectionComponent /></Box>
                         <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
                       </Grid>
                     ),

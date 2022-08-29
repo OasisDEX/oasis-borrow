@@ -1,7 +1,8 @@
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
+import { GraphQLClient } from 'graphql-request'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
-import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
+import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
@@ -30,6 +31,13 @@ export function setupAaveContext({
   accountBalances$,
 }: AppContext) {
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const graphQLClient$ = contextForAddress$.pipe(
+    distinctUntilKeyChanged('cacheApi'),
+    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  )
+
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
     switchMap(({ account }) => proxyAddress$(account)),
