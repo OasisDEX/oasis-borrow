@@ -7,7 +7,10 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
-import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from '../common/consts'
+import {
+  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+} from '../common/consts'
 import { getStartingSlRatio } from './common/helpers'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
@@ -26,12 +29,12 @@ export function useStopLossStateInitializator(
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
+
   const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-
-  const defaultThresholdFromLowestPossibleValue = 0.05
-  const selectedStopLossCollRatioIfTriggerDoesntExist = vault.collateralizationRatio.isZero() ? zero : sliderMin.plus(defaultThresholdFromLowestPossibleValue)
-
-  const initialSlRatio = getStartingSlRatio({
+  const selectedStopLossCollRatioIfTriggerDoesntExist = vault.collateralizationRatio.isZero()
+    ? zero
+    : sliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
+  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
     stopLossLevel,
     isStopLossEnabled,
     initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
@@ -44,7 +47,7 @@ export function useStopLossStateInitializator(
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'stop-loss',
-      stopLoss: initialSlRatio,
+      stopLoss: initialSlRatioWhenTriggerDoesntExist,
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'tx-details',
@@ -63,9 +66,9 @@ export function useStopLossStateInitializator(
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'stop-loss',
-      stopLoss: initialSlRatio.multipliedBy(100),
+      stopLoss: initialSlRatioWhenTriggerDoesntExist.multipliedBy(100),
     })
-  }, [isStopLossEnabled, initialSlRatio.toNumber()])
+  }, [isStopLossEnabled, initialSlRatioWhenTriggerDoesntExist.toNumber()])
 
   return isStopLossEnabled
 }
