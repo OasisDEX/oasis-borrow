@@ -103,13 +103,14 @@ export function AdjustSlFormControl({
   const replacedTriggerId = triggerId || 0
   console.log('uiState.selectedSLValue')
   console.log(uiState.selectedSLValue.toString())
+  const selectedSLValue = uiState.selectedSLValue.gte(100) ? uiState.selectedSLValue : uiState.selectedSLValue.times(100) // temp fix ~ŁW
 
   const txData = useMemo(
     () =>
       prepareAddStopLossTriggerData(
         vault,
         uiState.collateralActive,
-        uiState.selectedSLValue,
+        selectedSLValue,
         replacedTriggerId,
       ),
     [uiState.collateralActive, uiState.selectedSLValue, replacedTriggerId],
@@ -129,7 +130,7 @@ export function AdjustSlFormControl({
 
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,
-    selectedSLValue: uiState.selectedSLValue,
+    selectedSLValue: selectedSLValue,
     stopLossLevel: stopLossLevelInteger,
     collateralActive: uiState.collateralActive,
     isToCollateral,
@@ -183,9 +184,9 @@ export function AdjustSlFormControl({
   const sliderProps: SliderValuePickerProps = {
     ...stopLossSliderBasicConfig,
     sliderPercentageFill,
-    leftBoundry: uiState.selectedSLValue,
+    leftBoundry: selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
-    lastValue: uiState.selectedSLValue,
+    lastValue: selectedSLValue,
     maxBoundry,
     minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
     onChange: (slCollRatio) => {
@@ -333,7 +334,7 @@ export function AdjustSlFormControl({
     vault,
     ilkData,
     etherscan,
-    selectedSLValue: uiState.selectedSLValue,
+    selectedSLValue: selectedSLValue,
     toggleForms,
     firstStopLossSetup,
     isEditing,
