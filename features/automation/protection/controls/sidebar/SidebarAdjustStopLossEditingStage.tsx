@@ -15,7 +15,6 @@ import {
 import { ADD_FORM_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -80,9 +79,9 @@ export function SidebarAdjustStopLossEditingStage({
   }
 
   const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-  const selectedStopLossCollRatioIfTriggerDoesntExist = vault.collateralizationRatio.isZero()
-    ? zero
-    : sliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
+  const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
+    DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  )
   const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
     stopLossLevel,
     isStopLossEnabled,
