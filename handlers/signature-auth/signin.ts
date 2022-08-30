@@ -84,7 +84,6 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       chainId: body.chainId,
     }
     const token = jwt.sign(userJwtPayload, options.userJWTSecret, { algorithm: 'HS512' })
-    console.log(token, 'jwt')
 
     res.status(200).json({ jwt: token })
   }

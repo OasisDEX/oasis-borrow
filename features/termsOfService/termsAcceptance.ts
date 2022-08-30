@@ -100,11 +100,11 @@ function verifyAcceptance$(
     : of({ acceptance: false, updated: false })
   ).pipe(
     switchMap(({ acceptance, updated }) => {
-      const jwtAuth$ = new Subject<boolean>()
       if (acceptance) {
         return of({ stage: 'acceptanceAccepted' })
       }
 
+      const jwtAuth$ = new Subject<boolean>()
       if (updated) {
         token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
         return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
