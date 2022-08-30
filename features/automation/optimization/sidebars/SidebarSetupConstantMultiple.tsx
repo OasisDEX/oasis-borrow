@@ -2,12 +2,11 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/sidebars/SidebarConstantMultipleRemovalEditingStage'
 import {
   errorsConstantMultipleValidation,
@@ -50,6 +49,8 @@ interface SidebarSetupConstantMultipleProps {
   isRemoveForm: boolean
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
+  debtDeltaWhenSellAtCurrentCollRatio: BigNumber
+  debtDeltaAfterSell: BigNumber
   stage: SidebarVaultStages
   stopLossTriggerData: StopLossTriggerData
   textButtonHandler: () => void
@@ -84,12 +85,12 @@ export function SidebarSetupConstantMultiple({
   textButtonHandler,
   txHandler,
   vault,
+  debtDeltaWhenSellAtCurrentCollRatio,
+  debtDeltaAfterSell,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
 
   const gasEstimation = useGasEstimationContext()
-
-  const { uiChanges } = useAppContext()
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelConstantMultiple'
@@ -105,9 +106,17 @@ export function SidebarSetupConstantMultiple({
   })
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-  const errors = errorsConstantMultipleValidation({ constantMultipleState, isRemoveForm })
+  const errors = errorsConstantMultipleValidation({
+    constantMultipleState,
+    isRemoveForm,
+    debtDeltaWhenSellAtCurrentCollRatio,
+    debtDeltaAfterSell,
+    debtFloor: ilkData.debtFloor,
+    debt: vault.debt,
+  })
   const warnings = warningsConstantMultipleValidation({
     vault,
+    debtFloor: ilkData.debtFloor,
     gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
@@ -116,20 +125,25 @@ export function SidebarSetupConstantMultiple({
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     constantMultipleState,
+    debtDeltaWhenSellAtCurrentCollRatio,
   })
 
   const cancelConstantMultipleErrors = extractCancelBSErrors(errors)
   const cancelConstantMultipleWarnings = extractCancelBSWarnings(warnings)
   const validationErrors = isAddForm ? errors : cancelConstantMultipleErrors
 
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Optimization',
+    forcePanel: 'constantMultiple',
+    disabled: isDropdownDisabled({ stage }),
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+  })
+
   if (isConstantMultipleActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('constant-multiple.title'),
-      dropdown: {
-        forcePanel: 'constantMultiple',
-        disabled: isDropdownDisabled({ stage }),
-        items: commonOptimizationDropdownItems(uiChanges, t),
-      },
+      dropdown,
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
@@ -143,7 +157,6 @@ export function SidebarSetupConstantMultiple({
                   errors={errors}
                   warnings={warnings}
                   token={vault.token}
-                  lockedCollateralUSD={vault.lockedCollateralUSD}
                   constantMultipleState={constantMultipleState}
                   autoSellTriggerData={autoSellTriggerData}
                   constantMultipleTriggerData={constantMultipleTriggerData}
@@ -154,6 +167,7 @@ export function SidebarSetupConstantMultiple({
                   estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
                   estimatedBuyFee={estimatedBuyFee}
                   estimatedSellFee={estimatedSellFee}
+                  stopLossTriggerData={stopLossTriggerData}
                 />
               )}
               {isRemoveForm && (

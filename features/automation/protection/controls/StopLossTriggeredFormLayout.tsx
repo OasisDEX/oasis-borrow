@@ -29,7 +29,6 @@ interface StopLossSummaryInformationProps {
   tokensSold: BigNumber
   collRatio: BigNumber
   totalFee: BigNumber
-  slippage: BigNumber
 }
 
 export function StopLossSummaryInformation({
@@ -43,7 +42,6 @@ export function StopLossSummaryInformation({
   tokensSold,
   totalFee,
   collRatio,
-  slippage,
 }: StopLossSummaryInformationProps) {
   const { t } = useTranslation()
 
@@ -68,8 +66,6 @@ export function StopLossSummaryInformation({
       </Text>
     </>
   )
-
-  const slippageLimit = formatPercent(slippage, { precision: 2 })
 
   const collateral = (
     <>
@@ -120,12 +116,6 @@ export function StopLossSummaryInformation({
         value={<Flex>{impact}</Flex>}
       />
       <VaultChangesInformationItem
-        label={`${t('vault-changes.slippage-limit', {
-          token,
-        })}`}
-        value={<Flex>{slippageLimit}</Flex>}
-      />
-      <VaultChangesInformationItem
         label={`${t('system.collateral', {
           token,
         })}`}
@@ -165,7 +155,6 @@ interface StopLossTriggeredFormLayoutProps {
   collRatio: BigNumber
   isToCollateral: boolean
   totalFee: BigNumber
-  slippage: BigNumber
 }
 
 export function StopLossTriggeredFormLayout({
@@ -180,7 +169,6 @@ export function StopLossTriggeredFormLayout({
   collRatio,
   isToCollateral,
   totalFee,
-  slippage,
 }: StopLossTriggeredFormLayoutProps) {
   const { t } = useTranslation()
 
@@ -205,7 +193,6 @@ export function StopLossTriggeredFormLayout({
         tokensSold={tokensSold}
         totalFee={totalFee}
         collRatio={collRatio}
-        slippage={slippage}
       />
       <Button
         sx={{ width: '100%', justifySelf: 'center', mt: 3 }}

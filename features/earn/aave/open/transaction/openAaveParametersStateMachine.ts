@@ -3,8 +3,8 @@ import { assign, Machine, sendUpdate } from 'xstate'
 import { choose, log } from 'xstate/lib/actions'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { assertErrorEvent, assertEventType } from '../../../../../utils/xstate/index'
-import { OpenPositionResult } from '../../../../aave/index'
+import { assertErrorEvent, assertEventType } from '../../../../../utils/xstate'
+import { OpenPositionResult } from '../../../../aave'
 enum services {
   getParameters = 'getParameters',
   estimateGas = 'estimateGas',
@@ -68,7 +68,7 @@ enum actions {
 }
 
 export interface PreTransactionSequenceMachineServices {
-  [services.getParameters]: PromiseService<OpenPositionResult>
+  [services.getParameters]: PromiseService<OpenPositionResult | void>
   [services.estimateGas]: PromiseService<number>
   [services.estimateGasPrice]: PromiseService<HasGasEstimation>
 }

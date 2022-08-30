@@ -1,3 +1,4 @@
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
@@ -13,6 +14,7 @@ export interface SidebarSectionContentProps {
 }
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
+  const disableSidebarScrollEnabled = useFeatureToggle('DisableSidebarScroll')
   const contanierRef = useRef<HTMLDivElement>(null)
   const [overflowedConent, setOverflowedConent] = useState(false)
 
@@ -42,12 +44,12 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
           backgroundColor: theme.colors.secondary60,
           borderRadius: theme.radii.large,
         },
-        maxHeight: 490,
         overflowY: 'auto',
         overflowX: 'hidden',
         mr: overflowedConent ? '8px' : '0px',
         p: '24px',
         pr: overflowedConent ? '10px' : '24px',
+        ...(!disableSidebarScrollEnabled && { maxHeight: 490 }),
       }}
     >
       <Box>

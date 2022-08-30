@@ -1,17 +1,10 @@
 {
   "name": "oasis-borrow",
-  "version": "4.24.0",
+  "version": "4.25.0",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=16.x"
   },
-  "private": true,
-  "workspaces": [
-    "utils",
-    "utils/**",
-    "features/**",
-    "types"
-  ],
   "scripts": {
     "start": "next dev",
     "start:debug": "NODE_OPTIONS='--inspect' next dev",
@@ -56,7 +49,7 @@
     "@oasisdex/automation": "1.1.10",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
-    "@oasisdex/oasis-actions": "^0.0.3",
+    "@oasisdex/oasis-actions": "^0.0.4",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
@@ -220,6 +213,7 @@
     "buffer": "^4.3.0",
     "chai": "^4.2.0",
     "chai-subset": "^1.6.0",
+    "circular-dependency-plugin": "^5.2.2",
     "codecov": "^3.7.2",
     "crypto-browserify": "^3.12.0",
     "earljs": "^0.0.11",

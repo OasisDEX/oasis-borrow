@@ -16,19 +16,20 @@ import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPrice
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   ACCEPTABLE_FEE_DIFF,
-  calculateCollRatioFromMultiple,
-  calculateMultipleFromTargetCollRatio,
-} from 'features/automation/common/helpers'
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+} from 'features/automation/common/consts'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
@@ -52,10 +53,10 @@ interface SidebaConstantMultiplerEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   token: string
-  lockedCollateralUSD: BigNumber
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
+  stopLossTriggerData: StopLossTriggerData
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -73,10 +74,10 @@ export function SidebarConstantMultipleEditingStage({
   errors,
   warnings,
   token,
-  lockedCollateralUSD,
   constantMultipleState,
   autoSellTriggerData,
   constantMultipleTriggerData,
+  stopLossTriggerData,
   nextBuyPrice,
   nextSellPrice,
   collateralToBePurchased,
@@ -89,17 +90,6 @@ export function SidebarConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
 
-  const maxTargetRatioInVault = lockedCollateralUSD
-    .div(ilkData.debtFloor)
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-
-  const maxMultiplier = calculateMultipleFromTargetCollRatio(
-    constantMultipleState.minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
-  const minMultiplier = calculateMultipleFromTargetCollRatio(
-    maxTargetRatioInVault.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
   const isVaultEmpty = vault.debt.isZero()
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
@@ -120,11 +110,8 @@ export function SidebarConstantMultipleEditingStage({
       />
     )
   }
-  const eligibleMultipliers = constantMultipleState.multipliers.filter((item) => {
-    return item >= minMultiplier && item <= maxMultiplier
-  })
 
-  return eligibleMultipliers.length ? (
+  return constantMultipleState.eligibleMultipliers.length ? (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('constant-multiple.set-trigger-description', {
@@ -150,7 +137,7 @@ export function SidebarConstantMultipleEditingStage({
           items={constantMultipleState.multipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
-            disabled: !eligibleMultipliers.includes(multiplier),
+            disabled: !constantMultipleState.eligibleMultipliers.includes(multiplier),
             action: () => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'is-editing',
@@ -202,6 +189,12 @@ export function SidebarConstantMultipleEditingStage({
       />
       <VaultWarnings
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
+        ilkData={ilkData}
+      />
+      <VaultErrors
+        errorMessages={errors.filter(
+          (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
+        )}
         ilkData={ilkData}
       />
       <VaultActionInput
@@ -334,27 +327,46 @@ export function SidebarConstantMultipleEditingStage({
     </>
   ) : (
     <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-      <Trans
-        i18nKey="constant-multiple.sl-too-high"
-        components={[
-          <Text
-            as="span"
-            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
-            onClick={() => {
-              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-                type: 'Protection',
-                currentProtectionFeature: 'stopLoss',
-              })
-              setHash(VaultViewMode.Protection)
-            }}
-          />,
-        ]}
-        values={{
-          maxStopLoss: calculateCollRatioFromMultiple(constantMultipleState.multipliers[0]).minus(
-            MIX_MAX_COL_RATIO_TRIGGER_OFFSET * 2,
-          ),
-        }}
-      />
+      {stopLossTriggerData?.isStopLossEnabled ? (
+        <Trans
+          i18nKey="constant-multiple.sl-too-high"
+          components={[
+            <Text
+              as="span"
+              sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+              onClick={() => {
+                uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                  type: 'Protection',
+                  currentProtectionFeature: 'stopLoss',
+                })
+                setHash(VaultViewMode.Protection)
+              }}
+            />,
+          ]}
+          values={{
+            maxStopLoss: calculateCollRatioFromMultiple(
+              constantMultipleState.eligibleMultipliers[0] || constantMultipleState.multipliers[0],
+            ).minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
+          }}
+        />
+      ) : (
+        <Trans
+          i18nKey="constant-multiple.coll-ratio-too-close-to-dust-limit"
+          components={[
+            <Text
+              as="span"
+              sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+              onClick={() => {
+                uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                  type: 'change-tab',
+                  currentMode: VaultViewMode.Overview,
+                })
+                setHash(VaultViewMode.Protection)
+              }}
+            />,
+          ]}
+        />
+      )}
     </Text>
   )
 }

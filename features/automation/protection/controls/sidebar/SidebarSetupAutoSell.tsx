@@ -2,16 +2,15 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
 import {
   errorsBasicSellValidation,
   warningsBasicSellValidation,
 } from 'features/automation/common/validators'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
@@ -50,6 +49,7 @@ interface SidebarSetupAutoSellProps {
   isDisabled: boolean
   isFirstSetup: boolean
   debtDelta: BigNumber
+  debtDeltaAtCurrentCollRatio: BigNumber
   collateralDelta: BigNumber
 }
 
@@ -78,10 +78,10 @@ export function SidebarSetupAutoSell({
   isFirstSetup,
 
   debtDelta,
+  debtDeltaAtCurrentCollRatio,
   collateralDelta,
 }: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
 
   const gasEstimation = useGasEstimationContext()
 
@@ -105,6 +105,7 @@ export function SidebarSetupAutoSell({
     ilkData,
     vault,
     debtDelta,
+    debtDeltaAtCurrentCollRatio,
     basicSellState,
     autoBuyTriggerData,
     constantMultipleTriggerData,
@@ -128,6 +129,8 @@ export function SidebarSetupAutoSell({
     basicSellState,
     sliderMin: min,
     sliderMax: max,
+    debtDeltaAtCurrentCollRatio,
+    debtFloor: ilkData.debtFloor,
   })
 
   const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
@@ -135,14 +138,18 @@ export function SidebarSetupAutoSell({
 
   const validationErrors = isAddForm ? errors : cancelAutoSellErrors
 
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Protection',
+    forcePanel: 'autoSell',
+    disabled: isDropdownDisabled({ stage }),
+    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+  })
+
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
-      dropdown: {
-        forcePanel: 'autoSell',
-        disabled: isDropdownDisabled({ stage }),
-        items: commonProtectionDropdownItems(uiChanges, t),
-      },
+      dropdown,
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (

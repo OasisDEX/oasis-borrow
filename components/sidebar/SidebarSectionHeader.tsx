@@ -13,13 +13,15 @@ export interface SidebarSectionHeaderButton {
   action: () => void
 }
 
+export interface SidebarSectionHeaderDropdown {
+  disabled?: boolean
+  forcePanel?: string
+  items: SidebarSectionHeaderSelectItem[]
+}
+
 export interface SidebarSectionHeaderProps {
   title: string
-  dropdown?: {
-    disabled?: boolean
-    forcePanel?: string
-    items: SidebarSectionHeaderSelectItem[]
-  }
+  dropdown?: SidebarSectionHeaderDropdown
   headerButton?: SidebarSectionHeaderButton
   onSelect: (panel: string) => void
 }

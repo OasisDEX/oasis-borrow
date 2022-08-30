@@ -17,6 +17,7 @@ export type Feature =
   | 'Referrals'
   | 'ConstantMultiple'
   | 'ConstantMultipleReadOnly'
+  | 'DisableSidebarScroll'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -30,8 +31,9 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyBasicBS: false,
   Notifications: false,
   Referrals: true,
-  ConstantMultiple: false,
+  ConstantMultiple: true,
   ConstantMultipleReadOnly: false,
+  DisableSidebarScroll: false,
   // your feature here....
 }
 

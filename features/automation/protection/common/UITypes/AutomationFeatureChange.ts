@@ -1,4 +1,4 @@
-type AutomationKinds = 'Protection' | 'Optimization'
+export type AutomationKinds = 'Protection' | 'Optimization'
 export type AutomationProtectionFeatures = 'stopLoss' | 'autoSell'
 export type AutomationOptimizationFeatures = 'autoBuy' | 'constantMultiple'
 

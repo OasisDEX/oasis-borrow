@@ -40,6 +40,14 @@ export function createCollateralTokens$(
   )
 }
 
+export function createAaveCollateralTokens$(context$: Observable<Context>): Observable<string[]> {
+  return context$.pipe(
+    map((context) => {
+      return Object.keys(context.aaveTokens)
+    }),
+  )
+}
+
 export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumber }>
 
 export function createAccountBalance$(

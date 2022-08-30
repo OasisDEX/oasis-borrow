@@ -21,6 +21,7 @@ const publicRuntimeConfig = {
     process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
   multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
   mainnetCacheURL: process.env.MAINNET_CACHE_URL,
+  operationExecutorTemp: process.env.OPERATION_EXECUTOR_TEMP,
 }
 
 module.exports = {

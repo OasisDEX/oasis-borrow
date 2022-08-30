@@ -19,7 +19,7 @@ model TosApproval {
     address     String
     signature   String
     message     String
-    chain_id     Int
+    chain_id    Int
     doc_version String
     sign_date   DateTime
 
@@ -46,18 +46,19 @@ enum VaultType {
 
 model User {
     address                    String        @unique
-    createdAt                  DateTime      @default(now())
+    timestamp                  DateTime      @default(now())
     user_that_referred_address String?
-    total_amount               String
     user_that_referred         User?         @relation("UserToUser", fields: [user_that_referred_address], references: [address])
     referred_users             User[]        @relation("UserToUser")
     weekly_claims              WeeklyClaim[]
     accepted                   Boolean
+
     @@map("user")
 }
 
 model WeeklyClaim {
     id           Int      @id @default(autoincrement())
+    timestamp    DateTime? @default(now())
     week_number  Int
     user_address String
     proof        String[]
@@ -69,16 +70,21 @@ model WeeklyClaim {
 }
 
 model MerkleTree {
-    week_number Int    @unique
+    week_number Int       @unique
+    start_block Int?
+    end_block   Int?
+    timestamp   DateTime? @default(now())
     tree_root   String
+    snapshot    String?
+
     @@map("merkle_tree")
 }
 
 model WalletRisk {
-  address     String
-  last_check  DateTime
-  is_risky    Boolean
+    address    String
+    last_check DateTime
+    is_risky   Boolean
 
-  @@unique([address], name: "wallet_risk_unique_index")
-  @@map("wallet_risk")
+    @@unique([address], name: "wallet_risk_unique_index")
+    @@map("wallet_risk")
 }

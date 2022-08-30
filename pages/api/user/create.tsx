@@ -38,12 +38,11 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(401).json('referral-create/invalid-address')
   }
   if (params.user_that_referred_address !== params.address) {
+    // @ts-ignore
     // address is unique, hence it will revert on adding a duplicate
     const userCreate: User = {
       address: checksumAddress,
       user_that_referred_address: checksumReferredAddress,
-      total_amount: '0',
-      createdAt: new Date(),
       accepted: params.accepted,
     }
     // @ts-ignore

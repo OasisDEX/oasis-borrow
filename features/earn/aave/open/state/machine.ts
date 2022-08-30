@@ -113,6 +113,7 @@ export const createOpenAaveStateMachine = Machine<
         on: {
           'done.invoke.transaction': {
             target: 'txSuccess',
+            actions: [() => console.log('tx was successful')],
           },
           'error.platform.transaction': {
             target: 'txFailure',
