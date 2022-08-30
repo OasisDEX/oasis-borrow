@@ -83,7 +83,7 @@ export function AdjustSlFormControl({
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = triggerData
   const stopLossLevelInteger = stopLossLevel.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
   console.log('stopLossLevel from triggerData')
-  console.log(stopLossLevel.toString()) 
+  console.log(stopLossLevel.toString())
   console.log('stopLossLevelInteger from triggerData')
   console.log(stopLossLevelInteger.toString())
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
@@ -103,7 +103,7 @@ export function AdjustSlFormControl({
   const replacedTriggerId = triggerId || 0
   console.log('uiState.selectedSLValue')
   console.log(uiState.selectedSLValue.toString())
-  const selectedSLValue = uiState.selectedSLValue.gte(100) ? uiState.selectedSLValue : uiState.selectedSLValue.times(100) // temp fix ~ŁW
+  const selectedSLValue = uiState.selectedSLValue // fix ~ŁW
 
   const txData = useMemo(
     () =>

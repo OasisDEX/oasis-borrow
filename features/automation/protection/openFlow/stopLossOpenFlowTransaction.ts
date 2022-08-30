@@ -63,7 +63,6 @@ export function addStopLossTrigger<C extends AddStopLossChange>(
     proxyAddress?: string
   },
 ) {
-
   const { id, stopLossCloseType, stopLossLevel, proxyAddress } = state
   console.log('stopLossLevel in open flow')
   console.log(stopLossLevel.toString())

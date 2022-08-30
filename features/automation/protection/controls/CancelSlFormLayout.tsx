@@ -59,7 +59,6 @@ export function CancelDownsideProtectionInformation({
         value={
           <Flex>
             {formatPercent(selectedSLValue)}
-            {/* {formatPercent(selectedSLValue.times(100))} */}
             <VaultChangesInformationArrow />
             n/a
           </Flex>

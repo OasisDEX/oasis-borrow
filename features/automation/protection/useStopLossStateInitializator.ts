@@ -34,20 +34,16 @@ export function useStopLossStateInitializator(
   const selectedStopLossCollRatioIfTriggerDoesntExist = vault.collateralizationRatio.isZero()
     ? zero
     : sliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
-  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
+  const initialSelectedSlRatio = getStartingSlRatio({
     stopLossLevel,
     isStopLossEnabled,
     initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
-  })
+  }).multipliedBy(100)
 
   useEffect(() => {
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'close-type',
       toCollateral: isToCollateral,
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'stop-loss',
-      stopLoss: initialSlRatioWhenTriggerDoesntExist,
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'tx-details',
@@ -66,9 +62,9 @@ export function useStopLossStateInitializator(
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'stop-loss',
-      stopLoss: initialSlRatioWhenTriggerDoesntExist.multipliedBy(100),
+      stopLoss: initialSelectedSlRatio,
     })
-  }, [isStopLossEnabled, initialSlRatioWhenTriggerDoesntExist.toNumber()])
+  }, [isStopLossEnabled, initialSelectedSlRatio])
 
   return isStopLossEnabled
 }
