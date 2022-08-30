@@ -74,11 +74,6 @@ export function prepareStopLossTriggerData(
     ? TriggerType.StopLossToCollateral
     : TriggerType.StopLossToDai
 
-  console.log('stopLossLevel')
-  console.log(stopLossLevel.toFixed(2))
-  console.log('stopLossLevel.toString()')
-  console.log(stopLossLevel.toString())
-
   return {
     cdpId: vaultData.id,
     triggerType,

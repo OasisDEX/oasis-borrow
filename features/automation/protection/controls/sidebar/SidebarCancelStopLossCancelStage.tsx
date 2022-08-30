@@ -14,12 +14,7 @@ import { AddingStopLossAnimation } from 'theme/animations'
 export function SidebarCancelStopLossCancelStage(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
   const { stage, tokenPrice, liquidationPrice, actualCancelTxCost, selectedSLValue } = props
-  console.log('SidebarCancelStopLossCancelStage selectedSLValue')
-  console.log(selectedSLValue.toString())
   const [persistedStopLossLevel] = useState(selectedSLValue)
-  console.log('persistedStopLossLevel')
-  console.log(persistedStopLossLevel.toString())
-
   switch (stage) {
     case 'txInProgress':
       return (

@@ -64,8 +64,6 @@ export function addStopLossTrigger<C extends AddStopLossChange>(
   },
 ) {
   const { id, stopLossCloseType, stopLossLevel, proxyAddress } = state
-  console.log('stopLossLevel in open flow')
-  console.log(stopLossLevel.toString())
   sendWithGasEstimation(
     addAutomationBotTrigger,
     prepareAddStopLossTriggerData(

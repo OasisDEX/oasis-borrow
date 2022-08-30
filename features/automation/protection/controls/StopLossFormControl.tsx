@@ -62,8 +62,7 @@ function StopLossForms({
   const stopLossLevel = stopLossTriggerData.stopLossLevel
     .times(100)
     .decimalPlaces(0, BigNumber.ROUND_DOWN)
-  console.log('stopLossLevel in toggle form')
-  console.log(stopLossLevel.toString())
+
   return currentForm?.currentMode === AutomationFromKind.CANCEL ? (
     <CancelSlFormControl
       vault={vault}

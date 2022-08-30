@@ -44,8 +44,7 @@ export function CancelDownsideProtectionInformation({
   })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-  console.log('selectedSLValue in summary')
-  console.log(selectedSLValue.toFixed(2))
+
   return (
     <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
       {!liquidationPrice.isZero() && (
@@ -101,8 +100,6 @@ export function CancelCompleteInformation({
 }: CancelCompleteInformationProps) {
   const { t } = useTranslation()
 
-  console.log('selectedSLValue in CancelCompleteInformation', selectedSLValue)
-  console.log(selectedSLValue.toString())
   return (
     <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
       {!liquidationPrice.isZero() && (
