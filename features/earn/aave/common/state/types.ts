@@ -50,18 +50,18 @@ export type CommonMachineEvents =
   | {
       readonly type: 'BACK_TO_EDITING'
     }
-  | {
-      readonly type: 'xstate.update' // https://xstate.js.org/docs/guides/actors.html#sending-updates
-    }
-  | {
-      readonly type: 'done.invoke.transaction'
-    }
-  | {
-      readonly type: 'error.platform.transaction'
-    }
-  | {
-      readonly type: 'done.invoke.proxy'
-    }
-  | {
-      readonly type: 'error.platform.proxy'
-    }
+// | {
+//     readonly type: 'xstate.update' // https://xstate.js.org/docs/guides/actors.html#sending-updates
+//   }
+// | {
+//     readonly type: 'done.invoke.transaction'
+//   }
+// | {
+//     readonly type: 'error.platform.transaction'
+//   }
+// // | {
+// //     readonly type: 'done.invoke.proxy'
+// //   }
+// | {
+//     readonly type: 'error.platform.proxy'
+//   }

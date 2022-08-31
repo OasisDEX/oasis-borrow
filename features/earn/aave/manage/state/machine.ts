@@ -1,5 +1,4 @@
 import { Machine } from 'xstate'
-import { log } from 'xstate/lib/actions'
 
 import { actions, manageAaveMachineActions } from './actions'
 import { validCloseTransactionParameters, validTransactionParameters } from './guards'
@@ -51,12 +50,12 @@ export const createManageAaveStateMachine = Machine<
           POSITION_CLOSED: {
             target: 'reviewing',
           },
-          'xstate.update': {
-            actions: [
-              actions.getTransactionParametersFromParametersMachine,
-              actions.updateTransactionParameters,
-            ],
-          },
+          // 'xstate.update': {
+          //   actions: [
+          //     actions.getTransactionParametersFromParametersMachine,
+          //     actions.updateTransactionParameters,
+          //   ],
+          // },
         },
       },
       reviewing: {
@@ -73,27 +72,27 @@ export const createManageAaveStateMachine = Machine<
           BACK_TO_EDITING: {
             target: 'editing',
           },
-          'xstate.update': {
-            actions: [
-              log('update parameters'),
-              actions.getTransactionParametersFromParametersMachine,
-              actions.updateTransactionParameters,
-            ],
-          },
+          // 'xstate.update': {
+          //   actions: [
+          //     log('update parameters'),
+          //     actions.getTransactionParametersFromParametersMachine,
+          //     actions.updateTransactionParameters,
+          //   ],
+          // },
         },
       },
       txInProgress: {
         entry: [actions.updateTransactionParameters, actions.startTransaction],
-        on: {
-          'done.invoke.transaction': {
-            target: 'txSuccess',
-            actions: [() => console.log('tx was successful')],
-          },
-          'error.platform.transaction': {
-            target: 'txFailure',
-            actions: [actions.logError],
-          },
-        },
+        // on: {
+        //   'done.invoke.transaction': {
+        //     target: 'txSuccess',
+        //     actions: [() => console.log('tx was successful')],
+        //   },
+        //   'error.platform.transaction': {
+        //     target: 'txFailure',
+        //     actions: [actions.logError],
+        //   },
+        // },
       },
       txFailure: {
         on: {

@@ -11,8 +11,7 @@ import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { openAavePosition } from '../pipelines/openAavePosition'
 import {
   openAaveParametersStateMachine,
-  OpenAaveParametersStateMachineType,
-  PreTransactionSequenceMachineServices,
+  OpenAaveParametersStateMachineServices,
 } from './openAaveParametersStateMachine'
 
 /**
@@ -24,13 +23,13 @@ export function getOpenAaveParametersStateMachineServices$(
   txHelpers$: Observable<TxHelpers>,
   gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
   userSettings$: Observable<UserSettingsState>,
-): Observable<PreTransactionSequenceMachineServices> {
+): Observable<OpenAaveParametersStateMachineServices> {
   return combineLatest(context$, txHelpers$, userSettings$).pipe(
     first(), // We only need the first one (for an account, per refresh)
     map(([contextConnected, txHelpers, userSettings]) => {
       return {
         getParameters: async (context) => {
-          if (!context.proxyAddress) return Promise.resolve()
+          if (!context.proxyAddress) return undefined
           return await getOpenAaveParameters(
             contextConnected,
             context.amount || zero,
@@ -41,7 +40,7 @@ export function getOpenAaveParametersStateMachineServices$(
         },
         estimateGas: async (context) => {
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
-            return Promise.resolve(0)
+            return 0
           }
           const gas = await txHelpers
             .estimateGas(openAavePosition, {
@@ -66,13 +65,18 @@ export function getOpenAaveParametersStateMachineServices$(
 }
 
 export function getOpenAaveParametersStateMachine$(
-  services$: Observable<PreTransactionSequenceMachineServices>,
-): Observable<OpenAaveParametersStateMachineType> {
+  services$: Observable<OpenAaveParametersStateMachineServices>,
+) {
   return services$.pipe(
     map((services) => {
       return openAaveParametersStateMachine.withConfig({
         services: {
-          ...services,
+          getParameters: services.getParameters,
+          estimateGas: services.estimateGas,
+          estimateGasPrice: services.estimateGasPrice,
+        },
+        actions: {
+          notifyParent: () => {},
         },
       })
     }),

@@ -2,14 +2,15 @@ import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+import { Sender } from 'xstate'
 
 import { VaultActionInput } from '../../../../../components/vault/VaultActionInput'
 import { handleNumericInput } from '../../../../../helpers/input'
-import { OpenAaveStateMachineState } from '../state/types'
+import { OpenAaveEvent, OpenAaveStateMachineState } from '../state/machine'
 
 export interface OpenAaveEditingStateProps {
   state: OpenAaveStateMachineState
-  send: (amount: BigNumber) => void
+  send: Sender<OpenAaveEvent>
 }
 
 export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProps) {
@@ -29,7 +30,7 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
         maxAmountLabel={t('balance')}
         onChange={handleNumericInput((amount) => {
           if (amount) {
-            send(amount)
+            send({ type: 'SET_AMOUNT', amount: amount })
           }
         })}
         currencyCode={state.context.token!}

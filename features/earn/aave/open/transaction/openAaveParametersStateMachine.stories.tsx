@@ -9,7 +9,6 @@ import { Box, Button, Grid } from 'theme-ui'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OpenPositionResult } from '../../../../aave'
 import {
-  machineConfig,
   openAaveParametersStateMachine,
   OpenAaveParametersStateMachineEvents,
 } from './openAaveParametersStateMachine'
@@ -21,16 +20,24 @@ function delay() {
 }
 
 const machine = openAaveParametersStateMachine.withConfig({
+  actions: {
+    assignEstimatedGas: () => {},
+    assignReceivedParameters: () => {},
+    logError: () => {},
+    assignEstimatedGasPrice: () => {},
+    notifyParent: () => {},
+    assignTransactionParameters: () => {},
+  },
   services: {
-    [machineConfig.services.getParameters]: async () => {
-      await delay()
-      return {} as OpenPositionResult
-    },
-    [machineConfig.services.estimateGas]: async () => {
+    estimateGas: async () => {
       await delay()
       return 10
     },
-    [machineConfig.services.estimateGasPrice]: async () => {
+    getParameters: async () => {
+      await delay()
+      return {} as OpenPositionResult
+    },
+    estimateGasPrice: async () => {
       await delay()
       return {} as HasGasEstimation
     },

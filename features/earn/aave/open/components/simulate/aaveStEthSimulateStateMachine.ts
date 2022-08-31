@@ -42,6 +42,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
   },
   {
     actions: {
+      // @ts-ignore
       assignYields: assign<
         AaveStEthSimulateStateMachineContext,
         AaveStEthSimulateStateMachineEvents

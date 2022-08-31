@@ -80,7 +80,7 @@
     "@web3-react/types": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.13",
-    "@xstate/react": "^3.0.0",
+    "@xstate/react": "^3.0.1",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.22.0",
     "bignumber.js": "9.0.1",
@@ -149,7 +149,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "whatwg-fetch": "2.0.3",
-    "xstate": "^4.32.1",
+    "xstate": "^4.33.4",
     "zod": "^1.5.0"
   },
   "resolutions": {

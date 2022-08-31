@@ -28,12 +28,10 @@ export function getManageAaveStateMachine$(
             parametersStateMachine: parametersMachine.withContext({
               // https://xstate.js.org/docs/guides/machines.html#initial-context Look at the warning
               ...parametersMachine.context,
-              hasParent: true,
             }),
             proxyStateMachine: proxyMachine,
             transactionStateMachine: transactionStateMachine.withContext({
               ...transactionStateMachine.context,
-              hasParent: true,
             }),
           },
           token: 'ETH',

@@ -6,25 +6,28 @@ import React from 'react'
 import { interval, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
-import { ActorRefFrom } from 'xstate'
+import { ActorRefFrom, assign, sendParent, spawn } from 'xstate'
 
 import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
 import { OpenPositionResult } from '../../../../aave'
-import { createProxyStateMachine, ProxyEvent, ProxyStateMachine } from '../../../../proxyNew/state'
 import {
-  createTransactionServices,
+  createProxyStateMachine,
+  ProxyContext,
+  ProxyEvent,
+  ProxyStateMachine,
+} from '../../../../proxyNew/state'
+import {
   createTransactionStateMachine,
+  startTransactionService,
   TransactionStateMachine,
 } from '../../../../stateMachines/transaction'
 import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
-import { openAaveParametersStateMachine, OpenAaveParametersStateMachineType } from '../transaction'
-import { machineConfig } from '../transaction/openAaveParametersStateMachine'
-import { createOpenAaveStateMachine } from './machine'
-import { OpenAaveStateMachineServices, services } from './services'
-import { OpenAaveEvent } from './types'
+import { OpenAaveParametersStateMachine, openAaveParametersStateMachine } from '../transaction'
+import { createOpenAaveStateMachine, OpenAaveEvent } from './machine'
+import { contextToTransactionParameters } from './services'
 
 const stories = storiesOf('Xstate Machines/Open Aave State Machine', module)
 
@@ -50,16 +53,24 @@ function delay() {
 }
 
 const parametersMachine = openAaveParametersStateMachine.withConfig({
+  actions: {
+    assignEstimatedGas: () => {},
+    assignReceivedParameters: () => {},
+    logError: () => {},
+    assignEstimatedGasPrice: () => {},
+    notifyParent: () => {},
+    assignTransactionParameters: () => {},
+  },
   services: {
-    [machineConfig.services.getParameters]: async () => {
-      await delay()
-      return {} as OpenPositionResult
-    },
-    [machineConfig.services.estimateGas]: async () => {
+    estimateGas: async () => {
       await delay()
       return 10
     },
-    [machineConfig.services.estimateGasPrice]: async () => {
+    getParameters: async () => {
+      await delay()
+      return {} as OpenPositionResult
+    },
+    estimateGasPrice: async () => {
       await delay()
       return {} as HasGasEstimation
     },
@@ -72,27 +83,77 @@ const mockTxHelpers$ = of({
   sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
 })
 
-const transactionMachine = createTransactionStateMachine(openAavePosition, true).withConfig({
+const transactionMachine = createTransactionStateMachine(openAavePosition).withConfig({
+  actions: {
+    notifyParent: () => {},
+    raiseError: () => {},
+  },
   services: {
-    ...createTransactionServices<OpenAavePositionData>(mockTxHelpers$, mockContext$),
+    startTransaction: startTransactionService(mockTxHelpers$, mockContext$),
   },
 })
 
-const openAaveServices: OpenAaveStateMachineServices = {
-  [services.getProxyAddress]: (() => {}) as any,
-  [services.getBalance]: (() => {}) as any,
-}
-
 const openAaveStateMachine = createOpenAaveStateMachine
   .withConfig({
-    services: openAaveServices,
+    actions: {
+      spawnParametersMachine: assign((_) => ({
+        refParametersStateMachine: spawn(
+          parametersMachine.withConfig({
+            actions: {
+              notifyParent: sendParent(
+                (context): OpenAaveEvent => ({
+                  type: 'TRANSACTION_PARAMETERS_RECEIVED',
+                  parameters: context.transactionParameters!,
+                }),
+              ),
+            },
+          }),
+          { name: 'parametersMachine' },
+        ),
+      })),
+      spawnProxyMachine: assign((_) => ({
+        refProxyMachine: spawn(
+          proxyStateMachine.withConfig({
+            actions: {
+              raiseSuccess: sendParent(
+                (context: ProxyContext): OpenAaveEvent => ({
+                  type: 'PROXY_CREATED',
+                  proxyAddress: context.proxyAddress!,
+                }),
+              ),
+            },
+          }),
+          { name: 'proxyMachine' },
+        ),
+      })),
+      spawnTransactionMachine: assign((context) => ({
+        refTransactionMachine: spawn(
+          transactionMachine
+            .withConfig({
+              actions: {
+                notifyParent: sendParent(
+                  (_): OpenAaveEvent => ({
+                    type: 'POSITION_OPENED',
+                  }),
+                ),
+              },
+            })
+            .withContext({
+              ...transactionMachine.context,
+              transactionParameters: contextToTransactionParameters(context),
+            }),
+          {
+            name: 'transactionMachine',
+          },
+        ),
+      })),
+    },
+    services: {
+      getBalance: (() => {}) as any,
+      getProxyAddress: (() => {}) as any,
+    },
   })
   .withContext({
-    dependencies: {
-      parametersStateMachine: parametersMachine.withContext({ hasParent: true }),
-      proxyStateMachine: proxyStateMachine,
-      transactionStateMachine: transactionMachine,
-    },
     token: 'ETH',
     multiply: 2,
   })
@@ -100,7 +161,7 @@ const openAaveStateMachine = createOpenAaveStateMachine
 const ParametersView = ({
   parametersMachine,
 }: {
-  parametersMachine: ActorRefFrom<OpenAaveParametersStateMachineType>
+  parametersMachine: ActorRefFrom<OpenAaveParametersStateMachine>
 }) => {
   const [state] = useActor(parametersMachine)
 
@@ -190,18 +251,16 @@ const Machine = () => {
         />
         <OpenAaveButton type={'SET_AMOUNT'} amount={new BigNumber(100)} />
         <OpenAaveButton type={'PROXY_ADDRESS_RECEIVED'} proxyAddress={'0x00000'} />
-        <OpenAaveButton type={'CREATE_PROXY'} />
-        <OpenAaveButton type={'CONFIRM_DEPOSIT'} />
-        <OpenAaveButton type={'START_CREATING_POSITION'} />
+        <OpenAaveButton type={'NEXT_STEP'} />
       </Grid>
-      {state.context.refProxyStateMachine && (
-        <ProxyView proxyStateMachine={state.context.refProxyStateMachine} />
+      {state.context.refProxyMachine && (
+        <ProxyView proxyStateMachine={state.context.refProxyMachine} />
       )}
       {state.context.refParametersStateMachine && (
         <ParametersView parametersMachine={state.context.refParametersStateMachine} />
       )}
-      {state.context.refTransactionStateMachine && (
-        <TransactionView transactionMachine={state.context.refTransactionStateMachine} />
+      {state.context.refTransactionMachine && (
+        <TransactionView transactionMachine={state.context.refTransactionMachine} />
       )}
     </Grid>
   )

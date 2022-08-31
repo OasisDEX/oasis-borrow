@@ -13,7 +13,7 @@ import {
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
-import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/types'
+import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/machine'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
 export interface OpenAaveVaultProps {
@@ -73,9 +73,9 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: false,
-      disabled: !state.can('START_CREATING_POSITION'),
+      disabled: !state.can('NEXT_STEP'),
       label: t('open-earn.aave.vault-form.confirm-btn'),
-      action: () => send('START_CREATING_POSITION'),
+      action: () => send('NEXT_STEP'),
     },
   }
 
@@ -166,7 +166,7 @@ export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
     case state.matches('editing'):
       return <OpenAaveEditingStateView state={state} send={send} />
     case state.matches('proxyCreating'):
-      return <ProxyView proxyMachine={state.context.refProxyStateMachine!} />
+      return <ProxyView proxyMachine={state.context.refProxyMachine!} />
     case state.matches('reviewing'):
       return <OpenAaveReviewingStateView state={state} send={send} />
     case state.matches('txInProgress'):

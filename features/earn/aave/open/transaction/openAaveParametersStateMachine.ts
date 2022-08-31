@@ -1,15 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { assign, Machine, sendUpdate } from 'xstate'
-import { choose, log } from 'xstate/lib/actions'
+import { assign, createMachine } from 'xstate'
+import { log } from 'xstate/lib/actions'
+import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { assertErrorEvent, assertEventType } from '../../../../../utils/xstate'
+import { assertEventType } from '../../../../../utils/xstate'
 import { OpenPositionResult } from '../../../../aave'
-enum services {
-  getParameters = 'getParameters',
-  estimateGas = 'estimateGas',
-  estimateGasPrice = 'estimateGasPrice',
-}
 
 type OpenAaveParametersStateMachineContext = {
   readonly hasParent: boolean | false
@@ -23,79 +19,34 @@ type OpenAaveParametersStateMachineContext = {
   gasPriceEstimation?: HasGasEstimation
 }
 
-export type OpenAaveParametersStateMachineEvents =
-  | {
-      type: 'VARIABLES_RECEIVED'
-      readonly token: string
-      readonly amount: BigNumber
-      readonly multiply: number
-      readonly proxyAddress?: string
-    }
-  | {
-      type: 'done.invoke.getParameters'
-      data: OpenPositionResult
-    }
-  | {
-      type: 'done.invoke.estimateGas'
-      data: number
-    }
-  | {
-      type: 'done.invoke.estimateGasPrice'
-      data: HasGasEstimation
-    }
-
-type OpenAaveParametersStateMachineSchema = {
-  states: {
-    idle: {}
-    gettingParameters: {}
-    estimatingGas: {}
-    estimatingPrice: {}
-  }
+export type OpenAaveParametersStateMachineEvents = {
+  type: 'VARIABLES_RECEIVED'
+  readonly token: string
+  readonly amount: BigNumber
+  readonly multiply: number
+  readonly proxyAddress?: string
 }
-
-type PromiseService<T> = (
-  context: OpenAaveParametersStateMachineContext,
-  event: OpenAaveParametersStateMachineEvents,
-) => Promise<T>
-
-enum actions {
-  assignReceivedParameters = 'assignReceivedParameters',
-  assignTransactionParameters = 'assignTransactionParameters',
-  assignEstimatedGas = 'assignEstimatedGas',
-  assignEstimatedGasPrice = 'assignEstimatedGasPrice',
-  notifyParent = 'notifyParent',
-  logError = 'logError',
-}
-
-export interface PreTransactionSequenceMachineServices {
-  [services.getParameters]: PromiseService<OpenPositionResult | void>
-  [services.estimateGas]: PromiseService<number>
-  [services.estimateGasPrice]: PromiseService<HasGasEstimation>
-}
-
-export type OpenAaveParametersStateMachineType = typeof openAaveParametersStateMachine
 
 /*
   Machine based on the following pattern: https://xstate.js.org/docs/patterns/sequence.html#async-sequences
  */
-export const openAaveParametersStateMachine = Machine<
-  OpenAaveParametersStateMachineContext,
-  OpenAaveParametersStateMachineSchema,
-  OpenAaveParametersStateMachineEvents
->(
+export const openAaveParametersStateMachine = createMachine(
   {
+    predictableActionArguments: true,
+    tsTypes: {} as import('./openAaveParametersStateMachine.typegen').Typegen0,
     id: 'openAaveParameters',
     initial: 'idle',
-    context: {} as OpenAaveParametersStateMachineContext,
     schema: {
+      context: {} as OpenAaveParametersStateMachineContext,
+      events: {} as OpenAaveParametersStateMachineEvents,
       services: {} as {
-        [services.getParameters]: {
-          data: OpenPositionResult
+        getParameters: {
+          data: OpenPositionResult | undefined
         }
-        [services.estimateGas]: {
+        estimateGas: {
           data: number
         }
-        [services.estimateGasPrice]: {
+        estimateGasPrice: {
           data: HasGasEstimation
         }
       },
@@ -105,67 +56,67 @@ export const openAaveParametersStateMachine = Machine<
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: [actions.assignReceivedParameters],
+            actions: ['assignReceivedParameters'],
           },
         },
       },
       gettingParameters: {
         invoke: {
-          src: services.getParameters,
-          id: services.getParameters,
+          src: 'getParameters',
+          id: 'getParameters',
           onDone: {
             target: 'estimatingGas',
-            actions: [actions.assignTransactionParameters, actions.notifyParent],
+            actions: ['assignTransactionParameters', 'notifyParent'],
           },
           onError: {
-            actions: [actions.logError],
+            actions: ['logError'],
             target: 'idle',
           },
         },
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: [actions.assignReceivedParameters],
+            actions: ['assignReceivedParameters'],
           },
         },
       },
       estimatingGas: {
         invoke: {
-          src: services.estimateGas,
-          id: services.estimateGas,
+          src: 'estimateGas',
+          id: 'estimateGas',
           onDone: {
             target: 'estimatingPrice',
-            actions: [actions.assignEstimatedGas],
+            actions: ['assignEstimatedGas'],
           },
           onError: {
-            actions: [actions.logError],
+            actions: ['logError'],
             target: 'idle',
           },
         },
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: [actions.assignReceivedParameters],
+            actions: ['assignReceivedParameters'],
           },
         },
       },
       estimatingPrice: {
         invoke: {
-          src: services.estimateGasPrice,
-          id: services.estimateGasPrice,
+          src: 'estimateGasPrice',
+          id: 'estimateGasPrice',
           onDone: {
             target: 'idle',
-            actions: [actions.assignEstimatedGasPrice, actions.notifyParent],
+            actions: ['assignEstimatedGasPrice', 'notifyParent'],
           },
           onError: {
-            actions: [actions.logError],
+            actions: ['logError'],
             target: 'idle',
           },
         },
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: [actions.assignReceivedParameters],
+            actions: ['assignReceivedParameters'],
           },
         },
       },
@@ -173,7 +124,7 @@ export const openAaveParametersStateMachine = Machine<
   },
   {
     actions: {
-      [actions.assignReceivedParameters]: assign(
+      assignReceivedParameters: assign(
         (
           context: OpenAaveParametersStateMachineContext,
           event: OpenAaveParametersStateMachineEvents,
@@ -188,66 +139,47 @@ export const openAaveParametersStateMachine = Machine<
           }
         },
       ),
-      [actions.assignTransactionParameters]: assign(
-        (
-          context: OpenAaveParametersStateMachineContext,
-          event: OpenAaveParametersStateMachineEvents,
-        ) => {
-          assertEventType(event, `done.invoke.${services.getParameters}`)
-          return {
-            transactionParameters: event.data,
-          }
-        },
-      ),
-      [actions.assignEstimatedGas]: assign((context, event) => {
-        assertEventType(event, `done.invoke.${services.estimateGas}`)
+      assignTransactionParameters: assign((context, event) => {
+        return {
+          transactionParameters: event.data,
+        }
+      }),
+      assignEstimatedGas: assign((context, event) => {
         return {
           estimatedGas: event.data,
         }
       }),
-      [actions.assignEstimatedGasPrice]: assign((context, event) => {
-        assertEventType(event, `done.invoke.${services.estimateGas}`)
-        return {
-          estimatedGas: event.data,
-        }
-      }),
-      [actions.assignEstimatedGasPrice]: assign((context, event) => {
-        assertEventType(event, `done.invoke.${services.estimateGasPrice}`)
+      assignEstimatedGasPrice: assign((context, event) => {
         return {
           gasPriceEstimation: event.data,
         }
       }),
-      [actions.notifyParent]: choose<
-        OpenAaveParametersStateMachineContext,
-        OpenAaveParametersStateMachineEvents
-      >([
-        {
-          cond: (context) => context.hasParent, // If you know better way to check parent please tell me
-          actions: [sendUpdate()],
-        },
-      ]),
-      [actions.logError]: log((context, event) => {
-        assertErrorEvent(event)
+      logError: log((context, event) => {
         return {
           error: event.data,
         }
       }),
     },
-    services: {
-      [services.getParameters]: () => {
-        throw Error('getParameters not implemented. Pass it via config')
-      },
-      [services.estimateGas]: () => {
-        throw Error('estimateGas not implemented. Pass it via config')
-      },
-      [services.estimateGasPrice]: () => {
-        throw Error('estimateGasPrice not implemented. Pass it via config')
-      },
-    },
   },
 )
 
-export const machineConfig = {
-  services,
-  actions,
+class OpenAaveParametersStateMachineTypes {
+  needsConfiguration() {
+    return openAaveParametersStateMachine
+  }
+  withConfig() {
+    // @ts-ignore
+    return openAaveParametersStateMachine.withConfig({})
+  }
 }
+
+export type OpenAaveParametersStateMachineWithoutConfiguration = ReturnType<
+  OpenAaveParametersStateMachineTypes['needsConfiguration']
+>
+export type OpenAaveParametersStateMachine = ReturnType<
+  OpenAaveParametersStateMachineTypes['withConfig']
+>
+export type OpenAaveParametersStateMachineServices = MachineOptionsFrom<
+  OpenAaveParametersStateMachineWithoutConfiguration,
+  true
+>['services']
