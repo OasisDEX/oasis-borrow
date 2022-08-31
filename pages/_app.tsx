@@ -105,8 +105,6 @@ interface CustomAppProps {
   }
 }
 
-mixpanelInit()
-
 // script for disabling Next.js overlay for particular event errors
 // currently there is no option to configure error overlay in development mode
 const noOverlayWorkaroundScript = `
@@ -130,6 +128,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const router = useRouter()
 
   useEffect(() => {
+    mixpanelInit()
     const handleRouteChange = (url: string) => {
       // track events when not in development
       if (process.env.NODE_ENV !== 'development') {
