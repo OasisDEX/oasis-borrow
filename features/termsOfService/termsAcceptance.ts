@@ -16,6 +16,8 @@ export type TermsAcceptanceStage =
   | 'jwtAuthInProgress'
   | 'jwtAuthFailed'
   | 'jwtAuthRejected'
+  | 'jwtInvalidProgress'
+  | 'jwtInvalidWaiting4Acceptance'
   | 'acceptanceSaveInProgress'
   | 'acceptanceSaveFailed'
   | 'acceptanceAccepted'
@@ -93,7 +95,7 @@ function verifyAcceptance$(
 
   const token = jwtAuthGetToken(account)
 
-  return (token
+  return (token && token !== 'invalid'
     ? checkAcceptance$(token, version)
     : of({ acceptance: false, updated: false })
   ).pipe(
@@ -104,6 +106,7 @@ function verifyAcceptance$(
 
       const jwtAuth$ = new Subject<boolean>()
       if (updated) {
+        token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
         return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
           switchMap((token) => {
             return checkAcceptance(token, version, magicLinkEmail)
@@ -112,7 +115,7 @@ function verifyAcceptance$(
             return withClose({ stage: 'jwtAuthFailed' })
           }),
           startWith({
-            stage: 'jwtAuthInProgress',
+            stage: token === 'invalid' ? 'jwtInvalidProgress' : 'jwtAuthInProgress',
           }),
         )
       }
@@ -121,6 +124,7 @@ function verifyAcceptance$(
           if (!jwtAuthAccepted) {
             return withClose({ stage: 'jwtAuthRejected' })
           }
+          token === 'invalid' && localStorage.removeItem(`token-b/${account}`)
           return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
             switchMap((token) => {
               return checkAcceptance(token, version, magicLinkEmail)
@@ -129,12 +133,12 @@ function verifyAcceptance$(
               return withClose({ stage: 'jwtAuthFailed' })
             }),
             startWith({
-              stage: 'jwtAuthInProgress',
+              stage: token === 'invalid' ? 'jwtInvalidProgress' : 'jwtAuthInProgress',
             }),
           )
         }),
         startWith({
-          stage: 'jwtAuthWaiting4Acceptance',
+          stage: token === 'invalid' ? 'jwtInvalidWaiting4Acceptance' : 'jwtAuthWaiting4Acceptance',
           acceptJwtAuth: () => jwtAuth$.next(true),
           rejectJwtAuth: () => jwtAuth$.next(false),
         }),

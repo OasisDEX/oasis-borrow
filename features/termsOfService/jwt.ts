@@ -11,14 +11,15 @@ const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 
 export type JWToken = string
 
-export function jwtAuthGetToken(address: string): JWToken | undefined {
+// return 'invalid' if we have forced the removal of the token again
+export function jwtAuthGetToken(address: string): JWToken | undefined | 'invalid' {
   const token = localStorage.getItem(`token-b/${address}`)
   if (token && token !== 'xxx') {
     const parsedToken = JSON.parse(atob(token.split('.')[1]))
-    // remove old tokens
+
+    // remove old tokens moved to termsAcceptance.ts
     if (!parsedToken.chainId) {
-      localStorage.removeItem(`token-b/${address}`)
-      return undefined
+      return 'invalid'
     }
   }
   return token === null ? undefined : token
@@ -30,6 +31,9 @@ export function jwtAuthSetupToken$(
   isGnosisSafe: boolean,
 ): Observable<JWToken> {
   const token = jwtAuthGetToken(account)
+  if (token === 'invalid') {
+    return of('invalid')
+  }
   if (token === undefined) {
     return fromPromise(requestJWT(web3, account, isGnosisSafe))
   }

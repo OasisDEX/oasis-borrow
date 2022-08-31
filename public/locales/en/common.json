@@ -803,6 +803,8 @@
   "tos-acceptance-check-in-progress": "Acceptance check in progress...",
   "tos-desc": "By creating a Savings pot, I accept Oasis",
   "tos-jwt-signature-message": "It looks like you're new to Oasis.app or are using a new device to connect. For Security please accept our Terms of Service and sign a message with your wallet to continue.",
+  "tos-jwt-signature-expired-title": "Update Your Signature",
+  "tos-jwt-signature-expired-message": "Either your signature has expired, or an update to our services requires a new signature. Please sign a new message to continue.",
   "tos-read": "I have read and accept the Terms of Service.",
   "tos-view": "View Terms of Service",
   "tos-wallet-connection-in-progress": "Wallet connection in progress...",
@@ -1427,7 +1429,7 @@
     "add-content": "Your vault is currently being updated to add your {{featureName}}. {{featureName}} will not be active until this completes.",
     "remove-content": "Your {{featureName}} cancellation is in progress. Once the transaction is complete. Your {{featureName}} trigger will be removed.",
     "add-complete-content": "You have successfully set up an {{featureName}} on your vault. Find out more about how this works",
-    "remove-complete-content":  "Your {{featureName}} has been successfully cancelled."
+    "remove-complete-content": "Your {{featureName}} has been successfully cancelled."
   },
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee",
@@ -1571,7 +1573,7 @@
     "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple.",
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple.",
     "closed-vault-existing-trigger-header": "Your vault is closed but Constant Multiple is still active",
-    "closed-vault-existing-trigger-description":"You can cancel your existing Constant Multiple here or deposit into your vault in overview tab"
+    "closed-vault-existing-trigger-description": "You can cancel your existing Constant Multiple here or deposit into your vault in overview tab"
   },
   "ref": {
     "banner": "Refer a Friend. Earn DAI today",
