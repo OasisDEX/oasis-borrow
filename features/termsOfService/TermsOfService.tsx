@@ -35,6 +35,7 @@ function getStageErrorMessage(stage: TermsAcceptanceStage) {
 
 function getButtonMessage(stage: TermsAcceptanceStage) {
   switch (stage) {
+    case 'jwtInvalidProgress':
     case 'jwtAuthInProgress':
       return 'jwt-auth-in-progress'
     case 'acceptanceSaveInProgress':
@@ -56,15 +57,21 @@ function TOSWaiting4Signature({
     <Grid gap={3}>
       <Box px={2}>
         <Heading variant="header4" sx={{ textAlign: 'center', pb: 1, pt: 3 }}>
-          {t(`tos-welcome${updated ? '-updated' : ''}`)}
+          {stage === 'jwtAuthWaiting4Acceptance' && t(`tos-welcome${updated ? '-updated' : ''}`)}
+          {(stage === 'jwtInvalidWaiting4Acceptance' || stage === 'jwtInvalidProgress') &&
+            t(`tos-jwt-signature-expired-title`)}
         </Heading>
         <Text mt={3} variant="paragraph3">
-          {t('tos-jwt-signature-message')}
+          {stage === 'jwtInvalidWaiting4Acceptance' || stage === 'jwtInvalidProgress'
+            ? t('tos-jwt-signature-expired-message')
+            : t('tos-jwt-signature-message')}
         </Text>
       </Box>
       <Button
         sx={{ width: '80%', justifySelf: 'center' }}
-        disabled={stage !== 'jwtAuthWaiting4Acceptance'}
+        disabled={
+          !(stage === 'jwtAuthWaiting4Acceptance' || stage === 'jwtInvalidWaiting4Acceptance')
+        }
         onClick={acceptJwtAuth}
       >
         {t(getButtonMessage(stage))}
@@ -214,6 +221,8 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
               return <TOSWaiting4Acceptance {...termsAcceptance} />
             case 'jwtAuthWaiting4Acceptance':
             case 'jwtAuthInProgress':
+            case 'jwtInvalidProgress':
+            case 'jwtInvalidWaiting4Acceptance':
             case 'acceptanceSaveInProgress':
               return <TOSWaiting4Signature {...termsAcceptance} disconnect={disconnectHandler} />
             case 'acceptanceCheckFailed':
