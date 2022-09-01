@@ -1,4 +1,5 @@
 import { recoverPersonalSignature } from 'eth-sig-util'
+import { utils } from 'ethers'
 import jwt from 'jsonwebtoken'
 import { NextApiHandler } from 'next'
 import Web3 from 'web3'
@@ -28,6 +29,7 @@ const inputSchema = z.object({
   challenge: z.string(),
   signature: z.string(),
   chainId: z.number(),
+  isGnosisSafe: z.boolean(),
 })
 
 const networkMap: Record<number, string> = {
@@ -54,15 +56,31 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     }`
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
-    let isArgentWallet = false
 
+    let isArgentWallet = false
     try {
       isArgentWallet = await checkIfArgentWallet(web3, challenge.address)
     } catch {
       console.error('Check if argent wallet failed')
     }
 
-    if (isArgentWallet) {
+    if (body.isGnosisSafe) {
+      try {
+        const toHash = utils.defaultAbiCoder.encode(
+          ['bytes32', 'uint256'],
+          [utils.hashMessage(message), 7 /* signedMessages slot */],
+        )
+        const valueSlot = utils.keccak256(toHash).replace(/0x0/g, '0x')
+        const slot = await web3.eth.getStorageAt(challenge.address, valueSlot as any)
+        const [signed] = utils.defaultAbiCoder.decode(['uint256'], slot)
+        if (!signed.eq(1)) {
+          throw new SignatureAuthError('Signature not correct')
+        }
+      } catch (e) {
+        console.log('errr >> ', e)
+        return res.status(400).json({ jwt: (e as Error).message })
+      }
+    } else if (isArgentWallet) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
         throw new SignatureAuthError('Signature not correct')
       }
