@@ -90,7 +90,7 @@ export function createAavePositions$(
   tokenWithValue$: Observable<{ token: string; tokenPrice: BigNumber }[]>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
-) {
+): Observable<Position[]> {
   return combineLatest(getUserProxyAddress$(address), tokenWithValue$).pipe(
     switchMap(([proxyAddress, tokens]) => {
       if (!proxyAddress) return []
@@ -121,10 +121,10 @@ export function createPositions$(
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
-  const _aavePositions$ = aavePositions$(address)
-  return combineLatest([_makerPositions$, _aavePositions$]).pipe(
-    map(([makerPositions, aavePositions]) => {
-      return makerPositions.concat(aavePositions)
+  // const _aavePositions$ = aavePositions$(address)
+  return combineLatest(_makerPositions$).pipe(
+    map(([makerPositions]) => {
+      return makerPositions // .concat(aavePositions)
     }),
   )
 }
