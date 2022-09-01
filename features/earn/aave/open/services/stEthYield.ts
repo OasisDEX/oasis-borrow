@@ -59,10 +59,10 @@ export async function getAaveStEthYield(
 ): Promise<AaveStEthYieldsResponse> {
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
-    currentDate: currentDate.format('YYYY-MM-DD'),
-    date30daysAgo: currentDate.clone().subtract(30, 'days').format('YYYY-MM-DD'),
-    date90daysAgo: currentDate.clone().subtract(90, 'days').format('YYYY-MM-DD'),
-    date1yearAgo: currentDate.clone().subtract(1, 'year').format('YYYY-MM-DD'),
+    currentDate: currentDate.utc().format('YYYY-MM-DD'),
+    date30daysAgo: currentDate.utc().clone().subtract(30, 'days').format('YYYY-MM-DD'),
+    date90daysAgo: currentDate.utc().clone().subtract(90, 'days').format('YYYY-MM-DD'),
+    date1yearAgo: currentDate.utc().clone().subtract(1, 'year').format('YYYY-MM-DD'),
     multiply: multiply.toString(),
   })
   return {
