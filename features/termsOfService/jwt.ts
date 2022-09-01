@@ -101,7 +101,6 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
   }
 
   const signature = await signTypedPayload(challenge, web3Instance, addressForSignature)
-  console.log({ signature })
   const jwt = await requestSignin({
     challenge,
     signature,
