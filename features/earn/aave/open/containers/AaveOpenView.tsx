@@ -9,21 +9,27 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { SimulateSectionComponent } from '../components/simulate/SimulateSectionComponent'
+import { SimulateSectionComponent } from '../components'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
-import { OpenAaveStateMachine } from '../state/machine'
+import { OpenAaveStateMachine } from '../state'
 import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
 
-interface Props {
+interface OpenAaveViewProps {
   strategyName: string
 }
 
-function AaveOpenContainer({ aaveStateMachine }: { aaveStateMachine: OpenAaveStateMachine }) {
+function AaveOpenContainer({
+  aaveStateMachine,
+  strategyName,
+}: {
+  strategyName: string
+  aaveStateMachine: OpenAaveStateMachine
+}) {
   const { t } = useTranslation()
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine}>
       <Container variant="vaultPageContainer">
-        [HEADER]
+        {strategyName} [HEADER]
         <TabBar
           variant="underline"
           sections={[
@@ -53,7 +59,7 @@ function AaveOpenContainer({ aaveStateMachine }: { aaveStateMachine: OpenAaveSta
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function AaveOpenView({ strategyName }: Props) {
+export function AaveOpenView({ strategyName }: OpenAaveViewProps) {
   const { aaveStateMachine$ } = useAaveContext()
   const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
 
@@ -61,7 +67,7 @@ export function AaveOpenView({ strategyName }: Props) {
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
         {([_stateMachine]) => {
-          return <AaveOpenContainer aaveStateMachine={_stateMachine} />
+          return <AaveOpenContainer aaveStateMachine={_stateMachine} strategyName={strategyName} />
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>

@@ -12,11 +12,7 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
-import {
-  ManageAaveEvent,
-  ManageAaveStateMachine,
-  ManageAaveStateMachineState,
-} from '../state/types'
+import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
 import { SidebarManageAaveVaultEditingState } from './SidebarManageAaveVaultEditingState'
 
 export interface ManageAaveVaultProps {
@@ -144,7 +140,7 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
       disabled: true,
       label: t('manage-earn.aave.vault-form.deposit'),
       action: () => {
-        send('CONFIRM_DEPOSIT')
+        send('NEXT_STEP')
       },
     },
     textButton: {

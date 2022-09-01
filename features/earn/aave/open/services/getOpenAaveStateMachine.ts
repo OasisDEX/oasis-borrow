@@ -2,17 +2,64 @@ import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
+import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
+import { ContextConnected } from '../../../../../blockchain/network'
+import { TokenBalances } from '../../../../../blockchain/tokens'
+import { TxHelpers } from '../../../../../components/AppContext'
 import { ProxyContext, ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { AaveStEthSimulateStateMachine } from '../components/simulate/aaveStEthSimulateStateMachine'
 import { OpenAavePositionData } from '../pipelines/openAavePosition'
-import { OpenAaveParametersStateMachine } from '../transaction'
-import { createOpenAaveStateMachine, OpenAaveEvent, OpenAaveStateMachineServices } from './machine'
-import { contextToTransactionParameters } from './services'
+import {
+  AaveStEthSimulateStateMachine,
+  createOpenAaveStateMachine,
+  OpenAaveContext,
+  OpenAaveEvent,
+  OpenAaveStateMachineServices,
+  ParametersStateMachine,
+} from '../state'
+
+export function getOpenAavePositionStateMachineServices(
+  context$: Observable<ContextConnected>,
+  txHelpers$: Observable<TxHelpers>,
+  tokenBalances$: Observable<TokenBalances>,
+  proxyAddress$: Observable<string | undefined>,
+): OpenAaveStateMachineServices {
+  return {
+    getBalance: (context, _) => {
+      return tokenBalances$.pipe(
+        map((balances) => balances[context.token!]),
+        map(({ balance, price }) => ({
+          type: 'SET_BALANCE',
+          balance: balance,
+          tokenPrice: price,
+        })),
+      )
+    },
+    getProxyAddress: () => {
+      return proxyAddress$.pipe(
+        map((address) => ({
+          type: 'PROXY_ADDRESS_RECEIVED',
+          proxyAddress: address,
+        })),
+      )
+    },
+  }
+}
+
+export function contextToTransactionParameters(context: OpenAaveContext): OpenAavePositionData {
+  return {
+    kind: TxMetaKind.operationExecutor,
+    calls: context.transactionParameters!.calls as any,
+    operationName: context.transactionParameters!.operationName,
+    token: context.token,
+    proxyAddress: context.proxyAddress!,
+    amount: context.amount!,
+  }
+}
 
 export function getOpenAaveStateMachine$(
   services: OpenAaveStateMachineServices,
-  parametersMachine$: Observable<OpenAaveParametersStateMachine>,
+  parametersMachine$: Observable<ParametersStateMachine>,
   proxyMachine$: Observable<ProxyStateMachine>,
   transactionStateMachine: TransactionStateMachine<OpenAavePositionData>,
   simulationMachine: AaveStEthSimulateStateMachine,
@@ -32,6 +79,7 @@ export function getOpenAaveStateMachine$(
                     (context): OpenAaveEvent => ({
                       type: 'TRANSACTION_PARAMETERS_RECEIVED',
                       parameters: context.transactionParameters!,
+                      estimatedGasPrice: context.gasPriceEstimation!,
                     }),
                   ),
                 },

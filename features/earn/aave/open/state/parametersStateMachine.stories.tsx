@@ -7,11 +7,11 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OpenPositionResult } from '../../../../aave'
+import { OperationParameters } from '../../../../aave'
 import {
-  openAaveParametersStateMachine,
-  OpenAaveParametersStateMachineEvents,
-} from './openAaveParametersStateMachine'
+  createParametersStateMachine,
+  ParametersStateMachineEvents,
+} from './parametersStateMachine'
 
 const stories = storiesOf('Xstate Machines/Sequence Machine for Opening AAVE Position', module)
 
@@ -19,7 +19,7 @@ function delay() {
   return interval(2000).pipe(first()).toPromise()
 }
 
-const machine = openAaveParametersStateMachine.withConfig({
+const machine = createParametersStateMachine.withConfig({
   actions: {
     assignEstimatedGas: () => {},
     assignReceivedParameters: () => {},
@@ -35,7 +35,7 @@ const machine = openAaveParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OpenPositionResult
+      return {} as OperationParameters
     },
     estimateGasPrice: async () => {
       await delay()
@@ -46,7 +46,7 @@ const machine = openAaveParametersStateMachine.withConfig({
 
 const View = () => {
   const [state, send] = useMachine(machine, { devTools: true })
-  const SendButton = (event: OpenAaveParametersStateMachineEvents) => (
+  const SendButton = (event: ParametersStateMachineEvents) => (
     <Box
       sx={{
         width: '150px',

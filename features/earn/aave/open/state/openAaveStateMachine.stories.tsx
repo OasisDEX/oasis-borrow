@@ -12,7 +12,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
-import { OpenPositionResult } from '../../../../aave'
+import { OperationParameters } from '../../../../aave'
 import {
   createProxyStateMachine,
   ProxyContext,
@@ -24,11 +24,11 @@ import {
   startTransactionService,
   TransactionStateMachine,
 } from '../../../../stateMachines/transaction'
-import { aaveStEthSimulateStateMachine } from '../components/simulate/aaveStEthSimulateStateMachine'
 import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
-import { OpenAaveParametersStateMachine, openAaveParametersStateMachine } from '../transaction'
-import { createOpenAaveStateMachine, OpenAaveEvent } from './machine'
-import { contextToTransactionParameters } from './services'
+import { contextToTransactionParameters } from '../services'
+import { aaveStEthSimulateStateMachine } from './aaveStEthSimulateStateMachine'
+import { createOpenAaveStateMachine, OpenAaveEvent } from './openAaveStateMachine'
+import { createParametersStateMachine, ParametersStateMachine } from './parametersStateMachine'
 
 const stories = storiesOf('Xstate Machines/Open Aave State Machine', module)
 
@@ -53,7 +53,7 @@ function delay() {
   return interval(2000).pipe(first()).toPromise()
 }
 
-const parametersMachine = openAaveParametersStateMachine.withConfig({
+const parametersMachine = createParametersStateMachine.withConfig({
   actions: {
     assignEstimatedGas: () => {},
     assignReceivedParameters: () => {},
@@ -69,7 +69,7 @@ const parametersMachine = openAaveParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OpenPositionResult
+      return {} as OperationParameters
     },
     estimateGasPrice: async () => {
       await delay()
@@ -119,6 +119,7 @@ const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
               (context): OpenAaveEvent => ({
                 type: 'TRANSACTION_PARAMETERS_RECEIVED',
                 parameters: context.transactionParameters!,
+                estimatedGasPrice: context.gasPriceEstimation!,
               }),
             ),
           },
@@ -172,7 +173,7 @@ const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
 const ParametersView = ({
   parametersMachine,
 }: {
-  parametersMachine: ActorRefFrom<OpenAaveParametersStateMachine>
+  parametersMachine: ActorRefFrom<ParametersStateMachine>
 }) => {
   const [state] = useActor(parametersMachine)
 

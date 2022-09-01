@@ -5,30 +5,22 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
-import { OpenPositionResult } from '../../../../aave'
+import { OperationParameters } from '../../../../aave'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import {
-  CommonMachineEvents,
-  ProxyMachineEvents,
-  TransactionMachineEvents,
-} from '../../common/state/types'
+import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
-} from '../components/simulate/aaveStEthSimulateStateMachine'
-import { OpenAavePositionData } from '../pipelines/openAavePosition'
-import {
-  OpenAaveParametersStateMachine,
-  OpenAaveParametersStateMachineEvents,
-} from '../transaction/openAaveParametersStateMachine'
+} from './aaveStEthSimulateStateMachine'
+import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
 export interface OpenAaveContext {
   multiply: BigNumber
   token: string
   inputDelay: number
 
-  refParametersStateMachine?: ActorRefFrom<OpenAaveParametersStateMachine>
+  refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OpenAavePositionData>>
   refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
@@ -40,10 +32,9 @@ export interface OpenAaveContext {
   tokenPrice?: BigNumber
   auxiliaryAmount?: BigNumber
   proxyAddress?: string
-  vaultNumber?: BigNumber
   strategyName?: string
 
-  transactionParameters?: OpenPositionResult
+  transactionParameters?: OperationParameters
   estimatedGasPrice?: HasGasEstimation
 }
 export type OpenAaveMachineEvents =
@@ -53,13 +44,24 @@ export type OpenAaveMachineEvents =
   | { type: 'NEXT_STEP' }
 
 export type OpenAaveTransactionEvents =
-  | { type: 'TRANSACTION_PARAMETERS_RECEIVED'; parameters: OpenPositionResult }
+  | {
+      type: 'TRANSACTION_PARAMETERS_RECEIVED'
+      parameters: OperationParameters
+      estimatedGasPrice: HasGasEstimation
+    }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }
 
 export type OpenAaveEvent =
-  | ProxyMachineEvents
-  | TransactionMachineEvents
-  | CommonMachineEvents
+  | {
+      readonly type: 'PROXY_ADDRESS_RECEIVED'
+      readonly proxyAddress: string | undefined
+    }
+  | {
+      readonly type: 'PROXY_CREATED'
+      readonly proxyAddress: string
+    }
+  | { type: 'BACK_TO_EDITING' }
+  | { type: 'RETRY' }
   | OpenAaveMachineEvents
   | OpenAaveTransactionEvents
 
@@ -68,7 +70,7 @@ export const createOpenAaveStateMachine = createMachine(
     predictableActionArguments: true,
     preserveActionOrder: true,
     strict: true,
-    tsTypes: {} as import('./machine.typegen').Typegen0,
+    tsTypes: {} as import('./openAaveStateMachine.typegen').Typegen0,
     schema: {
       context: {} as OpenAaveContext,
       events: {} as OpenAaveEvent,
@@ -185,7 +187,7 @@ export const createOpenAaveStateMachine = createMachine(
         proxyAddress: event.proxyAddress,
       })),
       sendUpdateToParametersMachine: send(
-        (context): OpenAaveParametersStateMachineEvents => ({
+        (context): ParametersStateMachineEvents => ({
           type: 'VARIABLES_RECEIVED',
           amount: context.amount!,
           multiply: context.multiply,
@@ -215,6 +217,7 @@ export const createOpenAaveStateMachine = createMachine(
       })),
       assignTransactionParameters: assign((context, event) => ({
         transactionParameters: event.parameters,
+        estimatedGasPrice: event.estimatedGasPrice,
       })),
       sendFeesToSimulationMachine: send(
         (context): AaveStEthSimulateStateMachineEvents => ({

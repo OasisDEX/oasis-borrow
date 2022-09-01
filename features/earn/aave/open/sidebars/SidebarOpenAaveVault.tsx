@@ -14,7 +14,7 @@ import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/machine'
+import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
 export interface OpenAaveVaultProps {

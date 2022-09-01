@@ -35,13 +35,21 @@ const aaveStEthYield = gql`
         netAnnualisedYield
       }
     }
+    yieldSinceInception: aaveYieldRateStethEth(
+      input: { startDate: "2020-11-30", endDate: $currentDate, multiple: $multiply }
+    ) {
+      yield {
+        netAnnualisedYield
+      }
+    }
   }
 `
 
 export interface AaveStEthYieldsResponse {
-  annualised30Yield: BigNumber
-  annualised90Yield: BigNumber
-  annualised1Yield: BigNumber
+  annualisedYield30days: BigNumber
+  annualisedYield90days: BigNumber
+  annualisedYield1Year: BigNumber
+  annualisedYieldSinceInception: BigNumber
 }
 
 export async function getAaveStEthYield(
@@ -58,8 +66,11 @@ export async function getAaveStEthYield(
     multiply: multiply.toString(),
   })
   return {
-    annualised30Yield: new BigNumber(response.yield30days.yield.netAnnualisedYield),
-    annualised90Yield: new BigNumber(response.yield90days.yield.netAnnualisedYield),
-    annualised1Yield: new BigNumber(response.yield1year.yield.netAnnualisedYield),
+    annualisedYield30days: new BigNumber(response.yield30days.yield.netAnnualisedYield),
+    annualisedYield90days: new BigNumber(response.yield90days.yield.netAnnualisedYield),
+    annualisedYield1Year: new BigNumber(response.yield1year.yield.netAnnualisedYield),
+    annualisedYieldSinceInception: new BigNumber(
+      response.yieldSinceInception.yield.netAnnualisedYield,
+    ),
   }
 }

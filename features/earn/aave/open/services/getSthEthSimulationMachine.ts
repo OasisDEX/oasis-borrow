@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import {
-  AaveStEthSimulateStateMachine,
-  aaveStEthSimulateStateMachine,
-} from '../aaveStEthSimulateStateMachine'
+import { AaveStEthSimulateStateMachine, aaveStEthSimulateStateMachine } from '../state'
 import { calculateSimulation } from './calculateSimulation'
 import { AaveStEthYieldsResponse } from './stEthYield'
 

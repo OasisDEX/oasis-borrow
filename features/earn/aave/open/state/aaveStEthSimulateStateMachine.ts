@@ -3,8 +3,7 @@ import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { CalculateSimulationResult } from './services/calculateSimulation'
-import { AaveStEthYieldsResponse } from './services/stEthYield'
+import { AaveStEthYieldsResponse, CalculateSimulationResult } from '../services'
 
 interface AaveStEthSimulateStateMachineContext {
   yields?: AaveStEthYieldsResponse
@@ -59,7 +58,12 @@ export const aaveStEthSimulateStateMachine = createMachine(
           },
         },
         on: {
-          '*': {},
+          USER_PARAMETERS_CHANGED: {
+            actions: ['assignUserParameters'],
+          },
+          FEE_CHANGED: {
+            actions: ['assignFees'],
+          },
         },
       },
       calculating: {
@@ -76,7 +80,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
     on: {
       USER_PARAMETERS_CHANGED: {
         target: 'calculating',
-        actions: ['assignUserParameters', 'logParameters'],
+        actions: ['assignUserParameters'],
       },
       FEE_CHANGED: {
         target: 'calculating',
@@ -92,10 +96,6 @@ export const aaveStEthSimulateStateMachine = createMachine(
         amount: event.amount,
         multiply: event.multiply,
       })),
-      logParameters: log(
-        (context, event) =>
-          `Parameters changed, ${event.amount.toString()}, amount from context: ${context.amount!.toString()}`,
-      ),
       assignFees: assign((context, event) => ({
         fee: event.fee,
       })),

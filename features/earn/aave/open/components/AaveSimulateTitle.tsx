@@ -5,7 +5,7 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
-import { zero } from '../../../../../../helpers/zero'
+import { zero } from '../../../../../helpers/zero'
 
 interface AaveSimulateTitleProps {
   token?: string

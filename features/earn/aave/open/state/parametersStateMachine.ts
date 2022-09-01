@@ -4,19 +4,19 @@ import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OpenPositionResult } from '../../../../aave'
+import { OperationParameters } from '../../../../aave'
 
-type OpenAaveParametersStateMachineContext = {
+type ParametersStateMachineContext = {
   token?: string
   amount?: BigNumber
   multiply?: BigNumber
   proxyAddress?: string
-  transactionParameters?: OpenPositionResult
+  transactionParameters?: OperationParameters
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
 }
 
-export type OpenAaveParametersStateMachineEvents = {
+export type ParametersStateMachineEvents = {
   type: 'VARIABLES_RECEIVED'
   readonly token: string
   readonly amount: BigNumber
@@ -27,19 +27,19 @@ export type OpenAaveParametersStateMachineEvents = {
 /*
   Machine based on the following pattern: https://xstate.js.org/docs/patterns/sequence.html#async-sequences
  */
-export const openAaveParametersStateMachine = createMachine(
+export const createParametersStateMachine = createMachine(
   {
     predictableActionArguments: true,
-    tsTypes: {} as import('./openAaveParametersStateMachine.typegen').Typegen0,
+    tsTypes: {} as import("./parametersStateMachine.typegen").Typegen0,
     id: 'openAaveParameters',
     initial: 'idle',
     context: {},
     schema: {
-      context: {} as OpenAaveParametersStateMachineContext,
-      events: {} as OpenAaveParametersStateMachineEvents,
+      context: {} as ParametersStateMachineContext,
+      events: {} as ParametersStateMachineEvents,
       services: {} as {
         getParameters: {
-          data: OpenPositionResult | undefined
+          data: OperationParameters | undefined
         }
         estimateGas: {
           data: number
@@ -154,23 +154,21 @@ export const openAaveParametersStateMachine = createMachine(
   },
 )
 
-class OpenAaveParametersStateMachineTypes {
+class ParametersStateMachineTypes {
   needsConfiguration() {
-    return openAaveParametersStateMachine
+    return createParametersStateMachine
   }
   withConfig() {
     // @ts-ignore
-    return openAaveParametersStateMachine.withConfig({})
+    return createParametersStateMachine.withConfig({})
   }
 }
 
-export type OpenAaveParametersStateMachineWithoutConfiguration = ReturnType<
-  OpenAaveParametersStateMachineTypes['needsConfiguration']
+export type ParametersStateMachineWithoutConfiguration = ReturnType<
+  ParametersStateMachineTypes['needsConfiguration']
 >
-export type OpenAaveParametersStateMachine = ReturnType<
-  OpenAaveParametersStateMachineTypes['withConfig']
->
-export type OpenAaveParametersStateMachineServices = MachineOptionsFrom<
-  OpenAaveParametersStateMachineWithoutConfiguration,
+export type ParametersStateMachine = ReturnType<ParametersStateMachineTypes['withConfig']>
+export type ParametersStateMachineServices = MachineOptionsFrom<
+  ParametersStateMachineWithoutConfiguration,
   true
 >['services']

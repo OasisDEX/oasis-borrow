@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { zero } from '../../../../../../../helpers/zero'
+import { one, zero } from '../../../../../helpers/zero'
 import { AaveStEthYieldsResponse } from './stEthYield'
 
 export interface Simulation {
@@ -32,30 +32,31 @@ export function calculateSimulation({
   multiply: BigNumber
   yields: AaveStEthYieldsResponse
 }): CalculateSimulationResult {
+  const earningsPerDay = amount.times(yields.annualisedYield1Year.plus(one)).minus(amount).div(365)
   return {
-    apy: new BigNumber(12),
-    breakEven: new BigNumber(23),
+    apy: yields.annualisedYield1Year,
+    breakEven: (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
     previous30Days: getSimulation({
       amount,
-      annualizedYield: yields.annualised30Yield,
+      annualizedYield: yields.annualisedYield30days,
       token,
     }),
     previous90Days: getSimulation({
       amount,
-      annualizedYield: yields.annualised90Yield,
+      annualizedYield: yields.annualisedYield90days,
       token,
     }),
     previous1Year: getSimulation({
       amount,
-      annualizedYield: yields.annualised1Yield,
+      annualizedYield: yields.annualisedYield1Year,
       token,
     }),
-    sinceInception: {
-      earningAfterFees: new BigNumber(1.2),
-      netValue: new BigNumber(101.2),
+    sinceInception: getSimulation({
+      amount,
+      annualizedYield: yields.annualisedYieldSinceInception,
       token,
-    },
+    }),
   }
 }
 

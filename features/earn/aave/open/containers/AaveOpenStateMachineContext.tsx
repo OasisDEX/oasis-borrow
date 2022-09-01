@@ -1,7 +1,7 @@
 import { useInterpret } from '@xstate/react'
-import { createContext, PropsWithChildren, useContext } from 'react'
+import React from 'react'
 
-import { OpenAaveStateMachine } from '../state/machine'
+import { OpenAaveStateMachine } from '../state'
 
 function setupOpenAaveStateContext({ machine }: { machine: OpenAaveStateMachine }) {
   const stateMachine = useInterpret(machine).start()
@@ -11,14 +11,12 @@ function setupOpenAaveStateContext({ machine }: { machine: OpenAaveStateMachine 
 }
 export type OpenAaveStateMachineContext = ReturnType<typeof setupOpenAaveStateContext>
 
-const openAaveStateContext = createContext<OpenAaveStateMachineContext | undefined>(undefined)
+const openAaveStateContext = React.createContext<OpenAaveStateMachineContext | undefined>(undefined)
 
 export function useOpenAaveStateMachineContext(): OpenAaveStateMachineContext {
-  const ac = useContext(openAaveStateContext)
+  const ac = React.useContext(openAaveStateContext)
   if (!ac) {
-    throw new Error(
-      "OpenAaveStateMachineContext not available! useOpenAaveStateMachineContext can't be used serverside",
-    )
+    throw new Error('OpenAaveStateMachineContext not available!')
   }
   return ac
 }
@@ -26,7 +24,7 @@ export function useOpenAaveStateMachineContext(): OpenAaveStateMachineContext {
 export function OpenAaveStateMachineContextProvider({
   children,
   machine,
-}: PropsWithChildren<{ machine: OpenAaveStateMachine }>) {
+}: React.PropsWithChildren<{ machine: OpenAaveStateMachine }>) {
   const context = setupOpenAaveStateContext({ machine })
   return <openAaveStateContext.Provider value={context}>{children}</openAaveStateContext.Provider>
 }

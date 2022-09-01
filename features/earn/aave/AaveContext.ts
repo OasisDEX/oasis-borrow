@@ -7,22 +7,20 @@ import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
-import { getManageAaveStateMachine$ } from './manage/state/getManageAaveStateMachine'
-import { getManageAavePositionStateMachineServices } from './manage/state/services'
 import {
-  getManageAaveParametersStateMachine$,
-  getManageAaveParametersStateMachineServices$,
-} from './manage/transaction'
-import { getManageAaveTransactionMachine } from './manage/transaction/getTransactionMachine'
-import { getSthEthSimulationMachine } from './open/components/simulate/services/getSthEthSimulationMachine'
-import { getAaveStEthYield } from './open/components/simulate/services/stEthYield'
-import { getOpenAaveStateMachine$ } from './open/state/getOpenAaveStateMachine'
-import { getOpenAavePositionStateMachineServices } from './open/state/services'
+  getManageAavePositionStateMachineServices,
+  getManageAaveStateMachine$,
+  getManageAaveTransactionMachine,
+} from './manage/services'
 import {
-  getOpenAaveParametersStateMachine$,
+  getAaveStEthYield,
   getOpenAaveParametersStateMachineServices$,
-} from './open/transaction'
-import { getOpenAaveTransactionMachine } from './open/transaction/getTransactionMachine'
+  getOpenAavePositionStateMachineServices,
+  getOpenAaveStateMachine$,
+  getOpenAaveTransactionMachine,
+  getParametersStateMachine$,
+  getSthEthSimulationMachine,
+} from './open/services'
 
 export function setupAaveContext({
   userSettings$,
@@ -49,27 +47,14 @@ export function setupAaveContext({
     switchMap(({ account }) => accountBalances$(account)),
   )
 
-  const openAaveParametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
+  const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
     txHelpers$,
     gasEstimation$,
     userSettings$,
   )
 
-  const manageAaveParametersStateMachineServices$ = getManageAaveParametersStateMachineServices$(
-    contextForAddress$,
-    txHelpers$,
-    gasEstimation$,
-    userSettings$,
-  )
-
-  const openAaveParametersStateMachine$ = getOpenAaveParametersStateMachine$(
-    openAaveParametersStateMachineServices$,
-  )
-
-  const manageAaveParametersStateMachine$ = getManageAaveParametersStateMachine$(
-    manageAaveParametersStateMachineServices$,
-  )
+  const parametersStateMachine$ = getParametersStateMachine$(parametersStateMachineServices$)
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
     contextForAddress$,
@@ -97,14 +82,11 @@ export function setupAaveContext({
 
   const aaveSthEthYields = curry(getAaveStEthYield)(graphQLClient$, moment())
 
-  // TODO: Should be cached ?
-  // TODO: Check if delay and debounce works well
-
   const simulationMachine = getSthEthSimulationMachine(aaveSthEthYields)
 
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
-    openAaveParametersStateMachine$,
+    parametersStateMachine$,
     proxyStateMachine$,
     transactionMachine,
     simulationMachine,
@@ -112,8 +94,7 @@ export function setupAaveContext({
 
   const aaveManageStateMachine$ = getManageAaveStateMachine$(
     manageAaveStateMachineServices,
-    manageAaveParametersStateMachine$,
-    proxyStateMachine$,
+    parametersStateMachine$,
     manageTransactionMachine,
   )
 
