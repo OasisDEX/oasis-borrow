@@ -81,7 +81,7 @@ export function prepareStopLossTriggerData(
     triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
       vaultData.id.toString(),
       triggerType.toString(),
-      stopLossLevel.toString(),
+      stopLossLevel.toString(), // TODO ŁW How come here's floating point number when returning to adjust?
     ]),
   }
 }

@@ -15,6 +15,8 @@ import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
+export const ACCEPTABLE_FEE_DIFF = new BigNumber(3)
+export const DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET = 0.2
 export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
   const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
 
@@ -56,10 +58,28 @@ export function resolveWithThreshold({
   )
 }
 
-export function prepareBasicBSResetData(basicBSTriggersData: BasicBSTriggerData) {
+export function prepareBasicBSResetData(
+  basicBSTriggersData: BasicBSTriggerData,
+  collateralizationRatio: BigNumber,
+  publishKey: 'BASIC_SELL_FORM_CHANGE' | 'BASIC_BUY_FORM_CHANGE',
+) {
+  const defaultTriggerForSell = new BigNumber(
+    collateralizationRatio.minus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
+  )
+  const defaultTriggerForBuy = new BigNumber(
+    collateralizationRatio.plus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
+  )
+
+  const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
   return {
-    targetCollRatio: basicBSTriggersData.targetCollRatio,
-    execCollRatio: basicBSTriggersData.execCollRatio,
+    execCollRatio: basicBSTriggersData.targetCollRatio.isZero()
+      ? publishKey === 'BASIC_SELL_FORM_CHANGE'
+        ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+        : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+      : basicBSTriggersData.targetCollRatio,
+    targetCollRatio: basicBSTriggersData.execCollRatio.isZero()
+      ? defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+      : basicBSTriggersData.execCollRatio,
     maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(basicBSTriggersData.maxBuyOrMinSellPrice),
     maxBaseFeeInGwei: basicBSTriggersData.maxBaseFeeInGwei,
     withThreshold: resolveWithThreshold({

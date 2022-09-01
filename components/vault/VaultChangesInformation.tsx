@@ -153,7 +153,7 @@ export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, wit
     case undefined:
       return <EstimationError withBrackets={withBrackets} />
     case GasEstimationStatus.calculated:
-      const textGas = `$${formatAmount(gasEstimation.usdValue, 'USD')}`
+      const textGas = `$${formatAmount(gasEstimation?.usdValue, 'USD')}`
 
       return withBrackets ? `(${textGas})` : textGas
   }

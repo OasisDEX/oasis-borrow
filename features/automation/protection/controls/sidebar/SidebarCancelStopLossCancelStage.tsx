@@ -15,7 +15,6 @@ export function SidebarCancelStopLossCancelStage(props: CancelSlFormLayoutProps)
   const { t } = useTranslation()
   const { stage, tokenPrice, liquidationPrice, actualCancelTxCost, selectedSLValue } = props
   const [persistedStopLossLevel] = useState(selectedSLValue)
-
   switch (stage) {
     case 'txInProgress':
       return (

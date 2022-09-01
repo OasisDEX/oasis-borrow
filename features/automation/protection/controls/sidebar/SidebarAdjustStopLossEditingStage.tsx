@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+import { UIChanges } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -6,6 +8,10 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import {
+  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+} from 'features/automation/common/consts'
 import { ADD_FORM_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -13,6 +19,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
+import { getStartingSlRatio } from '../../common/helpers'
 import { AdjustSlFormLayoutProps, SetDownsideProtectionInformation } from '../AdjustSlFormLayout'
 
 export type SidebarAdjustStopLossEditingStageProps = Pick<
@@ -71,6 +78,17 @@ export function SidebarAdjustStopLossEditingStage({
     )
   }
 
+  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
+    DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  )
+  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
+    stopLossLevel,
+    isStopLossEnabled,
+    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
+  })
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
   return (
     <>
       {!vault.debt.isZero() ? (
@@ -95,14 +113,12 @@ export function SidebarAdjustStopLossEditingStage({
           {!isOpenFlow && (
             <SidebarResetButton
               clear={() => {
-                uiChanges.publish(ADD_FORM_CHANGE, {
-                  type: 'close-type',
-                  toCollateral: isToCollateral,
-                })
-                uiChanges.publish(ADD_FORM_CHANGE, {
-                  type: 'stop-loss',
-                  stopLoss: stopLossLevel.times(100),
-                })
+                handleReset(
+                  uiChanges,
+                  isToCollateral,
+                  stopLossLevel,
+                  initialSlRatioWhenTriggerDoesntExist,
+                )
               }}
             />
           )}
@@ -145,4 +161,19 @@ export function SidebarAdjustStopLossEditingStage({
       )}
     </>
   )
+}
+function handleReset(
+  uiChanges: UIChanges,
+  isToCollateral: boolean,
+  stopLossLevel: BigNumber,
+  initialSlRatioWhenTriggerDoesntExist: BigNumber,
+) {
+  uiChanges.publish(ADD_FORM_CHANGE, {
+    type: 'close-type',
+    toCollateral: isToCollateral,
+  })
+  uiChanges.publish(ADD_FORM_CHANGE, {
+    type: 'stop-loss',
+    stopLoss: stopLossLevel.isZero() ? initialSlRatioWhenTriggerDoesntExist : stopLossLevel,
+  })
 }

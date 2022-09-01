@@ -15,6 +15,7 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
 
+import { ADD_FORM_CHANGE } from '../common/UITypes/AddFormChange'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,
@@ -58,6 +59,10 @@ function StopLossForms({
   ethMarketPrice,
   shouldRemoveAllowance,
 }: StopLossFormsProps) {
+  const stopLossLevel = stopLossTriggerData.stopLossLevel
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+
   return currentForm?.currentMode === AutomationFromKind.CANCEL ? (
     <CancelSlFormControl
       vault={vault}
@@ -68,6 +73,10 @@ function StopLossForms({
       ctx={context}
       accountIsController={accountIsController}
       toggleForms={() => {
+        uiChanges.publish(ADD_FORM_CHANGE, {
+          type: 'stop-loss',
+          stopLoss: stopLossLevel,
+        })
         uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
           currentMode: AutomationFromKind.ADJUST,
           type: 'change-mode',

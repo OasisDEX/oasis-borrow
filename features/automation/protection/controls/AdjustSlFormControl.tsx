@@ -81,6 +81,8 @@ export function AdjustSlFormControl({
   balanceInfo,
 }: AdjustSlFormControlProps) {
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = triggerData
+  const stopLossLevelInteger = stopLossLevel.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
@@ -97,12 +99,14 @@ export function AdjustSlFormControl({
 
   const replacedTriggerId = triggerId || 0
 
+  const selectedSLValue = uiState.selectedSLValue
+
   const txData = useMemo(
     () =>
       prepareAddStopLossTriggerData(
         vault,
         uiState.collateralActive,
-        uiState.selectedSLValue,
+        selectedSLValue,
         replacedTriggerId,
       ),
     [uiState.collateralActive, uiState.selectedSLValue, replacedTriggerId],
@@ -122,8 +126,8 @@ export function AdjustSlFormControl({
 
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,
-    selectedSLValue: uiState.selectedSLValue,
-    stopLossLevel,
+    selectedSLValue: selectedSLValue,
+    stopLossLevel: stopLossLevelInteger,
     collateralActive: uiState.collateralActive,
     isToCollateral,
   })
@@ -176,9 +180,9 @@ export function AdjustSlFormControl({
   const sliderProps: SliderValuePickerProps = {
     ...stopLossSliderBasicConfig,
     sliderPercentageFill,
-    leftBoundry: uiState.selectedSLValue,
+    leftBoundry: selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
-    lastValue: uiState.selectedSLValue,
+    lastValue: selectedSLValue,
     maxBoundry,
     minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
     onChange: (slCollRatio) => {
@@ -326,7 +330,7 @@ export function AdjustSlFormControl({
     vault,
     ilkData,
     etherscan,
-    selectedSLValue: uiState.selectedSLValue,
+    selectedSLValue: selectedSLValue,
     toggleForms,
     firstStopLossSetup,
     isEditing,
@@ -341,7 +345,7 @@ export function AdjustSlFormControl({
     isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     autoBuyTriggerData,
     isToCollateral,
-    stopLossLevel,
+    stopLossLevel: stopLossLevelInteger,
   }
 
   return <SidebarAdjustStopLoss {...props} />
