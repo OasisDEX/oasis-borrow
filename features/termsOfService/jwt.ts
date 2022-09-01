@@ -38,12 +38,6 @@ export function jwtAuthSetupToken$(
 }
 
 async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
-  console.log({
-    isGnosisSafe,
-    web3,
-    provider: web3.givenProvider,
-    cProvider: web3.currentProvider,
-  })
   const web3Instance = web3
   const addressForSignature = account
 
@@ -63,7 +57,6 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
       const interval = setInterval(async () => {
         try {
           const { detailedExecutionInfo } = await sdk.txs.getBySafeTxHash(tx.safeTxHash)
-          console.log({ detailedExecutionInfo })
           if (
             !(
               detailedExecutionInfo?.type === 'MULTISIG' &&

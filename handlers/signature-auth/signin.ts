@@ -77,7 +77,6 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
           throw new SignatureAuthError('Signature not correct')
         }
       } catch (e) {
-        console.log('errr >> ', e)
         return res.status(400).json({ jwt: (e as Error).message })
       }
     } else if (isArgentWallet) {
