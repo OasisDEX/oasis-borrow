@@ -37,6 +37,11 @@ export type BasicBSChangeAction =
   | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
   | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
+  | {
+      type: 'form-defaults'
+      targetCollRatio: BigNumber
+      execCollRatio: BigNumber
+    }
 
 export function basicBSFormChangeReducer(
   state: BasicBSFormChange,
@@ -65,6 +70,12 @@ export function basicBSFormChangeReducer(
       return { ...state, txDetails: action.txDetails }
     case 'reset':
       return { ...state, ...action.resetData }
+    case 'form-defaults':
+      return {
+        ...state,
+        targetCollRatio: action.targetCollRatio,
+        execCollRatio: action.execCollRatio,
+      }
     default:
       return state
   }

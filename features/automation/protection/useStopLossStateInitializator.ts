@@ -7,6 +7,10 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
+import {
+  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+} from '../common/consts'
 import { getStartingSlRatio } from './common/helpers'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
@@ -26,22 +30,20 @@ export function useStopLossStateInitializator(
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
-  const initialVaultCollRatio = zero
-
-  const startingSlRatio = getStartingSlRatio({
+  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  const selectedStopLossCollRatioIfTriggerDoesntExist = vault.collateralizationRatio.isZero()
+    ? zero
+    : sliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
+  const initialSelectedSlRatio = getStartingSlRatio({
     stopLossLevel,
     isStopLossEnabled,
-    initialVaultCollRatio,
-  })
+    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
+  }).multipliedBy(100)
 
   useEffect(() => {
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'close-type',
       toCollateral: isToCollateral,
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'tx-details',
@@ -60,9 +62,9 @@ export function useStopLossStateInitializator(
     })
     uiChanges.publish(ADD_FORM_CHANGE, {
       type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
+      stopLoss: initialSelectedSlRatio,
     })
-  }, [isStopLossEnabled, startingSlRatio.toNumber()])
+  }, [isStopLossEnabled, initialSelectedSlRatio])
 
   return isStopLossEnabled
 }

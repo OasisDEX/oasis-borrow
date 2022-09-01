@@ -224,6 +224,18 @@ export function SidebarAutoSellAddEditingStage({
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
+      <SidebarResetButton
+        clear={() => {
+          uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+            type: 'reset',
+            resetData: prepareBasicBSResetData(
+              autoSellTriggerData,
+              vault.collateralizationRatio,
+              BASIC_SELL_FORM_CHANGE,
+            ),
+          })
+        }}
+      />
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
@@ -239,7 +251,11 @@ export function SidebarAutoSellAddEditingStage({
             clear={() => {
               uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
                 type: 'reset',
-                resetData: prepareBasicBSResetData(autoSellTriggerData),
+                resetData: prepareBasicBSResetData(
+                  autoSellTriggerData,
+                  vault.collateralizationRatio,
+                  BASIC_SELL_FORM_CHANGE,
+                ),
               })
             }}
           />

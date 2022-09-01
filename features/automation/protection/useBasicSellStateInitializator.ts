@@ -1,10 +1,12 @@
 import { TriggerType } from '@oasisdex/automation'
+import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import {
+  DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
   resolveMaxBuyOrMinSellPrice,
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
@@ -70,6 +72,21 @@ export function useBasicBSstateInitialization(
     uiChanges.publish(publishKey, {
       type: 'with-threshold',
       withThreshold: withThresholdResolved,
+    })
+    const defaultTriggerForSell = new BigNumber(
+      collateralizationRatio - DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+    )
+    const defaultTriggerForBuy = new BigNumber(
+      collateralizationRatio + DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+    )
+    const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
+    uiChanges.publish(publishKey, {
+      type: 'form-defaults',
+      execCollRatio:
+        publishKey === 'BASIC_SELL_FORM_CHANGE'
+          ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+          : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
+      targetCollRatio: defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
     })
   }, [triggerId.toNumber(), collateralizationRatio])
 

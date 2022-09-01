@@ -160,6 +160,7 @@ export function CancelSlFormControl({
 
   const { token } = vault
   const etherscan = ctx.etherscan.url
+  const selectedSLValue = addSlUiState.selectedSLValue
 
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
@@ -178,7 +179,7 @@ export function CancelSlFormControl({
     token,
     ilkData,
     currentCollateralRatio: vault.collateralizationRatio,
-    selectedSLValue: addSlUiState.selectedSLValue,
+    selectedSLValue: selectedSLValue,
     isProgressDisabled,
     isStopLossEnabled: triggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,

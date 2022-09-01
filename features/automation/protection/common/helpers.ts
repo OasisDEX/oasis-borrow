@@ -48,13 +48,13 @@ export function getIsEditingProtection({
 export function getStartingSlRatio({
   isStopLossEnabled,
   stopLossLevel,
-  initialVaultCollRatio,
+  initialStopLossSelected,
 }: {
   isStopLossEnabled: boolean
   stopLossLevel: BigNumber
-  initialVaultCollRatio: BigNumber
+  initialStopLossSelected: BigNumber
 }) {
-  return isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
+  return isStopLossEnabled ? stopLossLevel : initialStopLossSelected
 }
 
 export function backToVaultOverview(uiChanges: UIChanges) {
