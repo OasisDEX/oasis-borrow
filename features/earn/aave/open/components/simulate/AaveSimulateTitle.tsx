@@ -5,12 +5,14 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
+import { zero } from '../../../../../../helpers/zero'
+
 interface AaveSimulateTitleProps {
-  token: string
-  depositAmount: BigNumber
+  token?: string
+  depositAmount?: BigNumber
 }
 
-export function AaveSimulateTitle({ token, depositAmount }: AaveSimulateTitleProps) {
+export function AaveSimulateTitle({ token = 'ETH', depositAmount }: AaveSimulateTitleProps) {
   const { iconCircle } = getToken(token)
 
   return (
@@ -40,7 +42,7 @@ export function AaveSimulateTitle({ token, depositAmount }: AaveSimulateTitlePro
             color: 'primary100',
           }}
         >
-          {`${formatCryptoBalance(depositAmount)} ${token}`}
+          {`${formatCryptoBalance(depositAmount || zero)} ${token}`}
         </Heading>
         <Text
           variant="paragraph3"

@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { AnyEventObject, assign, createMachine } from 'xstate'
+import { assign, createMachine } from 'xstate'
+import { log } from 'xstate/lib/actions'
+import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { assertEventType } from '../../../../../../utils/xstate'
-import { AaveStEthYieldsResponse } from '../../../services/stEthYield'
+import { CalculateSimulationResult } from './services/calculateSimulation'
+import { AaveStEthYieldsResponse } from './services/stEthYield'
 
 interface AaveStEthSimulateStateMachineContext {
   yields?: AaveStEthYieldsResponse
@@ -10,48 +12,116 @@ interface AaveStEthSimulateStateMachineContext {
   amount?: BigNumber
   multiply?: BigNumber
   transactionFee?: BigNumber
-  oazoFee?: BigNumber
+  fee?: BigNumber
+  simulation?: CalculateSimulationResult
 }
 
-type AaveStEthSimulateStateMachineEvents =
-  | AnyEventObject
-  | { type: 'TOKEN_CHANGED'; token: string }
-  | { type: 'AMOUNT_CHANGED'; amount: BigNumber }
-  | { type: 'MULTIPLY_CHANGED'; multiply: BigNumber }
-  | { type: 'YIELD_RECEIVED'; yields: AaveStEthYieldsResponse }
-  | { type: 'TRANSACTION_FEE_CHANGED'; transactionFee: BigNumber }
-  | { type: 'OAZO_FEE_CHANGED'; oazoFee: BigNumber }
+export type AaveStEthSimulateStateMachineEvents =
+  | {
+      type: 'USER_PARAMETERS_CHANGED'
+      token: string
+      amount: BigNumber
+      multiply: BigNumber
+    }
+  | { type: 'FEE_CHANGED'; fee: BigNumber }
 
 export const aaveStEthSimulateStateMachine = createMachine(
   {
-    id: 'aaveStEthSimulate',
-    initial: 'idle',
+    predictableActionArguments: true,
+    tsTypes: {} as import('./aaveStEthSimulateStateMachine.typegen').Typegen0,
+    key: 'aaveStEthSimulate',
+    initial: 'loading',
     context: {},
     schema: {
+      context: {} as AaveStEthSimulateStateMachineContext,
       services: {} as {
         getYields: {
           data: AaveStEthYieldsResponse
         }
+        calculate: {
+          data: CalculateSimulationResult
+        }
       },
+      events: {} as AaveStEthSimulateStateMachineEvents,
     },
     states: {
-      idle: {
-        on: {},
+      idle: {},
+      loading: {
+        invoke: {
+          src: 'getYields',
+          id: 'getYields',
+          onDone: {
+            actions: ['assignYields'],
+            target: 'calculating',
+          },
+          onError: {
+            actions: ['logError'],
+          },
+        },
+        on: {
+          '*': {},
+        },
+      },
+      calculating: {
+        invoke: {
+          src: 'calculate',
+          id: 'calculate',
+          onDone: {
+            target: 'idle',
+            actions: ['assignResult'],
+          },
+        },
+      },
+    },
+    on: {
+      USER_PARAMETERS_CHANGED: {
+        target: 'calculating',
+        actions: ['assignUserParameters', 'logParameters'],
+      },
+      FEE_CHANGED: {
+        target: 'calculating',
+        actions: ['assignFees'],
       },
     },
   },
   {
     actions: {
-      // @ts-ignore
-      assignYields: assign<
-        AaveStEthSimulateStateMachineContext,
-        AaveStEthSimulateStateMachineEvents
-      >((ctx, event) => {
-        assertEventType(event, 'YIELD_RECEIVED')
-        return {
-          yields: event.yields,
-        }
-      }),
+      assignYields: assign((context, event) => ({ yields: event.data })),
+      assignUserParameters: assign((context, event) => ({
+        token: event.token,
+        amount: event.amount,
+        multiply: event.multiply,
+      })),
+      logParameters: log(
+        (context, event) =>
+          `Parameters changed, ${event.amount.toString()}, amount from context: ${context.amount!.toString()}`,
+      ),
+      assignFees: assign((context, event) => ({
+        fee: event.fee,
+      })),
+      assignResult: assign((context, event) => ({ simulation: event.data })),
+      logError: log((context, event) => event.data),
     },
   },
 )
+
+class AaveStEthSimulateStateMachineTypes {
+  needsConfiguration() {
+    return aaveStEthSimulateStateMachine
+  }
+  withConfig() {
+    // @ts-ignore
+    return aaveStEthSimulateStateMachine.withConfig({})
+  }
+}
+
+export type AaveStEthSimulateStateMachineWithoutConfiguration = ReturnType<
+  AaveStEthSimulateStateMachineTypes['needsConfiguration']
+>
+export type AaveStEthSimulateStateMachine = ReturnType<
+  AaveStEthSimulateStateMachineTypes['withConfig']
+>
+export type AaveStEthSimulateStateMachineServices = MachineOptionsFrom<
+  AaveStEthSimulateStateMachineWithoutConfiguration,
+  true
+>['services']

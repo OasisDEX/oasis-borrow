@@ -4,6 +4,7 @@ import { assign, sendParent, spawn } from 'xstate'
 
 import { ProxyContext, ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
+import { AaveStEthSimulateStateMachine } from '../components/simulate/aaveStEthSimulateStateMachine'
 import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import { OpenAaveParametersStateMachine } from '../transaction'
 import { createOpenAaveStateMachine, OpenAaveEvent, OpenAaveStateMachineServices } from './machine'
@@ -14,6 +15,7 @@ export function getOpenAaveStateMachine$(
   parametersMachine$: Observable<OpenAaveParametersStateMachine>,
   proxyMachine$: Observable<ProxyStateMachine>,
   transactionStateMachine: TransactionStateMachine<OpenAavePositionData>,
+  simulationMachine: AaveStEthSimulateStateMachine,
 ) {
   return combineLatest(parametersMachine$, proxyMachine$).pipe(
     map(([parametersMachine, proxyMachine]) => {
@@ -72,6 +74,11 @@ export function getOpenAaveStateMachine$(
                 name: 'transactionMachine',
               },
             ),
+          })),
+          spawnSimulationMachine: assign((_) => ({
+            refSimulationMachine: spawn(simulationMachine, {
+              name: 'simulationMachine',
+            }),
           })),
         },
       })

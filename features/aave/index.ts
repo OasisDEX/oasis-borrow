@@ -29,7 +29,7 @@ export interface OpenPositionResult {
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
-  multiply: number,
+  multiply: BigNumber,
   slippage: BigNumber,
   proxyAddress: string,
 ): Promise<OpenPositionResult> {

@@ -11,48 +11,57 @@ import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
 import { SimulateSectionComponent } from '../components/simulate/SimulateSectionComponent'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
+import { OpenAaveStateMachine } from '../state/machine'
+import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
 
 interface Props {
   strategyName: string
 }
 
+function AaveOpenContainer({ aaveStateMachine }: { aaveStateMachine: OpenAaveStateMachine }) {
+  const { t } = useTranslation()
+  return (
+    <OpenAaveStateMachineContextProvider machine={aaveStateMachine}>
+      <Container variant="vaultPageContainer">
+        [HEADER]
+        <TabBar
+          variant="underline"
+          sections={[
+            {
+              value: 'simulate',
+              label: t('open-vault.simulate'),
+              content: (
+                <Grid variant="vaultContainer">
+                  <Box>
+                    <SimulateSectionComponent />
+                  </Box>
+                  <Box>{<SidebarOpenAaveVault />}</Box>
+                </Grid>
+              ),
+            },
+            {
+              value: 'faq',
+              label: t('system.faq'),
+              content: <Card variant="faq">{aaveFaq}</Card>,
+            },
+          ]}
+        />
+        <Survey for="earn" />
+      </Container>
+    </OpenAaveStateMachineContextProvider>
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function AaveOpenView({ strategyName }: Props) {
   const { aaveStateMachine$ } = useAaveContext()
   const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
-
-  const { t } = useTranslation()
 
   return (
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
         {([_stateMachine]) => {
-          _stateMachine.context.strategyName = strategyName
-          return (
-            <Container variant="vaultPageContainer">
-              [HEADER]
-              <TabBar
-                variant="underline"
-                sections={[
-                  {
-                    value: 'simulate',
-                    label: t('open-vault.simulate'),
-                    content: (
-                      <Grid variant="vaultContainer">
-                        <Box><SimulateSectionComponent /></Box>
-                        <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
-                      </Grid>
-                    ),
-                  },
-                  {
-                    value: 'faq',
-                    label: t('system.faq'),
-                    content: <Card variant="faq">{aaveFaq}</Card>,
-                  },
-                ]}
-              />
-              <Survey for="earn" />
-            </Container>
-          )
+          return <AaveOpenContainer aaveStateMachine={_stateMachine} />
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>

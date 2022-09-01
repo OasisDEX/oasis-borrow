@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import moment from 'moment/moment'
+import { Observable } from 'rxjs'
+import { first } from 'rxjs/operators'
 
 const aaveStEthYield = gql`
   mutation stEthYields(
@@ -43,35 +45,21 @@ export interface AaveStEthYieldsResponse {
 }
 
 export async function getAaveStEthYield(
-  client: GraphQLClient,
+  client: Observable<GraphQLClient>,
   currentDate: moment.Moment,
   multiply: BigNumber,
 ): Promise<AaveStEthYieldsResponse> {
-  const response = await client.request(aaveStEthYield, {
+  const getClient = await client.pipe(first()).toPromise()
+  const response = await getClient.request(aaveStEthYield, {
     currentDate: currentDate.format('YYYY-MM-DD'),
     date30daysAgo: currentDate.clone().subtract(30, 'days').format('YYYY-MM-DD'),
     date90daysAgo: currentDate.clone().subtract(90, 'days').format('YYYY-MM-DD'),
     date1yearAgo: currentDate.clone().subtract(1, 'year').format('YYYY-MM-DD'),
     multiply: multiply.toString(),
   })
-
   return {
     annualised30Yield: new BigNumber(response.yield30days.yield.netAnnualisedYield),
     annualised90Yield: new BigNumber(response.yield90days.yield.netAnnualisedYield),
     annualised1Yield: new BigNumber(response.yield1year.yield.netAnnualisedYield),
   }
 }
-
-// export function createStEthYields$(
-//   context$: Observable<Context>,
-//   currentDate: moment.Moment,
-//   multiply: BigNumber,
-// ): Observable<aaveStEthYieldsResponse> {
-//   return context$.pipe(
-//     switchMap(({ cacheApi }) => {
-//       const apiClient = new GraphQLClient(cacheApi)
-//       return getAaveStEthYield(apiClient, currentDate, multiply)
-//     }),
-//     shareReplay(1),
-//   )
-// }

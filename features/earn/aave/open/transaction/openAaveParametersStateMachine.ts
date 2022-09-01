@@ -4,15 +4,12 @@ import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { assertEventType } from '../../../../../utils/xstate'
 import { OpenPositionResult } from '../../../../aave'
 
 type OpenAaveParametersStateMachineContext = {
-  readonly hasParent: boolean | false
-
   token?: string
   amount?: BigNumber
-  multiply?: number
+  multiply?: BigNumber
   proxyAddress?: string
   transactionParameters?: OpenPositionResult
   estimatedGas?: number
@@ -23,7 +20,7 @@ export type OpenAaveParametersStateMachineEvents = {
   type: 'VARIABLES_RECEIVED'
   readonly token: string
   readonly amount: BigNumber
-  readonly multiply: number
+  readonly multiply: BigNumber
   readonly proxyAddress?: string
 }
 
@@ -36,6 +33,7 @@ export const openAaveParametersStateMachine = createMachine(
     tsTypes: {} as import('./openAaveParametersStateMachine.typegen').Typegen0,
     id: 'openAaveParameters',
     initial: 'idle',
+    context: {},
     schema: {
       context: {} as OpenAaveParametersStateMachineContext,
       events: {} as OpenAaveParametersStateMachineEvents,
@@ -124,21 +122,14 @@ export const openAaveParametersStateMachine = createMachine(
   },
   {
     actions: {
-      assignReceivedParameters: assign(
-        (
-          context: OpenAaveParametersStateMachineContext,
-          event: OpenAaveParametersStateMachineEvents,
-        ) => {
-          assertEventType(event, 'VARIABLES_RECEIVED')
-
-          return {
-            token: event.token,
-            amount: event.amount,
-            multiply: event.multiply,
-            proxyAddress: event.proxyAddress,
-          }
-        },
-      ),
+      assignReceivedParameters: assign((context, event) => {
+        return {
+          token: event.token,
+          amount: event.amount,
+          multiply: event.multiply,
+          proxyAddress: event.proxyAddress,
+        }
+      }),
       assignTransactionParameters: assign((context, event) => {
         return {
           transactionParameters: event.data,

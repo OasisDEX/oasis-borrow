@@ -24,6 +24,7 @@ import {
   startTransactionService,
   TransactionStateMachine,
 } from '../../../../stateMachines/transaction'
+import { aaveStEthSimulateStateMachine } from '../components/simulate/aaveStEthSimulateStateMachine'
 import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
 import { OpenAaveParametersStateMachine, openAaveParametersStateMachine } from '../transaction'
 import { createOpenAaveStateMachine, OpenAaveEvent } from './machine'
@@ -93,70 +94,80 @@ const transactionMachine = createTransactionStateMachine(openAavePosition).withC
   },
 })
 
-const openAaveStateMachine = createOpenAaveStateMachine
-  .withConfig({
-    actions: {
-      spawnParametersMachine: assign((_) => ({
-        refParametersStateMachine: spawn(
-          parametersMachine.withConfig({
+const simulationMachine = aaveStEthSimulateStateMachine.withConfig({
+  actions: {},
+  services: {
+    getYields: async () => {
+      return {} as any
+    },
+    calculate: async () => {
+      return {} as any
+    },
+  },
+})
+
+const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
+  actions: {
+    spawnSimulationMachine: assign((_) => ({
+      refSimulationMachine: spawn(simulationMachine, { name: 'simulationMachine' }),
+    })),
+    spawnParametersMachine: assign((_) => ({
+      refParametersStateMachine: spawn(
+        parametersMachine.withConfig({
+          actions: {
+            notifyParent: sendParent(
+              (context): OpenAaveEvent => ({
+                type: 'TRANSACTION_PARAMETERS_RECEIVED',
+                parameters: context.transactionParameters!,
+              }),
+            ),
+          },
+        }),
+        { name: 'parametersMachine' },
+      ),
+    })),
+    spawnProxyMachine: assign((_) => ({
+      refProxyMachine: spawn(
+        proxyStateMachine.withConfig({
+          actions: {
+            raiseSuccess: sendParent(
+              (context: ProxyContext): OpenAaveEvent => ({
+                type: 'PROXY_CREATED',
+                proxyAddress: context.proxyAddress!,
+              }),
+            ),
+          },
+        }),
+        { name: 'proxyMachine' },
+      ),
+    })),
+    spawnTransactionMachine: assign((context) => ({
+      refTransactionMachine: spawn(
+        transactionMachine
+          .withConfig({
             actions: {
               notifyParent: sendParent(
-                (context): OpenAaveEvent => ({
-                  type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                  parameters: context.transactionParameters!,
+                (_): OpenAaveEvent => ({
+                  type: 'POSITION_OPENED',
                 }),
               ),
             },
+          })
+          .withContext({
+            ...transactionMachine.context,
+            transactionParameters: contextToTransactionParameters(context),
           }),
-          { name: 'parametersMachine' },
-        ),
-      })),
-      spawnProxyMachine: assign((_) => ({
-        refProxyMachine: spawn(
-          proxyStateMachine.withConfig({
-            actions: {
-              raiseSuccess: sendParent(
-                (context: ProxyContext): OpenAaveEvent => ({
-                  type: 'PROXY_CREATED',
-                  proxyAddress: context.proxyAddress!,
-                }),
-              ),
-            },
-          }),
-          { name: 'proxyMachine' },
-        ),
-      })),
-      spawnTransactionMachine: assign((context) => ({
-        refTransactionMachine: spawn(
-          transactionMachine
-            .withConfig({
-              actions: {
-                notifyParent: sendParent(
-                  (_): OpenAaveEvent => ({
-                    type: 'POSITION_OPENED',
-                  }),
-                ),
-              },
-            })
-            .withContext({
-              ...transactionMachine.context,
-              transactionParameters: contextToTransactionParameters(context),
-            }),
-          {
-            name: 'transactionMachine',
-          },
-        ),
-      })),
-    },
-    services: {
-      getBalance: (() => {}) as any,
-      getProxyAddress: (() => {}) as any,
-    },
-  })
-  .withContext({
-    token: 'ETH',
-    multiply: 2,
-  })
+        {
+          name: 'transactionMachine',
+        },
+      ),
+    })),
+  },
+  services: {
+    getBalance: (() => {}) as any,
+    getProxyAddress: (() => {}) as any,
+  },
+})
 
 const ParametersView = ({
   parametersMachine,

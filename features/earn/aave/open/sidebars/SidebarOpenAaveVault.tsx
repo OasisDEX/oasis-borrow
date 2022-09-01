@@ -1,4 +1,4 @@
-import { useMachine } from '@xstate/react'
+import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -13,6 +13,7 @@ import {
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
+import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/machine'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
@@ -107,7 +108,7 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
 function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
-  const canCreateProxy = state.can('CREATE_PROXY')
+  const hasProxy = state.context.proxyAddress !== undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -120,15 +121,9 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: false,
-      disabled: false,
-      label: canCreateProxy ? t('create-proxy-btn') : t('open-earn.aave.vault-form.open-btn'),
-      action: () => {
-        if (canCreateProxy) {
-          send('CREATE_PROXY')
-        } else {
-          send('CONFIRM_DEPOSIT')
-        }
-      },
+      disabled: !state.can('NEXT_STEP'),
+      label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
+      action: () => send('NEXT_STEP'),
     },
   }
 
@@ -159,8 +154,9 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
-  const [state, send] = useMachine(aaveStateMachine)
+export function SidebarOpenAaveVault() {
+  const { stateMachine } = useOpenAaveStateMachineContext()
+  const [state, send] = useActor(stateMachine)
 
   switch (true) {
     case state.matches('editing'):

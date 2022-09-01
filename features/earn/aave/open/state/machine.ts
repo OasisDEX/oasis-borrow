@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { ActorRefFrom, assign, createMachine, send } from 'xstate'
+import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
+import { cancel } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
@@ -12,6 +13,10 @@ import {
   ProxyMachineEvents,
   TransactionMachineEvents,
 } from '../../common/state/types'
+import {
+  AaveStEthSimulateStateMachine,
+  AaveStEthSimulateStateMachineEvents,
+} from '../components/simulate/aaveStEthSimulateStateMachine'
 import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import {
   OpenAaveParametersStateMachine,
@@ -19,12 +24,14 @@ import {
 } from '../transaction/openAaveParametersStateMachine'
 
 export interface OpenAaveContext {
-  multiply: number
+  multiply: BigNumber
   token: string
+  inputDelay: number
 
   refParametersStateMachine?: ActorRefFrom<OpenAaveParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OpenAavePositionData>>
+  refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
 
   currentStep?: number
   totalSteps?: number
@@ -59,6 +66,7 @@ export type OpenAaveEvent =
 export const createOpenAaveStateMachine = createMachine(
   {
     predictableActionArguments: true,
+    preserveActionOrder: true,
     strict: true,
     tsTypes: {} as import('./machine.typegen').Typegen0,
     schema: {
@@ -69,7 +77,7 @@ export const createOpenAaveStateMachine = createMachine(
     initial: 'editing',
     states: {
       editing: {
-        entry: ['initContextValues', 'spawnParametersMachine'],
+        entry: ['initContextValues', 'spawnParametersMachine', 'spawnSimulationMachine'],
         invoke: [
           {
             src: 'getBalance',
@@ -92,14 +100,21 @@ export const createOpenAaveStateMachine = createMachine(
             ],
           },
           SET_AMOUNT: {
-            actions: ['setAmount', 'calculateAuxiliaryAmount', 'sendUpdateToParametersMachine'],
+            actions: [
+              'setAmount',
+              'calculateAuxiliaryAmount',
+              'debounceSendingToParametersMachine',
+              'debounceSendingToSimulationMachine',
+              'sendUpdateToParametersMachine',
+              'sendUpdateToSimulationMachine',
+            ],
           },
           NEXT_STEP: [
             { cond: 'emptyProxyAddress', target: 'proxyCreating' },
             { cond: 'enoughBalance', target: 'reviewing' },
           ],
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters'],
+            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
           },
         },
       },
@@ -158,6 +173,9 @@ export const createOpenAaveStateMachine = createMachine(
       initContextValues: assign((context) => ({
         currentStep: 1,
         totalSteps: context.proxyAddress ? 2 : 3,
+        multiply: new BigNumber(2),
+        token: 'ETH',
+        inputDelay: 1000,
       })),
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,
@@ -174,7 +192,11 @@ export const createOpenAaveStateMachine = createMachine(
           token: context.token,
           proxyAddress: context.proxyAddress,
         }),
-        { to: (context) => context.refParametersStateMachine! },
+        {
+          to: (context) => context.refParametersStateMachine!,
+          delay: (context) => context.inputDelay,
+          id: 'update-parameters-machine',
+        },
       ),
       updateTotalSteps: assign((context) => ({
         totalSteps: context.proxyAddress ? 2 : 3,
@@ -194,6 +216,28 @@ export const createOpenAaveStateMachine = createMachine(
       assignTransactionParameters: assign((context, event) => ({
         transactionParameters: event.parameters,
       })),
+      sendFeesToSimulationMachine: send(
+        (context): AaveStEthSimulateStateMachineEvents => ({
+          type: 'FEE_CHANGED',
+          fee: context.transactionParameters?.positionInfo.fee || zero,
+        }),
+        { to: (context) => context.refSimulationMachine! },
+      ),
+      sendUpdateToSimulationMachine: send(
+        (context): AaveStEthSimulateStateMachineEvents => ({
+          type: 'USER_PARAMETERS_CHANGED',
+          amount: context.amount || zero,
+          multiply: context.multiply,
+          token: context.token,
+        }),
+        {
+          to: (context) => context.refSimulationMachine!,
+          delay: (context) => context.inputDelay,
+          id: 'update-simulate-machine',
+        },
+      ),
+      debounceSendingToParametersMachine: cancel('update-parameters-machine'),
+      debounceSendingToSimulationMachine: cancel('update-simulate-machine'),
     },
   },
 )
@@ -218,4 +262,4 @@ export type OpenAaveStateMachineServices = MachineOptionsFrom<
   true
 >['services']
 
-export type OpenAaveStateMachineState = OpenAaveStateMachine['initialState']
+export type OpenAaveStateMachineState = StateFrom<OpenAaveStateMachine>

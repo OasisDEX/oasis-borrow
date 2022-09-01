@@ -66,7 +66,7 @@ const View = () => {
           <SendButton
             type={'VARIABLES_RECEIVED'}
             amount={new BigNumber(100)}
-            multiply={2}
+            multiply={new BigNumber(2)}
             token={'ETH'}
           />{' '}
         </Box>

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
@@ -14,10 +15,6 @@ import {
   OpenAaveParametersStateMachineServices,
 } from './openAaveParametersStateMachine'
 
-/**
-  This function is used to set up the parameters StateMachine
-  It would be great if we could pass promises to that. Then we could return plain object of services
- **/
 export function getOpenAaveParametersStateMachineServices$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
@@ -33,7 +30,7 @@ export function getOpenAaveParametersStateMachineServices$(
           return await getOpenAaveParameters(
             contextConnected,
             context.amount || zero,
-            context.multiply || 2,
+            context.multiply || new BigNumber(2),
             userSettings.slippage,
             context.proxyAddress,
           )
@@ -42,7 +39,7 @@ export function getOpenAaveParametersStateMachineServices$(
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
             return 0
           }
-          const gas = await txHelpers
+          return await txHelpers
             .estimateGas(openAavePosition, {
               kind: TxMetaKind.operationExecutor,
               calls: context.transactionParameters!.calls as any,
@@ -53,8 +50,6 @@ export function getOpenAaveParametersStateMachineServices$(
             })
             .pipe(first())
             .toPromise()
-
-          return gas
         },
         estimateGasPrice: async (context) => {
           return await gasEstimation$(context.estimatedGas!).pipe(first()).toPromise()
