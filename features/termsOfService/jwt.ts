@@ -59,11 +59,14 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
     )
 
     let dataToSign: string
+    let safeTxHash: string
     if (pendingSignature) {
       dataToSign = pendingSignature.dataToSign
+      safeTxHash = pendingSignature.safeTxHash
     } else {
       dataToSign = getDataToSignFromChallenge(challenge)
-      const { safeTxHash } = await sdk.txs.signMessage(dataToSign)
+      const signatureRequest = await sdk.txs.signMessage(dataToSign)
+      safeTxHash = signatureRequest.safeTxHash
       localStorage.setItem(
         LOCAL_STORAGE_GNOSIS_SAFE_PENDING,
         JSON.stringify({
@@ -73,15 +76,13 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
       )
     }
 
-    const tx = await sdk.txs.signMessage(dataToSign)
-
     // start polling
     const token = await new Promise<string | null>((resolve) => {
       // eslint-disable-next-line func-style
       let returnValue = (val: string | null) => resolve(val) // CAUTION: this function is reassigned later
       const interval = setInterval(async () => {
         try {
-          const { detailedExecutionInfo } = await sdk.txs.getBySafeTxHash(tx.safeTxHash)
+          const { detailedExecutionInfo } = await sdk.txs.getBySafeTxHash(safeTxHash)
           if (
             !(
               detailedExecutionInfo?.type === 'MULTISIG' &&
