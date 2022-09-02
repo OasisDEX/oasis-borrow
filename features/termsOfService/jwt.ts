@@ -8,6 +8,8 @@ import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
 import Web3 from 'web3'
 
+const LOCAL_STORAGE_GNOSIS_SAFE_PENDING = 'LOCAL_STORAGE_GNOSIS_SAFE_PENDING'
+
 const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 
 export type JWToken = string
@@ -37,6 +39,11 @@ export function jwtAuthSetupToken$(
   return of(token)
 }
 
+interface GnosisSafePendingTransaction {
+  dataToSign: string
+  safeTxHash: string
+}
+
 async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
   const web3Instance = web3
   const addressForSignature = account
@@ -46,7 +53,26 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
 
   if (isGnosisSafe) {
     const sdk = new SafeAppsSDK()
-    const dataToSign = getDataToSignFromChallenge(challenge)
+
+    const pendingSignature: GnosisSafePendingTransaction = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_GNOSIS_SAFE_PENDING)!,
+    )
+
+    let dataToSign: string
+    if (pendingSignature) {
+      dataToSign = pendingSignature.dataToSign
+    } else {
+      dataToSign = getDataToSignFromChallenge(challenge)
+      const { safeTxHash } = await sdk.txs.signMessage(dataToSign)
+      localStorage.setItem(
+        LOCAL_STORAGE_GNOSIS_SAFE_PENDING,
+        JSON.stringify({
+          dataToSign,
+          safeTxHash,
+        } as GnosisSafePendingTransaction),
+      )
+    }
+
     const tx = await sdk.txs.signMessage(dataToSign)
 
     // start polling
