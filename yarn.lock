@@ -9292,6 +9292,18 @@
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
 
+"@xstate/cli@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@xstate/cli/-/cli-0.3.2.tgz#256946d252ce8ea1b5cabb7c528ac331575cbb31"
+  integrity sha512-IAToG5cVLkGG9XCnFVbnt2bQ3QYce4vDmA3NYpqqx34/wiWf6AimbWy+X7PF1ivLBXVN5xiwcB0YyGiI3jbkQw==
+  dependencies:
+    "@babel/core" "^7.12.10"
+    "@xstate/machine-extractor" "0.7.0"
+    "@xstate/tools-shared" "1.2.2"
+    chokidar "^3.5.3"
+    commander "^8.0.0"
+    xstate "^4.29.0"
+
 "@xstate/graph@^1.4.1":
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@xstate/graph/-/graph-1.4.2.tgz#14987fc1f6d4cf11dca31fe5e6cb14e802f7b299"
@@ -9304,10 +9316,15 @@
   dependencies:
     fast-safe-stringify "^2.1.1"
 
-"@xstate/react@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@xstate/react/-/react-3.0.0.tgz#888d9a6f128c70b632c18ad55f1f851f6ab092ba"
-  integrity sha512-KHSCfwtb8gZ7QH2luihvmKYI+0lcdHQOmGNRUxUEs4zVgaJCyd8csCEmwPsudpliLdUmyxX2pzUBojFkINpotw==
+"@xstate/machine-extractor@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@xstate/machine-extractor/-/machine-extractor-0.7.0.tgz#3f46a3686462f309ee208a97f6285e7d6a55cdb8"
+  integrity sha512-dXHI/sWWWouN/yG687ZuRCP7Cm6XggFWSK1qWj3NohBTyhaYWSR7ojwP6OUK6e1cbiJqxmM9EDnE2Auf+Xlp+A==
+
+"@xstate/react@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@xstate/react/-/react-3.0.1.tgz#937eeb5d5d61734ab756ca40146f84a6fe977095"
+  integrity sha512-/tq/gg92P9ke8J+yDNDBv5/PAxBvXJf2cYyGDByzgtl5wKaxKxzDT82Gj3eWlCJXkrBg4J5/V47//gRJuVH2fA==
   dependencies:
     use-isomorphic-layout-effect "^1.0.0"
     use-sync-external-store "^1.0.0"
@@ -9319,6 +9336,13 @@
   dependencies:
     "@xstate/graph" "^1.4.1"
     chalk "^2.4.2"
+
+"@xstate/tools-shared@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@xstate/tools-shared/-/tools-shared-1.2.2.tgz#1a72306e9642d53a5a133751e9fe1971b3ecfd8c"
+  integrity sha512-L99yPl8C0UcU/3VggLjPUExlLRkF4KmEh+mjFNF8m73IPUtEOxOp6tTAPl18k2Xu5F2EA3GzLKJpTlBOGQyOug==
+  dependencies:
+    "@xstate/machine-extractor" "0.7.0"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -11972,7 +11996,7 @@ chokidar@3.5.2, chokidar@^3.4.0, chokidar@^3.4.2:
   optionalDependencies:
     fsevents "~2.3.2"
 
-"chokidar@>=3.0.0 <4.0.0", chokidar@^3.4.3:
+"chokidar@>=3.0.0 <4.0.0", chokidar@^3.4.3, chokidar@^3.5.3:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.3.tgz#1cf37c8707b932bd1af1ae22c0432e2acd1903bd"
   integrity sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==
@@ -12370,7 +12394,7 @@ commander@^6.2.0, commander@^6.2.1:
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
 
-commander@^8.3.0:
+commander@^8.0.0, commander@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
   integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
@@ -28926,10 +28950,15 @@ xmlhttprequest@1.8.0:
   resolved "https://registry.yarnpkg.com/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz#67fe075c5c24fef39f9d65f5f7b7fe75171968fc"
   integrity sha1-Z/4HXFwk/vOfnWX197f+dRcZaPw=
 
-xstate@^4.32.1:
-  version "4.32.1"
-  resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.32.1.tgz#1a09c808a66072938861a3b4acc5b38460244b70"
-  integrity sha512-QYUd+3GkXZ8i6qdixnOn28bL3EvA++LONYL/EMWwKlFSh/hiLndJ8YTnz77FDs+JUXcwU7NZJg7qoezoRHc4GQ==
+xstate@^4.29.0:
+  version "4.33.3"
+  resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.33.3.tgz#a1c0a60626f79e8563f5ec6c55da058bab0ed563"
+  integrity sha512-NXFGDFXlDg04dYaKwAlHGeCT6K4bcYiXndaG1p9g++1z2FnEUji6chfZ2lxYc28pcV6tz1vAsfaSJdgZUS4J/w==
+
+xstate@^4.33.4:
+  version "4.33.4"
+  resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.33.4.tgz#ff6831b95947c5185a455f8bc4570b21f547278a"
+  integrity sha512-3giWybQ8XvAr+3tDENlGduR4XREmiUOVxKRjdqFEe6g8eD8UrYhTth3OyLHX/sR9r/9GY2t/LbjfkCC8XFfv4Q==
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@^4.0.2, xtend@~4.0.0:
   version "4.0.2"

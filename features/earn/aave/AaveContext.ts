@@ -1,24 +1,26 @@
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
+import { GraphQLClient } from 'graphql-request'
+import moment from 'moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
-import { distinctUntilKeyChanged, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilKeyChanged, shareReplay, switchMap, map } from 'rxjs/operators'
 
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
-import { getManageAaveStateMachine$ } from './manage/state/getManageAaveStateMachine'
-import { getManageAavePositionStateMachineServices } from './manage/state/services'
 import {
-  getManageAaveParametersStateMachine$,
-  getManageAaveParametersStateMachineServices$,
-} from './manage/transaction'
-import { getManageAaveTransactionMachine } from './manage/transaction/getTransactionMachine'
-import { getOpenAaveStateMachine$ } from './open/state/getOpenAaveStateMachine'
-import { getOpenAavePositionStateMachineServices } from './open/state/services'
+  getManageAavePositionStateMachineServices,
+  getManageAaveStateMachine$,
+  getManageAaveTransactionMachine,
+} from './manage/services'
 import {
-  getOpenAaveParametersStateMachine$,
+  getAaveStEthYield,
   getOpenAaveParametersStateMachineServices$,
-} from './open/transaction'
-import { getOpenAaveTransactionMachine } from './open/transaction/getTransactionMachine'
+  getOpenAavePositionStateMachineServices,
+  getOpenAaveStateMachine$,
+  getOpenAaveTransactionMachine,
+  getParametersStateMachine$,
+  getSthEthSimulationMachine,
+} from './open/services'
 import { observe } from '../../../blockchain/calls/observe'
 import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
 
@@ -33,6 +35,12 @@ export function setupAaveContext({
 }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
+
+  const graphQLClient$ = contextForAddress$.pipe(
+    distinctUntilKeyChanged('cacheApi'),
+    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  )
+
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
     switchMap(({ account }) => proxyAddress$(account)),
@@ -48,27 +56,14 @@ export function setupAaveContext({
     getAaveReserveConfigurationData,
   )({ token: 'STETH' }).pipe(shareReplay(1))
 
-  const openAaveParametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
+  const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
     txHelpers$,
     gasEstimation$,
     userSettings$,
   )
 
-  const manageAaveParametersStateMachineServices$ = getManageAaveParametersStateMachineServices$(
-    contextForAddress$,
-    txHelpers$,
-    gasEstimation$,
-    userSettings$,
-  )
-
-  const openAaveParametersStateMachine$ = getOpenAaveParametersStateMachine$(
-    openAaveParametersStateMachineServices$,
-  )
-
-  const manageAaveParametersStateMachine$ = getManageAaveParametersStateMachine$(
-    manageAaveParametersStateMachineServices$,
-  )
+  const parametersStateMachine$ = getParametersStateMachine$(parametersStateMachineServices$)
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
     contextForAddress$,
@@ -95,17 +90,21 @@ export function setupAaveContext({
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
   const manageTransactionMachine = getManageAaveTransactionMachine(txHelpers$, contextForAddress$)
 
+  const aaveSthEthYields = curry(getAaveStEthYield)(graphQLClient$, moment())
+
+  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYields)
+
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
-    openAaveParametersStateMachine$,
+    parametersStateMachine$,
     proxyStateMachine$,
     transactionMachine,
+    simulationMachine,
   )
 
   const aaveManageStateMachine$ = getManageAaveStateMachine$(
     manageAaveStateMachineServices,
-    manageAaveParametersStateMachine$,
-    proxyStateMachine$,
+    parametersStateMachine$,
     manageTransactionMachine,
   )
 

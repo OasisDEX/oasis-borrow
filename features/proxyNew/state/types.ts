@@ -1,4 +1,3 @@
-import { useMachine } from '@xstate/react'
 import { Observable } from 'rxjs'
 
 import { TxHelpers } from '../../../components/AppContext'
@@ -56,10 +55,9 @@ export type ProxyObservableService = (
   event: ProxyEvent,
 ) => Observable<ProxyEvent>
 
-function useProxyMachine(machine: ProxyStateMachine) {
-  return useMachine(machine)
-}
-
 export type ProxyStateMachine = ReturnType<typeof createProxyStateMachine>
 export type ProxyStateMachineState = ProxyStateMachine['initialState']
-export type ProxyStateMachineInstance = ReturnType<typeof useProxyMachine>
+
+export interface ProxyCreatingResult {
+  proxyAddress: string
+}

@@ -7,12 +7,11 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OpenPositionResult } from '../../../../aave'
+import { OperationParameters } from '../../../../aave'
 import {
-  machineConfig,
-  openAaveParametersStateMachine,
-  OpenAaveParametersStateMachineEvents,
-} from './openAaveParametersStateMachine'
+  createParametersStateMachine,
+  ParametersStateMachineEvents,
+} from './parametersStateMachine'
 
 const stories = storiesOf('Xstate Machines/Sequence Machine for Opening AAVE Position', module)
 
@@ -20,17 +19,25 @@ function delay() {
   return interval(2000).pipe(first()).toPromise()
 }
 
-const machine = openAaveParametersStateMachine.withConfig({
+const machine = createParametersStateMachine.withConfig({
+  actions: {
+    assignEstimatedGas: () => {},
+    assignReceivedParameters: () => {},
+    logError: () => {},
+    assignEstimatedGasPrice: () => {},
+    notifyParent: () => {},
+    assignTransactionParameters: () => {},
+  },
   services: {
-    [machineConfig.services.getParameters]: async () => {
-      await delay()
-      return {} as OpenPositionResult
-    },
-    [machineConfig.services.estimateGas]: async () => {
+    estimateGas: async () => {
       await delay()
       return 10
     },
-    [machineConfig.services.estimateGasPrice]: async () => {
+    getParameters: async () => {
+      await delay()
+      return {} as OperationParameters
+    },
+    estimateGasPrice: async () => {
       await delay()
       return {} as HasGasEstimation
     },
@@ -39,7 +46,7 @@ const machine = openAaveParametersStateMachine.withConfig({
 
 const View = () => {
   const [state, send] = useMachine(machine, { devTools: true })
-  const SendButton = (event: OpenAaveParametersStateMachineEvents) => (
+  const SendButton = (event: ParametersStateMachineEvents) => (
     <Box
       sx={{
         width: '150px',
@@ -59,7 +66,7 @@ const View = () => {
           <SendButton
             type={'VARIABLES_RECEIVED'}
             amount={new BigNumber(100)}
-            multiple={new BigNumber(2)}
+            multiply={new BigNumber(2)}
             token={'ETH'}
           />{' '}
         </Box>

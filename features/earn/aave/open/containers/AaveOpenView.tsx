@@ -9,49 +9,65 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
+import { SimulateSectionComponent } from '../components'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
+import { OpenAaveStateMachine } from '../state'
+import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
 
-interface Props {
+interface OpenAaveViewProps {
   strategyName: string
 }
 
-export function AaveOpenView({ strategyName }: Props) {
+function AaveOpenContainer({
+  aaveStateMachine,
+  strategyName,
+}: {
+  strategyName: string
+  aaveStateMachine: OpenAaveStateMachine
+}) {
+  const { t } = useTranslation()
+  return (
+    <OpenAaveStateMachineContextProvider machine={aaveStateMachine}>
+      <Container variant="vaultPageContainer">
+        {strategyName} [HEADER]
+        <TabBar
+          variant="underline"
+          sections={[
+            {
+              value: 'simulate',
+              label: t('open-vault.simulate'),
+              content: (
+                <Grid variant="vaultContainer">
+                  <Box>
+                    <SimulateSectionComponent />
+                  </Box>
+                  <Box>{<SidebarOpenAaveVault />}</Box>
+                </Grid>
+              ),
+            },
+            {
+              value: 'faq',
+              label: t('system.faq'),
+              content: <Card variant="faq">{aaveFaq}</Card>,
+            },
+          ]}
+        />
+        <Survey for="earn" />
+      </Container>
+    </OpenAaveStateMachineContextProvider>
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function AaveOpenView({ strategyName }: OpenAaveViewProps) {
   const { aaveStateMachine$ } = useAaveContext()
   const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
-
-  const { t } = useTranslation()
 
   return (
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
         {([_stateMachine]) => {
-          _stateMachine.context.strategyName = strategyName
-          return (
-            <Container variant="vaultPageContainer">
-              [HEADER]
-              <TabBar
-                variant="underline"
-                sections={[
-                  {
-                    value: 'simulate',
-                    label: t('open-vault.simulate'),
-                    content: (
-                      <Grid variant="vaultContainer">
-                        <Box>[OPEN AAVE DETAILS]</Box>
-                        <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
-                      </Grid>
-                    ),
-                  },
-                  {
-                    value: 'faq',
-                    label: t('system.faq'),
-                    content: <Card variant="faq">{aaveFaq}</Card>,
-                  },
-                ]}
-              />
-              <Survey for="earn" />
-            </Container>
-          )
+          return <AaveOpenContainer aaveStateMachine={_stateMachine} strategyName={strategyName} />
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>
