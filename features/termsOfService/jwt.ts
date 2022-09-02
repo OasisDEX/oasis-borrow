@@ -79,7 +79,6 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
     const token = await new Promise<string | null>((resolve) => {
       // eslint-disable-next-line func-style
       let returnValue = (val: string | null) => resolve(val) // CAUTION: this function is reassigned later
-      const timeout = setTimeout(() => returnValue(null), 5 * 60 * 1000)
       const interval = setInterval(async () => {
         try {
           const { detailedExecutionInfo } = await sdk.txs.getBySafeTxHash(tx.safeTxHash)
@@ -112,7 +111,6 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
 
       // clear all scheduled callbacks
       returnValue = (val: string | null) => {
-        clearTimeout(timeout)
         clearInterval(interval)
         resolve(val)
       }
