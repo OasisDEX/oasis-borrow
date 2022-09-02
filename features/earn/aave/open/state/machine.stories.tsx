@@ -81,6 +81,7 @@ const transactionMachine = createTransactionStateMachine(openAavePosition, true)
 const openAaveServices: OpenAaveStateMachineServices = {
   [services.getProxyAddress]: (() => {}) as any,
   [services.getBalance]: (() => {}) as any,
+  [services.maxMultiple]: (() => {}) as any,
 }
 
 const openAaveStateMachine = createOpenAaveStateMachine
@@ -94,7 +95,8 @@ const openAaveStateMachine = createOpenAaveStateMachine
       transactionStateMachine: transactionMachine,
     },
     token: 'ETH',
-    multiply: 2,
+    multiple: new BigNumber(2),
+    maxMultiple: new BigNumber(2),
   })
 
 const ParametersView = ({

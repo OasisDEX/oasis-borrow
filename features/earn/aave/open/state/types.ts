@@ -22,7 +22,6 @@ export interface OpenAaveContext {
     readonly parametersStateMachine: OpenAaveParametersStateMachineType
     readonly transactionStateMachine: TransactionStateMachine<OpenAavePositionData>
   }
-  multiply: number
   token: string
 
   refProxyStateMachine?: ActorRefFrom<ProxyStateMachine>
@@ -38,6 +37,10 @@ export interface OpenAaveContext {
   proxyAddress?: string
   vaultNumber?: BigNumber
   strategyName?: string
+
+  multiple?: BigNumber
+  maxMultiple?: BigNumber
+  liquidationThreshold?: BigNumber
 
   transactionParameters?: OpenPositionResult
   estimatedGasPrice?: HasGasEstimation
@@ -59,6 +62,13 @@ export type OpenAaveMachineEvents =
   | {
       readonly type: 'START_CREATING_POSITION'
     }
+  | {
+      readonly type: 'SET_MULTIPLE'
+      readonly multiple: BigNumber
+    }
+  | {
+      readonly type: 'CONFIRM_MULTIPLE'
+    }
 
 export type OpenAaveTransactionEvents =
   | {
@@ -72,12 +82,19 @@ export type OpenAaveTransactionEvents =
       readonly token: string
     }
 
+type ExternalDataEvents = {
+  readonly type: 'SET_MAX_MULTIPLE'
+  readonly maxMultiple: BigNumber
+  readonly liquidationThreshold: BigNumber
+}
+
 export type OpenAaveEvent =
   | ProxyMachineEvents
   | TransactionMachineEvents
   | CommonMachineEvents
   | OpenAaveMachineEvents
   | OpenAaveTransactionEvents
+  | ExternalDataEvents
 
 export type OpenAaveObservableService = (
   context: OpenAaveContext,

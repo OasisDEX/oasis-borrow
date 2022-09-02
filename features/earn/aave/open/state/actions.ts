@@ -11,7 +11,7 @@ import { OpenAaveContext, OpenAaveEvent } from './types'
 
 const initContextValues = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
   currentStep: 1,
-  totalSteps: context.proxyAddress ? 2 : 3,
+  totalSteps: context.proxyAddress ? 3 : 4,
 }))
 
 const setTokenBalanceFromEvent = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
@@ -20,6 +20,23 @@ const setTokenBalanceFromEvent = assign<OpenAaveContext, OpenAaveEvent>((_, even
   return {
     tokenBalance: event.balance,
     tokenPrice: event.tokenPrice,
+  }
+})
+
+const setMultiple = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
+  if (event.type !== 'SET_MULTIPLE') return {}
+
+  return {
+    multiple: event.multiple,
+  }
+})
+
+const setMaxMultiple = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
+  if (event.type !== 'SET_MAX_MULTIPLE') return {}
+
+  return {
+    maxMultiple: event.maxMultiple,
+    liquidationThreshold: event.liquidationThreshold,
   }
 })
 
@@ -39,7 +56,7 @@ const sendUpdateToParametersMachine = choose<OpenAaveContext, OpenAaveEvent>([
           return {
             type: 'VARIABLES_RECEIVED',
             amount: context.amount!,
-            multiply: context.multiply,
+            multiple: context.multiple,
             token: context.token,
             proxyAddress: context.proxyAddress,
           }
@@ -51,7 +68,7 @@ const sendUpdateToParametersMachine = choose<OpenAaveContext, OpenAaveEvent>([
 ])
 
 const updateTotalSteps = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
-  totalSteps: context.proxyAddress ? 2 : 3,
+  totalSteps: context.proxyAddress ? 3 : 4,
 }))
 
 const setAmount = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
@@ -164,6 +181,8 @@ export enum actions {
   setReceivedProxyAddress = 'setReceivedProxyAddress',
   updateTotalSteps = 'updateTotalSteps',
   setAmount = 'setAmount',
+  setMultiple = 'setMultiple',
+  setMaxMultiple = 'setMaxMultiple',
   setVaultNumber = 'setVaultNumber',
   setCurrentStepToTwo = 'setCurrentStepToTwo',
   calculateAuxiliaryAmount = 'calculateAuxiliaryAmount',
@@ -186,6 +205,8 @@ export const openAaveMachineActions: {
   setReceivedProxyAddress,
   updateTotalSteps,
   setAmount,
+  setMultiple,
+  setMaxMultiple,
   setVaultNumber,
   setCurrentStepToTwo,
   calculateAuxiliaryAmount,

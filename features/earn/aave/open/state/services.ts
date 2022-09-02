@@ -14,10 +14,13 @@ import {
   OpenAaveInvokeMachineService,
   OpenAaveObservableService,
 } from './types'
+import { AaveReserveConfigurationData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
+import { BigNumber } from 'bignumber.js'
 
 export enum services {
   getProxyAddress = 'getProxyAddress',
   getBalance = 'getBalance',
+  maxMultiple = 'maxMultiple',
   // createPosition = 'createPosition',
 }
 
@@ -30,6 +33,7 @@ export function getOpenAavePositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
+  aaveReserveConfigurationData$: Observable<AaveReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   return {
     [services.getBalance]: (context, _): Observable<OpenAaveEvent> => {
@@ -48,6 +52,20 @@ export function getOpenAavePositionStateMachineServices(
           type: 'PROXY_ADDRESS_RECEIVED',
           proxyAddress: address,
         })),
+      )
+    },
+    [services.maxMultiple]: (): Observable<OpenAaveEvent> => {
+      return aaveReserveConfigurationData$.pipe(
+        map(({ ltv, liquidationThreshold }) => {
+          // ltv = 6900
+          const minColRatio = new BigNumber(1).div(ltv.div(100)).times(100)
+          const maxMultiple = new BigNumber(1).div(minColRatio.minus(1)).plus(1)
+          return {
+            type: 'SET_MAX_MULTIPLE',
+            maxMultiple,
+            liquidationThreshold: liquidationThreshold,
+          }
+        }),
       )
     },
   }

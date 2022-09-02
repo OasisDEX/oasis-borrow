@@ -1,7 +1,7 @@
 import { useMachine } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
 
@@ -15,6 +15,8 @@ import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/types'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
+import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
+import { BigNumber } from 'bignumber.js'
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
@@ -50,7 +52,7 @@ function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStatePr
       </Grid>
     ),
     primaryButton: {
-      steps: [1, state.context.totalSteps!],
+      steps: [3, state.context.totalSteps!],
       isLoading: true,
       disabled: true,
       label: t('open-earn.aave.vault-form.confirm-btn'),
@@ -71,7 +73,7 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: [1, state.context.totalSteps!],
+      steps: [3, state.context.totalSteps!],
       isLoading: false,
       disabled: !state.can('START_CREATING_POSITION'),
       label: t('open-earn.aave.vault-form.confirm-btn'),
@@ -159,6 +161,47 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
+function SettingMultipleView({ state, send }: OpenAaveStateProps) {
+  const hf = state.context.amount?.times(state.context.liquidationThreshold!).div(100)
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: 'setting multiple',
+    content: (
+      <Grid gap={3}>
+        <SliderValuePicker
+          sliderKey="slider-key"
+          sliderPercentageFill={new BigNumber(0)}
+          leftBoundry={new BigNumber(1)}
+          leftBoundryFormatter={(value) => value.toString()}
+          rightBoundry={state.context.multiple!}
+          rightBoundryFormatter={(value) => value.toFixed(2)}
+          onChange={(value) => {
+            send({ type: 'SET_MULTIPLE', multiple: value })
+          }}
+          minBoundry={new BigNumber(1)}
+          maxBoundry={state.context.maxMultiple!}
+          lastValue={state.context.multiple!}
+          disabled={false}
+          leftBoundryStyling={{}}
+          rightBoundryStyling={{}}
+          step={0.01}
+        />
+        <p>{state.context.multiple?.toFixed(2)}</p>
+        <OpenAaveInformationContainer state={state} send={send} />
+      </Grid>
+    ),
+    primaryButton: {
+      steps: [2, state.context.totalSteps!],
+      isLoading: false,
+      disabled: false,
+      label: 'setting multiple',
+      action: () => send('CONFIRM_MULTIPLE'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
 export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
   const [state, send] = useMachine(aaveStateMachine)
 
@@ -167,6 +210,8 @@ export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
       return <OpenAaveEditingStateView state={state} send={send} />
     case state.matches('proxyCreating'):
       return <ProxyView proxyMachine={state.context.refProxyStateMachine!} />
+    case state.matches('settingMultiple'):
+      return <SettingMultipleView state={state} send={send} />
     case state.matches('reviewing'):
       return <OpenAaveReviewingStateView state={state} send={send} />
     case state.matches('txInProgress'):

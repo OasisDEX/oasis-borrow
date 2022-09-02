@@ -1,7 +1,7 @@
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { distinctUntilKeyChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
@@ -19,6 +19,8 @@ import {
   getOpenAaveParametersStateMachineServices$,
 } from './open/transaction'
 import { getOpenAaveTransactionMachine } from './open/transaction/getTransactionMachine'
+import { observe } from '../../../blockchain/calls/observe'
+import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
 
 export function setupAaveContext({
   userSettings$,
@@ -29,6 +31,7 @@ export function setupAaveContext({
   daiEthTokenPrice$,
   accountBalances$,
 }: AppContext) {
+  const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
@@ -38,6 +41,12 @@ export function setupAaveContext({
   const tokenBalances$: Observable<TokenBalances> = contextForAddress$.pipe(
     switchMap(({ account }) => accountBalances$(account)),
   )
+
+  const aaveReserveConfigurationData$ = observe(
+    once$,
+    connectedContext$,
+    getAaveReserveConfigurationData,
+  )({ token: 'STETH' }).pipe(shareReplay(1))
 
   const openAaveParametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
@@ -73,6 +82,7 @@ export function setupAaveContext({
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
+    aaveReserveConfigurationData$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

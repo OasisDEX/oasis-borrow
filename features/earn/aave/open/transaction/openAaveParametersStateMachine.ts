@@ -28,7 +28,7 @@ export type OpenAaveParametersStateMachineEvents =
       type: 'VARIABLES_RECEIVED'
       readonly token: string
       readonly amount: BigNumber
-      readonly multiply: number
+      readonly multiple: BigNumber
       readonly proxyAddress?: string
     }
   | {
@@ -183,7 +183,7 @@ export const openAaveParametersStateMachine = Machine<
           return {
             token: event.token,
             amount: event.amount,
-            multiply: event.multiply,
+            multiple: event.multiple,
             proxyAddress: event.proxyAddress,
           }
         },

@@ -8,6 +8,7 @@ import { OpenAaveParametersStateMachineType } from '../transaction'
 import { createOpenAaveStateMachine } from './machine'
 import { OpenAaveStateMachineServices } from './services'
 import { OpenAaveStateMachine } from './types'
+import { BigNumber } from 'bignumber.js'
 
 export function getOpenAaveStateMachine$(
   services: OpenAaveStateMachineServices,
@@ -37,7 +38,8 @@ export function getOpenAaveStateMachine$(
             }),
           },
           token: 'ETH',
-          multiply: 2,
+          multiple: new BigNumber(2),
+          maxMultiple: new BigNumber(2),
         })
     }),
   )

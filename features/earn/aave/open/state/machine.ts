@@ -10,6 +10,7 @@ export interface OpenAaveStateMachineSchema {
   states: {
     editing: {}
     proxyCreating: {}
+    settingMultiple: {}
     reviewing: {}
     txInProgress: {}
     txFailure: {}
@@ -62,7 +63,7 @@ export const createOpenAaveStateMachine = Machine<
             cond: emptyProxyAddress,
           },
           CONFIRM_DEPOSIT: {
-            target: 'reviewing',
+            target: 'settingMultiple',
             cond: enoughBalance,
           },
           'xstate.update': {
@@ -81,6 +82,25 @@ export const createOpenAaveStateMachine = Machine<
           },
           'error.platform.proxy': {
             target: 'editing',
+          },
+        },
+      },
+      settingMultiple: {
+        invoke: [
+          {
+            src: services.maxMultiple,
+            id: services.maxMultiple,
+          },
+        ],
+        on: {
+          SET_MAX_MULTIPLE: {
+            actions: [actions.setMaxMultiple],
+          },
+          SET_MULTIPLE: {
+            actions: [actions.setMultiple],
+          },
+          CONFIRM_MULTIPLE: {
+            target: 'reviewing',
           },
         },
       },
@@ -141,6 +161,9 @@ export const createOpenAaveStateMachine = Machine<
         throw new Error('getProxyAddress not implemented. Pass it via config')
       },
       [services.getBalance]: () => {
+        throw new Error('getBalance not implemented. Pass it via config')
+      },
+      [services.maxMultiple]: () => {
         throw new Error('getBalance not implemented. Pass it via config')
       },
     },
