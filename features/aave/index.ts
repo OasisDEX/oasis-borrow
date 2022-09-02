@@ -19,7 +19,7 @@ export interface PositionInfo {
   depositedAmount: BigNumber
 }
 
-export interface OpenPositionResult {
+export interface OperationParameters {
   calls: ActionCall[]
   operationName: string
   positionInfo: PositionInfo
@@ -29,10 +29,10 @@ export interface OpenPositionResult {
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
-  multiply: number,
+  multiply: BigNumber,
   slippage: BigNumber,
   proxyAddress: string,
-): Promise<OpenPositionResult> {
+): Promise<OperationParameters> {
   const mainnetAddresses = {
     DAI: ADDRESSES.main.DAI,
     ETH: ADDRESSES.main.ETH,

@@ -28,6 +28,7 @@ export function createProxyStateMachine(
 ) {
   return Machine<ProxyContext, ProxyMachineSchema, ProxyEvent>(
     {
+      predictableActionArguments: true,
       id: 'proxy',
       context: {
         dependencies: {
@@ -79,7 +80,11 @@ export function createProxyStateMachine(
           },
         },
         proxySuccess: {
+          entry: ['raiseSuccess'],
           type: 'final',
+          data: {
+            proxyAddress: (context: ProxyContext) => context.proxyAddress!,
+          },
         },
         proxyFailure: {
           on: {
@@ -93,6 +98,8 @@ export function createProxyStateMachine(
     {
       actions: {
         ...actions,
+        // to override in parent machine
+        raiseSuccess: (_) => {},
       },
       services: {
         ...services,

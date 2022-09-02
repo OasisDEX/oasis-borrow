@@ -7,25 +7,37 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { OperationParameters } from '../../../../aave'
 import {
-  machineConfig,
-  manageAaveParametersStateMachine,
-  ManageAaveParametersStateMachineEvents,
-} from './manageAaveParametersStateMachine'
+  createParametersStateMachine,
+  ParametersStateMachineEvents,
+} from './parametersStateMachine'
 
-const stories = storiesOf('Xstate Machines/Sequence Machine for Manageing AAVE Position', module)
+const stories = storiesOf('Xstate Machines/Sequence Machine for Opening AAVE Position', module)
 
 function delay() {
   return interval(2000).pipe(first()).toPromise()
 }
 
-const machine = manageAaveParametersStateMachine.withConfig({
+const machine = createParametersStateMachine.withConfig({
+  actions: {
+    assignEstimatedGas: () => {},
+    assignReceivedParameters: () => {},
+    logError: () => {},
+    assignEstimatedGasPrice: () => {},
+    notifyParent: () => {},
+    assignTransactionParameters: () => {},
+  },
   services: {
-    [machineConfig.services.estimateGas]: async () => {
+    estimateGas: async () => {
       await delay()
       return 10
     },
-    [machineConfig.services.estimateGasPrice]: async () => {
+    getParameters: async () => {
+      await delay()
+      return {} as OperationParameters
+    },
+    estimateGasPrice: async () => {
       await delay()
       return {} as HasGasEstimation
     },
@@ -34,7 +46,7 @@ const machine = manageAaveParametersStateMachine.withConfig({
 
 const View = () => {
   const [state, send] = useMachine(machine, { devTools: true })
-  const SendButton = (event: ManageAaveParametersStateMachineEvents) => (
+  const SendButton = (event: ParametersStateMachineEvents) => (
     <Box
       sx={{
         width: '150px',
@@ -54,7 +66,7 @@ const View = () => {
           <SendButton
             type={'VARIABLES_RECEIVED'}
             amount={new BigNumber(100)}
-            multiply={2}
+            multiply={new BigNumber(2)}
             token={'ETH'}
           />{' '}
         </Box>
