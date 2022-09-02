@@ -1,4 +1,5 @@
 import { recoverPersonalSignature } from 'eth-sig-util'
+import { utils } from 'ethers'
 import jwt from 'jsonwebtoken'
 import { NextApiHandler } from 'next'
 import Web3 from 'web3'
@@ -28,6 +29,7 @@ const inputSchema = z.object({
   challenge: z.string(),
   signature: z.string(),
   chainId: z.number(),
+  isGnosisSafe: z.boolean(),
 })
 
 const networkMap: Record<number, string> = {
@@ -54,15 +56,34 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     }`
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
-    let isArgentWallet = false
 
+    let isArgentWallet = false
     try {
       isArgentWallet = await checkIfArgentWallet(web3, challenge.address)
     } catch {
       console.error('Check if argent wallet failed')
     }
 
-    if (isArgentWallet) {
+    if (body.isGnosisSafe) {
+      try {
+        const toHash = utils.defaultAbiCoder.encode(
+          ['bytes32', 'uint256'],
+          [
+            getMessageHash(utils.hashMessage(message), body.chainId, challenge.address),
+            7 /* signedMessages slot */,
+          ],
+        )
+        const valueSlot = utils.keccak256(toHash).replace(/0x0/g, '0x')
+        const slot = await web3.eth.getStorageAt(challenge.address, valueSlot as any)
+        const [signed] = utils.defaultAbiCoder.decode(['uint256'], slot)
+
+        if (!signed.eq(1)) {
+          throw new SignatureAuthError('Signature not correct')
+        }
+      } catch (e) {
+        return res.status(400).json({ error: (e as Error).message })
+      }
+    } else if (isArgentWallet) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
         throw new SignatureAuthError('Signature not correct')
       }
@@ -87,6 +108,33 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
 
     res.status(200).json({ jwt: token })
   }
+}
+
+function getMessageHash(message: string, chainId: number, safe: string) {
+  const DOMAIN_SEPARATOR_TYPEHASH =
+    '0x47e79534a245952e8b16893a336b85a3d9ea9fa8c573f3d803afb92a79469218'
+  const SAFE_MSG_TYPESHASH = '0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca'
+  const safeMessageHash = utils.keccak256(
+    utils.defaultAbiCoder.encode(
+      ['bytes32', 'bytes32'],
+      [SAFE_MSG_TYPESHASH, utils.keccak256(message)],
+    ),
+  )
+
+  return utils.solidityKeccak256(
+    ['bytes1', 'bytes1', 'bytes32', 'bytes32'],
+    [
+      0x19,
+      0x01,
+      utils.keccak256(
+        utils.defaultAbiCoder.encode(
+          ['bytes32', 'uint256', 'address'],
+          [DOMAIN_SEPARATOR_TYPEHASH, chainId, safe],
+        ),
+      ),
+      safeMessageHash,
+    ],
+  )
 }
 
 export function recreateSignedMessage(challenge: ChallengeJWT): string {
