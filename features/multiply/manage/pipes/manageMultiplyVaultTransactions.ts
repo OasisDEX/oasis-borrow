@@ -649,17 +649,25 @@ export function applyEstimateGas(
 
     if (proxyAddress) {
       if (requiredCollRatio) {
-        const daiAmount =
+        const requiredDebt =
           swap?.status === 'SUCCESS'
             ? exchangeAction === 'BUY_COLLATERAL'
-              ? swap.daiAmount.div(one.minus(OAZO_FEE))
-              : swap.daiAmount
+              ? // add oazo fee because Oazo takes the fee from the pre swap amount,
+                // so that means that required debt on the vault must be increased
+                // to incorporate this fee.
+                swap.daiAmount.div(one.minus(OAZO_FEE))
+              : // remove slippage because we are selling collateral and buying DAI,
+                // and so we will only end up with the amount of DAI that is
+                // returned from the exchange minus the slippage.
+                swap.daiAmount.div(one.plus(SLIPPAGE))
             : zero
 
-        const collateralAmount =
+        const borrowedCollateral =
           swap?.status === 'SUCCESS'
             ? exchangeAction === 'BUY_COLLATERAL'
-              ? swap.collateralAmount.times(one.minus(SLIPPAGE))
+              ? // TODO: why are we removing slippage twice?
+                // see proxyActions.getMultiplyAdjustCallData - slippage is also removed there.
+                swap.collateralAmount.times(one.minus(SLIPPAGE))
               : swap.collateralAmount
             : zero
 
@@ -669,8 +677,8 @@ export function applyEstimateGas(
           depositDai: depositDaiAmount || zero,
           withdrawCollateral: withdrawAmount || zero,
           withdrawDai: generateAmount || zero,
-          requiredDebt: daiAmount,
-          borrowedCollateral: collateralAmount,
+          requiredDebt: requiredDebt,
+          borrowedCollateral: borrowedCollateral,
           userAddress: account!,
           proxyAddress: proxyAddress!,
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',

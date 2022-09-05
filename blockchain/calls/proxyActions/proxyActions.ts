@@ -255,7 +255,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       fromTokenAmount: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
       toTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       minToTokenAmount: amountToWei(data.borrowedCollateral, data.token)
-        .times(one.minus(data.slippage))
+        .times(one.minus(data.slippage)) // remove slippage
         .toFixed(0),
       exchangeAddress: data.exchangeAddress,
       _exchangeCalldata: data.exchangeData,
@@ -305,9 +305,9 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       toTokenAddress: tokens['DAI'].address,
       toTokenAmount: amountToWei(
         data.requiredDebt
-          .div(one.minus(OAZO_FEE))
-          .div(one.minus(LOAN_FEE))
-          .times(one.plus(data.slippage)),
+          .div(one.minus(OAZO_FEE)) // add oazo fee
+          .div(one.minus(LOAN_FEE)) // add loan fee
+          .times(one.plus(data.slippage)), // add slippage
         'DAI',
       ).toFixed(0),
       fromTokenAmount: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
