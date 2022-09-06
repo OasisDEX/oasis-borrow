@@ -44,7 +44,6 @@ export function jwtAuthSetupToken$(
 }
 
 interface GnosisSafeSignInDetails {
-  dataToSign: string
   safeTxHash: string
   challenge: string
 }
@@ -70,12 +69,11 @@ async function getGnosisSafeDetails(
   localStorage.setItem(
     key,
     JSON.stringify({
-      dataToSign,
       safeTxHash,
       challenge,
     } as GnosisSafeSignInDetails),
   )
-  return { challenge, safeTxHash, dataToSign }
+  return { challenge, safeTxHash }
 }
 
 async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
@@ -88,13 +86,14 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
   if (isGnosisSafe) {
     const sdk = new SafeAppsSDK()
 
-    const { challenge: gnosisSafeChallenge, safeTxHash, dataToSign } = await getGnosisSafeDetails(
+    const { challenge: gnosisSafeChallenge, safeTxHash } = await getGnosisSafeDetails(
       sdk,
       challenge,
       chainId,
       account,
     )
     challenge = gnosisSafeChallenge
+    const dataToSign = getDataToSignFromChallenge(challenge)
 
     // start polling
     const token = await new Promise<string | null>((resolve) => {
