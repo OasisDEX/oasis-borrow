@@ -12,9 +12,6 @@ import { Box, Grid } from 'theme-ui'
 export interface StopLossDetailsLayoutProps {
   slRatio: BigNumber
   vaultDebt: BigNumber
-  currentOraclePrice: BigNumber
-  nextOraclePrice: BigNumber
-  isStaticPrice: boolean
   isStopLossEnabled: boolean
   lockedCollateral: BigNumber
   token: string
@@ -30,7 +27,6 @@ export interface StopLossDetailsLayoutProps {
 export function StopLossDetailsLayout({
   slRatio,
   vaultDebt,
-  currentOraclePrice,
   isStopLossEnabled,
   lockedCollateral,
   token,
@@ -73,6 +69,8 @@ export function StopLossDetailsLayout({
                   liquidationPrice={liquidationPrice}
                   liquidationRatio={liquidationRatio}
                   afterSlRatio={afterSlRatio}
+                  lockedCollateral={lockedCollateral}
+                  debt={vaultDebt}
                 />
                 <ContentCardEstTokenOnTrigger
                   isCollateralActive={isCollateralActive}
@@ -81,10 +79,8 @@ export function StopLossDetailsLayout({
                   token={token}
                   slRatio={slRatio}
                   liquidationPrice={liquidationPrice}
-                  liquidationRatio={liquidationRatio}
                   lockedCollateral={lockedCollateral}
                   debt={vaultDebt}
-                  currentOraclePrice={currentOraclePrice}
                   liquidationPenalty={liquidationPenalty}
                   afterSlRatio={afterSlRatio}
                 />

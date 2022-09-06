@@ -1178,7 +1178,8 @@
     "set-threshold": "Set Threshold",
     "unable-to-access-protection": "Unable to access Protection",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
-    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab"
+    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab",
+    "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

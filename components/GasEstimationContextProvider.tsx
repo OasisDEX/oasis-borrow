@@ -57,7 +57,7 @@ export function GasEstimationContextProvider({ children }: WithChildren) {
     setEstimate({
       gasAmount: estimate ? new BigNumber(estimate.gasEstimation!) : zero,
       isSuccessful: !!estimate && estimate.gasEstimationStatus === GasEstimationStatus.calculated,
-      usdValue: estimate ? estimate.gasEstimationUsd! : zero,
+      usdValue: estimate?.gasEstimationUsd ? estimate.gasEstimationUsd : zero,
       isCompleted:
         !!estimate &&
         (estimate.gasEstimationStatus === GasEstimationStatus.error ||

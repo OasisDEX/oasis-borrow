@@ -40,7 +40,7 @@ export function GeneralManageTabBar({
   protectionEnabled,
   optimizationEnabled,
 }: GeneralManageTabBarProps): JSX.Element {
-  const { ilkData, vault, account, balanceInfo, vaultHistory } = generalManageVault.state
+  const { ilkData, vault, balanceInfo, vaultHistory } = generalManageVault.state
   const [hash] = useHash()
   const initialMode = Object.values<string>(VaultViewMode).includes(hash)
     ? (hash as VaultViewMode)
@@ -80,7 +80,7 @@ export function GeneralManageTabBar({
                   <ProtectionControl
                     vault={vault}
                     ilkData={ilkData}
-                    account={account}
+                    // account={account}
                     balanceInfo={balanceInfo}
                   />
                 ),

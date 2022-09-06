@@ -119,6 +119,10 @@ export function SidebarAutoBuyEditingStage({
             type: 'execution-coll-ratio',
             execCollRatio: new BigNumber(value.value1),
           })
+          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
         }}
         value={{
           value0: basicBuyState.targetCollRatio.toNumber(),
@@ -145,6 +149,10 @@ export function SidebarAutoBuyEditingStage({
             type: 'max-buy-or-sell-price',
             maxBuyOrMinSellPrice,
           })
+          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
         })}
         onToggle={(toggleStatus) => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
@@ -159,6 +167,10 @@ export function SidebarAutoBuyEditingStage({
               ? zero
               : autoBuyTriggerData.maxBuyOrMinSellPrice,
           })
+          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
         }}
         showToggle={true}
         toggleOnLabel={t('protection.set-no-threshold')}
@@ -172,23 +184,15 @@ export function SidebarAutoBuyEditingStage({
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
-      <SidebarResetButton
-        clear={() => {
-          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-            type: 'reset',
-            resetData: prepareBasicBSResetData(
-              autoBuyTriggerData,
-              vault.collateralizationRatio,
-              BASIC_BUY_FORM_CHANGE,
-            ),
-          })
-        }}
-      />
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
             type: 'max-gas-fee-in-gwei',
             maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
+          })
+          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
           })
         }}
         value={basicBuyState.maxBaseFeeInGwei.toNumber()}
