@@ -4,6 +4,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
@@ -15,16 +16,18 @@ import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPrice
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { maxUint256 } from 'features/automation/common/consts'
 import { prepareBasicBSResetData } from 'features/automation/common/helpers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
@@ -40,6 +43,7 @@ interface SidebarAutoBuyEditingStageProps {
   collateralDelta: BigNumber
   sliderMin: BigNumber
   sliderMax: BigNumber
+  stopLossTriggerData: StopLossTriggerData
 }
 
 export function SidebarAutoBuyEditingStage({
@@ -54,6 +58,7 @@ export function SidebarAutoBuyEditingStage({
   collateralDelta,
   sliderMin,
   sliderMax,
+  stopLossTriggerData,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -64,6 +69,39 @@ export function SidebarAutoBuyEditingStage({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
+
+  const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio.times(100).gt(sliderMax)
+  const {isStopLossEnabled} = stopLossTriggerData 
+
+  console.log('vault.collateralizationRatio')
+  console.log(vault.collateralizationRatio.toString())
+  console.log('sliderMax')
+  console.log(sliderMax.toString())
+  console.log('isCurrentCollRatioHigherThanSliderMax')
+  console.log(isCurrentCollRatioHigherThanSliderMax)
+
+  if (isCurrentCollRatioHigherThanSliderMax) {
+    return (
+      <Trans
+      i18nKey="auto-buy.coll-ratio-too-high"
+      components={[
+        <Text
+          as="span"
+          sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+          onClick={() => {
+            uiChanges.publish(TAB_CHANGE_SUBJECT, {
+              type: 'change-tab',
+              currentMode: VaultViewMode.Overview,
+            })
+          }}
+        />,
+      ]}
+      values={{
+        maxAutoBuyCollRatio: sliderMax
+      }}
+    />
+    )
+  }
 
   if (readOnlyBasicBSEnabled && !isVaultEmpty) {
     return (
