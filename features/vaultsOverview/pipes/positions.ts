@@ -1,7 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, first, map, switchMap, tap } from 'rxjs/operators'
 
+import {
+  AaveUserReserveData,
+  AaveUserReserveDataParameters,
+} from '../../../blockchain/calls/aaveProtocolDataProvider'
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
@@ -52,6 +56,9 @@ export function decorateAaveTokensPrice$(
   ) => Observable<Quote>,
 ): Observable<{ token: string; tokenPrice: BigNumber }[]> {
   return collateralTokens$.pipe(
+    distinctUntilChanged((a, b) => a.length === b.length && a.every((v, i) => v === b[i])),
+    tap((t) => console.log('collateralTokens$', t)),
+    first(),
     map((tokens) => {
       return combineLatest(
         tokens.map((token) => {
@@ -80,13 +87,7 @@ export function decorateAaveTokensPrice$(
 }
 
 export function createAavePositions$(
-  userReserveData$: ({
-    token,
-    proxyAddress,
-  }: {
-    token: string
-    proxyAddress: string
-  }) => Observable<{ currentATokenBalance: BigNumber }>,
+  userReserveData$: (parameters: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   tokenWithValue$: Observable<{ token: string; tokenPrice: BigNumber }[]>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
@@ -121,10 +122,10 @@ export function createPositions$(
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
-  // const _aavePositions$ = aavePositions$(address)
-  return combineLatest(_makerPositions$).pipe(
-    map(([makerPositions]) => {
-      return makerPositions // .concat(aavePositions)
+  const _aavePositions$ = aavePositions$(address)
+  return combineLatest(_makerPositions$, _aavePositions$).pipe(
+    map(([makerPositions, aavePositions]) => {
+      return makerPositions.concat(aavePositions)
     }),
   )
 }
