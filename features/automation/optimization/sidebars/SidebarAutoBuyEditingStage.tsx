@@ -14,9 +14,10 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoBuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { maxUint256 } from 'features/automation/common/consts'
+import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import { prepareBasicBSResetData } from 'features/automation/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
@@ -26,6 +27,7 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useHash } from 'helpers/useHash'
 import { one, zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -70,37 +72,58 @@ export function SidebarAutoBuyEditingStage({
     vaultDebt: vault.debt,
   })
 
-  const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio.times(100).gt(sliderMax)
-  const {isStopLossEnabled} = stopLossTriggerData 
+  adjustDefaultValuesIfOutsideSlider()
 
-  console.log('vault.collateralizationRatio')
-  console.log(vault.collateralizationRatio.toString())
-  console.log('sliderMax')
-  console.log(sliderMax.toString())
-  console.log('isCurrentCollRatioHigherThanSliderMax')
-  console.log(isCurrentCollRatioHigherThanSliderMax)
+  const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
+    .times(100)
+    .gt(sliderMax)
 
   if (isCurrentCollRatioHigherThanSliderMax) {
     return (
       <Trans
-      i18nKey="auto-buy.coll-ratio-too-high"
+        i18nKey="auto-buy.coll-ratio-too-high"
+        components={[
+          <Text
+            as="span"
+            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+            onClick={() => {
+              uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                type: 'change-tab',
+                currentMode: VaultViewMode.Overview,
+              })
+            }}
+          />,
+        ]}
+        values={{
+          maxAutoBuyCollRatio: sliderMax,
+        }}
+      />
+    )
+  }
+
+  const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
+  const [, setHash] = useHash()
+
+  if (isStopLossEnabled && stopLossLevel.gt(basicBuyState.execCollRatio)) {
+    ;<Trans
+      i18nKey="auto-buy.sl-too-high"
       components={[
         <Text
           as="span"
           sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
           onClick={() => {
-            uiChanges.publish(TAB_CHANGE_SUBJECT, {
-              type: 'change-tab',
-              currentMode: VaultViewMode.Overview,
+            uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+              type: 'Protection',
+              currentProtectionFeature: 'stopLoss',
             })
+            setHash(VaultViewMode.Protection)
           }}
         />,
       ]}
       values={{
-        maxAutoBuyCollRatio: sliderMax
+        maxStopLoss: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
       }}
     />
-    )
   }
 
   if (readOnlyBasicBSEnabled && !isVaultEmpty) {
@@ -260,6 +283,21 @@ export function SidebarAutoBuyEditingStage({
       )}
     </>
   )
+
+  function adjustDefaultValuesIfOutsideSlider() {
+    if (basicBuyState.targetCollRatio.lt(sliderMin)) {
+      uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+        type: 'target-coll-ratio',
+        targetCollRatio: sliderMin,
+      })
+    }
+    if (basicBuyState.execCollRatio.gt(sliderMax)) {
+      uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+        type: 'execution-coll-ratio',
+        execCollRatio: sliderMax,
+      })
+    }
+  }
 }
 
 interface AutoBuyInfoSectionControlProps {
