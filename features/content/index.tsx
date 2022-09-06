@@ -17,7 +17,6 @@ interface ContentVersioned {
 export interface Content {
   tos: ContentVersioned
   privacy: ContentVersioned
-  support: ContentVersioned
   cookie: ContentVersioned
 }
 
