@@ -19,7 +19,6 @@ const {
 
 const ROUTES = {
   CONTACT: `${apiHost}/daiwallet/contact`,
-  SUPPORT: '/support',
   TWITTER: 'https://twitter.com/oasisdotapp',
   DISCORD: 'https://discord.gg/Kc2bBB59GC',
 }
@@ -40,12 +39,9 @@ const FOOTER_SECTIONS = [
     titleKey: 'nav.resources',
     links: [
       { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
-      {
-        labelKey: 'nav.faq',
-        url: '/support',
-      },
       // add link
       { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
+      { labelKey: 'nav.bug-bounty', url: 'https://immunefi.com/bounty/oasis/', target: '_blank' },
       { labelKey: 'nav.oracles', url: '/oracles' },
       { labelKey: 'nav.referrals', url: '/referrals' },
     ],
@@ -60,6 +56,7 @@ const FOOTER_SECTIONS = [
       },
       { labelKey: 'nav.borrow', url: '/borrow' },
       { labelKey: 'nav.multiply', url: '/multiply' },
+      { labelKey: 'nav.earn', url: '/earn' },
     ],
   },
 ]
