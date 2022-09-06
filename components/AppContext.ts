@@ -333,7 +333,7 @@ export type SupportedUIChangeType =
   | TxPayloadChange
 
 export type LegalUiChanges = {
-  AddFormChange: StopLossFormChangeAction
+  StopLossFormChange: StopLossFormChangeAction
   BasicBSChange: BasicBSChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction

@@ -77,12 +77,7 @@ export function GeneralManageTabBar({
                 value: 'protection',
                 tag: { include: true, active: protectionEnabled },
                 content: (
-                  <ProtectionControl
-                    vault={vault}
-                    ilkData={ilkData}
-                    // account={account}
-                    balanceInfo={balanceInfo}
-                  />
+                  <ProtectionControl vault={vault} ilkData={ilkData} balanceInfo={balanceInfo} />
                 ),
               },
             ]
