@@ -1,40 +1,78 @@
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
+import { GasEstimation } from 'components/GasEstimation'
 import { MessageCard } from 'components/MessageCard'
+import {
+  VaultChangesInformationArrow,
+  VaultChangesInformationContainer,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import {
-  errorsStopLossValidation,
-  warningsStopLossValidation,
-} from 'features/automation/protection/common/validation'
-import {
-  CancelDownsideProtectionInformation,
-  CancelSlFormLayoutProps,
-} from 'features/automation/protection/controls/CancelSlFormLayout'
+import { StopLossFormChange } from 'features/automation/protection/common/UITypes/StopLossFormChange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Flex, Grid, Text } from 'theme-ui'
 
-export function SidebarCancelStopLossEditingStage({
-  ethBalance,
-  ethPrice,
-  ilkData,
+interface CancelDownsideProtectionInformationProps {
+  liquidationPrice: BigNumber
+
+  selectedSLValue: BigNumber
+}
+
+export function CancelDownsideProtectionInformation({
   liquidationPrice,
+
   selectedSLValue,
-  token,
-  txError,
-  vault: { debt },
-}: CancelSlFormLayoutProps) {
+}: CancelDownsideProtectionInformationProps) {
   const { t } = useTranslation()
 
-  const gasEstimation = useGasEstimationContext()
+  return (
+    <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
+      {!liquidationPrice.isZero() && (
+        <VaultChangesInformationItem
+          label={`${t('cancel-stoploss.liquidation')}`}
+          value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
+        />
+      )}
+      <VaultChangesInformationItem
+        label={`${t('cancel-stoploss.stop-loss-coll-ratio')}`}
+        value={
+          <Flex>
+            {formatPercent(selectedSLValue)}
+            <VaultChangesInformationArrow />
+            n/a
+          </Flex>
+        }
+      />
+      <VaultChangesInformationItem
+        label={`${t('protection.max-cost')}`}
+        value={<GasEstimation />}
+      />
+    </VaultChangesInformationContainer>
+  )
+}
 
-  const errors = errorsStopLossValidation({ txError, debt: debt })
-  const warnings = warningsStopLossValidation({
-    token,
-    gasEstimationUsd: gasEstimation?.usdValue,
-    ethBalance,
-    ethPrice,
-  })
+interface SidebarCancelStopLossEditingStageProps {
+  vault: Vault
+  ilkData: IlkData
+  errors: VaultErrorMessage[]
+  warnings: VaultWarningMessage[]
+  stopLossState: StopLossFormChange
+}
+
+export function SidebarCancelStopLossEditingStage({
+  vault,
+  ilkData,
+  errors,
+  warnings,
+  stopLossState,
+}: SidebarCancelStopLossEditingStageProps) {
+  const { t } = useTranslation()
 
   return (
     <Grid>
@@ -44,12 +82,8 @@ export function SidebarCancelStopLossEditingStage({
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
       <CancelDownsideProtectionInformation
-        liquidationPrice={liquidationPrice}
-        ethPrice={ethPrice}
-        gasEstimationUsd={gasEstimation?.usdValue}
-        ethBalance={ethBalance}
-        txError={txError}
-        selectedSLValue={selectedSLValue}
+        liquidationPrice={vault.liquidationPrice}
+        selectedSLValue={stopLossState.selectedSLValue}
       />
       <MessageCard
         messages={[

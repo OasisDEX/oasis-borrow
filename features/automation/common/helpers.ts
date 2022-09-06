@@ -58,11 +58,19 @@ export function resolveWithThreshold({
   )
 }
 
-export function prepareBasicBSResetData(
-  basicBSTriggersData: BasicBSTriggerData,
-  collateralizationRatio: BigNumber,
-  publishKey: 'BASIC_SELL_FORM_CHANGE' | 'BASIC_BUY_FORM_CHANGE',
-) {
+export function prepareBasicBSSliderDefaults({
+  execCollRatio,
+  targetCollRatio,
+  collateralizationRatio,
+  publishKey,
+}: {
+  execCollRatio: BigNumber
+  targetCollRatio: BigNumber
+  collateralizationRatio: BigNumber
+  publishKey: 'BASIC_SELL_FORM_CHANGE' | 'BASIC_BUY_FORM_CHANGE'
+}) {
+  const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
+
   const defaultTriggerForSell = new BigNumber(
     collateralizationRatio.minus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
   )
@@ -70,16 +78,31 @@ export function prepareBasicBSResetData(
     collateralizationRatio.plus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
   )
 
-  const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
   return {
-    execCollRatio: basicBSTriggersData.targetCollRatio.isZero()
+    execCollRatio: execCollRatio.isZero()
       ? publishKey === 'BASIC_SELL_FORM_CHANGE'
         ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
         : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
-      : basicBSTriggersData.targetCollRatio,
-    targetCollRatio: basicBSTriggersData.execCollRatio.isZero()
+      : execCollRatio,
+    targetCollRatio: targetCollRatio.isZero()
       ? defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
-      : basicBSTriggersData.execCollRatio,
+      : targetCollRatio,
+  }
+}
+
+export function prepareBasicBSResetData(
+  basicBSTriggersData: BasicBSTriggerData,
+  collateralizationRatio: BigNumber,
+  publishKey: 'BASIC_SELL_FORM_CHANGE' | 'BASIC_BUY_FORM_CHANGE',
+) {
+  const defaultSliderValues = prepareBasicBSSliderDefaults({
+    execCollRatio: basicBSTriggersData.execCollRatio,
+    targetCollRatio: basicBSTriggersData.targetCollRatio,
+    collateralizationRatio,
+    publishKey,
+  })
+  return {
+    ...defaultSliderValues,
     maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(basicBSTriggersData.maxBuyOrMinSellPrice),
     maxBaseFeeInGwei: basicBSTriggersData.maxBaseFeeInGwei,
     withThreshold: resolveWithThreshold({
@@ -87,6 +110,7 @@ export function prepareBasicBSResetData(
       triggerId: basicBSTriggersData.triggerId,
     }),
     txDetails: {},
+    isEditing: false,
   }
 }
 
@@ -102,11 +126,13 @@ export function checkIfEditingBasicBS({
   const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(basicBSTriggerData.maxBuyOrMinSellPrice)
 
   return (
-    !basicBSTriggerData.targetCollRatio.isEqualTo(basicBSState.targetCollRatio) ||
-    !basicBSTriggerData.execCollRatio.isEqualTo(basicBSState.execCollRatio) ||
-    !basicBSTriggerData.maxBaseFeeInGwei.isEqualTo(basicBSState.maxBaseFeeInGwei) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== basicBSState.maxBuyOrMinSellPrice?.toNumber() &&
-      !basicBSTriggerData.triggerId.isZero()) ||
+    (!basicBSTriggerData.isTriggerEnabled && basicBSState.isEditing) ||
+    (basicBSTriggerData.isTriggerEnabled &&
+      (!basicBSTriggerData.targetCollRatio.isEqualTo(basicBSState.targetCollRatio) ||
+        !basicBSTriggerData.execCollRatio.isEqualTo(basicBSState.execCollRatio) ||
+        !basicBSTriggerData.maxBaseFeeInGwei.isEqualTo(basicBSState.maxBaseFeeInGwei) ||
+        (maxBuyOrMinSellPrice?.toNumber() !== basicBSState.maxBuyOrMinSellPrice?.toNumber() &&
+          !basicBSTriggerData.triggerId.isZero()))) ||
     isRemoveForm
   )
 }

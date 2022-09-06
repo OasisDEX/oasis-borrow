@@ -70,12 +70,6 @@ import {
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
-  ADD_FORM_CHANGE,
-  AddFormChange,
-  AddFormChangeAction,
-  formChangeReducer,
-} from 'features/automation/protection/common/UITypes/AddFormChange'
-import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
   AutomationChangeFeatureAction,
@@ -99,17 +93,17 @@ import {
   multiplyPillChangeReducer,
 } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 import {
-  PROTECTION_MODE_CHANGE_SUBJECT,
-  ProtectionModeChange,
-  ProtectionModeChangeAction,
-  protectionModeChangeReducer,
-} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
-import {
   REMOVE_FORM_CHANGE,
   RemoveFormChange,
   RemoveFormChangeAction,
   removeFormReducer,
 } from 'features/automation/protection/common/UITypes/RemoveFormChange'
+import {
+  formChangeReducer,
+  STOP_LOSS_FORM_CHANGE,
+  StopLossFormChange,
+  StopLossFormChangeAction,
+} from 'features/automation/protection/common/UITypes/StopLossFormChange'
 import {
   TAB_CHANGE_SUBJECT,
   TabChange,
@@ -329,10 +323,9 @@ function createTxHelpers$(
 }
 
 export type SupportedUIChangeType =
-  | AddFormChange
+  | StopLossFormChange
   | RemoveFormChange
   | TabChange
-  | ProtectionModeChange
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
@@ -340,11 +333,10 @@ export type SupportedUIChangeType =
   | TxPayloadChange
 
 export type LegalUiChanges = {
-  AddFormChange: AddFormChangeAction
+  StopLossFormChange: StopLossFormChangeAction
   BasicBSChange: BasicBSChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
-  ProtectionModeChange: ProtectionModeChangeAction
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
@@ -431,13 +423,12 @@ function createUIChangesSubject(): UIChanges {
 function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
-  uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
+  uiChangesSubject.configureSubject(STOP_LOSS_FORM_CHANGE, formChangeReducer)
   uiChangesSubject.configureSubject(BASIC_SELL_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
-  uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
   uiChangesSubject.configureSubject(

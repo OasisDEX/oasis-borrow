@@ -3,7 +3,7 @@ import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
-import { useUIChanges } from 'helpers/uiChangesHook'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/common/UITypes/StopLossFormChange'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
@@ -12,12 +12,6 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from '../common/consts'
 import { getStartingSlRatio } from './common/helpers'
-import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
-import {
-  PROTECTION_MODE_CHANGE_SUBJECT,
-  ProtectionModeChange,
-} from './common/UITypes/ProtectionFormModeChange'
-import { REMOVE_FORM_CHANGE } from './common/UITypes/RemoveFormChange'
 import { TriggersData } from './triggers/AutomationTriggersData'
 
 export function useStopLossStateInitializator(
@@ -26,8 +20,9 @@ export function useStopLossStateInitializator(
   autoTriggersData: TriggersData,
 ) {
   const { uiChanges } = useAppContext()
-  const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
-  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
+  const { stopLossLevel, isStopLossEnabled, isToCollateral, triggerId } = extractStopLossData(
+    autoTriggersData,
+  )
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
@@ -41,30 +36,26 @@ export function useStopLossStateInitializator(
   }).multipliedBy(100)
 
   useEffect(() => {
-    uiChanges.publish(ADD_FORM_CHANGE, {
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'close-type',
       toCollateral: isToCollateral,
     })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
-    })
-    uiChanges.publish(REMOVE_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
-    })
-  }, [currentForm, collateralizationRatio])
-
-  useEffect(() => {
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'close-type',
-      toCollateral: isToCollateral,
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'stop-loss',
       stopLoss: initialSelectedSlRatio,
     })
-  }, [isStopLossEnabled, initialSelectedSlRatio])
+  }, [triggerId.toNumber(), collateralizationRatio])
+
+  useEffect(() => {
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      type: 'tx-details',
+      txDetails: {},
+    })
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: 'add',
+    })
+  }, [collateralizationRatio])
 
   return isStopLossEnabled
 }

@@ -31,7 +31,6 @@ interface ProtectionFormControlProps {
   txHelpers?: TxHelpers
   context: Context
   ethMarketPrice: BigNumber
-  account?: string
 }
 
 export function ProtectionFormControl({
@@ -39,7 +38,6 @@ export function ProtectionFormControl({
   automationTriggersData,
   priceInfo,
   vault,
-  account,
   balanceInfo,
   context,
   txHelpers,
@@ -86,7 +84,6 @@ export function ProtectionFormControl({
         constantMultipleTriggerData={constantMultipleTriggerData}
         priceInfo={priceInfo}
         vault={vault}
-        account={account}
         balanceInfo={balanceInfo}
         isStopLossActive={isStopLossActive}
         context={context}

@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js'
 import {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
-  AutomationBotRemoveTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
@@ -17,7 +16,7 @@ export interface StopLossTriggerData {
   isStopLossEnabled: boolean
   stopLossLevel: BigNumber
   isToCollateral: boolean
-  triggerId: number
+  triggerId: BigNumber
 }
 
 function pickTriggerWithHighestStopLossLevel(
@@ -30,7 +29,7 @@ function pickTriggerWithHighestStopLossLevel(
     const [, triggerType, stopLossLevel] = trigger.result
 
     return {
-      triggerId: trigger.triggerId,
+      triggerId: new BigNumber(trigger.triggerId),
       isStopLossEnabled: true,
       stopLossLevel: new BigNumber(stopLossLevel.toString()).div(100),
       isToCollateral:
@@ -43,9 +42,10 @@ function pickTriggerWithHighestStopLossLevel(
   )
 }
 
-const defaultStopLossData = {
+export const defaultStopLossData = {
   isStopLossEnabled: false,
   stopLossLevel: zero,
+  triggerId: zero,
 } as StopLossTriggerData
 
 export function extractStopLossData(data: TriggersData): StopLossTriggerData {
@@ -98,20 +98,5 @@ export function prepareAddStopLossTriggerData(
     ...baseTriggerData,
     replacedTriggerId,
     kind: TxMetaKind.addTrigger,
-  }
-}
-
-export function prepareRemoveStopLossTriggerData(
-  vaultData: Vault,
-  triggerId: number,
-  removeAllowance: boolean,
-): AutomationBotRemoveTriggerData {
-  const baseTriggerData = prepareStopLossTriggerData(vaultData, false, new BigNumber(0))
-
-  return {
-    ...baseTriggerData,
-    kind: TxMetaKind.removeTrigger,
-    triggerId,
-    removeAllowance,
   }
 }

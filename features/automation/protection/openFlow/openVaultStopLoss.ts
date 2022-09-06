@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
@@ -9,6 +10,8 @@ import {
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
 import { getSliderPercentageFill } from 'features/automation/protection/common/helpers'
+import { defaultStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { StopLossFormChange } from 'features/automation/protection/common/UITypes/StopLossFormChange'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -70,9 +73,7 @@ export function getDataForStopLoss(
     token,
     priceInfo: { currentEthPrice, nextCollateralPrice },
     ilkData,
-    balanceInfo: { ethBalance },
     afterCollateralizationRatioAtNextPrice,
-    afterCollateralizationRatio,
     afterLiquidationPrice,
     totalExposure,
     depositAmount,
@@ -86,6 +87,7 @@ export function getDataForStopLoss(
   } = props
 
   const debt = feature === 'multiply' ? afterOutstandingDebt : generateAmount
+  const lockedCollateral = feature === 'multiply' ? totalExposure : depositAmount
   const tokenData = getToken(token)
 
   const sliderPercentageFill = getSliderPercentageFill({
@@ -99,8 +101,31 @@ export function getDataForStopLoss(
     .multipliedBy(nextCollateralPrice)
     .dividedBy(afterCollateralizationRatioAtNextPrice)
 
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: stopLossLevel, // TODO potentialy div by 100
+    collateral: lockedCollateral!,
+    vaultDebt: debt!,
+  })
+
   const sidebarProps: SidebarAdjustStopLossEditingStageProps = {
-    token,
+    vault: {
+      liquidationPrice: afterLiquidationPrice,
+      lockedCollateral,
+      debt,
+      token,
+    } as Vault,
+    ilkData,
+    ethMarketPrice: currentEthPrice,
+    executionPrice,
+    errors: [],
+    warnings: [],
+    stopLossTriggerData: defaultStopLossData,
+    stopLossState: {
+      selectedSLValue: stopLossLevel,
+      collateralActive: stopLossCloseType === 'collateral',
+      currentForm: 'add',
+    } as StopLossFormChange,
+    isEditing: !stopLossLevel.isZero(),
     closePickerConfig: {
       optionNames: closeVaultOptions,
       onclickHandler: (optionName: string) => setStopLossCloseType(optionName as CloseVaultTo),
@@ -108,7 +133,7 @@ export function getDataForStopLoss(
       collateralTokenSymbol: token,
       collateralTokenIconCircle: tokenData.iconCircle,
     },
-    slValuePickerConfig: {
+    sliderConfig: {
       ...stopLossSliderBasicConfig,
       sliderPercentageFill,
       leftBoundry: stopLossLevel,
@@ -123,25 +148,6 @@ export function getDataForStopLoss(
       minBoundry: ilkData.liquidationRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
       onChange: (level) => setStopLossLevel(level),
     },
-    tokenPrice: nextCollateralPrice,
-    ethPrice: currentEthPrice,
-    vault: {
-      liquidationPrice: afterLiquidationPrice,
-      lockedCollateral: feature === 'multiply' ? totalExposure : depositAmount,
-      debt,
-    } as Vault,
-    ilkData,
-    selectedSLValue: stopLossLevel,
-    isEditing: !stopLossLevel.isZero(),
-    collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
-    ethBalance,
-    currentCollateralRatio: afterCollateralizationRatio,
-    isAutoSellEnabled: false,
-    isStopLossEnabled: false,
-    warnings: [],
-    errors: [],
-    stopLossLevel,
-    isToCollateral: false,
     isOpenFlow: true,
   }
 

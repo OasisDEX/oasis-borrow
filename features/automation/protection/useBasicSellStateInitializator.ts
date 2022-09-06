@@ -1,15 +1,15 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import {
-  DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+  prepareBasicBSSliderDefaults,
   resolveMaxBuyOrMinSellPrice,
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
@@ -34,11 +34,19 @@ export function useBasicBSstateInitialization(
     isTriggerEnabled,
     maxBaseFeeInGwei,
   } = extractBasicBSData({ triggersData: autoTriggersData, triggerType: type })
-  const collateralizationRatio = vault.collateralizationRatio.toNumber()
+  const { collateralizationRatio } = vault
+  const stopLossTriggerData = extractStopLossData(autoTriggersData)
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
   const maxBuyOrMinSellPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice)
   const withThresholdResolved = resolveWithThreshold({ maxBuyOrMinSellPrice, triggerId })
+
+  const sliderDefaults = prepareBasicBSSliderDefaults({
+    execCollRatio,
+    targetCollRatio,
+    collateralizationRatio,
+    publishKey,
+  })
 
   useEffect(() => {
     uiChanges.publish(publishKey, {
@@ -73,22 +81,22 @@ export function useBasicBSstateInitialization(
       type: 'with-threshold',
       withThreshold: withThresholdResolved,
     })
-    const defaultTriggerForSell = new BigNumber(
-      collateralizationRatio - DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
-    )
-    const defaultTriggerForBuy = new BigNumber(
-      collateralizationRatio + DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
-    )
-    const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
+
     uiChanges.publish(publishKey, {
       type: 'form-defaults',
-      execCollRatio:
-        publishKey === 'BASIC_SELL_FORM_CHANGE'
-          ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
-          : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
-      targetCollRatio: defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN),
+      execCollRatio: sliderDefaults.execCollRatio,
+      targetCollRatio: sliderDefaults.targetCollRatio,
     })
-  }, [triggerId.toNumber(), collateralizationRatio])
+
+    uiChanges.publish(publishKey, {
+      type: 'is-editing',
+      isEditing: false,
+    })
+  }, [
+    triggerId.toNumber(),
+    collateralizationRatio.toNumber(),
+    stopLossTriggerData.triggerId.toNumber(),
+  ])
 
   useEffect(() => {
     uiChanges.publish(publishKey, {
@@ -99,7 +107,7 @@ export function useBasicBSstateInitialization(
       type: 'current-form',
       currentForm: 'add',
     })
-  }, [collateralizationRatio])
+  }, [collateralizationRatio.toNumber()])
 
   return isTriggerEnabled
 }
