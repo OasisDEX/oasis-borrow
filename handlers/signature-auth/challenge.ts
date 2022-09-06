@@ -9,6 +9,7 @@ export interface ChallengeJWT {
 }
 
 const CHALLENGE_JWT_EXPIRATION = '5m' // 5 minutes should be more than enough to sign the challenge on a signer
+const GNOSIS_SAFE_CHALLENGE_JWT_EXPIRATION = '1d'
 
 const address = z
   .string()
@@ -19,6 +20,7 @@ const address = z
 
 const inputSchema = z.object({
   address: address,
+  isGnosisSafe: z.boolean(),
 })
 
 export function makeChallenge(options: { challengeJWTSecret: string }): NextApiHandler {
@@ -32,7 +34,9 @@ export function makeChallenge(options: { challengeJWTSecret: string }): NextApiH
 
     const challenge = jwt.sign(payload, options.challengeJWTSecret, {
       algorithm: 'HS512',
-      expiresIn: CHALLENGE_JWT_EXPIRATION,
+      expiresIn: body.isGnosisSafe
+        ? GNOSIS_SAFE_CHALLENGE_JWT_EXPIRATION
+        : CHALLENGE_JWT_EXPIRATION,
     })
 
     res.status(200).json({ challenge })
