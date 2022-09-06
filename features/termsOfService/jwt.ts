@@ -48,32 +48,39 @@ interface GnosisSafeSignInDetails {
   challenge: string
 }
 
+interface GnosisSafeSignInDetailsWithData extends GnosisSafeSignInDetails {
+  dataToSign: string
+}
+
 async function getGnosisSafeDetails(
   sdk: SafeAppsSDK,
-  challenge: string,
   chainId: number,
   account: string,
-): Promise<GnosisSafeSignInDetails> {
+  newChallenge: string,
+): Promise<GnosisSafeSignInDetailsWithData> {
   const key = `${LOCAL_STORAGE_GNOSIS_SAFE_PENDING}/${chainId}-${account}`
   const pendingSignature: GnosisSafeSignInDetails = JSON.parse(localStorage.getItem(key)!)
 
   if (pendingSignature) {
     const exp = (decode(pendingSignature.challenge) as any)?.exp
     if (exp && exp * 1000 >= Date.now()) {
-      return pendingSignature
+      return {
+        ...pendingSignature,
+        dataToSign: getDataToSignFromChallenge(pendingSignature.challenge),
+      }
     }
   }
 
-  const dataToSign = getDataToSignFromChallenge(challenge)
+  const dataToSign = getDataToSignFromChallenge(newChallenge)
   const { safeTxHash } = await sdk.txs.signMessage(dataToSign)
   localStorage.setItem(
     key,
     JSON.stringify({
       safeTxHash,
-      challenge,
+      challenge: newChallenge,
     } as GnosisSafeSignInDetails),
   )
-  return { challenge, safeTxHash }
+  return { challenge: newChallenge, safeTxHash, dataToSign }
 }
 
 async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
@@ -81,19 +88,17 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
   const addressForSignature = account
 
   const chainId = getNetworkId()
-  let challenge = await requestChallenge(account, isGnosisSafe).toPromise()
+  const challenge = await requestChallenge(account, isGnosisSafe).toPromise()
 
   if (isGnosisSafe) {
     const sdk = new SafeAppsSDK()
 
-    const { challenge: gnosisSafeChallenge, safeTxHash } = await getGnosisSafeDetails(
+    const { challenge: gnosisSafeChallenge, safeTxHash, dataToSign } = await getGnosisSafeDetails(
       sdk,
-      challenge,
       chainId,
       account,
+      challenge,
     )
-    challenge = gnosisSafeChallenge
-    const dataToSign = getDataToSignFromChallenge(challenge)
 
     // start polling
     const token = await new Promise<string | null>((resolve) => {
@@ -117,7 +122,7 @@ async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): P
           }
 
           const safeJwt = await requestSignin({
-            challenge,
+            challenge: gnosisSafeChallenge,
             signature: safeTxHash,
             chainId,
             isGnosisSafe: true,
