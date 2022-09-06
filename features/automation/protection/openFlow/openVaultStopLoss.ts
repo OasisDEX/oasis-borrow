@@ -16,6 +16,7 @@ import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/prot
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { zero } from 'helpers/zero'
 
 export type OpenVaultStopLossLevelChange = {
   kind: 'stopLossLevel'
@@ -102,9 +103,9 @@ export function getDataForStopLoss(
     .dividedBy(afterCollateralizationRatioAtNextPrice)
 
   const executionPrice = collateralPriceAtRatio({
-    colRatio: stopLossLevel, // TODO potentialy div by 100
-    collateral: lockedCollateral!,
-    vaultDebt: debt!,
+    colRatio: stopLossLevel.div(100),
+    collateral: lockedCollateral || zero,
+    vaultDebt: debt || zero,
   })
 
   const sidebarProps: SidebarAdjustStopLossEditingStageProps = {
