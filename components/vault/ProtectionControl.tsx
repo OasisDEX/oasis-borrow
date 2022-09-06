@@ -62,7 +62,6 @@ interface ProtectionControlProps {
   vault: Vault
   ilkData: IlkData
   balanceInfo: BalanceInfo
-  account?: string
 }
 
 function getZeroDebtProtectionBannerProps({
@@ -104,12 +103,7 @@ function getZeroDebtProtectionBannerProps({
   }
 }
 
-export function ProtectionControl({
-  vault,
-  ilkData,
-  account,
-  balanceInfo,
-}: ProtectionControlProps) {
+export function ProtectionControl({ vault, ilkData, balanceInfo }: ProtectionControlProps) {
   const {
     automationTriggersData$,
     priceInfo$,
@@ -163,7 +157,6 @@ export function ProtectionControl({
                 <ProtectionDetailsControl
                   vault={vault}
                   automationTriggersData={automationTriggers}
-                  priceInfo={priceInfo}
                   ilkData={ilkData}
                 />
               }
@@ -173,7 +166,6 @@ export function ProtectionControl({
                   automationTriggersData={automationTriggers}
                   priceInfo={priceInfo}
                   vault={vault}
-                  account={account}
                   balanceInfo={balanceInfo}
                   txHelpers={txHelpersData}
                   context={context}

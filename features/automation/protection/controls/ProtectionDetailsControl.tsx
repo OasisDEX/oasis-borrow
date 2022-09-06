@@ -11,7 +11,6 @@ import {
 import { BasicSellDetailsControl } from 'features/automation/protection/controls/BasicSellDetailsControl'
 import { StopLossDetailsControl } from 'features/automation/protection/controls/StopLossDetailsControl'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -19,14 +18,12 @@ import React from 'react'
 interface ProtectionDetailsControlProps {
   ilkData: IlkData
   automationTriggersData: TriggersData
-  priceInfo: PriceInfo
   vault: Vault
 }
 
 export function ProtectionDetailsControl({
   vault,
   automationTriggersData,
-  priceInfo,
   ilkData,
 }: ProtectionDetailsControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
@@ -49,7 +46,6 @@ export function ProtectionDetailsControl({
       <StopLossDetailsControl
         vault={vault}
         stopLossTriggerData={stopLossTriggerData}
-        priceInfo={priceInfo}
         ilkData={ilkData}
         isStopLossActive={isStopLossActive}
       />

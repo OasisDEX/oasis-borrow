@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { UIChanges } from 'components/AppContext'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   DEFAULT_BASIC_BS_MAX_SLIDER_VALUE,
@@ -12,23 +10,20 @@ import {
   AutomationOptimizationFeatures,
   AutomationProtectionFeatures,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import {
-  AutomationFromKind,
-  PROTECTION_MODE_CHANGE_SUBJECT,
-} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
-import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getIsEditingProtection({
   isStopLossEnabled,
   selectedSLValue,
   stopLossLevel,
+  isRemoveForm,
   collateralActive,
   isToCollateral,
 }: {
   isStopLossEnabled: boolean
   selectedSLValue: BigNumber
   stopLossLevel: BigNumber
+  isRemoveForm: boolean
   collateralActive?: boolean
   isToCollateral?: boolean
 }) {
@@ -41,7 +36,8 @@ export function getIsEditingProtection({
 
   return (
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
-    collateralActive !== isToCollateral
+    collateralActive !== isToCollateral ||
+    isRemoveForm
   )
 }
 
@@ -55,17 +51,6 @@ export function getStartingSlRatio({
   initialStopLossSelected: BigNumber
 }) {
   return isStopLossEnabled ? stopLossLevel : initialStopLossSelected
-}
-
-export function backToVaultOverview(uiChanges: UIChanges) {
-  uiChanges.publish(TAB_CHANGE_SUBJECT, {
-    type: 'change-tab',
-    currentMode: VaultViewMode.Overview,
-  })
-  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-    currentMode: AutomationFromKind.ADJUST,
-    type: 'change-mode',
-  })
 }
 
 export function getSliderPercentageFill({

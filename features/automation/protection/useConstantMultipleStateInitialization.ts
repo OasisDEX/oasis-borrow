@@ -39,6 +39,10 @@ export function useConstantMultipleStateInitialization(
     triggersData: autoTriggersData,
     triggerType: TriggerType.BasicBuy,
   })
+  const autoSellTriggerData = extractBasicBSData({
+    triggersData: autoTriggersData,
+    triggerType: TriggerType.BasicSell,
+  })
   const constantMultipleTriggerData = extractConstantMultipleData(autoTriggersData)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
@@ -108,7 +112,12 @@ export function useConstantMultipleStateInitialization(
       type: 'current-form',
       currentForm: 'add',
     })
-  }, [collateralizationRatio, stopLossTriggerData.triggerId])
+  }, [
+    collateralizationRatio,
+    stopLossTriggerData.triggerId.toNumber(),
+    autoBuyTriggerData.triggerId.toNumber(),
+    autoSellTriggerData.triggerId.toNumber(),
+  ])
 
   return constantMultipleTriggerData.isTriggerEnabled
 }

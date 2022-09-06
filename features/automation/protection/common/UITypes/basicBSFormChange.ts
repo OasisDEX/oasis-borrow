@@ -21,6 +21,7 @@ export type AutomationChangeAction =
   | { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
   | { type: 'current-form'; currentForm: CurrentBSForm }
   | { type: 'reset'; resetData: BasicBSTriggerResetData }
+  | { type: 'is-editing'; isEditing: boolean }
   | {
       type: 'tx-details'
       txDetails: {
@@ -68,6 +69,8 @@ export function basicBSFormChangeReducer(
       return { ...state, withThreshold: action.withThreshold }
     case 'tx-details':
       return { ...state, txDetails: action.txDetails }
+    case 'is-editing':
+      return { ...state, isEditing: action.isEditing }
     case 'reset':
       return { ...state, ...action.resetData }
     case 'form-defaults':
@@ -85,6 +88,7 @@ export type AutomationFormChange = {
   triggerId: BigNumber
   targetCollRatio: BigNumber
   continuous: boolean
+  isEditing: boolean
   deviation: BigNumber
   maxBaseFeeInGwei: BigNumber
   currentForm: CurrentBSForm

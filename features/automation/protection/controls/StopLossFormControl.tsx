@@ -1,205 +1,258 @@
+import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
-import { TxHelpers, UIChanges } from 'components/AppContext'
+import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { useSharedUI } from 'components/SharedUIProvider'
+import { PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { AddAndRemoveTriggerControl } from 'features/automation/common/AddAndRemoveTriggerControl'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import {
+  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  MAX_DEBT_FOR_SETTING_STOP_LOSS,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  NEXT_COLL_RATIO_OFFSET,
+} from 'features/automation/common/consts'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import { accountIsConnectedValidator } from 'features/form/commonValidators'
+import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
+import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
+import {
+  prepareAddStopLossTriggerData,
+  StopLossTriggerData,
+} from 'features/automation/protection/common/stopLossTriggerData'
+import {
+  STOP_LOSS_FORM_CHANGE,
+  StopLossFormChange,
+} from 'features/automation/protection/common/UITypes/StopLossFormChange'
+import { SidebarSetupStopLoss } from 'features/automation/protection/controls/sidebar/SidebarSetupStopLoss'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React, { useEffect } from 'react'
+import React, { useMemo } from 'react'
 
-import { ADD_FORM_CHANGE } from '../common/UITypes/AddFormChange'
+import { failedStatuses, progressStatuses } from '../../common/txStatues'
 import {
-  AutomationFromKind,
-  PROTECTION_MODE_CHANGE_SUBJECT,
-  ProtectionModeChange,
-} from '../common/UITypes/ProtectionFormModeChange'
-import { AdjustSlFormControl } from './AdjustSlFormControl'
-import { CancelSlFormControl } from './CancelSlFormControl'
-
-interface StopLossFormsProps {
-  context: Context
-  currentForm: ProtectionModeChange
-  vault: Vault
-  ilkData: IlkData
-  uiChanges: UIChanges
-  priceInfo: PriceInfo
-  balanceInfo: BalanceInfo
-  accountIsController: boolean
-  stopLossTriggerData: StopLossTriggerData
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  ethMarketPrice: BigNumber
-  shouldRemoveAllowance: boolean
-  txHelpers?: TxHelpers
-}
-
-function StopLossForms({
-  context,
-  currentForm,
-  vault,
-  ilkData,
-  uiChanges,
-  priceInfo,
-  balanceInfo,
-  txHelpers,
-  accountIsController,
-  stopLossTriggerData,
-  autoSellTriggerData,
-  autoBuyTriggerData,
-  constantMultipleTriggerData,
-  ethMarketPrice,
-  shouldRemoveAllowance,
-}: StopLossFormsProps) {
-  const stopLossLevel = stopLossTriggerData.stopLossLevel
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-
-  return currentForm?.currentMode === AutomationFromKind.CANCEL ? (
-    <CancelSlFormControl
-      vault={vault}
-      ilkData={ilkData}
-      triggerData={stopLossTriggerData}
-      autoSellTriggerData={autoSellTriggerData}
-      tx={txHelpers}
-      ctx={context}
-      accountIsController={accountIsController}
-      toggleForms={() => {
-        uiChanges.publish(ADD_FORM_CHANGE, {
-          type: 'stop-loss',
-          stopLoss: stopLossLevel,
-        })
-        uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-          currentMode: AutomationFromKind.ADJUST,
-          type: 'change-mode',
-        })
-      }}
-      priceInfo={priceInfo}
-      balanceInfo={balanceInfo}
-      ethMarketPrice={ethMarketPrice}
-      shouldRemoveAllowance={shouldRemoveAllowance}
-    />
-  ) : (
-    <AdjustSlFormControl
-      vault={vault}
-      priceInfo={priceInfo}
-      ilkData={ilkData}
-      triggerData={stopLossTriggerData}
-      autoSellTriggerData={autoSellTriggerData}
-      autoBuyTriggerData={autoBuyTriggerData}
-      constantMultipleTriggerData={constantMultipleTriggerData}
-      tx={txHelpers}
-      ctx={context}
-      accountIsController={accountIsController}
-      toggleForms={() => {
-        uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-          type: 'change-mode',
-          currentMode: AutomationFromKind.CANCEL,
-        })
-      }}
-      balanceInfo={balanceInfo}
-      ethMarketPrice={ethMarketPrice}
-    />
-  )
-}
+  getIsEditingProtection,
+  getSliderPercentageFill,
+  getStartingSlRatio,
+} from '../common/helpers'
 
 interface StopLossFormControlProps {
+  vault: Vault
+  priceInfo: PriceInfo
   ilkData: IlkData
   stopLossTriggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
-  priceInfo: PriceInfo
-  vault: Vault
+  context: Context
   balanceInfo: BalanceInfo
+  ethMarketPrice: BigNumber
+  shouldRemoveAllowance: boolean
   isStopLossActive: boolean
   txHelpers?: TxHelpers
-  context: Context
-  ethMarketPrice: BigNumber
-  account?: string
-  shouldRemoveAllowance: boolean
 }
 
 export function StopLossFormControl({
+  vault,
+  priceInfo: { nextCollateralPrice },
   ilkData,
   stopLossTriggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
   constantMultipleTriggerData,
-  priceInfo,
-  vault,
-  account,
-  isStopLossActive,
-  balanceInfo,
   context,
   txHelpers,
   ethMarketPrice,
+  balanceInfo,
   shouldRemoveAllowance,
+  isStopLossActive,
 }: StopLossFormControlProps) {
+  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = stopLossTriggerData
+
+  const isOwner = context.status === 'connected' && context.account === vault.controller
   const { uiChanges } = useAppContext()
-  const { setVaultFormOpened } = useSharedUI()
-  const isTouchDevice = window && 'ontouchstart' in window
 
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const token = vault.token
+  const tokenData = getToken(token)
 
-  useEffect(() => {
-    if (isTouchDevice && !stopLossTriggerData.isStopLossEnabled) {
-      setVaultFormOpened(true)
-    }
-  }, [])
+  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
+  const replacedTriggerId = triggerId.toNumber()
 
-  const accountIsConnected = accountIsConnectedValidator({ account })
-  const accountIsController = accountIsConnected && account === vault.controller
+  const addTxData = useMemo(
+    () =>
+      prepareAddStopLossTriggerData(
+        vault,
+        stopLossState.collateralActive,
+        stopLossState.selectedSLValue,
+        replacedTriggerId,
+      ),
+    [stopLossState.collateralActive, stopLossState.selectedSLValue, replacedTriggerId],
+  )
 
-  return basicBSEnabled ? (
-    isStopLossActive ? (
-      <StopLossForms
-        currentForm={currentForm}
-        txHelpers={txHelpers}
-        context={context}
-        vault={vault}
-        ilkData={ilkData}
-        uiChanges={uiChanges}
-        priceInfo={priceInfo}
-        balanceInfo={balanceInfo}
-        accountIsController={accountIsController}
-        stopLossTriggerData={stopLossTriggerData}
-        autoSellTriggerData={autoSellTriggerData}
-        autoBuyTriggerData={autoBuyTriggerData}
-        constantMultipleTriggerData={constantMultipleTriggerData}
-        ethMarketPrice={ethMarketPrice}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-      />
-    ) : (
-      <></>
-    )
-  ) : (
-    <StopLossForms
-      currentForm={currentForm}
+  const isAddForm = stopLossState.currentForm === 'add'
+  const isRemoveForm = stopLossState.currentForm === 'remove'
+
+  const isEditing = getIsEditingProtection({
+    isStopLossEnabled,
+    selectedSLValue: stopLossState.selectedSLValue,
+    stopLossLevel,
+    collateralActive: stopLossState.collateralActive,
+    isToCollateral,
+    isRemoveForm,
+  })
+
+  const liqRatio = ilkData.liquidationRatio
+
+  const closePickerConfig: PickCloseStateProps = {
+    optionNames: closeVaultOptions,
+    onclickHandler: (optionName: string) => {
+      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+        type: 'close-type',
+        toCollateral: optionName === closeVaultOptions[0],
+      })
+    },
+    isCollateralActive: stopLossState.collateralActive,
+    collateralTokenSymbol: token,
+    collateralTokenIconCircle: tokenData.iconCircle,
+  }
+
+  const max = autoSellTriggerData.isTriggerEnabled
+    ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
+    : constantMultipleTriggerData.isTriggerEnabled
+    ? constantMultipleTriggerData.sellExecutionCollRatio
+        .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
+        .div(100)
+    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+
+  const sliderPercentageFill = getSliderPercentageFill({
+    value: stopLossState.selectedSLValue,
+    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
+    max,
+  })
+
+  const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
+
+  const afterNewLiquidationPrice = stopLossState.selectedSLValue
+    .dividedBy(100)
+    .multipliedBy(nextCollateralPrice)
+    .dividedBy(vault.collateralizationRatioAtNextPrice)
+
+  const sliderConfig: SliderValuePickerProps = {
+    ...stopLossSliderBasicConfig,
+    sliderPercentageFill,
+    leftBoundry: stopLossState.selectedSLValue,
+    rightBoundry: afterNewLiquidationPrice,
+    lastValue: stopLossState.selectedSLValue,
+    maxBoundry,
+    minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+    onChange: (slCollRatio) => {
+      if (stopLossState.collateralActive === undefined) {
+        uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+          type: 'close-type',
+          toCollateral: false,
+        })
+      }
+
+      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+        type: 'stop-loss',
+        stopLoss: slCollRatio,
+      })
+    },
+  }
+
+  const txStatus = stopLossState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const maxDebtForSettingStopLoss = vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'stopLossEditing'
+
+  const isDisabled =
+    (isProgressStage || !isOwner || !isEditing || (isAddForm && maxDebtForSettingStopLoss)) &&
+    stage !== 'txSuccess'
+
+  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
+    DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  )
+  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
+    stopLossLevel,
+    isStopLossEnabled,
+    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
+  })
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+
+  const resetData = {
+    selectedSLValue: initialSlRatioWhenTriggerDoesntExist,
+    collateralActive: isToCollateral,
+    txDetails: {},
+  }
+
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: stopLossState.selectedSLValue.div(100), // TODO potentialy div by 100
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
+
+  const isFirstSetup = stopLossTriggerData.triggerId.isZero()
+
+  return (
+    <AddAndRemoveTriggerControl
       txHelpers={txHelpers}
-      context={context}
-      vault={vault}
-      ilkData={ilkData}
-      uiChanges={uiChanges}
-      priceInfo={priceInfo}
-      balanceInfo={balanceInfo}
-      accountIsController={accountIsController}
-      stopLossTriggerData={stopLossTriggerData}
-      autoSellTriggerData={autoSellTriggerData}
-      autoBuyTriggerData={autoBuyTriggerData}
-      constantMultipleTriggerData={constantMultipleTriggerData}
       ethMarketPrice={ethMarketPrice}
-      shouldRemoveAllowance={shouldRemoveAllowance}
-    />
+      isEditing={isEditing}
+      removeAllowance={shouldRemoveAllowance}
+      proxyAddress={vault.owner}
+      stage={stage}
+      addTxData={addTxData}
+      resetData={resetData}
+      publishType={STOP_LOSS_FORM_CHANGE}
+      currentForm={stopLossState.currentForm}
+      triggersId={[triggerId.toNumber()]}
+      isActiveFlag={isStopLossActive}
+    >
+      {(txHandler, textButtonHandler) => (
+        <SidebarSetupStopLoss
+          vault={vault}
+          ilkData={ilkData}
+          balanceInfo={balanceInfo}
+          context={context}
+          ethMarketPrice={ethMarketPrice}
+          executionPrice={executionPrice}
+          autoSellTriggerData={autoSellTriggerData}
+          autoBuyTriggerData={autoBuyTriggerData}
+          stopLossTriggerData={stopLossTriggerData}
+          constantMultipleTriggerData={constantMultipleTriggerData}
+          stopLossState={stopLossState}
+          txHandler={txHandler}
+          textButtonHandler={textButtonHandler}
+          stage={stage}
+          isAddForm={isAddForm}
+          isRemoveForm={isRemoveForm}
+          isEditing={isEditing}
+          isDisabled={isDisabled}
+          isFirstSetup={isFirstSetup}
+          closePickerConfig={closePickerConfig}
+          sliderConfig={sliderConfig}
+          isStopLossActive={isStopLossActive}
+          resetData={resetData}
+        />
+      )}
+    </AddAndRemoveTriggerControl>
   )
 }
