@@ -3,6 +3,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useScrollToTop } from 'helpers/useScrollToTop'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -68,6 +69,7 @@ const BlockHeading = ({
 )
 
 function BrandAssetsPage() {
+  useScrollToTop()
   const { t } = useTranslation()
   return (
     <Box sx={{ width: '100%', mt: 5, pb: 7 }}>
