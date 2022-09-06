@@ -72,7 +72,11 @@ export function SidebarAutoBuyEditingStage({
     vaultDebt: vault.debt,
   })
 
-  adjustDefaultValuesIfOutsideSlider()
+  const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
+
+  if (!isStopLossEnabled) {
+    adjustDefaultValuesIfOutsideSlider()
+  }
 
   const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
     .times(100)
@@ -101,29 +105,30 @@ export function SidebarAutoBuyEditingStage({
     )
   }
 
-  const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
   const [, setHash] = useHash()
 
-  if (isStopLossEnabled && stopLossLevel.gt(basicBuyState.execCollRatio)) {
-    ;<Trans
-      i18nKey="auto-buy.sl-too-high"
-      components={[
-        <Text
-          as="span"
-          sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
-          onClick={() => {
-            uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-              type: 'Protection',
-              currentProtectionFeature: 'stopLoss',
-            })
-            setHash(VaultViewMode.Protection)
-          }}
-        />,
-      ]}
-      values={{
-        maxStopLoss: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
-      }}
-    />
+  if (isStopLossEnabled && stopLossLevel.times(100).lt(sliderMin)) {
+    return (
+      <Trans
+        i18nKey="auto-buy.sl-too-high"
+        components={[
+          <Text
+            as="span"
+            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+            onClick={() => {
+              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                type: 'Protection',
+                currentProtectionFeature: 'stopLoss',
+              })
+              setHash(VaultViewMode.Protection)
+            }}
+          />,
+        ]}
+        values={{
+          maxStopLoss: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
+        }}
+      />
+    )
   }
 
   if (readOnlyBasicBSEnabled && !isVaultEmpty) {
