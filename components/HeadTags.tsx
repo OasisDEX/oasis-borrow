@@ -39,10 +39,28 @@ export function PageSEOTags({
   title,
   description,
   url = '/',
-  ogImage = 'og.png',
-  twitterImage = 'og_small.png',
+  ogImage = 'og_default.png',
+  twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
   const { t } = useTranslation()
+
+  const OGImages = {
+    '/borrow': {
+      ogImage: 'og_borrow.png',
+      twitterImage: 'twitter_preview_borrow.png',
+    },
+    '/multiply': {
+      ogImage: 'og_multiply.png',
+      twitterImage: 'twitter_preview_multiply.png',
+    },
+    '/earn': {
+      ogImage: 'og_earn.png',
+      twitterImage: 'twitter_preview_earn.png',
+    },
+  }[url] || {
+    ogImage,
+    twitterImage,
+  }
 
   return (
     <Head>
@@ -67,9 +85,18 @@ export function PageSEOTags({
       <meta property="og:url" content={`${APP_URL}${url}`} />
       <link rel="canonical" href={`${APP_URL}${url}`} />
 
-      <meta property="og:image" content={`${APP_URL}/static/${ogImage}`} />
-      <meta property="og:image:secure_url" content={`${APP_URL}/static/${ogImage}`} />
-      <meta name="twitter:image" content={`${APP_URL}/static/${twitterImage}`} />
+      <meta
+        property="og:image"
+        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}`)}
+      />
+      <meta
+        property="og:image:secure_url"
+        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}`)}
+      />
+      <meta
+        name="twitter:image"
+        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.twitterImage}`)}
+      />
       <meta name="twitter:card" content="summary_large_image" />
 
       <meta property="og:type" content="website" />
