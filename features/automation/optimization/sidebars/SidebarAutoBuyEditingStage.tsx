@@ -107,7 +107,7 @@ export function SidebarAutoBuyEditingStage({
 
   const [, setHash] = useHash()
 
-  if (isStopLossEnabled && stopLossLevel.times(100).lt(sliderMin)) {
+  if (isStopLossEnabled && stopLossLevel.times(100).gt(sliderMin)) {
     return (
       <Trans
         i18nKey="auto-buy.sl-too-high"

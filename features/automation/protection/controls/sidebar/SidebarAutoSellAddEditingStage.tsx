@@ -154,7 +154,7 @@ export function SidebarAutoSellAddEditingStage({
 
   const [, setHash] = useHash()
 
-  if (isStopLossEnabled && stopLossLevel.times(100).lt(sliderMin)) {
+  if (isStopLossEnabled && stopLossLevel.times(100).gt(sliderMin)) {
     return (
       <Trans
         i18nKey="auto-sell.sl-too-high"
