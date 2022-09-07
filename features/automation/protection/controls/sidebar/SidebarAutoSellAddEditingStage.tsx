@@ -347,13 +347,13 @@ export function SidebarAutoSellAddEditingStage({
     if (basicSellState.targetCollRatio.gt(sliderMax)) {
       uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
         type: 'target-coll-ratio',
-        targetCollRatio: sliderMin,
+        targetCollRatio: sliderMax,
       })
     }
     if (basicSellState.execCollRatio.lt(sliderMin)) {
       uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
         type: 'execution-coll-ratio',
-        execCollRatio: sliderMax,
+        execCollRatio: sliderMin,
       })
     }
   }
