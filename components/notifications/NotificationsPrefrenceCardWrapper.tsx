@@ -1,5 +1,4 @@
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
-import { NotificationsEmailPreferences } from 'components/notifications/NotificationsEmailPreferences'
 import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { notificationPreferences } from 'features/notifications/consts'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
@@ -67,7 +66,10 @@ export function NotificationPreferenceCardWrapper({
 
   return (
     <Box>
-      <Box sx={{ pb: 3, borderBottom: '1px solid', borderColor: 'neutral20' }}>
+      <Box
+      // TODO UNCOMMENTED WHEN E-MAIL HANDLING WILL BE HANDLED IN API
+      // sx={{ pb: 3, borderBottom: '1px solid', borderColor: 'neutral20' }}
+      >
         {notificationPreferences.map((preference) => (
           <NotificationPreferenceCard
             key={preference.notificationType}
@@ -83,7 +85,8 @@ export function NotificationPreferenceCardWrapper({
           />
         ))}
       </Box>
-      <NotificationsEmailPreferences account={account} />
+      {/* TODO UNCOMMENTED WHEN E-MAIL HANDLING WILL BE HANDLED IN API*/}
+      {/*<NotificationsEmailPreferences account={account} />*/}
     </Box>
   )
 }
