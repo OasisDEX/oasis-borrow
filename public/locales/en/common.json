@@ -1658,7 +1658,7 @@
     "action-notifications": "Vault action notifications",
     "action-notifications-description": "You will be able to receive notifications when triggering Automation, Liquidation, or opening a vault.",
     "info-notifications": "Vault info notifications",
-    "info-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+    "info-notifications-description": "Get notified when your positions get within 5% of the Stop Loss or liquidation price.",
     "user-communication-notifications": "Oasis.app user communication notifications",
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "news-notifications": "Oasis.app news notifications",
