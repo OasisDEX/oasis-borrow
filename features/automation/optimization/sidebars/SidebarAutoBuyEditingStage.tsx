@@ -15,7 +15,10 @@ import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSect
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
-import { prepareBasicBSResetData } from 'features/automation/common/helpers'
+import {
+  adjustDefaultValuesIfOutsideSlider,
+  prepareBasicBSResetData,
+} from 'features/automation/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
@@ -30,7 +33,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { one, zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
 
 interface SidebarAutoBuyEditingStageProps {
@@ -74,9 +77,15 @@ export function SidebarAutoBuyEditingStage({
 
   const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
 
-  if (!isStopLossEnabled) {
-    adjustDefaultValuesIfOutsideSlider()
-  }
+  useEffect(() => {
+    adjustDefaultValuesIfOutsideSlider({
+      basicBSState: basicBuyState,
+      sliderMax,
+      sliderMin,
+      uiChanges,
+      publishType: BASIC_BUY_FORM_CHANGE,
+    })
+  }, [vault.collateralizationRatio.toNumber()])
 
   const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
     .times(100)
@@ -288,21 +297,6 @@ export function SidebarAutoBuyEditingStage({
       )}
     </>
   )
-
-  function adjustDefaultValuesIfOutsideSlider() {
-    if (basicBuyState.targetCollRatio.lt(sliderMin)) {
-      uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-        type: 'target-coll-ratio',
-        targetCollRatio: sliderMin,
-      })
-    }
-    if (basicBuyState.execCollRatio.gt(sliderMax)) {
-      uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-        type: 'execution-coll-ratio',
-        execCollRatio: sliderMax,
-      })
-    }
-  }
 }
 
 interface AutoBuyInfoSectionControlProps {

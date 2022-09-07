@@ -15,7 +15,10 @@ import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSec
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
-import { prepareBasicBSResetData } from 'features/automation/common/helpers'
+import {
+  adjustDefaultValuesIfOutsideSlider,
+  prepareBasicBSResetData,
+} from 'features/automation/common/helpers'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -27,7 +30,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { one } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
 
 import { StopLossTriggerData } from '../../common/stopLossTriggerData'
@@ -121,9 +124,15 @@ export function SidebarAutoSellAddEditingStage({
 
   const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
 
-  if (!isStopLossEnabled) {
-    adjustDefaultValuesIfOutsideSlider()
-  }
+  useEffect(() => {
+    adjustDefaultValuesIfOutsideSlider({
+      basicBSState: basicSellState,
+      sliderMax,
+      sliderMin,
+      uiChanges,
+      publishType: BASIC_SELL_FORM_CHANGE,
+    })
+  }, [vault.collateralizationRatio.toNumber()])
 
   const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
     .times(100)
@@ -342,19 +351,4 @@ export function SidebarAutoSellAddEditingStage({
       )}
     </>
   )
-
-  function adjustDefaultValuesIfOutsideSlider() {
-    if (basicSellState.targetCollRatio.gt(sliderMax)) {
-      uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-        type: 'target-coll-ratio',
-        targetCollRatio: sliderMax,
-      })
-    }
-    if (basicSellState.execCollRatio.lt(sliderMin)) {
-      uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-        type: 'execution-coll-ratio',
-        execCollRatio: sliderMin,
-      })
-    }
-  }
 }
