@@ -16,7 +16,6 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/common/stopLossTriggerData'
 import { GraphQLClient } from 'graphql-request'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
@@ -71,25 +70,21 @@ export function createAutomationTriggersChange$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ) {
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
-
-  return stopLossReadEnabled
-    ? automationTriggersData$(id).pipe(
-        map((triggers) => ({
-          kind: 'automationTriggersData',
-          stopLossData: extractStopLossData(triggers),
-          basicSellData: extractBasicBSData({
-            triggersData: triggers,
-            triggerType: TriggerType.BasicSell,
-          }),
-          basicBuyData: extractBasicBSData({
-            triggersData: triggers,
-            triggerType: TriggerType.BasicBuy,
-          }),
-          constantMultipleData: extractConstantMultipleData(triggers),
-        })),
-      )
-    : []
+  return automationTriggersData$(id).pipe(
+    map((triggers) => ({
+      kind: 'automationTriggersData',
+      stopLossData: extractStopLossData(triggers),
+      basicSellData: extractBasicBSData({
+        triggersData: triggers,
+        triggerType: TriggerType.BasicSell,
+      }),
+      basicBuyData: extractBasicBSData({
+        triggersData: triggers,
+        triggerType: TriggerType.BasicBuy,
+      }),
+      constantMultipleData: extractConstantMultipleData(triggers),
+    })),
+  )
 }
 
 export interface AutomationTriggersChange {

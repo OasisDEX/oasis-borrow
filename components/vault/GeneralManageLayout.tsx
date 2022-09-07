@@ -1,7 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useBasicBSstateInitialization } from 'features/automation/protection/useBasicSellStateInitializator'
 import { useConstantMultipleStateInitialization } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
@@ -19,34 +19,41 @@ import { VaultHeadline } from './VaultHeadline'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
-  autoTriggersData: TriggersData
 }
 
-export function GeneralManageLayout({
-  generalManageVault,
-  autoTriggersData,
-}: GeneralManageLayoutProps) {
+export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutProps) {
+  const {
+    stopLossTriggerData,
+    autoSellTriggerData,
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+  } = useAutomationContext()
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
 
   const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
-  const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
+  const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, stopLossTriggerData)
   const isBasicSellEnabled = useBasicBSstateInitialization(
     ilkData,
     vault,
-    autoTriggersData,
+    autoSellTriggerData,
+    stopLossTriggerData,
     TriggerType.BasicSell,
   )
   const isBasicBuyEnabled = useBasicBSstateInitialization(
     ilkData,
     vault,
-    autoTriggersData,
+    autoBuyTriggerData,
+    stopLossTriggerData,
     TriggerType.BasicBuy,
   )
   const isConstantMultipleEnabled = useConstantMultipleStateInitialization(
     ilkData,
     vault,
-    autoTriggersData,
+    constantMultipleTriggerData,
+    autoBuyTriggerData,
+    autoSellTriggerData,
+    stopLossTriggerData,
   )
 
   const headlineElement =

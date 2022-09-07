@@ -2,7 +2,7 @@ import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/common/UITypes/StopLossFormChange'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
@@ -12,17 +12,14 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from '../common/consts'
 import { getStartingSlRatio } from './common/helpers'
-import { TriggersData } from './triggers/AutomationTriggersData'
 
 export function useStopLossStateInitializator(
   ilkData: IlkData,
   vault: Vault | InstiVault,
-  autoTriggersData: TriggersData,
+  stopLossTriggerData: StopLossTriggerData,
 ) {
   const { uiChanges } = useAppContext()
-  const { stopLossLevel, isStopLossEnabled, isToCollateral, triggerId } = extractStopLossData(
-    autoTriggersData,
-  )
+  const { stopLossLevel, isStopLossEnabled, isToCollateral, triggerId } = stopLossTriggerData
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))

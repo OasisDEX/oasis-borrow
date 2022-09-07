@@ -1,11 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AppLink } from 'components/Links'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
-import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -108,28 +106,17 @@ export function OptimizationControl({
   balanceInfo,
   vaultHistory,
 }: OptimizationControlProps) {
-  const { automationTriggersData$, context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
+  const { context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
   const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
   const [contextData, contextError] = useObservable(context$)
-  const autoTriggersData$ = automationTriggersData$(vault.id)
-  const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
+  const { autoBuyTriggerData, constantMultipleTriggerData } = useAutomationContext()
 
-  const basicBuyData = automationTriggersData
-    ? extractBasicBSData({
-        triggersData: automationTriggersData,
-        triggerType: TriggerType.BasicBuy,
-      })
-    : undefined
-  const constantMultipleTriggerData = automationTriggersData
-    ? extractConstantMultipleData(automationTriggersData)
-    : undefined
-
-  const vaultHasActiveAutoBuyTrigger = basicBuyData?.isTriggerEnabled
-  const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData?.isTriggerEnabled
+  const vaultHasActiveAutoBuyTrigger = autoBuyTriggerData.isTriggerEnabled
+  const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData.isTriggerEnabled
 
   if (
     (!vaultHasActiveAutoBuyTrigger &&
@@ -156,21 +143,18 @@ export function OptimizationControl({
   }
 
   return (
-    <WithErrorHandler
-      error={[automationTriggersError, ethAndTokenPricesError, contextError, txHelpersError]}
-    >
+    <WithErrorHandler error={[ethAndTokenPricesError, contextError, txHelpersError]}>
       <WithLoadingIndicator
-        value={[automationTriggersData, contextData, ethAndTokenPricesData]}
+        value={[contextData, ethAndTokenPricesData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, context, ethAndTokenPrices]) => (
+        {([context, ethAndTokenPrices]) => (
           <DefaultVaultLayout
             detailsViewControl={
               <OptimizationDetailsControl
                 vault={vault}
                 vaultType={vaultType}
                 vaultHistory={vaultHistory}
-                automationTriggersData={automationTriggers}
                 tokenMarketPrice={ethAndTokenPrices[vault.token]}
               />
             }
@@ -178,7 +162,6 @@ export function OptimizationControl({
               <OptimizationFormControl
                 vault={vault}
                 vaultType={vaultType}
-                automationTriggersData={automationTriggers}
                 ilkData={ilkData}
                 txHelpers={txHelpersData}
                 context={context}

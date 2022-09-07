@@ -1,9 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
@@ -104,66 +102,39 @@ function getZeroDebtProtectionBannerProps({
 }
 
 export function ProtectionControl({ vault, ilkData, balanceInfo }: ProtectionControlProps) {
-  const {
-    automationTriggersData$,
-    priceInfo$,
-    context$,
-    txHelpers$,
-    tokenPriceUSD$,
-  } = useAppContext()
+  const { priceInfo$, context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
+  const { stopLossTriggerData, autoSellTriggerData } = useAutomationContext()
+
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
   const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
   const [contextData, contextError] = useObservable(context$)
-  const autoTriggersData$ = automationTriggersData$(vault.id)
-  const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
   const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
   const dustLimit = ilkData.debtFloor
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
-  const stopLossData = automationTriggersData
-    ? extractStopLossData(automationTriggersData)
-    : undefined
-  const basicSellData = automationTriggersData
-    ? extractBasicBSData({
-        triggersData: automationTriggersData,
-        triggerType: TriggerType.BasicSell,
-      })
-    : undefined
-  const vaultHasActiveTrigger = stopLossData?.isStopLossEnabled || basicSellData?.isTriggerEnabled
+  const vaultHasActiveTrigger =
+    stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled
 
   return vaultHasActiveTrigger ||
     (!vault.debt.isZero() &&
       vault.debt.gt(dustLimit) &&
       (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
     <WithErrorHandler
-      error={[
-        automationTriggersError,
-        priceInfoError,
-        txHelpersError,
-        contextError,
-        ethAndTokenPricesError,
-      ]}
+      error={[priceInfoError, txHelpersError, contextError, ethAndTokenPricesError]}
     >
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData, contextData, ethAndTokenPricesData]}
+        value={[priceInfoData, contextData, ethAndTokenPricesData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, priceInfo, context, ethAndTokenPrices]) => {
+        {([priceInfo, context, ethAndTokenPrices]) => {
           return (
             <DefaultVaultLayout
-              detailsViewControl={
-                <ProtectionDetailsControl
-                  vault={vault}
-                  automationTriggersData={automationTriggers}
-                  ilkData={ilkData}
-                />
-              }
+              detailsViewControl={<ProtectionDetailsControl vault={vault} ilkData={ilkData} />}
               editForm={
                 <ProtectionFormControl
                   ilkData={ilkData}
-                  automationTriggersData={automationTriggers}
                   priceInfo={priceInfo}
                   vault={vault}
                   balanceInfo={balanceInfo}

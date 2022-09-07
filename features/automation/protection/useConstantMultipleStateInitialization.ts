@@ -1,15 +1,14 @@
-import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   calculateCollRatioFromMultiple,
   getEligibleMultipliers,
 } from 'features/automation/common/helpers'
 import {
-  extractConstantMultipleData,
+  ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
@@ -17,11 +16,10 @@ import {
   getConstantMultipleMultipliers,
   getDefaultMultiplier,
 } from 'features/automation/optimization/common/multipliers'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useEffect } from 'react'
 
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
-import { TriggersData } from './triggers/AutomationTriggersData'
 
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
 
@@ -30,20 +28,13 @@ export const DEFAULT_TARGET_OFFSET = 10
 export function useConstantMultipleStateInitialization(
   ilkData: IlkData,
   vault: Vault | InstiVault,
-  autoTriggersData: TriggersData,
+  constantMultipleTriggerData: ConstantMultipleTriggerData,
+  autoBuyTriggerData: BasicBSTriggerData,
+  autoSellTriggerData: BasicBSTriggerData,
+  stopLossTriggerData: StopLossTriggerData,
 ) {
   const { uiChanges } = useAppContext()
 
-  const stopLossTriggerData = extractStopLossData(autoTriggersData)
-  const autoBuyTriggerData = extractBasicBSData({
-    triggersData: autoTriggersData,
-    triggerType: TriggerType.BasicBuy,
-  })
-  const autoSellTriggerData = extractBasicBSData({
-    triggersData: autoTriggersData,
-    triggerType: TriggerType.BasicSell,
-  })
-  const constantMultipleTriggerData = extractConstantMultipleData(autoTriggersData)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const { min, max } = getConstantMutliplyMinMaxValues({

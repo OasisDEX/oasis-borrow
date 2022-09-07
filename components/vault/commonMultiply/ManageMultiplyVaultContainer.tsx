@@ -1,13 +1,13 @@
+import { trackingEvents } from 'analytics/analytics'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { createManageMultiplyVaultAnalytics$ } from 'features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
 import { Box, Grid } from 'theme-ui'
 
-import { trackingEvents } from '../../../analytics/analytics'
-import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipes/manageMultiplyVault'
-import { createManageMultiplyVaultAnalytics$ } from '../../../features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
-import { VaultHistoryEvent } from '../../../features/vaultHistory/vaultHistory'
-import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import { useAppContext } from '../../AppContextProvider'
 import { DefaultVaultHeaderProps } from '../DefaultVaultHeader'
 

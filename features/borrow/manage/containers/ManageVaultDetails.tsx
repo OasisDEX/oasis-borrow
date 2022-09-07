@@ -1,7 +1,7 @@
 import { Box } from '@theme-ui/components'
 import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -21,10 +21,8 @@ import {
 } from 'components/vault/VaultDetails'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { overrideWarningAutoSellTriggerIds } from 'features/automation/common/consts'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -115,7 +113,6 @@ export function ManageVaultDetails(
       daiYieldFromLockedCollateral,
       debt,
       freeCollateral,
-      id,
       token,
       liquidationPrice,
       lockedCollateral,
@@ -138,16 +135,13 @@ export function ManageVaultDetails(
     basicSellData,
   } = props
   const { t } = useTranslation()
-  const { automationTriggersData$ } = useAppContext()
-  const autoTriggersData$ = automationTriggersData$(id)
-  const [automationTriggersData] = useObservable(autoTriggersData$)
+  const { stopLossTriggerData } = useAutomationContext()
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
-  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   const basicSellTriggerId = basicSellData?.triggerId.toNumber() || 0
 
@@ -173,7 +167,6 @@ export function ManageVaultDetails(
                 liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
                 afterLiquidationPrice={afterLiquidationPrice}
                 changeVariant={changeVariant}
-                vaultId={id}
               />
               <ContentCardCollateralizationRatio
                 collateralizationRatio={collateralizationRatio}
@@ -188,9 +181,9 @@ export function ManageVaultDetails(
                 afterLockedCollateralUSD={afterLockedCollateralUSD}
                 changeVariant={changeVariant}
               />
-              {slData && slData.isStopLossEnabled && (
+              {stopLossTriggerData.isStopLossEnabled && (
                 <ContentCardDynamicStopPriceWithColRatio
-                  slData={slData}
+                  slData={stopLossTriggerData}
                   liquidationPrice={liquidationPrice}
                   afterLiquidationPrice={afterLiquidationPrice}
                   liquidationRatio={liquidationRatio}
@@ -217,7 +210,7 @@ export function ManageVaultDetails(
       />
 
       {stopLossReadEnabled && stopLossWriteEnabled && (
-        <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
+        <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} />
       )}
       <BonusContainer cdpId={props.vault.id} />
     </Grid>

@@ -1,25 +1,22 @@
 import { BigNumber } from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { AfterPillProps } from 'components/vault/VaultDetails'
 import React from 'react'
 
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { AfterPillProps } from '../../../../components/vault/VaultDetails'
-import { useObservable } from '../../../../helpers/observableHook'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { StopLossBannerLayout } from './StopLossBannerLayout'
 
 interface StopLossBannerControlProps {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
-  vaultId: BigNumber
   afterLiquidationPrice?: BigNumber
   compact?: boolean
   onClick?: () => void
 }
 
 export function StopLossBannerControl({
-  vaultId,
   liquidationPrice,
   liquidationRatio,
   afterLiquidationPrice,
@@ -27,23 +24,22 @@ export function StopLossBannerControl({
   compact = false,
   onClick,
 }: StopLossBannerControlProps & AfterPillProps) {
-  const { automationTriggersData$, uiChanges } = useAppContext()
-  const autoTriggersData$ = automationTriggersData$(vaultId)
-  const [automationTriggersData] = useObservable(autoTriggersData$)
+  const { uiChanges } = useAppContext()
+  const { stopLossTriggerData } = useAutomationContext()
 
-  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
-
-  if (slData && slData.isStopLossEnabled) {
-    const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slData.stopLossLevel)
+  if (stopLossTriggerData.isStopLossEnabled) {
+    const dynamicStopPrice = liquidationPrice
+      .div(liquidationRatio)
+      .times(stopLossTriggerData.stopLossLevel)
     const afterDynamicStopPrice =
       afterLiquidationPrice &&
-      afterLiquidationPrice.div(liquidationRatio).times(slData.stopLossLevel)
+      afterLiquidationPrice.div(liquidationRatio).times(stopLossTriggerData.stopLossLevel)
 
     return (
       <StopLossBannerLayout
         dynamicStopPrice={dynamicStopPrice}
         afterDynamicStopPrice={afterDynamicStopPrice}
-        stopLossLevel={slData.stopLossLevel}
+        stopLossLevel={stopLossTriggerData.stopLossLevel}
         showAfterPill={showAfterPill}
         handleClick={() => {
           uiChanges.publish(TAB_CHANGE_SUBJECT, {

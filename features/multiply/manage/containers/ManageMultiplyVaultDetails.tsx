@@ -1,6 +1,6 @@
 import { Box } from '@theme-ui/components'
 import { IlkData } from 'blockchain/ilks'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -15,9 +15,7 @@ import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/Cont
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { overrideWarningAutoSellTriggerIds } from 'features/automation/common/consts'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
-import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -29,7 +27,7 @@ import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD, ilk },
+    vault: { token, liquidationPrice, debt, lockedCollateral, lockedCollateralUSD, ilk },
     ilkData: { liquidationRatio },
     afterDebt,
     afterLockedCollateral,
@@ -53,9 +51,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     basicSellData,
   } = props
   const { t } = useTranslation()
-  const { automationTriggersData$ } = useAppContext()
-  const autoTriggersData$ = automationTriggersData$(id)
-  const [automationTriggersData] = useObservable(autoTriggersData$)
+  const { stopLossTriggerData } = useAutomationContext()
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
@@ -63,7 +59,6 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
-  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   const basicSellTriggerId = basicSellData?.triggerId.toNumber() || 0
 
@@ -89,7 +84,6 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
                 liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
                 afterLiquidationPrice={afterLiquidationPrice}
                 changeVariant={changeVariant}
-                vaultId={id}
               />
               <ContentCardBuyingPower
                 token={token}
@@ -111,9 +105,9 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
                 debt={debt}
                 changeVariant={changeVariant}
               />
-              {slData && slData.isStopLossEnabled && (
+              {stopLossTriggerData.isStopLossEnabled && (
                 <ContentCardDynamicStopPriceWithColRatio
-                  slData={slData}
+                  slData={stopLossTriggerData}
                   liquidationPrice={liquidationPrice}
                   afterLiquidationPrice={afterLiquidationPrice}
                   liquidationRatio={liquidationRatio}
@@ -140,7 +134,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       />
 
       {stopLossReadEnabled && stopLossWriteEnabled && (
-        <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
+        <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} />
       )}
     </Grid>
   )
