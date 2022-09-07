@@ -138,7 +138,7 @@ export function SidebarAutoSellAddEditingStage({
     .times(100)
     .gt(sliderMax)
 
-  if (isCurrentCollRatioHigherThanSliderMax) {
+  if (isCurrentCollRatioHigherThanSliderMax || sliderMin.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).gt(sliderMax)) {
     return (
       <Trans
         i18nKey="auto-sell.coll-ratio-too-high"
@@ -163,7 +163,7 @@ export function SidebarAutoSellAddEditingStage({
 
   const [, setHash] = useHash()
 
-  if (isStopLossEnabled && stopLossLevel.times(100).gt(sliderMin)) {
+  if (isStopLossEnabled && stopLossLevel.times(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).gt(sliderMax)) {
     return (
       <Trans
         i18nKey="auto-sell.sl-too-high"
