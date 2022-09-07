@@ -1,7 +1,9 @@
+import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
+import { AaveReserveConfigurationData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
@@ -17,9 +19,6 @@ import {
   OpenAaveStateMachineServices,
   ParametersStateMachine,
 } from '../state'
-import { BigNumber } from 'bignumber.js'
-import { AaveReserveConfigurationData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
-import { WAD } from '../../../../../components/constants'
 
 export function getOpenAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,

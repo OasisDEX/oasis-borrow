@@ -63,8 +63,8 @@ export function calculatePosition(
   } = params
 
   /**
-   * C_W	Collateral in wallet to top-up or seed position
-   * D_W	Debt token in wallet to top-up or seed position
+   * C_W  Collateral in wallet to top-up or seed position
+   * D_W  Debt token in wallet to top-up or seed position
    * */
   const seedOrTopupCollateral = addedByUser?.collateral || ZERO
   const seedOrTopupDebt = addedByUser?.debt || ZERO
@@ -74,8 +74,8 @@ export function calculatePosition(
    * If it's a new position then these values will be whatever the
    * user decides to seed the position with.
    *
-   * C_C	Current collateral
-   * D_C	Current debt
+   * C_C  Current collateral
+   * D_C  Current debt
    * */
   const currentCollateral = (currentPosition?.collateral || ZERO).plus(seedOrTopupCollateral)
   const currentDebt = (currentPosition?.collateral || ZERO).plus(seedOrTopupDebt)
@@ -89,8 +89,8 @@ export function calculatePosition(
    * AAVE uses ETH
    * Compound uses ETH
    *
-   * P_O	Oracle Price
-   * P_M	Market Price
+   * P_O  Oracle Price
+   * P_M  Market Price
    * P_{MS} Market Price adjusted for Slippage
    * */
   const oraclePrice = prices.oracle

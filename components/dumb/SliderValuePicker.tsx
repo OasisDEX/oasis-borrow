@@ -1,6 +1,5 @@
-import { Box, Flex, Grid, Slider, Text } from '@theme-ui/components'
+import { Box, Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { SxStyleProp, useThemeUI } from 'theme-ui'
 
@@ -23,7 +22,6 @@ export interface SliderValuePickerProps {
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
-  const { t } = useTranslation()
   const {
     theme: { colors },
   } = useThemeUI()

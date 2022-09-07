@@ -3,8 +3,11 @@ import { GraphQLClient } from 'graphql-request'
 import moment from 'moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
-import { distinctUntilKeyChanged, shareReplay, switchMap, map } from 'rxjs/operators'
+import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
+import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
+import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
+import { observe } from '../../../blockchain/calls/observe'
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import {
@@ -20,10 +23,7 @@ import {
   getParametersStateMachine$,
   getSthEthSimulationMachine,
 } from './open/services'
-import { observe } from '../../../blockchain/calls/observe'
-import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
 import { getOpenAaveStateMachine$ } from './open/services/getOpenAaveStateMachine'
-import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
 
 export function setupAaveContext({
   userSettings$,

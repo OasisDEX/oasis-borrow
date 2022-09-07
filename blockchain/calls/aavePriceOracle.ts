@@ -1,7 +1,8 @@
-import { CallDef } from './callsHelpers'
-import { AavePriceOracle } from '../../types/web3-v1-contracts/aave-price-oracle'
 import BigNumber from 'bignumber.js'
+
 import { WAD } from '../../components/constants'
+import { AavePriceOracle } from '../../types/web3-v1-contracts/aave-price-oracle'
+import { CallDef } from './callsHelpers'
 
 export const getAaveAssetPriceData: CallDef<{ token: string }, BigNumber> = {
   call: (args, { contract, aavePriceOracle }) => {

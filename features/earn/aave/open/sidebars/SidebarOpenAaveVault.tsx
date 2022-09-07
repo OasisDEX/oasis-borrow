@@ -1,32 +1,29 @@
 import { useActor } from '@xstate/react'
+import { BigNumber } from 'bignumber.js'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
+import { amountFromWei } from '../../../../../blockchain/utils'
+import { WAD } from '../../../../../components/constants'
+import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
+import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
+import { LOAN_FEE, OAZO_FEE } from '../../../../../helpers/multiply/calculations'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { one, zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
+import { calculatePosition, IPosition } from '../services/tmpMaths'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
-import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
-import { BigNumber } from 'bignumber.js'
-import { calculatePosition, IPosition } from '../services/tmpMaths'
-import { one, zero } from '../../../../../helpers/zero'
-import { WAD } from '../../../../../components/constants'
-import { LOAN_FEE, OAZO_FEE } from '../../../../../helpers/multiply/calculations'
-import { amountFromWei } from '../../../../../blockchain/utils'
-import { getTextButtonLabel } from '../../../../sidebar/getTextButtonLabel'
-import { regressTrackingEvent } from '../../../../sidebar/trackingEvents'
-import { Icon } from '@makerdao/dai-ui-icons'
-import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
