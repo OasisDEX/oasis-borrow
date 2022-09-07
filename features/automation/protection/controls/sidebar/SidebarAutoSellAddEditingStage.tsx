@@ -4,6 +4,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
@@ -13,7 +14,11 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { prepareBasicBSResetData } from 'features/automation/common/helpers'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
+import {
+  adjustDefaultValuesIfOutsideSlider,
+  prepareBasicBSResetData,
+} from 'features/automation/common/helpers'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -22,10 +27,15 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useHash } from 'helpers/useHash'
 import { one } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
+import { Trans, useTranslation } from 'next-i18next'
+import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
+
+import { StopLossTriggerData } from '../../common/stopLossTriggerData'
+import { AUTOMATION_CHANGE_FEATURE } from '../../common/UITypes/AutomationFeatureChange'
+import { TAB_CHANGE_SUBJECT } from '../../common/UITypes/TabChange'
 
 interface AutoSellInfoSectionControlProps {
   vault: Vault
@@ -85,6 +95,7 @@ interface SidebarAutoSellAddEditingStageProps {
   collateralDelta: BigNumber
   sliderMin: BigNumber
   sliderMax: BigNumber
+  stopLossTriggerData: StopLossTriggerData
 }
 
 export function SidebarAutoSellAddEditingStage({
@@ -99,6 +110,7 @@ export function SidebarAutoSellAddEditingStage({
   collateralDelta,
   sliderMin,
   sliderMax,
+  stopLossTriggerData,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -109,6 +121,74 @@ export function SidebarAutoSellAddEditingStage({
   })
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const isVaultEmpty = vault.debt.isZero()
+
+  const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
+
+  useEffect(() => {
+    adjustDefaultValuesIfOutsideSlider({
+      basicBSState: basicSellState,
+      sliderMax,
+      sliderMin,
+      uiChanges,
+      publishType: BASIC_SELL_FORM_CHANGE,
+    })
+  }, [vault.collateralizationRatio.toNumber()])
+
+  const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
+    .times(100)
+    .gt(sliderMax)
+
+  if (
+    isStopLossEnabled &&
+    stopLossLevel.times(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)).gt(sliderMax)
+  ) {
+    return (
+      <Trans
+        i18nKey="auto-sell.sl-too-high"
+        components={[
+          <Text
+            as="span"
+            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+            onClick={() => {
+              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                type: 'Protection',
+                currentProtectionFeature: 'stopLoss',
+              })
+              setHash(VaultViewMode.Protection)
+            }}
+          />,
+        ]}
+        values={{
+          maxStopLoss: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
+        }}
+      />
+    )
+  }
+
+  if (isCurrentCollRatioHigherThanSliderMax) {
+    return (
+      <Trans
+        i18nKey="auto-sell.coll-ratio-too-high"
+        components={[
+          <Text
+            as="span"
+            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+            onClick={() => {
+              uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                type: 'change-tab',
+                currentMode: VaultViewMode.Overview,
+              })
+            }}
+          />,
+        ]}
+        values={{
+          maxAutoBuyCollRatio: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
+        }}
+      />
+    )
+  }
+
+  const [, setHash] = useHash()
 
   if (readOnlyBasicBSEnabled && !isVaultEmpty) {
     return (

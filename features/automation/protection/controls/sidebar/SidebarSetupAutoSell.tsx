@@ -167,6 +167,7 @@ export function SidebarSetupAutoSell({
                   collateralDelta={collateralDelta}
                   sliderMin={min}
                   sliderMax={max}
+                  stopLossTriggerData={stopLossTriggerData}
                 />
               )}
               {isRemoveForm && (

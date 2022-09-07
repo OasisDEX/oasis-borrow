@@ -3,9 +3,14 @@ import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
+import { UIChanges } from 'components/AppContext'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
-import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
+  BASIC_BUY_FORM_CHANGE,
+  BASIC_SELL_FORM_CHANGE,
+  BasicBSFormChange,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import {
   TriggerRecord,
   TriggersData,
@@ -292,4 +297,39 @@ export function getEligibleMultipliers({
       )
     })
     .filter((item) => item >= minMultiplier && item <= maxMultiplier)
+}
+
+export function adjustDefaultValuesIfOutsideSlider({
+  basicBSState,
+  sliderMin,
+  sliderMax,
+  uiChanges,
+  publishType,
+}: {
+  basicBSState: BasicBSFormChange
+  sliderMin: BigNumber
+  sliderMax: BigNumber
+  uiChanges: UIChanges
+  publishType: typeof BASIC_SELL_FORM_CHANGE | typeof BASIC_BUY_FORM_CHANGE
+}) {
+  const sliderValuesMap = {
+    [BASIC_BUY_FORM_CHANGE]: { targetCollRatio: sliderMin, execCollRatio: sliderMin.plus(5) },
+    [BASIC_SELL_FORM_CHANGE]: { targetCollRatio: sliderMin.plus(5), execCollRatio: sliderMin },
+  }
+
+  if (
+    basicBSState.targetCollRatio.lt(sliderMin) ||
+    basicBSState.targetCollRatio.gt(sliderMax) ||
+    basicBSState.execCollRatio.gt(sliderMax) ||
+    basicBSState.execCollRatio.lt(sliderMin)
+  ) {
+    uiChanges.publish(publishType, {
+      type: 'target-coll-ratio',
+      targetCollRatio: sliderValuesMap[publishType].targetCollRatio,
+    })
+    uiChanges.publish(publishType, {
+      type: 'execution-coll-ratio',
+      execCollRatio: sliderValuesMap[publishType].execCollRatio,
+    })
+  }
 }
