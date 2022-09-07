@@ -187,7 +187,11 @@ export function SidebarAdjustStopLossEditingStage({
               {t('here')}.
             </AppLink>
           </Text>
-          <SliderValuePicker {...sliderConfig} />
+          <SliderValuePicker
+            {...sliderConfig}
+            leftLabel={t('slider.set-stoploss.left-label')}
+            rightLabel={t('slider.set-stoploss.right-label')}
+          />
         </Grid>
       ) : (
         <SidebarFormInfo

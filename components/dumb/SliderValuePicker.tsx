@@ -5,7 +5,6 @@ import React from 'react'
 import { SxStyleProp, useThemeUI } from 'theme-ui'
 
 export interface SliderValuePickerProps {
-  sliderKey: string
   sliderPercentageFill: BigNumber
   leftBoundry: BigNumber
   leftBoundryFormatter: (input: BigNumber) => string
@@ -19,6 +18,8 @@ export interface SliderValuePickerProps {
   leftBoundryStyling: SxStyleProp
   rightBoundryStyling: SxStyleProp
   step: number
+  leftLabel?: string
+  rightLabel?: string
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -26,9 +27,6 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
   const {
     theme: { colors },
   } = useThemeUI()
-
-  const leftLabel = t(`slider.${props.sliderKey}.left-label`)
-  const rightLabel = t(`slider.${props.sliderKey}.right-label`)
 
   const background = props.sliderPercentageFill
     ? `linear-gradient(to right, ${colors?.interactive50} 0%, ${colors?.interactive50} ${
@@ -41,7 +39,9 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
   return (
     <Grid gap={2}>
       <Box>
-        <Flex
+        <Grid
+          columns={2}
+          gap={2}
           sx={{
             variant: 'text.paragraph4',
             justifyContent: 'space-between',
@@ -49,19 +49,15 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
             color: 'neutral80',
           }}
         >
-          <Grid gap={2}>
-            {leftLabel && <Text>{leftLabel}</Text>}
-            <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
-              {props.leftBoundryFormatter(props.leftBoundry)}
-            </Text>
-          </Grid>
-          <Grid gap={2}>
-            {rightLabel && <Text>{rightLabel}</Text>}
-            <Text variant="paragraph1" sx={props.leftBoundryStyling}>
-              {props.rightBoundryFormatter(props.rightBoundry)}
-            </Text>
-          </Grid>
-        </Flex>
+          <Text>{props.leftLabel}</Text>
+          <Text>{props.rightLabel}</Text>
+          <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+            {props.leftBoundryFormatter(props.leftBoundry)}
+          </Text>
+          <Text variant="paragraph1" sx={props.leftBoundryStyling}>
+            {props.rightBoundryFormatter(props.rightBoundry)}
+          </Text>
+        </Grid>
       </Box>
       <Box my={1}>
         <Slider

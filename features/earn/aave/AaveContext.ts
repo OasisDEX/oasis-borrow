@@ -16,13 +16,14 @@ import {
   getAaveStEthYield,
   getOpenAaveParametersStateMachineServices$,
   getOpenAavePositionStateMachineServices,
-  getOpenAaveStateMachine$,
   getOpenAaveTransactionMachine,
   getParametersStateMachine$,
   getSthEthSimulationMachine,
 } from './open/services'
 import { observe } from '../../../blockchain/calls/observe'
 import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
+import { getOpenAaveStateMachine$ } from './open/services/getOpenAaveStateMachine'
+import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
 
 export function setupAaveContext({
   userSettings$,
@@ -54,7 +55,9 @@ export function setupAaveContext({
     once$,
     connectedContext$,
     getAaveReserveConfigurationData,
-  )({ token: 'STETH' }).pipe(shareReplay(1))
+  )
+
+  const aaveAssetPriceData$ = observe(once$, connectedContext$, getAaveAssetPriceData)
 
   const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
@@ -78,6 +81,7 @@ export function setupAaveContext({
     tokenBalances$,
     proxyForAccount$,
     aaveReserveConfigurationData$,
+    aaveAssetPriceData$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

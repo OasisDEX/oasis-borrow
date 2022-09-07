@@ -2,7 +2,7 @@ import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import { Box, Flex, Grid, Image } from 'theme-ui'
+import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
 import {
@@ -18,6 +18,15 @@ import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
 import { BigNumber } from 'bignumber.js'
+import { calculatePosition, IPosition } from '../services/tmpMaths'
+import { one, zero } from '../../../../../helpers/zero'
+import { WAD } from '../../../../../components/constants'
+import { LOAN_FEE, OAZO_FEE } from '../../../../../helpers/multiply/calculations'
+import { amountFromWei } from '../../../../../blockchain/utils'
+import { getTextButtonLabel } from '../../../../sidebar/getTextButtonLabel'
+import { regressTrackingEvent } from '../../../../sidebar/trackingEvents'
+import { Icon } from '@makerdao/dai-ui-icons'
+import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
@@ -157,31 +166,101 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
 }
 
 function SettingMultipleView({ state, send }: OpenAaveStateProps) {
-  const hf = state.context.amount?.times(state.context.liquidationThreshold!).div(100)
+  const { t } = useTranslation()
+  function convertMultipleToColRatio(multiple: BigNumber): BigNumber {
+    return one.div(multiple.minus(one)).plus(one)
+  }
+
+  function convertColRatioToMultiple(colRatio: BigNumber): BigNumber {
+    return convertMultipleToColRatio(colRatio)
+  }
+  const marketStEthEthPrice = amountFromWei(new BigNumber('968102393798180700'), 'ETH')
+  const minColRatio = new BigNumber(5)
+  const minRisk = convertColRatioToMultiple(minColRatio)
+  const maxRisk = state.context.strategyInfo ? state.context.strategyInfo.maxMultiple : zero
+
+  const currentPosition: IPosition = {
+    collateral: zero,
+    collateralPriceInUSD: new BigNumber(1),
+    debt: zero,
+    debtPriceInUSD: new BigNumber('968102393798180700').div(WAD),
+    collateralRatio: zero,
+    liquidationRatio: one.div(state.context.strategyInfo?.liquidationThreshold || one),
+    multiple: zero,
+  }
+
+  const endState = calculatePosition({
+    currentPosition,
+    addedByUser: {
+      collateral: state.context.amount,
+    },
+    targetCollateralRatio: convertMultipleToColRatio(state.context.multiply || minRisk),
+    fees: {
+      oazo: OAZO_FEE,
+      flashLoan: LOAN_FEE,
+    },
+    prices: {
+      oracle: one.div(marketStEthEthPrice),
+      market: marketStEthEthPrice,
+    },
+    slippage: new BigNumber('0.005'),
+  })
+
+  let liquidationPriceRatio = one
+
+  if (
+    state.context.amount &&
+    state.context.strategyInfo?.liquidationThreshold &&
+    endState.debtDelta
+  ) {
+    liquidationPriceRatio = one.div(
+      state.context.amount
+        .times(state.context.strategyInfo?.liquidationThreshold)
+        .div(endState.debtDelta),
+    )
+  }
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: 'setting multiple',
+    title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <SliderValuePicker
-          sliderKey="slider-key"
           sliderPercentageFill={new BigNumber(0)}
-          leftBoundry={new BigNumber(1)}
-          leftBoundryFormatter={(value) => value.toString()}
-          rightBoundry={state.context.multiple!}
-          rightBoundryFormatter={(value) => value.toFixed(2)}
+          leftBoundry={liquidationPriceRatio}
+          leftBoundryFormatter={(value) => value.toFixed(2)}
+          rightBoundry={marketStEthEthPrice}
+          rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
           onChange={(value) => {
             send({ type: 'SET_MULTIPLE', multiple: value })
           }}
-          minBoundry={new BigNumber(1)}
-          maxBoundry={state.context.maxMultiple!}
-          lastValue={state.context.multiple!}
+          minBoundry={minRisk}
+          maxBoundry={maxRisk}
+          lastValue={state.context.multiply!}
           disabled={false}
-          leftBoundryStyling={{}}
-          rightBoundryStyling={{}}
+          leftBoundryStyling={{ fontWeight: 'semiBold', textAlign: 'right' }}
+          rightBoundryStyling={{
+            fontWeight: 'semiBold',
+            textAlign: 'right',
+            color: 'primary100',
+          }}
           step={0.01}
+          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
         />
-        <p>{state.context.multiple?.toFixed(2)}</p>
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            color: 'neutral80',
+          }}
+        >
+          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
+          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
+        </Flex>
+        <SidebarResetButton
+          clear={() => {
+            send({ type: 'SET_MULTIPLE', multiple: minRisk })
+          }}
+        />
         <OpenAaveInformationContainer state={state} send={send} />
       </Grid>
     ),
@@ -189,8 +268,12 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
       steps: [2, state.context.totalSteps!],
       isLoading: false,
       disabled: false,
-      label: 'setting multiple',
-      action: () => send('CONFIRM_MULTIPLE'),
+      label: t('open-earn.aave.vault-form.open-btn'),
+      action: () => send('NEXT_STEP'),
+    },
+    textButton: {
+      label: 'Back to enter ETH',
+      action: () => send('BACK_TO_EDITING'),
     },
   }
 

@@ -34,8 +34,8 @@ export const getAaveReserveConfigurationData: CallDef<
   },
   postprocess: (result) => {
     return {
-      ltv: new BigNumber(result.ltv),
-      liquidationThreshold: new BigNumber(result.liquidationThreshold),
+      ltv: new BigNumber(result.ltv).div(10000), // 6900 -> 0.69
+      liquidationThreshold: new BigNumber(result.liquidationThreshold).div(10000), // 8100 -> 0.81
     }
   },
 }
