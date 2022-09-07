@@ -664,6 +664,10 @@
     "brand-assets": {
       "title": "Brand assets",
       "description": "Find here the Oasis.app Logo and graphics."
+    },
+    "security": {
+      "title": "Security",
+      "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
