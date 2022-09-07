@@ -1,23 +1,20 @@
 import BigNumber from 'bignumber.js'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { useAutomationContext } from 'components/AutomationContextProvider'
+import { StopLossBannerControl } from 'features/automation/protection/controls/StopLossBannerControl'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { ModalProps, useModal } from 'helpers/modalHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-import { StopLossBannerControl } from '../../../features/automation/protection/controls/StopLossBannerControl'
-import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
-import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { useObservable } from '../../../helpers/observableHook'
-import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
-import { zero } from '../../../helpers/zero'
-import { useAppContext } from '../../AppContextProvider'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
-  vaultId?: BigNumber
   isStopLossEnabled?: boolean
 }
 
@@ -26,7 +23,6 @@ function VaultDetailsLiquidationModal({
   liquidationRatio,
   liquidationPriceCurrentPriceDifference,
   close,
-  vaultId,
   isStopLossEnabled,
 }: ModalProps<LiquidationProps>) {
   const { t } = useTranslation()
@@ -67,7 +63,7 @@ function VaultDetailsLiquidationModal({
           liquidationPrice,
           'USD',
         )}`}</Card>
-        {isStopLossEnabled && vaultId && (
+        {isStopLossEnabled && (
           <>
             <Heading variant="header3">{`${t('system.vault-protection')}`}</Heading>
             <Text variant="paragraph3" sx={{ pb: 2 }}>
@@ -76,7 +72,6 @@ function VaultDetailsLiquidationModal({
             <StopLossBannerControl
               liquidationPrice={liquidationPrice}
               liquidationRatio={liquidationRatio}
-              vaultId={vaultId}
               onClick={close}
               compact
             />
@@ -95,18 +90,16 @@ export function VaultDetailsCardLiquidationPrice({
   afterPillColors,
   showAfterPill,
   relevant = true,
-  vaultId,
 }: {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
-  vaultId?: BigNumber
   relevant?: Boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
-  const { automationTriggersData$ } = useAppContext()
+  const { stopLossTriggerData } = useAutomationContext()
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const cardDetailsData = {
@@ -129,11 +122,7 @@ export function VaultDetailsCardLiquidationPrice({
     afterPillColors,
   }
 
-  if (vaultId && stopLossReadEnabled) {
-    const autoTriggersData$ = automationTriggersData$(vaultId)
-    const [automationTriggersData] = useObservable(autoTriggersData$)
-    const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
-
+  if (stopLossReadEnabled) {
     return (
       <VaultDetailsCard
         {...cardDetailsData}
@@ -142,8 +131,7 @@ export function VaultDetailsCardLiquidationPrice({
             liquidationPrice,
             liquidationRatio,
             liquidationPriceCurrentPriceDifference,
-            vaultId,
-            isStopLossEnabled: slData?.isStopLossEnabled,
+            isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
           })
         }
       />

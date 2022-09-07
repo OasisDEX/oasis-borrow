@@ -39,7 +39,7 @@ interface PrepareConstantMultipleResetDataProps {
   constantMultipleTriggerData: ConstantMultipleTriggerData
 }
 
-const defaultConstantMultipleData: ConstantMultipleTriggerData = {
+export const defaultConstantMultipleData: ConstantMultipleTriggerData = {
   triggersId: [zero, zero],
   buyExecutionCollRatio: zero,
   sellExecutionCollRatio: zero,
