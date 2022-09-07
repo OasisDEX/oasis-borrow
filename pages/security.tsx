@@ -1,4 +1,3 @@
-import { keyframes } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
