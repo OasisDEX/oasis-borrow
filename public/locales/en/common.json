@@ -574,7 +574,8 @@
     "earn": "Earn",
     "select-an-asset": "Select an asset",
     "referrals": "Referrals",
-    "cookie": "Cookie Policy"
+    "cookie": "Cookie Policy",
+    "brand-assets": "Brand assets"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -658,6 +659,10 @@
     "referrals": {
       "title": "Refer a friend and earn Dai",
       "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
+    },
+    "brand-assets": {
+      "title": "Brand assets",
+      "description": "Find here the Oasis.app Logo and graphics."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -1684,6 +1689,40 @@
         "retry-btn": "Retry",
         "success-title": "All done! You've opened a position",
         "go-to-position": "Go to position"
+      }
+    }
+  },
+  "brand-assets": {
+    "heading": "Brand Assets",
+    "intro": "Find here the Oasis.app Logo and graphics.",
+    "intro-cta": "Download all assets",
+    "category": {
+      "logo": {
+        "heading": "Logo",
+        "info": "Please don’t modify, edit, or distort the logo."
+      },
+      "palm-leaf": {
+        "heading": "The Palm Leaf",
+        "info": "lease only use the mark-only logo in these situations: The full-version logo is illegible, a limited space to display the full-version logo or Oasis.app brand is already established well."
+      },
+      "minimum-size": {
+        "heading": "Minimum Size",
+        "info": "To avoiding the logo are too small to read, please apply the minimum size at least.",
+        "digital": "Digital",
+        "print": "Print",
+        "digital-minimum-size": "72px",
+        "print-minimum-size": "2cm",
+        "width": "(Width)"
+      },
+      "best-practices": {
+        "heading": "Best Practices",
+        "info": "Please avoid the examples blow when using the logo.",
+        "no-gradient": "Do not use gradient for the wordmark",
+        "no-shadow": "Do not add shadow",
+        "no-rotate": "Do not rotate the logo",
+        "no-alone": "Do not use the wordmark alone",
+        "no-stack": "Do not stack the logo",
+        "no-ratio": "Do not change the ratio"
       }
     }
   }
