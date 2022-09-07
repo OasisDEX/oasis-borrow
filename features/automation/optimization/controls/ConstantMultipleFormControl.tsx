@@ -7,11 +7,8 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
+import { AddAndRemoveTriggerControl } from 'features/automation/common/AddAndRemoveTriggerControl'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import {
-  addConstantMultipleTrigger,
-  removeConstantMultipleTrigger,
-} from 'features/automation/common/constanMultipleHandlers'
 import { maxUint256 } from 'features/automation/common/consts'
 import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
@@ -23,22 +20,18 @@ import {
   checkIfDisabledConstantMultiple,
   checkIfEditingConstantMultiple,
 } from 'features/automation/optimization/common/helpers'
-import {
-  prepareAddConstantMultipleTriggerData,
-  prepareRemoveConstantMultipleTriggerData,
-} from 'features/automation/optimization/controls/constantMultipleTriggersData'
+import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
 
@@ -110,21 +103,11 @@ export function ConstantMultipleFormControl({
       constantMultipleState.sellExecutionCollRatio?.toNumber(),
       constantMultipleState.buyWithThreshold,
       constantMultipleState.sellWithThreshold,
-      constantMultipleState.targetCollRatio,
+      constantMultipleState.targetCollRatio.toNumber(),
       constantMultipleState.continuous,
       constantMultipleState.deviation?.toNumber(),
       constantMultipleState.maxBaseFeeInGwei?.toNumber(),
     ],
-  )
-
-  const cancelTxData = useMemo(
-    () =>
-      prepareRemoveConstantMultipleTriggerData({
-        vaultData: vault,
-        triggersId: constantMultipleTriggerData.triggersId,
-        shouldRemoveAllowance,
-      }),
-    [constantMultipleTriggerData.triggersId, shouldRemoveAllowance],
   )
 
   const txStatus = constantMultipleState?.txDetails?.txStatus
@@ -140,41 +123,7 @@ export function ConstantMultipleFormControl({
     ? 'txFailure'
     : 'editing'
 
-  function txHandler() {
-    if (txHelpers) {
-      if (stage === 'txSuccess') {
-        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-          type: 'reset',
-          resetData: prepareConstantMultipleResetData({
-            defaultMultiplier: constantMultipleState.defaultMultiplier,
-            defaultCollRatio: constantMultipleState.defaultCollRatio,
-            constantMultipleTriggerData,
-          }),
-        })
-        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-          type: 'tx-details',
-          txDetails: {},
-        })
-        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-          type: 'current-form',
-          currentForm: 'add',
-        })
-      } else {
-        if (isAddForm) {
-          addConstantMultipleTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice)
-        }
-        if (isRemoveForm) {
-          removeConstantMultipleTrigger(txHelpers, cancelTxData, uiChanges, ethMarketPrice)
-        }
-      }
-    }
-  }
-
-  function textButtonHandler() {
-    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-      type: 'current-form',
-      currentForm: isAddForm ? 'remove' : 'add',
-    })
+  function textButtonHandlerExtension() {
     if (isAddForm) {
       uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
         type: 'multiplier',
@@ -188,15 +137,6 @@ export function ConstantMultipleFormControl({
         type: 'buy-execution-coll-ratio',
         buyExecutionCollRatio: zero,
       })
-    } else {
-      uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-        type: 'reset',
-        resetData: prepareConstantMultipleResetData({
-          defaultMultiplier: constantMultipleState.defaultMultiplier,
-          defaultCollRatio: constantMultipleState.defaultCollRatio,
-          constantMultipleTriggerData,
-        }),
-      })
     }
   }
 
@@ -208,23 +148,6 @@ export function ConstantMultipleFormControl({
     state: constantMultipleState,
     isRemoveForm,
   })
-
-  useEffect(() => {
-    if (isEditing && isConstantMultipleActive) {
-      if (isAddForm) {
-        uiChanges.publish(TX_DATA_CHANGE, {
-          type: 'add-aggregator-trigger',
-          data: addTxData,
-        })
-      }
-      if (isRemoveForm) {
-        uiChanges.publish(TX_DATA_CHANGE, {
-          type: 'remove-aggregator-trigger',
-          data: cancelTxData,
-        })
-      }
-    }
-  }, [addTxData, cancelTxData, isEditing, isConstantMultipleActive])
 
   const isDisabled = checkIfDisabledConstantMultiple({
     isProgressStage,
@@ -299,35 +222,57 @@ export function ConstantMultipleFormControl({
   const estimatedSellFee = debtDeltaAfterSell.abs().times(OAZO_FEE)
 
   return (
-    <SidebarSetupConstantMultiple
-      autoBuyTriggerData={autoBuyTriggerData}
-      autoSellTriggerData={autoSellTriggerData}
-      balanceInfo={balanceInfo}
-      collateralToBePurchased={collateralToBePurchased}
-      collateralToBeSold={collateralToBeSold}
-      constantMultipleState={constantMultipleState}
-      constantMultipleTriggerData={constantMultipleTriggerData}
-      context={context}
-      estimatedBuyFee={estimatedBuyFee}
-      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
-      estimatedSellFee={estimatedSellFee}
+    <AddAndRemoveTriggerControl
+      txHelpers={txHelpers!}
       ethMarketPrice={ethMarketPrice}
-      ilkData={ilkData}
-      isAddForm={isAddForm}
-      isConstantMultipleActive={isConstantMultipleActive}
-      isDisabled={isDisabled}
       isEditing={isEditing}
-      isFirstSetup={isFirstSetup}
-      isRemoveForm={isRemoveForm}
-      nextBuyPrice={nextBuyPrice}
-      nextSellPrice={nextSellPrice}
+      removeAllowance={shouldRemoveAllowance}
+      proxyAddress={vault.owner}
       stage={stage}
-      stopLossTriggerData={stopLossTriggerData}
-      textButtonHandler={textButtonHandler}
-      txHandler={txHandler}
-      vault={vault}
-      debtDeltaWhenSellAtCurrentCollRatio={debtDeltaWhenSellAtCurrentCollRatio}
-      debtDeltaAfterSell={debtDeltaAfterSell}
-    />
+      addTxData={addTxData}
+      resetData={prepareConstantMultipleResetData({
+        defaultMultiplier: constantMultipleState.defaultMultiplier,
+        defaultCollRatio: constantMultipleState.defaultCollRatio,
+        constantMultipleTriggerData,
+      })}
+      textButtonHandlerExtension={textButtonHandlerExtension}
+      publishType={CONSTANT_MULTIPLE_FORM_CHANGE}
+      currentForm={constantMultipleState.currentForm}
+      triggersId={constantMultipleTriggerData.triggersId.map((id) => id.toNumber())}
+      isActiveFlag={isConstantMultipleActive}
+    >
+      {(txHandler, textButtonHandler) => (
+        <SidebarSetupConstantMultiple
+          autoBuyTriggerData={autoBuyTriggerData}
+          autoSellTriggerData={autoSellTriggerData}
+          balanceInfo={balanceInfo}
+          collateralToBePurchased={collateralToBePurchased}
+          collateralToBeSold={collateralToBeSold}
+          constantMultipleState={constantMultipleState}
+          constantMultipleTriggerData={constantMultipleTriggerData}
+          context={context}
+          estimatedBuyFee={estimatedBuyFee}
+          estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+          estimatedSellFee={estimatedSellFee}
+          ethMarketPrice={ethMarketPrice}
+          ilkData={ilkData}
+          isAddForm={isAddForm}
+          isConstantMultipleActive={isConstantMultipleActive}
+          isDisabled={isDisabled}
+          isEditing={isEditing}
+          isFirstSetup={isFirstSetup}
+          isRemoveForm={isRemoveForm}
+          nextBuyPrice={nextBuyPrice}
+          nextSellPrice={nextSellPrice}
+          stage={stage}
+          stopLossTriggerData={stopLossTriggerData}
+          textButtonHandler={textButtonHandler}
+          txHandler={txHandler}
+          vault={vault}
+          debtDeltaWhenSellAtCurrentCollRatio={debtDeltaWhenSellAtCurrentCollRatio}
+          debtDeltaAfterSell={debtDeltaAfterSell}
+        />
+      )}
+    </AddAndRemoveTriggerControl>
   )
 }

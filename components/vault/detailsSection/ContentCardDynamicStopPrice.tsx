@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -17,6 +18,8 @@ interface ContentCardDynamicStopPriceProps {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
   afterSlRatio: BigNumber
+  lockedCollateral: BigNumber
+  debt: BigNumber
 }
 
 export function ContentCardDynamicStopPriceModal({
@@ -50,10 +53,16 @@ export function ContentCardDynamicStopPrice({
   liquidationPrice,
   liquidationRatio,
   afterSlRatio,
+  lockedCollateral,
+  debt,
 }: ContentCardDynamicStopPriceProps) {
   const { t } = useTranslation()
 
-  const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
+  const dynamicStopPrice = collateralPriceAtRatio({
+    colRatio: slRatio,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
+  })
 
   const formatted = {
     dynamicStopPrice: `$${formatAmount(dynamicStopPrice, 'USD')}`,

@@ -1,3 +1,4 @@
+import SafeAppsSDK from '@gnosis.pm/safe-apps-sdk'
 import { getNetworkId } from '@oasisdex/web3-context'
 import { decode } from 'jsonwebtoken'
 import getConfig from 'next/config'
@@ -6,6 +7,8 @@ import { ajax } from 'rxjs/ajax'
 import { fromPromise } from 'rxjs/internal-compatibility'
 import { map } from 'rxjs/operators'
 import Web3 from 'web3'
+
+const LOCAL_STORAGE_GNOSIS_SAFE_PENDING = 'gnosis-safe-pending'
 
 const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 
@@ -40,17 +43,119 @@ export function jwtAuthSetupToken$(
   return of(token)
 }
 
-async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
-  const web3Instance = isGnosisSafe ? new Web3(web3.givenProvider) : web3
-  const addressForSignature = isGnosisSafe ? web3Instance.givenProvider.selectedAddress : account
-  const challenge = await requestChallenge(account).toPromise()
+interface GnosisSafeSignInDetails {
+  safeTxHash: string
+  challenge: string
+}
 
-  console.log('Signing challenge: ', challenge)
+interface GnosisSafeSignInDetailsWithData extends GnosisSafeSignInDetails {
+  dataToSign: string
+}
+
+async function getGnosisSafeDetails(
+  sdk: SafeAppsSDK,
+  chainId: number,
+  account: string,
+  newChallenge: string,
+): Promise<GnosisSafeSignInDetailsWithData> {
+  const key = `${LOCAL_STORAGE_GNOSIS_SAFE_PENDING}/${chainId}-${account}`
+  const pendingSignature: GnosisSafeSignInDetails = JSON.parse(localStorage.getItem(key)!)
+
+  if (pendingSignature) {
+    const exp = (decode(pendingSignature.challenge) as any)?.exp
+    if (exp && exp * 1000 >= Date.now()) {
+      return {
+        ...pendingSignature,
+        dataToSign: getDataToSignFromChallenge(pendingSignature.challenge),
+      }
+    }
+  }
+
+  const dataToSign = getDataToSignFromChallenge(newChallenge)
+  const { safeTxHash } = await sdk.txs.signMessage(dataToSign)
+  localStorage.setItem(
+    key,
+    JSON.stringify({
+      safeTxHash,
+      challenge: newChallenge,
+    } as GnosisSafeSignInDetails),
+  )
+  return { challenge: newChallenge, safeTxHash, dataToSign }
+}
+
+async function requestJWT(web3: Web3, account: string, isGnosisSafe: boolean): Promise<string> {
+  const web3Instance = web3
+  const addressForSignature = account
 
   const chainId = getNetworkId()
+  const challenge = await requestChallenge(account, isGnosisSafe).toPromise()
+
+  if (isGnosisSafe) {
+    const sdk = new SafeAppsSDK()
+
+    const { challenge: gnosisSafeChallenge, safeTxHash, dataToSign } = await getGnosisSafeDetails(
+      sdk,
+      chainId,
+      account,
+      challenge,
+    )
+
+    // start polling
+    const token = await new Promise<string | null>((resolve) => {
+      // eslint-disable-next-line func-style
+      let returnValue = (val: string | null) => resolve(val) // CAUTION: this function is reassigned later
+      const interval = setInterval(async () => {
+        try {
+          const { detailedExecutionInfo } = await sdk.txs.getBySafeTxHash(safeTxHash)
+          if (
+            !(
+              detailedExecutionInfo?.type === 'MULTISIG' &&
+              detailedExecutionInfo.confirmations.length
+            )
+          ) {
+            throw new Error('GS: not ready')
+          }
+
+          const isSigned = await sdk.safe.isMessageSigned(dataToSign)
+          if (!isSigned) {
+            throw new Error('Not signed yet')
+          }
+
+          const safeJwt = await requestSignin({
+            challenge: gnosisSafeChallenge,
+            signature: safeTxHash,
+            chainId,
+            isGnosisSafe: true,
+          }).toPromise()
+
+          return returnValue(safeJwt)
+        } catch (error) {
+          console.log('GS: error occurred', error)
+        }
+      }, 5 * 1000)
+
+      // clear all scheduled callbacks
+      returnValue = (val: string | null) => {
+        clearInterval(interval)
+        resolve(val)
+      }
+    })
+
+    if (!token) {
+      throw new Error(`GS: failed to sign`)
+    }
+
+    localStorage.setItem(`token-b/${account}`, token)
+    return token
+  }
 
   const signature = await signTypedPayload(challenge, web3Instance, addressForSignature)
-  const jwt = await requestSignin({ challenge, signature, chainId }).toPromise()
+  const jwt = await requestSignin({
+    challenge,
+    signature,
+    chainId,
+    isGnosisSafe: false,
+  }).toPromise()
 
   localStorage.setItem(`token-b/${account}`, jwt)
 
@@ -63,14 +168,14 @@ async function signTypedPayload(challenge: string, web3: Web3, account: string):
   return web3.eth.personal.sign(data, account, '')
 }
 
-function requestChallenge(address: string): Observable<string> {
+function requestChallenge(address: string, isGnosisSafe: boolean): Observable<string> {
   return ajax({
     url: `/api/auth/challenge`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: { address: address.toLowerCase() },
+    body: { address: address.toLowerCase(), isGnosisSafe },
   }).pipe(map((resp) => resp.response.challenge))
 }
 
@@ -78,10 +183,12 @@ function requestSignin({
   signature,
   challenge,
   chainId,
+  isGnosisSafe,
 }: {
   signature: string
   challenge: string
   chainId: number
+  isGnosisSafe: boolean
 }): Observable<string> {
   return ajax({
     url: `${basePath}/api/auth/signin`,
@@ -89,7 +196,7 @@ function requestSignin({
     headers: {
       'Content-Type': 'application/json',
     },
-    body: { signature, challenge, chainId },
+    body: { signature, challenge, chainId, isGnosisSafe },
   }).pipe(map((resp) => resp.response.jwt))
 }
 

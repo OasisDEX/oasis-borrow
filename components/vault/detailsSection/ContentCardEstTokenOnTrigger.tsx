@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
@@ -18,10 +19,8 @@ interface ContentCardEstTokenOnTriggerProps {
   token: string
   slRatio: BigNumber
   liquidationPrice: BigNumber
-  liquidationRatio: BigNumber
   lockedCollateral: BigNumber
   debt: BigNumber
-  currentOraclePrice: BigNumber
   liquidationPenalty: BigNumber
   afterSlRatio: BigNumber
 }
@@ -54,17 +53,23 @@ export function ContentCardEstTokenOnTrigger({
   token,
   slRatio,
   liquidationPrice,
-  liquidationRatio,
   lockedCollateral,
   debt,
-  currentOraclePrice,
   liquidationPenalty,
   afterSlRatio,
 }: ContentCardEstTokenOnTriggerProps) {
   const { t } = useTranslation()
 
-  const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
-  const afterDynamicStopPrice = liquidationPrice.div(liquidationRatio).times(afterSlRatio)
+  const dynamicStopPrice = collateralPriceAtRatio({
+    colRatio: slRatio,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
+  })
+  const afterDynamicStopPrice = collateralPriceAtRatio({
+    colRatio: afterSlRatio,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
+  })
   const maxToken = !dynamicStopPrice.isZero()
     ? lockedCollateral.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
     : zero
@@ -82,7 +87,7 @@ export function ContentCardEstTokenOnTrigger({
   const formatTokenOrDai = (val: BigNumber): string => {
     return isCollateralActive
       ? `${formatAmount(val, token)} ${token}`
-      : `${formatAmount(val.multipliedBy(currentOraclePrice), 'USD')} DAI`
+      : `${formatAmount(val.multipliedBy(dynamicStopPrice), 'USD')} DAI`
   }
 
   const formatted = {

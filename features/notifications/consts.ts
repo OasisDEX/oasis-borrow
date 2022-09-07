@@ -25,16 +25,17 @@ export const notificationPreferences = [
     description: 'notifications.info-notifications-description',
     notificationType: NotificationSubscriptionTypes.VAULT_INFO_NOTIFICATIONS,
   },
-  {
-    heading: 'notifications.user-communication-notifications',
-    description: 'notifications.user-communication-notifications-description',
-    notificationType: NotificationSubscriptionTypes.OASIS_DIRECT_NOTIFICATIONS,
-  },
-  {
-    heading: 'notifications.news-notifications',
-    description: 'notifications.news-notifications-description',
-    notificationType: NotificationSubscriptionTypes.OASIS_NEWS_NOTIFICATIONS,
-  },
+  // TODO UNCOMMENTED WHEN WE WILL HAVE THESE SUBSCRIPTION TYPES IMPLEMENTED
+  // {
+  //   heading: 'notifications.user-communication-notifications',
+  //   description: 'notifications.user-communication-notifications-description',
+  //   notificationType: NotificationSubscriptionTypes.OASIS_DIRECT_NOTIFICATIONS,
+  // },
+  // {
+  //   heading: 'notifications.news-notifications',
+  //   description: 'notifications.news-notifications-description',
+  //   notificationType: NotificationSubscriptionTypes.OASIS_NEWS_NOTIFICATIONS,
+  // },
 ]
 
 export const maxNumberOfNotifications = 50

@@ -574,7 +574,8 @@
     "earn": "Earn",
     "select-an-asset": "Select an asset",
     "referrals": "Referrals",
-    "cookie": "Cookie Policy"
+    "cookie": "Cookie Policy",
+    "brand-assets": "Brand assets"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -658,6 +659,10 @@
     "referrals": {
       "title": "Refer a friend and earn Dai",
       "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
+    },
+    "brand-assets": {
+      "title": "Brand assets",
+      "description": "Find here the Oasis.app Logo and graphics."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -1178,7 +1183,8 @@
     "set-threshold": "Set Threshold",
     "unable-to-access-protection": "Unable to access Protection",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
-    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab"
+    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab",
+    "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1480,6 +1486,8 @@
     "add-complete-content": "You have successfully set up an Auto-Sell on your vault. Find out more about how this works",
     "remove-content": "Your Auto-Sell cancellation is in progress. Once the transaction is complete. Your Auto-Sell trigger will be removed.",
     "remove-complete-content": "Your Auto-Sell has been successfully cancelled.",
+    "sl-too-high": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Sell.",
+    "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
     "banner": {
       "header": "Set up Auto Sell",
       "content": "Set up an Auto-Sell to keep your vault’s collateralization ratio above a certain level. This may be beneficial, for example, in a bear market where the value of your collateral is decreasing. Find out more about how this works",
@@ -1525,7 +1533,9 @@
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
     "set-trigger-description": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a Max Buy price of ${{minBuyPrice}}/{{token}}. Learn More ",
-    "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More "
+    "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More ",
+    "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
+    "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1652,7 +1662,7 @@
     "action-notifications": "Vault action notifications",
     "action-notifications-description": "You will be able to receive notifications when triggering Automation, Liquidation, or opening a vault.",
     "info-notifications": "Vault info notifications",
-    "info-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+    "info-notifications-description": "Get notified when your positions get within 5% of the Stop Loss or liquidation price.",
     "user-communication-notifications": "Oasis.app user communication notifications",
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "news-notifications": "Oasis.app news notifications",
@@ -1683,6 +1693,40 @@
         "retry-btn": "Retry",
         "success-title": "All done! You've opened a position",
         "go-to-position": "Go to position"
+      }
+    }
+  },
+  "brand-assets": {
+    "heading": "Brand Assets",
+    "intro": "Find here the Oasis.app Logo and graphics.",
+    "intro-cta": "Download all assets",
+    "category": {
+      "logo": {
+        "heading": "Logo",
+        "info": "Please don’t modify, edit, or distort the logo."
+      },
+      "palm-leaf": {
+        "heading": "The Palm Leaf",
+        "info": "lease only use the mark-only logo in these situations: The full-version logo is illegible, a limited space to display the full-version logo or Oasis.app brand is already established well."
+      },
+      "minimum-size": {
+        "heading": "Minimum Size",
+        "info": "To avoiding the logo are too small to read, please apply the minimum size at least.",
+        "digital": "Digital",
+        "print": "Print",
+        "digital-minimum-size": "72px",
+        "print-minimum-size": "2cm",
+        "width": "(Width)"
+      },
+      "best-practices": {
+        "heading": "Best Practices",
+        "info": "Please avoid the examples blow when using the logo.",
+        "no-gradient": "Do not use gradient for the wordmark",
+        "no-shadow": "Do not add shadow",
+        "no-rotate": "Do not rotate the logo",
+        "no-alone": "Do not use the wordmark alone",
+        "no-stack": "Do not stack the logo",
+        "no-ratio": "Do not change the ratio"
       }
     }
   }
