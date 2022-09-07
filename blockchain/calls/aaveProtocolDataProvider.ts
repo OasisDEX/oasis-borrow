@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-
 import { AaveProtocolDataProvider } from '../../types/web3-v1-contracts/aave-protocol-data-provider'
 import { CallDef } from './callsHelpers'
 
@@ -9,7 +7,7 @@ export interface AaveUserReserveDataParameters {
 }
 
 export interface AaveUserReserveData {
-  currentATokenBalance: BigNumber
+  currentATokenBalance: string
 }
 
 export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, AaveUserReserveData> = {

@@ -151,8 +151,6 @@ export function createPositionsOverviewSummary$(
         }
       })
 
-      console.log('viewModels', viewModels)
-
       return [viewModels, totalAssetsUsd] as [PositionView[], BigNumber]
     }),
   )

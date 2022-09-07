@@ -1,3 +1,4 @@
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
@@ -96,7 +97,9 @@ export function createAavePositions$(
           map((userReserve) => {
             return {
               token: token,
-              contentsUsd: new BigNumber(userReserve.currentATokenBalance).times(tokenPrice),
+              contentsUsd: new BigNumber(
+                amountFromWei(new BigNumber(userReserve.currentATokenBalance)),
+              ).times(tokenPrice),
               title: `${token} Aave `,
               url: `/earn/steth/${address}`,
             }
