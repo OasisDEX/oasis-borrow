@@ -122,10 +122,15 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const Layout = Component.layout || AppLayout
 
   const layoutProps = Component.layoutProps
-  const seoTags = Component.seoTags || (
-    <PageSEOTags title="seo.default.title" description="seo.default.description" />
-  )
   const router = useRouter()
+
+  const seoTags = Component.seoTags || (
+    <PageSEOTags
+      title="seo.default.title"
+      description="seo.default.description"
+      url={router.pathname || '/'}
+    />
+  )
 
   useEffect(() => {
     mixpanelInit()
