@@ -44,6 +44,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.bug-bounty', url: 'https://immunefi.com/bounty/oasis/', target: '_blank' },
       { labelKey: 'nav.oracles', url: '/oracles' },
       { labelKey: 'nav.referrals', url: '/referrals' },
+      { labelKey: 'nav.brand-assets', url: '/brand' },
     ],
   },
   {

@@ -1,21 +1,17 @@
-import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
-import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { AutoBuyFormControl } from 'features/automation/optimization/controls/AutoBuyFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/protection/common/helpers'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -24,7 +20,6 @@ import React, { useEffect } from 'react'
 import { ConstantMultipleFormControl } from './ConstantMultipleFormControl'
 
 interface OptimizationFormControlProps {
-  automationTriggersData: TriggersData
   vault: Vault
   vaultType: VaultType
   ilkData: IlkData
@@ -35,7 +30,6 @@ interface OptimizationFormControlProps {
 }
 
 export function OptimizationFormControl({
-  automationTriggersData,
   vault,
   vaultType,
   ilkData,
@@ -44,17 +38,14 @@ export function OptimizationFormControl({
   balanceInfo,
   ethMarketPrice,
 }: OptimizationFormControlProps) {
-  const stopLossTriggerData = extractStopLossData(automationTriggersData)
-  const autoBuyTriggerData = extractBasicBSData({
-    triggersData: automationTriggersData,
-    triggerType: TriggerType.BasicBuy,
-  })
-  const autoSellTriggerData = extractBasicBSData({
-    triggersData: automationTriggersData,
-    triggerType: TriggerType.BasicSell,
-  })
+  const {
+    stopLossTriggerData,
+    autoSellTriggerData,
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+    automationTriggersData,
+  } = useAutomationContext()
 
-  const constantMultipleTriggerData = extractConstantMultipleData(automationTriggersData)
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 

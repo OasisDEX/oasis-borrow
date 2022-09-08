@@ -968,7 +968,7 @@
       },
       "more-info": {
           "text1": "更多关于奖励的信息",
-          "link-text": "这里",  
+          "link-text": "这里",
           "text2": "。"
       }
   },
@@ -1702,7 +1702,7 @@
       "action-notifications": "金库操作通知",
       "action-notifications-description": "你将会收到关于自动化触发、清算和开启金库的通知。",
       "info-notifications": "金库信息通知",
-      "info-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+      "info-notifications-description": "Get notified when your positions get within 5% of the Stop Loss or liquidation price.",
       "user-communication-notifications": "Oasis.app  用户沟通通知",
       "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
       "news-notifications": "Oasis.app 新消息通知",

@@ -1,14 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import {
   ChangeVariantType,
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { StopLossBannerControl } from 'features/automation/protection/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -39,7 +37,6 @@ function ContentCardLiquidationPriceModal({
   liquidationRatio,
   liquidationPriceCurrentPriceDifference,
   liquidationPriceCurrentPriceDifferenceLevel,
-  vaultId,
   isStopLossEnabled,
 }: ContentCardLiquidationPriceModalProps) {
   const { t } = useTranslation()
@@ -63,7 +60,7 @@ function ContentCardLiquidationPriceModal({
           })}
         </Text>
       )}
-      {stopLossReadEnabled && isStopLossEnabled && vaultId && (
+      {stopLossReadEnabled && isStopLossEnabled && (
         <>
           <Heading variant="header3" sx={{ mt: 3 }}>{`${t('system.vault-protection')}`}</Heading>
           <Text as="p" variant="paragraph2" sx={{ mb: 2 }}>
@@ -72,7 +69,6 @@ function ContentCardLiquidationPriceModal({
           <StopLossBannerControl
             liquidationPrice={liquidationPrice}
             liquidationRatio={liquidationRatio}
-            vaultId={vaultId}
             onClick={close}
             compact
           />
@@ -91,7 +87,6 @@ export function ContentCardLiquidationPrice({
   vaultId,
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
-  const { automationTriggersData$ } = useAppContext()
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const formatted = {
@@ -117,15 +112,12 @@ export function ContentCardLiquidationPrice({
     liquidationPriceCurrentPriceDifference,
     liquidationPriceCurrentPriceDifferenceLevel:
       formatted.liquidationPriceCurrentPriceDifferenceLevel,
-    vaultId,
   }
 
-  if (vaultId && stopLossReadEnabled) {
-    const autoTriggersData$ = automationTriggersData$(vaultId)
-    const [automationTriggersData] = useObservable(autoTriggersData$)
-    const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
+  if (stopLossReadEnabled && vaultId) {
+    const { stopLossTriggerData } = useAutomationContext()
 
-    contentCardModalSettings.isStopLossEnabled = slData?.isStopLossEnabled
+    contentCardModalSettings.isStopLossEnabled = stopLossTriggerData.isStopLossEnabled
   }
 
   const contentCardSettings: ContentCardProps = {

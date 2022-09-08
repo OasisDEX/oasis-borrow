@@ -75,7 +75,7 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
   })
 }
 
-const defaultBasicBSData = {
+export const defaultBasicBSData = {
   triggerId: zero,
   execCollRatio: zero,
   targetCollRatio: zero,

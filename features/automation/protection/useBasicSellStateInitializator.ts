@@ -3,24 +3,24 @@ import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   prepareBasicBSSliderDefaults,
   resolveMaxBuyOrMinSellPrice,
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useEffect } from 'react'
 
 export function useBasicBSstateInitialization(
   ilkData: IlkData,
   vault: Vault | InstiVault,
-  autoTriggersData: TriggersData,
+  autoTriggersData: BasicBSTriggerData,
+  stopLossTriggerData: StopLossTriggerData,
   type: TriggerType,
 ) {
   const { uiChanges } = useAppContext()
@@ -33,9 +33,8 @@ export function useBasicBSstateInitialization(
     deviation,
     isTriggerEnabled,
     maxBaseFeeInGwei,
-  } = extractBasicBSData({ triggersData: autoTriggersData, triggerType: type })
+  } = autoTriggersData
   const { collateralizationRatio } = vault
-  const stopLossTriggerData = extractStopLossData(autoTriggersData)
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
   const maxBuyOrMinSellPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice)

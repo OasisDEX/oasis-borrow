@@ -1,10 +1,10 @@
 import { Story } from '@storybook/react'
 import { BigNumber } from 'bignumber.js'
+import { ModalProvider, useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { ModalProvider, useModal } from '../../../helpers/modalHook'
 import { VaultDetailsCardCollateralLocked } from '../detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollaterlizationRatioModal } from '../detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from '../detailsCards/VaultDetailsCardCurrentPrice'
@@ -110,7 +110,6 @@ export const LiquidationPrice = ({ hasAfter, hasBottom }: CardsControl) => {
         afterLiquidationPrice={new BigNumber(900)}
         liquidationPriceCurrentPriceDifference={hasBottom ? new BigNumber(0.02) : undefined}
         showAfterPill={hasAfter}
-        vaultId={new BigNumber(1)}
       />
     </MaxWidthWrapper>
   )
