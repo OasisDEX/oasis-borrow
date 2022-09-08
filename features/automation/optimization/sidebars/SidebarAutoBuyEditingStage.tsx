@@ -66,6 +66,7 @@ export function SidebarAutoBuyEditingStage({
   stopLossTriggerData,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
+  const [, setHash] = useHash()
   const { t } = useTranslation()
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const isVaultEmpty = vault.debt.isZero()
@@ -131,6 +132,7 @@ export function SidebarAutoBuyEditingStage({
                 type: 'change-tab',
                 currentMode: VaultViewMode.Overview,
               })
+              setHash(VaultViewMode.Overview)
             }}
           />,
         ]}
@@ -140,8 +142,6 @@ export function SidebarAutoBuyEditingStage({
       />
     )
   }
-
-  const [, setHash] = useHash()
 
   if (readOnlyBasicBSEnabled && !isVaultEmpty) {
     return (

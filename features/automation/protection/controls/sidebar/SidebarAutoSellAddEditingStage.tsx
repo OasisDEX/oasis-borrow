@@ -114,6 +114,7 @@ export function SidebarAutoSellAddEditingStage({
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const [, setHash] = useHash()
   const executionPrice = collateralPriceAtRatio({
     colRatio: basicSellState.execCollRatio.div(100),
     collateral: vault.lockedCollateral,
@@ -178,6 +179,7 @@ export function SidebarAutoSellAddEditingStage({
                 type: 'change-tab',
                 currentMode: VaultViewMode.Overview,
               })
+              setHash(VaultViewMode.Overview)
             }}
           />,
         ]}
@@ -187,8 +189,6 @@ export function SidebarAutoSellAddEditingStage({
       />
     )
   }
-
-  const [, setHash] = useHash()
 
   if (readOnlyBasicBSEnabled && !isVaultEmpty) {
     return (
