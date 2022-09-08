@@ -97,49 +97,53 @@ export function SidebarAutoBuyEditingStage({
     stopLossLevel.times(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)).gt(sliderMax)
   ) {
     return (
-      <Trans
-        i18nKey="auto-buy.sl-too-high"
-        components={[
-          <Text
-            as="span"
-            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
-            onClick={() => {
-              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-                type: 'Protection',
-                currentProtectionFeature: 'stopLoss',
-              })
-              setHash(VaultViewMode.Protection)
-            }}
-          />,
-        ]}
-        values={{
-          maxStopLoss: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
-        }}
-      />
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        <Trans
+          i18nKey="auto-buy.sl-too-high"
+          components={[
+            <Text
+              as="span"
+              sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+              onClick={() => {
+                uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                  type: 'Protection',
+                  currentProtectionFeature: 'stopLoss',
+                })
+                setHash(VaultViewMode.Protection)
+              }}
+            />,
+          ]}
+          values={{
+            maxStopLoss: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
+          }}
+        />
+      </Text>
     )
   }
 
   if (isCurrentCollRatioHigherThanSliderMax) {
     return (
-      <Trans
-        i18nKey="auto-buy.coll-ratio-too-high"
-        components={[
-          <Text
-            as="span"
-            sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
-            onClick={() => {
-              uiChanges.publish(TAB_CHANGE_SUBJECT, {
-                type: 'change-tab',
-                currentMode: VaultViewMode.Overview,
-              })
-              setHash(VaultViewMode.Overview)
-            }}
-          />,
-        ]}
-        values={{
-          maxAutoBuyCollRatio: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
-        }}
-      />
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        <Trans
+          i18nKey="auto-buy.coll-ratio-too-high"
+          components={[
+            <Text
+              as="span"
+              sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
+              onClick={() => {
+                uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                  type: 'change-tab',
+                  currentMode: VaultViewMode.Overview,
+                })
+                setHash(VaultViewMode.Overview)
+              }}
+            />,
+          ]}
+          values={{
+            maxAutoBuyCollRatio: sliderMax.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.times(2)),
+          }}
+        />
+      </Text>
     )
   }
 
