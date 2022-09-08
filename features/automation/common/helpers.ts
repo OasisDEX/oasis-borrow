@@ -84,14 +84,16 @@ export function prepareBasicBSSliderDefaults({
   )
 
   return {
-    execCollRatio: execCollRatio.isZero()
-      ? publishKey === 'BASIC_SELL_FORM_CHANGE'
-        ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
-        : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
-      : execCollRatio,
-    targetCollRatio: targetCollRatio.isZero()
-      ? defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
-      : targetCollRatio,
+    execCollRatio:
+      execCollRatio.isZero() && collateralizationRatio.gt(zero)
+        ? publishKey === 'BASIC_SELL_FORM_CHANGE'
+          ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+          : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+        : execCollRatio,
+    targetCollRatio:
+      targetCollRatio.isZero() && collateralizationRatio.gt(zero)
+        ? defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
+        : targetCollRatio,
   }
 }
 

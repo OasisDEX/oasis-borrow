@@ -4,7 +4,7 @@
 <br> <br>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/OasisDEX/oasis-borrow/57f15f27fad34b05f94398eec8eec33bcf4ffee8/public/static/img/logo_footer.svg" width="500" height="500">
+  <img src="https://raw.githubusercontent.com/OasisDEX/oasis-borrow/57f15f27fad34b05f94398eec8eec33bcf4ffee8/public/static/img/logo_footer_v2.svg" width="500" height="500">
 </div>
 <br>
 <br>

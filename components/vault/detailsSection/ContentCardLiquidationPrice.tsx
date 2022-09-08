@@ -28,6 +28,7 @@ interface ContentCardLiquidationPriceProps {
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
   changeVariant?: ChangeVariantType
+  vaultId?: BigNumber
 }
 
 function ContentCardLiquidationPriceModal({
@@ -83,9 +84,9 @@ export function ContentCardLiquidationPrice({
   liquidationPriceCurrentPriceDifference,
   afterLiquidationPrice,
   changeVariant,
+  vaultId,
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
-  const { stopLossTriggerData } = useAutomationContext()
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const formatted = {
@@ -113,7 +114,9 @@ export function ContentCardLiquidationPrice({
       formatted.liquidationPriceCurrentPriceDifferenceLevel,
   }
 
-  if (stopLossReadEnabled) {
+  if (stopLossReadEnabled && vaultId) {
+    const { stopLossTriggerData } = useAutomationContext()
+
     contentCardModalSettings.isStopLossEnabled = stopLossTriggerData.isStopLossEnabled
   }
 
