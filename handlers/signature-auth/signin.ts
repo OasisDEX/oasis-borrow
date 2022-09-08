@@ -69,7 +69,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
         const toHash = utils.defaultAbiCoder.encode(
           ['bytes32', 'uint256'],
           [
-            getMessageHash(utils.hashMessage(message), body.chainId, challenge.address),
+            await getMessageHash(web3, utils.hashMessage(message), challenge.address),
             7 /* signedMessages slot */,
           ],
         )
@@ -110,9 +110,22 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
   }
 }
 
-function getMessageHash(message: string, chainId: number, safe: string) {
-  const DOMAIN_SEPARATOR_TYPEHASH =
-    '0x47e79534a245952e8b16893a336b85a3d9ea9fa8c573f3d803afb92a79469218'
+const GnosisSafeABI = [
+  {
+    name: 'domainSeparator',
+    inputs: [],
+    outputs: [
+      {
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+
+async function getMessageHash(web3: Web3, message: string, safe: string) {
   const SAFE_MSG_TYPESHASH = '0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca'
   const safeMessageHash = utils.keccak256(
     utils.defaultAbiCoder.encode(
@@ -121,19 +134,11 @@ function getMessageHash(message: string, chainId: number, safe: string) {
     ),
   )
 
+  const contract = new web3.eth.Contract(GnosisSafeABI as any, safe)
+  const domainSeparator = await contract.methods.domainSeparator().call()
   return utils.solidityKeccak256(
     ['bytes1', 'bytes1', 'bytes32', 'bytes32'],
-    [
-      0x19,
-      0x01,
-      utils.keccak256(
-        utils.defaultAbiCoder.encode(
-          ['bytes32', 'uint256', 'address'],
-          [DOMAIN_SEPARATOR_TYPEHASH, chainId, safe],
-        ),
-      ),
-      safeMessageHash,
-    ],
+    [0x19, 0x01, domainSeparator, safeMessageHash],
   )
 }
 
