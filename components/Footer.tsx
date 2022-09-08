@@ -153,7 +153,7 @@ function SocialWithLogo() {
   return (
     <Grid gap={3}>
       <Image
-        src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')}
+        src={staticFilesRuntimeUrl('/static/img/logo_footer_v2.svg')}
         sx={{ height: '34px', position: 'relative', top: '-2px' }}
       />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>

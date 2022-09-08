@@ -48,7 +48,7 @@ function Logo({ sx }: { sx?: SxStyleProp }) {
         ...sx,
       }}
     >
-      <Image src={staticFilesRuntimeUrl('/static/img/logo.svg')} />
+      <Image src={staticFilesRuntimeUrl('/static/img/logo_v2.svg')} />
     </AppLink>
   )
 }

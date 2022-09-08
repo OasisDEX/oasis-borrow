@@ -1,7 +1,7 @@
 {
   "name": "Oasis",
   "description": "Generate Dai on Oasis using crypto as your collateral",
-  "iconPath": "static/img/logo.svg",
+  "iconPath": "static/img/logo_v2.svg",
   "short_name": "Oasis",
   "display": "standalone",
   "orientation": "portrait",
