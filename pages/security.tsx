@@ -18,58 +18,58 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 function SecurityPage() {
   useScrollToTop()
   const { t } = useTranslation()
-  const securityTopics = [
+  const securityCategories = [
     {
       name: 'people',
-      header: 'Talented people',
-      description:
-        'A highly experienced and dedicated team of DeFi builders. We’ve built and launched some of the most popular DeFi protocols and products.',
-      links: [{ url: '/about', label: 'Meet our Team' }],
+      header: t('security.category.people.header'),
+      description: t('security.category.people.description'),
+      links: [{ url: '/about', label: t('security.category.people.link-about') }],
     },
     {
       name: 'audit',
-      header: 'Independently audited',
-      description:
-        'Our stringent security procedures didn’t occur by luck. It came about with a rigorous process of both internal and external audits.',
+      header: t('security.category.audit.header'),
+      description: t('security.category.audit.description'),
       links: [
         {
           url: 'https://chainsecurity.com/security-audit/oasis-multiply-smart-contracts/',
-          label: 'Multiply Audit Report',
+          label: t('security.category.audit.link-multiply'),
         },
         {
           url: 'https://chainsecurity.com/security-audit/oasis-multiply-fmm-extension/',
-          label: 'Multiply FMM extension audit report',
+          label: t('security.category.audit.link-multiply-fmm'),
         },
         {
           url:
             'https://chainsecurity.com/security-audit/oasis-automation-consultancy-smart-contracts/',
-          label: 'Automation  Audit Report',
+          label: t('security.category.audit.link-automation'),
         },
       ],
     },
     {
       name: 'bug',
-      header: 'Bug bounty',
-      description:
-        'Working with a community of code reviewers, ethical and white hat hackers we are giving rewards of up to $100k indentify any bugs.',
-      links: [{ url: 'https://immunefi.com/bounty/oasis/', label: 'Go to Bug Bounty' }],
+      header: t('security.category.bug.header'),
+      description: t('security.category.bug.description'),
+      links: [
+        {
+          url: 'https://immunefi.com/bounty/oasis/',
+          label: t('security.category.bug.link-bug-bounty'),
+        },
+      ],
     },
     {
       name: 'shield',
-      header: 'Privacy protection',
-      description:
-        "We don't collect any personal identifiable information and do not track or store IP addresses or locations.",
-      links: [{ url: '/privacy', label: 'View Privacy Policy' }],
+      header: t('security.category.shield.header'),
+      description: t('security.category.shield.description'),
+      links: [{ url: '/privacy', label: t('security.category.shield.link-privacy') }],
     },
   ]
   return (
     <Box sx={{ width: '100%', mt: [4, 5], pb: [4, 6] }}>
       <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
-        Why do users trust&nbsp;us?
+        {t('security.heading')}
       </Heading>
       <Text variant="paragraph1" sx={{ color: 'neutral80', textAlign: 'center', mb: 90 }}>
-        Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users
-        from all over the world trust us with billions of dollars of their funds.
+        {t('security.intro')}
       </Text>
       <Grid
         sx={{
@@ -78,23 +78,23 @@ function SecurityPage() {
           rowGap: [2, 5],
         }}
       >
-        {securityTopics.map((topic) => (
-          <Fragment key={`SecurityTopics_${topic.name}`}>
+        {securityCategories.map((category) => (
+          <Fragment key={`SecurityCategories_${category.name}`}>
             <Box sx={{ textAlign: ['center', 'left'] }}>
               <Image
-                src={staticFilesRuntimeUrl(`/static/img/security/${topic.name}.svg`)}
+                src={staticFilesRuntimeUrl(`/static/img/security/${category.name}.svg`)}
                 width={100}
                 sx={{ width: '100px', height: '100px' }}
               />
             </Box>
-            <Box sx={{ textAlign: ['center', 'left'], mb: [6, null] }}>
+            <Box sx={{ textAlign: ['center', 'left'], mb: [6, 2] }}>
               <Heading variant="header3" sx={{ color: 'primary100', mb: 1 }}>
-                {topic.header}
+                {category.header}
               </Heading>
               <Text variant="paragraph2" sx={{ color: 'neutral80', mb: 1 }}>
-                {topic.description}
+                {category.description}
               </Text>
-              {topic.links.length && (
+              {category.links.length && (
                 <Grid
                   sx={{
                     mt: 3,
@@ -103,7 +103,7 @@ function SecurityPage() {
                     rowGap: 1,
                   }}
                 >
-                  {topic.links.map((link) => (
+                  {category.links.map((link) => (
                     <AppLink variant="inText" target="_blank" href={link.url}>
                       {link.label}
                       <Icon
