@@ -18,7 +18,6 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 function SecurityPage() {
   useScrollToTop()
   const { t } = useTranslation()
-
   const securityTopics = [
     {
       name: 'people',
@@ -33,10 +32,19 @@ function SecurityPage() {
       description:
         'Our stringent security procedures didn’t occur by luck. It came about with a rigorous process of both internal and external audits.',
       links: [
-        { url: '/report1', label: 'Multiply Audit Report' },
-        { url: '/report2', label: 'B Feature Report Report' },
-        { url: '/report3', label: 'Automation  Audit Report' },
-        { url: '/report4', label: 'A Feature Report Report' },
+        {
+          url: 'https://chainsecurity.com/security-audit/oasis-multiply-smart-contracts/',
+          label: 'Multiply Audit Report',
+        },
+        {
+          url: 'https://chainsecurity.com/security-audit/oasis-multiply-fmm-extension/',
+          label: 'Multiply FMM extension audit report',
+        },
+        {
+          url:
+            'https://chainsecurity.com/security-audit/oasis-automation-consultancy-smart-contracts/',
+          label: 'Automation  Audit Report',
+        },
       ],
     },
     {
@@ -55,9 +63,9 @@ function SecurityPage() {
     },
   ]
   return (
-    <Box sx={{ width: '100%', mt: 5, pb: 6 }}>
+    <Box sx={{ width: '100%', mt: [4, 5], pb: [4, 6] }}>
       <Heading variant="header2" sx={{ textAlign: 'center', mb: 2 }}>
-        Why do users trust us?
+        Why do users trust&nbsp;us?
       </Heading>
       <Text variant="paragraph1" sx={{ color: 'neutral80', textAlign: 'center', mb: 90 }}>
         Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users
@@ -65,21 +73,21 @@ function SecurityPage() {
       </Text>
       <Grid
         sx={{
-          gridTemplateColumns: 'repeat(1, 100px calc(100% - 120px))',
+          gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(1, 100px calc(100% - 120px))'],
           columnGap: 4,
-          rowGap: 5,
+          rowGap: [2, 5],
         }}
       >
         {securityTopics.map((topic) => (
           <Fragment key={`SecurityTopics_${topic.name}`}>
-            <Box>
+            <Box sx={{ textAlign: ['center', 'left'] }}>
               <Image
                 src={staticFilesRuntimeUrl(`/static/img/security/${topic.name}.svg`)}
                 width={100}
                 sx={{ width: '100px', height: '100px' }}
               />
             </Box>
-            <Box>
+            <Box sx={{ textAlign: ['center', 'left'], mb: [5, null] }}>
               <Heading variant="header3" sx={{ color: 'primary100', mb: 1 }}>
                 {topic.header}
               </Heading>
@@ -90,7 +98,7 @@ function SecurityPage() {
                 <Grid
                   sx={{
                     mt: 3,
-                    gridTemplateColumns: 'repeat(2, calc(50% - 16px))',
+                    gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, calc(50% - 16px))'],
                     columnGap: 4,
                     rowGap: 1,
                   }}
