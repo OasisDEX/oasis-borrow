@@ -87,7 +87,7 @@ function SecurityPage() {
                 sx={{ width: '100px', height: '100px' }}
               />
             </Box>
-            <Box sx={{ textAlign: ['center', 'left'], mb: [5, null] }}>
+            <Box sx={{ textAlign: ['center', 'left'], mb: [6, null] }}>
               <Heading variant="header3" sx={{ color: 'primary100', mb: 1 }}>
                 {topic.header}
               </Heading>
