@@ -575,7 +575,8 @@
     "select-an-asset": "Select an asset",
     "referrals": "Referrals",
     "cookie": "Cookie Policy",
-    "brand-assets": "Brand assets"
+    "brand-assets": "Brand assets",
+    "security": "Security"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -663,6 +664,10 @@
     "brand-assets": {
       "title": "Brand assets",
       "description": "Find here the Oasis.app Logo and graphics."
+    },
+    "security": {
+      "title": "Security",
+      "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -1727,6 +1732,34 @@
         "no-alone": "Do not use the wordmark alone",
         "no-stack": "Do not stack the logo",
         "no-ratio": "Do not change the ratio"
+      }
+    }
+  },
+  "security": {
+    "heading": "Why do users trust us?",
+    "intro": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds.",
+    "category": {
+      "people": {
+        "header": "Talented people",
+        "description": "A highly experienced and dedicated team of DeFi builders. We’ve built and launched some of the most popular DeFi protocols and products.",
+        "link-about": "Meet our Team"
+      },
+      "audit": {
+        "header": "Independently audited",
+        "description": "Our stringent security procedures didn’t occur by luck. It came about with a rigorous process of both internal and external audits.",
+        "link-multiply": "Multiply Audit Report",
+        "link-multiply-fmm": "Multiply FMM extension audit report",
+        "link-automation": "Automation Audit Report"
+      },
+      "bug": {
+        "header": "Bug bounty",
+        "description": "Working with a community of code reviewers, ethical and white hat hackers we are giving rewards of up to $100k indentify any bugs.",
+        "link-bug-bounty": "Go to Bug Bounty"
+      },
+      "shield": {
+        "header": "Privacy protection",
+        "description": "We don't collect any personal identifiable information and do not track or store IP addresses or locations.",
+        "link-privacy": "View Privacy Policy"
       }
     }
   }

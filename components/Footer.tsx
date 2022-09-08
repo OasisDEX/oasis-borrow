@@ -33,6 +33,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.privacy', url: '/privacy' },
       { labelKey: 'nav.cookie', url: '/cookie' },
       { labelKey: 'nav.terms', url: '/terms' },
+      { labelKey: 'nav.security', url: '/security' },
       { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
     ],
   },
