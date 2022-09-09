@@ -1,9 +1,5 @@
-const {
-  join
-} = require('path')
-const {
-  existsSync
-} = require('fs')
+const { join } = require('path')
+const { existsSync } = require('fs')
 const Enzyme = require('enzyme')
 const Adapter = require('enzyme-adapter-react-16')
 process.env.NODE_ENV = 'test'
@@ -34,7 +30,7 @@ module.exports = {
 }
 
 Enzyme.configure({
-  adapter: new Adapter()
+  adapter: new Adapter(),
 })
 
 // do not import files that we don't care about
