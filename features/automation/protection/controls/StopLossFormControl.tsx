@@ -250,7 +250,6 @@ export function StopLossFormControl({
           closePickerConfig={closePickerConfig}
           sliderConfig={sliderConfig}
           isStopLossActive={isStopLossActive}
-          resetData={resetData}
         />
       )}
     </AddAndRemoveTriggerControl>

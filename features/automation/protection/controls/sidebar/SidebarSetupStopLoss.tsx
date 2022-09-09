@@ -10,13 +10,18 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormTitle } from 'features/automation/common/getAutomationFormTitle'
+import { getAutomationPrimaryButtonLabel } from 'features/automation/common/getAutomationPrimaryButtonLabel'
+import { getAutomationStatusTitle } from 'features/automation/common/getAutomationStatusTitle'
+import { getAutomationTextButtonLabel } from 'features/automation/common/getAutomationTextButtonLabel'
+import {
+  AutomationFeatures,
+  SidebarAutomationFlow,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-  StopLossResetData,
-} from 'features/automation/protection/common/UITypes/StopLossFormChange'
+import { StopLossFormChange } from 'features/automation/protection/common/UITypes/StopLossFormChange'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import {
   errorsStopLossValidation,
@@ -26,13 +31,10 @@ import { SidebarCancelStopLossEditingStage } from 'features/automation/protectio
 import { StopLossCompleteInformation } from 'features/automation/protection/controls/StopLossCompleteInformation'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
-import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -51,9 +53,9 @@ interface SidebarSetupStopLossProps {
   context: Context
   ethMarketPrice: BigNumber
   stopLossState: StopLossFormChange
-  txHandler: () => void
+  txHandler: ({ callOnSuccess }: { callOnSuccess?: () => void }) => void
   textButtonHandler: () => void
-  stage: SidebarVaultStages
+  stage: SidebarAutomationStages
   isAddForm: boolean
   isRemoveForm: boolean
   isEditing: boolean
@@ -62,7 +64,6 @@ interface SidebarSetupStopLossProps {
   closePickerConfig: PickCloseStateProps
   sliderConfig: SliderValuePickerProps
   executionPrice: BigNumber
-  resetData: StopLossResetData
 }
 
 export function SidebarSetupStopLoss({
@@ -82,7 +83,6 @@ export function SidebarSetupStopLoss({
   txHandler,
   textButtonHandler,
   stage,
-  resetData,
 
   isAddForm,
   isRemoveForm,
@@ -99,8 +99,13 @@ export function SidebarSetupStopLoss({
   const { uiChanges } = useAppContext()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const gasEstimationContext = useGasEstimationContext()
+  const [, setHash] = useHash()
 
-  const flow = isRemoveForm ? 'cancelSl' : isFirstSetup ? 'addSl' : 'adjustSl'
+  const flow: SidebarAutomationFlow = isRemoveForm
+    ? 'cancelSl'
+    : isFirstSetup
+    ? 'addSl'
+    : 'adjustSl'
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const errors = errorsStopLossValidation({
@@ -131,18 +136,26 @@ export function SidebarSetupStopLoss({
   const cancelStopLossWarnings = extractCancelBSWarnings(warnings)
   const cancelStopLossErrors = extractCancelBSErrors(errors)
 
-  const sidebarTitle = getSidebarTitle({
+  const feature = AutomationFeatures.STOP_LOSS
+
+  const sidebarTitle = getAutomationFormTitle({
     flow,
     stage,
-    token: vault.token,
-    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    feature,
   })
-  const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage, token: vault.token })
-  const sidebarStatus = getSidebarStatus({
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
+  })
+  const sidebarStatus = getAutomationStatusTitle({
     flow,
     txHash: stopLossState.txDetails?.txHash,
     etherscan: context.etherscan.url,
     stage,
+    feature,
   })
 
   if (isStopLossActive) {
@@ -191,7 +204,7 @@ export function SidebarSetupStopLoss({
             <>
               {(stage === 'txSuccess' || stage === 'txInProgress') && (
                 <SidebarAutomationFeatureCreationStage
-                  featureName="Stop-Loss"
+                  featureName={feature}
                   stage={stage}
                   isAddForm={isAddForm}
                   isRemoveForm={isRemoveForm}
@@ -215,28 +228,20 @@ export function SidebarSetupStopLoss({
         label: primaryButtonLabel,
         disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
-        action: () => {
-          if (stage !== 'txSuccess') {
-            txHandler()
-          } else {
-            uiChanges.publish(TAB_CHANGE_SUBJECT, {
-              type: 'change-tab',
-              currentMode: VaultViewMode.Overview,
-            })
-            uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-              type: 'reset',
-              resetData,
-            })
-            uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-              type: 'current-form',
-              currentForm: 'add',
-            })
-          }
-        },
+        action: () =>
+          txHandler({
+            callOnSuccess: () => {
+              uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                type: 'change-tab',
+                currentMode: VaultViewMode.Overview,
+              })
+              setHash(VaultViewMode.Overview)
+            },
+          }),
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
+          label: textButtonLabel,
           hidden: isFirstSetup,
           action: () => textButtonHandler(),
         },

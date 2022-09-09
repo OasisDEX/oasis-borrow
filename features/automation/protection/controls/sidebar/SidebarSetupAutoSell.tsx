@@ -4,8 +4,18 @@ import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { AddAndRemoveTxHandler } from 'features/automation/common/AddAndRemoveTriggerControl'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormTitle } from 'features/automation/common/getAutomationFormTitle'
+import { getAutomationPrimaryButtonLabel } from 'features/automation/common/getAutomationPrimaryButtonLabel'
+import { getAutomationStatusTitle } from 'features/automation/common/getAutomationStatusTitle'
+import { getAutomationTextButtonLabel } from 'features/automation/common/getAutomationTextButtonLabel'
+import {
+  AutomationFeatures,
+  SidebarAutomationFlow,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
 import {
   errorsBasicSellValidation,
   warningsBasicSellValidation,
@@ -18,13 +28,8 @@ import { SidebarAutoSellCancelEditingStage } from 'features/automation/protectio
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
-import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -40,9 +45,9 @@ interface SidebarSetupAutoSellProps {
   context: Context
   ethMarketPrice: BigNumber
   basicSellState: BasicBSFormChange
-  txHandler: () => void
+  txHandler: (options?: AddAndRemoveTxHandler) => void
   textButtonHandler: () => void
-  stage: SidebarVaultStages
+  stage: SidebarAutomationStages
   isAddForm: boolean
   isRemoveForm: boolean
   isEditing: boolean
@@ -81,25 +86,31 @@ export function SidebarSetupAutoSell({
   debtDeltaAtCurrentCollRatio,
   collateralDelta,
 }: SidebarSetupAutoSellProps) {
-  const { t } = useTranslation()
-
   const gasEstimation = useGasEstimationContext()
 
-  const flow: SidebarFlow = isRemoveForm
+  const flow: SidebarAutomationFlow = isRemoveForm
     ? 'cancelBasicSell'
     : isFirstSetup
     ? 'addBasicSell'
     : 'editBasicSell'
 
-  const sidebarStatus = getSidebarStatus({
+  const feature = AutomationFeatures.AUTO_SELL
+
+  const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: basicSellState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
+    feature,
   })
 
-  const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-  const sidebarTitle = getSidebarTitle({ flow, stage, token: vault.token })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
+  const sidebarTitle = getAutomationFormTitle({
+    flow,
+    stage,
+    feature,
+  })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
 
   const errors = errorsBasicSellValidation({
     ilkData,
@@ -183,7 +194,7 @@ export function SidebarSetupAutoSell({
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
             <SidebarAutomationFeatureCreationStage
-              featureName="Auto-Sell"
+              featureName={feature}
               stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}
@@ -199,8 +210,8 @@ export function SidebarSetupAutoSell({
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: basicSellState.triggerId.isZero(),
+          label: textButtonLabel,
+          hidden: isFirstSetup,
           action: () => textButtonHandler(),
         },
       }),

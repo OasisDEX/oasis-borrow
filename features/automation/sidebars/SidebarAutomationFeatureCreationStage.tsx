@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +9,7 @@ import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
 interface SidebarAutomationFeatureCreationStageProps {
-  featureName: 'Auto-Buy' | 'Auto-Sell' | 'Constant Multiple' | 'Stop-Loss'
+  featureName: AutomationFeatures
   stage: SidebarVaultStages
   isAddForm: boolean
   isRemoveForm: boolean
@@ -25,10 +26,10 @@ export function SidebarAutomationFeatureCreationStage({
   const { t } = useTranslation()
 
   const linkMap = {
-    'Stop-Loss': 'setting-up-auto-buy-for-your-vault',
-    'Auto-Buy': 'setting-up-auto-buy-for-your-vault',
-    'Auto-Sell': 'setting-up-auto-sell-for-your-vault',
-    'Constant Multiple': 'what-is-constant-multiple',
+    [AutomationFeatures.STOP_LOSS]: 'setting-up-auto-buy-for-your-vault',
+    [AutomationFeatures.AUTO_BUY]: 'setting-up-auto-buy-for-your-vault',
+    [AutomationFeatures.AUTO_SELL]: 'setting-up-auto-sell-for-your-vault',
+    [AutomationFeatures.CONSTANT_MULTIPLE]: 'what-is-constant-multiple',
   }
 
   switch (stage) {
@@ -60,11 +61,11 @@ export function SidebarAutomationFeatureCreationStage({
                 >
                   {t('here')}.
                 </AppLink>
-                <Box mt={3}>{!!customContent && customContent}</Box>
               </>
             )}
             {isRemoveForm && t('automation-creation.remove-complete-content', { featureName })}
           </Text>
+          {isAddForm && !!customContent && <Box mt={3}>{!!customContent && customContent}</Box>}
           <Box>
             <VaultChangesWithADelayCard />
           </Box>

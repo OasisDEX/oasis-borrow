@@ -17,10 +17,17 @@ import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { addTransactionMap, TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { ReactElement, useEffect, useMemo } from 'react'
 
+export interface AddAndRemoveTxHandler {
+  callOnSuccess?: () => void
+}
+
 interface AddAndRemoveTriggerControlProps {
   txHelpers?: TxHelpers
   ethMarketPrice: BigNumber
-  children: (txHandler: () => void, textButtonHandler: () => void) => ReactElement
+  children: (
+    txHandler: (options?: AddAndRemoveTxHandler) => void,
+    textButtonHandler: () => void,
+  ) => ReactElement
   isEditing: boolean
   removeAllowance: boolean
   proxyAddress: string
@@ -65,7 +72,7 @@ export function AddAndRemoveTriggerControl({
     [removeAllowance, proxyAddress, triggersId],
   )
 
-  function txHandler() {
+  function txHandler(options?: AddAndRemoveTxHandler) {
     if (txHelpers) {
       if (stage === 'txSuccess') {
         uiChanges.publish(publishType, {
@@ -80,6 +87,7 @@ export function AddAndRemoveTriggerControl({
           type: 'current-form',
           currentForm: 'add',
         })
+        options?.callOnSuccess && options.callOnSuccess()
       } else {
         if (isAddForm) {
           addAutomationTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, publishType)
