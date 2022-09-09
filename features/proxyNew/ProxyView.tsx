@@ -30,7 +30,7 @@ function ProxyInfoStateView({ state, send }: ProxyViewStateProps) {
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: 'Create proxy',
+    title: t('vault-form.header.proxy'),
     content: (
       <Grid gap={3}>
         <>

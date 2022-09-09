@@ -123,7 +123,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: false,
-      disabled: !state.can('NEXT_STEP') || isProxyCreationDisabled,
+      disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
       label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
       action: () => send('NEXT_STEP'),
     },
