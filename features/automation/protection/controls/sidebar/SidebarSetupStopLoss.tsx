@@ -176,7 +176,7 @@ export function SidebarSetupStopLoss({
                       ilkData={ilkData}
                       errors={cancelStopLossErrors}
                       warnings={cancelStopLossWarnings}
-                      stopLossState={stopLossState}
+                      stopLossLevel={stopLossTriggerData.stopLossLevel}
                     />
                   )}
                 </>

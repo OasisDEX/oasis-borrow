@@ -64,7 +64,13 @@ export function ProtectionFormControl({
         currentProtectionFeature: 'autoSell',
       })
     }
-  }, [])
+    if (isStopLossActive) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Protection',
+        currentProtectionFeature: 'stopLoss',
+      })
+    }
+  }, [autoSellTriggerData.isTriggerEnabled, stopLossTriggerData.isStopLossEnabled])
 
   return (
     <>
