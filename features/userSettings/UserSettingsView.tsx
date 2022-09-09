@@ -147,7 +147,10 @@ function SlippageSettingsForm() {
           <Text variant="paragraph3" sx={{ color: 'neutral80', mb: -1 }}>
             {t('user-settings.slippage-limit.preset-description')}
           </Text>
-          <Link href="/support#using-multiply" passHref>
+          <Link
+            href="https://kb.oasis.app/help/frequently-asked-questions#h_8073651997861662481520644"
+            passHref
+          >
             <ThemeLink target="_self" sx={{ mt: -1, fontWeight: 400 }}>
               {t('user-settings.slippage-limit.read-more')}
             </ThemeLink>
@@ -374,7 +377,12 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         >
           {t('account-privacy')}
         </AppLink>
-        <AppLink variant="settings" withAccountPrefix={false} href="/support" onClick={close}>
+        <AppLink
+          variant="settings"
+          withAccountPrefix={false}
+          href="https://kb.oasis.app/help"
+          onClick={close}
+        >
           {t('account-support')}
         </AppLink>
       </Flex>
