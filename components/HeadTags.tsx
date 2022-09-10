@@ -2,6 +2,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
 import React from 'react'
+import { v4 as uuid } from 'uuid'
 
 import { useTheme } from '../theme/useThemeUI'
 
@@ -87,17 +88,18 @@ export function PageSEOTags({
 
       <meta
         property="og:image"
-        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}`)}
+        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}?${uuid()}`)}
       />
       <meta
         property="og:image:secure_url"
-        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}`)}
+        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.ogImage}?${uuid()}`)}
       />
       <meta
         name="twitter:image"
-        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.twitterImage}`)}
+        content={staticFilesRuntimeUrl(`/static/img/og_images/${OGImages.twitterImage}?${uuid()}`)}
       />
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:creator" content="@oasisdotapp" />
 
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="Oasis" />
