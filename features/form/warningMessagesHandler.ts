@@ -20,7 +20,6 @@ export type VaultWarningMessage =
   | 'autoBuyTargetCloseToAutoSellTrigger'
   | 'autoBuyTriggeredImmediately'
   | 'autoSellTriggeredImmediately'
-  | 'autoSellOverride'
   | 'constantMultipleSellTriggerCloseToStopLossTrigger'
   | 'stopLossTriggerCloseToConstantMultipleSellTrigger'
   | 'addingConstantMultipleWhenAutoSellOrBuyEnabled'

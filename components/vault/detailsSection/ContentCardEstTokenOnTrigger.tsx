@@ -77,26 +77,26 @@ export function ContentCardEstTokenOnTrigger({
     .times(liquidationPrice)
     .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
     .div(liquidationPrice)
-  const afterMaxToken = lockedCollateral
-    .times(afterDynamicStopPrice)
-    .minus(debt)
-    .div(afterDynamicStopPrice)
+  const afterMaxToken = afterDynamicStopPrice.isZero()
+    ? zero
+    : lockedCollateral.times(afterDynamicStopPrice).minus(debt).div(afterDynamicStopPrice)
+
   const savingCompareToLiquidation = maxToken.minus(ethDuringLiquidation)
   const symbol = isCollateralActive ? token : 'DAI'
 
-  const formatTokenOrDai = (val: BigNumber): string => {
+  const formatTokenOrDai = (val: BigNumber, stopPrice: BigNumber): string => {
     return isCollateralActive
       ? `${formatAmount(val, token)} ${token}`
-      : `${formatAmount(val.multipliedBy(dynamicStopPrice), 'USD')} DAI`
+      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')} DAI`
   }
 
   const formatted = {
     title: t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', {
       token: symbol,
     }),
-    maxTokenOrDai: formatTokenOrDai(maxToken),
-    savingTokenOrDai: formatTokenOrDai(savingCompareToLiquidation),
-    afterMaxTokenOrDai: formatTokenOrDai(afterMaxToken),
+    maxTokenOrDai: formatTokenOrDai(maxToken, dynamicStopPrice),
+    savingTokenOrDai: formatTokenOrDai(savingCompareToLiquidation, dynamicStopPrice),
+    afterMaxTokenOrDai: formatTokenOrDai(afterMaxToken, afterDynamicStopPrice),
     liquidationPenalty: formatPercent(liquidationPenalty.multipliedBy(100), {
       precision: 2,
     }),

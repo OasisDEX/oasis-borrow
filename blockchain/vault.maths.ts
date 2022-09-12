@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
-
-import { HOUR, SECONDS_PER_YEAR } from '../components/constants'
-import { one, zero } from '../helpers/zero'
+import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
+import { one, zero } from 'helpers/zero'
 
 const defaultDebtOffset = new BigNumber('1e-18')
 
@@ -156,7 +155,7 @@ export function collateralPriceAtRatio({
   collateral,
   vaultDebt,
 }: CollateralPriceAtRatioThresholdArgs): BigNumber {
-  return collateral.isZero() || vaultDebt.isZero()
+  return collateral.isZero() || vaultDebt.isZero() || colRatio.isZero()
     ? zero
     : vaultDebt.times(colRatio).div(collateral)
 }

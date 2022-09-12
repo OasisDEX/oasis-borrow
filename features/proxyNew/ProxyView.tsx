@@ -2,6 +2,7 @@ import { useActor } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
@@ -26,9 +27,10 @@ interface ProxyViewStateProps {
 
 function ProxyInfoStateView({ state, send }: ProxyViewStateProps) {
   const { t } = useTranslation()
+  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: 'Create proxy',
+    title: t('vault-form.header.proxy'),
     content: (
       <Grid gap={3}>
         <>
@@ -65,7 +67,7 @@ function ProxyInfoStateView({ state, send }: ProxyViewStateProps) {
     ),
     primaryButton: {
       isLoading: false,
-      disabled: false,
+      disabled: isProxyCreationDisabled,
       label: state.matches('proxyFailure') ? t('retry-create-proxy') : t('create-proxy-btn'),
       action: state.matches('proxyFailure') ? () => send('RETRY') : () => send('START'),
     },

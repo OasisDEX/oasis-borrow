@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -39,9 +38,7 @@ export function StopLossDetailsControl({
       {isStopLossActive ? (
         <StopLossDetailsLayout
           slRatio={stopLossTriggerData.stopLossLevel}
-          afterSlRatio={
-            stopLossState ? stopLossState.selectedSLValue?.dividedBy(100) : new BigNumber(0)
-          }
+          afterSlRatio={stopLossState.selectedSLValue.dividedBy(100)}
           vaultDebt={vault.debt}
           isStopLossEnabled={stopLossTriggerData.isStopLossEnabled}
           lockedCollateral={vault.lockedCollateral}
@@ -56,9 +53,7 @@ export function StopLossDetailsControl({
             stopLossLevel: stopLossTriggerData.stopLossLevel,
             collateralActive: stopLossState.collateralActive,
             isToCollateral: stopLossTriggerData.isToCollateral,
-            // TODO to be updated when working on details section remove state
-            isRemoveForm: false,
-            // isRemoveForm: stopLossState.currentForm === 'remove',
+            isRemoveForm: stopLossState.currentForm === 'remove',
           })}
           collateralizationRatio={vault.collateralizationRatio}
         />

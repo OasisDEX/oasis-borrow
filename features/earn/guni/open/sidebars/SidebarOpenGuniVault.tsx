@@ -18,6 +18,7 @@ import {
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -48,6 +49,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
+  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -62,7 +64,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
-      disabled: !canProgress,
+      disabled: !canProgress || (isProxyStage && isProxyCreationDisabled),
       isLoading: isLoadingStage,
       action: () => {
         if (!isSuccessStage) progress!()

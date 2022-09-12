@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
 interface GetSidebarTitleParams {
@@ -97,7 +98,7 @@ export function getSidebarTitle({
 }: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
-
+  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
   if (isSLPanelVisible) return t('protection.your-stop-loss-triggered')
 
   switch (stage) {
@@ -114,7 +115,9 @@ export function getSidebarTitle({
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
     case 'proxyFailure':
-      return t('vault-form.header.proxy')
+      return !isProxyCreationDisabled
+        ? t('vault-form.header.proxy')
+        : t('vault-form.header.proxyDisabled')
     case 'proxySuccess':
       return t('vault-form.header.proxy-success')
     case 'allowanceWaitingForConfirmation':
