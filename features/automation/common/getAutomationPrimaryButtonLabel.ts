@@ -5,8 +5,6 @@ import {
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
-const UNREACHABLE_CASE_MESSAGE = ''
-
 function getPrimaryButtonLabelEditingTranslationKey({ flow }: { flow: SidebarAutomationFlow }) {
   switch (flow) {
     case 'addSl':
@@ -51,7 +49,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({
     case 'cancelSl':
       return 'automation.cancelling'
     default:
-      return UNREACHABLE_CASE_MESSAGE
+      throw new UnreachableCaseError(flow)
   }
 }
 
@@ -72,7 +70,7 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationF
     case 'editConstantMultiple':
       return 'finished'
     default:
-      return UNREACHABLE_CASE_MESSAGE
+      throw new UnreachableCaseError(flow)
   }
 }
 

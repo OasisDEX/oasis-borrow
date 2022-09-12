@@ -19,24 +19,6 @@ function getSidebarProgressTxInProgressKey({
       return 'creating-your-vault'
     case 'addSl':
       return 'protection.setting-downside-protection'
-    // case 'adjustSl':
-    // case 'cancelSl':
-    //   return 'protection.cancelling-downside-protection'
-    // case 'addBasicSell':
-    // case 'editBasicSell':
-    //   return 'protection.setting-auto-sell'
-    // case 'cancelBasicSell':
-    //   return 'protection.cancelling-auto-sell'
-    // case 'cancelBasicBuy':
-    //   return 'auto-buy.cancelling-auto-buy'
-    // case 'addBasicBuy':
-    // case 'editBasicBuy':
-    //   return 'auto-buy.setting-auto-buy'
-    // case 'cancelConstantMultiple':
-    //   return 'constant-multiple.cancelling-constant-multiple'
-    // case 'addConstantMultiple':
-    // case 'editConstantMultiple':
-    //   return 'constant-multiple.setting-constant-multiple'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -49,17 +31,6 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'openGuni':
       return 'vault-creation-confirmed'
     case 'addSl':
-      // case 'adjustSl':
-      // case 'cancelSl':
-      // case 'addBasicSell':
-      // case 'editBasicSell':
-      // case 'cancelBasicSell':
-      // case 'addBasicBuy':
-      // case 'editBasicBuy':
-      // case 'cancelBasicBuy':
-      // case 'addConstantMultiple':
-      // case 'editConstantMultiple':
-      // case 'cancelConstantMultiple':
       return 'vault-changed'
     default:
       throw new UnreachableCaseError(flow)
