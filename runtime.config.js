@@ -15,7 +15,8 @@ const publicRuntimeConfig = {
   infuraProjectId: process.env.INFURA_PROJECT_ID,
   etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
   sentryRelease: process.env.SENTRY_RELEASE,
-  exchangeAddress: process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
+  exchangeAddress:
+    process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
   multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
   mainnetCacheURL: process.env.MAINNET_CACHE_URL,
   operationExecutorTemp: process.env.OPERATION_EXECUTOR_TEMP,
