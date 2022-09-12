@@ -20,6 +20,7 @@ import {
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -63,6 +64,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
   const stopLossData = getDataForStopLoss(props, 'borrow')
+  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),
@@ -85,7 +87,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage && !isAddStopLossStage ? [currentStep, totalSteps] : undefined,
-      disabled: !canProgress,
+      disabled: !canProgress || (isProxyStage && isProxyCreationDisabled),
       isLoading: isLoadingStage,
       action: () => {
         if (!isSuccessStage && !isStopLossSuccessStage) progress!()

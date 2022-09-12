@@ -1,5 +1,6 @@
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
@@ -109,6 +110,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const hasProxy = state.context.proxyAddress !== undefined
+  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -121,7 +123,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: false,
-      disabled: !state.can('NEXT_STEP'),
+      disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
       label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
       action: () => send('NEXT_STEP'),
     },

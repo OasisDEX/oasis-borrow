@@ -1050,6 +1050,7 @@
       "edit": "Configure your Vault",
       "editWithToken": "Configure your {{token}} Vault",
       "proxy": "Create your smart Proxy",
+      "proxyDisabled": "Proxy creation temporally disabled",
       "proxy-in-progress": "Smart proxy being created",
       "proxy-success": "Smart Proxy successfully created",
       "allowance": "Set {{token}} allowance",
@@ -1080,7 +1081,8 @@
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
-      "modified": "Your Vault is currently being updated. Please wait."
+      "modified": "Your Vault is currently being updated. Please wait.",
+      "new-proxy-temporally-disabled": "Proxy creation is temporary disabled around the merge, to prevent unexpected behavior from re-orgs. See our <1>blog</1> for more info."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
