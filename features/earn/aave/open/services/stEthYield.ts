@@ -7,11 +7,20 @@ import { first } from 'rxjs/operators'
 const aaveStEthYield = gql`
   mutation stEthYields(
     $currentDate: Date!
+    $date7daysAgo: Date!
     $date30daysAgo: Date!
     $date90daysAgo: Date!
     $date1yearAgo: Date!
     $multiply: BigFloat!
   ) {
+    yield7days: aaveYieldRateStethEth(
+      input: { startDate: $date7daysAgo, endDate: $currentDate, multiple: $multiply }
+    ) {
+      yield {
+        netAnnualisedYield
+      }
+    }
+
     yield30days: aaveYieldRateStethEth(
       input: { startDate: $date30daysAgo, endDate: $currentDate, multiple: $multiply }
     ) {
@@ -46,6 +55,7 @@ const aaveStEthYield = gql`
 `
 
 export interface AaveStEthYieldsResponse {
+  annualisedYield7days: BigNumber
   annualisedYield30days: BigNumber
   annualisedYield90days: BigNumber
   annualisedYield1Year: BigNumber
@@ -60,12 +70,14 @@ export async function getAaveStEthYield(
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
     currentDate: currentDate.utc().format('YYYY-MM-DD'),
+    date7daysAgo: currentDate.utc().clone().subtract(7, 'days').format('YYYY-MM-DD'),
     date30daysAgo: currentDate.utc().clone().subtract(30, 'days').format('YYYY-MM-DD'),
     date90daysAgo: currentDate.utc().clone().subtract(90, 'days').format('YYYY-MM-DD'),
     date1yearAgo: currentDate.utc().clone().subtract(1, 'year').format('YYYY-MM-DD'),
     multiply: multiply.toString(),
   })
   return {
+    annualisedYield7days: new BigNumber(response.yield7days.yield.netAnnualisedYield),
     annualisedYield30days: new BigNumber(response.yield30days.yield.netAnnualisedYield),
     annualisedYield90days: new BigNumber(response.yield90days.yield.netAnnualisedYield),
     annualisedYield1Year: new BigNumber(response.yield1year.yield.netAnnualisedYield),
