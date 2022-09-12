@@ -24,11 +24,14 @@ module.exports = {
     './components/**/*.test.ts',
     './features/**/*.test.ts',
     './blockchain/**/*.test.ts',
+    './locales.test.ts',
   ],
   timeout: 1000,
 }
 
-Enzyme.configure({ adapter: new Adapter() })
+Enzyme.configure({
+  adapter: new Adapter(),
+})
 
 // do not import files that we don't care about
 function noop() {
