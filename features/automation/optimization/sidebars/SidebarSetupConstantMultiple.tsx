@@ -6,6 +6,15 @@ import { useGasEstimationContext } from 'components/GasEstimationContextProvider
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormTitle } from 'features/automation/common/getAutomationFormTitle'
+import { getAutomationPrimaryButtonLabel } from 'features/automation/common/getAutomationPrimaryButtonLabel'
+import { getAutomationStatusTitle } from 'features/automation/common/getAutomationStatusTitle'
+import { getAutomationTextButtonLabel } from 'features/automation/common/getAutomationTextButtonLabel'
+import {
+  AutomationFeatures,
+  SidebarAutomationFlow,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/sidebars/SidebarConstantMultipleRemovalEditingStage'
 import {
@@ -16,12 +25,8 @@ import { StopLossTriggerData } from 'features/automation/protection/common/stopL
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -51,7 +56,7 @@ interface SidebarSetupConstantMultipleProps {
   nextSellPrice: BigNumber
   debtDeltaWhenSellAtCurrentCollRatio: BigNumber
   debtDeltaAfterSell: BigNumber
-  stage: SidebarVaultStages
+  stage: SidebarAutomationStages
   stopLossTriggerData: StopLossTriggerData
   textButtonHandler: () => void
   txHandler: () => void
@@ -88,24 +93,36 @@ export function SidebarSetupConstantMultiple({
   debtDeltaWhenSellAtCurrentCollRatio,
   debtDeltaAfterSell,
 }: SidebarSetupConstantMultipleProps) {
-  const { t } = useTranslation()
-
   const gasEstimation = useGasEstimationContext()
 
-  const flow: SidebarFlow = isRemoveForm
+  const flow: SidebarAutomationFlow = isRemoveForm
     ? 'cancelConstantMultiple'
     : isFirstSetup
     ? 'addConstantMultiple'
     : 'editConstantMultiple'
 
-  const sidebarStatus = getSidebarStatus({
+  const feature = AutomationFeatures.CONSTANT_MULTIPLE
+
+  const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: constantMultipleState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
+    feature,
   })
 
-  const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
+  const sidebarTitle = getAutomationFormTitle({
+    flow,
+    stage,
+    feature,
+  })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
+  })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+
   const errors = errorsConstantMultipleValidation({
     constantMultipleState,
     isRemoveForm,
@@ -142,7 +159,7 @@ export function SidebarSetupConstantMultiple({
 
   if (isConstantMultipleActive) {
     const sidebarSectionProps: SidebarSectionProps = {
-      title: t('constant-multiple.title'),
+      title: sidebarTitle,
       dropdown,
       content: (
         <Grid gap={3}>
@@ -183,7 +200,7 @@ export function SidebarSetupConstantMultiple({
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
             <SidebarAutomationFeatureCreationStage
-              featureName="Constant Multiple"
+              featureName={feature}
               stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}
@@ -200,7 +217,7 @@ export function SidebarSetupConstantMultiple({
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
           textButton: {
-            label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
+            label: textButtonLabel,
             hidden: isFirstSetup,
             action: () => textButtonHandler(),
           },

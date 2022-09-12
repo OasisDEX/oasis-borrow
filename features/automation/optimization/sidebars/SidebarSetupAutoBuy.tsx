@@ -6,6 +6,15 @@ import { useGasEstimationContext } from 'components/GasEstimationContextProvider
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormTitle } from 'features/automation/common/getAutomationFormTitle'
+import { getAutomationPrimaryButtonLabel } from 'features/automation/common/getAutomationPrimaryButtonLabel'
+import { getAutomationStatusTitle } from 'features/automation/common/getAutomationStatusTitle'
+import { getAutomationTextButtonLabel } from 'features/automation/common/getAutomationTextButtonLabel'
+import {
+  AutomationFeatures,
+  SidebarAutomationFlow,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { getBasicBuyMinMaxValues } from 'features/automation/optimization/helpers'
 import {
@@ -17,13 +26,9 @@ import { BasicBSFormChange } from 'features/automation/protection/common/UITypes
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -45,7 +50,7 @@ interface SidebarSetupAutoBuyProps {
   basicBuyState: BasicBSFormChange
   txHandler: () => void
   textButtonHandler: () => void
-  stage: SidebarVaultStages
+  stage: SidebarAutomationStages
   isAddForm: boolean
   isRemoveForm: boolean
   isEditing: boolean
@@ -84,27 +89,34 @@ export function SidebarSetupAutoBuy({
   collateralDelta,
   isAutoBuyActive,
 }: SidebarSetupAutoBuyProps) {
-  const { t } = useTranslation()
-
   const gasEstimation = useGasEstimationContext()
 
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
   const isMultiplyVault = vaultType === VaultType.Multiply
 
-  const flow: SidebarFlow = isRemoveForm
+  const flow: SidebarAutomationFlow = isRemoveForm
     ? 'cancelBasicBuy'
     : isFirstSetup
     ? 'addBasicBuy'
     : 'editBasicBuy'
 
-  const sidebarStatus = getSidebarStatus({
+  const feature = AutomationFeatures.AUTO_BUY
+
+  const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: basicBuyState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
+    feature,
   })
 
-  const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
+  const sidebarTitle = getAutomationFormTitle({
+    flow,
+    stage,
+    feature,
+  })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
 
   const errors = errorsBasicBuyValidation({
     basicBuyState,
@@ -147,7 +159,7 @@ export function SidebarSetupAutoBuy({
     const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
     const sidebarSectionProps: SidebarSectionProps = {
-      title: t('auto-buy.form-title'),
+      title: sidebarTitle,
       ...(constantMultipleEnabled && isMultiplyVault && { dropdown }),
       content: (
         <Grid gap={3}>
@@ -182,7 +194,7 @@ export function SidebarSetupAutoBuy({
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
             <SidebarAutomationFeatureCreationStage
-              featureName="Auto-Buy"
+              featureName={feature}
               stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}
@@ -198,8 +210,8 @@ export function SidebarSetupAutoBuy({
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: basicBuyState.triggerId.isZero(),
+          label: textButtonLabel,
+          hidden: isFirstSetup,
           action: () => textButtonHandler(),
         },
       }),

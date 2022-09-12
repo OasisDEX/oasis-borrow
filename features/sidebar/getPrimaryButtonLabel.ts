@@ -42,24 +42,11 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'openGuni':
     case 'manageBorrow':
     case 'manageMultiply':
-    case 'addBasicSell':
-    case 'cancelBasicSell':
-    case 'addBasicBuy':
-    case 'cancelBasicBuy':
-    case 'editBasicSell':
-    case 'editBasicBuy':
-    case 'addConstantMultiple':
-    case 'editConstantMultiple':
-    case 'cancelConstantMultiple':
       return 'confirm'
     case 'manageGuni':
       return 'close-vault'
     case 'addSl':
       return 'add-stop-loss'
-    case 'adjustSl':
-      return 'update-stop-loss'
-    case 'cancelSl':
-      return 'cancel-stop-loss'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -71,29 +58,6 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
     case 'openMultiply':
     case 'openGuni':
       return 'creating-vault'
-    case 'addSl':
-      return 'add-stop-loss'
-    case 'adjustSl':
-      return 'update-stop-loss'
-    case 'cancelSl':
-      return 'cancel-stop-loss'
-    case 'addBasicSell':
-      return 'adding-auto-sell'
-    case 'cancelBasicSell':
-      return 'cancelling-auto-sell'
-    case 'editBasicSell':
-      return 'adding-auto-sell'
-    case 'addBasicBuy':
-    case 'editBasicBuy':
-      return 'adding-auto-buy'
-    case 'cancelBasicBuy':
-      return 'cancelling-auto-buy'
-    case 'addConstantMultiple':
-      return 'constant-multiple.adding-constant-multiple'
-    case 'editConstantMultiple':
-      return 'constant-multiple.adjusting-constant-multiple'
-    case 'cancelConstantMultiple':
-      return 'constant-multiple.removing-constant-multiple'
     default:
       return UNREACHABLE_CASE_MESSAGE
   }
@@ -105,20 +69,6 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'openMultiply':
     case 'openGuni':
       return 'go-to-vault'
-    case 'addSl':
-    case 'adjustSl':
-    case 'cancelSl':
-      return 'back-to-vault-overview'
-    case 'addBasicSell':
-    case 'cancelBasicSell':
-    case 'addBasicBuy':
-    case 'cancelBasicBuy':
-    case 'editBasicSell':
-    case 'editBasicBuy':
-    case 'addConstantMultiple':
-    case 'cancelConstantMultiple':
-    case 'editConstantMultiple':
-      return 'finished'
     default:
       return UNREACHABLE_CASE_MESSAGE
   }

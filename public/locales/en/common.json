@@ -1466,7 +1466,7 @@
     "estimated-transaction-cost": "Estimated transaction cost",
     "target-ratio-with-deviation": "Target ratio with deviation",
     "title": "Auto-Sell",
-    "add-form-title": "Auto Sell-Setup",
+    "add-form-title": "Auto-Sell Setup",
     "edit-form-title": "Edit Auto-Sell",
     "setting-form-title": "Setting Auto-Sell",
     "cancelling-form-title": "Cancelling Auto-Sell",
@@ -1497,9 +1497,9 @@
     "sl-too-high": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Sell.",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
     "banner": {
-      "header": "Set up Auto Sell",
+      "header": "Set up Auto-Sell",
       "content": "Set up an Auto-Sell to keep your vault’s collateralization ratio above a certain level. This may be beneficial, for example, in a bear market where the value of your collateral is decreasing. Find out more about how this works",
-      "button": "Setup Auto Sell"
+      "button": "Setup Auto-Sell"
     }
   },
   "auto-buy": {
@@ -1516,6 +1516,14 @@
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
     "trigger-coll-ratio": "Buy Trigger Ratio",
     "buy-title": "Basic Auto-Buy Summary",
+    "add-form-title": "Auto-Buy Setup",
+    "edit-form-title": "Edit Auto-Buy",
+    "setting-form-title": "Setting Auto-Buy",
+    "cancelling-form-title": "Cancelling Auto-Buy",
+    "cancel-form-title": "Cancellation confirmation",
+    "trigger-added": "Auto-Buy Enabled",
+    "trigger-cancelled": "Auto-Buy cancellation completed",
+    "trigger-updated": "Auto-Buy Updated",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
     "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
@@ -1536,7 +1544,7 @@
     "banner": {
       "header": "Set up Auto-Buy",
       "content": "Set up an Auto-Buy to keep your vault’s collateralization ratio below a certain level. This may be beneficial, for example, in a bull market where the value of your collateral is increasing. Find out more about how this works",
-      "button": "Setup Auto Buy"
+      "button": "Setup Auto-Buy"
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
@@ -1544,6 +1552,19 @@
     "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More ",
     "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
+  },
+  "automation": {
+    "setup": "{{feature}} Setup",
+    "trigger-added": "{{feature}} Enabled",
+    "trigger-cancelled": "{{feature}} cancellation completed",
+    "trigger-updated": "{{feature}} Updated",
+    "add-trigger": "Add {{feature}}",
+    "edit-trigger": "Edit {{feature}}",
+    "setting": "Setting {{feature}}",
+    "updating": "Updating {{feature}}",
+    "cancelling": "Cancelling {{feature}}",
+    "update-trigger": "Update {{feature}}",
+    "cancel-trigger": "Cancel {{feature}}"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1554,6 +1575,14 @@
   },
   "constant-multiple": {
     "title": "Constant Multiple",
+    "add-form-title": "Constant Multiple Setup",
+    "setting-form-title": "Setting Constant Multiple",
+    "cancelling-form-title": "Cancelling Constant Multiple",
+    "edit-form-title": "Edit Constant Multiple",
+    "cancel-form-title": "Cancellation confirmation",
+    "trigger-added": "Constant Multiple Enabled",
+    "trigger-cancelled": "Constant Multiple cancellation completed",
+    "trigger-updated": "Constant Multiple Updated",
     "set-trigger-description": "The Constant Multiple Automation will sell {{token}} at a col. ratio of {{sellExecutionCollRatio}}% and will buy {{token}} at a col. ratio of {{buyExecutionCollRatio}}% returning your vault's multiple to {{multiplier}}x.",
     "set-trigger-risk": "Please Note - Constant Multiple is an advanced strategy, with risks that should be well understood before set-up. Find out more ",
     "target-multiple": "Target Multiple",
