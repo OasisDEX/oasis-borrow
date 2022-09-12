@@ -1,8 +1,7 @@
 import { useActor, useSelector } from '@xstate/react'
-import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { formatBigNumber, formatPercent } from 'helpers/formatters/format'
+import { formatPercent } from 'helpers/formatters/format'
 import { ActorRefFrom } from 'xstate'
 
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
