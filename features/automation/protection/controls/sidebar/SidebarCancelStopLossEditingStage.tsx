@@ -10,7 +10,6 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { StopLossFormChange } from 'features/automation/protection/common/UITypes/StopLossFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
@@ -62,7 +61,7 @@ interface SidebarCancelStopLossEditingStageProps {
   ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  stopLossState: StopLossFormChange
+  stopLossLevel: BigNumber
 }
 
 export function SidebarCancelStopLossEditingStage({
@@ -70,7 +69,7 @@ export function SidebarCancelStopLossEditingStage({
   ilkData,
   errors,
   warnings,
-  stopLossState,
+  stopLossLevel,
 }: SidebarCancelStopLossEditingStageProps) {
   const { t } = useTranslation()
 
@@ -83,7 +82,7 @@ export function SidebarCancelStopLossEditingStage({
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
       <CancelDownsideProtectionInformation
         liquidationPrice={vault.liquidationPrice}
-        selectedSLValue={stopLossState.selectedSLValue}
+        selectedSLValue={stopLossLevel.times(100)}
       />
       <MessageCard
         messages={[

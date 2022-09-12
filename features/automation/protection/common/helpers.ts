@@ -27,10 +27,7 @@ export function getIsEditingProtection({
   collateralActive?: boolean
   isToCollateral?: boolean
 }) {
-  if (
-    (collateralActive === undefined && isToCollateral === undefined) ||
-    selectedSLValue.isZero()
-  ) {
+  if (collateralActive === undefined && isToCollateral === undefined) {
     return false
   }
 

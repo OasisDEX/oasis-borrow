@@ -32,6 +32,7 @@ import { SidebarSetupStopLoss } from 'features/automation/protection/controls/si
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 import { failedStatuses, progressStatuses } from '../../common/txStatues'
@@ -204,12 +205,21 @@ export function StopLossFormControl({
   }
 
   const executionPrice = collateralPriceAtRatio({
-    colRatio: stopLossState.selectedSLValue.div(100), // TODO potentialy div by 100
+    colRatio: stopLossState.selectedSLValue.div(100),
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
 
   const isFirstSetup = stopLossTriggerData.triggerId.isZero()
+
+  function textButtonHandlerExtension() {
+    if (isAddForm) {
+      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+        type: 'stop-loss',
+        stopLoss: zero,
+      })
+    }
+  }
 
   return (
     <AddAndRemoveTriggerControl
@@ -225,6 +235,7 @@ export function StopLossFormControl({
       currentForm={stopLossState.currentForm}
       triggersId={[triggerId.toNumber()]}
       isActiveFlag={isStopLossActive}
+      textButtonHandlerExtension={textButtonHandlerExtension}
     >
       {(txHandler, textButtonHandler) => (
         <SidebarSetupStopLoss
