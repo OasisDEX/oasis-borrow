@@ -8,7 +8,6 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-const SupportLink = <AppLink sx={{ color: 'warning100' }} href="mailto:support@oasis.app" />
 const ConstantMultipleKBLink = (
   <AppLink
     sx={{ color: 'warning100' }}
@@ -81,9 +80,6 @@ export function VaultWarnings({
         return translate('auto-buy-triggered-immediately')
       case 'autoSellTriggeredImmediately':
         return translate('auto-sell-triggered-immediately')
-      // TEMPORARY override message as banner in overview details
-      case 'autoSellOverride':
-        return <Trans i18nKey="vault-warnings.auto-sell-override" components={[SupportLink]} />
       case 'constantMultipleAutoSellTriggeredImmediately':
         return translate('constant-multiple-auto-sell-triggered-immediately')
       case 'constantMultipleAutoBuyTriggeredImmediately':
