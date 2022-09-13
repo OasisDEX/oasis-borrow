@@ -47,9 +47,7 @@ export interface AutomationSidebarStatusParams {
   etherscan?: string
 }
 
-export type AutomationBSPublishType =
-  | typeof AUTO_SELL_FORM_CHANGE
-  | typeof AUTO_BUY_FORM_CHANGE
+export type AutomationBSPublishType = typeof AUTO_SELL_FORM_CHANGE | typeof AUTO_BUY_FORM_CHANGE
 
 export type AutomationPublishType =
   | AutomationBSPublishType

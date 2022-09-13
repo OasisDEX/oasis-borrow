@@ -49,7 +49,7 @@ export function getAutomationFeatureStatus({
     : feature !== AutomationFeatures.STOP_LOSS
     ? 'editing'
     : 'stopLossEditing'
-  const isFirstSetup = triggersId.every(id => id.isZero())
+  const isFirstSetup = triggersId.every((id) => id.isZero())
 
   return {
     isAddForm,
