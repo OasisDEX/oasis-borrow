@@ -87,7 +87,10 @@ const conf = withBundleAnalyzer(
           }
         }
 
-        if (!isServer) {
+        const enableCircularDependencyPlugin =
+          process.env.ENABLE_CIRCULAR_DEPENDENCY_PLUGIN === 'true'
+
+        if (!isServer && enableCircularDependencyPlugin) {
           const CircularDependencyPlugin = require('circular-dependency-plugin')
           config.plugins.push(
             new CircularDependencyPlugin({

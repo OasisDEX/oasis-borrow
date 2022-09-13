@@ -32,7 +32,12 @@ export function AutoSellDetailsControl({
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
   const { uiChanges } = useAppContext()
-  const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice } = autoSellTriggerData
+  const {
+    execCollRatio,
+    targetCollRatio,
+    maxBuyOrMinSellPrice,
+    isTriggerEnabled,
+  } = autoSellTriggerData
   const isDebtZero = vault.debt.isZero()
 
   const executionPrice = collateralPriceAtRatio({
@@ -48,6 +53,12 @@ export function AutoSellDetailsControl({
   })
 
   const autoSellDetailsLayoutOptionalParams = {
+    ...(isTriggerEnabled && {
+      triggerColRatio: execCollRatio,
+      nextSellPrice: executionPrice,
+      targetColRatio: targetCollRatio,
+      threshold: maxBuyOrMinSellPrice,
+    }),
     ...(isEditing && {
       afterTriggerColRatio: autoSellState.execCollRatio,
       afterTargetColRatio: autoSellState.targetCollRatio,
@@ -67,10 +78,6 @@ export function AutoSellDetailsControl({
       {isAutoSellActive ? (
         <AutoSellDetailsLayout
           token={vault.token}
-          triggerColRatio={execCollRatio}
-          nextSellPrice={executionPrice}
-          targetColRatio={targetCollRatio}
-          threshold={maxBuyOrMinSellPrice}
           autoSellTriggerData={autoSellTriggerData}
           {...autoSellDetailsLayoutOptionalParams}
         />
