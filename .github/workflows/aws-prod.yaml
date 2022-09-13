@@ -49,6 +49,7 @@ jobs:
         # be deployed to ECS.
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg API_HOST=${{ secrets.API_HOST }} \
+                     --build-arg APP_FULL_DOMAIN=${{ secrets.APP_FULL_DOMAIN }} \
                      --build-arg MIXPANEL_ENV=production \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} \
                      --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_PROD }} \
