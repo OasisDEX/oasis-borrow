@@ -1,6 +1,6 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
-import { checkIfEditingAutoBS } from 'features/automation/common/helpers'
+import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers'
 import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
@@ -29,7 +29,7 @@ export function AutoBuyDetailsControl({ vault, autoBuyTriggerData }: AutoBuyDeta
     vaultDebt: vault.debt,
   })
 
-  const isEditing = checkIfEditingAutoBS({
+  const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData: autoBuyTriggerData,
     autoBSState: autoBuyState,
     isRemoveForm: autoBuyState.currentForm === 'remove',

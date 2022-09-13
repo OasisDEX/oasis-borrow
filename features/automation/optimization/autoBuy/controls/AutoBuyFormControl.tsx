@@ -23,37 +23,37 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 interface AutoBuyFormControlProps {
-  vault: Vault
-  vaultType: VaultType
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  autoSellTriggerData: AutoBSTriggerData
   autoBuyTriggerData: AutoBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  balanceInfo: BalanceInfo
   constantMultipleTriggerData: ConstantMultipleTriggerData
-  isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
-  shouldRemoveAllowance: boolean
-  txHelpers?: TxHelpers
+  ilkData: IlkData
   isAutoBuyActive: boolean
+  isAutoBuyOn: boolean
+  shouldRemoveAllowance: boolean
+  stopLossTriggerData: StopLossTriggerData
+  txHelpers?: TxHelpers
+  vault: Vault
+  vaultType: VaultType
 }
 
 export function AutoBuyFormControl({
-  vault,
-  vaultType,
-  ilkData,
-  balanceInfo,
-  autoSellTriggerData,
   autoBuyTriggerData,
-  stopLossTriggerData,
+  autoSellTriggerData,
+  balanceInfo,
   constantMultipleTriggerData,
-  isAutoBuyOn,
-  txHelpers,
   context,
   ethMarketPrice,
+  ilkData,
   isAutoBuyActive,
+  isAutoBuyOn,
   shouldRemoveAllowance,
+  stopLossTriggerData,
+  txHelpers,
+  vault,
+  vaultType,
 }: AutoBuyFormControlProps) {
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
 

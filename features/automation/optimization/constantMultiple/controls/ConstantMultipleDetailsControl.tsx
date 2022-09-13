@@ -3,7 +3,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { ConstantMultipleDetailsLayout } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsLayout'
-import { checkIfEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'
+import { checkIfIsEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -40,7 +40,7 @@ export function ConstantMultipleDetailsControl({
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
-  const isEditing = checkIfEditingConstantMultiple({
+  const isEditing = checkIfIsEditingConstantMultiple({
     triggerData: constantMultipleTriggerData,
     state: constantMultipleState,
     isRemoveForm: constantMultipleState.currentForm === 'remove',

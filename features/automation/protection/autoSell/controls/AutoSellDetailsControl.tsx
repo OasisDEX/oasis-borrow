@@ -3,7 +3,7 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
-import { checkIfEditingAutoBS } from 'features/automation/common/helpers'
+import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers'
 import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
@@ -41,7 +41,7 @@ export function AutoSellDetailsControl({
     vaultDebt: vault.debt,
   })
 
-  const isEditing = checkIfEditingAutoBS({
+  const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData: autoSellTriggerData,
     autoBSState: autoSellState,
     isRemoveForm: autoSellState.currentForm === 'remove',

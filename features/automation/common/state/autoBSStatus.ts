@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import {
-  checkIfDisabledAutoBS,
-  checkIfEditingAutoBS,
+  checkIfIsDisabledAutoBS,
+  checkIfIsEditingAutoBS,
   getAutoBSVaultChange,
   prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
@@ -47,12 +47,12 @@ export function getAutoBSStatus({
   stage,
   vault,
 }: GetAutoBSStatusParams): AutoBSStatus {
-  const isEditing = checkIfEditingAutoBS({
+  const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData,
     autoBSState,
     isRemoveForm,
   })
-  const isDisabled = checkIfDisabledAutoBS({
+  const isDisabled = checkIfIsDisabledAutoBS({
     isProgressStage,
     isOwner,
     isEditing,
