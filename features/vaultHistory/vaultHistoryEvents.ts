@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
 interface HistoryEventBase {
   hash: string
@@ -220,8 +220,8 @@ interface AutomationBaseEvent {
   timestamp: string
   triggerData: string
   commandAddress: string
-  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
-  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
   kind: 'basic-sell' | 'basic-buy' | 'stop-loss'
   eventType: 'added' | 'updated' | 'removed'
   token: string
@@ -236,24 +236,24 @@ type StopLossExecutedEvent = StopLossCloseEvent & {
   eventType: 'executed'
   triggerId: string
   triggerData: string
-  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
-  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
 }
 
-export interface BasicBuyExecutedEvent extends IncreaseMultipleEvent {
+export interface AutoBuyExecutedEvent extends IncreaseMultipleEvent {
   eventType: 'executed'
   triggerId: string
   triggerData: string
-  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
-  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
 }
 
-export interface BasicSellExecutedEvent extends DecreaseMultipleEvent {
+export interface AutoSellExecutedEvent extends DecreaseMultipleEvent {
   eventType: 'executed'
   triggerId: string
   triggerData: string
-  addTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
-  removeTriggerData: (BasicBSTriggerData | StopLossTriggerData)[]
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
 }
 
 export type MultiplyEvent =
@@ -267,8 +267,8 @@ export type MultiplyEvent =
 
 export type AutomationEvent =
   | StopLossExecutedEvent
-  | BasicBuyExecutedEvent
-  | BasicSellExecutedEvent
+  | AutoBuyExecutedEvent
+  | AutoSellExecutedEvent
   | AutomationBaseEvent
 
 export interface ReturnedEvent {

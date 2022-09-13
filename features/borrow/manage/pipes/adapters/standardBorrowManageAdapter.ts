@@ -101,8 +101,8 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       gasEstimationStatus: GasEstimationStatus.unset,
       vaultHistory: [],
       stopLossData: undefined,
-      basicBuyData: undefined,
-      basicSellData: undefined,
+      autoBuyData: undefined,
+      autoSellData: undefined,
       constantMultipleData: undefined,
       injectStateOverride,
     }

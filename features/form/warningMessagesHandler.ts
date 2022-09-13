@@ -13,8 +13,8 @@ export type VaultWarningMessage =
   | 'currentCollRatioCloseToStopLoss'
   | 'noMinSellPriceWhenStopLossEnabled'
   | 'settingAutoBuyTriggerWithNoThreshold'
-  | 'basicSellTriggerCloseToStopLossTrigger'
-  | 'basicSellTargetCloseToAutoBuyTrigger'
+  | 'autoSellTriggerCloseToStopLossTrigger'
+  | 'autoSellTargetCloseToAutoBuyTrigger'
   | 'stopLossTriggerCloseToAutoSellTrigger'
   | 'autoBuyTargetCloseToStopLossTrigger'
   | 'autoBuyTargetCloseToAutoSellTrigger'
@@ -39,8 +39,8 @@ interface WarningMessagesHandler {
   currentCollRatioCloseToStopLoss?: boolean
   noMinSellPriceWhenStopLossEnabled?: boolean
   settingAutoBuyTriggerWithNoThreshold?: boolean
-  basicSellTriggerCloseToStopLossTrigger?: boolean
-  basicSellTargetCloseToAutoBuyTrigger?: boolean
+  autoSellTriggerCloseToStopLossTrigger?: boolean
+  autoSellTargetCloseToAutoBuyTrigger?: boolean
   stopLossTriggerCloseToAutoSellTrigger?: boolean
   autoBuyTargetCloseToStopLossTrigger?: boolean
   autoBuyTargetCloseToAutoSellTrigger?: boolean
@@ -64,8 +64,8 @@ export function warningMessagesHandler({
   currentCollRatioCloseToStopLoss,
   noMinSellPriceWhenStopLossEnabled,
   settingAutoBuyTriggerWithNoThreshold,
-  basicSellTriggerCloseToStopLossTrigger,
-  basicSellTargetCloseToAutoBuyTrigger,
+  autoSellTriggerCloseToStopLossTrigger,
+  autoSellTargetCloseToAutoBuyTrigger,
   stopLossTriggerCloseToAutoSellTrigger,
   autoBuyTargetCloseToStopLossTrigger,
   autoBuyTargetCloseToAutoSellTrigger,
@@ -118,12 +118,12 @@ export function warningMessagesHandler({
   if (settingAutoBuyTriggerWithNoThreshold) {
     warningMessages.push('settingAutoBuyTriggerWithNoThreshold')
   }
-  if (basicSellTriggerCloseToStopLossTrigger) {
-    warningMessages.push('basicSellTriggerCloseToStopLossTrigger')
+  if (autoSellTriggerCloseToStopLossTrigger) {
+    warningMessages.push('autoSellTriggerCloseToStopLossTrigger')
   }
 
-  if (basicSellTargetCloseToAutoBuyTrigger) {
-    warningMessages.push('basicSellTargetCloseToAutoBuyTrigger')
+  if (autoSellTargetCloseToAutoBuyTrigger) {
+    warningMessages.push('autoSellTargetCloseToAutoBuyTrigger')
   }
 
   if (stopLossTriggerCloseToAutoSellTrigger) {

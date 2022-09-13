@@ -2,26 +2,23 @@ import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { UIChanges } from 'components/AppContext'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
+import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
-  BASIC_BUY_FORM_CHANGE,
-  BASIC_SELL_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
+  DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+  maxUint256,
+} from 'features/automation/common/consts'
 import {
-  TriggerRecord,
-  TriggersData,
-} from 'features/automation/protection/triggers/AutomationTriggersData'
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
-export const ACCEPTABLE_FEE_DIFF = new BigNumber(3)
-export const DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET = 0.2
 export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
   const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
 
@@ -63,7 +60,7 @@ export function resolveWithThreshold({
   )
 }
 
-export function prepareBasicBSSliderDefaults({
+export function prepareAutoBSSliderDefaults({
   execCollRatio,
   targetCollRatio,
   collateralizationRatio,
@@ -72,7 +69,7 @@ export function prepareBasicBSSliderDefaults({
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
   collateralizationRatio: BigNumber
-  publishKey: 'BASIC_SELL_FORM_CHANGE' | 'BASIC_BUY_FORM_CHANGE'
+  publishKey: 'AUTO_SELL_FORM_CHANGE' | 'AUTO_BUY_FORM_CHANGE'
 }) {
   const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
 
@@ -86,7 +83,7 @@ export function prepareBasicBSSliderDefaults({
   return {
     execCollRatio:
       execCollRatio.isZero() && collateralizationRatio.gt(zero)
-        ? publishKey === 'BASIC_SELL_FORM_CHANGE'
+        ? publishKey === 'AUTO_SELL_FORM_CHANGE'
           ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
           : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
         : execCollRatio,
@@ -97,66 +94,66 @@ export function prepareBasicBSSliderDefaults({
   }
 }
 
-export function prepareBasicBSResetData(
-  basicBSTriggersData: BasicBSTriggerData,
+export function prepareAutoBSResetData(
+  autoBSTriggersData: AutoBSTriggerData,
   collateralizationRatio: BigNumber,
-  publishKey: 'BASIC_SELL_FORM_CHANGE' | 'BASIC_BUY_FORM_CHANGE',
+  publishKey: 'AUTO_SELL_FORM_CHANGE' | 'AUTO_BUY_FORM_CHANGE',
 ) {
-  const defaultSliderValues = prepareBasicBSSliderDefaults({
-    execCollRatio: basicBSTriggersData.execCollRatio,
-    targetCollRatio: basicBSTriggersData.targetCollRatio,
+  const defaultSliderValues = prepareAutoBSSliderDefaults({
+    execCollRatio: autoBSTriggersData.execCollRatio,
+    targetCollRatio: autoBSTriggersData.targetCollRatio,
     collateralizationRatio,
     publishKey,
   })
   return {
     ...defaultSliderValues,
-    maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(basicBSTriggersData.maxBuyOrMinSellPrice),
-    maxBaseFeeInGwei: basicBSTriggersData.maxBaseFeeInGwei,
+    maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(autoBSTriggersData.maxBuyOrMinSellPrice),
+    maxBaseFeeInGwei: autoBSTriggersData.maxBaseFeeInGwei,
     withThreshold: resolveWithThreshold({
-      maxBuyOrMinSellPrice: basicBSTriggersData.maxBuyOrMinSellPrice,
-      triggerId: basicBSTriggersData.triggerId,
+      maxBuyOrMinSellPrice: autoBSTriggersData.maxBuyOrMinSellPrice,
+      triggerId: autoBSTriggersData.triggerId,
     }),
     txDetails: {},
     isEditing: false,
   }
 }
 
-export function checkIfEditingBasicBS({
-  basicBSTriggerData,
-  basicBSState,
+export function checkIfEditingAutoBS({
+  autoBSTriggerData,
+  autoBSState,
   isRemoveForm,
 }: {
-  basicBSTriggerData: BasicBSTriggerData
-  basicBSState: BasicBSFormChange
+  autoBSTriggerData: AutoBSTriggerData
+  autoBSState: AutoBSFormChange
   isRemoveForm: boolean
 }) {
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(basicBSTriggerData.maxBuyOrMinSellPrice)
+  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoBSTriggerData.maxBuyOrMinSellPrice)
 
   return (
-    (!basicBSTriggerData.isTriggerEnabled && basicBSState.isEditing) ||
-    (basicBSTriggerData.isTriggerEnabled &&
-      (!basicBSTriggerData.targetCollRatio.isEqualTo(basicBSState.targetCollRatio) ||
-        !basicBSTriggerData.execCollRatio.isEqualTo(basicBSState.execCollRatio) ||
-        !basicBSTriggerData.maxBaseFeeInGwei.isEqualTo(basicBSState.maxBaseFeeInGwei) ||
-        (maxBuyOrMinSellPrice?.toNumber() !== basicBSState.maxBuyOrMinSellPrice?.toNumber() &&
-          !basicBSTriggerData.triggerId.isZero()))) ||
+    (!autoBSTriggerData.isTriggerEnabled && autoBSState.isEditing) ||
+    (autoBSTriggerData.isTriggerEnabled &&
+      (!autoBSTriggerData.targetCollRatio.isEqualTo(autoBSState.targetCollRatio) ||
+        !autoBSTriggerData.execCollRatio.isEqualTo(autoBSState.execCollRatio) ||
+        !autoBSTriggerData.maxBaseFeeInGwei.isEqualTo(autoBSState.maxBaseFeeInGwei) ||
+        (maxBuyOrMinSellPrice?.toNumber() !== autoBSState.maxBuyOrMinSellPrice?.toNumber() &&
+          !autoBSTriggerData.triggerId.isZero()))) ||
     isRemoveForm
   )
 }
 
-export function checkIfDisabledBasicBS({
+export function checkIfDisabledAutoBS({
   isProgressStage,
   isOwner,
   isEditing,
   isAddForm,
-  basicBSState,
+  autoBSState,
   stage,
 }: {
   isProgressStage?: boolean
   isOwner: boolean
   isEditing: boolean
   isAddForm: boolean
-  basicBSState: BasicBSFormChange
+  autoBSState: AutoBSFormChange
   stage: SidebarVaultStages
 }) {
   return (
@@ -164,16 +161,16 @@ export function checkIfDisabledBasicBS({
       !isOwner ||
       !isEditing ||
       (isAddForm &&
-        (basicBSState.execCollRatio.isZero() ||
-          basicBSState.targetCollRatio.isZero() ||
-          (basicBSState.withThreshold &&
-            (basicBSState.maxBuyOrMinSellPrice === undefined ||
-              basicBSState.maxBuyOrMinSellPrice?.isZero()))))) &&
+        (autoBSState.execCollRatio.isZero() ||
+          autoBSState.targetCollRatio.isZero() ||
+          (autoBSState.withThreshold &&
+            (autoBSState.maxBuyOrMinSellPrice === undefined ||
+              autoBSState.maxBuyOrMinSellPrice?.isZero()))))) &&
     stage !== 'txSuccess'
   )
 }
 
-export function getBasicBSVaultChange({
+export function getAutoBSVaultChange({
   targetCollRatio,
   execCollRatio,
   deviation,
@@ -220,110 +217,29 @@ export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
   return automationTriggersData.triggers?.length === 1
 }
 
-export function getEligibleMultipliers({
-  multipliers,
-  collateralizationRatio,
-  lockedCollateral,
-  debt,
-  debtFloor,
-  deviation,
-  minTargetRatio,
-  maxTargetRatio,
-}: {
-  multipliers: number[]
-  collateralizationRatio: BigNumber
-  lockedCollateral: BigNumber
-  debt: BigNumber
-  debtFloor: BigNumber
-  deviation: BigNumber
-  minTargetRatio: BigNumber
-  maxTargetRatio: BigNumber
-}) {
-  const maxMultiplier = calculateMultipleFromTargetCollRatio(
-    minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
-
-  const minMultiplier = calculateMultipleFromTargetCollRatio(
-    maxTargetRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-  ).toNumber()
-
-  return multipliers
-    .filter((multiplier) => {
-      const targetCollRatio = calculateCollRatioFromMultiple(multiplier)
-      const sellExecutionExtremes = [
-        minTargetRatio,
-        targetCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-      ]
-
-      const verifiedSellExtremes = sellExecutionExtremes.map((sellExecutionCollRatio) => {
-        const sellExecutionPrice = collateralPriceAtRatio({
-          colRatio: sellExecutionCollRatio.div(100),
-          collateral: lockedCollateral,
-          vaultDebt: debt,
-        })
-
-        const { debtDelta } = getBasicBSVaultChange({
-          targetCollRatio,
-          execCollRatio: sellExecutionCollRatio,
-          deviation,
-          executionPrice: sellExecutionPrice,
-          lockedCollateral,
-          debt,
-        })
-
-        return !debtFloor.gt(debt.plus(debtDelta))
-      })
-
-      // IF following array is equal to [false] it means that whole range of sell execution coll ratio would lead
-      // to dust limit issue and therefore multiplier should be disabled
-      const deduplicatedVerifiedSellExtremes = [...new Set(verifiedSellExtremes)]
-
-      const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
-        colRatio: collateralizationRatio,
-        collateral: lockedCollateral,
-        vaultDebt: debt,
-      })
-
-      const { debtDelta: debtDeltaAtCurrentCollRatio } = getBasicBSVaultChange({
-        targetCollRatio,
-        execCollRatio: collateralizationRatio.times(100),
-        deviation,
-        executionPrice: executionPriceAtCurrentCollRatio,
-        lockedCollateral,
-        debt,
-      })
-
-      return !(
-        debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio)) ||
-        (deduplicatedVerifiedSellExtremes.length === 1 && !deduplicatedVerifiedSellExtremes[0])
-      )
-    })
-    .filter((item) => item >= minMultiplier && item <= maxMultiplier)
-}
-
 export function adjustDefaultValuesIfOutsideSlider({
-  basicBSState,
+  autoBSState,
   sliderMin,
   sliderMax,
   uiChanges,
   publishType,
 }: {
-  basicBSState: BasicBSFormChange
+  autoBSState: AutoBSFormChange
   sliderMin: BigNumber
   sliderMax: BigNumber
   uiChanges: UIChanges
-  publishType: typeof BASIC_SELL_FORM_CHANGE | typeof BASIC_BUY_FORM_CHANGE
+  publishType: typeof AUTO_SELL_FORM_CHANGE | typeof AUTO_BUY_FORM_CHANGE
 }) {
   const sliderValuesMap = {
-    [BASIC_BUY_FORM_CHANGE]: { targetCollRatio: sliderMin, execCollRatio: sliderMin.plus(5) },
-    [BASIC_SELL_FORM_CHANGE]: { targetCollRatio: sliderMin.plus(5), execCollRatio: sliderMin },
+    [AUTO_BUY_FORM_CHANGE]: { targetCollRatio: sliderMin, execCollRatio: sliderMin.plus(5) },
+    [AUTO_SELL_FORM_CHANGE]: { targetCollRatio: sliderMin.plus(5), execCollRatio: sliderMin },
   }
 
   if (
-    basicBSState.targetCollRatio.lt(sliderMin) ||
-    basicBSState.targetCollRatio.gt(sliderMax) ||
-    basicBSState.execCollRatio.gt(sliderMax) ||
-    basicBSState.execCollRatio.lt(sliderMin)
+    autoBSState.targetCollRatio.lt(sliderMin) ||
+    autoBSState.targetCollRatio.gt(sliderMax) ||
+    autoBSState.execCollRatio.gt(sliderMax) ||
+    autoBSState.execCollRatio.lt(sliderMin)
   ) {
     uiChanges.publish(publishType, {
       type: 'target-coll-ratio',

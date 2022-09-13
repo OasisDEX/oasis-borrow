@@ -11,13 +11,13 @@ import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/Con
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
+import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
+import { StopLossTriggeredBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBannerControl'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
