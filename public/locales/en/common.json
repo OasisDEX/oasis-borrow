@@ -1000,8 +1000,8 @@
   },
   "vault-banners": {
     "setup-stop-loss": {
-      "header": "Get vault protection",
-      "content": "Set up a Stop-Loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
+      "header": "Protect against unnecessary losses",
+      "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
     "get-protection": {
@@ -1497,8 +1497,8 @@
     "sl-too-high": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Sell.",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
     "banner": {
-      "header": "Set up Auto-Sell",
-      "content": "Set up an Auto-Sell to keep your vault’s collateralization ratio above a certain level. This may be beneficial, for example, in a bear market where the value of your collateral is decreasing. Find out more about how this works",
+      "header": "Stop scrambling to manage a position",
+      "content": "Get peace of mind and setup Auto-Sell to automatically protect your Vault. Sell collateral to repay your debt when you most need it. Find out more about how this works",
       "button": "Setup Auto-Sell"
     }
   },
@@ -1542,8 +1542,8 @@
     "remove-content": "Your Auto-Buy cancellation is in progress. Once the transaction is complete. Your Auto-Buy trigger will be removed.",
     "remove-complete-content": "Your Auto-Buy has been successfully cancelled.",
     "banner": {
-      "header": "Set up Auto-Buy",
-      "content": "Set up an Auto-Buy to keep your vault’s collateralization ratio below a certain level. This may be beneficial, for example, in a bull market where the value of your collateral is increasing. Find out more about how this works",
+      "header": "Stop missing buying opportunities",
+      "content": "Setup Auto-Buy to automatically buy additional collateral with your Vaults debt when the price of your collateral is increasing so you never miss a buying opportunity again. Find out more about how this works",
       "button": "Setup Auto-Buy"
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
@@ -1592,10 +1592,10 @@
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
-      "header": "Set up Constant Multiple",
-      "header-no-multiply": "Want to Set Up Constant Multiple?",
-      "content": "Constant Multiple maintains your vault at a multiple that you select - find out more",
-      "content-no-multiply": "Constant Multiple maintains your vault at a multiple that you select. It is only available on Multiply Vaults, but you can change your vault type from your Vault Overview tab. Find out more",
+      "header": "Set and forget with Constant Multiple",
+      "header-no-multiply": "Set and forget with Constant Multiple",
+      "content": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. Find out more about how this works",
+      "content-no-multiply": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. This is only available on a Mulitply Vaults, you can change your vault type from your Vault Overview Tab. Find out more about how this works",
       "button": "Setup Constant Multiple",
       "button-no-multiply": "Go to vault overview"
     },
