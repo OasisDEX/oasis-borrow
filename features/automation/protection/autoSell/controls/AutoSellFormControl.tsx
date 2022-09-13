@@ -3,7 +3,6 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { prepareAutoBSResetData } from 'features/automation/common/helpers'
 import {
@@ -12,15 +11,15 @@ import {
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
+import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
 import { getAutoSellStatus } from 'features/automation/protection/autoSell/state/autoSellStatus'
-import { getAutoSellTx } from 'features/automation/protection/autoSell/state/autoSellTx'
+import { getAutoSellTxHandlers } from 'features/automation/protection/autoSell/state/autoSellTxHandlers'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
 import React from 'react'
 
 interface AutoSellFormControlProps {
@@ -39,70 +38,72 @@ interface AutoSellFormControlProps {
 }
 
 export function AutoSellFormControl({
-  vault,
-  ilkData,
-  balanceInfo,
-  autoSellTriggerData,
   autoBuyTriggerData,
-  stopLossTriggerData,
+  autoSellTriggerData,
+  balanceInfo,
   constantMultipleTriggerData,
-  isAutoSellActive,
-  txHelpers,
   context,
   ethMarketPrice,
+  ilkData,
+  isAutoSellActive,
   shouldRemoveAllowance,
+  stopLossTriggerData,
+  txHelpers,
+  vault,
 }: AutoSellFormControlProps) {
-  const { uiChanges } = useAppContext()
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
-  const { addTxData, txStatus } = getAutoSellTx({
-    autoSellState,
-    vault,
-  })
   const {
     isAddForm,
+    isFirstSetup,
     isOwner,
     isProgressStage,
     isRemoveForm,
     stage,
-    isFirstSetup,
   } = getAutomationFeatureStatus({
     context,
     currentForm: autoSellState.currentForm,
     feature: AutomationFeatures.AUTO_BUY,
-    vault,
-    txStatus,
     triggersId: [autoSellTriggerData.triggerId],
+    txStatus: autoSellState.txDetails?.txStatus,
+    vault,
   })
   const {
-    isEditing,
-    isDisabled,
+    collateralDelta,
     debtDelta,
     debtDeltaAtCurrentCollRatio,
-    collateralDelta,
+    isDisabled,
+    isEditing,
+    resetData,
   } = getAutoSellStatus({
-    autoSellTriggerData,
     autoSellState,
-    isRemoveForm,
-    isProgressStage,
-    isOwner,
+    autoSellTriggerData,
     isAddForm,
+    isOwner,
+    isProgressStage,
+    isRemoveForm,
     stage,
     vault,
   })
-
-  function textButtonHandlerExtension() {
-    if (isAddForm) {
-      uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
-        type: 'execution-coll-ratio',
-        execCollRatio: zero,
-      })
-      uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
-        type: 'target-coll-ratio',
-        targetCollRatio: zero,
-      })
-    }
-  }
+  const { addTxData, textButtonHandlerExtension } = getAutoSellTxHandlers({
+    autoSellState,
+    isAddForm,
+    vault,
+  })
+  const { textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({
+    addTxData,
+    ethMarketPrice,
+    isAddForm,
+    isRemoveForm,
+    proxyAddress: vault.owner,
+    publishType: AUTO_SELL_FORM_CHANGE,
+    resetData,
+    shouldRemoveAllowance,
+    stage,
+    textButtonHandlerExtension,
+    triggersId: [autoSellTriggerData.triggerId.toNumber()],
+    txHelpers,
+  })
 
   return (
     <AddAndRemoveTriggerControl
@@ -124,7 +125,7 @@ export function AutoSellFormControl({
       isActiveFlag={isAutoSellActive}
       textButtonHandlerExtension={textButtonHandlerExtension}
     >
-      {(txHandler, textButtonHandler) => (
+      {() => (
         <SidebarSetupAutoSell
           vault={vault}
           ilkData={ilkData}

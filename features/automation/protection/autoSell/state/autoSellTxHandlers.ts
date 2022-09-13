@@ -2,22 +2,34 @@ import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { useAppContext } from 'components/AppContextProvider'
+import {
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
-interface GetAutoSellTxParams {
+interface GetAutoSellTxHandlersParams {
   autoSellState: AutoBSFormChange
+  isAddForm: boolean
   vault: Vault
 }
 
-interface AutoSellTx {
+interface AutoSellTxHandlers {
   addTxData: AutomationBotAddTriggerData
+  textButtonHandlerExtension: () => void
   txStatus?: TxStatus
 }
 
-export function getAutoSellTx({ autoSellState, vault }: GetAutoSellTxParams): AutoSellTx {
+export function getAutoSellTxHandlers({
+  autoSellState,
+  isAddForm,
+  vault,
+}: GetAutoSellTxHandlersParams): AutoSellTxHandlers {
+  const { uiChanges } = useAppContext()
+
   const addTxData = useMemo(
     () =>
       prepareAddAutoBSTriggerData({
@@ -42,10 +54,22 @@ export function getAutoSellTx({ autoSellState, vault }: GetAutoSellTxParams): Au
       vault.collateralizationRatio.toNumber(),
     ],
   )
-  const txStatus = autoSellState.txDetails?.txStatus
+
+  function textButtonHandlerExtension() {
+    if (isAddForm) {
+      uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+        type: 'execution-coll-ratio',
+        execCollRatio: zero,
+      })
+      uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+        type: 'target-coll-ratio',
+        targetCollRatio: zero,
+      })
+    }
+  }
 
   return {
     addTxData,
-    txStatus,
+    textButtonHandlerExtension,
   }
 }

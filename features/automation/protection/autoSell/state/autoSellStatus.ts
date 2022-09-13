@@ -1,8 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
-import { checkIfDisabledAutoBS, checkIfEditingAutoBS, getAutoBSVaultChange } from 'features/automation/common/helpers'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import {
+  checkIfDisabledAutoBS,
+  checkIfEditingAutoBS,
+  getAutoBSVaultChange,
+  prepareAutoBSResetData,
+} from 'features/automation/common/helpers'
+import {
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { SidebarAutomationStages } from 'features/automation/common/types'
 
@@ -18,22 +26,23 @@ interface GetAutoSellStatusParams {
 }
 
 interface AutoSellStatus {
-  isDisabled: boolean
-  isEditing: boolean
+  collateralDelta: BigNumber
+  debtDelta: BigNumber
+  debtDeltaAtCurrentCollRatio: BigNumber
   executionPrice: BigNumber
   executionPriceAtCurrentCollRatio: BigNumber
-  debtDelta: BigNumber
-  collateralDelta: BigNumber
-  debtDeltaAtCurrentCollRatio: BigNumber
+  isDisabled: boolean
+  isEditing: boolean
+  resetData: any
 }
 
 export function getAutoSellStatus({
-  autoSellTriggerData,
   autoSellState,
-  isRemoveForm,
-  isProgressStage,
-  isOwner,
+  autoSellTriggerData,
   isAddForm,
+  isOwner,
+  isProgressStage,
+  isRemoveForm,
   stage,
   vault,
 }: GetAutoSellStatusParams): AutoSellStatus {
@@ -76,14 +85,20 @@ export function getAutoSellStatus({
     lockedCollateral: vault.lockedCollateral,
     debt: vault.debt,
   })
+  const resetData = prepareAutoBSResetData(
+    autoSellTriggerData,
+    vault.collateralizationRatio,
+    AUTO_SELL_FORM_CHANGE,
+  )
 
   return {
-    isDisabled,
-    isEditing,
+    collateralDelta,
+    debtDelta,
+    debtDeltaAtCurrentCollRatio,
     executionPrice,
     executionPriceAtCurrentCollRatio,
-    debtDelta,
-    collateralDelta,
-    debtDeltaAtCurrentCollRatio,
+    isDisabled,
+    isEditing,
+    resetData,
   }
 }

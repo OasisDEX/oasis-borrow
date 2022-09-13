@@ -10,29 +10,29 @@ interface GetAutomationFeatureStatusParams {
   context: Context
   currentForm: AutomationFormType
   feature: AutomationFeatures
+  triggersId: BigNumber[]
   txStatus?: TxStatus
   vault: Vault
-  triggersId: BigNumber[]
 }
 
 interface AutomationFeatureStatus {
   isAddForm: boolean
   isFailureStage: boolean
+  isFirstSetup: boolean
   isOwner: boolean
   isProgressStage: boolean
   isRemoveForm: boolean
   isSuccessStage: boolean
-  isFirstSetup: boolean
   stage: SidebarAutomationStages
 }
 
 export function getAutomationFeatureStatus({
-  currentForm,
   context,
-  txStatus,
-  vault,
+  currentForm,
   feature,
   triggersId,
+  txStatus,
+  vault,
 }: GetAutomationFeatureStatusParams): AutomationFeatureStatus {
   const isOwner = context.status === 'connected' && context.account === vault.controller
   const isAddForm = currentForm === 'add'
@@ -54,11 +54,11 @@ export function getAutomationFeatureStatus({
   return {
     isAddForm,
     isFailureStage,
+    isFirstSetup,
     isOwner,
     isProgressStage,
     isRemoveForm,
     isSuccessStage,
     stage,
-    isFirstSetup,
   }
 }
