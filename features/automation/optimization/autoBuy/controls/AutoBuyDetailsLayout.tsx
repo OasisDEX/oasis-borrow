@@ -18,11 +18,11 @@ import { Grid } from 'theme-ui'
 
 export interface AutoBuyDetailsLayoutProps {
   token: string
-  triggerColRatio: BigNumber
-  nextBuyPrice: BigNumber
-  targetColRatio: BigNumber
-  threshold: BigNumber
   autoBuyTriggerData: AutoBSTriggerData
+  triggerColRatio?: BigNumber
+  nextBuyPrice?: BigNumber
+  targetColRatio?: BigNumber
+  threshold?: BigNumber
   afterTriggerColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
 }
