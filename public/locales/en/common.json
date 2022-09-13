@@ -1593,11 +1593,8 @@
     "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
       "header": "Set and forget with Constant Multiple",
-      "header-no-multiply": "Set and forget with Constant Multiple",
       "content": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. Find out more about how this works",
-      "content-no-multiply": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. This is only available on a Mulitply Vaults, you can change your vault type from your Vault Overview Tab. Find out more about how this works",
-      "button": "Setup Constant Multiple",
-      "button-no-multiply": "Go to vault overview"
+      "button": "Setup Constant Multiple"
     },
     "vault-changes": {
       "general-summary": "General summary",
