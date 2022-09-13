@@ -126,7 +126,7 @@ export function getDataForStopLoss(
       collateralActive: stopLossCloseType === 'collateral',
       currentForm: 'add',
     } as StopLossFormChange,
-    isEditing: !stopLossLevel.isZero(),
+    isEditing: true,
     closePickerConfig: {
       optionNames: closeVaultOptions,
       onclickHandler: (optionName: string) => setStopLossCloseType(optionName as CloseVaultTo),

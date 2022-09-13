@@ -167,6 +167,7 @@ export function SidebarAdjustStopLossEditingStage({
   const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
     DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   )
+
   const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
     stopLossLevel: stopLossTriggerData.stopLossLevel,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
