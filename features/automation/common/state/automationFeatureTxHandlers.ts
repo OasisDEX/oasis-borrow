@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
+import {
+  AutomationBotAddAggregatorTriggerData,
+  AutomationBotRemoveTriggersData,
+} from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
@@ -16,7 +19,7 @@ interface TxHandlerParams {
 }
 
 interface GetAutomationFeatureTxHandlersParams {
-  addTxData: AutomationBotAddTriggerData
+  addTxData: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
   ethMarketPrice: BigNumber
   isAddForm: boolean
   isRemoveForm: boolean
@@ -25,7 +28,7 @@ interface GetAutomationFeatureTxHandlersParams {
   resetData: any
   shouldRemoveAllowance: boolean
   stage: SidebarAutomationStages
-  textButtonHandlerExtension: () => void
+  textButtonHandlerExtension?: () => void
   triggersId: number[]
   txHelpers?: TxHelpers
 }
@@ -33,6 +36,7 @@ interface GetAutomationFeatureTxHandlersParams {
 interface AutomationFeatureTxHandlers {
   textButtonHandler: () => void
   txHandler: () => void
+  removeTxData: AutomationBotRemoveTriggersData
 }
 
 export function getAutomationFeatureTxHandlers({
@@ -104,5 +108,6 @@ export function getAutomationFeatureTxHandlers({
   return {
     textButtonHandler,
     txHandler,
+    removeTxData,
   }
 }

@@ -221,10 +221,12 @@ export function ConstantMultipleFormControl({
 
   return (
     <AddAndRemoveTriggerControl
+    isAddForm={isAddForm}
+    isRemoveForm={isRemoveForm}
       txHelpers={txHelpers!}
       ethMarketPrice={ethMarketPrice}
       isEditing={isEditing}
-      removeAllowance={shouldRemoveAllowance}
+      shouldRemoveAllowance={shouldRemoveAllowance}
       proxyAddress={vault.owner}
       stage={stage}
       addTxData={addTxData}
@@ -235,7 +237,6 @@ export function ConstantMultipleFormControl({
       })}
       textButtonHandlerExtension={textButtonHandlerExtension}
       publishType={CONSTANT_MULTIPLE_FORM_CHANGE}
-      currentForm={constantMultipleState.currentForm}
       triggersId={constantMultipleTriggerData.triggersId.map((id) => id.toNumber())}
       isActiveFlag={isConstantMultipleActive}
     >

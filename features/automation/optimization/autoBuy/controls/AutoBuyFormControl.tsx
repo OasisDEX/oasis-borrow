@@ -158,10 +158,12 @@ export function AutoBuyFormControl({
 
   return (
     <AddAndRemoveTriggerControl
+      isAddForm={isAddForm}
+      isRemoveForm={isRemoveForm}
       txHelpers={txHelpers!}
       ethMarketPrice={ethMarketPrice}
       isEditing={isEditing}
-      removeAllowance={shouldRemoveAllowance}
+      shouldRemoveAllowance={shouldRemoveAllowance}
       proxyAddress={vault.owner}
       stage={stage}
       addTxData={addTxData}
@@ -171,7 +173,6 @@ export function AutoBuyFormControl({
         AUTO_BUY_FORM_CHANGE,
       )}
       publishType={AUTO_BUY_FORM_CHANGE}
-      currentForm={autoBuyState.currentForm}
       triggersId={[autoBuyTriggerData.triggerId.toNumber()]}
       isActiveFlag={isAutoBuyActive}
       textButtonHandlerExtension={textButtonHandlerExtension}

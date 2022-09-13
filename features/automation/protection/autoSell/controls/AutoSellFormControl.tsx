@@ -4,14 +4,12 @@ import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
-import { prepareAutoBSResetData } from 'features/automation/common/helpers'
 import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
-import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
@@ -23,18 +21,18 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 interface AutoSellFormControlProps {
-  vault: Vault
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  autoSellTriggerData: AutoBSTriggerData
   autoBuyTriggerData: AutoBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  balanceInfo: BalanceInfo
   constantMultipleTriggerData: ConstantMultipleTriggerData
-  isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
+  ilkData: IlkData
+  isAutoSellActive: boolean
   shouldRemoveAllowance: boolean
+  stopLossTriggerData: StopLossTriggerData
   txHelpers?: TxHelpers
+  vault: Vault
 }
 
 export function AutoSellFormControl({
@@ -90,65 +88,48 @@ export function AutoSellFormControl({
     isAddForm,
     vault,
   })
-  const { textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({
-    addTxData,
-    ethMarketPrice,
-    isAddForm,
-    isRemoveForm,
-    proxyAddress: vault.owner,
-    publishType: AUTO_SELL_FORM_CHANGE,
-    resetData,
-    shouldRemoveAllowance,
-    stage,
-    textButtonHandlerExtension,
-    triggersId: [autoSellTriggerData.triggerId.toNumber()],
-    txHelpers,
-  })
 
   return (
     <AddAndRemoveTriggerControl
-      txHelpers={txHelpers!}
-      ethMarketPrice={ethMarketPrice}
-      isEditing={isEditing}
-      removeAllowance={shouldRemoveAllowance}
-      proxyAddress={vault.owner}
-      stage={stage}
       addTxData={addTxData}
-      resetData={prepareAutoBSResetData(
-        autoSellTriggerData,
-        vault.collateralizationRatio,
-        AUTO_SELL_FORM_CHANGE,
-      )}
-      publishType={AUTO_SELL_FORM_CHANGE}
-      currentForm={autoSellState.currentForm}
-      triggersId={[autoSellTriggerData.triggerId.toNumber()]}
+      ethMarketPrice={ethMarketPrice}
       isActiveFlag={isAutoSellActive}
+      isAddForm={isAddForm}
+      isEditing={isEditing}
+      isRemoveForm={isRemoveForm}
+      proxyAddress={vault.owner}
+      publishType={AUTO_SELL_FORM_CHANGE}
+      resetData={resetData}
+      shouldRemoveAllowance={shouldRemoveAllowance}
+      stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
+      triggersId={[autoSellTriggerData.triggerId.toNumber()]}
+      txHelpers={txHelpers!}
     >
-      {() => (
+      {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoSell
-          vault={vault}
-          ilkData={ilkData}
-          balanceInfo={balanceInfo}
-          autoSellTriggerData={autoSellTriggerData}
           autoBuyTriggerData={autoBuyTriggerData}
-          stopLossTriggerData={stopLossTriggerData}
-          constantMultipleTriggerData={constantMultipleTriggerData}
-          isAutoSellActive={isAutoSellActive}
-          context={context}
-          ethMarketPrice={ethMarketPrice}
           autoSellState={autoSellState}
-          textButtonHandler={textButtonHandler}
-          stage={stage}
-          isAddForm={isAddForm}
-          isRemoveForm={isRemoveForm}
-          isEditing={isEditing}
-          isDisabled={isDisabled}
-          isFirstSetup={isFirstSetup}
+          autoSellTriggerData={autoSellTriggerData}
+          balanceInfo={balanceInfo}
+          collateralDelta={collateralDelta}
+          constantMultipleTriggerData={constantMultipleTriggerData}
+          context={context}
           debtDelta={debtDelta}
           debtDeltaAtCurrentCollRatio={debtDeltaAtCurrentCollRatio}
-          collateralDelta={collateralDelta}
+          ethMarketPrice={ethMarketPrice}
+          ilkData={ilkData}
+          isAddForm={isAddForm}
+          isAutoSellActive={isAutoSellActive}
+          isDisabled={isDisabled}
+          isEditing={isEditing}
+          isFirstSetup={isFirstSetup}
+          isRemoveForm={isRemoveForm}
+          stage={stage}
+          stopLossTriggerData={stopLossTriggerData}
+          textButtonHandler={textButtonHandler}
           txHandler={txHandler}
+          vault={vault}
         />
       )}
     </AddAndRemoveTriggerControl>

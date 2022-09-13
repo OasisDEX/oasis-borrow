@@ -223,16 +223,17 @@ export function StopLossFormControl({
 
   return (
     <AddAndRemoveTriggerControl
+      isAddForm={isAddForm}
+      isRemoveForm={isRemoveForm}
       txHelpers={txHelpers}
       ethMarketPrice={ethMarketPrice}
       isEditing={isEditing}
-      removeAllowance={shouldRemoveAllowance}
+      shouldRemoveAllowance={shouldRemoveAllowance}
       proxyAddress={vault.owner}
       stage={stage}
       addTxData={addTxData}
       resetData={resetData}
       publishType={STOP_LOSS_FORM_CHANGE}
-      currentForm={stopLossState.currentForm}
       triggersId={[triggerId.toNumber()]}
       isActiveFlag={isStopLossActive}
       textButtonHandlerExtension={textButtonHandlerExtension}
