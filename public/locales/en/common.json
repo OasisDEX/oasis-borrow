@@ -1028,7 +1028,7 @@
   "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
   "open-vault-two-tx-second-step-title": "Step 2/2: Stop-Loss setup transaction",
   "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
-  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is confirmed",
+  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is completed",
   "not-started": "not started",
   "in-progress": "in progress",
   "vault-creation-confirmed": "Vault creation confirmed",
