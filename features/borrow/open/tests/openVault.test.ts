@@ -148,7 +148,7 @@ describe('openVault', () => {
 
     it('should update stop loss level', () => {
       const stopLossLevel = new BigNumber(2)
-      const defaultStopLossLevel = zero
+      const defaultStopLossLevel = new BigNumber(160)
       const state = getStateUnpacker(mockOpenVault$())
       expect(state().stopLossLevel!).to.deep.equal(defaultStopLossLevel)
       state().setStopLossLevel(stopLossLevel)
@@ -487,7 +487,7 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('stopLossTxFailure')
     })
 
-    it('should open vault successfully and progress to editing', () => {
+    it('should open vault successfully and add stop-loss', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
@@ -508,10 +508,9 @@ describe('openVault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
-      expect(state().stage).to.deep.equal('txSuccess')
-      expect(state().id!).to.deep.equal(new BigNumber('3281'))
+      expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
       state().progress!()
-      expect(state().stage).to.deep.equal('editing')
+      expect(state().stage).to.deep.equal('stopLossTxSuccess')
     })
 
     it('should handle open vault tx failing and back to editing', () => {
