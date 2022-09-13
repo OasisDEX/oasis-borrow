@@ -9,11 +9,11 @@ import React from 'react'
 
 interface AutoSellDetailsLayoutProps {
   token: string
-  triggerColRatio: BigNumber
-  nextSellPrice: BigNumber
-  targetColRatio: BigNumber
-  threshold: BigNumber
   autoSellTriggerData: AutoBSTriggerData
+  triggerColRatio?: BigNumber
+  nextSellPrice?: BigNumber
+  targetColRatio?: BigNumber
+  threshold?: BigNumber
   afterTriggerColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
 }

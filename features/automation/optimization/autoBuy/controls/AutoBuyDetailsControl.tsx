@@ -20,7 +20,12 @@ interface AutoBuyDetailsControlProps {
 export function AutoBuyDetailsControl({ vault, autoBuyTriggerData }: AutoBuyDetailsControlProps) {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
-  const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice } = autoBuyTriggerData
+  const {
+    execCollRatio,
+    targetCollRatio,
+    maxBuyOrMinSellPrice,
+    isTriggerEnabled,
+  } = autoBuyTriggerData
   const isDebtZero = vault.debt.isZero()
 
   const executionPrice = collateralPriceAtRatio({
@@ -36,6 +41,12 @@ export function AutoBuyDetailsControl({ vault, autoBuyTriggerData }: AutoBuyDeta
   })
 
   const autoBuyDetailsLayoutOptionalParams = {
+    ...(isTriggerEnabled && {
+      triggerColRatio: execCollRatio,
+      nextBuyPrice: executionPrice,
+      targetColRatio: targetCollRatio,
+      threshold: maxBuyOrMinSellPrice,
+    }),
     ...(isEditing && {
       afterTriggerColRatio: autoBuyState.execCollRatio,
       afterTargetColRatio: autoBuyState.targetCollRatio,
@@ -54,10 +65,6 @@ export function AutoBuyDetailsControl({ vault, autoBuyTriggerData }: AutoBuyDeta
     <Grid>
       <AutoBuyDetailsLayout
         token={vault.token}
-        triggerColRatio={execCollRatio}
-        nextBuyPrice={executionPrice}
-        targetColRatio={targetCollRatio}
-        threshold={maxBuyOrMinSellPrice}
         autoBuyTriggerData={autoBuyTriggerData}
         {...autoBuyDetailsLayoutOptionalParams}
       />
