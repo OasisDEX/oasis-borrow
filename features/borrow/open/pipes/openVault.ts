@@ -15,11 +15,11 @@ import {
   applyOpenVaultStopLoss,
   OpenVaultStopLossChanges,
   StopLossOpenFlowStages,
-} from 'features/automation/protection/openFlow/openVaultStopLoss'
+} from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import {
   addStopLossTrigger,
   applyStopLossOpenFlowTransaction,
-} from 'features/automation/protection/openFlow/stopLossOpenFlowTransaction'
+} from 'features/automation/protection/stopLoss/openFlow/stopLossOpenFlowTransaction'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'

@@ -232,8 +232,8 @@ export interface ManageVaultConditions {
   invalidSlippage: boolean
   stopLossTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
-  afterCollRatioBelowBasicSellRatio: boolean
-  afterCollRatioAboveBasicBuyRatio: boolean
+  afterCollRatioBelowAutoSellRatio: boolean
+  afterCollRatioAboveAutoBuyRatio: boolean
   afterCollRatioBelowConstantMultipleSellRatio: boolean
   afterCollRatioAboveConstantMultipleBuyRatio: boolean
 
@@ -302,8 +302,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   invalidSlippage: false,
   stopLossTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
-  afterCollRatioBelowBasicSellRatio: false,
-  afterCollRatioAboveBasicBuyRatio: false,
+  afterCollRatioBelowAutoSellRatio: false,
+  afterCollRatioAboveAutoBuyRatio: false,
   afterCollRatioBelowConstantMultipleSellRatio: false,
   afterCollRatioAboveConstantMultipleBuyRatio: false,
 
@@ -365,8 +365,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     invalidSlippage,
     vaultHistory,
     stopLossData,
-    basicSellData,
-    basicBuyData,
+    autoSellData,
+    autoBuyData,
     constantMultipleData,
   } = state
 
@@ -591,21 +591,21 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       margin: STOP_LOSS_MARGIN,
     })
 
-  const afterCollRatioBelowBasicSellRatio =
-    !!basicSellData?.isTriggerEnabled &&
+  const afterCollRatioBelowAutoSellRatio =
+    !!autoSellData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
-      threshold: basicSellData.execCollRatio.div(100),
+      threshold: autoSellData.execCollRatio.div(100),
       type: 'below',
     })
 
-  const afterCollRatioAboveBasicBuyRatio =
-    !!basicBuyData?.isTriggerEnabled &&
+  const afterCollRatioAboveAutoBuyRatio =
+    !!autoBuyData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
-      threshold: basicBuyData.execCollRatio.div(100),
+      threshold: autoBuyData.execCollRatio.div(100),
       type: 'above',
     })
 
@@ -650,8 +650,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       hasToDepositCollateralOnEmptyVault ||
       invalidSlippage ||
       afterCollRatioBelowStopLossRatio ||
-      afterCollRatioBelowBasicSellRatio ||
-      afterCollRatioAboveBasicBuyRatio ||
+      afterCollRatioBelowAutoSellRatio ||
+      afterCollRatioAboveAutoBuyRatio ||
       afterCollRatioBelowConstantMultipleSellRatio ||
       afterCollRatioAboveConstantMultipleBuyRatio)
 
@@ -770,8 +770,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     highSlippage,
     stopLossTriggered,
     afterCollRatioBelowStopLossRatio,
-    afterCollRatioBelowBasicSellRatio,
-    afterCollRatioAboveBasicBuyRatio,
+    afterCollRatioBelowAutoSellRatio,
+    afterCollRatioAboveAutoBuyRatio,
     afterCollRatioBelowConstantMultipleSellRatio,
     afterCollRatioAboveConstantMultipleBuyRatio,
 

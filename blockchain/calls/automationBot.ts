@@ -50,25 +50,3 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
     getAddAutomationTriggerCallData(data, context).encodeABI(),
   ],
 }
-
-function getRemoveAutomationTriggerCallData(
-  data: AutomationBotRemoveTriggerData,
-  context: ContextConnected,
-) {
-  const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).methods.removeTrigger(
-    data.cdpId,
-    data.triggerId,
-    data.removeAllowance,
-  )
-}
-
-export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => [
-    context.automationBot.address,
-    getRemoveAutomationTriggerCallData(data, context).encodeABI(),
-  ],
-}

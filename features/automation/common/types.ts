@@ -1,3 +1,10 @@
+import {
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
+} from 'features/automation/common/state/autoBSFormChange'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+
 export enum AutomationFeatures {
   AUTO_BUY = 'Auto-Buy',
   AUTO_SELL = 'Auto-Sell',
@@ -9,12 +16,12 @@ export type SidebarAutomationFlow =
   | 'addSl'
   | 'adjustSl'
   | 'cancelSl'
-  | 'addBasicSell'
-  | 'cancelBasicSell'
-  | 'editBasicSell'
-  | 'addBasicBuy'
-  | 'cancelBasicBuy'
-  | 'editBasicBuy'
+  | 'addAutoSell'
+  | 'cancelAutoSell'
+  | 'editAutoSell'
+  | 'addAutoBuy'
+  | 'cancelAutoBuy'
+  | 'editAutoBuy'
   | 'addConstantMultiple'
   | 'cancelConstantMultiple'
   | 'editConstantMultiple'
@@ -39,3 +46,9 @@ export interface AutomationSidebarStatusParams {
   txHash?: string
   etherscan?: string
 }
+
+export type AutomationPublishType =
+  | typeof CONSTANT_MULTIPLE_FORM_CHANGE
+  | typeof AUTO_SELL_FORM_CHANGE
+  | typeof AUTO_BUY_FORM_CHANGE
+  | typeof STOP_LOSS_FORM_CHANGE

@@ -9,11 +9,11 @@ import {
   applyOpenVaultStopLoss,
   OpenVaultStopLossChanges,
   StopLossOpenFlowStages,
-} from 'features/automation/protection/openFlow/openVaultStopLoss'
+} from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import {
   addStopLossTrigger,
   applyStopLossOpenFlowTransaction,
-} from 'features/automation/protection/openFlow/stopLossOpenFlowTransaction'
+} from 'features/automation/protection/stopLoss/openFlow/stopLossOpenFlowTransaction'
 import { OpenVaultStopLossSetup } from 'features/borrow/open/pipes/openVault'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'

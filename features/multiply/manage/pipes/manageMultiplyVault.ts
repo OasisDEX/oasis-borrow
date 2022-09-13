@@ -5,9 +5,13 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import {
+  createAutomationTriggersChange$,
+  TriggersData,
+} from 'features/automation/api/automationTriggersData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import {
@@ -24,10 +28,6 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import {
-  createAutomationTriggersChange$,
-  TriggersData,
-} from '../../../automation/protection/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
@@ -262,8 +262,8 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     totalSteps: number
     currentStep: number
     stopLossData?: StopLossTriggerData
-    basicBuyData?: BasicBSTriggerData
-    basicSellData?: BasicBSTriggerData
+    autoBuyData?: AutoBSTriggerData
+    autoSellData?: AutoBSTriggerData
     constantMultipleData?: ConstantMultipleTriggerData
   } & HasGasEstimation
 
@@ -548,8 +548,8 @@ export function createManageMultiplyVault$(
                     priceInfo,
                     vaultHistory: [],
                     stopLossData: undefined,
-                    basicBuyData: undefined,
-                    basicSellData: undefined,
+                    autoBuyData: undefined,
+                    autoSellData: undefined,
                     constantMultipleData: undefined,
                     balanceInfo,
                     ilkData,

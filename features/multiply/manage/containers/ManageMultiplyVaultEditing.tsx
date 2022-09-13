@@ -7,7 +7,7 @@ import { getCollRatioColor } from 'components/vault/VaultDetails'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
-} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import {
   formatAmount,
   formatCryptoBalance,
