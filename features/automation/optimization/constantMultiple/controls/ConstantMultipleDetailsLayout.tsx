@@ -8,14 +8,12 @@ import { ContentCardOperatingCost } from 'components/vault/detailsSection/Conten
 import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -56,7 +54,6 @@ export function ConstantMultipleDetailsLayout({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
-  const [, setHash] = useHash()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isMultiplyVault = vaultType === VaultType.Multiply
 
@@ -95,50 +92,36 @@ export function ConstantMultipleDetailsLayout({
         />
       ) : (
         <>
-          <Banner
-            title={t(
-              isMultiplyVault
-                ? 'constant-multiple.banner.header'
-                : 'constant-multiple.banner.header-no-multiply',
-            )}
-            description={
-              <>
-                {t(
-                  isMultiplyVault
-                    ? 'constant-multiple.banner.content'
-                    : 'constant-multiple.banner.content-no-multiply',
-                )}{' '}
-                <AppLink
-                  href="https://kb.oasis.app/help/what-is-constant-multiple"
-                  sx={{ fontSize: 2 }}
-                >
-                  {t('here')}.
-                </AppLink>
-              </>
-            }
-            image={{
-              src: '/static/img/setup-banner/constant-multiply.svg',
-              backgroundColor: bannerGradientPresets.constantMultiply[0],
-              backgroundColorEnd: bannerGradientPresets.constantMultiply[1],
-            }}
-            button={{
-              action: () => {
-                if (isMultiplyVault) {
+          {isMultiplyVault && (
+            <Banner
+              title={t('constant-multiple.banner.header')}
+              description={
+                <>
+                  {t('constant-multiple.banner.content')}{' '}
+                  <AppLink
+                    href="https://kb.oasis.app/help/what-is-constant-multiple"
+                    sx={{ fontSize: 2 }}
+                  >
+                    {t('here')}.
+                  </AppLink>
+                </>
+              }
+              image={{
+                src: '/static/img/setup-banner/constant-multiply.svg',
+                backgroundColor: bannerGradientPresets.constantMultiply[0],
+                backgroundColorEnd: bannerGradientPresets.constantMultiply[1],
+              }}
+              button={{
+                action: () => {
                   uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                     type: 'Optimization',
                     currentOptimizationFeature: 'constantMultiple',
                   })
-                } else {
-                  setHash(VaultViewMode.Overview)
-                }
-              },
-              text: t(
-                isMultiplyVault
-                  ? 'constant-multiple.banner.button'
-                  : 'constant-multiple.banner.button-no-multiply',
-              ),
-            }}
-          />
+                },
+                text: t('constant-multiple.banner.button'),
+              }}
+            />
+          )}
         </>
       )}
     </Grid>
