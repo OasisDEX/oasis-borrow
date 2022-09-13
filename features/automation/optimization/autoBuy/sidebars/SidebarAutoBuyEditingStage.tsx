@@ -211,13 +211,13 @@ export function SidebarAutoBuyEditingStage({
           value1: autoBuyState.execCollRatio.toNumber(),
         }}
         valueColors={{
-          value0: 'warning100',
+          value0: 'primary100',
           value1: 'success100',
         }}
         step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
-        leftThumbColor="warning100"
+        leftThumbColor="primary100"
         rightThumbColor="success100"
       />
       <VaultActionInput
