@@ -51,14 +51,14 @@ export function ContentCardTargetColRatioAfterSell({
       value: `${formatted.afterTargetColRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
+
   if (threshold)
     contentCardSettings.footnote = t('auto-sell.continual-sell-threshold', {
       amount: formatted.threshold,
       token,
     })
 
-  if (!threshold || threshold?.isZero())
-    contentCardSettings.footnote = t('auto-sell.continual-sell-no-threshold')
+  if (threshold?.isZero()) contentCardSettings.footnote = t('auto-sell.continual-sell-no-threshold')
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

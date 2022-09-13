@@ -1,10 +1,10 @@
 import { TriggerType } from '@oasisdex/automation'
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
-import { useBasicBSstateInitialization } from 'features/automation/protection/useBasicSellStateInitializator'
-import { useConstantMultipleStateInitialization } from 'features/automation/protection/useConstantMultipleStateInitialization'
-import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
+import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
+import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
+import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
@@ -19,34 +19,41 @@ import { VaultHeadline } from './VaultHeadline'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
-  autoTriggersData: TriggersData
 }
 
-export function GeneralManageLayout({
-  generalManageVault,
-  autoTriggersData,
-}: GeneralManageLayoutProps) {
+export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutProps) {
+  const {
+    stopLossTriggerData,
+    autoSellTriggerData,
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+  } = useAutomationContext()
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
 
   const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
-  const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
-  const isBasicSellEnabled = useBasicBSstateInitialization(
+  const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, stopLossTriggerData)
+  const isAutoSellEnabled = useAutoBSstateInitialization(
     ilkData,
     vault,
-    autoTriggersData,
+    autoSellTriggerData,
+    stopLossTriggerData,
     TriggerType.BasicSell,
   )
-  const isBasicBuyEnabled = useBasicBSstateInitialization(
+  const isAutoBuyEnabled = useAutoBSstateInitialization(
     ilkData,
     vault,
-    autoTriggersData,
+    autoBuyTriggerData,
+    stopLossTriggerData,
     TriggerType.BasicBuy,
   )
   const isConstantMultipleEnabled = useConstantMultipleStateInitialization(
     ilkData,
     vault,
-    autoTriggersData,
+    constantMultipleTriggerData,
+    autoBuyTriggerData,
+    autoSellTriggerData,
+    stopLossTriggerData,
   )
 
   const headlineElement =
@@ -60,8 +67,8 @@ export function GeneralManageLayout({
       />
     )
 
-  const protectionEnabled = isStopLossEnabled || isBasicSellEnabled
-  const optimizationEnabled = isBasicBuyEnabled || isConstantMultipleEnabled
+  const protectionEnabled = isStopLossEnabled || isAutoSellEnabled
+  const optimizationEnabled = isAutoBuyEnabled || isConstantMultipleEnabled
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 

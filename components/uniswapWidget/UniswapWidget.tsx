@@ -8,7 +8,7 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   SwapWidgetState,
-} from 'features/automation/protection/common/UITypes/SwapWidgetChange'
+} from 'features/uniswapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
@@ -69,7 +69,7 @@ const cssPaths = (() => {
 const OnboardingGraphic = () => (
   <Box sx={{ position: 'relative' }}>
     <Image
-      src={staticFilesRuntimeUrl('/static/img/logo.svg')}
+      src={staticFilesRuntimeUrl('/static/img/logo_v2.svg')}
       sx={{ position: 'absolute', top: '45px', left: '24px', width: '60.6px' }}
     />
     <svg

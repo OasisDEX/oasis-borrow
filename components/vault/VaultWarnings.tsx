@@ -8,7 +8,6 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-const SupportLink = <AppLink sx={{ color: 'warning100' }} href="mailto:support@oasis.app" />
 const ConstantMultipleKBLink = (
   <AppLink
     sx={{ color: 'warning100' }}
@@ -67,9 +66,9 @@ export function VaultWarnings({
         return translate('no-min-sell-price-when-stop-loss-enabled')
       case 'settingAutoBuyTriggerWithNoThreshold':
         return translate('auto-buy-with-no-max-price-threshold')
-      case 'basicSellTriggerCloseToStopLossTrigger':
+      case 'autoSellTriggerCloseToStopLossTrigger':
         return translate('auto-sell-trigger-close-to-stop-loss-trigger')
-      case 'basicSellTargetCloseToAutoBuyTrigger':
+      case 'autoSellTargetCloseToAutoBuyTrigger':
         return translate('auto-sell-target-close-to-auto-buy-trigger')
       case 'stopLossTriggerCloseToAutoSellTrigger':
         return translate('stop-loss-trigger-close-to-auto-sell-trigger')
@@ -81,9 +80,6 @@ export function VaultWarnings({
         return translate('auto-buy-triggered-immediately')
       case 'autoSellTriggeredImmediately':
         return translate('auto-sell-triggered-immediately')
-      // TEMPORARY override message as banner in overview details
-      case 'autoSellOverride':
-        return <Trans i18nKey="vault-warnings.auto-sell-override" components={[SupportLink]} />
       case 'constantMultipleAutoSellTriggeredImmediately':
         return translate('constant-multiple-auto-sell-triggered-immediately')
       case 'constantMultipleAutoBuyTriggeredImmediately':

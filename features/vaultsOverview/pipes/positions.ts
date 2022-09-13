@@ -1,7 +1,12 @@
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { combineLatest, Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
+import {
+  AaveUserReserveData,
+  AaveUserReserveDataParameters,
+} from '../../../blockchain/calls/aaveProtocolDataProvider'
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
@@ -52,65 +57,56 @@ export function decorateAaveTokensPrice$(
   ) => Observable<Quote>,
 ): Observable<{ token: string; tokenPrice: BigNumber }[]> {
   return collateralTokens$.pipe(
-    map((tokens) => {
-      return combineLatest(
-        tokens.map((token) => {
-          const defaultQuoteAmount = new BigNumber(100)
-          return exchangeQuote$(
-            token,
-            new BigNumber(0.005),
-            defaultQuoteAmount,
-            'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
-            'defaultExchange',
-          ).pipe(
-            map((quote) => {
-              return {
-                token,
-                tokenPrice: quote.status === 'SUCCESS' ? quote.tokenPrice : new BigNumber(0),
-              }
-            }),
-          )
-        }),
-      )
-    }),
-    switchMap((tokenWithPrice) => {
-      return tokenWithPrice
+    switchMap((tokens) => {
+      const tokens$ = tokens.map((token) => {
+        const defaultQuoteAmount = new BigNumber(100)
+        return exchangeQuote$(
+          token,
+          new BigNumber(0.005),
+          defaultQuoteAmount,
+          'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
+          'defaultExchange',
+        ).pipe(
+          map((quote) => {
+            return {
+              token,
+              tokenPrice: quote.status === 'SUCCESS' ? quote.tokenPrice : new BigNumber(0),
+            }
+          }),
+        )
+      })
+      return tokens$.length === 0 ? of([]) : combineLatest(tokens$)
     }),
   )
 }
 
 export function createAavePositions$(
-  userReserveData$: ({
-    token,
-    proxyAddress,
-  }: {
-    token: string
-    proxyAddress: string
-  }) => Observable<{ currentATokenBalance: BigNumber }>,
+  userReserveData$: (parameters: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   tokenWithValue$: Observable<{ token: string; tokenPrice: BigNumber }[]>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
 ): Observable<Position[]> {
   return combineLatest(getUserProxyAddress$(address), tokenWithValue$).pipe(
     switchMap(([proxyAddress, tokens]) => {
-      if (!proxyAddress) return []
-      return combineLatest(
-        tokens.map(({ token, tokenPrice }) => {
-          return userReserveData$({
-            token,
-            proxyAddress,
-          }).pipe(
-            map((userReserve) => {
-              return {
-                token: token,
-                contentsUsd: new BigNumber(userReserve.currentATokenBalance).times(tokenPrice),
-                title: `${token} Aave `,
-                url: `/earn/steth/${address}`,
-              }
-            }),
-          )
-        }),
-      )
+      if (!proxyAddress) return of([])
+      const tokens$ = tokens.map(({ token, tokenPrice }) => {
+        return userReserveData$({
+          token,
+          proxyAddress,
+        }).pipe(
+          map((userReserve) => {
+            return {
+              token: token,
+              contentsUsd: new BigNumber(
+                amountFromWei(new BigNumber(userReserve.currentATokenBalance)),
+              ).times(tokenPrice),
+              title: `${token} Aave `,
+              url: `/earn/steth/${address}`,
+            }
+          }),
+        )
+      })
+      return tokens$.length === 0 ? of([]) : combineLatest(tokens$)
     }),
   )
 }
@@ -121,10 +117,10 @@ export function createPositions$(
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
-  // const _aavePositions$ = aavePositions$(address)
-  return combineLatest(_makerPositions$).pipe(
-    map(([makerPositions]) => {
-      return makerPositions // .concat(aavePositions)
+  const _aavePositions$ = aavePositions$(address)
+  return combineLatest(_makerPositions$, _aavePositions$).pipe(
+    map(([makerPositions, aavePositions]) => {
+      return makerPositions.concat(aavePositions)
     }),
   )
 }

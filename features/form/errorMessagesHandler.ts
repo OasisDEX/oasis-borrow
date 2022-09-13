@@ -29,8 +29,8 @@ export type VaultErrorMessage =
   | 'depositCollateralOnVaultUnderDebtFloor'
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
-  | 'afterCollRatioBelowBasicSellRatio'
-  | 'afterCollRatioAboveBasicBuyRatio'
+  | 'afterCollRatioBelowAutoSellRatio'
+  | 'afterCollRatioAboveAutoBuyRatio'
   | 'afterCollRatioBelowConstantMultipleSellRatio'
   | 'afterCollRatioAboveConstantMultipleBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
@@ -76,8 +76,8 @@ interface ErrorMessagesHandler {
   shouldShowExchangeError?: boolean
   invalidSlippage?: boolean
   afterCollRatioBelowStopLossRatio?: boolean
-  afterCollRatioBelowBasicSellRatio?: boolean
-  afterCollRatioAboveBasicBuyRatio?: boolean
+  afterCollRatioBelowAutoSellRatio?: boolean
+  afterCollRatioAboveAutoBuyRatio?: boolean
   afterCollRatioBelowConstantMultipleSellRatio?: boolean
   afterCollRatioAboveConstantMultipleBuyRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
@@ -123,8 +123,8 @@ export function errorMessagesHandler({
   shouldShowExchangeError,
   invalidSlippage,
   afterCollRatioBelowStopLossRatio,
-  afterCollRatioBelowBasicSellRatio,
-  afterCollRatioAboveBasicBuyRatio,
+  afterCollRatioBelowAutoSellRatio,
+  afterCollRatioAboveAutoBuyRatio,
   afterCollRatioBelowConstantMultipleSellRatio,
   afterCollRatioAboveConstantMultipleBuyRatio,
   stopLossOnNearLiquidationRatio,
@@ -256,12 +256,12 @@ export function errorMessagesHandler({
     errorMessages.push('afterCollRatioBelowStopLossRatio')
   }
 
-  if (afterCollRatioBelowBasicSellRatio) {
-    errorMessages.push('afterCollRatioBelowBasicSellRatio')
+  if (afterCollRatioBelowAutoSellRatio) {
+    errorMessages.push('afterCollRatioBelowAutoSellRatio')
   }
 
-  if (afterCollRatioAboveBasicBuyRatio) {
-    errorMessages.push('afterCollRatioAboveBasicBuyRatio')
+  if (afterCollRatioAboveAutoBuyRatio) {
+    errorMessages.push('afterCollRatioAboveAutoBuyRatio')
   }
 
   if (afterCollRatioBelowConstantMultipleSellRatio) {

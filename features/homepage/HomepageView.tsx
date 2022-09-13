@@ -346,7 +346,7 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.support.contact-whenever')}
             links={[
               {
-                href: '/support',
+                href: 'https://kb.oasis.app/help/frequently-asked-questions',
                 text: t('landing.info-cards.support.faq'),
               },
               {

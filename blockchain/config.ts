@@ -208,7 +208,7 @@ const protoMain = {
   ),
   aaveTokens: {
     STETH: mainnetAddresses['STETH'],
-  },
+  } as Record<string, string>,
   aaveProtocolDataProvider: contractDesc(
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
@@ -403,9 +403,7 @@ const goerli: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
-  aaveTokens: {
-    STETH: mainnetAddresses['STETH'],
-  },
+  aaveTokens: {},
   aaveProtocolDataProvider: contractDesc(
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts

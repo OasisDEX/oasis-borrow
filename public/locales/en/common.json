@@ -575,7 +575,9 @@
     "select-an-asset": "Select an asset",
     "referrals": "Referrals",
     "cookie": "Cookie Policy",
-    "brand-assets": "Brand assets"
+    "bug-bounty": "Bug Bounty",
+    "brand-assets": "Brand assets",
+    "security": "Security"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -663,6 +665,10 @@
     "brand-assets": {
       "title": "Brand assets",
       "description": "Find here the Oasis.app Logo and graphics."
+    },
+    "security": {
+      "title": "Security",
+      "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -867,9 +873,9 @@
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop-Loss Col. Ratio at current or next collateral price",
-    "after-coll-ratio-below-basic-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
+    "after-coll-ratio-below-auto-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
     "after-coll-ratio-below-constant-multiple-sell-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Sell Trigger ratio first",
-    "after-coll-ratio-above-basic-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
+    "after-coll-ratio-above-auto-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
     "after-coll-ratio-above-constant-multiple-buy-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Buy Trigger ratio first",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault",
@@ -994,8 +1000,8 @@
   },
   "vault-banners": {
     "setup-stop-loss": {
-      "header": "Get vault protection",
-      "content": "Set up a Stop-Loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
+      "header": "Protect against unnecessary losses",
+      "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
     "get-protection": {
@@ -1022,7 +1028,7 @@
   "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
   "open-vault-two-tx-second-step-title": "Step 2/2: Stop-Loss setup transaction",
   "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
-  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is confirmed",
+  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is completed",
   "not-started": "not started",
   "in-progress": "in progress",
   "vault-creation-confirmed": "Vault creation confirmed",
@@ -1044,6 +1050,7 @@
       "edit": "Configure your Vault",
       "editWithToken": "Configure your {{token}} Vault",
       "proxy": "Create your smart Proxy",
+      "proxyDisabled": "Proxy creation temporally disabled",
       "proxy-in-progress": "Smart proxy being created",
       "proxy-success": "Smart Proxy successfully created",
       "allowance": "Set {{token}} allowance",
@@ -1074,7 +1081,8 @@
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
-      "modified": "Your Vault is currently being updated. Please wait."
+      "modified": "Your Vault is currently being updated. Please wait.",
+      "new-proxy-temporally-disabled": "Proxy creation is temporary disabled around the merge, to prevent unexpected behavior from re-orgs. See our <1>blog</1> for more info."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
@@ -1458,7 +1466,7 @@
     "estimated-transaction-cost": "Estimated transaction cost",
     "target-ratio-with-deviation": "Target ratio with deviation",
     "title": "Auto-Sell",
-    "add-form-title": "Auto Sell-Setup",
+    "add-form-title": "Auto-Sell Setup",
     "edit-form-title": "Edit Auto-Sell",
     "setting-form-title": "Setting Auto-Sell",
     "cancelling-form-title": "Cancelling Auto-Sell",
@@ -1489,9 +1497,9 @@
     "sl-too-high": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Sell.",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
     "banner": {
-      "header": "Set up Auto Sell",
-      "content": "Set up an Auto-Sell to keep your vault’s collateralization ratio above a certain level. This may be beneficial, for example, in a bear market where the value of your collateral is decreasing. Find out more about how this works",
-      "button": "Setup Auto Sell"
+      "header": "Stop scrambling to manage a position",
+      "content": "Get peace of mind and setup Auto-Sell to automatically protect your Vault. Sell collateral to repay your debt when you most need it. Find out more about how this works",
+      "button": "Setup Auto-Sell"
     }
   },
   "auto-buy": {
@@ -1508,6 +1516,14 @@
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
     "trigger-coll-ratio": "Buy Trigger Ratio",
     "buy-title": "Basic Auto-Buy Summary",
+    "add-form-title": "Auto-Buy Setup",
+    "edit-form-title": "Edit Auto-Buy",
+    "setting-form-title": "Setting Auto-Buy",
+    "cancelling-form-title": "Cancelling Auto-Buy",
+    "cancel-form-title": "Cancellation confirmation",
+    "trigger-added": "Auto-Buy Enabled",
+    "trigger-cancelled": "Auto-Buy cancellation completed",
+    "trigger-updated": "Auto-Buy Updated",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
     "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
@@ -1526,9 +1542,9 @@
     "remove-content": "Your Auto-Buy cancellation is in progress. Once the transaction is complete. Your Auto-Buy trigger will be removed.",
     "remove-complete-content": "Your Auto-Buy has been successfully cancelled.",
     "banner": {
-      "header": "Set up Auto-Buy",
-      "content": "Set up an Auto-Buy to keep your vault’s collateralization ratio below a certain level. This may be beneficial, for example, in a bull market where the value of your collateral is increasing. Find out more about how this works",
-      "button": "Setup Auto Buy"
+      "header": "Stop missing buying opportunities",
+      "content": "Setup Auto-Buy to automatically buy additional collateral with your Vaults debt when the price of your collateral is increasing so you never miss a buying opportunity again. Find out more about how this works",
+      "button": "Setup Auto-Buy"
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
@@ -1536,6 +1552,19 @@
     "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More ",
     "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
+  },
+  "automation": {
+    "setup": "{{feature}} Setup",
+    "trigger-added": "{{feature}} Enabled",
+    "trigger-cancelled": "{{feature}} cancellation completed",
+    "trigger-updated": "{{feature}} Updated",
+    "add-trigger": "Add {{feature}}",
+    "edit-trigger": "Edit {{feature}}",
+    "setting": "Setting {{feature}}",
+    "updating": "Updating {{feature}}",
+    "cancelling": "Cancelling {{feature}}",
+    "update-trigger": "Update {{feature}}",
+    "cancel-trigger": "Cancel {{feature}}"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1546,6 +1575,14 @@
   },
   "constant-multiple": {
     "title": "Constant Multiple",
+    "add-form-title": "Constant Multiple Setup",
+    "setting-form-title": "Setting Constant Multiple",
+    "cancelling-form-title": "Cancelling Constant Multiple",
+    "edit-form-title": "Edit Constant Multiple",
+    "cancel-form-title": "Cancellation confirmation",
+    "trigger-added": "Constant Multiple Enabled",
+    "trigger-cancelled": "Constant Multiple cancellation completed",
+    "trigger-updated": "Constant Multiple Updated",
     "set-trigger-description": "The Constant Multiple Automation will sell {{token}} at a col. ratio of {{sellExecutionCollRatio}}% and will buy {{token}} at a col. ratio of {{buyExecutionCollRatio}}% returning your vault's multiple to {{multiplier}}x.",
     "set-trigger-risk": "Please Note - Constant Multiple is an advanced strategy, with risks that should be well understood before set-up. Find out more ",
     "target-multiple": "Target Multiple",
@@ -1555,12 +1592,9 @@
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
-      "header": "Set up Constant Multiple",
-      "header-no-multiply": "Want to Set Up Constant Multiple?",
-      "content": "Constant Multiple maintains your vault at a multiple that you select - find out more",
-      "content-no-multiply": "Constant Multiple maintains your vault at a multiple that you select. It is only available on Multiply Vaults, but you can change your vault type from your Vault Overview tab. Find out more",
-      "button": "Setup Constant Multiple",
-      "button-no-multiply": "Go to vault overview"
+      "header": "Set and forget with Constant Multiple",
+      "content": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. Find out more about how this works",
+      "button": "Setup Constant Multiple"
     },
     "vault-changes": {
       "general-summary": "General summary",
@@ -1735,6 +1769,34 @@
         "no-alone": "Do not use the wordmark alone",
         "no-stack": "Do not stack the logo",
         "no-ratio": "Do not change the ratio"
+      }
+    }
+  },
+  "security": {
+    "heading": "Why do users trust us?",
+    "intro": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds.",
+    "category": {
+      "people": {
+        "header": "Talented people",
+        "description": "A highly experienced and dedicated team of DeFi builders. We’ve built and launched some of the most popular DeFi protocols and products.",
+        "link-about": "Meet our Team"
+      },
+      "audit": {
+        "header": "Independently audited",
+        "description": "Our stringent security procedures didn’t occur by luck. It came about with a rigorous process of both internal and external audits.",
+        "link-multiply": "Multiply Audit Report",
+        "link-multiply-fmm": "Multiply FMM extension audit report",
+        "link-automation": "Automation Audit Report"
+      },
+      "bug": {
+        "header": "Bug bounty",
+        "description": "Working with a community of code reviewers, ethical and white hat hackers we are giving rewards of up to $100k indentify any bugs.",
+        "link-bug-bounty": "Go to Bug Bounty"
+      },
+      "shield": {
+        "header": "Privacy protection",
+        "description": "We don't collect any personal identifiable information and do not track or store IP addresses or locations.",
+        "link-privacy": "View Privacy Policy"
       }
     }
   }

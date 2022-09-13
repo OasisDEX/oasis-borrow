@@ -134,42 +134,47 @@ export function createPositionsOverviewSummary$(
   )
 
   // calc total assets value
-  const totalAssetsUsd$: Observable<BigNumber> = assetsAndPositions$.pipe(
-    map((tokensAndBalances) =>
-      tokensAndBalances.reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero),
-    ),
-    distinctUntilChanged((prev, cur) => prev.eq(cur)),
-  )
+  const positionsWithTotalBalance$: Observable<[
+    PositionView[],
+    BigNumber,
+  ]> = assetsAndPositions$.pipe(
+    map((assetsAndPositions) => {
+      const totalAssetsUsd = assetsAndPositions.reduce(
+        (acc, { contentsUsd }) => acc.plus(contentsUsd || zero),
+        zero,
+      )
 
-  // add percentages
-  const rowViewModels$: Observable<Array<PositionView>> = combineLatest(
-    assetsAndPositions$,
-    totalAssetsUsd$,
-  ).pipe(
-    map(([assetsAndPositions, totalAssetsUsd]) =>
-      assetsAndPositions.map((assetOrPosition) => {
+      const viewModels: PositionView[] = assetsAndPositions.map((assetOrPosition) => {
         return {
           ...assetOrPosition,
           proportion: assetOrPosition.contentsUsd?.div(totalAssetsUsd).times(100),
         }
-      }),
-    ),
+      })
+
+      return [viewModels, totalAssetsUsd] as [PositionView[], BigNumber]
+    }),
   )
 
   // create percentage of other things
-  const percentageOther$: Observable<BigNumber> = combineLatest(
-    rowViewModels$,
-    totalAssetsUsd$,
-  ).pipe(
+  const withPercentageOther$: Observable<[
+    PositionView[],
+    BigNumber,
+    BigNumber,
+  ]> = positionsWithTotalBalance$.pipe(
     map(([assetsAndPositions, totalAssetsUsd]) => {
       const top5Sum = assetsAndPositions
         .slice(0, 5)
         .reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero)
-      return totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
+      const percentageOther = totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
+      return [assetsAndPositions, percentageOther, totalAssetsUsd] as [
+        PositionView[],
+        BigNumber,
+        BigNumber,
+      ]
     }),
   )
 
-  return combineLatest(rowViewModels$, percentageOther$, totalAssetsUsd$).pipe(
+  return withPercentageOther$.pipe(
     map(([assetsAndPositions, percentageOther, totalValueUsd]) => ({
       assetsAndPositions,
       percentageOther,

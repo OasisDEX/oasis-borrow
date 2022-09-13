@@ -7,7 +7,7 @@ export const tokenList = {
     patch: 0,
   },
   tags: {},
-  logoURI: 'https://oasis.app/static/img/logo_footer.svg',
+  logoURI: 'https://oasis.app/static/img/logo_footer_v2.svg',
   keywords: ['Oasis.app', 'MakerDAO'],
   tokens: [
     {

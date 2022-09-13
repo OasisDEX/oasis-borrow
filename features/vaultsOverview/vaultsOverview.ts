@@ -1,22 +1,18 @@
 import { BigNumber } from 'bignumber.js'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
-
-import { getToken } from '../../blockchain/tokensMetadata'
+import { getToken } from 'blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
   EarnPositionVM,
   MultiplyPositionVM,
   PositionVM,
-} from '../../components/dumb/PositionList'
-import {
-  formatCryptoBalance,
-  formatFiatBalance,
-  formatPercent,
-} from '../../helpers/formatters/format'
-import { calculatePNL } from '../../helpers/multiply/calculations'
-import { zero } from '../../helpers/zero'
+} from 'components/dumb/PositionList'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { calculatePNL } from 'helpers/multiply/calculations'
+import { zero } from 'helpers/zero'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { PositionDetails } from './pipes/positionsList'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
@@ -147,7 +143,7 @@ function getPnl(vault: PositionDetails): BigNumber {
 }
 
 function isAutomationEnabled(position: PositionDetails): boolean {
-  return position.stopLossData.isStopLossEnabled || position.basicSellData.isTriggerEnabled
+  return position.stopLossData.isStopLossEnabled || position.autoSellData.isTriggerEnabled
 }
 
 function getProtectionAmount(position: PositionDetails): string {
@@ -155,8 +151,8 @@ function getProtectionAmount(position: PositionDetails): string {
 
   if (position.stopLossData.stopLossLevel.gt(zero))
     protectionAmount = position.stopLossData.stopLossLevel.times(100)
-  else if (position.basicSellData.execCollRatio.gt(zero))
-    protectionAmount = position.basicSellData.execCollRatio
+  else if (position.autoSellData.execCollRatio.gt(zero))
+    protectionAmount = position.autoSellData.execCollRatio
 
   return formatPercent(protectionAmount)
 }

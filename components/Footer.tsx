@@ -19,7 +19,6 @@ const {
 
 const ROUTES = {
   CONTACT: `${apiHost}/daiwallet/contact`,
-  SUPPORT: '/support',
   TWITTER: 'https://twitter.com/oasisdotapp',
   DISCORD: 'https://discord.gg/Kc2bBB59GC',
 }
@@ -33,6 +32,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.privacy', url: '/privacy' },
       { labelKey: 'nav.cookie', url: '/cookie' },
       { labelKey: 'nav.terms', url: '/terms' },
+      { labelKey: 'nav.security', url: '/security' },
       { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
     ],
   },
@@ -40,12 +40,9 @@ const FOOTER_SECTIONS = [
     titleKey: 'nav.resources',
     links: [
       { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
-      {
-        labelKey: 'nav.faq',
-        url: '/support',
-      },
       // add link
       { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
+      { labelKey: 'nav.bug-bounty', url: 'https://immunefi.com/bounty/oasis/', target: '_blank' },
       { labelKey: 'nav.oracles', url: '/oracles' },
       { labelKey: 'nav.referrals', url: '/referrals' },
       { labelKey: 'nav.brand-assets', url: '/brand' },
@@ -61,6 +58,7 @@ const FOOTER_SECTIONS = [
       },
       { labelKey: 'nav.borrow', url: '/borrow' },
       { labelKey: 'nav.multiply', url: '/multiply' },
+      { labelKey: 'nav.earn', url: '/earn' },
     ],
   },
 ]
@@ -152,7 +150,7 @@ function SocialWithLogo() {
   return (
     <Grid gap={3}>
       <Image
-        src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')}
+        src={staticFilesRuntimeUrl('/static/img/logo_footer_v2.svg')}
         sx={{ height: '34px', position: 'relative', top: '-2px' }}
       />
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>

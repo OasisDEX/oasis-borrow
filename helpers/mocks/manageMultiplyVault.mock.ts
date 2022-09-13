@@ -4,19 +4,19 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   createManageMultiplyVault$,
   ManageMultiplyVaultState,
 } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
-import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockedMultiplyEvents } from '../multiply/calculations.test'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'

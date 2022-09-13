@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js'
+import { AutomationContextProvider } from 'components/AutomationContextProvider'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import React, { useEffect } from 'react'
 
-import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
 import { GeneralManageLayout } from './GeneralManageLayout'
 
@@ -12,28 +13,28 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$, automationTriggersData$ } = useAppContext()
+  const { generalManageVault$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
-  const autoTriggersData$ = automationTriggersData$(id)
-  const [autoTriggersData, autoTriggersDataError] = useObservable(autoTriggersData$)
+
   useEffect(() => {
     return () => {
       generalManageVault?.state.clear()
     }
   }, [])
 
+  const vaultHistoryCheck = generalManageVault?.state.vaultHistory.length || undefined
+
   return (
-    <WithErrorHandler error={[generalManageVaultError, autoTriggersDataError]}>
+    <WithErrorHandler error={[generalManageVaultError]}>
       <WithLoadingIndicator
-        value={[generalManageVault, autoTriggersData]}
+        value={[generalManageVault, vaultHistoryCheck]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, autoTriggersData]) => (
-          <GeneralManageLayout
-            generalManageVault={generalManageVault}
-            autoTriggersData={autoTriggersData}
-          />
+        {([generalManageVault]) => (
+          <AutomationContextProvider id={id}>
+            <GeneralManageLayout generalManageVault={generalManageVault} />
+          </AutomationContextProvider>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>
