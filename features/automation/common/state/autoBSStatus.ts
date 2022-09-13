@@ -8,24 +8,24 @@ import {
   prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
 import {
-  AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { SidebarAutomationStages } from 'features/automation/common/types'
+import { AutomationBSPublishType, SidebarAutomationStages } from 'features/automation/common/types'
 
-interface GetAutoSellStatusParams {
-  autoSellTriggerData: AutoBSTriggerData
-  autoSellState: AutoBSFormChange
+interface GetAutoBSStatusParams {
+  autoBSState: AutoBSFormChange
+  autoBSTriggerData: AutoBSTriggerData
   isRemoveForm: boolean
   isProgressStage: boolean
   isOwner: boolean
   isAddForm: boolean
+  publishType: AutomationBSPublishType
   stage: SidebarAutomationStages
   vault: Vault
 }
 
-interface AutoSellStatus {
+interface AutoBSStatus {
   collateralDelta: BigNumber
   debtDelta: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
@@ -36,19 +36,20 @@ interface AutoSellStatus {
   resetData: any
 }
 
-export function getAutoSellStatus({
-  autoSellState,
-  autoSellTriggerData,
+export function getAutoBSStatus({
+  autoBSState,
+  autoBSTriggerData,
   isAddForm,
   isOwner,
   isProgressStage,
   isRemoveForm,
+  publishType,
   stage,
   vault,
-}: GetAutoSellStatusParams): AutoSellStatus {
+}: GetAutoBSStatusParams): AutoBSStatus {
   const isEditing = checkIfEditingAutoBS({
-    autoBSTriggerData: autoSellTriggerData,
-    autoBSState: autoSellState,
+    autoBSTriggerData,
+    autoBSState,
     isRemoveForm,
   })
   const isDisabled = checkIfDisabledAutoBS({
@@ -56,11 +57,11 @@ export function getAutoSellStatus({
     isOwner,
     isEditing,
     isAddForm,
-    autoBSState: autoSellState,
+    autoBSState,
     stage,
   })
   const executionPrice = collateralPriceAtRatio({
-    colRatio: autoSellState.execCollRatio.div(100),
+    colRatio: autoBSState.execCollRatio.div(100),
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
@@ -70,25 +71,25 @@ export function getAutoSellStatus({
     vaultDebt: vault.debt,
   })
   const { debtDelta, collateralDelta } = getAutoBSVaultChange({
-    targetCollRatio: autoSellState.targetCollRatio,
-    execCollRatio: autoSellState.execCollRatio,
-    deviation: autoSellState.deviation,
+    targetCollRatio: autoBSState.targetCollRatio,
+    execCollRatio: autoBSState.execCollRatio,
+    deviation: autoBSState.deviation,
     executionPrice,
     lockedCollateral: vault.lockedCollateral,
     debt: vault.debt,
   })
   const { debtDelta: debtDeltaAtCurrentCollRatio } = getAutoBSVaultChange({
-    targetCollRatio: autoSellState.targetCollRatio,
+    targetCollRatio: autoBSState.targetCollRatio,
     execCollRatio: vault.collateralizationRatio.times(100),
-    deviation: autoSellState.deviation,
+    deviation: autoBSState.deviation,
     executionPrice: executionPriceAtCurrentCollRatio,
     lockedCollateral: vault.lockedCollateral,
     debt: vault.debt,
   })
   const resetData = prepareAutoBSResetData(
-    autoSellTriggerData,
+    autoBSTriggerData,
     vault.collateralizationRatio,
-    AUTO_SELL_FORM_CHANGE,
+    publishType,
   )
 
   return {

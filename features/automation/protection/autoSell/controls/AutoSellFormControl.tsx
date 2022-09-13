@@ -1,3 +1,4 @@
+import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
@@ -8,13 +9,13 @@ import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
+import { getAutoBSStatus } from 'features/automation/common/state/autoBSStatus'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHandlers'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
-import { getAutoSellStatus } from 'features/automation/protection/autoSell/state/autoSellStatus'
-import { getAutoSellTxHandlers } from 'features/automation/protection/autoSell/state/autoSellTxHandlers'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -51,6 +52,7 @@ export function AutoSellFormControl({
 }: AutoSellFormControlProps) {
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
+  const publishType = AUTO_SELL_FORM_CHANGE
   const {
     isAddForm,
     isFirstSetup,
@@ -61,7 +63,7 @@ export function AutoSellFormControl({
   } = getAutomationFeatureStatus({
     context,
     currentForm: autoSellState.currentForm,
-    feature: AutomationFeatures.AUTO_BUY,
+    feature: AutomationFeatures.AUTO_SELL,
     triggersId: [autoSellTriggerData.triggerId],
     txStatus: autoSellState.txDetails?.txStatus,
     vault,
@@ -73,19 +75,22 @@ export function AutoSellFormControl({
     isDisabled,
     isEditing,
     resetData,
-  } = getAutoSellStatus({
-    autoSellState,
-    autoSellTriggerData,
+  } = getAutoBSStatus({
+    autoBSState: autoSellState,
+    autoBSTriggerData: autoSellTriggerData,
     isAddForm,
     isOwner,
     isProgressStage,
     isRemoveForm,
+    publishType,
     stage,
     vault,
   })
-  const { addTxData, textButtonHandlerExtension } = getAutoSellTxHandlers({
-    autoSellState,
+  const { addTxData, textButtonHandlerExtension } = getAutoBSTxHandlers({
+    autoBSState: autoSellState,
     isAddForm,
+    publishType,
+    triggerType: TriggerType.BasicSell,
     vault,
   })
 
@@ -98,7 +103,7 @@ export function AutoSellFormControl({
       isEditing={isEditing}
       isRemoveForm={isRemoveForm}
       proxyAddress={vault.owner}
-      publishType={AUTO_SELL_FORM_CHANGE}
+      publishType={publishType}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
       stage={stage}

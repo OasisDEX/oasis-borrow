@@ -27,7 +27,7 @@ export interface AutoBSTriggerData {
   isTriggerEnabled: boolean
 }
 
-type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
+export type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
 
 interface ExtractAutoBSDataProps {
   triggersData: TriggersData
