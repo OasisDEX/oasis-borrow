@@ -24,7 +24,9 @@ export function AutoBuyDetailsControl({
   isconstantMultipleEnabled,
 }: AutoBuyDetailsControlProps) {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
+
   const {
     execCollRatio,
     targetCollRatio,
@@ -38,7 +40,6 @@ export function AutoBuyDetailsControl({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
-
   const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData: autoBuyTriggerData,
     autoBSState: autoBuyState,
@@ -58,13 +59,7 @@ export function AutoBuyDetailsControl({
     }),
   }
 
-  if (readOnlyAutoBSEnabled) {
-    return null
-  }
-
-  if (isDebtZero) {
-    return null
-  }
+  if (readOnlyAutoBSEnabled || isDebtZero) return null
 
   return (
     <Grid>

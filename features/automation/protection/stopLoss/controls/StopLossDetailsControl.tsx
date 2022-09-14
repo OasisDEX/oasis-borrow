@@ -29,8 +29,9 @@ export function StopLossDetailsControl({
   vault,
   isStopLossActive,
 }: StopLossDetailsControlProps) {
-  const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+
+  const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
   return (

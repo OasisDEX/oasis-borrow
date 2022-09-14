@@ -30,10 +30,13 @@ export function AutoSellDetailsControl({
   isAutoSellActive,
   isconstantMultipleEnabled,
 }: AutoSellDetailsControlProps) {
-  const { t } = useTranslation()
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
-  const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
+
+  const { t } = useTranslation()
+
   const { uiChanges } = useAppContext()
+  const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
+
   const {
     execCollRatio,
     targetCollRatio,
@@ -47,7 +50,6 @@ export function AutoSellDetailsControl({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
-
   const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData: autoSellTriggerData,
     autoBSState: autoSellState,
@@ -67,13 +69,7 @@ export function AutoSellDetailsControl({
     }),
   }
 
-  if (readOnlyAutoBSEnabled) {
-    return null
-  }
-
-  if (isDebtZero) {
-    return null
-  }
+  if (readOnlyAutoBSEnabled || isDebtZero) return null
 
   return (
     <Grid>
