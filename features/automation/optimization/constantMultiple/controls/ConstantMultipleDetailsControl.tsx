@@ -18,7 +18,6 @@ import {
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import { Grid } from 'theme-ui'
 
 interface ConstantMultipleDetailsControlProps {
   vault: Vault
@@ -86,13 +85,11 @@ export function ConstantMultipleDetailsControl({
   if (constantMultipleReadOnlyEnabled || isDebtZero) return null
 
   return (
-    <Grid>
-      <ConstantMultipleDetailsLayout
-        vaultType={vaultType}
-        token={token}
-        isTriggerEnabled={isTriggerEnabled}
-        {...constantMultipleDetailsLayoutOptionalParams}
-      />
-    </Grid>
+    <ConstantMultipleDetailsLayout
+      vaultType={vaultType}
+      token={token}
+      isTriggerEnabled={isTriggerEnabled}
+      {...constantMultipleDetailsLayoutOptionalParams}
+    />
   )
 }

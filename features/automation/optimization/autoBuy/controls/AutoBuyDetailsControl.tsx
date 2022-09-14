@@ -10,7 +10,6 @@ import { AutoBuyDetailsLayout } from 'features/automation/optimization/autoBuy/c
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import { Grid } from 'theme-ui'
 
 interface AutoBuyDetailsControlProps {
   vault: Vault
@@ -62,13 +61,11 @@ export function AutoBuyDetailsControl({
   if (readOnlyAutoBSEnabled || isDebtZero) return null
 
   return (
-    <Grid>
-      <AutoBuyDetailsLayout
-        token={vault.token}
-        autoBuyTriggerData={autoBuyTriggerData}
-        isconstantMultipleEnabled={isconstantMultipleEnabled}
-        {...autoBuyDetailsLayoutOptionalParams}
-      />
-    </Grid>
+    <AutoBuyDetailsLayout
+      token={vault.token}
+      autoBuyTriggerData={autoBuyTriggerData}
+      isconstantMultipleEnabled={isconstantMultipleEnabled}
+      {...autoBuyDetailsLayoutOptionalParams}
+    />
   )
 }

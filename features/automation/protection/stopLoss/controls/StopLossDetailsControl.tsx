@@ -14,7 +14,6 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
 
 interface StopLossDetailsControlProps {
   ilkData: IlkData
@@ -35,7 +34,7 @@ export function StopLossDetailsControl({
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
   return (
-    <Grid>
+    <>
       {isStopLossActive ? (
         <StopLossDetailsLayout
           slRatio={stopLossTriggerData.stopLossLevel}
@@ -85,6 +84,6 @@ export function StopLossDetailsControl({
           }}
         />
       )}
-    </Grid>
+    </>
   )
 }
