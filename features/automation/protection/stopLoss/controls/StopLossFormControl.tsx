@@ -1,28 +1,15 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
-import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import {
-  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
-  MAX_DEBT_FOR_SETTING_STOP_LOSS,
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
-  NEXT_COLL_RATIO_OFFSET,
-} from 'features/automation/common/consts'
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import {
-  getSliderPercentageFill,
-  getStartingSlRatio,
-} from 'features/automation/protection/stopLoss/helpers'
 import { SidebarSetupStopLoss } from 'features/automation/protection/stopLoss/sidebars/SidebarSetupStopLoss'
-import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
@@ -66,7 +53,6 @@ export function StopLossFormControl({
   txHelpers,
   vault,
 }: StopLossFormControlProps) {
-  const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
   const {
@@ -84,95 +70,25 @@ export function StopLossFormControl({
     txStatus: stopLossState.txDetails?.txStatus,
     vault,
   })
-  const { isEditing, closePickerConfig } = getStopLossStatus({
-    stopLossTriggerData,
-    stopLossState,
-    isRemoveForm,
-    vault,
-  })
-  const { addTxData, textButtonHandlerExtension } = getStopLossTxHandlers({
-    vault,
-    stopLossState,
-    stopLossTriggerData,
-    isAddForm,
-  })
-
-  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = stopLossTriggerData
-
-  const liqRatio = ilkData.liquidationRatio
-
-  const max = autoSellTriggerData.isTriggerEnabled
-    ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
-    : constantMultipleTriggerData.isTriggerEnabled
-    ? constantMultipleTriggerData.sellExecutionCollRatio
-        .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
-        .div(100)
-    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
-
-  const sliderPercentageFill = getSliderPercentageFill({
-    value: stopLossState.stopLossLevel,
-    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
-    max,
-  })
-
-  const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
-
-  const afterNewLiquidationPrice = stopLossState.stopLossLevel
-    .dividedBy(100)
-    .multipliedBy(nextCollateralPrice)
-    .dividedBy(vault.collateralizationRatioAtNextPrice)
-
-  const sliderConfig: SliderValuePickerProps = {
-    ...stopLossSliderBasicConfig,
-    sliderPercentageFill,
-    leftBoundry: stopLossState.stopLossLevel,
-    rightBoundry: afterNewLiquidationPrice,
-    lastValue: stopLossState.stopLossLevel,
-    maxBoundry,
-    minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-    onChange: (slCollRatio) => {
-      if (stopLossState.collateralActive === undefined) {
-        uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-          type: 'close-type',
-          toCollateral: false,
-        })
-      }
-
-      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-        type: 'stop-loss-level',
-        stopLossLevel: slCollRatio,
-      })
+  const { closePickerConfig, executionPrice, isDisabled, isEditing, resetData } = getStopLossStatus(
+    {
+      ilkData,
+      isAddForm,
+      isOwner,
+      isProgressStage,
+      isRemoveForm,
+      maxDebtForSettingStopLoss: vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS),
+      stage,
+      stopLossState,
+      stopLossTriggerData,
+      vault,
     },
-  }
-
-  const maxDebtForSettingStopLoss = vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
-
-  const isDisabled =
-    (isProgressStage || !isOwner || !isEditing || (isAddForm && maxDebtForSettingStopLoss)) &&
-    stage !== 'txSuccess'
-
-  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-  const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
-    DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   )
-  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
-    stopLossLevel,
-    isStopLossEnabled,
-    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
-  })
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-
-  const resetData = {
-    stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
-    collateralActive: isToCollateral,
-    txDetails: {},
-  }
-
-  const executionPrice = collateralPriceAtRatio({
-    colRatio: stopLossState.stopLossLevel.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+  const { addTxData, textButtonHandlerExtension } = getStopLossTxHandlers({
+    isAddForm,
+    stopLossState,
+    stopLossTriggerData,
+    vault,
   })
 
   return (
@@ -189,7 +105,7 @@ export function StopLossFormControl({
       shouldRemoveAllowance={shouldRemoveAllowance}
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
-      triggersId={[triggerId.toNumber()]}
+      triggersId={[stopLossTriggerData.triggerId.toNumber()]}
       txHelpers={txHelpers}
     >
       {(textButtonHandler, txHandler) => (
@@ -209,7 +125,7 @@ export function StopLossFormControl({
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
           isStopLossActive={isStopLossActive}
-          sliderConfig={sliderConfig}
+          nextCollateralPrice={nextCollateralPrice}
           stage={stage}
           stopLossState={stopLossState}
           stopLossTriggerData={stopLossTriggerData}

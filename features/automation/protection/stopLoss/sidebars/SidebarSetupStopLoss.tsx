@@ -8,6 +8,10 @@ import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import {
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  NEXT_COLL_RATIO_OFFSET,
+} from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
 import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
@@ -22,9 +26,14 @@ import {
 } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
+import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
-import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
+import {
+  STOP_LOSS_FORM_CHANGE,
+  StopLossFormChange,
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import {
   errorsStopLossValidation,
@@ -61,8 +70,8 @@ interface SidebarSetupStopLossProps {
   isDisabled: boolean
   isFirstSetup: boolean
   closePickerConfig: PickCloseStateProps
-  sliderConfig: SliderValuePickerProps
   executionPrice: BigNumber
+  nextCollateralPrice: BigNumber
 }
 
 export function SidebarSetupStopLoss({
@@ -92,7 +101,7 @@ export function SidebarSetupStopLoss({
   isStopLossActive,
 
   closePickerConfig,
-  sliderConfig,
+  nextCollateralPrice,
 }: SidebarSetupStopLossProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -106,6 +115,50 @@ export function SidebarSetupStopLoss({
     ? 'addSl'
     : 'adjustSl'
   const autoBSEnabled = useFeatureToggle('BasicBS')
+
+  const max = autoSellTriggerData.isTriggerEnabled
+    ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
+    : constantMultipleTriggerData.isTriggerEnabled
+    ? constantMultipleTriggerData.sellExecutionCollRatio
+        .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
+        .div(100)
+    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+  const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
+  const liqRatio = ilkData.liquidationRatio
+
+  const sliderPercentageFill = getSliderPercentageFill({
+    value: stopLossState.stopLossLevel,
+    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
+    max,
+  })
+
+  const afterNewLiquidationPrice = stopLossState.stopLossLevel
+    .dividedBy(100)
+    .multipliedBy(nextCollateralPrice)
+    .dividedBy(vault.collateralizationRatioAtNextPrice)
+
+  const sliderConfig: SliderValuePickerProps = {
+    ...stopLossSliderBasicConfig,
+    sliderPercentageFill,
+    leftBoundry: stopLossState.stopLossLevel,
+    rightBoundry: afterNewLiquidationPrice,
+    lastValue: stopLossState.stopLossLevel,
+    maxBoundry,
+    minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+    onChange: (slCollRatio) => {
+      if (stopLossState.collateralActive === undefined) {
+        uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+          type: 'close-type',
+          toCollateral: false,
+        })
+      }
+
+      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+        type: 'stop-loss-level',
+        stopLossLevel: slCollRatio,
+      })
+    },
+  }
 
   const errors = errorsStopLossValidation({
     txError: stopLossState.txDetails?.txError,

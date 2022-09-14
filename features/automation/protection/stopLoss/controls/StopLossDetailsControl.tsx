@@ -5,7 +5,7 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
-import { getIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
+import { checkIfIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
@@ -47,7 +47,7 @@ export function StopLossDetailsControl({
           liquidationPenalty={ilkData.liquidationPenalty}
           collateralizationRatioAtNextPrice={vault.collateralizationRatioAtNextPrice}
           isCollateralActive={!!stopLossState?.collateralActive}
-          isEditing={getIsEditingStopLoss({
+          isEditing={checkIfIsEditingStopLoss({
             isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
             selectedSLValue: stopLossState.stopLossLevel,
             stopLossLevel: stopLossTriggerData.stopLossLevel,
