@@ -102,14 +102,40 @@ export function SidebarSetupStopLoss({
   closePickerConfig,
   nextCollateralPrice,
 }: SidebarSetupStopLossProps) {
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
   const gasEstimationContext = useGasEstimationContext()
   const [, setHash] = useHash()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
-  const autoBSEnabled = useFeatureToggle('BasicBS')
+  const sidebarTitle = getAutomationFormTitle({
+    flow,
+    stage,
+    feature,
+  })
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Protection',
+    forcePanel: 'stopLoss',
+    disabled: isDropdownDisabled({ stage }),
+    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+  })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
+  })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const sidebarStatus = getAutomationStatusTitle({
+    flow,
+    txHash: stopLossState.txDetails?.txHash,
+    etherscan: context.etherscan.url,
+    stage,
+    feature,
+  })
 
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
@@ -171,42 +197,13 @@ export function SidebarSetupStopLoss({
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
   })
-
-  const dropdown = getAutoFeaturesSidebarDropdown({
-    type: 'Protection',
-    forcePanel: 'stopLoss',
-    disabled: isDropdownDisabled({ stage }),
-    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
-    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
-  })
-
   const cancelStopLossWarnings = extractCancelBSWarnings(warnings)
   const cancelStopLossErrors = extractCancelBSErrors(errors)
-
-  const sidebarTitle = getAutomationFormTitle({
-    flow,
-    stage,
-    feature,
-  })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
-
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
-    flow,
-    stage,
-    feature,
-  })
-  const sidebarStatus = getAutomationStatusTitle({
-    flow,
-    txHash: stopLossState.txDetails?.txHash,
-    etherscan: context.etherscan.url,
-    stage,
-    feature,
-  })
 
   if (isStopLossActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
-      ...(autoBSEnabled && { dropdown }),
+      dropdown,
       content: (
         <Grid gap={3}>
           {stopLossWriteEnabled ? (
