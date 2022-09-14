@@ -487,7 +487,7 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('stopLossTxFailure')
     })
 
-    it('should open vault successfully and progress to editing', () => {
+    it('should open vault successfully and add stop-loss', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
