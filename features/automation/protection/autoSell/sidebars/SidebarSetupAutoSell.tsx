@@ -155,6 +155,7 @@ export function SidebarSetupAutoSell({
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
   })
 
   if (isAutoSellActive) {

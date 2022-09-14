@@ -14,7 +14,7 @@ import {
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 export interface AutoBuyDetailsLayoutProps {
   token: string
@@ -25,6 +25,7 @@ export interface AutoBuyDetailsLayoutProps {
   threshold?: BigNumber
   afterTriggerColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
+  isconstantMultipleEnabled: boolean
 }
 
 export function AutoBuyDetailsLayout({
@@ -36,6 +37,7 @@ export function AutoBuyDetailsLayout({
   targetColRatio,
   afterTriggerColRatio,
   afterTargetColRatio,
+  isconstantMultipleEnabled,
 }: AutoBuyDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -70,14 +72,21 @@ export function AutoBuyDetailsLayout({
       ) : (
         <Banner
           title={t('auto-buy.banner.header')}
-          description={
+          description={[
             <>
               {t('auto-buy.banner.content')}{' '}
               <AppLink href="https://kb.oasis.app/help/auto-buy-and-auto-sell" sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
-            </>
-          }
+            </>,
+            ...(isconstantMultipleEnabled
+              ? [
+                  <Text as="span" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
+                    {t('auto-buy.banner.cm-warning')}
+                  </Text>,
+                ]
+              : []),
+          ]}
           image={{
             src: '/static/img/setup-banner/auto-buy.svg',
             backgroundColor: bannerGradientPresets.autoBuy[0],
@@ -91,6 +100,7 @@ export function AutoBuyDetailsLayout({
               })
             },
             text: t('auto-buy.banner.button'),
+            disabled: isconstantMultipleEnabled,
           }}
         />
       )}
