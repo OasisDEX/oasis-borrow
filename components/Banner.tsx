@@ -10,6 +10,7 @@ export const bannerGradientPresets: BannerGradientPresetsArray = {
   autoSell: ['#fef1e1', '#fef5d6'],
   constantMultiply: ['#ffdde7', '#ffe7f5'],
   stopLoss: ['#ffeaea', '#fff5ea'],
+  autoTakeProfit: ['#e0e7ff', '#fae2fc'],
 }
 
 type BannerButtonProps = {

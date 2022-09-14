@@ -655,6 +655,7 @@
       "basic-sell": "Auto-Sell",
       "basic-buy": "Auto-Buy",
       "constant-multiple": "Constant Multiple",
+      "auto-take-profit": "Auto Take Profit",
       "history": "历史",
       "vaultinfo": "金库信息",
       "multiply-buy-coll": "以 DAI 购买 ({{token}})",

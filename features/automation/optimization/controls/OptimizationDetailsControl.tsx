@@ -7,6 +7,7 @@ import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
+import { AutoTakeProfitDetailsControl } from './AutoTakeProfitDetailsControl'
 import { ConstantMultipleDetailsControl } from './ConstantMultipleDetailsControl'
 
 interface OptimizationDetailsControlProps {
@@ -24,6 +25,7 @@ export function OptimizationDetailsControl({
 }: OptimizationDetailsControlProps) {
   const { autoBuyTriggerData, constantMultipleTriggerData } = useAutomationContext()
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
 
   return (
     <>
@@ -37,6 +39,7 @@ export function OptimizationDetailsControl({
           constantMultipleTriggerData={constantMultipleTriggerData}
         />
       )}
+      {autoTakeProfitEnabled && <AutoTakeProfitDetailsControl vault={vault} />}
     </>
   )
 }
