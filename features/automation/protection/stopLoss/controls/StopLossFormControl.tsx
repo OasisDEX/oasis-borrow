@@ -55,6 +55,7 @@ export function StopLossFormControl({
 }: StopLossFormControlProps) {
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
+  const feature = AutomationFeatures.STOP_LOSS
   const {
     isAddForm,
     isFirstSetup,
@@ -118,6 +119,7 @@ export function StopLossFormControl({
           context={context}
           ethMarketPrice={ethMarketPrice}
           executionPrice={executionPrice}
+          feature={feature}
           ilkData={ilkData}
           isAddForm={isAddForm}
           isDisabled={isDisabled}

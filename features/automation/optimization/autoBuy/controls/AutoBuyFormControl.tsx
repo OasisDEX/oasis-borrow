@@ -57,6 +57,7 @@ export function AutoBuyFormControl({
 }: AutoBuyFormControlProps) {
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
 
+  const feature = AutomationFeatures.AUTO_BUY
   const publishType = AUTO_BUY_FORM_CHANGE
   const {
     isAddForm,
@@ -120,6 +121,7 @@ export function AutoBuyFormControl({
           context={context}
           debtDelta={debtDelta}
           ethMarketPrice={ethMarketPrice}
+          feature={feature}
           ilkData={ilkData}
           isAddForm={isAddForm}
           isAutoBuyActive={isAutoBuyActive}

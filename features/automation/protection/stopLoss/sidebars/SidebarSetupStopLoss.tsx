@@ -13,17 +13,14 @@ import {
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
 import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import {
-  AutomationFeatures,
-  SidebarAutomationFlow,
-  SidebarAutomationStages,
-} from 'features/automation/common/types'
+import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
@@ -60,6 +57,7 @@ interface SidebarSetupStopLossProps {
   isStopLossActive: boolean
   context: Context
   ethMarketPrice: BigNumber
+  feature: AutomationFeatures
   stopLossState: StopLossFormChange
   txHandler: ({ callOnSuccess }: { callOnSuccess?: () => void }) => void
   textButtonHandler: () => void
@@ -81,6 +79,7 @@ export function SidebarSetupStopLoss({
   context,
   ethMarketPrice,
   executionPrice,
+  feature,
 
   autoSellTriggerData,
   autoBuyTriggerData,
@@ -109,11 +108,7 @@ export function SidebarSetupStopLoss({
   const gasEstimationContext = useGasEstimationContext()
   const [, setHash] = useHash()
 
-  const flow: SidebarAutomationFlow = isRemoveForm
-    ? 'cancelSl'
-    : isFirstSetup
-    ? 'addSl'
-    : 'adjustSl'
+  const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const autoBSEnabled = useFeatureToggle('BasicBS')
 
   const max = autoSellTriggerData.isTriggerEnabled
@@ -187,8 +182,6 @@ export function SidebarSetupStopLoss({
 
   const cancelStopLossWarnings = extractCancelBSWarnings(warnings)
   const cancelStopLossErrors = extractCancelBSErrors(errors)
-
-  const feature = AutomationFeatures.STOP_LOSS
 
   const sidebarTitle = getAutomationFormTitle({
     flow,

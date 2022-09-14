@@ -52,6 +52,7 @@ export function AutoSellFormControl({
 }: AutoSellFormControlProps) {
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
+  const feature = AutomationFeatures.AUTO_SELL
   const publishType = AUTO_SELL_FORM_CHANGE
   const {
     isAddForm,
@@ -63,7 +64,7 @@ export function AutoSellFormControl({
   } = getAutomationFeatureStatus({
     context,
     currentForm: autoSellState.currentForm,
-    feature: AutomationFeatures.AUTO_SELL,
+    feature,
     triggersId: [autoSellTriggerData.triggerId],
     txStatus: autoSellState.txDetails?.txStatus,
     vault,
@@ -123,6 +124,7 @@ export function AutoSellFormControl({
           debtDelta={debtDelta}
           debtDeltaAtCurrentCollRatio={debtDeltaAtCurrentCollRatio}
           ethMarketPrice={ethMarketPrice}
+          feature={feature}
           ilkData={ilkData}
           isAddForm={isAddForm}
           isAutoSellActive={isAutoSellActive}

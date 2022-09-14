@@ -5,6 +5,7 @@ import { Vault } from 'blockchain/vaults'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
 import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
@@ -14,7 +15,6 @@ import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormCha
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   AutomationFeatures,
-  SidebarAutomationFlow,
   SidebarAutomationStages,
 } from 'features/automation/common/types'
 import { getAutoBuyMinMaxValues } from 'features/automation/optimization/autoBuy/helpers'
@@ -30,7 +30,6 @@ import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -58,6 +57,7 @@ interface SidebarSetupAutoBuyProps {
   debtDelta: BigNumber
   collateralDelta: BigNumber
   isAutoBuyActive: boolean
+  feature: AutomationFeatures
 }
 
 export function SidebarSetupAutoBuy({
@@ -67,6 +67,7 @@ export function SidebarSetupAutoBuy({
   balanceInfo,
   context,
   ethMarketPrice,
+  feature,
 
   autoSellTriggerData,
   autoBuyTriggerData,
@@ -90,38 +91,29 @@ export function SidebarSetupAutoBuy({
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
 
-  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
   const isMultiplyVault = vaultType === VaultType.Multiply
 
-  const flow: SidebarAutomationFlow = isRemoveForm
-    ? 'cancelAutoBuy'
-    : isFirstSetup
-    ? 'addAutoBuy'
-    : 'editAutoBuy'
-
-  const feature = AutomationFeatures.AUTO_BUY
-
+  const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
+  const sidebarTitle = getAutomationFormTitle({
+    flow,
+    stage,
+    feature,
+  })
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Optimization',
+    forcePanel: 'autoBuy',
+    disabled: isDropdownDisabled({ stage }),
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+  })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoBuyState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
     feature,
-  })
-
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
-  const sidebarTitle = getAutomationFormTitle({
-    flow,
-    stage,
-    feature,
-  })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
-
-  const errors = errorsAutoBuyValidation({
-    autoBuyState,
-    autoSellTriggerData,
-    constantMultipleTriggerData,
-    isRemoveForm,
   })
 
   const { min, max } = getAutoBuyMinMaxValues({
@@ -142,24 +134,20 @@ export function SidebarSetupAutoBuy({
     sliderMin: min,
     withThreshold: autoBuyState.withThreshold,
   })
-
+  const errors = errorsAutoBuyValidation({
+    autoBuyState,
+    autoSellTriggerData,
+    constantMultipleTriggerData,
+    isRemoveForm,
+  })
   const cancelAutoBuyWarnings = extractCancelBSWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelBSErrors(errors)
-
-  const dropdown = getAutoFeaturesSidebarDropdown({
-    type: 'Optimization',
-    forcePanel: 'autoBuy',
-    disabled: isDropdownDisabled({ stage }),
-    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
-    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
-  })
+  const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
   if (isAutoBuyActive) {
-    const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
-
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
-      ...(constantMultipleEnabled && isMultiplyVault && { dropdown }),
+      ...(isMultiplyVault && { dropdown }),
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (

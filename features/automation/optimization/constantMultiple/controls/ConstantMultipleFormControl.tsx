@@ -53,6 +53,7 @@ export function ConstantMultipleFormControl({
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
 
+  const feature = AutomationFeatures.CONSTANT_MULTIPLE
   const {
     isAddForm,
     isFirstSetup,
@@ -63,7 +64,7 @@ export function ConstantMultipleFormControl({
   } = getAutomationFeatureStatus({
     context,
     currentForm: constantMultipleState.currentForm,
-    feature: AutomationFeatures.CONSTANT_MULTIPLE,
+    feature,
     triggersId: constantMultipleTriggerData.triggersId,
     txStatus: constantMultipleState.txDetails?.txStatus,
     vault,
@@ -134,6 +135,7 @@ export function ConstantMultipleFormControl({
           estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
           estimatedSellFee={estimatedSellFee}
           ethMarketPrice={ethMarketPrice}
+          feature={feature}
           ilkData={ilkData}
           isAddForm={isAddForm}
           isConstantMultipleActive={isConstantMultipleActive}
