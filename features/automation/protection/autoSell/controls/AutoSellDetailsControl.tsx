@@ -15,18 +15,20 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 interface AutoSellDetailsControlProps {
   vault: Vault
   autoSellTriggerData: AutoBSTriggerData
   isAutoSellActive: boolean
+  isconstantMultipleEnabled: boolean
 }
 
 export function AutoSellDetailsControl({
   vault,
   autoSellTriggerData,
   isAutoSellActive,
+  isconstantMultipleEnabled,
 }: AutoSellDetailsControlProps) {
   const { t } = useTranslation()
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
@@ -84,14 +86,21 @@ export function AutoSellDetailsControl({
       ) : (
         <Banner
           title={t('auto-sell.banner.header')}
-          description={
+          description={[
             <>
               {t('auto-sell.banner.content')}{' '}
               <AppLink href="https://kb.oasis.app/help/auto-buy-and-auto-sell" sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
-            </>
-          }
+            </>,
+            ...(isconstantMultipleEnabled
+              ? [
+                  <Text as="span" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
+                    {t('auto-sell.banner.cm-warning')}
+                  </Text>,
+                ]
+              : []),
+          ]}
           image={{
             src: '/static/img/setup-banner/auto-sell.svg',
             backgroundColor: bannerGradientPresets.autoSell[0],
@@ -105,6 +114,7 @@ export function AutoSellDetailsControl({
               })
             },
             text: t('auto-sell.banner.button'),
+            disabled: isconstantMultipleEnabled,
           }}
         />
       )}
