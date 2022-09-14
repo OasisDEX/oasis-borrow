@@ -12,7 +12,7 @@ function getPrimaryButtonLabelEditingTranslationKey({ flow }: { flow: SidebarAut
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.add-trigger'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -38,7 +38,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.setting'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -56,7 +56,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({
 function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationFlow }) {
   switch (flow) {
     case 'addSl':
-    case 'adjustSl':
+    case 'editSl':
     case 'cancelSl':
       return 'back-to-vault-overview'
     case 'addAutoSell':

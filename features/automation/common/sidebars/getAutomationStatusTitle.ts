@@ -13,7 +13,7 @@ function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarAutomationFl
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.setting'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -31,7 +31,7 @@ function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarAutomationFl
 function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarAutomationFlow }) {
   switch (flow) {
     case 'addSl':
-    case 'adjustSl':
+    case 'editSl':
     case 'cancelSl':
     case 'addAutoSell':
     case 'editAutoSell':

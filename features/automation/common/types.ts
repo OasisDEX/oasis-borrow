@@ -14,7 +14,7 @@ export enum AutomationFeatures {
 
 export type SidebarAutomationFlow =
   | 'addSl'
-  | 'adjustSl'
+  | 'editSl'
   | 'cancelSl'
   | 'addAutoSell'
   | 'cancelAutoSell'
