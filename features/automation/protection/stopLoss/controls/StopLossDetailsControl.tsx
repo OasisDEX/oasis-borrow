@@ -2,6 +2,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
+import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
 import { getIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
@@ -59,7 +60,14 @@ export function StopLossDetailsControl({
       ) : (
         <Banner
           title={t('vault-banners.setup-stop-loss.header')}
-          description={t('vault-banners.setup-stop-loss.content', { token: vault.token })}
+          description={
+            <>
+              {t('vault-banners.setup-stop-loss.content', { token: vault.token })}{' '}
+              <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+                {t('here')}.
+              </AppLink>
+            </>
+          }
           image={{
             src: '/static/img/setup-banner/stop-loss.svg',
             backgroundColor: bannerGradientPresets.stopLoss[0],

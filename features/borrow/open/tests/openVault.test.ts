@@ -147,7 +147,7 @@ describe('openVault', () => {
     })
 
     it('should update stop loss level', () => {
-      const stopLossLevel = new BigNumber(2)
+      const stopLossLevel = new BigNumber(200)
       const defaultStopLossLevel = new BigNumber(160)
       const state = getStateUnpacker(mockOpenVault$())
       expect(state().stopLossLevel!).to.deep.equal(defaultStopLossLevel)
@@ -509,6 +509,7 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
       expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
+      expect(state().id!).to.deep.equal(new BigNumber('3281'))
       state().progress!()
       expect(state().stage).to.deep.equal('stopLossTxSuccess')
     })

@@ -117,7 +117,7 @@ describe('open multiply vault', () => {
     })
 
     it('should update stop loss level', () => {
-      const stopLossLevel = new BigNumber(2)
+      const stopLossLevel = new BigNumber(200)
       const defaultStopLossLevel = new BigNumber(160)
       const state = getStateUnpacker(mockOpenMultiplyVault())
       expect(state().stopLossLevel!).to.deep.equal(defaultStopLossLevel)
