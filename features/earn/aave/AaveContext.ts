@@ -2,9 +2,12 @@ import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/
 import { GraphQLClient } from 'graphql-request'
 import moment from 'moment'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
+import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
+import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
+import { observe } from '../../../blockchain/calls/observe'
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import {
@@ -16,11 +19,11 @@ import {
   getAaveStEthYield,
   getOpenAaveParametersStateMachineServices$,
   getOpenAavePositionStateMachineServices,
-  getOpenAaveStateMachine$,
   getOpenAaveTransactionMachine,
   getParametersStateMachine$,
   getSthEthSimulationMachine,
 } from './open/services'
+import { getOpenAaveStateMachine$ } from './open/services/getOpenAaveStateMachine'
 
 export function setupAaveContext({
   userSettings$,
@@ -31,6 +34,7 @@ export function setupAaveContext({
   daiEthTokenPrice$,
   accountBalances$,
 }: AppContext) {
+  const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
 
   const graphQLClient$ = contextForAddress$.pipe(
@@ -46,6 +50,14 @@ export function setupAaveContext({
   const tokenBalances$: Observable<TokenBalances> = contextForAddress$.pipe(
     switchMap(({ account }) => accountBalances$(account)),
   )
+
+  const aaveReserveConfigurationData$ = observe(
+    once$,
+    connectedContext$,
+    getAaveReserveConfigurationData,
+  )
+
+  const aaveAssetPriceData$ = observe(once$, connectedContext$, getAaveAssetPriceData)
 
   const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
@@ -68,6 +80,8 @@ export function setupAaveContext({
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
+    aaveReserveConfigurationData$,
+    aaveAssetPriceData$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

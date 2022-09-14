@@ -26,7 +26,11 @@ export function OptimizationDetailsControl({
 
   return (
     <>
-      <AutoBuyDetailsControl vault={vault} autoBuyTriggerData={autoBuyTriggerData} />
+      <AutoBuyDetailsControl
+        vault={vault}
+        autoBuyTriggerData={autoBuyTriggerData}
+        isconstantMultipleEnabled={constantMultipleTriggerData.isTriggerEnabled}
+      />
       {constantMultipleEnabled && (
         <ConstantMultipleDetailsControl
           vault={vault}

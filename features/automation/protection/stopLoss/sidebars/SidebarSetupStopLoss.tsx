@@ -122,6 +122,7 @@ export function SidebarSetupStopLoss({
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,

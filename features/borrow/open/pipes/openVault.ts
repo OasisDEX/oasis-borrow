@@ -12,6 +12,10 @@ import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { setAllowance } from 'features/allowance/setAllowance'
 import {
+  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+} from 'features/automation/common/consts'
+import {
   applyOpenVaultStopLoss,
   OpenVaultStopLossChanges,
   StopLossOpenFlowStages,
@@ -379,6 +383,12 @@ export function createOpenVault$(
                       : false
 
                     const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+                    const stopLossSliderMin = ilkData.liquidationRatio.plus(
+                      MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100),
+                    )
+                    const initialStopLossSelected = stopLossSliderMin
+                      .plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
+                      .times(100)
 
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
@@ -390,7 +400,7 @@ export function createOpenVault$(
                       setStopLossLevel: (level: BigNumber) =>
                         change({ kind: 'stopLossLevel', level }),
                       stopLossCloseType: 'dai',
-                      stopLossLevel: zero,
+                      stopLossLevel: initialStopLossSelected,
                       priceInfo,
                       balanceInfo,
                       ilkData,

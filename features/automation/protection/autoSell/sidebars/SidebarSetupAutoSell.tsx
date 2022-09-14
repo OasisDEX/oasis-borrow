@@ -102,6 +102,7 @@ export function SidebarSetupAutoSell({
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })

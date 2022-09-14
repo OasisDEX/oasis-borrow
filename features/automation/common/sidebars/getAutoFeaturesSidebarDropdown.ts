@@ -16,7 +16,7 @@ interface GetAutoFeaturesSidebarDropdownProps {
   isStopLossEnabled?: boolean
   isAutoSellEnabled?: boolean
   isAutoBuyEnabled?: boolean
-  isAutoConstantMultipleEnabled?: boolean
+  isAutoConstantMultipleEnabled: boolean
 }
 interface GetAutoFeaturesSidebarDropdownItemProps {
   translationKey: string
@@ -62,43 +62,49 @@ export function getAutoFeaturesSidebarDropdown({
   isAutoSellEnabled,
   isAutoBuyEnabled,
   isAutoConstantMultipleEnabled,
-}: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown {
-  return {
-    forcePanel,
-    disabled,
-    items: [
-      ...(type === 'Protection'
-        ? [
-            getAutoFeaturesSidebarDropdownItem({
-              translationKey: 'system.stop-loss',
-              type: 'Protection',
-              panel: 'stopLoss',
-              isFeatureEnabled: isStopLossEnabled,
-            }),
-            getAutoFeaturesSidebarDropdownItem({
-              translationKey: 'system.basic-sell',
-              type: 'Protection',
-              panel: 'autoSell',
-              isFeatureEnabled: isAutoSellEnabled,
-            }),
-          ]
-        : []),
-      ...(type === 'Optimization'
-        ? [
-            getAutoFeaturesSidebarDropdownItem({
-              translationKey: 'system.basic-buy',
-              type: 'Optimization',
-              panel: 'autoBuy',
-              isFeatureEnabled: isAutoBuyEnabled,
-            }),
-            getAutoFeaturesSidebarDropdownItem({
-              translationKey: 'system.constant-multiple',
-              type: 'Optimization',
-              panel: 'constantMultiple',
-              isFeatureEnabled: isAutoConstantMultipleEnabled,
-            }),
-          ]
-        : []),
-    ],
-  }
+}: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
+  const stopLossDropdownItem = getAutoFeaturesSidebarDropdownItem({
+    translationKey: 'system.stop-loss',
+    type: 'Protection',
+    panel: 'stopLoss',
+    isFeatureEnabled: isStopLossEnabled,
+  })
+  const autoSellDropdownItem = getAutoFeaturesSidebarDropdownItem({
+    translationKey: 'system.basic-sell',
+    type: 'Protection',
+    panel: 'autoSell',
+    isFeatureEnabled: isAutoSellEnabled,
+  })
+  const basicBuyDropdownItem = getAutoFeaturesSidebarDropdownItem({
+    translationKey: 'system.basic-buy',
+    type: 'Optimization',
+    panel: 'autoBuy',
+    isFeatureEnabled: isAutoBuyEnabled,
+  })
+  const constantMultipleDropdownItem = getAutoFeaturesSidebarDropdownItem({
+    translationKey: 'system.constant-multiple',
+    type: 'Optimization',
+    panel: 'constantMultiple',
+    isFeatureEnabled: isAutoConstantMultipleEnabled,
+  })
+
+  const items = [
+    ...(type === 'Protection'
+      ? [stopLossDropdownItem, ...(!isAutoConstantMultipleEnabled ? [autoSellDropdownItem] : [])]
+      : []),
+    ...(type === 'Optimization'
+      ? [
+          ...(!isAutoConstantMultipleEnabled ? [basicBuyDropdownItem] : []),
+          constantMultipleDropdownItem,
+        ]
+      : []),
+  ]
+
+  return items.length > 1
+    ? {
+        forcePanel,
+        disabled,
+        items,
+      }
+    : undefined
 }
