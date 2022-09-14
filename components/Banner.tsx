@@ -29,8 +29,6 @@ type BannerProps = {
 
 export function Banner({ title, description, button, image, sx }: BannerProps) {
   const descriptionsArray = Array.isArray(description) ? description : [description]
-  console.log(description)
-  console.log(descriptionsArray)
 
   return (
     <Card sx={{ borderRadius: 'large', border: 'lightMuted', p: 2, ...sx }}>
