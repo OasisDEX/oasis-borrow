@@ -1,15 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
-import { getToken } from 'blockchain/tokensMetadata'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import {
-  closeVaultOptions,
   DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   MAX_DEBT_FOR_SETTING_STOP_LOSS,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
@@ -31,15 +28,12 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { getStopLossStatus } from 'features/automation/protection/stopLoss/state/stopLossStatus'
-import {
-  prepareAddStopLossTriggerData,
-  StopLossTriggerData,
-} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React from 'react'
 
 interface StopLossFormControlProps {
   autoBuyTriggerData: AutoBSTriggerData
@@ -90,44 +84,22 @@ export function StopLossFormControl({
     txStatus: stopLossState.txDetails?.txStatus,
     vault,
   })
-  const { isEditing } = getStopLossStatus({
+  const { isEditing, closePickerConfig } = getStopLossStatus({
     stopLossTriggerData,
     stopLossState,
     isRemoveForm,
+    vault,
+  })
+  const { addTxData, textButtonHandlerExtension } = getStopLossTxHandlers({
+    vault,
+    stopLossState,
+    stopLossTriggerData,
+    isAddForm,
   })
 
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = stopLossTriggerData
 
-  const token = vault.token
-  const tokenData = getToken(token)
-
-  const replacedTriggerId = triggerId.toNumber()
-
-  const addTxData = useMemo(
-    () =>
-      prepareAddStopLossTriggerData(
-        vault,
-        stopLossState.collateralActive,
-        stopLossState.stopLossLevel,
-        replacedTriggerId,
-      ),
-    [stopLossState.collateralActive, stopLossState.stopLossLevel, replacedTriggerId],
-  )
-
   const liqRatio = ilkData.liquidationRatio
-
-  const closePickerConfig: PickCloseStateProps = {
-    optionNames: closeVaultOptions,
-    onclickHandler: (optionName: string) => {
-      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-        type: 'close-type',
-        toCollateral: optionName === closeVaultOptions[0],
-      })
-    },
-    isCollateralActive: stopLossState.collateralActive,
-    collateralTokenSymbol: token,
-    collateralTokenIconCircle: tokenData.iconCircle,
-  }
 
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
@@ -202,15 +174,6 @@ export function StopLossFormControl({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
-
-  function textButtonHandlerExtension() {
-    if (isAddForm) {
-      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-        type: 'stop-loss-level',
-        stopLossLevel: zero,
-      })
-    }
-  }
 
   return (
     <AddAndRemoveTriggerControl
