@@ -1726,7 +1726,15 @@
         "confirm-btn": "Confirm",
         "retry-btn": "Retry",
         "success-title": "All done! You've opened a position",
-        "go-to-position": "Go to position"
+        "go-to-position": "Go to position",
+        "configure-multiple": {
+          "title": "Set your risk level",
+          "liquidation-price": "stETH/ETH Liquidation Price",
+          "steth-eth-historial-ratio": "stETH / ETH Historical Ratio",
+          "back-to-enter-eth": "Back to enter ETH",
+          "increase-risk": "Increase risk",
+          "decrease-risk": "Decrease risk"
+        }
       }
     }
   },
