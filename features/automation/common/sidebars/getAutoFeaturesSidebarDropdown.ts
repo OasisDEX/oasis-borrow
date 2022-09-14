@@ -31,8 +31,8 @@ function getAutoFeaturesSidebarDropdownItem({
   panel,
   isFeatureEnabled,
 }: GetAutoFeaturesSidebarDropdownItemProps): SidebarSectionHeaderSelectItem {
-  const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const { uiChanges } = useAppContext()
 
   return {
     label: `${t(isFeatureEnabled ? 'manage' : 'setup')} ${t(translationKey)}`,
