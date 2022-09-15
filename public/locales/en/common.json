@@ -1499,6 +1499,7 @@
     "banner": {
       "header": "Stop scrambling to manage a position",
       "content": "Get peace of mind and setup Auto-Sell to automatically protect your Vault. Sell collateral to repay your debt when you most need it. Find out more about how this works",
+      "cm-warning": "Auto-Sell cannot be used if you have Constant Multiple enabled.",
       "button": "Setup Auto-Sell"
     }
   },
@@ -1544,6 +1545,7 @@
     "banner": {
       "header": "Stop missing buying opportunities",
       "content": "Setup Auto-Buy to automatically buy additional collateral with your Vaults debt when the price of your collateral is increasing so you never miss a buying opportunity again. Find out more about how this works",
+      "cm-warning": "Auto-Buy cannot be used if you have Constant Multiple enabled.",
       "button": "Setup Auto-Buy"
     },
     "setting-auto-buy": "Setting up your Auto-Buy",

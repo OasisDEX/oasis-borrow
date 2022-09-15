@@ -15,9 +15,14 @@ import { Grid } from 'theme-ui'
 interface AutoBuyDetailsControlProps {
   vault: Vault
   autoBuyTriggerData: AutoBSTriggerData
+  isconstantMultipleEnabled: boolean
 }
 
-export function AutoBuyDetailsControl({ vault, autoBuyTriggerData }: AutoBuyDetailsControlProps) {
+export function AutoBuyDetailsControl({
+  vault,
+  autoBuyTriggerData,
+  isconstantMultipleEnabled,
+}: AutoBuyDetailsControlProps) {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const {
@@ -66,6 +71,7 @@ export function AutoBuyDetailsControl({ vault, autoBuyTriggerData }: AutoBuyDeta
       <AutoBuyDetailsLayout
         token={vault.token}
         autoBuyTriggerData={autoBuyTriggerData}
+        isconstantMultipleEnabled={isconstantMultipleEnabled}
         {...autoBuyDetailsLayoutOptionalParams}
       />
     </Grid>

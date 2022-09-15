@@ -58,7 +58,7 @@ jobs:
         # be deployed to ECS.
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg API_HOST=${{ secrets.API_HOST_STAGING }} \
-                     --build-arg NOTIFICATIONS_HOST=${{ secrets.NOTIFICATIONS_HOST }} \
+                     --build-arg NOTIFICATIONS_HOST=${{ secrets.NOTIFICATIONS_HOST_STAGING }} \
                      --build-arg APP_FULL_DOMAIN=${{ secrets.APP_FULL_DOMAIN_STAGING }} \
                      --build-arg MIXPANEL_ENV=staging \
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \

@@ -18,7 +18,11 @@ interface ProtectionDetailsControlProps {
 }
 
 export function ProtectionDetailsControl({ vault, ilkData }: ProtectionDetailsControlProps) {
-  const { stopLossTriggerData, autoSellTriggerData } = useAutomationContext()
+  const {
+    stopLossTriggerData,
+    autoSellTriggerData,
+    constantMultipleTriggerData,
+  } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const autoBSEnabled = useFeatureToggle('BasicBS')
@@ -43,6 +47,7 @@ export function ProtectionDetailsControl({ vault, ilkData }: ProtectionDetailsCo
           vault={vault}
           autoSellTriggerData={autoSellTriggerData}
           isAutoSellActive={isAutoSellActive}
+          isconstantMultipleEnabled={constantMultipleTriggerData.isTriggerEnabled}
         />
       )}
     </>
