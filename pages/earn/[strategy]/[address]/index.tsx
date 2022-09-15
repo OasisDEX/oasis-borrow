@@ -15,19 +15,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
       strategy: ctx.query.strategy || null,
-      proxy: ctx.query.proxy || null,
+      address: ctx.query.address || null,
     },
   }
 }
 
-function Position({ proxy }: { proxy: string; strategy: string }) {
+function Position({ address, strategy }: { address: string; strategy: string }) {
   return (
     <AaveContextProvider>
       <WithConnection>
         <WithTermsOfService>
           <Grid gap={0} sx={{ width: '100%' }}>
             <BackgroundLight />
-            <AaveManagePositionView proxy={proxy} />
+            <AaveManagePositionView address={address} strategy={strategy} />
           </Grid>
         </WithTermsOfService>
       </WithConnection>

@@ -1,3 +1,4 @@
+import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 
 import { AaveProtocolDataProvider } from '../../types/web3-v1-contracts/aave-protocol-data-provider'
@@ -9,7 +10,7 @@ export interface AaveUserReserveDataParameters {
 }
 
 export interface AaveUserReserveData {
-  currentATokenBalance: string
+  currentATokenBalance: BigNumber
 }
 
 export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, AaveUserReserveData> = {
@@ -18,6 +19,11 @@ export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, Aave
   },
   prepareArgs: ({ token, proxyAddress }, context) => {
     return [context.tokens[token].address, proxyAddress]
+  },
+  postprocess: (result) => {
+    return {
+      currentATokenBalance: amountFromWei(new BigNumber(result.currentATokenBalance)),
+    }
   },
 }
 

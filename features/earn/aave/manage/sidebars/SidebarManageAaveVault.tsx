@@ -1,4 +1,4 @@
-import { useMachine } from '@xstate/react'
+import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -12,6 +12,7 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
+import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
 import { SidebarManageAaveVaultEditingState } from './SidebarManageAaveVaultEditingState'
 
@@ -148,7 +149,7 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
       disabled: false,
       label: t('manage-earn.aave.vault-form.close'),
       action: () => {
-        send('POSITION_CLOSED')
+        send('CLOSE_POSITION')
       },
     },
   }
@@ -173,19 +174,22 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.go-to-position'),
-      url: `/earn/${state.context.strategyName}/${state.context.proxyAddress}`,
+      url: ``,
     },
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarManageAaveVault({ aaveStateMachine }: ManageAaveVaultProps) {
-  const [state, send] = useMachine(aaveStateMachine)
+export function SidebarManageAaveVault() {
+  const { stateMachine } = useManageAaveStateMachineContext()
+  const [state, send] = useActor(stateMachine)
 
   switch (true) {
     case state.matches('editing'):
       return <ManageAaveEditingStateView state={state} send={send} />
+    case state.matches('reviewingClosing'):
+      return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('reviewing'):
       return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('txInProgress'):
