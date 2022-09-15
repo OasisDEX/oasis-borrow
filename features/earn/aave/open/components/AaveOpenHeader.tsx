@@ -1,7 +1,9 @@
 import { useActor, useSelector } from '@xstate/react'
+import { useAppContext } from 'components/AppContextProvider'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { formatPercent } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
 import { ActorRefFrom } from 'xstate'
 
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
@@ -22,6 +24,8 @@ export function AaveOpenHeader({
   strategyName: string
 }) {
   const [state] = useActor(actor)
+  const { aaveTotalValueLocked$ } = useAppContext()
+  const [aaveTotalValueLocked] = useObservable(aaveTotalValueLocked$)
 
   const { context } = state
 
@@ -52,14 +56,15 @@ export function AaveOpenHeader({
       }),
     })
   }
-  console.log('context', context)
+  // console.log('context', context)
 
-  headlineDetails.push({
-    label: 'Total value locked',
-    value: Intl.NumberFormat('en', { notation: 'compact', minimumFractionDigits: 3 }).format(
-      7574698,
-    ),
-  })
+  aaveTotalValueLocked?.totalValueLocked &&
+    headlineDetails.push({
+      label: 'Total value locked',
+      value: Intl.NumberFormat('en', { notation: 'compact', minimumFractionDigits: 3 }).format(
+        aaveTotalValueLocked.totalValueLocked.toNumber(),
+      ),
+    })
 
   return (
     <VaultHeadline
