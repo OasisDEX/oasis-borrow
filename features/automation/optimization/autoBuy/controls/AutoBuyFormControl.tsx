@@ -72,7 +72,7 @@ export function AutoBuyFormControl({
     feature: AutomationFeatures.AUTO_BUY,
     triggersId: [autoBuyTriggerData.triggerId],
     txStatus: autoBuyState.txDetails?.txStatus,
-    vault,
+    vaultController: vault.controller,
   })
   const { collateralDelta, debtDelta, isDisabled, isEditing, resetData } = getAutoBSStatus({
     autoBSState: autoBuyState,

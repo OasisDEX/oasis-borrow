@@ -67,7 +67,7 @@ export function AutoSellFormControl({
     feature,
     triggersId: [autoSellTriggerData.triggerId],
     txStatus: autoSellState.txDetails?.txStatus,
-    vault,
+    vaultController: vault.controller,
   })
   const {
     collateralDelta,

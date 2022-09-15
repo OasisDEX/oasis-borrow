@@ -69,7 +69,7 @@ export function StopLossFormControl({
     feature: AutomationFeatures.STOP_LOSS,
     triggersId: [stopLossTriggerData.triggerId],
     txStatus: stopLossState.txDetails?.txStatus,
-    vault,
+    vaultController: vault.controller,
   })
   const { closePickerConfig, executionPrice, isDisabled, isEditing, resetData } = getStopLossStatus(
     {

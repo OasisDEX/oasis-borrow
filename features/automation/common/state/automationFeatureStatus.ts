@@ -1,7 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
 import { failedStatuses, progressStatuses } from 'features/automation/common/consts'
 import { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
@@ -12,7 +11,7 @@ interface GetAutomationFeatureStatusParams {
   feature: AutomationFeatures
   triggersId: BigNumber[]
   txStatus?: TxStatus
-  vault: Vault
+  vaultController?: string,
 }
 
 interface AutomationFeatureStatus {
@@ -32,9 +31,9 @@ export function getAutomationFeatureStatus({
   feature,
   triggersId,
   txStatus,
-  vault,
+  vaultController,
 }: GetAutomationFeatureStatusParams): AutomationFeatureStatus {
-  const isOwner = context.status === 'connected' && context.account === vault.controller
+  const isOwner = context.status === 'connected' && context.account === vaultController
   const isAddForm = currentForm === 'add'
   const isRemoveForm = currentForm === 'remove'
   const isSuccessStage = txStatus === TxStatus.Success

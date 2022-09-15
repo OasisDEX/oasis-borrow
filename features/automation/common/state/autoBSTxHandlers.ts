@@ -3,11 +3,8 @@ import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
-import {
-  AutoBSTriggerTypes,
-  prepareAddAutoBSTriggerData,
-} from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationBSPublishType } from 'features/automation/common/types'
+import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AutoBSTriggerTypes, AutomationBSPublishType } from 'features/automation/common/types'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 

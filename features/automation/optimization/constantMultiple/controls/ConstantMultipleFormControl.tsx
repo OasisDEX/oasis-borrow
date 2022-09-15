@@ -67,7 +67,7 @@ export function ConstantMultipleFormControl({
     feature,
     triggersId: constantMultipleTriggerData.triggersId,
     txStatus: constantMultipleState.txDetails?.txStatus,
-    vault,
+    vaultController: vault.controller,
   })
   const {
     collateralToBePurchased,

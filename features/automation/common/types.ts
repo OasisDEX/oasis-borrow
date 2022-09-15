@@ -1,3 +1,4 @@
+import { TriggerType } from '@oasisdex/automation'
 import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
@@ -53,3 +54,5 @@ export type AutomationPublishType =
   | AutomationBSPublishType
   | typeof CONSTANT_MULTIPLE_FORM_CHANGE
   | typeof STOP_LOSS_FORM_CHANGE
+
+export type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
