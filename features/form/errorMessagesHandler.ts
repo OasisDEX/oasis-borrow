@@ -44,6 +44,8 @@ export type VaultErrorMessage =
   | 'autoBuyTriggerLowerThanAutoSellTarget'
   | 'stopLossTriggerHigherThanAutoBuyTarget'
   | 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled'
+  | 'minSellPriceWillPreventSellTrigger'
+  | 'maxBuyPriceWillPreventBuyTrigger'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -90,6 +92,8 @@ interface ErrorMessagesHandler {
   autoBuyTriggerLowerThanAutoSellTarget?: boolean
   stopLossTriggerHigherThanAutoBuyTarget?: boolean
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled?: boolean
+  minSellPriceWillPreventSellTrigger?: boolean
+  maxBuyPriceWillPreventBuyTrigger?: boolean
 }
 
 export function errorMessagesHandler({
@@ -137,6 +141,8 @@ export function errorMessagesHandler({
   autoBuyTriggerLowerThanAutoSellTarget,
   stopLossTriggerHigherThanAutoBuyTarget,
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
+  minSellPriceWillPreventSellTrigger,
+  maxBuyPriceWillPreventBuyTrigger,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -313,6 +319,14 @@ export function errorMessagesHandler({
 
   if (cantSetupAutoBuyOrSellWhenConstantMultipleEnabled) {
     errorMessages.push('cantSetupAutoBuyOrSellWhenConstantMultipleEnabled')
+  }
+
+  if (minSellPriceWillPreventSellTrigger) {
+    errorMessages.push('minSellPriceWillPreventSellTrigger')
+  }
+
+  if (maxBuyPriceWillPreventBuyTrigger) {
+    errorMessages.push('maxBuyPriceWillPreventBuyTrigger')
   }
 
   return errorMessages

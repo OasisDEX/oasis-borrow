@@ -8,6 +8,7 @@ import { ConstantMultipleTriggerData } from 'features/automation/optimization/co
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
+import { zero } from 'helpers/zero'
 
 export function warningsAutoSellValidation({
   vault,
@@ -67,6 +68,7 @@ export function errorsAutoSellValidation({
   vault,
   ilkData,
   debtDelta,
+  executionPrice,
   debtDeltaAtCurrentCollRatio,
   isRemoveForm,
   autoSellState,
@@ -76,6 +78,7 @@ export function errorsAutoSellValidation({
   vault: Vault
   ilkData: IlkData
   debtDelta: BigNumber
+  executionPrice: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
   isRemoveForm: boolean
   autoSellState: AutoBSFormChange
@@ -107,11 +110,15 @@ export function errorsAutoSellValidation({
   const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
     constantMultipleTriggerData.isTriggerEnabled
 
+  const minSellPriceWillPreventSellTrigger =
+    maxBuyOrMinSellPrice?.gt(zero) && maxBuyOrMinSellPrice.gt(executionPrice)
+
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
     minimumSellPriceNotProvided,
     autoSellTriggerHigherThanAutoBuyTarget,
     cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
+    minSellPriceWillPreventSellTrigger,
   })
 }

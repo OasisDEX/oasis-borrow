@@ -36,6 +36,8 @@ import { handleNumericInput } from 'helpers/input'
 import {
   extractConstantMultipleCommonErrors,
   extractConstantMultipleCommonWarnings,
+  extractConstantMultipleMaxBuyErrors,
+  extractConstantMultipleMinSellErrors,
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -229,10 +231,7 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={constantMultipleState?.buyWithThreshold}
       />
-      <VaultErrors
-        errorMessages={errors.filter((item) => item === 'autoBuyMaxBuyPriceNotSpecified')}
-        ilkData={ilkData}
-      />
+      <VaultErrors errorMessages={extractConstantMultipleMaxBuyErrors(errors)} ilkData={ilkData} />
       <VaultWarnings
         warningMessages={warnings.filter((item) => item === 'settingAutoBuyTriggerWithNoThreshold')}
         ilkData={ilkData}
@@ -269,10 +268,7 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
-      <VaultErrors
-        errorMessages={errors.filter((item) => item === 'minimumSellPriceNotProvided')}
-        ilkData={ilkData}
-      />
+      <VaultErrors errorMessages={extractConstantMultipleMinSellErrors(errors)} ilkData={ilkData} />
       <VaultWarnings
         warningMessages={extractConstantMultipleCommonWarnings(warnings)}
         ilkData={ilkData}

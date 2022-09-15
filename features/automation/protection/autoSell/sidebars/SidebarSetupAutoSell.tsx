@@ -53,6 +53,7 @@ interface SidebarSetupAutoSellProps {
   debtDelta: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
   collateralDelta: BigNumber
+  executionPrice: BigNumber
   feature: AutomationFeatures
 }
 
@@ -84,6 +85,7 @@ export function SidebarSetupAutoSell({
   debtDelta,
   debtDeltaAtCurrentCollRatio,
   collateralDelta,
+  executionPrice,
 }: SidebarSetupAutoSellProps) {
   const gasEstimation = useGasEstimationContext()
 
@@ -135,6 +137,7 @@ export function SidebarSetupAutoSell({
     ilkData,
     vault,
     debtDelta,
+    executionPrice,
     debtDeltaAtCurrentCollRatio,
     autoSellState,
     autoBuyTriggerData,

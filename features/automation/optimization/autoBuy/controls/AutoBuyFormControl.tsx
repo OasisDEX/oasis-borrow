@@ -74,7 +74,14 @@ export function AutoBuyFormControl({
     txStatus: autoBuyState.txDetails?.txStatus,
     vaultController: vault.controller,
   })
-  const { collateralDelta, debtDelta, isDisabled, isEditing, resetData } = getAutoBSStatus({
+  const {
+    collateralDelta,
+    debtDelta,
+    isDisabled,
+    isEditing,
+    resetData,
+    executionPrice,
+  } = getAutoBSStatus({
     autoBSState: autoBuyState,
     autoBSTriggerData: autoBuyTriggerData,
     isAddForm,
@@ -136,6 +143,7 @@ export function AutoBuyFormControl({
           txHandler={txHandler}
           vault={vault}
           vaultType={vaultType}
+          executionPrice={executionPrice}
         />
       )}
     </AddAndRemoveTriggerControl>
