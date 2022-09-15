@@ -2,102 +2,73 @@ import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import {
   AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import {
-  addAutomationTrigger,
-  removeAutomationTrigger,
-} from 'features/automation/api/automationTxHandlers'
-import { AutomationPublishType } from 'features/automation/common/types'
-import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
+import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
 import { addTransactionMap, TX_DATA_CHANGE } from 'helpers/gasEstimate'
-import { ReactElement, useEffect, useMemo } from 'react'
+import { ReactElement, useEffect } from 'react'
 
 export interface AddAndRemoveTxHandler {
   callOnSuccess?: () => void
 }
 
 interface AddAndRemoveTriggerControlProps {
-  txHelpers?: TxHelpers
+  addTxData: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
   ethMarketPrice: BigNumber
+  isActiveFlag: boolean
+  isAddForm: boolean
+  isEditing: boolean
+  isRemoveForm: boolean
+  proxyAddress: string
+  publishType: AutomationPublishType
+  resetData: any
+  shouldRemoveAllowance: boolean
+  stage: SidebarAutomationStages
+  textButtonHandlerExtension?: () => void
+  triggersId: number[]
+  txHelpers?: TxHelpers
   children: (
     txHandler: (options?: AddAndRemoveTxHandler) => void,
     textButtonHandler: () => void,
   ) => ReactElement
-  isEditing: boolean
-  removeAllowance: boolean
-  proxyAddress: string
-  triggersId: number[]
-  stage: SidebarVaultStages
-  addTxData: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
-  resetData: any
-  publishType: AutomationPublishType
-  currentForm: 'add' | 'remove'
-  isActiveFlag: boolean
-  textButtonHandlerExtension?: () => void
 }
 
 export function AddAndRemoveTriggerControl({
-  txHelpers,
-  ethMarketPrice,
-  isEditing,
-  children,
-  triggersId,
-  proxyAddress,
-  removeAllowance,
-  stage,
   addTxData,
-  resetData,
-  publishType,
-  currentForm,
+  children,
+  ethMarketPrice,
   isActiveFlag,
+  isAddForm,
+  isEditing,
+  isRemoveForm,
+  proxyAddress,
+  publishType,
+  resetData,
+  shouldRemoveAllowance,
+  stage,
   textButtonHandlerExtension,
+  triggersId,
+  txHelpers,
 }: AddAndRemoveTriggerControlProps) {
   const { uiChanges } = useAppContext()
 
-  const isAddForm = currentForm === 'add'
-  const isRemoveForm = currentForm === 'remove'
-
-  const removeTxData: AutomationBotRemoveTriggersData = useMemo(
-    () => ({
-      removeAllowance,
-      proxyAddress,
-      triggersId,
-      kind: TxMetaKind.removeTriggers,
-    }),
-    [removeAllowance, proxyAddress, triggersId],
-  )
-
-  function txHandler(options?: AddAndRemoveTxHandler) {
-    if (txHelpers) {
-      if (stage === 'txSuccess') {
-        uiChanges.publish(publishType, {
-          type: 'reset',
-          resetData,
-        })
-        uiChanges.publish(publishType, {
-          type: 'tx-details',
-          txDetails: {},
-        })
-        uiChanges.publish(publishType, {
-          type: 'current-form',
-          currentForm: 'add',
-        })
-        options?.callOnSuccess && options.callOnSuccess()
-      } else {
-        if (isAddForm) {
-          addAutomationTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, publishType)
-        }
-        if (isRemoveForm) {
-          removeAutomationTrigger(txHelpers, removeTxData, uiChanges, ethMarketPrice, publishType)
-        }
-      }
-    }
-  }
+  const { removeTxData, textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({
+    addTxData,
+    ethMarketPrice,
+    isAddForm,
+    isRemoveForm,
+    proxyAddress,
+    publishType,
+    resetData,
+    shouldRemoveAllowance,
+    stage,
+    textButtonHandlerExtension,
+    triggersId,
+    txHelpers,
+  })
 
   useEffect(() => {
     if (isActiveFlag && isEditing) {
@@ -118,18 +89,5 @@ export function AddAndRemoveTriggerControl({
     }
   }, [addTxData, removeTxData, isActiveFlag])
 
-  function textButtonHandler() {
-    uiChanges.publish(publishType, {
-      type: 'current-form',
-      currentForm: isAddForm ? 'remove' : 'add',
-    })
-    uiChanges.publish(publishType, {
-      type: 'reset',
-      resetData,
-    })
-
-    textButtonHandlerExtension && textButtonHandlerExtension()
-  }
-
-  return children(txHandler, textButtonHandler)
+  return children(textButtonHandler, txHandler)
 }

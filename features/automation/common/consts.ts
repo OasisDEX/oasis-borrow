@@ -1,5 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { FixedSizeArray } from 'helpers/types'
 import { one } from 'helpers/zero'
 
@@ -31,3 +32,10 @@ export const progressStatuses = [
 ]
 
 export const failedStatuses = [TxStatus.Failure, TxStatus.CancelledByTheUser, TxStatus.Error]
+
+export const sidebarAutomationFlowSuffix = {
+  [AutomationFeatures.STOP_LOSS]: 'Sl',
+  [AutomationFeatures.AUTO_SELL]: 'AutoSell',
+  [AutomationFeatures.AUTO_BUY]: 'AutoBuy',
+  [AutomationFeatures.CONSTANT_MULTIPLE]: 'ConstantMultiple',
+}

@@ -16,7 +16,8 @@ interface GetAutoFeaturesSidebarDropdownProps {
   isStopLossEnabled?: boolean
   isAutoSellEnabled?: boolean
   isAutoBuyEnabled?: boolean
-  isAutoConstantMultipleEnabled: boolean
+  isAutoConstantMultipleEnabled?: boolean
+  isAutoTakeProfitEnabled?: boolean
 }
 interface GetAutoFeaturesSidebarDropdownItemProps {
   translationKey: string
@@ -62,6 +63,7 @@ export function getAutoFeaturesSidebarDropdown({
   isAutoSellEnabled,
   isAutoBuyEnabled,
   isAutoConstantMultipleEnabled,
+  isAutoTakeProfitEnabled,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
   const stopLossDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.stop-loss',
@@ -87,6 +89,12 @@ export function getAutoFeaturesSidebarDropdown({
     panel: 'constantMultiple',
     isFeatureEnabled: isAutoConstantMultipleEnabled,
   })
+  const autoTakeProfitDropdownItem = getAutoFeaturesSidebarDropdownItem({
+    translationKey: 'system.auto-take-profit',
+    type: 'Optimization',
+    panel: 'autoTakeProfit',
+    isFeatureEnabled: isAutoTakeProfitEnabled,
+  })
 
   const items = [
     ...(type === 'Protection'
@@ -96,6 +104,7 @@ export function getAutoFeaturesSidebarDropdown({
       ? [
           ...(!isAutoConstantMultipleEnabled ? [basicBuyDropdownItem] : []),
           constantMultipleDropdownItem,
+          ...(!isAutoTakeProfitEnabled ? [autoTakeProfitDropdownItem] : []),
         ]
       : []),
   ]

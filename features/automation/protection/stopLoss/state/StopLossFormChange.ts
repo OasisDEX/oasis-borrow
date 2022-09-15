@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { CurrentBSForm } from 'features/automation/common/state/autoBSFormChange'
+import { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
 import { TxError } from 'helpers/types'
 
 export const STOP_LOSS_FORM_CHANGE = 'STOP_LOSS_FORM_CHANGE'
@@ -12,7 +12,7 @@ export type StopLossResetData = Pick<
 export type StopLossFormChangeAction =
   | { type: 'stop-loss-level'; stopLossLevel: BigNumber }
   | { type: 'close-type'; toCollateral: boolean }
-  | { type: 'current-form'; currentForm: CurrentBSForm }
+  | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'reset'; resetData: StopLossResetData }
   | {
       type: 'tx-details'
@@ -47,7 +47,7 @@ export function formChangeReducer(
 export interface StopLossFormChange {
   stopLossLevel: BigNumber
   collateralActive: boolean
-  currentForm: CurrentBSForm
+  currentForm: AutomationFormType
   resetData: StopLossResetData
   txDetails?: {
     txStatus?: TxStatus

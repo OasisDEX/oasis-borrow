@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { SidebarAutomationStages } from 'features/automation/common/types'
 
-export function getIsEditingStopLoss({
+export function checkIfIsEditingStopLoss({
   isStopLossEnabled,
   selectedSLValue,
   stopLossLevel,
@@ -50,4 +51,25 @@ export function getSliderPercentageFill({
   return value
     .minus(min.times(100))
     .div(max.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(min))
+}
+
+export function checkIfIsDisabledStopLoss({
+  isAddForm,
+  isEditing,
+  isOwner,
+  isProgressStage,
+  maxDebtForSettingStopLoss,
+  stage,
+}: {
+  isAddForm: boolean
+  isEditing: boolean
+  isOwner: boolean
+  isProgressStage: boolean
+  maxDebtForSettingStopLoss: boolean
+  stage: SidebarAutomationStages
+}) {
+  return (
+    (isProgressStage || !isOwner || !isEditing || (isAddForm && maxDebtForSettingStopLoss)) &&
+    stage !== 'txSuccess'
+  )
 }

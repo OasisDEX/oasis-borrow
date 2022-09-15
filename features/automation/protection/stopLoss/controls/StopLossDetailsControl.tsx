@@ -5,7 +5,7 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
-import { getIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
+import { checkIfIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
@@ -14,7 +14,6 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
 
 interface StopLossDetailsControlProps {
   ilkData: IlkData
@@ -29,12 +28,13 @@ export function StopLossDetailsControl({
   vault,
   isStopLossActive,
 }: StopLossDetailsControlProps) {
-  const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+
+  const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
   return (
-    <Grid>
+    <>
       {isStopLossActive ? (
         <StopLossDetailsLayout
           slRatio={stopLossTriggerData.stopLossLevel}
@@ -47,7 +47,7 @@ export function StopLossDetailsControl({
           liquidationPenalty={ilkData.liquidationPenalty}
           collateralizationRatioAtNextPrice={vault.collateralizationRatioAtNextPrice}
           isCollateralActive={!!stopLossState?.collateralActive}
-          isEditing={getIsEditingStopLoss({
+          isEditing={checkIfIsEditingStopLoss({
             isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
             selectedSLValue: stopLossState.stopLossLevel,
             stopLossLevel: stopLossTriggerData.stopLossLevel,
@@ -84,6 +84,6 @@ export function StopLossDetailsControl({
           }}
         />
       )}
-    </Grid>
+    </>
   )
 }
