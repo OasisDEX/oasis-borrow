@@ -5,10 +5,10 @@ import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
 import { AppLink } from 'components/Links'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { WithArrow } from 'components/WithArrow'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,
@@ -115,7 +115,7 @@ interface AutomationEntryProps {
   event: AutomationEvent
   isAddOrRemoveEvent: boolean
   isUpdateEvent: boolean
-  addOrRemoveTriggersData: (BasicBSTriggerData | StopLossTriggerData)[]
+  addOrRemoveTriggersData: (AutoBSTriggerData | StopLossTriggerData)[]
 }
 
 function StandaloneAutomationEntry({
@@ -127,7 +127,7 @@ function StandaloneAutomationEntry({
   const { t } = useTranslation()
 
   const isStopLossEvent = event.kind === 'stop-loss'
-  const isBasicBSEvent = event.kind === 'basic-buy' || event.kind === 'basic-sell'
+  const isAutoBSEvent = event.kind === 'basic-buy' || event.kind === 'basic-sell'
   const maxBuyOrMinSellPriceLabel =
     event.kind === 'basic-sell' ? t('history.minimum-sell-price') : t('history.maximum-buy-price')
   const unlimited = t('unlimited')
@@ -136,7 +136,7 @@ function StandaloneAutomationEntry({
     <>
       {isAddOrRemoveEvent && (
         <>
-          {isBasicBSEvent && 'execCollRatio' in addOrRemoveTriggersData[0] && (
+          {isAutoBSEvent && 'execCollRatio' in addOrRemoveTriggersData[0] && (
             <DefinitionList>
               <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
                 {formatPercent(addOrRemoveTriggersData[0].execCollRatio, {
@@ -180,7 +180,7 @@ function StandaloneAutomationEntry({
       )}
       {isUpdateEvent && (
         <>
-          {isBasicBSEvent &&
+          {isAutoBSEvent &&
             'execCollRatio' in event.removeTriggerData[0] &&
             'execCollRatio' in event.addTriggerData[0] && (
               <DefinitionList>

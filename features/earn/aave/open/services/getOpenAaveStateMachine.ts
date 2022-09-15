@@ -1,7 +1,9 @@
+import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
+import { AaveReserveConfigurationData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
@@ -23,6 +25,12 @@ export function getOpenAavePositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
+  aaveReserveConfigurationData$: ({
+    token,
+  }: {
+    token: string
+  }) => Observable<AaveReserveConfigurationData>,
+  aaveAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
 ): OpenAaveStateMachineServices {
   return {
     getBalance: (context, _) => {
@@ -41,6 +49,22 @@ export function getOpenAavePositionStateMachineServices(
           type: 'PROXY_ADDRESS_RECEIVED',
           proxyAddress: address,
         })),
+      )
+    },
+    getStrategyInfo: () => {
+      const reserveConfigData$ = aaveReserveConfigurationData$({ token: 'STETH' })
+      const assetPriceData$ = aaveAssetPriceData$({ token: 'STETH' })
+      return combineLatest(reserveConfigData$, assetPriceData$).pipe(
+        map(([{ ltv, liquidationThreshold }, assetPrice]) => {
+          const minColRatio = new BigNumber(1).div(ltv)
+          const maxMultiple = new BigNumber(1).div(minColRatio.minus(1)).plus(1)
+          return {
+            type: 'UPDATE_STRATEGY_INFO',
+            maxMultiple,
+            liquidationThreshold,
+            assetPrice,
+          }
+        }),
       )
     },
   }

@@ -9,11 +9,11 @@ import {
 } from 'blockchain/calls/automationBotAggregator'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
-  BASIC_BUY_FORM_CHANGE,
-  BASIC_SELL_FORM_CHANGE,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
-import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/common/UITypes/StopLossFormChange'
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
+} from 'features/automation/common/state/autoBSFormChange'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
 export const TX_DATA_CHANGE = 'TX_DATA_CHANGE'
 
@@ -64,7 +64,7 @@ export function gasEstimationReducer(
 
 export const addTransactionMap = {
   [CONSTANT_MULTIPLE_FORM_CHANGE]: addAutomationBotAggregatorTrigger,
-  [BASIC_BUY_FORM_CHANGE]: addAutomationBotTrigger,
-  [BASIC_SELL_FORM_CHANGE]: addAutomationBotTrigger,
+  [AUTO_BUY_FORM_CHANGE]: addAutomationBotTrigger,
+  [AUTO_SELL_FORM_CHANGE]: addAutomationBotTrigger,
   [STOP_LOSS_FORM_CHANGE]: addAutomationBotTrigger,
 }

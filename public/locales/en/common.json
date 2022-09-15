@@ -874,9 +874,9 @@
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop-Loss Col. Ratio at current or next collateral price",
-    "after-coll-ratio-below-basic-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
+    "after-coll-ratio-below-auto-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
     "after-coll-ratio-below-constant-multiple-sell-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Sell Trigger ratio first",
-    "after-coll-ratio-above-basic-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
+    "after-coll-ratio-above-auto-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
     "after-coll-ratio-above-constant-multiple-buy-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Buy Trigger ratio first",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault",
@@ -1001,8 +1001,8 @@
   },
   "vault-banners": {
     "setup-stop-loss": {
-      "header": "Get vault protection",
-      "content": "Set up a Stop-Loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
+      "header": "Protect against unnecessary losses",
+      "content": "Reduce the risk of ruin with automated Stop-Loss. Cap your downside with the option to close to either Dai or {{token}} at your desired Price or Collateral level. Find out more about how it works",
       "button": "Setup Stop-Loss"
     },
     "get-protection": {
@@ -1029,7 +1029,7 @@
   "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
   "open-vault-two-tx-second-step-title": "Step 2/2: Stop-Loss setup transaction",
   "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
-  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is confirmed",
+  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is completed",
   "not-started": "not started",
   "in-progress": "in progress",
   "vault-creation-confirmed": "Vault creation confirmed",
@@ -1498,8 +1498,9 @@
     "sl-too-high": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Sell.",
     "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell.",
     "banner": {
-      "header": "Set up Auto-Sell",
-      "content": "Set up an Auto-Sell to keep your vault’s collateralization ratio above a certain level. This may be beneficial, for example, in a bear market where the value of your collateral is decreasing. Find out more about how this works",
+      "header": "Stop scrambling to manage a position",
+      "content": "Get peace of mind and setup Auto-Sell to automatically protect your Vault. Sell collateral to repay your debt when you most need it. Find out more about how this works",
+      "cm-warning": "Auto-Sell cannot be used if you have Constant Multiple enabled.",
       "button": "Setup Auto-Sell"
     }
   },
@@ -1543,8 +1544,9 @@
     "remove-content": "Your Auto-Buy cancellation is in progress. Once the transaction is complete. Your Auto-Buy trigger will be removed.",
     "remove-complete-content": "Your Auto-Buy has been successfully cancelled.",
     "banner": {
-      "header": "Set up Auto-Buy",
-      "content": "Set up an Auto-Buy to keep your vault’s collateralization ratio below a certain level. This may be beneficial, for example, in a bull market where the value of your collateral is increasing. Find out more about how this works",
+      "header": "Stop missing buying opportunities",
+      "content": "Setup Auto-Buy to automatically buy additional collateral with your Vaults debt when the price of your collateral is increasing so you never miss a buying opportunity again. Find out more about how this works",
+      "cm-warning": "Auto-Buy cannot be used if you have Constant Multiple enabled.",
       "button": "Setup Auto-Buy"
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
@@ -1604,12 +1606,9 @@
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
-      "header": "Set up Constant Multiple",
-      "header-no-multiply": "Want to Set Up Constant Multiple?",
-      "content": "Constant Multiple maintains your vault at a multiple that you select - find out more",
-      "content-no-multiply": "Constant Multiple maintains your vault at a multiple that you select. It is only available on Multiply Vaults, but you can change your vault type from your Vault Overview tab. Find out more",
-      "button": "Setup Constant Multiple",
-      "button-no-multiply": "Go to vault overview"
+      "header": "Set and forget with Constant Multiple",
+      "content": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. Find out more about how this works",
+      "button": "Setup Constant Multiple"
     },
     "vault-changes": {
       "general-summary": "General summary",
@@ -1741,7 +1740,15 @@
         "confirm-btn": "Confirm",
         "retry-btn": "Retry",
         "success-title": "All done! You've opened a position",
-        "go-to-position": "Go to position"
+        "go-to-position": "Go to position",
+        "configure-multiple": {
+          "title": "Set your risk level",
+          "liquidation-price": "stETH/ETH Liquidation Price",
+          "steth-eth-historial-ratio": "stETH / ETH Historical Ratio",
+          "back-to-enter-eth": "Back to enter ETH",
+          "increase-risk": "Increase risk",
+          "decrease-risk": "Decrease risk"
+        }
       }
     }
   },

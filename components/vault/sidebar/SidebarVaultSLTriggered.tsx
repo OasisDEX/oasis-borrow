@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import { StopLossSummaryInformation } from 'features/automation/protection/controls/StopLossTriggeredFormLayout'
+import { StopLossSummaryInformation } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredFormLayout'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {

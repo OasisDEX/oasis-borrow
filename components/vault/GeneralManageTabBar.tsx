@@ -1,11 +1,8 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { TabBar } from 'components/TabBar'
-import {
-  TAB_CHANGE_SUBJECT,
-  TabChange,
-} from 'features/automation/protection/common/UITypes/TabChange'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
+import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
@@ -48,7 +45,7 @@ export function GeneralManageTabBar({
   const [mode, setMode] = useState<VaultViewMode>(initialMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-  const basicBSEnabled = useFeatureToggle('BasicBS')
+  const autoBSEnabled = useFeatureToggle('BasicBS')
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -82,7 +79,7 @@ export function GeneralManageTabBar({
               },
             ]
           : []),
-        ...(basicBSEnabled && showAutomationTabs
+        ...(autoBSEnabled && showAutomationTabs
           ? [
               {
                 label: t('system.optimization'),

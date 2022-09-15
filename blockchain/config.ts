@@ -4,6 +4,7 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
+import * as aavePriceOracle from './abi/aave-price-oracle.json'
 import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBot from './abi/automation-bot.json'
@@ -213,6 +214,11 @@ const protoMain = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
   ),
+  aavePriceOracle: contractDesc(
+    aavePriceOracle,
+    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
+    '0xA50ba011c48153De246E5192C8f9258A2ba79Ca9',
+  ),
   // TODO: Replace with mainnet address (current val has been used for testing only)
   operationExecutor: contractDesc(
     operationExecutor,
@@ -304,6 +310,11 @@ const kovan: NetworkConfig = {
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+  ),
+  aavePriceOracle: contractDesc(
+    aavePriceOracle,
+    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
+    '0xB8bE51E6563BB312Cbb2aa26e352516c25c26ac1',
   ),
   operationExecutor: contractDesc(
     operationExecutor,
@@ -397,6 +408,11 @@ const goerli: NetworkConfig = {
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+  ),
+  aavePriceOracle: contractDesc(
+    aavePriceOracle,
+    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
+    '0xc1c6f3b788FE7F4bB896a2Fad65F5a8c0Ad509C9',
   ),
   operationExecutor: contractDesc(
     operationExecutor,

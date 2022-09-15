@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/AutomationContextProvider'
-import { StopLossBannerControl } from 'features/automation/protection/controls/StopLossBannerControl'
+import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'

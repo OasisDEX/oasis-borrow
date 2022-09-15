@@ -1,29 +1,29 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
-  BasicBSTriggerData,
-  defaultBasicBSData,
-  extractBasicBSData,
-} from 'features/automation/common/basicBSTriggerData'
+  AutoBSTriggerData,
+  defaultAutoBSData,
+  extractAutoBSData,
+} from 'features/automation/common/state/autoBSTriggerData'
 import {
   ConstantMultipleTriggerData,
   defaultConstantMultipleData,
   extractConstantMultipleData,
-} from 'features/automation/optimization/common/constantMultipleTriggerData'
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import {
   defaultStopLossData,
   extractStopLossData,
   StopLossTriggerData,
-} from 'features/automation/protection/common/stopLossTriggerData'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import React, { useContext, useEffect, useState } from 'react'
 
 interface AutomationContext {
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   automationTriggersData: TriggersData
@@ -46,8 +46,8 @@ export function useAutomationContext(): AutomationContext {
 */
 
 const automationContextInitialState = {
-  autoBuyTriggerData: defaultBasicBSData,
-  autoSellTriggerData: defaultBasicBSData,
+  autoBuyTriggerData: defaultAutoBSData,
+  autoSellTriggerData: defaultAutoBSData,
   stopLossTriggerData: defaultStopLossData,
   constantMultipleTriggerData: defaultConstantMultipleData,
   automationTriggersData: { isAutomationEnabled: false, triggers: [] },
@@ -67,11 +67,11 @@ export function AutomationContextProvider({ children, id }: { id: BigNumber } & 
   useEffect(() => {
     if (automationTriggersData) {
       setContext({
-        autoBuyTriggerData: extractBasicBSData({
+        autoBuyTriggerData: extractAutoBSData({
           triggersData: automationTriggersData,
           triggerType: TriggerType.BasicBuy,
         }),
-        autoSellTriggerData: extractBasicBSData({
+        autoSellTriggerData: extractAutoBSData({
           triggersData: automationTriggersData,
           triggerType: TriggerType.BasicSell,
         }),

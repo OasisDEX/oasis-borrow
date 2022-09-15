@@ -17,14 +17,14 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
+import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
+import { StopLossTriggeredBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { BonusContainer } from '../../../bonus/BonusContainer'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
