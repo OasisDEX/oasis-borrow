@@ -1,5 +1,6 @@
 import { Grid } from '@theme-ui/components'
 import { Vault } from 'blockchain/vaults'
+import React from 'react'
 
 import { AutoTakeProfitDetailsLayout } from './AutoTakeProfitDetailsLayout'
 

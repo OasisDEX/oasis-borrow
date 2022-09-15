@@ -9,6 +9,7 @@ import {
 } from 'features/automation/common/state/automationFeatureChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 export interface AutoTakeProfitDetailsLayoutProps {
