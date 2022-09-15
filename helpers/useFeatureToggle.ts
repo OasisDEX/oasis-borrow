@@ -35,7 +35,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ConstantMultiple: true,
   ConstantMultipleReadOnly: false,
   DisableSidebarScroll: false,
-  ProxyCreationDisabled: false,
+  ProxyCreationDisabled: true,
   // your feature here....
 }
 
