@@ -176,8 +176,6 @@ export function SidebarAdjustStopLossEditingStage({
     .times(100)
     .decimalPlaces(0, BigNumber.ROUND_DOWN)
 
-  console.log(sliderConfig)
-
   return (
     <>
       {!vault.debt.isZero() ? (
