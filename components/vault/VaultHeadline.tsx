@@ -35,6 +35,7 @@ export function VaultHeadline({ header, token, details }: VaultHeadlineProps) {
         {tokenData instanceof Array &&
           tokenData.map(({ iconCircle }, iconIndex) => (
             <Icon
+              key={`VaultHeadlineIcon_${iconCircle}`}
               name={iconCircle}
               size="32px"
               sx={{

@@ -3,7 +3,7 @@ import { Box, Text } from 'theme-ui'
 
 export interface HeadlineDetailsProp {
   label: string
-  value: string
+  value: string | number
   sub?: string
   subColor?: string
 }
