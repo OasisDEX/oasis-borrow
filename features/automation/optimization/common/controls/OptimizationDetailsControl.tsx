@@ -8,8 +8,7 @@ import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
-import { AutoTakeProfitDetailsControl } from './AutoTakeProfitDetailsControl'
-import { ConstantMultipleDetailsControl } from './ConstantMultipleDetailsControl'
+import { AutoTakeProfitDetailsControl } from '../../autoTakeProfit/controls/AutoTakeProfitDetailsControl'
 
 interface OptimizationDetailsControlProps {
   vault: Vault

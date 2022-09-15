@@ -6,7 +6,7 @@ import { AppLink } from 'components/Links'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
-} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+} from 'features/automation/common/state/automationFeatureChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import { Grid } from 'theme-ui'
