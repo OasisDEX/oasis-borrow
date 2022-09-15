@@ -759,6 +759,7 @@
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
+    "auto-take-profit": "Auto-Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -1555,6 +1556,17 @@
     "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
+  "auto-take-profit": {
+    "title": "Auto-Take Profit",
+    "cancel-summary-title": "Cancel Auto-Take Profit order summary",
+    "form-title": "Auto-Take Profit Setup",
+    "banner": {
+      "header": "Set up Auto-Take Profit",
+      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price",
+      "button": "Setup Auto-Take Profit"
+    }
+  },
+
   "automation": {
     "setup": "{{feature}} Setup",
     "trigger-added": "{{feature}} Enabled",

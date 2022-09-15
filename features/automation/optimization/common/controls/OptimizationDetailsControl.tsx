@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AutoBuyDetailsControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyDetailsControl'
+import { AutoTakeProfitDetailsControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitDetailsControl'
 import { ConstantMultipleDetailsControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsControl'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
@@ -23,6 +24,7 @@ export function OptimizationDetailsControl({
 }: OptimizationDetailsControlProps) {
   const { autoBuyTriggerData, constantMultipleTriggerData } = useAutomationContext()
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
 
   return (
     <>
@@ -40,6 +42,7 @@ export function OptimizationDetailsControl({
           constantMultipleTriggerData={constantMultipleTriggerData}
         />
       )}
+      {autoTakeProfitEnabled && <AutoTakeProfitDetailsControl vault={vault} />}
     </>
   )
 }
