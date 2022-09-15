@@ -11,7 +11,7 @@ interface GetAutomationFeatureStatusParams {
   feature: AutomationFeatures
   triggersId: BigNumber[]
   txStatus?: TxStatus
-  vaultController?: string,
+  vaultController?: string
 }
 
 interface AutomationFeatureStatus {
