@@ -1,206 +1,141 @@
 import { TriggerType } from '@oasisdex/automation'
-import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
-import { failedStatuses, maxUint256, progressStatuses } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
-import {
-  checkIfDisabledAutoBS,
-  checkIfEditingAutoBS,
-  getAutoBSVaultChange,
-  prepareAutoBSResetData,
-} from 'features/automation/common/helpers'
 import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
-import {
-  AutoBSTriggerData,
-  prepareAddAutoBSTriggerData,
-} from 'features/automation/common/state/autoBSTriggerData'
+import { getAutoBSStatus } from 'features/automation/common/state/autoBSStatus'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHandlers'
+import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/autoBuy/sidebars/SidebarSetupAutoBuy'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React from 'react'
 
 interface AutoBuyFormControlProps {
-  vault: Vault
-  vaultType: VaultType
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  autoSellTriggerData: AutoBSTriggerData
   autoBuyTriggerData: AutoBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  balanceInfo: BalanceInfo
   constantMultipleTriggerData: ConstantMultipleTriggerData
-  isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
-  shouldRemoveAllowance: boolean
-  txHelpers?: TxHelpers
+  ilkData: IlkData
   isAutoBuyActive: boolean
+  isAutoBuyOn: boolean
+  shouldRemoveAllowance: boolean
+  stopLossTriggerData: StopLossTriggerData
+  txHelpers?: TxHelpers
+  vault: Vault
+  vaultType: VaultType
 }
 
 export function AutoBuyFormControl({
-  vault,
-  vaultType,
-  ilkData,
-  balanceInfo,
-  autoSellTriggerData,
   autoBuyTriggerData,
-  stopLossTriggerData,
+  autoSellTriggerData,
+  balanceInfo,
   constantMultipleTriggerData,
-  isAutoBuyOn,
-  txHelpers,
   context,
   ethMarketPrice,
+  ilkData,
   isAutoBuyActive,
+  isAutoBuyOn,
   shouldRemoveAllowance,
+  stopLossTriggerData,
+  txHelpers,
+  vault,
+  vaultType,
 }: AutoBuyFormControlProps) {
-  const { uiChanges } = useAppContext()
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
 
-  const isOwner = context?.status === 'connected' && context?.account === vault.controller
-
-  const addTxData = useMemo(
-    () =>
-      prepareAddAutoBSTriggerData({
-        vaultData: vault,
-        triggerType: TriggerType.BasicBuy,
-        execCollRatio: autoBuyState.execCollRatio,
-        targetCollRatio: autoBuyState.targetCollRatio,
-        maxBuyOrMinSellPrice: autoBuyState.withThreshold
-          ? autoBuyState.maxBuyOrMinSellPrice || maxUint256
-          : maxUint256,
-        continuous: autoBuyState.continuous, // leave as default
-        deviation: autoBuyState.deviation,
-        replacedTriggerId: autoBuyState.triggerId,
-        maxBaseFeeInGwei: autoBuyState.maxBaseFeeInGwei,
-      }),
-    [
-      autoBuyState.execCollRatio.toNumber(),
-      autoBuyState.targetCollRatio.toNumber(),
-      autoBuyState.maxBuyOrMinSellPrice?.toNumber(),
-      autoBuyState.triggerId.toNumber(),
-      autoBuyState.maxBaseFeeInGwei.toNumber(),
-      vault.collateralizationRatio.toNumber(),
-    ],
-  )
-
-  const txStatus = autoBuyState?.txDetails?.txStatus
-  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
-  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
-  const isSuccessStage = txStatus === TxStatus.Success
-
-  const stage = isSuccessStage
-    ? 'txSuccess'
-    : isProgressStage
-    ? 'txInProgress'
-    : isFailureStage
-    ? 'txFailure'
-    : 'editing'
-
-  const isAddForm = autoBuyState.currentForm === 'add'
-  const isRemoveForm = autoBuyState.currentForm === 'remove'
-
-  const isEditing = checkIfEditingAutoBS({
-    autoBSTriggerData: autoBuyTriggerData,
-    autoBSState: autoBuyState,
-    isRemoveForm,
-  })
-
-  const isDisabled = checkIfDisabledAutoBS({
-    isProgressStage,
-    isOwner,
-    isEditing,
+  const feature = AutomationFeatures.AUTO_BUY
+  const publishType = AUTO_BUY_FORM_CHANGE
+  const {
     isAddForm,
-    autoBSState: autoBuyState,
+    isFirstSetup,
+    isOwner,
+    isProgressStage,
+    isRemoveForm,
     stage,
+  } = getAutomationFeatureStatus({
+    context,
+    currentForm: autoBuyState.currentForm,
+    feature: AutomationFeatures.AUTO_BUY,
+    triggersId: [autoBuyTriggerData.triggerId],
+    txStatus: autoBuyState.txDetails?.txStatus,
+    vaultController: vault.controller,
   })
-
-  const isFirstSetup = autoBuyTriggerData.triggerId.isZero()
-
-  const executionPrice = collateralPriceAtRatio({
-    colRatio: autoBuyState.execCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+  const { collateralDelta, debtDelta, isDisabled, isEditing, resetData } = getAutoBSStatus({
+    autoBSState: autoBuyState,
+    autoBSTriggerData: autoBuyTriggerData,
+    isAddForm,
+    isOwner,
+    isProgressStage,
+    isRemoveForm,
+    publishType,
+    stage,
+    vault,
   })
-
-  const { debtDelta, collateralDelta } = getAutoBSVaultChange({
-    targetCollRatio: autoBuyState.targetCollRatio,
-    execCollRatio: autoBuyState.execCollRatio,
-    deviation: autoBuyState.deviation,
-    executionPrice,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
+  const { addTxData, textButtonHandlerExtension } = getAutoBSTxHandlers({
+    autoBSState: autoBuyState,
+    isAddForm,
+    publishType,
+    triggerType: TriggerType.BasicBuy,
+    vault,
   })
-
-  function textButtonHandlerExtension() {
-    if (isAddForm) {
-      uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-        type: 'execution-coll-ratio',
-        execCollRatio: zero,
-      })
-      uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-        type: 'target-coll-ratio',
-        targetCollRatio: zero,
-      })
-    }
-  }
 
   return (
     <AddAndRemoveTriggerControl
-      txHelpers={txHelpers!}
-      ethMarketPrice={ethMarketPrice}
-      isEditing={isEditing}
-      removeAllowance={shouldRemoveAllowance}
-      proxyAddress={vault.owner}
-      stage={stage}
       addTxData={addTxData}
-      resetData={prepareAutoBSResetData(
-        autoBuyTriggerData,
-        vault.collateralizationRatio,
-        AUTO_BUY_FORM_CHANGE,
-      )}
-      publishType={AUTO_BUY_FORM_CHANGE}
-      currentForm={autoBuyState.currentForm}
-      triggersId={[autoBuyTriggerData.triggerId.toNumber()]}
+      ethMarketPrice={ethMarketPrice}
       isActiveFlag={isAutoBuyActive}
+      isAddForm={isAddForm}
+      isEditing={isEditing}
+      isRemoveForm={isRemoveForm}
+      proxyAddress={vault.owner}
+      publishType={publishType}
+      resetData={resetData}
+      shouldRemoveAllowance={shouldRemoveAllowance}
+      stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
+      triggersId={[autoBuyTriggerData.triggerId.toNumber()]}
+      txHelpers={txHelpers!}
     >
-      {(txHandler, textButtonHandler) => (
+      {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoBuy
+          autoBuyState={autoBuyState}
+          autoBuyTriggerData={autoBuyTriggerData}
+          autoSellTriggerData={autoSellTriggerData}
+          balanceInfo={balanceInfo}
+          collateralDelta={collateralDelta}
+          constantMultipleTriggerData={constantMultipleTriggerData}
+          context={context}
+          debtDelta={debtDelta}
+          ethMarketPrice={ethMarketPrice}
+          feature={feature}
+          ilkData={ilkData}
+          isAddForm={isAddForm}
+          isAutoBuyActive={isAutoBuyActive}
+          isAutoBuyOn={isAutoBuyOn}
+          isDisabled={isDisabled}
+          isEditing={isEditing}
+          isFirstSetup={isFirstSetup}
+          isRemoveForm={isRemoveForm}
+          stage={stage}
+          stopLossTriggerData={stopLossTriggerData}
+          textButtonHandler={textButtonHandler}
+          txHandler={txHandler}
           vault={vault}
           vaultType={vaultType}
-          ilkData={ilkData}
-          balanceInfo={balanceInfo}
-          autoSellTriggerData={autoSellTriggerData}
-          autoBuyTriggerData={autoBuyTriggerData}
-          stopLossTriggerData={stopLossTriggerData}
-          constantMultipleTriggerData={constantMultipleTriggerData}
-          isAutoBuyOn={isAutoBuyOn}
-          context={context}
-          ethMarketPrice={ethMarketPrice}
-          autoBuyState={autoBuyState}
-          txHandler={txHandler}
-          textButtonHandler={textButtonHandler}
-          stage={stage}
-          isAddForm={isAddForm}
-          isRemoveForm={isRemoveForm}
-          isEditing={isEditing}
-          isDisabled={isDisabled}
-          isFirstSetup={isFirstSetup}
-          debtDelta={debtDelta}
-          collateralDelta={collateralDelta}
-          isAutoBuyActive={isAutoBuyActive}
         />
       )}
     </AddAndRemoveTriggerControl>

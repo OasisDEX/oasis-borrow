@@ -118,7 +118,7 @@ export function prepareAutoBSResetData(
   }
 }
 
-export function checkIfEditingAutoBS({
+export function checkIfIsEditingAutoBS({
   autoBSTriggerData,
   autoBSState,
   isRemoveForm,
@@ -141,7 +141,7 @@ export function checkIfEditingAutoBS({
   )
 }
 
-export function checkIfDisabledAutoBS({
+export function checkIfIsDisabledAutoBS({
   isProgressStage,
   isOwner,
   isEditing,

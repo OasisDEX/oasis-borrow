@@ -5,17 +5,14 @@ import { Vault } from 'blockchain/vaults'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
 import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import {
-  AutomationFeatures,
-  SidebarAutomationFlow,
-  SidebarAutomationStages,
-} from 'features/automation/common/types'
+import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
@@ -44,6 +41,7 @@ interface SidebarSetupConstantMultipleProps {
   estimatedGasCostOnTrigger?: BigNumber
   estimatedSellFee: BigNumber
   ethMarketPrice: BigNumber
+  feature: AutomationFeatures
   ilkData: IlkData
   isAddForm: boolean
   isConstantMultipleActive: boolean
@@ -75,6 +73,7 @@ export function SidebarSetupConstantMultiple({
   estimatedGasCostOnTrigger,
   estimatedSellFee,
   ethMarketPrice,
+  feature,
   ilkData,
   isAddForm,
   isConstantMultipleActive,
@@ -94,26 +93,18 @@ export function SidebarSetupConstantMultiple({
 }: SidebarSetupConstantMultipleProps) {
   const gasEstimation = useGasEstimationContext()
 
-  const flow: SidebarAutomationFlow = isRemoveForm
-    ? 'cancelConstantMultiple'
-    : isFirstSetup
-    ? 'addConstantMultiple'
-    : 'editConstantMultiple'
-
-  const feature = AutomationFeatures.CONSTANT_MULTIPLE
-
-  const sidebarStatus = getAutomationStatusTitle({
-    stage,
-    txHash: constantMultipleState.txDetails?.txHash,
-    flow,
-    etherscan: context.etherscan.url,
-    feature,
-  })
-
+  const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
     flow,
     stage,
     feature,
+  })
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Optimization',
+    forcePanel: 'constantMultiple',
+    disabled: isDropdownDisabled({ stage }),
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -121,6 +112,13 @@ export function SidebarSetupConstantMultiple({
     feature,
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const sidebarStatus = getAutomationStatusTitle({
+    stage,
+    txHash: constantMultipleState.txDetails?.txHash,
+    flow,
+    etherscan: context.etherscan.url,
+    feature,
+  })
 
   const errors = errorsConstantMultipleValidation({
     constantMultipleState,
@@ -143,18 +141,9 @@ export function SidebarSetupConstantMultiple({
     constantMultipleState,
     debtDeltaWhenSellAtCurrentCollRatio,
   })
-
   const cancelConstantMultipleErrors = extractCancelBSErrors(errors)
   const cancelConstantMultipleWarnings = extractCancelBSWarnings(warnings)
   const validationErrors = isAddForm ? errors : cancelConstantMultipleErrors
-
-  const dropdown = getAutoFeaturesSidebarDropdown({
-    type: 'Optimization',
-    forcePanel: 'constantMultiple',
-    disabled: isDropdownDisabled({ stage }),
-    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
-    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
-  })
 
   if (isConstantMultipleActive) {
     const sidebarSectionProps: SidebarSectionProps = {

@@ -14,7 +14,7 @@ import {
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Text } from 'theme-ui'
 
 export interface AutoBuyDetailsLayoutProps {
   token: string
@@ -41,11 +41,12 @@ export function AutoBuyDetailsLayout({
 }: AutoBuyDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoBuyOn = autoBuyTriggerData.isTriggerEnabled
 
   return (
-    <Grid>
+    <>
       {isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy' ? (
         <DetailsSection
           title={t('auto-buy.title')}
@@ -104,6 +105,6 @@ export function AutoBuyDetailsLayout({
           }}
         />
       )}
-    </Grid>
+    </>
   )
 }

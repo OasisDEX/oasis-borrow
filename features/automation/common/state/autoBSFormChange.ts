@@ -1,11 +1,10 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
 import { TxError } from 'helpers/types'
 
 export const AUTO_SELL_FORM_CHANGE = 'AUTO_SELL_FORM_CHANGE'
 export const AUTO_BUY_FORM_CHANGE = 'AUTO_BUY_FORM_CHANGE'
-
-export type CurrentBSForm = 'add' | 'remove'
 
 export type AutoBSTriggerResetData = Pick<
   AutoBSFormChange,
@@ -19,7 +18,7 @@ export type AutomationChangeAction =
   | { type: 'continuous'; continuous: boolean }
   | { type: 'deviation'; deviation: BigNumber }
   | { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
-  | { type: 'current-form'; currentForm: CurrentBSForm }
+  | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'reset'; resetData: AutoBSTriggerResetData }
   | { type: 'is-editing'; isEditing: boolean }
   | {
@@ -91,7 +90,7 @@ export type AutomationFormChange = {
   isEditing: boolean
   deviation: BigNumber
   maxBaseFeeInGwei: BigNumber
-  currentForm: CurrentBSForm
+  currentForm: AutomationFormType
   resetData: AutoBSTriggerResetData
   txDetails?: {
     txStatus?: TxStatus

@@ -6,6 +6,7 @@ import { useGasEstimationContext } from 'components/GasEstimationContextProvider
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
 import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
@@ -13,11 +14,7 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import {
-  AutomationFeatures,
-  SidebarAutomationFlow,
-  SidebarAutomationStages,
-} from 'features/automation/common/types'
+import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAuteSellCancelEditingStage'
@@ -56,6 +53,7 @@ interface SidebarSetupAutoSellProps {
   debtDelta: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
   collateralDelta: BigNumber
+  feature: AutomationFeatures
 }
 
 export function SidebarSetupAutoSell({
@@ -64,6 +62,7 @@ export function SidebarSetupAutoSell({
   balanceInfo,
   context,
   ethMarketPrice,
+  feature,
 
   autoSellTriggerData,
   autoBuyTriggerData,
@@ -88,39 +87,28 @@ export function SidebarSetupAutoSell({
 }: SidebarSetupAutoSellProps) {
   const gasEstimation = useGasEstimationContext()
 
-  const flow: SidebarAutomationFlow = isRemoveForm
-    ? 'cancelAutoSell'
-    : isFirstSetup
-    ? 'addAutoSell'
-    : 'editAutoSell'
-
-  const feature = AutomationFeatures.AUTO_SELL
-
+  const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
+  const sidebarTitle = getAutomationFormTitle({
+    flow,
+    stage,
+    feature,
+  })
+  const dropdown = getAutoFeaturesSidebarDropdown({
+    type: 'Protection',
+    forcePanel: 'autoSell',
+    disabled: isDropdownDisabled({ stage }),
+    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+  })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoSellState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
     feature,
-  })
-
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
-  const sidebarTitle = getAutomationFormTitle({
-    flow,
-    stage,
-    feature,
-  })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
-
-  const errors = errorsAutoSellValidation({
-    ilkData,
-    vault,
-    debtDelta,
-    debtDeltaAtCurrentCollRatio,
-    autoSellState,
-    autoBuyTriggerData,
-    constantMultipleTriggerData,
-    isRemoveForm,
   })
 
   const { min, max } = getAutoSellMinMaxValues({
@@ -143,20 +131,19 @@ export function SidebarSetupAutoSell({
     debtDeltaAtCurrentCollRatio,
     debtFloor: ilkData.debtFloor,
   })
-
+  const errors = errorsAutoSellValidation({
+    ilkData,
+    vault,
+    debtDelta,
+    debtDeltaAtCurrentCollRatio,
+    autoSellState,
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+    isRemoveForm,
+  })
   const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
   const cancelAutoSellErrors = extractCancelBSErrors(errors)
-
   const validationErrors = isAddForm ? errors : cancelAutoSellErrors
-
-  const dropdown = getAutoFeaturesSidebarDropdown({
-    type: 'Protection',
-    forcePanel: 'autoSell',
-    disabled: isDropdownDisabled({ stage }),
-    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
-    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
-    isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
-  })
 
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {

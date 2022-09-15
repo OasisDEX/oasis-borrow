@@ -37,7 +37,7 @@ export function getConstantMutliplyMinMaxValues({
   }
 }
 
-export function checkIfEditingConstantMultiple({
+export function checkIfIsEditingConstantMultiple({
   triggerData,
   state,
   isRemoveForm = false,
@@ -143,7 +143,7 @@ export function getEligibleMultipliers({
     .filter((item) => item >= minMultiplier && item <= maxMultiplier)
 }
 
-export function checkIfDisabledConstantMultiple({
+export function checkIfIsDisabledConstantMultiple({
   isProgressStage,
   isOwner,
   isEditing,
