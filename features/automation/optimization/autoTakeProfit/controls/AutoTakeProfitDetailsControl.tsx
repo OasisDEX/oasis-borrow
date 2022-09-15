@@ -1,4 +1,3 @@
-import { Grid } from '@theme-ui/components'
 import { Vault } from 'blockchain/vaults'
 import React from 'react'
 
@@ -9,9 +8,8 @@ interface AutoTakeProfitDetailsControlProps {
 }
 
 export function AutoTakeProfitDetailsControl({ vault }: AutoTakeProfitDetailsControlProps) {
-  return (
-    <Grid>
-      <AutoTakeProfitDetailsLayout token={vault.token} />
-    </Grid>
-  )
+  //TODO: TDAutoTakeProfit | to be replaced with data from autoTakeProfitTriggerData when its available
+  const isTriggerEnabled = false
+
+  return <AutoTakeProfitDetailsLayout isTriggerEnabled={isTriggerEnabled} token={vault.token} />
 }
