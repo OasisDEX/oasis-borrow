@@ -759,6 +759,7 @@
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
+    "auto-take-profit": "Auto-Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",

@@ -17,6 +17,7 @@ interface GetAutoFeaturesSidebarDropdownProps {
   isAutoSellEnabled?: boolean
   isAutoBuyEnabled?: boolean
   isAutoConstantMultipleEnabled?: boolean
+  isAutoTakeProfitEnabled?: boolean
 }
 interface GetAutoFeaturesSidebarDropdownItemProps {
   translationKey: string
@@ -62,6 +63,7 @@ export function getAutoFeaturesSidebarDropdown({
   isAutoSellEnabled,
   isAutoBuyEnabled,
   isAutoConstantMultipleEnabled,
+  isAutoTakeProfitEnabled,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown {
   return {
     forcePanel,
@@ -96,6 +98,12 @@ export function getAutoFeaturesSidebarDropdown({
               type: 'Optimization',
               panel: 'constantMultiple',
               isFeatureEnabled: isAutoConstantMultipleEnabled,
+            }),
+            getAutoFeaturesSidebarDropdownItem({
+              translationKey: 'system.auto-take-profit',
+              type: 'Optimization',
+              panel: 'autoTakeProfit',
+              isFeatureEnabled: isAutoTakeProfitEnabled,
             }),
           ]
         : []),

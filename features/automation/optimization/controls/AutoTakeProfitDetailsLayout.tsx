@@ -1,9 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
-import {
-  DetailsSectionContentCardWrapper,
-} from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -38,30 +36,30 @@ export function AutoTakeProfitDetailsLayout({ token }: AutoTakeProfitDetailsLayo
         />
       ) : (
         <Banner
-        title={t('auto-take-profit.banner.header')}
-        description={
-          <>
-            {t('auto-take-profit.banner.content')}{' '}
-            <AppLink href="https://kb.oasis.app/help/auto-buy-and-auto-sell" sx={{ fontSize: 2 }}>
-              {t('here')}.
-            </AppLink>
-          </>
-        }
-        image={{
-          src: '/static/img/setup-banner/auto-buy.svg',
-          backgroundColor: bannerGradientPresets.autoTakeProfit[0],
-          backgroundColorEnd: bannerGradientPresets.autoTakeProfit[1],
-        }}
-        button={{
-          action: () => {
-            uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-              type: 'Optimization',
-              currentOptimizationFeature: 'autoTakeProfit',
-            })
-          },
-          text: t('auto-take-profit.banner.button'),
-        }}
-      />
+          title={t('auto-take-profit.banner.header')}
+          description={
+            <>
+              {t('auto-take-profit.banner.content')}{' '}
+              <AppLink href="https://kb.oasis.app/help/auto-buy-and-auto-sell" sx={{ fontSize: 2 }}>
+                {t('here')}.
+              </AppLink>
+            </>
+          }
+          image={{
+            src: '/static/img/setup-banner/auto-buy.svg',
+            backgroundColor: bannerGradientPresets.autoTakeProfit[0],
+            backgroundColorEnd: bannerGradientPresets.autoTakeProfit[1],
+          }}
+          button={{
+            action: () => {
+              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                type: 'Optimization',
+                currentOptimizationFeature: 'autoTakeProfit',
+              })
+            },
+            text: t('auto-take-profit.banner.button'),
+          }}
+        />
       )}
     </Grid>
   )
