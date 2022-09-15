@@ -4,6 +4,8 @@ import moment from 'moment/moment'
 import { Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
 
+import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
+
 const aaveStEthYield = gql`
   mutation stEthYields(
     $currentDate: Date!
@@ -55,15 +57,16 @@ export interface AaveStEthYieldsResponse {
 export async function getAaveStEthYield(
   client: Observable<GraphQLClient>,
   currentDate: moment.Moment,
-  multiply: BigNumber,
+  riskRatio: IRiskRatio,
 ): Promise<AaveStEthYieldsResponse> {
   const getClient = await client.pipe(first()).toPromise()
+  console.log(`call api with riskRatio ${riskRatio.multiple}`)
   const response = await getClient.request(aaveStEthYield, {
     currentDate: currentDate.utc().format('YYYY-MM-DD'),
     date30daysAgo: currentDate.utc().clone().subtract(30, 'days').format('YYYY-MM-DD'),
     date90daysAgo: currentDate.utc().clone().subtract(90, 'days').format('YYYY-MM-DD'),
     date1yearAgo: currentDate.utc().clone().subtract(1, 'year').format('YYYY-MM-DD'),
-    multiply: multiply.toString(),
+    multiply: riskRatio.multiple.toString(),
   })
   return {
     annualisedYield30days: new BigNumber(response.yield30days.yield.netAnnualisedYield),

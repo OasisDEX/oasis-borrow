@@ -10,7 +10,7 @@ interface AaveStEthSimulateStateMachineContext {
   yields?: AaveStEthYieldsResponse
   token?: string
   amount?: BigNumber
-  multiply?: BigNumber
+  riskRatio?: IRiskRatio
   transactionFee?: BigNumber
   fee?: BigNumber
   simulation?: CalculateSimulationResult
@@ -61,6 +61,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
         on: {
           USER_PARAMETERS_CHANGED: {
             actions: ['assignUserParameters'],
+            target: 'loading',
           },
           FEE_CHANGED: {
             actions: ['assignFees'],
@@ -80,7 +81,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
     },
     on: {
       USER_PARAMETERS_CHANGED: {
-        target: 'calculating',
+        target: 'loading',
         actions: ['assignUserParameters'],
       },
       FEE_CHANGED: {
