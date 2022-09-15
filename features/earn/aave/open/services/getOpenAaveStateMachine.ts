@@ -73,7 +73,7 @@ export function getOpenAavePositionStateMachineServices(
 export function contextToTransactionParameters(context: OpenAaveContext): OpenAavePositionData {
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.transactionParameters!.calls as any,
+    calls: context.transactionParameters!.strategy.calls as any,
     operationName: context.transactionParameters!.operationName,
     token: context.token,
     proxyAddress: context.proxyAddress!,
@@ -100,11 +100,13 @@ export function getOpenAaveStateMachine$(
               parametersMachine.withConfig({
                 actions: {
                   notifyParent: sendParent(
-                    (context): OpenAaveEvent => ({
-                      type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                      parameters: context.transactionParameters!,
-                      estimatedGasPrice: context.gasPriceEstimation!,
-                    }),
+                    (context): OpenAaveEvent => {
+                      return {
+                        type: 'TRANSACTION_PARAMETERS_RECEIVED',
+                        parameters: context.transactionParameters!,
+                        estimatedGasPrice: context.gasPriceEstimation!,
+                      }
+                    },
                   ),
                 },
               }),

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
@@ -10,7 +11,7 @@ import { ManageAavePositionData } from '../pipelines/manageAavePosition'
 
 export interface ManageAaveContext {
   token: string
-  multiply: BigNumber
+  riskRatio: IRiskRatio
   inputDelay: number
   amount: BigNumber
   auxiliaryAmount?: BigNumber
@@ -154,7 +155,7 @@ export const createManageAaveStateMachine = createMachine(
         (context): ParametersStateMachineEvents => ({
           type: 'VARIABLES_RECEIVED',
           amount: context.amount!,
-          multiply: context.multiply,
+          riskRatio: context.riskRatio,
           token: context.token,
           proxyAddress: context.proxyAddress,
         }),

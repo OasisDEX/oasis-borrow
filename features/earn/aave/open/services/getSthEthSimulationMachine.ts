@@ -11,6 +11,7 @@ export function getSthEthSimulationMachine(
     .withConfig({
       services: {
         calculate: async (context) => {
+          console.log(`getSthEthSimulationMachine ${context.multiply}`)
           return calculateSimulation({
             amount: context.amount!,
             token: context.token!,

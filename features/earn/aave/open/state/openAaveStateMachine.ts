@@ -3,6 +3,7 @@ import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { IRiskRatio, RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import { OperationParameters } from '../../../../aave'
@@ -16,7 +17,7 @@ import {
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
 export interface OpenAaveContext {
-  multiply: BigNumber
+  riskRatio: IRiskRatio
   token: string
   inputDelay: number
 
@@ -34,16 +35,8 @@ export interface OpenAaveContext {
   proxyAddress?: string
   strategyName?: string
 
-  strategyInfo?: StrategyInfo
-
   transactionParameters?: OperationParameters
   estimatedGasPrice?: HasGasEstimation
-}
-
-type StrategyInfo = {
-  maxMultiple: BigNumber
-  liquidationThreshold: BigNumber
-  assetPrice: BigNumber
 }
 
 export type OpenAaveMachineEvents =
@@ -51,7 +44,7 @@ export type OpenAaveMachineEvents =
   | { type: 'SET_BALANCE'; balance: BigNumber; tokenPrice: BigNumber }
   | { type: 'POSITION_OPENED' }
   | { type: 'NEXT_STEP' }
-  | { type: 'SET_MULTIPLE'; multiple: BigNumber }
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | {
       type: 'UPDATE_STRATEGY_INFO'
       maxMultiple: BigNumber
@@ -156,8 +149,17 @@ export const createOpenAaveStateMachine = createMachine(
           UPDATE_STRATEGY_INFO: {
             actions: ['updateStrategyInfo'],
           },
-          SET_MULTIPLE: {
-            actions: ['setMultiple'],
+          SET_RISK_RATIO: {
+            actions: [
+              'setRiskRatio',
+              'debounceSendingToParametersMachine',
+              'debounceSendingToSimulationMachine',
+              'sendUpdateToParametersMachine',
+              'sendUpdateToSimulationMachine',
+            ],
+          },
+          TRANSACTION_PARAMETERS_RECEIVED: {
+            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
           },
           NEXT_STEP: {
             target: 'reviewing',
@@ -214,7 +216,7 @@ export const createOpenAaveStateMachine = createMachine(
       initContextValues: assign((context) => ({
         currentStep: 1,
         totalSteps: context.proxyAddress ? 2 : 3,
-        multiply: new BigNumber(2),
+        riskRatio: new RiskRatio(new BigNumber(0), RiskRatio.TYPE.LTV),
         token: 'ETH',
         inputDelay: 1000,
       })),
@@ -226,27 +228,24 @@ export const createOpenAaveStateMachine = createMachine(
         proxyAddress: event.proxyAddress,
       })),
       sendUpdateToParametersMachine: send(
-        (context): ParametersStateMachineEvents => ({
-          type: 'VARIABLES_RECEIVED',
-          amount: context.amount!,
-          multiply: context.multiply,
-          token: context.token,
-          proxyAddress: context.proxyAddress,
-        }),
+        (context): ParametersStateMachineEvents => {
+          return {
+            type: 'VARIABLES_RECEIVED',
+            amount: context.amount!,
+            riskRatio: context.riskRatio,
+            token: context.token,
+            proxyAddress: context.proxyAddress,
+          }
+        },
         {
           to: (context) => context.refParametersStateMachine!,
           delay: (context) => context.inputDelay,
           id: 'update-parameters-machine',
         },
       ),
-      setMultiple: assign((_, event) => {
+      setRiskRatio: assign((_, event) => {
         return {
-          multiply: event.multiple,
-        }
-      }),
-      updateStrategyInfo: assign((_, event) => {
-        return {
-          strategyInfo: event,
+          riskRatio: event.riskRatio,
         }
       }),
       updateTotalSteps: assign((context) => ({
@@ -264,14 +263,16 @@ export const createOpenAaveStateMachine = createMachine(
       setCurrentStepToTwo: assign((_) => ({
         currentStep: 2,
       })),
-      assignTransactionParameters: assign((context, event) => ({
-        transactionParameters: event.parameters,
-        estimatedGasPrice: event.estimatedGasPrice,
-      })),
+      assignTransactionParameters: assign((context, event) => {
+        return {
+          transactionParameters: event.parameters,
+          estimatedGasPrice: event.estimatedGasPrice,
+        }
+      }),
       sendFeesToSimulationMachine: send(
         (context): AaveStEthSimulateStateMachineEvents => ({
           type: 'FEE_CHANGED',
-          fee: context.transactionParameters?.positionInfo.fee || zero,
+          fee: context.transactionParameters?.strategy.simulation.swap.fee || zero,
         }),
         { to: (context) => context.refSimulationMachine! },
       ),
@@ -279,7 +280,7 @@ export const createOpenAaveStateMachine = createMachine(
         (context): AaveStEthSimulateStateMachineEvents => ({
           type: 'USER_PARAMETERS_CHANGED',
           amount: context.amount || zero,
-          multiply: context.multiply,
+          riskRatio: context.riskRatio,
           token: context.token,
         }),
         {

@@ -3,6 +3,7 @@ import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { AaveStEthYieldsResponse, CalculateSimulationResult } from '../services'
 
 interface AaveStEthSimulateStateMachineContext {
@@ -20,7 +21,7 @@ export type AaveStEthSimulateStateMachineEvents =
       type: 'USER_PARAMETERS_CHANGED'
       token: string
       amount: BigNumber
-      multiply: BigNumber
+      riskRatio: IRiskRatio
     }
   | { type: 'FEE_CHANGED'; fee: BigNumber }
 
@@ -94,7 +95,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
       assignUserParameters: assign((context, event) => ({
         token: event.token,
         amount: event.amount,
-        multiply: event.multiply,
+        riskRatio: event.riskRatio,
       })),
       assignFees: assign((context, event) => ({
         fee: event.fee,

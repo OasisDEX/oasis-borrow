@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
+import { RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TxHelpers } from '../../../../../components/AppContext'
@@ -27,7 +28,7 @@ export function getOpenAaveParametersStateMachineServices$(
           return await getOpenAaveParameters(
             contextConnected,
             context.amount || zero,
-            context.multiply || new BigNumber(2),
+            context.riskRatio || new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
             userSettings.slippage,
             context.proxyAddress,
           )
@@ -39,7 +40,7 @@ export function getOpenAaveParametersStateMachineServices$(
           return await txHelpers
             .estimateGas(openAavePosition, {
               kind: TxMetaKind.operationExecutor,
-              calls: context.transactionParameters!.calls as any,
+              calls: context.transactionParameters!.strategy.calls as any,
               operationName: context.transactionParameters!.operationName,
               token: context.token!,
               amount: context.amount!,
@@ -66,7 +67,9 @@ export function getParametersStateMachine$(services$: Observable<ParametersState
           estimateGasPrice: services.estimateGasPrice,
         },
         actions: {
-          notifyParent: () => {},
+          notifyParent: () => {
+            // overridden in parent when machine is consumed
+          },
         },
       })
     }),

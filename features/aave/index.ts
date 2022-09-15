@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { ADDRESSES, strategy } from '@oasisdex/oasis-actions'
+import { ADDRESSES, IRiskRatio, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
+import { IStrategy } from '../../../oasis-earn-sc/packages/oasis-actions/src/strategies'
 import { ContextConnected } from '../../blockchain/network'
 import { oneInchCallMock } from '../../helpers/swap'
 
@@ -12,24 +13,16 @@ export interface ActionCall {
   callData: string
 }
 
-export interface PositionInfo {
-  flashLoanAmount: BigNumber
-  borrowedAmount: BigNumber
-  fee: BigNumber
-  depositedAmount: BigNumber
-}
-
 export interface OperationParameters {
-  calls: ActionCall[]
   operationName: string
-  positionInfo: PositionInfo
   isAllowanceNeeded: boolean
+  strategy: IStrategy
 }
 
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
-  multiply: BigNumber,
+  riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
 ): Promise<OperationParameters> {
@@ -50,11 +43,11 @@ export async function getOpenAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const strategyReturn = await strategy.openStEth(
+  const strategyReturn = await strategies.openStEth(
     {
       depositAmount: amount,
       slippage: slippage,
-      multiply: new BigNumber(multiply),
+      multiple: riskRatio.multiple,
     },
     {
       addresses,
@@ -66,14 +59,8 @@ export async function getOpenAaveParameters(
   )
 
   return {
-    calls: strategyReturn.calls,
+    strategy: strategyReturn,
     operationName: 'CustomOperation',
-    positionInfo: {
-      flashLoanAmount: strategyReturn.flashLoanAmount,
-      borrowedAmount: strategyReturn.borrowEthAmount,
-      fee: strategyReturn.feeAmount,
-      depositedAmount: amount,
-    },
     isAllowanceNeeded: false,
   }
 }

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
+import { RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { ParametersStateMachine } from '../../open/state'
@@ -18,7 +19,7 @@ import {
 function contextToTransactionParameters(context: ManageAaveContext): ManageAavePositionData {
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.transactionParameters!.calls as any,
+    calls: context.transactionParameters!.strategy.calls as any,
     operationName: context.transactionParameters!.operationName,
     token: context.token,
     proxyAddress: context.proxyAddress!,
@@ -94,7 +95,7 @@ export function getManageAaveStateMachine$(
         })
         .withContext({
           token: 'ETH',
-          multiply: new BigNumber(2),
+          riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
           inputDelay: 1000,
           amount: new BigNumber(0),
         })

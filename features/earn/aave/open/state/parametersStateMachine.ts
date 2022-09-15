@@ -3,13 +3,14 @@ import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 
 type ParametersStateMachineContext = {
   token?: string
   amount?: BigNumber
-  multiply?: BigNumber
+  riskRatio?: IRiskRatio
   proxyAddress?: string
   transactionParameters?: OperationParameters
   estimatedGas?: number
@@ -20,7 +21,7 @@ export type ParametersStateMachineEvents = {
   type: 'VARIABLES_RECEIVED'
   readonly token: string
   readonly amount: BigNumber
-  readonly multiply: BigNumber
+  readonly riskRatio: IRiskRatio
   readonly proxyAddress?: string
 }
 
@@ -126,7 +127,7 @@ export const createParametersStateMachine = createMachine(
         return {
           token: event.token,
           amount: event.amount,
-          multiply: event.multiply,
+          riskRatio: event.riskRatio,
           proxyAddress: event.proxyAddress,
         }
       }),

@@ -6,6 +6,7 @@ import { interval } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
+import { RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 import {
@@ -66,7 +67,7 @@ const View = () => {
           <SendButton
             type={'VARIABLES_RECEIVED'}
             amount={new BigNumber(100)}
-            multiply={new BigNumber(2)}
+            riskRatio={new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE)}
             token={'ETH'}
           />{' '}
         </Box>
