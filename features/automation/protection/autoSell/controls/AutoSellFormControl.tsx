@@ -76,6 +76,7 @@ export function AutoSellFormControl({
     isDisabled,
     isEditing,
     resetData,
+    executionPrice,
   } = getAutoBSStatus({
     autoBSState: autoSellState,
     autoBSTriggerData: autoSellTriggerData,
@@ -137,6 +138,7 @@ export function AutoSellFormControl({
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
           vault={vault}
+          executionPrice={executionPrice}
         />
       )}
     </AddAndRemoveTriggerControl>

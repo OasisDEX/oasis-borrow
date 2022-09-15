@@ -887,7 +887,9 @@
     "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
     "stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
     "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first",
-    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing."
+    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing.",
+    "min-sell-price-will-prevent-sell-trigger": "This Min Sell Price will prevent the Sell Trigger from executing",
+    "max-buy-price-will-prevent-buy-trigger": "This Max Buy Price will prevent the Buy Trigger from executing"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",

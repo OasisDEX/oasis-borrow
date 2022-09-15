@@ -53,6 +53,7 @@ interface SidebarSetupAutoBuyProps {
   isFirstSetup: boolean
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  executionPrice: BigNumber
   isAutoBuyActive: boolean
   feature: AutomationFeatures
 }
@@ -84,6 +85,7 @@ export function SidebarSetupAutoBuy({
 
   debtDelta,
   collateralDelta,
+  executionPrice,
   isAutoBuyActive,
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
@@ -136,6 +138,7 @@ export function SidebarSetupAutoBuy({
     autoSellTriggerData,
     constantMultipleTriggerData,
     isRemoveForm,
+    executionPrice,
   })
   const cancelAutoBuyWarnings = extractCancelBSWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelBSErrors(errors)

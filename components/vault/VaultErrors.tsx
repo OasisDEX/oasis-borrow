@@ -154,6 +154,10 @@ export function VaultErrors({
         return translate('stop-loss-trigger-higher-than-auto-buy-target')
       case 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled':
         return translate('cant-setup-auto-buy-or-sell-when-constant-multiple-enabled', { autoType })
+      case 'minSellPriceWillPreventSellTrigger':
+        return translate('min-sell-price-will-prevent-sell-trigger')
+      case 'maxBuyPriceWillPreventBuyTrigger':
+        return translate('max-buy-price-will-prevent-buy-trigger')
       case 'autoBuyMaxBuyPriceNotSpecified':
         return (
           <Trans

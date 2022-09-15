@@ -127,6 +127,8 @@ export function SidebarSetupConstantMultiple({
     debtDeltaAfterSell,
     debtFloor: ilkData.debtFloor,
     debt: vault.debt,
+    nextBuyPrice,
+    nextSellPrice,
   })
   const warnings = warningsConstantMultipleValidation({
     vault,
