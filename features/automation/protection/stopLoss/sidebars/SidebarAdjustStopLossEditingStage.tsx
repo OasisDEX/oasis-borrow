@@ -176,6 +176,8 @@ export function SidebarAdjustStopLossEditingStage({
     .times(100)
     .decimalPlaces(0, BigNumber.ROUND_DOWN)
 
+  console.log(sliderConfig)
+
   return (
     <>
       {!vault.debt.isZero() ? (
@@ -187,11 +189,7 @@ export function SidebarAdjustStopLossEditingStage({
               {t('here')}.
             </AppLink>
           </Text>
-          <SliderValuePicker
-            {...sliderConfig}
-            leftLabel={t('slider.set-stoploss.left-label')}
-            rightLabel={t('slider.set-stoploss.right-label')}
-          />
+          <SliderValuePicker {...sliderConfig} />
         </Grid>
       ) : (
         <SidebarFormInfo
