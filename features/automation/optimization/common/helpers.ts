@@ -1,4 +1,5 @@
 import { AutomationOptimizationFeatures } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getActiveOptimizationFeature({
@@ -19,20 +20,20 @@ export function getActiveOptimizationFeature({
       isAutoBuyActive:
         (isAutoBuyOn &&
           !isConstantMultipleOn &&
-          currentOptimizationFeature !== 'constantMultiple') ||
-        currentOptimizationFeature === 'autoBuy',
+          currentOptimizationFeature !== AutomationFeatures.CONSTANT_MULTIPLE) ||
+        currentOptimizationFeature === AutomationFeatures.AUTO_BUY,
       isConstantMultipleActive:
-        (isConstantMultipleOn && currentOptimizationFeature !== 'autoBuy') ||
-        currentOptimizationFeature === 'constantMultiple',
+        (isConstantMultipleOn && currentOptimizationFeature !== AutomationFeatures.AUTO_BUY) ||
+        currentOptimizationFeature === AutomationFeatures.CONSTANT_MULTIPLE,
     }
   }
 
   if (section === 'details') {
     return {
-      isAutoBuyActive: isAutoBuyOn || currentOptimizationFeature === 'autoBuy',
+      isAutoBuyActive: isAutoBuyOn || currentOptimizationFeature === AutomationFeatures.AUTO_BUY,
       isConstantMultipleActive:
         isConstantMultipleOn ||
-        currentOptimizationFeature === 'constantMultiple' ||
+        currentOptimizationFeature === AutomationFeatures.CONSTANT_MULTIPLE ||
         !constantMultipleEnabled,
     }
   }

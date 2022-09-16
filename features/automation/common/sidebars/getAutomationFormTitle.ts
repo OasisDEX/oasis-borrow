@@ -1,3 +1,4 @@
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import {
   AutomationSidebarCopiesParams,
   SidebarAutomationFlow,
@@ -107,17 +108,17 @@ export function getAutomationFormTitle({ flow, stage, feature }: AutomationSideb
     case 'stopLossEditing':
       const editingKey = getSidebarTitleEditingTranslationKey({ flow })
 
-      return t(editingKey, { feature })
+      return t(editingKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txInProgress':
       const txInProgressKey = getSidebarTitleTxInProgressTranslationKey({
         flow,
       })
 
-      return t(txInProgressKey, { feature })
+      return t(txInProgressKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txFailure':
       const txFailureKey = getSidebarTitleTxFailureTranslationKey({ flow })
 
-      return t(txFailureKey, { feature })
+      return t(txFailureKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txSuccess':
       const txSuccessKey = getSidebarTitleTxSuccessTranslationKey({ flow })
 

@@ -1,3 +1,4 @@
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import {
   AutomationSidebarCopiesParams,
   SidebarAutomationFlow,
@@ -88,13 +89,13 @@ export function getAutomationPrimaryButtonLabel({
         flow,
       })
 
-      return t(translationKey, { feature })
+      return t(translationKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txFailure':
       return t('retry')
     case 'txInProgress':
       const txInProgressKey = getPrimaryButtonLabelTxInProgressTranslationKey({ flow })
 
-      return t(txInProgressKey, { feature })
+      return t(txInProgressKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txSuccess':
       const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow })
 

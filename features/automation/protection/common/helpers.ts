@@ -1,4 +1,5 @@
 import { AutomationProtectionFeatures } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getActiveProtectionFeature({
@@ -17,18 +18,21 @@ export function getActiveProtectionFeature({
   if (section === 'form') {
     return {
       isAutoSellActive:
-        (isAutoSellOn && !isStopLossOn && currentProtectionFeature !== 'stopLoss') ||
-        currentProtectionFeature === 'autoSell',
+        (isAutoSellOn &&
+          !isStopLossOn &&
+          currentProtectionFeature !== AutomationFeatures.STOP_LOSS) ||
+        currentProtectionFeature === AutomationFeatures.AUTO_SELL,
       isStopLossActive:
-        (isStopLossOn && currentProtectionFeature !== 'autoSell') ||
-        currentProtectionFeature === 'stopLoss',
+        (isStopLossOn && currentProtectionFeature !== AutomationFeatures.AUTO_SELL) ||
+        currentProtectionFeature === AutomationFeatures.STOP_LOSS,
     }
   }
 
   if (section === 'details') {
     return {
-      isAutoSellActive: isAutoSellOn || currentProtectionFeature === 'autoSell',
-      isStopLossActive: isStopLossOn || currentProtectionFeature === 'stopLoss' || !autoBSEnabled,
+      isAutoSellActive: isAutoSellOn || currentProtectionFeature === AutomationFeatures.AUTO_SELL,
+      isStopLossActive:
+        isStopLossOn || currentProtectionFeature === AutomationFeatures.STOP_LOSS || !autoBSEnabled,
     }
   }
 

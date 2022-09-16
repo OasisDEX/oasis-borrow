@@ -118,7 +118,7 @@ export function SidebarSetupStopLoss({
   })
   const dropdown = getAutoFeaturesSidebarDropdown({
     type: 'Protection',
-    forcePanel: 'stopLoss',
+    forcePanel: AutomationFeatures.STOP_LOSS,
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,

@@ -100,7 +100,7 @@ export function SidebarSetupAutoBuy({
   })
   const dropdown = getAutoFeaturesSidebarDropdown({
     type: 'Optimization',
-    forcePanel: 'autoBuy',
+    forcePanel: AutomationFeatures.AUTO_BUY,
     disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,

@@ -38,4 +38,13 @@ export const sidebarAutomationFlowSuffix = {
   [AutomationFeatures.AUTO_SELL]: 'AutoSell',
   [AutomationFeatures.AUTO_BUY]: 'AutoBuy',
   [AutomationFeatures.CONSTANT_MULTIPLE]: 'ConstantMultiple',
+  [AutomationFeatures.AUTO_TAKE_PROFIT]: 'AutoTakeProfit',
+}
+
+export const sidebarAutomationFeatureCopyMap = {
+  [AutomationFeatures.STOP_LOSS]: 'protection.stop-loss-protection',
+  [AutomationFeatures.AUTO_BUY]: 'auto-buy.title',
+  [AutomationFeatures.AUTO_SELL]: 'auto-sell.title',
+  [AutomationFeatures.CONSTANT_MULTIPLE]: 'constant-multiple.title',
+  [AutomationFeatures.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
 }

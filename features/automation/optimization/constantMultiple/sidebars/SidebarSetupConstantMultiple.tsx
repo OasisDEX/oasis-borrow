@@ -101,7 +101,7 @@ export function SidebarSetupConstantMultiple({
   })
   const dropdown = getAutoFeaturesSidebarDropdown({
     type: 'Optimization',
-    forcePanel: 'constantMultiple',
+    forcePanel: AutomationFeatures.CONSTANT_MULTIPLE,
     disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
