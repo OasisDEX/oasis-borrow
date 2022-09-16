@@ -10,7 +10,6 @@ import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/opera
 
 import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
 import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
-import { observe } from '../../../blockchain/calls/observe'
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
