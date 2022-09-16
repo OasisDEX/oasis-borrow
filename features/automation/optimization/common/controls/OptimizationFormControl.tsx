@@ -10,6 +10,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
@@ -61,13 +62,13 @@ export function OptimizationFormControl({
     if (autoBuyTriggerData.isTriggerEnabled) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
-        currentOptimizationFeature: 'autoBuy',
+        currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
       })
     }
     if (constantMultipleTriggerData.isTriggerEnabled) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
-        currentOptimizationFeature: 'constantMultiple',
+        currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
       })
     }
   }, [])

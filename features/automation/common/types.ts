@@ -7,12 +7,12 @@ import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
 export enum AutomationFeatures {
-  AUTO_BUY = 'Auto-Buy',
-  AUTO_SELL = 'Auto-Sell',
-  CONSTANT_MULTIPLE = 'Constant Multiple',
-  STOP_LOSS = 'Stop-Loss Protection',
+  AUTO_BUY = 'autoBuy',
+  AUTO_SELL = 'autoSell',
+  CONSTANT_MULTIPLE = 'constantMultiple',
+  STOP_LOSS = 'stopLoss',
+  AUTO_TAKE_PROFIT = 'autoTakeProfit',
 }
-
 export type SidebarAutomationFlow =
   | 'addSl'
   | 'editSl'

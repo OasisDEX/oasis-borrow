@@ -7,6 +7,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -55,7 +56,7 @@ export function AutoTakeProfitDetailsLayout({ token }: AutoTakeProfitDetailsLayo
             action: () => {
               uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                 type: 'Optimization',
-                currentOptimizationFeature: 'autoTakeProfit',
+                currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
               })
             },
             text: t('auto-take-profit.banner.button'),

@@ -23,6 +23,7 @@ import {
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { AddAutoSellInfoSection } from 'features/automation/protection/autoSell/controls/AddAutoSellInfoSection'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
@@ -153,7 +154,7 @@ export function SidebarAutoSellAddEditingStage({
               onClick={() => {
                 uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                   type: 'Protection',
-                  currentProtectionFeature: 'stopLoss',
+                  currentProtectionFeature: AutomationFeatures.STOP_LOSS,
                 })
                 setHash(VaultViewMode.Protection)
               }}

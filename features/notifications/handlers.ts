@@ -26,6 +26,7 @@ export function prepareNotificationMessageHandlers(uiChanges: UIChanges) {
     allActiveSubscriptionsHandler: function (message: {
       activeSubscriptions: NotificationSubscription[]
     }) {
+      console.log('message.activeSubscriptions', message.activeSubscriptions)
       uiChanges.publish(NOTIFICATION_CHANGE, {
         type: 'all-active-subscriptions',
         allActiveSubscriptions: message.activeSubscriptions,
