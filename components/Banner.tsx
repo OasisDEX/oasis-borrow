@@ -1,6 +1,6 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { ReactNode } from 'react'
-import { Box, Button, Card, Flex, Heading, Image, SxProps, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
 
 import { AppSpinner } from '../helpers/AppSpinner'
 
@@ -10,6 +10,7 @@ export const bannerGradientPresets: BannerGradientPresetsArray = {
   autoSell: ['#fef1e1', '#fef5d6'],
   constantMultiply: ['#ffdde7', '#ffe7f5'],
   stopLoss: ['#ffeaea', '#fff5ea'],
+  autoTakeProfit: ['#e0e7ff', '#fae2fc'],
 }
 
 type BannerButtonProps = {
@@ -21,13 +22,15 @@ type BannerButtonProps = {
 
 type BannerProps = {
   title: string | ReactNode
-  description: ReactNode
+  description: ReactNode | ReactNode[]
   button?: BannerButtonProps
   image?: { src: string; backgroundColor?: string; backgroundColorEnd?: string }
   sx?: SxProps
 }
 
 export function Banner({ title, description, button, image, sx }: BannerProps) {
+  const descriptionsArray = Array.isArray(description) ? description : [description]
+
   return (
     <Card sx={{ borderRadius: 'large', border: 'lightMuted', p: 2, ...sx }}>
       <Flex
@@ -48,20 +51,23 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
             flexGrow: 1,
           }}
         >
-          <Heading as="p" variant="boldParagraph1" sx={{ mb: 1 }}>
+          <Heading as="h3" variant="boldParagraph1" sx={{ mb: 1 }}>
             {title}
           </Heading>
-          <Text
-            as="p"
-            sx={{
-              mb: 3,
-              fontSize: 2,
-              lineHeight: 1.571,
-              color: 'neutral80',
-            }}
-          >
-            {description}
-          </Text>
+          <Grid gap={2} mb={3}>
+            {descriptionsArray.map((item) => (
+              <Text
+                as="p"
+                sx={{
+                  fontSize: 2,
+                  lineHeight: 1.571,
+                  color: 'neutral80',
+                }}
+              >
+                {item}
+              </Text>
+            ))}
+          </Grid>
           <Button disabled={button?.disabled} variant="tertiary" onClick={button?.action}>
             {button?.isLoading ? (
               <AppSpinner

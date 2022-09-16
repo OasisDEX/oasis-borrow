@@ -1,7 +1,7 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { MultiplyPillChange } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+import { MultiplyPillChange } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import getConfig from 'next/config'
 import { of } from 'ramda'
@@ -25,7 +25,8 @@ export function checkVaultTypeUsingApi$(
       if (pillState.currentStage === 'closeVault') {
         return of(VaultType.Multiply)
       }
-      const vaultType = getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
+
+      return getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
         map((resp) => {
           if (Object.keys(resp).length === 0) {
             return VaultType.Borrow
@@ -38,7 +39,6 @@ export function checkVaultTypeUsingApi$(
           }
         }),
       )
-      return vaultType
     }),
   )
 }

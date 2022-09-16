@@ -4,15 +4,15 @@ import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
 const flowsWithoutProxy = [
-  'adjustSl',
+  'editSl',
   'addSl',
   'cancelSl',
-  'addBasicSell',
-  'cancelBasicSell',
-  'addBasicBuy',
-  'cancelBasicBuy',
-  'editBasicSell',
-  'editBasicBuy',
+  'addAutoSell',
+  'cancelAutoSell',
+  'addAutoBuy',
+  'cancelAutoBuy',
+  'editAutoSell',
+  'editAutoBuy',
   'addConstantMultiple',
   'cancelConstantMultiple',
   'editConstantMultiple',

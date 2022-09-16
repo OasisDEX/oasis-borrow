@@ -51,8 +51,8 @@ const commonErrors = [
   'hasToDepositCollateralOnEmptyVault',
   'invalidSlippage',
   'afterCollRatioBelowStopLossRatio',
-  'afterCollRatioBelowBasicSellRatio',
-  'afterCollRatioAboveBasicBuyRatio',
+  'afterCollRatioBelowAutoSellRatio',
+  'afterCollRatioAboveAutoBuyRatio',
   'afterCollRatioBelowConstantMultipleSellRatio',
   'afterCollRatioAboveConstantMultipleBuyRatio',
   'vaultWillBeTakenUnderMinActiveColRatio',
@@ -130,4 +130,22 @@ const constantMultipleCommonErrors = ['insufficientEthFundsForTx']
 
 export function extractConstantMultipleCommonErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => constantMultipleCommonErrors.includes(message))
+}
+
+const constantMultipleMaxBuyInputErrors = [
+  'maxBuyPriceWillPreventBuyTrigger',
+  'autoBuyMaxBuyPriceNotSpecified',
+]
+
+export function extractConstantMultipleMaxBuyErrors(errorMessages: VaultErrorMessage[]) {
+  return errorMessages.filter((message) => constantMultipleMaxBuyInputErrors.includes(message))
+}
+
+const constantMultipleMinSellInputErrors = [
+  'minSellPriceWillPreventSellTrigger',
+  'minimumSellPriceNotProvided',
+]
+
+export function extractConstantMultipleMinSellErrors(errorMessages: VaultErrorMessage[]) {
+  return errorMessages.filter((message) => constantMultipleMinSellInputErrors.includes(message))
 }

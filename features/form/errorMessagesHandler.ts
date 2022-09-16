@@ -29,8 +29,8 @@ export type VaultErrorMessage =
   | 'depositCollateralOnVaultUnderDebtFloor'
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
-  | 'afterCollRatioBelowBasicSellRatio'
-  | 'afterCollRatioAboveBasicBuyRatio'
+  | 'afterCollRatioBelowAutoSellRatio'
+  | 'afterCollRatioAboveAutoBuyRatio'
   | 'afterCollRatioBelowConstantMultipleSellRatio'
   | 'afterCollRatioAboveConstantMultipleBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
@@ -44,6 +44,8 @@ export type VaultErrorMessage =
   | 'autoBuyTriggerLowerThanAutoSellTarget'
   | 'stopLossTriggerHigherThanAutoBuyTarget'
   | 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled'
+  | 'minSellPriceWillPreventSellTrigger'
+  | 'maxBuyPriceWillPreventBuyTrigger'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -76,8 +78,8 @@ interface ErrorMessagesHandler {
   shouldShowExchangeError?: boolean
   invalidSlippage?: boolean
   afterCollRatioBelowStopLossRatio?: boolean
-  afterCollRatioBelowBasicSellRatio?: boolean
-  afterCollRatioAboveBasicBuyRatio?: boolean
+  afterCollRatioBelowAutoSellRatio?: boolean
+  afterCollRatioAboveAutoBuyRatio?: boolean
   afterCollRatioBelowConstantMultipleSellRatio?: boolean
   afterCollRatioAboveConstantMultipleBuyRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
@@ -90,6 +92,8 @@ interface ErrorMessagesHandler {
   autoBuyTriggerLowerThanAutoSellTarget?: boolean
   stopLossTriggerHigherThanAutoBuyTarget?: boolean
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled?: boolean
+  minSellPriceWillPreventSellTrigger?: boolean
+  maxBuyPriceWillPreventBuyTrigger?: boolean
 }
 
 export function errorMessagesHandler({
@@ -123,8 +127,8 @@ export function errorMessagesHandler({
   shouldShowExchangeError,
   invalidSlippage,
   afterCollRatioBelowStopLossRatio,
-  afterCollRatioBelowBasicSellRatio,
-  afterCollRatioAboveBasicBuyRatio,
+  afterCollRatioBelowAutoSellRatio,
+  afterCollRatioAboveAutoBuyRatio,
   afterCollRatioBelowConstantMultipleSellRatio,
   afterCollRatioAboveConstantMultipleBuyRatio,
   stopLossOnNearLiquidationRatio,
@@ -137,6 +141,8 @@ export function errorMessagesHandler({
   autoBuyTriggerLowerThanAutoSellTarget,
   stopLossTriggerHigherThanAutoBuyTarget,
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
+  minSellPriceWillPreventSellTrigger,
+  maxBuyPriceWillPreventBuyTrigger,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -256,12 +262,12 @@ export function errorMessagesHandler({
     errorMessages.push('afterCollRatioBelowStopLossRatio')
   }
 
-  if (afterCollRatioBelowBasicSellRatio) {
-    errorMessages.push('afterCollRatioBelowBasicSellRatio')
+  if (afterCollRatioBelowAutoSellRatio) {
+    errorMessages.push('afterCollRatioBelowAutoSellRatio')
   }
 
-  if (afterCollRatioAboveBasicBuyRatio) {
-    errorMessages.push('afterCollRatioAboveBasicBuyRatio')
+  if (afterCollRatioAboveAutoBuyRatio) {
+    errorMessages.push('afterCollRatioAboveAutoBuyRatio')
   }
 
   if (afterCollRatioBelowConstantMultipleSellRatio) {
@@ -313,6 +319,14 @@ export function errorMessagesHandler({
 
   if (cantSetupAutoBuyOrSellWhenConstantMultipleEnabled) {
     errorMessages.push('cantSetupAutoBuyOrSellWhenConstantMultipleEnabled')
+  }
+
+  if (minSellPriceWillPreventSellTrigger) {
+    errorMessages.push('minSellPriceWillPreventSellTrigger')
+  }
+
+  if (maxBuyPriceWillPreventBuyTrigger) {
+    errorMessages.push('maxBuyPriceWillPreventBuyTrigger')
   }
 
   return errorMessages

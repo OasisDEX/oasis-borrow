@@ -167,6 +167,7 @@ const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
   services: {
     getBalance: (() => {}) as any,
     getProxyAddress: (() => {}) as any,
+    getStrategyInfo: (() => {}) as any,
   },
 })
 

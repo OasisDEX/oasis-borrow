@@ -1,30 +1,30 @@
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { CharteredDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
+import { StandardDssProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { IlkData } from 'blockchain/ilks'
+import { InstiVault } from 'blockchain/instiVault'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  InstitutionalBorrowManageAdapter,
+  ManageInstiVaultState,
+} from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import {
   createManageVault$,
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
-import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
-import { InstiVault } from '../../blockchain/instiVault'
-import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
-import {
-  InstitutionalBorrowManageAdapter,
-  ManageInstiVaultState,
-} from '../../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
-import { StandardBorrowManageAdapter } from '../../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'

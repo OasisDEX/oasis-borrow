@@ -1,6 +1,6 @@
 import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
-import { AutomationTriggersChange } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { AutomationTriggersChange } from 'features/automation/api/automationTriggersData'
 import { BalanceInfoChange } from 'features/shared/balanceInfo'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { VaultHistoryChange } from 'features/vaultHistory/vaultHistory'
@@ -58,8 +58,8 @@ export function applyManageVaultEnvironment<VaultState extends ManageStandardBor
     return {
       ...state,
       stopLossData: change.stopLossData,
-      basicSellData: change.basicSellData,
-      basicBuyData: change.basicBuyData,
+      autoSellData: change.autoSellData,
+      autoBuyData: change.autoBuyData,
       constantMultipleData: change.constantMultipleData,
     }
   }

@@ -66,9 +66,9 @@ export function VaultWarnings({
         return translate('no-min-sell-price-when-stop-loss-enabled')
       case 'settingAutoBuyTriggerWithNoThreshold':
         return translate('auto-buy-with-no-max-price-threshold')
-      case 'basicSellTriggerCloseToStopLossTrigger':
+      case 'autoSellTriggerCloseToStopLossTrigger':
         return translate('auto-sell-trigger-close-to-stop-loss-trigger')
-      case 'basicSellTargetCloseToAutoBuyTrigger':
+      case 'autoSellTargetCloseToAutoBuyTrigger':
         return translate('auto-sell-target-close-to-auto-buy-trigger')
       case 'stopLossTriggerCloseToAutoSellTrigger':
         return translate('stop-loss-trigger-close-to-auto-sell-trigger')

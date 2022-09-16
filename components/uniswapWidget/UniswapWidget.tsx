@@ -8,7 +8,7 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   SwapWidgetState,
-} from 'features/automation/protection/common/UITypes/SwapWidgetChange'
+} from 'features/uniswapWidget/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'

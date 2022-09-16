@@ -5,7 +5,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { StopLossBannerControl } from 'features/automation/protection/controls/StopLossBannerControl'
+import { StopLossBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'

@@ -1,20 +1,28 @@
-export enum AutomationFeatures {
-  AUTO_BUY = 'Auto-Buy',
-  AUTO_SELL = 'Auto-Sell',
-  CONSTANT_MULTIPLE = 'Constant Multiple',
-  STOP_LOSS = 'Stop-Loss Protection',
-}
+import { TriggerType } from '@oasisdex/automation'
+import {
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
+} from 'features/automation/common/state/autoBSFormChange'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
+export enum AutomationFeatures {
+  AUTO_BUY = 'autoBuy',
+  AUTO_SELL = 'autoSell',
+  CONSTANT_MULTIPLE = 'constantMultiple',
+  STOP_LOSS = 'stopLoss',
+  AUTO_TAKE_PROFIT = 'autoTakeProfit',
+}
 export type SidebarAutomationFlow =
   | 'addSl'
-  | 'adjustSl'
+  | 'editSl'
   | 'cancelSl'
-  | 'addBasicSell'
-  | 'cancelBasicSell'
-  | 'editBasicSell'
-  | 'addBasicBuy'
-  | 'cancelBasicBuy'
-  | 'editBasicBuy'
+  | 'addAutoSell'
+  | 'cancelAutoSell'
+  | 'editAutoSell'
+  | 'addAutoBuy'
+  | 'cancelAutoBuy'
+  | 'editAutoBuy'
   | 'addConstantMultiple'
   | 'cancelConstantMultiple'
   | 'editConstantMultiple'
@@ -39,3 +47,12 @@ export interface AutomationSidebarStatusParams {
   txHash?: string
   etherscan?: string
 }
+
+export type AutomationBSPublishType = typeof AUTO_SELL_FORM_CHANGE | typeof AUTO_BUY_FORM_CHANGE
+
+export type AutomationPublishType =
+  | AutomationBSPublishType
+  | typeof CONSTANT_MULTIPLE_FORM_CHANGE
+  | typeof STOP_LOSS_FORM_CHANGE
+
+export type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell

@@ -128,10 +128,10 @@ export function VaultErrors({
         return translate('invalid-slippage')
       case 'afterCollRatioBelowStopLossRatio':
         return translate('after-coll-ratio-below-stop-loss-ratio')
-      case 'afterCollRatioBelowBasicSellRatio':
-        return translate('after-coll-ratio-below-basic-sell-ratio')
-      case 'afterCollRatioAboveBasicBuyRatio':
-        return translate('after-coll-ratio-above-basic-buy-ratio')
+      case 'afterCollRatioBelowAutoSellRatio':
+        return translate('after-coll-ratio-below-auto-sell-ratio')
+      case 'afterCollRatioAboveAutoBuyRatio':
+        return translate('after-coll-ratio-above-auto-buy-ratio')
       case 'afterCollRatioBelowConstantMultipleSellRatio':
         return translate('after-coll-ratio-below-constant-multiple-sell-ratio')
       case 'afterCollRatioAboveConstantMultipleBuyRatio':
@@ -154,6 +154,10 @@ export function VaultErrors({
         return translate('stop-loss-trigger-higher-than-auto-buy-target')
       case 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled':
         return translate('cant-setup-auto-buy-or-sell-when-constant-multiple-enabled', { autoType })
+      case 'minSellPriceWillPreventSellTrigger':
+        return translate('min-sell-price-will-prevent-sell-trigger')
+      case 'maxBuyPriceWillPreventBuyTrigger':
+        return translate('max-buy-price-will-prevent-buy-trigger')
       case 'autoBuyMaxBuyPriceNotSpecified':
         return (
           <Trans

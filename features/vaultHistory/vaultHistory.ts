@@ -2,8 +2,8 @@ import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
+import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { flatten, memoize } from 'lodash'
@@ -67,7 +67,7 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
   switch (event.kind) {
     case 'basic-buy':
     case 'basic-sell': {
-      const basicBuyData = extractBasicBSData({
+      const autoBSData = extractAutoBSData({
         triggersData: {
           isAutomationEnabled: false,
           triggers: [
@@ -82,10 +82,10 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
       })
 
       return {
-        execCollRatio: basicBuyData.execCollRatio,
-        targetCollRatio: basicBuyData.targetCollRatio,
-        maxBuyOrMinSellPrice: basicBuyData.maxBuyOrMinSellPrice,
-        maxBaseFeeInGwei: basicBuyData.maxBaseFeeInGwei,
+        execCollRatio: autoBSData.execCollRatio,
+        targetCollRatio: autoBSData.targetCollRatio,
+        maxBuyOrMinSellPrice: autoBSData.maxBuyOrMinSellPrice,
+        maxBaseFeeInGwei: autoBSData.maxBaseFeeInGwei,
       }
     }
     case 'stop-loss':

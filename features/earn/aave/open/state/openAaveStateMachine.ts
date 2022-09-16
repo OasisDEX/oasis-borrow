@@ -34,14 +34,30 @@ export interface OpenAaveContext {
   proxyAddress?: string
   strategyName?: string
 
+  strategyInfo?: StrategyInfo
+
   transactionParameters?: OperationParameters
   estimatedGasPrice?: HasGasEstimation
 }
+
+type StrategyInfo = {
+  maxMultiple: BigNumber
+  liquidationThreshold: BigNumber
+  assetPrice: BigNumber
+}
+
 export type OpenAaveMachineEvents =
   | { type: 'SET_AMOUNT'; amount: BigNumber }
   | { type: 'SET_BALANCE'; balance: BigNumber; tokenPrice: BigNumber }
   | { type: 'POSITION_OPENED' }
   | { type: 'NEXT_STEP' }
+  | { type: 'SET_MULTIPLE'; multiple: BigNumber }
+  | {
+      type: 'UPDATE_STRATEGY_INFO'
+      maxMultiple: BigNumber
+      liquidationThreshold: BigNumber
+      assetPrice: BigNumber
+    }
 
 export type OpenAaveTransactionEvents =
   | {
@@ -113,7 +129,7 @@ export const createOpenAaveStateMachine = createMachine(
           },
           NEXT_STEP: [
             { cond: 'emptyProxyAddress', target: 'proxyCreating' },
-            { cond: 'enoughBalance', target: 'reviewing' },
+            { cond: 'enoughBalance', target: 'settingMultiple' },
           ],
           TRANSACTION_PARAMETERS_RECEIVED: {
             actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
@@ -125,6 +141,29 @@ export const createOpenAaveStateMachine = createMachine(
         on: {
           PROXY_CREATED: {
             actions: ['assignProxyAddress'],
+            target: 'editing',
+          },
+        },
+      },
+      settingMultiple: {
+        invoke: [
+          {
+            src: 'getStrategyInfo',
+            id: 'getStrategyInfo',
+          },
+        ],
+        on: {
+          UPDATE_STRATEGY_INFO: {
+            actions: ['updateStrategyInfo'],
+          },
+          SET_MULTIPLE: {
+            actions: ['setMultiple'],
+          },
+          NEXT_STEP: {
+            target: 'reviewing',
+            // TODO: validate multiple here cond: 'validTransactionParameters'
+          },
+          BACK_TO_EDITING: {
             target: 'editing',
           },
         },
@@ -200,6 +239,16 @@ export const createOpenAaveStateMachine = createMachine(
           id: 'update-parameters-machine',
         },
       ),
+      setMultiple: assign((_, event) => {
+        return {
+          multiply: event.multiple,
+        }
+      }),
+      updateStrategyInfo: assign((_, event) => {
+        return {
+          strategyInfo: event,
+        }
+      }),
       updateTotalSteps: assign((context) => ({
         totalSteps: context.proxyAddress ? 2 : 3,
       })),

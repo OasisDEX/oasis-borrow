@@ -3,6 +3,7 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { getAaveUserReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -22,9 +23,31 @@ import {
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
+import {
+  cropperBonusTokenAddress,
+  cropperCrops,
+  cropperShare,
+  cropperStake,
+  cropperStock,
+  cropperUrnProxy,
+} from 'blockchain/calls/cropper'
+import { dogIlk } from 'blockchain/calls/dog'
+import {
+  ApproveData,
+  DisapproveData,
+  tokenAllowance,
+  tokenBalance,
+  tokenBalanceRawForJoin,
+  tokenDecimals,
+  tokenName,
+  tokenSymbol,
+} from 'blockchain/calls/erc20'
 import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
+import { jugIlk } from 'blockchain/calls/jug'
+import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
+import { observe } from 'blockchain/calls/observe'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -32,6 +55,13 @@ import {
   createProxyOwner$,
   SetProxyOwnerData,
 } from 'blockchain/calls/proxy'
+import { CropjoinProxyActionsContractAdapter } from 'blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
+import {
+  ClaimRewardData,
+  DepositAndGenerateData,
+  OpenData,
+  WithdrawAndPaybackData,
+} from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import {
   CloseGuniMultiplyData,
   CloseVaultData,
@@ -40,12 +70,27 @@ import {
   OpenMultiplyData,
   ReclaimData,
 } from 'blockchain/calls/proxyActions/proxyActions'
+import { proxyActionsAdapterResolver$ } from 'blockchain/calls/proxyActions/proxyActionsAdapterResolver'
+import { vaultActionsLogic } from 'blockchain/calls/proxyActions/vaultActionsLogic'
+import { spotIlk } from 'blockchain/calls/spot'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
+import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
+import { charterIlks, cropJoinIlks, networksById } from 'blockchain/config'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
+import {
+  ContextConnected,
+  createAccount$,
+  createContext$,
+  createContextConnected$,
+  createInitializedAccount$,
+  createOnEveryBlock$,
+  createWeb3ContextConnected$,
+  every10Seconds$,
+} from 'blockchain/network'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -69,48 +114,46 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import { createTransactionManager } from 'features/account/transactionManager'
+import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  AUTO_BUY_FORM_CHANGE,
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSChangeAction,
+  AutoBSFormChange,
+  autoBSFormChangeReducer,
+} from 'features/automation/common/state/autoBSFormChange'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
   AutomationChangeFeatureAction,
   automationChangeFeatureReducer,
-} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import {
-  BASIC_BUY_FORM_CHANGE,
-  BASIC_SELL_FORM_CHANGE,
-  BasicBSChangeAction,
-  basicBSFormChangeReducer,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
+} from 'features/automation/common/state/automationFeatureChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleChangeAction,
+  ConstantMultipleFormChange,
   constantMultipleFormChangeReducer,
-} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
   MultiplyPillChangeAction,
   multiplyPillChangeReducer,
-} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
-import {
-  REMOVE_FORM_CHANGE,
-  RemoveFormChange,
-  RemoveFormChangeAction,
-  removeFormReducer,
-} from 'features/automation/protection/common/UITypes/RemoveFormChange'
+} from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
 import {
   formChangeReducer,
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
   StopLossFormChangeAction,
-} from 'features/automation/protection/common/UITypes/StopLossFormChange'
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { createBonusPipe$ } from 'features/bonus/bonusPipe'
+import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
 import {
-  TAB_CHANGE_SUBJECT,
-  TabChange,
-  TabChangeAction,
-  tabChangeReducer,
-} from 'features/automation/protection/common/UITypes/TabChange'
-import { createAutomationTriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+  InstitutionalBorrowManageAdapter,
+  ManageInstiVaultState,
+} from 'features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { StandardBorrowManageAdapter } from 'features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import {
   createManageVault$,
   ManageStandardBorrowVaultState,
@@ -118,9 +161,27 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { OpenAavePositionData } from 'features/earn/aave/open/pipelines/openAavePosition'
+import {
+  getTotalSupply,
+  getUnderlyingBalances,
+} from 'features/earn/guni/manage/pipes/guniActionsCalls'
+import { createManageGuniVault$ } from 'features/earn/guni/manage/pipes/manageGuniVault'
+import { getGuniMintAmount, getToken1Balance } from 'features/earn/guni/open/pipes/guniActionsCalls'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
+import {
+  createMakerOracleTokenPrices$,
+  createMakerOracleTokenPricesForDates$,
+} from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import {
+  TAB_CHANGE_SUBJECT,
+  TabChange,
+  TabChangeAction,
+  tabChangeReducer,
+} from 'features/generalManageVault/TabChange'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -141,128 +202,60 @@ import {
   getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
 import { redirectState$ } from 'features/router/redirectState'
+import { BalanceInfo, createBalanceInfo$ } from 'features/shared/balanceInfo'
+import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { jwtAuthSetupToken$ } from 'features/termsOfService/jwt'
+import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  swapWidgetChangeReducer,
+  SwapWidgetState,
+} from 'features/uniswapWidget/SwapWidgetChange'
 import { createUserSettings$ } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
+import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
+import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
+import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
+import {
+  createAavePositions$,
+  createMakerPositions$,
+  createPositions$,
+  decorateAaveTokensPrice$,
+} from 'features/vaultsOverview/pipes/positions'
+import { createPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
+import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
+import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
+import { doGasEstimation, HasGasEstimation } from 'helpers/form'
 import {
   gasEstimationReducer,
   TX_DATA_CHANGE,
   TxPayloadChange,
   TxPayloadChangeAction,
 } from 'helpers/gasEstimate'
-import { isEqual, mapValues, memoize } from 'lodash'
-import moment from 'moment'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
-
-import { getAaveUserReserveData } from '../blockchain/calls/aaveProtocolDataProvider'
-import {
-  cropperBonusTokenAddress,
-  cropperCrops,
-  cropperShare,
-  cropperStake,
-  cropperStock,
-  cropperUrnProxy,
-} from '../blockchain/calls/cropper'
-import { dogIlk } from '../blockchain/calls/dog'
-import {
-  ApproveData,
-  DisapproveData,
-  tokenAllowance,
-  tokenBalance,
-  tokenBalanceRawForJoin,
-  tokenDecimals,
-  tokenName,
-  tokenSymbol,
-} from '../blockchain/calls/erc20'
-import { jugIlk } from '../blockchain/calls/jug'
-import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
-import { observe } from '../blockchain/calls/observe'
-import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
-import {
-  ClaimRewardData,
-  DepositAndGenerateData,
-  OpenData,
-  WithdrawAndPaybackData,
-} from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
-import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
-import { spotIlk } from '../blockchain/calls/spot'
-import { getCollateralLocked$, getTotalValueLocked$ } from '../blockchain/collateral'
-import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
-import {
-  ContextConnected,
-  createAccount$,
-  createContext$,
-  createContextConnected$,
-  createInitializedAccount$,
-  createOnEveryBlock$,
-  createWeb3ContextConnected$,
-  every10Seconds$,
-} from '../blockchain/network'
-import { createTransactionManager } from '../features/account/transactionManager'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-  swapWidgetChangeReducer,
-  SwapWidgetState,
-} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
-import { createBonusPipe$ } from '../features/bonus/bonusPipe'
-import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
-import {
-  InstitutionalBorrowManageAdapter,
-  ManageInstiVaultState,
-} from '../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
-import { StandardBorrowManageAdapter } from '../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import { OpenAavePositionData } from '../features/earn/aave/open/pipelines/openAavePosition'
-import {
-  getTotalSupply,
-  getUnderlyingBalances,
-} from '../features/earn/guni/manage/pipes/guniActionsCalls'
-import { createManageGuniVault$ } from '../features/earn/guni/manage/pipes/manageGuniVault'
-import {
-  getGuniMintAmount,
-  getToken1Balance,
-} from '../features/earn/guni/open/pipes/guniActionsCalls'
-import {
-  createMakerOracleTokenPrices$,
-  createMakerOracleTokenPricesForDates$,
-} from '../features/earn/makerOracleTokenPrices'
-import { VaultType } from '../features/generalManageVault/vaultType'
-import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
-import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
-import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
-import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
-import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
-import { vaultsWithHistory$ } from '../features/vaultHistory/vaultsHistory'
-import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
-import {
-  createAavePositions$,
-  createMakerPositions$,
-  createPositions$,
-  decorateAaveTokensPrice$,
-} from '../features/vaultsOverview/pipes/positions'
-import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
-import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
-import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
-import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
   createProductCardsData$,
   createProductCardsWithBalance$,
   supportedBorrowIlks,
   supportedEarnIlks,
   supportedMultiplyIlks,
-} from '../helpers/productCards'
+} from 'helpers/productCards'
+import { isEqual, mapValues, memoize } from 'lodash'
+import moment from 'moment'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -324,7 +317,8 @@ function createTxHelpers$(
 
 export type SupportedUIChangeType =
   | StopLossFormChange
-  | RemoveFormChange
+  | AutoBSFormChange
+  | ConstantMultipleFormChange
   | TabChange
   | MultiplyPillChange
   | SwapWidgetState
@@ -334,8 +328,7 @@ export type SupportedUIChangeType =
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
-  BasicBSChange: BasicBSChangeAction
-  RemoveFormChange: RemoveFormChangeAction
+  AutoBSChange: AutoBSChangeAction
   TabChange: TabChangeAction
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
@@ -424,9 +417,8 @@ function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
   uiChangesSubject.configureSubject(STOP_LOSS_FORM_CHANGE, formChangeReducer)
-  uiChangesSubject.configureSubject(BASIC_SELL_FORM_CHANGE, basicBSFormChangeReducer)
-  uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
-  uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
+  uiChangesSubject.configureSubject(AUTO_SELL_FORM_CHANGE, autoBSFormChangeReducer)
+  uiChangesSubject.configureSubject(AUTO_BUY_FORM_CHANGE, autoBSFormChangeReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)

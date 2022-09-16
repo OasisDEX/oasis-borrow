@@ -1,21 +1,21 @@
+import { ManageMultiplyVaultButton } from 'components/vault/commonMultiply/ManageMultiplyVaultButton'
+import {
+  ManageMultiplyVaultConfirmation,
+  ManageMultiplyVaultConfirmationStatus,
+} from 'components/vault/commonMultiply/ManageMultiplyVaultConfirmation'
+import { ManageVaultCollateralAllowance } from 'components/vault/commonMultiply/ManageVaultCollateralAllowance'
+import { ManageVaultDaiAllowance } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { StopLossTriggeredFormControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredFormControl'
+import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useState } from 'react'
 
-import { ManageMultiplyVaultButton } from '../../../../components/vault/commonMultiply/ManageMultiplyVaultButton'
-import {
-  ManageMultiplyVaultConfirmation,
-  ManageMultiplyVaultConfirmationStatus,
-} from '../../../../components/vault/commonMultiply/ManageMultiplyVaultConfirmation'
-import { ManageVaultCollateralAllowance } from '../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
-import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { extractGasDataFromState } from '../../../../helpers/extractGasDataFromState'
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { StopLossTriggeredFormControl } from '../../../automation/protection/controls/StopLossTriggeredFormControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 import { ManageMultiplyVaultBorrowTransition } from './ManageMultiplyVaultBorrowTransition'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'

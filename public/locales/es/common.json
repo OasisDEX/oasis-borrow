@@ -1242,5 +1242,40 @@
     "contents": "Contents",
     "learn-more-heading": "Want to know more?",
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
+  },
+  "manage-earn": {
+    "aave": {
+      "vault-form": {
+        "deposit": "Deposit ETH",
+        "title": "Your Earn position",
+        "close-title": "Close position to ETH",
+        "close": "Close vault",
+        "confirm-btn": "Confirm",
+        "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
+        "stop-close": "Not right now",
+        "eth-after-closing": "ETH after closing",
+        "retry-btn": "Retry"
+      }
+    }
+  },
+  "open-earn": {
+    "aave": {
+      "vault-form": {
+        "title": "Set up Earn strategy",
+        "open-btn": "Open Earn position",
+        "confirm-btn": "Confirm",
+        "retry-btn": "Retry",
+        "success-title": "All done! You've opened a position",
+        "go-to-position": "Go to position",
+        "configure-multiple": {
+          "title": "Set your risk level",
+          "liquidation-price": "stETH/ETH Liquidation Price",
+          "steth-eth-historial-ratio": "stETH / ETH Historical Ratio",
+          "back-to-enter-eth": "Back to enter ETH",
+          "increase-risk": "Increase risk",
+          "decrease-risk": "Decrease risk"
+        }
+      }
+    }
   }
 }
