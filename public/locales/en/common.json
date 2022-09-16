@@ -686,7 +686,7 @@
       "right-footer": "Increase risk"
     },
     "set-stoploss": {
-      "left-label": "Stop-Loss coll.ratio",
+      "left-label": "Stop-Loss collateral ratio",
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
       "right-footer": "More likely execution"
