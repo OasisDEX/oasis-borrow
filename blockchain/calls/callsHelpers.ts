@@ -15,7 +15,6 @@ import { Context, ContextConnected } from '../network'
 import { GasPrice$ } from '../prices'
 
 export type CallDef<A, R> = CallDefAbstractContext<A, R, Context>
-export type CallDefOverwriteReply<A, R, O> = CallDefAbstractContext<A, R | O, Context> // usable when you want to overwrite the reply type
 
 export type TransactionDef<A extends TxMeta> = TransactionDefAbstractContext<A, ContextConnected>
 
