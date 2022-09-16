@@ -15,11 +15,17 @@ import { Grid } from 'theme-ui'
 
 export interface AutoTakeProfitDetailsLayoutProps {
   isTriggerEnabled: boolean
+  triggerColPrice?: BigNumber
+  estimatedProfit?: BigNumber
+  afterTriggerColPrice?: BigNumber
   token: string
 }
 
 export function AutoTakeProfitDetailsLayout({
   isTriggerEnabled,
+  triggerColPrice,
+  estimatedProfit,
+  afterTriggerColPrice,
   token,
 }: AutoTakeProfitDetailsLayoutProps) {
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -37,11 +43,10 @@ export function AutoTakeProfitDetailsLayout({
             <DetailsSectionContentCardWrapper>
               <ContentCardTriggerColPrice
                 token={token}
-                //TODO: TDAutoTakeProfit | to be replaced with data from state
-                triggerColPrice={new BigNumber(1904)}
-                afterTriggerColPrice={new BigNumber(1964)}
-                estimatedProfit={new BigNumber(399040200)}
-                changeVariant='positive'
+                triggerColPrice={triggerColPrice}
+                afterTriggerColPrice={estimatedProfit}
+                estimatedProfit={afterTriggerColPrice}
+                changeVariant="positive"
               />
             </DetailsSectionContentCardWrapper>
           }
