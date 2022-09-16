@@ -1,4 +1,3 @@
-import { prepareAaveTotalValueLocked$ } from 'blockchain/aavePrepareAaveTotalValueLocked'
 import { getAaveAssetsPrices } from 'blockchain/calls/aavePriceOracle'
 import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
@@ -11,6 +10,7 @@ import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
+import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
 import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine$,
@@ -110,7 +110,7 @@ export function setupAaveContext({
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'STETH' }),
     getAaveReserveData$({ token: 'ETH' }),
-    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }),
+    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
   return {

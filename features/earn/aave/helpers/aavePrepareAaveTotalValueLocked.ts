@@ -1,15 +1,14 @@
 import BigNumber from 'bignumber.js'
+import { AaveReserveDataReply } from 'blockchain/calls/aaveProtocolDataProvider'
+import { amountFromWei } from 'blockchain/utils'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-
-import { AaveReserveDataReply } from './calls/aaveProtocolDataProvider'
-import { amountFromWei } from './utils'
 
 export type PreparedAaveReserveData = {
   totalValueLocked: BigNumber
 }
 
-type PrepareAaveTVLProps = [AaveReserveDataReply, AaveReserveDataReply, string[]]
+type PrepareAaveTVLProps = [AaveReserveDataReply, AaveReserveDataReply, BigNumber[]]
 
 export function prepareAaveTotalValueLocked$(
   getAaveStEthReserveData$: Observable<AaveReserveDataReply>,
@@ -25,7 +24,7 @@ export function prepareAaveTotalValueLocked$(
       ([
         STETH_reserveData,
         ETH_reserveData,
-        [USDC_ETH_priceString, USDC_STETH_priceString],
+        [USDC_ETH_price, STETH_ETH_ratio],
       ]: PrepareAaveTVLProps) => {
         /*
           The formula:
@@ -35,11 +34,8 @@ export function prepareAaveTotalValueLocked$(
           We need to get the total value locked in USD, so we need to convert the ETH and STETH values to USD.
           There's no prices in USD in their oracle so im assuming 1 USDC = 1 USD
         */
-        const USDC_ETH_price = amountFromWei(new BigNumber(USDC_ETH_priceString), 'ETH') // price of one USDC in ETH
         const ETH_USDC_price = new BigNumber(1).div(USDC_ETH_price) // price of one ETH in USDC
-        const STETH_USDC_price = amountFromWei(new BigNumber(USDC_STETH_priceString), 'ETH').times(
-          ETH_USDC_price,
-        ) // price of one STETH in USDC
+        const STETH_USDC_price = STETH_ETH_ratio.times(ETH_USDC_price) // price of one STETH in USDC
 
         const STETH_availableLiquidity = amountFromWei(
           new BigNumber(STETH_reserveData.availableLiquidity),
