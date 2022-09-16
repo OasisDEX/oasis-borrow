@@ -1565,9 +1565,13 @@
     "form-title": "Auto-Take Profit Setup",
     "banner": {
       "header": "Set up Auto-Take Profit",
-      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price",
+      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
       "button": "Setup Auto-Take Profit"
-    }
+    },
+    "trigger-col-price": "Trigger {{token}} Price",
+    "estimated-profit": "Estimated Profit at close {{amount}}",
+    "trigger-col-ratio": "Trigger Collateral Ratio",
+    "current-col-ratio": "Current Collateral Ratio {{amount}}"
   },
 
   "automation": {
