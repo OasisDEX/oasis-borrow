@@ -28,9 +28,7 @@ describe('tokens metadata', () => {
     expect(getToken('ETH')).to.include.keys(tokenKeys)
   })
   it('should return metadata for multiple tokens', () => {
-    const tokenData = tokens.map((token) => token.symbol)
-    expect(tokenData).to.be.an('array')
-    getTokens(tokenData).forEach((tokenData) => {
+    getTokens(tokens.map((token) => token.symbol)).forEach((tokenData) => {
       expect(tokenData).to.include.keys(tokenKeys)
     })
   })
