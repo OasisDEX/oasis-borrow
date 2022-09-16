@@ -1,11 +1,11 @@
 import { useActor, useSelector } from '@xstate/react'
-import { useAppContext } from 'components/AppContextProvider'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { ActorRefFrom } from 'xstate'
 
+import { useAaveContext } from '../../AaveContextProvider'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { AaveStEthSimulateStateMachine } from '../state'
 
@@ -24,7 +24,7 @@ export function AaveOpenHeader({
   strategyName: string
 }) {
   const [state] = useActor(actor)
-  const { aaveTotalValueLocked$ } = useAppContext()
+  const { aaveTotalValueLocked$ } = useAaveContext()
   const [aaveTotalValueLocked] = useObservable(aaveTotalValueLocked$)
 
   const { context } = state

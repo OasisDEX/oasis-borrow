@@ -3,8 +3,6 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import { prepareAaveTotalValueLocked$ } from 'blockchain/aavePrepareAaveTotalValueLocked'
-import { getAaveAssetsPrices } from 'blockchain/calls/aavePriceOracle'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -167,10 +165,7 @@ import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
-import {
-  getAaveReserveData,
-  getAaveUserReserveData,
-} from '../blockchain/calls/aaveProtocolDataProvider'
+import { getAaveUserReserveData } from '../blockchain/calls/aaveProtocolDataProvider'
 import {
   cropperBonusTokenAddress,
   cropperCrops,
@@ -789,15 +784,6 @@ export function setupAppContext() {
   const tokensWithValue$ = decorateAaveTokensPrice$(aaveCollateralTokens$, exchangeQuote$)
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
 
-  const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
-
-  const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
-    getAaveReserveData$({ token: 'STETH' }),
-    getAaveReserveData$({ token: 'ETH' }),
-    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }),
-  )
-
   const aavePositions$ = memoize(
     curry(createAavePositions$)(aaveUserReserveData$, tokensWithValue$, proxyAddress$),
   )
@@ -1138,7 +1124,6 @@ export function setupAppContext() {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
-    aaveTotalValueLocked$,
   }
 }
 

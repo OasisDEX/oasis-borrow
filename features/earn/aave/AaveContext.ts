@@ -1,3 +1,7 @@
+import { prepareAaveTotalValueLocked$ } from 'blockchain/aavePrepareAaveTotalValueLocked'
+import { getAaveAssetsPrices } from 'blockchain/calls/aavePriceOracle'
+import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
+import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { GraphQLClient } from 'graphql-request'
 import moment from 'moment'
@@ -30,6 +34,8 @@ export function setupAaveContext({
   gasPrice$,
   daiEthTokenPrice$,
   accountBalances$,
+  onEveryBlock$,
+  context$,
 }: AppContext) {
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
 
@@ -98,9 +104,19 @@ export function setupAaveContext({
     manageTransactionMachine,
   )
 
+  const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
+
+  const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
+    getAaveReserveData$({ token: 'STETH' }),
+    getAaveReserveData$({ token: 'ETH' }),
+    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }),
+  )
+
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
+    aaveTotalValueLocked$,
   }
 }
 
