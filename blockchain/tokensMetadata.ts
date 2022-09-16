@@ -631,7 +631,7 @@ export const tokens = [
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
-const tokensBySymbol = keyBy(tokens, 'symbol')
+export const tokensBySymbol = keyBy(tokens, 'symbol')
 
 type SymbolType = ElementOf<typeof tokens>['symbol']
 
