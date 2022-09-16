@@ -38,7 +38,7 @@ export interface NotificationChannels {
 
 export interface NotificationAdditionalData {
   vaultId?: number
-  price?: number
+  nextPrice?: number
 }
 
 export interface NotificationBase {
