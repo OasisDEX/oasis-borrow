@@ -27,7 +27,7 @@ export function getNotificationTitle({
   lastModified: number
   additionalData: NotificationAdditionalData
 }) {
-  const priceInDai = amountFromWei(new BigNumber(additionalData?.nextPrice || 0), 'DAI')
+  const priceInDai = amountFromWei(new BigNumber(additionalData?.usdPrice || 0), 'DAI')
   const usdPrice = formatAmount(priceInDai, 'USD')
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
