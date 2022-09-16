@@ -48,7 +48,7 @@ export function AutoTakeProfitDetailsLayout({ token }: AutoTakeProfitDetailsLayo
             </>
           }
           image={{
-            src: '/static/img/setup-banner/auto-take.svg',
+            src: '/static/img/setup-banner/auto-take-profit.svg',
             backgroundColor: bannerGradientPresets.autoTakeProfit[0],
             backgroundColorEnd: bannerGradientPresets.autoTakeProfit[1],
           }}
