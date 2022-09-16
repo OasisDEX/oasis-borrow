@@ -51,8 +51,8 @@ export function AutoTakeProfitDetailsLayout({
               <ContentCardTriggerColPrice
                 token={token}
                 triggerColPrice={triggerColPrice}
-                afterTriggerColPrice={estimatedProfit}
-                estimatedProfit={afterTriggerColPrice}
+                afterTriggerColPrice={afterTriggerColPrice}
+                estimatedProfit={estimatedProfit}
                 changeVariant="positive"
               />
               <ContentCardTriggerColRatio
