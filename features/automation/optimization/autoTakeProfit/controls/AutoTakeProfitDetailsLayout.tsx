@@ -4,6 +4,7 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardTriggerColPrice } from 'components/vault/detailsSection/ContentCardTriggerColPrice'
+import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -18,6 +19,9 @@ export interface AutoTakeProfitDetailsLayoutProps {
   triggerColPrice?: BigNumber
   estimatedProfit?: BigNumber
   afterTriggerColPrice?: BigNumber
+  triggerColRatio?: BigNumber
+  afterTriggerColRatio?: BigNumber
+  currentColRatio: BigNumber
   token: string
 }
 
@@ -26,6 +30,9 @@ export function AutoTakeProfitDetailsLayout({
   triggerColPrice,
   estimatedProfit,
   afterTriggerColPrice,
+  triggerColRatio,
+  afterTriggerColRatio,
+  currentColRatio,
   token,
 }: AutoTakeProfitDetailsLayoutProps) {
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -46,6 +53,12 @@ export function AutoTakeProfitDetailsLayout({
                 triggerColPrice={triggerColPrice}
                 afterTriggerColPrice={estimatedProfit}
                 estimatedProfit={afterTriggerColPrice}
+                changeVariant="positive"
+              />
+              <ContentCardTriggerColRatio
+                triggerColRatio={triggerColRatio}
+                afterTriggerColRatio={afterTriggerColRatio}
+                currentColRatio={currentColRatio}
                 changeVariant="positive"
               />
             </DetailsSectionContentCardWrapper>

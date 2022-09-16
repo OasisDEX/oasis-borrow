@@ -16,17 +16,26 @@ export function AutoTakeProfitDetailsControl({ vault }: AutoTakeProfitDetailsCon
   const triggerColPrice = new BigNumber(1904)
   const afterTriggerColPrice = new BigNumber(1964)
   const estimatedProfit = new BigNumber(399040200)
-  // TODO: TDAutoTakeProfit | to be replaced with data from checkIfIsEditingAutoTakeProfit
-  const isEditing = false
+  const triggerColRatio = new BigNumber(210.37)
+  const afterTriggerColRatio = new BigNumber(222.32)
+  // TODO: TDAutoTakeProfit | commented out due to not being used right now
+  // const isEditing = false
 
   const autoTakeProfitDetailsLayoutOptionalParams = {
-    ...(isTriggerEnabled && {
-      triggerColPrice,
-      estimatedProfit,
-    }),
-    ...(isEditing && {
-      afterTriggerColPrice,
-    }),
+    // TODO: TDAutoTakeProfit | shoule be passed only when trigger is enabled, can't be done in current state because var is always false and it causes typescript error
+    // Spread types may only be created from object types.ts(2698)
+    // ...(isTriggerEnabled && {
+    triggerColPrice,
+    estimatedProfit,
+    triggerColRatio,
+    // }),
+    // TODO: TDAutoTakeProfit | shoule be passed only when is in editing stage, can't be done in current state because var is always false and it causes typescript error
+    // Spread types may only be created from object types.ts(2698)
+    // ...(isEditing && {
+    afterTriggerColPrice,
+    afterTriggerColRatio,
+    // }),
+    currentColRatio: vault.collateralizationRatio.times(100),
   }
 
   if (isDebtZero) return null
