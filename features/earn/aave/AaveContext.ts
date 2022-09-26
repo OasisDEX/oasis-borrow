@@ -13,6 +13,7 @@ import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveP
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
+import { aavePrepareReserveConfigurationData$ } from './helpers/aavePrepareReserveConfigurationData'
 import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine$,
@@ -126,10 +127,15 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
+  const aaveReserveStEthData$ = curry(aavePrepareReserveConfigurationData$)(
+    aaveReserveConfigurationData$({ token: 'STETH' }),
+  )
+
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
+    aaveReserveStEthData$,
   }
 }
 
