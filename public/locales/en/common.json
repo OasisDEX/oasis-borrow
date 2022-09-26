@@ -1569,8 +1569,11 @@
       "button": "Setup Auto-Take Profit"
     },
     "trigger-col-price": "Trigger {{token}} Price",
+    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
     "estimated-profit": "Estimated Profit at close {{amount}}",
+    "estimated-profit-explanation": "Estimated Profit at Close = Collateral value (USD) at trigger - Debt value to be repaid - estimated Tx Fees",
     "trigger-col-ratio": "Trigger Collateral Ratio",
+    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
     "current-col-ratio": "Current Collateral Ratio {{amount}}"
   },
 
