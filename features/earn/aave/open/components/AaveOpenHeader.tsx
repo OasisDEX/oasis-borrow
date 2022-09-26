@@ -5,21 +5,15 @@ import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatPercent } from 'helpers/formatters/format'
+import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useTranslation } from 'next-i18next'
 import { ActorRefFrom } from 'xstate'
 
 import { useAaveContext } from '../../AaveContextProvider'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareAaveTotalValueLocked'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { AaveStEthSimulateStateMachine } from '../state'
-
-const tokenPairList = {
-  'aave-steth': {
-    name: 'AAVE stETH yield multiple',
-    tokenList: ['AAVE', 'STETH', 'ETH'],
-  },
-} as Record<string, { name: string; tokenList: string[] }>
 
 const minimumMultiple = new BigNumber(1.1)
 
@@ -34,6 +28,14 @@ export function AaveOpenHeader({
   strategyName: string
   aaveReserveState: AaveReserveConfigurationData
 }) {
+  const { t } = useTranslation()
+  const tokenPairList = {
+    'aave-steth': {
+      name: t('open-earn.aave.product-header.token-pair-list.aave-steth-eth'),
+      tokenList: ['AAVE', 'STETH', 'ETH'],
+    },
+  } as Record<string, { name: string; tokenList: string[] }>
+
   const [simulationState] = useActor(simulationActor)
 
   const { context: simulationContext } = simulationState
@@ -55,7 +57,7 @@ export function AaveOpenHeader({
     )
 
     headlineDetails.push({
-      label: 'Current yield',
+      label: t('open-earn.aave.product-header.current-yield'),
       value: `${formatYield(yield7DaysMin).toString()} - ${formatYield(yield7DaysMax).toString()}`,
       sub: formatPercent(yield7DaysDiff, {
         precision: 2,
@@ -73,7 +75,7 @@ export function AaveOpenHeader({
       ),
     )
     headlineDetails.push({
-      label: '90 Day Avg',
+      label: t('open-earn.aave.product-header.90-day-avg-yield'),
       value: formatPercent(maximumMultiple.times(simulationContext.yields.annualisedYield90days), {
         precision: 2,
       }),
@@ -89,10 +91,8 @@ export function AaveOpenHeader({
 
   aaveTVL?.totalValueLocked &&
     headlineDetails.push({
-      label: 'Total value locked',
-      value: Intl.NumberFormat('en', { notation: 'compact', minimumFractionDigits: 3 }).format(
-        aaveTVL.totalValueLocked.toNumber(),
-      ),
+      label: t('open-earn.aave.product-header.total-value-locked'),
+      value: formatHugeNumbersToShortHuman(aaveTVL.totalValueLocked),
     })
 
   return (
