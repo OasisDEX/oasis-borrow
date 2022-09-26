@@ -1,5 +1,5 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
+import { EstimationOnClose } from 'components/EstimationOnClose'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultChangesInformation'
@@ -49,27 +49,11 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
             {t('vault-info-messages.closing')}
           </Text>
           {!debt.isZero() && (
-            <>
-              <Text
-                as="p"
-                variant="paragraph3"
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  mt: 2,
-                  fontWeight: 'semiBold',
-                }}
-              >
-                <Text
-                  as="span"
-                  sx={{ display: 'flex', alignItems: 'flex-end', color: 'neutral80' }}
-                >
-                  <Icon name={getToken('DAI').iconCircle} size="20px" sx={{ mr: 1 }} />
-                  {t('minimum')} {t('after-closing', { token: 'DAI' })}
-                </Text>
-                <Text as="span">{formatCryptoBalance(afterCloseToDai)} DAI</Text>
-              </Text>
-            </>
+            <EstimationOnClose
+              iconCircle={getToken('DAI').iconCircle}
+              label={`${t('minimum')} ${t('after-closing', { token: 'DAI' })}`}
+              value={`${formatCryptoBalance(afterCloseToDai)} DAI`}
+            />
           )}
         </>
       )}
