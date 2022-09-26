@@ -21,7 +21,9 @@ function ContentCardTriggerColRatioModal() {
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('auto-take-profit.trigger-col-ratio')}</Heading>
-      <Text as="p" variant="paragraph2">{t('auto-take-profit.trigger-col-ratio-explanation')}</Text>
+      <Text as="p" variant="paragraph2">
+        {t('auto-take-profit.trigger-col-ratio-explanation')}
+      </Text>
     </Grid>
   )
 }
