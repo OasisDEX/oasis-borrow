@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { AppSpinner } from 'helpers/AppSpinner'
 import React from 'react'
 import { Flex } from 'theme-ui'
 
@@ -10,9 +11,10 @@ export type VaultHeadlineProps = {
   header: string
   token: string[]
   details: HeadlineDetailsProp[]
+  loading?: boolean
 }
 
-export function VaultHeadline({ header, token, details }: VaultHeadlineProps) {
+export function VaultHeadline({ header, token, details, loading = false }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   return (
     <Flex
@@ -54,9 +56,11 @@ export function VaultHeadline({ header, token, details }: VaultHeadlineProps) {
           flexDirection: ['column', 'row'],
         }}
       >
-        {details.map((detail) => (
-          <VaultHeadlineDetails {...detail} key={`VaultHeadlineDetails_${detail.label}`} />
-        ))}
+        {!loading &&
+          details.map((detail) => (
+            <VaultHeadlineDetails {...detail} key={`VaultHeadlineDetails_${detail.label}`} />
+          ))}
+        {loading && <AppSpinner variant="styles.spinner.large" />}
       </Flex>
     </Flex>
   )

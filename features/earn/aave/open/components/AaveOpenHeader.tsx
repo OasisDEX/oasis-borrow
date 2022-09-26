@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aaveProtocolDataProvider'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -100,6 +99,7 @@ export function AaveOpenHeader({
       header={tokenPairList[strategyName].name}
       token={tokenPairList[strategyName].tokenList}
       details={headlineDetails}
+      loading={!aaveTVL?.totalValueLocked || simulationState.value === 'loading'}
     />
   )
 }
@@ -116,21 +116,14 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
 
   return (
     <WithErrorHandler error={[tvlStateError, aaveReserveStateError]}>
-      <WithLoadingIndicator
-        value={[tvlState, simulationMachine, aaveReserveState]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([_tvlState, _simulationMachine, _aaveReserveState]) => {
-          return (
-            <AaveOpenHeader
-              strategyName={strategyName}
-              simulationActor={_simulationMachine}
-              aaveTVL={_tvlState}
-              aaveReserveState={_aaveReserveState}
-            />
-          )
-        }}
-      </WithLoadingIndicator>
+      {tvlState && aaveReserveState && simulationMachine && (
+        <AaveOpenHeader
+          strategyName={strategyName}
+          simulationActor={simulationMachine}
+          aaveTVL={tvlState}
+          aaveReserveState={aaveReserveState}
+        />
+      )}
     </WithErrorHandler>
   )
 }
