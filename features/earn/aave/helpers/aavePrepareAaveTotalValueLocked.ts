@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { AaveReserveDataReply } from 'blockchain/calls/aaveProtocolDataProvider'
 import { amountFromWei } from 'blockchain/utils'
-import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { combineLatest, Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 export type PreparedAaveReserveData = {
   totalValueLocked: BigNumber
@@ -20,7 +20,7 @@ export function prepareAaveTotalValueLocked$(
     getAaveWEthReserveData$,
     getAaveAssetsPrices$,
   ).pipe(
-    switchMap(
+    map(
       ([
         STETH_reserveData,
         ETH_reserveData,
@@ -56,9 +56,9 @@ export function prepareAaveTotalValueLocked$(
         ) // total debt in WETH in USDC
         const totalValueLocked = STETH_USDC_availableLiquidity.minus(USDC_WETH_debt) // total value locked in USDC
 
-        return of({
+        return {
           totalValueLocked,
-        })
+        }
       },
     ),
   )
