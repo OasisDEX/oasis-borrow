@@ -17,7 +17,10 @@ import { ConstantMultipleFormControl } from 'features/automation/optimization/co
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
+
+import { AutoTakeProfitFormControl } from '../../autoTakeProfit/controls/AutoTakeProfitFormControl'
 
 interface OptimizationFormControlProps {
   vault: Vault
@@ -47,12 +50,15 @@ export function OptimizationFormControl({
   } = useAutomationContext()
 
   const { uiChanges } = useAppContext()
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
+
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
-  const { isConstantMultipleActive, isAutoBuyActive } = getActiveOptimizationFeature({
+  const { isConstantMultipleActive, isAutoBuyActive, isAutoTakeProfitActive } = getActiveOptimizationFeature({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
     isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
+    isAutoTakeProfitOn: autoTakeProfitEnabled, // TODO ŁW automationTriggersData?.autoTakeProfit?.isTriggerEnabled,
     section: 'form',
   })
 
@@ -71,6 +77,7 @@ export function OptimizationFormControl({
         currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
       })
     }
+    // TODO ŁW: add autoTakeProfit
   }, [])
 
   return (
@@ -105,6 +112,7 @@ export function OptimizationFormControl({
         balanceInfo={balanceInfo}
         shouldRemoveAllowance={shouldRemoveAllowance}
       />
+      {autoTakeProfitEnabled && <AutoTakeProfitFormControl isAutoTakeProfitActive={isAutoTakeProfitActive}/>}
     </>
   )
 }
