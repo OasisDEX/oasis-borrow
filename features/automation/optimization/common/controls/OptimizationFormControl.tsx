@@ -12,6 +12,7 @@ import {
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/controls/AutoBuyFormControl'
+import { AutoTakeProfitFormControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -20,41 +21,45 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
 interface OptimizationFormControlProps {
-  vault: Vault
-  vaultType: VaultType
+  balanceInfo: BalanceInfo
+  context: Context
+  ethMarketPrice: BigNumber
   ilkData: IlkData
   txHelpers?: TxHelpers
-  context: Context
-  balanceInfo: BalanceInfo
-  ethMarketPrice: BigNumber
+  vault: Vault
+  vaultType: VaultType
 }
 
 export function OptimizationFormControl({
-  vault,
-  vaultType,
+  balanceInfo,
+  context,
+  ethMarketPrice,
   ilkData,
   txHelpers,
-  context,
-  balanceInfo,
-  ethMarketPrice,
+  vault,
+  vaultType,
 }: OptimizationFormControlProps) {
   const {
-    stopLossTriggerData,
-    autoSellTriggerData,
     autoBuyTriggerData,
-    constantMultipleTriggerData,
     automationTriggersData,
+    autoSellTriggerData,
+    constantMultipleTriggerData,
+    stopLossTriggerData,
   } = useAutomationContext()
 
   // TODO: TDAutoTakeProfit | to be replaced with data from autoTakeProfitTriggerData from useAutomationContext method
   const autoTakeProfitTriggerData = {
-    isTriggerEnabled: false
+    isTriggerEnabled: false,
   }
 
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
-  const { isConstantMultipleActive, isAutoBuyActive } = getActiveOptimizationFeature({
+  const {
+    isAutoBuyActive,
+    isAutoTakeProfitActive,
+    isConstantMultipleActive,
+  } = getActiveOptimizationFeature({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     section: 'form',
   })
@@ -85,34 +90,39 @@ export function OptimizationFormControl({
   return (
     <>
       <AutoBuyFormControl
+        autoBuyTriggerData={autoBuyTriggerData}
+        autoSellTriggerData={autoSellTriggerData}
+        balanceInfo={balanceInfo}
+        constantMultipleTriggerData={constantMultipleTriggerData}
+        context={context}
+        ethMarketPrice={ethMarketPrice}
+        ilkData={ilkData}
+        isAutoBuyActive={isAutoBuyActive}
+        isAutoBuyOn={autoBuyTriggerData.isTriggerEnabled}
+        shouldRemoveAllowance={shouldRemoveAllowance}
+        stopLossTriggerData={stopLossTriggerData}
+        txHelpers={txHelpers}
         vault={vault}
         vaultType={vaultType}
-        ilkData={ilkData}
-        balanceInfo={balanceInfo}
-        autoSellTriggerData={autoSellTriggerData}
-        autoBuyTriggerData={autoBuyTriggerData}
-        stopLossTriggerData={stopLossTriggerData}
-        constantMultipleTriggerData={constantMultipleTriggerData}
-        isAutoBuyOn={autoBuyTriggerData.isTriggerEnabled}
-        context={context}
-        txHelpers={txHelpers}
-        ethMarketPrice={ethMarketPrice}
-        isAutoBuyActive={isAutoBuyActive}
-        shouldRemoveAllowance={shouldRemoveAllowance}
       />
       <ConstantMultipleFormControl
+        autoBuyTriggerData={autoBuyTriggerData}
+        autoSellTriggerData={autoSellTriggerData}
+        balanceInfo={balanceInfo}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         context={context}
-        isConstantMultipleActive={isConstantMultipleActive}
-        txHelpers={txHelpers}
-        vault={vault}
         ethMarketPrice={ethMarketPrice}
         ilkData={ilkData}
-        autoSellTriggerData={autoSellTriggerData}
-        autoBuyTriggerData={autoBuyTriggerData}
-        stopLossTriggerData={stopLossTriggerData}
-        constantMultipleTriggerData={constantMultipleTriggerData}
-        balanceInfo={balanceInfo}
+        isConstantMultipleActive={isConstantMultipleActive}
         shouldRemoveAllowance={shouldRemoveAllowance}
+        stopLossTriggerData={stopLossTriggerData}
+        txHelpers={txHelpers}
+        vault={vault}
+      />
+      <AutoTakeProfitFormControl
+        autoBuyTriggerData={autoBuyTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
+        isAutoTakeProfitActive={isAutoTakeProfitActive}
       />
     </>
   )
