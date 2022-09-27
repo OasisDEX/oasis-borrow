@@ -14,6 +14,7 @@ import {
   maxUint256,
 } from 'features/automation/common/consts'
 import { getTriggersByType } from 'features/automation/common/helpers'
+import { AutoBSTriggerTypes } from 'features/automation/common/types'
 import { zero } from 'helpers/zero'
 
 export interface AutoBSTriggerData {
@@ -26,8 +27,6 @@ export interface AutoBSTriggerData {
   maxBaseFeeInGwei: BigNumber
   isTriggerEnabled: boolean
 }
-
-type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
 
 interface ExtractAutoBSDataProps {
   triggersData: TriggersData

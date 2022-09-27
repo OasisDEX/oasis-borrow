@@ -10,6 +10,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
@@ -61,13 +62,13 @@ export function ProtectionFormControl({
     if (isAutoSellActive) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Protection',
-        currentProtectionFeature: 'autoSell',
+        currentProtectionFeature: AutomationFeatures.AUTO_SELL,
       })
     }
     if (isStopLossActive) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Protection',
-        currentProtectionFeature: 'stopLoss',
+        currentProtectionFeature: AutomationFeatures.STOP_LOSS,
       })
     }
   }, [autoSellTriggerData.isTriggerEnabled, stopLossTriggerData.isStopLossEnabled])

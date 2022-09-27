@@ -1,6 +1,6 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
-import { checkIfEditingAutoBS } from 'features/automation/common/helpers'
+import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers'
 import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
@@ -10,7 +10,6 @@ import { AutoBuyDetailsLayout } from 'features/automation/optimization/autoBuy/c
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import { Grid } from 'theme-ui'
 
 interface AutoBuyDetailsControlProps {
   vault: Vault
@@ -24,7 +23,9 @@ export function AutoBuyDetailsControl({
   isconstantMultipleEnabled,
 }: AutoBuyDetailsControlProps) {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
+
   const {
     execCollRatio,
     targetCollRatio,
@@ -38,8 +39,7 @@ export function AutoBuyDetailsControl({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
-
-  const isEditing = checkIfEditingAutoBS({
+  const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData: autoBuyTriggerData,
     autoBSState: autoBuyState,
     isRemoveForm: autoBuyState.currentForm === 'remove',
@@ -58,22 +58,14 @@ export function AutoBuyDetailsControl({
     }),
   }
 
-  if (readOnlyAutoBSEnabled) {
-    return null
-  }
-
-  if (isDebtZero) {
-    return null
-  }
+  if (readOnlyAutoBSEnabled || isDebtZero) return null
 
   return (
-    <Grid>
-      <AutoBuyDetailsLayout
-        token={vault.token}
-        autoBuyTriggerData={autoBuyTriggerData}
-        isconstantMultipleEnabled={isconstantMultipleEnabled}
-        {...autoBuyDetailsLayoutOptionalParams}
-      />
-    </Grid>
+    <AutoBuyDetailsLayout
+      token={vault.token}
+      autoBuyTriggerData={autoBuyTriggerData}
+      isconstantMultipleEnabled={isconstantMultipleEnabled}
+      {...autoBuyDetailsLayoutOptionalParams}
+    />
   )
 }

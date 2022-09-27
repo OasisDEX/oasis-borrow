@@ -54,8 +54,13 @@ export function NotificationSocketProvider({ children }: WithChildren) {
       }
 
       if (!socket) {
-        const socketInstance = io(notificationsHost, { auth: { token: `Bearer ${jwtToken}` } })
-
+        const socketInstance = io(notificationsHost, {
+          auth: {
+            token: `Bearer ${jwtToken}`,
+          },
+          transports: ['websocket'],
+          upgrade: false,
+        })
         // initialize state
         uiChanges.publish(NOTIFICATION_CHANGE, {
           type: 'initialize-state',

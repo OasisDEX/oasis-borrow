@@ -1,7 +1,7 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
+import { EstimationOnClose } from 'components/EstimationOnClose'
 import {
   extractFieldDepositCollateralData,
   extractFieldDepositDaiData,
@@ -81,6 +81,13 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
 
   const isClosingToCollateral = closeVaultTo === 'collateral'
   const closeToTokenSymbol = isClosingToCollateral ? token : 'DAI'
+  const amountOnClose = (
+    <>
+      {formatCryptoBalance(isClosingToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
+      {closeToTokenSymbol}{' '}
+      {isClosingToCollateral && `($${formatAmount(afterCloseToCollateralUSD, 'USD')})`}
+    </>
+  )
 
   return (
     <>
@@ -106,21 +113,11 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
       <Text as="p" variant="paragraph3" sx={{ mt: 2, color: 'neutral80' }}>
         {t('vault-info-messages.closing')}
       </Text>
-      <Text
-        as="p"
-        variant="paragraph3"
-        sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, fontWeight: 'semiBold' }}
-      >
-        <Text as="span" sx={{ display: 'flex', alignItems: 'flex-end', color: 'neutral80' }}>
-          <Icon name={getToken(closeToTokenSymbol).iconCircle} size="20px" sx={{ mr: 1 }} />
-          {t('after-closing', { token: closeToTokenSymbol })}
-        </Text>
-        <Text as="span">
-          {formatCryptoBalance(isClosingToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
-          {closeToTokenSymbol}{' '}
-          {isClosingToCollateral && `($${formatAmount(afterCloseToCollateralUSD, 'USD')})`}
-        </Text>
-      </Text>
+      <EstimationOnClose
+        iconCircle={getToken(closeToTokenSymbol).iconCircle}
+        label={t('after-closing', { token: closeToTokenSymbol })}
+        value={amountOnClose}
+      />
     </>
   )
 }

@@ -7,7 +7,6 @@ import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/Co
 import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
 
 export interface StopLossDetailsLayoutProps {
   slRatio: BigNumber
@@ -44,51 +43,47 @@ export function StopLossDetailsLayout({
 
   if (!(vaultDebt.isZero() && isStopLossEnabled)) {
     return (
-      <Grid>
-        <Box>
-          <DetailsSection
-            title={t('system.stop-loss')}
-            badge={isStopLossEnabled}
-            content={
-              <DetailsSectionContentCardWrapper>
-                <ContentCardStopLossCollateralRatio
-                  isStopLossEnabled={isStopLossEnabled}
-                  isEditing={isEditing}
-                  slRatio={slRatio}
-                  collateralizationRatio={collateralizationRatio}
-                  afterSlRatio={afterSlRatio}
-                />
-                <ContentCardCollateralizationRatio
-                  collateralizationRatio={collateralizationRatio}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-                />
-                <ContentCardDynamicStopPrice
-                  isStopLossEnabled={isStopLossEnabled}
-                  isEditing={isEditing}
-                  slRatio={slRatio}
-                  liquidationPrice={liquidationPrice}
-                  liquidationRatio={liquidationRatio}
-                  afterSlRatio={afterSlRatio}
-                  lockedCollateral={lockedCollateral}
-                  debt={vaultDebt}
-                />
-                <ContentCardEstTokenOnTrigger
-                  isCollateralActive={isCollateralActive}
-                  isStopLossEnabled={isStopLossEnabled}
-                  isEditing={isEditing}
-                  token={token}
-                  slRatio={slRatio}
-                  liquidationPrice={liquidationPrice}
-                  lockedCollateral={lockedCollateral}
-                  debt={vaultDebt}
-                  liquidationPenalty={liquidationPenalty}
-                  afterSlRatio={afterSlRatio}
-                />
-              </DetailsSectionContentCardWrapper>
-            }
-          />
-        </Box>
-      </Grid>
+      <DetailsSection
+        title={t('system.stop-loss')}
+        badge={isStopLossEnabled}
+        content={
+          <DetailsSectionContentCardWrapper>
+            <ContentCardStopLossCollateralRatio
+              isStopLossEnabled={isStopLossEnabled}
+              isEditing={isEditing}
+              slRatio={slRatio}
+              collateralizationRatio={collateralizationRatio}
+              afterSlRatio={afterSlRatio}
+            />
+            <ContentCardCollateralizationRatio
+              collateralizationRatio={collateralizationRatio}
+              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+            />
+            <ContentCardDynamicStopPrice
+              isStopLossEnabled={isStopLossEnabled}
+              isEditing={isEditing}
+              slRatio={slRatio}
+              liquidationPrice={liquidationPrice}
+              liquidationRatio={liquidationRatio}
+              afterSlRatio={afterSlRatio}
+              lockedCollateral={lockedCollateral}
+              debt={vaultDebt}
+            />
+            <ContentCardEstTokenOnTrigger
+              isCollateralActive={isCollateralActive}
+              isStopLossEnabled={isStopLossEnabled}
+              isEditing={isEditing}
+              token={token}
+              slRatio={slRatio}
+              liquidationPrice={liquidationPrice}
+              lockedCollateral={lockedCollateral}
+              debt={vaultDebt}
+              liquidationPenalty={liquidationPenalty}
+              afterSlRatio={afterSlRatio}
+            />
+          </DetailsSectionContentCardWrapper>
+        }
+      />
     )
   } else {
     return <></>

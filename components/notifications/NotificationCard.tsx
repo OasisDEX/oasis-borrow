@@ -116,28 +116,28 @@ export function NotificationCard({
       >
         {humanDate}
       </Text>
-      {isCritical && (
-        <Flex sx={{ justifyContent: 'flex-start', gap: 2 }}>
+      <Flex sx={{ justifyContent: 'flex-start', gap: 2 }}>
+        {additionalData.vaultId && linkHash && (
           <AppLink href={`/${additionalData.vaultId}`} hash={linkHash}>
             <Button
               variant="bean"
               sx={{ px: '24px', py: 1, height: '28px' }}
               onClick={() => editHandler(id)}
             >
-              {t('edit-vault')}
+              {t('go-to-vault-generic')}
             </Button>
           </AppLink>
-          {!isRead && (
-            <Button
-              variant="textual"
-              sx={{ color: 'primary', fontSize: 1, py: 1 }}
-              onClick={() => markReadHandler(id)}
-            >
-              {t('mark-as-read')}
-            </Button>
-          )}
-        </Flex>
-      )}
+        )}
+        {isCritical && !isRead && (
+          <Button
+            variant="textual"
+            sx={{ color: 'primary', fontSize: 1, py: 1 }}
+            onClick={() => markReadHandler(id)}
+          >
+            {t('mark-as-read')}
+          </Button>
+        )}
+      </Flex>
     </Card>
   )
 }

@@ -3,7 +3,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { ConstantMultipleDetailsLayout } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsLayout'
-import { checkIfEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'
+import { checkIfIsEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -18,7 +18,6 @@ import {
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import { Grid } from 'theme-ui'
 
 interface ConstantMultipleDetailsControlProps {
   vault: Vault
@@ -35,23 +34,27 @@ export function ConstantMultipleDetailsControl({
   tokenMarketPrice,
   constantMultipleTriggerData,
 }: ConstantMultipleDetailsControlProps) {
-  const { debt, lockedCollateral, token } = vault
-  const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
+  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
+
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
-  const isEditing = checkIfEditingConstantMultiple({
-    triggerData: constantMultipleTriggerData,
-    state: constantMultipleState,
-    isRemoveForm: constantMultipleState.currentForm === 'remove',
-  })
+
+  const { debt, lockedCollateral, token } = vault
   const {
     isTriggerEnabled,
     targetCollRatio,
     buyExecutionCollRatio,
     sellExecutionCollRatio,
   } = constantMultipleTriggerData
-  const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
+  const isDebtZero = vault.debt.isZero()
+
+  const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
+  const isEditing = checkIfIsEditingConstantMultiple({
+    triggerData: constantMultipleTriggerData,
+    state: constantMultipleState,
+    isRemoveForm: constantMultipleState.currentForm === 'remove',
+  })
 
   const constantMultipleDetailsLayoutOptionalParams = {
     ...(isTriggerEnabled && {
@@ -79,22 +82,14 @@ export function ConstantMultipleDetailsControl({
     }),
   }
 
-  if (constantMultipleReadOnlyEnabled) {
-    return null
-  }
-  const isDebtZero = vault.debt.isZero()
-  if (isDebtZero) {
-    return null
-  }
+  if (constantMultipleReadOnlyEnabled || isDebtZero) return null
 
   return (
-    <Grid>
-      <ConstantMultipleDetailsLayout
-        vaultType={vaultType}
-        token={token}
-        isTriggerEnabled={isTriggerEnabled}
-        {...constantMultipleDetailsLayoutOptionalParams}
-      />
-    </Grid>
+    <ConstantMultipleDetailsLayout
+      vaultType={vaultType}
+      token={token}
+      isTriggerEnabled={isTriggerEnabled}
+      {...constantMultipleDetailsLayoutOptionalParams}
+    />
   )
 }

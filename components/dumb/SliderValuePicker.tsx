@@ -1,7 +1,7 @@
 import { Box, Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import React from 'react'
-import { SxStyleProp, useThemeUI } from 'theme-ui'
+import { Flex, SxStyleProp, useThemeUI } from 'theme-ui'
 
 export interface SliderValuePickerProps {
   sliderPercentageFill: BigNumber
@@ -14,8 +14,8 @@ export interface SliderValuePickerProps {
   maxBoundry: BigNumber
   lastValue: BigNumber
   disabled: boolean
-  leftBoundryStyling: SxStyleProp
-  rightBoundryStyling: SxStyleProp
+  leftBoundryStyling?: SxStyleProp
+  rightBoundryStyling?: SxStyleProp
   step: number
   leftLabel?: string
   rightLabel?: string
@@ -36,27 +36,28 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
 
   return (
     <Grid gap={2}>
-      <Box>
-        <Grid
-          columns={2}
-          gap={2}
-          sx={{
-            variant: 'text.paragraph4',
-            justifyContent: 'space-between',
-            fontWeight: 'semiBold',
-            color: 'neutral80',
-          }}
-        >
-          <Text>{props.leftLabel}</Text>
-          <Text>{props.rightLabel}</Text>
-          <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+      <Flex
+        sx={{
+          variant: 'text.paragraph4',
+          justifyContent: 'space-between',
+          fontWeight: 'semiBold',
+          color: 'neutral80',
+          alignItems: 'flex-end',
+        }}
+      >
+        <Grid gap={2}>
+          {props.leftLabel && <Text as="span">{props.leftLabel}</Text>}
+          <Text as="span" variant="boldParagraph1" sx={props.leftBoundryStyling}>
             {props.leftBoundryFormatter(props.leftBoundry)}
           </Text>
-          <Text variant="paragraph1" sx={props.leftBoundryStyling}>
+        </Grid>
+        <Grid gap={2} sx={{ textAlign: 'right' }}>
+          {props.rightLabel && <Text as="span">{props.rightLabel}</Text>}
+          <Text as="span" variant="boldParagraph1" sx={props.rightBoundryStyling}>
             {props.rightBoundryFormatter(props.rightBoundry)}
           </Text>
         </Grid>
-      </Box>
+      </Flex>
       <Box my={1}>
         <Slider
           sx={{ ...props.rightBoundryStyling, background }}

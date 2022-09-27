@@ -1,3 +1,4 @@
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import {
   AutomationSidebarCopiesParams,
   SidebarAutomationFlow,
@@ -12,7 +13,7 @@ function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarAutomatio
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.setup'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -34,7 +35,7 @@ function getSidebarTitleTxInProgressTranslationKey({ flow }: { flow: SidebarAuto
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.setting'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -52,7 +53,7 @@ function getSidebarTitleTxInProgressTranslationKey({ flow }: { flow: SidebarAuto
 function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarAutomationFlow }) {
   switch (flow) {
     case 'addSl':
-    case 'adjustSl':
+    case 'editSl':
       return 'protection.set-downside-protection'
     case 'cancelSl':
       return 'protection.cancel-downside-protection'
@@ -83,7 +84,7 @@ function getSidebarTitleTxSuccessTranslationKey({ flow }: { flow: SidebarAutomat
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.trigger-added'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -107,17 +108,17 @@ export function getAutomationFormTitle({ flow, stage, feature }: AutomationSideb
     case 'stopLossEditing':
       const editingKey = getSidebarTitleEditingTranslationKey({ flow })
 
-      return t(editingKey, { feature })
+      return t(editingKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txInProgress':
       const txInProgressKey = getSidebarTitleTxInProgressTranslationKey({
         flow,
       })
 
-      return t(txInProgressKey, { feature })
+      return t(txInProgressKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txFailure':
       const txFailureKey = getSidebarTitleTxFailureTranslationKey({ flow })
 
-      return t(txFailureKey, { feature })
+      return t(txFailureKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txSuccess':
       const txSuccessKey = getSidebarTitleTxSuccessTranslationKey({ flow })
 

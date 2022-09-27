@@ -17,6 +17,7 @@ import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 
 export type OpenVaultStopLossLevelChange = {
   kind: 'stopLossLevel'
@@ -70,6 +71,8 @@ export function getDataForStopLoss(
   },
   feature: 'borrow' | 'multiply',
 ) {
+  const { t } = useTranslation()
+
   const {
     token,
     priceInfo: { currentEthPrice, nextCollateralPrice },
@@ -137,6 +140,8 @@ export function getDataForStopLoss(
     sliderConfig: {
       ...stopLossSliderBasicConfig,
       sliderPercentageFill,
+      leftLabel: t('slider.set-stoploss.left-label'),
+      rightLabel: t('slider.set-stoploss.right-label'),
       leftBoundry: stopLossLevel,
       rightBoundry: afterNewLiquidationPrice,
       lastValue: stopLossLevel,

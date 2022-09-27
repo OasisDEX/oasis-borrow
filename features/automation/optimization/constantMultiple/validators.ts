@@ -4,6 +4,7 @@ import { ConstantMultipleFormChange } from 'features/automation/optimization/con
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
+import { zero } from 'helpers/zero'
 
 export function warningsConstantMultipleValidation({
   vault,
@@ -79,6 +80,8 @@ export function errorsConstantMultipleValidation({
   debtFloor,
   debtDeltaAfterSell,
   debtDeltaWhenSellAtCurrentCollRatio,
+  nextBuyPrice,
+  nextSellPrice,
 }: {
   constantMultipleState: ConstantMultipleFormChange
   isRemoveForm: boolean
@@ -86,6 +89,8 @@ export function errorsConstantMultipleValidation({
   debtFloor: BigNumber
   debt: BigNumber
   debtDeltaWhenSellAtCurrentCollRatio: BigNumber
+  nextBuyPrice: BigNumber
+  nextSellPrice: BigNumber
 }) {
   const {
     minSellPrice,
@@ -107,10 +112,16 @@ export function errorsConstantMultipleValidation({
     (debtFloor.gt(debt.plus(debtDeltaAfterSell)) ||
       debtFloor.gt(debt.plus(debtDeltaWhenSellAtCurrentCollRatio)))
 
+  const maxBuyPriceWillPreventBuyTrigger = maxBuyPrice?.gt(zero) && maxBuyPrice.lt(nextBuyPrice)
+  const minSellPriceWillPreventSellTrigger =
+    minSellPrice?.gt(zero) && minSellPrice.gt(nextSellPrice)
+
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     autoBuyMaxBuyPriceNotSpecified,
     minimumSellPriceNotProvided,
     targetCollRatioExceededDustLimitCollRatio,
+    maxBuyPriceWillPreventBuyTrigger,
+    minSellPriceWillPreventSellTrigger,
   })
 }

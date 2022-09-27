@@ -30,6 +30,8 @@ export function SidebarAutomationFeatureCreationStage({
     [AutomationFeatures.AUTO_BUY]: 'setting-up-auto-buy-for-your-vault',
     [AutomationFeatures.AUTO_SELL]: 'setting-up-auto-sell-for-your-vault',
     [AutomationFeatures.CONSTANT_MULTIPLE]: 'what-is-constant-multiple',
+    // TODO to be updated
+    [AutomationFeatures.AUTO_TAKE_PROFIT]: '',
   }
 
   switch (stage) {

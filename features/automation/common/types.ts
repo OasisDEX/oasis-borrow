@@ -1,3 +1,4 @@
+import { TriggerType } from '@oasisdex/automation'
 import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
@@ -6,15 +7,15 @@ import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
 export enum AutomationFeatures {
-  AUTO_BUY = 'Auto-Buy',
-  AUTO_SELL = 'Auto-Sell',
-  CONSTANT_MULTIPLE = 'Constant Multiple',
-  STOP_LOSS = 'Stop-Loss Protection',
+  AUTO_BUY = 'autoBuy',
+  AUTO_SELL = 'autoSell',
+  CONSTANT_MULTIPLE = 'constantMultiple',
+  STOP_LOSS = 'stopLoss',
+  AUTO_TAKE_PROFIT = 'autoTakeProfit',
 }
-
 export type SidebarAutomationFlow =
   | 'addSl'
-  | 'adjustSl'
+  | 'editSl'
   | 'cancelSl'
   | 'addAutoSell'
   | 'cancelAutoSell'
@@ -47,8 +48,11 @@ export interface AutomationSidebarStatusParams {
   etherscan?: string
 }
 
+export type AutomationBSPublishType = typeof AUTO_SELL_FORM_CHANGE | typeof AUTO_BUY_FORM_CHANGE
+
 export type AutomationPublishType =
+  | AutomationBSPublishType
   | typeof CONSTANT_MULTIPLE_FORM_CHANGE
-  | typeof AUTO_SELL_FORM_CHANGE
-  | typeof AUTO_BUY_FORM_CHANGE
   | typeof STOP_LOSS_FORM_CHANGE
+
+export type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell

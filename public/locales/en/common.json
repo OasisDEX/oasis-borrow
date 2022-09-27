@@ -224,6 +224,7 @@
   "get-dai": "Get Dai",
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
+  "go-to-vault-generic": "Go to Vault",
   "here": "here",
   "from:": "From",
   "full": "Full",
@@ -689,7 +690,7 @@
       "right-footer": "Increase risk"
     },
     "set-stoploss": {
-      "left-label": "Stop-Loss coll.ratio",
+      "left-label": "Stop-Loss collateral ratio",
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
       "right-footer": "More likely execution"
@@ -762,6 +763,7 @@
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
+    "auto-take-profit": "Auto-Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -889,7 +891,9 @@
     "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
     "stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
     "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first",
-    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing."
+    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing.",
+    "min-sell-price-will-prevent-sell-trigger": "This Min Sell Price will prevent the Sell Trigger from executing",
+    "max-buy-price-will-prevent-buy-trigger": "This Max Buy Price will prevent the Buy Trigger from executing"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -1126,6 +1130,7 @@
   },
   "setup": "Setup",
   "protection": {
+    "stop-loss-protection": "Stop-Loss Protection",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
@@ -1558,6 +1563,35 @@
     "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
+  "auto-take-profit": {
+    "title": "Auto-Take Profit",
+    "cancel-summary-title": "Cancel Auto-Take Profit order summary",
+    "form-title": "Auto-Take Profit Setup",
+    "banner": {
+      "header": "Set up Auto-Take Profit",
+      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
+      "button": "Setup Auto-Take Profit"
+    },
+    "trigger-col-price": "Trigger {{token}} Price",
+    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
+    "estimated-profit": "Estimated Profit at close {{amount}}",
+    "estimated-profit-explanation": "Estimated Profit at Close = Collateral value (USD) at trigger - Debt value to be repaid - estimated Tx Fees",
+    "trigger-col-ratio": "Trigger Collateral Ratio",
+    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
+    "current-col-ratio": "Current Collateral Ratio {{amount}}",
+    "vault-changes": {
+      "general-summary": "General summary",
+      "trigger-col-price": "Trigger {{token}} Price",
+      "trigger-collateral-ratio": "Trigger Collateral Ratio",
+      "debt-repaid": "Debt Repaid",
+      "col-price-impact": "ETH Price (impact)",
+      "total-transaction-cost": "Total transaction cost on trigger",
+      "estimated-oasis-fee": "Estimated Oasis fee",
+      "estimated-gas-fee": "Estimated gas fee",
+      "setup-transaction-cost": "Setup transaction cost"
+    }
+  },
+
   "automation": {
     "setup": "{{feature}} Setup",
     "trigger-added": "{{feature}} Enabled",
@@ -1699,9 +1733,9 @@
     "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "oracle-price-changed": "Oracle price changed ${{usdPrice}}.",
     "action-notifications": "Vault action notifications",
-    "action-notifications-description": "You will be able to receive notifications when triggering Automation, Liquidation, or opening a vault.",
+    "action-notifications-description": "Receive a notification when an action occurs on your Vault.",
     "info-notifications": "Vault info notifications",
-    "info-notifications-description": "Get notified when your positions get within 5% of the Stop Loss or liquidation price.",
+    "info-notifications-description": "Receive notifications with important, timely information, so you can adjust your Vault.",
     "user-communication-notifications": "Oasis.app user communication notifications",
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "news-notifications": "Oasis.app news notifications",

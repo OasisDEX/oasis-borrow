@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
+import { amountFromWei } from 'blockchain/utils'
 import {
   Notification,
   NotificationAdditionalData,
@@ -9,13 +8,6 @@ import {
 import { formatAmount } from 'helpers/formatters/format'
 import { Trans } from 'next-i18next'
 import React from 'react'
-
-function linkComponents(href: string) {
-  return {
-    1: <AppLink href={href} sx={{ fontSize: 2, fontWeight: 'semiBold' }} />,
-    2: <WithArrow sx={{ display: 'inline', color: 'interactive100', fontWeight: 'semiBold' }} />,
-  }
-}
 
 export function getNotificationTitle({
   type,
@@ -26,7 +18,8 @@ export function getNotificationTitle({
   lastModified: number
   additionalData: NotificationAdditionalData
 }) {
-  const usdPrice = new BigNumber(additionalData?.price || 0)
+  const priceInDai = amountFromWei(new BigNumber(additionalData?.usdPrice || 0), 'DAI')
+  const usdPrice = formatAmount(priceInDai, 'USD')
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'numeric',
@@ -44,8 +37,8 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.vault-liquidated"
           values={{
-            vaultId: vaultId,
-            usdPrice: formatAmount(usdPrice, 'USD'),
+            vaultId,
+            usdPrice,
             humanDate,
           }}
         />
@@ -55,7 +48,7 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.oracle-price-changed"
           values={{
-            usdPrice: formatAmount(usdPrice, 'USD'),
+            usdPrice,
             humanDate,
           }}
         />
@@ -65,8 +58,8 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.stop-loss-executed"
           values={{
-            vaultId: vaultId,
-            usdPrice: formatAmount(usdPrice, 'USD'),
+            vaultId,
+            usdPrice,
             humanDate,
           }}
         />
@@ -76,8 +69,8 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.auto-buy-executed"
           values={{
-            vaultId: vaultId,
-            usdPrice: formatAmount(usdPrice, 'USD'),
+            vaultId,
+            usdPrice,
             humanDate,
           }}
         />
@@ -87,8 +80,8 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.auto-sell-executed"
           values={{
-            vaultId: vaultId,
-            usdPrice: formatAmount(usdPrice, 'USD'),
+            vaultId,
+            usdPrice,
             humanDate,
           }}
         />
@@ -98,7 +91,7 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.approaching-liquidation"
           values={{
-            vaultId: vaultId,
+            vaultId,
             humanDate,
           }}
         />
@@ -107,32 +100,28 @@ export function getNotificationTitle({
       return (
         <Trans
           i18nKey="notifications.approaching-trigger"
-          values={{ vaultId: vaultId, trigger: 'Auto-Buy' }}
-          components={linkComponents(`/${vaultId}`)}
+          values={{ vaultId, trigger: 'Auto-Buy' }}
         />
       )
     case NotificationTypes.APPROACHING_AUTO_SELL:
       return (
         <Trans
           i18nKey="notifications.approaching-trigger"
-          values={{ vaultId: vaultId, trigger: 'Auto-Sell' }}
-          components={linkComponents(`/${vaultId}`)}
+          values={{ vaultId, trigger: 'Auto-Sell' }}
         />
       )
     case NotificationTypes.APPROACHING_STOP_LOSS:
       return (
         <Trans
           i18nKey="notifications.approaching-trigger"
-          values={{ vaultId: vaultId, trigger: 'Stop-Loss' }}
-          components={linkComponents(`/${vaultId}`)}
+          values={{ vaultId, trigger: 'Stop-Loss' }}
         />
       )
     case NotificationTypes.APPROACHING_CONSTANT_MULTIPLE:
       return (
         <Trans
           i18nKey="notifications.approaching-trigger"
-          values={{ vaultId: vaultId, trigger: 'Constant-Multiple' }}
-          components={linkComponents(`/${vaultId}`)}
+          values={{ vaultId, trigger: 'Constant-Multiple' }}
         />
       )
     default:
