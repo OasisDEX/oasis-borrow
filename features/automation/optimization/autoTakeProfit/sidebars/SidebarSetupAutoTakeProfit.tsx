@@ -1,4 +1,6 @@
 import { Vault } from 'blockchain/vaults'
+import { PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -16,14 +18,18 @@ interface SidebarSetupAutoTakeProfitProps {
   isAutoTakeProfitActive: boolean
   feature: AutomationFeatures
   vault: Vault
+  closePickerConfig: PickCloseStateProps
+  // sliderConfig: SliderValuePickerProps
 }
-
+// TODO ŁW Slider config
 export function SidebarSetupAutoTakeProfit({
   autoBuyTriggerData,
   constantMultipleTriggerData,
   isAutoTakeProfitActive,
   feature,
   vault,
+  closePickerConfig,
+  // sliderConfig,
 }: SidebarSetupAutoTakeProfitProps) {
   const { t } = useTranslation()
 
@@ -49,7 +55,7 @@ export function SidebarSetupAutoTakeProfit({
       content: (
         <Grid gap={3}>
           {/* TODO: Should be displayed based on current form state */}
-          <SidebarAutoTakeProfitEditingStage vault={vault} />
+          <SidebarAutoTakeProfitEditingStage vault={vault} closePickerConfig={closePickerConfig} sliderConfig={sliderConfig}/>
         </Grid>
       ),
       primaryButton: {
