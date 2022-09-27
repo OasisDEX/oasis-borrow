@@ -7,12 +7,25 @@ import {
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardTriggerColRatioProps {
   triggerColRatio?: BigNumber
   afterTriggerColRatio?: BigNumber
   currentColRatio: BigNumber
   changeVariant?: ChangeVariantType
+}
+
+function ContentCardTriggerColRatioModal() {
+  const { t } = useTranslation()
+  return (
+    <Grid gap={2}>
+      <Heading variant="header3">{t('auto-take-profit.trigger-col-ratio')}</Heading>
+      <Text as="p" variant="paragraph2">
+        {t('auto-take-profit.trigger-col-ratio-explanation')}
+      </Text>
+    </Grid>
+  )
 }
 
 export function ContentCardTriggerColRatio({
@@ -44,6 +57,7 @@ export function ContentCardTriggerColRatio({
 
   const contentCardSettings: ContentCardProps = {
     title: t('auto-take-profit.trigger-col-ratio'),
+    modal: <ContentCardTriggerColRatioModal />,
   }
 
   if (triggerColRatio) contentCardSettings.value = formatted.triggerColRatio

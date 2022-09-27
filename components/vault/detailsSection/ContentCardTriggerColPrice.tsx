@@ -7,6 +7,7 @@ import {
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardTriggerColPriceProps {
   token: string
@@ -14,6 +15,24 @@ interface ContentCardTriggerColPriceProps {
   afterTriggerColPrice?: BigNumber
   estimatedProfit?: BigNumber
   changeVariant?: ChangeVariantType
+}
+interface ContentCardTriggerColPriceModalProps {
+  token: string
+}
+
+function ContentCardTriggerColPriceModal({ token }: ContentCardTriggerColPriceModalProps) {
+  const { t } = useTranslation()
+  return (
+    <Grid gap={2}>
+      <Heading variant="header3">{t('auto-take-profit.trigger-col-price', { token })}</Heading>
+      <Text as="p" variant="paragraph2">
+        {t('auto-take-profit.trigger-col-price-explanation', { token })}
+      </Text>
+      <Text as="p" variant="paragraph2">
+        {t('auto-take-profit.estimated-profit-explanation', { token })}
+      </Text>
+    </Grid>
+  )
 }
 
 export function ContentCardTriggerColPrice({
@@ -33,6 +52,7 @@ export function ContentCardTriggerColPrice({
 
   const contentCardSettings: ContentCardProps = {
     title: t('auto-take-profit.trigger-col-price', { token }),
+    modal: <ContentCardTriggerColPriceModal token={token} />,
   }
 
   if (triggerColPrice) contentCardSettings.value = formatted.triggerColPrice

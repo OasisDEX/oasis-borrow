@@ -8,6 +8,7 @@ import {
   AutomationProtectionFeatures,
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
 interface GetAutoFeaturesSidebarDropdownProps {
@@ -66,6 +67,8 @@ export function getAutoFeaturesSidebarDropdown({
   isAutoConstantMultipleEnabled,
   isAutoTakeProfitEnabled,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
+
   const stopLossDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.stop-loss',
     type: 'Protection',
@@ -105,7 +108,7 @@ export function getAutoFeaturesSidebarDropdown({
       ? [
           ...(!isAutoConstantMultipleEnabled ? [basicBuyDropdownItem] : []),
           constantMultipleDropdownItem,
-          ...(!isAutoTakeProfitEnabled ? [autoTakeProfitDropdownItem] : []),
+          ...(autoTakeProfitEnabled ? [autoTakeProfitDropdownItem] : []),
         ]
       : []),
   ]
