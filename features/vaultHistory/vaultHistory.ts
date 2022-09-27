@@ -322,10 +322,10 @@ export type VaultHistoryEvent = VaultEvent & {
   }
   ethx?: {
     url: string
-  },
-  daiAmount?: BigNumber;
-  collateralAmount?: BigNumber;
-  gasFee?: BigNumber;
+  }
+  daiAmount?: BigNumber
+  collateralAmount?: BigNumber
+  gasFee?: BigNumber
 }
 export function fetchWithOperationId(url: string, options?: RequestInit) {
   const operationNameRegex = /query (?<operationName>[a-zA-Z0-9]+)\(/gm

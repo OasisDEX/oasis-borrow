@@ -13,14 +13,17 @@ import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/Cont
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBannerControl'
-import { calculateNetEarnings, calculatePNL } from 'helpers/multiply/calculations'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
-import { calculateCurrentPnLInUSD, calculateTotalDepositWithdrawels, calculateTotalGasFeeInEth } from '../utils'
+import {
+  calculateCurrentPnLInUSD,
+  calculateTotalDepositWithdrawels,
+  calculateTotalGasFeeInEth,
+} from '../utils'
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
@@ -46,7 +49,6 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     priceInfo,
     stopLossTriggered,
     vaultHistory,
-    
   } = props
   const { t } = useTranslation()
   const { stopLossTriggerData } = useAutomationContext()
@@ -57,7 +59,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
- 
+
   const depositTotalAmounts = calculateTotalDepositWithdrawels(vaultHistory, 'DEPOSIT')
   const withdrawTotalAmounts = calculateTotalDepositWithdrawels(vaultHistory, 'WITHDRAW')
   const totalGasFeesInEth = calculateTotalGasFeeInEth(vaultHistory)
