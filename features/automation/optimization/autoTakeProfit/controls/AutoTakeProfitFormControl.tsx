@@ -11,7 +11,7 @@ export function AutoTakeProfitFormControl({isAutoTakeProfitActive}: AutoTakeProf
   //  TODO ŁW use AddAndRemoveTriggerControl later
   return (
     <>
-      <SetupAutoTakeProfit />
+      <SetupAutoTakeProfit isAutoTakeProfitActive={isAutoTakeProfitActive} />
     </>
   )
 }
