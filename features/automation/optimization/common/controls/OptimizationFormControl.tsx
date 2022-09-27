@@ -46,19 +46,28 @@ export function OptimizationFormControl({
     automationTriggersData,
   } = useAutomationContext()
 
+  // TODO: TDAutoTakeProfit | to be replaced with data from autoTakeProfitTriggerData from useAutomationContext method
+  const autoTakeProfitTriggerData = {
+    isTriggerEnabled: false
+  }
+
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const { isConstantMultipleActive, isAutoBuyActive } = getActiveOptimizationFeature({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
-    isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
-    isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
     section: 'form',
   })
 
   const shouldRemoveAllowance = getShouldRemoveAllowance(automationTriggersData)
 
   useEffect(() => {
+    if (autoTakeProfitTriggerData.isTriggerEnabled) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Optimization',
+        currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
+      })
+    }
     if (autoBuyTriggerData.isTriggerEnabled) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
