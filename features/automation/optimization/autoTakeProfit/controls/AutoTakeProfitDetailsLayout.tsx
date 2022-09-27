@@ -70,7 +70,7 @@ export function AutoTakeProfitDetailsLayout({
           title={t('auto-take-profit.banner.header')}
           description={t('auto-take-profit.banner.content')}
           image={{
-            src: '/static/img/setup-banner/auto-buy.svg',
+            src: '/static/img/setup-banner/auto-take-profit.svg',
             backgroundColor: bannerGradientPresets.autoTakeProfit[0],
             backgroundColorEnd: bannerGradientPresets.autoTakeProfit[1],
           }}
