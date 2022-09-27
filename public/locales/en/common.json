@@ -1574,7 +1574,18 @@
     "estimated-profit-explanation": "Estimated Profit at Close = Collateral value (USD) at trigger - Debt value to be repaid - estimated Tx Fees",
     "trigger-col-ratio": "Trigger Collateral Ratio",
     "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
-    "current-col-ratio": "Current Collateral Ratio {{amount}}"
+    "current-col-ratio": "Current Collateral Ratio {{amount}}",
+    "vault-changes": {
+      "general-summary": "General summary",
+      "trigger-col-price": "Trigger {{token}} Price",
+      "trigger-collateral-ratio": "Trigger Collateral Ratio",
+      "debt-repaid": "Debt Repaid",
+      "col-price-impact": "ETH Price (impact)",
+      "total-transaction-cost": "Total transaction cost on trigger",
+      "estimated-oasis-fee": "Estimated Oasis fee",
+      "estimated-gas-fee": "Estimated gas fee",
+      "setup-transaction-cost": "Setup transaction cost"
+    }
   },
 
   "automation": {

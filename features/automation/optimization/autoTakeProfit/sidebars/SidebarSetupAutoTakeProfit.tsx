@@ -1,3 +1,4 @@
+import { Vault } from 'blockchain/vaults'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -14,6 +15,7 @@ interface SidebarSetupAutoTakeProfitProps {
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoTakeProfitActive: boolean
   feature: AutomationFeatures
+  vault: Vault
 }
 
 export function SidebarSetupAutoTakeProfit({
@@ -21,6 +23,7 @@ export function SidebarSetupAutoTakeProfit({
   constantMultipleTriggerData,
   isAutoTakeProfitActive,
   feature,
+  vault,
 }: SidebarSetupAutoTakeProfitProps) {
   const { t } = useTranslation()
 
@@ -46,7 +49,7 @@ export function SidebarSetupAutoTakeProfit({
       content: (
         <Grid gap={3}>
           {/* TODO: Should be displayed based on current form state */}
-          <SidebarAutoTakeProfitEditingStage />
+          <SidebarAutoTakeProfitEditingStage vault={vault} />
         </Grid>
       ),
       primaryButton: {

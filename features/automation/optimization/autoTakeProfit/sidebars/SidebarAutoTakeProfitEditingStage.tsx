@@ -1,14 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { Vault } from 'blockchain/vaults'
 import { EstimationOnClose } from 'components/EstimationOnClose'
 import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
 import React from 'react'
 
-interface SidebarAutoTakeProfitEditingStageProps {}
+interface SidebarAutoTakeProfitEditingStageProps {
+  vault: Vault
+}
 
-// TODO: TDAutoTakeProfit | temporary disable before neede interface props are known 
-// eslint-disable-next-line no-empty-pattern
-export function SidebarAutoTakeProfitEditingStage({}: SidebarAutoTakeProfitEditingStageProps) {
+export function SidebarAutoTakeProfitEditingStage({
+  vault,
+}: SidebarAutoTakeProfitEditingStageProps) {
   return (
     <>
       Form placeholder
@@ -17,16 +20,18 @@ export function SidebarAutoTakeProfitEditingStage({}: SidebarAutoTakeProfitEditi
         label="Estimated DAI at Trigger"
         value="$3,990,402.00 DAI"
       />
-      <AutoTakeProfitInfoSectionControl />
+      <AutoTakeProfitInfoSectionControl token={vault.token} />
     </>
   )
 }
 
-interface AutoTakeProfitInfoSectionControlProps {}
+interface AutoTakeProfitInfoSectionControlProps {
+  token: string
+}
 
 // TODO: TDAutoTakeProfit | temporary disable before neede interface props are known
 // eslint-disable-next-line no-empty-pattern
-function AutoTakeProfitInfoSectionControl({}: AutoTakeProfitInfoSectionControlProps) {
+function AutoTakeProfitInfoSectionControl({ token }: AutoTakeProfitInfoSectionControlProps) {
   // TODO: TDAutoTakeProfit | to be replaced with data from parent component
   const triggerColPrice = new BigNumber(2500)
   const triggerColRatio = new BigNumber(400)
@@ -36,16 +41,17 @@ function AutoTakeProfitInfoSectionControl({}: AutoTakeProfitInfoSectionControlPr
   const setupTransactionCost = new BigNumber(3.24)
   const totalTransactionCost = new BigNumber(388.26)
   const estimatedOasisFee = new BigNumber(371.75)
-  const estimatedMaxGasFee = new BigNumber(16.51)
+  const estimatedGasFee = new BigNumber(16.51)
 
   return (
     <AddAutoTakeProfitInfoSection
       debtRepaid={debtRepaid}
-      estimatedMaxGasFee={estimatedMaxGasFee}
+      estimatedGasFee={estimatedGasFee}
       estimatedOasisFee={estimatedOasisFee}
       ethPrice={ethPrice}
       ethPriceImpact={ethPriceImpact}
       setupTransactionCost={setupTransactionCost}
+      token={token}
       totalTransactionCost={totalTransactionCost}
       triggerColPrice={triggerColPrice}
       triggerColRatio={triggerColRatio}

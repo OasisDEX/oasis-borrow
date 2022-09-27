@@ -7,11 +7,12 @@ import { Text } from 'theme-ui'
 
 interface AddAutoTakeProfitInfoSectionProps {
   debtRepaid: BigNumber
-  estimatedMaxGasFee: BigNumber
+  estimatedGasFee: BigNumber
   estimatedOasisFee: BigNumber
   ethPrice: BigNumber
   ethPriceImpact: BigNumber
   setupTransactionCost: BigNumber
+  token: string
   totalTransactionCost: BigNumber
   triggerColPrice: BigNumber
   triggerColRatio: BigNumber
@@ -19,11 +20,12 @@ interface AddAutoTakeProfitInfoSectionProps {
 
 export function AddAutoTakeProfitInfoSection({
   debtRepaid,
-  estimatedMaxGasFee,
+  estimatedGasFee,
   estimatedOasisFee,
   ethPrice,
   ethPriceImpact,
   setupTransactionCost,
+  token,
   totalTransactionCost,
   triggerColPrice,
   triggerColRatio,
@@ -32,22 +34,22 @@ export function AddAutoTakeProfitInfoSection({
 
   return (
     <InfoSection
-      title={t('General summary')}
+      title={t('auto-take-profit.vault-changes.general-summary')}
       items={[
         {
-          label: t('Trigger ETH Price'),
+          label: t('auto-take-profit.vault-changes.trigger-col-price', { token }),
           value: `$${formatAmount(triggerColPrice, 'USD')}`,
         },
         {
-          label: t('Trigger Collateral Ratio'),
+          label: t('auto-take-profit.vault-changes.trigger-collateral-ratio'),
           value: `${triggerColRatio}%`,
         },
         {
-          label: t('Debt Repaid'),
+          label: t('auto-take-profit.vault-changes.debt-repaid'),
           value: `$${formatAmount(debtRepaid, 'USD')}`,
         },
         {
-          label: t('ETH Price (impact)'),
+          label: t('auto-take-profit.vault-changes.col-price-impact', { token }),
           value: (
             <>
               ${formatAmount(ethPrice, 'USD')}
@@ -61,21 +63,21 @@ export function AddAutoTakeProfitInfoSection({
           ),
         },
         {
-          label: t('Total transaction cost on trigger'),
+          label: t('auto-take-profit.vault-changes.total-transaction-cost'),
           value: `$${formatAmount(totalTransactionCost, 'USD')}`,
           dropdownValues: [
             {
-              label: t('Estimated Oasis fee'),
+              label: t('auto-take-profit.vault-changes.estimated-oasis-fee'),
               value: `$${formatAmount(estimatedOasisFee, 'USD')}`,
             },
             {
-              label: t('Estimated max gas fee'),
-              value: `$${formatAmount(estimatedMaxGasFee, 'USD')}`,
+              label: t('auto-take-profit.vault-changes.estimated-gas-fee'),
+              value: `$${formatAmount(estimatedGasFee, 'USD')}`,
             },
           ],
         },
         {
-          label: t('Setup transaction cost'),
+          label: t('auto-take-profit.vault-changes.setup-transaction-cost'),
           value: `$${formatAmount(setupTransactionCost, 'USD')}`,
         },
       ]}

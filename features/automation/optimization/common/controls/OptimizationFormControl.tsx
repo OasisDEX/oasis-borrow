@@ -123,6 +123,7 @@ export function OptimizationFormControl({
         autoBuyTriggerData={autoBuyTriggerData}
         constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoTakeProfitActive={isAutoTakeProfitActive}
+        vault={vault}
       />
     </>
   )
