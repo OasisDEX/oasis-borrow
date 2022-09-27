@@ -21,8 +21,6 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
 
-import { AutoTakeProfitFormControl } from '../../autoTakeProfit/controls/AutoTakeProfitFormControl'
-
 interface OptimizationFormControlProps {
   balanceInfo: BalanceInfo
   context: Context
@@ -128,14 +126,13 @@ export function OptimizationFormControl({
         txHelpers={txHelpers}
         vault={vault}
       />
-      <AutoTakeProfitFormControl
-        autoBuyTriggerData={autoBuyTriggerData}
-        constantMultipleTriggerData={constantMultipleTriggerData}
-        isAutoTakeProfitActive={isAutoTakeProfitActive}
-        vault={vault}
-      />
       {autoTakeProfitEnabled && (
-        <AutoTakeProfitFormControl isAutoTakeProfitActive={isAutoTakeProfitActive} />
+        <AutoTakeProfitFormControl
+          autoBuyTriggerData={autoBuyTriggerData}
+          constantMultipleTriggerData={constantMultipleTriggerData}
+          isAutoTakeProfitActive={isAutoTakeProfitActive}
+          vault={vault}
+        />
       )}
     </>
   )

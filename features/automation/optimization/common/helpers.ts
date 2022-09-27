@@ -1,6 +1,6 @@
 import { AutomationOptimizationFeatures } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+// import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getActiveOptimizationFeature({
   currentOptimizationFeature,
@@ -15,7 +15,7 @@ export function getActiveOptimizationFeature({
   currentOptimizationFeature?: AutomationOptimizationFeatures
   isAutoTakeProfitOn?: boolean
 }) {
-  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  // const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   if (section === 'form') {
     return {
