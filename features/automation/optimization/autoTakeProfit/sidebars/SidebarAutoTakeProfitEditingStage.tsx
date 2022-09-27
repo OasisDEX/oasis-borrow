@@ -29,8 +29,6 @@ interface AutoTakeProfitInfoSectionControlProps {
   token: string
 }
 
-// TODO: TDAutoTakeProfit | temporary disable before neede interface props are known
-// eslint-disable-next-line no-empty-pattern
 function AutoTakeProfitInfoSectionControl({ token }: AutoTakeProfitInfoSectionControlProps) {
   // TODO: TDAutoTakeProfit | to be replaced with data from parent component
   const triggerColPrice = new BigNumber(2500)
