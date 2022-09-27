@@ -224,6 +224,7 @@
   "get-dai": "Get Dai",
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
+  "go-to-vault-generic": "Go to Vault",
   "here": "here",
   "from:": "From",
   "full": "Full",

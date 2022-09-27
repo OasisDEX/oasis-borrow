@@ -1,7 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
 import {
   Notification,
   NotificationAdditionalData,
@@ -10,13 +8,6 @@ import {
 import { formatAmount } from 'helpers/formatters/format'
 import { Trans } from 'next-i18next'
 import React from 'react'
-
-function getLinkComponents(href: string) {
-  return {
-    1: <AppLink href={href} sx={{ fontSize: 2, fontWeight: 'semiBold' }} />,
-    2: <WithArrow sx={{ display: 'inline', color: 'interactive100', fontWeight: 'semiBold' }} />,
-  }
-}
 
 export function getNotificationTitle({
   type,
@@ -39,7 +30,6 @@ export function getNotificationTitle({
 
   const humanDate = new Date(lastModified).toLocaleDateString('en-US', options)
   const vaultId = additionalData?.vaultId || 'n/a'
-  const linkComponents = getLinkComponents(`/${vaultId}`)
 
   switch (type) {
     case NotificationTypes.VAULT_LIQUIDATED:
@@ -111,7 +101,6 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.approaching-trigger"
           values={{ vaultId, trigger: 'Auto-Buy' }}
-          components={linkComponents}
         />
       )
     case NotificationTypes.APPROACHING_AUTO_SELL:
@@ -119,7 +108,6 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.approaching-trigger"
           values={{ vaultId, trigger: 'Auto-Sell' }}
-          components={linkComponents}
         />
       )
     case NotificationTypes.APPROACHING_STOP_LOSS:
@@ -127,7 +115,6 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.approaching-trigger"
           values={{ vaultId, trigger: 'Stop-Loss' }}
-          components={linkComponents}
         />
       )
     case NotificationTypes.APPROACHING_CONSTANT_MULTIPLE:
@@ -135,7 +122,6 @@ export function getNotificationTitle({
         <Trans
           i18nKey="notifications.approaching-trigger"
           values={{ vaultId, trigger: 'Constant-Multiple' }}
-          components={linkComponents}
         />
       )
     default:
