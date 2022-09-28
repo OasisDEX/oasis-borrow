@@ -7,9 +7,31 @@ export interface AaveUserReserveDataParameters {
   token: string
   proxyAddress: string
 }
+export interface AaveReserveDataParameters {
+  token: AaveUserReserveDataParameters['token']
+}
 
 export interface AaveUserReserveData {
   currentATokenBalance: string
+}
+
+export type AaveReserveDataReply = {
+  availableLiquidity: string
+  totalStableDebt: string
+  totalVariableDebt: string
+  liquidityRate: string
+  variableBorrowRate: string
+  stableBorrowRate: string
+  averageStableBorrowRate: string
+  liquidityIndex: string
+  variableBorrowIndex: string
+  lastUpdateTimestamp: string
+}
+
+export type AaveReserveConfigurationData = {
+  ltv: BigNumber
+  liquidationThreshold: BigNumber
+  // .... could add more things here.  see https://etherscan.io/address/0x057835ad21a177dbdd3090bb1cae03eacf78fc6d#readContract
 }
 
 export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, AaveUserReserveData> = {
@@ -21,10 +43,10 @@ export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, Aave
   },
 }
 
-export type AaveReserveConfigurationData = {
-  ltv: BigNumber
-  liquidationThreshold: BigNumber
-  // .... could add more things here.  see https://etherscan.io/address/0x057835ad21a177dbdd3090bb1cae03eacf78fc6d#readContract
+export const getAaveReserveData: CallDef<AaveReserveDataParameters, AaveReserveDataReply> = {
+  call: (_, { contract, aaveProtocolDataProvider }) =>
+    contract<AaveProtocolDataProvider>(aaveProtocolDataProvider).methods.getReserveData,
+  prepareArgs: ({ token }, context) => [context.tokens[token].address],
 }
 
 export const getAaveReserveConfigurationData: CallDef<

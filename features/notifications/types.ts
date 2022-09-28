@@ -8,8 +8,8 @@ export enum NotificationTypes {
   APPROACHING_LIQUIDATION = 7,
   APPROACHING_STOP_LOSS = 8,
   ORACLE_PRICE_CHANGED = 9, //not existing yet
-  CONSTANT_MULTIPLE_TRIGGERED = 10, //not existing yet
-  APPROACHING_CONSTANT_MULTIPLE = 11, //not existing yet
+  CONSTANT_MULTIPLE_TRIGGERED = 10,
+  APPROACHING_CONSTANT_MULTIPLE = 11,
 }
 
 export enum NotificationSubscriptionTypes {
