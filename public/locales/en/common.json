@@ -1728,6 +1728,7 @@
     "stop-loss-executed": "Your Stop-Loss Protection on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-buy-executed": "Your Auto-Buy on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "constant-multiple-executed": "Your Constant Multiple on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "oracle-price-changed": "Oracle price changed ${{usdPrice}}.",
     "action-notifications": "Vault action notifications",
     "action-notifications-description": "Receive a notification when an action occurs on your Vault.",
