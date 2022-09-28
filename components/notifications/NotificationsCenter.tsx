@@ -42,15 +42,16 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         bg: 'white',
         position: 'absolute',
         mt: 2,
-        borderRadius: '24px',
-        boxShadow: theme.shadows.vaultDetailsCard,
-        py: 24,
-        px: 3,
+        borderRadius: 'large',
+        boxShadow: theme.shadows.buttonMenu,
+        pt: 2,
+        px: 2,
         // TODO: Needs to be calculated but possibly be easier to get designers to adapt to this as its simpler from dev perspective & looks just as good
         ...notificationCenterStyles,
-        transition: 'transform 0.3s ease-in-out',
-        transform: !isOpen ? 'translateX(400%)' : 'translateX(0)',
-        visibility: isOpen ? 'visible' : 'hidden',
+        opacity: isOpen ? 1 : 0,
+        transform: isOpen ? 'translateY(0)' : 'translateY(-5px)',
+        pointerEvents: isOpen ? 'auto' : 'none',
+        transition: 'opacity 200ms, transform 200ms',
       }}
     >
       <NotificationsCenterHeader
@@ -64,7 +65,7 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
       )}
       {!!notificationsState && (
         <NotificationsCenterContent>
-          <Grid sx={{ px: 2, mt: 3, mb: 2 }}>
+          <Grid as="ul" p={3} gap="12px">
             {showPreferencesTab ? (
               <NotificationPreferenceCardWrapper account={account} />
             ) : (
