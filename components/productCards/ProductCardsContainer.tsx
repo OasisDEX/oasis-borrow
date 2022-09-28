@@ -6,7 +6,7 @@ import { useObservable } from '../../helpers/observableHook'
 import { ProductCardData } from '../../helpers/productCards'
 import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
-import { ProductCardEarn } from './ProductCardEarn'
+import { ProductCardEarnIlk } from './ProductCardEarnIlk'
 import { ProductCardMultiply } from './ProductCardMultiply'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
@@ -51,5 +51,5 @@ export function MultiplyProductCardsContainer(props: ProductSpecificContainerPro
 }
 
 export function EarnProductCardsContainer(props: ProductSpecificContainerProps) {
-  return <ProductCardsContainer renderProductCard={ProductCardEarn} {...props} />
+  return <ProductCardsContainer renderProductCard={ProductCardEarnIlk} {...props} />
 }

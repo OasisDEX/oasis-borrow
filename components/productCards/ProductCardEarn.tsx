@@ -55,11 +55,11 @@ function UnprofitableSlot({ value, variant }: UnprofitableTooltipProps) {
   )
 }
 
-interface ProductCardEarnProps {
+interface ProductCardEarnIlkProps {
   cardData: ProductCardData
 }
 
-export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
+export function ProductCardEarnIlk({ cardData }: ProductCardEarnIlkProps) {
   const { t } = useTranslation()
   const defaultDaiValue = new BigNumber(100000)
   const { yields$ } = useAppContext()

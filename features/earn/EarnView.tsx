@@ -3,7 +3,7 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
+import { ProductCardEarnIlk } from '../../components/productCards/ProductCardEarnIlk'
 import {
   ProductCardsLoader,
   ProductCardsWrapper,
@@ -20,6 +20,8 @@ export function EarnView() {
   const [productCardsData, productCardsDataError] = useObservable(
     productCardsData$(supportedEarnIlks),
   )
+
+  console.log('productCardsData', productCardsData)
 
   return (
     <Grid
@@ -43,7 +45,7 @@ export function EarnView() {
           {([productCardsData]) => (
             <ProductCardsWrapper>
               {productCardsData.map((cardData) => (
-                <ProductCardEarn cardData={cardData} key={cardData.ilk} />
+                <ProductCardEarnIlk cardData={cardData} key={cardData.ilk} />
               ))}
             </ProductCardsWrapper>
           )}
