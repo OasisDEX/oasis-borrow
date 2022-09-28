@@ -113,14 +113,14 @@ function ContentCardNetValueModal({
             sx={{ fontWeight: 'semiBold' }}
           >{`${netValueUndercollateralizedToken} ${token}`}</Text>
           <Text sx={{ fontSize: 1, color: 'neutral80', fontWeight: 'semiBold' }}>
-            Total Col: {`${lockedCollateral} ${token}`}
+            {t('manage-multiply-vault.card.total-col')}: {`${lockedCollateral} ${token}`}
           </Text>
         </Box>
 
         <Box>
           <Text sx={{ fontWeight: 'semiBold' }}>{netValueUSD}</Text>
           <Text sx={{ fontSize: 1, color: 'neutral80', fontWeight: 'semiBold' }}>
-            Debt: {lockedCollateralUSD}
+            {t('manage-multiply-vault.card.debt')}: {lockedCollateralUSD}
           </Text>
         </Box>
       </Grid>
@@ -273,7 +273,6 @@ export function ContentCardNetValue({
       precision: 2,
       roundMode: BigNumber.ROUND_DOWN,
     })}`,
-    currentPnLValue: ``,
     debtUSD: `$${formatAmount(debt || zero, 'USD')}`,
     afterNetValueUSD: `$${formatAmount(afterNetValueUSD || zero, 'USD')}`,
     totalGasSpentUSD: `$${formatAmount(totalGasSpentUSD || zero, 'USD')}`,
@@ -320,12 +319,8 @@ export function ContentCardNetValue({
     debtTokenMarketPrice: formatted.debtTokenMarketPrice,
     netValueOraclePrice: formatted.netValueOraclePrice,
     netValueMarketPrice: formatted.netValueMarketPrice,
-    depositTotalAmounts: {
-      ...formatted.depositTotalAmounts,
-    },
-    withdrawTotalAmounts: {
-      ...formatted.withdrawTotalAmounts,
-    },
+    depositTotalAmounts: formatted.depositTotalAmounts,
+    withdrawTotalAmounts: formatted.withdrawTotalAmounts,
     totalGasFeesInEth: formatted.totalGasFeesInEth,
     currentPnLInUSD: formatted.currentPnLInUSD,
   }

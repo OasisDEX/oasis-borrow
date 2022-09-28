@@ -474,6 +474,8 @@
       "unrealised-pnl": "Unrealised Profit & Loss",
       "based-on-price": "The current net value is calculated based on the market price of",
       "based-on-price-lp": "The current net value is calculated based on the oracle price of",
+      "total-col": "Total Col:",
+      "debt": "Debt",
       "collateral-value-in-vault": "Collateral value in vault",
       "dai-debt-in-vault": "Dai debt in vault",
       "collateral-value": "Collateral Value",

@@ -12,20 +12,20 @@ export function calculateTotalDepositWithdrawels(
   historyEvents: VaultHistoryEvent[],
   type: 'WITHDRAW' | 'DEPOSIT',
 ) {
-  const validTypes = type === 'DEPOSIT' ? ['DEPOSIT', 'OPEN'] : ['WITHDRAW']
+  const validTypes = ['DEPOSIT', 'WITHDRAW']
   const events = historyEvents.filter((event) => validTypes.includes(event.kind))
 
   let totalDolarAmount = new BigNumber(0)
   let totalEthAmount = new BigNumber(0)
 
   for (const event of events) {
+
+    totalDolarAmount = totalDolarAmount.plus((event.collateralAmount?.times(event.ethPrice)) || 0)
+
     if (type === 'WITHDRAW') {
-      totalDolarAmount = totalDolarAmount.plus(event.daiAmount || 0)
-      console.log(event.collateralAmount?.toString())
       // Multiply by minus one to convert number to positive
       totalEthAmount = new BigNumber(totalEthAmount.plus(event.collateralAmount?.times(-1) || 0))
     } else {
-      totalDolarAmount = totalDolarAmount.plus(event.daiAmount || 0)
       totalEthAmount = totalEthAmount.plus(event.collateralAmount || 0)
     }
   }
@@ -46,7 +46,6 @@ export function calculateTotalGasFeeInEth(historyEvents: VaultHistoryEvent[]) {
 
   if (historyEvents) {
     for (const event of historyEvents) {
-      console.log(event && event.gasFee?.toString())
       totalGasFees = totalGasFees.plus(event.gasFee || 0)
     }
   }
