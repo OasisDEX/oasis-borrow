@@ -1,3 +1,6 @@
+import { getAaveAssetsPrices } from 'blockchain/calls/aavePriceOracle'
+import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
+import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { GraphQLClient } from 'graphql-request'
 import moment from 'moment'
@@ -7,9 +10,10 @@ import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/opera
 
 import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
 import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
-import { observe } from '../../../blockchain/calls/observe'
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
+import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
+import { aavePrepareReserveConfigurationData$ } from './helpers/aavePrepareReserveConfigurationData'
 import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine$,
@@ -33,6 +37,8 @@ export function setupAaveContext({
   gasPrice$,
   daiEthTokenPrice$,
   accountBalances$,
+  onEveryBlock$,
+  context$,
 }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
@@ -112,9 +118,24 @@ export function setupAaveContext({
     manageTransactionMachine,
   )
 
+  const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
+
+  const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
+    getAaveReserveData$({ token: 'STETH' }),
+    getAaveReserveData$({ token: 'ETH' }),
+    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  )
+
+  const aaveReserveStEthData$ = curry(aavePrepareReserveConfigurationData$)(
+    aaveReserveConfigurationData$({ token: 'STETH' }),
+  )
+
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
+    aaveTotalValueLocked$,
+    aaveReserveStEthData$,
   }
 }
 

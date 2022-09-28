@@ -1756,6 +1756,14 @@
   },
   "open-earn": {
     "aave": {
+      "product-header": {
+        "token-pair-list": {
+          "aave-steth-eth": "AAVE stETH yield multiple"
+        },
+        "current-yield": "Current yield",
+        "90-day-avg-yield": "90 Day Avg",
+        "total-value-locked": "Total value locked"
+      },
       "vault-form": {
         "title": "Set up Earn strategy",
         "open-btn": "Open Earn position",

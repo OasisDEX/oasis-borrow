@@ -779,6 +779,7 @@ export function setupAppContext() {
   const aavePositions$ = memoize(
     curry(createAavePositions$)(aaveUserReserveData$, tokensWithValue$, proxyAddress$),
   )
+
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
   const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
 

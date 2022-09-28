@@ -13,6 +13,7 @@ export interface CalculateSimulationResult {
   breakEven: BigNumber
   entryFees: BigNumber
   apy: BigNumber
+  previous7Days: Simulation
   previous30Days: Simulation
   previous90Days: Simulation
   previous1Year: Simulation
@@ -37,6 +38,11 @@ export function calculateSimulation({
     apy: yields.annualisedYield1Year,
     breakEven: (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
+    previous7Days: getSimulation({
+      amount,
+      annualizedYield: yields.annualisedYield7days,
+      token,
+    }),
     previous30Days: getSimulation({
       amount,
       annualizedYield: yields.annualisedYield30days,

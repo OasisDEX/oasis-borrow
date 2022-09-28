@@ -14,8 +14,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 
+import { DefaultVaultHeadline } from './DefaultVaultHeadline'
 import { GeneralManageTabBar } from './GeneralManageTabBar'
-import { VaultHeadline } from './VaultHeadline'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
@@ -60,9 +60,9 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     generalManageVault.type === VaultType.Earn ? (
       <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} />
     ) : (
-      <VaultHeadline
+      <DefaultVaultHeadline
         header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
-        token={vault.token}
+        token={[vault.token]}
         priceInfo={priceInfo}
       />
     )
