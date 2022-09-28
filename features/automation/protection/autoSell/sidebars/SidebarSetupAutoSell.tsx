@@ -97,7 +97,7 @@ export function SidebarSetupAutoSell({
   })
   const dropdown = getAutoFeaturesSidebarDropdown({
     type: 'Protection',
-    forcePanel: 'autoSell',
+    forcePanel: AutomationFeatures.AUTO_SELL,
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,

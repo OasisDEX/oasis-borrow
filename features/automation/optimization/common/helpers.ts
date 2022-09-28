@@ -1,44 +1,32 @@
 import { AutomationOptimizationFeatures } from 'features/automation/common/state/automationFeatureChange'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { AutomationFeatures } from 'features/automation/common/types'
 
 export function getActiveOptimizationFeature({
+  currentOptimizationFeature,
   isAutoBuyOn,
+  isAutoTakeProfitOn,
   isConstantMultipleOn,
   section,
-  currentOptimizationFeature,
 }: {
-  isAutoBuyOn: boolean
-  isConstantMultipleOn: boolean
-  section: 'form' | 'details'
   currentOptimizationFeature?: AutomationOptimizationFeatures
+  isAutoBuyOn?: boolean
+  isAutoTakeProfitOn?: boolean
+  isConstantMultipleOn?: boolean
+  section: 'form' | 'details'
 }) {
-  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
-
-  if (section === 'form') {
-    return {
-      isAutoBuyActive:
-        (isAutoBuyOn &&
-          !isConstantMultipleOn &&
-          currentOptimizationFeature !== 'constantMultiple') ||
-        currentOptimizationFeature === 'autoBuy',
-      isConstantMultipleActive:
-        (isConstantMultipleOn && currentOptimizationFeature !== 'autoBuy') ||
-        currentOptimizationFeature === 'constantMultiple',
-    }
-  }
-
-  if (section === 'details') {
-    return {
-      isAutoBuyActive: isAutoBuyOn || currentOptimizationFeature === 'autoBuy',
-      isConstantMultipleActive:
-        isConstantMultipleOn ||
-        currentOptimizationFeature === 'constantMultiple' ||
-        !constantMultipleEnabled,
-    }
-  }
-
-  return {
-    isAutoBuyActive: false,
-    isConstantMultipleActive: false,
-  }
+  return section === 'details'
+    ? {
+        isAutoBuyActive: isAutoBuyOn || currentOptimizationFeature === AutomationFeatures.AUTO_BUY,
+        isConstantMultipleActive:
+          isConstantMultipleOn ||
+          currentOptimizationFeature === AutomationFeatures.CONSTANT_MULTIPLE,
+        isAutoTakeProfitActive:
+          isAutoTakeProfitOn || currentOptimizationFeature === AutomationFeatures.AUTO_TAKE_PROFIT,
+      }
+    : {
+        isAutoBuyActive: currentOptimizationFeature === AutomationFeatures.AUTO_BUY,
+        isConstantMultipleActive:
+          currentOptimizationFeature === AutomationFeatures.CONSTANT_MULTIPLE,
+        isAutoTakeProfitActive: currentOptimizationFeature === AutomationFeatures.AUTO_TAKE_PROFIT,
+      }
 }

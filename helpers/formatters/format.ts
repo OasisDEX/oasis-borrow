@@ -132,3 +132,11 @@ export function formatAddress(address: string, first: number = 4, last: number =
 export function formatBigNumber(amount: BigNumber, digits: number) {
   return amount.dp(digits, BigNumber.ROUND_DOWN).toString()
 }
+
+export function formatHugeNumbersToShortHuman(amount: BigNumber) {
+  // 285000 -> 285K
+  // 285000000 -> 285M etc
+  return Intl.NumberFormat('en', { notation: 'compact', minimumFractionDigits: 3 }).format(
+    amount.toNumber(),
+  )
+}

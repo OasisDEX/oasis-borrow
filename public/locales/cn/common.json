@@ -241,7 +241,7 @@
             "headlinePreAssetLandingPages": "抵押数字资产，生成 Dai",
             "subheaderPreAssetLandingPages": "开启 Maker 金库，存入抵押品，生成 Dai。<0/>连接钱包以开始。",
             "headline": "使用你最爱的加密货币来借贷和进行杠杆交易",
-            "subheader": "超过30种的资产选择，包含 ETH 和 WBCT，让您每年赚取 1.5% 收益。<0/>连接钱包开始交易"
+            "subheader": "超过30种的加密资产选择，包含 ETH 和 WBCT，让您每年赚取 1.5% 收益。<0/>连接钱包开始交易"
         },
         "cards": {
             "dai": {
@@ -266,7 +266,7 @@
             },
             "multiply": {
                 "tabLabel": "在 Oasis 开启杠杆",
-                "tabParaContent": "提高最爱的加密货币敞口，浏览我们的特色产品",
+                "tabParaContent": "快来浏览我们的特色产品，接着选择您最爱的加密货币来提高风险敞口吧。",
                 "tabParaLinkContent": "查看所有杠杆抵押品 →"
             },
             "earn": {
@@ -279,14 +279,14 @@
             "have-some-questions": "有任何疑问吗？",
             "learn": {
                 "learn": "学习",
-                "deep-dive": "深入了解 Oasis.app 的功能和专业词汇",
+                "deep-dive": "深入了解 Oasis.app 的功能和重要概念",
                 "get-started": "开始",
                 "tutorials": "教程",
                 "key-concepts": "重要概念"
             },
             "support": {
                 "support": "帮助",
-                "contact-whenever": "任何时候你需要帮助时，请联系 Oasis.app 团队",
+                "contact-whenever": "任何您需要帮助时，请联系 Oasis.app 团队",
                 "faq": "常见问题",
                 "discord": "Discord",
                 "contact-us": "联系我们",
@@ -295,7 +295,7 @@
             "get-started": "开始使用 Oasis.app",
             "multiply": {
                 "multiply": "增加你的资产",
-                "subtitle": "您可以经由单一的交易开启 Maker 金库并生产 DAI，接着再购买更多的抵押品。",
+                "subtitle": "您可以经由单一的交易开启 Maker 金库并生成 DAI，接着再购买更多的抵押品。",
                 "open-vault": "开启金库"
             },
             "borrow": {
@@ -484,11 +484,14 @@
         "dai-wallet": "Dai 钱包",
         "borrow": "抵押借贷",
         "oasis-borrow": "Oasis Borrow",
-        "assets": "资产",
+        "assets": "加密资产",
         "earn": "赚取奖励",
         "select-an-asset": "选择资产",
         "referrals": "推荐朋友",
-        "cookie": "Cookie 政策"
+        "cookie": "Cookie 政策",
+        "bug-bounty": "Bug 赏金计划",
+        "brand-assets": "品牌资产",
+        "security": "安全性"
     },
     "new-to-ethereum": "第一次接触以太坊？",
     "next": "下一步",
@@ -595,6 +598,14 @@
         "referrals": {
             "title": "推荐好友使用 Oasis 并赚取 Dai",
             "description": "我们让 Oasis.app 的用户可以经由推荐朋友而得到回报。您可以邀请好友使用我们的产品，您和朋友都可以因此赚取少许的手续费。"
+        },
+        "brand-assets": {
+            "title": "品牌资产",
+            "description": "在这里可以找到 Oasis.app 的 Logo 和图像。"
+        },
+        "security": {
+            "title": "安全性",
+            "description": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。"
         }
     },
     "set-allowance-for": "设置 {{token}} 许可额度",
@@ -707,7 +718,8 @@
             }
         },
         "remove-trigger": "删除触发器",
-        "add-trigger": "增加触发器"
+        "add-trigger": "增加触发器",
+        "auto-take-profit": "Auto-Take Profit"
     },
     "to-the-following-address": "至此地址",
     "token-balance": "{{token}} 余额",
@@ -783,9 +795,9 @@
         "vaults": "所有金库",
         "vaults-at-risk": "风险金库",
         "your-vaults": "你的金库",
-        "assets-and-positions": "前 {{number}} 资产和仓位",
+        "assets-and-positions": "前 {{number}} 名的资产和仓位",
         "total-assets": "总资产",
-        "total-assets-subheader": "使用 <0>Oasis 精心策划的代币列表计算 →</0>"
+        "total-assets-subheader": "使用 <0>Oasis 精心规划的代币列表计算 →</0>"
     },
     "vault-notices": {
         "ownership": {
@@ -845,7 +857,8 @@
             "proxy-success": "已成功建立智能代理合约",
             "manage": "管理金库",
             "success": "完成! 你已拥有一个金库",
-            "success-manage": "完成! 已更新你的金库"
+            "success-manage": "完成! 已更新你的金库",
+            "proxyDisabled": "建立智能代理合约目前停用"
         },
         "subtext": {
             "collateral": "在你的金库存款或提款，并且通过合并交易来节省手续费。",
@@ -862,7 +875,8 @@
             "edit-multiply-dai": "你可以只是 <1>存入 DAI </1>来建立这个金库，而这个交易将会基于存入的 DAI 为你建立 {{token}} 的仓位。",
             "proxy-start": "只需要设定代理合约一次，就可以在一次的交易里执行多项动作。前往 <1>知识中心</1>了解更多。",
             "proxy-success": "已成功设定智能代理合约。 前往 <1>知识中心</1>了解更多 →</1>",
-            "proxy-progress": "前往 <1>知识中心</1>进一步了解智能代理合约。"
+            "proxy-progress": "前往 <1>知识中心</1>进一步了解智能代理合约。",
+            "new-proxy-temporally-disabled": "在合并的过程，会暂时无法建立智能代理合约，以避免来自重新组织的非预期错误。请阅读我们的<1>博客</1>以了解进一步的信息。"
         }
     },
     "creating-your-vault": "创建你的 {{token}} 金库！",
@@ -911,15 +925,15 @@
         "gdpr": "输入您的邮箱地址即表示您明白 Oazo Apps Limited 将会因行销用途搜集和使用您的个人信息（如：电子报、更新）。如想了解更多，请查阅我们的<1>隐私政策</1>。"
     },
     "product-card": {
-        "borrow": "为抵押 {{token}} 来借贷而生的金库",
-        "multiply": "为增加 {{token}} 風險敞口而生的金库",
-        "borrow-and-multiply": "为抵押 {{token}} 来借贷且同时增加風險敞口而生的金库",
-        "lp-tokens": "为增加 {{token}} 風險敞口而生的金库",
-        "medium-exposure-medium-cost": "一般風險敞口和花费，非常适合借贷和杠杆交易。",
-        "biggest-multiply": "此杠杆交易极可能最大值化 {{token}} 的风险敞口",
-        "lowest-stabilityFee-and-cheapest": "最低的稳定费和最容易负担的金库，适合借贷 {{token}}",
-        "staking-rewards": "最适合在赚取质押奖励时执行借贷或杠杆交易",
-        "great-borrowing-and-multiplying": "最适合执行 {{token}} 的借贷或杠杆交易",
+        "borrow": "此金库适用于抵押 {{token}} 来借贷",
+        "multiply": "此金库适用于增加 {{token}} 風險敞口",
+        "borrow-and-multiply": "此金库适用于抵押 {{token}} 来借贷并增加風險敞口",
+        "lp-tokens": "此金库适用于增加 {{token}} 風險敞口",
+        "medium-exposure-medium-cost": "此金库的風險敞口和花费为一般，适用于借贷和进行杠杆交易",
+        "biggest-multiply": "此杠杆交易有机会最大值化 {{token}} 的风险敞口",
+        "lowest-stabilityFee-and-cheapest": "此为最低的稳定费和最易负担的金库，适用于借贷 {{token}}",
+        "staking-rewards": "非常适用于赚取质押奖励时，执行借贷或杠杆交易",
+        "great-borrowing-and-multiplying": "最适用于执行 {{token}} 的借贷或杠杆交易",
         "guni": {
             "GUNIV3DAIUSDC2-A": "让 Dai 的风险敞口在 UNI V3 的 DAI/USDC 1bps 资金池赚取奖励",
             "GUNIV3DAIUSDC1-A": "让 Dai 的风险敞口在 UNI V3 的 DAI/USDC 5bps 资金池赚取奖励"
@@ -929,7 +943,7 @@
             "staking-rewards": "质押奖励",
             "max-exposure": "{{token}} 最大的风险敞口"
         },
-        "lowest-annual-fee-cheapest-vault": "以最低年手续费和最可负担开启抵押 stETH 的借贷金库",
+        "lowest-annual-fee-cheapest-vault": "此为使用质押 ETH 借贷选项中，最低年费和最便宜的金库",
         "unprofitable-position": "此仓位目前无法获利，但只要您明白现况，仍可以开启金库。"
     },
     "product-card-banner": {
@@ -945,17 +959,17 @@
     "product-page": {
         "multiply": {
             "title": "Oasis Multiply",
-            "description": "提高最爱的加密货币风险敞口，来浏览我们的产品或选择一项资产吧。",
+            "description": "快来浏览我们的产品或者选择您最爱的加密资产来提高风险敞口吧。",
             "link": "进一步了解 Multiply ->"
         },
         "borrow": {
             "title": "Oasis Borrow",
-            "description": "提高最爱的加密资产风险敞口. 你可以从下方选择想抵押的资产。",
+            "description": "现在就从下方选择您想抵押的加密资产来提高风险敞口吧。",
             "link": "进一步了解 Borrow ->"
         },
         "earn": {
             "title": "Oasis Earn",
-            "description": "让你的加密资产从今天开始为你赚取奖励，启动最棒的流动性挖矿。你可以从下方选择适合你的 Earn 产品。",
+            "description": "启用最优质的流动性挖矿，让加密资产开始为您赚取奖励。您可以从下方选择合适的 Earn 产品。",
             "link": "进一步了解 Earn ->"
         }
     },
@@ -1034,7 +1048,7 @@
     "disconnect-wallet": "断开连接钱包",
     "pending": "进行中...",
     "error-header": "失去连接",
-    "error-button-reload": "重新载入页面",
+    "error-button-reload": "重新载入",
     "exchange": {
         "onboarding": {
             "title": "向 Oasis Swap 打招呼",
@@ -1198,8 +1212,12 @@
         "stop-loss-trigger-higher-than-auto-buy-target": "设置你的 Stop-Loss 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
         "auto-buy-trigger-lower-than-auto-sell-target": "设置你的  Auto-Buy 触发器在这个层级将会导致你的 Auto-Sell 执行它。请先调整你的 Auto-Sell 目标比率。",
         "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "如果你已经设置 Constant Multiple， 你就无法设置  {{autoType}}。请移除 Constant MultipleYou 再继续设置。",
-        "after-coll-ratio-below-constant-multiple-sell-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Sell Trigger ratio first",
-        "after-coll-ratio-above-constant-multiple-buy-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Buy Trigger ratio first"
+        "after-coll-ratio-below-constant-multiple-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 出售触发器比率",
+        "after-coll-ratio-above-constant-multiple-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 的购买触发器比率",
+        "after-coll-ratio-below-auto-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Sell 的金库。请先调整 Auto-sell 的触发器比率。",
+        "after-coll-ratio-above-auto-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Buy 的金库。清先调整 Auto-Buy 的触发器比率。",
+        "min-sell-price-will-prevent-sell-trigger": "此最低出售价格将会防止启动出售触发器",
+        "max-buy-price-will-prevent-buy-trigger": "此最高购买价格将会防止启动购买触发器"
     },
     "vault-warnings": {
         "potential-generate-amount-less-than-debt-floor": "开启金库要求的最低 Dai 数量是 {{debtFloor}}，请增加更多抵押品来生成 {{debtFloor}} Dai",
@@ -1317,7 +1335,7 @@
         "saving-comp-to-liquidation": "和清算相比能保留下的价值",
         "estimated-fees-on-trigger": "预估在触发器上的手续费",
         "up-to": "至多",
-        "not-guaranteed": "自动化不保证总是百分之百保护",
+        "not-guaranteed": "自动化不保证绝对百分之百保护",
         "guarantee-factors": "有许多的因素会影响执行是否成功，这其中包含清算价格、波动性和燃料费。",
         "learn-more-about-automation": "进一步了解自动化以及 Oasis 如何在以太坊上创建最好的自动化产品 →",
         "automation-fact": "{{total}} 使用自动化的金库的 {{success}} 在过去 90 天已经被成功保存",
@@ -1349,7 +1367,8 @@
         "unable-to-access-protection": "无法使用保护",
         "closed-vault-not-existing-trigger-header": "在设置 Stop-Loss前，你必须生成 Dai",
         "closed-vault-not-existing-trigger-description": "为启用 Stop-Loss，你必须在概述分页生成 Dai",
-        "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+        "adding-new-triggers-disabled-description": "由于极端对抗的市场现况，为了保护我们的用户，我们暂时不提供设置新的 Stop-Loss 触发器。如果你想现在就关闭金库，请点击“关闭金库”的选项。",
+        "stop-loss-protection": "Stop-Loss 保护"
     },
     "user-settings": {
         "button-menu": "滑点",
@@ -1563,8 +1582,11 @@
         "banner": {
             "header": "设置 Auto-Sell",
             "content": "设置 Auto-Sell 以确保你的金库抵押率高于特定层级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
-            "button": "设置 Auto Sell"
-        }
+            "button": "设置 Auto Sell",
+            "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Sell。"
+        },
+        "sl-too-high": "当你现有的 Stop-Loss 保护触发点过高时，Auto-Sell 将无法使用。在使用 Stop-Loss 触发器前，请将<0>讓你的 Stop-Loss 触发器调低于</0>{{maxStopLoss}}%。",
+        "coll-ratio-too-high": "当你的抵押率太高时，Auto-Sell 将无法使用。在使用 Auto-Sell 前，请先<0>降低你的抵押率</0>。"
     },
     "auto-buy": {
         "title": "Auto-Buy",
@@ -1599,13 +1621,24 @@
         "banner": {
             "header": "设置 Auto-Buy",
             "content": "设置 Auto-Buy 以确保你的金库抵押率高于特点等级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
-            "button": "设置 Auto Buy"
+            "button": "设置 Auto Buy",
+            "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Buy。"
         },
         "setting-auto-buy": "正在设置 Auto-Buy",
         "cancelling-auto-buy": "正在取消 Auto-Buy",
         "set-trigger-description": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，而最高购买价格为${{minBuyPrice}}/{{token}}。了解更多",
         "set-trigger-description-no-threshold": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，没有最低购买价格。了解更多",
-        "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Auto-Buy 触发器"
+        "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Auto-Buy 触发器",
+        "add-form-title": "Auto-Buy 设置",
+        "edit-form-title": "编辑 Auto-Buy",
+        "setting-form-title": "正在设置 Auto-Buy",
+        "cancelling-form-title": "正在取消 Auto-Buy",
+        "cancel-form-title": "已取消",
+        "trigger-added": "已启用 Auto-Buy ",
+        "trigger-cancelled": "已取消 Auto-Buy",
+        "trigger-updated": "已更新 Auto-Buy",
+        "sl-too-high": "当你现有的 Stop-Loss 保护触发器比率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 前，请先 <0>讓你的 Stop-Loss 触发器低于</0> {{maxStopLoss}}%。",
+        "coll-ratio-too-high": "当你的抵押率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 之前，请先<0>讓你的抵押率</0>低于 {{maxAutoBuyCollRatio}}%。"
     },
     "optimization": {
         "zero-debt-heading": "在设置 Optimization 前，你必须生成 DAI。",
@@ -1653,10 +1686,18 @@
         "cancelling-constant-multiple": "正在取消 Constant Multiple",
         "adding-new-triggers-disabled": "目前关闭创建新的 Constant Multiple 触发器的功能",
         "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Constant Multiple 觸發器",
-        "sl-too-high": "由于你现有的 Stop-Loss 触发器过高，所以暂停 Constant Multiple 的服务。請<0>將 Stop-Loss 觸發器調整至低於</0>{{maxStopLoss}}% 以使用 Constant Multiple。",
+        "sl-too-high": "由于你现有的 Stop-Loss 触发器过高，所以暂停 Constant Multiple 的服务。請<0>讓 Stop-Loss 觸發器低於</0>{{maxStopLoss}}% 以使用 Constant Multiple。",
         "coll-ratio-too-close-to-dust-limit": "由於当前的抵押率非常接近 Dust 限度，所以暂停 Constant Multiple 的服务。请调整 <0>你的抵押率</0>以使用 Constant Multiple。",
         "closed-vault-existing-trigger-header": "你的金库已被关闭，但 Constant Multiple 仍处于活跃状态",
-        "closed-vault-existing-trigger-description": "你可以在这里取消已设置的 Constant Multiple 或在总览页面存入抵押品至你的金库。"
+        "closed-vault-existing-trigger-description": "你可以在这里取消已设置的 Constant Multiple 或在总览页面存入抵押品至你的金库。",
+        "add-form-title": "Constant Multiple Setup",
+        "setting-form-title": "正在設置 Constant Multiple",
+        "cancelling-form-title": "正在取消 Constant Multiple",
+        "edit-form-title": "編輯 Constant Multiple",
+        "cancel-form-title": "取消确认",
+        "trigger-added": "已啟用Constant Multiple",
+        "trigger-cancelled": "已取消 Constant Multiple",
+        "trigger-updated": "已更新 Constant Multiple"
     },
     "ref": {
         "banner": "推荐你的好友，一起来赚取 DAI",
@@ -1667,13 +1708,13 @@
         "not-claimed": "尚未领取的 DAI",
         "claim": "领取 DAI",
         "claimed": "已领取",
-        "no-claim": "没有可以领取",
+        "no-claim": "尚无奖励",
         "claiming": "领取中",
         "top": "顶尖赚取者",
         "link": "你的 Oasis.app 推荐链接",
         "copy": "复制",
         "copied": "已复制",
-        "explanation": "只要你的好友点击你的推荐连接并接受邀请，你就会看见他们显示在下方的”你已推荐的账户“。如此一来一切都搞定，手续费奖励立即生效！只要你想要，你可以无限次分享你的推荐链接。",
+        "explanation": "只要你的好友点击你的推荐连接并接受邀请，你就会看见他们显示在下方的”你已推荐的账户“。如此一来，手续费奖励立即生效！只要你想要，你可以无限次分享你的推荐链接。",
         "faq-link": "进一步了解 Oasis 推荐规则",
         "you-referred": "你已推荐的账户",
         "not-referred-yet": "你尚未推荐任何人",
@@ -1774,7 +1815,107 @@
                 "confirm-btn": "确认",
                 "retry-btn": "再试一次",
                 "success-title": "完成！你已开启仓位",
-                "go-to-position": "前往仓位"
+                "go-to-position": "前往仓位",
+                "configure-multiple": {
+                    "title": "设置风险等级",
+                    "liquidation-price": "stETH/ETH 清算价格",
+                    "steth-eth-historial-ratio": "stETH / ETH 历史比率",
+                    "back-to-enter-eth": "回到进入 ETH",
+                    "increase-risk": "增加风险",
+                    "decrease-risk": "降低风险"
+                }
+            }
+        }
+    },
+    "auto-take-profit": {
+        "title": "Auto-Take Profit",
+        "cancel-summary-title": "取消 Auto-Take Profit 订单摘要",
+        "form-title": "Auto-Take Profit 设置",
+        "banner": {
+            "header": "设置 Auto-Take Profit",
+            "content": "Auto-Take Profit 让你设置一个退出的策略，当你的抵押品达到你的目标价格时，它将自动帮你关闭金库并赚取获利。",
+            "button": "设置 Auto-Take Profit"
+        },
+        "trigger-col-price": "触发 {{token}} 的价格",
+        "trigger-col-price-explanation": "若要讓 Auto-Take profit 執行，{{token}} 必須達到的價格。",
+        "estimated-profit": "在關閉 {{amount}} 的預測獲利",
+        "estimated-profit-explanation": "在關閉時的預測獲利 = 触发的抵押品價值(USD) - 须偿还的债务 - 预测的交易手续费",
+        "trigger-col-ratio": "触发抵押率",
+        "trigger-col-ratio-explanation": "你的金库必须达到触发抵押率才会执行 Auto-Take profit。",
+        "current-col-ratio": "当前抵押率 {{amount}}"
+    },
+    "automation": {
+        "setup": "{{feature}} 设置",
+        "trigger-added": "已启用 {{feature}} ",
+        "trigger-cancelled": "已取消 {{feature}}",
+        "trigger-updated": "已更新 {{feature}}",
+        "add-trigger": "增加 {{feature}}",
+        "edit-trigger": "编辑 {{feature}}",
+        "setting": "正在设置 {{feature}}",
+        "updating": "正在更新 {{feature}}",
+        "cancelling": "正在取消 {{feature}}",
+        "update-trigger": "更新 {{feature}}",
+        "cancel-trigger": "取消 {{feature}}"
+    },
+    "brand-assets": {
+        "heading": "品牌资产",
+        "intro": "在这里可以找到 Oasis.app 的 Logo 和图像。",
+        "intro-cta": "下载所有档案",
+        "category": {
+            "logo": {
+                "heading": "Logo",
+                "info": "请勿修改、编辑或扭曲 Logo。"
+            },
+            "palm-leaf": {
+                "heading": "椰子叶图标",
+                "info": "请只有在以下情况时才单独使用图标：完整的 Logo 难以阅读、在有限的空间展示完整的 Logo，或者 Oasis.app 的品牌形象已完整建立。"
+            },
+            "minimum-size": {
+                "heading": "最小尺寸",
+                "info": "为了避免因 Logo 太小而难以辨识，请至少使用我们建议的最小尺寸。",
+                "digital": "数位",
+                "print": "印刷",
+                "digital-minimum-size": "72px",
+                "print-minimum-size": "2cm",
+                "width": "(宽)"
+            },
+            "best-practices": {
+                "heading": "范例",
+                "info": "在使用我们的 Logo 时请避免以下的使用方式。",
+                "no-gradient": "请勿在标准字体上使用渐层色",
+                "no-shadow": "请勿使用阴影",
+                "no-rotate": "请勿旋转 Logo",
+                "no-alone": "请勿单独使用标准字体",
+                "no-stack": "请勿堆叠 Logo",
+                "no-ratio": "请勿改变比例"
+            }
+        }
+    },
+    "security": {
+        "heading": "用户相信我们的原因",
+        "intro": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。",
+        "category": {
+            "people": {
+                "header": "我们有最顶尖的人才",
+                "description": "一群对于 DeFi 经验丰富并热于其中的建造者，某些您使用过的 DeFi 协议或产品都是来自我们。",
+                "link-about": "认识团队"
+            },
+            "audit": {
+                "header": "独立于公司之外的审计",
+                "description": "我们内部与外部严谨的审计过程，让我们拥有安全和严格的审查流程。",
+                "link-multiply": "多分审计报告",
+                "link-multiply-fmm": "Multiply FMM 外挂审计报告",
+                "link-automation": "Automation 审计报告"
+            },
+            "bug": {
+                "header": "Bug 赏金计划",
+                "description": "我们与程式码审查者、符合道义的白帽骇客的社群合作，给予那些找出 Bug 的人最多 10 万美元的赏金。",
+                "link-bug-bounty": "前往赏金计划"
+            },
+            "shield": {
+                "header": "保护隐私",
+                "description": "我们从不搜集任何可辨识的个人信息，也不追踪或储存任何 IP 地址和地点。",
+                "link-privacy": "阅读隐私政策"
             }
         }
     }

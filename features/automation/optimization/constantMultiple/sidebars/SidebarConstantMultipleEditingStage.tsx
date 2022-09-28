@@ -19,6 +19,7 @@ import { calculateCollRatioFromMultiple } from 'features/automation/common/helpe
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { AddConstantMultipleInfoSection } from 'features/automation/optimization/constantMultiple/controls/AddConstantMultipleInfoSection'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -333,7 +334,7 @@ export function SidebarConstantMultipleEditingStage({
               onClick={() => {
                 uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                   type: 'Protection',
-                  currentProtectionFeature: 'stopLoss',
+                  currentProtectionFeature: AutomationFeatures.STOP_LOSS,
                 })
                 setHash(VaultViewMode.Protection)
               }}

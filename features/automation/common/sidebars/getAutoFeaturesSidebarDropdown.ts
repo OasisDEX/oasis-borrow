@@ -7,6 +7,8 @@ import {
   AutomationOptimizationFeatures,
   AutomationProtectionFeatures,
 } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
 interface GetAutoFeaturesSidebarDropdownProps {
@@ -65,34 +67,36 @@ export function getAutoFeaturesSidebarDropdown({
   isAutoConstantMultipleEnabled,
   isAutoTakeProfitEnabled,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
+
   const stopLossDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.stop-loss',
     type: 'Protection',
-    panel: 'stopLoss',
+    panel: AutomationFeatures.STOP_LOSS,
     isFeatureEnabled: isStopLossEnabled,
   })
   const autoSellDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.basic-sell',
     type: 'Protection',
-    panel: 'autoSell',
+    panel: AutomationFeatures.AUTO_SELL,
     isFeatureEnabled: isAutoSellEnabled,
   })
   const basicBuyDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.basic-buy',
     type: 'Optimization',
-    panel: 'autoBuy',
+    panel: AutomationFeatures.AUTO_BUY,
     isFeatureEnabled: isAutoBuyEnabled,
   })
   const constantMultipleDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.constant-multiple',
     type: 'Optimization',
-    panel: 'constantMultiple',
+    panel: AutomationFeatures.CONSTANT_MULTIPLE,
     isFeatureEnabled: isAutoConstantMultipleEnabled,
   })
   const autoTakeProfitDropdownItem = getAutoFeaturesSidebarDropdownItem({
     translationKey: 'system.auto-take-profit',
     type: 'Optimization',
-    panel: 'autoTakeProfit',
+    panel: AutomationFeatures.AUTO_TAKE_PROFIT,
     isFeatureEnabled: isAutoTakeProfitEnabled,
   })
 
@@ -104,7 +108,7 @@ export function getAutoFeaturesSidebarDropdown({
       ? [
           ...(!isAutoConstantMultipleEnabled ? [basicBuyDropdownItem] : []),
           constantMultipleDropdownItem,
-          ...(!isAutoTakeProfitEnabled ? [autoTakeProfitDropdownItem] : []),
+          ...(autoTakeProfitEnabled ? [autoTakeProfitDropdownItem] : []),
         ]
       : []),
   ]

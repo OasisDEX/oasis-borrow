@@ -2,6 +2,7 @@ import { NotificationCard } from 'components/notifications/NotificationCard'
 import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { getNotificationTitle } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import { NotificationTypes } from 'features/notifications/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -30,19 +31,21 @@ export function NotificationCardsWrapper({ account }: NotificationCardsWrapperPr
 
   return (
     <>
-      {notificationsState.allNotifications.map((item) => (
-        <NotificationCard
-          key={item.id}
-          {...item}
-          title={getNotificationTitle({
-            type: item.notificationType,
-            lastModified: item.lastModified,
-            additionalData: item.additionalData,
-          })}
-          markReadHandler={markReadHandler}
-          editHandler={editHandler}
-        />
-      ))}
+      {notificationsState.allNotifications
+        .filter((item) => item.notificationType in NotificationTypes)
+        .map((item) => (
+          <NotificationCard
+            key={item.id}
+            {...item}
+            title={getNotificationTitle({
+              type: item.notificationType,
+              lastModified: item.lastModified,
+              additionalData: item.additionalData,
+            })}
+            markReadHandler={markReadHandler}
+            editHandler={editHandler}
+          />
+        ))}
     </>
   )
 }

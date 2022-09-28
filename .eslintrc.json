@@ -112,12 +112,7 @@
     "no-octal-escape": "error",
     "no-path-concat": "error",
     "no-proto": "error",
-    "no-redeclare": [
-      "error",
-      {
-        "builtinGlobals": false
-      }
-    ],
+    "@typescript-eslint/no-redeclare": "warn",
     "no-invalid-this": "off",
     "no-use-before-define": "off",
     "no-regex-spaces": "error",

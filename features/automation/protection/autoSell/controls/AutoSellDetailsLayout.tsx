@@ -11,6 +11,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -47,7 +48,8 @@ export function AutoSellDetailsLayout({
 
   return (
     <>
-      {isAutoSellOn || activeAutomationFeature?.currentProtectionFeature === 'autoSell' ? (
+      {isAutoSellOn ||
+      activeAutomationFeature?.currentProtectionFeature === AutomationFeatures.AUTO_SELL ? (
         <DetailsSection
           title={t('auto-sell.title')}
           badge={autoSellTriggerData.isTriggerEnabled}
@@ -97,7 +99,7 @@ export function AutoSellDetailsLayout({
             action: () => {
               uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                 type: 'Protection',
-                currentProtectionFeature: 'autoSell',
+                currentProtectionFeature: AutomationFeatures.AUTO_SELL,
               })
             },
             text: t('auto-sell.banner.button'),

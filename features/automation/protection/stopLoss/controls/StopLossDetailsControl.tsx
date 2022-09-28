@@ -4,6 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
 import { checkIfIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
 import {
@@ -77,7 +78,7 @@ export function StopLossDetailsControl({
             action: () => {
               uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                 type: 'Protection',
-                currentProtectionFeature: 'stopLoss',
+                currentProtectionFeature: AutomationFeatures.STOP_LOSS,
               })
             },
             text: t('vault-banners.setup-stop-loss.button'),

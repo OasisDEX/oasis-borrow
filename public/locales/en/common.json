@@ -224,6 +224,7 @@
   "get-dai": "Get Dai",
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
+  "go-to-vault-generic": "Go to Vault",
   "here": "here",
   "from:": "From",
   "full": "Full",
@@ -686,7 +687,7 @@
       "right-footer": "Increase risk"
     },
     "set-stoploss": {
-      "left-label": "Stop-Loss coll.ratio",
+      "left-label": "Stop-Loss collateral ratio",
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
       "right-footer": "More likely execution"
@@ -1126,6 +1127,7 @@
   },
   "setup": "Setup",
   "protection": {
+    "stop-loss-protection": "Stop-Loss Protection",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
@@ -1564,8 +1566,26 @@
     "form-title": "Auto-Take Profit Setup",
     "banner": {
       "header": "Set up Auto-Take Profit",
-      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price",
+      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
       "button": "Setup Auto-Take Profit"
+    },
+    "trigger-col-price": "Trigger {{token}} Price",
+    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
+    "estimated-profit": "Estimated Profit at close {{amount}}",
+    "estimated-profit-explanation": "Estimated Profit at Close = Collateral value (USD) at trigger - Debt value to be repaid - estimated Tx Fees",
+    "trigger-col-ratio": "Trigger Collateral Ratio",
+    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
+    "current-col-ratio": "Current Collateral Ratio {{amount}}",
+    "vault-changes": {
+      "general-summary": "General summary",
+      "trigger-col-price": "Trigger {{token}} Price",
+      "trigger-collateral-ratio": "Trigger Collateral Ratio",
+      "debt-repaid": "Debt Repaid",
+      "col-price-impact": "ETH Price (impact)",
+      "total-transaction-cost": "Total transaction cost on trigger",
+      "estimated-oasis-fee": "Estimated Oasis fee",
+      "estimated-gas-fee": "Estimated gas fee",
+      "setup-transaction-cost": "Setup transaction cost"
     }
   },
 
@@ -1708,11 +1728,12 @@
     "stop-loss-executed": "Your Stop-Loss Protection on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-buy-executed": "Your Auto-Buy on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "constant-multiple-executed": "Your Constant Multiple on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "oracle-price-changed": "Oracle price changed ${{usdPrice}}.",
     "action-notifications": "Vault action notifications",
-    "action-notifications-description": "You will be able to receive notifications when triggering Automation, Liquidation, or opening a vault.",
+    "action-notifications-description": "Receive a notification when an action occurs on your Vault.",
     "info-notifications": "Vault info notifications",
-    "info-notifications-description": "Get notified when your positions get within 5% of the Stop Loss or liquidation price.",
+    "info-notifications-description": "Receive notifications with important, timely information, so you can adjust your Vault.",
     "user-communication-notifications": "Oasis.app user communication notifications",
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "news-notifications": "Oasis.app news notifications",
@@ -1736,6 +1757,14 @@
   },
   "open-earn": {
     "aave": {
+      "product-header": {
+        "token-pair-list": {
+          "aave-steth-eth": "AAVE stETH yield multiple"
+        },
+        "current-yield": "Current yield",
+        "90-day-avg-yield": "90 Day Avg",
+        "total-value-locked": "Total value locked"
+      },
       "vault-form": {
         "title": "Set up Earn strategy",
         "open-btn": "Open Earn position",

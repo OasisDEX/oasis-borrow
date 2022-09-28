@@ -1,4 +1,5 @@
 import { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import {
   AutomationSidebarStatusParams,
   SidebarAutomationFlow,
@@ -68,7 +69,7 @@ export function getAutomationStatusTitle({
 
       return [
         {
-          text: t(txInProgressKey, { feature }),
+          text: t(txInProgressKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) }),
           type: 'progress',
           ...txData,
         },

@@ -118,7 +118,7 @@ export function SidebarSetupStopLoss({
   })
   const dropdown = getAutoFeaturesSidebarDropdown({
     type: 'Protection',
-    forcePanel: 'stopLoss',
+    forcePanel: AutomationFeatures.STOP_LOSS,
     disabled: isDropdownDisabled({ stage }),
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
@@ -162,6 +162,8 @@ export function SidebarSetupStopLoss({
   const sliderConfig: SliderValuePickerProps = {
     ...stopLossSliderBasicConfig,
     sliderPercentageFill,
+    leftLabel: t('slider.set-stoploss.left-label'),
+    rightLabel: t('slider.set-stoploss.right-label'),
     leftBoundry: stopLossState.stopLossLevel,
     rightBoundry: afterNewLiquidationPrice,
     lastValue: stopLossState.stopLossLevel,

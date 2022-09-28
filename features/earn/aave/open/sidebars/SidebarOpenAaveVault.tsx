@@ -193,12 +193,6 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
           maxBoundry={maxRisk || zero}
           lastValue={state.context.riskRatio.loanToValue}
           disabled={false}
-          leftBoundryStyling={{ fontWeight: 'semiBold', textAlign: 'right' }}
-          rightBoundryStyling={{
-            fontWeight: 'semiBold',
-            textAlign: 'right',
-            color: 'primary100',
-          }}
           step={0.01}
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
         />
