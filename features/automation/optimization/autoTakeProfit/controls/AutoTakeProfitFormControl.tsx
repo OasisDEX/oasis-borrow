@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { closeVaultOptions } from 'features/automation/common/consts'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -19,7 +20,6 @@ interface AutoTakeProfitFormControlProps {
   isAutoTakeProfitActive: boolean
   vault: Vault
 }
-const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
 export function AutoTakeProfitFormControl({
   autoBuyTriggerData,
@@ -27,18 +27,20 @@ export function AutoTakeProfitFormControl({
   isAutoTakeProfitActive,
   vault,
 }: AutoTakeProfitFormControlProps) {
+  const { uiChanges } = useAppContext()
+  const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
+
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
-  // const { uiChanges } = useAppContext()
 
   const closePickerConfig = {
     optionNames: closeVaultOptions,
     onclickHandler: (optionName: string) => {
       alert(optionName)
       // TODO ŁW implement atp form change
-      // uiChanges.publish(TAKE_PROFIT_FORM_CHANGE, {
-      //   type: 'close-type',
-      //   toCollateral: optionName === closeVaultOptions[0],
-      // })
+      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+        type: 'close-type',
+        toCollateral: optionName === closeVaultOptions[0],
+      })
     },
     isCollateralActive: true,
     collateralTokenSymbol: vault.token,
