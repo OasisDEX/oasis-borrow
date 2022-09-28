@@ -1,4 +1,5 @@
 import { SidebarSectionStatusProps } from 'components/sidebar/SidebarSectionStatus'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import {
   AutomationSidebarStatusParams,
   SidebarAutomationFlow,
@@ -13,7 +14,7 @@ function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarAutomationFl
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.setting'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -31,7 +32,7 @@ function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarAutomationFl
 function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarAutomationFlow }) {
   switch (flow) {
     case 'addSl':
-    case 'adjustSl':
+    case 'editSl':
     case 'cancelSl':
     case 'addAutoSell':
     case 'editAutoSell':
@@ -68,7 +69,7 @@ export function getAutomationStatusTitle({
 
       return [
         {
-          text: t(txInProgressKey, { feature }),
+          text: t(txInProgressKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) }),
           type: 'progress',
           ...txData,
         },

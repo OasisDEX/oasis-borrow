@@ -12,6 +12,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
@@ -60,7 +61,8 @@ export function ConstantMultipleDetailsLayout({
   return (
     <Grid>
       {isTriggerEnabled ||
-      activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple' ? (
+      activeAutomationFeature?.currentOptimizationFeature ===
+        AutomationFeatures.CONSTANT_MULTIPLE ? (
         <DetailsSection
           title={t('constant-multiple.title')}
           badge={isTriggerEnabled}
@@ -115,7 +117,7 @@ export function ConstantMultipleDetailsLayout({
                 action: () => {
                   uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                     type: 'Optimization',
-                    currentOptimizationFeature: 'constantMultiple',
+                    currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
                   })
                 },
                 text: t('constant-multiple.banner.button'),

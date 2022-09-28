@@ -19,6 +19,7 @@ export type Feature =
   | 'ConstantMultipleReadOnly'
   | 'DisableSidebarScroll'
   | 'ProxyCreationDisabled'
+  | 'AutoTakeProfit'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -35,7 +36,8 @@ const configuredFeatures: Record<Feature, boolean> = {
   ConstantMultiple: true,
   ConstantMultipleReadOnly: false,
   DisableSidebarScroll: false,
-  ProxyCreationDisabled: true,
+  ProxyCreationDisabled: false,
+  AutoTakeProfit: false,
   // your feature here....
 }
 

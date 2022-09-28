@@ -669,7 +669,7 @@ const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
     'WBTC-B',
     'WBTC-C',
     'WSTETH-A',
-    'WSTETH-C',
+    'WSTETH-B',
     'RENBTC-A',
     'YFI-A',
     'UNI-A',

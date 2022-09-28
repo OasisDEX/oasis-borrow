@@ -1,3 +1,4 @@
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import {
   AutomationSidebarCopiesParams,
   SidebarAutomationFlow,
@@ -12,7 +13,7 @@ function getPrimaryButtonLabelEditingTranslationKey({ flow }: { flow: SidebarAut
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.add-trigger'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -38,7 +39,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({
     case 'addAutoBuy':
     case 'addConstantMultiple':
       return 'automation.setting'
-    case 'adjustSl':
+    case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
@@ -56,7 +57,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({
 function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationFlow }) {
   switch (flow) {
     case 'addSl':
-    case 'adjustSl':
+    case 'editSl':
     case 'cancelSl':
       return 'back-to-vault-overview'
     case 'addAutoSell':
@@ -88,13 +89,13 @@ export function getAutomationPrimaryButtonLabel({
         flow,
       })
 
-      return t(translationKey, { feature })
+      return t(translationKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txFailure':
       return t('retry')
     case 'txInProgress':
       const txInProgressKey = getPrimaryButtonLabelTxInProgressTranslationKey({ flow })
 
-      return t(txInProgressKey, { feature })
+      return t(txInProgressKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txSuccess':
       const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow })
 

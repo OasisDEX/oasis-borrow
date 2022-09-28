@@ -7,6 +7,7 @@ import { ConstantMultipleTriggerData } from 'features/automation/optimization/co
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
+import { zero } from 'helpers/zero'
 
 export function warningsAutoBuyValidation({
   vault,
@@ -63,11 +64,13 @@ export function errorsAutoBuyValidation({
   autoSellTriggerData,
   constantMultipleTriggerData,
   isRemoveForm,
+  executionPrice,
 }: {
   autoBuyState: AutoBSFormChange
   autoSellTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isRemoveForm: boolean
+  executionPrice: BigNumber
 }) {
   const { maxBuyOrMinSellPrice, txDetails, withThreshold, execCollRatio } = autoBuyState
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError: txDetails?.txError })
@@ -82,10 +85,14 @@ export function errorsAutoBuyValidation({
   const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
     constantMultipleTriggerData.isTriggerEnabled
 
+  const maxBuyPriceWillPreventBuyTrigger =
+    maxBuyOrMinSellPrice?.gt(zero) && maxBuyOrMinSellPrice.lt(executionPrice)
+
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     autoBuyMaxBuyPriceNotSpecified,
     autoBuyTriggerLowerThanAutoSellTarget,
     cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
+    maxBuyPriceWillPreventBuyTrigger,
   })
 }

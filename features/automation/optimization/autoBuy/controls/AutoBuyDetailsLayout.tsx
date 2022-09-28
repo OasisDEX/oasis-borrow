@@ -11,10 +11,11 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/common/state/automationFeatureChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Text } from 'theme-ui'
+import { Text } from 'theme-ui'
 
 export interface AutoBuyDetailsLayoutProps {
   token: string
@@ -41,12 +42,14 @@ export function AutoBuyDetailsLayout({
 }: AutoBuyDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoBuyOn = autoBuyTriggerData.isTriggerEnabled
 
   return (
-    <Grid>
-      {isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy' ? (
+    <>
+      {isAutoBuyOn ||
+      activeAutomationFeature?.currentOptimizationFeature === AutomationFeatures.AUTO_BUY ? (
         <DetailsSection
           title={t('auto-buy.title')}
           badge={isAutoBuyOn}
@@ -96,7 +99,7 @@ export function AutoBuyDetailsLayout({
             action: () => {
               uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
                 type: 'Optimization',
-                currentOptimizationFeature: 'autoBuy',
+                currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
               })
             },
             text: t('auto-buy.banner.button'),
@@ -104,6 +107,6 @@ export function AutoBuyDetailsLayout({
           }}
         />
       )}
-    </Grid>
+    </>
   )
 }
