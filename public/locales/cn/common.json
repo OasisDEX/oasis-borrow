@@ -489,9 +489,9 @@
         "select-an-asset": "选择资产",
         "referrals": "推荐朋友",
         "cookie": "Cookie 政策",
-        "bug-bounty": "Bug Bounty",
-        "brand-assets": "Brand assets",
-        "security": "Security"
+        "bug-bounty": "Bug 赏金计划",
+        "brand-assets": "品牌资产",
+        "security": "安全性"
     },
     "new-to-ethereum": "第一次接触以太坊？",
     "next": "下一步",
@@ -600,12 +600,12 @@
             "description": "我们让 Oasis.app 的用户可以经由推荐朋友而得到回报。您可以邀请好友使用我们的产品，您和朋友都可以因此赚取少许的手续费。"
         },
         "brand-assets": {
-            "title": "Brand assets",
-            "description": "Find here the Oasis.app Logo and graphics."
+            "title": "品牌资产",
+            "description": "在这里可以找到 Oasis.app 的 Logo 和图像。"
         },
         "security": {
-            "title": "Security",
-            "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
+            "title": "安全性",
+            "description": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。"
         }
     },
     "set-allowance-for": "设置 {{token}} 许可额度",
@@ -858,7 +858,7 @@
             "manage": "管理金库",
             "success": "完成! 你已拥有一个金库",
             "success-manage": "完成! 已更新你的金库",
-            "proxyDisabled": "Proxy creation temporally disabled"
+            "proxyDisabled": "建立智能代理合约目前停用"
         },
         "subtext": {
             "collateral": "在你的金库存款或提款，并且通过合并交易来节省手续费。",
@@ -876,7 +876,7 @@
             "proxy-start": "只需要设定代理合约一次，就可以在一次的交易里执行多项动作。前往 <1>知识中心</1>了解更多。",
             "proxy-success": "已成功设定智能代理合约。 前往 <1>知识中心</1>了解更多 →</1>",
             "proxy-progress": "前往 <1>知识中心</1>进一步了解智能代理合约。",
-            "new-proxy-temporally-disabled": "Proxy creation is temporary disabled around the merge, to prevent unexpected behavior from re-orgs. See our <1>blog</1> for more info."
+            "new-proxy-temporally-disabled": "在合并的过程，会暂时无法建立智能代理合约，以避免来自重新组织的非预期错误。请阅读我们的<1>博客</1>以了解进一步的信息。"
         }
     },
     "creating-your-vault": "创建你的 {{token}} 金库！",
@@ -1212,12 +1212,12 @@
         "stop-loss-trigger-higher-than-auto-buy-target": "设置你的 Stop-Loss 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
         "auto-buy-trigger-lower-than-auto-sell-target": "设置你的  Auto-Buy 触发器在这个层级将会导致你的 Auto-Sell 执行它。请先调整你的 Auto-Sell 目标比率。",
         "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "如果你已经设置 Constant Multiple， 你就无法设置  {{autoType}}。请移除 Constant MultipleYou 再继续设置。",
-        "after-coll-ratio-below-constant-multiple-sell-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Sell Trigger ratio first",
-        "after-coll-ratio-above-constant-multiple-buy-ratio": "You cannot make adjustments to your vault that would trigger your Constant-Multiple at the current or next price. Please adjust your Constant-Multiple Buy Trigger ratio first",
-        "after-coll-ratio-below-auto-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
-        "after-coll-ratio-above-auto-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
-        "min-sell-price-will-prevent-sell-trigger": "This Min Sell Price will prevent the Sell Trigger from executing",
-        "max-buy-price-will-prevent-buy-trigger": "This Max Buy Price will prevent the Buy Trigger from executing"
+        "after-coll-ratio-below-constant-multiple-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 出售触发器比率",
+        "after-coll-ratio-above-constant-multiple-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 的购买触发器比率",
+        "after-coll-ratio-below-auto-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Sell 的金库。请先调整 Auto-sell 的触发器比率。",
+        "after-coll-ratio-above-auto-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Buy 的金库。清先调整 Auto-Buy 的触发器比率。",
+        "min-sell-price-will-prevent-sell-trigger": "此最低出售价格将会防止启动出售触发器",
+        "max-buy-price-will-prevent-buy-trigger": "此最高购买价格将会防止启动购买触发器"
     },
     "vault-warnings": {
         "potential-generate-amount-less-than-debt-floor": "开启金库要求的最低 Dai 数量是 {{debtFloor}}，请增加更多抵押品来生成 {{debtFloor}} Dai",
@@ -1367,8 +1367,8 @@
         "unable-to-access-protection": "无法使用保护",
         "closed-vault-not-existing-trigger-header": "在设置 Stop-Loss前，你必须生成 Dai",
         "closed-vault-not-existing-trigger-description": "为启用 Stop-Loss，你必须在概述分页生成 Dai",
-        "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
-        "stop-loss-protection": "Stop-Loss Protection"
+        "adding-new-triggers-disabled-description": "由于极端对抗的市场现况，为了保护我们的用户，我们暂时不提供设置新的 Stop-Loss 触发器。如果你想现在就关闭金库，请点击“关闭金库”的选项。",
+        "stop-loss-protection": "Stop-Loss 保护"
     },
     "user-settings": {
         "button-menu": "滑点",
@@ -1583,10 +1583,10 @@
             "header": "设置 Auto-Sell",
             "content": "设置 Auto-Sell 以确保你的金库抵押率高于特定层级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
             "button": "设置 Auto Sell",
-            "cm-warning": "Auto-Sell cannot be used if you have Constant Multiple enabled."
+            "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Sell。"
         },
-        "sl-too-high": "Auto-Sell is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Sell.",
-        "coll-ratio-too-high": "Auto-Sell is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Sell."
+        "sl-too-high": "当你现有的 Stop-Loss 保护触发点过高时，Auto-Sell 将无法使用。在使用 Stop-Loss 触发器前，请将<0>讓你的 Stop-Loss 触发器调低于</0>{{maxStopLoss}}%。",
+        "coll-ratio-too-high": "当你的抵押率太高时，Auto-Sell 将无法使用。在使用 Auto-Sell 前，请先<0>降低你的抵押率</0>。"
     },
     "auto-buy": {
         "title": "Auto-Buy",
@@ -1622,23 +1622,23 @@
             "header": "设置 Auto-Buy",
             "content": "设置 Auto-Buy 以确保你的金库抵押率高于特点等级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
             "button": "设置 Auto Buy",
-            "cm-warning": "Auto-Buy cannot be used if you have Constant Multiple enabled."
+            "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Buy。"
         },
         "setting-auto-buy": "正在设置 Auto-Buy",
         "cancelling-auto-buy": "正在取消 Auto-Buy",
         "set-trigger-description": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，而最高购买价格为${{minBuyPrice}}/{{token}}。了解更多",
         "set-trigger-description-no-threshold": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，没有最低购买价格。了解更多",
         "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Auto-Buy 触发器",
-        "add-form-title": "Auto-Buy Setup",
-        "edit-form-title": "Edit Auto-Buy",
-        "setting-form-title": "Setting Auto-Buy",
-        "cancelling-form-title": "Cancelling Auto-Buy",
-        "cancel-form-title": "Cancellation confirmation",
-        "trigger-added": "Auto-Buy Enabled",
-        "trigger-cancelled": "Auto-Buy cancellation completed",
-        "trigger-updated": "Auto-Buy Updated",
-        "sl-too-high": "Auto-Buy is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Auto-Buy.",
-        "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
+        "add-form-title": "Auto-Buy 设置",
+        "edit-form-title": "编辑 Auto-Buy",
+        "setting-form-title": "正在设置 Auto-Buy",
+        "cancelling-form-title": "正在取消 Auto-Buy",
+        "cancel-form-title": "已取消",
+        "trigger-added": "已启用 Auto-Buy ",
+        "trigger-cancelled": "已取消 Auto-Buy",
+        "trigger-updated": "已更新 Auto-Buy",
+        "sl-too-high": "当你现有的 Stop-Loss 保护触发器比率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 前，请先 <0>讓你的 Stop-Loss 触发器低于</0> {{maxStopLoss}}%。",
+        "coll-ratio-too-high": "当你的抵押率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 之前，请先<0>讓你的抵押率</0>低于 {{maxAutoBuyCollRatio}}%。"
     },
     "optimization": {
         "zero-debt-heading": "在设置 Optimization 前，你必须生成 DAI。",
@@ -1686,18 +1686,18 @@
         "cancelling-constant-multiple": "正在取消 Constant Multiple",
         "adding-new-triggers-disabled": "目前关闭创建新的 Constant Multiple 触发器的功能",
         "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Constant Multiple 觸發器",
-        "sl-too-high": "由于你现有的 Stop-Loss 触发器过高，所以暂停 Constant Multiple 的服务。請<0>將 Stop-Loss 觸發器調整至低於</0>{{maxStopLoss}}% 以使用 Constant Multiple。",
+        "sl-too-high": "由于你现有的 Stop-Loss 触发器过高，所以暂停 Constant Multiple 的服务。請<0>讓 Stop-Loss 觸發器低於</0>{{maxStopLoss}}% 以使用 Constant Multiple。",
         "coll-ratio-too-close-to-dust-limit": "由於当前的抵押率非常接近 Dust 限度，所以暂停 Constant Multiple 的服务。请调整 <0>你的抵押率</0>以使用 Constant Multiple。",
         "closed-vault-existing-trigger-header": "你的金库已被关闭，但 Constant Multiple 仍处于活跃状态",
         "closed-vault-existing-trigger-description": "你可以在这里取消已设置的 Constant Multiple 或在总览页面存入抵押品至你的金库。",
         "add-form-title": "Constant Multiple Setup",
-        "setting-form-title": "Setting Constant Multiple",
-        "cancelling-form-title": "Cancelling Constant Multiple",
-        "edit-form-title": "Edit Constant Multiple",
-        "cancel-form-title": "Cancellation confirmation",
-        "trigger-added": "Constant Multiple Enabled",
-        "trigger-cancelled": "Constant Multiple cancellation completed",
-        "trigger-updated": "Constant Multiple Updated"
+        "setting-form-title": "正在設置 Constant Multiple",
+        "cancelling-form-title": "正在取消 Constant Multiple",
+        "edit-form-title": "編輯 Constant Multiple",
+        "cancel-form-title": "取消确认",
+        "trigger-added": "已啟用Constant Multiple",
+        "trigger-cancelled": "已取消 Constant Multiple",
+        "trigger-updated": "已更新 Constant Multiple"
     },
     "ref": {
         "banner": "推荐你的好友，一起来赚取 DAI",
@@ -1859,7 +1859,7 @@
     },
     "brand-assets": {
         "heading": "品牌资产",
-        "intro": "在这里可以找到 Oasis.app 的 Logo 和图像",
+        "intro": "在这里可以找到 Oasis.app 的 Logo 和图像。",
         "intro-cta": "下载所有档案",
         "category": {
             "logo": {
