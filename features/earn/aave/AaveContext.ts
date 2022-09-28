@@ -124,6 +124,7 @@ export function setupAaveContext({
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'STETH' }),
     getAaveReserveData$({ token: 'ETH' }),
+    // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 

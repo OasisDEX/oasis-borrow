@@ -7,6 +7,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { ActorRefFrom } from 'xstate'
 
 import { useAaveContext } from '../../AaveContextProvider'
