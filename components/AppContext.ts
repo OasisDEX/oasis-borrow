@@ -130,6 +130,10 @@ import {
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
 import {
+  AutoTakeProfitFormChange,
+  AutoTakeProfitFormChangeAction,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleChangeAction,
   ConstantMultipleFormChange,
@@ -325,6 +329,7 @@ export type SupportedUIChangeType =
   | AutomationChangeFeature
   | NotificationChange
   | TxPayloadChange
+  | AutoTakeProfitFormChange
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
@@ -336,6 +341,7 @@ export type LegalUiChanges = {
   ConstantMultipleChangeAction: ConstantMultipleChangeAction
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
+  AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
 }
 
 export type UIChanges = {
