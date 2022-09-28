@@ -9,7 +9,7 @@ export const AUTO_TAKE_PROFIT_FORM_CHANGE = 'AUTO_TAKE_PROFIT_FORM_CHANGE'
 // >
 
 export type AutoTakeProfitFormChangeAction =
-  | { type: 'trigger-price'; executionCollRatio: BigNumber }
+  | { type: 'execution-coll-ratio'; executionCollRatio: BigNumber }
   | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'close-type'; toCollateral: boolean }
 // TODO ŁW
@@ -21,7 +21,7 @@ export function formChangeReducer(
   action: AutoTakeProfitFormChangeAction,
 ): AutoTakeProfitFormChange {
   switch (action.type) {
-    case 'trigger-price':
+    case 'execution-coll-ratio':
       return { ...state, executionCollRatio: action.executionCollRatio }
     case 'current-form':
       return { ...state, currentForm: action.currentForm }

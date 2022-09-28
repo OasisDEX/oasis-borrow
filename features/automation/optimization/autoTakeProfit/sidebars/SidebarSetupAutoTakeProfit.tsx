@@ -82,7 +82,7 @@ export function SidebarSetupAutoTakeProfit({
     rightLabel: t('slider.set-auto-take-profit.right-label'),
     leftBoundry: min, // TODO level based on state like stopLossState.stopLossLevel,
     rightBoundry: max,
-    lastValue: autoTakeProfitState.executionCollRatio,
+    lastValue: new BigNumber(300),//autoTakeProfitState.executionCollRatio, why undefined!?
     maxBoundry,
     minBoundry: min,
     onChange: (slCollRatio) => {
