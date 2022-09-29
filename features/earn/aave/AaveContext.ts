@@ -13,7 +13,6 @@ import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveP
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
-import { aavePrepareReserveConfigurationData$ } from './helpers/aavePrepareReserveConfigurationData'
 import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine$,
@@ -43,6 +42,11 @@ export function setupAaveContext({
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
 
+  const disconnectedGraphQLClient$ = context$.pipe(
+    distinctUntilKeyChanged('cacheApi'),
+    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  )
+
   const graphQLClient$ = contextForAddress$.pipe(
     distinctUntilKeyChanged('cacheApi'),
     map(({ cacheApi }) => new GraphQLClient(cacheApi)),
@@ -57,11 +61,7 @@ export function setupAaveContext({
     switchMap(({ account }) => accountBalances$(account)),
   )
 
-  const aaveReserveConfigurationData$ = observe(
-    once$,
-    connectedContext$,
-    getAaveReserveConfigurationData,
-  )
+  const aaveReserveConfigurationData$ = observe(once$, context$, getAaveReserveConfigurationData)
 
   const aaveAssetPriceData$ = observe(once$, connectedContext$, getAaveAssetPriceData)
 
@@ -101,6 +101,7 @@ export function setupAaveContext({
   const manageTransactionMachine = getManageAaveTransactionMachine(txHelpers$, contextForAddress$)
 
   const aaveSthEthYields = curry(getAaveStEthYield)(graphQLClient$, moment())
+  const aaveSthEthYieldsQuery = curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment())
 
   const simulationMachine = getSthEthSimulationMachine(aaveSthEthYields)
 
@@ -128,15 +129,14 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  const aaveReserveStEthData$ = curry(aavePrepareReserveConfigurationData$)(
-    aaveReserveConfigurationData$({ token: 'STETH' }),
-  )
+  const aaveReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
 
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
-    aaveReserveStEthData$,
+    aaveReserveConfigurationData,
+    aaveSthEthYieldsQuery,
   }
 }
 

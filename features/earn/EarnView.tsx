@@ -1,3 +1,5 @@
+import { getTokens } from 'blockchain/tokensMetadata'
+import { ProductCardEarnAave } from 'components/productCards/ProductCardEarnAave'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -13,15 +15,26 @@ import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { supportedEarnIlks } from '../../helpers/productCards'
+import { useAaveContext } from './aave/AaveContextProvider'
+
+const aaveStrategiesList = ['AAVE-STETH-ETH']
 
 export function EarnView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(
+  const [productCardsIlksData, productCardsIlksDataError] = useObservable(
     productCardsData$(supportedEarnIlks),
   )
 
-  console.log('productCardsData', productCardsData)
+  const {
+    aaveTotalValueLocked$,
+    aaveReserveConfigurationData,
+    aaveSthEthYieldsQuery,
+  } = useAaveContext()
+  const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
+  const aaveStrategiesTokens = getTokens(aaveStrategiesList)
+  console.log('renderrr')
 
   return (
     <Grid
@@ -40,12 +53,24 @@ export function EarnView() {
         }}
       />
 
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
-          {([productCardsData]) => (
+      <WithErrorHandler error={[productCardsIlksDataError, aaveReserveStateError, tvlStateError]}>
+        <WithLoadingIndicator
+          value={[productCardsIlksData, aaveReserveState, tvlState]}
+          customLoader={<ProductCardsLoader />}
+        >
+          {([_productCardsIlksData, _aaveReserveState, _tvlState]) => (
             <ProductCardsWrapper>
-              {productCardsData.map((cardData) => (
+              {_productCardsIlksData.map((cardData) => (
                 <ProductCardEarnIlk cardData={cardData} key={cardData.ilk} />
+              ))}
+              {aaveStrategiesTokens.map((cardData) => (
+                <ProductCardEarnAave
+                  key={`ProductCardEarnAave_${cardData.symbol}`}
+                  cardData={cardData}
+                  aaveReserveState={_aaveReserveState}
+                  tvlState={_tvlState}
+                  aaveSthEthYieldsQuery={aaveSthEthYieldsQuery}
+                />
               ))}
             </ProductCardsWrapper>
           )}

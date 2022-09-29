@@ -1,3 +1,5 @@
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { aaveContext, AaveContextProvider } from 'features/earn/aave/AaveContextProvider'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -14,10 +16,14 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 function EarnPage() {
   return (
-    <WithConnection>
-      <EarnView />
-      <Survey for="earn" />
-    </WithConnection>
+    <AaveContextProvider>
+      <DeferedContextProvider context={aaveContext}>
+        <WithConnection>
+          <EarnView />
+          <Survey for="earn" />
+        </WithConnection>
+      </DeferedContextProvider>
+    </AaveContextProvider>
   )
 }
 
