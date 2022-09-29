@@ -60,7 +60,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       </Flex>
       <Box my={1}>
         <Slider
-          sx={{ ...props.rightBoundryStyling, background }}
+          sx={{ background }}
           disabled={props.disabled}
           step={props.step}
           min={props.minBoundry?.toNumber()}

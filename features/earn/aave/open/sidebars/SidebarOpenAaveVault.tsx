@@ -174,6 +174,17 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
   const liquidationPriceRatio =
     state.context.transactionParameters?.strategy.simulation.position.liquidationPrice || zero
 
+  const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
+
+  enum RiskLevel {
+    OK = 'OK',
+    AT_RISK = 'AT_RISK',
+  }
+
+  const riskTrafficLight = liquidationPriceRatio.div(oracleAssetPrice).lt(0.8)
+    ? RiskLevel.OK
+    : RiskLevel.AT_RISK
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
@@ -182,8 +193,11 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
           sliderPercentageFill={new BigNumber(0)}
           leftBoundry={liquidationPriceRatio}
           leftBoundryFormatter={(value) => value.toFixed(2)}
-          rightBoundry={state.context.strategyInfo?.oracleAssetPrice || zero}
+          rightBoundry={oracleAssetPrice}
           rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
+          rightBoundryStyling={{
+            color: riskTrafficLight === RiskLevel.OK ? 'success100' : 'warning100',
+          }}
           onChange={(ltv) => {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
           }}
