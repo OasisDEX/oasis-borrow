@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js'
+
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -17,7 +17,7 @@ export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
   // ŁW dummy initial data
   const isToCollateral = true
   const triggerId = zero
-  const initialSelectedTakeProfitRatio = new BigNumber(500)
+  const initialSelectedTakeProfitRatio = vault.collateralizationRatio.multipliedBy(100)
   useEffect(() => {
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'form-defaults',

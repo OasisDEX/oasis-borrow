@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
@@ -58,15 +59,15 @@ export function SidebarSetupAutoTakeProfit({
   const autoTakeSliderBasicConfig = {
     disabled: false,
     leftBoundryFormatter: (x: BigNumber) =>
-      x.isZero() ? '-' : '$ ' + formatAmount(x, vault.token),
+      x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD'),
     rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     step: 1,
   }
 
-  const sliderPercentageFill = new BigNumber(1025.0)
-  const min = new BigNumber(100)
-  const max = new BigNumber(10000)
-  const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
+  const sliderPercentageFill = new BigNumber(2000)
+  const min = vault.collateralizationRatio.multipliedBy(100)
+  const max = new BigNumber(500) // TODO ŁW coll ratio if price reached last ATH+100%
+  const maxBoundry = max
 
   // TODO ŁW slider % fill based on selected price
   // const sliderPercentageFill = getSliderPercentageFill({
@@ -80,12 +81,16 @@ export function SidebarSetupAutoTakeProfit({
     sliderPercentageFill,
     leftLabel: t('slider.set-auto-take-profit.left-label'),
     rightLabel: t('slider.set-auto-take-profit.right-label'),
-    leftBoundry: min, // TODO level based on state like stopLossState.stopLossLevel,
-    rightBoundry: max,
-    lastValue: new BigNumber(300), //autoTakeProfitState.executionCollRatio, why undefined!?
+    leftBoundry: collateralPriceAtRatio({
+      colRatio: autoTakeProfitState.executionCollRatio.div(100),
+      collateral: vault.lockedCollateral,
+      vaultDebt: vault.debt,
+    }), // TODO price for coll ratio collateralPriceAtRatio also calculated in status
+    rightBoundry: autoTakeProfitState.executionCollRatio,
+    lastValue: autoTakeProfitState.executionCollRatio.decimalPlaces(0, BigNumber.ROUND_DOWN), //autoTakeProfitState.executionCollRatio, why undefined!?
     maxBoundry,
     minBoundry: min,
-    onChange: (slCollRatio) => {
+    onChange: (executionCollRatio) => {
       if (autoTakeProfitState.collateralActive === undefined) {
         uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
           type: 'close-type',
@@ -94,8 +99,8 @@ export function SidebarSetupAutoTakeProfit({
       }
 
       uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-        type: 'stop-loss-level',
-        stopLossLevel: slCollRatio,
+        type: 'execution-coll-ratio',
+        executionCollRatio: executionCollRatio,
       })
     },
   }
