@@ -1,3 +1,6 @@
+import { getAaveAssetsPrices } from 'blockchain/calls/aavePriceOracle'
+import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
+import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
@@ -11,9 +14,10 @@ import {
   getAaveReserveConfigurationData,
   getAaveUserReserveData,
 } from '../../../blockchain/calls/aaveProtocolDataProvider'
-import { observe } from '../../../blockchain/calls/observe'
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
+import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
+import { aavePrepareReserveConfigurationData$ } from './helpers/aavePrepareReserveConfigurationData'
 import {
   getClosePositionParametersStateMachine$,
   getClosePositionParametersStateMachineServices$,
@@ -38,6 +42,8 @@ export function setupAaveContext({
   gasPrice$,
   daiEthTokenPrice$,
   accountBalances$,
+  onEveryBlock$,
+  context$,
 }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
@@ -132,9 +138,25 @@ export function setupAaveContext({
     ({ token, address, strategy }) => `${address}-${token}-${strategy}`,
   )
 
+  const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
+
+  const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
+    getAaveReserveData$({ token: 'STETH' }),
+    getAaveReserveData$({ token: 'ETH' }),
+    // @ts-expect-error
+    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  )
+
+  const aaveReserveStEthData$ = curry(aavePrepareReserveConfigurationData$)(
+    aaveReserveConfigurationData$({ token: 'STETH' }),
+  )
+
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
+    aaveTotalValueLocked$,
+    aaveReserveStEthData$,
   }
 }
 

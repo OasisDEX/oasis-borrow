@@ -314,7 +314,7 @@ const kovan: NetworkConfig = {
   aavePriceOracle: contractDesc(
     aavePriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    '0xB8bE51E6563BB312Cbb2aa26e352516c25c26ac1',
+    '0x',
   ),
   operationExecutor: contractDesc(
     operationExecutor,

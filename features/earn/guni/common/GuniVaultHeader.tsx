@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { YieldChange } from 'helpers/earn/calculations'
 import moment from 'moment'
@@ -7,7 +8,6 @@ import React from 'react'
 
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { EarnVaultHeadline } from '../../../../components/vault/EarnVaultHeadline'
-import { HeadlineDetailsProp } from '../../../../components/vault/VaultHeadline'
 import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHandler'
 import { formatFiatBalance, formatPercent } from '../../../../helpers/formatters/format'
 import { useObservable } from '../../../../helpers/observableHook'
@@ -41,7 +41,7 @@ export function GuniVaultHeader({ ilk, token }: EarnVaultHeaderProps) {
               value: `$${formatFiatBalance(_totalValueLocked.value || zero)}`,
             },
           ]
-          return <EarnVaultHeadline header={ilk} token={token} details={details} />
+          return <EarnVaultHeadline header={ilk} token={[token]} details={details} />
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>

@@ -86,6 +86,17 @@ export function getNotificationTitle({
           }}
         />
       )
+    case NotificationTypes.CONSTANT_MULTIPLE_TRIGGERED:
+      return (
+        <Trans
+          i18nKey="notifications.constant-multiple-executed"
+          values={{
+            vaultId,
+            usdPrice,
+            humanDate,
+          }}
+        />
+      )
     case NotificationTypes.APPROACHING_LIQUIDATION:
       return (
         <Trans

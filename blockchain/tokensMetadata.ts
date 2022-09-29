@@ -631,13 +631,22 @@ export const tokens = [
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
-const tokensBySymbol = keyBy(tokens, 'symbol')
+export const tokensBySymbol = keyBy(tokens, 'symbol')
 
-export function getToken(tokenSymbol: string) {
+type SymbolType = ElementOf<typeof tokens>['symbol']
+
+export function getToken(tokenSymbol: SymbolType): typeof tokens[number] {
   if (!tokensBySymbol[tokenSymbol]) {
     throw new Error(`No meta information for token: ${tokenSymbol}`)
   }
   return tokensBySymbol[tokenSymbol]
+}
+
+export function getTokens(tokenSymbol: SymbolType[]): typeof tokens {
+  if (tokenSymbol instanceof Array) {
+    return tokenSymbol.map(getToken)
+  }
+  throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
 }
 
 export const ALLOWED_MULTIPLY_TOKENS = tokens
