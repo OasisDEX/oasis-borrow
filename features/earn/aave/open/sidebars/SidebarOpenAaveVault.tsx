@@ -9,14 +9,16 @@ import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
+import { MessageCard } from '../../../../../components/MessageCard'
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
+import { formatPercent } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
-import { zero } from '../../../../../helpers/zero'
+import { one, zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
@@ -171,7 +173,7 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
     state.context.transactionParameters?.strategy.simulation.minConfigurableRiskRatio ||
     new RiskRatio(zero, RiskRatio.TYPE.LTV)
 
-  const liquidationPriceRatio =
+  const liquidationPrice =
     state.context.transactionParameters?.strategy.simulation.position.liquidationPrice || zero
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
@@ -181,9 +183,24 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
     AT_RISK = 'AT_RISK',
   }
 
-  const riskTrafficLight = liquidationPriceRatio.div(oracleAssetPrice).lt(0.8)
+  const riskTrafficLight = liquidationPrice.div(oracleAssetPrice).lt(0.8)
     ? RiskLevel.OK
     : RiskLevel.AT_RISK
+
+  const debtToken = state.context.token
+
+  const priceMovementUntilLiquidation = one.minus(liquidationPrice.div(oracleAssetPrice)).times(100)
+
+  const priceMovementWarningThreshold = new BigNumber(20)
+
+  const priceMovementToDisplay = formatPercent(
+    BigNumber.min(priceMovementUntilLiquidation, priceMovementWarningThreshold),
+    { precision: 2 },
+  )
+
+  const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
+
+  const liquidationPenalty = formatPercent(new BigNumber('7.5'), { precision: 2 })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -191,7 +208,7 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
       <Grid gap={3}>
         <SliderValuePicker
           sliderPercentageFill={new BigNumber(0)}
-          leftBoundry={liquidationPriceRatio}
+          leftBoundry={liquidationPrice}
           leftBoundryFormatter={(value) => value.toFixed(2)}
           rightBoundry={oracleAssetPrice}
           rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
@@ -218,6 +235,15 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
         </Flex>
+        <OpenAaveInformationContainer state={state} send={send} />
+        <MessageCard
+          messages={[
+            isWarning
+              ? `At the chosen risk level if the price of stETH moves ${priceMovementToDisplay}  with respect to ${debtToken} this Earn position could be liquidated. Aave liquidations penalty is ${liquidationPenalty}`
+              : `At the chosen risk level if the price of stETH moves ${priceMovementToDisplay}  with respect to ${debtToken} this Earn position is unlikely to be liquidated. Aave liquidations penalty is ${liquidationPenalty}`,
+          ]}
+          type={isWarning ? 'warning' : 'ok'}
+        />
         <SidebarResetButton
           clear={() => {
             send({ type: 'SET_RISK_RATIO', riskRatio: minRisk })
