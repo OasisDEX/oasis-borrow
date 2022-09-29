@@ -216,6 +216,7 @@ export const productCardsConfig: {
       'ETH-C': 'lowest-fees-for-borrowing',
       'WBTC-C': 'lowest-fees-for-borrowing',
       'WSTETH-A': 'staking-rewards',
+      'WSTETH-B': 'staking-rewards',
       'CRVV1ETHSTETH-A': 'staking-rewards',
     },
   },
