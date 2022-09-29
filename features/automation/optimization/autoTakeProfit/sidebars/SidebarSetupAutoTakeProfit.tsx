@@ -11,6 +11,7 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -63,28 +64,26 @@ export function SidebarSetupAutoTakeProfit({
     step: 1,
   }
 
-  const sliderPercentageFill = new BigNumber(2000)
   const min = vault.collateralizationRatio.multipliedBy(100)
   const max = new BigNumber(500) // TODO ŁW coll ratio if price reached last ATH+100%
   const maxBoundry = max
-
-  // TODO ŁW slider % fill based on selected price
-  // const sliderPercentageFill = getSliderPercentageFill({
-  //   value: stopLossState.stopLossLevel,
-  //   min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
-  //   max,
-  // })
+  const priceValueForCollRatio = collateralPriceAtRatio({
+    colRatio: autoTakeProfitState.executionCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
+  const sliderPercentageFill = getSliderPercentageFill({
+    value: autoTakeProfitState.executionCollRatio.times(100),
+    min: min,
+    max,
+  })
 
   const sliderConfig: SliderValuePickerProps = {
     ...autoTakeSliderBasicConfig,
     sliderPercentageFill,
     leftLabel: t('slider.set-auto-take-profit.left-label'),
     rightLabel: t('slider.set-auto-take-profit.right-label'),
-    leftBoundry: collateralPriceAtRatio({
-      colRatio: autoTakeProfitState.executionCollRatio.div(100),
-      collateral: vault.lockedCollateral,
-      vaultDebt: vault.debt,
-    }), // TODO price for coll ratio collateralPriceAtRatio also calculated in status
+    leftBoundry: priceValueForCollRatio, // TODO price for coll ratio collateralPriceAtRatio also calculated in status
     rightBoundry: autoTakeProfitState.executionCollRatio,
     lastValue: autoTakeProfitState.executionCollRatio.decimalPlaces(0, BigNumber.ROUND_DOWN), //autoTakeProfitState.executionCollRatio, why undefined!?
     maxBoundry,
