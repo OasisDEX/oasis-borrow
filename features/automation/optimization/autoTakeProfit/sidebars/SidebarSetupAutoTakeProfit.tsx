@@ -58,8 +58,7 @@ export function SidebarSetupAutoTakeProfit({
 
   const autoTakeSliderBasicConfig = {
     disabled: false,
-    leftBoundryFormatter: (x: BigNumber) =>
-      x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD'),
+    leftBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')),
     rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     step: 1,
   }

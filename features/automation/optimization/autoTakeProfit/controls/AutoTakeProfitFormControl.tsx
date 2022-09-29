@@ -31,12 +31,10 @@ export function AutoTakeProfitFormControl({
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
-  console.log('autoTakeProfitState', autoTakeProfitState)
   const closePickerConfig = {
     optionNames: closeVaultOptions,
     onclickHandler: (optionName: string) => {
       alert(optionName)
-      // TODO ŁW implement atp form change
       uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
         type: 'close-type',
         toCollateral: optionName === closeVaultOptions[0],
