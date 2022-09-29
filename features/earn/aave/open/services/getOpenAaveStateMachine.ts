@@ -3,6 +3,7 @@ import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
+import { AaveReserveConfigurationData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
@@ -25,6 +26,11 @@ export function getOpenAavePositionStateMachineServices(
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
   aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
+  aaveReserveConfigurationData$: ({
+    token,
+  }: {
+    token: string
+  }) => Observable<AaveReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   return {
     getBalance: (context, _) => {
@@ -46,12 +52,16 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     getStrategyInfo: () => {
-      return aaveOracleAssetPriceData$({ token: 'STETH' }).pipe(
-        map((oracleAssetPrice) => {
+      return combineLatest(
+        aaveOracleAssetPriceData$({ token: 'STETH' }),
+        aaveReserveConfigurationData$({ token: 'STETH' }),
+      ).pipe(
+        map(([oracleAssetPrice, reserveConfigurationData]) => {
           return {
             type: 'UPDATE_STRATEGY_INFO',
             strategyInfo: {
               oracleAssetPrice,
+              liquidationBonus: reserveConfigurationData.liquidationBonus,
             },
           }
         }),

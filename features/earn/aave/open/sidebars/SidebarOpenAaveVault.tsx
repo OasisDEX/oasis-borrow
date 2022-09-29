@@ -200,7 +200,9 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
 
   const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
 
-  const liquidationPenalty = formatPercent(new BigNumber('7.5'), { precision: 2 })
+  const liquidationPenalty = formatPercent(state.context.strategyInfo?.liquidationBonus || zero, {
+    precision: 2,
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
