@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { BigNumber } from 'bignumber.js'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -7,8 +8,6 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { RiskRatio } from '@oasisdex/oasis-actions'
-import { amountFromWei } from '../../../../../blockchain/utils'
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import {

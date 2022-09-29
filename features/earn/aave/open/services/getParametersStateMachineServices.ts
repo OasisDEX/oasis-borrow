@@ -1,8 +1,8 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
-import { RiskRatio } from '@oasisdex/oasis-actions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TxHelpers } from '../../../../../components/AppContext'

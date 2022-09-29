@@ -1,9 +1,9 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 

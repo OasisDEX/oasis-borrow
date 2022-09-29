@@ -1,10 +1,9 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import moment from 'moment/moment'
 import { Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
-
-import { IRiskRatio } from '@oasisdex/oasis-actions'
 
 const aaveStEthYield = gql`
   mutation stEthYields(

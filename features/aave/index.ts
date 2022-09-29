@@ -3,10 +3,10 @@
 import { ADDRESSES, IRiskRatio, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
+import { Awaited } from 'ts-essentials'
 
 import { ContextConnected } from '../../blockchain/network'
 import { oneInchCallMock } from '../../helpers/swap'
-import { Awaited } from 'ts-essentials'
 
 export interface ActionCall {
   targetHash: string

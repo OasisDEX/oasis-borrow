@@ -1,6 +1,6 @@
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { AaveStEthSimulateStateMachine, aaveStEthSimulateStateMachine } from '../state'
 import { calculateSimulation } from './calculateSimulation'
 import { AaveStEthYieldsResponse } from './stEthYield'

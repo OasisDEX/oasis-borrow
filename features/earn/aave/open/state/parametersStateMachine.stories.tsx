@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { storiesOf } from '@storybook/react'
 import { useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -6,7 +7,6 @@ import { interval } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
-import { RiskRatio } from '@oasisdex/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 import {
