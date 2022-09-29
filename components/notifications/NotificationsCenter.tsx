@@ -34,7 +34,7 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
 
   useEffect(() => {
     setShowPrefencesTab(false)
-  }, [account])
+  }, [account, isOpen])
 
   return (
     <Box
