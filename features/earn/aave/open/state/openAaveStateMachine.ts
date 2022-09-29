@@ -221,7 +221,7 @@ export const createOpenAaveStateMachine = createMachine(
     actions: {
       initContextValues: assign((context) => ({
         currentStep: 1,
-        totalSteps: context.proxyAddress ? 2 : 3,
+        totalSteps: context.proxyAddress ? 3 : 4,
         riskRatio: new RiskRatio(new BigNumber(0), RiskRatio.TYPE.LTV),
         token: 'ETH',
         inputDelay: 1000,
@@ -254,9 +254,13 @@ export const createOpenAaveStateMachine = createMachine(
           riskRatio: event.riskRatio,
         }
       }),
-      updateTotalSteps: assign((context) => ({
-        totalSteps: context.proxyAddress ? 2 : 3,
-      })),
+      updateTotalSteps: assign((context) => {
+        return {
+          totalSteps: context.proxyAddress
+            ? (context.totalSteps || 0) - 1
+            : context.totalSteps || 0,
+        }
+      }),
       setAmount: assign((context, event) => ({
         amount: event.amount,
       })),
