@@ -1,3 +1,4 @@
+import { NetworkIds } from 'blockchain/network'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import {
   firstNotificationsRelevantDate,
@@ -29,13 +30,15 @@ export function NotificationSocketProvider({ children }: WithChildren) {
     return null
   }
 
-  const notificationsHost = getConfig()?.publicRuntimeConfig?.notificationsHost
-
   const notificationsToggle = useFeatureToggle('Notifications')
   const { context$, uiChanges } = useAppContext()
   const [context] = useObservable(context$)
   const [socket, setSocket] = useState<Socket | undefined>(undefined)
   const [token, setToken] = useState('')
+  const notificationsHost =
+    context?.chainId === NetworkIds.GOERLI
+      ? getConfig()?.publicRuntimeConfig?.notificationsHostGoerli
+      : getConfig()?.publicRuntimeConfig?.notificationsHost
 
   const account = context?.status === 'connected' ? context.account : ''
   const jwtToken = jwtAuthGetToken(account)
