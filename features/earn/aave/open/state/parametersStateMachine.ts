@@ -28,6 +28,15 @@ export type ParametersStateMachineEvents = {
 /*
   Machine based on the following pattern: https://xstate.js.org/docs/patterns/sequence.html#async-sequences
  */
+
+// what it does:
+// 1) call the library; then:
+// 2) estimate gas; then:
+// 3) estimate gas price
+// -> returns gas estimation USD and call data
+//
+// state machine used because it was easier to cancel previous runs when input changes
+
 export const createParametersStateMachine = createMachine(
   {
     predictableActionArguments: true,
