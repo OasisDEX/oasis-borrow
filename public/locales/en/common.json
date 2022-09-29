@@ -1738,7 +1738,10 @@
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "news-notifications": "Oasis.app news notifications",
     "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-    "service-not-available": "Notification service not available, please try again later."
+    "service-not-available": "Notification service not available, please try again later.",
+    "welcome-to-notifications": "Welcome to your Notification Center!",
+    "zero-notifications": "When available, your notifications will appear here.",
+    "zero-notifications-no-active-subscriptions": "Enable notifications in settings to allow them to appear here."
   },
   "manage-earn": {
     "aave": {
