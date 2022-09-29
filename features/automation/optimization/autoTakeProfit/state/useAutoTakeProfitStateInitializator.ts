@@ -17,8 +17,13 @@ export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
   // ŁW dummy initial data
   const isToCollateral = true
   const triggerId = zero
-  const initialSelectedTakeProfitRatio = new BigNumber(300)
+  const initialSelectedTakeProfitRatio = new BigNumber(500)
   useEffect(() => {
+    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+      type: 'form-defaults',
+      executionCollRatio: initialSelectedTakeProfitRatio,
+      toCollateral: isToCollateral,
+    })
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'close-type',
       toCollateral: isToCollateral,
@@ -29,16 +34,16 @@ export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
     })
   }, [triggerId.toNumber(), collateralizationRatio])
 
-  useEffect(() => {
-    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
-    })
-    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-      type: 'current-form',
-      currentForm: 'add',
-    })
-  }, [collateralizationRatio])
+  // useEffect(() => {
+  //   uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+  //     type: 'tx-details',
+  //     txDetails: {},
+  //   })
+  //   uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+  //     type: 'current-form',
+  //     currentForm: 'add',
+  //   })
+  // }, [collateralizationRatio])
 
   const isAutoTakeProfitEnabled = true
   return isAutoTakeProfitEnabled

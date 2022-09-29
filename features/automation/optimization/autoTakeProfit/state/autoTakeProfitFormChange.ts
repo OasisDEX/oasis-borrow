@@ -12,11 +12,16 @@ export type AutoTakeProfitFormChangeAction =
   | { type: 'execution-coll-ratio'; executionCollRatio: BigNumber }
   | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'close-type'; toCollateral: boolean }
+  | {
+      type: 'form-defaults'
+      executionCollRatio: BigNumber
+      toCollateral: boolean
+    }
 // TODO ŁW
 //   | { type: 'txDetails...'}
 // | {type: 'reset'; resetData: AutoTakeProfitResetData}
 
-export function formChangeReducer(
+export function autoTakeProfitFormChangeReducer(
   state: AutoTakeProfitFormChange,
   action: AutoTakeProfitFormChangeAction,
 ): AutoTakeProfitFormChange {

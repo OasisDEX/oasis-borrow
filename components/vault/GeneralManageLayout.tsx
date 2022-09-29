@@ -70,7 +70,8 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     )
 
   const protectionEnabled = isStopLossEnabled || isAutoSellEnabled
-  const optimizationEnabled = isAutoBuyEnabled || isConstantMultipleEnabled || isAutoTakeProfitEnabled
+  const optimizationEnabled =
+    isAutoBuyEnabled || isConstantMultipleEnabled || isAutoTakeProfitEnabled
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 

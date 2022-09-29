@@ -31,7 +31,7 @@ export function AutoTakeProfitFormControl({
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
-
+  console.log('autoTakeProfitState', autoTakeProfitState)
   const closePickerConfig = {
     optionNames: closeVaultOptions,
     onclickHandler: (optionName: string) => {
@@ -42,7 +42,7 @@ export function AutoTakeProfitFormControl({
         toCollateral: optionName === closeVaultOptions[0],
       })
     },
-    isCollateralActive: true,
+    isCollateralActive: autoTakeProfitState.collateralActive,
     collateralTokenSymbol: vault.token,
     collateralTokenIconCircle: getToken(vault.token).iconCircle,
   }

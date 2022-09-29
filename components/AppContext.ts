@@ -130,8 +130,10 @@ import {
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
 import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
   AutoTakeProfitFormChangeAction,
+  autoTakeProfitFormChangeReducer,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -435,6 +437,7 @@ function initializeUIChanges() {
   )
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
+  uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
 
   return uiChangesSubject
 }
@@ -1131,5 +1134,3 @@ export function bigNumberTostring(v: BigNumber): string {
 function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
   return `${ilk}-${urnAddress}`
 }
-
-export type AppContext = ReturnType<typeof setupAppContext>
