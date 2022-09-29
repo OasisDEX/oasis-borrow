@@ -3,7 +3,7 @@ import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 

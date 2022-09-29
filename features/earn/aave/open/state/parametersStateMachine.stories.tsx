@@ -6,7 +6,7 @@ import { interval } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
-import { RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 import {

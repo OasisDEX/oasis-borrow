@@ -4,9 +4,9 @@ import { ADDRESSES, IRiskRatio, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
-import { IStrategy } from '../../../oasis-earn-sc/packages/oasis-actions/src/strategies'
 import { ContextConnected } from '../../blockchain/network'
 import { oneInchCallMock } from '../../helpers/swap'
+import { Awaited } from 'ts-essentials'
 
 export interface ActionCall {
   targetHash: string
@@ -16,7 +16,7 @@ export interface ActionCall {
 export interface OperationParameters {
   operationName: string
   isAllowanceNeeded: boolean
-  strategy: IStrategy
+  strategy: Awaited<ReturnType<typeof strategies.aave.openStEth>>
 }
 
 export async function getOpenAaveParameters(
@@ -35,6 +35,7 @@ export async function getOpenAaveParameters(
     aavePriceOracle: ADDRESSES.main.aavePriceOracle,
     aaveLendingPool: ADDRESSES.main.aave.MainnetLendingPool,
     operationExecutor: context.operationExecutor.address,
+    aaveProtocolDataProvider: ADDRESSES.main.aave.DataProvider,
   }
 
   const addresses = {
@@ -43,7 +44,7 @@ export async function getOpenAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const strategyReturn = await strategies.openStEth(
+  const strategyReturn = await strategies.aave.openStEth(
     {
       depositAmount: amount,
       slippage: slippage,
@@ -57,7 +58,6 @@ export async function getOpenAaveParameters(
       // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
     },
   )
-
   return {
     strategy: strategyReturn,
     operationName: 'CustomOperation',

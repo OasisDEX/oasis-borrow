@@ -19,18 +19,14 @@ import {
   OpenAaveStateMachineServices,
   ParametersStateMachine,
 } from '../state'
+import { RiskRatio } from '@oasisdex/oasis-actions'
 
 export function getOpenAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
-  aaveReserveConfigurationData$: ({
-    token,
-  }: {
-    token: string
-  }) => Observable<AaveReserveConfigurationData>,
-  aaveAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
+  aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
 ): OpenAaveStateMachineServices {
   return {
     getBalance: (context, _) => {
@@ -52,17 +48,13 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     getStrategyInfo: () => {
-      const reserveConfigData$ = aaveReserveConfigurationData$({ token: 'STETH' })
-      const assetPriceData$ = aaveAssetPriceData$({ token: 'STETH' })
-      return combineLatest(reserveConfigData$, assetPriceData$).pipe(
-        map(([{ ltv, liquidationThreshold }, assetPrice]) => {
-          const minColRatio = new BigNumber(1).div(ltv)
-          const maxMultiple = new BigNumber(1).div(minColRatio.minus(1)).plus(1)
+      return aaveOracleAssetPriceData$({ token: 'STETH' }).pipe(
+        map((oracleAssetPrice) => {
           return {
             type: 'UPDATE_STRATEGY_INFO',
-            maxMultiple,
-            liquidationThreshold,
-            assetPrice,
+            strategyInfo: {
+              oracleAssetPrice,
+            },
           }
         }),
       )

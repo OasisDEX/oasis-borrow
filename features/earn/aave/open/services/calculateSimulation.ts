@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { one, zero } from '../../../../../helpers/zero'
 import { AaveStEthYieldsResponse } from './stEthYield'
 

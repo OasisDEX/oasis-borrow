@@ -7,7 +7,7 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '../../../../../blockchain/utils'
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
@@ -165,7 +165,6 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
 function SettingMultipleView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
-  const marketStEthEthPrice = amountFromWei(new BigNumber('968102393798180700'), 'ETH')
   const maxRisk =
     state.context.transactionParameters?.strategy.simulation.position.category.maxLoanToValue
 
@@ -174,7 +173,7 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
     new RiskRatio(zero, RiskRatio.TYPE.LTV)
 
   const liquidationPriceRatio =
-    state.context.transactionParameters?.strategy.simulation.position?.liquidationPrice || zero
+    state.context.transactionParameters?.strategy.simulation.position.liquidationPrice || zero
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -184,7 +183,7 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
           sliderPercentageFill={new BigNumber(0)}
           leftBoundry={liquidationPriceRatio}
           leftBoundryFormatter={(value) => value.toFixed(2)}
-          rightBoundry={marketStEthEthPrice}
+          rightBoundry={state.context.strategyInfo?.oracleAssetPrice || zero}
           rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
           onChange={(ltv) => {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })

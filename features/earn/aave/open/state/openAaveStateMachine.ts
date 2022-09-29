@@ -3,7 +3,7 @@ import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { IRiskRatio, RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import { OperationParameters } from '../../../../aave'
@@ -15,6 +15,10 @@ import {
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
+
+type IStrategyInfo = {
+  oracleAssetPrice: BigNumber
+}
 
 export interface OpenAaveContext {
   riskRatio: IRiskRatio
@@ -37,6 +41,8 @@ export interface OpenAaveContext {
 
   transactionParameters?: OperationParameters
   estimatedGasPrice?: HasGasEstimation
+
+  strategyInfo?: IStrategyInfo
 }
 
 export type OpenAaveMachineEvents =
@@ -47,9 +53,7 @@ export type OpenAaveMachineEvents =
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | {
       type: 'UPDATE_STRATEGY_INFO'
-      maxMultiple: BigNumber
-      liquidationThreshold: BigNumber
-      assetPrice: BigNumber
+      strategyInfo: IStrategyInfo
     }
 
 export type OpenAaveTransactionEvents =
@@ -269,6 +273,9 @@ export const createOpenAaveStateMachine = createMachine(
           estimatedGasPrice: event.estimatedGasPrice,
         }
       }),
+      updateStrategyInfo: assign((context, event) => ({
+        strategyInfo: event.strategyInfo,
+      })),
       sendFeesToSimulationMachine: send(
         (context): AaveStEthSimulateStateMachineEvents => ({
           type: 'FEE_CHANGED',
@@ -277,12 +284,14 @@ export const createOpenAaveStateMachine = createMachine(
         { to: (context) => context.refSimulationMachine! },
       ),
       sendUpdateToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => ({
-          type: 'USER_PARAMETERS_CHANGED',
-          amount: context.amount || zero,
-          riskRatio: context.riskRatio,
-          token: context.token,
-        }),
+        (context): AaveStEthSimulateStateMachineEvents => {
+          return {
+            type: 'USER_PARAMETERS_CHANGED',
+            amount: context.amount || zero,
+            riskRatio: context.riskRatio,
+            token: context.token,
+          }
+        },
         {
           to: (context) => context.refSimulationMachine!,
           delay: (context) => context.inputDelay,

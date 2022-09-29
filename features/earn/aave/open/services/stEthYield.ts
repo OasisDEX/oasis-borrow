@@ -4,7 +4,7 @@ import moment from 'moment/moment'
 import { Observable } from 'rxjs'
 import { first } from 'rxjs/operators'
 
-import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 
 const aaveStEthYield = gql`
   mutation stEthYields(
@@ -91,7 +91,6 @@ export async function getAaveStEthYield(
   riskRatio: IRiskRatio,
 ): Promise<AaveStEthYieldsResponse> {
   const getClient = await client.pipe(first()).toPromise()
-  console.log(`call api with riskRatio ${riskRatio.multiple}`)
   const response = await getClient.request(aaveStEthYield, {
     currentDate: currentDate.utc().format('YYYY-MM-DD'),
     currentDateOffset: currentDate.utc().subtract(1, 'days').format('YYYY-MM-DD'),
