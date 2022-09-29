@@ -19,6 +19,7 @@ import { ParametersStateMachine, ParametersStateMachineEvents } from './paramete
 type IStrategyInfo = {
   oracleAssetPrice: BigNumber
   liquidationBonus: BigNumber
+  collateralToken: string
 }
 
 export interface OpenAaveContext {

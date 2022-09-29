@@ -187,6 +187,8 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
     ? RiskLevel.OK
     : RiskLevel.AT_RISK
 
+  const collateralToken = state.context.strategyInfo?.collateralToken
+
   const debtToken = state.context.token
 
   const priceMovementUntilLiquidation = one.minus(liquidationPrice.div(oracleAssetPrice)).times(100)
@@ -241,8 +243,18 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
         <MessageCard
           messages={[
             isWarning
-              ? `At the chosen risk level if the price of stETH moves ${priceMovementToDisplay}  with respect to ${debtToken} this Earn position could be liquidated. Aave liquidations penalty is ${liquidationPenalty}`
-              : `At the chosen risk level if the price of stETH moves ${priceMovementToDisplay}  with respect to ${debtToken} this Earn position is unlikely to be liquidated. Aave liquidations penalty is ${liquidationPenalty}`,
+              ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                  collateralToken,
+                  priceMovement: priceMovementToDisplay,
+                  debtToken,
+                  liquidationPenalty,
+                })
+              : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                  collateralToken,
+                  priceMovement: priceMovementToDisplay,
+                  debtToken,
+                  liquidationPenalty,
+                }),
           ]}
           type={isWarning ? 'warning' : 'ok'}
         />

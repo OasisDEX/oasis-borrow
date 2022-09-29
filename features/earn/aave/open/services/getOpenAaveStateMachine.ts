@@ -52,9 +52,10 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     getStrategyInfo: () => {
+      const collateralToken = 'STETH'
       return combineLatest(
-        aaveOracleAssetPriceData$({ token: 'STETH' }),
-        aaveReserveConfigurationData$({ token: 'STETH' }),
+        aaveOracleAssetPriceData$({ token: collateralToken }),
+        aaveReserveConfigurationData$({ token: collateralToken }),
       ).pipe(
         map(([oracleAssetPrice, reserveConfigurationData]) => {
           return {
@@ -62,6 +63,7 @@ export function getOpenAavePositionStateMachineServices(
             strategyInfo: {
               oracleAssetPrice,
               liquidationBonus: reserveConfigurationData.liquidationBonus,
+              collateralToken,
             },
           }
         }),
