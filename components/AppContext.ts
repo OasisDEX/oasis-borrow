@@ -1126,6 +1126,7 @@ export function setupAppContext() {
     checkReferralLocal$,
   }
 }
+export type AppContext = ReturnType<typeof setupAppContext>
 
 export function bigNumberTostring(v: BigNumber): string {
   return v.toString()
