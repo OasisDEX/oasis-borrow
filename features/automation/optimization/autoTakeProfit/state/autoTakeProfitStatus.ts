@@ -35,7 +35,6 @@ export function getAutoTakeProfitStatus({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
-
   const closePickerConfig = {
     optionNames: closeVaultOptions,
     onclickHandler: (optionName: string) => {
@@ -46,9 +45,8 @@ export function getAutoTakeProfitStatus({
     },
     isCollateralActive: autoTakeProfitState.collateralActive,
     collateralTokenSymbol: vault.token,
-    collateralTokenIconCircle: getToken(vault.token).iconCircle, // probably redundant added it because was required in type~ł
+    collateralTokenIconCircle: getToken(vault.token).iconCircle,
   }
-
   return {
     executionPrice,
     closePickerConfig,

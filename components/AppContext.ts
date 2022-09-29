@@ -1126,7 +1126,6 @@ export function setupAppContext() {
     checkReferralLocal$,
   }
 }
-export type AppContext = ReturnType<typeof setupAppContext>
 
 export function bigNumberTostring(v: BigNumber): string {
   return v.toString()
@@ -1135,3 +1134,5 @@ export function bigNumberTostring(v: BigNumber): string {
 function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: string }): string {
   return `${ilk}-${urnAddress}`
 }
+
+export type AppContext = ReturnType<typeof setupAppContext>
