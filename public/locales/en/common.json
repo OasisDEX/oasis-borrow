@@ -1253,7 +1253,7 @@
       "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
     },
     "aave": {
-      "AAVE-STETH-ETH": {
+      "AAVE-STETH": {
         "title": "stETH/ETH AAVE",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on AAVE to get more exposure to stETH."
       }
@@ -1275,7 +1275,7 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "AAVE-STETH-ETH": "Get up to {{value}} ETH exposure to stETH"
+      "AAVE-STETH": "Get up to {{value}} ETH exposure to stETH"
     }
   },
   "product-card-title": {

@@ -11,7 +11,7 @@ interface ProductCardWrapperProps {
 
 export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
   const { theme } = useTheme()
-  const childrenLength = children.flat().length
+  const childrenLength = children.flat().filter(Boolean).length
   const gapSpace = theme.space[4]
   const desktopWidthOfCard = 378
   const desktopWidthOfGrid = (childrenLength - 1) * gapSpace + childrenLength * desktopWidthOfCard

@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aaveProtocolDataProvider'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
-import { PreparedAaveReserveData } from 'features/earn/aave/helpers/aavePrepareAaveTotalValueLocked'
-import { calculateSimulation } from 'features/earn/aave/open/services'
-import { formatHugeNumbersToShortHuman } from 'helpers/formatters/format'
+import { AaveStEthYieldsResponse, calculateSimulation } from 'features/earn/aave/open/services'
+import { AppSpinner } from 'helpers/AppSpinner'
+import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
@@ -12,7 +13,8 @@ import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 type ProductCardEarnAaveProps = {
   cardData: TokenMetadataType
   aaveReserveState?: AaveReserveConfigurationData
-  tvlState: PreparedAaveReserveData
+  aaveSthEthYieldsQuery: (multiply: BigNumber) => Promise<AaveStEthYieldsResponse>
+  availableLiquidity: BigNumber
 }
 
 const aaveCalcValueBasis = {
@@ -23,30 +25,24 @@ const aaveCalcValueBasis = {
 export function ProductCardEarnAave({
   cardData,
   aaveReserveState,
-  tvlState,
   aaveSthEthYieldsQuery,
+  availableLiquidity,
 }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const [yields, setYields] = useState(undefined)
   const [simulations, setSimulations] = useState<ReturnType<typeof calculateSimulation>>()
-  const maximumMultiple = new BigNumber(1).div(aaveReserveState!.ltv)
+  const maximumMultiple = one.div(one.minus(aaveReserveState!.ltv))
 
   useEffect(() => {
-    if (!yields) {
-      void (async () => {
-        setYields(await aaveSthEthYieldsQuery(maximumMultiple))
-      })()
-    }
-    if (yields && !simulations) {
+    void (async () => {
       setSimulations(
         calculateSimulation({
           ...aaveCalcValueBasis,
-          yields,
+          yields: await aaveSthEthYieldsQuery(maximumMultiple),
           multiply: maximumMultiple,
         }),
       )
-    }
-  }, [yields, simulations])
+    })()
+  }, [])
 
   return (
     <ProductCard
@@ -57,7 +53,7 @@ export function ProductCardEarnAave({
       banner={{
         title: t('product-card-banner.with', {
           value: aaveCalcValueBasis.amount.toString(),
-          token: 'ETH',
+          token: aaveCalcValueBasis.token,
         }),
         description: t(`product-card-banner.aave.${cardData.symbol}`, {
           value: maximumMultiple.times(aaveCalcValueBasis.amount).toFormat(0),
@@ -67,15 +63,28 @@ export function ProductCardEarnAave({
       labels={[
         {
           title: '7 day net APY',
-          value: `${simulations?.previous7Days.earningAfterFees.toFormat(2)}%`,
+          value: simulations ? (
+            // this takes a while, so we show a spinner until it's ready
+            formatPercent(simulations?.previous7Days.earningAfterFees, {
+              precision: 2,
+            })
+          ) : (
+            <AppSpinner />
+          ),
         },
         {
           title: '90 day net APY',
-          value: `${simulations?.previous90Days.earningAfterFees.toFormat(2)}%`,
+          value: simulations ? (
+            formatPercent(simulations?.previous90Days.earningAfterFees, {
+              precision: 2,
+            })
+          ) : (
+            <AppSpinner />
+          ),
         },
         {
           title: 'Current Liquidity Available',
-          value: formatHugeNumbersToShortHuman(tvlState.totalValueLocked),
+          value: formatHugeNumbersToShortHuman(availableLiquidity),
         },
         {
           title: t('system.protocol'),
@@ -83,7 +92,7 @@ export function ProductCardEarnAave({
         },
       ]}
       button={{
-        link: `/earn/open/${cardData.symbol}`,
+        link: `/earn/open/${cardData.symbol.toLocaleLowerCase()}`,
         text: t('nav.earn'),
       }}
       background={cardData.background}

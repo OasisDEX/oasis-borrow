@@ -383,7 +383,7 @@ export const productCardsConfig: {
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
       name: 'Maker/Curve/Lido',
     },
-    'AAVE-STETH-ETH': {
+    'AAVE-STETH': {
       link: '#',
       name: 'Link goes here',
     },
