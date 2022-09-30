@@ -33,6 +33,7 @@ export type SidebarAutomationStages =
   | 'txInProgress'
   | 'editing'
   | 'stopLossEditing'
+  | 'isConfirming'
 
 export interface AutomationSidebarCopiesParams {
   stage: SidebarAutomationStages
