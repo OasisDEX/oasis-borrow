@@ -41,16 +41,6 @@ export function createTransactionStateMachine<T extends TxMeta>(transactionDef: 
         events: {} as TransactionStateMachineEvents<T>,
       },
       states: {
-        // idle: {
-        //   on: {
-        //     START: {
-        //       target: 'inProgress',
-        //     },
-        //     PARAMETERS_CHANGED: {
-        //       actions: ['assignParameters'],
-        //     },
-        //   },
-        // },
         inProgress: {
           invoke: {
             src: 'startTransaction',
