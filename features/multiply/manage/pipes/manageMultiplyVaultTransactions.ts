@@ -8,7 +8,7 @@ import {
   MultiplyAdjustData,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Context } from 'blockchain/network'
+import { Context, ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
@@ -233,7 +233,7 @@ export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { tokensMainnet, defaultExchange }: Context,
+  { connectionKind, tokensMainnet, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -253,8 +253,11 @@ export function adjustPosition(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
-        getQuote$(
+      switchMap(({ sendWithGasEstimation, send }) => {
+        const isGnosisSafe = context.connectionKind === 'gnosisSafe';
+        const sendFn = isGnosisSafe ? send : sendWithGasEstimation
+
+        return getQuote$(
           getTokenMetaData('DAI', tokensMainnet),
           getTokenMetaData(token, tokensMainnet),
           defaultExchange.address,
@@ -264,7 +267,7 @@ export function adjustPosition(
         ).pipe(
           first(),
           switchMap((swap) =>
-            sendWithGasEstimation(adjustMultiplyVault, {
+            sendFn(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
               depositDai: depositDaiAmount || zero,
@@ -303,8 +306,8 @@ export function adjustPosition(
               ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
       startWith({ kind: 'manageWaitingForApproval' } as ManageMultiplyVaultChange),
       catchError(() => of({ kind: 'manageFailure' } as ManageMultiplyVaultChange)),
     )
@@ -361,8 +364,10 @@ export function manageVaultDepositAndGenerate(
     )
     .subscribe((ch) => change(ch))
 }
+
 export function manageVaultWithdrawAndPayback(
   txHelpers$: Observable<TxHelpers>,
+  context: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -375,41 +380,45 @@ export function manageVaultWithdrawAndPayback(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(
-          vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
-          {
-            kind: TxMetaKind.withdrawAndPayback,
-            withdrawAmount,
-            paybackAmount,
-            proxyAddress: proxyAddress!,
-            ilk,
-            token,
-            id,
-            shouldPaybackAll,
-          },
-        ).pipe(
-          transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
-            { kind: 'manageWaitingForApproval' },
-            (txState) =>
-              of({
-                kind: 'manageInProgress',
-                manageTxHash: (txState as any).txHash as string,
-              }),
-            (txState) => {
-              return of({
-                kind: 'manageFailure',
-                txError:
-                  txState.status === TxStatus.Error ||
-                  txState.status === TxStatus.CancelledByTheUser
-                    ? txState.error
-                    : undefined,
-              })
+      switchMap(({ sendWithGasEstimation, send }) => {
+
+          const isGnosisSafe = context.connectionKind === 'gnosisSafe';
+          const sendFn = isGnosisSafe ? send : sendWithGasEstimation
+
+          return sendFn(
+            vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
+            {
+              kind: TxMetaKind.withdrawAndPayback,
+              withdrawAmount,
+              paybackAmount,
+              proxyAddress: proxyAddress!,
+              ilk,
+              token,
+              id,
+              shouldPaybackAll,
             },
-            () => of({ kind: 'manageSuccess' }),
-          ),
-        ),
-      ),
+          ).pipe(
+            transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
+              { kind: 'manageWaitingForApproval' },
+              (txState) =>
+                of({
+                  kind: 'manageInProgress',
+                  manageTxHash: (txState as any).txHash as string,
+                }),
+              (txState) => {
+                return of({
+                  kind: 'manageFailure',
+                  txError:
+                    txState.status === TxStatus.Error ||
+                    txState.status === TxStatus.CancelledByTheUser
+                      ? txState.error
+                      : undefined,
+                })
+              },
+              () => of({ kind: 'manageSuccess' }),
+            ),
+          )
+      }),
     )
     .subscribe((ch) => change(ch))
 }
@@ -548,7 +557,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { tokensMainnet, defaultExchange }: Context,
+  { connectionKind, tokensMainnet, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -566,7 +575,7 @@ export function closeVault(
   txHelpers$
     .pipe(
       first(),
-      switchMap(({ sendWithGasEstimation }) =>
+      switchMap(({ sendWithGasEstimation, send }) =>
         getQuote$(
           getTokenMetaData('DAI', tokensMainnet),
           getTokenMetaData(token, tokensMainnet),
@@ -577,7 +586,10 @@ export function closeVault(
         ).pipe(
           first(),
           switchMap((swap) => {
-            return sendWithGasEstimation(closeVaultCall, {
+            const isGnosisSafe = connectionKind === 'gnosisSafe';
+            const sendFn = isGnosisSafe ? send : sendWithGasEstimation
+
+            return sendFn(closeVaultCall, {
               kind: TxMetaKind.closeVault,
               closeTo: closeVaultTo!,
               token,
@@ -623,6 +635,7 @@ export function closeVault(
 }
 
 export function applyEstimateGas(
+  context: Context,
   addGasEstimation$: AddGasEstimationFunction,
   state: ManageMultiplyVaultState,
 ): Observable<ManageMultiplyVaultState> {
@@ -646,6 +659,8 @@ export function applyEstimateGas(
       closeToCollateralParams,
       isProxyStage,
     } = state
+
+    const isGnosisSafeWallet = context.connectionKind === 'gnosisSafe';
 
     if (proxyAddress) {
       if (requiredCollRatio) {
@@ -694,7 +709,7 @@ export function applyEstimateGas(
           const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
             closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
-          return estimateGas(closeVaultCall, {
+          return isGnosisSafeWallet || estimateGas(closeVaultCall, {
             kind: TxMetaKind.closeVault,
             closeTo: closeVaultTo!,
             token,
@@ -727,7 +742,7 @@ export function applyEstimateGas(
               },
             )
           } else {
-            return estimateGas(
+            return isGnosisSafeWallet || estimateGas(
               vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
               {
                 kind: TxMetaKind.withdrawAndPayback,

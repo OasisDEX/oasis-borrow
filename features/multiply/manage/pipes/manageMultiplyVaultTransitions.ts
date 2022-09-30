@@ -272,10 +272,10 @@ export function progressAdjust(
       return manageVaultDepositAndGenerate(txHelpers$, change, state)
     }
     if (state.withdrawAmount !== undefined || state.paybackAmount !== undefined) {
-      return manageVaultWithdrawAndPayback(txHelpers$, change, state)
+      return manageVaultWithdrawAndPayback(txHelpers$, context, change, state)
     }
     if (state.otherAction === 'closeVault' && state.vault.debt.isZero()) {
-      return manageVaultWithdrawAndPayback(txHelpers$, change, {
+      return manageVaultWithdrawAndPayback(txHelpers$, context, change, {
         ...state,
         withdrawAmount: state.maxWithdrawAmount,
       })
