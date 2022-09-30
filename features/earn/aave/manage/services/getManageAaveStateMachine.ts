@@ -1,9 +1,9 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
-import { RiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { ParametersStateMachine } from '../../open/state'

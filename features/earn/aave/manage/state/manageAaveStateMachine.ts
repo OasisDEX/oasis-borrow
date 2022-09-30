@@ -1,8 +1,8 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { IRiskRatio } from '../../../../../../oasis-earn-sc/packages/oasis-actions'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
