@@ -130,6 +130,12 @@ import {
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
 import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+  AutoTakeProfitFormChangeAction,
+  autoTakeProfitFormChangeReducer,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleChangeAction,
   ConstantMultipleFormChange,
@@ -325,6 +331,7 @@ export type SupportedUIChangeType =
   | AutomationChangeFeature
   | NotificationChange
   | TxPayloadChange
+  | AutoTakeProfitFormChange
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
@@ -336,6 +343,7 @@ export type LegalUiChanges = {
   ConstantMultipleChangeAction: ConstantMultipleChangeAction
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
+  AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
 }
 
 export type UIChanges = {
@@ -429,6 +437,7 @@ function initializeUIChanges() {
   )
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
+  uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
 
   return uiChangesSubject
 }
