@@ -92,9 +92,9 @@ function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
     ),
     primaryButton: {
       isLoading: false,
-      disabled: !state.can('START_CLOSING_POSITION'),
+      disabled: !state.can('NEXT_STEP'),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
-      action: () => send('START_CLOSING_POSITION'),
+      action: () => send('NEXT_STEP'),
     },
   }
 

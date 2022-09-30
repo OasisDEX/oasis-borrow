@@ -64,7 +64,7 @@ export const createParametersStateMachine = createMachine(
           id: 'getParameters',
           onDone: {
             target: 'estimatingGas',
-            actions: ['assignTransactionParameters', 'notifyParent'],
+            actions: ['assignTransactionParameters'],
           },
           onError: {
             actions: ['logError'],

@@ -6,7 +6,10 @@ import { AaveUserReserveData } from '../../../../../blockchain/calls/aaveProtoco
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
-import { TransactionStateMachine } from '../../../../stateMachines/transaction'
+import {
+  TransactionStateMachine,
+  TransactionStateMachineEvents,
+} from '../../../../stateMachines/transaction'
 import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
@@ -135,7 +138,7 @@ export const createManageAaveStateMachine =
         },
         reviewing: {},
         txInProgress: {
-          entry: 'spawnTransactionMachine',
+          entry: ['spawnTransactionMachine', 'startTransaction'],
           on: {
             POSITION_CLOSED: {
               target: 'txSuccess',
@@ -201,6 +204,12 @@ export const createManageAaveStateMachine =
             valueLocked: context.positionData!.currentATokenBalance!,
           }),
           { to: (context) => context.refClosePositionParametersStateMachine! },
+        ),
+        startTransaction: send(
+          (_): TransactionStateMachineEvents<OperationExecutorTxMeta> => ({
+            type: 'START',
+          }),
+          { to: (context) => context.refTransactionStateMachine! },
         ),
       },
     },

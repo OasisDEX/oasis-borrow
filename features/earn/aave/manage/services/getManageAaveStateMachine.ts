@@ -44,7 +44,6 @@ export function getManageAaveStateMachine$(
                   actions: {
                     notifyParent: sendParent(
                       (context): ManageAaveEvent => {
-                        // console.log(context.gasPriceEstimation!.gasEstimation)
                         return {
                           type: 'CLOSING_PARAMETERS_RECEIVED',
                           parameters: context.transactionParameters!,

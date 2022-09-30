@@ -124,6 +124,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
+        <>{'test'}</>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
         <OpenAaveInformationContainer state={state} send={send} />
       </Grid>

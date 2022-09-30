@@ -35,7 +35,6 @@ export function getClosePositionParametersStateMachineServices$(
         },
         estimateGas: async (context) => {
           if (context.transactionParameters === undefined) return 0
-          console.log('Trying to estimate gas')
           return await txHelpers
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
