@@ -17,15 +17,17 @@ export function NotificationsCenterHeader({
   return (
     <Flex
       sx={{
+        mx: 3,
         borderBottom: '1px solid',
         borderColor: 'neutral20',
-        pb: '16px',
         alignItems: 'center',
       }}
     >
       <Text
+        as="h2"
         sx={{
           flexGrow: 1,
+          py: 3,
           fontWeight: 600,
           fontSize: '18px',
         }}

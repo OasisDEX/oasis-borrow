@@ -5,13 +5,12 @@ import { criticalNotifications } from 'features/notifications/consts'
 import { Notification, NotificationTypes } from 'features/notifications/types'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useMemo } from 'react'
-import { Box, Card, Flex, Text } from 'theme-ui'
+import { Box, Card, Flex, Heading, Text } from 'theme-ui'
 
 function getNotificationCardSx({ isCritical, isRead }: { isCritical: boolean; isRead: boolean }) {
   return isCritical
     ? {
-        boxShadow: isRead ? 'unset' : 'vaultDetailsCard',
-        border: 'unset',
+        boxShadow: isRead ? 'none' : 'buttonMenu',
         '&:hover': {
           boxShadow: 'surface',
           '> div:first-child': {
@@ -20,7 +19,6 @@ function getNotificationCardSx({ isCritical, isRead }: { isCritical: boolean; is
         },
       }
     : {
-        border: 'unset',
         '&:hover': {
           bg: 'neutral30',
           '> div:first-child': {
@@ -91,7 +89,20 @@ export function NotificationCard({
   const humanDate = new Date(lastModified).toLocaleDateString('en-US', options)
 
   return (
-    <Card sx={{ pl: '4', position: 'relative', ...cardSx }}>
+    <Card
+      as="li"
+      sx={{
+        position: 'relative',
+        py: '12px',
+        pr: 3,
+        pl: 4,
+        listStyle: 'none',
+        borderRadius: 'large',
+        border: 'none',
+        transition: 'background-color 200ms, box-shadow 200ms',
+        ...cardSx,
+      }}
+    >
       <Box
         sx={{
           position: 'absolute',
@@ -99,24 +110,28 @@ export function NotificationCard({
           height: '6px',
           bg: statusDotColor,
           borderRadius: '50%',
-          top: '23px',
+          top: '20px',
           left: '16px',
+          transition: 'background-color 200ms',
         }}
       />
-      <Text as="div" variant="paragraph3" sx={{ mb: 2, fontWeight: isRead ? 'body' : 'semiBold' }}>
+      <Heading
+        as="h3"
+        variant="paragraph3"
+        sx={{ mb: 1, fontWeight: isRead ? 'regular' : 'semiBold' }}
+      >
         {title}
-      </Text>
+      </Heading>
       <Text
         as="p"
         sx={{
-          mb: isCritical ? 3 : 0,
           fontSize: 1,
-          color: 'text.subtitle',
+          color: 'neutral80',
         }}
       >
         {humanDate}
       </Text>
-      <Flex sx={{ justifyContent: 'flex-start', gap: 2 }}>
+      <Flex sx={{ justifyContent: 'flex-start', gap: 2, mt: '12px' }}>
         {additionalData.vaultId && linkHash && (
           <AppLink href={`/${additionalData.vaultId}`} hash={linkHash}>
             <Button
