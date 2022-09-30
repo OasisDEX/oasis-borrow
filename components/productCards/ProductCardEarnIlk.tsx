@@ -76,9 +76,9 @@ export function ProductCardEarnIlk({ cardData }: ProductCardEarnIlkProps) {
   return (
     <WithErrorHandler error={[yieldsError]}>
       <WithLoadingIndicator value={[yields]}>
-        {([{ yields }]) => {
-          const sevenDayAverage = yields[YieldPeriod.Yield7Days]?.value || zero
-          const ninetyDayAverage = yields[YieldPeriod.Yield90Days]?.value || zero
+        {([{ yields: loadedYields }]) => {
+          const sevenDayAverage = loadedYields[YieldPeriod.Yield7Days]?.value || zero
+          const ninetyDayAverage = loadedYields[YieldPeriod.Yield90Days]?.value || zero
 
           const yieldSevenDayAsPercentage = formatPercent(sevenDayAverage.times(100), {
             precision: 2,

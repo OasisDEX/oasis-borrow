@@ -40,7 +40,7 @@ export function AaveOpenHeader({
   const [simulationState] = useActor(simulationActor)
 
   const { context: simulationContext } = simulationState
-  const maximumMultiple = one.div(one.minus(aaveReserveState!.ltv))
+  const maximumMultiple = one.div(one.minus(aaveReserveState.ltv))
 
   const headlineDetails = []
   if (simulationContext.yields) {
