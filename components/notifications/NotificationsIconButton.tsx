@@ -44,7 +44,7 @@ export function NotificationsIconButton({
         }}
       >
         <>
-          {notificationsCount && (
+          {notificationsCount > 0 && (
             <Box
               as="span"
               sx={{

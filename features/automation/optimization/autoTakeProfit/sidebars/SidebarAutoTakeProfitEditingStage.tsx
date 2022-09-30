@@ -1,20 +1,28 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { EstimationOnClose } from 'components/EstimationOnClose'
 import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
 import React from 'react'
 
 interface SidebarAutoTakeProfitEditingStageProps {
   vault: Vault
+  closePickerConfig: PickCloseStateProps
+  sliderConfig: SliderValuePickerProps
 }
 
 export function SidebarAutoTakeProfitEditingStage({
   vault,
+  closePickerConfig,
+  sliderConfig,
 }: SidebarAutoTakeProfitEditingStageProps) {
   return (
     <>
-      Form placeholder
+      <PickCloseState {...closePickerConfig} />
+      <SliderValuePicker {...sliderConfig} />
+
       <EstimationOnClose
         iconCircle={getToken('DAI').iconCircle}
         label="Estimated DAI at Trigger"
