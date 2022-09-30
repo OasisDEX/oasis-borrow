@@ -17,8 +17,8 @@ export interface SliderValuePickerProps {
   leftBoundryStyling?: SxStyleProp
   rightBoundryStyling?: SxStyleProp
   step: number
-  leftLabel?: string
-  rightLabel?: string
+  leftLabel?: string | JSX.Element
+  rightLabel?: string | JSX.Element
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {

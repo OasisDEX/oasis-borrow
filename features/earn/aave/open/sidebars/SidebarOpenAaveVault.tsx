@@ -5,7 +5,7 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { Box, Flex, Grid, Image, Link, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
@@ -227,7 +227,21 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
           lastValue={state.context.riskRatio.loanToValue}
           disabled={false}
           step={0.01}
-          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
+          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {
+            collateralToken,
+            debtToken,
+          })}
+          rightLabel={
+            <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
+              <Text variant="paragraph4" color="interactive100">
+                {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
+                  collateralToken,
+                  debtToken,
+                })}{' '}
+                &gt;
+              </Text>
+            </Link>
+          }
         />
         <Flex
           sx={{

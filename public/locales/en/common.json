@@ -1774,7 +1774,8 @@
         "go-to-position": "Go to position",
         "configure-multiple": {
           "title": "Set your risk level",
-          "liquidation-price": "stETH/ETH Liquidation Price",
+          "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
+          "historical-ratio": "{{collateralToken}} / {{debtToken}} Historical Ratio",
           "steth-eth-historial-ratio": "stETH / ETH Historical Ratio",
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
