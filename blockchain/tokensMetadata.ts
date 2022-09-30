@@ -19,6 +19,7 @@ export interface TokenConfig {
   token0?: string
   token1?: string
   coinbaseTicker?: string
+  coinGeckoId?: string
   background?: string
   digitsInstant?: number
 }
@@ -99,6 +100,7 @@ export const tokens = [
     iconColor: 'ether_color',
     coinpaprikaTicker: 'eth-ethereum',
     coinbaseTicker: 'eth-usd',
+    coinGeckoId: 'ethereum',
     color: '#667FE3',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
@@ -131,6 +133,7 @@ export const tokens = [
     iconCircle: 'wbtc_circle_color',
     iconColor: 'wbtc_circle_color',
     coinpaprikaTicker: 'wbtc-wrapped-bitcoin',
+    coinGeckoId: 'wrapped-bitcoin',
     color: '#f09242',
     background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wbtc.png'),
@@ -150,6 +153,7 @@ export const tokens = [
     iconCircle: 'renbtc_circle_color',
     iconColor: 'renbtc_circle_color',
     coinpaprikaTicker: 'renbtc-renbtc',
+    coinGeckoId: 'renbtc',
     color: '#838489',
     background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/renBTC.png'),
@@ -195,6 +199,7 @@ export const tokens = [
     iconColor: 'mana_color',
     color: '#f05',
     coinbaseTicker: 'MANA-USD',
+    coinGeckoId: 'decentraland',
     background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/mana.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/mana.gif'),
@@ -266,6 +271,7 @@ export const tokens = [
     iconColor: 'chainlink_color',
     color: '#375bd2',
     coinbaseTicker: 'LINK-USD',
+    coinGeckoId: 'chainlink',
     background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/link.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/link.gif'),
@@ -281,6 +287,7 @@ export const tokens = [
     iconColor: 'gemini_color',
     color: '#25ddfb',
     coinpaprikaTicker: 'gusd-gemini-dollar',
+    coinGeckoId: 'gemini-dollar',
     background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/gusd.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/gusd.gif'),
@@ -342,6 +349,7 @@ export const tokens = [
     iconCircle: 'yfi_circle_color',
     iconColor: 'yfi_circle_color',
     coinbaseTicker: 'YFI-USD',
+    coinGeckoId: 'yearn-finance',
     color: '#0657f9',
     background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/yfi.png'),
@@ -574,6 +582,7 @@ export const tokens = [
     iconColor: 'matic_circle_color',
     color: '#ff077d',
     coinbaseTicker: 'MATIC-USD',
+    coinGeckoId: 'polygon',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/matic.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/matic.gif'),
@@ -589,6 +598,7 @@ export const tokens = [
     iconCircle: 'wsteth_circle_color',
     iconColor: 'wsteth_circle_color',
     coinGeckoTicker: 'wrapped-steth',
+    coinGeckoId: 'wrapped-steth',
     color: '#ff077d',
     background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wstETH.png'),
