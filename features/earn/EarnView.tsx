@@ -17,8 +17,7 @@ import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { supportedEarnIlks } from '../../helpers/productCards'
 import { useAaveContext } from './aave/AaveContextProvider'
-
-const aaveStrategiesList = ['AAVE-STETH']
+import { aaveStrategiesList } from './aave/constants'
 
 export function EarnView() {
   const showAaveStETHETHProductCard = useFeatureToggle('AaveStETHETHProductCard')

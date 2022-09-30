@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { aaveStrategiesList } from 'features/earn/aave/constants'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -258,7 +259,7 @@ export const productCardsConfig: {
         'WSTETH-B',
       ],
       multiply: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
-      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A', ...aaveStrategiesList],
     },
   },
   descriptionCustomKeys: {
