@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
 
@@ -11,6 +12,8 @@ export function NotificationsCenterHeader({
   onButtonClick,
   showPreferencesTab,
 }: NotificationsCenterHeaderProps) {
+  const { t } = useTranslation()
+
   return (
     <Flex
       sx={{
@@ -27,7 +30,11 @@ export function NotificationsCenterHeader({
           fontSize: '18px',
         }}
       >
-        Notifications
+        {t(
+          showPreferencesTab
+            ? 'notifications.notifications-preferences'
+            : 'notifications.notifications-center',
+        )}
       </Text>
 
       <Button
@@ -48,9 +55,9 @@ export function NotificationsCenterHeader({
         onClick={onButtonClick}
       >
         <Icon
-          name={showPreferencesTab ? 'close' : 'settings'}
+          name={showPreferencesTab ? 'arrow_left' : 'settings'}
           size="auto"
-          width="16"
+          width={showPreferencesTab ? '20' : '16'}
           color="neutral80"
         />
       </Button>
