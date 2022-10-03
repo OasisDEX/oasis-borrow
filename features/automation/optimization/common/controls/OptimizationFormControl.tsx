@@ -18,12 +18,14 @@ import { ConstantMultipleFormControl } from 'features/automation/optimization/co
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
 
 interface OptimizationFormControlProps {
   balanceInfo: BalanceInfo
   context: Context
   ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
   ilkData: IlkData
   txHelpers?: TxHelpers
   vault: Vault
@@ -34,6 +36,7 @@ export function OptimizationFormControl({
   balanceInfo,
   context,
   ethMarketPrice,
+  tokenMarketPrice,
   ilkData,
   txHelpers,
   vault,
@@ -53,14 +56,19 @@ export function OptimizationFormControl({
   }
 
   const { uiChanges } = useAppContext()
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
+
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const {
+    isConstantMultipleActive,
     isAutoBuyActive,
     isAutoTakeProfitActive,
-    isConstantMultipleActive,
   } = getActiveOptimizationFeature({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
+    isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
+    isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
+    isAutoTakeProfitOn: autoTakeProfitEnabled, // TODO ŁW automationTriggersData?.autoTakeProfit?.isTriggerEnabled,
     section: 'form',
   })
 
@@ -85,6 +93,7 @@ export function OptimizationFormControl({
         currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
       })
     }
+    // TODO ŁW: add autoTakeProfit
   }, [])
 
   return (
@@ -123,6 +132,7 @@ export function OptimizationFormControl({
         autoBuyTriggerData={autoBuyTriggerData}
         constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoTakeProfitActive={isAutoTakeProfitActive}
+        tokenMarketPrice={tokenMarketPrice}
         vault={vault}
       />
     </>

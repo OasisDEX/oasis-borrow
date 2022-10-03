@@ -696,6 +696,12 @@
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
       "right-footer": "More likely execution"
+    },
+    "set-auto-take-profit": {
+      "left-label": "Trigger {{token}} price",
+      "right-label": "Trigger collateral ratio",
+      "left-footer": "Lower price",
+      "right-footer": "Higher price"
     }
   },
   "cancel-stoploss": {
@@ -1566,9 +1572,9 @@
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
   "auto-take-profit": {
-    "title": "Auto-Take Profit",
-    "cancel-summary-title": "Cancel Auto-Take Profit order summary",
-    "form-title": "Auto-Take Profit Setup",
+    "title": "Take Profit",
+    "cancel-summary-title": "Cancel Take Profit order summary",
+    "form-title": "Take Profit Setup",
     "banner": {
       "header": "Set up Auto-Take Profit",
       "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
@@ -1718,6 +1724,8 @@
     }
   },
   "notifications": {
+    "notifications-center": "Notifications",
+    "notifications-preferences": "Notifications preferences",
     "enable-notifications-email-heading": "Enable email notifications",
     "enable-notifications-email-description": "You are able to receive the email updates on Oasis.app",
     "enable-notifications-email-placeholder": "Enter email...",
@@ -1733,6 +1741,7 @@
     "stop-loss-executed": "Your Stop-Loss Protection on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-buy-executed": "Your Auto-Buy on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "constant-multiple-executed": "Your Constant Multiple on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "oracle-price-changed": "Oracle price changed ${{usdPrice}}.",
     "action-notifications": "Vault action notifications",
     "action-notifications-description": "Receive a notification when an action occurs on your Vault.",
@@ -1742,7 +1751,10 @@
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "news-notifications": "Oasis.app news notifications",
     "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-    "service-not-available": "Notification service not available, please try again later."
+    "service-not-available": "Notification service not available, please try again later.",
+    "welcome-to-notifications": "Welcome to your Notification Center!",
+    "zero-notifications": "When available, your notifications will appear here.",
+    "zero-notifications-no-active-subscriptions": "Enable notifications in settings to allow them to appear here."
   },
   "manage-earn": {
     "aave": {
@@ -1761,6 +1773,14 @@
   },
   "open-earn": {
     "aave": {
+      "product-header": {
+        "token-pair-list": {
+          "aave-steth-eth": "AAVE stETH yield multiple"
+        },
+        "current-yield": "Current yield",
+        "90-day-avg-yield": "90 Day Avg",
+        "total-value-locked": "Total value locked"
+      },
       "vault-form": {
         "title": "Set up Earn strategy",
         "open-btn": "Open Earn position",

@@ -106,7 +106,7 @@ export function getStopLossStatus({
     },
     isCollateralActive: stopLossState.collateralActive,
     collateralTokenSymbol: vault.token,
-    collateralTokenIconCircle: getToken(vault.token).iconCircle,
+    collateralTokenIconCircle: getToken(vault.token).iconCircle, // Isn't this icon redundant? ~Ł
   }
 
   return {
