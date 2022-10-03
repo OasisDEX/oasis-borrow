@@ -3,6 +3,7 @@ import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { GraphQLClient } from 'graphql-request'
+import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
@@ -102,7 +103,9 @@ export function setupAaveContext({
   const manageTransactionMachine = getManageAaveTransactionMachine(txHelpers$, contextForAddress$)
 
   const aaveSthEthYields = curry(getAaveStEthYield)(graphQLClient$, moment())
-  const aaveSthEthYieldsQuery = curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment())
+  const aaveSthEthYieldsQuery = memoize(
+    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+  )
 
   const simulationMachine = getSthEthSimulationMachine(aaveSthEthYields)
 

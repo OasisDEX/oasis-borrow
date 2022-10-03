@@ -16,26 +16,16 @@ import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { supportedEarnIlks } from '../../helpers/productCards'
-import { useAaveContext } from './aave/AaveContextProvider'
 import { aaveStrategiesList } from './aave/constants'
 
 export function EarnView() {
-  const showAaveStETHETHProductCard = useFeatureToggle('AaveStETHETHProductCard')
+  const showAaveStETHETHProductCard = useFeatureToggle('ShowAaveStETHETHProductCard')
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsIlksData, productCardsIlksDataError] = useObservable(
     productCardsData$(supportedEarnIlks),
   )
 
-  const {
-    aaveReserveConfigurationData,
-    aaveSthEthYieldsQuery,
-    aaveAvailableLiquidityETH$,
-  } = useAaveContext()
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
-  const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
-    aaveAvailableLiquidityETH$,
-  )
   const aaveStrategiesTokens = getTokens(aaveStrategiesList)
 
   return (
@@ -55,14 +45,9 @@ export function EarnView() {
         }}
       />
 
-      <WithErrorHandler
-        error={[productCardsIlksDataError, aaveReserveStateError, aaveAvailableLiquidityETHError]}
-      >
-        <WithLoadingIndicator
-          value={[productCardsIlksData, aaveReserveState, aaveAvailableLiquidityETH]}
-          customLoader={<ProductCardsLoader />}
-        >
-          {([_productCardsIlksData, _aaveReserveState, _availableLiquidity]) => (
+      <WithErrorHandler error={[productCardsIlksDataError]}>
+        <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
+          {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
               {_productCardsIlksData.map((cardData) => (
                 <ProductCardEarnIlk cardData={cardData} key={cardData.ilk} />
@@ -72,9 +57,6 @@ export function EarnView() {
                   <ProductCardEarnAave
                     key={`ProductCardEarnAave_${cardData.symbol}`}
                     cardData={cardData}
-                    aaveReserveState={_aaveReserveState}
-                    availableLiquidity={_availableLiquidity}
-                    aaveSthEthYieldsQuery={aaveSthEthYieldsQuery}
                   />
                 ))}
             </ProductCardsWrapper>

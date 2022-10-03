@@ -69,6 +69,7 @@ export type ProductLandingPagesFilter = {
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
 export type Ilk = typeof supportedIlks[number]
+export type AaveStrategy = typeof aaveStrategiesList[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -110,7 +111,7 @@ export const supportedEarnIlks = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
 
 type ProductPageType = {
   cardsFilters: Array<ProductLandingPagesFilter>
-  featuredCards: Array<Ilk>
+  featuredIlkCards: Array<Ilk>
   inactiveIlks: Array<Ilk>
   ordering: { [Key in ProductLandingPagesFiltersKeys]?: Array<Ilk> }
   tags: Partial<Record<Ilk, string>>
@@ -189,7 +190,8 @@ export const productCardsConfig: {
   multiply: ProductPageType
   earn: ProductPageType
   landing: {
-    featuredCards: Record<ProductTypes, Array<Ilk>>
+    featuredIlkCards: Record<ProductTypes, Array<Ilk>>
+    featuredAaveCards: Record<ProductTypes, Array<AaveStrategy>>
   }
   descriptionCustomKeys: Record<Ilk, string>
   descriptionLinks: Record<Ilk, { link: string; name: string }>
@@ -207,7 +209,7 @@ export const productCardsConfig: {
       genericFilters.gusd,
       genericFilters.crvlp,
     ],
-    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-B'],
+    featuredIlkCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-B'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
@@ -231,7 +233,7 @@ export const productCardsConfig: {
       genericFilters.mana,
       genericFilters.matic,
     ],
-    featuredCards: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
+    featuredIlkCards: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
@@ -245,13 +247,13 @@ export const productCardsConfig: {
   },
   earn: {
     cardsFilters: [],
-    featuredCards: [],
+    featuredIlkCards: [],
     inactiveIlks: [],
     ordering: {},
     tags: {},
   },
   landing: {
-    featuredCards: {
+    featuredIlkCards: {
       borrow: [
         'ETH-C',
         'WBTC-C',
@@ -260,6 +262,11 @@ export const productCardsConfig: {
       ],
       multiply: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
       earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+    },
+    featuredAaveCards: {
+      borrow: [],
+      multiply: [],
+      earn: ['AAVE-STETH'],
     },
   },
   descriptionCustomKeys: {
@@ -429,7 +436,7 @@ export function landingPageCardsData({
   product?: ProductTypes
 }) {
   return productCardsData.filter((ilk) =>
-    productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
+    productCardsConfig.landing.featuredIlkCards[product].includes(ilk.ilk),
   )
 }
 
@@ -496,7 +503,7 @@ export function multiplyPageCardsData<T extends IlkTokenMap>({
 
   if (cardsFilter === 'Featured') {
     return ilkToTokenMapping.filter((ilk) =>
-      productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
+      productCardsConfig.multiply.featuredIlkCards.includes(ilk.ilk),
     )
   }
 
@@ -522,7 +529,7 @@ export function borrowPageCardsData<T extends IlkTokenMap>({
 
   if (cardsFilter === 'Featured') {
     return ilkToTokenMapping.filter(({ ilk }) =>
-      productCardsConfig.borrow.featuredCards.includes(ilk),
+      productCardsConfig.borrow.featuredIlkCards.includes(ilk),
     )
   }
 

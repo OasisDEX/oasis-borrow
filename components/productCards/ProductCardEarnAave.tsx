@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { AaveReserveConfigurationData } from 'blockchain/calls/aaveProtocolDataProvider'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/earn/aave/AaveContextProvider'
-import { AaveStEthYieldsResponse, calculateSimulation } from 'features/earn/aave/open/services'
+import { calculateSimulation } from 'features/earn/aave/open/services'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
@@ -16,9 +15,6 @@ import { ProductCardsLoader } from './ProductCardsWrapper'
 
 type ProductCardEarnAaveProps = {
   cardData: TokenMetadataType
-  aaveReserveState?: AaveReserveConfigurationData
-  aaveSthEthYieldsQuery: (multiply: BigNumber) => Promise<AaveStEthYieldsResponse>
-  availableLiquidity: BigNumber
 }
 
 const aaveCalcValueBasis = {
