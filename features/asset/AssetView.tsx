@@ -16,8 +16,6 @@ import {
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
 
-  console.log('content', content)
-
   const tabs = () => {
     const borrowTab = content.borrowIlks && {
       label: t('landing.tabs.borrow.tabLabel'),

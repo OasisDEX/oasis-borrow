@@ -27,8 +27,6 @@ export function EarnView() {
   )
 
   const aaveStrategiesTokens = getTokens(aaveStrategiesList)
-
-  console.log('productCardsIlksData', productCardsIlksData)
   return (
     <Grid
       sx={{
@@ -48,25 +46,21 @@ export function EarnView() {
 
       <WithErrorHandler error={[productCardsIlksDataError]}>
         <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
-          {([_productCardsIlksData]) => {
-            console.log('_productCardsIlksData', _productCardsIlksData)
-
-            return (
-              <ProductCardsWrapper>
-                {_productCardsIlksData.map((cardData) => (
-                  <ProductCardEarnMaker cardData={cardData} key={cardData.ilk} />
+          {([_productCardsIlksData]) => (
+            <ProductCardsWrapper>
+              {_productCardsIlksData.map((cardData) => (
+                <ProductCardEarnMaker cardData={cardData} key={cardData.ilk} />
+              ))}
+              {showAaveStETHETHProductCard &&
+              _productCardsIlksData.length && // just to show them simultanously
+                aaveStrategiesTokens.map((cardData) => (
+                  <ProductCardEarnAave
+                    key={`ProductCardEarnAave_${cardData.symbol}`}
+                    cardData={cardData}
+                  />
                 ))}
-                {showAaveStETHETHProductCard &&
-                _productCardsIlksData.length && // just to show them simultanously
-                  aaveStrategiesTokens.map((cardData) => (
-                    <ProductCardEarnAave
-                      key={`ProductCardEarnAave_${cardData.symbol}`}
-                      cardData={cardData}
-                    />
-                  ))}
-              </ProductCardsWrapper>
-            )
-          }}
+            </ProductCardsWrapper>
+          )}
         </WithLoadingIndicator>
       </WithErrorHandler>
     </Grid>
