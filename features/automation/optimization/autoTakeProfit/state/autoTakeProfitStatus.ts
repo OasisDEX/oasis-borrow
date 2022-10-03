@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
@@ -23,7 +22,6 @@ interface GetAutoTakeProfitStatusParams {
 
 interface AutoTakeProfitStatus {
   closePickerConfig: PickCloseStateProps
-  executionPrice: BigNumber
   min: BigNumber
   max: BigNumber
 }
@@ -39,11 +37,6 @@ export function getAutoTakeProfitStatus({
 }: GetAutoTakeProfitStatusParams): AutoTakeProfitStatus {
   const { uiChanges } = useAppContext()
 
-  const executionPrice = collateralPriceAtRatio({
-    colRatio: autoTakeProfitState.executionCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
-  })
   const closePickerConfig = {
     optionNames: closeVaultOptions,
     onclickHandler: (optionName: string) => {
@@ -52,7 +45,7 @@ export function getAutoTakeProfitStatus({
         toCollateral: optionName === closeVaultOptions[0],
       })
     },
-    isCollateralActive: autoTakeProfitState.collateralActive,
+    isCollateralActive: autoTakeProfitState.toCollateral,
     collateralTokenSymbol: vault.token,
     collateralTokenIconCircle: getToken(vault.token).iconCircle,
   }
@@ -62,11 +55,7 @@ export function getAutoTakeProfitStatus({
     ? tokenAth.times(MAX_MULTIPLIER_WITH_ATH)
     : tokenMarketPrice.times(MAX_MULTIPLIER_WITH_PRICE)
 
-  console.log(`tokenAth: ${tokenAth}`)
-  console.log(`${min}, ${max}`)
-
   return {
-    executionPrice,
     closePickerConfig,
     min,
     max,

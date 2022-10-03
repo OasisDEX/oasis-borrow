@@ -30,18 +30,24 @@ export function AutoTakeProfitFormControl({
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
-  const { closePickerConfig } = getAutoTakeProfitStatus({ autoTakeProfitState, tokenMarketPrice, vault })
+  const { closePickerConfig, min, max } = getAutoTakeProfitStatus({
+    autoTakeProfitState,
+    tokenMarketPrice,
+    vault,
+  })
 
   return (
     // TODO: TDAutoTakeProfit | should be used with AddAndRemoveTriggerControl as a wrapper when there is enough data
     <SidebarSetupAutoTakeProfit
       autoBuyTriggerData={autoBuyTriggerData}
+      autoTakeProfitState={autoTakeProfitState}
+      closePickerConfig={closePickerConfig}
       constantMultipleTriggerData={constantMultipleTriggerData}
       feature={feature}
       isAutoTakeProfitActive={isAutoTakeProfitActive}
+      max={max}
+      min={min}
       vault={vault}
-      closePickerConfig={closePickerConfig}
-      autoTakeProfitState={autoTakeProfitState}
     />
   )
 }
