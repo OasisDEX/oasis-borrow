@@ -166,7 +166,6 @@ type RatioAtCollateralPriceArgs = {
   vaultDebt: BigNumber
 }
 
-// the collateral price at which the collateral ratio is reached
 export function ratioAtCollateralPrice({
   lockedCollateral,
   collateralPriceUSD,
