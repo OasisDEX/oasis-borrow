@@ -21,7 +21,7 @@ import { Grid } from 'theme-ui'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 import {
   calculateCurrentPnLInUSD,
-  calculateTotalDepositWithdrawels,
+  calculateTotalDepositWithdrawals,
   calculateTotalGasFeeInEth,
 } from '../utils'
 
@@ -60,8 +60,8 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
 
-  const depositTotalAmounts = calculateTotalDepositWithdrawels(vaultHistory, 'DEPOSIT')
-  const withdrawTotalAmounts = calculateTotalDepositWithdrawels(vaultHistory, 'WITHDRAW')
+  const depositTotalAmounts = calculateTotalDepositWithdrawals(vaultHistory, 'DEPOSIT')
+  const withdrawTotalAmounts = calculateTotalDepositWithdrawals(vaultHistory, 'WITHDRAW')
   const totalGasFeesInEth = calculateTotalGasFeeInEth(vaultHistory)
   const currentPnLInUSD = calculateCurrentPnLInUSD(currentPnL, netValueUSD)
 

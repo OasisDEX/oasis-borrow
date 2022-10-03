@@ -27,11 +27,11 @@ interface ContentCardNetValueModalProps {
   netValueUSD: string
   totalGasSpentUSD: string
   depositTotalAmounts?: {
-    totalDolarAmount: string
+    totalDollarAmount: string
     totalEthAmount: string
   }
   withdrawTotalAmounts?: {
-    totalDolarAmount: string
+    totalDollarAmount: string
     totalEthAmount: string
   }
   totalGasFeesInEth?: string
@@ -184,7 +184,7 @@ function ContentCardNetValueModal({
         <Text
           sx={{ fontWeight: 'semiBold' }}
         >{`${depositTotalAmounts?.totalEthAmount} ${token}`}</Text>
-        <Text sx={{ fontWeight: 'semiBold' }}>${depositTotalAmounts?.totalDolarAmount}</Text>
+        <Text sx={{ fontWeight: 'semiBold' }}>${depositTotalAmounts?.totalDollarAmount}</Text>
 
         <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80' }}>
           {t('manage-multiply-vault.card.withdraws')}
@@ -192,7 +192,7 @@ function ContentCardNetValueModal({
         <Text
           sx={{ fontWeight: 'semiBold' }}
         >{`${withdrawTotalAmounts?.totalEthAmount} ${token}`}</Text>
-        <Text sx={{ fontWeight: 'semiBold' }}>${withdrawTotalAmounts?.totalDolarAmount}</Text>
+        <Text sx={{ fontWeight: 'semiBold' }}>${withdrawTotalAmounts?.totalDollarAmount}</Text>
 
         <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80' }}>
           {t('manage-multiply-vault.card.gas-fees')}
@@ -237,11 +237,11 @@ interface ContentCardNetValueProps {
   debt?: BigNumber
   changeVariant?: ChangeVariantType
   depositTotalAmounts?: {
-    totalDolarAmount: BigNumber
+    totalDollarAmount: BigNumber
     totalEthAmount: BigNumber
   }
   withdrawTotalAmounts?: {
-    totalDolarAmount: BigNumber
+    totalDollarAmount: BigNumber
     totalEthAmount: BigNumber
   }
   totalGasFeesInEth?: BigNumber
@@ -294,11 +294,11 @@ export function ContentCardNetValue({
     )}`,
     marketOrOraclePrice: `$${formatAmount(marketPrice || oraclePrice, 'USD')}`,
     depositTotalAmounts: {
-      totalDolarAmount: `${formatAmount(depositTotalAmounts?.totalDolarAmount || zero, 'USD')}`,
+      totalDollarAmount: `${formatAmount(depositTotalAmounts?.totalDollarAmount || zero, 'USD')}`,
       totalEthAmount: `${formatCryptoBalance(depositTotalAmounts?.totalEthAmount || zero)}`,
     },
     withdrawTotalAmounts: {
-      totalDolarAmount: `${formatAmount(withdrawTotalAmounts?.totalDolarAmount || zero, 'USD')}`,
+      totalDollarAmount: `${formatAmount(withdrawTotalAmounts?.totalDollarAmount || zero, 'USD')}`,
       totalEthAmount: `${withdrawTotalAmounts?.totalEthAmount.toString() || zero}`,
     },
     totalGasFeesInEth: `${formatCryptoBalance(totalGasFeesInEth || zero)}`,
