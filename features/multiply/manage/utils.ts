@@ -12,44 +12,51 @@ export function calculateTotalDepositWithdrawals(
   historyEvents: VaultHistoryEvent[],
   type: 'WITHDRAW' | 'DEPOSIT',
 ) {
-
-  const validDepositEvents = type === 'DEPOSIT' ? ['DEPOSIT', 'OPEN_MULTIPLY_VAULT'] : ['WITHDRAW'];
+  const validDepositEvents = type === 'DEPOSIT' ? ['DEPOSIT', 'OPEN_MULTIPLY_VAULT'] : ['WITHDRAW']
   const events = historyEvents.filter((event) => validDepositEvents.includes(event.kind))
-  
+
   // Calculate the total eth amount
-  const totalEthAmount = events.length && events.map((event) => {
-    if (event.kind === 'OPEN_MULTIPLY_VAULT') {
-      return event.depositCollateral
-    } else if(type === 'WITHDRAW') {
-      // convert to a positive number
-      return event.collateralAmount?.times(-1)
-    } else {
-      return event.collateralAmount
-    }
-  })?.reduce((value, totalAmount) => totalAmount?.plus(value || 0)) as BigNumber
+  const totalEthAmount =
+    events.length &&
+    (events
+      .map((event) => {
+        if (event.kind === 'OPEN_MULTIPLY_VAULT') {
+          return event.depositCollateral
+        } else if (type === 'WITHDRAW') {
+          // convert to a positive number
+          return event.collateralAmount?.times(-1)
+        } else {
+          return event.collateralAmount
+        }
+      })
+      ?.reduce((value, totalAmount) => totalAmount?.plus(value || 0)) as BigNumber)
 
   // Calculate the total dollar amount
-  const totalDollarAmount = events.length && events.map((event) => {
-    if (event.kind === 'OPEN_MULTIPLY_VAULT') {
-      const ethDeposited = event.depositCollateral;
-      const ethPrice = event.ethPrice
+  const totalDollarAmount =
+    events.length &&
+    (events
+      .map((event) => {
+        if (event.kind === 'OPEN_MULTIPLY_VAULT') {
+          const ethDeposited = event.depositCollateral
+          const ethPrice = event.ethPrice
 
-      return (ethDeposited.times(ethPrice));
-    } else if(type === 'WITHDRAW') {
-      // convert to a positive number
-      const withdrawAmount = event.collateralAmount?.times(-1) as BigNumber
-      
-      return withdrawAmount.times(event.ethPrice)
-    } else {
-      return (event.collateralAmount?.times(event.ethPrice))
-    }
-  })?.reduce((value, totalAmount) => totalAmount?.plus(value || 0)) as BigNumber
+          return ethDeposited.times(ethPrice)
+        } else if (type === 'WITHDRAW') {
+          // convert to a positive number
+          const withdrawAmount = event.collateralAmount?.times(-1) as BigNumber
+
+          return withdrawAmount.times(event.ethPrice)
+        } else {
+          return event.collateralAmount?.times(event.ethPrice)
+        }
+      })
+      ?.reduce((value, totalAmount) => totalAmount?.plus(value || 0)) as BigNumber)
 
   return {
     totalDollarAmount,
     totalEthAmount,
   } as {
-    totalDollarAmount: BigNumber,
+    totalDollarAmount: BigNumber
     totalEthAmount: BigNumber
   }
 }
