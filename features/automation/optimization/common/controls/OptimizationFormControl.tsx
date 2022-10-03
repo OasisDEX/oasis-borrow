@@ -25,6 +25,7 @@ interface OptimizationFormControlProps {
   balanceInfo: BalanceInfo
   context: Context
   ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
   ilkData: IlkData
   txHelpers?: TxHelpers
   vault: Vault
@@ -35,6 +36,7 @@ export function OptimizationFormControl({
   balanceInfo,
   context,
   ethMarketPrice,
+  tokenMarketPrice,
   ilkData,
   txHelpers,
   vault,
@@ -126,11 +128,11 @@ export function OptimizationFormControl({
         txHelpers={txHelpers}
         vault={vault}
       />
-
       <AutoTakeProfitFormControl
         autoBuyTriggerData={autoBuyTriggerData}
         constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoTakeProfitActive={isAutoTakeProfitActive}
+        tokenMarketPrice={tokenMarketPrice}
         vault={vault}
       />
     </>

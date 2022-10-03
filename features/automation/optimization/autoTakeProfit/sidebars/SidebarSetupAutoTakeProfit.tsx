@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
+import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
@@ -23,23 +23,27 @@ import {
 } from '../state/autoTakeProfitFormChange'
 
 interface SidebarSetupAutoTakeProfitProps {
-  autoTakeProfitState: AutoTakeProfitFormChange
   autoBuyTriggerData: AutoBSTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  isAutoTakeProfitActive: boolean
-  feature: AutomationFeatures
-  vault: Vault
+  autoTakeProfitState: AutoTakeProfitFormChange
   closePickerConfig: PickCloseStateProps
+  constantMultipleTriggerData: ConstantMultipleTriggerData
+  feature: AutomationFeatures
+  isAutoTakeProfitActive: boolean
+  max: BigNumber
+  min: BigNumber
+  vault: Vault
 }
 // TODO ŁW Slider config
 export function SidebarSetupAutoTakeProfit({
-  autoTakeProfitState,
   autoBuyTriggerData,
-  constantMultipleTriggerData,
-  isAutoTakeProfitActive,
-  feature,
-  vault,
+  autoTakeProfitState,
   closePickerConfig,
+  constantMultipleTriggerData,
+  feature,
+  isAutoTakeProfitActive,
+  max,
+  min,
+  vault,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -59,46 +63,42 @@ export function SidebarSetupAutoTakeProfit({
 
   const autoTakeSliderBasicConfig = {
     disabled: false,
-    leftBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')),
+    leftBoundryFormatter: (x: BigNumber) =>
+      x.isZero() ? '-' : `$${formatAmount(x, 'USD')} ${vault.token}`,
     rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     step: 1,
   }
-
-  const min = vault.collateralizationRatio.multipliedBy(100)
-  const max = new BigNumber(500) // TODO ŁW coll ratio if price reached last ATH+100%
-  const maxBoundry = max
-  const priceValueForCollRatio = collateralPriceAtRatio({
-    colRatio: autoTakeProfitState.executionCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
-  })
   const sliderPercentageFill = getSliderPercentageFill({
-    value: autoTakeProfitState.executionCollRatio.times(100),
+    value: autoTakeProfitState.executionPrice,
     min: min,
     max,
   })
-
+  const targetColRatio = ratioAtCollateralPrice({
+    lockedCollateral: vault.lockedCollateral,
+    collateralPriceUSD: autoTakeProfitState.executionPrice,
+    vaultDebt: vault.debt,
+  })
   const sliderConfig: SliderValuePickerProps = {
     ...autoTakeSliderBasicConfig,
     sliderPercentageFill,
-    leftLabel: t('slider.set-auto-take-profit.left-label'),
+    leftLabel: t('slider.set-auto-take-profit.left-label', { token: vault.token }),
     rightLabel: t('slider.set-auto-take-profit.right-label'),
-    leftBoundry: priceValueForCollRatio, // TODO price for coll ratio collateralPriceAtRatio also calculated in status
+    leftBoundry: autoTakeProfitState.executionPrice,
     rightBoundry: autoTakeProfitState.executionCollRatio,
-    lastValue: autoTakeProfitState.executionCollRatio.decimalPlaces(0, BigNumber.ROUND_DOWN), //autoTakeProfitState.executionCollRatio, why undefined!?
-    maxBoundry,
+    lastValue: autoTakeProfitState.executionPrice,
+    maxBoundry: max,
     minBoundry: min,
-    onChange: (executionCollRatio) => {
-      if (autoTakeProfitState.collateralActive === undefined) {
+    onChange: (value) => {
+      if (autoTakeProfitState.toCollateral === undefined) {
         uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
           type: 'close-type',
           toCollateral: false,
         })
       }
-
       uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-        type: 'execution-coll-ratio',
-        executionCollRatio: executionCollRatio,
+        type: 'execution-price',
+        executionPrice: value.decimalPlaces(0, BigNumber.ROUND_DOWN),
+        executionCollRatio: targetColRatio,
       })
     },
   }
