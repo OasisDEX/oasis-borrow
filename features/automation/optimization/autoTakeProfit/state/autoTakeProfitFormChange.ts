@@ -9,11 +9,12 @@ export const AUTO_TAKE_PROFIT_FORM_CHANGE = 'AUTO_TAKE_PROFIT_FORM_CHANGE'
 // >
 
 export type AutoTakeProfitFormChangeAction =
-  | { type: 'execution-coll-ratio'; executionCollRatio: BigNumber }
+  | { type: 'execution-price'; executionPrice: BigNumber; executionCollRatio: BigNumber }
   | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'close-type'; toCollateral: boolean }
   | {
       type: 'form-defaults'
+      executionPrice: BigNumber
       executionCollRatio: BigNumber
       toCollateral: boolean
     }
@@ -26,12 +27,23 @@ export function autoTakeProfitFormChangeReducer(
   action: AutoTakeProfitFormChangeAction,
 ): AutoTakeProfitFormChange {
   switch (action.type) {
-    case 'execution-coll-ratio':
-      return { ...state, executionCollRatio: action.executionCollRatio }
+    case 'execution-price':
+      return {
+        ...state,
+        executionPrice: action.executionPrice,
+        executionCollRatio: action.executionCollRatio,
+      }
     case 'current-form':
       return { ...state, currentForm: action.currentForm }
     case 'close-type':
-      return { ...state, collateralActive: action.toCollateral }
+      return { ...state, toCollateral: action.toCollateral }
+    case 'form-defaults':
+      return {
+        ...state,
+        executionPrice: action.executionPrice,
+        executionCollRatio: action.executionCollRatio,
+        toCollateral: action.toCollateral,
+      }
     // TODO ŁW
     //     case 'reset':
     //       return { ...state, ...action.resetData }
@@ -41,8 +53,9 @@ export function autoTakeProfitFormChangeReducer(
 }
 
 export interface AutoTakeProfitFormChange {
+  executionPrice: BigNumber
   executionCollRatio: BigNumber
   currentForm: AutomationFormType
-  collateralActive: boolean
+  toCollateral: boolean
   // resetData: AutoTakeProfitResetData
 }
