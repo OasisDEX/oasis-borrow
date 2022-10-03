@@ -142,9 +142,9 @@
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
   "discovery": {
-    "title": "Discover Oasis.app",
-    "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
-    "description-link": "Learn more about Discover",
+    "heading": "Discover Oasis.app",
+    "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
+    "intro-link": "Learn more about Discover",
     "navigation": {
       "high-risk-positions": "High-Risk Positions",
       "highest-multiply-pnl": "Highest Multiply P&L",
