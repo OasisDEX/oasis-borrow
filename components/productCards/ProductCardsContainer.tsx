@@ -9,12 +9,12 @@ import { ProductCardData } from '../../helpers/productCards'
 import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
-import { ProductCardEarnIlk } from './ProductCardEarnIlk'
+import { ProductCardEarnMaker } from './ProductCardEarnMaker'
 import { ProductCardMultiply } from './ProductCardMultiply'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
 type StrategyTypes = {
-  ilks: string[]
+  maker: string[]
   aave: string[]
 }
 
@@ -30,7 +30,7 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
 
   const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(
-    productCardsData$(props.strategies.ilks),
+    productCardsData$(props.strategies.maker),
   )
 
   const aaveStrategyCards = getTokens(props.strategies.aave)
@@ -71,5 +71,5 @@ export function MultiplyProductCardsContainer(props: ProductSpecificContainerPro
 }
 
 export function EarnProductCardsContainer(props: ProductSpecificContainerProps) {
-  return <ProductCardsContainer renderProductCard={ProductCardEarnIlk} {...props} />
+  return <ProductCardsContainer renderProductCard={ProductCardEarnMaker} {...props} />
 }

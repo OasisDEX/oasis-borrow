@@ -16,13 +16,15 @@ import {
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
 
+  console.log('content', content)
+
   const tabs = () => {
     const borrowTab = content.borrowIlks && {
       label: t('landing.tabs.borrow.tabLabel'),
       value: 'borrow',
       content: (
         <Box sx={{ mt: 5 }}>
-          <BorrowProductCardsContainer strategies={{ ilks: content.borrowIlks, aave: [] }} />
+          <BorrowProductCardsContainer strategies={{ maker: content.borrowIlks, aave: [] }} />
         </Box>
       ),
     }
@@ -32,7 +34,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       value: 'multiply',
       content: (
         <Box sx={{ mt: 5 }}>
-          <MultiplyProductCardsContainer strategies={{ ilks: content.multiplyIlks, aave: [] }} />
+          <MultiplyProductCardsContainer strategies={{ maker: content.multiplyIlks, aave: [] }} />
         </Box>
       ),
     }
@@ -42,7 +44,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       value: 'earn',
       content: (
         <Box sx={{ mt: 5 }}>
-          <EarnProductCardsContainer strategies={{ ilks: content.earnIlks, aave: [] }} />
+          <EarnProductCardsContainer strategies={{ maker: content.earnIlks, aave: [] }} />
         </Box>
       ),
     }

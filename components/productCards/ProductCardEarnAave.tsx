@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
-import { useAaveContext } from 'features/earn/aave/AaveContextProvider'
 import { calculateSimulation } from 'features/earn/aave/open/services'
+import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
@@ -28,7 +28,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
     aaveReserveConfigurationData,
     aaveSthEthYieldsQuery,
     aaveAvailableLiquidityETH$,
-  } = useAaveContext()
+  } = useEarnContext()
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityETH$,

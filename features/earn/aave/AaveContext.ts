@@ -3,7 +3,6 @@ import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { GraphQLClient } from 'graphql-request'
-import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
@@ -14,7 +13,6 @@ import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveP
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
-import { prepareAaveAvailableLiquidityInUSD$ } from './helpers/aavePrepareAvailableLiquidity'
 import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine$,
@@ -43,11 +41,6 @@ export function setupAaveContext({
 }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
-
-  const disconnectedGraphQLClient$ = context$.pipe(
-    distinctUntilKeyChanged('cacheApi'),
-    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
-  )
 
   const graphQLClient$ = contextForAddress$.pipe(
     distinctUntilKeyChanged('cacheApi'),
@@ -103,9 +96,6 @@ export function setupAaveContext({
   const manageTransactionMachine = getManageAaveTransactionMachine(txHelpers$, contextForAddress$)
 
   const aaveSthEthYields = curry(getAaveStEthYield)(graphQLClient$, moment())
-  const aaveSthEthYieldsQuery = memoize(
-    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
-  )
 
   const simulationMachine = getSthEthSimulationMachine(aaveSthEthYields)
 
@@ -133,21 +123,10 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  const aaveAvailableLiquidityETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
-    getAaveReserveData$({ token: 'ETH' }),
-    // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
-  )
-
-  const aaveReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
-
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
-    aaveReserveConfigurationData,
-    aaveSthEthYieldsQuery,
-    aaveAvailableLiquidityETH$,
   }
 }
 

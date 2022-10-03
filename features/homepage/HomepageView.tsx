@@ -251,7 +251,7 @@ export function HomepageView() {
                   cards={
                     <MultiplyProductCardsContainer
                       strategies={{
-                        ilks: productCardsConfig.landing.featuredIlkCards['multiply'],
+                        maker: productCardsConfig.landing.featuredIlkCards['multiply'],
                         aave: [],
                       }}
                     />
@@ -275,7 +275,7 @@ export function HomepageView() {
                   cards={
                     <BorrowProductCardsContainer
                       strategies={{
-                        ilks: productCardsConfig.landing.featuredIlkCards['borrow'],
+                        maker: productCardsConfig.landing.featuredIlkCards['borrow'],
                         aave: [],
                       }}
                     />
@@ -300,7 +300,7 @@ export function HomepageView() {
                   cards={
                     <EarnProductCardsContainer
                       strategies={{
-                        ilks: productCardsConfig.landing.featuredIlkCards['earn'],
+                        maker: productCardsConfig.landing.featuredIlkCards['earn'],
                         aave: productCardsConfig.landing.featuredAaveCards['earn'],
                       }}
                     />

@@ -6,7 +6,7 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardEarnIlk } from '../../components/productCards/ProductCardEarnIlk'
+import { ProductCardEarnMaker } from '../../components/productCards/ProductCardEarnMaker'
 import {
   ProductCardsLoader,
   ProductCardsWrapper,
@@ -28,6 +28,7 @@ export function EarnView() {
 
   const aaveStrategiesTokens = getTokens(aaveStrategiesList)
 
+  console.log('productCardsIlksData', productCardsIlksData)
   return (
     <Grid
       sx={{
@@ -47,20 +48,25 @@ export function EarnView() {
 
       <WithErrorHandler error={[productCardsIlksDataError]}>
         <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
-          {([_productCardsIlksData]) => (
-            <ProductCardsWrapper>
-              {_productCardsIlksData.map((cardData) => (
-                <ProductCardEarnIlk cardData={cardData} key={cardData.ilk} />
-              ))}
-              {showAaveStETHETHProductCard &&
-                aaveStrategiesTokens.map((cardData) => (
-                  <ProductCardEarnAave
-                    key={`ProductCardEarnAave_${cardData.symbol}`}
-                    cardData={cardData}
-                  />
+          {([_productCardsIlksData]) => {
+            console.log('_productCardsIlksData', _productCardsIlksData)
+
+            return (
+              <ProductCardsWrapper>
+                {_productCardsIlksData.map((cardData) => (
+                  <ProductCardEarnMaker cardData={cardData} key={cardData.ilk} />
                 ))}
-            </ProductCardsWrapper>
-          )}
+                {showAaveStETHETHProductCard &&
+                _productCardsIlksData.length && // just to show them simultanously
+                  aaveStrategiesTokens.map((cardData) => (
+                    <ProductCardEarnAave
+                      key={`ProductCardEarnAave_${cardData.symbol}`}
+                      cardData={cardData}
+                    />
+                  ))}
+              </ProductCardsWrapper>
+            )
+          }}
         </WithLoadingIndicator>
       </WithErrorHandler>
     </Grid>
