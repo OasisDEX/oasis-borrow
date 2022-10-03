@@ -20,6 +20,7 @@ export type Feature =
   | 'DisableSidebarScroll'
   | 'ProxyCreationDisabled'
   | 'AutoTakeProfit'
+  | 'DiscoverOasis'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -38,6 +39,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   DisableSidebarScroll: false,
   ProxyCreationDisabled: false,
   AutoTakeProfit: false,
+  DiscoverOasis: false,
   // your feature here....
 }
 
