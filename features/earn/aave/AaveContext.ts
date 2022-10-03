@@ -123,10 +123,13 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
+  const aaveReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
+
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
+    aaveReserveConfigurationData,
   }
 }
 
