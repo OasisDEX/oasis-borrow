@@ -12,6 +12,12 @@ export interface AutoTakeProfitTriggerData {
   isToCollateral: boolean
 }
 
+export const defaultAutoTakeData = {
+    executionPrice: new BigNumber(0),
+    maxBaseFeeInGwei: new BigNumber(0),
+    isToCollateral: false,
+} as AutoTakeProfitTriggerData
+
 export function prepareAutoTakeProfitTriggerData({
   vaultData,
   executionPrice,
