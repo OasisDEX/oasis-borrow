@@ -132,6 +132,8 @@ export function OptimizationFormControl({
         constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoTakeProfitActive={isAutoTakeProfitActive}
         vault={vault}
+        ethMarketPrice={ethMarketPrice}
+
       />
     </>
   )

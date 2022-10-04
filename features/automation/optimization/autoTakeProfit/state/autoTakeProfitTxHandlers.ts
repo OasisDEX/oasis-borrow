@@ -1,15 +1,18 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import {
   AutoTakeProfitTriggerData,
   prepareAddAutoTakeProfitTriggerData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { zero } from 'helpers/zero'
 
 interface GetAutoTakeProfitTxHandlersParams {
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   vaultData: Vault
-  replacedTriggerId: number
+  isAddForm: boolean
 }
 
 interface AutoTakeProfitTxHandlers {
@@ -21,17 +24,26 @@ interface AutoTakeProfitTxHandlers {
 export function getAutoTakeProfitTxHandlers({
   vaultData,
   autoTakeProfitTriggerData,
-  replacedTriggerId,
+  isAddForm,
 }: GetAutoTakeProfitTxHandlersParams): AutoTakeProfitTxHandlers {
+  const { uiChanges } = useAppContext()
+
   const addTxData = prepareAddAutoTakeProfitTriggerData(
     vaultData,
     autoTakeProfitTriggerData.executionPrice,
     autoTakeProfitTriggerData.maxBaseFeeInGwei,
     autoTakeProfitTriggerData.isToCollateral,
-    replacedTriggerId,
+    autoTakeProfitTriggerData.triggerId.toNumber(),
   )
   // TODO ŁW
-  function textButtonHandlerExtension() {}
+  function textButtonHandlerExtension() {
+    if (isAddForm) {
+      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+        type: 'execution-coll-ratio',
+        executionCollRatio: zero,
+      })
+    }
+  }
 
   return { addTxData, textButtonHandlerExtension }
 }

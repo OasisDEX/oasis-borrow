@@ -10,6 +10,7 @@ export interface AutoTakeProfitTriggerData {
   executionPrice: BigNumber
   maxBaseFeeInGwei: BigNumber
   isToCollateral: boolean
+  triggerId: BigNumber
 }
 
 export const defaultAutoTakeData = {

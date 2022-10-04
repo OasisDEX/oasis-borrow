@@ -17,7 +17,7 @@ export type AutoTakeProfitFormChangeAction =
       executionCollRatio: BigNumber
       toCollateral: boolean
     }
-// TODO ŁW
+// TODO ŁW, do i need execution price here or is just fine to convert from c ratio when needed?...
 //   | { type: 'txDetails...'}
 // | {type: 'reset'; resetData: AutoTakeProfitResetData}
 
