@@ -12,7 +12,8 @@ export function calculateTotalDepositWithdrawals(
   historyEvents: VaultHistoryEvent[],
   type: 'WITHDRAW' | 'DEPOSIT',
 ) {
-  const validDepositEvents = type === 'DEPOSIT' ? ['DEPOSIT', 'OPEN_MULTIPLY_VAULT', 'DEPOSIT-GENERATE'] : ['WITHDRAW']
+  const validDepositEvents =
+    type === 'DEPOSIT' ? ['DEPOSIT', 'OPEN_MULTIPLY_VAULT', 'DEPOSIT-GENERATE'] : ['WITHDRAW']
   const events = historyEvents.filter((event) => validDepositEvents.includes(event.kind))
 
   // Calculate the total eth amount
