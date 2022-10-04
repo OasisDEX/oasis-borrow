@@ -11,22 +11,24 @@ interface ProductCardWrapperProps {
 
 export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
   const { theme } = useTheme()
+  const childrenLength = children.flat().filter(Boolean).length
   const gapSpace = theme.space[4]
   const desktopWidthOfCard = 378
-  const desktopWidthOfGrid = (children.length - 1) * gapSpace + children.length * desktopWidthOfCard
+  const desktopWidthOfGrid = (childrenLength - 1) * gapSpace + childrenLength * desktopWidthOfCard
+
   return (
     <Grid
-      columns={children.length > 2 ? [1, 2, 3] : [1, children.length, children.length]}
+      columns={childrenLength > 2 ? [1, 2, 3] : [1, childrenLength, childrenLength]}
       sx={{
         justifyItems: 'center',
         ...slideInAnimation,
         position: 'relative',
-        width: ['100%', children.length <= 2 ? `${desktopWidthOfGrid}px` : '100%'],
+        width: ['100%', childrenLength <= 2 ? `${desktopWidthOfGrid}px` : '100%'],
         gap: `${gapSpace}px`,
         margin: '0 auto',
       }}
     >
-      {children.map((productCard, index) => (
+      {children.flat().map((productCard, index) => (
         <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5), width: '100%' }} key={index}>
           {productCard}
         </Box>
