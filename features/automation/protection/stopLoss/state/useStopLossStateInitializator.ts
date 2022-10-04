@@ -33,6 +33,13 @@ export function useStopLossStateInitializator(
 
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      type: 'is-confirmation',
+      isConfirmation: false,
+    })
+  }, [])
+  
+  useEffect(() => {
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'close-type',
       toCollateral: isToCollateral,
     })

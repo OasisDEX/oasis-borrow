@@ -66,7 +66,7 @@ interface SidebarSetupStopLossProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
-  isConfirming: boolean;
+  isAwaitingUserConfirmation: boolean;
   isFirstSetup: boolean
   closePickerConfig: PickCloseStateProps
   executionPrice: BigNumber
@@ -97,6 +97,7 @@ export function SidebarSetupStopLoss({
   isEditing,
   isDisabled,
   isFirstSetup,
+  isAwaitingUserConfirmation,
 
   isStopLossActive,
 
@@ -214,7 +215,7 @@ export function SidebarSetupStopLoss({
         <Grid gap={3}>
           {stopLossWriteEnabled ? (
             <>
-              {(stage === 'stopLossEditing' || stage === 'txFailure') && (
+              {(stage === 'stopLossEditing' || stage === 'txFailure' && !isAwaitingUserConfirmation) && (
                 <>
                   {isAddForm && (
                     <SidebarAdjustStopLossEditingStage
@@ -228,6 +229,7 @@ export function SidebarSetupStopLoss({
                       stopLossState={stopLossState}
                       isEditing={isEditing}
                       closePickerConfig={closePickerConfig}
+                      isAwaitingUserConfirmation={isAwaitingUserConfirmation}
                       sliderConfig={sliderConfig}
                     />
                   )}
@@ -274,18 +276,26 @@ export function SidebarSetupStopLoss({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: false,
         isLoading: stage === 'txInProgress',
-        action: () =>
-          txHandler({
-            callOnSuccess: () => {
-              uiChanges.publish(TAB_CHANGE_SUBJECT, {
-                type: 'change-tab',
-                currentMode: VaultViewMode.Overview,
-              })
-              setHash(VaultViewMode.Overview)
-            },
-          }),
+        action: () => {
+          if(!isAwaitingUserConfirmation) {
+            uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+              type: 'is-confirmation',
+              isConfirmation: true
+            })
+          } else {
+            txHandler({
+              callOnSuccess: () => {
+                uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                  type: 'change-tab',
+                  currentMode: VaultViewMode.Overview,
+                })
+                setHash(VaultViewMode.Overview)
+              },
+            })
+          }
+        }
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
