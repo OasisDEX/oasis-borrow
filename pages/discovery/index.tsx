@@ -1,4 +1,5 @@
 import { GetServerSidePropsContext } from 'next'
+import React from 'react'
 
 export default function DiscoveryPage() {
   return <></>

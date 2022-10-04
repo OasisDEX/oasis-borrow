@@ -1,5 +1,6 @@
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
+import React from 'react'
 
 export const discoveryPageLayout = MarketingLayout
 export const discoveryPageLayoutProps = {
