@@ -41,13 +41,14 @@ export function getAutoTakeProfitTxHandlers({
     autoTakeProfitTriggerData.executionPrice,
     autoTakeProfitTriggerData.maxBaseFeeInGwei,
     autoTakeProfitTriggerData.isToCollateral,
-    autoTakeProfitTriggerData.triggerId.toNumber(),
+    0,
+    // autoTakeProfitTriggerData.triggerId.toNumber(),
   ),
   [
     autoTakeProfitState.toCollateral,
     autoTakeProfitState.executionCollRatio,
     autoTakeProfitState.executionPrice,
-    autoTakeProfitTriggerData.triggerId.toNumber(),
+    // autoTakeProfitTriggerData.triggerId.toNumber(),
   ]
   )
   // TODO ŁW
