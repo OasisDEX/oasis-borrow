@@ -11,24 +11,28 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ActorRefFrom } from 'xstate'
 
-import { useAaveContext } from '../../AaveContextProvider'
-import { PreparedAaveReserveData } from '../../helpers/aavePrepareAaveTotalValueLocked'
-import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { AaveStEthSimulateStateMachine } from '../state'
+import { useAaveContext } from '../AaveContextProvider'
+import { PreparedAaveReserveData } from '../helpers/aavePrepareAaveTotalValueLocked'
+import { useOpenAaveStateMachineContext } from '../open/containers/AaveOpenStateMachineContext'
+import { AaveStEthSimulateStateMachine } from '../open/state'
 
 const minimumMultiple = new BigNumber(1.1)
 
-export function AaveOpenHeader({
+type AavePositionHeaderPropsBase = {
+  simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
+  aaveTVL?: PreparedAaveReserveData
+  aaveReserveState?: AaveReserveConfigurationData
+  strategyName: string
+  noDetails?: boolean
+}
+
+export function AavePositionHeader({
   simulationActor,
   strategyName,
   aaveTVL,
   aaveReserveState,
-}: {
-  simulationActor: ActorRefFrom<AaveStEthSimulateStateMachine>
-  aaveTVL: PreparedAaveReserveData
-  strategyName: string
-  aaveReserveState: AaveReserveConfigurationData
-}) {
+  noDetails = false,
+}: AavePositionHeaderPropsBase) {
   const { t } = useTranslation()
   const tokenPairList = {
     'aave-steth': {
@@ -36,11 +40,16 @@ export function AaveOpenHeader({
       tokenList: ['AAVE', 'STETH', 'ETH'],
     },
   } as Record<string, { name: string; tokenList: string[] }>
+  const tokenData = tokenPairList[strategyName]
 
-  const [simulationState] = useActor(simulationActor)
+  if (noDetails && (!simulationActor || !aaveReserveState || !aaveTVL)) {
+    // this should never change during runtime
+    return <VaultHeadline header={tokenData.name} token={tokenData.tokenList} details={[]} />
+  }
 
+  const [simulationState] = useActor(simulationActor!)
   const { context: simulationContext } = simulationState
-  const maximumMultiple = one.div(one.minus(aaveReserveState.ltv))
+  const maximumMultiple = one.div(one.minus(aaveReserveState!.ltv))
 
   const headlineDetails = []
   if (simulationContext.yields) {
@@ -90,23 +99,23 @@ export function AaveOpenHeader({
     })
   }
 
-  aaveTVL?.totalValueLocked &&
+  aaveTVL!.totalValueLocked &&
     headlineDetails.push({
       label: t('open-earn.aave.product-header.total-value-locked'),
-      value: formatHugeNumbersToShortHuman(aaveTVL.totalValueLocked),
+      value: formatHugeNumbersToShortHuman(aaveTVL!.totalValueLocked),
     })
 
   return (
     <VaultHeadline
-      header={tokenPairList[strategyName].name}
-      token={tokenPairList[strategyName].tokenList}
+      header={tokenData.name}
+      token={tokenData.tokenList}
       details={headlineDetails}
       loading={!aaveTVL?.totalValueLocked || simulationState.value === 'loading'}
     />
   )
 }
 
-export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string }) {
+export function AavePositionHeaderWithDetails({ strategyName }: { strategyName: string }) {
   const { stateMachine: openAaveStateMachine } = useOpenAaveStateMachineContext()
   const simulationMachine = useSelector(openAaveStateMachine, (state) => {
     return state.context.refSimulationMachine
@@ -119,7 +128,7 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
   return (
     <WithErrorHandler error={[tvlStateError, aaveReserveStateError]}>
       {tvlState && aaveReserveState && simulationMachine && (
-        <AaveOpenHeader
+        <AavePositionHeader
           strategyName={strategyName}
           simulationActor={simulationMachine}
           aaveTVL={tvlState}
