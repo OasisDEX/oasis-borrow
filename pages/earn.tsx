@@ -1,3 +1,5 @@
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { earnContext, EarnContextProvider } from 'features/earn/EarnContextProvider'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -14,10 +16,14 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 
 function EarnPage() {
   return (
-    <WithConnection>
-      <EarnView />
-      <Survey for="earn" />
-    </WithConnection>
+    <EarnContextProvider>
+      <DeferedContextProvider context={earnContext}>
+        <WithConnection>
+          <EarnView />
+          <Survey for="earn" />
+        </WithConnection>
+      </DeferedContextProvider>
+    </EarnContextProvider>
   )
 }
 
