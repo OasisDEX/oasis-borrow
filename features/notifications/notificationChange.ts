@@ -46,7 +46,6 @@ export function notificationReducer(state: NotificationChange, action: Notificat
 
           return [...acc, curr]
         }, [] as Notification[])
-        .sort((a, b) => b.id - a.id)
       return { ...state, allNotifications }
     case 'all-active-subscriptions':
       return { ...state, allActiveSubscriptions: action.allActiveSubscriptions }
