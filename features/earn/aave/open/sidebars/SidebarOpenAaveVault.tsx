@@ -183,15 +183,18 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
     AT_RISK = 'AT_RISK',
   }
 
-  const riskTrafficLight = liquidationPrice.div(oracleAssetPrice).lt(0.8)
-    ? RiskLevel.OK
-    : RiskLevel.AT_RISK
+  const healthFactor =
+    state.context.transactionParameters?.strategy.simulation.position.healthFactor
+
+  const warningHealthFactor = new BigNumber('1.25')
+
+  const riskTrafficLight = healthFactor?.gt(warningHealthFactor) ? RiskLevel.OK : RiskLevel.AT_RISK
 
   const collateralToken = state.context.strategyInfo?.collateralToken
 
   const debtToken = state.context.token
 
-  const priceMovementUntilLiquidation = one.minus(liquidationPrice.div(oracleAssetPrice)).times(100)
+  const priceMovementUntilLiquidation = one.minus(one.div(healthFactor || zero)).times(100)
 
   const priceMovementWarningThreshold = new BigNumber(20)
 
