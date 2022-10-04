@@ -10,7 +10,7 @@ export function DiscoveryWrapperWithIntro({ children }: WithChildren) {
 
   return (
     <Box sx={{ width: '100%', mt: [4, 5], pb: [4, 6] }}>
-      <Box sx={{ mb: 90, textAlign: 'center' }}>
+      <Box sx={{ mb: [4, 5], textAlign: 'center' }}>
         <Heading variant="header2" sx={{ mb: 2 }}>
           {t('discovery.heading')}
         </Heading>

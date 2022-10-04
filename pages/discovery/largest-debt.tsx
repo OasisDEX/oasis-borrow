@@ -12,7 +12,7 @@ import React from 'react'
 function DiscoveryPage() {
   return (
     <DiscoveryWrapperWithIntro>
-      <DiscoveryNavigation active={DiscoveryPages.HIGH_RISK_POSITIONS} />
+      <DiscoveryNavigation active={DiscoveryPages.LARGEST_DEBT} />
     </DiscoveryWrapperWithIntro>
   )
 }
