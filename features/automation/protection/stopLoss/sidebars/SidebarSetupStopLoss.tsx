@@ -66,6 +66,7 @@ interface SidebarSetupStopLossProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
+  isConfirming: boolean;
   isFirstSetup: boolean
   closePickerConfig: PickCloseStateProps
   executionPrice: BigNumber
@@ -202,6 +203,8 @@ export function SidebarSetupStopLoss({
   })
   const cancelStopLossWarnings = extractCancelBSWarnings(warnings)
   const cancelStopLossErrors = extractCancelBSErrors(errors)
+
+  console.log('hello there')
 
   if (isStopLossActive) {
     const sidebarSectionProps: SidebarSectionProps = {

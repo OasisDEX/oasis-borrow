@@ -13,6 +13,7 @@ export type StopLossFormChangeAction =
   | { type: 'stop-loss-level'; stopLossLevel: BigNumber }
   | { type: 'close-type'; toCollateral: boolean }
   | { type: 'current-form'; currentForm: AutomationFormType }
+  | { type: 'is-confirmation'; isConfirmation: Boolean }
   | { type: 'reset'; resetData: StopLossResetData }
   | {
       type: 'tx-details'

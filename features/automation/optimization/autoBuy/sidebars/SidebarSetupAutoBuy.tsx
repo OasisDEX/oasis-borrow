@@ -144,6 +144,8 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyErrors = extractCancelBSErrors(errors)
   const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
+  console.log('hello there')
+
   if (isAutoBuyActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
@@ -193,7 +195,13 @@ export function SidebarSetupAutoBuy({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if(isEditing) {
+            
+          } else {
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
