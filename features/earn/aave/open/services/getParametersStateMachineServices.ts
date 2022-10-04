@@ -33,7 +33,6 @@ export function getOpenAaveParametersStateMachineServices$(
           )
         },
         estimateGas: async (context) => {
-          console.log('estimating gas')
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
             return 0
           }

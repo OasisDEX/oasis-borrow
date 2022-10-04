@@ -30,43 +30,35 @@ export interface ManageAaveContext {
   tokenBalance?: BigNumber
   transactionParameters?: OperationParameters
   estimatedGasPrice?: HasGasEstimation
+
+  strategyInfo?: StrategyInfo
 }
 
-export type ManageAaveMachineEvents =
-  | {
-      readonly type: 'POSITION_CLOSED'
-    }
-  | {
-      readonly type: 'START_ADJUSTING_POSITION'
-    }
-  | {
-      readonly type: 'START_CLOSING_POSITION'
-    }
+// TODO: Should go to common types
+type StrategyInfo = {
+  maxMultiple: BigNumber
+  liquidationThreshold: BigNumber
+  assetPrice: BigNumber
+}
+
+export type ManageAaveEvent =
+  | { readonly type: 'POSITION_CLOSED' }
   | { type: 'SET_BALANCE'; balance: BigNumber; tokenPrice: BigNumber }
-  | { type: 'NEXT_STEP' }
+  | { type: 'ADJUST_POSITION' }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'CLOSE_POSITION' }
+  | { type: 'START_TRANSACTION' }
   | {
       type: 'CLOSING_PARAMETERS_RECEIVED'
       parameters: OperationParameters
       estimatedGasPrice: HasGasEstimation
     }
-
-export type ManageAaveTransactionEvents =
   | {
-      type: 'TRANSACTION_PARAMETERS_RECEIVED'
+      type: 'ADJUSTING_PARAMETERS_RECEIVED'
       parameters: OperationParameters
       estimatedGasPrice: HasGasEstimation
     }
-  | {
-      readonly type: 'TRANSACTION_PARAMETERS_CHANGED'
-      readonly amount: BigNumber
-      readonly multiply: number
-      readonly token: string
-    }
-
-export type ManageAaveEvent = ManageAaveMachineEvents | ManageAaveTransactionEvents
 
 export const createManageAaveStateMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
@@ -128,15 +120,25 @@ export const createManageAaveStateMachine =
             SET_BALANCE: {
               actions: 'setTokenBalanceFromEvent',
             },
-            NEXT_STEP: {
-              target: 'reviewing',
-            },
             CLOSE_POSITION: {
               target: 'reviewingClosing',
             },
+            ADJUST_POSITION: {
+              target: 'reviewingAdjusting',
+            },
           },
         },
-        reviewing: {},
+        reviewingAdjusting: {
+          on: {
+            BACK_TO_EDITING: {
+              target: 'editing',
+            },
+            START_TRANSACTION: {
+              cond: 'validTransactionParameters',
+              target: 'txInProgress',
+            },
+          },
+        },
         txInProgress: {
           entry: ['spawnTransactionMachine', 'startTransaction'],
           on: {
@@ -148,7 +150,7 @@ export const createManageAaveStateMachine =
         txFailure: {
           on: {
             RETRY: {
-              target: 'reviewing',
+              target: 'editing',
             },
           },
         },
@@ -164,7 +166,7 @@ export const createManageAaveStateMachine =
             CLOSING_PARAMETERS_RECEIVED: {
               actions: 'assignTransactionParameters',
             },
-            NEXT_STEP: {
+            START_TRANSACTION: {
               cond: 'validTransactionParameters',
               target: 'txInProgress',
             },
