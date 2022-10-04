@@ -55,14 +55,14 @@ function getEditVaultLinkHash(type: NotificationTypes) {
 
 export type NotificationCardProps = {
   title: ReactNode
-  editHandler: (id: number) => void
-  markReadHandler: (id: number) => void
+  editHandler: (id: string) => void
+  markReadHandler: (id: string) => void
 } & Notification
 
 export function NotificationCard({
   id,
   title,
-  lastModified,
+  timestamp,
   notificationType,
   isRead,
   editHandler,
@@ -86,7 +86,7 @@ export function NotificationCard({
     day: 'numeric',
   }
 
-  const humanDate = new Date(lastModified).toLocaleDateString('en-US', options)
+  const humanDate = new Date(parseInt(timestamp, 10)).toLocaleDateString('en-US', options)
 
   return (
     <Card

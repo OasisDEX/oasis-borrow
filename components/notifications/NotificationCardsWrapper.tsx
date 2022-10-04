@@ -15,18 +15,18 @@ export function NotificationCardsWrapper({ account }: NotificationCardsWrapperPr
   const { socket } = useNotificationSocket()
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
-  const validNotifications = notificationsState.allNotifications.filter(
-    (item) => item.notificationType in NotificationTypes,
-  )
+  const validNotifications = notificationsState.allNotifications
+    .filter((item) => item.notificationType in NotificationTypes)
+    .sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1))
 
-  function markReadHandler(notificationId: number) {
+  function markReadHandler(notificationId: string) {
     socket?.emit('markread', {
       address: account,
       notificationId,
     })
   }
 
-  function editHandler(notificationId: number) {
+  function editHandler(notificationId: string) {
     markReadHandler(notificationId)
     socket?.emit('markread', {
       address: account,
@@ -44,7 +44,7 @@ export function NotificationCardsWrapper({ account }: NotificationCardsWrapperPr
               {...item}
               title={getNotificationTitle({
                 type: item.notificationType,
-                lastModified: item.lastModified,
+                timestamp: item.timestamp,
                 additionalData: item.additionalData,
               })}
               markReadHandler={markReadHandler}
