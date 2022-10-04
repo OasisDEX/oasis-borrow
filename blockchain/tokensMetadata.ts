@@ -638,21 +638,37 @@ export const tokens = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.gif'),
     tags: ['lp-token'],
   },
+  {
+    symbol: 'AAVE-STETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'stETH/ETH',
+    icon: 'aave_steth_eth',
+    iconCircle: 'aave_steth_eth',
+    iconColor: 'aave_steth_eth',
+    color: '#E2F7F9',
+    background: 'linear-gradient(160.47deg, #E2F7F9 0.35%, #D3F3F5 99.18%), #000000',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.gif'),
+    tags: [],
+  },
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
 export const tokensBySymbol = keyBy(tokens, 'symbol')
 
-type SymbolType = ElementOf<typeof tokens>['symbol']
+export type TokenSymbolType = ElementOf<typeof tokens>['symbol']
+export type TokenMetadataType = typeof tokens[number]
 
-export function getToken(tokenSymbol: SymbolType): typeof tokens[number] {
+export function getToken(tokenSymbol: TokenSymbolType): TokenMetadataType {
   if (!tokensBySymbol[tokenSymbol]) {
     throw new Error(`No meta information for token: ${tokenSymbol}`)
   }
   return tokensBySymbol[tokenSymbol]
 }
 
-export function getTokens(tokenSymbol: SymbolType[]): typeof tokens {
+export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
   if (tokenSymbol instanceof Array) {
     return tokenSymbol.map(getToken)
   }

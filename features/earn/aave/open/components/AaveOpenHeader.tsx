@@ -6,6 +6,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ActorRefFrom } from 'xstate'
@@ -39,7 +40,7 @@ export function AaveOpenHeader({
   const [simulationState] = useActor(simulationActor)
 
   const { context: simulationContext } = simulationState
-  const maximumMultiple = new BigNumber(1).div(aaveReserveState.ltv)
+  const maximumMultiple = one.div(one.minus(aaveReserveState.ltv))
 
   const headlineDetails = []
   if (simulationContext.yields) {
@@ -111,9 +112,9 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
     return state.context.refSimulationMachine
   })
 
-  const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
+  const { aaveTotalValueLocked$, aaveReserveConfigurationData } = useAaveContext()
   const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveStEthData$)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
 
   return (
     <WithErrorHandler error={[tvlStateError, aaveReserveStateError]}>
