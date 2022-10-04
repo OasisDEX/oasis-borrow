@@ -442,6 +442,7 @@ const LINKS = {
   multiply: `/multiply`,
   borrow: `/borrow`,
   earn: '/earn',
+  discovery: '/discovery/high-risk-positions',
 }
 
 function ConnectedHeader() {
@@ -456,7 +457,7 @@ function ConnectedHeader() {
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
   return (
-    <React.Fragment>
+    <>
       {!onMobile ? (
         <BasicHeader
           sx={{
@@ -466,16 +467,36 @@ function ConnectedHeader() {
           }}
           variant="appContainer"
         >
-          <>
-            <Flex
+          <Flex
+            sx={{
+              alignItems: 'center',
+              justifyContent: ['space-between', 'flex-start'],
+              width: ['100%', 'auto'],
+            }}
+          >
+            <Logo />
+            <Grid
+              as="ul"
               sx={{
-                alignItems: 'center',
-                justifyContent: ['space-between', 'flex-start'],
-                width: ['100%', 'auto'],
+                gridAutoFlow: 'column',
+                columnGap: '48px',
+                ml: '48px',
+                p: 0,
+                listStyle: 'none',
               }}
             >
-              <Logo />
-              <Flex sx={{ ml: 5, zIndex: 1 }}>
+              <HeaderLink label={t('nav.products')}>
+                <HeaderList
+                  links={[
+                    { label: t('nav.multiply'), href: LINKS.multiply },
+                    { label: t('nav.borrow'), href: LINKS.borrow },
+                    { label: t('nav.earn'), href: LINKS.earn },
+                  ]}
+                />
+              </HeaderLink>
+              <HeaderLink label={t('nav.assets')} />
+              <HeaderLink label={t('nav.discovery')} href={LINKS.discovery} />
+              {/* <Box as="li">
                 <AppLink
                   variant="links.navHeader"
                   href={LINKS.multiply}
@@ -486,6 +507,8 @@ function ConnectedHeader() {
                 >
                   {t('nav.multiply')}
                 </AppLink>
+              </Box>
+              <Box as="li">
                 <AppLink
                   variant="links.navHeader"
                   href={LINKS.borrow}
@@ -493,6 +516,8 @@ function ConnectedHeader() {
                 >
                   {t('nav.borrow')}
                 </AppLink>
+              </Box>
+              <Box as="li">
                 <AppLink
                   variant="links.navHeader"
                   href={LINKS.earn}
@@ -500,62 +525,146 @@ function ConnectedHeader() {
                 >
                   {t('nav.earn')}
                 </AppLink>
-                <AssetsDropdown />
-              </Flex>
-            </Flex>
-            <UserDesktopMenu />
-          </>
+              </Box>
+              <AssetsDropdown /> */}
+            </Grid>
+          </Flex>
+          <UserDesktopMenu />
         </BasicHeader>
       ) : (
+        <>a</>
         // Mobile header
-        <Box sx={{ mb: 5 }}>
-          <BasicHeader variant="appContainer">
-            <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Logo />
-            </Flex>
-            <Flex sx={{ flexShrink: 0 }}>
-              <PositionsButton sx={{ mr: 2 }} />
-              <Button
-                variant="menuButtonRound"
-                onClick={() => {
-                  uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
-                    type: 'open',
-                  })
-                }}
+        // <Box sx={{ mb: 5 }}>
+        //   <BasicHeader variant="appContainer">
+        //     <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+        //       <Logo />
+        //     </Flex>
+        //     <Flex sx={{ flexShrink: 0 }}>
+        //       <PositionsButton sx={{ mr: 2 }} />
+        //       <Button
+        //         variant="menuButtonRound"
+        //         onClick={() => {
+        //           uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+        //             type: 'open',
+        //           })
+        //         }}
+        //         sx={{
+        //           mr: 2,
+        //           '&, :focus': {
+        //             outline: widgetOpen ? '1px solid' : null,
+        //             outlineColor: 'primary100',
+        //           },
+        //           color: 'neutral80',
+        //           ':hover': { color: 'primary100' },
+        //         }}
+        //       >
+        //         <Icon
+        //           name="exchange"
+        //           size="auto"
+        //           width="20"
+        //           color={widgetOpen ? 'primary100' : 'inherit'}
+        //         />
+        //       </Button>
+        //       <UniswapWidgetShowHide
+        //         sxWrapper={{
+        //           position: 'fixed',
+        //           top: '50%',
+        //           left: '50%',
+        //           right: 'unset',
+        //           bottom: 'unset',
+        //           transform: 'translateX(-50%) translateY(-50%)',
+        //         }}
+        //       />
+        //       <MobileMenu />
+        //     </Flex>
+        //     <MobileSettings />
+        //   </BasicHeader>
+        // </Box>
+      )}
+    </>
+  )
+}
+
+function HeaderLink({ label, href, children }: { label: string; href?: string } & WithChildren) {
+  const [isMouseOver, setIsMouseOver] = useState<boolean>(false)
+  const itemSx: SxStyleProp = {
+    position: 'relative',
+    display: 'block',
+    fontSize: 2,
+    pr: children ? 3 : 0,
+    color: isMouseOver ? 'primary100' : 'neutral80',
+    fontWeight: 'semiBold',
+    cursor: 'pointer',
+    transition: '200ms color',
+  }
+
+  return (
+    <Box
+      as="li"
+      sx={{ position: 'relative' }}
+      onMouseEnter={() => {
+        setIsMouseOver(true)
+      }}
+      onMouseLeave={() => {
+        setIsMouseOver(false)
+      }}
+    >
+      {href ? (
+        <AppLink href={href} sx={itemSx}>
+          {label}
+        </AppLink>
+      ) : (
+        <>
+          <Text as="span" sx={itemSx}>
+            {label}
+            {children && (
+              <Icon
+                name="caret_down"
+                size="8px"
+                sx={{ position: 'absolute', top: '6px', right: 0 }}
+              />
+            )}
+          </Text>
+          {children && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '100%',
+                left: '-12px',
+                pt: '12px',
+                opacity: isMouseOver ? 1 : 0,
+                transform: isMouseOver ? 'translateY(0)' : 'translateY(-5px)',
+                pointerEvents: isMouseOver ? 'auto' : 'none',
+                transition: 'opacity 200ms, transform 200ms',
+              }}
+            >
+              <Box
                 sx={{
-                  mr: 2,
-                  '&, :focus': {
-                    outline: widgetOpen ? '1px solid' : null,
-                    outlineColor: 'primary100',
-                  },
-                  color: 'neutral80',
-                  ':hover': { color: 'primary100' },
+                  p: '24px',
+                  backgroundColor: 'neutral10',
+                  borderRadius: 'large',
+                  boxShadow: 'buttonMenu',
                 }}
               >
-                <Icon
-                  name="exchange"
-                  size="auto"
-                  width="20"
-                  color={widgetOpen ? 'primary100' : 'inherit'}
-                />
-              </Button>
-              <UniswapWidgetShowHide
-                sxWrapper={{
-                  position: 'fixed',
-                  top: '50%',
-                  left: '50%',
-                  right: 'unset',
-                  bottom: 'unset',
-                  transform: 'translateX(-50%) translateY(-50%)',
-                }}
-              />
-              <MobileMenu />
-            </Flex>
-            <MobileSettings />
-          </BasicHeader>
-        </Box>
+                {children}
+              </Box>
+            </Box>
+          )}
+        </>
       )}
-    </React.Fragment>
+    </Box>
+  )
+}
+
+function HeaderList({ links }: { links: { label: string; href: string }[] } & WithChildren) {
+  return (
+    <Box as="ul" sx={{ p: 0, listStyle: 'none' }}>
+      {links.map(({ label, href }, i) => (
+        <Box as="li" sx={{ mt: i > 0 ? '24px' : 0 }}>
+          <AppLink href={href}>{label}</AppLink>
+        </Box>
+      ))}
+    </Box>
   )
 }
 
