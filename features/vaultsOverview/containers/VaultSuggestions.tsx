@@ -11,7 +11,7 @@ import { Box, Flex, Heading, Text } from 'theme-ui'
 
 import { AppLink } from '../../../components/Links'
 import { ProductCardBorrow } from '../../../components/productCards/ProductCardBorrow'
-import { ProductCardEarn } from '../../../components/productCards/ProductCardEarn'
+import { ProductCardEarnMaker } from '../../../components/productCards/ProductCardEarnMaker'
 import { ProductCardMultiply } from '../../../components/productCards/ProductCardMultiply'
 import { ProductCardsWrapper } from '../../../components/productCards/ProductCardsWrapper'
 import { formatAddress } from '../../../helpers/formatters/format'
@@ -132,7 +132,7 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
             content: (
               <TabContent
                 type="earn"
-                renderProductCard={ProductCardEarn}
+                renderProductCard={ProductCardEarnMaker}
                 productCardsData={productCardsData}
               />
             ),

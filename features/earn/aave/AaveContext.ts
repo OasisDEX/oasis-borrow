@@ -58,7 +58,7 @@ export function setupAaveContext({
 
   const aaveReserveConfigurationData$ = observe(
     once$,
-    connectedContext$,
+    context$,
     getAaveReserveConfigurationData,
     ({ token }) => token,
   )

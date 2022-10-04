@@ -1,10 +1,13 @@
 import { InstiVault } from 'blockchain/instiVault'
+import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
 import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange'
+
+const INITIAL_SELECTED_PRICE_MULTIPLIER = 1.2
 
 export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
   const { uiChanges } = useAppContext()
@@ -16,20 +19,27 @@ export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
   // ŁW dummy initial data
   const isToCollateral = true
   const triggerId = zero
-  const initialSelectedTakeProfitRatio = vault.collateralizationRatio.multipliedBy(100)
+  const initialSelectedPrice = collateralPriceAtRatio({
+    colRatio: vault.collateralizationRatio.times(INITIAL_SELECTED_PRICE_MULTIPLIER),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
+  const initialSelectedColRatio = ratioAtCollateralPrice({
+    lockedCollateral: vault.lockedCollateral,
+    collateralPriceUSD: initialSelectedPrice,
+    vaultDebt: vault.debt,
+  })
+
   useEffect(() => {
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'form-defaults',
-      executionCollRatio: initialSelectedTakeProfitRatio,
+      executionPrice: initialSelectedPrice,
+      executionCollRatio: initialSelectedColRatio,
       toCollateral: isToCollateral,
     })
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'close-type',
       toCollateral: isToCollateral,
-    })
-    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-      type: 'execution-coll-ratio',
-      executionCollRatio: initialSelectedTakeProfitRatio, // why it remains undefined !!!?
     })
   }, [triggerId.toNumber(), collateralizationRatio])
 

@@ -167,6 +167,7 @@ export function OptimizationControl({
                 context={context}
                 balanceInfo={balanceInfo}
                 ethMarketPrice={ethAndTokenPrices['ETH']}
+                tokenMarketPrice={ethAndTokenPrices[vault.token]}
               />
             }
           />

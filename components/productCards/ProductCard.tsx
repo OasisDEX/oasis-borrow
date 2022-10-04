@@ -77,10 +77,11 @@ interface ProductCardBannerProps {
   description: string
 }
 
-export function ProductCardProtocolLink({ ilk }: Partial<ProductCardData>) {
-  const { link, name } = productCardsConfig.descriptionLinks[ilk!] ?? {
-    link: `https://makerburn.com/#/collateral/${ilk}`,
-    ilk,
+// changed "ilk" to "strategyName" cause not everything is an ilk
+export function ProductCardProtocolLink({ ilk: strategyName }: Partial<ProductCardData>) {
+  const { link, name } = productCardsConfig.descriptionLinks[strategyName!] ?? {
+    link: `https://makerburn.com/#/collateral/${strategyName}`,
+    ilk: strategyName,
   }
   return (
     <Box sx={{ paddingRight: '10px' }}>
