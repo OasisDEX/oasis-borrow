@@ -127,11 +127,6 @@ const conf = withBundleAnalyzer(
             destination: '/daiwallet/dashboard',
             permanent: true,
           },
-          {
-            source: '/discovery',
-            destination: '/discovery/high-risk-positions',
-            permanent: true,
-          },
         ]
       },
       async headers() {

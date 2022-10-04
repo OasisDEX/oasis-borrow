@@ -442,14 +442,13 @@ const LINKS = {
   multiply: `/multiply`,
   borrow: `/borrow`,
   earn: '/earn',
-  discovery: '/discovery/high-risk-positions',
+  discovery: '/discovery',
 }
 
 function ConnectedHeader() {
   const { uiChanges } = useAppContext()
-  const { pathname } = useRouter()
-  const { t } = useTranslation()
   const onMobile = useOnMobile()
+
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
@@ -467,132 +466,72 @@ function ConnectedHeader() {
           }}
           variant="appContainer"
         >
-          <Flex
-            sx={{
-              alignItems: 'center',
-              justifyContent: ['space-between', 'flex-start'],
-              width: ['100%', 'auto'],
-            }}
-          >
-            <Logo />
-            <Grid
-              as="ul"
-              sx={{
-                gridAutoFlow: 'column',
-                columnGap: '48px',
-                ml: '48px',
-                p: 0,
-                listStyle: 'none',
-              }}
-            >
-              <HeaderLink label={t('nav.products')}>
-                <HeaderList
-                  links={[
-                    { label: t('nav.multiply'), href: LINKS.multiply },
-                    { label: t('nav.borrow'), href: LINKS.borrow },
-                    { label: t('nav.earn'), href: LINKS.earn },
-                  ]}
-                />
-              </HeaderLink>
-              <HeaderLink label={t('nav.assets')} />
-              <HeaderLink label={t('nav.discovery')} href={LINKS.discovery} />
-              {/* <Box as="li">
-                <AppLink
-                  variant="links.navHeader"
-                  href={LINKS.multiply}
-                  sx={{
-                    mr: 4,
-                    color: navLinkColor(pathname.includes(LINKS.multiply)),
-                  }}
-                >
-                  {t('nav.multiply')}
-                </AppLink>
-              </Box>
-              <Box as="li">
-                <AppLink
-                  variant="links.navHeader"
-                  href={LINKS.borrow}
-                  sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.borrow)) }}
-                >
-                  {t('nav.borrow')}
-                </AppLink>
-              </Box>
-              <Box as="li">
-                <AppLink
-                  variant="links.navHeader"
-                  href={LINKS.earn}
-                  sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
-                >
-                  {t('nav.earn')}
-                </AppLink>
-              </Box>
-              <AssetsDropdown /> */}
-            </Grid>
-          </Flex>
+          <MainNavigation />
           <UserDesktopMenu />
         </BasicHeader>
       ) : (
-        <>a</>
         // Mobile header
-        // <Box sx={{ mb: 5 }}>
-        //   <BasicHeader variant="appContainer">
-        //     <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-        //       <Logo />
-        //     </Flex>
-        //     <Flex sx={{ flexShrink: 0 }}>
-        //       <PositionsButton sx={{ mr: 2 }} />
-        //       <Button
-        //         variant="menuButtonRound"
-        //         onClick={() => {
-        //           uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
-        //             type: 'open',
-        //           })
-        //         }}
-        //         sx={{
-        //           mr: 2,
-        //           '&, :focus': {
-        //             outline: widgetOpen ? '1px solid' : null,
-        //             outlineColor: 'primary100',
-        //           },
-        //           color: 'neutral80',
-        //           ':hover': { color: 'primary100' },
-        //         }}
-        //       >
-        //         <Icon
-        //           name="exchange"
-        //           size="auto"
-        //           width="20"
-        //           color={widgetOpen ? 'primary100' : 'inherit'}
-        //         />
-        //       </Button>
-        //       <UniswapWidgetShowHide
-        //         sxWrapper={{
-        //           position: 'fixed',
-        //           top: '50%',
-        //           left: '50%',
-        //           right: 'unset',
-        //           bottom: 'unset',
-        //           transform: 'translateX(-50%) translateY(-50%)',
-        //         }}
-        //       />
-        //       <MobileMenu />
-        //     </Flex>
-        //     <MobileSettings />
-        //   </BasicHeader>
-        // </Box>
+        <Box sx={{ mb: 5 }}>
+          <BasicHeader variant="appContainer">
+            <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Logo />
+            </Flex>
+            <Flex sx={{ flexShrink: 0 }}>
+              <PositionsButton sx={{ mr: 2 }} />
+              <Button
+                variant="menuButtonRound"
+                onClick={() => {
+                  uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+                    type: 'open',
+                  })
+                }}
+                sx={{
+                  mr: 2,
+                  '&, :focus': {
+                    outline: widgetOpen ? '1px solid' : null,
+                    outlineColor: 'primary100',
+                  },
+                  color: 'neutral80',
+                  ':hover': { color: 'primary100' },
+                }}
+              >
+                <Icon
+                  name="exchange"
+                  size="auto"
+                  width="20"
+                  color={widgetOpen ? 'primary100' : 'inherit'}
+                />
+              </Button>
+              <UniswapWidgetShowHide
+                sxWrapper={{
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  right: 'unset',
+                  bottom: 'unset',
+                  transform: 'translateX(-50%) translateY(-50%)',
+                }}
+              />
+              <MobileMenu />
+            </Flex>
+            <MobileSettings />
+          </BasicHeader>
+        </Box>
       )}
     </>
   )
 }
 
-function HeaderLink({ label, href, children }: { label: string; href?: string } & WithChildren) {
+function HeaderLink({ label, link, children }: { label: string; link?: string } & WithChildren) {
+  const { asPath } = useRouter()
   const [isMouseOver, setIsMouseOver] = useState<boolean>(false)
+  const isActive = link ? asPath.includes(link) : false
   const itemSx: SxStyleProp = {
     position: 'relative',
     display: 'block',
     fontSize: 2,
     pr: children ? 3 : 0,
-    color: isMouseOver ? 'primary100' : 'neutral80',
+    color: isMouseOver || isActive ? 'primary100' : 'neutral80',
     fontWeight: 'semiBold',
     cursor: 'pointer',
     transition: '200ms color',
@@ -609,8 +548,8 @@ function HeaderLink({ label, href, children }: { label: string; href?: string } 
         setIsMouseOver(false)
       }}
     >
-      {href ? (
-        <AppLink href={href} sx={itemSx}>
+      {link ? (
+        <AppLink href={link} sx={itemSx}>
           {label}
         </AppLink>
       ) : (
@@ -621,7 +560,7 @@ function HeaderLink({ label, href, children }: { label: string; href?: string } 
               <Icon
                 name="caret_down"
                 size="8px"
-                sx={{ position: 'absolute', top: '6px', right: 0 }}
+                sx={{ position: 'absolute', top: '7px', right: 0 }}
               />
             )}
           </Text>
@@ -656,12 +595,41 @@ function HeaderLink({ label, href, children }: { label: string; href?: string } 
   )
 }
 
-function HeaderList({ links }: { links: { label: string; href: string }[] } & WithChildren) {
+function HeaderList({
+  links,
+  columns,
+}: {
+  links: { label: string; link: string; icon?: string }[]
+  columns?: number
+}) {
+  const { asPath } = useRouter()
+
   return (
-    <Box as="ul" sx={{ p: 0, listStyle: 'none' }}>
-      {links.map(({ label, href }, i) => (
+    <Box
+      as="ul"
+      sx={{ p: 0, listStyle: 'none', ...(columns && { columnCount: columns, columnGap: '24px' }) }}
+    >
+      {links.map(({ label, link, icon }, i) => (
         <Box as="li" sx={{ mt: i > 0 ? '24px' : 0 }}>
-          <AppLink href={href}>{label}</AppLink>
+          <AppLink
+            href={link}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              color: asPath.includes(link) ? 'primary100' : 'neutral80',
+              fontSize: 3,
+              fontWeight: 'regular',
+              transition: '200ms color',
+              '&:hover': {
+                color: 'primary100',
+              },
+            }}
+          >
+            {icon && <Icon name={icon} size={32} sx={{ mr: 2 }} />}
+            <Text as="span" sx={{ whiteSpace: 'pre' }}>
+              {label}
+            </Text>
+          </AppLink>
         </Box>
       ))}
     </Box>
@@ -797,6 +765,7 @@ function MobileMenu() {
     { labelKey: 'nav.multiply', url: LINKS.multiply },
     { labelKey: 'nav.borrow', url: LINKS.borrow },
     { labelKey: 'nav.earn', url: LINKS.earn },
+    { labelKey: 'nav.discovery', url: LINKS.discovery },
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -907,37 +876,12 @@ function MobileMenu() {
 
 function DisconnectedHeader() {
   const { t } = useTranslation()
-  const { pathname } = useRouter()
 
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
-          <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
-            <Logo />
-            <AppLink
-              variant="links.navHeader"
-              href={LINKS.multiply}
-              sx={{ color: navLinkColor(pathname.includes(LINKS.multiply)) }}
-            >
-              {t('nav.multiply')}
-            </AppLink>
-            <AppLink
-              variant="links.navHeader"
-              href={LINKS.borrow}
-              sx={{ color: navLinkColor(pathname.includes(LINKS.borrow)) }}
-            >
-              {t('nav.borrow')}
-            </AppLink>
-            <AppLink
-              variant="links.navHeader"
-              href={LINKS.earn}
-              sx={{ color: navLinkColor(pathname.includes(LINKS.earn)) }}
-            >
-              {t('nav.earn')}
-            </AppLink>
-            <AssetsDropdown />
-          </Grid>
+          <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
             <AppLink
               variant="buttons.secondary"
@@ -974,6 +918,79 @@ function DisconnectedHeader() {
         </BasicHeader>
       </Box>
     </>
+  )
+}
+
+function MainNavigation() {
+  const { t } = useTranslation()
+
+  const discoverOasisEnabled = useFeatureToggle('DiscoverOasis')
+  const { pathname } = useRouter()
+
+  return (
+    <Flex
+      sx={{
+        alignItems: 'center',
+        justifyContent: ['space-between', 'flex-start'],
+        width: ['100%', 'auto'],
+      }}
+    >
+      <Logo />
+      {!discoverOasisEnabled ? (
+        <Flex sx={{ ml: 5, zIndex: 1 }}>
+          <AppLink
+            variant="links.navHeader"
+            href={LINKS.multiply}
+            sx={{
+              mr: 4,
+              color: navLinkColor(pathname.includes(LINKS.multiply)),
+            }}
+          >
+            {t('nav.multiply')}
+          </AppLink>
+          <AppLink
+            variant="links.navHeader"
+            href={LINKS.borrow}
+            sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.borrow)) }}
+          >
+            {t('nav.borrow')}
+          </AppLink>
+          <AppLink
+            variant="links.navHeader"
+            href={LINKS.earn}
+            sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
+          >
+            {t('nav.earn')}
+          </AppLink>
+          <AssetsDropdown />
+        </Flex>
+      ) : (
+        <Grid
+          as="ul"
+          sx={{
+            gridAutoFlow: 'column',
+            columnGap: ['24px', '24px', '24px', '48px'],
+            mx: ['24px', '24px', '24px', '48px'],
+            p: 0,
+            listStyle: 'none',
+          }}
+        >
+          <HeaderLink label={t('nav.products')}>
+            <HeaderList
+              links={[
+                { label: t('nav.multiply'), link: LINKS.multiply },
+                { label: t('nav.borrow'), link: LINKS.borrow },
+                { label: t('nav.earn'), link: LINKS.earn },
+              ]}
+            />
+          </HeaderLink>
+          <HeaderLink label={t('nav.assets')}>
+            <HeaderList links={LANDING_PILLS} columns={2} />
+          </HeaderLink>
+          <HeaderLink label={t('nav.discovery')} link={LINKS.discovery} />
+        </Grid>
+      )}
+    </Flex>
   )
 }
 
