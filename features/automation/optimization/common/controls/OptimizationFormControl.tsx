@@ -48,12 +48,8 @@ export function OptimizationFormControl({
     autoSellTriggerData,
     constantMultipleTriggerData,
     stopLossTriggerData,
+    autoTakeProfitTriggerData,
   } = useAutomationContext()
-
-  // TODO: TDAutoTakeProfit | to be replaced with data from autoTakeProfitTriggerData from useAutomationContext method
-  const autoTakeProfitTriggerData = {
-    isTriggerEnabled: false,
-  }
 
   const { uiChanges } = useAppContext()
   const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
@@ -135,6 +131,9 @@ export function OptimizationFormControl({
         tokenMarketPrice={tokenMarketPrice}
         vault={vault}
         ethMarketPrice={ethMarketPrice}
+        shouldRemoveAllowance={shouldRemoveAllowance}
+        txHelpers={txHelpers}
+        autoTakeProfitTriggerData={autoTakeProfitTriggerData}
 
       />
     </>
