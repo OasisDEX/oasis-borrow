@@ -10,26 +10,25 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitStatus'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
 import React from 'react'
 
 interface AutoTakeProfitFormControlProps {
   autoBuyTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoTakeProfitActive: boolean
+  tokenMarketPrice: BigNumber
   vault: Vault
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   ethMarketPrice: BigNumber
-
 }
 
 export function AutoTakeProfitFormControl({
   autoBuyTriggerData,
   constantMultipleTriggerData,
   isAutoTakeProfitActive,
+  tokenMarketPrice,
   vault,
   autoTakeProfitTriggerData,
   ethMarketPrice,
@@ -37,15 +36,13 @@ export function AutoTakeProfitFormControl({
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
-  const { closePickerConfig, resetData } = getAutoTakeProfitStatus({ autoTakeProfitState, vault })
-  const { addTxData, textButtonHandlerExtension } = getAutoTakeProfitTxHandlers({
-    vaultData: vault,
-    autoTakeProfitTriggerData,
-    isAddForm: true,
+  const { closePickerConfig, min, max } = getAutoTakeProfitStatus({
+    autoTakeProfitState,
+    tokenMarketPrice,
+    vault,
   })
   return (
-    // TODO: TDAutoTakeProfit | should be used with AddAndRemoveTriggerControl as a wrapper when
-    // there is enough data
+    // TODO: TDAutoTakeProfit | should be used with AddAndRemoveTriggerControl as a wrapper when there is enough data
     <AddAndRemoveTriggerControl
       addTxData={addTxData}
       textButtonHandlerExtension={textButtonHandlerExtension}
@@ -71,6 +68,8 @@ export function AutoTakeProfitFormControl({
           vault={vault}
           closePickerConfig={closePickerConfig}
           autoTakeProfitState={autoTakeProfitState}
+          min={min}
+          max={max}
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
         />
