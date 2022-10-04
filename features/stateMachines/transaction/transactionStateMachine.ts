@@ -81,11 +81,6 @@ export function createTransactionStateMachine<T extends TxMeta>(transactionDef: 
     },
     {
       actions: {
-        assignParameters: assign((context, event) => {
-          return {
-            transactionParameters: event.parameters,
-          }
-        }),
         assignTxHash: assign((context, event) => {
           return {
             txHash: event.txHash,

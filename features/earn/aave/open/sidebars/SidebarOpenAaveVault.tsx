@@ -205,9 +205,16 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
 
   const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
 
-  const liquidationPenalty = formatPercent(state.context.strategyInfo?.liquidationBonus || zero, {
-    precision: 2,
-  })
+  console.log(
+    `state.context.strategyInfo?.liquidationBonus ${state.context.strategyInfo?.liquidationBonus}`,
+  )
+
+  const liquidationPenalty = formatPercent(
+    (state.context.strategyInfo?.liquidationBonus || zero).times(100),
+    {
+      precision: 2,
+    },
+  )
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
