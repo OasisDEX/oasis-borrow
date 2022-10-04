@@ -1808,6 +1808,14 @@
         }
     },
     "open-earn": {
+        "product-header": {
+          "token-pair-list": {
+            "aave-steth-eth": "AAVE stETH yield multiple"
+          },
+          "current-yield": "Current yield",
+          "90-day-avg-yield": "90 Day Avg",
+          "total-value-locked": "Total value locked"
+        },
         "aave": {
             "vault-form": {
                 "title": "设置 Earn 策略",
@@ -1818,11 +1826,13 @@
                 "go-to-position": "前往仓位",
                 "configure-multiple": {
                     "title": "设置风险等级",
-                    "liquidation-price": "stETH/ETH 清算价格",
-                    "steth-eth-historial-ratio": "stETH / ETH 历史比率",
+                    "liquidation-price": "{{collateralToken}}/{{debtToken}} 清算价格",
+                    "historical-ratio": "{{collateralToken}} / {{debtToken}} 历史比率",
                     "back-to-enter-eth": "回到进入 ETH",
                     "increase-risk": "增加风险",
-                    "decrease-risk": "降低风险"
+                    "decrease-risk": "降低风险",
+                    "vault-message-ok": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position is unlikely to be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}",
+                    "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}"
                 }
             }
         }
