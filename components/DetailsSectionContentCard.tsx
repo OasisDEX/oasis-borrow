@@ -28,6 +28,7 @@ export interface ContentCardProps {
   footnote?: string
   link?: DetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
+  customBackground?: string
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
@@ -109,8 +110,10 @@ export function DetailsSectionContentCard({
   unit,
   change,
   footnote,
+  footnoteLink = false,
   link,
   modal,
+  customBackground = '',
 }: ContentCardProps) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
@@ -120,7 +123,6 @@ export function DetailsSectionContentCard({
   const hightlightableItemEvents = {
     onMouseEnter: () => setIsHighlighted(true),
     onMouseLeave: () => setIsHighlighted(false),
-    onClick: modalHandler,
   }
 
   return (
@@ -130,7 +132,11 @@ export function DetailsSectionContentCard({
         alignItems: 'flex-start',
         p: '12px',
         borderRadius: 'medium',
-        backgroundColor: modal && isHighlighted ? 'neutral30' : 'neutral10',
+        backgroundColor: !customBackground
+          ? modal && isHighlighted
+            ? 'neutral30'
+            : 'neutral10'
+          : customBackground,
         transition: 'background-color 200ms',
         wordWrap: 'break-word',
       }}
@@ -140,6 +146,7 @@ export function DetailsSectionContentCard({
         variant="paragraph4"
         color="neutral80"
         sx={{ cursor: modal ? 'pointer' : 'auto' }}
+        onClick={modalHandler}
         {...hightlightableItemEvents}
       >
         {title}
@@ -157,7 +164,7 @@ export function DetailsSectionContentCard({
       <Text
         as="p"
         variant="header3"
-        sx={{ maxWidth: '100%', lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
+        sx={{ maxWidth: '100%', lineHeight: 'loose' }}
         {...hightlightableItemEvents}
       >
         {value || '-'}
@@ -168,10 +175,7 @@ export function DetailsSectionContentCard({
         )}
       </Text>
       {change && (
-        <Box
-          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }}
-          {...hightlightableItemEvents}
-        >
+        <Box sx={{ maxWidth: '100%', pt: 2 }} {...hightlightableItemEvents}>
           <DetailsSectionContentCardChangePill {...change} />
         </Box>
       )}
@@ -179,7 +183,7 @@ export function DetailsSectionContentCard({
         <Text
           as="p"
           variant="paragraph4"
-          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto', fontSize: '12px' }}
+          sx={{ maxWidth: '100%', pt: 2, fontSize: '12px' }}
           {...hightlightableItemEvents}
         >
           {footnote}
