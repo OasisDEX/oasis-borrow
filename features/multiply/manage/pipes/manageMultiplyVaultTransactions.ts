@@ -666,6 +666,7 @@ export function applyEstimateGas(
     */
     const isGnosisSafeWallet = context.connectionKind === 'gnosisSafe'
     const GNOSIS_GAS_ESTIMATE = undefined
+    if (isGnosisSafeWallet) return GNOSIS_GAS_ESTIMATE
 
     if (proxyAddress) {
       if (requiredCollRatio) {
@@ -714,9 +715,7 @@ export function applyEstimateGas(
           const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
             closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
-          return isGnosisSafeWallet
-            ? GNOSIS_GAS_ESTIMATE
-            : estimateGas(closeVaultCall, {
+          return estimateGas(closeVaultCall, {
                 kind: TxMetaKind.closeVault,
                 closeTo: closeVaultTo!,
                 token,
@@ -749,9 +748,7 @@ export function applyEstimateGas(
               },
             )
           } else {
-            return isGnosisSafeWallet
-              ? GNOSIS_GAS_ESTIMATE
-              : estimateGas(
+            return estimateGas(
                   vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
                   {
                     kind: TxMetaKind.withdrawAndPayback,
