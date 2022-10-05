@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
+import { amountToWei } from '../../blockchain/utils'
 import { oneInchCallMock } from '../../helpers/swap'
 
 export interface ActionCall {
@@ -99,7 +100,7 @@ export async function getCloseAaveParameters(
 
   const strategyReturn = await strategy.aave.closeStEth(
     {
-      stEthAmountLockedInAave: stEthValueLocked,
+      stEthAmountLockedInAave: amountToWei(stEthValueLocked, 'ETH'),
       slippage: slippage,
     },
     {

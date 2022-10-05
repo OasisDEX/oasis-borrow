@@ -93,7 +93,7 @@ export const createClosePositionParametersStateMachine = createMachine(
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: ['assignReceivedParameters'],
+            actions: ['assignReceivedParameters', 'notifyParent'],
           },
         },
       },

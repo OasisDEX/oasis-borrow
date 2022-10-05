@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import React from 'react'
 import { Box } from 'theme-ui'
 
 import { DetailsSection } from '../../../../../components/DetailsSection'
