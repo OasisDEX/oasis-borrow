@@ -1810,11 +1810,11 @@
     "open-earn": {
         "product-header": {
           "token-pair-list": {
-            "aave-steth-eth": "AAVE stETH yield multiple"
+            "aave-steth-eth": "AAVE stETH 质押杠杆"
           },
-          "current-yield": "Current yield",
-          "90-day-avg-yield": "90 Day Avg",
-          "total-value-locked": "Total value locked"
+          "current-yield": "当前收益率",
+          "90-day-avg-yield": "90 天平均收益率",
+          "total-value-locked": "总质押价值"
         },
         "aave": {
             "vault-form": {
@@ -1831,8 +1831,8 @@
                     "back-to-enter-eth": "回到进入 ETH",
                     "increase-risk": "增加风险",
                     "decrease-risk": "降低风险",
-                    "vault-message-ok": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position is unlikely to be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}",
-                    "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}"
+                    "vault-message-ok": "在你选择的风险等级下，如果 {{collateralToken}} 的价格相对于 {{debtToken}} 移动 {{priceMovement}}，则此 Earn 仓位有可能被清算。AAVE 的最低清算罚金为 {{liquidationPenalty}}",
+                    "vault-message-warning": "在你选择的风险等级下，如果 {{collateralToken}} 的价格相对于 {{debtToken}} 移动 {{priceMovement}}，则此 Earn 仓位会被清算。AAVE 的最低清算罚金为 {{liquidationPenalty}}"
                 }
             }
         }
