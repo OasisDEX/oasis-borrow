@@ -122,6 +122,7 @@ export function DetailsSectionContentCard({
   const hightlightableItemEvents = {
     onMouseEnter: () => setIsHighlighted(true),
     onMouseLeave: () => setIsHighlighted(false),
+    onClick: modalHandler,
   }
 
   return (
@@ -145,7 +146,6 @@ export function DetailsSectionContentCard({
         variant="paragraph4"
         color="neutral80"
         sx={{ cursor: modal ? 'pointer' : 'auto' }}
-        onClick={modalHandler}
         {...hightlightableItemEvents}
       >
         {title}
