@@ -141,6 +141,17 @@
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
+  "discovery": {
+    "heading": "Discover Oasis.app",
+    "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
+    "intro-link": "Learn more about Discover",
+    "navigation": {
+      "high-risk-positions": "High-Risk Positions",
+      "highest-multiply-pnl": "Highest Multiply P&L",
+      "most-yield-earned": "Most Yield Earned",
+      "largest-debt": "Largest Debt"
+    }
+  },
   "earning": "Earning",
   "edit-token-allowance": "Edit {{token}} allowance",
   "edit-vault-details": "Edit Vault details",
@@ -578,7 +589,8 @@
     "cookie": "Cookie Policy",
     "bug-bounty": "Bug Bounty",
     "brand-assets": "Brand assets",
-    "security": "Security"
+    "security": "Security",
+    "discovery": "Discovery"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -670,6 +682,10 @@
     "security": {
       "title": "Security",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
+    },
+    "discovery": {
+      "title": "Discover Oasis.app",
+      "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
