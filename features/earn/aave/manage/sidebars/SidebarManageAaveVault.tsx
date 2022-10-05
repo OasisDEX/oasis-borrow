@@ -182,7 +182,7 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
     primaryButton: {
       isLoading: false,
       disabled: true,
-      label: t('manage-earn.aave.vault-form.adjust_risk'),
+      label: t('manage-earn.aave.vault-form.adjust-risk'),
       action: () => {
         send('ADJUST_POSITION')
       },

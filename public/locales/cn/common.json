@@ -1795,7 +1795,7 @@
     "manage-earn": {
         "aave": {
             "vault-form": {
-              "adjust_risk": "Adjust Risk",
+              "adjust-risk": "Adjust Risk",
 
               "deposit": "存入 ETH",
                 "title": "你的 Earn 仓位",
