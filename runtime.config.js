@@ -4,6 +4,7 @@ const publicRuntimeConfig = {
   buildDate: Date.now(),
   apiHost: process.env.API_HOST,
   notificationsHost: process.env.NOTIFICATIONS_HOST,
+  notificationsHostGoerli: process.env.NOTIFICATIONS_HOST_GOERLI,
   basePath: process.env.APP_FULL_DOMAIN,
   mixpanelEnv: process.env.MIXPANEL_ENV,
   mixpanelAPIKey: process.env.MIXPANEL_KEY,

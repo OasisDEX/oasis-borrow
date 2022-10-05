@@ -250,7 +250,10 @@ export function HomepageView() {
                   }
                   cards={
                     <MultiplyProductCardsContainer
-                      ilks={productCardsConfig.landing.featuredCards['multiply']}
+                      strategies={{
+                        maker: productCardsConfig.landing.featuredIlkCards['multiply'],
+                        aave: [],
+                      }}
                     />
                   }
                 />
@@ -271,7 +274,10 @@ export function HomepageView() {
                   }
                   cards={
                     <BorrowProductCardsContainer
-                      ilks={productCardsConfig.landing.featuredCards['borrow']}
+                      strategies={{
+                        maker: productCardsConfig.landing.featuredIlkCards['borrow'],
+                        aave: [],
+                      }}
                     />
                   }
                 />
@@ -293,7 +299,10 @@ export function HomepageView() {
                   }
                   cards={
                     <EarnProductCardsContainer
-                      ilks={productCardsConfig.landing.featuredCards['earn']}
+                      strategies={{
+                        maker: productCardsConfig.landing.featuredIlkCards['earn'],
+                        aave: productCardsConfig.landing.featuredAaveCards['earn'],
+                      }}
                     />
                   }
                 />

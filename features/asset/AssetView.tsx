@@ -22,7 +22,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       value: 'borrow',
       content: (
         <Box sx={{ mt: 5 }}>
-          <BorrowProductCardsContainer ilks={content.borrowIlks} />
+          <BorrowProductCardsContainer strategies={{ maker: content.borrowIlks, aave: [] }} />
         </Box>
       ),
     }
@@ -32,7 +32,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       value: 'multiply',
       content: (
         <Box sx={{ mt: 5 }}>
-          <MultiplyProductCardsContainer ilks={content.multiplyIlks} />
+          <MultiplyProductCardsContainer strategies={{ maker: content.multiplyIlks, aave: [] }} />
         </Box>
       ),
     }
@@ -42,7 +42,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       value: 'earn',
       content: (
         <Box sx={{ mt: 5 }}>
-          <EarnProductCardsContainer ilks={content.earnIlks} />
+          <EarnProductCardsContainer strategies={{ maker: content.earnIlks, aave: [] }} />
         </Box>
       ),
     }

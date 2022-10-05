@@ -159,3 +159,19 @@ export function collateralPriceAtRatio({
     ? zero
     : vaultDebt.times(colRatio).div(collateral)
 }
+
+type RatioAtCollateralPriceArgs = {
+  lockedCollateral: BigNumber
+  collateralPriceUSD: BigNumber
+  vaultDebt: BigNumber
+}
+
+export function ratioAtCollateralPrice({
+  lockedCollateral,
+  collateralPriceUSD,
+  vaultDebt,
+}: RatioAtCollateralPriceArgs): BigNumber {
+  return lockedCollateral.isZero() || collateralPriceUSD.isZero()
+    ? zero
+    : lockedCollateral.times(collateralPriceUSD).div(vaultDebt).times(100)
+}

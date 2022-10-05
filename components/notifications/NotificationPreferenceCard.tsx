@@ -1,7 +1,7 @@
 import { Toggle } from 'components/Toggle'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
-import { Box, Card, Flex, Text } from 'theme-ui'
+import { Card, Flex, Text } from 'theme-ui'
 
 interface NotificationPrefrenceCardProps {
   heading: string
@@ -26,45 +26,35 @@ export function NotificationPreferenceCard({
 
   return (
     <Card
+      as="li"
       sx={{
+        p: 2,
+        listStyle: 'none',
         border: 'none',
-        padding: 2,
-        mt: 3,
       }}
     >
-      <Flex>
+      <Flex as="h3">
         <Text
+          as="span"
+          variant="boldParagraph3"
           sx={{
-            fontWeight: 'heading',
             marginRight: 'auto',
-            fontSize: 2,
           }}
         >
           {t(heading)}
         </Text>
-        <Toggle
-          isChecked={checked}
-          onChange={handleToggle}
-          isLoading={isLoading}
-          sx={{
-            transition: '0.4s',
-          }}
-        />
+        <Toggle isChecked={checked} onChange={handleToggle} isLoading={isLoading} />
       </Flex>
-      <Box
+      <Text
+        as="p"
         sx={{
-          pr: '40px',
+          pr: 5,
+          color: 'neutral80',
+          fontSize: 2,
         }}
       >
-        <Text
-          sx={{
-            color: 'neutral80',
-            fontSize: 2,
-          }}
-        >
-          {t(description)}
-        </Text>
-      </Box>
+        {t(description)}
+      </Text>
     </Card>
   )
 }
