@@ -5,18 +5,15 @@ import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 // import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationFeatures } from 'features/automation/common/types'
+import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
-import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -36,8 +33,9 @@ interface SidebarSetupAutoTakeProfitProps {
   min: BigNumber
   vault: Vault
   closePickerConfig: PickCloseStateProps
-  txHandler: ({ callOnSuccess }: { callOnSuccess?: () => void }) => void
+  txHandler: () => void
   textButtonHandler: () => void
+  stage: SidebarAutomationStages
 }
 // TODO ŁW Slider config
 export function SidebarSetupAutoTakeProfit({
@@ -51,11 +49,11 @@ export function SidebarSetupAutoTakeProfit({
   vault,
   closePickerConfig,
   txHandler,
+  stage,
 }: // textButtonHandler,
 SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-  const [, setHash] = useHash()
 
   // TODO: TDAutoTakeProfit | replace with sidebarTitle method when data is available
   const sidebarTitle = t(sidebarAutomationFeatureCopyMap[feature])
@@ -134,17 +132,8 @@ SidebarSetupAutoTakeProfitProps) {
       primaryButton: {
         label: primaryButtonLabel,
         disabled: false,
-        isLoading: false, //stage === 'txInProgress',
-        action: () =>
-          txHandler({
-            callOnSuccess: () => {
-              uiChanges.publish(TAB_CHANGE_SUBJECT, {
-                type: 'change-tab',
-                currentMode: VaultViewMode.Overview,
-              })
-              setHash(VaultViewMode.Overview)
-            },
-          }),
+        isLoading: stage === 'txInProgress',
+        action: () => txHandler(),
         // TODO ŁW
         // ...(stage !== 'txInProgress' && {
         //   textButton: {

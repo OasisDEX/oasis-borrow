@@ -7,22 +7,23 @@ import {
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
+import { zero } from 'helpers/zero'
 
 export interface AutoTakeProfitTriggerData {
-  isTriggerEnabled: any
-  // uint256 cdpId;
-  // uint16 triggerType;
+  isTriggerEnabled: boolean
   executionPrice: BigNumber
   maxBaseFeeInGwei: BigNumber
   isToCollateral: boolean
   triggerId: BigNumber
 }
 
-export const defaultAutoTakeProfitData = {
-  executionPrice: new BigNumber(0),
-  maxBaseFeeInGwei: new BigNumber(0),
+export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
+  executionPrice: zero,
+  maxBaseFeeInGwei: zero,
   isToCollateral: false,
-} as AutoTakeProfitTriggerData
+  isTriggerEnabled: false,
+  triggerId: zero,
+}
 
 export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTriggerData {
   if (data.triggers && data.triggers.length > 0) {

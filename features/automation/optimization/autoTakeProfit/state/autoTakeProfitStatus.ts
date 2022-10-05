@@ -6,7 +6,11 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 
-import { AUTO_TAKE_PROFIT_FORM_CHANGE, AutoTakeProfitFormChange } from './autoTakeProfitFormChange'
+import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+  AutoTakeProfitResetData,
+} from './autoTakeProfitFormChange'
 
 interface GetAutoTakeProfitStatusParams {
   // TODO ŁW
@@ -24,7 +28,7 @@ interface AutoTakeProfitStatus {
   closePickerConfig: PickCloseStateProps
   min: BigNumber
   max: BigNumber
-  resetData: any
+  resetData: AutoTakeProfitResetData
 }
 
 const MIN_MULTIPLIER = 1.05
@@ -56,7 +60,7 @@ export function getAutoTakeProfitStatus({
     ? tokenAth.times(MAX_MULTIPLIER_WITH_ATH)
     : tokenMarketPrice.times(MAX_MULTIPLIER_WITH_PRICE)
 
-  const resetData = {
+  const resetData: AutoTakeProfitResetData = {
     toCollateral: autoTakeProfitState.toCollateral, //TODO use triggerData l8r
     executionPrice: autoTakeProfitState.executionPrice, // change to initialSelectedPrice?
     executionCollRatio: autoTakeProfitState.executionCollRatio,

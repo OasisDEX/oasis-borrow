@@ -15,7 +15,7 @@ import { useMemo } from 'react'
 
 interface GetAutoTakeProfitTxHandlersParams {
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  vaultData: Vault
+  vault: Vault
   isAddForm: boolean
   autoTakeProfitState: AutoTakeProfitFormChange
 }
@@ -27,7 +27,7 @@ interface AutoTakeProfitTxHandlers {
 }
 
 export function getAutoTakeProfitTxHandlers({
-  vaultData,
+  vault,
   autoTakeProfitTriggerData,
   isAddForm,
   autoTakeProfitState,
@@ -37,7 +37,7 @@ export function getAutoTakeProfitTxHandlers({
   const addTxData = useMemo(
     () =>
       prepareAddAutoTakeProfitTriggerData(
-        vaultData,
+        vault,
         autoTakeProfitTriggerData.executionPrice,
         autoTakeProfitTriggerData.maxBaseFeeInGwei,
         autoTakeProfitTriggerData.isToCollateral,
@@ -56,7 +56,7 @@ export function getAutoTakeProfitTxHandlers({
     if (isAddForm) {
       uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
         type: 'execution-price',
-        executionPrice: zero, // TODO ŁW not sure if 0s make sense like in sl
+        executionPrice: zero,
         executionCollRatio: zero,
       })
     }

@@ -89,7 +89,6 @@ export function OptimizationFormControl({
         currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
       })
     }
-    // TODO ŁW: add autoTakeProfit
   }, [])
 
   return (
@@ -134,6 +133,7 @@ export function OptimizationFormControl({
         shouldRemoveAllowance={shouldRemoveAllowance}
         txHelpers={txHelpers}
         autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+        context={context}
       />
     </>
   )
