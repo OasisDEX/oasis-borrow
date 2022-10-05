@@ -7,7 +7,7 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
-import { formatBigNumber, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
@@ -24,6 +24,10 @@ const mockData = {
   APYtotal: new BigNumber(8.3),
   APYtoDate: new BigNumber(2.2),
   liquidationPriceRatio: new BigNumber(0.75),
+  totalCollateral: new BigNumber(224987.69),
+  totalCollateralToken: 'STETH',
+  positionETHDebt: new BigNumber(4447684),
+  variableAnnualFee: new BigNumber(0.05),
 }
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
@@ -72,12 +76,12 @@ export function ManageSectionComponent() {
             modal={<div>Explanation of the thing, probably</div>}
           />
           <DetailsSectionContentCard
-            title="Liquidation price ratio"
+            title={t('manage-earn-vault.liquidation-price-ratio')}
             value={mockData.liquidationPriceRatio.toFormat(2)}
             modal={<div>Explanation of the thing, probably</div>}
             customBackground={getLiquidationPriceRatioColor(mockData.liquidationPriceRatio)}
             link={{
-              label: 'Ratio history',
+              label: t('manage-earn-vault.ratio-history'),
               url: 'https://dune.com/dataalways/stETH-De-Peg', // should we move this url to a file? an env?
             }}
           />
@@ -85,9 +89,20 @@ export function ManageSectionComponent() {
       }
       footer={
         <DetailsSectionFooterItemWrapper>
-          <DetailsSectionFooterItem title="Total collateral" value="224,987.69 stETH" />
-          <DetailsSectionFooterItem title="Position ETH Debt" value="44,464,761,3484 ETH" />
-          <DetailsSectionFooterItem title="Variable Annual Fee" value="0.05%" />
+          <DetailsSectionFooterItem
+            title={t('system.total-collateral')}
+            value={`${formatAmount(mockData.totalCollateral, mockData.totalCollateralToken)} ${
+              mockData.totalCollateralToken
+            }`}
+          />
+          <DetailsSectionFooterItem
+            title={t('manage-earn-vault.position-eth-debt')}
+            value={`${formatAmount(mockData.positionETHDebt, mockData.token)} ${mockData.token}`}
+          />
+          <DetailsSectionFooterItem
+            title={t('system.variable-annual-fee')}
+            value={`${formatPercent(mockData.variableAnnualFee, { precision: 2 })}`}
+          />
         </DetailsSectionFooterItemWrapper>
       }
     />

@@ -526,7 +526,10 @@
     "net-apy": "Net APY",
     "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
     "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed.",
-    "pnl": "PnL {{value}} {{token}}"
+    "pnl": "PnL {{value}} {{token}}",
+    "ratio-history": "Ratio history",
+    "position-eth-debt": "Position ETH Debt",
+    "liquidation-price-ratio": "Liquidation price ratio"
   },
   "borrow-to-multiply": {
     "checkmark1": "Multiply your exposure on your {{token}}",
