@@ -9,7 +9,8 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { AaveOverviewSectionComponent } from '../components'
+import { AavePositionHeader } from '../../components'
+import { ManageSectionComponent } from '../components/ManageSectionComponent'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { ManageAaveStateMachine } from '../state'
 import { ManageAaveStateMachineContextProvider } from './AaveManageStateMachineContext'
@@ -24,10 +25,11 @@ function AaveManageContainer({
   strategy,
 }: AaveManageViewPositionViewProps & { manageAaveStateMachine: ManageAaveStateMachine }) {
   const { t } = useTranslation()
+
   return (
     <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
       <Container variant="vaultPageContainer">
-        {strategy} [HEADER]
+        <AavePositionHeader strategyName={strategy} noDetails />
         <TabBar
           variant="underline"
           sections={[
@@ -37,7 +39,7 @@ function AaveManageContainer({
               content: (
                 <Grid variant="vaultContainer">
                   <Box>
-                    <AaveOverviewSectionComponent />
+                    <ManageSectionComponent />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>
                 </Grid>
