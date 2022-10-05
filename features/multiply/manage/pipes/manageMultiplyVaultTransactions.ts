@@ -716,21 +716,21 @@ export function applyEstimateGas(
             closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
           return estimateGas(closeVaultCall, {
-                kind: TxMetaKind.closeVault,
-                closeTo: closeVaultTo!,
-                token,
-                ilk,
-                id,
-                exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
-                exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-                userAddress: account!,
-                totalCollateral: lockedCollateral,
-                totalDebt: debt.plus(debtOffset),
-                proxyAddress: proxyAddress!,
-                fromTokenAmount,
-                toTokenAmount,
-                minToTokenAmount,
-              })
+            kind: TxMetaKind.closeVault,
+            closeTo: closeVaultTo!,
+            token,
+            ilk,
+            id,
+            exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
+            exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
+            userAddress: account!,
+            totalCollateral: lockedCollateral,
+            totalDebt: debt.plus(debtOffset),
+            proxyAddress: proxyAddress!,
+            fromTokenAmount,
+            toTokenAmount,
+            minToTokenAmount,
+          })
         } else {
           const isDepositAndGenerate = depositAmount || generateAmount
 
@@ -749,18 +749,18 @@ export function applyEstimateGas(
             )
           } else {
             return estimateGas(
-                  vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
-                  {
-                    kind: TxMetaKind.withdrawAndPayback,
-                    withdrawAmount: withdrawAmount || zero,
-                    paybackAmount: paybackAmount || zero,
-                    proxyAddress: proxyAddress!,
-                    ilk,
-                    token,
-                    id,
-                    shouldPaybackAll,
-                  },
-                )
+              vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
+              {
+                kind: TxMetaKind.withdrawAndPayback,
+                withdrawAmount: withdrawAmount || zero,
+                paybackAmount: paybackAmount || zero,
+                proxyAddress: proxyAddress!,
+                ilk,
+                token,
+                id,
+                shouldPaybackAll,
+              },
+            )
           }
         }
       }
