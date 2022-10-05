@@ -4,13 +4,13 @@ import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
 import { AaveReserveConfigurationData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
+import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { ProxyContext, ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import {
   AaveStEthSimulateStateMachine,
   createOpenAaveStateMachine,
@@ -70,7 +70,7 @@ export function getOpenAavePositionStateMachineServices(
   }
 }
 
-export function contextToTransactionParameters(context: OpenAaveContext): OpenAavePositionData {
+export function contextToTransactionParameters(context: OpenAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
@@ -85,7 +85,7 @@ export function getOpenAaveStateMachine$(
   services: OpenAaveStateMachineServices,
   parametersMachine$: Observable<ParametersStateMachine>,
   proxyMachine$: Observable<ProxyStateMachine>,
-  transactionStateMachine: TransactionStateMachine<OpenAavePositionData>,
+  transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
   simulationMachine: AaveStEthSimulateStateMachine,
 ) {
   return combineLatest(parametersMachine$, proxyMachine$).pipe(

@@ -1,19 +1,24 @@
-import { useMachine } from '@xstate/react'
+import { useActor } from '@xstate/react'
+import { BigNumber } from 'bignumber.js'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
+import { amountFromWei } from '../../../../../blockchain/utils'
+import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
+import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { one, zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
+import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
-import { SidebarManageAaveVaultEditingState } from './SidebarManageAaveVaultEditingState'
 
 export interface ManageAaveVaultProps {
   readonly aaveStateMachine: ManageAaveStateMachine
@@ -25,7 +30,7 @@ interface ManageAaveStateProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function CloseAaveInformationContainer({ state, send }: ManageAaveStateProps) {
+function TransactionInformationContainer({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
   return (
     <VaultChangesInformationContainer title="Total fees">
@@ -62,7 +67,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <CloseAaveInformationContainer state={state} send={send} />
+        <TransactionInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
@@ -86,14 +91,14 @@ function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <CloseAaveInformationContainer state={state} send={send} />
+        <TransactionInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
       isLoading: false,
-      disabled: !state.can('START_CLOSING_POSITION'),
+      disabled: !state.can('START_TRANSACTION'),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
-      action: () => send('START_CLOSING_POSITION'),
+      action: () => send('START_TRANSACTION'),
     },
   }
 
@@ -111,7 +116,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <CloseAaveInformationContainer state={state} send={send} />
+        <TransactionInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
@@ -128,19 +133,58 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
 function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
+  function convertMultipleToColRatio(multiple: BigNumber): BigNumber {
+    return one.div(multiple.minus(one)).plus(one)
+  }
+
+  function convertColRatioToMultiple(colRatio: BigNumber): BigNumber {
+    return convertMultipleToColRatio(colRatio)
+  }
+
+  const liquidationPriceRatio = one
+  const marketStEthEthPrice = amountFromWei(new BigNumber('968102393798180700'), 'ETH')
+  const minColRatio = new BigNumber(5)
+  const minRisk = convertColRatioToMultiple(minColRatio)
+  const maxRisk = state.context.strategyInfo ? state.context.strategyInfo.maxMultiple : zero
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('manage-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <SidebarManageAaveVaultEditingState state={state} send={send} />
+        <SliderValuePicker
+          sliderPercentageFill={new BigNumber(0)}
+          leftBoundry={liquidationPriceRatio}
+          leftBoundryFormatter={(value) => value.toFixed(2)}
+          rightBoundry={marketStEthEthPrice}
+          rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
+          onChange={() => {}}
+          minBoundry={minRisk}
+          maxBoundry={maxRisk}
+          lastValue={new BigNumber(2)}
+          disabled={false}
+          step={0.01}
+          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
+        />
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            color: 'neutral80',
+          }}
+        >
+          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
+          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
+        </Flex>
+        <SidebarResetButton clear={() => {}} />
+        <TransactionInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
       isLoading: false,
       disabled: true,
-      label: t('manage-earn.aave.vault-form.deposit'),
+      label: t('manage-earn.aave.vault-form.adjust-risk'),
       action: () => {
-        send('NEXT_STEP')
+        send('ADJUST_POSITION')
       },
     },
     textButton: {
@@ -148,7 +192,7 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
       disabled: false,
       label: t('manage-earn.aave.vault-form.close'),
       action: () => {
-        send('POSITION_CLOSED')
+        send('CLOSE_POSITION')
       },
     },
   }
@@ -168,25 +212,28 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <CloseAaveInformationContainer state={state} send={send} />
+        <TransactionInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.go-to-position'),
-      url: `/earn/${state.context.strategyName}/${state.context.proxyAddress}`,
+      url: ``,
     },
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarManageAaveVault({ aaveStateMachine }: ManageAaveVaultProps) {
-  const [state, send] = useMachine(aaveStateMachine)
+export function SidebarManageAaveVault() {
+  const { stateMachine } = useManageAaveStateMachineContext()
+  const [state, send] = useActor(stateMachine)
 
   switch (true) {
     case state.matches('editing'):
       return <ManageAaveEditingStateView state={state} send={send} />
-    case state.matches('reviewing'):
+    case state.matches('reviewingClosing'):
+      return <ManageAaveReviewingStateView state={state} send={send} />
+    case state.matches('reviewingAdjusting'):
       return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />

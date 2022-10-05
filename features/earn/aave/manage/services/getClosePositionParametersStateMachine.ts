@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
@@ -7,42 +6,40 @@ import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { one, zero } from '../../../../../helpers/zero'
-import { getOpenAaveParameters } from '../../../../aave'
+import { zero } from '../../../../../helpers/zero'
+import { getCloseAaveParameters } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
-import { createParametersStateMachine, ParametersStateMachineServices } from '../state'
+import {
+  ClosePositionParametersStateMachineServices,
+  createClosePositionParametersStateMachine,
+} from '../state'
 
-export function getOpenAaveParametersStateMachineServices$(
+export function getClosePositionParametersStateMachineServices$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
   userSettings$: Observable<UserSettingsState>,
-): Observable<ParametersStateMachineServices> {
+): Observable<ClosePositionParametersStateMachineServices> {
   return combineLatest(context$, txHelpers$, userSettings$).pipe(
-    first(), // We only need the first one (for an account, per refresh)
+    first(),
     map(([contextConnected, txHelpers, userSettings]) => {
       return {
         getParameters: async (context) => {
           if (!context.proxyAddress) return undefined
-          return await getOpenAaveParameters(
+          return await getCloseAaveParameters(
             contextConnected,
-            context.amount || zero,
-            context.multiply || new BigNumber(2),
+            context.valueLocked || zero,
             userSettings.slippage,
             context.proxyAddress,
           )
         },
         estimateGas: async (context) => {
-          if (context.proxyAddress === undefined || (context.amount || zero) < one) {
-            return 0
-          }
+          if (context.transactionParameters === undefined) return 0
           return await txHelpers
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
               calls: context.transactionParameters!.calls as any,
               operationName: context.transactionParameters!.operationName,
-              token: context.token!,
-              amount: context.amount!,
               proxyAddress: context.proxyAddress!,
             })
             .pipe(first())
@@ -56,14 +53,14 @@ export function getOpenAaveParametersStateMachineServices$(
   )
 }
 
-export function getParametersStateMachine$(services$: Observable<ParametersStateMachineServices>) {
+export function getClosePositionParametersStateMachine$(
+  services$: Observable<ClosePositionParametersStateMachineServices>,
+) {
   return services$.pipe(
     map((services) => {
-      return createParametersStateMachine.withConfig({
+      return createClosePositionParametersStateMachine.withConfig({
         services: {
-          getParameters: services.getParameters,
-          estimateGas: services.estimateGas,
-          estimateGasPrice: services.estimateGasPrice,
+          ...services,
         },
         actions: {
           notifyParent: () => {},

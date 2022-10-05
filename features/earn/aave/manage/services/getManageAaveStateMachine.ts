@@ -1,13 +1,12 @@
-import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
+import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { ParametersStateMachine } from '../../open/state'
-import { ManageAavePositionData } from '../pipelines/manageAavePosition'
 import {
+  ClosePositionParametersStateMachine,
   createManageAaveStateMachine,
   ManageAaveContext,
   ManageAaveEvent,
@@ -15,40 +14,42 @@ import {
   ManageAaveStateMachineServices,
 } from '../state'
 
-function contextToTransactionParameters(context: ManageAaveContext): ManageAavePositionData {
+function contextToTransactionParameters(context: ManageAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
     operationName: context.transactionParameters!.operationName,
     token: context.token,
     proxyAddress: context.proxyAddress!,
-    amount: context.amount!,
   }
 }
 
 export function getManageAaveStateMachine$(
   services: ManageAaveStateMachineServices,
-  parametersMachine$: Observable<ParametersStateMachine>,
-  transactionStateMachine: TransactionStateMachine<ManageAavePositionData>,
+  closePositionParametersStateMachine$: Observable<ClosePositionParametersStateMachine>,
+  transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
+  { token, address, strategy }: { token: string; address: string; strategy: string },
 ): Observable<ManageAaveStateMachine> {
-  return parametersMachine$.pipe(
-    map((parametersMachine) => {
+  return closePositionParametersStateMachine$.pipe(
+    map((closePositionParametersStateMachine) => {
       return createManageAaveStateMachine
         .withConfig({
           services: {
             ...services,
           },
           actions: {
-            spawnParametersMachine: assign((_) => ({
-              refParametersStateMachine: spawn(
-                parametersMachine.withConfig({
+            spawnClosePositionParametersMachine: assign((_) => ({
+              refClosePositionParametersStateMachine: spawn(
+                closePositionParametersStateMachine.withConfig({
                   actions: {
                     notifyParent: sendParent(
-                      (context): ManageAaveEvent => ({
-                        type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                        parameters: context.transactionParameters!,
-                        estimatedGasPrice: context.gasPriceEstimation!,
-                      }),
+                      (context): ManageAaveEvent => {
+                        return {
+                          type: 'CLOSING_PARAMETERS_RECEIVED',
+                          parameters: context.transactionParameters!,
+                          estimatedGasPrice: context.gasPriceEstimation!,
+                        }
+                      },
                     ),
                   },
                 }),
@@ -75,28 +76,13 @@ export function getManageAaveStateMachine$(
                   name: 'transactionMachine',
                 },
               ),
-              refParametersStateMachine: spawn(
-                parametersMachine.withConfig({
-                  actions: {
-                    notifyParent: sendParent(
-                      (context): ManageAaveEvent => ({
-                        type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                        parameters: context.transactionParameters!,
-                        estimatedGasPrice: context.gasPriceEstimation!,
-                      }),
-                    ),
-                  },
-                }),
-                { name: 'parametersMachine' },
-              ),
             })),
           },
         })
         .withContext({
-          token: 'ETH',
-          multiply: new BigNumber(2),
-          inputDelay: 1000,
-          amount: new BigNumber(0),
+          token,
+          address,
+          strategy,
         })
     }),
   )

@@ -8,6 +8,10 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 import { ActorRefFrom, assign, sendParent, spawn } from 'xstate'
 
+import {
+  callOperationExecutor,
+  OperationExecutorTxMeta,
+} from '../../../../../blockchain/calls/operationExecutor'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
@@ -24,7 +28,6 @@ import {
   startTransactionService,
   TransactionStateMachine,
 } from '../../../../stateMachines/transaction'
-import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
 import { contextToTransactionParameters } from '../services'
 import { aaveStEthSimulateStateMachine } from './aaveStEthSimulateStateMachine'
 import { createOpenAaveStateMachine, OpenAaveEvent } from './openAaveStateMachine'
@@ -84,7 +87,7 @@ const mockTxHelpers$ = of({
   sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
 })
 
-const transactionMachine = createTransactionStateMachine(openAavePosition).withConfig({
+const transactionMachine = createTransactionStateMachine(callOperationExecutor).withConfig({
   actions: {
     notifyParent: () => {},
     raiseError: () => {},
@@ -192,7 +195,7 @@ const ParametersView = ({
 const TransactionView = ({
   transactionMachine,
 }: {
-  transactionMachine: ActorRefFrom<TransactionStateMachine<OpenAavePositionData>>
+  transactionMachine: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
 }) => {
   const [state] = useActor(transactionMachine)
 

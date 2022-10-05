@@ -1,3 +1,3 @@
 export * from './getManageAavePositionStateMachineServices'
 export * from './getManageAaveStateMachine'
-export * from './getTransactionMachine'
+export * from './getClosePositionParametersStateMachine'
