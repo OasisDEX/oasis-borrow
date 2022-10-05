@@ -7,8 +7,9 @@ import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
+// import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationFeatures } from 'features/automation/common/types'
+import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
@@ -25,26 +26,32 @@ import {
 interface SidebarSetupAutoTakeProfitProps {
   autoBuyTriggerData: AutoBSTriggerData
   autoTakeProfitState: AutoTakeProfitFormChange
-  closePickerConfig: PickCloseStateProps
   constantMultipleTriggerData: ConstantMultipleTriggerData
   feature: AutomationFeatures
   isAutoTakeProfitActive: boolean
   max: BigNumber
   min: BigNumber
   vault: Vault
+  closePickerConfig: PickCloseStateProps
+  txHandler: () => void
+  textButtonHandler: () => void
+  stage: SidebarAutomationStages
 }
 // TODO ŁW Slider config
 export function SidebarSetupAutoTakeProfit({
   autoBuyTriggerData,
   autoTakeProfitState,
-  closePickerConfig,
   constantMultipleTriggerData,
   feature,
   isAutoTakeProfitActive,
   max,
   min,
   vault,
-}: SidebarSetupAutoTakeProfitProps) {
+  closePickerConfig,
+  txHandler,
+  stage,
+}: // textButtonHandler,
+SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 
@@ -105,6 +112,8 @@ export function SidebarSetupAutoTakeProfit({
 
   // TODO: TDAutoTakeProfit | replace with getAutomationPrimaryButtonLabel method when data is available
   const primaryButtonLabel = 'Temp CTA'
+  // TODO ŁW txt button
+  // const textButtonLabel = getAutomationTextButtonLabel({ isAddForm: true }) // TODO Łw change when middlesteps
 
   if (isAutoTakeProfitActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -122,6 +131,18 @@ export function SidebarSetupAutoTakeProfit({
       ),
       primaryButton: {
         label: primaryButtonLabel,
+        disabled: false,
+        isLoading: stage === 'txInProgress',
+        action: () => txHandler(),
+        // TODO ŁW
+        // ...(stage !== 'txInProgress' && {
+        //   textButton: {
+        //     label: textButtonLabel,
+        //     hidden: true, //isFirstSetup,
+        //     action: () => textButtonHandler(),
+        //   },
+        // }),
+        // status: sidebarStatus,
       },
     }
 

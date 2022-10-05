@@ -1,12 +1,10 @@
+import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { AutomationFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
+import { TxError } from 'helpers/types'
 
 export const AUTO_TAKE_PROFIT_FORM_CHANGE = 'AUTO_TAKE_PROFIT_FORM_CHANGE'
-// TODO ŁW
-// export type AutoTakeProfitResetData = Pick<
-//   AutoTakeProfitFormChange,
-//
-// >
 
 export type AutoTakeProfitFormChangeAction =
   | { type: 'execution-price'; executionPrice: BigNumber; executionCollRatio: BigNumber }
@@ -18,9 +16,15 @@ export type AutoTakeProfitFormChangeAction =
       executionCollRatio: BigNumber
       toCollateral: boolean
     }
-// TODO ŁW
-//   | { type: 'txDetails...'}
-// | {type: 'reset'; resetData: AutoTakeProfitResetData}
+  | {
+      type: 'tx-details'
+      txDetails: {
+        txStatus?: TxStatus
+        txError?: TxError
+        txHash?: string
+        txCost?: BigNumber
+      }
+    }
 
 export function autoTakeProfitFormChangeReducer(
   state: AutoTakeProfitFormChange,
@@ -52,10 +56,14 @@ export function autoTakeProfitFormChangeReducer(
   }
 }
 
-export interface AutoTakeProfitFormChange {
+export type AutoTakeProfitResetData = Pick<
+  AutoTakeProfitFormChange,
+  'executionPrice' | 'executionCollRatio' | 'toCollateral' | 'txDetails'
+>
+
+export type AutoTakeProfitFormChange = AutomationFormChange & {
   executionPrice: BigNumber
   executionCollRatio: BigNumber
   currentForm: AutomationFormType
   toCollateral: boolean
-  // resetData: AutoTakeProfitResetData
 }

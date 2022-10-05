@@ -3,6 +3,7 @@ import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
 } from 'features/automation/common/state/autoBSFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
@@ -54,5 +55,6 @@ export type AutomationPublishType =
   | AutomationBSPublishType
   | typeof CONSTANT_MULTIPLE_FORM_CHANGE
   | typeof STOP_LOSS_FORM_CHANGE
+  | typeof AUTO_TAKE_PROFIT_FORM_CHANGE
 
 export type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
