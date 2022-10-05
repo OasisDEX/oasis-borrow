@@ -595,7 +595,7 @@ export function createManageMultiplyVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                    switchMap(curry(applyEstimateGas)(context, addGasEstimation$)),
                     map(finalValidation),
                     map((state) =>
                       addTransitions(
