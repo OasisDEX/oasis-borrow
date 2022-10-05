@@ -124,6 +124,10 @@ export function DetailsSectionContentCard({
     onMouseLeave: () => setIsHighlighted(false),
     onClick: modalHandler,
   }
+  let cardBackgroundColor = modal && isHighlighted ? 'neutral30' : 'neutral10'
+  if (customBackground) {
+    cardBackgroundColor = customBackground
+  }
 
   return (
     <Flex
@@ -132,11 +136,7 @@ export function DetailsSectionContentCard({
         alignItems: 'flex-start',
         p: '12px',
         borderRadius: 'medium',
-        backgroundColor: !customBackground
-          ? modal && isHighlighted
-            ? 'neutral30'
-            : 'neutral10'
-          : customBackground,
+        backgroundColor: cardBackgroundColor,
         transition: 'background-color 200ms',
         wordWrap: 'break-word',
       }}

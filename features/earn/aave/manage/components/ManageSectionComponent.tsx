@@ -74,9 +74,12 @@ export function ManageSectionComponent() {
           <DetailsSectionContentCard
             title="Liquidation price ratio"
             value={mockData.liquidationPriceRatio.toFormat(2)}
-            footnote="Ratio history >"
             modal={<div>Explanation of the thing, probably</div>}
             customBackground={getLiquidationPriceRatioColor(mockData.liquidationPriceRatio)}
+            link={{
+              label: 'Ratio history',
+              url: 'https://dune.com/dataalways/stETH-De-Peg', // should we move this url to a file? an env?
+            }}
           />
         </DetailsSectionContentCardWrapper>
       }
