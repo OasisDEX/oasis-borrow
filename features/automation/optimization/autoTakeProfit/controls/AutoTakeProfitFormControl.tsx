@@ -26,7 +26,6 @@ interface AutoTakeProfitFormControlProps {
   ethMarketPrice: BigNumber
   shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
-
 }
 
 export function AutoTakeProfitFormControl({
@@ -69,7 +68,7 @@ export function AutoTakeProfitFormControl({
       publishType={AUTO_TAKE_PROFIT_FORM_CHANGE}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
-      stage='editing'//{stage} TODO
+      stage="editing" //{stage} TODO
       triggersId={[0]}
       txHelpers={txHelpers}
     >

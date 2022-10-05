@@ -7,7 +7,10 @@ import {
   defaultAutoBSData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
-import { AutoTakeProfitTriggerData, defaultAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import {
+  AutoTakeProfitTriggerData,
+  defaultAutoTakeProfitData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import {
   ConstantMultipleTriggerData,
   defaultConstantMultipleData,

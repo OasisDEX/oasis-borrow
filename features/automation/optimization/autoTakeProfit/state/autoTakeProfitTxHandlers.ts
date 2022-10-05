@@ -35,21 +35,21 @@ export function getAutoTakeProfitTxHandlers({
   const { uiChanges } = useAppContext()
 
   const addTxData = useMemo(
-    ()=>
-    prepareAddAutoTakeProfitTriggerData(
-    vaultData,
-    autoTakeProfitTriggerData.executionPrice,
-    autoTakeProfitTriggerData.maxBaseFeeInGwei,
-    autoTakeProfitTriggerData.isToCollateral,
-    0,
-    // autoTakeProfitTriggerData.triggerId.toNumber(),
-  ),
-  [
-    autoTakeProfitState.toCollateral,
-    autoTakeProfitState.executionCollRatio,
-    autoTakeProfitState.executionPrice,
-    // autoTakeProfitTriggerData.triggerId.toNumber(),
-  ]
+    () =>
+      prepareAddAutoTakeProfitTriggerData(
+        vaultData,
+        autoTakeProfitTriggerData.executionPrice,
+        autoTakeProfitTriggerData.maxBaseFeeInGwei,
+        autoTakeProfitTriggerData.isToCollateral,
+        0,
+        // autoTakeProfitTriggerData.triggerId.toNumber(),
+      ),
+    [
+      autoTakeProfitState.toCollateral,
+      autoTakeProfitState.executionCollRatio,
+      autoTakeProfitState.executionPrice,
+      // autoTakeProfitTriggerData.triggerId.toNumber(),
+    ],
   )
   // TODO ŁW
   function textButtonHandlerExtension() {

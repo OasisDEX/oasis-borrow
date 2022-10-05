@@ -134,7 +134,6 @@ export function OptimizationFormControl({
         shouldRemoveAllowance={shouldRemoveAllowance}
         txHelpers={txHelpers}
         autoTakeProfitTriggerData={autoTakeProfitTriggerData}
-
       />
     </>
   )

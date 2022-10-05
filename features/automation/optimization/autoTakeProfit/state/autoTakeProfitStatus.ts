@@ -60,7 +60,7 @@ export function getAutoTakeProfitStatus({
     toCollateral: autoTakeProfitState.toCollateral, //TODO use triggerData l8r
     executionPrice: autoTakeProfitState.executionPrice, // change to initialSelectedPrice?
     executionCollRatio: autoTakeProfitState.executionCollRatio,
-    txDetails: {}
+    txDetails: {},
   }
 
   return {

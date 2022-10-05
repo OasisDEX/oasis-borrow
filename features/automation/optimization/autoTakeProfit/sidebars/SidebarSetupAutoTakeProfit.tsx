@@ -51,8 +51,8 @@ export function SidebarSetupAutoTakeProfit({
   vault,
   closePickerConfig,
   txHandler,
-  // textButtonHandler,
-}: SidebarSetupAutoTakeProfitProps) {
+}: // textButtonHandler,
+SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const [, setHash] = useHash()
