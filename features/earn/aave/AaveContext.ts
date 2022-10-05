@@ -3,20 +3,25 @@ import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { GraphQLClient } from 'graphql-request'
+import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
-import { getAaveReserveConfigurationData } from '../../../blockchain/calls/aaveProtocolDataProvider'
+import {
+  getAaveReserveConfigurationData,
+  getAaveUserReserveData,
+} from '../../../blockchain/calls/aaveProtocolDataProvider'
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
 import {
+  getClosePositionParametersStateMachine$,
+  getClosePositionParametersStateMachineServices$,
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine$,
-  getManageAaveTransactionMachine,
 } from './manage/services'
 import {
   getAaveStEthYield,
@@ -26,7 +31,7 @@ import {
   getParametersStateMachine$,
   getSthEthSimulationMachine,
 } from './open/services'
-import { getOpenAaveStateMachine$ } from './open/services/getOpenAaveStateMachine'
+import { getOpenAaveStateMachine$ } from './open/services'
 
 export function setupAaveContext({
   userSettings$,
@@ -58,6 +63,8 @@ export function setupAaveContext({
 
   const aaveReserveConfigurationData$ = observe(once$, context$, getAaveReserveConfigurationData)
 
+  const aaveUserReserveData$ = observe(once$, connectedContext$, getAaveUserReserveData)
+
   const aaveAssetPriceData$ = observe(once$, connectedContext$, getAaveAssetPriceData)
 
   const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
@@ -68,6 +75,16 @@ export function setupAaveContext({
   )
 
   const parametersStateMachine$ = getParametersStateMachine$(parametersStateMachineServices$)
+
+  const closePositionParametersStateMachineServices$ = getClosePositionParametersStateMachineServices$(
+    contextForAddress$,
+    txHelpers$,
+    gasEstimation$,
+    userSettings$,
+  )
+  const closePositionParametersStateMachine$ = getClosePositionParametersStateMachine$(
+    closePositionParametersStateMachineServices$,
+  )
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
     contextForAddress$,
@@ -90,10 +107,10 @@ export function setupAaveContext({
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
+    aaveUserReserveData$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
-  const manageTransactionMachine = getManageAaveTransactionMachine(txHelpers$, contextForAddress$)
 
   const aaveSthEthYields = curry(getAaveStEthYield)(graphQLClient$, moment())
 
@@ -107,10 +124,13 @@ export function setupAaveContext({
     simulationMachine,
   )
 
-  const aaveManageStateMachine$ = getManageAaveStateMachine$(
-    manageAaveStateMachineServices,
-    parametersStateMachine$,
-    manageTransactionMachine,
+  const aaveManageStateMachine$ = memoize(
+    curry(getManageAaveStateMachine$)(
+      manageAaveStateMachineServices,
+      closePositionParametersStateMachine$,
+      transactionMachine,
+    ),
+    ({ token, address, strategy }) => `${address}-${token}-${strategy}`,
   )
 
   const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)

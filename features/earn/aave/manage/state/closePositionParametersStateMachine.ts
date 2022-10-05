@@ -6,37 +6,36 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OperationParameters } from '../../../../aave'
 
-type ParametersStateMachineContext = {
-  token?: string
-  amount?: BigNumber
-  multiply?: BigNumber
+type ClosePositionParametersStateMachineContext = {
   proxyAddress?: string
+  token?: string
+  valueLocked?: BigNumber
+
   transactionParameters?: OperationParameters
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
 }
 
-export type ParametersStateMachineEvents = {
+export type ClosePositionParametersStateMachineEvents = {
   type: 'VARIABLES_RECEIVED'
-  readonly token: string
-  readonly amount: BigNumber
-  readonly multiply: BigNumber
-  readonly proxyAddress?: string
+  proxyAddress?: string
+  token?: string
+  valueLocked?: BigNumber
 }
 
 /*
   Machine based on the following pattern: https://xstate.js.org/docs/patterns/sequence.html#async-sequences
  */
-export const createParametersStateMachine = createMachine(
+export const createClosePositionParametersStateMachine = createMachine(
   {
     predictableActionArguments: true,
-    tsTypes: {} as import('./parametersStateMachine.typegen').Typegen0,
-    id: 'openAaveParameters',
+    tsTypes: {} as import('./closePositionParametersStateMachine.typegen').Typegen0,
+    id: 'closeAaveParameters',
     initial: 'idle',
     context: {},
     schema: {
-      context: {} as ParametersStateMachineContext,
-      events: {} as ParametersStateMachineEvents,
+      context: {} as ClosePositionParametersStateMachineContext,
+      events: {} as ClosePositionParametersStateMachineEvents,
       services: {} as {
         getParameters: {
           data: OperationParameters | undefined
@@ -94,7 +93,7 @@ export const createParametersStateMachine = createMachine(
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: ['assignReceivedParameters'],
+            actions: ['assignReceivedParameters', 'notifyParent'],
           },
         },
       },
@@ -124,10 +123,9 @@ export const createParametersStateMachine = createMachine(
     actions: {
       assignReceivedParameters: assign((context, event) => {
         return {
-          token: event.token,
-          amount: event.amount,
-          multiply: event.multiply,
           proxyAddress: event.proxyAddress,
+          token: event.token,
+          valueLocked: event.valueLocked,
         }
       }),
       assignTransactionParameters: assign((context, event) => {
@@ -154,21 +152,23 @@ export const createParametersStateMachine = createMachine(
   },
 )
 
-class ParametersStateMachineTypes {
+class ClosePositionParametersStateMachineTypes {
   needsConfiguration() {
-    return createParametersStateMachine
+    return createClosePositionParametersStateMachine
   }
   withConfig() {
     // @ts-ignore
-    return createParametersStateMachine.withConfig({})
+    return createClosePositionParametersStateMachine.withConfig({})
   }
 }
 
-export type ParametersStateMachineWithoutConfiguration = ReturnType<
-  ParametersStateMachineTypes['needsConfiguration']
+export type ClosePositionParametersStateMachineWithoutConfiguration = ReturnType<
+  ClosePositionParametersStateMachineTypes['needsConfiguration']
 >
-export type ParametersStateMachine = ReturnType<ParametersStateMachineTypes['withConfig']>
-export type ParametersStateMachineServices = MachineOptionsFrom<
-  ParametersStateMachineWithoutConfiguration,
+export type ClosePositionParametersStateMachine = ReturnType<
+  ClosePositionParametersStateMachineTypes['withConfig']
+>
+export type ClosePositionParametersStateMachineServices = MachineOptionsFrom<
+  ClosePositionParametersStateMachineWithoutConfiguration,
   true
 >['services']

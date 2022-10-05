@@ -167,7 +167,6 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { OpenAavePositionData } from 'features/earn/aave/open/pipelines/openAavePosition'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -262,6 +261,7 @@ import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
+import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -283,7 +283,7 @@ export type TxData =
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
-  | OpenAavePositionData
+  | OperationExecutorTxMeta
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -1125,6 +1125,7 @@ export function setupAppContext() {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
+    aaveUserReserveData$,
   }
 }
 
