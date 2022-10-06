@@ -2,12 +2,10 @@ import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
-import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
-import moment from 'moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
-import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilKeyChanged, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getAaveUserAccountData } from '../../../blockchain/calls/aave/aaveLendingPool'
 import { getAaveOracleAssetPriceData } from '../../../blockchain/calls/aave/aavePriceOracle'
@@ -25,7 +23,6 @@ import {
   getManageAaveStateMachine$,
 } from './manage/services'
 import {
-  getAaveStEthYield,
   getOpenAaveParametersStateMachineServices$,
   getOpenAavePositionStateMachineServices,
   getOpenAaveTransactionMachine,
@@ -44,14 +41,10 @@ export function setupAaveContext({
   accountBalances$,
   onEveryBlock$,
   context$,
+  aaveSthEthYieldsQuery,
 }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
-
-  const graphQLClient$ = contextForAddress$.pipe(
-    distinctUntilKeyChanged('cacheApi'),
-    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
-  )
 
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
@@ -122,9 +115,7 @@ export function setupAaveContext({
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
 
-  const aaveSthEthYields = curry(getAaveStEthYield)(graphQLClient$, moment())
-
-  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYields)
+  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYieldsQuery)
 
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
