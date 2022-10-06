@@ -39,7 +39,6 @@ export function SidebarAutoTakeProfitEditingStage({
     debt: vault.debt,
     debtOffset: vault.debtOffset,
     colMarketPrice: autoTakeProfitState.executionPrice,
-    slippage: new BigNumber(0.01),
   })
   const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
 
