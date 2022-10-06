@@ -75,7 +75,7 @@ async function checkIfRisky(address: string) {
     try{
       console.log(`TRM_LOG ${address} check, payload ${JSON.stringify(trmData)}`);
     }catch(ex){
-      console.log("TRM_LOG loging failed", ex);
+      console.log("TRM_LOG logging failed", ex);
     }
 
     return !!trmData.addressRiskIndicators.length;
