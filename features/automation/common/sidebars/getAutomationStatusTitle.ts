@@ -13,16 +13,19 @@ function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarAutomationFl
     case 'addAutoSell':
     case 'addAutoBuy':
     case 'addConstantMultiple':
+    case 'addAutoTakeProfit':
       return 'automation.setting'
     case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
+    case 'editAutoTakeProfit':
       return 'automation.updating'
     case 'cancelSl':
     case 'cancelAutoSell':
     case 'cancelAutoBuy':
     case 'cancelConstantMultiple':
+    case 'cancelAutoTakeProfit':
       return 'automation.cancelling'
     default:
       throw new UnreachableCaseError(flow)
@@ -43,6 +46,9 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarAutomationFlow 
     case 'addConstantMultiple':
     case 'editConstantMultiple':
     case 'cancelConstantMultiple':
+    case 'addAutoTakeProfit':
+    case 'cancelAutoTakeProfit':
+    case 'editAutoTakeProfit':
       return 'vault-changed'
     default:
       throw new UnreachableCaseError(flow)

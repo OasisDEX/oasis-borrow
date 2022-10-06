@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
 import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -9,6 +10,9 @@ import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sideb
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
 import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
+import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
+import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
+import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
@@ -31,10 +35,12 @@ interface SidebarSetupAutoTakeProfitProps {
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   closePickerConfig: PickCloseStateProps
   constantMultipleTriggerData: ConstantMultipleTriggerData
+  context: Context
   ethMarketPrice: BigNumber
   feature: AutomationFeatures
   isAddForm: boolean
   isAutoTakeProfitActive: boolean
+  isDisabled: boolean
   isEditing: boolean
   isFirstSetup: boolean
   isRemoveForm: boolean
@@ -53,16 +59,19 @@ export function SidebarSetupAutoTakeProfit({
   autoTakeProfitTriggerData,
   closePickerConfig,
   constantMultipleTriggerData,
+  context,
   ethMarketPrice,
   feature,
   isAddForm,
   isAutoTakeProfitActive,
+  isDisabled,
   isEditing,
   isFirstSetup,
   isRemoveForm,
   max,
   min,
   stage,
+  textButtonHandler,
   tokenMarketPrice,
   txHandler,
   vault,
@@ -89,6 +98,17 @@ export function SidebarSetupAutoTakeProfit({
     stage,
     feature,
   })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const sidebarStatus = getAutomationStatusTitle({
+    stage,
+    txHash: autoTakeProfitState.txDetails?.txHash,
+    flow,
+    etherscan: context.etherscan.url,
+    feature,
+  })
+
+  // TODO: TDAutoTakeProfit | needs real validation
+  const validationErrors = []
 
   const autoTakeSliderBasicConfig = {
     disabled: false,
@@ -153,23 +173,31 @@ export function SidebarSetupAutoTakeProfit({
               )}
             </>
           )}
+          {(stage === 'txSuccess' || stage === 'txInProgress') && (
+            <SidebarAutomationFeatureCreationStage
+              featureName={feature}
+              stage={stage}
+              isAddForm={isAddForm}
+              isRemoveForm={isRemoveForm}
+            />
+          )}
         </Grid>
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: false,
+        disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
-        // TODO ŁW
-        // ...(stage !== 'txInProgress' && {
-        //   textButton: {
-        //     label: textButtonLabel,
-        //     hidden: true, //isFirstSetup,
-        //     action: () => textButtonHandler(),
-        //   },
-        // }),
-        // status: sidebarStatus,
       },
+      ...(stage !== 'txInProgress' &&
+        stage !== 'txSuccess' && {
+          textButton: {
+            label: textButtonLabel,
+            hidden: isFirstSetup,
+            action: () => textButtonHandler(),
+          },
+        }),
+      status: sidebarStatus,
     }
 
     return <SidebarSection {...sidebarSectionProps} />
