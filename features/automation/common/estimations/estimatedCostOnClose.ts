@@ -26,10 +26,7 @@ export function getEstimatedCostOnClose({
 
   const currentDebt = debt.plus(debtOffset)
   const toTokenAmount = lockedCollateral.times(colMarketPrice).times(one.minus(OAZO_FEE))
-  const requiredAmount = currentDebt
-    .times(1.00001 /* to account for not up to date value here */)
-    .times(one.plus(OAZO_FEE))
-    .times(one.plus(LOAN_FEE))
+  const requiredAmount = currentDebt.times(one.plus(OAZO_FEE)).times(one.plus(LOAN_FEE))
 
   const oasisFee = toCollateral
     ? requiredAmount.times(OAZO_FEE)
@@ -38,9 +35,7 @@ export function getEstimatedCostOnClose({
 
   const estimatedOasisFeeOnTrigger = oasisFee.plus(loanFee)
   const estimatedGasFeeOnTrigger = gasPrice
-    ? amountFromWei(
-        AVERAGE_CLOSE_VAULT_COST.multipliedBy(gasPrice?.maxFeePerGas).multipliedBy(ethMarketPrice),
-      )
+    ? amountFromWei(AVERAGE_CLOSE_VAULT_COST.times(gasPrice?.maxFeePerGas).times(ethMarketPrice))
     : undefined
 
   return {

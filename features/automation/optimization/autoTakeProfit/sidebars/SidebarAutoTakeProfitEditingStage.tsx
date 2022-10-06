@@ -5,8 +5,11 @@ import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseSt
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { EstimationOnClose } from 'components/EstimationOnClose'
 import { getEstimatedCostOnClose } from 'features/automation/common/estimations/estimatedCostOnClose'
+import { getEstimatedProfitOnClose } from 'features/automation/common/estimations/estimatedProfitOnClose'
 import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
 import { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { formatAmount } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface SidebarAutoTakeProfitEditingStageProps {
@@ -28,15 +31,27 @@ export function SidebarAutoTakeProfitEditingStage({
   tokenMarketPrice,
   vault,
 }: SidebarAutoTakeProfitEditingStageProps) {
+  const { t } = useTranslation()
+
+  const estimationProfitOnClose = getEstimatedProfitOnClose({
+    toCollateral: autoTakeProfitState.toCollateral,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
+    debtOffset: vault.debtOffset,
+    colMarketPrice: autoTakeProfitState.executionPrice,
+    slippage: new BigNumber(0.01),
+  })
+  const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
+
   return (
     <>
       <PickCloseState {...closePickerConfig} />
       <SliderValuePicker {...sliderConfig} />
 
       <EstimationOnClose
-        iconCircle={getToken('DAI').iconCircle}
-        label="Estimated DAI at Trigger"
-        value="$3,990,402.00 DAI"
+        iconCircle={getToken(closeToToken).iconCircle}
+        label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
+        value={`${formatAmount(estimationProfitOnClose, closeToToken)} ${closeToToken}`}
       />
       {isEditing && (
         <>

@@ -1607,6 +1607,7 @@
     "trigger-col-ratio": "Trigger Collateral Ratio",
     "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
     "current-col-ratio": "Current Collateral Ratio {{amount}}",
+    "estimated-at-trigger": "Estimated {{token}} at Trigger",
     "vault-changes": {
       "general-summary": "General summary",
       "trigger-col-price": "Trigger {{token}} Price",
