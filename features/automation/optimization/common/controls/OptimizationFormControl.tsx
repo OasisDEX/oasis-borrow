@@ -112,6 +112,7 @@ export function OptimizationFormControl({
       <ConstantMultipleFormControl
         autoBuyTriggerData={autoBuyTriggerData}
         autoSellTriggerData={autoSellTriggerData}
+        autoTakeProfitTriggerData={autoTakeProfitTriggerData}
         balanceInfo={balanceInfo}
         constantMultipleTriggerData={constantMultipleTriggerData}
         context={context}

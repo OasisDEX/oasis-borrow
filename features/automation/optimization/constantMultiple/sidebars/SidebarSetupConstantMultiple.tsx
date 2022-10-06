@@ -13,6 +13,7 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
@@ -31,6 +32,7 @@ import { Grid } from 'theme-ui'
 interface SidebarSetupConstantMultipleProps {
   autoBuyTriggerData: AutoBSTriggerData
   autoSellTriggerData: AutoBSTriggerData
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   balanceInfo: BalanceInfo
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
@@ -63,6 +65,7 @@ interface SidebarSetupConstantMultipleProps {
 export function SidebarSetupConstantMultiple({
   autoBuyTriggerData,
   autoSellTriggerData,
+  autoTakeProfitTriggerData,
   balanceInfo,
   collateralToBePurchased,
   collateralToBeSold,
@@ -105,6 +108,7 @@ export function SidebarSetupConstantMultiple({
     disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+    isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,

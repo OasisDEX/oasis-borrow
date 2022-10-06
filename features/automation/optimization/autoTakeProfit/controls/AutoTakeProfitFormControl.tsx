@@ -45,12 +45,13 @@ export function AutoTakeProfitFormControl({
   context,
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
+  console.log(autoTakeProfitState)
   const {
     isAddForm,
-    // isFirstSetup, TODO ł
+    isFirstSetup,
     // isOwner,
     // isProgressStage,
-    // isRemoveForm,
+    isRemoveForm,
     stage,
   } = getAutomationFeatureStatus({
     context,
@@ -104,6 +105,10 @@ export function AutoTakeProfitFormControl({
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
           stage={stage}
+          isFirstSetup={isFirstSetup}
+          isRemoveForm={isRemoveForm}
+          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+          isAddForm={isAddForm}
         />
       )}
     </AddAndRemoveTriggerControl>

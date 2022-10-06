@@ -5,14 +5,18 @@ import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
+import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
+import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
+import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
 // import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -36,6 +40,10 @@ interface SidebarSetupAutoTakeProfitProps {
   txHandler: () => void
   textButtonHandler: () => void
   stage: SidebarAutomationStages
+  isFirstSetup: boolean
+  isAddForm: boolean
+  isRemoveForm: boolean
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
 }
 // TODO ŁW Slider config
 export function SidebarSetupAutoTakeProfit({
@@ -50,22 +58,33 @@ export function SidebarSetupAutoTakeProfit({
   closePickerConfig,
   txHandler,
   stage,
+  isFirstSetup,
+  isAddForm,
+  isRemoveForm,
+  autoTakeProfitTriggerData,
 }: // textButtonHandler,
 SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 
-  // TODO: TDAutoTakeProfit | replace with sidebarTitle method when data is available
-  const sidebarTitle = t(sidebarAutomationFeatureCopyMap[feature])
+  const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
+  const sidebarTitle = getAutomationFormTitle({
+    flow,
+    stage,
+    feature,
+  })
   const dropdown = getAutoFeaturesSidebarDropdown({
     type: 'Optimization',
     forcePanel: AutomationFeatures.AUTO_TAKE_PROFIT,
-    // TODO: TDAutoTakeProfit | replace with isDropdownDisabled method when stage prop is available
-    disabled: false,
+    disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
-    // TODO: TDAutoTakeProfit | to be replaced with data from autoTakeProfitTriggerData
-    isAutoTakeProfitEnabled: false,
+    isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
+  })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
   })
 
   const autoTakeSliderBasicConfig = {
@@ -110,23 +129,23 @@ SidebarSetupAutoTakeProfitProps) {
     },
   }
 
-  // TODO: TDAutoTakeProfit | replace with getAutomationPrimaryButtonLabel method when data is available
-  const primaryButtonLabel = 'Temp CTA'
-  // TODO ŁW txt button
-  // const textButtonLabel = getAutomationTextButtonLabel({ isAddForm: true }) // TODO Łw change when middlesteps
-
   if (isAutoTakeProfitActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
       dropdown,
       content: (
         <Grid gap={3}>
-          {/* TODO: Should be displayed based on current form state */}
-          <SidebarAutoTakeProfitEditingStage
-            vault={vault}
-            closePickerConfig={closePickerConfig}
-            sliderConfig={sliderConfig}
-          />
+          {(stage === 'editing' || stage === 'txFailure') && (
+            <>
+              {isAddForm && (
+                <SidebarAutoTakeProfitEditingStage
+                  closePickerConfig={closePickerConfig}
+                  sliderConfig={sliderConfig}
+                  vault={vault}
+                />
+              )}
+            </>
+          )}
         </Grid>
       ),
       primaryButton: {

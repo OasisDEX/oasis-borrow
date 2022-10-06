@@ -50,6 +50,13 @@ export function getAutomationFeatureStatus({
     : 'stopLossEditing'
   const isFirstSetup = triggersId.every((id) => id.isZero())
 
+  console.log('---')
+  console.log(`currentForm: ${currentForm}`)
+  console.log(`isAddForm: ${isAddForm}`)
+  console.log(`isFirstSetup: ${isFirstSetup}`)
+  console.log(`isRemoveForm: ${isRemoveForm}`)
+  console.log(`stage: ${stage}`)
+
   return {
     isAddForm,
     isFailureStage,
