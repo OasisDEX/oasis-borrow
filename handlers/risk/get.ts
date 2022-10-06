@@ -57,7 +57,7 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
   })
     .then((resp) => {
       if (!resp.ok) {
-        throw Error(`Risk service status code ${resp.status}`)
+        throw Error(`Risk service status code ${resp.status} ${resp.statusText}`)
       }
       return resp.json()
     })
@@ -70,6 +70,11 @@ const offset = 14 * 24 * 60 * 60 * 1000 // 14 days
 
 async function checkIfRisky(address: string) {
   const trmData = await getTrmRisk(address)
+  if (trmData.addressRiskIndicators.length > 0) {
+    console.log('Risky address', address)
+    console.log('Risk indicators', trmData.addressRiskIndicators)
+    console.log('Entities', trmData.entities)
+  }
 
   return !!trmData.addressRiskIndicators.length
 }
