@@ -9,10 +9,13 @@ import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sideb
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
 import { getAutomationPrimaryButtonLabel } from 'features/automation/common/sidebars/getAutomationPrimaryButtonLabel'
-// import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
+import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
@@ -22,48 +25,42 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import {
-  AUTO_TAKE_PROFIT_FORM_CHANGE,
-  AutoTakeProfitFormChange,
-} from '../state/autoTakeProfitFormChange'
-
 interface SidebarSetupAutoTakeProfitProps {
   autoBuyTriggerData: AutoBSTriggerData
   autoTakeProfitState: AutoTakeProfitFormChange
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+  closePickerConfig: PickCloseStateProps
   constantMultipleTriggerData: ConstantMultipleTriggerData
   feature: AutomationFeatures
+  isAddForm: boolean
   isAutoTakeProfitActive: boolean
+  isFirstSetup: boolean
+  isRemoveForm: boolean
   max: BigNumber
   min: BigNumber
-  vault: Vault
-  closePickerConfig: PickCloseStateProps
-  txHandler: () => void
-  textButtonHandler: () => void
   stage: SidebarAutomationStages
-  isFirstSetup: boolean
-  isAddForm: boolean
-  isRemoveForm: boolean
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+  textButtonHandler: () => void
+  txHandler: () => void
+  vault: Vault
 }
-// TODO ŁW Slider config
+
 export function SidebarSetupAutoTakeProfit({
   autoBuyTriggerData,
   autoTakeProfitState,
+  autoTakeProfitTriggerData,
+  closePickerConfig,
   constantMultipleTriggerData,
   feature,
+  isAddForm,
   isAutoTakeProfitActive,
+  isFirstSetup,
+  isRemoveForm,
   max,
   min,
-  vault,
-  closePickerConfig,
-  txHandler,
   stage,
-  isFirstSetup,
-  isAddForm,
-  isRemoveForm,
-  autoTakeProfitTriggerData,
-}: // textButtonHandler,
-SidebarSetupAutoTakeProfitProps) {
+  txHandler,
+  vault,
+}: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 

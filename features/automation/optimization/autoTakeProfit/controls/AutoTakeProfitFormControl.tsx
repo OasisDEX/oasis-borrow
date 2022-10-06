@@ -21,28 +21,28 @@ import React from 'react'
 
 interface AutoTakeProfitFormControlProps {
   autoBuyTriggerData: AutoBSTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  isAutoTakeProfitActive: boolean
-  tokenMarketPrice: BigNumber
-  vault: Vault
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  ethMarketPrice: BigNumber
-  shouldRemoveAllowance: boolean
-  txHelpers?: TxHelpers
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
+  ethMarketPrice: BigNumber
+  isAutoTakeProfitActive: boolean
+  shouldRemoveAllowance: boolean
+  tokenMarketPrice: BigNumber
+  txHelpers?: TxHelpers
+  vault: Vault
 }
 
 export function AutoTakeProfitFormControl({
   autoBuyTriggerData,
-  constantMultipleTriggerData,
-  isAutoTakeProfitActive,
-  tokenMarketPrice,
-  vault,
   autoTakeProfitTriggerData,
-  ethMarketPrice,
-  shouldRemoveAllowance,
-  txHelpers,
+  constantMultipleTriggerData,
   context,
+  ethMarketPrice,
+  isAutoTakeProfitActive,
+  shouldRemoveAllowance,
+  tokenMarketPrice,
+  txHelpers,
+  vault,
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
   console.log(autoTakeProfitState)
@@ -62,7 +62,7 @@ export function AutoTakeProfitFormControl({
     vaultController: vault.controller,
   })
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
-  const { closePickerConfig, min, max, resetData } = getAutoTakeProfitStatus({
+  const { closePickerConfig, isEditing, min, max, resetData } = getAutoTakeProfitStatus({
     autoTakeProfitState,
     tokenMarketPrice,
     vault,
@@ -77,38 +77,38 @@ export function AutoTakeProfitFormControl({
   return (
     <AddAndRemoveTriggerControl
       addTxData={addTxData}
-      textButtonHandlerExtension={textButtonHandlerExtension}
       ethMarketPrice={ethMarketPrice}
-      isActiveFlag={false}
-      isAddForm={true}
-      isEditing={true}
-      isRemoveForm={false}
+      isActiveFlag={isAutoTakeProfitActive}
+      isAddForm={isAddForm}
+      isEditing={isEditing}
+      isRemoveForm={isRemoveForm}
       proxyAddress={vault.owner}
       publishType={AUTO_TAKE_PROFIT_FORM_CHANGE}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
       stage={stage}
-      triggersId={[0]}
-      txHelpers={txHelpers}
+      textButtonHandlerExtension={textButtonHandlerExtension}
+      triggersId={[autoTakeProfitTriggerData.triggerId.toNumber()]}
+      txHelpers={txHelpers!}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoTakeProfit
           autoBuyTriggerData={autoBuyTriggerData}
+          autoTakeProfitState={autoTakeProfitState}
+          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+          closePickerConfig={closePickerConfig}
           constantMultipleTriggerData={constantMultipleTriggerData}
           feature={feature}
+          isAddForm={isAddForm}
           isAutoTakeProfitActive={isAutoTakeProfitActive}
-          vault={vault}
-          closePickerConfig={closePickerConfig}
-          autoTakeProfitState={autoTakeProfitState}
-          min={min}
-          max={max}
-          textButtonHandler={textButtonHandler}
-          txHandler={txHandler}
-          stage={stage}
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
-          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
-          isAddForm={isAddForm}
+          max={max}
+          min={min}
+          stage={stage}
+          textButtonHandler={textButtonHandler}
+          txHandler={txHandler}
+          vault={vault}
         />
       )}
     </AddAndRemoveTriggerControl>
