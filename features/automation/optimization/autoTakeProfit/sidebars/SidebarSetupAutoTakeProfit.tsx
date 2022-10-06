@@ -34,6 +34,7 @@ interface SidebarSetupAutoTakeProfitProps {
   feature: AutomationFeatures
   isAddForm: boolean
   isAutoTakeProfitActive: boolean
+  isEditing: boolean
   isFirstSetup: boolean
   isRemoveForm: boolean
   max: BigNumber
@@ -53,6 +54,7 @@ export function SidebarSetupAutoTakeProfit({
   feature,
   isAddForm,
   isAutoTakeProfitActive,
+  isEditing,
   isFirstSetup,
   isRemoveForm,
   max,
@@ -136,7 +138,9 @@ export function SidebarSetupAutoTakeProfit({
             <>
               {isAddForm && (
                 <SidebarAutoTakeProfitEditingStage
+                  autoTakeProfitState={autoTakeProfitState}
                   closePickerConfig={closePickerConfig}
+                  isEditing={isEditing}
                   sliderConfig={sliderConfig}
                   vault={vault}
                 />

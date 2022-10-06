@@ -16,7 +16,6 @@ import { AutoTakeProfitTriggerData } from 'features/automation/optimization/auto
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
 import React from 'react'
 
 interface AutoTakeProfitFormControlProps {
@@ -45,7 +44,7 @@ export function AutoTakeProfitFormControl({
   vault,
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
-  console.log(autoTakeProfitState)
+
   const {
     isAddForm,
     isFirstSetup,
@@ -57,7 +56,7 @@ export function AutoTakeProfitFormControl({
     context,
     currentForm: autoTakeProfitState.currentForm,
     feature: AutomationFeatures.AUTO_TAKE_PROFIT,
-    triggersId: [zero], //[autoTakeProfitTriggerData.triggerId],
+    triggersId: [autoTakeProfitTriggerData.triggerId],
     txStatus: autoTakeProfitState.txDetails?.txStatus,
     vaultController: vault.controller,
   })
@@ -101,6 +100,7 @@ export function AutoTakeProfitFormControl({
           feature={feature}
           isAddForm={isAddForm}
           isAutoTakeProfitActive={isAutoTakeProfitActive}
+          isEditing={isEditing}
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
           max={max}

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
@@ -11,7 +12,6 @@ interface AddAutoTakeProfitInfoSectionProps {
   estimatedOasisFee: BigNumber
   ethPrice: BigNumber
   ethPriceImpact: BigNumber
-  setupTransactionCost: BigNumber
   token: string
   totalTransactionCost: BigNumber
   triggerColPrice: BigNumber
@@ -24,7 +24,6 @@ export function AddAutoTakeProfitInfoSection({
   estimatedOasisFee,
   ethPrice,
   ethPriceImpact,
-  setupTransactionCost,
   token,
   totalTransactionCost,
   triggerColPrice,
@@ -42,11 +41,11 @@ export function AddAutoTakeProfitInfoSection({
         },
         {
           label: t('auto-take-profit.vault-changes.trigger-collateral-ratio'),
-          value: `${triggerColRatio}%`,
+          value: `${formatPercent(triggerColRatio, { precision: 2 })}`,
         },
         {
           label: t('auto-take-profit.vault-changes.debt-repaid'),
-          value: `$${formatAmount(debtRepaid, 'USD')}`,
+          value: `${formatAmount(debtRepaid, 'DAI')} DAI`,
         },
         {
           label: t('auto-take-profit.vault-changes.col-price-impact', { token }),
@@ -78,7 +77,7 @@ export function AddAutoTakeProfitInfoSection({
         },
         {
           label: t('auto-take-profit.vault-changes.setup-transaction-cost'),
-          value: `$${formatAmount(setupTransactionCost, 'USD')}`,
+          value: <GasEstimation />,
         },
       ]}
     />
