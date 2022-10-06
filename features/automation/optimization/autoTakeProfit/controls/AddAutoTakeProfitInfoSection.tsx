@@ -53,7 +53,8 @@ export function AddAutoTakeProfitInfoSection({
             },
             {
               label: t('auto-take-profit.vault-changes.estimated-gas-fee'),
-              value: estimatedGasFeeOnTrigger && `$${formatAmount(estimatedGasFeeOnTrigger, 'USD')}`,
+              value:
+                estimatedGasFeeOnTrigger && `$${formatAmount(estimatedGasFeeOnTrigger, 'USD')}`,
             },
           ],
         },
