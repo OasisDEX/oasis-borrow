@@ -116,6 +116,7 @@ export async function getCloseAaveParameters(
     operationName: 'CustomOperation',
     positionInfo: {
       fee: strategyReturn.feeAmount,
+      ethAmountAfterSwap: strategyReturn.ethAmountAfterSwap,
     },
     isAllowanceNeeded: false,
   }

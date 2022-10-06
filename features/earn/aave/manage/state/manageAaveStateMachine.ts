@@ -5,6 +5,7 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { AaveUserReserveData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { zero } from '../../../../../helpers/zero'
 import { OperationParameters } from '../../../../aave'
 import {
   TransactionStateMachine,
@@ -28,7 +29,9 @@ export interface ManageAaveContext {
   currentStep?: number
   totalSteps?: number
   tokenBalance?: BigNumber
+  tokenPrice?: BigNumber
   transactionParameters?: OperationParameters
+  balanceAfterClose?: BigNumber
   estimatedGasPrice?: HasGasEstimation
 
   strategyInfo?: StrategyInfo
@@ -118,7 +121,7 @@ export const createManageAaveStateMachine =
           },
           on: {
             SET_BALANCE: {
-              actions: 'setTokenBalanceFromEvent',
+              actions: ['setTokenBalanceFromEvent', 'updateBalanceAfterClose'],
             },
             CLOSE_POSITION: {
               target: 'reviewingClosing',
@@ -164,7 +167,7 @@ export const createManageAaveStateMachine =
           ],
           on: {
             CLOSING_PARAMETERS_RECEIVED: {
-              actions: 'assignTransactionParameters',
+              actions: ['assignTransactionParameters', 'updateBalanceAfterClose'],
             },
             START_TRANSACTION: {
               cond: 'validTransactionParameters',
@@ -187,6 +190,11 @@ export const createManageAaveStateMachine =
         setTokenBalanceFromEvent: assign((context, event) => ({
           tokenBalance: event.balance,
           tokenPrice: event.tokenPrice,
+        })),
+        updateBalanceAfterClose: assign((context) => ({
+          balanceAfterClose: context.tokenBalance?.plus(
+            context.transactionParameters?.positionInfo['ethAmountAfterSwap'] ?? zero,
+          ),
         })),
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
