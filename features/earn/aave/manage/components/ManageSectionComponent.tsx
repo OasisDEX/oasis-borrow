@@ -1,3 +1,4 @@
+import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import {
   DetailsSectionContentCard,
@@ -7,12 +8,14 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../../components/DetailsSection'
+import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 
 const mockData = {
   earnId: 3920,
@@ -39,6 +42,9 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 
 export function ManageSectionComponent() {
   const { t } = useTranslation()
+  const { stateMachine } = useManageAaveStateMachineContext()
+  const [state] = useActor(stateMachine)
+
   return (
     <DetailsSection
       title={t('manage-earn-vault.overview-earn', { earnId: mockData.earnId })}
@@ -89,12 +95,17 @@ export function ManageSectionComponent() {
       }
       footer={
         <DetailsSectionFooterItemWrapper>
-          <DetailsSectionFooterItem
-            title={t('system.total-collateral')}
-            value={`${formatAmount(mockData.totalCollateral, mockData.totalCollateralToken)} ${
-              mockData.totalCollateralToken
-            }`}
-          />
+          {state.context.positionData?.currentATokenBalance ? (
+            <DetailsSectionFooterItem
+              title={t('system.total-collateral')}
+              value={`${formatAmount(
+                state.context.positionData.currentATokenBalance,
+                state.context.token,
+              )} ${state.context.token}`}
+            />
+          ) : (
+            <AppSpinner />
+          )}
           <DetailsSectionFooterItem
             title={t('manage-earn-vault.position-eth-debt')}
             value={`${formatAmount(mockData.positionETHDebt, mockData.token)} ${mockData.token}`}
