@@ -6,8 +6,11 @@ import {
 } from 'blockchain/calls/automationBotAggregator'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
+import { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
 import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { addTransactionMap, TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { ReactElement, useEffect } from 'react'
 
@@ -24,7 +27,7 @@ interface AddAndRemoveTriggerControlProps {
   isRemoveForm: boolean
   proxyAddress: string
   publishType: AutomationPublishType
-  resetData: any
+  resetData: StopLossResetData | AutoTakeProfitResetData | AutoBSTriggerResetData
   shouldRemoveAllowance: boolean
   stage: SidebarAutomationStages
   textButtonHandlerExtension?: () => void
