@@ -11,18 +11,22 @@ import React from 'react'
 
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
-  vault: Vault
   closePickerConfig: PickCloseStateProps
+  ethMarketPrice: BigNumber
   isEditing: boolean
   sliderConfig: SliderValuePickerProps
+  tokenMarketPrice: BigNumber
+  vault: Vault
 }
 
 export function SidebarAutoTakeProfitEditingStage({
-  vault,
+  autoTakeProfitState,
   closePickerConfig,
+  ethMarketPrice,
   isEditing,
   sliderConfig,
-  autoTakeProfitState,
+  tokenMarketPrice,
+  vault,
 }: SidebarAutoTakeProfitEditingStageProps) {
   return (
     <>
@@ -38,13 +42,15 @@ export function SidebarAutoTakeProfitEditingStage({
         <>
           {/* TODO: TDAutoTakeProfit | handle SidebarResetButton here */}
           <AutoTakeProfitInfoSectionControl
-            triggerColRatio={autoTakeProfitState.executionCollRatio}
-            triggerColPrice={autoTakeProfitState.executionPrice}
-            lockedCollateral={vault.lockedCollateral}
             debt={vault.debt}
             debtOffset={vault.debtOffset}
-            token={vault.token}
+            ethMarketPrice={ethMarketPrice}
+            lockedCollateral={vault.lockedCollateral}
             toCollateral={autoTakeProfitState.toCollateral}
+            token={vault.token}
+            tokenMarketPrice={tokenMarketPrice}
+            triggerColPrice={autoTakeProfitState.executionPrice}
+            triggerColRatio={autoTakeProfitState.executionCollRatio}
           />
         </>
       )}
@@ -53,44 +59,47 @@ export function SidebarAutoTakeProfitEditingStage({
 }
 
 interface AutoTakeProfitInfoSectionControlProps {
-  lockedCollateral: BigNumber
-  triggerColPrice: BigNumber
-  triggerColRatio: BigNumber
   debt: BigNumber
   debtOffset: BigNumber
-  token: string
+  ethMarketPrice: BigNumber
+  lockedCollateral: BigNumber
   toCollateral: boolean
+  token: string
+  tokenMarketPrice: BigNumber
+  triggerColPrice: BigNumber
+  triggerColRatio: BigNumber
 }
 
 function AutoTakeProfitInfoSectionControl({
+  debt,
+  debtOffset,
+  ethMarketPrice,
   lockedCollateral,
+  toCollateral,
   token,
   triggerColPrice,
   triggerColRatio,
-  debt,
-  debtOffset,
-  toCollateral,
 }: AutoTakeProfitInfoSectionControlProps) {
-  // TODO: TDAutoTakeProfit | to be replaced with data from parent component
-  const ethPrice = new BigNumber(1925)
-  const ethPriceImpact = new BigNumber(-0.25)
-  const { estimatedOasisFee, estimatedGasFee, totalTransactionCost } = getEstimatedCostOnClose({
+  const {
+    estimatedOasisFeeOnTrigger,
+    estimatedGasFeeOnTrigger,
+    totalTriggerCost,
+  } = getEstimatedCostOnClose({
     toCollateral,
     lockedCollateral,
     debt,
     debtOffset,
-    marketPrice: triggerColPrice,
+    ethMarketPrice,
+    colMarketPrice: triggerColPrice,
   })
 
   return (
     <AddAutoTakeProfitInfoSection
       debtRepaid={debt}
-      estimatedGasFee={estimatedGasFee}
-      estimatedOasisFee={estimatedOasisFee}
-      ethPrice={ethPrice}
-      ethPriceImpact={ethPriceImpact}
+      estimatedOasisFeeOnTrigger={estimatedOasisFeeOnTrigger}
+      estimatedGasFeeOnTrigger={estimatedGasFeeOnTrigger}
       token={token}
-      totalTransactionCost={totalTransactionCost}
+      totalTriggerCost={totalTriggerCost}
       triggerColPrice={triggerColPrice}
       triggerColRatio={triggerColRatio}
     />

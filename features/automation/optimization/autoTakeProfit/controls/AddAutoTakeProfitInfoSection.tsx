@@ -4,28 +4,23 @@ import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text } from 'theme-ui'
 
 interface AddAutoTakeProfitInfoSectionProps {
   debtRepaid: BigNumber
-  estimatedGasFee: BigNumber
-  estimatedOasisFee: BigNumber
-  ethPrice: BigNumber
-  ethPriceImpact: BigNumber
+  estimatedGasFeeOnTrigger?: BigNumber
+  estimatedOasisFeeOnTrigger: BigNumber
   token: string
-  totalTransactionCost: BigNumber
+  totalTriggerCost?: BigNumber
   triggerColPrice: BigNumber
   triggerColRatio: BigNumber
 }
 
 export function AddAutoTakeProfitInfoSection({
   debtRepaid,
-  estimatedGasFee,
-  estimatedOasisFee,
-  ethPrice,
-  ethPriceImpact,
+  estimatedGasFeeOnTrigger,
+  estimatedOasisFeeOnTrigger,
   token,
-  totalTransactionCost,
+  totalTriggerCost,
   triggerColPrice,
   triggerColRatio,
 }: AddAutoTakeProfitInfoSectionProps) {
@@ -48,30 +43,17 @@ export function AddAutoTakeProfitInfoSection({
           value: `${formatAmount(debtRepaid, 'DAI')} DAI`,
         },
         {
-          label: t('auto-take-profit.vault-changes.col-price-impact', { token }),
-          value: (
-            <>
-              ${formatAmount(ethPrice, 'USD')}
-              <Text
-                as="span"
-                sx={{ ml: 1, color: ethPriceImpact.isPositive() ? 'success100' : 'critical100' }}
-              >
-                ({ethPriceImpact.toFixed(2)}%)
-              </Text>
-            </>
-          ),
-        },
-        {
           label: t('auto-take-profit.vault-changes.total-transaction-cost'),
-          value: `$${formatAmount(totalTransactionCost, 'USD')}`,
+          value: totalTriggerCost && `$${formatAmount(totalTriggerCost, 'USD')}`,
+          isLoading: totalTriggerCost === undefined,
           dropdownValues: [
             {
               label: t('auto-take-profit.vault-changes.estimated-oasis-fee'),
-              value: `$${formatAmount(estimatedOasisFee, 'USD')}`,
+              value: `$${formatAmount(estimatedOasisFeeOnTrigger, 'USD')}`,
             },
             {
               label: t('auto-take-profit.vault-changes.estimated-gas-fee'),
-              value: `$${formatAmount(estimatedGasFee, 'USD')}`,
+              value: estimatedGasFeeOnTrigger && `$${formatAmount(estimatedGasFeeOnTrigger, 'USD')}`,
             },
           ],
         },

@@ -67,10 +67,10 @@ export function AutoTakeProfitFormControl({
     vault,
   })
   const { addTxData, textButtonHandlerExtension } = getAutoTakeProfitTxHandlers({
-    vault: vault,
-    autoTakeProfitTriggerData,
     autoTakeProfitState,
+    autoTakeProfitTriggerData,
     isAddForm,
+    vault,
   })
 
   return (
@@ -97,6 +97,7 @@ export function AutoTakeProfitFormControl({
           autoTakeProfitTriggerData={autoTakeProfitTriggerData}
           closePickerConfig={closePickerConfig}
           constantMultipleTriggerData={constantMultipleTriggerData}
+          ethMarketPrice={ethMarketPrice}
           feature={feature}
           isAddForm={isAddForm}
           isAutoTakeProfitActive={isAutoTakeProfitActive}
@@ -107,6 +108,7 @@ export function AutoTakeProfitFormControl({
           min={min}
           stage={stage}
           textButtonHandler={textButtonHandler}
+          tokenMarketPrice={tokenMarketPrice}
           txHandler={txHandler}
           vault={vault}
         />

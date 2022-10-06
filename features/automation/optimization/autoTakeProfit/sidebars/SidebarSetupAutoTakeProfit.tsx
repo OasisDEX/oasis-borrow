@@ -31,6 +31,7 @@ interface SidebarSetupAutoTakeProfitProps {
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   closePickerConfig: PickCloseStateProps
   constantMultipleTriggerData: ConstantMultipleTriggerData
+  ethMarketPrice: BigNumber
   feature: AutomationFeatures
   isAddForm: boolean
   isAutoTakeProfitActive: boolean
@@ -41,6 +42,7 @@ interface SidebarSetupAutoTakeProfitProps {
   min: BigNumber
   stage: SidebarAutomationStages
   textButtonHandler: () => void
+  tokenMarketPrice: BigNumber
   txHandler: () => void
   vault: Vault
 }
@@ -51,6 +53,7 @@ export function SidebarSetupAutoTakeProfit({
   autoTakeProfitTriggerData,
   closePickerConfig,
   constantMultipleTriggerData,
+  ethMarketPrice,
   feature,
   isAddForm,
   isAutoTakeProfitActive,
@@ -60,6 +63,7 @@ export function SidebarSetupAutoTakeProfit({
   max,
   min,
   stage,
+  tokenMarketPrice,
   txHandler,
   vault,
 }: SidebarSetupAutoTakeProfitProps) {
@@ -140,8 +144,10 @@ export function SidebarSetupAutoTakeProfit({
                 <SidebarAutoTakeProfitEditingStage
                   autoTakeProfitState={autoTakeProfitState}
                   closePickerConfig={closePickerConfig}
+                  ethMarketPrice={ethMarketPrice}
                   isEditing={isEditing}
                   sliderConfig={sliderConfig}
+                  tokenMarketPrice={tokenMarketPrice}
                   vault={vault}
                 />
               )}
