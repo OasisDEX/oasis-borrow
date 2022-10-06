@@ -69,14 +69,20 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
 const offset = 14 * 24 * 60 * 60 * 1000 // 14 days
 
 async function checkIfRisky(address: string) {
-  const trmData = await getTrmRisk(address)
-  if (trmData.addressRiskIndicators.length > 0) {
-    console.log('Risky address', address)
-    console.log('Risk indicators', trmData.addressRiskIndicators)
-    console.log('Entities', trmData.entities)
-  }
+  try{
+    const trmData = await getTrmRisk(address)
 
-  return !!trmData.addressRiskIndicators.length
+    try{
+      console.log(`TRM_LOG ${address} check, payload ${JSON.stringify(trmData)}`);
+    }catch(ex){
+      console.log("TRM_LOG loging failed", ex);
+    }
+
+    return !!trmData.addressRiskIndicators.length;
+  }catch(ex){
+    console.log(`TRM_LOG ${address} check failed`);
+    throw ex;
+  }
 }
 
 const inputSchema = z.object({
