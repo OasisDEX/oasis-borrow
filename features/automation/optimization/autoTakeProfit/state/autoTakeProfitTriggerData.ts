@@ -35,9 +35,11 @@ export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTri
       TriggerType.AutoTakeProfitToCollateral,
       TriggerType.AutoTakeProfitToDai,
     ])
-    
+
     console.log('autoTakeProfitTriggersData', autoTakeProfitTriggersData)
     if (autoTakeProfitTriggersData.length) {
+      console.log('pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData)')
+      console.log(pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData))
       return pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData)
     }
 
@@ -61,15 +63,6 @@ export function prepareAutoTakeProfitTriggerData({
   const triggerType = isCloseToCollateral
     ? TriggerType.AutoTakeProfitToCollateral
     : TriggerType.AutoTakeProfitToDai
-
-    console.log('vaultData.id.toString()')
-    console.log(vaultData.id.toString())
-    console.log('triggerType.toString()')
-    console.log(triggerType.toString())
-    console.log('executionPrice.toString()')
-    console.log(executionPrice.toString())
-    console.log('maxBaseFeeInGwei.toString()')
-    console.log(maxBaseFeeInGwei.toString())
 
   return {
     cdpId: vaultData.id,
