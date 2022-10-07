@@ -39,7 +39,7 @@ export function GenericSelect({
   defaultValue,
   expandableArrowSize = 12,
   expandableArrowSx,
-  iconSize = 12,
+  iconSize = 32,
   isDisabled = false,
   isSearchable = false,
   name,
