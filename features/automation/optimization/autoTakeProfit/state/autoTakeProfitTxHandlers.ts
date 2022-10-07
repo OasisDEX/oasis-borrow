@@ -40,7 +40,10 @@ export function getAutoTakeProfitTxHandlers({
     () =>
       prepareAddAutoTakeProfitTriggerData(
         vault,
-        amountToWei(autoTakeProfitState.executionPrice.decimalPlaces(0, BigNumber.ROUND_DOWN), 'ETH'),
+        amountToWei(
+          autoTakeProfitState.executionPrice.decimalPlaces(0, BigNumber.ROUND_DOWN),
+          'ETH',
+        ),
         zero, // autoTakeProfitState.maxBaseFeeInGwei,
         autoTakeProfitState.toCollateral,
         0,
