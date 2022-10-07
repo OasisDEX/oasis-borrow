@@ -1,4 +1,3 @@
-
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 export function checkIfIsDisabledAutoTakeProfit({
