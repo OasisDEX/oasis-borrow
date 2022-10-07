@@ -75,6 +75,15 @@ export function GenericSelect({
       color: theme.colors.primary100,
       overflow: 'visible',
     }),
+    placeholder: () => ({
+      fontSize: theme.fontSizes[2],
+      fontWeight: theme.fontWeights.semiBold,
+      color: theme.colors.neutral80,
+    }),
+    input: () => ({
+      fontSize: theme.fontSizes[2],
+      color: theme.colors.primary100,
+    }),
     menu: () => ({
       marginTop: theme.space[1],
       marginBottom: 0,
