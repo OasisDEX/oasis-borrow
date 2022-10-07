@@ -82,7 +82,7 @@ export function getManageAaveStateMachine$(
           },
         })
         .withContext({
-          token: 'ETH',
+          token,
           userInput: {
             riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
             amount: new BigNumber(0),

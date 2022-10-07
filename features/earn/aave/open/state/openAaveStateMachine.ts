@@ -7,6 +7,7 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
+import { OpenStEthReturn } from '../../../../aave'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import {
@@ -14,7 +15,6 @@ import {
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
-import { OpenStEthReturn } from '../../../../aave'
 
 type IStrategyInfo = {
   oracleAssetPrice: BigNumber

@@ -7,6 +7,8 @@ import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLe
 import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { zero } from '../../../../../helpers/zero'
+import { AdjustStEthReturn, CloseStEthReturn } from '../../../../aave'
 import {
   TransactionStateMachine,
   TransactionStateMachineEvents,
@@ -15,8 +17,6 @@ import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
-import { AdjustStEthReturn, CloseStEthReturn } from '../../../../aave'
-import { zero } from '../../../../../helpers/zero'
 
 type UserInput = {
   riskRatio: IRiskRatio

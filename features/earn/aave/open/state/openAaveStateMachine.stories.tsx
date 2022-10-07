@@ -16,6 +16,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
+import { OpenStEthReturn } from '../../../../aave'
 import {
   createProxyStateMachine,
   ProxyContext,
@@ -31,7 +32,6 @@ import { contextToTransactionParameters } from '../services'
 import { aaveStEthSimulateStateMachine } from './aaveStEthSimulateStateMachine'
 import { createOpenAaveStateMachine, OpenAaveEvent } from './openAaveStateMachine'
 import { createParametersStateMachine, ParametersStateMachine } from './parametersStateMachine'
-import { OpenStEthReturn } from '../../../../aave'
 
 const stories = storiesOf('Xstate Machines/Open Aave State Machine', module)
 
