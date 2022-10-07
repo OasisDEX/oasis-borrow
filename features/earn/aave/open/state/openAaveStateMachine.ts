@@ -284,7 +284,10 @@ export const createOpenAaveStateMachine = createMachine(
       })),
       sendFeesToSimulationMachine: send(
         (context): AaveStEthSimulateStateMachineEvents => {
-          const { sourceTokenFee, targetTokenFee } = context.transactionParameters!.simulation.swap
+          const sourceTokenFee =
+            context.transactionParameters?.simulation.swap.sourceTokenFee || zero
+          const targetTokenFee =
+            context.transactionParameters?.simulation.swap.targetTokenFee || zero
           return {
             type: 'FEE_CHANGED',
             fee: sourceTokenFee.plus(targetTokenFee),
