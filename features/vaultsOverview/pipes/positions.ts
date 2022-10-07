@@ -5,7 +5,7 @@ import { map, switchMap } from 'rxjs/operators'
 import {
   AaveUserReserveData,
   AaveUserReserveDataParameters,
-} from '../../../blockchain/calls/aaveProtocolDataProvider'
+} from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'

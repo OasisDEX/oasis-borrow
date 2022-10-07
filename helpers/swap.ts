@@ -82,3 +82,24 @@ export async function oneInchCallMock(
     exchangeCalldata: 0,
   }
 }
+
+export function getOneInchCall(swapAddress: string) {
+  return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
+    const response = await swapOneInchTokens(
+      from,
+      to,
+      amount.toString(),
+      swapAddress,
+      slippage.toString(),
+    )
+
+    return {
+      toTokenAddress: to,
+      fromTokenAddress: from,
+      minToTokenAmount: new BigNumber(0),
+      toTokenAmount: new BigNumber(response.toTokenAmount),
+      fromTokenAmount: new BigNumber(response.fromTokenAmount),
+      exchangeCalldata: response.tx.data,
+    }
+  }
+}
