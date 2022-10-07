@@ -134,7 +134,7 @@ export function GenericSelect({
     )
 
   return (
-    <Box sx={{ position: 'relative', zIndex: 3 }}>
+    <Box sx={{ position: 'relative' }}>
       <ReactSelect
         blurInputOnSelect={true}
         isDisabled={isDisabled}
