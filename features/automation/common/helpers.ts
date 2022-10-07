@@ -21,26 +21,17 @@ import { one, zero } from 'helpers/zero'
 
 export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
   const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
-  console.log('triggers')
-  console.log(triggers)
+
   try {
     const decodedTriggers = triggers.map((trigger) => {
-      console.log('trigger')
-      console.log(trigger)
-      console.log('decodded')
-      console.log(decodeTriggerData(trigger.commandAddress, networkId, trigger.executionParams))
       return {
         triggerId: trigger.triggerId,
         result: decodeTriggerData(trigger.commandAddress, networkId, trigger.executionParams),
       }
     })
-    console.log('decoded triggers', decodedTriggers)
 
     return decodedTriggers.filter((decodedTrigger) => {
       const triggerType = decodedTrigger.result[1]
-      console.log('triggerType', triggerType)
-      console.log('triggerTypes', triggerTypes)
-      console.log('is it included?', triggerTypes.includes(triggerType))
       return triggerTypes.includes(triggerType)
     })
   } catch (e) {

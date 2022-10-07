@@ -28,18 +28,14 @@ export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
 }
 
 export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTriggerData {
-  console.log('extracting atp triggers data')
-  console.log(data)
+
   if (data.triggers && data.triggers.length > 0) {
     const autoTakeProfitTriggersData = getTriggersByType(data.triggers, [
       TriggerType.AutoTakeProfitToCollateral,
       TriggerType.AutoTakeProfitToDai,
     ])
 
-    console.log('autoTakeProfitTriggersData', autoTakeProfitTriggersData)
     if (autoTakeProfitTriggersData.length) {
-      console.log('pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData)')
-      console.log(pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData))
       return pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData)
     }
 
