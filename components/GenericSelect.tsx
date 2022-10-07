@@ -18,6 +18,9 @@ interface GenericSelectOption {
   icon?: string
 }
 interface GenericSelectProps {
+  /**
+   * For more info about custom styles options see: https://react-select.com/styles
+   */
   customStyles?: ReactSelectSimplifiedStyles
   defaultValue?: GenericSelectOption
   expandableArrowSize?: number
