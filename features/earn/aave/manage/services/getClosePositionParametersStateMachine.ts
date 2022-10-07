@@ -6,7 +6,6 @@ import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { zero } from '../../../../../helpers/zero'
 import { getCloseAaveParameters } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
 import {
@@ -33,10 +32,12 @@ export function getClosePositionParametersStateMachineServices$(
           }
           return await getCloseAaveParameters(
             contextConnected,
-            context.valueLocked || zero,
+            context.aaveReverseData.currentATokenBalance,
             userSettings.slippage,
             context.proxyAddress,
             context.transactionParameters.simulation.position,
+            context.aaveReverseData,
+            context.aaveUserAccountData,
           )
         },
         estimateGas: async (context) => {

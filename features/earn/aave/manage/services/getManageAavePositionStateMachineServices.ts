@@ -53,7 +53,7 @@ export function getManageAavePositionStateMachineServices(
       return proxy
     },
     getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
-      const result = await aaveProtocolData(context.token!, context.proxyAddress!)
+      const result = await aaveProtocolData(context.strategy!, context.proxyAddress!)
         .pipe(first())
         .toPromise()
       console.log(`protocol data: `, result.positionData.currentATokenBalance.toString())

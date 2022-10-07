@@ -24,7 +24,7 @@ type UserInput = {
 }
 
 export interface ManageAaveContext {
-  strategy: string
+  strategy: string // TODO: Consider changing name to reserve token
   token: string
   address: string
   proxyAddress?: string

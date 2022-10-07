@@ -10,6 +10,7 @@ import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall, oneInchCallMock } from '../../helpers/swap'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
 import { getOneInchCall } from '../../helpers/swap'
+import { one, zero } from '../../helpers/zero'
 
 export interface ActionCall {
   targetHash: string

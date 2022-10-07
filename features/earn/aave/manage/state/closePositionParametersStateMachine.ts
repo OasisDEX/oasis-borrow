@@ -3,13 +3,16 @@ import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLendingPool'
+import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { CloseStEthReturn } from '../../../../aave'
 
 type ClosePositionParametersStateMachineContext = {
-  proxyAddress?: string
-  token?: string
-  valueLocked?: BigNumber
+  proxyAddress: string
+  token: string
+  aaveReverseData: AaveUserReserveData
+  aaveUserAccountData: AaveUserAccountData
 
   transactionParameters?: CloseStEthReturn
   estimatedGas?: number
@@ -32,7 +35,7 @@ export const createClosePositionParametersStateMachine = createMachine(
     tsTypes: {} as import('./closePositionParametersStateMachine.typegen').Typegen0,
     id: 'closeAaveParameters',
     initial: 'idle',
-    context: {},
+    context: {} as ClosePositionParametersStateMachineContext,
     schema: {
       context: {} as ClosePositionParametersStateMachineContext,
       events: {} as ClosePositionParametersStateMachineEvents,

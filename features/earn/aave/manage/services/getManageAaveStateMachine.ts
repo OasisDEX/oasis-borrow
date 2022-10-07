@@ -40,21 +40,29 @@ export function getManageAaveStateMachine$(
             ...services,
           },
           actions: {
-            spawnClosePositionParametersMachine: assign((_) => ({
+            spawnClosePositionParametersMachine: assign((context) => ({
               refClosePositionParametersStateMachine: spawn(
-                closePositionParametersStateMachine.withConfig({
-                  actions: {
-                    notifyParent: sendParent(
-                      (context): ManageAaveEvent => {
-                        return {
-                          type: 'CLOSING_PARAMETERS_RECEIVED',
-                          parameters: context.transactionParameters!,
-                          estimatedGasPrice: context.gasPriceEstimation!,
-                        }
-                      },
-                    ),
-                  },
-                }),
+                closePositionParametersStateMachine
+                  .withConfig({
+                    actions: {
+                      notifyParent: sendParent(
+                        (context): ManageAaveEvent => {
+                          return {
+                            type: 'CLOSING_PARAMETERS_RECEIVED',
+                            parameters: context.transactionParameters!,
+                            estimatedGasPrice: context.gasPriceEstimation!,
+                          }
+                        },
+                      ),
+                    },
+                  })
+                  .withContext({
+                    ...closePositionParametersStateMachine.context,
+                    proxyAddress: context.proxyAddress!,
+                    token: context.strategy!,
+                    aaveReverseData: context.protocolData!.positionData,
+                    aaveUserAccountData: context.protocolData!.accountData,
+                  }),
                 { name: 'parametersMachine' },
               ),
             })),
