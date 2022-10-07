@@ -1,8 +1,8 @@
-import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 
-import { AaveProtocolDataProvider } from '../../types/web3-v1-contracts/aave-protocol-data-provider'
-import { CallDef } from './callsHelpers'
+import { AaveProtocolDataProvider } from '../../../types/web3-v1-contracts/aave-protocol-data-provider'
+import { amountFromWei } from '../../utils'
+import { CallDef } from '../callsHelpers'
 
 export interface AaveUserReserveDataParameters {
   token: string
@@ -14,6 +14,13 @@ export interface AaveReserveDataParameters {
 
 export interface AaveUserReserveData {
   currentATokenBalance: BigNumber
+  currentStableDebt: BigNumber
+  currentVariableDebt: BigNumber
+  principalStableDebt: BigNumber
+  scaledVariableDebt: BigNumber
+  stableBorrowRate: BigNumber
+  liquidityRate: BigNumber
+  usageAsCollateralEnabled: boolean
 }
 
 export type AaveReserveDataReply = {
@@ -42,9 +49,31 @@ export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, Aave
   prepareArgs: ({ token, proxyAddress }, context) => {
     return [context.tokens[token].address, proxyAddress]
   },
-  postprocess: (result) => {
+  postprocess: (result, args) => {
     return {
-      currentATokenBalance: amountFromWei(new BigNumber(result.currentATokenBalance)),
+      currentATokenBalance: amountFromWei(
+        new BigNumber(result.currentATokenBalance.toString()),
+        args.token,
+      ),
+      currentStableDebt: amountFromWei(
+        new BigNumber(result.currentStableDebt.toString()),
+        args.token,
+      ),
+      currentVariableDebt: amountFromWei(
+        new BigNumber(result.currentVariableDebt.toString()),
+        args.token,
+      ),
+      principalStableDebt: amountFromWei(
+        new BigNumber(result.principalStableDebt.toString()),
+        args.token,
+      ),
+      scaledVariableDebt: amountFromWei(
+        new BigNumber(result.scaledVariableDebt.toString()),
+        args.token,
+      ),
+      stableBorrowRate: new BigNumber(result.stableBorrowRate.toString()),
+      liquidityRate: new BigNumber(result.liquidityRate.toString()),
+      usageAsCollateralEnabled: result.usageAsCollateralEnabled,
     }
   },
 }

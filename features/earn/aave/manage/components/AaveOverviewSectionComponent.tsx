@@ -21,7 +21,9 @@ export function AaveOverviewSectionComponent() {
           </Box>
           <Box>
             {'Position Details: '}{' '}
-            {formatCryptoBalance(state.context.positionData?.currentATokenBalance || zero)}
+            {formatCryptoBalance(
+              state.context.protocolData?.positionData?.currentATokenBalance || zero,
+            )}
             {' stETH'}
           </Box>
           <Box>

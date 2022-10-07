@@ -57,7 +57,7 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
   })
     .then((resp) => {
       if (!resp.ok) {
-        throw Error(`Risk service status code ${resp.status}`)
+        throw Error(`Risk service status code ${resp.status} ${resp.statusText}`)
       }
       return resp.json()
     })
@@ -69,9 +69,20 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
 const offset = 14 * 24 * 60 * 60 * 1000 // 14 days
 
 async function checkIfRisky(address: string) {
-  const trmData = await getTrmRisk(address)
+  try{
+    const trmData = await getTrmRisk(address)
 
-  return !!trmData.addressRiskIndicators.length
+    try{
+      console.log(`TRM_LOG ${address} check, payload ${JSON.stringify(trmData)}`);
+    }catch(ex){
+      console.log("TRM_LOG logging failed", ex);
+    }
+
+    return !!trmData.addressRiskIndicators.length;
+  }catch(ex){
+    console.log(`TRM_LOG ${address} check failed`);
+    throw ex;
+  }
 }
 
 const inputSchema = z.object({

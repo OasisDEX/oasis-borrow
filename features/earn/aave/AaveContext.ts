@@ -1,5 +1,5 @@
-import { getAaveAssetsPrices } from 'blockchain/calls/aavePriceOracle'
-import { getAaveReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
+import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
+import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { GraphQLClient } from 'graphql-request'
@@ -9,11 +9,12 @@ import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { getAaveAssetPriceData } from '../../../blockchain/calls/aavePriceOracle'
+import { getAaveUserAccountData } from '../../../blockchain/calls/aave/aaveLendingPool'
+import { getAaveAssetPriceData } from '../../../blockchain/calls/aave/aavePriceOracle'
 import {
   getAaveReserveConfigurationData,
   getAaveUserReserveData,
-} from '../../../blockchain/calls/aaveProtocolDataProvider'
+} from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
@@ -67,6 +68,8 @@ export function setupAaveContext({
 
   const aaveAssetPriceData$ = observe(once$, connectedContext$, getAaveAssetPriceData)
 
+  const aaveUserAccountData$ = observe(once$, connectedContext$, getAaveUserAccountData)
+
   const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
     txHelpers$,
@@ -108,6 +111,7 @@ export function setupAaveContext({
     tokenBalances$,
     proxyForAccount$,
     aaveUserReserveData$,
+    aaveUserAccountData$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)

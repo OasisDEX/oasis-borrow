@@ -8,6 +8,10 @@ import {
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
 import {
+  AutoTakeProfitTriggerData,
+  defaultAutoTakeProfitData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import {
   ConstantMultipleTriggerData,
   defaultConstantMultipleData,
   extractConstantMultipleData,
@@ -27,6 +31,7 @@ interface AutomationContext {
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   automationTriggersData: TriggersData
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
 }
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
@@ -50,6 +55,7 @@ const automationContextInitialState = {
   autoSellTriggerData: defaultAutoBSData,
   stopLossTriggerData: defaultStopLossData,
   constantMultipleTriggerData: defaultConstantMultipleData,
+  autoTakeProfitTriggerData: defaultAutoTakeProfitData,
   automationTriggersData: { isAutomationEnabled: false, triggers: [] },
 }
 
@@ -77,6 +83,7 @@ export function AutomationContextProvider({ children, id }: { id: BigNumber } & 
         }),
         stopLossTriggerData: extractStopLossData(automationTriggersData),
         constantMultipleTriggerData: extractConstantMultipleData(automationTriggersData),
+        autoTakeProfitTriggerData: defaultAutoTakeProfitData, //TODO extractAutoTakeProfitData(automationTriggersData),
         automationTriggersData,
       })
     }

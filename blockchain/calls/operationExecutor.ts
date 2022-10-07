@@ -1,15 +1,13 @@
 import { TxMeta } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { Contract } from 'ethers'
+import dsProxy from 'blockchain/abi/ds-proxy.json'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { contractDesc } from 'blockchain/config'
+import { ContextConnected } from 'blockchain/network'
+import { DsProxy, OperationExecutor } from 'types/ethers-contracts'
 
 import { zero } from '../../helpers/zero'
-import { DsProxy } from '../../types/web3-v1-contracts/ds-proxy'
-import dsProxy from '../abi/ds-proxy.json'
-import { default as OperationExecutorAbi } from '../abi/operation-executor.json'
-import { contractDesc } from '../config'
-import { ContextConnected } from '../network'
 import { amountToWei } from '../utils'
-import { TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
 
 export interface OperationExecutorTxMeta extends TxMeta {
@@ -35,10 +33,8 @@ export const callOperationExecutor: TransactionDef<OperationExecutorTxMeta> = {
 }
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
-  const operatorExecutor = new Contract(context.operationExecutor.address, OperationExecutorAbi)
-
-  return operatorExecutor.interface.encodeFunctionData('executeOp', [
-    data.calls,
-    data.operationName,
-  ])
+  return context
+    .contract<OperationExecutor>(context.operationExecutor)
+    .methods.executeOp(data.calls, data.operationName)
+    .encodeABI()
 }

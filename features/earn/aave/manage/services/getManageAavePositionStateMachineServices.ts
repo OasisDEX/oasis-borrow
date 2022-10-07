@@ -1,14 +1,18 @@
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
 import {
+  AaveUserAccountData,
+  AaveUserAccountDataParameters,
+} from '../../../../../blockchain/calls/aave/aaveLendingPool'
+import {
   AaveUserReserveData,
   AaveUserReserveDataParameters,
-} from '../../../../../blockchain/calls/aaveProtocolDataProvider'
+} from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
-import { ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
+import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
 export function getManageAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,
@@ -16,7 +20,20 @@ export function getManageAavePositionStateMachineServices(
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
+  aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
 ): ManageAaveStateMachineServices {
+  function aaveProtocolData(token: string, proxyAddress: string) {
+    return combineLatest(
+      aaveUserReserveData$({ token, proxyAddress }),
+      aaveUserAccountData$({ proxyAddress }),
+    ).pipe(
+      map(([reserveData, accountData]) => ({
+        positionData: reserveData,
+        accountData: accountData,
+      })),
+    )
+  }
+
   return {
     getBalance: (context, _): Observable<ManageAaveEvent> => {
       return tokenBalances$.pipe(
@@ -35,13 +52,8 @@ export function getManageAavePositionStateMachineServices(
       if (proxy === undefined) throw new Error('Proxy address not found')
       return proxy
     },
-    getAavePosition: async (context): Promise<AaveUserReserveData> => {
-      return await aaveUserReserveData$({
-        token: context.strategy,
-        proxyAddress: context.proxyAddress!,
-      })
-        .pipe(first())
-        .toPromise()
+    getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
+      return await aaveProtocolData(context.token!, context.proxyAddress!).pipe(first()).toPromise()
     },
   }
 }

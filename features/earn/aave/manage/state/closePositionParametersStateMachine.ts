@@ -63,7 +63,7 @@ export const createClosePositionParametersStateMachine = createMachine(
           id: 'getParameters',
           onDone: {
             target: 'estimatingGas',
-            actions: ['assignTransactionParameters'],
+            actions: ['assignTransactionParameters', 'notifyParent'],
           },
           onError: {
             actions: ['logError'],
@@ -93,7 +93,7 @@ export const createClosePositionParametersStateMachine = createMachine(
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: ['assignReceivedParameters', 'notifyParent'],
+            actions: ['assignReceivedParameters'],
           },
         },
       },

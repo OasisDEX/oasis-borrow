@@ -2,9 +2,11 @@ import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveUserReserveData } from '../../../../../blockchain/calls/aaveProtocolDataProvider'
+import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLendingPool'
+import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { zero } from '../../../../../helpers/zero'
 import { OperationParameters } from '../../../../aave'
 import {
   TransactionStateMachine,
@@ -20,7 +22,7 @@ export interface ManageAaveContext {
   token: string
   address: string
   proxyAddress?: string
-  positionData?: AaveUserReserveData
+  protocolData?: AaveProtocolData
 
   refClosePositionParametersStateMachine?: ActorRefFrom<ClosePositionParametersStateMachine>
   refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
@@ -28,7 +30,9 @@ export interface ManageAaveContext {
   currentStep?: number
   totalSteps?: number
   tokenBalance?: BigNumber
+  tokenPrice?: BigNumber
   transactionParameters?: OperationParameters
+  balanceAfterClose?: BigNumber
   estimatedGasPrice?: HasGasEstimation
 
   strategyInfo?: StrategyInfo
@@ -39,6 +43,11 @@ type StrategyInfo = {
   maxMultiple: BigNumber
   liquidationThreshold: BigNumber
   assetPrice: BigNumber
+}
+
+export interface AaveProtocolData {
+  positionData: AaveUserReserveData
+  accountData: AaveUserAccountData
 }
 
 export type ManageAaveEvent =
@@ -72,8 +81,8 @@ export const createManageAaveStateMachine =
           getProxyAddress: {
             data: string
           }
-          getAavePosition: {
-            data: AaveUserReserveData
+          getAaveProtocolData: {
+            data: AaveProtocolData
           }
         },
       },
@@ -99,11 +108,11 @@ export const createManageAaveStateMachine =
             },
             gettingAavePosition: {
               invoke: {
-                src: 'getAavePosition',
-                id: 'getAavePosition',
+                src: 'getAaveProtocolData',
+                id: 'getAaveProtocolData',
                 onDone: [
                   {
-                    actions: ['assignPositionData'],
+                    actions: ['assignProtocolData'],
                     target: '#manageAave.editing',
                   },
                 ],
@@ -118,7 +127,7 @@ export const createManageAaveStateMachine =
           },
           on: {
             SET_BALANCE: {
-              actions: 'setTokenBalanceFromEvent',
+              actions: ['setTokenBalanceFromEvent', 'updateBalanceAfterClose'],
             },
             CLOSE_POSITION: {
               target: 'reviewingClosing',
@@ -164,7 +173,7 @@ export const createManageAaveStateMachine =
           ],
           on: {
             CLOSING_PARAMETERS_RECEIVED: {
-              actions: 'assignTransactionParameters',
+              actions: ['assignTransactionParameters', 'updateBalanceAfterClose'],
             },
             START_TRANSACTION: {
               cond: 'validTransactionParameters',
@@ -188,11 +197,16 @@ export const createManageAaveStateMachine =
           tokenBalance: event.balance,
           tokenPrice: event.tokenPrice,
         })),
+        updateBalanceAfterClose: assign((context) => ({
+          balanceAfterClose: context.tokenBalance?.plus(
+            context.transactionParameters?.positionInfo['ethAmountAfterSwap'] ?? zero,
+          ),
+        })),
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
         })),
-        assignPositionData: assign((context, event) => ({
-          positionData: event.data,
+        assignProtocolData: assign((context, event) => ({
+          protocolData: event.data,
         })),
         assignTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,
@@ -203,7 +217,7 @@ export const createManageAaveStateMachine =
             type: 'VARIABLES_RECEIVED',
             proxyAddress: context.proxyAddress!,
             token: context.token,
-            valueLocked: context.positionData!.currentATokenBalance!,
+            valueLocked: context.protocolData!.positionData!.currentATokenBalance!,
           }),
           { to: (context) => context.refClosePositionParametersStateMachine! },
         ),
