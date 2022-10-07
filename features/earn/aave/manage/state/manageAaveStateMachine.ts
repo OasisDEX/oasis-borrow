@@ -7,8 +7,6 @@ import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLe
 import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { zero } from '../../../../../helpers/zero'
-import { OperationParameters } from '../../../../aave'
 import {
   TransactionStateMachine,
   TransactionStateMachineEvents,
@@ -17,6 +15,13 @@ import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
+import { AdjustStEthReturn, CloseStEthReturn } from '../../../../aave'
+import { zero } from '../../../../../helpers/zero'
+
+type UserInput = {
+  riskRatio: IRiskRatio
+  amount: BigNumber
+}
 
 export interface ManageAaveContext {
   strategy: string
@@ -32,9 +37,12 @@ export interface ManageAaveContext {
   totalSteps?: number
   tokenBalance?: BigNumber
   tokenPrice?: BigNumber
-  transactionParameters?: OperationParameters
+  transactionParameters?: AdjustStEthReturn
   balanceAfterClose?: BigNumber
   estimatedGasPrice?: HasGasEstimation
+  inputDelay: number
+
+  userInput: UserInput
 
   strategyInfo?: StrategyInfo
 }
@@ -61,12 +69,12 @@ export type ManageAaveEvent =
   | { type: 'START_TRANSACTION' }
   | {
       type: 'CLOSING_PARAMETERS_RECEIVED'
-      parameters: OperationParameters
+      parameters: CloseStEthReturn
       estimatedGasPrice: HasGasEstimation
     }
   | {
       type: 'ADJUSTING_PARAMETERS_RECEIVED'
-      parameters: OperationParameters
+      parameters: AdjustStEthReturn
       estimatedGasPrice: HasGasEstimation
     }
 
@@ -200,7 +208,7 @@ export const createManageAaveStateMachine =
         })),
         updateBalanceAfterClose: assign((context) => ({
           balanceAfterClose: context.tokenBalance?.plus(
-            context.transactionParameters?.positionInfo['ethAmountAfterSwap'] ?? zero,
+            context.transactionParameters?.simulation.swap.minToTokenAmount ?? zero,
           ),
         })),
         assignProxyAddress: assign((context, event) => ({

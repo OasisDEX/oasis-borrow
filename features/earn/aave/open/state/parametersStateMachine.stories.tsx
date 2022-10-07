@@ -8,7 +8,7 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OperationParameters } from '../../../../aave'
+import { OpenStEthReturn } from '../../../../aave'
 import {
   createParametersStateMachine,
   ParametersStateMachineEvents,
@@ -36,7 +36,7 @@ const machine = createParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OperationParameters
+      return {} as OpenStEthReturn
     },
     estimateGasPrice: async () => {
       await delay()

@@ -7,7 +7,6 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
-import { OperationParameters } from '../../../../aave'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import {
@@ -15,6 +14,7 @@ import {
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
+import { OpenStEthReturn } from '../../../../aave'
 
 type IStrategyInfo = {
   oracleAssetPrice: BigNumber
@@ -41,7 +41,7 @@ export interface OpenAaveContext {
   proxyAddress?: string
   strategyName?: string
 
-  transactionParameters?: OperationParameters
+  transactionParameters?: OpenStEthReturn
   estimatedGasPrice?: HasGasEstimation
 
   strategyInfo?: IStrategyInfo
@@ -61,7 +61,7 @@ export type OpenAaveMachineEvents =
 export type OpenAaveTransactionEvents =
   | {
       type: 'TRANSACTION_PARAMETERS_RECEIVED'
-      parameters: OperationParameters
+      parameters: OpenStEthReturn
       estimatedGasPrice: HasGasEstimation
     }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }
@@ -283,10 +283,13 @@ export const createOpenAaveStateMachine = createMachine(
         strategyInfo: event.strategyInfo,
       })),
       sendFeesToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => ({
-          type: 'FEE_CHANGED',
-          fee: context.transactionParameters?.strategy.simulation.swap.fee || zero,
-        }),
+        (context): AaveStEthSimulateStateMachineEvents => {
+          const { sourceTokenFee, targetTokenFee } = context.transactionParameters!.simulation.swap
+          return {
+            type: 'FEE_CHANGED',
+            fee: sourceTokenFee.plus(targetTokenFee),
+          }
+        },
         { to: (context) => context.refSimulationMachine! },
       ),
       sendUpdateToSimulationMachine: send(

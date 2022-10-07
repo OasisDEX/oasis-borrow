@@ -75,8 +75,8 @@ export function getOpenAavePositionStateMachineServices(
 export function contextToTransactionParameters(context: OpenAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.transactionParameters!.strategy.calls as any,
-    operationName: context.transactionParameters!.operationName,
+    calls: context.transactionParameters!.calls as any,
+    operationName: 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
     amount: context.amount!,

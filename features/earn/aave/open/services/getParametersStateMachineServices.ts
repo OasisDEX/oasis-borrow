@@ -40,8 +40,8 @@ export function getOpenAaveParametersStateMachineServices$(
           return await txHelpers
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
-              calls: context.transactionParameters!.strategy.calls as any,
-              operationName: context.transactionParameters!.operationName,
+              calls: context.transactionParameters!.calls as any,
+              operationName: 'CustomOperation',
               token: context.token!,
               amount: context.amount!,
               proxyAddress: context.proxyAddress!,

@@ -8,21 +8,14 @@ import { Awaited } from 'ts-essentials'
 import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall, oneInchCallMock } from '../../helpers/swap'
+import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
 
 export interface ActionCall {
   targetHash: string
   callData: string
 }
 
-export type PositionInfo = { fee: BigNumber } & Record<string, BigNumber>
-
-export interface OperationParameters {
-  calls: ActionCall[]
-  // TODO: Is needed? The library should return it.
-  operationName: string
-  isAllowanceNeeded: boolean
-  strategy: Awaited<ReturnType<typeof strategies.aave.openStEth>>
-}
+export type OpenStEthReturn = Awaited<ReturnType<typeof strategies.aave.openStEth>>
 
 export async function getOpenAaveParameters(
   context: ContextConnected,
@@ -30,7 +23,7 @@ export async function getOpenAaveParameters(
   riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
-): Promise<OperationParameters> {
+): Promise<OpenStEthReturn> {
   const mainnetAddresses = {
     DAI: ADDRESSES.main.DAI,
     ETH: ADDRESSES.main.ETH,
@@ -49,7 +42,7 @@ export async function getOpenAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const strategyReturn = await strategies.aave.aave.openStEth(
+  return await strategies.aave.openStEth(
     {
       depositAmount: amount,
       slippage: slippage,
@@ -63,19 +56,19 @@ export async function getOpenAaveParameters(
       // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
     },
   )
-  return {
-    strategy: strategyReturn,
-    operationName: 'CustomOperation',
-    isAllowanceNeeded: false,
-  }
 }
+
+export type AdjustStEthReturn = Awaited<ReturnType<typeof strategies.aave.adjustStEth>>
+
+export type CloseStEthReturn = Awaited<ReturnType<typeof strategies.aave.closeStEth>>
 
 export async function getCloseAaveParameters(
   context: ContextConnected,
   stEthValueLocked: BigNumber,
   slippage: BigNumber,
   proxyAddress: string,
-): Promise<OperationParameters> {
+  position: IBasePosition,
+): Promise<CloseStEthReturn> {
   const mainnetAddresses = {
     DAI: ADDRESSES.main.DAI,
     ETH: ADDRESSES.main.ETH,
@@ -93,7 +86,7 @@ export async function getCloseAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const strategyReturn = await strategy.aave.closeStEth(
+  return await strategies.aave.closeStEth(
     {
       stEthAmountLockedInAave: amountToWei(stEthValueLocked, 'ETH'),
       slippage: slippage,
@@ -103,16 +96,7 @@ export async function getCloseAaveParameters(
       provider: provider,
       getSwapData: getOneInchCall('0xa779C1D17bC5230c07afdC51376CAC1cb3Dd5314'),
       dsProxy: proxyAddress,
+      position,
     },
   )
-
-  return {
-    calls: strategyReturn.calls,
-    operationName: 'CustomOperation',
-    positionInfo: {
-      fee: strategyReturn.feeAmount,
-      ethAmountAfterSwap: strategyReturn.ethAmountAfterSwap,
-    },
-    isAllowanceNeeded: false,
-  }
 }

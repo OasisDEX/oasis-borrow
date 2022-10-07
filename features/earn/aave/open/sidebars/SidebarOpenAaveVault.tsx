@@ -166,15 +166,14 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
 function SettingMultipleView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
-  const maxRisk =
-    state.context.transactionParameters?.strategy.simulation.position.category.maxLoanToValue
+  const maxRisk = state.context.transactionParameters?.simulation.position.category.maxLoanToValue
 
   const minRisk =
-    state.context.transactionParameters?.strategy.simulation.minConfigurableRiskRatio ||
+    state.context.transactionParameters?.simulation.minConfigurableRiskRatio ||
     new RiskRatio(zero, RiskRatio.TYPE.LTV)
 
   const liquidationPrice =
-    state.context.transactionParameters?.strategy.simulation.position.liquidationPrice || zero
+    state.context.transactionParameters?.simulation.position.liquidationPrice || zero
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
@@ -183,8 +182,7 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
     AT_RISK = 'AT_RISK',
   }
 
-  const healthFactor =
-    state.context.transactionParameters?.strategy.simulation.position.healthFactor
+  const healthFactor = state.context.transactionParameters?.simulation.position.healthFactor
 
   const warningHealthFactor = new BigNumber('1.25')
 

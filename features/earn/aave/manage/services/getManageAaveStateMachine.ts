@@ -19,8 +19,8 @@ import {
 function contextToTransactionParameters(context: ManageAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.transactionParameters!.strategy.calls as any,
-    operationName: context.transactionParameters!.operationName,
+    calls: context.transactionParameters!.calls as any,
+    operationName: 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
   }
@@ -83,9 +83,11 @@ export function getManageAaveStateMachine$(
         })
         .withContext({
           token: 'ETH',
-          riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
+          userInput: {
+            riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
+            amount: new BigNumber(0),
+          },
           inputDelay: 1000,
-          amount: new BigNumber(0),
           address,
           strategy,
         })

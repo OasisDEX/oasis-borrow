@@ -5,14 +5,14 @@ import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OperationParameters } from '../../../../aave'
+import { OpenStEthReturn } from '../../../../aave'
 
 type ParametersStateMachineContext = {
   token?: string
   amount?: BigNumber
   riskRatio?: IRiskRatio
   proxyAddress?: string
-  transactionParameters?: OperationParameters
+  transactionParameters?: OpenStEthReturn
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
 }
@@ -49,7 +49,7 @@ export const createParametersStateMachine = createMachine(
       events: {} as ParametersStateMachineEvents,
       services: {} as {
         getParameters: {
-          data: OperationParameters | undefined
+          data: OpenStEthReturn | undefined
         }
         estimateGas: {
           data: number
