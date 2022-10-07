@@ -9,6 +9,7 @@ import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall, oneInchCallMock } from '../../helpers/swap'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
+import { getOneInchCall } from '../../helpers/swap'
 
 export interface ActionCall {
   targetHash: string
@@ -37,7 +38,14 @@ export async function getOpenAaveParameters(
   }
 
   const addresses = {
-    ...mainnetAddresses,
+    DAI: context.tokens['DAI'].address,
+    ETH: context.tokens['ETH'].address,
+    WETH: context.tokens['WETH'].address,
+    stETH: context.tokens['stETH'].address,
+    chainlinkEthUsdPriceFeed: context.aavePriceOracle.address,
+    aavePriceOracle: context.aavePriceOracle.address,
+    aaveLendingPool: context.aaveLendingPool.address,
+    operationExecutor: context.operationExecutor.address,
   }
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
@@ -51,9 +59,9 @@ export async function getOpenAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: oneInchCallMock,
+      // getSwapData: oneInchCallMock,
       dsProxy: proxyAddress,
-      // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
+      getSwapData: getOneInchCall(context.swapAddress),
     },
   )
 }
@@ -81,7 +89,14 @@ export async function getCloseAaveParameters(
   }
 
   const addresses = {
-    ...mainnetAddresses,
+    DAI: context.tokens['DAI'].address,
+    ETH: context.tokens['ETH'].address,
+    WETH: context.tokens['WETH'].address,
+    stETH: context.tokens['stETH'].address,
+    chainlinkEthUsdPriceFeed: context.aavePriceOracle.address,
+    aavePriceOracle: context.aavePriceOracle.address,
+    aaveLendingPool: context.aaveLendingPool.address,
+    operationExecutor: context.operationExecutor.address,
   }
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
@@ -94,7 +109,7 @@ export async function getCloseAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: getOneInchCall('0xa779C1D17bC5230c07afdC51376CAC1cb3Dd5314'),
+      getSwapData: getOneInchCall(context.swapAddress),
       dsProxy: proxyAddress,
       position,
     },
