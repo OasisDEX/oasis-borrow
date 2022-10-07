@@ -1,6 +1,7 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import React, { useState } from 'react'
-import ReactSelect from 'react-select'
+import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
 import { Box, SxProps } from 'theme-ui'
 
@@ -14,31 +15,34 @@ type ReactSelectSimplifiedStyles = {
 interface GenericSelectOption {
   label: string
   value: string
+  icon?: string
 }
 interface GenericSelectProps {
   customStyles?: ReactSelectSimplifiedStyles
   defaultValue?: GenericSelectOption
+  expandableArrowSize?: number
+  expandableArrowSx?: SxProps
+  iconSize?: number
   isDisabled?: boolean
   isSearchable?: boolean
   name?: string
   onChange?: (value: GenericSelectOption) => void
   options: GenericSelectOption[]
   placeholder?: string
-  expandableArrowSize?: number
-  expandableArrowSx?: SxProps
 }
 
 export function GenericSelect({
   customStyles = {},
   defaultValue,
+  expandableArrowSize = 12,
+  expandableArrowSx,
+  iconSize = 12,
   isDisabled = false,
   isSearchable = false,
   name,
   onChange,
   options,
   placeholder,
-  expandableArrowSize = 12,
-  expandableArrowSx,
 }: GenericSelectProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [value, setValue] = useState<GenericSelectOption | undefined>(defaultValue)
@@ -56,14 +60,17 @@ export function GenericSelect({
       },
     }),
     valueContainer: () => ({
-      paddingRight: theme.space[3],
-      paddingLeft: theme.space[3],
+      padding: `0 ${theme.space[3]}px`,
+      overflow: 'visible',
     }),
     singleValue: () => ({
+      display: 'flex',
+      alignItems: 'center',
       margin: 0,
       fontSize: theme.fontSizes[2],
       fontWeight: theme.fontWeights.semiBold,
       color: theme.colors.primary100,
+      overflow: 'visible',
     }),
     menu: () => ({
       marginTop: theme.space[1],
@@ -81,7 +88,10 @@ export function GenericSelect({
       paddingBottom: '12px',
     }),
     option: ({ isSelected }) => ({
-      padding: '12px 16px',
+      display: 'flex',
+      minHeight: '48px',
+      alignItems: 'center',
+      padding: '0 16px',
       fontSize: theme.fontSizes[3],
       fontWeight: theme.fontWeights.regular,
       color: theme.colors.primary100,
@@ -115,21 +125,43 @@ export function GenericSelect({
     <Box sx={{ position: 'relative', zIndex: 3 }}>
       <ReactSelect
         blurInputOnSelect={true}
-        components={{ DropdownIndicator: null }}
         isDisabled={isDisabled}
         isSearchable={isSearchable}
         menuIsOpen={true}
         options={options}
         styles={combinedStyles}
         value={value}
+        components={{
+          DropdownIndicator: null,
+          SingleValue: ({ children, data, ...props }) => (
+            <components.SingleValue data={data} {...props}>
+              {data.icon ? (
+                <Box sx={{ pl: `${iconSize + 12}px` }}>
+                  <Icon
+                    size={iconSize}
+                    sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
+                    name={data.icon}
+                  />
+                  {children}
+                </Box>
+              ) : (
+                children
+              )}
+            </components.SingleValue>
+          ),
+          Option: ({ children, data, ...props }) => (
+            <components.Option data={data} {...props}>
+              {data.icon && <Icon size={iconSize} sx={{ mr: '12px' }} name={data.icon} />}
+              {children}
+            </components.Option>
+          ),
+        }}
         onBlur={() => {
           setIsOpen(false)
         }}
         onFocus={() => {
           setIsOpen(true)
         }}
-        {...(name && { name })}
-        {...(placeholder && { placeholder })}
         onChange={(option) => {
           const value = option as GenericSelectOption
 
@@ -137,6 +169,8 @@ export function GenericSelect({
           setIsOpen(false)
           if (onChange) onChange(value)
         }}
+        {...(name && { name })}
+        {...(placeholder && { placeholder })}
       />
       <ExpandableArrow
         size={expandableArrowSize}
