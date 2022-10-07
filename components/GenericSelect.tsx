@@ -175,11 +175,11 @@ export function GenericSelect({
           setIsOpen(true)
         }}
         onChange={(option) => {
-          const value = option as GenericSelectOption
+          const currentValue = option as GenericSelectOption
 
-          setValue(value)
+          setValue(currentValue)
           setIsOpen(false)
-          if (onChange) onChange(value)
+          if (onChange) onChange(currentValue)
         }}
         {...(name && { name })}
         {...(placeholder && { placeholder })}
