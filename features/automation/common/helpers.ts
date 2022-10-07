@@ -21,7 +21,8 @@ import { one, zero } from 'helpers/zero'
 
 export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
   const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
-
+  console.log('triggers')
+  console.log(triggers)
   try {
     const decodedTriggers = triggers.map((trigger) => {
       console.log('trigger')
