@@ -19,7 +19,6 @@ function DiscoveryPage() {
 
 DiscoveryPage.layout = discoveryPageLayout
 DiscoveryPage.layoutProps = discoveryPageLayoutProps
-
 DiscoveryPage.seoTags = discoveryPageSeoTags
 
 export default DiscoveryPage
