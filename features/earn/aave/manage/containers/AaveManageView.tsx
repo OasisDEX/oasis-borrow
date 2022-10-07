@@ -1,5 +1,8 @@
+import { useActor } from '@xstate/react'
+import { amountToWei } from 'blockchain/utils'
 import { TabBar } from 'components/TabBar'
 import { aaveFaq } from 'features/content/faqs/aave'
+import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -13,7 +16,10 @@ import { AavePositionHeader } from '../../components'
 import { ManageSectionComponent } from '../components'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { ManageAaveStateMachine } from '../state'
-import { ManageAaveStateMachineContextProvider } from './AaveManageStateMachineContext'
+import {
+  ManageAaveStateMachineContextProvider,
+  useManageAaveStateMachineContext,
+} from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
   address: string
@@ -29,6 +35,7 @@ function AaveManageContainer({
   return (
     <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
       <Container variant="vaultPageContainer">
+        <AavePositionNotice />
         <AavePositionHeader strategyName={strategy} noDetails />
         <TabBar
           variant="underline"
@@ -56,6 +63,19 @@ function AaveManageContainer({
       </Container>
     </ManageAaveStateMachineContextProvider>
   )
+}
+
+function AavePositionNotice() {
+  const { stateMachine } = useManageAaveStateMachineContext()
+  const [state] = useActor(stateMachine)
+  const { context } = state
+  if (
+    context.protocolData &&
+    amountToWei(context.protocolData.accountData.totalCollateralETH, context.token).gt(1)
+  ) {
+    return <AavePositionAlreadyOpenedNotice />
+  }
+  return null
 }
 
 export function AaveManagePositionView({ address, strategy }: AaveManageViewPositionViewProps) {
