@@ -1,8 +1,8 @@
-import { getAaveAssetsPrices } from 'blockchain/calls/aavePriceOracle'
+import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import {
   getAaveReserveConfigurationData,
   getAaveReserveData,
-} from 'blockchain/calls/aaveProtocolDataProvider'
+} from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
 import { AppContext } from 'components/AppContext'
 import { GraphQLClient } from 'graphql-request'
