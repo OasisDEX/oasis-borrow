@@ -9,43 +9,69 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
+import { AaveOverviewSectionComponent } from '../components'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
+import { ManageAaveStateMachine } from '../state'
+import { ManageAaveStateMachineContextProvider } from './AaveManageStateMachineContext'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function AaveManagePositionView({ proxy }: { proxy: string }) {
-  const { aaveManageStateMachine$ } = useAaveContext()
-  const [stateMachine, stateMachineError] = useObservable(aaveManageStateMachine$)
+interface AaveManageViewPositionViewProps {
+  address: string
+  strategy: string // TODO: Get token from strategy
+}
 
+function AaveManageContainer({
+  manageAaveStateMachine,
+  strategy,
+}: AaveManageViewPositionViewProps & { manageAaveStateMachine: ManageAaveStateMachine }) {
   const { t } = useTranslation()
+  return (
+    <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
+      <Container variant="vaultPageContainer">
+        {strategy} [HEADER]
+        <TabBar
+          variant="underline"
+          sections={[
+            {
+              value: 'overview',
+              label: t('system.overview'),
+              content: (
+                <Grid variant="vaultContainer">
+                  <Box>
+                    <AaveOverviewSectionComponent />
+                  </Box>
+                  <Box>{<SidebarManageAaveVault />}</Box>
+                </Grid>
+              ),
+            },
+            {
+              value: 'faq',
+              label: t('system.faq'),
+              content: <Card variant="faq">{aaveFaq}</Card>,
+            },
+          ]}
+        />
+        <Survey for="earn" />
+      </Container>
+    </ManageAaveStateMachineContextProvider>
+  )
+}
+
+export function AaveManagePositionView({ address, strategy }: AaveManageViewPositionViewProps) {
+  const { aaveManageStateMachine$ } = useAaveContext()
+  const [stateMachine, stateMachineError] = useObservable(
+    aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'STETH' }),
+  ) // TODO: should be created with strategy and address. Then should be more generic.
+
   return (
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
         {([_stateMachine]) => {
           return (
-            <Container variant="vaultPageContainer">
-              [HEADER]
-              <TabBar
-                variant="underline"
-                sections={[
-                  {
-                    value: 'overview',
-                    label: t('system.overview'),
-                    content: (
-                      <Grid variant="vaultContainer">
-                        <Box>[MANAGE AAVE DETAILS]</Box>
-                        <Box>{<SidebarManageAaveVault aaveStateMachine={_stateMachine} />}</Box>
-                      </Grid>
-                    ),
-                  },
-                  {
-                    value: 'faq',
-                    label: t('system.faq'),
-                    content: <Card variant="faq">{aaveFaq}</Card>,
-                  },
-                ]}
-              />
-              <Survey for="earn" />
-            </Container>
+            <AaveManageContainer
+              address={address}
+              strategy={strategy}
+              manageAaveStateMachine={_stateMachine}
+            />
           )
         }}
       </WithLoadingIndicator>

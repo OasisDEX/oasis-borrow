@@ -1795,7 +1795,9 @@
     "manage-earn": {
         "aave": {
             "vault-form": {
-                "deposit": "存入 ETH",
+              "adjust-risk": "Adjust Risk",
+
+              "deposit": "存入 ETH",
                 "title": "你的 Earn 仓位",
                 "close-title": "以 ETH 结算并关闭此仓位",
                 "close": "关闭金库",

@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
+import { callOperationExecutor } from '../../../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TxHelpers } from '../../../../../components/AppContext'
@@ -10,7 +11,6 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { one, zero } from '../../../../../helpers/zero'
 import { getOpenAaveParameters } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
-import { openAavePosition } from '../pipelines/openAavePosition'
 import { createParametersStateMachine, ParametersStateMachineServices } from '../state'
 
 export function getOpenAaveParametersStateMachineServices$(
@@ -38,7 +38,7 @@ export function getOpenAaveParametersStateMachineServices$(
             return 0
           }
           return await txHelpers
-            .estimateGas(openAavePosition, {
+            .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
               calls: context.transactionParameters!.strategy.calls as any,
               operationName: context.transactionParameters!.operationName,

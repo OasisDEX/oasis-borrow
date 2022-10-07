@@ -4,6 +4,7 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
+import * as aaveLendingPool from './abi/aave-lending-pool.json'
 import * as aavePriceOracle from './abi/aave-price-oracle.json'
 import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
@@ -219,6 +220,7 @@ const protoMain = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0xA50ba011c48153De246E5192C8f9258A2ba79Ca9',
   ),
+  aaveLendingPool: contractDesc(aaveLendingPool, '0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9'),
   // TODO: Replace with mainnet address (current val has been used for testing only)
   operationExecutor: contractDesc(
     operationExecutor,
@@ -316,6 +318,7 @@ const kovan: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x',
   ),
+  aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
   operationExecutor: contractDesc(
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
@@ -414,6 +417,7 @@ const goerli: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0xc1c6f3b788FE7F4bB896a2Fad65F5a8c0Ad509C9',
   ),
+  aaveLendingPool: contractDesc(aaveLendingPool, '0x4bd5643ac6f66a5237E18bfA7d47cF22f1c9F210'),
   operationExecutor: contractDesc(
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,

@@ -1246,6 +1246,7 @@
   "manage-earn": {
     "aave": {
       "vault-form": {
+        "adjust-risk": "Adjust Risk",
         "deposit": "Depositar ETH",
         "title": "Tu posición de Earn",
         "close-title": "Cerrar posición a ETH",

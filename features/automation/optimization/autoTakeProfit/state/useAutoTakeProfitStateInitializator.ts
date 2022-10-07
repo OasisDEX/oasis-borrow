@@ -54,6 +54,7 @@ export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
   //   })
   // }, [collateralizationRatio])
 
-  const isAutoTakeProfitEnabled = true
+  // because this value was hardcoded as true, Optimization was always shown as "On", regardless of feature flag
+  const isAutoTakeProfitEnabled = false
   return isAutoTakeProfitEnabled
 }
