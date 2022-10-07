@@ -61,6 +61,16 @@ export function prepareAutoTakeProfitTriggerData({
   const triggerType = isCloseToCollateral
     ? TriggerType.AutoTakeProfitToCollateral
     : TriggerType.AutoTakeProfitToDai
+
+    console.log('vaultData.id.toString()')
+    console.log(vaultData.id.toString())
+    console.log('triggerType.toString()')
+    console.log(triggerType.toString())
+    console.log('executionPrice.toString()')
+    console.log(executionPrice.toString())
+    console.log('maxBaseFeeInGwei.toString()')
+    console.log(maxBaseFeeInGwei.toString())
+
   return {
     cdpId: vaultData.id,
     triggerType,
