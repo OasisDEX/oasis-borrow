@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { AavePriceOracle } from 'types/web3-v1-contracts/aave-price-oracle'
 
-import { WAD } from '../../components/constants'
-import { CallDef } from './callsHelpers'
+import { WAD } from '../../../components/constants'
+import { CallDef } from '../callsHelpers'
 export interface AaveAssetsPricesParameters {
   tokens: string[]
 }

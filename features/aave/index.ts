@@ -6,7 +6,7 @@ import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
-import { oneInchCallMock } from '../../helpers/swap'
+import { getOneInchCall, oneInchCallMock } from '../../helpers/swap'
 
 export interface ActionCall {
   targetHash: string
@@ -106,7 +106,7 @@ export async function getCloseAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: oneInchCallMock,
+      getSwapData: getOneInchCall('0xa779C1D17bC5230c07afdC51376CAC1cb3Dd5314'),
       dsProxy: proxyAddress,
     },
   )
@@ -116,6 +116,7 @@ export async function getCloseAaveParameters(
     operationName: 'CustomOperation',
     positionInfo: {
       fee: strategyReturn.feeAmount,
+      ethAmountAfterSwap: strategyReturn.ethAmountAfterSwap,
     },
     isAllowanceNeeded: false,
   }
