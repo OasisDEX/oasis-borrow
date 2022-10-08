@@ -1,15 +1,19 @@
 import { DiscoveryFilters } from 'features/discovery/common/DiscoveryFilters'
+import { getDiscoveryData } from 'features/discovery/discoveryApi'
 import { getDefaultSettingsState } from 'features/discovery/helpers'
 import { DiscoveryPagesMeta } from 'features/discovery/meta'
-import { DiscoveryPages } from 'features/discovery/types'
+import { DiscoveryFiltersSettings, DiscoveryPages } from 'features/discovery/types'
 import React, { useState } from 'react'
 import { Box } from 'theme-ui'
 
 export function DiscoveryControl({ active }: { active: DiscoveryPages }) {
-  const { filters } = DiscoveryPagesMeta[active]
-  const [settings, setSettings] = useState(getDefaultSettingsState({ filters: filters }))
+  const { endpoint, filters } = DiscoveryPagesMeta[active]
+  const [settings, setSettings] = useState<DiscoveryFiltersSettings>(
+    getDefaultSettingsState({ filters: filters }),
+  )
+  const discoveryData = getDiscoveryData(endpoint, settings)
 
-  console.log(settings)
+  console.log(discoveryData)
 
   return (
     <Box

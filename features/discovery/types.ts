@@ -4,3 +4,7 @@ export enum DiscoveryPages {
   MOST_YIELD_EARNED,
   LARGEST_DEBT,
 }
+
+export interface DiscoveryFiltersSettings {
+  [key: string]: string
+}
