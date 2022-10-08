@@ -13,6 +13,7 @@ export function DiscoveryControl({ active }: { active: DiscoveryPages }) {
   )
   const discoveryData = getDiscoveryData(endpoint, settings)
 
+  // TODO: pass data to table component
   console.log(discoveryData)
 
   return (

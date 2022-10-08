@@ -8,7 +8,7 @@ import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
 
 export interface DiscoveryDataResponse {
-  //TODO: replace with real discovery data when available
+  // TODO: replace with real discovery data when available
   data?: any
   error?: boolean
 }
