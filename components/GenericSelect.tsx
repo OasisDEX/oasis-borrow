@@ -12,12 +12,12 @@ type ReactSelectSimplifiedStyles = {
   [key in keyof Styles]: (state: any) => ReactSelectCSSProperties
 }
 
-interface GenericSelectOption {
+export interface GenericSelectOption {
   label: string
   value: string
   icon?: string
 }
-interface GenericSelectProps {
+export interface GenericSelectProps {
   /**
    * For more info about custom styles options see: https://react-select.com/styles
    */

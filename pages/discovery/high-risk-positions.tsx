@@ -1,5 +1,6 @@
 import { DiscoveryNavigation } from 'features/discovery/common/DiscoveryNavigation'
 import { DiscoveryWrapperWithIntro } from 'features/discovery/common/DiscoveryWrapperWithIntro'
+import { DiscoveryControl } from 'features/discovery/controllers/DiscoveryControl'
 import {
   discoveryPageLayout,
   discoveryPageLayoutProps,
@@ -13,6 +14,7 @@ function DiscoveryPage() {
   return (
     <DiscoveryWrapperWithIntro>
       <DiscoveryNavigation active={DiscoveryPages.HIGH_RISK_POSITIONS} />
+      <DiscoveryControl active={DiscoveryPages.HIGH_RISK_POSITIONS} />
     </DiscoveryWrapperWithIntro>
   )
 }

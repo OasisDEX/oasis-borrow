@@ -1,11 +1,21 @@
+import { getToken } from 'blockchain/tokensMetadata'
 import { DiscoveryPages } from 'features/discovery/types'
 import React from 'react'
 
+export interface DiscoveryFiltersListItem {
+  label: string
+  value: string
+  icon?: string
+}
+export interface DiscoveryFiltersList {
+  [key: string]: DiscoveryFiltersListItem[]
+}
 export interface DiscoveryPageMeta {
   kind: DiscoveryPages
   id: string
   iconColor: string
   iconContent: JSX.Element
+  filters: DiscoveryFiltersList
 }
 
 export const DiscoveryPagesMeta: DiscoveryPageMeta[] = [
@@ -21,6 +31,20 @@ export const DiscoveryPagesMeta: DiscoveryPageMeta[] = [
         fill="white"
       />
     ),
+    filters: {
+      asset: [
+        { value: 'all', label: 'All asset' },
+        { value: 'eth', label: 'ETH', icon: getToken('ETH').iconCircle },
+        { value: 'dai', label: 'DAI', icon: getToken('DAI').iconCircle },
+        { value: 'wbtc', label: 'WBTC', icon: getToken('WBTC').iconCircle },
+      ],
+      value: [
+        { value: '>100k', label: 'Over $100' },
+        { value: '75k-100k', label: '$75,000 - $100,000' },
+        { value: '50k-75k', label: '$50,000 - $75,000' },
+        { value: '<50k', label: 'Below $50,000' },
+      ],
+    },
   },
   {
     kind: DiscoveryPages.HIGHEST_MULTIPLY_PNL,
@@ -39,6 +63,7 @@ export const DiscoveryPagesMeta: DiscoveryPageMeta[] = [
         <circle opacity="0.8" cx="22.6875" cy="12" r="1" fill="white" />
       </>
     ),
+    filters: {},
   },
   {
     kind: DiscoveryPages.MOST_YIELD_EARNED,
@@ -53,6 +78,7 @@ export const DiscoveryPagesMeta: DiscoveryPageMeta[] = [
         <rect opacity="0.8" x="14.0391" y="14" width="4.03053" height="10" rx="2" fill="white" />
       </>
     ),
+    filters: {},
   },
   {
     kind: DiscoveryPages.LARGEST_DEBT,
@@ -75,5 +101,6 @@ export const DiscoveryPagesMeta: DiscoveryPageMeta[] = [
         />
       </>
     ),
+    filters: {},
   },
 ]
