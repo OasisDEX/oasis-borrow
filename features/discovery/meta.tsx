@@ -19,7 +19,7 @@ export interface DiscoveryPageMeta {
   filters: DiscoveryFiltersList
 }
 
-export const DiscoveryPagesMeta: DiscoveryPageMeta[] = [
+export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   {
     kind: DiscoveryPages.HIGH_RISK_POSITIONS,
     id: 'high-risk-positions',

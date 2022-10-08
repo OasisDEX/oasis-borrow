@@ -1,3 +1,4 @@
+import { discoveryPagesMeta } from 'features/discovery/meta'
 import { GetServerSidePropsContext } from 'next'
 import React from 'react'
 
@@ -10,7 +11,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     redirect: {
-      destination: `/discovery/high-risk-positions${network}`,
+      destination: `/discovery/${discoveryPagesMeta[0].id}${network}`,
       permanent: true,
     },
   }
