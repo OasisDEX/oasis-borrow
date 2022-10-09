@@ -36,8 +36,6 @@ export function getClosePositionParametersStateMachineServices$(
             userSettings.slippage,
             context.proxyAddress,
             context.transactionParameters.simulation.position,
-            context.aaveReverseData,
-            context.aaveUserAccountData,
           )
         },
         estimateGas: async (context) => {
