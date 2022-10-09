@@ -1,4 +1,4 @@
-import { DiscoveryTableCellText } from 'features/discovery/common/DiscoveryTableCellText'
+import { getDiscoveryTableCellContent } from 'features/discovery/helpers'
 import { DiscoveryTableRowData } from 'features/discovery/types'
 import React from 'react'
 import { Box } from 'theme-ui'
@@ -44,9 +44,19 @@ export function DiscoveryTable({ rows }: { rows: DiscoveryTableRowData[] }) {
                 }}
               >
                 {Object.keys(row).map((key) => (
-                  <DiscoveryTableCellText key={`${key}-${i}`}>
-                    {`${row[key]}`}
-                  </DiscoveryTableCellText>
+                  <Box
+                    as="td"
+                    key={`${key}-${i}`}
+                    sx={{
+                      p: '8px 12px',
+                      textAlign: 'right',
+                      '&:first-child': {
+                        textAlign: 'left',
+                      },
+                    }}
+                  >
+                    {getDiscoveryTableCellContent({ key, row })}
+                  </Box>
                 ))}
               </Box>
             ))}
