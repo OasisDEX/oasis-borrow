@@ -35,22 +35,12 @@ export function createTransactionStateMachine<T extends TxMeta>(transactionDef: 
       context: {
         transactionDef,
       } as TransactionStateMachineContext<T>,
-      initial: 'idle',
+      initial: 'inProgress',
       schema: {
         context: {} as TransactionStateMachineContext<T>,
         events: {} as TransactionStateMachineEvents<T>,
       },
       states: {
-        idle: {
-          on: {
-            START: {
-              target: 'inProgress',
-            },
-            PARAMETERS_CHANGED: {
-              actions: ['assignParameters'],
-            },
-          },
-        },
         inProgress: {
           invoke: {
             src: 'startTransaction',
@@ -82,7 +72,6 @@ export function createTransactionStateMachine<T extends TxMeta>(transactionDef: 
         },
         failure: {
           entry: ['raiseError'],
-          always: 'idle',
         },
         success: {
           entry: ['notifyParent'],
@@ -92,11 +81,6 @@ export function createTransactionStateMachine<T extends TxMeta>(transactionDef: 
     },
     {
       actions: {
-        assignParameters: assign((context, event) => {
-          return {
-            transactionParameters: event.parameters,
-          }
-        }),
         assignTxHash: assign((context, event) => {
           return {
             txHash: event.txHash,

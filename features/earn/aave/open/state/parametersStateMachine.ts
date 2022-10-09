@@ -1,17 +1,18 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OperationParameters } from '../../../../aave'
+import { OpenStEthReturn } from '../../../../aave'
 
 type ParametersStateMachineContext = {
   token?: string
   amount?: BigNumber
-  multiply?: BigNumber
+  riskRatio?: IRiskRatio
   proxyAddress?: string
-  transactionParameters?: OperationParameters
+  transactionParameters?: OpenStEthReturn
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
 }
@@ -20,13 +21,22 @@ export type ParametersStateMachineEvents = {
   type: 'VARIABLES_RECEIVED'
   readonly token: string
   readonly amount: BigNumber
-  readonly multiply: BigNumber
+  readonly riskRatio: IRiskRatio
   readonly proxyAddress?: string
 }
 
 /*
   Machine based on the following pattern: https://xstate.js.org/docs/patterns/sequence.html#async-sequences
  */
+
+// what it does:
+// 1) call the library; then:
+// 2) estimate gas; then:
+// 3) estimate gas price
+// -> returns gas estimation USD and call data
+//
+// state machine used because it was easier to cancel previous runs when input changes
+
 export const createParametersStateMachine = createMachine(
   {
     predictableActionArguments: true,
@@ -39,7 +49,7 @@ export const createParametersStateMachine = createMachine(
       events: {} as ParametersStateMachineEvents,
       services: {} as {
         getParameters: {
-          data: OperationParameters | undefined
+          data: OpenStEthReturn | undefined
         }
         estimateGas: {
           data: number
@@ -126,7 +136,7 @@ export const createParametersStateMachine = createMachine(
         return {
           token: event.token,
           amount: event.amount,
-          multiply: event.multiply,
+          riskRatio: event.riskRatio,
           proxyAddress: event.proxyAddress,
         }
       }),

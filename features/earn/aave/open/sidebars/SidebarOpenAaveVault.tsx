@@ -1,28 +1,27 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { BigNumber } from 'bignumber.js'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { Box, Flex, Grid, Image, Link, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { amountFromWei } from '../../../../../blockchain/utils'
-import { WAD } from '../../../../../components/constants'
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
+import { MessageCard } from '../../../../../components/MessageCard'
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
-import { LOAN_FEE, OAZO_FEE } from '../../../../../helpers/multiply/calculations'
+import { formatPercent } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { one, zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { calculatePosition, IPosition } from '../services/tmpMaths'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
@@ -166,58 +165,54 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
 
 function SettingMultipleView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  function convertMultipleToColRatio(multiple: BigNumber): BigNumber {
-    return one.div(multiple.minus(one)).plus(one)
+
+  const maxRisk = state.context.transactionParameters?.simulation.position.category.maxLoanToValue
+
+  const minRisk =
+    state.context.transactionParameters?.simulation.minConfigurableRiskRatio ||
+    new RiskRatio(zero, RiskRatio.TYPE.LTV)
+
+  const liquidationPrice =
+    state.context.transactionParameters?.simulation.position.liquidationPrice || zero
+
+  const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
+
+  enum RiskLevel {
+    OK = 'OK',
+    AT_RISK = 'AT_RISK',
   }
 
-  function convertColRatioToMultiple(colRatio: BigNumber): BigNumber {
-    return convertMultipleToColRatio(colRatio)
-  }
-  const marketStEthEthPrice = amountFromWei(new BigNumber('968102393798180700'), 'ETH')
-  const minColRatio = new BigNumber(5)
-  const minRisk = convertColRatioToMultiple(minColRatio)
-  const maxRisk = state.context.strategyInfo ? state.context.strategyInfo.maxMultiple : zero
+  const healthFactor = state.context.transactionParameters?.simulation.position.healthFactor
 
-  const currentPosition: IPosition = {
-    collateral: zero,
-    collateralPriceInUSD: new BigNumber(1),
-    debt: zero,
-    debtPriceInUSD: new BigNumber('968102393798180700').div(WAD),
-    collateralRatio: zero,
-    liquidationRatio: one.div(state.context.strategyInfo?.liquidationThreshold || one),
-    multiple: zero,
-  }
+  const warningHealthFactor = new BigNumber('1.25')
 
-  const endState = calculatePosition({
-    currentPosition,
-    addedByUser: {
-      collateral: state.context.amount,
+  const riskTrafficLight = healthFactor?.gt(warningHealthFactor) ? RiskLevel.OK : RiskLevel.AT_RISK
+
+  const collateralToken = state.context.strategyInfo?.collateralToken
+
+  const debtToken = state.context.token
+
+  const priceMovementUntilLiquidation = one.minus(one.div(healthFactor || zero)).times(100)
+
+  const priceMovementWarningThreshold = new BigNumber(20)
+
+  const priceMovementToDisplay = formatPercent(
+    BigNumber.min(priceMovementUntilLiquidation, priceMovementWarningThreshold),
+    { precision: 2 },
+  )
+
+  const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
+
+  console.log(
+    `state.context.strategyInfo?.liquidationBonus ${state.context.strategyInfo?.liquidationBonus}`,
+  )
+
+  const liquidationPenalty = formatPercent(
+    (state.context.strategyInfo?.liquidationBonus || zero).times(100),
+    {
+      precision: 2,
     },
-    targetCollateralRatio: convertMultipleToColRatio(state.context.multiply || minRisk),
-    fees: {
-      oazo: OAZO_FEE,
-      flashLoan: LOAN_FEE,
-    },
-    prices: {
-      oracle: one.div(marketStEthEthPrice),
-      market: marketStEthEthPrice,
-    },
-    slippage: new BigNumber('0.005'),
-  })
-
-  let liquidationPriceRatio = one
-
-  if (
-    state.context.amount &&
-    state.context.strategyInfo?.liquidationThreshold &&
-    endState.debtDelta
-  ) {
-    liquidationPriceRatio = one.div(
-      state.context.amount
-        .times(state.context.strategyInfo?.liquidationThreshold)
-        .div(endState.debtDelta),
-    )
-  }
+  )
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -225,19 +220,36 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
       <Grid gap={3}>
         <SliderValuePicker
           sliderPercentageFill={new BigNumber(0)}
-          leftBoundry={liquidationPriceRatio}
+          leftBoundry={liquidationPrice}
           leftBoundryFormatter={(value) => value.toFixed(2)}
-          rightBoundry={marketStEthEthPrice}
+          rightBoundry={oracleAssetPrice}
           rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
-          onChange={(value) => {
-            send({ type: 'SET_MULTIPLE', multiple: value })
+          rightBoundryStyling={{
+            color: riskTrafficLight === RiskLevel.OK ? 'success100' : 'warning100',
           }}
-          minBoundry={minRisk}
-          maxBoundry={maxRisk}
-          lastValue={state.context.multiply!}
+          onChange={(ltv) => {
+            send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
+          }}
+          minBoundry={minRisk.loanToValue || zero}
+          maxBoundry={maxRisk || zero}
+          lastValue={state.context.riskRatio.loanToValue}
           disabled={false}
           step={0.01}
-          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
+          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {
+            collateralToken,
+            debtToken,
+          })}
+          rightLabel={
+            <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
+              <Text variant="paragraph4" color="interactive100">
+                {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
+                  collateralToken,
+                  debtToken,
+                })}{' '}
+                &gt;
+              </Text>
+            </Link>
+          }
         />
         <Flex
           sx={{
@@ -249,9 +261,28 @@ function SettingMultipleView({ state, send }: OpenAaveStateProps) {
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
         </Flex>
+        <OpenAaveInformationContainer state={state} send={send} />
+        <MessageCard
+          messages={[
+            isWarning
+              ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                  collateralToken,
+                  priceMovement: priceMovementToDisplay,
+                  debtToken,
+                  liquidationPenalty,
+                })
+              : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                  collateralToken,
+                  priceMovement: priceMovementToDisplay,
+                  debtToken,
+                  liquidationPenalty,
+                }),
+          ]}
+          type={isWarning ? 'warning' : 'ok'}
+        />
         <SidebarResetButton
           clear={() => {
-            send({ type: 'SET_MULTIPLE', multiple: minRisk })
+            send({ type: 'SET_RISK_RATIO', riskRatio: minRisk })
           }}
         />
         <OpenAaveInformationContainer state={state} send={send} />

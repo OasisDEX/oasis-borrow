@@ -1811,11 +1811,13 @@
         "go-to-position": "Go to position",
         "configure-multiple": {
           "title": "Set your risk level",
-          "liquidation-price": "stETH/ETH Liquidation Price",
-          "steth-eth-historial-ratio": "stETH / ETH Historical Ratio",
+          "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
+          "historical-ratio": "{{collateralToken}} / {{debtToken}} Historical Ratio",
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
-          "decrease-risk": "Decrease risk"
+          "decrease-risk": "Decrease risk",
+          "vault-message-ok": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position is unlikely to be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}",
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}"
         }
       }
     }
