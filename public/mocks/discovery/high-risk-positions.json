@@ -1,3 +1,50 @@
 {
-  "success": true
+  "rows": [
+    {
+      "asset": "ETH",
+      "liquidationPrice": 1354,
+      "nextOsmPrice": 1276.4,
+      "maxLiquidationAmount": 353422,
+      "status": {
+        "kind": 1
+      },
+      "cid": 18604
+    },
+    {
+      "asset": "WBTC",
+      "liquidationPrice": 23500.3,
+      "nextOsmPrice": 1276.4,
+      "maxLiquidationAmount": 43943422.24,
+      "status": {
+        "kind": 2
+      },
+      "cid": 17503
+    },
+    {
+      "asset": "WSTETH",
+      "liquidationPrice": 1432.31,
+      "nextOsmPrice": 1276.4,
+      "maxLiquidationAmount": 9231242.2,
+      "status": {
+        "kind": 3,
+        "additionalData": {
+          "tillLiquidation": 1.02
+        }
+      },
+      "cid": 6843
+    },
+    {
+      "asset": "ETH",
+      "liquidationPrice": 1240,
+      "nextOsmPrice": 1276.4,
+      "maxLiquidationAmount": 234215463.94,
+      "status": {
+        "kind": 4,
+        "additionalData": {
+          "toStopLoss": 12
+        }
+      },
+      "cid": 24300
+    }
+  ]
 }

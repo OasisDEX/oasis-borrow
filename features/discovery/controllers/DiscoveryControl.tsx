@@ -1,4 +1,5 @@
 import { DiscoveryFilters } from 'features/discovery/common/DiscoveryFilters'
+import { DiscoveryTable } from 'features/discovery/common/DiscoveryTable'
 import { getDiscoveryData } from 'features/discovery/discoveryApi'
 import { getDefaultSettingsState } from 'features/discovery/helpers'
 import { discoveryPagesMeta } from 'features/discovery/meta'
@@ -12,9 +13,6 @@ export function DiscoveryControl({ active }: { active: DiscoveryPages }) {
     getDefaultSettingsState({ filters: filters }),
   )
   const discoveryData = getDiscoveryData(endpoint, settings)
-
-  // TODO: pass data to table component
-  console.log(discoveryData)
 
   return (
     <Box
@@ -35,6 +33,9 @@ export function DiscoveryControl({ active }: { active: DiscoveryPages }) {
             })
           }}
         />
+      </Box>
+      <Box sx={{ py: 2, px: 4, borderTop: '1px solid', borderTopColor: 'neutral20' }}>
+        {discoveryData?.data?.rows && <DiscoveryTable rows={discoveryData.data.rows} />}
       </Box>
     </Box>
   )
