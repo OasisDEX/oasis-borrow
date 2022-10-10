@@ -5,6 +5,7 @@ import { first, map } from 'rxjs/operators'
 import {
   AaveUserAccountData,
   AaveUserAccountDataParameters,
+  AaveUserConfigurationsData,
 } from '../../../../../blockchain/calls/aave/aaveLendingPool'
 import {
   AaveUserReserveData,
@@ -23,18 +24,36 @@ export function getManageAavePositionStateMachineServices(
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
   aaveAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
+  aaveUserConfiguration$: ({
+    proxyAddress,
+  }: {
+    proxyAddress: string
+  }) => Observable<AaveUserConfigurationsData>,
+  aaveReservesList$: () => Observable<AaveUserConfigurationsData>,
 ): ManageAaveStateMachineServices {
   function aaveProtocolData(token: string, proxyAddress: string) {
     return combineLatest(
       aaveUserReserveData$({ token, proxyAddress }),
       aaveUserAccountData$({ proxyAddress }),
       aaveAssetPriceData$({ token: 'STETH' }),
+      aaveUserConfiguration$({ proxyAddress }),
+      aaveReservesList$(),
     ).pipe(
-      map(([reserveData, accountData, aaveSTETHPriceData]) => ({
-        positionData: reserveData,
-        accountData,
-        aaveSTETHPriceData,
-      })),
+      map(
+        ([
+          reserveData,
+          accountData,
+          aaveSTETHPriceData,
+          aaveUserConfiguration,
+          aaveReservesList,
+        ]) => ({
+          positionData: reserveData,
+          accountData,
+          aaveSTETHPriceData,
+          aaveUserConfiguration,
+          aaveReservesList,
+        }),
+      ),
     )
   }
 

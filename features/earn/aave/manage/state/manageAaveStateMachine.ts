@@ -2,7 +2,10 @@ import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLendingPool'
+import {
+  AaveUserAccountData,
+  AaveUserConfigurationsData,
+} from '../../../../../blockchain/calls/aave/aaveLendingPool'
 import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
@@ -49,6 +52,8 @@ export interface AaveProtocolData {
   positionData: AaveUserReserveData
   accountData: AaveUserAccountData
   aaveSTETHPriceData: BigNumber
+  aaveUserConfiguration: AaveUserConfigurationsData
+  aaveReservesList: AaveUserConfigurationsData
 }
 
 export type ManageAaveEvent =

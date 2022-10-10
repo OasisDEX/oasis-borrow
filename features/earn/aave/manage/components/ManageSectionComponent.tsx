@@ -18,6 +18,7 @@ import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../../components/DetailsSection'
+import { createAaveUserConfiguration } from '../../helpers/aaveUserConfiguration'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 
 type ManageSectionComponentProps = {

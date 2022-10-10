@@ -9,7 +9,11 @@ import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { getAaveUserAccountData } from '../../../blockchain/calls/aave/aaveLendingPool'
+import {
+  getAaveReservesList,
+  getAaveUserAccountData,
+  getAaveUserConfiguration,
+} from '../../../blockchain/calls/aave/aaveLendingPool'
 import { getAaveAssetPriceData } from '../../../blockchain/calls/aave/aavePriceOracle'
 import {
   getAaveReserveConfigurationData,
@@ -69,6 +73,8 @@ export function setupAaveContext({
   const aaveAssetPriceData$ = observe(once$, connectedContext$, getAaveAssetPriceData)
 
   const aaveUserAccountData$ = observe(once$, connectedContext$, getAaveUserAccountData)
+  const aaveUserConfiguration$ = observe(once$, connectedContext$, getAaveUserConfiguration)
+  const aaveReservesList$ = observe(once$, connectedContext$, getAaveReservesList)
 
   const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
@@ -113,6 +119,8 @@ export function setupAaveContext({
     aaveUserReserveData$,
     aaveUserAccountData$,
     aaveAssetPriceData$,
+    aaveUserConfiguration$,
+    aaveReservesList$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
