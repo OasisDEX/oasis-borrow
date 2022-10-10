@@ -4,8 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { EstimationOnClose } from 'components/EstimationOnClose'
-import { getEstimatedCostOnClose } from 'features/automation/common/estimations/estimatedCostOnClose'
-import { getEstimatedProfitOnClose } from 'features/automation/common/estimations/estimatedProfitOnClose'
+import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
 import { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { formatAmount } from 'helpers/formatters/format'
@@ -33,12 +32,14 @@ export function SidebarAutoTakeProfitEditingStage({
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
 
-  const estimationProfitOnClose = getEstimatedProfitOnClose({
-    toCollateral: autoTakeProfitState.toCollateral,
-    lockedCollateral: vault.lockedCollateral,
+  const { estimatedProfitOnClose } = getOnCloseEstimations({
+    colMarketPrice: autoTakeProfitState.executionPrice,
+    colOraclePrice: autoTakeProfitState.executionPrice,
     debt: vault.debt,
     debtOffset: vault.debtOffset,
-    colMarketPrice: autoTakeProfitState.executionPrice,
+    ethMarketPrice,
+    lockedCollateral: vault.lockedCollateral,
+    toCollateral: autoTakeProfitState.toCollateral,
   })
   const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
 
@@ -50,7 +51,7 @@ export function SidebarAutoTakeProfitEditingStage({
       <EstimationOnClose
         iconCircle={getToken(closeToToken).iconCircle}
         label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
-        value={`${formatAmount(estimationProfitOnClose, closeToToken)} ${closeToToken}`}
+        value={`${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`}
       />
       {isEditing && (
         <>
@@ -95,16 +96,17 @@ function AutoTakeProfitInfoSectionControl({
   triggerColRatio,
 }: AutoTakeProfitInfoSectionControlProps) {
   const {
-    estimatedOasisFeeOnTrigger,
     estimatedGasFeeOnTrigger,
+    estimatedOasisFeeOnTrigger,
     totalTriggerCost,
-  } = getEstimatedCostOnClose({
-    toCollateral,
-    lockedCollateral,
-    debt,
-    debtOffset,
-    ethMarketPrice,
+  } = getOnCloseEstimations({
     colMarketPrice: triggerColPrice,
+    colOraclePrice: triggerColPrice,
+    debt: debt,
+    debtOffset: debtOffset,
+    ethMarketPrice,
+    lockedCollateral: lockedCollateral,
+    toCollateral: toCollateral,
   })
 
   return (
