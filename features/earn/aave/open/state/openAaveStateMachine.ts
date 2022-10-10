@@ -1,4 +1,4 @@
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, IStrategy, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -7,7 +7,6 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
-import { OpenStEthReturn } from '../../../../aave'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import {
@@ -15,36 +14,19 @@ import {
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
+import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 
-type IStrategyInfo = {
-  oracleAssetPrice: BigNumber
-  liquidationBonus: BigNumber
-  collateralToken: string
-}
-
-export interface OpenAaveContext {
+export interface OpenAaveContext extends BaseAaveContext {
   riskRatio: IRiskRatio
-  token: string
-  inputDelay: number
 
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
 
-  currentStep?: number
-  totalSteps?: number
-  tokenBalance?: BigNumber
   amount?: BigNumber
-  tokenPrice?: BigNumber
   auxiliaryAmount?: BigNumber
-  proxyAddress?: string
   strategyName?: string
-
-  transactionParameters?: OpenStEthReturn
-  estimatedGasPrice?: HasGasEstimation
-
-  strategyInfo?: IStrategyInfo
 }
 
 export type OpenAaveMachineEvents =
@@ -61,7 +43,7 @@ export type OpenAaveMachineEvents =
 export type OpenAaveTransactionEvents =
   | {
       type: 'TRANSACTION_PARAMETERS_RECEIVED'
-      parameters: OpenStEthReturn
+      parameters: IStrategy
       estimatedGasPrice: HasGasEstimation
     }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }

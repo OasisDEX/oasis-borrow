@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { ADDRESSES, IRiskRatio, strategies } from '@oasisdex/oasis-actions'
+import { ADDRESSES, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 import { Awaited } from 'ts-essentials'
@@ -15,15 +15,13 @@ export interface ActionCall {
   callData: string
 }
 
-export type OpenStEthReturn = Awaited<ReturnType<typeof strategies.aave.openStEth>>
-
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
   riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
-): Promise<OpenStEthReturn> {
+): Promise<IStrategy> {
   const mainnetAddresses = {
     DAI: ADDRESSES.main.DAI,
     ETH: ADDRESSES.main.ETH,
@@ -57,8 +55,6 @@ export async function getOpenAaveParameters(
     },
   )
 }
-
-export type AdjustStEthReturn = Awaited<ReturnType<typeof strategies.aave.adjustStEth>>
 
 export type CloseStEthReturn = Awaited<ReturnType<typeof strategies.aave.closeStEth>>
 

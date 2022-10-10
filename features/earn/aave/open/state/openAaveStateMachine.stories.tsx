@@ -16,7 +16,6 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
-import { OpenStEthReturn } from '../../../../aave'
 import {
   createProxyStateMachine,
   ProxyContext,
@@ -32,6 +31,7 @@ import { contextToTransactionParameters } from '../services'
 import { aaveStEthSimulateStateMachine } from './aaveStEthSimulateStateMachine'
 import { createOpenAaveStateMachine, OpenAaveEvent } from './openAaveStateMachine'
 import { createParametersStateMachine, ParametersStateMachine } from './parametersStateMachine'
+import { IStrategy } from '@oasisdex/oasis-actions'
 
 const stories = storiesOf('Xstate Machines/Open Aave State Machine', module)
 
@@ -72,7 +72,7 @@ const parametersMachine = createParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OpenStEthReturn
+      return {} as IStrategy
     },
     estimateGasPrice: async () => {
       await delay()

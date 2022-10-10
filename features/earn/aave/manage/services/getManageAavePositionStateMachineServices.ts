@@ -6,6 +6,7 @@ import {
   AaveUserAccountDataParameters,
 } from '../../../../../blockchain/calls/aave/aaveLendingPool'
 import {
+  AaveReserveConfigurationData,
   AaveUserReserveData,
   AaveUserReserveDataParameters,
 } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
@@ -13,6 +14,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
+import { BigNumber } from 'bignumber.js'
 
 export function getManageAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,
@@ -21,6 +23,12 @@ export function getManageAavePositionStateMachineServices(
   proxyAddress$: Observable<string | undefined>,
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
+  aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
+  aaveReserveConfigurationData$: ({
+    token,
+  }: {
+    token: string
+  }) => Observable<AaveReserveConfigurationData>,
 ): ManageAaveStateMachineServices {
   function aaveProtocolData(token: string, proxyAddress: string) {
     return combineLatest(
@@ -51,6 +59,24 @@ export function getManageAavePositionStateMachineServices(
       const proxy = await proxyAddress$.pipe(first()).toPromise()
       if (proxy === undefined) throw new Error('Proxy address not found')
       return proxy
+    },
+    getStrategyInfo: () => {
+      const collateralToken = 'STETH'
+      return combineLatest(
+        aaveOracleAssetPriceData$({ token: collateralToken }),
+        aaveReserveConfigurationData$({ token: collateralToken }),
+      ).pipe(
+        map(([oracleAssetPrice, reserveConfigurationData]) => {
+          return {
+            type: 'UPDATE_STRATEGY_INFO',
+            strategyInfo: {
+              oracleAssetPrice,
+              liquidationBonus: reserveConfigurationData.liquidationBonus,
+              collateralToken,
+            },
+          }
+        }),
+      )
     },
     getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
       return await aaveProtocolData(context.token!, context.proxyAddress!).pipe(first()).toPromise()
