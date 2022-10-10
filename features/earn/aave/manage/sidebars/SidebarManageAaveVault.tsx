@@ -153,7 +153,9 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
   const marketStEthEthPrice = amountFromWei(new BigNumber('968102393798180700'), 'ETH')
   const minColRatio = new BigNumber(5)
   const minRisk = convertColRatioToMultiple(minColRatio)
-  const maxRisk = state.context.strategyInfo ? state.context.strategyInfo.maxMultiple : zero
+  const maxRisk = state.context.protocolData
+    ? state.context.protocolData?.position.riskRatio.colRatio
+    : zero
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('manage-earn.aave.vault-form.title'),
