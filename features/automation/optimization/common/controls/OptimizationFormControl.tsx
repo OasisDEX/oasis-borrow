@@ -123,7 +123,7 @@ export function OptimizationFormControl({
         txHelpers={txHelpers}
         vault={vault}
       />
-      <AutoTakeProfitFormControl
+      {autoTakeProfitEnabled && <AutoTakeProfitFormControl
         autoBuyTriggerData={autoBuyTriggerData}
         constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoTakeProfitActive={isAutoTakeProfitActive}
@@ -134,7 +134,7 @@ export function OptimizationFormControl({
         txHelpers={txHelpers}
         autoTakeProfitTriggerData={autoTakeProfitTriggerData}
         context={context}
-      />
+      />}
     </>
   )
 }
