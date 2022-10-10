@@ -1,19 +1,16 @@
+import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLendingPool'
-import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { CloseStEthReturn } from '../../../../aave'
 
 type ClosePositionParametersStateMachineContext = {
   proxyAddress: string
   token: string
-  aaveReverseData: AaveUserReserveData
-  aaveUserAccountData: AaveUserAccountData
-
+  position: IPosition
   transactionParameters?: CloseStEthReturn
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation

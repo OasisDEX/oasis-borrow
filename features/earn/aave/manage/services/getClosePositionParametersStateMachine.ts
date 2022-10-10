@@ -25,17 +25,13 @@ export function getClosePositionParametersStateMachineServices$(
       return {
         getParameters: async (context) => {
           if (!context.proxyAddress) return undefined
-          if (!context.transactionParameters) {
-            throw new Error(
-              'getClosePositionParametersStateMachineServices$: context.transactionParameters is undefined',
-            )
-          }
+
           return await getCloseAaveParameters(
             contextConnected,
-            context.aaveReverseData.currentATokenBalance,
+            context.position.collateral.amount,
             userSettings.slippage,
             context.proxyAddress,
-            context.transactionParameters.simulation.position,
+            context.position,
           )
         },
         estimateGas: async (context) => {
