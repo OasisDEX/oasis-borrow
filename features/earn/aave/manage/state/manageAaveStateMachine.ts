@@ -48,6 +48,7 @@ type StrategyInfo = {
 export interface AaveProtocolData {
   positionData: AaveUserReserveData
   accountData: AaveUserAccountData
+  aaveSTETHPriceData: BigNumber
 }
 
 export type ManageAaveEvent =

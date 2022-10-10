@@ -1,7 +1,9 @@
 import { useActor } from '@xstate/react'
+import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { amountToWei } from 'blockchain/utils'
 import { TabBar } from 'components/TabBar'
 import { aaveFaq } from 'features/content/faqs/aave'
+import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -24,11 +26,13 @@ import {
 interface AaveManageViewPositionViewProps {
   address: string
   strategy: string // TODO: Get token from strategy
+  aaveReserveState?: AaveReserveConfigurationData
 }
 
 function AaveManageContainer({
   manageAaveStateMachine,
   strategy,
+  aaveReserveState,
 }: AaveManageViewPositionViewProps & { manageAaveStateMachine: ManageAaveStateMachine }) {
   const { t } = useTranslation()
 
@@ -46,7 +50,7 @@ function AaveManageContainer({
               content: (
                 <Grid variant="vaultContainer">
                   <Box>
-                    <ManageSectionComponent />
+                    <ManageSectionComponent aaveReserveState={aaveReserveState} />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>
                 </Grid>
@@ -80,19 +84,25 @@ function AavePositionNotice() {
 
 export function AaveManagePositionView({ address, strategy }: AaveManageViewPositionViewProps) {
   const { aaveManageStateMachine$ } = useAaveContext()
+  const { aaveSTETHReserveConfigurationData } = useEarnContext()
   const [stateMachine, stateMachineError] = useObservable(
     aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'STETH' }),
   ) // TODO: should be created with strategy and address. Then should be more generic.
+  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
 
   return (
-    <WithErrorHandler error={[stateMachineError]}>
-      <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
-        {([_stateMachine]) => {
+    <WithErrorHandler error={[stateMachineError, aaveReserveStateError]}>
+      <WithLoadingIndicator
+        value={[stateMachine, aaveReserveState]}
+        customLoader={<VaultContainerSpinner />}
+      >
+        {([_stateMachine, _aaveReserveState]) => {
           return (
             <AaveManageContainer
               address={address}
               strategy={strategy}
               manageAaveStateMachine={_stateMachine}
+              aaveReserveState={_aaveReserveState}
             />
           )
         }}

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
@@ -21,15 +22,18 @@ export function getManageAavePositionStateMachineServices(
   proxyAddress$: Observable<string | undefined>,
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
+  aaveAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   function aaveProtocolData(token: string, proxyAddress: string) {
     return combineLatest(
       aaveUserReserveData$({ token, proxyAddress }),
       aaveUserAccountData$({ proxyAddress }),
+      aaveAssetPriceData$({ token: 'STETH' }),
     ).pipe(
-      map(([reserveData, accountData]) => ({
+      map(([reserveData, accountData, aaveSTETHPriceData]) => ({
         positionData: reserveData,
-        accountData: accountData,
+        accountData,
+        aaveSTETHPriceData,
       })),
     )
   }

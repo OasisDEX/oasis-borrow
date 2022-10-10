@@ -37,10 +37,10 @@ export function setupEarnContext({ onEveryBlock$, context$ }: AppContext) {
     getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  const aaveReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
+  const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
 
   return {
-    aaveReserveConfigurationData,
+    aaveSTETHReserveConfigurationData,
     aaveSthEthYieldsQuery,
     aaveAvailableLiquidityETH$,
   }

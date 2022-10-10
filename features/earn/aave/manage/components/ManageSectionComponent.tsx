@@ -1,5 +1,7 @@
+import { Position } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   DetailsSectionContentCard,
   DetailsSectionContentCardWrapper,
@@ -10,12 +12,17 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../../components/DetailsSection'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
+
+type ManageSectionComponentProps = {
+  aaveReserveState?: AaveReserveConfigurationData
+}
 
 const mockData = {
   earnId: 3920,
@@ -40,10 +47,40 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
   return ratio.isLessThanOrEqualTo(0.2) ? 'warning10' : 'success10'
 }
 
-export function ManageSectionComponent() {
+export function ManageSectionComponent({ aaveReserveState }: ManageSectionComponentProps) {
   const { t } = useTranslation()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const {
+    accountData,
+    positionData,
+    aaveSTETHPriceData, // STETH price data
+  } = state.context.protocolData || {}
+
+  if (
+    !accountData?.totalDebtETH ||
+    !aaveReserveState?.liquidationThreshold ||
+    !aaveSTETHPriceData
+  ) {
+    return <AppSpinner />
+  }
+
+  const managedPosition = new Position(
+    { amount: accountData.totalDebtETH },
+    { amount: accountData.totalCollateralETH },
+    aaveSTETHPriceData, // oracle price for STETH, not needed/used to calculate liquidation price ratio
+    {
+      liquidationThreshold: aaveReserveState.liquidationThreshold,
+      dustLimit: new BigNumber(0), // not needed/used to calculate liquidation price ratio
+      maxLoanToValue: new BigNumber(0), // not needed/used to calculate liquidation price ratio
+    },
+  )
+
+  // Net value (= in ETH terms is:Calculated the same as for other earn positions,
+  // but then in eth terms: stETH collateral times the stETH/ETH price, minus the ETH debt.)
+  const netValue = accountData
+    ? accountData.totalCollateralETH.minus(accountData.totalDebtETH)
+    : zero
 
   return (
     <DetailsSection
@@ -52,7 +89,7 @@ export function ManageSectionComponent() {
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('net-value')}
-            value={formatBigNumber(mockData.netValue, 2)}
+            value={formatBigNumber(netValue || zero, 2)}
             unit={mockData.token}
             footnote={t('manage-earn-vault.pnl', {
               value: formatBigNumber(mockData.pnl, 2),
@@ -83,9 +120,9 @@ export function ManageSectionComponent() {
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.liquidation-price-ratio')}
-            value={mockData.liquidationPriceRatio.toFormat(2)}
+            value={formatBigNumber(managedPosition.liquidationPrice, 2)}
             modal={<div>Explanation of the thing, probably</div>}
-            customBackground={getLiquidationPriceRatioColor(mockData.liquidationPriceRatio)}
+            customBackground={getLiquidationPriceRatioColor(managedPosition.liquidationPrice)}
             link={{
               label: t('manage-earn-vault.ratio-history'),
               url: 'https://dune.com/dataalways/stETH-De-Peg', // should we move this url to a file? an env?
@@ -95,13 +132,12 @@ export function ManageSectionComponent() {
       }
       footer={
         <DetailsSectionFooterItemWrapper>
-          {state.context.positionData?.currentATokenBalance ? (
+          {positionData?.currentATokenBalance ? (
             <DetailsSectionFooterItem
               title={t('system.total-collateral')}
-              value={`${formatAmount(
-                state.context.positionData.currentATokenBalance,
-                state.context.token,
-              )} ${state.context.token}`}
+              value={`${formatAmount(positionData.currentATokenBalance, state.context.token)} ${
+                state.context.token
+              }`}
             />
           ) : (
             <AppSpinner />

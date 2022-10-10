@@ -112,6 +112,7 @@ export function setupAaveContext({
     proxyForAccount$,
     aaveUserReserveData$,
     aaveUserAccountData$,
+    aaveAssetPriceData$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
@@ -147,13 +148,13 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  const aaveReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
+  const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
 
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
-    aaveReserveConfigurationData,
+    aaveSTETHReserveConfigurationData,
   }
 }
 
