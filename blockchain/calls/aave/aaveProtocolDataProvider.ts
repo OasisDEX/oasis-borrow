@@ -8,6 +8,7 @@ export interface AaveUserReserveDataParameters {
   token: string
   proxyAddress: string
 }
+
 export interface AaveReserveDataParameters {
   token: AaveUserReserveDataParameters['token']
 }
@@ -34,12 +35,6 @@ export type AaveReserveDataReply = {
   liquidityIndex: string
   variableBorrowIndex: string
   lastUpdateTimestamp: string
-}
-
-export type AaveReserveConfigurationData = {
-  ltv: BigNumber
-  liquidationThreshold: BigNumber
-  // .... could add more things here.  see https://etherscan.io/address/0x057835ad21a177dbdd3090bb1cae03eacf78fc6d#readContract
 }
 
 export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, AaveUserReserveData> = {
@@ -84,6 +79,13 @@ export const getAaveReserveData: CallDef<AaveReserveDataParameters, AaveReserveD
   prepareArgs: ({ token }, context) => [context.tokens[token].address],
 }
 
+export type AaveReserveConfigurationData = {
+  ltv: BigNumber
+  liquidationThreshold: BigNumber
+  liquidationBonus: BigNumber
+  // .... could add more things here.  see https://etherscan.io/address/0x057835ad21a177dbdd3090bb1cae03eacf78fc6d#readContract
+}
+
 export const getAaveReserveConfigurationData: CallDef<
   { token: string },
   AaveReserveConfigurationData
@@ -99,6 +101,7 @@ export const getAaveReserveConfigurationData: CallDef<
     return {
       ltv: new BigNumber(result.ltv).div(10000), // 6900 -> 0.69
       liquidationThreshold: new BigNumber(result.liquidationThreshold).div(10000), // 8100 -> 0.81
+      liquidationBonus: new BigNumber(result.liquidationBonus).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
     }
   },
 }

@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { calculateSimulation } from 'features/earn/aave/open/services'
@@ -39,12 +40,13 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
 
   useEffect(() => {
     if (maximumMultiple) {
+      const maxRisk = new RiskRatio(maximumMultiple, RiskRatio.TYPE.MULITPLE)
       void (async () => {
         setSimulations(
           calculateSimulation({
             ...aaveCalcValueBasis,
-            yields: await aaveSthEthYieldsQuery(maximumMultiple),
-            multiply: maximumMultiple,
+            yields: await aaveSthEthYieldsQuery(maxRisk),
+            riskRatio: maxRisk,
           }),
         )
       })()

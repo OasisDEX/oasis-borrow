@@ -112,9 +112,9 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
     return state.context.refSimulationMachine
   })
 
-  const { aaveTotalValueLocked$, aaveReserveConfigurationData } = useAaveContext()
+  const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
   const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveStEthData$)
 
   return (
     <WithErrorHandler error={[tvlStateError, aaveReserveStateError]}>

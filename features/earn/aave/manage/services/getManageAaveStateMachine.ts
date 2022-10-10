@@ -1,3 +1,5 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
@@ -18,7 +20,7 @@ function contextToTransactionParameters(context: ManageAaveContext): OperationEx
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
-    operationName: context.transactionParameters!.operationName,
+    operationName: 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
   }
@@ -81,6 +83,11 @@ export function getManageAaveStateMachine$(
         })
         .withContext({
           token,
+          userInput: {
+            riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
+            amount: new BigNumber(0),
+          },
+          inputDelay: 1000,
           address,
           strategy,
         })

@@ -1,3 +1,4 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
@@ -9,7 +10,7 @@ interface AaveStEthSimulateStateMachineContext {
   yields?: AaveStEthYieldsResponse
   token?: string
   amount?: BigNumber
-  multiply?: BigNumber
+  riskRatio?: IRiskRatio
   transactionFee?: BigNumber
   fee?: BigNumber
   simulation?: CalculateSimulationResult
@@ -20,7 +21,7 @@ export type AaveStEthSimulateStateMachineEvents =
       type: 'USER_PARAMETERS_CHANGED'
       token: string
       amount: BigNumber
-      multiply: BigNumber
+      riskRatio: IRiskRatio
     }
   | { type: 'FEE_CHANGED'; fee: BigNumber }
 
@@ -60,6 +61,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
         on: {
           USER_PARAMETERS_CHANGED: {
             actions: ['assignUserParameters'],
+            target: 'loading',
           },
           FEE_CHANGED: {
             actions: ['assignFees'],
@@ -79,7 +81,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
     },
     on: {
       USER_PARAMETERS_CHANGED: {
-        target: 'calculating',
+        target: 'loading',
         actions: ['assignUserParameters'],
       },
       FEE_CHANGED: {
@@ -94,7 +96,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
       assignUserParameters: assign((context, event) => ({
         token: event.token,
         amount: event.amount,
-        multiply: event.multiply,
+        riskRatio: event.riskRatio,
       })),
       assignFees: assign((context, event) => ({
         fee: event.fee,

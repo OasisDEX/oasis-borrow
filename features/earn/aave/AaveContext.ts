@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getAaveUserAccountData } from '../../../blockchain/calls/aave/aaveLendingPool'
-import { getAaveAssetPriceData } from '../../../blockchain/calls/aave/aavePriceOracle'
+import { getAaveOracleAssetPriceData } from '../../../blockchain/calls/aave/aavePriceOracle'
 import {
   getAaveReserveConfigurationData,
   getAaveUserReserveData,
@@ -62,11 +62,16 @@ export function setupAaveContext({
     switchMap(({ account }) => accountBalances$(account)),
   )
 
-  const aaveReserveConfigurationData$ = observe(once$, context$, getAaveReserveConfigurationData)
+  const aaveReserveConfigurationData$ = observe(
+    once$,
+    context$,
+    getAaveReserveConfigurationData,
+    ({ token }) => token,
+  )
 
   const aaveUserReserveData$ = observe(once$, connectedContext$, getAaveUserReserveData)
 
-  const aaveAssetPriceData$ = observe(once$, connectedContext$, getAaveAssetPriceData)
+  const aaveOracleAssetPriceData$ = observe(once$, connectedContext$, getAaveOracleAssetPriceData)
 
   const aaveUserAccountData$ = observe(once$, connectedContext$, getAaveUserAccountData)
 
@@ -101,8 +106,8 @@ export function setupAaveContext({
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
+    aaveOracleAssetPriceData$,
     aaveReserveConfigurationData$,
-    aaveAssetPriceData$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
@@ -147,13 +152,11 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  const aaveReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
-
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
-    aaveReserveConfigurationData,
+    aaveReserveStEthData$: aaveReserveConfigurationData$({ token: 'STETH' }),
   }
 }
 

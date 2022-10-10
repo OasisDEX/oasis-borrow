@@ -1,5 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import { amountToWei } from 'blockchain/utils'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import {
@@ -38,9 +40,12 @@ export function getAutoTakeProfitTxHandlers({
     () =>
       prepareAddAutoTakeProfitTriggerData(
         vault,
-        autoTakeProfitTriggerData.executionPrice,
-        autoTakeProfitTriggerData.maxBaseFeeInGwei,
-        autoTakeProfitTriggerData.isToCollateral,
+        amountToWei(
+          autoTakeProfitState.executionPrice.decimalPlaces(0, BigNumber.ROUND_DOWN),
+          'ETH',
+        ),
+        zero, // autoTakeProfitState.maxBaseFeeInGwei,
+        autoTakeProfitState.toCollateral,
         0,
         // autoTakeProfitTriggerData.triggerId.toNumber(),
       ),
@@ -48,7 +53,7 @@ export function getAutoTakeProfitTxHandlers({
       autoTakeProfitState.toCollateral,
       autoTakeProfitState.executionCollRatio,
       autoTakeProfitState.executionPrice,
-      // autoTakeProfitTriggerData.triggerId.toNumber(),
+      autoTakeProfitTriggerData.triggerId.toNumber(),
     ],
   )
   // TODO ŁW
