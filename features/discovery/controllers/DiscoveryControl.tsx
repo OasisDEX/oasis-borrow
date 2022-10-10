@@ -23,20 +23,16 @@ export function DiscoveryControl({ active }: { active: DiscoveryPages }) {
         borderRadius: 'large',
       }}
     >
-      <Box sx={{ p: 4 }}>
-        <DiscoveryFilters
-          filters={filters}
-          onChange={(key, currentValue) => {
-            setSettings({
-              ...settings,
-              [key]: currentValue.value,
-            })
-          }}
-        />
-      </Box>
-      <Box sx={{ py: 2, px: 4, borderTop: '1px solid', borderTopColor: 'neutral20' }}>
-        {discoveryData?.data?.rows && <DiscoveryTable rows={discoveryData.data.rows} />}
-      </Box>
+      <DiscoveryFilters
+        filters={filters}
+        onChange={(key, currentValue) => {
+          setSettings({
+            ...settings,
+            [key]: currentValue.value,
+          })
+        }}
+      />
+      {discoveryData?.data?.rows && <DiscoveryTable rows={discoveryData.data.rows} />}
     </Box>
   )
 }

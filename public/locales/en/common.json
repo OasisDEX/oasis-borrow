@@ -152,6 +152,17 @@
       "largest-debt": "Largest Debt"
     },
     "table": {
+      "no-entries": "There are no entries available for selected filters.",
+      "vault-number": "Vault #{{cid}}",
+      "view-position": "View Position",
+      "header": {
+        "asset": "Asset",
+        "liquidation-price": "Liquidation price",
+        "next-osm-price": "Next OSM price",
+        "max-liquidation-amount": "Max liquidation amount",
+        "status": "Status",
+        "cid": ""
+      },
       "status": {
         "1": "Liquidated",
         "2": "Being liquidated",

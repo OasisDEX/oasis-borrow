@@ -1,11 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { AppLink } from 'components/Links'
 import { DiscoveryFiltersList } from 'features/discovery/meta'
 import { DiscoveryTableRowData, DiscoveryTableVaultStatus } from 'features/discovery/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import { Flex, SxStyleProp, Text } from 'theme-ui'
+import { Button, Flex, SxStyleProp, Text } from 'theme-ui'
 
 const statusColors: { [key in DiscoveryTableVaultStatus]: SxStyleProp } = {
   [DiscoveryTableVaultStatus.LIQUIDATED]: { color: 'critical100', backgroundColor: 'critical10' },
@@ -50,8 +51,8 @@ export function getDiscoveryTableCellContent({
               {row.asset}
             </Text>
             {row.cid && (
-              <Text as="span" sx={{ fontSize: 2, color: 'neutral80' }}>
-                Vault #{row.cid}
+              <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
+                {t('discovery.table.vault-number', { cid: row.cid })}
               </Text>
             )}
           </Flex>
@@ -66,11 +67,18 @@ export function getDiscoveryTableCellContent({
             fontSize: 1,
             fontWeight: 'semiBold',
             borderRadius: 'mediumLarge',
+            whiteSpace: 'pre',
             ...(row.status && { ...statusColors[row.status?.kind] }),
           }}
         >
           {t(`discovery.table.status.${row.status?.kind}`, { ...row.status?.additionalData })}
         </Text>
+      )
+    case 'cid':
+      return (
+        <AppLink href={`/${row?.cid}`}>
+          <Button variant="tertiary">{t('discovery.table.view-position')}</Button>
+        </AppLink>
       )
     case 'liquidationPrice':
     case 'nextOsmPrice':
