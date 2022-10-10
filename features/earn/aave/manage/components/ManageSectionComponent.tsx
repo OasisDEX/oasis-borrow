@@ -78,6 +78,7 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
 
   // Net value (= in ETH terms is:Calculated the same as for other earn positions,
   // but then in eth terms: stETH collateral times the stETH/ETH price, minus the ETH debt.)
+  // accountData has them iin ETH so the conversion isn't needed
   const netValue = accountData
     ? accountData.totalCollateralETH.minus(accountData.totalDebtETH)
     : zero
@@ -134,14 +135,10 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
       }
       footer={
         <DetailsSectionFooterItemWrapper>
-          {totalCollateral ? (
-            <DetailsSectionFooterItem
-              title={t('system.total-collateral')}
-              value={`${formatAmount(totalCollateral, 'STETH')} stETH`}
-            />
-          ) : (
-            <AppSpinner />
-          )}
+          <DetailsSectionFooterItem
+            title={t('system.total-collateral')}
+            value={`${formatAmount(totalCollateral, 'STETH')} stETH`}
+          />
           <DetailsSectionFooterItem
             title={t('manage-earn-vault.position-eth-debt')}
             value={`${formatAmount(accountData.totalDebtETH, state.context.token)} ${
