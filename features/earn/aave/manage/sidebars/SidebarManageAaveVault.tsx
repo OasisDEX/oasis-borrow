@@ -14,6 +14,7 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
+import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { one, zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
@@ -49,12 +50,19 @@ function TransactionInformationContainer({ state, send }: ManageAaveStateProps) 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EthBalanceAfterClose({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
+  const balance = formatCryptoBalance(state.context.balanceAfterClose || zero)
+  const fiatBalanceAfterClose = (state.context.balanceAfterClose || zero).times(
+    state.context.tokenPrice || zero,
+  )
+  const fiatBalance = formatFiatBalance(fiatBalanceAfterClose)
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
         {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
-      <Text variant="boldParagraph3">3.2562 ETH ($9,403.20)</Text>
+      <Text variant="boldParagraph3">
+        {balance} {state.context.token} (${fiatBalance})
+      </Text>
     </Flex>
   )
 }

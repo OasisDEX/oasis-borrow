@@ -1,6 +1,6 @@
 import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
-import { AaveReserveConfigurationData } from 'blockchain/calls/aaveProtocolDataProvider'
+import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -112,9 +112,9 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
     return state.context.refSimulationMachine
   })
 
-  const { aaveTotalValueLocked$, aaveReserveConfigurationData } = useAaveContext()
+  const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
   const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveStEthData$)
 
   return (
     <WithErrorHandler error={[tvlStateError, aaveReserveStateError]}>

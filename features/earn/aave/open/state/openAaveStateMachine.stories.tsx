@@ -16,7 +16,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
-import { OperationParameters } from '../../../../aave'
+import { OpenStEthReturn } from '../../../../aave'
 import {
   createProxyStateMachine,
   ProxyContext,
@@ -72,7 +72,7 @@ const parametersMachine = createParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OperationParameters
+      return {} as OpenStEthReturn
     },
     estimateGasPrice: async () => {
       await delay()

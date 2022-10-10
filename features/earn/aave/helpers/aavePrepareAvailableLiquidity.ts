@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { AaveReserveDataReply } from 'blockchain/calls/aaveProtocolDataProvider'
+import { AaveReserveDataReply } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { TokenSymbolType } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { combineLatest, Observable } from 'rxjs'

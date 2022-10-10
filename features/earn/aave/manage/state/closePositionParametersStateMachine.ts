@@ -4,14 +4,14 @@ import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OperationParameters } from '../../../../aave'
+import { CloseStEthReturn } from '../../../../aave'
 
 type ClosePositionParametersStateMachineContext = {
   proxyAddress?: string
   token?: string
   valueLocked?: BigNumber
 
-  transactionParameters?: OperationParameters
+  transactionParameters?: CloseStEthReturn
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
 }
@@ -38,7 +38,7 @@ export const createClosePositionParametersStateMachine = createMachine(
       events: {} as ClosePositionParametersStateMachineEvents,
       services: {} as {
         getParameters: {
-          data: OperationParameters | undefined
+          data: CloseStEthReturn | undefined
         }
         estimateGas: {
           data: number
@@ -63,7 +63,7 @@ export const createClosePositionParametersStateMachine = createMachine(
           id: 'getParameters',
           onDone: {
             target: 'estimatingGas',
-            actions: ['assignTransactionParameters'],
+            actions: ['assignTransactionParameters', 'notifyParent'],
           },
           onError: {
             actions: ['logError'],
@@ -93,7 +93,7 @@ export const createClosePositionParametersStateMachine = createMachine(
         on: {
           VARIABLES_RECEIVED: {
             target: 'gettingParameters',
-            actions: ['assignReceivedParameters', 'notifyParent'],
+            actions: ['assignReceivedParameters'],
           },
         },
       },
