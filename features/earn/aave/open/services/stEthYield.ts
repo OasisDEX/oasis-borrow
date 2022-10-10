@@ -92,6 +92,7 @@ export async function getAaveStEthYield(
   const reserveAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
+    reserveAddress,
     currentDate: currentDate.utc().format('YYYY-MM-DD'),
     currentDateOffset: currentDate.utc().subtract(1, 'days').format('YYYY-MM-DD'),
     date7daysAgo: currentDate.utc().clone().subtract(7, 'days').format('YYYY-MM-DD'),
@@ -106,7 +107,6 @@ export async function getAaveStEthYield(
     date90daysAgoOffset: currentDate.utc().clone().subtract(90, 'days').format('YYYY-MM-DD'),
     date1yearAgo: currentDate.utc().clone().subtract(1, 'year').format('YYYY-MM-DD'),
     multiply: riskRatio.multiple.toString(),
-    reserveAddress,
   })
   return {
     annualisedYield7days: new BigNumber(response.yield7days.yield.netAnnualisedYield),
