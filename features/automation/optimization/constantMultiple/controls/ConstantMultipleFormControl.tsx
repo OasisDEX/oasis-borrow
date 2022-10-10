@@ -120,7 +120,7 @@ export function ConstantMultipleFormControl({
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={constantMultipleTriggerData.triggersId.map((id) => id.toNumber())}
-      txHelpers={txHelpers!}
+      txHelpers={txHelpers}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupConstantMultiple

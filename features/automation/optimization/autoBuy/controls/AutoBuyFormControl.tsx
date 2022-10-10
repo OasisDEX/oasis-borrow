@@ -115,7 +115,7 @@ export function AutoBuyFormControl({
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoBuyTriggerData.triggerId.toNumber()]}
-      txHelpers={txHelpers!}
+      txHelpers={txHelpers}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoBuy

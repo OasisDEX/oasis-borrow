@@ -94,7 +94,7 @@ export function AutoTakeProfitFormControl({
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoTakeProfitTriggerData.triggerId.toNumber()]}
-      txHelpers={txHelpers!}
+      txHelpers={txHelpers}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoTakeProfit
