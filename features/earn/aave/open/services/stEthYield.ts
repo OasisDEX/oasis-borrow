@@ -17,7 +17,7 @@ const aaveStEthYield = gql`
     $date1yearAgo: Date!
     $multiply: BigFloat!
   ) {
-    yield7days: aaveYieldRateStethEth(
+    yield7days: aaveYieldRate(
       input: { startDate: $date7daysAgo, endDate: $currentDate, multiple: $multiply }
     ) {
       yield {
@@ -25,7 +25,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield7daysOffset: aaveYieldRateStethEth(
+    yield7daysOffset: aaveYieldRate(
       input: { startDate: $date7daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
     ) {
       yield {
@@ -33,7 +33,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield30days: aaveYieldRateStethEth(
+    yield30days: aaveYieldRate(
       input: { startDate: $date30daysAgo, endDate: $currentDate, multiple: $multiply }
     ) {
       yield {
@@ -41,7 +41,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield90days: aaveYieldRateStethEth(
+    yield90days: aaveYieldRate(
       input: { startDate: $date90daysAgo, endDate: $currentDate, multiple: $multiply }
     ) {
       yield {
@@ -49,7 +49,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield90daysOffset: aaveYieldRateStethEth(
+    yield90daysOffset: aaveYieldRate(
       input: { startDate: $date90daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
     ) {
       yield {
@@ -57,14 +57,14 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield1year: aaveYieldRateStethEth(
+    yield1year: aaveYieldRate(
       input: { startDate: $date1yearAgo, endDate: $currentDate, multiple: $multiply }
     ) {
       yield {
         netAnnualisedYield
       }
     }
-    yieldSinceInception: aaveYieldRateStethEth(
+    yieldSinceInception: aaveYieldRate(
       input: { startDate: "2020-11-30", endDate: $currentDate, multiple: $multiply }
     ) {
       yield {
@@ -89,6 +89,7 @@ export async function getAaveStEthYield(
   currentDate: moment.Moment,
   riskRatio: IRiskRatio,
 ): Promise<AaveStEthYieldsResponse> {
+  const reserveAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
     currentDate: currentDate.utc().format('YYYY-MM-DD'),
@@ -105,6 +106,7 @@ export async function getAaveStEthYield(
     date90daysAgoOffset: currentDate.utc().clone().subtract(90, 'days').format('YYYY-MM-DD'),
     date1yearAgo: currentDate.utc().clone().subtract(1, 'year').format('YYYY-MM-DD'),
     multiply: riskRatio.multiple.toString(),
+    reserveAddress,
   })
   return {
     annualisedYield7days: new BigNumber(response.yield7days.yield.netAnnualisedYield),
