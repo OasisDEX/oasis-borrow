@@ -100,14 +100,14 @@ function pickTriggerWithLowestExecutionPrice(
   }[],
 ): AutoTakeProfitTriggerData {
   const mappedAutoTakeProfitTriggers = autoTakeProfitTriggersData.map((trigger) => {
-    const [, , executionPrice, maxBaseFeeInGwei, triggerType, isTriggerEnabled] = trigger.result
+    const [, triggerType, executionPrice, maxBaseFeeInGwei] = trigger.result
 
     return {
       executionPrice: new BigNumber(executionPrice),
       maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
       isToCollateral: triggerType === TriggerType.AutoTakeProfitToCollateral,
       triggerId: new BigNumber(trigger.triggerId),
-      isTriggerEnabled,
+      isTriggerEnabled: true,
     }
   })
 

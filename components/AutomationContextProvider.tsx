@@ -10,6 +10,7 @@ import {
 import {
   AutoTakeProfitTriggerData,
   defaultAutoTakeProfitData,
+  extractAutoTakeProfitData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import {
   ConstantMultipleTriggerData,
@@ -83,7 +84,7 @@ export function AutomationContextProvider({ children, id }: { id: BigNumber } & 
         }),
         stopLossTriggerData: extractStopLossData(automationTriggersData),
         constantMultipleTriggerData: extractConstantMultipleData(automationTriggersData),
-        autoTakeProfitTriggerData: defaultAutoTakeProfitData, //TODO extractAutoTakeProfitData(automationTriggersData),
+        autoTakeProfitTriggerData: extractAutoTakeProfitData(automationTriggersData),
         automationTriggersData,
       })
     }
