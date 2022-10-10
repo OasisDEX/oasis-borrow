@@ -1,4 +1,4 @@
-import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { IRiskRatio, IStrategy, IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -24,7 +24,7 @@ type UserInput = {
 }
 
 export interface ManageAaveContext extends BaseAaveContext {
-  strategy: string
+  strategy: string // TODO: Consider changing name to reserve token
   address: string
   protocolData?: AaveProtocolData
 
@@ -39,6 +39,8 @@ export interface ManageAaveContext extends BaseAaveContext {
 export interface AaveProtocolData {
   positionData: AaveUserReserveData
   accountData: AaveUserAccountData
+  oraclePrice: BigNumber
+  position: IPosition
 }
 
 export type ManageAaveEvent =

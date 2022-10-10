@@ -25,6 +25,7 @@ export const getAaveUserAccountData: CallDef<AaveUserAccountDataParameters, Aave
     return [proxyAddress]
   },
   postprocess: (result) => {
+    console.log('Account user data: ', result.totalCollateralETH.toString())
     return {
       totalCollateralETH: amountFromWei(new BigNumber(result.totalCollateralETH.toString()), 'ETH'),
       totalDebtETH: amountFromWei(new BigNumber(result.totalDebtETH.toString()), 'ETH'),
