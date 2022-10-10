@@ -1,11 +1,8 @@
 import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
-import { ActorRefFrom, EventObject, Sender } from 'xstate'
-import { ProxyStateMachine } from '../../../proxyNew/state'
-import { TransactionStateMachine } from '../../../stateMachines/transaction'
-import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import BigNumber from 'bignumber.js'
+import { EventObject, Sender } from 'xstate'
+
 import { HasGasEstimation } from '../../../../helpers/form'
-import { AaveProtocolData, ClosePositionParametersStateMachine } from '../manage/state'
 
 export type IStrategyInfo = {
   oracleAssetPrice: BigNumber

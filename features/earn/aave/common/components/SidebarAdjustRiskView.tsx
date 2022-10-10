@@ -1,21 +1,21 @@
-import { useTranslation } from 'next-i18next'
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
-import { one, zero } from '../../../../../helpers/zero'
 import { BigNumber } from 'bignumber.js'
-import { formatPercent } from '../../../../../helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Flex, Grid, Link, Text } from 'theme-ui'
+
+import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
+import { MessageCard } from '../../../../../components/MessageCard'
 import {
   SidebarSection,
   SidebarSectionProps,
 } from '../../../../../components/sidebar/SidebarSection'
-import { Flex, Grid, Link, Text } from 'theme-ui'
-import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
-import { MessageCard } from '../../../../../components/MessageCard'
-import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
-import React from 'react'
-import { OpenAaveInformationContainer } from './OpenAaveInformationContainer'
-import { BaseAaveContext, BaseViewProps } from '../BaseAaveContext'
-import { EventObject, Sender } from 'xstate'
 import { SidebarSectionFooterButtonSettings } from '../../../../../components/sidebar/SidebarSectionFooter'
+import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
+import { formatPercent } from '../../../../../helpers/formatters/format'
+import { one, zero } from '../../../../../helpers/zero'
+import { BaseViewProps } from '../BaseAaveContext'
+import { OpenAaveInformationContainer } from './OpenAaveInformationContainer'
 
 type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
 
@@ -24,12 +24,7 @@ type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   textButton: SidebarSectionFooterButtonSettings
 }
 
-export function AdjustRiskView<AaveEvent extends EventObject>({
-  state,
-  send,
-  primaryButton,
-  textButton,
-}: AdjustRiskViewProps) {
+export function AdjustRiskView({ state, send, primaryButton, textButton }: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
   const maxRisk = state.context.transactionParameters?.simulation.position.category.maxLoanToValue

@@ -12,11 +12,11 @@ import {
   TransactionStateMachine,
   TransactionStateMachineEvents,
 } from '../../../../stateMachines/transaction'
+import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
-import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 
 type UserInput = {
   riskRatio: IRiskRatio

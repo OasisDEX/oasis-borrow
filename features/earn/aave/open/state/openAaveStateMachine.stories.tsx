@@ -1,3 +1,4 @@
+import { IStrategy } from '@oasisdex/oasis-actions'
 import { TxMeta } from '@oasisdex/transactions'
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
@@ -31,7 +32,6 @@ import { contextToTransactionParameters } from '../services'
 import { aaveStEthSimulateStateMachine } from './aaveStEthSimulateStateMachine'
 import { createOpenAaveStateMachine, OpenAaveEvent } from './openAaveStateMachine'
 import { createParametersStateMachine, ParametersStateMachine } from './parametersStateMachine'
-import { IStrategy } from '@oasisdex/oasis-actions'
 
 const stories = storiesOf('Xstate Machines/Open Aave State Machine', module)
 

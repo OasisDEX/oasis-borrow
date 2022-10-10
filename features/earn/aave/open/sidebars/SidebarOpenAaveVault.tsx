@@ -5,14 +5,15 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
+
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
+import { OpenAaveInformationContainer } from '../../common/components/OpenAaveInformationContainer'
+import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
-import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
-import { OpenAaveInformationContainer } from '../../common/components/OpenAaveInformationContainer'
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
@@ -23,7 +24,7 @@ interface OpenAaveStateProps {
   readonly send: Sender<OpenAaveEvent>
 }
 
-function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStateProps) {
+function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -115,7 +116,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
+function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {

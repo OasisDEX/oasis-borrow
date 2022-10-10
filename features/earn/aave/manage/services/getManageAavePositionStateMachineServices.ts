@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
@@ -14,7 +15,6 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
-import { BigNumber } from 'bignumber.js'
 
 export function getManageAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,

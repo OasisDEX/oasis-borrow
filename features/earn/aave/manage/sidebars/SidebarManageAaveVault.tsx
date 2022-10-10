@@ -1,14 +1,10 @@
 import { useActor } from '@xstate/react'
-import { BigNumber } from 'bignumber.js'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { amountFromWei } from '../../../../../blockchain/utils'
-import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
-import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
@@ -16,11 +12,11 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
-import { one, zero } from '../../../../../helpers/zero'
+import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
+import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
-import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 
 export interface ManageAaveVaultProps {
   readonly aaveStateMachine: ManageAaveStateMachine

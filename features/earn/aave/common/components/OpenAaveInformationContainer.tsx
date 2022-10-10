@@ -1,10 +1,11 @@
 import { useTranslation } from 'next-i18next'
+import React from 'react'
+
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
-import React from 'react'
 import { HasGasEstimation } from '../../../../../helpers/form'
 
 type OpenAaveInformationContainerProps = {

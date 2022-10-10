@@ -9,12 +9,12 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
+import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
-import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 
 export interface OpenAaveContext extends BaseAaveContext {
   riskRatio: IRiskRatio
