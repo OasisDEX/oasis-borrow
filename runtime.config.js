@@ -21,6 +21,7 @@ const publicRuntimeConfig = {
   multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
   mainnetCacheURL: process.env.MAINNET_CACHE_URL,
   operationExecutorTemp: process.env.OPERATION_EXECUTOR_TEMP,
+  swapAddress: process.env.SWAP_ADDRESS,
 }
 
 module.exports = {
