@@ -1,3 +1,4 @@
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -6,7 +7,7 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
-import { OperationParameters } from '../../../../aave'
+import { OpenStEthReturn } from '../../../../aave'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import {
@@ -15,8 +16,14 @@ import {
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
+type IStrategyInfo = {
+  oracleAssetPrice: BigNumber
+  liquidationBonus: BigNumber
+  collateralToken: string
+}
+
 export interface OpenAaveContext {
-  multiply: BigNumber
+  riskRatio: IRiskRatio
   token: string
   inputDelay: number
 
@@ -34,16 +41,10 @@ export interface OpenAaveContext {
   proxyAddress?: string
   strategyName?: string
 
-  strategyInfo?: StrategyInfo
-
-  transactionParameters?: OperationParameters
+  transactionParameters?: OpenStEthReturn
   estimatedGasPrice?: HasGasEstimation
-}
 
-type StrategyInfo = {
-  maxMultiple: BigNumber
-  liquidationThreshold: BigNumber
-  assetPrice: BigNumber
+  strategyInfo?: IStrategyInfo
 }
 
 export type OpenAaveMachineEvents =
@@ -51,18 +52,16 @@ export type OpenAaveMachineEvents =
   | { type: 'SET_BALANCE'; balance: BigNumber; tokenPrice: BigNumber }
   | { type: 'POSITION_OPENED' }
   | { type: 'NEXT_STEP' }
-  | { type: 'SET_MULTIPLE'; multiple: BigNumber }
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | {
       type: 'UPDATE_STRATEGY_INFO'
-      maxMultiple: BigNumber
-      liquidationThreshold: BigNumber
-      assetPrice: BigNumber
+      strategyInfo: IStrategyInfo
     }
 
 export type OpenAaveTransactionEvents =
   | {
       type: 'TRANSACTION_PARAMETERS_RECEIVED'
-      parameters: OperationParameters
+      parameters: OpenStEthReturn
       estimatedGasPrice: HasGasEstimation
     }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }
@@ -156,8 +155,17 @@ export const createOpenAaveStateMachine = createMachine(
           UPDATE_STRATEGY_INFO: {
             actions: ['updateStrategyInfo'],
           },
-          SET_MULTIPLE: {
-            actions: ['setMultiple'],
+          SET_RISK_RATIO: {
+            actions: [
+              'setRiskRatio',
+              'debounceSendingToParametersMachine',
+              'debounceSendingToSimulationMachine',
+              'sendUpdateToParametersMachine',
+              'sendUpdateToSimulationMachine',
+            ],
+          },
+          TRANSACTION_PARAMETERS_RECEIVED: {
+            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
           },
           NEXT_STEP: {
             target: 'reviewing',
@@ -213,8 +221,8 @@ export const createOpenAaveStateMachine = createMachine(
     actions: {
       initContextValues: assign((context) => ({
         currentStep: 1,
-        totalSteps: context.proxyAddress ? 2 : 3,
-        multiply: new BigNumber(2),
+        totalSteps: context.proxyAddress ? 3 : 4,
+        riskRatio: new RiskRatio(new BigNumber(0), RiskRatio.TYPE.LTV),
         token: 'ETH',
         inputDelay: 1000,
       })),
@@ -226,32 +234,33 @@ export const createOpenAaveStateMachine = createMachine(
         proxyAddress: event.proxyAddress,
       })),
       sendUpdateToParametersMachine: send(
-        (context): ParametersStateMachineEvents => ({
-          type: 'VARIABLES_RECEIVED',
-          amount: context.amount!,
-          multiply: context.multiply,
-          token: context.token,
-          proxyAddress: context.proxyAddress,
-        }),
+        (context): ParametersStateMachineEvents => {
+          return {
+            type: 'VARIABLES_RECEIVED',
+            amount: context.amount!,
+            riskRatio: context.riskRatio,
+            token: context.token,
+            proxyAddress: context.proxyAddress,
+          }
+        },
         {
           to: (context) => context.refParametersStateMachine!,
           delay: (context) => context.inputDelay,
           id: 'update-parameters-machine',
         },
       ),
-      setMultiple: assign((_, event) => {
+      setRiskRatio: assign((_, event) => {
         return {
-          multiply: event.multiple,
+          riskRatio: event.riskRatio,
         }
       }),
-      updateStrategyInfo: assign((_, event) => {
+      updateTotalSteps: assign((context) => {
         return {
-          strategyInfo: event,
+          totalSteps: context.proxyAddress
+            ? (context.totalSteps || 0) - 1
+            : context.totalSteps || 0,
         }
       }),
-      updateTotalSteps: assign((context) => ({
-        totalSteps: context.proxyAddress ? 2 : 3,
-      })),
       setAmount: assign((context, event) => ({
         amount: event.amount,
       })),
@@ -264,24 +273,37 @@ export const createOpenAaveStateMachine = createMachine(
       setCurrentStepToTwo: assign((_) => ({
         currentStep: 2,
       })),
-      assignTransactionParameters: assign((context, event) => ({
-        transactionParameters: event.parameters,
-        estimatedGasPrice: event.estimatedGasPrice,
+      assignTransactionParameters: assign((context, event) => {
+        return {
+          transactionParameters: event.parameters,
+          estimatedGasPrice: event.estimatedGasPrice,
+        }
+      }),
+      updateStrategyInfo: assign((context, event) => ({
+        strategyInfo: event.strategyInfo,
       })),
       sendFeesToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => ({
-          type: 'FEE_CHANGED',
-          fee: context.transactionParameters?.positionInfo.fee || zero,
-        }),
+        (context): AaveStEthSimulateStateMachineEvents => {
+          const sourceTokenFee =
+            context.transactionParameters?.simulation.swap.sourceTokenFee || zero
+          const targetTokenFee =
+            context.transactionParameters?.simulation.swap.targetTokenFee || zero
+          return {
+            type: 'FEE_CHANGED',
+            fee: sourceTokenFee.plus(targetTokenFee),
+          }
+        },
         { to: (context) => context.refSimulationMachine! },
       ),
       sendUpdateToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => ({
-          type: 'USER_PARAMETERS_CHANGED',
-          amount: context.amount || zero,
-          multiply: context.multiply,
-          token: context.token,
-        }),
+        (context): AaveStEthSimulateStateMachineEvents => {
+          return {
+            type: 'USER_PARAMETERS_CHANGED',
+            amount: context.amount || zero,
+            riskRatio: context.riskRatio,
+            token: context.token,
+          }
+        },
         {
           to: (context) => context.refSimulationMachine!,
           delay: (context) => context.inputDelay,

@@ -1,3 +1,4 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 
 import { one, zero } from '../../../../../helpers/zero'
@@ -30,7 +31,7 @@ export function calculateSimulation({
   fees?: BigNumber
   amount: BigNumber
   token: string
-  multiply: BigNumber
+  riskRatio: IRiskRatio
   yields: AaveStEthYieldsResponse
 }): CalculateSimulationResult {
   const earningsPerDay = amount.times(yields.annualisedYield1Year.plus(one)).minus(amount).div(365)
@@ -75,10 +76,10 @@ function getSimulation({
   annualizedYield: BigNumber
   token: string
 }): Simulation {
-  const earnigs = amount.times(annualizedYield.div(100))
+  const earnings = amount.times(annualizedYield.div(100))
   return {
-    earningAfterFees: earnigs,
-    netValue: earnigs.plus(amount),
+    earningAfterFees: earnings,
+    netValue: earnings.plus(amount),
     token,
   }
 }

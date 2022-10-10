@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { storiesOf } from '@storybook/react'
 import { useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -7,7 +8,7 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OperationParameters } from '../../../../aave'
+import { OpenStEthReturn } from '../../../../aave'
 import {
   createParametersStateMachine,
   ParametersStateMachineEvents,
@@ -35,7 +36,7 @@ const machine = createParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OperationParameters
+      return {} as OpenStEthReturn
     },
     estimateGasPrice: async () => {
       await delay()
@@ -66,7 +67,7 @@ const View = () => {
           <SendButton
             type={'VARIABLES_RECEIVED'}
             amount={new BigNumber(100)}
-            multiply={new BigNumber(2)}
+            riskRatio={new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE)}
             token={'ETH'}
           />{' '}
         </Box>

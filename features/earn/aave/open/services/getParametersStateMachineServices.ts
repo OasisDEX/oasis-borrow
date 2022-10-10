@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
@@ -27,7 +28,7 @@ export function getOpenAaveParametersStateMachineServices$(
           return await getOpenAaveParameters(
             contextConnected,
             context.amount || zero,
-            context.multiply || new BigNumber(2),
+            context.riskRatio || new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
             userSettings.slippage,
             context.proxyAddress,
           )
@@ -40,7 +41,7 @@ export function getOpenAaveParametersStateMachineServices$(
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
               calls: context.transactionParameters!.calls as any,
-              operationName: context.transactionParameters!.operationName,
+              operationName: 'CustomOperation',
               token: context.token!,
               amount: context.amount!,
               proxyAddress: context.proxyAddress!,
@@ -66,7 +67,9 @@ export function getParametersStateMachine$(services$: Observable<ParametersState
           estimateGasPrice: services.estimateGasPrice,
         },
         actions: {
-          notifyParent: () => {},
+          notifyParent: () => {
+            // overridden in parent when machine is consumed
+          },
         },
       })
     }),
