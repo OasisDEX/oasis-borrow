@@ -12,7 +12,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
@@ -53,7 +53,7 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
   const [state] = useActor(stateMachine)
   const {
     accountData,
-    positionData,
+    positionData: _positionData,
     aaveSTETHPriceData, // STETH price data
   } = state.context.protocolData || {}
 
@@ -82,6 +82,8 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
     ? accountData.totalCollateralETH.minus(accountData.totalDebtETH)
     : zero
 
+  const totalCollateral = aaveSTETHPriceData.times(accountData.totalCollateralETH)
+
   return (
     <DetailsSection
       title={t('manage-earn-vault.overview-earn', { earnId: mockData.earnId })}
@@ -90,20 +92,20 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
           <DetailsSectionContentCard
             title={t('net-value')}
             value={formatBigNumber(netValue || zero, 2)}
-            unit={mockData.token}
+            unit={state.context.token}
             footnote={t('manage-earn-vault.pnl', {
               value: formatBigNumber(mockData.pnl, 2),
-              token: mockData.token,
+              token: state.context.token,
             })}
             modal={<div>Explanation of the thing, probably</div>}
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.earnings-to-date')}
             value={formatBigNumber(mockData.earnings, 2)}
-            unit={mockData.token}
+            unit={state.context.token}
             footnote={t('manage-earn-vault.earnings-to-date-after-fees', {
               afterFees: formatBigNumber(mockData.earningsAfterFees, 2),
-              symbol: mockData.token,
+              symbol: state.context.token,
             })}
             modal={
               <Grid gap={2}>
@@ -132,19 +134,19 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
       }
       footer={
         <DetailsSectionFooterItemWrapper>
-          {positionData?.currentATokenBalance ? (
+          {totalCollateral ? (
             <DetailsSectionFooterItem
               title={t('system.total-collateral')}
-              value={`${formatAmount(positionData.currentATokenBalance, state.context.token)} ${
-                state.context.token
-              }`}
+              value={`${formatAmount(totalCollateral, 'STETH')} stETH`}
             />
           ) : (
             <AppSpinner />
           )}
           <DetailsSectionFooterItem
             title={t('manage-earn-vault.position-eth-debt')}
-            value={`${formatAmount(mockData.positionETHDebt, mockData.token)} ${mockData.token}`}
+            value={`${formatAmount(accountData.totalDebtETH, state.context.token)} ${
+              state.context.token
+            }`}
           />
           <DetailsSectionFooterItem
             title={t('system.variable-annual-fee')}
