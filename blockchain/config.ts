@@ -226,6 +226,7 @@ const protoMain = {
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
   ),
+  swapAddress: getConfig()?.publicRuntimeConfig.swapAddress,
 }
 
 export type NetworkConfig = typeof protoMain
@@ -323,6 +324,7 @@ const kovan: NetworkConfig = {
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
   ),
+  swapAddress: main.swapAddress,
 }
 
 const goerli: NetworkConfig = {
@@ -422,6 +424,7 @@ const goerli: NetworkConfig = {
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
   ),
+  swapAddress: main.swapAddress,
 }
 
 const hardhat: NetworkConfig = {

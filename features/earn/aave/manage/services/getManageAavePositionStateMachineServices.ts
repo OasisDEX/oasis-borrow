@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
@@ -12,6 +13,7 @@ import {
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
+import { createPosition } from '../../../../aave'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
 export function getManageAavePositionStateMachineServices(
@@ -21,15 +23,19 @@ export function getManageAavePositionStateMachineServices(
   proxyAddress$: Observable<string | undefined>,
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
+  aaveOraclePrice$: ({ token }: { token: string }) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   function aaveProtocolData(token: string, proxyAddress: string) {
     return combineLatest(
       aaveUserReserveData$({ token, proxyAddress }),
       aaveUserAccountData$({ proxyAddress }),
+      aaveOraclePrice$({ token }),
     ).pipe(
-      map(([reserveData, accountData]) => ({
+      map(([reserveData, accountData, oraclePrice]) => ({
         positionData: reserveData,
         accountData: accountData,
+        oraclePrice: oraclePrice,
+        position: createPosition(reserveData, accountData, oraclePrice),
       })),
     )
   }
@@ -53,7 +59,11 @@ export function getManageAavePositionStateMachineServices(
       return proxy
     },
     getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
-      return await aaveProtocolData(context.token!, context.proxyAddress!).pipe(first()).toPromise()
+      const result = await aaveProtocolData(context.strategy!, context.proxyAddress!)
+        .pipe(first())
+        .toPromise()
+      console.log(`protocol data: `, result.positionData.currentATokenBalance.toString())
+      return result
     },
   }
 }

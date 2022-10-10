@@ -1,4 +1,4 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -18,13 +18,8 @@ import {
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
 
-type UserInput = {
-  riskRatio: IRiskRatio
-  amount: BigNumber
-}
-
 export interface ManageAaveContext {
-  strategy: string
+  strategy: string // TODO: Consider changing name to reserve token
   token: string
   address: string
   proxyAddress?: string
@@ -41,22 +36,13 @@ export interface ManageAaveContext {
   balanceAfterClose?: BigNumber
   estimatedGasPrice?: HasGasEstimation
   inputDelay: number
-
-  userInput: UserInput
-
-  strategyInfo?: StrategyInfo
-}
-
-// TODO: Should go to common types
-type StrategyInfo = {
-  maxMultiple: BigNumber
-  liquidationThreshold: BigNumber
-  assetPrice: BigNumber
 }
 
 export interface AaveProtocolData {
   positionData: AaveUserReserveData
   accountData: AaveUserAccountData
+  oraclePrice: BigNumber
+  position: IPosition
 }
 
 export type ManageAaveEvent =
