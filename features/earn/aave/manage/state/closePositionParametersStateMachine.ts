@@ -1,3 +1,4 @@
+import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
@@ -7,10 +8,9 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { CloseStEthReturn } from '../../../../aave'
 
 type ClosePositionParametersStateMachineContext = {
-  proxyAddress?: string
-  token?: string
-  valueLocked?: BigNumber
-
+  proxyAddress: string
+  token: string
+  position: IPosition
   transactionParameters?: CloseStEthReturn
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
@@ -32,7 +32,7 @@ export const createClosePositionParametersStateMachine = createMachine(
     tsTypes: {} as import('./closePositionParametersStateMachine.typegen').Typegen0,
     id: 'closeAaveParameters',
     initial: 'idle',
-    context: {},
+    context: {} as ClosePositionParametersStateMachineContext,
     schema: {
       context: {} as ClosePositionParametersStateMachineContext,
       events: {} as ClosePositionParametersStateMachineEvents,
