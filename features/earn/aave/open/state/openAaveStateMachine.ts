@@ -17,8 +17,6 @@ import {
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
 export interface OpenAaveContext extends BaseAaveContext {
-  riskRatio: IRiskRatio
-
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
@@ -204,7 +202,7 @@ export const createOpenAaveStateMachine = createMachine(
       initContextValues: assign((context) => ({
         currentStep: 1,
         totalSteps: context.proxyAddress ? 3 : 4,
-        riskRatio: new RiskRatio(new BigNumber(0), RiskRatio.TYPE.LTV),
+        riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
         token: 'ETH',
         inputDelay: 1000,
       })),
@@ -243,12 +241,16 @@ export const createOpenAaveStateMachine = createMachine(
             : context.totalSteps || 0,
         }
       }),
-      setAmount: assign((context, event) => ({
-        amount: event.amount,
-      })),
-      calculateAuxiliaryAmount: assign((context) => ({
-        auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
-      })),
+      setAmount: assign((context, event) => {
+        return {
+          amount: event.amount,
+        }
+      }),
+      calculateAuxiliaryAmount: assign((context) => {
+        return {
+          auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
+        }
+      }),
       assignProxyAddress: assign((_, event) => ({
         proxyAddress: event.proxyAddress,
       })),

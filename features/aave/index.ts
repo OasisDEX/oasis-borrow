@@ -9,6 +9,7 @@ import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
+import { toWei } from 'web3-utils'
 
 export interface ActionCall {
   targetHash: string
@@ -47,7 +48,7 @@ export async function getOpenAaveParameters(
       provider: provider,
       // getSwapData: oneInchCallMock,
       dsProxy: proxyAddress,
-      getSwapData: getOneInchCall(context.swapAddress),
+      getSwapData: getOneInchCall(proxyAddress),
     },
   )
 }
@@ -85,7 +86,7 @@ export async function getCloseAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: getOneInchCall(context.swapAddress),
+      getSwapData: getOneInchCall(proxyAddress),
       dsProxy: proxyAddress,
       position,
     },

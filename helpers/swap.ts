@@ -85,6 +85,7 @@ export async function oneInchCallMock(
 
 export function getOneInchCall(swapAddress: string) {
   return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
+    console.log(`amount 1inch: ${amount}`)
     const response = await swapOneInchTokens(
       from,
       to,
@@ -92,7 +93,7 @@ export function getOneInchCall(swapAddress: string) {
       swapAddress,
       slippage.toString(),
     )
-
+    console.log(`fromTokenAmount 1inch: ${response.fromTokenAmount}`)
     return {
       toTokenAddress: to,
       fromTokenAddress: from,
