@@ -1,3 +1,5 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
@@ -89,6 +91,10 @@ export function getManageAaveStateMachine$(
         .withContext({
           token,
           riskRatio: new RiskRatio(new BigNumber(1), RiskRatio.TYPE.MULITPLE),
+          userInput: {
+            riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
+            amount: new BigNumber(0),
+          },
           inputDelay: 1000,
           address,
           strategy,

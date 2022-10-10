@@ -1,3 +1,4 @@
+import { Position } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
@@ -14,7 +15,7 @@ import {
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
-import { createPosition } from '../../../../aave'
+import { one, zero } from '../../../../../helpers/zero'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
 export function getManageAavePositionStateMachineServices(
@@ -42,7 +43,16 @@ export function getManageAavePositionStateMachineServices(
         positionData: reserveData,
         accountData: accountData,
         oraclePrice: oraclePrice,
-        position: createPosition(reserveData, accountData, oraclePrice),
+        position: new Position(
+          { amount: new BigNumber(accountData.totalDebtETH.toString()) },
+          { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
+          oraclePrice,
+          {
+            dustLimit: new BigNumber(0),
+            maxLoanToValue: new BigNumber(accountData.ltv.toString()).plus(one),
+            liquidationThreshold: zero,
+          },
+        ),
       })),
     )
   }

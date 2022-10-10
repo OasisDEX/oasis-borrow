@@ -1,4 +1,4 @@
-import { IRiskRatio, IStrategy, IPosition } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'

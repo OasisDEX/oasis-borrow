@@ -5,12 +5,9 @@ import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 import { Awaited } from 'ts-essentials'
 
-import { AaveUserAccountData } from '../../blockchain/calls/aave/aaveLendingPool'
-import { AaveUserReserveData } from '../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
-import { one, zero } from '../../helpers/zero'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
 
 export interface ActionCall {
@@ -91,23 +88,6 @@ export async function getCloseAaveParameters(
       getSwapData: getOneInchCall(context.swapAddress),
       dsProxy: proxyAddress,
       position,
-    },
-  )
-}
-
-export function createPosition(
-  aaveReserveData: AaveUserReserveData,
-  aaveUserData: AaveUserAccountData,
-  oraclePrice: BigNumber,
-): IPosition {
-  return new Position(
-    { amount: new BigNumber(aaveUserData.totalDebtETH.toString()) },
-    { amount: new BigNumber(aaveReserveData.currentATokenBalance.toString()) },
-    oraclePrice,
-    {
-      dustLimit: new BigNumber(0),
-      maxLoanToValue: new BigNumber(aaveUserData.ltv.toString()).plus(one),
-      liquidationThreshold: zero,
     },
   )
 }

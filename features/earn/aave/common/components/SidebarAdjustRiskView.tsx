@@ -70,7 +70,8 @@ export function AdjustRiskView({ state, send, primaryButton, textButton }: Adjus
       precision: 2,
     },
   )
-
+  console.log(`minRisk: ${minRisk.loanToValue}`)
+  console.log(`maxRisk: ${maxRisk}`)
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
