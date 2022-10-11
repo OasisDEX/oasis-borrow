@@ -5,7 +5,10 @@ import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
 import { SidebarAutomationStages } from 'features/automation/common/types'
-import { checkIfIsDisabledAutoTakeProfit, checkIfIsEditingAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
+import {
+  checkIfIsDisabledAutoTakeProfit,
+  checkIfIsEditingAutoTakeProfit,
+} from 'features/automation/optimization/autoTakeProfit/helpers'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 
@@ -18,12 +21,12 @@ import {
 interface GetAutoTakeProfitStatusParams {
   autoTakeProfitState: AutoTakeProfitFormChange
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  tokenMarketPrice: BigNumber
-  vault: Vault
   isOwner: boolean
   isProgressStage: boolean
   isRemoveForm: boolean
   stage: SidebarAutomationStages
+  tokenMarketPrice: BigNumber
+  vault: Vault
 }
 
 interface AutoTakeProfitStatus {
