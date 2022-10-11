@@ -1,18 +1,17 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OpenStEthReturn } from '../../../../aave'
 
 type ParametersStateMachineContext = {
   token?: string
   amount?: BigNumber
   riskRatio?: IRiskRatio
   proxyAddress?: string
-  transactionParameters?: OpenStEthReturn
+  transactionParameters?: IStrategy
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
 }
@@ -49,7 +48,7 @@ export const createParametersStateMachine = createMachine(
       events: {} as ParametersStateMachineEvents,
       services: {} as {
         getParameters: {
-          data: OpenStEthReturn | undefined
+          data: IStrategy | undefined
         }
         estimateGas: {
           data: number

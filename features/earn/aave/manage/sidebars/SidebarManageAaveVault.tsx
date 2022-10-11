@@ -1,14 +1,10 @@
 import { useActor } from '@xstate/react'
-import { BigNumber } from 'bignumber.js'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { amountFromWei } from '../../../../../blockchain/utils'
-import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
-import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
@@ -16,8 +12,9 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
-import { one, zero } from '../../../../../helpers/zero'
+import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
+import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
 
@@ -138,78 +135,6 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
-  const { t } = useTranslation()
-
-  function convertMultipleToColRatio(multiple: BigNumber): BigNumber {
-    return one.div(multiple.minus(one)).plus(one)
-  }
-
-  function convertColRatioToMultiple(colRatio: BigNumber): BigNumber {
-    return convertMultipleToColRatio(colRatio)
-  }
-
-  const liquidationPriceRatio = one
-  const marketStEthEthPrice = amountFromWei(new BigNumber('968102393798180700'), 'ETH')
-  const minColRatio = new BigNumber(5)
-  const minRisk = convertColRatioToMultiple(minColRatio)
-  const maxRisk = state.context.protocolData
-    ? state.context.protocolData?.position.riskRatio.colRatio
-    : zero
-
-  const sidebarSectionProps: SidebarSectionProps = {
-    title: t('manage-earn.aave.vault-form.title'),
-    content: (
-      <Grid gap={3}>
-        <SliderValuePicker
-          sliderPercentageFill={new BigNumber(0)}
-          leftBoundry={liquidationPriceRatio}
-          leftBoundryFormatter={(value) => value.toFixed(2)}
-          rightBoundry={marketStEthEthPrice}
-          rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
-          onChange={() => {}}
-          minBoundry={minRisk}
-          maxBoundry={maxRisk}
-          lastValue={new BigNumber(2)}
-          disabled={false}
-          step={0.01}
-          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
-        />
-        <Flex
-          sx={{
-            variant: 'text.paragraph4',
-            justifyContent: 'space-between',
-            color: 'neutral80',
-          }}
-        >
-          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
-          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
-        </Flex>
-        <SidebarResetButton clear={() => {}} />
-        <TransactionInformationContainer state={state} send={send} />
-      </Grid>
-    ),
-    primaryButton: {
-      isLoading: false,
-      disabled: true,
-      label: t('manage-earn.aave.vault-form.adjust-risk'),
-      action: () => {
-        send('ADJUST_POSITION')
-      },
-    },
-    textButton: {
-      isLoading: false,
-      disabled: false,
-      label: t('manage-earn.aave.vault-form.close'),
-      action: () => {
-        send('CLOSE_POSITION')
-      },
-    },
-  }
-
-  return <SidebarSection {...sidebarSectionProps} />
-}
-
 function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
@@ -237,10 +162,32 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
 export function SidebarManageAaveVault() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
+  const { t } = useTranslation()
 
   switch (true) {
     case state.matches('editing'):
-      return <ManageAaveEditingStateView state={state} send={send} />
+      return (
+        <AdjustRiskView
+          state={state}
+          send={send}
+          primaryButton={{
+            isLoading: false,
+            disabled: true,
+            label: t('manage-earn.aave.vault-form.adjust-risk'),
+            action: () => {
+              send('ADJUST_POSITION')
+            },
+          }}
+          textButton={{
+            isLoading: false,
+            disabled: false,
+            label: t('manage-earn.aave.vault-form.close'),
+            action: () => {
+              send('CLOSE_POSITION')
+            },
+          }}
+        />
+      )
     case state.matches('reviewingClosing'):
       return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('reviewingAdjusting'):
