@@ -27,6 +27,9 @@ export type SidebarAutomationFlow =
   | 'addConstantMultiple'
   | 'cancelConstantMultiple'
   | 'editConstantMultiple'
+  | 'addAutoTakeProfit'
+  | 'cancelAutoTakeProfit'
+  | 'editAutoTakeProfit'
 
 export type SidebarAutomationStages =
   | 'txSuccess'

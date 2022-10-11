@@ -7,6 +7,7 @@ import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { SidebarSetupConstantMultiple } from 'features/automation/optimization/constantMultiple/sidebars/SidebarSetupConstantMultiple'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -23,6 +24,7 @@ import React from 'react'
 interface ConstantMultipleFormControlProps {
   autoBuyTriggerData: AutoBSTriggerData
   autoSellTriggerData: AutoBSTriggerData
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   balanceInfo: BalanceInfo
   constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
@@ -38,6 +40,7 @@ interface ConstantMultipleFormControlProps {
 export function ConstantMultipleFormControl({
   autoBuyTriggerData,
   autoSellTriggerData,
+  autoTakeProfitTriggerData,
   balanceInfo,
   constantMultipleTriggerData,
   context,
@@ -123,6 +126,7 @@ export function ConstantMultipleFormControl({
         <SidebarSetupConstantMultiple
           autoBuyTriggerData={autoBuyTriggerData}
           autoSellTriggerData={autoSellTriggerData}
+          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
           balanceInfo={balanceInfo}
           collateralToBePurchased={collateralToBePurchased}
           collateralToBeSold={collateralToBeSold}

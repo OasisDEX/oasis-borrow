@@ -1,6 +1,7 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { calculateSimulation } from 'features/earn/aave/open/services'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -25,33 +26,29 @@ const aaveCalcValueBasis = {
 
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const {
-    aaveReserveConfigurationData,
-    aaveSthEthYieldsQuery,
-    aaveAvailableLiquidityETH$,
-  } = useEarnContext()
+  const { aaveReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
+  const { aaveSthEthYieldsQuery } = useAppContext()
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityETH$,
   )
-
   const [simulations, setSimulations] = useState<ReturnType<typeof calculateSimulation>>()
   const maximumMultiple = aaveReserveState ? one.div(one.minus(aaveReserveState!.ltv)) : undefined
 
   useEffect(() => {
-    if (maximumMultiple) {
+    if (maximumMultiple && !simulations) {
       const maxRisk = new RiskRatio(maximumMultiple, RiskRatio.TYPE.MULITPLE)
       void (async () => {
         setSimulations(
           calculateSimulation({
             ...aaveCalcValueBasis,
-            yields: await aaveSthEthYieldsQuery(maxRisk),
+            yields: await aaveSthEthYieldsQuery(maxRisk, ['7Days', '90Days']),
             riskRatio: maxRisk,
           }),
         )
       })()
     }
-  }, [maximumMultiple])
+  }, [maximumMultiple, simulations])
 
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
@@ -78,7 +75,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
             labels={[
               {
                 title: '7 day net APY',
-                value: simulations ? (
+                value: simulations?.previous7Days ? (
                   // this takes a while, so we show a spinner until it's ready
                   formatPercent(simulations?.previous7Days.earningAfterFees, {
                     precision: 2,
@@ -89,7 +86,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               },
               {
                 title: '90 day net APY',
-                value: simulations ? (
+                value: simulations?.previous90Days ? (
                   formatPercent(simulations?.previous90Days.earningAfterFees, {
                     precision: 2,
                   })

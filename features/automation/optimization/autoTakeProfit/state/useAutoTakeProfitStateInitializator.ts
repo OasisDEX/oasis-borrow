@@ -41,16 +41,16 @@ export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
       type: 'close-type',
       toCollateral: isToCollateral,
     })
+    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: 'add',
+    })
   }, [triggerId.toNumber(), collateralizationRatio])
 
   // useEffect(() => {
   //   uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
   //     type: 'tx-details',
   //     txDetails: {},
-  //   })
-  //   uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-  //     type: 'current-form',
-  //     currentForm: 'add',
   //   })
   // }, [collateralizationRatio])
 
