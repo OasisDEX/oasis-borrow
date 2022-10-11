@@ -6,7 +6,11 @@ import React, { useState } from 'react'
 import { theme } from 'theme'
 import { Box, Flex, Text } from 'theme-ui'
 
-export function DiscoveryNavigation({ active }: { active: DiscoveryPages }) {
+interface DiscoveryNavigationProps {
+  kind: DiscoveryPages
+}
+
+export function DiscoveryNavigation({ kind }: DiscoveryNavigationProps) {
   return (
     <Flex
       as="ul"
@@ -19,7 +23,7 @@ export function DiscoveryNavigation({ active }: { active: DiscoveryPages }) {
       }}
     >
       {discoveryPagesMeta.map((item, i) => (
-        <DiscoveryNavigationItem key={i} isActive={active === item.kind} {...item} />
+        <DiscoveryNavigationItem key={i} isActive={kind === item.kind} {...item} />
       ))}
     </Flex>
   )

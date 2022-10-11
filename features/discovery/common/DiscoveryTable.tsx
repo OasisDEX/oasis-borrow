@@ -1,11 +1,21 @@
+import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBanner'
 import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
-import { DiscoveryTableRowData } from 'features/discovery/types'
+import { DiscoveryBanner } from 'features/discovery/meta'
+import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
 import { camelToKebab } from 'helpers/camelToKebab'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Box, Text } from 'theme-ui'
 
-export function DiscoveryTable({ rows }: { rows: DiscoveryTableRowData[] }) {
+export function DiscoveryTable({
+  banner,
+  kind,
+  rows,
+}: {
+  banner?: DiscoveryBanner
+  kind: DiscoveryPages
+  rows: DiscoveryTableRowData[]
+}) {
   const { t } = useTranslation()
 
   return (
@@ -31,16 +41,25 @@ export function DiscoveryTable({ rows }: { rows: DiscoveryTableRowData[] }) {
     >
       {rows.length > 0 ? (
         <Box as="table" sx={{ width: '100%', borderSpacing: '0 20px' }}>
-          <Box as="thead" sx={{}}>
-            <Box as="tr">
-              {Object.keys(rows[0]).map((key) => (
-                <DiscoveryTableHeaderCell key={key} label={key} />
+          <Box as="thead">
+            <tr>
+              {Object.keys(rows[0]).map((label, i) => (
+                <DiscoveryTableHeaderCell key={i} label={label} />
               ))}
-            </Box>
+            </tr>
           </Box>
           <Box as="tbody" sx={{ borderSpacing: '12px 0' }}>
             {rows.map((row, i) => (
-              <DiscoveryTableDataRow key={i} row={row} />
+              <Fragment key={i}>
+                <DiscoveryTableDataRow row={row} />
+                {banner && i === Math.floor((rows.length - 1) / 2) && (
+                  <tr>
+                    <td colSpan={Object.keys(row).length}>
+                      <DiscoveryTableBanner kind={kind} {...banner} />
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
           </Box>
         </Box>
@@ -89,8 +108,8 @@ export function DiscoveryTableDataRow({ row }: { row: DiscoveryTableRowData }) {
         },
       }}
     >
-      {Object.keys(row).map((key) => (
-        <DiscoveryTableDataCell key={key} label={key} row={row} />
+      {Object.keys(row).map((label, i) => (
+        <DiscoveryTableDataCell key={i} label={label} row={row} />
       ))}
     </Box>
   )

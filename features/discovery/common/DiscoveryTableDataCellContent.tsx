@@ -8,24 +8,20 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, SxStyleProp, Text } from 'theme-ui'
 
+const pillColors: { [key: string]: SxStyleProp } = {
+  critical: { color: 'critical100', backgroundColor: 'critical10' },
+  warning: { color: 'warning100', backgroundColor: 'warning10' },
+  success: { color: 'success100', backgroundColor: 'success10' },
+  interactive: { color: 'interactive100', backgroundColor: 'interactive10' },
+  faded: { color: 'primary30', backgroundColor: 'secondary60' },
+}
+
 const statusColors: { [key in DiscoveryTableVaultStatus]: SxStyleProp } = {
-  [DiscoveryTableVaultStatus.LIQUIDATED]: { color: 'critical100', backgroundColor: 'critical10' },
-  [DiscoveryTableVaultStatus.BEING_LIQUIDATED]: {
-    color: 'warning100',
-    backgroundColor: 'warning10',
-  },
-  [DiscoveryTableVaultStatus.TILL_LIQUIDATION]: {
-    color: 'success100',
-    backgroundColor: 'success10',
-  },
-  [DiscoveryTableVaultStatus.TO_STOP_LOSS]: {
-    color: 'interactive100',
-    backgroundColor: 'interactive10',
-  },
-  [DiscoveryTableVaultStatus.CLOSED_LONG_TIME_AGO]: {
-    color: 'primary30',
-    backgroundColor: 'secondary60',
-  },
+  [DiscoveryTableVaultStatus.LIQUIDATED]: pillColors.critical,
+  [DiscoveryTableVaultStatus.BEING_LIQUIDATED]: pillColors.warning,
+  [DiscoveryTableVaultStatus.TILL_LIQUIDATION]: pillColors.success,
+  [DiscoveryTableVaultStatus.TO_STOP_LOSS]: pillColors.interactive,
+  [DiscoveryTableVaultStatus.CLOSED_LONG_TIME_AGO]: pillColors.faded,
 }
 
 export function DiscoveryTableDataCellContent({
@@ -36,8 +32,6 @@ export function DiscoveryTableDataCellContent({
   row: DiscoveryTableRowData
 }) {
   const { t } = useTranslation()
-
-  console.log(label)
 
   switch (label) {
     case 'asset':

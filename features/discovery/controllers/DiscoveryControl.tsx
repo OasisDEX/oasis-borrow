@@ -1,6 +1,6 @@
+import { getDiscoveryData } from 'features/discovery/api'
 import { DiscoveryFilters } from 'features/discovery/common/DiscoveryFilters'
 import { DiscoveryTable } from 'features/discovery/common/DiscoveryTable'
-import { getDiscoveryData } from 'features/discovery/discoveryApi'
 import { getDefaultSettingsState } from 'features/discovery/helpers'
 import { discoveryPagesMeta } from 'features/discovery/meta'
 import { DiscoveryFiltersSettings, DiscoveryPages } from 'features/discovery/types'
@@ -9,11 +9,11 @@ import React, { useState } from 'react'
 import { Box } from 'theme-ui'
 
 interface DiscoveryControlProps {
-  active: DiscoveryPages
+  kind: DiscoveryPages
 }
 
-export function DiscoveryControl({ active }: DiscoveryControlProps) {
-  const { endpoint, filters } = keyBy(discoveryPagesMeta, 'kind')[active]
+export function DiscoveryControl({ kind }: DiscoveryControlProps) {
+  const { banner, endpoint, filters } = keyBy(discoveryPagesMeta, 'kind')[kind]
   const [settings, setSettings] = useState<DiscoveryFiltersSettings>(
     getDefaultSettingsState({ filters }),
   )
@@ -37,7 +37,9 @@ export function DiscoveryControl({ active }: DiscoveryControlProps) {
           })
         }}
       />
-      {discoveryData?.data?.rows && <DiscoveryTable rows={discoveryData.data.rows} />}
+      {discoveryData?.data?.rows && (
+        <DiscoveryTable banner={banner} kind={kind} rows={discoveryData.data.rows} />
+      )}
     </Box>
   )
 }

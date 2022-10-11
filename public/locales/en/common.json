@@ -169,6 +169,28 @@
         "3": "{{tillLiquidation}}% till liquidation",
         "4": "{{toStopLoss}}% to Stop-loss",
         "5": "Closed {{closedDaysAgo}} days ago"
+      },
+      "banner": {
+        "high-risk-positions": {
+          "title": "Mutiply your crypto assets with Stop-Loss Vault Protection",
+          "description": "All Multiply Vaults on Oasis.app allow you to protect yourself from liquidation with automated Stop-Loss Protection.",
+          "cta": "Get started with Multiply"
+        },
+        "highest-multiply-pnl": {
+          "title": "Multiply your exposure up to 4x with automated buy and sell actions",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Multiply"
+        },
+        "most-yield-earned": {
+          "title": "Put your crypto to work today and start earning a yield",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Earn"
+        },
+        "largest-debt": {
+          "title": "Borrow against your crypto today.",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Borrow"
+        }
       }
     }
   },
