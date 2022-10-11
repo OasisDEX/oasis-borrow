@@ -21,7 +21,7 @@ DiscoveryPage.seoTags = discoveryPageSeoTags
 export default DiscoveryPage
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = discoveryPagesMeta.map(({ id }) => ({ params: { slug: id } }))
+  const paths = discoveryPagesMeta.map(({ kind }) => ({ params: { slug: kind } }))
 
   return {
     paths,
@@ -30,7 +30,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
-  const meta = discoveryPagesMeta.filter((page) => page.id === params?.slug)
+  const meta = discoveryPagesMeta.filter((page) => page.kind === params?.slug)
 
   return {
     ...(meta.length === 0 && { notFound: true }),

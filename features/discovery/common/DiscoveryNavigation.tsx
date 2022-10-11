@@ -28,7 +28,6 @@ export function DiscoveryNavigation({ active }: { active: DiscoveryPages }) {
 export function DiscoveryNavigationItem({
   isActive,
   kind,
-  id,
   iconColor,
   iconContent,
 }: { isActive: boolean } & DiscoveryPageMeta) {
@@ -48,7 +47,7 @@ export function DiscoveryNavigationItem({
       }}
     >
       <AppLink
-        href={`/discovery/${id}`}
+        href={`/discovery/${kind}`}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -75,7 +74,7 @@ export function DiscoveryNavigationItem({
           {iconContent}
         </svg>
         <Text as="span" sx={{ mt: 2 }}>
-          {t(`discovery.navigation.${id}`)}
+          {t(`discovery.navigation.${kind}`)}
         </Text>
       </AppLink>
     </Box>

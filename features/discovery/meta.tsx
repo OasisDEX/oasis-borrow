@@ -12,7 +12,6 @@ export interface DiscoveryFiltersList {
 }
 export interface DiscoveryPageMeta {
   kind: DiscoveryPages
-  id: string
   endpoint: string
   iconColor: string
   iconContent: JSX.Element
@@ -22,7 +21,6 @@ export interface DiscoveryPageMeta {
 export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   {
     kind: DiscoveryPages.HIGH_RISK_POSITIONS,
-    id: 'high-risk-positions',
     endpoint: '/high-risk-positions.json',
     iconColor: '#FE665C',
     iconContent: (
@@ -50,7 +48,6 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   },
   {
     kind: DiscoveryPages.HIGHEST_MULTIPLY_PNL,
-    id: 'highest-multiply-pnl',
     endpoint: '/highest-multiply-pnl.json',
     iconColor: '#FFC700',
     iconContent: (
@@ -70,7 +67,6 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   },
   {
     kind: DiscoveryPages.MOST_YIELD_EARNED,
-    id: 'most-yield-earned',
     endpoint: '/most-yield-earned.json',
     iconColor: '#00E2BA',
     iconContent: (
@@ -86,7 +82,6 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   },
   {
     kind: DiscoveryPages.LARGEST_DEBT,
-    id: 'largest-debt',
     endpoint: '/largest-debt.json',
     iconColor: '#FF4DB8',
     iconContent: (
