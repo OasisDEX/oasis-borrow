@@ -47,12 +47,12 @@ export function SidebarAutoTakeProfitEditingStage({
     <>
       <PickCloseState {...closePickerConfig} />
       <SliderValuePicker {...sliderConfig} />
-
       <EstimationOnClose
         iconCircle={getToken(closeToToken).iconCircle}
         label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
         value={`${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`}
       />
+      isEditing: {String(isEditing)}
       {isEditing && (
         <>
           {/* TODO: TDAutoTakeProfit | handle SidebarResetButton here */}

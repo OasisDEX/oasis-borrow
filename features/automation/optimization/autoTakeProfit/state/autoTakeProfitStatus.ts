@@ -56,6 +56,7 @@ export function getAutoTakeProfitStatus({
     autoTakeProfitTriggerData,
     autoTakeProfitState,
     isRemoveForm,
+    token: vault.token,
   })
   const isDisabled = checkIfIsDisabledAutoTakeProfit({
     isEditing,
