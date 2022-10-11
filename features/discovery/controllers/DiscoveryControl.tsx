@@ -13,7 +13,9 @@ interface DiscoveryControlProps {
 
 export function DiscoveryControl({ active }: DiscoveryControlProps) {
   const { endpoint, filters } = keyBy(discoveryPagesMeta, 'kind')[active]
-  const [settings, setSettings] = useState<DiscoveryFiltersSettings>(getDefaultSettingsState({ filters }))
+  const [settings, setSettings] = useState<DiscoveryFiltersSettings>(
+    getDefaultSettingsState({ filters }),
+  )
   const discoveryData = getDiscoveryData(endpoint, settings)
 
   // TODO: pass data to table component
