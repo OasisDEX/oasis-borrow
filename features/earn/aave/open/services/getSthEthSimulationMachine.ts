@@ -31,7 +31,13 @@ export function getSthEthSimulationMachine(
             },
             getYields: async (context) => {
               const [yieldsMin, yieldsMax] = [
-                await getStEthYields(context.riskRatio!, ['7Days']),
+                await getStEthYields(context.riskRatio!, [
+                  '7Days',
+                  '30Days',
+                  '90Days',
+                  '1Year',
+                  'Inception',
+                ]),
                 await getStEthYields(context.riskRatioMax!, [
                   '7Days',
                   '7DaysOffset',

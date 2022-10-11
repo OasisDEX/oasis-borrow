@@ -2,6 +2,7 @@ import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -106,13 +107,15 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
 
   return (
     <WithErrorHandler error={[tvlStateError]}>
-      {tvlState && simulationMachine && (
-        <AaveOpenHeader
-          strategyName={strategyName}
-          simulationActor={simulationMachine}
-          aaveTVL={tvlState}
-        />
-      )}
+      <WithLoadingIndicator value={[tvlState, simulationMachine]} customLoader={<AppSpinner />}>
+        {([_tvlState, _simulationMachine]) => (
+          <AaveOpenHeader
+            strategyName={strategyName}
+            simulationActor={_simulationMachine}
+            aaveTVL={_tvlState}
+          />
+        )}
+      </WithLoadingIndicator>
     </WithErrorHandler>
   )
 }
