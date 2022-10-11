@@ -9,6 +9,10 @@ import { Vault } from 'blockchain/vaults'
 import { Result } from 'ethers/lib/utils'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getTriggersByType } from 'features/automation/common/helpers'
+import {
+  AutoTakeProfitFormChange,
+  AutoTakeProfitResetData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { zero } from 'helpers/zero'
 
 export interface AutoTakeProfitTriggerData {
@@ -114,4 +118,17 @@ function pickTriggerWithLowestExecutionPrice(
   return mappedAutoTakeProfitTriggers.reduce((min, obj) =>
     min.executionPrice.lt(obj.executionPrice) ? min : obj,
   )
+}
+
+export function prepareAutoTakeProfitResetData(
+  autoTakeProfitState: AutoTakeProfitFormChange,
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData,
+): AutoTakeProfitResetData {
+  return {
+    executionPrice: autoTakeProfitState.defaultExecutionPrice,
+    executionCollRatio: autoTakeProfitState.defaultExecutionCollRatio,
+    toCollateral: autoTakeProfitTriggerData.isToCollateral,
+    txDetails: {},
+    isEditing: false,
+  }
 }

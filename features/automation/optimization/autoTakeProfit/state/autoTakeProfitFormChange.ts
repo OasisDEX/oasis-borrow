@@ -55,6 +55,8 @@ export function autoTakeProfitFormChangeReducer(
     case 'form-defaults':
       return {
         ...state,
+        defaultExecutionPrice: action.executionPrice,
+        defaultExecutionCollRatio: action.executionCollRatio,
         executionPrice: action.executionPrice,
         executionCollRatio: action.executionCollRatio,
         toCollateral: action.toCollateral,
@@ -66,12 +68,14 @@ export function autoTakeProfitFormChangeReducer(
 
 export type AutoTakeProfitResetData = Pick<
   AutoTakeProfitFormChange,
-  'executionPrice' | 'executionCollRatio' | 'toCollateral' | 'txDetails'
+  'executionPrice' | 'executionCollRatio' | 'toCollateral' | 'txDetails' | 'isEditing'
 >
 
 export type AutoTakeProfitFormChange = AutomationFormChange & {
-  executionPrice: BigNumber
-  executionCollRatio: BigNumber
   currentForm: AutomationFormType
+  defaultExecutionCollRatio: BigNumber
+  defaultExecutionPrice: BigNumber
+  executionCollRatio: BigNumber
+  executionPrice: BigNumber
   toCollateral: boolean
 }

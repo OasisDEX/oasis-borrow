@@ -163,6 +163,7 @@ export function SidebarSetupAutoTakeProfit({
               {isAddForm && (
                 <SidebarAutoTakeProfitEditingStage
                   autoTakeProfitState={autoTakeProfitState}
+                  autoTakeProfitTriggerData={autoTakeProfitTriggerData}
                   closePickerConfig={closePickerConfig}
                   ethMarketPrice={ethMarketPrice}
                   isEditing={isEditing}
