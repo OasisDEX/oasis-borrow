@@ -48,12 +48,12 @@ export function AaveOpenHeader({
       formatPercent(yieldVal, {
         precision: 2,
       })
-    const yield7DaysMin = minimumMultiple.times(simulationContext.yields.annualisedYield7days)
-    const yield7DaysMax = maximumMultiple.times(simulationContext.yields.annualisedYield7days)
+    const yield7DaysMin = minimumMultiple.times(simulationContext.yields.annualisedYield7days!)
+    const yield7DaysMax = maximumMultiple.times(simulationContext.yields.annualisedYield7days!)
 
     const yield7DaysDiff = maximumMultiple.times(
-      simulationContext.yields.annualisedYield7days.minus(
-        simulationContext.yields.annualisedYield7daysOffset,
+      simulationContext.yields.annualisedYield7days!.minus(
+        simulationContext.yields.annualisedYield7daysOffset!,
       ),
     )
 
@@ -71,7 +71,7 @@ export function AaveOpenHeader({
   }
   if (simulationContext.yields?.annualisedYield90days) {
     const yield90DaysDiff = maximumMultiple.times(
-      simulationContext.yields.annualisedYield90daysOffset.minus(
+      simulationContext.yields.annualisedYield90daysOffset!.minus(
         simulationContext.yields.annualisedYield90days,
       ),
     )
