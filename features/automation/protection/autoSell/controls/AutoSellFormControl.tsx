@@ -111,7 +111,7 @@ export function AutoSellFormControl({
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoSellTriggerData.triggerId.toNumber()]}
-      txHelpers={txHelpers!}
+      txHelpers={txHelpers}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoSell

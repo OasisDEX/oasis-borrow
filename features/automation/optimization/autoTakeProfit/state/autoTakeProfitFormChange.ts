@@ -10,6 +10,8 @@ export type AutoTakeProfitFormChangeAction =
   | { type: 'execution-price'; executionPrice: BigNumber; executionCollRatio: BigNumber }
   | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'close-type'; toCollateral: boolean }
+  | { type: 'is-editing'; isEditing: boolean }
+  | { type: 'reset'; resetData: AutoTakeProfitResetData }
   | {
       type: 'form-defaults'
       executionPrice: BigNumber
@@ -41,6 +43,12 @@ export function autoTakeProfitFormChangeReducer(
       return { ...state, currentForm: action.currentForm }
     case 'close-type':
       return { ...state, toCollateral: action.toCollateral }
+    case 'tx-details':
+      return { ...state, txDetails: action.txDetails }
+    case 'is-editing':
+      return { ...state, isEditing: action.isEditing }
+    case 'reset':
+      return { ...state, ...action.resetData }
     case 'form-defaults':
       return {
         ...state,
@@ -48,9 +56,6 @@ export function autoTakeProfitFormChangeReducer(
         executionCollRatio: action.executionCollRatio,
         toCollateral: action.toCollateral,
       }
-    // TODO ŁW
-    //     case 'reset':
-    //       return { ...state, ...action.resetData }
     default:
       return state
   }
