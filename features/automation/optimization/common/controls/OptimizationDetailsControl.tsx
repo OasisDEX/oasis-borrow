@@ -13,6 +13,7 @@ interface OptimizationDetailsControlProps {
   vault: Vault
   vaultType: VaultType
   vaultHistory: VaultHistoryEvent[]
+  ethMarketPrice: BigNumber
   tokenMarketPrice: BigNumber
 }
 
@@ -20,9 +21,14 @@ export function OptimizationDetailsControl({
   vault,
   vaultType,
   vaultHistory,
+  ethMarketPrice,
   tokenMarketPrice,
 }: OptimizationDetailsControlProps) {
-  const { autoBuyTriggerData, constantMultipleTriggerData } = useAutomationContext()
+  const {
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+    autoTakeProfitTriggerData,
+  } = useAutomationContext()
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
   const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
 
@@ -42,7 +48,13 @@ export function OptimizationDetailsControl({
           constantMultipleTriggerData={constantMultipleTriggerData}
         />
       )}
-      {autoTakeProfitEnabled && <AutoTakeProfitDetailsControl vault={vault} />}
+      {autoTakeProfitEnabled && (
+        <AutoTakeProfitDetailsControl
+          ethMarketPrice={ethMarketPrice}
+          vault={vault}
+          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+        />
+      )}
     </>
   )
 }
