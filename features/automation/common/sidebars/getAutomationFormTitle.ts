@@ -122,7 +122,7 @@ export function getAutomationFormTitle({ flow, stage, feature }: AutomationSideb
     case 'txSuccess':
       const txSuccessKey = getSidebarTitleTxSuccessTranslationKey({ flow })
 
-      return t(txSuccessKey, { feature })
+      return t(txSuccessKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     default:
       throw new UnreachableCaseError(stage)
   }
