@@ -14,7 +14,7 @@ export function DiscoveryWrapperWithIntro({ children }: WithChildren) {
         <Heading variant="header2" sx={{ mb: 2 }}>
           {t('discovery.heading')}
         </Heading>
-        <Text as="p" variant="paragraph1" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
+        <Text variant="paragraph1" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
           {t('discovery.intro')}{' '}
           <AppLink href="https://kb.oasis.app/">
             <WithArrow

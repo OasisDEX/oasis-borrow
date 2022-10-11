@@ -1,5 +1,5 @@
 import { AppLink } from 'components/Links'
-import { DiscoveryPageMeta, DiscoveryPagesMeta } from 'features/discovery/helpers'
+import { DiscoveryPageMeta, discoveryPagesMeta } from 'features/discovery/meta'
 import { DiscoveryPages } from 'features/discovery/types'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -13,12 +13,13 @@ export function DiscoveryNavigation({ active }: { active: DiscoveryPages }) {
       sx={{
         flexWrap: 'wrap',
         justifyContent: ['space-around', 'space-around', 'center'],
+        mb: '48px',
         p: 0,
         listStyle: 'none',
       }}
     >
-      {DiscoveryPagesMeta.map((item) => (
-        <DiscoveryNavigationItem isActive={active === item.kind} {...item} />
+      {discoveryPagesMeta.map((item, i) => (
+        <DiscoveryNavigationItem key={i} isActive={active === item.kind} {...item} />
       ))}
     </Flex>
   )
@@ -27,7 +28,6 @@ export function DiscoveryNavigation({ active }: { active: DiscoveryPages }) {
 export function DiscoveryNavigationItem({
   isActive,
   kind,
-  id,
   iconColor,
   iconContent,
 }: { isActive: boolean } & DiscoveryPageMeta) {
@@ -47,7 +47,7 @@ export function DiscoveryNavigationItem({
       }}
     >
       <AppLink
-        href={`/discovery/${id}`}
+        href={`/discovery/${kind}`}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -74,7 +74,7 @@ export function DiscoveryNavigationItem({
           {iconContent}
         </svg>
         <Text as="span" sx={{ mt: 2 }}>
-          {t(`discovery.navigation.${id}`)}
+          {t(`discovery.navigation.${kind}`)}
         </Text>
       </AppLink>
     </Box>
