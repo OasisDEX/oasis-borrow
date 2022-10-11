@@ -45,14 +45,11 @@ export function useAutoTakeProfitStateInitializator(vault: Vault | InstiVault) {
       type: 'current-form',
       currentForm: 'add',
     })
+    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+      type: 'tx-details',
+      txDetails: {},
+    })
   }, [triggerId.toNumber(), collateralizationRatio])
-
-  // useEffect(() => {
-  //   uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-  //     type: 'tx-details',
-  //     txDetails: {},
-  //   })
-  // }, [collateralizationRatio])
 
   // because this value was hardcoded as true, Optimization was always shown as "On", regardless of feature flag
   const isAutoTakeProfitEnabled = false
