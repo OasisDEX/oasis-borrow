@@ -31,6 +31,7 @@ interface AutoTakeProfitStatus {
   max: BigNumber
   min: BigNumber
   resetData: AutoTakeProfitResetData
+  isEditing: boolean
 }
 
 const MIN_MULTIPLIER = 1.05

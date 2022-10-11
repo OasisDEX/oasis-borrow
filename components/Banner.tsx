@@ -1,8 +1,7 @@
+import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { ReactNode } from 'react'
 import { Box, Button, Card, Flex, Grid, Heading, Image, SxProps, Text } from 'theme-ui'
-
-import { AppSpinner } from '../helpers/AppSpinner'
 
 type BannerGradientPresetsArray = { [key: string]: [string, string] }
 export const bannerGradientPresets: BannerGradientPresetsArray = {
@@ -55,7 +54,7 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
             {title}
           </Heading>
           <Grid gap={2} mb={3}>
-            {descriptionsArray.map((item) => (
+            {descriptionsArray.map((item, idx) => (
               <Text
                 as="p"
                 sx={{
@@ -63,6 +62,7 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
                   lineHeight: 1.571,
                   color: 'neutral80',
                 }}
+                key={idx}
               >
                 {item}
               </Text>

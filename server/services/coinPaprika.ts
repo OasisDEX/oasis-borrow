@@ -44,11 +44,11 @@ const requiredTickers = tokens
   .filter((token) => token.coinpaprikaTicker)
   .map((token) => token.coinpaprikaTicker) as string[]
 
-async function fetchTicker(id: string): Promise<{ data: CoinPaprikaApiResponse }> {
+function fetchTicker(): Promise<{ data: CoinPaprikaApiResponse[] }> {
   return axios({
     method: 'get',
     timeout: 1000,
-    url: `https://api.coinpaprika.com/v1/tickers/${id}`,
+    url: `https://api.coinpaprika.com/v1/tickers/`,
     responseType: 'json',
     headers: {
       Accept: 'application/json',
@@ -56,18 +56,27 @@ async function fetchTicker(id: string): Promise<{ data: CoinPaprikaApiResponse }
   })
 }
 
+function fetchTickersWithRetry(
+  retries = 3,
+  err = null,
+): Promise<{ data: CoinPaprikaApiResponse[] }> {
+  if (!retries) {
+    return Promise.reject(err)
+  }
+  return fetchTicker().catch((err) => {
+    return fetchTickersWithRetry(retries - 1, err)
+  })
+}
+
 export async function getCoinPaprikaTickers(): Promise<PriceServiceResponse> {
-  const result = await Promise.allSettled(requiredTickers.map((ticker) => fetchTicker(ticker)))
+  const result = await fetchTickersWithRetry()
 
-  const mappedResult = result
-    .filter((res) => res.status === 'fulfilled')
-    .map((res) => (res as PromiseFulfilledResult<{ data: CoinPaprikaApiResponse }>).value.data)
-    .map((res, idx) => ({ ...res, ticker: requiredTickers[idx] }))
-
-  return mappedResult.reduce((acc, res) => {
-    return {
-      ...acc,
-      [res.ticker]: res.quotes.USD.price,
-    }
-  }, {})
+  return result.data
+    .filter((response: CoinPaprikaApiResponse) => requiredTickers.includes(response.id))
+    .reduce((acc, res) => {
+      return {
+        ...acc,
+        [res.id]: res.quotes.USD.price,
+      }
+    }, {})
 }
