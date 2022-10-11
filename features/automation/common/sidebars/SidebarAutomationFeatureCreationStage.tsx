@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -40,8 +41,14 @@ export function SidebarAutomationFeatureCreationStage({
         <>
           <AddingStopLossAnimation />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {isAddForm && t('automation-creation.add-content', { featureName })}
-            {isRemoveForm && t('automation-creation.remove-content', { featureName })}
+            {isAddForm &&
+              t('automation-creation.add-content', {
+                featureName: t(sidebarAutomationFeatureCopyMap[featureName]),
+              })}
+            {isRemoveForm &&
+              t('automation-creation.remove-content', {
+                featureName: t(sidebarAutomationFeatureCopyMap[featureName]),
+              })}
           </Text>
         </>
       )
@@ -56,7 +63,9 @@ export function SidebarAutomationFeatureCreationStage({
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {isAddForm && (
               <>
-                {t('automation-creation.add-complete-content', { featureName })}{' '}
+                {t('automation-creation.add-complete-content', {
+                  featureName: t(sidebarAutomationFeatureCopyMap[featureName]),
+                })}{' '}
                 <AppLink
                   href={`https://kb.oasis.app/help/${linkMap[featureName]}`}
                   sx={{ fontSize: 2 }}
@@ -65,7 +74,10 @@ export function SidebarAutomationFeatureCreationStage({
                 </AppLink>
               </>
             )}
-            {isRemoveForm && t('automation-creation.remove-complete-content', { featureName })}
+            {isRemoveForm &&
+              t('automation-creation.remove-complete-content', {
+                featureName: t(sidebarAutomationFeatureCopyMap[featureName]),
+              })}
           </Text>
           {isAddForm && !!customContent && <Box mt={3}>{!!customContent && customContent}</Box>}
           <Box>

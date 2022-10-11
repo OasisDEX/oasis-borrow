@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { ADDRESSES, IRiskRatio, strategies } from '@oasisdex/oasis-actions'
+import { ADDRESSES, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 import { Awaited } from 'ts-essentials'
 
 import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
-import { getOneInchCall, oneInchCallMock } from '../../helpers/swap'
+import { getOneInchCall } from '../../helpers/swap'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
 
 export interface ActionCall {
@@ -15,29 +15,23 @@ export interface ActionCall {
   callData: string
 }
 
-export type OpenStEthReturn = Awaited<ReturnType<typeof strategies.aave.openStEth>>
-
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
   riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
-): Promise<OpenStEthReturn> {
-  const mainnetAddresses = {
-    DAI: ADDRESSES.main.DAI,
-    ETH: ADDRESSES.main.ETH,
-    WETH: ADDRESSES.main.WETH,
-    stETH: ADDRESSES.main.stETH,
-    chainlinkEthUsdPriceFeed: ADDRESSES.main.chainlinkEthUsdPriceFeed,
-    aavePriceOracle: ADDRESSES.main.aavePriceOracle,
-    aaveLendingPool: ADDRESSES.main.aave.MainnetLendingPool,
-    operationExecutor: context.operationExecutor.address,
-    aaveProtocolDataProvider: ADDRESSES.main.aave.DataProvider,
-  }
-
+): Promise<IStrategy> {
   const addresses = {
-    ...mainnetAddresses,
+    DAI: context.tokens['DAI'].address,
+    ETH: context.tokens['ETH'].address,
+    WETH: context.tokens['WETH'].address,
+    stETH: context.tokens['STETH'].address,
+    chainlinkEthUsdPriceFeed: ADDRESSES.main.chainlinkEthUsdPriceFeed, // TODO: Add this to context.
+    aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
+    aavePriceOracle: context.aavePriceOracle.address,
+    aaveLendingPool: context.aaveLendingPool.address,
+    operationExecutor: context.operationExecutor.address,
   }
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
@@ -51,14 +45,12 @@ export async function getOpenAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: oneInchCallMock,
+      // getSwapData: oneInchCallMock,
       dsProxy: proxyAddress,
-      // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
+      getSwapData: getOneInchCall(proxyAddress),
     },
   )
 }
-
-export type AdjustStEthReturn = Awaited<ReturnType<typeof strategies.aave.adjustStEth>>
 
 export type CloseStEthReturn = Awaited<ReturnType<typeof strategies.aave.closeStEth>>
 
@@ -69,22 +61,21 @@ export async function getCloseAaveParameters(
   proxyAddress: string,
   position: IBasePosition,
 ): Promise<CloseStEthReturn> {
-  const mainnetAddresses = {
-    DAI: ADDRESSES.main.DAI,
-    ETH: ADDRESSES.main.ETH,
-    WETH: ADDRESSES.main.WETH,
-    stETH: ADDRESSES.main.stETH,
-    chainlinkEthUsdPriceFeed: ADDRESSES.main.chainlinkEthUsdPriceFeed,
-    aavePriceOracle: ADDRESSES.main.aavePriceOracle,
-    aaveLendingPool: ADDRESSES.main.aave.MainnetLendingPool,
+  const addresses = {
+    DAI: context.tokens['DAI'].address,
+    ETH: context.tokens['ETH'].address,
+    WETH: context.tokens['WETH'].address,
+    stETH: context.tokens['STETH'].address,
+    chainlinkEthUsdPriceFeed: ADDRESSES.main.chainlinkEthUsdPriceFeed, // TODO: Add this to context.
+    aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
+    aavePriceOracle: context.aavePriceOracle.address,
+    aaveLendingPool: context.aaveLendingPool.address,
     operationExecutor: context.operationExecutor.address,
   }
 
-  const addresses = {
-    ...mainnetAddresses,
-  }
-
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+
+  console.log('Value locked: ', stEthValueLocked.toString())
 
   return await strategies.aave.closeStEth(
     {
@@ -94,7 +85,7 @@ export async function getCloseAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: getOneInchCall('0xa779C1D17bC5230c07afdC51376CAC1cb3Dd5314'),
+      getSwapData: getOneInchCall(proxyAddress),
       dsProxy: proxyAddress,
       position,
     },

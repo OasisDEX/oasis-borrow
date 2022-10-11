@@ -1,4 +1,4 @@
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, IStrategy, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -7,44 +7,24 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
-import { OpenStEthReturn } from '../../../../aave'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
+import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
-type IStrategyInfo = {
-  oracleAssetPrice: BigNumber
-  liquidationBonus: BigNumber
-  collateralToken: string
-}
-
-export interface OpenAaveContext {
-  riskRatio: IRiskRatio
-  token: string
-  inputDelay: number
-
+export interface OpenAaveContext extends BaseAaveContext {
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
 
-  currentStep?: number
-  totalSteps?: number
-  tokenBalance?: BigNumber
   amount?: BigNumber
-  tokenPrice?: BigNumber
   auxiliaryAmount?: BigNumber
-  proxyAddress?: string
   strategyName?: string
-
-  transactionParameters?: OpenStEthReturn
-  estimatedGasPrice?: HasGasEstimation
-
-  strategyInfo?: IStrategyInfo
 }
 
 export type OpenAaveMachineEvents =
@@ -61,7 +41,7 @@ export type OpenAaveMachineEvents =
 export type OpenAaveTransactionEvents =
   | {
       type: 'TRANSACTION_PARAMETERS_RECEIVED'
-      parameters: OpenStEthReturn
+      parameters: IStrategy
       estimatedGasPrice: HasGasEstimation
     }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }
@@ -222,7 +202,7 @@ export const createOpenAaveStateMachine = createMachine(
       initContextValues: assign((context) => ({
         currentStep: 1,
         totalSteps: context.proxyAddress ? 3 : 4,
-        riskRatio: new RiskRatio(new BigNumber(0), RiskRatio.TYPE.LTV),
+        riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
         token: 'ETH',
         inputDelay: 1000,
       })),
@@ -261,12 +241,16 @@ export const createOpenAaveStateMachine = createMachine(
             : context.totalSteps || 0,
         }
       }),
-      setAmount: assign((context, event) => ({
-        amount: event.amount,
-      })),
-      calculateAuxiliaryAmount: assign((context) => ({
-        auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
-      })),
+      setAmount: assign((context, event) => {
+        return {
+          amount: event.amount,
+        }
+      }),
+      calculateAuxiliaryAmount: assign((context) => {
+        return {
+          auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
+        }
+      }),
       assignProxyAddress: assign((_, event) => ({
         proxyAddress: event.proxyAddress,
       })),

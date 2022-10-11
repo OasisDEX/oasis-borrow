@@ -45,6 +45,8 @@ export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, Aave
     return [context.tokens[token].address, proxyAddress]
   },
   postprocess: (result, args) => {
+    console.log('Token: ', args.token)
+    console.log('User reserve data: ', result.currentATokenBalance.toString())
     return {
       currentATokenBalance: amountFromWei(
         new BigNumber(result.currentATokenBalance.toString()),

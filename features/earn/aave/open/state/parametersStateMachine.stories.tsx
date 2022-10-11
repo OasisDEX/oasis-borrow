@@ -1,4 +1,4 @@
-import { RiskRatio } from '@oasisdex/oasis-actions'
+import { IStrategy, RiskRatio } from '@oasisdex/oasis-actions'
 import { storiesOf } from '@storybook/react'
 import { useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -8,7 +8,6 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { OpenStEthReturn } from '../../../../aave'
 import {
   createParametersStateMachine,
   ParametersStateMachineEvents,
@@ -36,7 +35,7 @@ const machine = createParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OpenStEthReturn
+      return {} as IStrategy
     },
     estimateGasPrice: async () => {
       await delay()

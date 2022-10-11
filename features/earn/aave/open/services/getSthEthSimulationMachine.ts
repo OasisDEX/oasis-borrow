@@ -3,10 +3,13 @@ import BigNumber from 'bignumber.js'
 
 import { AaveStEthSimulateStateMachine, aaveStEthSimulateStateMachine } from '../state'
 import { calculateSimulation } from './calculateSimulation'
-import { AaveStEthYieldsResponse } from './stEthYield'
+import { AaveStEthYieldsResponse, FilterYieldFieldsType } from './stEthYield'
 
 export function getSthEthSimulationMachine(
-  getStEthYields: (riskRatio: IRiskRatio) => Promise<AaveStEthYieldsResponse>,
+  getStEthYields: (
+    riskRatio: IRiskRatio,
+    field: FilterYieldFieldsType[],
+  ) => Promise<AaveStEthYieldsResponse>,
 ): AaveStEthSimulateStateMachine {
   return aaveStEthSimulateStateMachine
     .withConfig({
@@ -20,7 +23,13 @@ export function getSthEthSimulationMachine(
           })
         },
         getYields: async (context) => {
-          return await getStEthYields(context.riskRatio!)
+          return await getStEthYields(context.riskRatio!, [
+            '7Days',
+            '7DaysOffset',
+            '30Days',
+            '90Days',
+            '90DaysOffset',
+          ])
         },
       },
     })
