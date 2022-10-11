@@ -1,4 +1,4 @@
-import { Position } from '@oasisdex/oasis-actions'
+import { Position, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
@@ -17,6 +17,7 @@ import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { one, zero } from '../../../../../helpers/zero'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
+import { getAdjustAaveParameters, getOpenAaveParameters } from '../../../../aave'
 
 export function getManageAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,
@@ -38,8 +39,9 @@ export function getManageAavePositionStateMachineServices(
       aaveUserReserveData$({ token, proxyAddress }),
       aaveUserAccountData$({ proxyAddress }),
       aaveOraclePrice$({ token }),
+      aaveReserveConfigurationData$({ token }),
     ).pipe(
-      map(([reserveData, accountData, oraclePrice]) => ({
+      map(([reserveData, accountData, oraclePrice, reserveConfigurationData]) => ({
         positionData: reserveData,
         accountData: accountData,
         oraclePrice: oraclePrice,
@@ -49,8 +51,8 @@ export function getManageAavePositionStateMachineServices(
           oraclePrice,
           {
             dustLimit: new BigNumber(0),
-            maxLoanToValue: new BigNumber(accountData.ltv.toString()).plus(one),
-            liquidationThreshold: zero,
+            maxLoanToValue: reserveConfigurationData.ltv,
+            liquidationThreshold: reserveConfigurationData.liquidationThreshold,
           },
         ),
       })),
@@ -97,7 +99,6 @@ export function getManageAavePositionStateMachineServices(
       const result = await aaveProtocolData(context.strategy!, context.proxyAddress!)
         .pipe(first())
         .toPromise()
-      console.log(`protocol data: `, result.positionData.currentATokenBalance.toString())
       return result
     },
   }

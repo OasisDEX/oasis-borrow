@@ -1,4 +1,4 @@
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -24,17 +24,21 @@ type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   textButton: SidebarSectionFooterButtonSettings
 }
 
-export function AdjustRiskView({ state, send, primaryButton, textButton }: AdjustRiskViewProps) {
+export function AdjustRiskView(props: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
-  const maxRisk = state.context.transactionParameters?.simulation.position.category.maxLoanToValue
+  const { state, send, primaryButton, textButton } = props
+  const position = state.context.protocolData
+    ? state.context.protocolData.position
+    : state.context.transactionParameters?.simulation.position
+
+  const maxRisk = position?.category.maxLoanToValue
 
   const minRisk =
     state.context.transactionParameters?.simulation.minConfigurableRiskRatio ||
     new RiskRatio(zero, RiskRatio.TYPE.LTV)
 
-  const liquidationPrice =
-    state.context.transactionParameters?.simulation.position.liquidationPrice || zero
+  const liquidationPrice = position?.liquidationPrice || zero
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
@@ -43,7 +47,7 @@ export function AdjustRiskView({ state, send, primaryButton, textButton }: Adjus
     AT_RISK = 'AT_RISK',
   }
 
-  const healthFactor = state.context.transactionParameters?.simulation.position.healthFactor
+  const healthFactor = position?.healthFactor
 
   const warningHealthFactor = new BigNumber('1.25')
 
@@ -70,8 +74,7 @@ export function AdjustRiskView({ state, send, primaryButton, textButton }: Adjus
       precision: 2,
     },
   )
-  console.log(`minRisk: ${minRisk.loanToValue}`)
-  console.log(`maxRisk: ${maxRisk}`)
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
@@ -90,7 +93,7 @@ export function AdjustRiskView({ state, send, primaryButton, textButton }: Adjus
           }}
           minBoundry={minRisk.loanToValue || zero}
           maxBoundry={maxRisk || zero}
-          lastValue={state.context.riskRatio.loanToValue}
+          lastValue={state.context.userInput.riskRatio.loanToValue}
           disabled={false}
           step={0.01}
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {

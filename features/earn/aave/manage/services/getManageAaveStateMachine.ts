@@ -90,7 +90,6 @@ export function getManageAaveStateMachine$(
         })
         .withContext({
           token,
-          riskRatio: new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE),
           userInput: {
             riskRatio: new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE),
             amount: new BigNumber(0),

@@ -7,6 +7,7 @@ import { Sender } from 'xstate'
 import { VaultActionInput } from '../../../../../components/vault/VaultActionInput'
 import { handleNumericInput } from '../../../../../helpers/input'
 import { OpenAaveEvent, OpenAaveStateMachineState } from '../state'
+import { zero } from '../../../../../helpers/zero'
 
 export interface OpenAaveEditingStateProps {
   state: OpenAaveStateMachineState
@@ -21,7 +22,7 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
     <Grid gap={3}>
       <VaultActionInput
         action={'Deposit'}
-        amount={state.context.amount}
+        amount={state.context.userInput?.amount || zero}
         hasAuxiliary={true}
         auxiliaryAmount={state.context.auxiliaryAmount}
         hasError={false}

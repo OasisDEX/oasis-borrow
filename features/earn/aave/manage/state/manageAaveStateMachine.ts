@@ -26,14 +26,11 @@ type UserInput = {
 export interface ManageAaveContext extends BaseAaveContext {
   strategy: string // TODO: Consider changing name to reserve token
   address: string
-  protocolData?: AaveProtocolData
 
   refClosePositionParametersStateMachine?: ActorRefFrom<ClosePositionParametersStateMachine>
   refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
 
   balanceAfterClose?: BigNumber
-
-  userInput: UserInput
 }
 
 export interface AaveProtocolData {
@@ -140,7 +137,7 @@ export const createManageAaveStateMachine =
               target: 'reviewingClosing',
             },
             SET_RISK_RATIO: {
-              actions: ['setRiskRatioFromEvent'],
+              actions: ['userInputRiskRatio'],
             },
             ADJUST_POSITION: {
               target: 'reviewingAdjusting',
@@ -212,15 +209,23 @@ export const createManageAaveStateMachine =
             context.transactionParameters?.simulation.swap.minToTokenAmount ?? zero,
           ),
         })),
-        setRiskRatioFromEvent: assign((context, event) => ({
-          riskRatio: event.riskRatio,
-        })),
+        userInputRiskRatio: assign((context, event) => {
+          console.log(`userInputRiskRatio ${event.riskRatio.loanToValue}`)
+          return {
+            userInput: {
+              ...context.userInput,
+              riskRatio: event.riskRatio,
+            },
+          }
+        }),
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
         })),
-        assignProtocolData: assign((context, event) => ({
-          protocolData: event.data,
-        })),
+        assignProtocolData: assign((context, event) => {
+          return {
+            protocolData: event.data,
+          }
+        }),
         assignTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,
           estimatedGasPrice: event.estimatedGasPrice,

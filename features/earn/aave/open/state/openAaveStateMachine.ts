@@ -22,7 +22,6 @@ export interface OpenAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
 
-  amount?: BigNumber
   auxiliaryAmount?: BigNumber
   strategyName?: string
 }
@@ -193,10 +192,14 @@ export const createOpenAaveStateMachine = createMachine(
   {
     guards: {
       emptyProxyAddress: ({ proxyAddress }) => proxyAddress === undefined,
-      validTransactionParameters: ({ amount, proxyAddress, transactionParameters }) =>
-        amount !== undefined && proxyAddress !== undefined && transactionParameters !== undefined,
-      enoughBalance: ({ tokenBalance, amount }) =>
-        tokenBalance !== undefined && amount !== undefined && tokenBalance.gt(amount),
+      validTransactionParameters: ({ userInput, proxyAddress, transactionParameters }) =>
+        userInput.amount !== undefined &&
+        proxyAddress !== undefined &&
+        transactionParameters !== undefined,
+      enoughBalance: ({ tokenBalance, userInput }) =>
+        tokenBalance !== undefined &&
+        userInput?.amount !== undefined &&
+        tokenBalance.gt(userInput.amount),
     },
     actions: {
       initContextValues: assign((context) => ({
@@ -217,8 +220,8 @@ export const createOpenAaveStateMachine = createMachine(
         (context): ParametersStateMachineEvents => {
           return {
             type: 'VARIABLES_RECEIVED',
-            amount: context.amount!,
-            riskRatio: context.riskRatio,
+            amount: context.userInput?.amount!,
+            riskRatio: context.userInput?.riskRatio,
             token: context.token,
             proxyAddress: context.proxyAddress,
           }
@@ -229,9 +232,12 @@ export const createOpenAaveStateMachine = createMachine(
           id: 'update-parameters-machine',
         },
       ),
-      setRiskRatio: assign((_, event) => {
+      setRiskRatio: assign((context, event) => {
         return {
-          riskRatio: event.riskRatio,
+          userInput: {
+            ...context.userInput,
+            riskRatio: event.riskRatio,
+          },
         }
       }),
       updateTotalSteps: assign((context) => {
@@ -243,12 +249,15 @@ export const createOpenAaveStateMachine = createMachine(
       }),
       setAmount: assign((context, event) => {
         return {
-          amount: event.amount,
+          userInput: {
+            ...context.userInput,
+            amount: event.amount,
+          },
         }
       }),
       calculateAuxiliaryAmount: assign((context) => {
         return {
-          auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
+          auxiliaryAmount: context.userInput.amount?.times(context.tokenPrice || zero),
         }
       }),
       assignProxyAddress: assign((_, event) => ({
@@ -283,8 +292,8 @@ export const createOpenAaveStateMachine = createMachine(
         (context): AaveStEthSimulateStateMachineEvents => {
           return {
             type: 'USER_PARAMETERS_CHANGED',
-            amount: context.amount || zero,
-            riskRatio: context.riskRatio,
+            amount: context.userInput.amount || zero,
+            riskRatio: context.userInput.riskRatio,
             token: context.token,
           }
         },
