@@ -36,8 +36,8 @@ export function SidebarAutoTakeProfitRemovalEditingStage({
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
       <AutoTakeProfitInfoSectionControl
-        vault={vault}
         autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+        vault={vault}
       />
     </>
   )
@@ -54,9 +54,9 @@ function AutoTakeProfitInfoSectionControl({
 }: AutoTakeProfitInfoSectionControlProps) {
   return (
     <CancelAutoTakeProfitInfoSection
-      triggerColPrice={amountFromWei(autoTakeProfitTriggerData.executionPrice, vault.token)}
-      token={vault.token}
       collateralizationRatio={vault.collateralizationRatio.times(100)}
+      token={vault.token}
+      triggerColPrice={amountFromWei(autoTakeProfitTriggerData.executionPrice, vault.token)}
     />
   )
 }

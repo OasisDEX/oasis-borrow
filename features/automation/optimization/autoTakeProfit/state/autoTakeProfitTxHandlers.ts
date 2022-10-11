@@ -17,10 +17,10 @@ import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
 interface GetAutoTakeProfitTxHandlersParams {
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  vault: Vault
-  isAddForm: boolean
   autoTakeProfitState: AutoTakeProfitFormChange
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+  isAddForm: boolean
+  vault: Vault
 }
 
 interface AutoTakeProfitTxHandlers {

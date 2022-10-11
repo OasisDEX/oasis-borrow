@@ -10,7 +10,6 @@ import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange'
 
 const INITIAL_SELECTED_PRICE_MULTIPLIER = 1.2
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function useAutoTakeProfitStateInitializator(
   vault: Vault | InstiVault,
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData,

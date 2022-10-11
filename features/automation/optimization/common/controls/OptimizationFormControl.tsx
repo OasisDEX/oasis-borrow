@@ -64,7 +64,7 @@ export function OptimizationFormControl({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
     isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
-    isAutoTakeProfitOn: autoTakeProfitEnabled, // TODO ŁW automationTriggersData?.autoTakeProfit?.isTriggerEnabled,
+    isAutoTakeProfitOn: autoTakeProfitTriggerData.isTriggerEnabled,
     section: 'form',
   })
 

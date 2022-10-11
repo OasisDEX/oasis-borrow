@@ -46,20 +46,20 @@ const MAX_MULTIPLIER_WITH_ATH = 2
 const MAX_MULTIPLIER_WITH_PRICE = 10
 
 export function getAutoTakeProfitStatus({
-  autoTakeProfitTriggerData,
   autoTakeProfitState,
-  tokenMarketPrice,
+  autoTakeProfitTriggerData,
   isOwner,
   isProgressStage,
   isRemoveForm,
-  vault,
   stage,
+  tokenMarketPrice,
+  vault,
 }: GetAutoTakeProfitStatusParams): AutoTakeProfitStatus {
   const { uiChanges } = useAppContext()
 
   const isEditing = checkIfIsEditingAutoTakeProfit({
-    autoTakeProfitTriggerData,
     autoTakeProfitState,
+    autoTakeProfitTriggerData,
     isRemoveForm,
     token: vault.token,
   })
@@ -95,8 +95,8 @@ export function getAutoTakeProfitStatus({
 
   return {
     closePickerConfig,
-    isEditing,
     isDisabled,
+    isEditing,
     max,
     min,
     resetData,

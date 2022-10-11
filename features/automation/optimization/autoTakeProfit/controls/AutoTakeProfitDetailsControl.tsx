@@ -42,8 +42,8 @@ export function AutoTakeProfitDetailsControl({
     toCollateral: false,
   })
   const isEditing = checkIfIsEditingAutoTakeProfit({
-    autoTakeProfitTriggerData,
     autoTakeProfitState,
+    autoTakeProfitTriggerData,
     isRemoveForm: autoTakeProfitState.currentForm === 'remove',
     token,
   })

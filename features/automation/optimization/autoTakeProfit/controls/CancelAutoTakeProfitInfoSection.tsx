@@ -6,15 +6,15 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface CancelAutoTakeProfitInfoSectionProps {
-  triggerColPrice: BigNumber
   collateralizationRatio: BigNumber
   token: string
+  triggerColPrice: BigNumber
 }
 
 export function CancelAutoTakeProfitInfoSection({
-  triggerColPrice,
   collateralizationRatio,
   token,
+  triggerColPrice,
 }: CancelAutoTakeProfitInfoSectionProps) {
   const { t } = useTranslation()
 

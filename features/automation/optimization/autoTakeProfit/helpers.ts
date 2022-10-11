@@ -4,8 +4,8 @@ import { AutoTakeProfitTriggerData } from 'features/automation/optimization/auto
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 export function checkIfIsEditingAutoTakeProfit({
-  autoTakeProfitTriggerData,
   autoTakeProfitState,
+  autoTakeProfitTriggerData,
   isRemoveForm,
   token,
 }: {

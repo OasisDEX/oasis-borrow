@@ -68,12 +68,12 @@ export function AutoTakeProfitFormControl({
     {
       autoTakeProfitState,
       autoTakeProfitTriggerData,
-      tokenMarketPrice,
-      vault,
       isOwner,
       isProgressStage,
       isRemoveForm,
       stage,
+      tokenMarketPrice,
+      vault,
     },
   )
   const { addTxData, textButtonHandlerExtension } = getAutoTakeProfitTxHandlers({

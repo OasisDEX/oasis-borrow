@@ -16,18 +16,18 @@ import {
 import { zero } from 'helpers/zero'
 
 export interface AutoTakeProfitTriggerData {
-  isTriggerEnabled: boolean
   executionPrice: BigNumber
-  maxBaseFeeInGwei: BigNumber
   isToCollateral: boolean
+  isTriggerEnabled: boolean
+  maxBaseFeeInGwei: BigNumber
   triggerId: BigNumber
 }
 
 export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
   executionPrice: zero,
-  maxBaseFeeInGwei: zero,
   isToCollateral: true,
   isTriggerEnabled: false,
+  maxBaseFeeInGwei: zero,
   triggerId: zero,
 }
 
@@ -41,23 +41,21 @@ export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTri
     if (autoTakeProfitTriggersData.length) {
       return pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData)
     }
-
-    return defaultAutoTakeProfitData
   }
 
   return defaultAutoTakeProfitData
 }
 
 export function prepareAutoTakeProfitTriggerData({
-  vaultData,
   executionPrice,
-  maxBaseFeeInGwei,
   isCloseToCollateral,
+  maxBaseFeeInGwei,
+  vaultData,
 }: {
-  vaultData: Vault
   executionPrice: BigNumber
-  maxBaseFeeInGwei: BigNumber
   isCloseToCollateral: boolean
+  maxBaseFeeInGwei: BigNumber
+  vaultData: Vault
 }): AutomationBaseTriggerData {
   const triggerType = isCloseToCollateral
     ? TriggerType.AutoTakeProfitToCollateral
@@ -108,10 +106,10 @@ function pickTriggerWithLowestExecutionPrice(
 
     return {
       executionPrice: new BigNumber(executionPrice.toString()),
-      maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei.toString()),
       isToCollateral: triggerType === TriggerType.AutoTakeProfitToCollateral,
-      triggerId: new BigNumber(trigger.triggerId),
       isTriggerEnabled: true,
+      maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei.toString()),
+      triggerId: new BigNumber(trigger.triggerId),
     }
   })
 
@@ -125,10 +123,10 @@ export function prepareAutoTakeProfitResetData(
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData,
 ): AutoTakeProfitResetData {
   return {
-    executionPrice: autoTakeProfitState.defaultExecutionPrice,
     executionCollRatio: autoTakeProfitState.defaultExecutionCollRatio,
+    executionPrice: autoTakeProfitState.defaultExecutionPrice,
+    isEditing: false,
     toCollateral: autoTakeProfitTriggerData.isToCollateral,
     txDetails: {},
-    isEditing: false,
   }
 }

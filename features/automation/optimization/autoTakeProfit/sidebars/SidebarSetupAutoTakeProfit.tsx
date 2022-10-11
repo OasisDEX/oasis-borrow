@@ -196,9 +196,9 @@ export function SidebarSetupAutoTakeProfit({
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
             <SidebarAutomationFeatureCreationStage
               featureName={feature}
-              stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}
+              stage={stage}
             />
           )}
         </Grid>
