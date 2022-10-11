@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { ADDRESSES, IPosition, IRiskRatio, Position, strategies } from '@oasisdex/oasis-actions'
+import { ADDRESSES, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 import { Awaited } from 'ts-essentials'
 
-import { AaveUserAccountData } from '../../blockchain/calls/aave/aaveLendingPool'
-import { AaveUserReserveData } from '../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
-import { one, zero } from '../../helpers/zero'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
 
 export interface ActionCall {
@@ -18,15 +15,13 @@ export interface ActionCall {
   callData: string
 }
 
-export type OpenStEthReturn = Awaited<ReturnType<typeof strategies.aave.openStEth>>
-
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
   riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
-): Promise<OpenStEthReturn> {
+): Promise<IStrategy> {
   const addresses = {
     DAI: context.tokens['DAI'].address,
     ETH: context.tokens['ETH'].address,
@@ -52,12 +47,10 @@ export async function getOpenAaveParameters(
       provider: provider,
       // getSwapData: oneInchCallMock,
       dsProxy: proxyAddress,
-      getSwapData: getOneInchCall(context.swapAddress),
+      getSwapData: getOneInchCall(proxyAddress),
     },
   )
 }
-
-export type AdjustStEthReturn = Awaited<ReturnType<typeof strategies.aave.adjustStEth>>
 
 export type CloseStEthReturn = Awaited<ReturnType<typeof strategies.aave.closeStEth>>
 
@@ -92,26 +85,9 @@ export async function getCloseAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: getOneInchCall(context.swapAddress),
+      getSwapData: getOneInchCall(proxyAddress),
       dsProxy: proxyAddress,
       position,
-    },
-  )
-}
-
-export function createPosition(
-  aaveReserveData: AaveUserReserveData,
-  aaveUserData: AaveUserAccountData,
-  oraclePrice: BigNumber,
-): IPosition {
-  return new Position(
-    { amount: new BigNumber(aaveUserData.totalDebtETH.toString()) },
-    { amount: new BigNumber(aaveReserveData.currentATokenBalance.toString()) },
-    oraclePrice,
-    {
-      dustLimit: new BigNumber(0),
-      maxLoanToValue: new BigNumber(aaveUserData.ltv.toString()).plus(one),
-      liquidationThreshold: zero,
     },
   )
 }

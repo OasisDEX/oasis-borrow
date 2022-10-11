@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -8,34 +8,32 @@ import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aavePr
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
-import { AdjustStEthReturn, CloseStEthReturn } from '../../../../aave'
 import {
   TransactionStateMachine,
   TransactionStateMachineEvents,
 } from '../../../../stateMachines/transaction'
+import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
 
-export interface ManageAaveContext {
+type UserInput = {
+  riskRatio: IRiskRatio
+  amount: BigNumber
+}
+
+export interface ManageAaveContext extends BaseAaveContext {
   strategy: string // TODO: Consider changing name to reserve token
-  token: string
   address: string
-  proxyAddress?: string
   protocolData?: AaveProtocolData
 
   refClosePositionParametersStateMachine?: ActorRefFrom<ClosePositionParametersStateMachine>
   refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
 
-  currentStep?: number
-  totalSteps?: number
-  tokenBalance?: BigNumber
-  tokenPrice?: BigNumber
-  transactionParameters?: AdjustStEthReturn
   balanceAfterClose?: BigNumber
-  estimatedGasPrice?: HasGasEstimation
-  inputDelay: number
+
+  userInput: UserInput
 }
 
 export interface AaveProtocolData {
@@ -53,15 +51,20 @@ export type ManageAaveEvent =
   | { type: 'RETRY' }
   | { type: 'CLOSE_POSITION' }
   | { type: 'START_TRANSACTION' }
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | {
       type: 'CLOSING_PARAMETERS_RECEIVED'
-      parameters: CloseStEthReturn
+      parameters: IStrategy
       estimatedGasPrice: HasGasEstimation
     }
   | {
       type: 'ADJUSTING_PARAMETERS_RECEIVED'
-      parameters: AdjustStEthReturn
+      parameters: IStrategy
       estimatedGasPrice: HasGasEstimation
+    }
+  | {
+      type: 'UPDATE_STRATEGY_INFO'
+      strategyInfo: IStrategyInfo
     }
 
 export const createManageAaveStateMachine =
@@ -116,16 +119,28 @@ export const createManageAaveStateMachine =
           },
         },
         editing: {
-          invoke: {
-            src: 'getBalance',
-            id: 'getBalance',
-          },
+          invoke: [
+            {
+              src: 'getBalance',
+              id: 'getBalance',
+            },
+            {
+              src: 'getStrategyInfo',
+              id: 'getStrategyInfo',
+            },
+          ],
           on: {
+            UPDATE_STRATEGY_INFO: {
+              actions: ['updateStrategyInfo'],
+            },
             SET_BALANCE: {
               actions: ['setTokenBalanceFromEvent', 'updateBalanceAfterClose'],
             },
             CLOSE_POSITION: {
               target: 'reviewingClosing',
+            },
+            SET_RISK_RATIO: {
+              actions: ['setRiskRatioFromEvent'],
             },
             ADJUST_POSITION: {
               target: 'reviewingAdjusting',
@@ -197,6 +212,9 @@ export const createManageAaveStateMachine =
             context.transactionParameters?.simulation.swap.minToTokenAmount ?? zero,
           ),
         })),
+        setRiskRatioFromEvent: assign((context, event) => ({
+          riskRatio: event.riskRatio,
+        })),
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
         })),
@@ -206,6 +224,9 @@ export const createManageAaveStateMachine =
         assignTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,
           estimatedGasPrice: event.estimatedGasPrice,
+        })),
+        updateStrategyInfo: assign((context, event) => ({
+          strategyInfo: event.strategyInfo,
         })),
         sendVariablesToClosePositionParametersMachine: send(
           (context): ClosePositionParametersStateMachineEvents => ({

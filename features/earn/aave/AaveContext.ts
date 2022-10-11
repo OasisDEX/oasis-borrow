@@ -111,6 +111,8 @@ export function setupAaveContext({
     aaveUserReserveData$,
     aaveUserAccountData$,
     aaveOracleAssetPriceData$,
+    aaveReserveConfigurationData$,
+    aaveOracleAssetPriceData$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)

@@ -96,7 +96,7 @@ export function getOneInchCall(swapAddress: string) {
     return {
       toTokenAddress: to,
       fromTokenAddress: from,
-      minToTokenAmount: new BigNumber(0),
+      minToTokenAmount: new BigNumber(response.toTokenAmount),
       toTokenAmount: new BigNumber(response.toTokenAmount),
       fromTokenAmount: new BigNumber(response.fromTokenAmount),
       exchangeCalldata: response.tx.data,

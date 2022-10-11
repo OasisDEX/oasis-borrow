@@ -1,3 +1,4 @@
+import { discoveryPagesMeta } from 'features/discovery/meta'
 import { GetServerSidePropsContext } from 'next'
 import React from 'react'
 
@@ -7,10 +8,11 @@ export default function DiscoveryPage() {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const network = context.query.network ? `?network=${context.query.network}` : ''
+  const defaultDiscoveryPage = discoveryPagesMeta[0] // 0 => HIGH_RISK_POSITIONS
 
   return {
     redirect: {
-      destination: `/discovery/high-risk-positions${network}`,
+      destination: `/discovery/${defaultDiscoveryPage.kind}${network}`,
       permanent: true,
     },
   }
