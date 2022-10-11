@@ -90,6 +90,7 @@ export function getAutoTakeProfitStatus({
     executionPrice: autoTakeProfitState.executionPrice, // change to initialSelectedPrice?
     executionCollRatio: autoTakeProfitState.executionCollRatio,
     txDetails: {},
+    isEditing: false,
   }
 
   return {
