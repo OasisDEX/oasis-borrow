@@ -62,7 +62,7 @@ export async function getCloseAaveParameters(
 
   return await strategies.aave.closeStEth(
     {
-      stEthAmountLockedInAave: amountToWei(stEthValueLocked, 'ETH'),
+      stEthAmountLockedInAave: amountToWei(stEthValueLocked, 'STETH'),
       slippage: slippage,
     },
     {
