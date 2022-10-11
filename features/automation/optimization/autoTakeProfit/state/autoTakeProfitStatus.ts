@@ -5,7 +5,8 @@ import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
 import { SidebarAutomationStages } from 'features/automation/common/types'
-import { checkIfIsDisabledAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
+import { checkIfIsDisabledAutoTakeProfit, checkIfIsEditingAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 
 import {
@@ -16,6 +17,7 @@ import {
 
 interface GetAutoTakeProfitStatusParams {
   autoTakeProfitState: AutoTakeProfitFormChange
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   tokenMarketPrice: BigNumber
   vault: Vault
   isOwner: boolean
@@ -38,17 +40,23 @@ const MAX_MULTIPLIER_WITH_ATH = 2
 const MAX_MULTIPLIER_WITH_PRICE = 10
 
 export function getAutoTakeProfitStatus({
+  autoTakeProfitTriggerData,
   autoTakeProfitState,
   tokenMarketPrice,
   isOwner,
   isProgressStage,
+  isRemoveForm,
   vault,
   stage,
 }: GetAutoTakeProfitStatusParams): AutoTakeProfitStatus {
   const { uiChanges } = useAppContext()
 
   // TODO: TDAutoTakeProfit | to be replaced with checkIfIsEditingAutoTakeProfit method
-  const isEditing = true
+  const isEditing = checkIfIsEditingAutoTakeProfit({
+    autoTakeProfitTriggerData,
+    autoTakeProfitState,
+    isRemoveForm,
+  })
   const isDisabled = checkIfIsDisabledAutoTakeProfit({
     isEditing,
     isOwner,

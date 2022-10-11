@@ -64,6 +64,7 @@ export function AutoTakeProfitFormControl({
   const { closePickerConfig, isEditing, isDisabled, min, max, resetData } = getAutoTakeProfitStatus(
     {
       autoTakeProfitState,
+      autoTakeProfitTriggerData,
       tokenMarketPrice,
       vault,
       isOwner,
