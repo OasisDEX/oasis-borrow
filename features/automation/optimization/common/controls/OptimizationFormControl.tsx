@@ -131,6 +131,7 @@ export function OptimizationFormControl({
           constantMultipleTriggerData={constantMultipleTriggerData}
           context={context}
           ethMarketPrice={ethMarketPrice}
+          ilkData={ilkData}
           isAutoTakeProfitActive={isAutoTakeProfitActive}
           shouldRemoveAllowance={shouldRemoveAllowance}
           tokenMarketPrice={tokenMarketPrice}
