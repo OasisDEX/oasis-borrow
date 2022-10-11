@@ -1620,7 +1620,8 @@
       "estimated-oasis-fee": "Estimated Oasis fee",
       "estimated-gas-fee": "Estimated gas fee",
       "setup-transaction-cost": "Setup transaction cost"
-    }
+    },
+    "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction."
   },
 
   "automation": {

@@ -77,16 +77,16 @@ export function OptimizationFormControl({
         currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
       })
     }
-    if (autoBuyTriggerData.isTriggerEnabled) {
-      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-        type: 'Optimization',
-        currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
-      })
-    }
     if (constantMultipleTriggerData.isTriggerEnabled) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
+      })
+    }
+    if (autoBuyTriggerData.isTriggerEnabled) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Optimization',
+        currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
       })
     }
   }, [])

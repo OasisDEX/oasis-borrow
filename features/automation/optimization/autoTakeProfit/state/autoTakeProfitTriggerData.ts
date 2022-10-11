@@ -103,8 +103,8 @@ function pickTriggerWithLowestExecutionPrice(
     const [, triggerType, executionPrice, maxBaseFeeInGwei] = trigger.result
 
     return {
-      executionPrice: new BigNumber(executionPrice),
-      maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
+      executionPrice: new BigNumber(executionPrice.toString()),
+      maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei.toString()),
       isToCollateral: triggerType === TriggerType.AutoTakeProfitToCollateral,
       triggerId: new BigNumber(trigger.triggerId),
       isTriggerEnabled: true,
