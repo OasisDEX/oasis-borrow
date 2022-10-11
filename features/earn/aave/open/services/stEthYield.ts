@@ -112,9 +112,6 @@ export async function getAaveStEthYield(
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
     reserveAddress,
-    currentDate: currentDate.utc().format('YYYY-MM-DD'),
-    currentDateOffset: currentDate.utc().subtract(1, 'days').format('YYYY-MM-DD'),
-    date7daysAgo: currentDate.utc().clone().subtract(7, 'days').format('YYYY-MM-DD'),
     multiply: riskRatio.multiple.toString(),
     currentDate: currentDate.utc().format(yieldsDateFormat),
     currentDateOffset: currentDate.utc().subtract(1, 'days').format(yieldsDateFormat),
