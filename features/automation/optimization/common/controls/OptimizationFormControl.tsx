@@ -112,6 +112,7 @@ export function OptimizationFormControl({
       <ConstantMultipleFormControl
         autoBuyTriggerData={autoBuyTriggerData}
         autoSellTriggerData={autoSellTriggerData}
+        autoTakeProfitTriggerData={autoTakeProfitTriggerData}
         balanceInfo={balanceInfo}
         constantMultipleTriggerData={constantMultipleTriggerData}
         context={context}
@@ -126,15 +127,15 @@ export function OptimizationFormControl({
       {autoTakeProfitEnabled && (
         <AutoTakeProfitFormControl
           autoBuyTriggerData={autoBuyTriggerData}
-          constantMultipleTriggerData={constantMultipleTriggerData}
-          isAutoTakeProfitActive={isAutoTakeProfitActive}
-          tokenMarketPrice={tokenMarketPrice}
-          vault={vault}
-          ethMarketPrice={ethMarketPrice}
-          shouldRemoveAllowance={shouldRemoveAllowance}
-          txHelpers={txHelpers}
           autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+          constantMultipleTriggerData={constantMultipleTriggerData}
           context={context}
+          ethMarketPrice={ethMarketPrice}
+          isAutoTakeProfitActive={isAutoTakeProfitActive}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+          tokenMarketPrice={tokenMarketPrice}
+          txHelpers={txHelpers}
+          vault={vault}
         />
       )}
     </>

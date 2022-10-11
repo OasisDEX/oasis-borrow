@@ -12,16 +12,19 @@ function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarAutomatio
     case 'addAutoSell':
     case 'addAutoBuy':
     case 'addConstantMultiple':
+    case 'addAutoTakeProfit':
       return 'automation.setup'
     case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
+    case 'editAutoTakeProfit':
       return 'automation.edit-trigger'
     case 'cancelSl':
     case 'cancelAutoSell':
     case 'cancelAutoBuy':
     case 'cancelConstantMultiple':
+    case 'cancelAutoTakeProfit':
       return 'automation.cancel-trigger'
     default:
       throw new UnreachableCaseError(flow)
@@ -34,16 +37,19 @@ function getSidebarTitleTxInProgressTranslationKey({ flow }: { flow: SidebarAuto
     case 'addAutoSell':
     case 'addAutoBuy':
     case 'addConstantMultiple':
+    case 'addAutoTakeProfit':
       return 'automation.setting'
     case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
+    case 'editAutoTakeProfit':
       return 'automation.updating'
     case 'cancelSl':
     case 'cancelAutoSell':
     case 'cancelAutoBuy':
     case 'cancelConstantMultiple':
+    case 'cancelAutoTakeProfit':
       return 'automation.cancelling'
     default:
       throw new UnreachableCaseError(flow)
@@ -72,6 +78,11 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarAutomat
       return 'constant-multiple.setting-form-title'
     case 'cancelConstantMultiple':
       return 'constant-multiple.cancelling-form-title'
+    case 'addAutoTakeProfit':
+    case 'editAutoTakeProfit':
+      return 'auto-take-profit.setting-form-title'
+    case 'cancelAutoTakeProfit':
+      return 'auto-take-profit.cancelling-form-title'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -83,16 +94,19 @@ function getSidebarTitleTxSuccessTranslationKey({ flow }: { flow: SidebarAutomat
     case 'addAutoSell':
     case 'addAutoBuy':
     case 'addConstantMultiple':
+    case 'addAutoTakeProfit':
       return 'automation.trigger-added'
     case 'editSl':
     case 'editAutoSell':
     case 'editAutoBuy':
     case 'editConstantMultiple':
+    case 'editAutoTakeProfit':
       return 'automation.trigger-updated'
     case 'cancelSl':
     case 'cancelAutoSell':
     case 'cancelAutoBuy':
     case 'cancelConstantMultiple':
+    case 'cancelAutoTakeProfit':
       return 'automation.trigger-cancelled'
 
     default:
