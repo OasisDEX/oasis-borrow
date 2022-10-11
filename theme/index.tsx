@@ -327,6 +327,11 @@ export const oasisBaseTheme = {
       borderColor: 'warning100',
       bg: 'warning10',
     },
+    ok: {
+      variant: 'cards.primary',
+      borderColor: 'success100',
+      bg: 'success10',
+    },
     vaultFormContainer: {
       variant: 'cards.primary',
       boxShadow: ['none', 'card'],

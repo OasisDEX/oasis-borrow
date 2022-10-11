@@ -4,13 +4,18 @@ import { getDiscoveryData } from 'features/discovery/discoveryApi'
 import { getDefaultSettingsState } from 'features/discovery/helpers'
 import { discoveryPagesMeta } from 'features/discovery/meta'
 import { DiscoveryFiltersSettings, DiscoveryPages } from 'features/discovery/types'
+import { keyBy } from 'lodash'
 import React, { useState } from 'react'
 import { Box } from 'theme-ui'
 
-export function DiscoveryControl({ active }: { active: DiscoveryPages }) {
-  const { endpoint, filters } = discoveryPagesMeta[active]
+interface DiscoveryControlProps {
+  active: DiscoveryPages
+}
+
+export function DiscoveryControl({ active }: DiscoveryControlProps) {
+  const { endpoint, filters } = keyBy(discoveryPagesMeta, 'kind')[active]
   const [settings, setSettings] = useState<DiscoveryFiltersSettings>(
-    getDefaultSettingsState({ filters: filters }),
+    getDefaultSettingsState({ filters }),
   )
   const discoveryData = getDiscoveryData(endpoint, settings)
 

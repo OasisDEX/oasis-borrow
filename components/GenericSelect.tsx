@@ -139,6 +139,8 @@ export function GenericSelect({
         blurInputOnSelect={true}
         isDisabled={isDisabled}
         isSearchable={isSearchable}
+        // this prop hardcoded to true, because react-select removes its options list from DOM when it's not used. for the purpose of seo and animations,
+        // options list is always renderded and it's visibility is decided by useState instead of built-in react-select solution
         menuIsOpen={true}
         options={options}
         styles={combinedStyles}

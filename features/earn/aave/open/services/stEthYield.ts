@@ -1,3 +1,4 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import moment from 'moment/moment'
@@ -86,7 +87,7 @@ export interface AaveStEthYieldsResponse {
 export async function getAaveStEthYield(
   client: Observable<GraphQLClient>,
   currentDate: moment.Moment,
-  multiply: BigNumber,
+  riskRatio: IRiskRatio,
 ): Promise<AaveStEthYieldsResponse> {
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
@@ -103,7 +104,7 @@ export async function getAaveStEthYield(
     date90daysAgo: currentDate.utc().clone().subtract(90, 'days').format('YYYY-MM-DD'),
     date90daysAgoOffset: currentDate.utc().clone().subtract(90, 'days').format('YYYY-MM-DD'),
     date1yearAgo: currentDate.utc().clone().subtract(1, 'year').format('YYYY-MM-DD'),
-    multiply: multiply.toString(),
+    multiply: riskRatio.multiple.toString(),
   })
   return {
     annualisedYield7days: new BigNumber(response.yield7days.yield.netAnnualisedYield),

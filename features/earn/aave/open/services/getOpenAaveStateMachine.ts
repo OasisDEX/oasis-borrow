@@ -25,12 +25,12 @@ export function getOpenAavePositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
+  aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
   aaveReserveConfigurationData$: ({
     token,
   }: {
     token: string
   }) => Observable<AaveReserveConfigurationData>,
-  aaveAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
 ): OpenAaveStateMachineServices {
   return {
     getBalance: (context, _) => {
@@ -52,17 +52,19 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     getStrategyInfo: () => {
-      const reserveConfigData$ = aaveReserveConfigurationData$({ token: 'STETH' })
-      const assetPriceData$ = aaveAssetPriceData$({ token: 'STETH' })
-      return combineLatest(reserveConfigData$, assetPriceData$).pipe(
-        map(([{ ltv, liquidationThreshold }, assetPrice]) => {
-          const minColRatio = new BigNumber(1).div(ltv)
-          const maxMultiple = new BigNumber(1).div(minColRatio.minus(1)).plus(1)
+      const collateralToken = 'STETH'
+      return combineLatest(
+        aaveOracleAssetPriceData$({ token: collateralToken }),
+        aaveReserveConfigurationData$({ token: collateralToken }),
+      ).pipe(
+        map(([oracleAssetPrice, reserveConfigurationData]) => {
           return {
             type: 'UPDATE_STRATEGY_INFO',
-            maxMultiple,
-            liquidationThreshold,
-            assetPrice,
+            strategyInfo: {
+              oracleAssetPrice,
+              liquidationBonus: reserveConfigurationData.liquidationBonus,
+              collateralToken,
+            },
           }
         }),
       )
@@ -74,7 +76,7 @@ export function contextToTransactionParameters(context: OpenAaveContext): Operat
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
-    operationName: context.transactionParameters!.operationName,
+    operationName: 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
     amount: context.amount!,
@@ -100,11 +102,13 @@ export function getOpenAaveStateMachine$(
               parametersMachine.withConfig({
                 actions: {
                   notifyParent: sendParent(
-                    (context): OpenAaveEvent => ({
-                      type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                      parameters: context.transactionParameters!,
-                      estimatedGasPrice: context.gasPriceEstimation!,
-                    }),
+                    (context): OpenAaveEvent => {
+                      return {
+                        type: 'TRANSACTION_PARAMETERS_RECEIVED',
+                        parameters: context.transactionParameters!,
+                        estimatedGasPrice: context.gasPriceEstimation!,
+                      }
+                    },
                   ),
                 },
               }),
