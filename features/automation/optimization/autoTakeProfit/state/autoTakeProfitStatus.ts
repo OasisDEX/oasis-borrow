@@ -16,12 +16,12 @@ import {
 
 interface GetAutoTakeProfitStatusParams {
   autoTakeProfitState: AutoTakeProfitFormChange
-  tokenMarketPrice: BigNumber
-  vault: Vault
   isOwner: boolean
   isProgressStage: boolean
   isRemoveForm: boolean
   stage: SidebarAutomationStages
+  tokenMarketPrice: BigNumber
+  vault: Vault
 }
 
 interface AutoTakeProfitStatus {
@@ -31,7 +31,6 @@ interface AutoTakeProfitStatus {
   max: BigNumber
   min: BigNumber
   resetData: AutoTakeProfitResetData
-  isEditing: boolean
 }
 
 const MIN_MULTIPLIER = 1.05
