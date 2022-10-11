@@ -18,11 +18,6 @@ import {
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
 
-type UserInput = {
-  riskRatio: IRiskRatio
-  amount: BigNumber
-}
-
 export interface ManageAaveContext extends BaseAaveContext {
   strategy: string // TODO: Consider changing name to reserve token
   address: string

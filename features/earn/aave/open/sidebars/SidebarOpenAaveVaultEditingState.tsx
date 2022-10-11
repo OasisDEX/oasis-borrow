@@ -6,8 +6,8 @@ import { Sender } from 'xstate'
 
 import { VaultActionInput } from '../../../../../components/vault/VaultActionInput'
 import { handleNumericInput } from '../../../../../helpers/input'
-import { OpenAaveEvent, OpenAaveStateMachineState } from '../state'
 import { zero } from '../../../../../helpers/zero'
+import { OpenAaveEvent, OpenAaveStateMachineState } from '../state'
 
 export interface OpenAaveEditingStateProps {
   state: OpenAaveStateMachineState

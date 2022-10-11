@@ -1,4 +1,4 @@
-import { Position, RiskRatio } from '@oasisdex/oasis-actions'
+import { Position } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
@@ -15,9 +15,7 @@ import {
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
-import { one, zero } from '../../../../../helpers/zero'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
-import { getAdjustAaveParameters, getOpenAaveParameters } from '../../../../aave'
 
 export function getManageAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,

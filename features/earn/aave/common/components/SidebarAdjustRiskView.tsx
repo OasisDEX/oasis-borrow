@@ -1,4 +1,4 @@
-import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
