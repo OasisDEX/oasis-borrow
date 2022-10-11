@@ -29,6 +29,7 @@ interface AutoTakeProfitStatus {
   min: BigNumber
   max: BigNumber
   resetData: AutoTakeProfitResetData
+  isEditing: boolean
 }
 
 const MIN_MULTIPLIER = 1.05
@@ -42,6 +43,8 @@ export function getAutoTakeProfitStatus({
 }: GetAutoTakeProfitStatusParams): AutoTakeProfitStatus {
   const { uiChanges } = useAppContext()
 
+  // TODO: TDAutoTakeProfit | to be replaced with checkIfIsEditingAutoTakeProfit method
+  const isEditing = true
   const closePickerConfig = {
     optionNames: closeVaultOptions,
     onclickHandler: (optionName: string) => {
@@ -69,8 +72,9 @@ export function getAutoTakeProfitStatus({
 
   return {
     closePickerConfig,
-    min,
+    isEditing,
     max,
+    min,
     resetData,
   }
 }

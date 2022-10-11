@@ -167,6 +167,7 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { getAaveStEthYield } from 'features/earn/aave/open/services'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -241,6 +242,7 @@ import { createPositionsList$ } from 'features/vaultsOverview/pipes/positionsLis
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
+import { GraphQLClient } from 'graphql-request'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
 import {
@@ -259,7 +261,15 @@ import {
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import curry from 'ramda/src/curry'
@@ -488,6 +498,20 @@ export function setupAppContext() {
     initializedAccount$,
     onEveryBlock$,
     connectedContext$,
+  )
+  // saved for later?
+  // const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
+  // const graphQLClient$ = contextForAddress$.pipe(
+  //   distinctUntilKeyChanged('cacheApi'),
+  //   map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  // )
+  const disconnectedGraphQLClient$ = context$.pipe(
+    distinctUntilKeyChanged('cacheApi'),
+    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  )
+  const aaveSthEthYieldsQuery = memoize(
+    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+    (fields) => JSON.stringify({ fields }),
   )
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
@@ -1126,6 +1150,7 @@ export function setupAppContext() {
     userReferral$,
     checkReferralLocal$,
     aaveUserReserveData$,
+    aaveSthEthYieldsQuery,
   }
 }
 
