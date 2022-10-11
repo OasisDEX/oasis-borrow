@@ -149,6 +149,10 @@ export function SidebarSetupAutoTakeProfit({
         executionPrice: value.decimalPlaces(0, BigNumber.ROUND_DOWN),
         executionCollRatio: targetColRatio,
       })
+      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+        type: 'is-editing',
+        isEditing: true,
+      })
     },
   }
 

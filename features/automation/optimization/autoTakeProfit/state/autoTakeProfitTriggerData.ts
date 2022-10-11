@@ -26,7 +26,7 @@ export interface AutoTakeProfitTriggerData {
 export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
   executionPrice: zero,
   maxBaseFeeInGwei: zero,
-  isToCollateral: false,
+  isToCollateral: true,
   isTriggerEnabled: false,
   triggerId: zero,
 }

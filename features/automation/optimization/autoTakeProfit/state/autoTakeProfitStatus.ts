@@ -9,7 +9,10 @@ import {
   checkIfIsDisabledAutoTakeProfit,
   checkIfIsEditingAutoTakeProfit,
 } from 'features/automation/optimization/autoTakeProfit/helpers'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import {
+  AutoTakeProfitTriggerData,
+  prepareAutoTakeProfitResetData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 
 import {
@@ -54,7 +57,6 @@ export function getAutoTakeProfitStatus({
 }: GetAutoTakeProfitStatusParams): AutoTakeProfitStatus {
   const { uiChanges } = useAppContext()
 
-  // TODO: TDAutoTakeProfit | to be replaced with checkIfIsEditingAutoTakeProfit method
   const isEditing = checkIfIsEditingAutoTakeProfit({
     autoTakeProfitTriggerData,
     autoTakeProfitState,
@@ -74,6 +76,10 @@ export function getAutoTakeProfitStatus({
         type: 'close-type',
         toCollateral: optionName === closeVaultOptions[0],
       })
+      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+        type: 'is-editing',
+        isEditing: true,
+      })
     },
     isCollateralActive: autoTakeProfitState.toCollateral,
     collateralTokenSymbol: vault.token,
@@ -85,13 +91,7 @@ export function getAutoTakeProfitStatus({
     ? tokenAth.times(MAX_MULTIPLIER_WITH_ATH)
     : tokenMarketPrice.times(MAX_MULTIPLIER_WITH_PRICE)
 
-  const resetData: AutoTakeProfitResetData = {
-    toCollateral: autoTakeProfitState.toCollateral, //TODO use triggerData l8r
-    executionPrice: autoTakeProfitState.executionPrice, // change to initialSelectedPrice?
-    executionCollRatio: autoTakeProfitState.executionCollRatio,
-    txDetails: {},
-    isEditing: false,
-  }
+  const resetData = prepareAutoTakeProfitResetData(autoTakeProfitState, autoTakeProfitTriggerData)
 
   return {
     closePickerConfig,
