@@ -9,7 +9,6 @@ import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
-import { toWei } from 'web3-utils'
 
 export interface ActionCall {
   targetHash: string
