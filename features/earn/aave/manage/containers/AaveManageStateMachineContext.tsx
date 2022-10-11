@@ -5,7 +5,7 @@ import React from 'react'
 import { ManageAaveStateMachine } from '../state'
 
 function setupManageAaveStateContext({ machine }: { machine: ManageAaveStateMachine }) {
-  const stateMachine = useInterpret(machine, { devTools: env.NODE_ENV === 'development' }).start()
+  const stateMachine = useInterpret(machine, { devTools: env.NODE_ENV !== 'production' }).start()
   return {
     stateMachine,
   }
