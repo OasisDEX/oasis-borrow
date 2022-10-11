@@ -10,6 +10,7 @@ import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detail
 import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
+import { UpdatedContentCardNetValue } from 'components/vault/detailsSection/UpdatedContentCardNetvalue'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBannerControl'
@@ -52,6 +53,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   } = props
   const { t } = useTranslation()
   const { stopLossTriggerData } = useAutomationContext()
+  const updatedPnlToogle = useFeatureToggle('UpdatedPnL')
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
@@ -86,23 +88,39 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
               afterBuyingPowerUSD={afterBuyingPowerUSD}
               changeVariant={changeVariant}
             />
-            <ContentCardNetValue
-              token={token}
-              oraclePrice={oraclePrice}
-              marketPrice={marketPrice}
-              netValueUSD={netValueUSD}
-              afterNetValueUSD={afterNetValueUSD}
-              totalGasSpentUSD={totalGasSpentUSD}
-              currentPnL={currentPnL}
-              currentPnLInUSD={currentPnLInUSD}
-              lockedCollateral={lockedCollateral}
-              lockedCollateralUSD={lockedCollateralUSD}
-              debt={debt}
-              changeVariant={changeVariant}
-              depositTotalAmounts={depositTotalAmounts}
-              withdrawTotalAmounts={withdrawTotalAmounts}
-              totalGasFeesInEth={totalGasFeesInEth}
-            />
+            {updatedPnlToogle ? (
+              <UpdatedContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                marketPrice={marketPrice}
+                netValueUSD={netValueUSD}
+                afterNetValueUSD={afterNetValueUSD}
+                totalGasSpentUSD={totalGasSpentUSD}
+                currentPnL={currentPnL}
+                currentPnLInUSD={currentPnLInUSD}
+                lockedCollateral={lockedCollateral}
+                lockedCollateralUSD={lockedCollateralUSD}
+                debt={debt}
+                changeVariant={changeVariant}
+                depositTotalAmounts={depositTotalAmounts}
+                withdrawTotalAmounts={withdrawTotalAmounts}
+                totalGasFeesInEth={totalGasFeesInEth}
+              />
+            ) : (
+              <ContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                marketPrice={marketPrice}
+                netValueUSD={netValueUSD}
+                afterNetValueUSD={afterNetValueUSD}
+                totalGasSpentUSD={totalGasSpentUSD}
+                currentPnL={currentPnL}
+                lockedCollateral={lockedCollateral}
+                lockedCollateralUSD={lockedCollateralUSD}
+                debt={debt}
+                changeVariant={changeVariant}
+              />
+            )}
             {stopLossTriggerData.isStopLossEnabled && (
               <ContentCardDynamicStopPriceWithColRatio
                 slData={stopLossTriggerData}

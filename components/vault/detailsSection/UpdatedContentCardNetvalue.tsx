@@ -26,6 +26,16 @@ interface ContentCardNetValueModalProps {
   currentPnL: string
   netValueUSD: string
   totalGasSpentUSD: string
+  depositTotalAmounts?: {
+    totalDollarAmount: string
+    totalEthAmount: string
+  }
+  withdrawTotalAmounts?: {
+    totalDollarAmount: string
+    totalEthAmount: string
+  }
+  totalGasFeesInEth?: string
+  currentPnLInUSD?: string
 }
 
 function ContentCardNetValueModal({
@@ -42,6 +52,10 @@ function ContentCardNetValueModal({
   debtTokenMarketPrice,
   netValueOraclePrice,
   netValueMarketPrice,
+  depositTotalAmounts,
+  withdrawTotalAmounts,
+  totalGasFeesInEth,
+  currentPnLInUSD,
 }: ContentCardNetValueModalProps) {
   const { t } = useTranslation()
   const collateralTags = getToken(token).tags as string[]
@@ -64,13 +78,13 @@ function ContentCardNetValueModal({
     <>
       <Grid gap={2}>
         <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
-        <Text variant="paragraph2">
+        <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
           {isCollateralLpToken
             ? t('manage-multiply-vault.card.based-on-price-lp')
             : t('manage-multiply-vault.card.based-on-price')}
-        </Text>
-        <Text variant="boldParagraph2" sx={{ pb: 2, fontWeight: 'bold' }}>
-          {marketOrOraclePrice}
+          <Text as="span" sx={{ fontWeight: 'bold', ml: 1 }}>
+            {marketOrOraclePrice}
+          </Text>
         </Text>
       </Grid>
       {/* Grid for just DESKTOP */}
@@ -78,35 +92,37 @@ function ContentCardNetValueModal({
         gap={2}
         columns={[1, 2, 3]}
         variant="paragraph2"
-        sx={{ pb: 2, display: ['none', 'none', 'grid'] }}
+        sx={{ pb: 0, display: ['none', 'none', 'grid'], textAlign: 'right' }}
       >
         <Box />
         {renderCollateralValue ? (
-          <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
+          <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80', pb: 3 }}>
+            {t('manage-multiply-vault.card.collateral-value')}
+          </Box>
         ) : (
           <Box />
         )}
-        <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
+        <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80' }}>
+          {t('manage-multiply-vault.card.usd-value')}
+        </Box>
 
-        <Box>{t('manage-multiply-vault.card.collateral-value-in-vault')}</Box>
+        <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80' }}>{t('net-value')}</Box>
 
-        <Box>{`${lockedCollateral} ${token}`}</Box>
-        <Box>{lockedCollateralUSD}</Box>
-        <Box>{t('manage-multiply-vault.card.dai-debt-in-vault')}</Box>
-        {renderCollateralValue ? (
-          <Box>{`${daiDebtUndercollateralizedToken} ${token}`}</Box>
-        ) : (
-          <Box />
-        )}
-        <Box>{debtUSD}</Box>
+        <Box>
+          <Text
+            sx={{ fontWeight: 'semiBold' }}
+          >{`${netValueUndercollateralizedToken} ${token}`}</Text>
+          <Text sx={{ fontSize: 1, color: 'neutral80', fontWeight: 'semiBold' }}>
+            {t('manage-multiply-vault.card.total-col')}: {`${lockedCollateral} ${token}`}
+          </Text>
+        </Box>
 
-        <Box>{t('net-value')}</Box>
-        {renderCollateralValue ? (
-          <Box>{`${netValueUndercollateralizedToken} ${token}`}</Box>
-        ) : (
-          <Box />
-        )}
-        <Box>{netValueUSD}</Box>
+        <Box>
+          <Text sx={{ fontWeight: 'semiBold' }}>{netValueUSD}</Text>
+          <Text sx={{ fontSize: 1, color: 'neutral80', fontWeight: 'semiBold' }}>
+            {t('manage-multiply-vault.card.debt')}: {lockedCollateralUSD}
+          </Text>
+        </Box>
       </Grid>
 
       {/* Grid for MOBILE && TABLETs */}
@@ -116,15 +132,9 @@ function ContentCardNetValueModal({
         variant="paragraph2"
         sx={{ pb: 2, display: ['grid', 'grid', 'none'] }}
       >
-        <Box sx={{ fontWeight: 'semiBold' }}>
-          {t('manage-multiply-vault.card.collateral-value-in-vault')}
-        </Box>
+        <Box sx={{ fontWeight: 'semiBold' }}>{t('net-value')}</Box>
         <Box />
-        {renderCollateralValue ? (
-          <Box>{t('manage-multiply-vault.card.collateral-value')}</Box>
-        ) : (
-          <Box />
-        )}
+        {renderCollateralValue ? <Box>{t('net-value')}</Box> : <Box />}
         <Box>{`${lockedCollateral} ${token}`}</Box>
         <Box>{t('manage-multiply-vault.card.usd-value')}</Box>
         <Box>{lockedCollateralUSD}</Box>
@@ -160,24 +170,54 @@ function ContentCardNetValueModal({
         <Box>{netValueUSD}</Box>
       </Grid>
 
-      <Divider variant="styles.hrVaultFormBottom" />
-      <Grid gap={2} columns={[1, 2, 3]}>
-        <Box>{t('manage-multiply-vault.card.gas-fees')}</Box>
-        <Box />
-        <Box>{totalGasSpentUSD}</Box>
+      <Box sx={{ px: 4 }}>
+        <Divider variant="styles.hrVaultFormBottom" />
+      </Box>
+      <Grid
+        sx={{ textAlign: 'right', gridTemplateColumns: 'repeat(3,1fr)' }}
+        gap={2}
+        columns={[1, 2, 3]}
+      >
+        <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80' }}>
+          {t('manage-multiply-vault.card.deposits')}
+        </Box>
+        <Text
+          sx={{ fontWeight: 'semiBold' }}
+        >{`${depositTotalAmounts?.totalEthAmount} ${token}`}</Text>
+        <Text sx={{ fontWeight: 'semiBold' }}>${depositTotalAmounts?.totalDollarAmount}</Text>
+
+        <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80' }}>
+          {t('manage-multiply-vault.card.withdraws')}
+        </Box>
+        <Text
+          sx={{ fontWeight: 'semiBold' }}
+        >{`${withdrawTotalAmounts?.totalEthAmount} ${token}`}</Text>
+        <Text sx={{ fontWeight: 'semiBold' }}>${withdrawTotalAmounts?.totalDollarAmount}</Text>
+
+        <Box sx={{ fontSize: 1, fontWeight: 'medium', color: 'neutral80' }}>
+          {t('manage-multiply-vault.card.gas-fees')}
+        </Box>
+        <Text sx={{ fontWeight: 'semiBold' }}>{`${totalGasFeesInEth} ${token}`}</Text>
+        <Text sx={{ fontWeight: 'semiBold' }}>{totalGasSpentUSD}</Text>
       </Grid>
       <Card
         variant="vaultDetailsCardModal"
         sx={{ fontWeight: 'semiBold', alignItems: 'center', textAlign: 'center' }}
       >
-        <Text variant="paragraph2" sx={{ fontSize: 1, pb: 2 }}>
+        <Text variant="paragraph2" sx={{ fontSize: 1, pb: 2, color: 'neutral80' }}>
           {t('manage-multiply-vault.card.unrealised-pnl')}
         </Text>
-        <Text>{currentPnL}</Text>
+        <Text sx={{ fontSize: 5, pb: 2, fontWeight: 'regular', color: 'primary100' }}>
+          {currentPnL} / {currentPnLInUSD}
+        </Text>
       </Card>
-      <Grid>
-        <Text variant="paragraph2" sx={{ pb: 2 }}>
+      <Grid sx={{ fontStyle: 'italic' }}>
+        <Text variant="paragraph2" sx={{ pb: 2, color: 'neutral80' }}>
           {t('manage-multiply-vault.card.formula')}
+        </Text>
+
+        <Text variant="paragraph2" sx={{ pb: 2, color: 'neutral80' }}>
+          {t('manage-multiply-vault.card.formula-note')}
         </Text>
       </Grid>
     </>
@@ -196,9 +236,19 @@ interface ContentCardNetValueProps {
   lockedCollateralUSD?: BigNumber
   debt?: BigNumber
   changeVariant?: ChangeVariantType
+  depositTotalAmounts?: {
+    totalDollarAmount: BigNumber
+    totalEthAmount: BigNumber
+  }
+  withdrawTotalAmounts?: {
+    totalDollarAmount: BigNumber
+    totalEthAmount: BigNumber
+  }
+  totalGasFeesInEth?: BigNumber
+  currentPnLInUSD?: BigNumber
 }
 
-export function ContentCardNetValue({
+export function UpdatedContentCardNetValue({
   token,
   lockedCollateral,
   lockedCollateralUSD,
@@ -210,6 +260,10 @@ export function ContentCardNetValue({
   oraclePrice,
   marketPrice,
   changeVariant,
+  withdrawTotalAmounts,
+  depositTotalAmounts,
+  totalGasFeesInEth,
+  currentPnLInUSD,
 }: ContentCardNetValueProps) {
   const { t } = useTranslation()
 
@@ -239,6 +293,16 @@ export function ContentCardNetValue({
       netValueUSD && marketPrice ? netValueUSD.div(marketPrice) : zero,
     )}`,
     marketOrOraclePrice: `$${formatAmount(marketPrice || oraclePrice, 'USD')}`,
+    depositTotalAmounts: {
+      totalDollarAmount: `${formatAmount(depositTotalAmounts?.totalDollarAmount || zero, 'USD')}`,
+      totalEthAmount: `${formatCryptoBalance(depositTotalAmounts?.totalEthAmount || zero)}`,
+    },
+    withdrawTotalAmounts: {
+      totalDollarAmount: `${formatAmount(withdrawTotalAmounts?.totalDollarAmount || zero, 'USD')}`,
+      totalEthAmount: `${withdrawTotalAmounts?.totalEthAmount.toString() || zero}`,
+    },
+    totalGasFeesInEth: `${formatCryptoBalance(totalGasFeesInEth || zero)}`,
+    currentPnLInUSD: `$${formatAmount(currentPnLInUSD || zero, 'USD')}`,
   }
 
   const contentCardModalSettings: ContentCardNetValueModalProps = {
@@ -255,6 +319,10 @@ export function ContentCardNetValue({
     debtTokenMarketPrice: formatted.debtTokenMarketPrice,
     netValueOraclePrice: formatted.netValueOraclePrice,
     netValueMarketPrice: formatted.netValueMarketPrice,
+    depositTotalAmounts: formatted.depositTotalAmounts,
+    withdrawTotalAmounts: formatted.withdrawTotalAmounts,
+    totalGasFeesInEth: formatted.totalGasFeesInEth,
+    currentPnLInUSD: formatted.currentPnLInUSD,
   }
 
   if (lockedCollateral && marketPrice) {
