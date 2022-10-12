@@ -15,6 +15,7 @@ import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
+import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
 
@@ -163,6 +164,9 @@ export function SidebarManageAaveVault() {
       return (
         <AdjustRiskView
           state={state}
+          resetRiskValue={
+            state.context.protocolData?.position.riskRatio || aaveStETHMinimumRiskRatio
+          }
           send={send}
           primaryButton={{
             isLoading: false,

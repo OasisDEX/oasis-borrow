@@ -16,6 +16,7 @@ import {
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
+import { aaveStETHMinimumRiskRatio } from '../../constants'
 
 export interface OpenAaveContext extends BaseAaveContext {
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
@@ -196,7 +197,7 @@ export const createOpenAaveStateMachine = createMachine(
       validTransactionParameters: ({ userInput, proxyAddress, transactionParameters }) =>
         allDefined(userInput, proxyAddress, transactionParameters),
       enoughBalance: ({ tokenBalance, userInput }) =>
-        allDefined(tokenBalance, userInput) && tokenBalance!.gt(userInput?.amount),
+        allDefined(tokenBalance, userInput.amount) && tokenBalance!.gt(userInput.amount!),
     },
     actions: {
       initContextValues: assign((context) => ({
@@ -218,7 +219,7 @@ export const createOpenAaveStateMachine = createMachine(
           return {
             type: 'VARIABLES_RECEIVED',
             amount: context.userInput?.amount!,
-            riskRatio: context.userInput?.riskRatio,
+            riskRatio: context.userInput.riskRatio || aaveStETHMinimumRiskRatio,
             token: context.token,
             proxyAddress: context.proxyAddress,
           }
@@ -290,7 +291,7 @@ export const createOpenAaveStateMachine = createMachine(
           return {
             type: 'USER_PARAMETERS_CHANGED',
             amount: context.userInput.amount || zero,
-            riskRatio: context.userInput.riskRatio,
+            riskRatio: context.userInput.riskRatio || aaveStETHMinimumRiskRatio,
             token: context.token,
           }
         },

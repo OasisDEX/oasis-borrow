@@ -14,6 +14,7 @@ import { SidebarSectionFooterButtonSettings } from '../../../../../components/si
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
+import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
 import { OpenAaveInformationContainer } from './OpenAaveInformationContainer'
 
@@ -22,12 +23,13 @@ type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
 type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
   textButton: SidebarSectionFooterButtonSettings
+  resetRiskValue: IRiskRatio
 }
 
 export function AdjustRiskView(props: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
-  const { state, send, primaryButton, textButton } = props
+  const { state, send, primaryButton, textButton, resetRiskValue } = props
   const position = state.context.protocolData
     ? state.context.protocolData.position
     : state.context.transactionParameters?.simulation.position
@@ -36,7 +38,7 @@ export function AdjustRiskView(props: AdjustRiskViewProps) {
 
   const minRisk =
     state.context.transactionParameters?.simulation.minConfigurableRiskRatio ||
-    new RiskRatio(zero, RiskRatio.TYPE.LTV)
+    aaveStETHMinimumRiskRatio
 
   const liquidationPrice = position?.liquidationPrice || zero
 
@@ -75,6 +77,9 @@ export function AdjustRiskView(props: AdjustRiskViewProps) {
     },
   )
 
+  const sliderValue =
+    state.context.userInput.riskRatio?.loanToValue || position?.riskRatio.loanToValue
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
@@ -93,7 +98,7 @@ export function AdjustRiskView(props: AdjustRiskViewProps) {
           }}
           minBoundry={minRisk.loanToValue || zero}
           maxBoundry={maxRisk || zero}
-          lastValue={state.context.userInput.riskRatio.loanToValue}
+          lastValue={sliderValue || zero}
           disabled={false}
           step={0.01}
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {
@@ -143,7 +148,7 @@ export function AdjustRiskView(props: AdjustRiskViewProps) {
         />
         <SidebarResetButton
           clear={() => {
-            send({ type: 'SET_RISK_RATIO', riskRatio: minRisk })
+            send({ type: 'SET_RISK_RATIO', riskRatio: resetRiskValue })
           }}
         />
       </Grid>

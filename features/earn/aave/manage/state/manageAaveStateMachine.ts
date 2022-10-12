@@ -209,7 +209,6 @@ export const createManageAaveStateMachine =
           ),
         })),
         userInputRiskRatio: assign((context, event) => {
-          console.log(`userInputRiskRatio ${event.riskRatio.loanToValue}`)
           return {
             userInput: {
               ...context.userInput,

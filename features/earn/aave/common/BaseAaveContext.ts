@@ -6,8 +6,8 @@ import { HasGasEstimation } from '../../../../helpers/form'
 import { AaveProtocolData } from '../manage/state'
 
 type UserInput = {
-  riskRatio: IRiskRatio
-  amount: BigNumber
+  riskRatio?: IRiskRatio
+  amount?: BigNumber
 }
 
 export type IStrategyInfo = {
