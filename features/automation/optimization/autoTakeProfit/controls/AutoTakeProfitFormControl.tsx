@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
@@ -24,6 +25,7 @@ interface AutoTakeProfitFormControlProps {
   constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
   ethMarketPrice: BigNumber
+  ilkData: IlkData
   isAutoTakeProfitActive: boolean
   shouldRemoveAllowance: boolean
   tokenMarketPrice: BigNumber
@@ -37,6 +39,7 @@ export function AutoTakeProfitFormControl({
   constantMultipleTriggerData,
   context,
   ethMarketPrice,
+  ilkData,
   isAutoTakeProfitActive,
   shouldRemoveAllowance,
   tokenMarketPrice,
@@ -64,12 +67,13 @@ export function AutoTakeProfitFormControl({
   const { closePickerConfig, isEditing, isDisabled, min, max, resetData } = getAutoTakeProfitStatus(
     {
       autoTakeProfitState,
-      tokenMarketPrice,
-      vault,
+      autoTakeProfitTriggerData,
       isOwner,
       isProgressStage,
       isRemoveForm,
       stage,
+      tokenMarketPrice,
+      vault,
     },
   )
   const { addTxData, textButtonHandlerExtension } = getAutoTakeProfitTxHandlers({
@@ -106,6 +110,7 @@ export function AutoTakeProfitFormControl({
           context={context}
           ethMarketPrice={ethMarketPrice}
           feature={feature}
+          ilkData={ilkData}
           isAddForm={isAddForm}
           isAutoTakeProfitActive={isAutoTakeProfitActive}
           isDisabled={isDisabled}

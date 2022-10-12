@@ -1,40 +1,67 @@
 import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
+import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
+import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
+import { checkIfIsEditingAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
+import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 import { AutoTakeProfitDetailsLayout } from './AutoTakeProfitDetailsLayout'
 
 interface AutoTakeProfitDetailsControlProps {
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+  ethMarketPrice: BigNumber
   vault: Vault
 }
 
-export function AutoTakeProfitDetailsControl({ vault }: AutoTakeProfitDetailsControlProps) {
-  const isDebtZero = vault.debt.isZero()
-  // TODO: TDAutoTakeProfit | to be replaced with data from autoTakeProfitTriggerData or autoTakeProfitState
-  // or from calculations based on those states
-  const isTriggerEnabled = false
-  const triggerColPrice = new BigNumber(1904)
-  const afterTriggerColPrice = new BigNumber(1964)
-  const estimatedProfit = new BigNumber(399040200)
-  const triggerColRatio = new BigNumber(210.37)
-  const afterTriggerColRatio = new BigNumber(222.32)
-  // TODO: TDAutoTakeProfit | commented out due to not being used right now
-  // const isEditing = false
+export function AutoTakeProfitDetailsControl({
+  autoTakeProfitTriggerData,
+  ethMarketPrice,
+  vault,
+}: AutoTakeProfitDetailsControlProps) {
+  const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
+
+  const { debt, debtOffset, lockedCollateral, token } = vault
+  const { isTriggerEnabled, executionPrice } = autoTakeProfitTriggerData
+  const isDebtZero = debt.isZero()
+
+  const triggerColPrice = amountFromWei(executionPrice, vault.token)
+  const { estimatedProfitOnClose } = getOnCloseEstimations({
+    colMarketPrice: triggerColPrice,
+    colOraclePrice: triggerColPrice,
+    debt,
+    debtOffset,
+    ethMarketPrice,
+    lockedCollateral,
+    toCollateral: false,
+  })
+  const isEditing = checkIfIsEditingAutoTakeProfit({
+    autoTakeProfitState,
+    autoTakeProfitTriggerData,
+    isRemoveForm: autoTakeProfitState.currentForm === 'remove',
+    token,
+  })
 
   const autoTakeProfitDetailsLayoutOptionalParams = {
-    // TODO: TDAutoTakeProfit | shoule be passed only when trigger is enabled, can't be done in current state because var is always false and it causes typescript error
-    // Spread types may only be created from object types.ts(2698)
-    // ...(isTriggerEnabled && {
-    triggerColPrice,
-    estimatedProfit,
-    triggerColRatio,
-    // }),
-    // TODO: TDAutoTakeProfit | shoule be passed only when is in editing stage, can't be done in current state because var is always false and it causes typescript error
-    // Spread types may only be created from object types.ts(2698)
-    // ...(isEditing && {
-    afterTriggerColPrice,
-    afterTriggerColRatio,
-    // }),
+    ...(isTriggerEnabled && {
+      triggerColPrice,
+      estimatedProfit: estimatedProfitOnClose,
+      triggerColRatio: ratioAtCollateralPrice({
+        lockedCollateral: lockedCollateral,
+        collateralPriceUSD: triggerColPrice,
+        vaultDebt: debt,
+      }),
+    }),
+    ...(isEditing && {
+      afterTriggerColPrice: autoTakeProfitState.executionPrice,
+      afterTriggerColRatio: autoTakeProfitState.executionCollRatio,
+    }),
     currentColRatio: vault.collateralizationRatio.times(100),
   }
 

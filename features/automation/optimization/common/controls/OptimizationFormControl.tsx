@@ -64,7 +64,7 @@ export function OptimizationFormControl({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
     isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
-    isAutoTakeProfitOn: autoTakeProfitEnabled, // TODO ŁW automationTriggersData?.autoTakeProfit?.isTriggerEnabled,
+    isAutoTakeProfitOn: autoTakeProfitTriggerData.isTriggerEnabled,
     section: 'form',
   })
 
@@ -77,16 +77,16 @@ export function OptimizationFormControl({
         currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
       })
     }
-    if (autoBuyTriggerData.isTriggerEnabled) {
-      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-        type: 'Optimization',
-        currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
-      })
-    }
     if (constantMultipleTriggerData.isTriggerEnabled) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
+      })
+    }
+    if (autoBuyTriggerData.isTriggerEnabled) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Optimization',
+        currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
       })
     }
   }, [])
@@ -131,6 +131,7 @@ export function OptimizationFormControl({
           constantMultipleTriggerData={constantMultipleTriggerData}
           context={context}
           ethMarketPrice={ethMarketPrice}
+          ilkData={ilkData}
           isAutoTakeProfitActive={isAutoTakeProfitActive}
           shouldRemoveAllowance={shouldRemoveAllowance}
           tokenMarketPrice={tokenMarketPrice}

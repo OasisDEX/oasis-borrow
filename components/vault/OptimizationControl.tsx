@@ -155,6 +155,7 @@ export function OptimizationControl({
                 vault={vault}
                 vaultType={vaultType}
                 vaultHistory={vaultHistory}
+                ethMarketPrice={ethAndTokenPrices['ETH']}
                 tokenMarketPrice={ethAndTokenPrices[vault.token]}
               />
             }

@@ -28,6 +28,7 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     autoSellTriggerData,
     autoBuyTriggerData,
     constantMultipleTriggerData,
+    autoTakeProfitTriggerData,
   } = useAutomationContext()
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
@@ -56,7 +57,10 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     autoSellTriggerData,
     stopLossTriggerData,
   )
-  const isAutoTakeProfitEnabled = useAutoTakeProfitStateInitializator(vault)
+  const isAutoTakeProfitEnabled = useAutoTakeProfitStateInitializator(
+    vault,
+    autoTakeProfitTriggerData,
+  )
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
