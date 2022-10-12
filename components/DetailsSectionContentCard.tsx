@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { SystemStyleObject } from '@styled-system/css'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
@@ -29,7 +30,7 @@ export interface ContentCardProps {
   link?: DetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
   customBackground?: string
-  customUnitStyle?: React.CSSProperties
+  customUnitStyle?: SystemStyleObject
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {

@@ -11,13 +11,13 @@ import React from 'react'
 import { ActorRefFrom } from 'xstate'
 
 import { useAaveContext } from '../AaveContextProvider'
-import { PreparedAaveReserveData } from '../helpers/aavePrepareAaveTotalValueLocked'
+import { PreparedAaveTotalValueLocked } from '../helpers/aavePrepareAaveTotalValueLocked'
 import { useOpenAaveStateMachineContext } from '../open/containers/AaveOpenStateMachineContext'
 import { AaveStEthSimulateStateMachine } from '../open/state'
 
 type AavePositionHeaderPropsBase = {
   simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
-  aaveTVL?: PreparedAaveReserveData
+  aaveTVL?: PreparedAaveTotalValueLocked
   strategyName: string
   noDetails?: boolean
 }

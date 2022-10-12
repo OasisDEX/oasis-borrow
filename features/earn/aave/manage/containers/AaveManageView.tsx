@@ -27,8 +27,6 @@ import {
 interface AaveManageViewPositionViewProps {
   address: string
   strategy: string // TODO: Get token from strategy
-  aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
 }
 
 function AaveManageContainer({
@@ -36,7 +34,11 @@ function AaveManageContainer({
   strategy,
   aaveReserveState,
   aaveReserveDataETH,
-}: AaveManageViewPositionViewProps & { manageAaveStateMachine: ManageAaveStateMachine }) {
+}: AaveManageViewPositionViewProps & {
+  manageAaveStateMachine: ManageAaveStateMachine
+  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveDataETH: PreparedAaveReserveData
+}) {
   const { t } = useTranslation()
   return (
     <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
