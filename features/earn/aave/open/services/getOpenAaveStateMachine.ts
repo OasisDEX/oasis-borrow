@@ -88,10 +88,10 @@ export function getOpenAaveStateMachine$(
   parametersMachine$: Observable<ParametersStateMachine>,
   proxyMachine$: Observable<ProxyStateMachine>,
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
-  simulationMachine: AaveStEthSimulateStateMachine,
+  simulationMachine$: Observable<AaveStEthSimulateStateMachine>,
 ) {
-  return combineLatest(parametersMachine$, proxyMachine$).pipe(
-    map(([parametersMachine, proxyMachine]) => {
+  return combineLatest(parametersMachine$, proxyMachine$, simulationMachine$).pipe(
+    map(([parametersMachine, proxyMachine, simulationMachine]) => {
       return createOpenAaveStateMachine.withConfig({
         services: {
           ...services,

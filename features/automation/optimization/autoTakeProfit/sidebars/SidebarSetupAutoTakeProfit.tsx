@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
@@ -16,6 +17,7 @@ import { SidebarAutomationFeatureCreationStage } from 'features/automation/commo
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
+import { SidebarAutoTakeProfitRemovalEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitRemovalEditingStage'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
@@ -38,6 +40,7 @@ interface SidebarSetupAutoTakeProfitProps {
   context: Context
   ethMarketPrice: BigNumber
   feature: AutomationFeatures
+  ilkData: IlkData
   isAddForm: boolean
   isAutoTakeProfitActive: boolean
   isDisabled: boolean
@@ -62,6 +65,7 @@ export function SidebarSetupAutoTakeProfit({
   context,
   ethMarketPrice,
   feature,
+  ilkData,
   isAddForm,
   isAutoTakeProfitActive,
   isDisabled,
@@ -149,6 +153,10 @@ export function SidebarSetupAutoTakeProfit({
         executionPrice: value.decimalPlaces(0, BigNumber.ROUND_DOWN),
         executionCollRatio: targetColRatio,
       })
+      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+        type: 'is-editing',
+        isEditing: true,
+      })
     },
   }
 
@@ -163,6 +171,7 @@ export function SidebarSetupAutoTakeProfit({
               {isAddForm && (
                 <SidebarAutoTakeProfitEditingStage
                   autoTakeProfitState={autoTakeProfitState}
+                  autoTakeProfitTriggerData={autoTakeProfitTriggerData}
                   closePickerConfig={closePickerConfig}
                   ethMarketPrice={ethMarketPrice}
                   isEditing={isEditing}
@@ -171,14 +180,25 @@ export function SidebarSetupAutoTakeProfit({
                   vault={vault}
                 />
               )}
+              {isRemoveForm && (
+                <SidebarAutoTakeProfitRemovalEditingStage
+                  autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+                  // TODO: TDAutoTakeProfit | needs real validation
+                  errors={[]}
+                  ilkData={ilkData}
+                  vault={vault}
+                  // TODO: TDAutoTakeProfit | needs real validation
+                  warnings={[]}
+                />
+              )}
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
             <SidebarAutomationFeatureCreationStage
               featureName={feature}
-              stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}
+              stage={stage}
             />
           )}
         </Grid>

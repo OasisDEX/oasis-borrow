@@ -1,12 +1,11 @@
 import { useActor, useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
-import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ActorRefFrom } from 'xstate'
@@ -16,18 +15,14 @@ import { PreparedAaveReserveData } from '../../helpers/aavePrepareAaveTotalValue
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { AaveStEthSimulateStateMachine } from '../state'
 
-const minimumMultiple = new BigNumber(1.1)
-
 export function AaveOpenHeader({
   simulationActor,
   strategyName,
   aaveTVL,
-  aaveReserveState,
 }: {
   simulationActor: ActorRefFrom<AaveStEthSimulateStateMachine>
   aaveTVL: PreparedAaveReserveData
   strategyName: string
-  aaveReserveState: AaveReserveConfigurationData
 }) {
   const { t } = useTranslation()
   const tokenPairList = {
@@ -40,21 +35,18 @@ export function AaveOpenHeader({
   const [simulationState] = useActor(simulationActor)
 
   const { context: simulationContext } = simulationState
-  const maximumMultiple = one.div(one.minus(aaveReserveState.ltv))
 
   const headlineDetails = []
-  if (simulationContext.yields) {
+  if (simulationContext.yieldsMin && simulationContext.yieldsMax) {
     const formatYield = (yieldVal: BigNumber) =>
       formatPercent(yieldVal, {
         precision: 2,
       })
-    const yield7DaysMin = minimumMultiple.times(simulationContext.yields.annualisedYield7days!)
-    const yield7DaysMax = maximumMultiple.times(simulationContext.yields.annualisedYield7days!)
+    const yield7DaysMin = simulationContext.yieldsMin.annualisedYield7days!
+    const yield7DaysMax = simulationContext.yieldsMax.annualisedYield7days!
 
-    const yield7DaysDiff = maximumMultiple.times(
-      simulationContext.yields.annualisedYield7days!.minus(
-        simulationContext.yields.annualisedYield7daysOffset!,
-      ),
+    const yield7DaysDiff = simulationContext.yieldsMax.annualisedYield7days!.minus(
+      simulationContext.yieldsMax.annualisedYield7daysOffset!,
     )
 
     headlineDetails.push({
@@ -69,15 +61,13 @@ export function AaveOpenHeader({
       }),
     })
   }
-  if (simulationContext.yields?.annualisedYield90days) {
-    const yield90DaysDiff = maximumMultiple.times(
-      simulationContext.yields.annualisedYield90daysOffset!.minus(
-        simulationContext.yields.annualisedYield90days,
-      ),
+  if (simulationContext.yieldsMax?.annualisedYield90days) {
+    const yield90DaysDiff = simulationContext.yieldsMax.annualisedYield90daysOffset!.minus(
+      simulationContext.yieldsMax.annualisedYield90days,
     )
     headlineDetails.push({
       label: t('open-earn.aave.product-header.90-day-avg-yield'),
-      value: formatPercent(maximumMultiple.times(simulationContext.yields.annualisedYield90days), {
+      value: formatPercent(simulationContext.yieldsMax.annualisedYield90days, {
         precision: 2,
       }),
       sub: formatPercent(yield90DaysDiff, {
@@ -112,20 +102,20 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
     return state.context.refSimulationMachine
   })
 
-  const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
+  const { aaveTotalValueLocked$ } = useAaveContext()
   const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveStEthData$)
 
   return (
-    <WithErrorHandler error={[tvlStateError, aaveReserveStateError]}>
-      {tvlState && aaveReserveState && simulationMachine && (
-        <AaveOpenHeader
-          strategyName={strategyName}
-          simulationActor={simulationMachine}
-          aaveTVL={tvlState}
-          aaveReserveState={aaveReserveState}
-        />
-      )}
+    <WithErrorHandler error={[tvlStateError]}>
+      <WithLoadingIndicator value={[tvlState, simulationMachine]} customLoader={<AppSpinner />}>
+        {([_tvlState, _simulationMachine]) => (
+          <AaveOpenHeader
+            strategyName={strategyName}
+            simulationActor={_simulationMachine}
+            aaveTVL={_tvlState}
+          />
+        )}
+      </WithLoadingIndicator>
     </WithErrorHandler>
   )
 }

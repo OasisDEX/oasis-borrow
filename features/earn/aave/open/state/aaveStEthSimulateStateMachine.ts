@@ -7,10 +7,12 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { AaveStEthYieldsResponse, CalculateSimulationResult } from '../services'
 
 interface AaveStEthSimulateStateMachineContext {
-  yields?: AaveStEthYieldsResponse
+  yieldsMin?: AaveStEthYieldsResponse
+  yieldsMax?: AaveStEthYieldsResponse
   token?: string
   amount?: BigNumber
   riskRatio?: IRiskRatio
+  riskRatioMax?: IRiskRatio
   transactionFee?: BigNumber
   fee?: BigNumber
   simulation?: CalculateSimulationResult
@@ -36,7 +38,10 @@ export const aaveStEthSimulateStateMachine = createMachine(
       context: {} as AaveStEthSimulateStateMachineContext,
       services: {} as {
         getYields: {
-          data: AaveStEthYieldsResponse
+          data: {
+            yieldsMin: AaveStEthYieldsResponse
+            yieldsMax: AaveStEthYieldsResponse
+          }
         }
         calculate: {
           data: CalculateSimulationResult
@@ -92,7 +97,10 @@ export const aaveStEthSimulateStateMachine = createMachine(
   },
   {
     actions: {
-      assignYields: assign((context, event) => ({ yields: event.data })),
+      assignYields: assign((context, event) => ({
+        yieldsMin: event.data.yieldsMin,
+        yieldsMax: event.data.yieldsMax,
+      })),
       assignUserParameters: assign((context, event) => ({
         token: event.token,
         amount: event.amount,

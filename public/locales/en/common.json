@@ -1598,9 +1598,9 @@
     "cancelling-form-title": "Cancelling Take Profit",
     "form-title": "Take Profit Setup",
     "banner": {
-      "header": "Set up Auto-Take Profit",
-      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
-      "button": "Setup Auto-Take Profit"
+      "header": "Set up Take Profit",
+      "content": "Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
+      "button": "Setup Take Profit"
     },
     "trigger-col-price": "Trigger {{token}} Price",
     "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
@@ -1620,7 +1620,8 @@
       "estimated-oasis-fee": "Estimated Oasis fee",
       "estimated-gas-fee": "Estimated gas fee",
       "setup-transaction-cost": "Setup transaction cost"
-    }
+    },
+    "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction."
   },
 
   "automation": {

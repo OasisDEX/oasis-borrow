@@ -6,6 +6,7 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLendingPool'
 import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
+import { amountFromWei } from '../../../../../blockchain/utils'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import {
@@ -201,7 +202,10 @@ export const createManageAaveStateMachine =
         })),
         updateBalanceAfterClose: assign((context) => ({
           balanceAfterClose: context.tokenBalance?.plus(
-            context.transactionParameters?.simulation.swap.minToTokenAmount ?? zero,
+            amountFromWei(
+              context.transactionParameters?.simulation.swap.minToTokenAmount ?? zero,
+              'ETH',
+            ),
           ),
         })),
         userInputRiskRatio: assign((context, event) => {
