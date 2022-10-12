@@ -150,6 +150,48 @@
       "highest-multiply-pnl": "Highest Multiply P&L",
       "most-yield-earned": "Most Yield Earned",
       "largest-debt": "Largest Debt"
+    },
+    "table": {
+      "no-entries": "There are no entries available for selected filters.",
+      "vault-number": "Vault #{{cid}}",
+      "view-position": "View Position",
+      "header": {
+        "asset": "Asset",
+        "liquidation-price": "Liquidation price",
+        "next-osm-price": "Next OSM price",
+        "max-liquidation-amount": "Max liquidation amount",
+        "status": "Status",
+        "cid": ""
+      },
+      "status": {
+        "1": "Liquidated",
+        "2": "Being liquidated",
+        "3": "{{tillLiquidation}}% till liquidation",
+        "4": "{{toStopLoss}}% to Stop-loss",
+        "5": "Closed {{closedDaysAgo}} days ago"
+      },
+      "banner": {
+        "high-risk-positions": {
+          "title": "Mutiply your crypto assets with Stop-Loss Vault Protection",
+          "description": "All Multiply Vaults on Oasis.app allow you to protect yourself from liquidation with automated Stop-Loss Protection.",
+          "cta": "Get started with Multiply"
+        },
+        "highest-multiply-pnl": {
+          "title": "Multiply your exposure up to 4x with automated buy and sell actions",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Multiply"
+        },
+        "most-yield-earned": {
+          "title": "Put your crypto to work today and start earning a yield",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Earn"
+        },
+        "largest-debt": {
+          "title": "Borrow against your crypto today.",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Borrow"
+        }
+      }
     }
   },
   "earning": "Earning",
