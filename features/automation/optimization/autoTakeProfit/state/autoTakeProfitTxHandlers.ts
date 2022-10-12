@@ -1,7 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { amountToWei } from 'blockchain/utils'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { maxUint32 } from 'features/automation/common/consts'
@@ -41,10 +39,7 @@ export function getAutoTakeProfitTxHandlers({
     () =>
       prepareAddAutoTakeProfitTriggerData(
         vault,
-        amountToWei(
-          autoTakeProfitState.executionPrice.decimalPlaces(0, BigNumber.ROUND_DOWN),
-          vault.token,
-        ),
+        autoTakeProfitState.executionPrice,
         maxUint32,
         autoTakeProfitState.toCollateral,
         autoTakeProfitState.triggerId.toNumber(),

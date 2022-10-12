@@ -15,6 +15,7 @@ import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHa
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/autoBuy/sidebars/SidebarSetupAutoBuy'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -25,8 +26,9 @@ import React from 'react'
 interface AutoBuyFormControlProps {
   autoBuyTriggerData: AutoBSTriggerData
   autoSellTriggerData: AutoBSTriggerData
-  balanceInfo: BalanceInfo
   constantMultipleTriggerData: ConstantMultipleTriggerData
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+  balanceInfo: BalanceInfo
   context: Context
   ethMarketPrice: BigNumber
   ilkData: IlkData
@@ -42,8 +44,9 @@ interface AutoBuyFormControlProps {
 export function AutoBuyFormControl({
   autoBuyTriggerData,
   autoSellTriggerData,
-  balanceInfo,
   constantMultipleTriggerData,
+  autoTakeProfitTriggerData,
+  balanceInfo,
   context,
   ethMarketPrice,
   ilkData,
@@ -122,9 +125,10 @@ export function AutoBuyFormControl({
           autoBuyState={autoBuyState}
           autoBuyTriggerData={autoBuyTriggerData}
           autoSellTriggerData={autoSellTriggerData}
+          constantMultipleTriggerData={constantMultipleTriggerData}
+          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
           balanceInfo={balanceInfo}
           collateralDelta={collateralDelta}
-          constantMultipleTriggerData={constantMultipleTriggerData}
           context={context}
           debtDelta={debtDelta}
           ethMarketPrice={ethMarketPrice}

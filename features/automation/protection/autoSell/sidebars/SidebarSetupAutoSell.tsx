@@ -26,7 +26,10 @@ import {
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -144,8 +147,8 @@ export function SidebarSetupAutoSell({
     constantMultipleTriggerData,
     isRemoveForm,
   })
-  const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
-  const cancelAutoSellErrors = extractCancelBSErrors(errors)
+  const cancelAutoSellWarnings = extractCancelAutomationWarnings(warnings)
+  const cancelAutoSellErrors = extractCancelAutomationErrors(errors)
   const validationErrors = isAddForm ? errors : cancelAutoSellErrors
 
   if (isAutoSellActive) {

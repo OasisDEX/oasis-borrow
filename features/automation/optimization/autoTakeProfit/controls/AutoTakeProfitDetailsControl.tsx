@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { amountFromWei } from 'blockchain/utils'
 import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
@@ -27,14 +26,13 @@ export function AutoTakeProfitDetailsControl({
 }: AutoTakeProfitDetailsControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
-  const { debt, debtOffset, lockedCollateral, token } = vault
+  const { debt, debtOffset, lockedCollateral } = vault
   const { isTriggerEnabled, executionPrice } = autoTakeProfitTriggerData
   const isDebtZero = debt.isZero()
 
-  const triggerColPrice = amountFromWei(executionPrice, vault.token)
   const { estimatedProfitOnClose } = getOnCloseEstimations({
-    colMarketPrice: triggerColPrice,
-    colOraclePrice: triggerColPrice,
+    colMarketPrice: executionPrice,
+    colOraclePrice: executionPrice,
     debt,
     debtOffset,
     ethMarketPrice,
@@ -45,16 +43,15 @@ export function AutoTakeProfitDetailsControl({
     autoTakeProfitState,
     autoTakeProfitTriggerData,
     isRemoveForm: autoTakeProfitState.currentForm === 'remove',
-    token,
   })
 
   const autoTakeProfitDetailsLayoutOptionalParams = {
     ...(isTriggerEnabled && {
-      triggerColPrice,
+      triggerColPrice: executionPrice,
       estimatedProfit: estimatedProfitOnClose,
       triggerColRatio: ratioAtCollateralPrice({
         lockedCollateral: lockedCollateral,
-        collateralPriceUSD: triggerColPrice,
+        collateralPriceUSD: executionPrice,
         vaultDebt: debt,
       }),
     }),

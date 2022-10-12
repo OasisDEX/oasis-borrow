@@ -1,5 +1,4 @@
 import { InstiVault } from 'blockchain/instiVault'
-import { amountFromWei } from 'blockchain/utils'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -19,7 +18,7 @@ export function useAutoTakeProfitStateInitializator(
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const initialSelectedPrice = isTriggerEnabled
-    ? amountFromWei(executionPrice, vault.token)
+    ? executionPrice
     : collateralPriceAtRatio({
         colRatio: vault.collateralizationRatio.times(INITIAL_SELECTED_PRICE_MULTIPLIER),
         collateral: vault.lockedCollateral,

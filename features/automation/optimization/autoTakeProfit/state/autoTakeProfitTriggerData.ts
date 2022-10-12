@@ -68,7 +68,10 @@ export function prepareAutoTakeProfitTriggerData({
     triggerData: encodeTriggerDataByType(CommandContractType.AutoTakeProfitCommand, [
       vaultData.id.toString(),
       triggerType.toString(),
-      executionPrice.toString(),
+      executionPrice
+        .decimalPlaces(0, BigNumber.ROUND_DOWN)
+        .times(new BigNumber(10).pow(18))
+        .toString(),
       maxBaseFeeInGwei.toString(),
     ]),
   }
@@ -105,7 +108,7 @@ function pickTriggerWithLowestExecutionPrice(
     const [, triggerType, executionPrice, maxBaseFeeInGwei] = trigger.result
 
     return {
-      executionPrice: new BigNumber(executionPrice.toString()),
+      executionPrice: new BigNumber(executionPrice.toString()).div(new BigNumber(10).pow(18)),
       isToCollateral: triggerType === TriggerType.AutoTakeProfitToCollateral,
       isTriggerEnabled: true,
       maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei.toString()),

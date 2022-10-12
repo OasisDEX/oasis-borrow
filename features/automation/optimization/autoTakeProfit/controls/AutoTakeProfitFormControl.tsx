@@ -16,6 +16,8 @@ import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTa
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -29,8 +31,10 @@ interface AutoTakeProfitFormControlProps {
   isAutoTakeProfitActive: boolean
   shouldRemoveAllowance: boolean
   tokenMarketPrice: BigNumber
+  priceInfo: PriceInfo
   txHelpers?: TxHelpers
   vault: Vault
+  balanceInfo: BalanceInfo
 }
 
 export function AutoTakeProfitFormControl({
@@ -43,8 +47,10 @@ export function AutoTakeProfitFormControl({
   isAutoTakeProfitActive,
   shouldRemoveAllowance,
   tokenMarketPrice,
+  priceInfo: { nextCollateralPrice },
   txHelpers,
   vault,
+  balanceInfo,
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
@@ -124,6 +130,8 @@ export function AutoTakeProfitFormControl({
           tokenMarketPrice={tokenMarketPrice}
           txHandler={txHandler}
           vault={vault}
+          nextCollateralPrice={nextCollateralPrice}
+          ethBalance={balanceInfo.ethBalance}
         />
       )}
     </AddAndRemoveTriggerControl>

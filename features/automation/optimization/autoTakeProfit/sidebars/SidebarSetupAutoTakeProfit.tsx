@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
-import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
+import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
@@ -23,10 +24,18 @@ import {
   AutoTakeProfitFormChange,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import {
+  errorsAutoTakeProfitValidation,
+  warningsAutoTakeProfitValidation,
+} from 'features/automation/optimization/autoTakeProfit/validators'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -52,8 +61,10 @@ interface SidebarSetupAutoTakeProfitProps {
   stage: SidebarAutomationStages
   textButtonHandler: () => void
   tokenMarketPrice: BigNumber
+  nextCollateralPrice: BigNumber
   txHandler: () => void
   vault: Vault
+  ethBalance: BigNumber
 }
 
 export function SidebarSetupAutoTakeProfit({
@@ -77,10 +88,13 @@ export function SidebarSetupAutoTakeProfit({
   stage,
   textButtonHandler,
   tokenMarketPrice,
+  nextCollateralPrice,
   txHandler,
   vault,
+  ethBalance,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
+  const gasEstimation = useGasEstimationContext()
   const { t } = useTranslation()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
@@ -111,9 +125,6 @@ export function SidebarSetupAutoTakeProfit({
     feature,
   })
 
-  // TODO: TDAutoTakeProfit | needs real validation
-  const validationErrors = []
-
   const autoTakeSliderBasicConfig = {
     disabled: false,
     leftBoundryFormatter: (x: BigNumber) =>
@@ -131,6 +142,38 @@ export function SidebarSetupAutoTakeProfit({
     collateralPriceUSD: autoTakeProfitState.executionPrice,
     vaultDebt: vault.debt,
   })
+
+  const warnings = warningsAutoTakeProfitValidation({
+    token: vault.token,
+    ethPrice: ethMarketPrice,
+    ethBalance,
+    gasEstimationUsd: gasEstimation?.usdValue,
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+    executionPrice: autoTakeProfitState.executionPrice,
+    autoBuyTriggerPrice: collateralPriceAtRatio({
+      colRatio: autoBuyTriggerData.execCollRatio.div(100),
+      collateral: vault.lockedCollateral,
+      vaultDebt: vault.debt,
+    }),
+    constantMultipleBuyTriggerPrice: collateralPriceAtRatio({
+      colRatio: constantMultipleTriggerData.buyExecutionCollRatio.div(100),
+      collateral: vault.lockedCollateral,
+      vaultDebt: vault.debt,
+    }),
+  })
+
+  const errors = errorsAutoTakeProfitValidation({
+    nextCollateralPrice,
+    executionPrice: autoTakeProfitState.executionPrice,
+    txError: autoTakeProfitState.txDetails?.txError,
+  })
+
+  const cancelAutoTakeProfitWarnings = extractCancelAutomationWarnings(warnings)
+  const cancelAutoTakeProfitErrors = extractCancelAutomationErrors(errors)
+
+  const validationErrors = isAddForm ? errors : cancelAutoTakeProfitErrors
+
   const sliderConfig: SliderValuePickerProps = {
     ...autoTakeSliderBasicConfig,
     sliderPercentageFill,
@@ -178,17 +221,18 @@ export function SidebarSetupAutoTakeProfit({
                   sliderConfig={sliderConfig}
                   tokenMarketPrice={tokenMarketPrice}
                   vault={vault}
+                  ilkData={ilkData}
+                  errors={errors}
+                  warnings={warnings}
                 />
               )}
               {isRemoveForm && (
                 <SidebarAutoTakeProfitRemovalEditingStage
                   autoTakeProfitTriggerData={autoTakeProfitTriggerData}
-                  // TODO: TDAutoTakeProfit | needs real validation
-                  errors={[]}
+                  errors={cancelAutoTakeProfitErrors}
                   ilkData={ilkData}
                   vault={vault}
-                  // TODO: TDAutoTakeProfit | needs real validation
-                  warnings={[]}
+                  warnings={cancelAutoTakeProfitWarnings}
                 />
               )}
             </>

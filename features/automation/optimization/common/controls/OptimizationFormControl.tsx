@@ -17,6 +17,7 @@ import { getActiveOptimizationFeature } from 'features/automation/optimization/c
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
@@ -30,6 +31,7 @@ interface OptimizationFormControlProps {
   txHelpers?: TxHelpers
   vault: Vault
   vaultType: VaultType
+  priceInfo: PriceInfo
 }
 
 export function OptimizationFormControl({
@@ -41,6 +43,7 @@ export function OptimizationFormControl({
   txHelpers,
   vault,
   vaultType,
+  priceInfo,
 }: OptimizationFormControlProps) {
   const {
     autoBuyTriggerData,
@@ -96,8 +99,9 @@ export function OptimizationFormControl({
       <AutoBuyFormControl
         autoBuyTriggerData={autoBuyTriggerData}
         autoSellTriggerData={autoSellTriggerData}
-        balanceInfo={balanceInfo}
         constantMultipleTriggerData={constantMultipleTriggerData}
+        autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+        balanceInfo={balanceInfo}
         context={context}
         ethMarketPrice={ethMarketPrice}
         ilkData={ilkData}
@@ -137,6 +141,8 @@ export function OptimizationFormControl({
           tokenMarketPrice={tokenMarketPrice}
           txHelpers={txHelpers}
           vault={vault}
+          priceInfo={priceInfo}
+          balanceInfo={balanceInfo}
         />
       )}
     </>
