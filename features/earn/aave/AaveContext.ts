@@ -109,6 +109,8 @@ export function setupAaveContext({
     proxyForAccount$,
     aaveOracleAssetPriceData$,
     aaveReserveConfigurationData$,
+    aaveUserConfiguration$,
+    aaveReservesList$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

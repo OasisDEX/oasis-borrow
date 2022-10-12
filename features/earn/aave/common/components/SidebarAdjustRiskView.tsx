@@ -22,9 +22,16 @@ type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
 type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
   textButton: SidebarSectionFooterButtonSettings
+  viewLocked?: boolean // locks whole view + displays warning
 }
 
-export function AdjustRiskView({ state, send, primaryButton, textButton }: AdjustRiskViewProps) {
+export function AdjustRiskView({
+  state,
+  send,
+  primaryButton,
+  textButton,
+  viewLocked = false,
+}: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
   const maxRisk = state.context.transactionParameters?.simulation.position.category.maxLoanToValue
@@ -91,7 +98,7 @@ export function AdjustRiskView({ state, send, primaryButton, textButton }: Adjus
           minBoundry={minRisk.loanToValue || zero}
           maxBoundry={maxRisk || zero}
           lastValue={state.context.riskRatio.loanToValue}
-          disabled={false}
+          disabled={viewLocked}
           step={0.01}
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {
             collateralToken,
@@ -120,33 +127,43 @@ export function AdjustRiskView({ state, send, primaryButton, textButton }: Adjus
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
         </Flex>
         <OpenAaveInformationContainer state={state} />
-        <MessageCard
-          messages={[
-            isWarning
-              ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
-                  collateralToken,
-                  priceMovement: priceMovementToDisplay,
-                  debtToken,
-                  liquidationPenalty,
-                })
-              : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
-                  collateralToken,
-                  priceMovement: priceMovementToDisplay,
-                  debtToken,
-                  liquidationPenalty,
-                }),
-          ]}
-          type={isWarning ? 'warning' : 'ok'}
-        />
+        {viewLocked ? (
+          <MessageCard
+            messages={[t('manage-earn-vault.has-asset-already')]}
+            type="error"
+            withBullet={false}
+          />
+        ) : (
+          <MessageCard
+            messages={[
+              isWarning
+                ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                    collateralToken,
+                    priceMovement: priceMovementToDisplay,
+                    debtToken,
+                    liquidationPenalty,
+                  })
+                : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                    collateralToken,
+                    priceMovement: priceMovementToDisplay,
+                    debtToken,
+                    liquidationPenalty,
+                  }),
+            ]}
+            type={isWarning ? 'warning' : 'ok'}
+          />
+        )}
+
         <SidebarResetButton
           clear={() => {
             send({ type: 'SET_RISK_RATIO', riskRatio: minRisk })
           }}
+          disabled={viewLocked}
         />
       </Grid>
     ),
-    primaryButton,
-    textButton,
+    primaryButton: { ...primaryButton, disabled: viewLocked || primaryButton.disabled },
+    textButton, // this is going back button, no need to block it
   }
 
   return <SidebarSection {...sidebarSectionProps} />

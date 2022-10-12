@@ -529,7 +529,8 @@
     "pnl": "PnL {{value}} {{token}}",
     "ratio-history": "Ratio history",
     "position-eth-debt": "Position ETH Debt",
-    "liquidation-price-ratio": "Liquidation price ratio"
+    "liquidation-price-ratio": "Liquidation price ratio",
+    "has-asset-already": "There is an active AAVE position open in this address. Therefore, you cannot open a stETH earn position. Close your AAVE position first to continue."
   },
   "borrow-to-multiply": {
     "checkmark1": "Multiply your exposure on your {{token}}",
