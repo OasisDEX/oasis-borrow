@@ -62,6 +62,15 @@ describe('auto take profit warnings', () => {
 
     expect(warnings).to.be.deep.eq(['autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger'])
   })
+  it('should show warning that ATP is equal to constant-multiple buy trigger', () => {
+    const warnings = warningsAutoTakeProfitValidation({
+      ...autoTakeProfitWarningsValidationBaseData,
+      isConstantMultipleEnabled: true,
+      constantMultipleBuyTriggerPrice: new BigNumber(1500),
+    })
+
+    expect(warnings).to.be.deep.eq(['autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger'])
+  })
   it('should return empty warning array when auto-buy and constant-multiple triggers not created', () => {
     const warnings = warningsAutoTakeProfitValidation(autoTakeProfitWarningsValidationBaseData)
 
