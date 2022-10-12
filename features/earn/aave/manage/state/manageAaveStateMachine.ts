@@ -7,6 +7,7 @@ import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLe
 import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { amountFromWei } from '../../../../../blockchain/utils'
+import { allDefined } from '../../../../../helpers/allDefined'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import {
@@ -18,7 +19,6 @@ import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
-import { allDefined } from '../../../../../helpers/allDefined'
 
 export interface ManageAaveContext extends BaseAaveContext {
   strategy: string // TODO: Consider changing name to reserve token
