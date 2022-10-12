@@ -152,12 +152,12 @@ export function SidebarSetupAutoTakeProfit({
     isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     executionPrice: autoTakeProfitState.executionPrice,
     autoBuyTriggerPrice: collateralPriceAtRatio({
-      colRatio: autoBuyTriggerData.execCollRatio,
+      colRatio: autoBuyTriggerData.execCollRatio.div(100),
       collateral: vault.lockedCollateral,
       vaultDebt: vault.debt,
     }),
     constantMultipleBuyTriggerPrice: collateralPriceAtRatio({
-      colRatio: constantMultipleTriggerData.buyExecutionCollRatio,
+      colRatio: constantMultipleTriggerData.buyExecutionCollRatio.div(100),
       collateral: vault.lockedCollateral,
       vaultDebt: vault.debt,
     }),
