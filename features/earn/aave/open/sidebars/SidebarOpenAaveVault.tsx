@@ -167,7 +167,7 @@ export function SidebarOpenAaveVault() {
             label: 'Back to enter ETH',
             action: () => send('BACK_TO_EDITING'),
           }}
-          viewLocked={hasOtherAssetsThanETH_STETH || true}
+          viewLocked={hasOtherAssetsThanETH_STETH}
         />
       )
     case state.matches('reviewing'):
