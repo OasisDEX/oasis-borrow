@@ -41,7 +41,6 @@ export function DiscoveryNavigationItem({
   return (
     <Box
       as="li"
-      key={kind}
       sx={{ width: ['50%', 'auto'], mx: [0, 0, 4], p: [2, 0], textAlign: 'center' }}
       onMouseEnter={() => {
         setIsMouseOver(true)

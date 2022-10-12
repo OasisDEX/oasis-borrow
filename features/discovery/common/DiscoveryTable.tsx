@@ -2,7 +2,7 @@ import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBa
 import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
 import { DiscoveryBanner } from 'features/discovery/meta'
 import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
-import { camelToKebab } from 'helpers/camelToKebab'
+import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
 import { Box, Text } from 'theme-ui'
@@ -91,7 +91,7 @@ export function DiscoveryTableHeaderCell({ label }: { label: string }) {
         },
       }}
     >
-      {t(`discovery.table.header.${camelToKebab(label)}`)}
+      {t(`discovery.table.header.${kebabCase(label)}`)}
     </Box>
   )
 }
