@@ -9,21 +9,25 @@ import { Vault } from 'blockchain/vaults'
 import { Result } from 'ethers/lib/utils'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getTriggersByType } from 'features/automation/common/helpers'
+import {
+  AutoTakeProfitFormChange,
+  AutoTakeProfitResetData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { zero } from 'helpers/zero'
 
 export interface AutoTakeProfitTriggerData {
-  isTriggerEnabled: boolean
   executionPrice: BigNumber
-  maxBaseFeeInGwei: BigNumber
   isToCollateral: boolean
+  isTriggerEnabled: boolean
+  maxBaseFeeInGwei: BigNumber
   triggerId: BigNumber
 }
 
 export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
   executionPrice: zero,
-  maxBaseFeeInGwei: zero,
-  isToCollateral: false,
+  isToCollateral: true,
   isTriggerEnabled: false,
+  maxBaseFeeInGwei: zero,
   triggerId: zero,
 }
 
@@ -37,23 +41,21 @@ export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTri
     if (autoTakeProfitTriggersData.length) {
       return pickTriggerWithLowestExecutionPrice(autoTakeProfitTriggersData)
     }
-
-    return defaultAutoTakeProfitData
   }
 
   return defaultAutoTakeProfitData
 }
 
 export function prepareAutoTakeProfitTriggerData({
-  vaultData,
   executionPrice,
-  maxBaseFeeInGwei,
   isCloseToCollateral,
+  maxBaseFeeInGwei,
+  vaultData,
 }: {
-  vaultData: Vault
   executionPrice: BigNumber
-  maxBaseFeeInGwei: BigNumber
   isCloseToCollateral: boolean
+  maxBaseFeeInGwei: BigNumber
+  vaultData: Vault
 }): AutomationBaseTriggerData {
   const triggerType = isCloseToCollateral
     ? TriggerType.AutoTakeProfitToCollateral
@@ -100,18 +102,31 @@ function pickTriggerWithLowestExecutionPrice(
   }[],
 ): AutoTakeProfitTriggerData {
   const mappedAutoTakeProfitTriggers = autoTakeProfitTriggersData.map((trigger) => {
-    const [, , executionPrice, maxBaseFeeInGwei, triggerType, isTriggerEnabled] = trigger.result
+    const [, triggerType, executionPrice, maxBaseFeeInGwei] = trigger.result
 
     return {
-      executionPrice: new BigNumber(executionPrice),
-      maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
+      executionPrice: new BigNumber(executionPrice.toString()),
       isToCollateral: triggerType === TriggerType.AutoTakeProfitToCollateral,
+      isTriggerEnabled: true,
+      maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei.toString()),
       triggerId: new BigNumber(trigger.triggerId),
-      isTriggerEnabled,
     }
   })
 
   return mappedAutoTakeProfitTriggers.reduce((min, obj) =>
     min.executionPrice.lt(obj.executionPrice) ? min : obj,
   )
+}
+
+export function prepareAutoTakeProfitResetData(
+  autoTakeProfitState: AutoTakeProfitFormChange,
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData,
+): AutoTakeProfitResetData {
+  return {
+    executionCollRatio: autoTakeProfitState.defaultExecutionCollRatio,
+    executionPrice: autoTakeProfitState.defaultExecutionPrice,
+    isEditing: false,
+    toCollateral: autoTakeProfitTriggerData.isToCollateral,
+    txDetails: {},
+  }
 }

@@ -94,6 +94,8 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
+  const aaveReserveStEthData$ = aaveReserveConfigurationData$({ token: 'STETH' })
+
   const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
     contextForAddress$,
     txHelpers$,
@@ -111,11 +113,13 @@ export function setupAaveContext({
     aaveUserReserveData$,
     aaveUserAccountData$,
     aaveOracleAssetPriceData$,
+    aaveReserveConfigurationData$,
+    aaveOracleAssetPriceData$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
 
-  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYieldsQuery)
+  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYieldsQuery, aaveReserveStEthData$)
 
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
@@ -148,7 +152,7 @@ export function setupAaveContext({
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
-    aaveReserveStEthData$: aaveReserveConfigurationData$({ token: 'STETH' }),
+    aaveReserveStEthData$,
   }
 }
 

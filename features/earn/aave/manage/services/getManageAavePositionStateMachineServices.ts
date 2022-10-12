@@ -1,4 +1,5 @@
-import BigNumber from 'bignumber.js'
+import { Position } from '@oasisdex/oasis-actions'
+import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
@@ -7,13 +8,14 @@ import {
   AaveUserAccountDataParameters,
 } from '../../../../../blockchain/calls/aave/aaveLendingPool'
 import {
+  AaveReserveConfigurationData,
   AaveUserReserveData,
   AaveUserReserveDataParameters,
 } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
-import { createPosition } from '../../../../aave'
+import { one, zero } from '../../../../../helpers/zero'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
 export function getManageAavePositionStateMachineServices(
@@ -23,6 +25,12 @@ export function getManageAavePositionStateMachineServices(
   proxyAddress$: Observable<string | undefined>,
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
+  aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
+  aaveReserveConfigurationData$: ({
+    token,
+  }: {
+    token: string
+  }) => Observable<AaveReserveConfigurationData>,
   aaveOraclePrice$: ({ token }: { token: string }) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   function aaveProtocolData(token: string, proxyAddress: string) {
@@ -35,7 +43,16 @@ export function getManageAavePositionStateMachineServices(
         positionData: reserveData,
         accountData: accountData,
         oraclePrice: oraclePrice,
-        position: createPosition(reserveData, accountData, oraclePrice),
+        position: new Position(
+          { amount: new BigNumber(accountData.totalDebtETH.toString()) },
+          { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
+          oraclePrice,
+          {
+            dustLimit: new BigNumber(0),
+            maxLoanToValue: new BigNumber(accountData.ltv.toString()).plus(one),
+            liquidationThreshold: zero,
+          },
+        ),
       })),
     )
   }
@@ -57,6 +74,24 @@ export function getManageAavePositionStateMachineServices(
       const proxy = await proxyAddress$.pipe(first()).toPromise()
       if (proxy === undefined) throw new Error('Proxy address not found')
       return proxy
+    },
+    getStrategyInfo: () => {
+      const collateralToken = 'STETH'
+      return combineLatest(
+        aaveOracleAssetPriceData$({ token: collateralToken }),
+        aaveReserveConfigurationData$({ token: collateralToken }),
+      ).pipe(
+        map(([oracleAssetPrice, reserveConfigurationData]) => {
+          return {
+            type: 'UPDATE_STRATEGY_INFO',
+            strategyInfo: {
+              oracleAssetPrice,
+              liquidationBonus: reserveConfigurationData.liquidationBonus,
+              collateralToken,
+            },
+          }
+        }),
+      )
     },
     getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
       const result = await aaveProtocolData(context.strategy!, context.proxyAddress!)

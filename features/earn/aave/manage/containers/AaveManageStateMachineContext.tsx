@@ -1,10 +1,11 @@
 import { useInterpret } from '@xstate/react'
+import { env } from 'process'
 import React from 'react'
 
 import { ManageAaveStateMachine } from '../state'
 
 function setupManageAaveStateContext({ machine }: { machine: ManageAaveStateMachine }) {
-  const stateMachine = useInterpret(machine).start()
+  const stateMachine = useInterpret(machine, { devTools: env.NODE_ENV === 'development' }).start()
   return {
     stateMachine,
   }

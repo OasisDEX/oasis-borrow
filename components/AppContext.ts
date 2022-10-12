@@ -511,7 +511,7 @@ export function setupAppContext() {
   )
   const aaveSthEthYieldsQuery = memoize(
     curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
-    (fields) => JSON.stringify({ fields }),
+    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)

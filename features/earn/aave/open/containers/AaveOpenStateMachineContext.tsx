@@ -1,10 +1,11 @@
 import { useInterpret } from '@xstate/react'
+import { env } from 'process'
 import React from 'react'
 
 import { OpenAaveStateMachine } from '../state'
 
 function setupOpenAaveStateContext({ machine }: { machine: OpenAaveStateMachine }) {
-  const stateMachine = useInterpret(machine).start()
+  const stateMachine = useInterpret(machine, { devTools: env.NODE_ENV === 'development' }).start()
   return {
     stateMachine,
   }
