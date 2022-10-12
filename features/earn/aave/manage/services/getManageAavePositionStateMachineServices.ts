@@ -14,12 +14,14 @@ import {
 } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
-import { TxHelpers } from '../../../../../components/AppContext'
+import { zero } from '../../../../../helpers/zero'
+import { getAdjustAaveParameters } from '../../../../aave'
+import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
-export function getManageAavePositionStateMachineServices(
+export function getManageAavePositionStateMachineServices$(
   context$: Observable<ContextConnected>,
-  txHelpers$: Observable<TxHelpers>,
+  userSettings$: Observable<UserSettingsState>,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
@@ -31,7 +33,7 @@ export function getManageAavePositionStateMachineServices(
     token: string
   }) => Observable<AaveReserveConfigurationData>,
   aaveOraclePrice$: ({ token }: { token: string }) => Observable<BigNumber>,
-): ManageAaveStateMachineServices {
+): Observable<ManageAaveStateMachineServices> {
   function aaveProtocolData(token: string, proxyAddress: string) {
     return combineLatest(
       aaveUserReserveData$({ token, proxyAddress }),
@@ -57,47 +59,64 @@ export function getManageAavePositionStateMachineServices(
     )
   }
 
-  return {
-    getBalance: (context, _): Observable<ManageAaveEvent> => {
-      return tokenBalances$.pipe(
-        map((balances) => {
-          return balances[context.token!]
-        }),
-        map(({ balance, price }) => ({
-          type: 'SET_BALANCE',
-          balance: balance,
-          tokenPrice: price,
-        })),
-      )
-    },
-    getProxyAddress: async (): Promise<string> => {
-      const proxy = await proxyAddress$.pipe(first()).toPromise()
-      if (proxy === undefined) throw new Error('Proxy address not found')
-      return proxy
-    },
-    getStrategyInfo: () => {
-      const collateralToken = 'STETH'
-      return combineLatest(
-        aaveOracleAssetPriceData$({ token: collateralToken }),
-        aaveReserveConfigurationData$({ token: collateralToken }),
-      ).pipe(
-        map(([oracleAssetPrice, reserveConfigurationData]) => {
-          return {
-            type: 'UPDATE_STRATEGY_INFO',
-            strategyInfo: {
-              oracleAssetPrice,
-              liquidationBonus: reserveConfigurationData.liquidationBonus,
-              collateralToken,
-            },
-          }
-        }),
-      )
-    },
-    getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
-      const result = await aaveProtocolData(context.strategy!, context.proxyAddress!)
-        .pipe(first())
-        .toPromise()
-      return result
-    },
-  }
+  return combineLatest(context$, userSettings$).pipe(
+    map(([contextConnected, userSettings]) => {
+      return {
+        getParameters: async (context) => {
+          if (!context.proxyAddress || !context.protocolData || !context.userInput.riskRatio)
+            return undefined
+
+          return await getAdjustAaveParameters(
+            contextConnected,
+            zero,
+            context.userInput.riskRatio,
+            userSettings.slippage,
+            context.proxyAddress,
+            context.protocolData.position,
+          )
+        },
+        getBalance: (context, _): Observable<ManageAaveEvent> => {
+          return tokenBalances$.pipe(
+            map((balances) => {
+              return balances[context.token!]
+            }),
+            map(({ balance, price }) => ({
+              type: 'SET_BALANCE',
+              balance: balance,
+              tokenPrice: price,
+            })),
+          )
+        },
+        getProxyAddress: async (): Promise<string> => {
+          const proxy = await proxyAddress$.pipe(first()).toPromise()
+          if (proxy === undefined) throw new Error('Proxy address not found')
+          return proxy
+        },
+        getStrategyInfo: () => {
+          const collateralToken = 'STETH'
+          return combineLatest(
+            aaveOracleAssetPriceData$({ token: collateralToken }),
+            aaveReserveConfigurationData$({ token: collateralToken }),
+          ).pipe(
+            map(([oracleAssetPrice, reserveConfigurationData]) => {
+              return {
+                type: 'UPDATE_STRATEGY_INFO',
+                strategyInfo: {
+                  oracleAssetPrice,
+                  liquidationBonus: reserveConfigurationData.liquidationBonus,
+                  collateralToken,
+                },
+              }
+            }),
+          )
+        },
+        getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
+          const result = await aaveProtocolData(context.strategy!, context.proxyAddress!)
+            .pipe(first())
+            .toPromise()
+          return result
+        },
+      }
+    }),
+  )
 }

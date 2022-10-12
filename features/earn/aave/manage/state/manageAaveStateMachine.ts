@@ -70,6 +70,9 @@ export const createManageAaveStateMachine =
         context: {} as ManageAaveContext,
         events: {} as ManageAaveEvent,
         services: {} as {
+          getParameters: {
+            data: IStrategy | undefined
+          }
           getProxyAddress: {
             data: string
           }
@@ -143,6 +146,13 @@ export const createManageAaveStateMachine =
           },
         },
         reviewingAdjusting: {
+          invoke: {
+            src: 'getParameters',
+            id: 'getParameters',
+            onDone: {
+              actions: ['assignTransactionParameters'],
+            },
+          },
           on: {
             BACK_TO_EDITING: {
               target: 'editing',
@@ -178,7 +188,7 @@ export const createManageAaveStateMachine =
           ],
           on: {
             CLOSING_PARAMETERS_RECEIVED: {
-              actions: ['assignTransactionParameters', 'updateBalanceAfterClose'],
+              actions: ['assignClosingTransactionParameters', 'updateBalanceAfterClose'],
             },
             START_TRANSACTION: {
               cond: 'validTransactionParameters',
@@ -193,8 +203,15 @@ export const createManageAaveStateMachine =
     },
     {
       guards: {
-        validTransactionParameters: ({ proxyAddress, transactionParameters }) =>
-          allDefined(proxyAddress, transactionParameters),
+        validTransactionParameters: ({ proxyAddress, transactionParameters }) => {
+          console.log(
+            `validTransactionParameters ${proxyAddress} ${transactionParameters} ${allDefined(
+              proxyAddress,
+              transactionParameters,
+            )}`,
+          )
+          return allDefined(proxyAddress, transactionParameters)
+        },
         newRiskInputted: (state) => {
           return (
             allDefined(state.userInput.riskRatio, state.protocolData) &&
@@ -234,6 +251,9 @@ export const createManageAaveStateMachine =
           }
         }),
         assignTransactionParameters: assign((context, event) => ({
+          transactionParameters: event.data,
+        })),
+        assignClosingTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,
           estimatedGasPrice: event.estimatedGasPrice,
         })),

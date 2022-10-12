@@ -19,7 +19,7 @@ import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValu
 import {
   getClosePositionParametersStateMachine$,
   getClosePositionParametersStateMachineServices$,
-  getManageAavePositionStateMachineServices,
+  getManageAavePositionStateMachineServices$,
   getManageAaveStateMachine$,
 } from './manage/services'
 import {
@@ -105,9 +105,9 @@ export function setupAaveContext({
     aaveReserveConfigurationData$,
   )
 
-  const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
+  const manageAaveStateMachineServices$ = getManageAavePositionStateMachineServices$(
     contextForAddress$,
-    txHelpers$,
+    userSettings$,
     tokenBalances$,
     proxyForAccount$,
     aaveUserReserveData$,
@@ -131,7 +131,7 @@ export function setupAaveContext({
 
   const aaveManageStateMachine$ = memoize(
     curry(getManageAaveStateMachine$)(
-      manageAaveStateMachineServices,
+      manageAaveStateMachineServices$,
       closePositionParametersStateMachine$,
       transactionMachine,
     ),

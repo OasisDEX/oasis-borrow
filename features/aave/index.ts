@@ -54,6 +54,7 @@ export async function getAdjustAaveParameters(
   proxyAddress: string,
   position: IBasePosition,
 ): Promise<IStrategy> {
+  console.log('here')
   const addresses = {
     DAI: context.tokens['DAI'].address,
     ETH: context.tokens['ETH'].address,

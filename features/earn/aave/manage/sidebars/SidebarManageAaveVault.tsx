@@ -80,7 +80,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -99,6 +99,34 @@ function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
       disabled: !state.can('START_TRANSACTION'),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
       action: () => send('START_TRANSACTION'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+function ManageAaveReviewingAdjustingStateView({ state, send }: ManageAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('manage-earn.aave.vault-form.adjust-title'),
+    content: (
+      <Grid gap={3}>
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+          {t('manage-earn.aave.vault-form.adjust-description')}
+        </Text>
+        <TransactionInformationContainer state={state} send={send} />
+      </Grid>
+    ),
+    primaryButton: {
+      isLoading: false,
+      disabled: !state.can('START_TRANSACTION'),
+      label: t('manage-earn.aave.vault-form.confirm-btn'),
+      action: () => send('START_TRANSACTION'),
+    },
+    textButton: {
+      label: t('manage-earn.aave.vault-form.back-to-editing'),
+      action: () => send('BACK_TO_EDITING'),
     },
   }
 
@@ -146,7 +174,7 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
       </Grid>
     ),
     primaryButton: {
-      label: t('manage-earn.aave.vault-form.go-to-position'),
+      label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
       url: ``,
     },
   }
@@ -186,10 +214,10 @@ export function SidebarManageAaveVault() {
           }}
         />
       )
-    case state.matches('reviewingClosing'):
-      return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('reviewingAdjusting'):
-      return <ManageAaveReviewingStateView state={state} send={send} />
+      return <ManageAaveReviewingAdjustingStateView state={state} send={send} />
+    case state.matches('reviewingClosing'):
+      return <ManageAaveReviewingClosingStateView state={state} send={send} />
     case state.matches('txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('txFailure'):
