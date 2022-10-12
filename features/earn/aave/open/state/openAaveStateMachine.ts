@@ -15,6 +15,7 @@ import {
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
+import { allDefined } from '../../../../../helpers/allDefined'
 
 export interface OpenAaveContext extends BaseAaveContext {
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
@@ -191,15 +192,11 @@ export const createOpenAaveStateMachine = createMachine(
   },
   {
     guards: {
-      emptyProxyAddress: ({ proxyAddress }) => proxyAddress === undefined,
+      emptyProxyAddress: ({ proxyAddress }) => allDefined(proxyAddress),
       validTransactionParameters: ({ userInput, proxyAddress, transactionParameters }) =>
-        userInput.amount !== undefined &&
-        proxyAddress !== undefined &&
-        transactionParameters !== undefined,
+        allDefined(userInput, proxyAddress, transactionParameters),
       enoughBalance: ({ tokenBalance, userInput }) =>
-        tokenBalance !== undefined &&
-        userInput?.amount !== undefined &&
-        tokenBalance.gt(userInput.amount),
+        allDefined(tokenBalance, userInput) && tokenBalance!.gt(userInput?.amount),
     },
     actions: {
       initContextValues: assign((context) => ({

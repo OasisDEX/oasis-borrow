@@ -1,4 +1,4 @@
-import { IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
+import { ADDRESSES, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 

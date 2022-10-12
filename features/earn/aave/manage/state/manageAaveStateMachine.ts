@@ -18,6 +18,7 @@ import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
+import { allDefined } from '../../../../../helpers/allDefined'
 
 export interface ManageAaveContext extends BaseAaveContext {
   strategy: string // TODO: Consider changing name to reserve token
@@ -191,9 +192,8 @@ export const createManageAaveStateMachine =
     },
     {
       guards: {
-        validTransactionParameters: ({ proxyAddress, transactionParameters }) => {
-          return proxyAddress !== undefined && transactionParameters !== undefined
-        },
+        validTransactionParameters: ({ proxyAddress, transactionParameters }) =>
+          allDefined(proxyAddress, transactionParameters),
       },
       actions: {
         setTokenBalanceFromEvent: assign((context, event) => ({
