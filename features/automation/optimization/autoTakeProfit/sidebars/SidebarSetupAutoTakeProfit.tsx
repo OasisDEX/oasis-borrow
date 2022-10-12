@@ -32,7 +32,10 @@ import { ConstantMultipleTriggerData } from 'features/automation/optimization/co
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { extractCancelAutomationErrors } from 'helpers/messageMappers'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -166,8 +169,7 @@ export function SidebarSetupAutoTakeProfit({
     txError: autoTakeProfitState.txDetails?.txError,
   })
 
-  // TODO use in remove form
-  // const cancelAutoTakeProfitWarnings = extractCancelAutomationWarnings(warnings)
+  const cancelAutoTakeProfitWarnings = extractCancelAutomationWarnings(warnings)
   const cancelAutoTakeProfitErrors = extractCancelAutomationErrors(errors)
 
   const validationErrors = isAddForm ? errors : cancelAutoTakeProfitErrors
@@ -227,12 +229,10 @@ export function SidebarSetupAutoTakeProfit({
               {isRemoveForm && (
                 <SidebarAutoTakeProfitRemovalEditingStage
                   autoTakeProfitTriggerData={autoTakeProfitTriggerData}
-                  // TODO: TDAutoTakeProfit | needs real validation
-                  errors={[]}
+                  errors={cancelAutoTakeProfitErrors}
                   ilkData={ilkData}
                   vault={vault}
-                  // TODO: TDAutoTakeProfit | needs real validation
-                  warnings={[]}
+                  warnings={cancelAutoTakeProfitWarnings}
                 />
               )}
             </>
