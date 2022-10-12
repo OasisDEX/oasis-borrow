@@ -18,27 +18,21 @@ import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../../components/DetailsSection'
-import { createAaveUserConfiguration } from '../../helpers/aaveUserConfiguration'
+import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 
 type ManageSectionComponentProps = {
-  aaveReserveState?: AaveReserveConfigurationData
+  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveDataETH: PreparedAaveReserveData
 }
 
 const mockData = {
   earnId: 3920,
-  token: 'ETH',
-  netValue: new BigNumber(122500.4243),
   pnl: new BigNumber(30000.01),
   earnings: new BigNumber(34000.21),
   earningsAfterFees: new BigNumber(31000.21),
   APYtotal: new BigNumber(8.3),
   APYtoDate: new BigNumber(2.2),
-  liquidationPriceRatio: new BigNumber(0.75),
-  totalCollateral: new BigNumber(224987.69),
-  totalCollateralToken: 'STETH',
-  positionETHDebt: new BigNumber(4447684),
-  variableAnnualFee: new BigNumber(0.05),
 }
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
@@ -48,21 +42,17 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
   return ratio.isLessThanOrEqualTo(0.2) ? 'warning10' : 'success10'
 }
 
-export function ManageSectionComponent({ aaveReserveState }: ManageSectionComponentProps) {
+export function ManageSectionComponent({
+  aaveReserveState,
+  aaveReserveDataETH,
+}: ManageSectionComponentProps) {
   const { t } = useTranslation()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const {
     accountData,
     oraclePrice, // STETH price data
-    aaveUserConfiguration,
-    aaveReservesList,
   } = state.context.protocolData || {}
-
-  console.log(
-    'createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)',
-    createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList),
-  )
 
   if (!accountData?.totalDebtETH || !aaveReserveState?.liquidationThreshold || !oraclePrice) {
     return <AppSpinner />
@@ -127,6 +117,15 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
           <DetailsSectionContentCard
             title={t('manage-earn-vault.liquidation-price-ratio')}
             value={formatBigNumber(managedPosition.liquidationPrice, 2)}
+            unit={`(${formatPercent(
+              oraclePrice.minus(managedPosition.liquidationPrice).times(100),
+              {
+                precision: 0,
+              },
+            )} below current ratio)`}
+            customUnitStyle={{
+              fontSize: 3,
+            }}
             modal={<div>Explanation of the thing, probably</div>}
             customBackground={getLiquidationPriceRatioColor(managedPosition.liquidationPrice)}
             link={{
@@ -150,7 +149,11 @@ export function ManageSectionComponent({ aaveReserveState }: ManageSectionCompon
           />
           <DetailsSectionFooterItem
             title={t('system.variable-annual-fee')}
-            value={`${formatPercent(mockData.variableAnnualFee, { precision: 2 })}`}
+            value={
+              aaveReserveDataETH?.variableBorrowRate
+                ? formatPercent(aaveReserveDataETH.variableBorrowRate, { precision: 2 })
+                : zero.toString()
+            }
           />
         </DetailsSectionFooterItemWrapper>
       }

@@ -4,7 +4,7 @@ import { amountFromWei } from 'blockchain/utils'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-export type PreparedAaveReserveData = {
+export type PreparedAaveTotalValueLocked = {
   totalValueLocked: BigNumber
 }
 
@@ -14,7 +14,7 @@ export function prepareAaveTotalValueLocked$(
   getAaveStEthReserveData$: Observable<AaveReserveDataReply>,
   getAaveWEthReserveData$: Observable<AaveReserveDataReply>,
   getAaveAssetsPrices$: Observable<string[]>,
-): Observable<PreparedAaveReserveData> {
+): Observable<PreparedAaveTotalValueLocked> {
   return combineLatest(
     getAaveStEthReserveData$,
     getAaveWEthReserveData$,

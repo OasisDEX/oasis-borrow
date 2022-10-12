@@ -1,6 +1,5 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { amountToWei } from 'blockchain/utils'
 import { TabBar } from 'components/TabBar'
 import { aaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
@@ -15,6 +14,8 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
 import { AavePositionHeader } from '../../components'
+import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
+import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { ManageSectionComponent } from '../components'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { ManageAaveStateMachine } from '../state'
@@ -26,13 +27,15 @@ import {
 interface AaveManageViewPositionViewProps {
   address: string
   strategy: string // TODO: Get token from strategy
-  aaveReserveState?: AaveReserveConfigurationData
+  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveDataETH: PreparedAaveReserveData
 }
 
 function AaveManageContainer({
   manageAaveStateMachine,
   strategy,
   aaveReserveState,
+  aaveReserveDataETH,
 }: AaveManageViewPositionViewProps & { manageAaveStateMachine: ManageAaveStateMachine }) {
   const { t } = useTranslation()
   return (
@@ -49,7 +52,10 @@ function AaveManageContainer({
               content: (
                 <Grid variant="vaultContainer">
                   <Box>
-                    <ManageSectionComponent aaveReserveState={aaveReserveState} />
+                    <ManageSectionComponent
+                      aaveReserveState={aaveReserveState}
+                      aaveReserveDataETH={aaveReserveDataETH}
+                    />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>
                 </Grid>
@@ -72,10 +78,13 @@ function AavePositionNotice() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const { context } = state
-  if (
-    context.protocolData &&
-    amountToWei(context.protocolData.accountData.totalCollateralETH, context.token).gt(1)
-  ) {
+  const { aaveUserConfiguration, aaveReservesList } = context.protocolData || {}
+  const hasOtherAssetsThanETH_STETH = hasOtherAssets(
+    createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList),
+    ['ETH', 'STETH'],
+  )
+
+  if (hasOtherAssetsThanETH_STETH) {
     return <AavePositionAlreadyOpenedNotice />
   }
   return null
@@ -83,25 +92,27 @@ function AavePositionNotice() {
 
 export function AaveManagePositionView({ address, strategy }: AaveManageViewPositionViewProps) {
   const { aaveManageStateMachine$ } = useAaveContext()
-  const { aaveSTETHReserveConfigurationData } = useEarnContext()
+  const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
   const [stateMachine, stateMachineError] = useObservable(
     aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'STETH' }),
   ) // TODO: should be created with strategy and address. Then should be more generic.
+  const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
 
   return (
     <WithErrorHandler error={[stateMachineError, aaveReserveStateError]}>
       <WithLoadingIndicator
-        value={[stateMachine, aaveReserveState]}
+        value={[stateMachine, aaveReserveState, aaveReserveDataETH]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([_stateMachine, _aaveReserveState]) => {
+        {([_stateMachine, _aaveReserveState, _aaveReserveDataETH]) => {
           return (
             <AaveManageContainer
               address={address}
               strategy={strategy}
               manageAaveStateMachine={_stateMachine}
               aaveReserveState={_aaveReserveState}
+              aaveReserveDataETH={_aaveReserveDataETH}
             />
           )
         }}

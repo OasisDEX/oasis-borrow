@@ -29,6 +29,7 @@ export interface ContentCardProps {
   link?: DetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
   customBackground?: string
+  customUnitStyle?: React.CSSProperties
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
@@ -113,6 +114,7 @@ export function DetailsSectionContentCard({
   link,
   modal,
   customBackground = '',
+  customUnitStyle = {},
 }: ContentCardProps) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
@@ -169,7 +171,7 @@ export function DetailsSectionContentCard({
       >
         {value || '-'}
         {unit && (
-          <Text as="small" sx={{ ml: 1, fontSize: 5 }}>
+          <Text as="small" sx={{ ml: 1, fontSize: 5, ...customUnitStyle }}>
             {unit}
           </Text>
         )}
