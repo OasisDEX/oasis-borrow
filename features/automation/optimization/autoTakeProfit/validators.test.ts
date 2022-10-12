@@ -44,6 +44,15 @@ describe('auto take profit warnings', () => {
 
     expect(warnings).to.be.deep.eq(['autoTakeProfitTriggerLowerThanAutoBuyTrigger'])
   })
+  it('should show warning that ATP is equal to auto-buy trigger', () => {
+    const warnings = warningsAutoTakeProfitValidation({
+      ...autoTakeProfitWarningsValidationBaseData,
+      autoBuyTriggerPrice: new BigNumber(1500),
+      isAutoBuyEnabled: true,
+    })
+
+    expect(warnings).to.be.deep.eq(['autoTakeProfitTriggerLowerThanAutoBuyTrigger'])
+  })
   it('should show warning that ATP is lower than constant-multiple buy trigger', () => {
     const warnings = warningsAutoTakeProfitValidation({
       ...autoTakeProfitWarningsValidationBaseData,

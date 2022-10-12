@@ -33,10 +33,10 @@ export function warningsAutoTakeProfitValidation({
   })
 
   const autoTakeProfitTriggerLowerThanAutoBuyTrigger =
-    isAutoBuyEnabled && executionPrice.lt(autoBuyTriggerPrice)
+    isAutoBuyEnabled && executionPrice.lte(autoBuyTriggerPrice)
 
   const autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger =
-    isConstantMultipleEnabled && executionPrice.lt(constantMultipleBuyTriggerPrice)
+    isConstantMultipleEnabled && executionPrice.lte(constantMultipleBuyTriggerPrice)
 
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
