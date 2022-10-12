@@ -96,13 +96,13 @@ export function extractCommonWarnings(warningMessages: VaultWarningMessage[]) {
 
 const cancelAutoBuyWarnings = ['potentialInsufficientEthFundsForTx']
 
-export function extractCancelBSWarnings(warningMessages: VaultWarningMessage[]) {
+export function extractCancelAutomationWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => cancelAutoBuyWarnings.includes(message))
 }
 
 const cancelAutoBuyErrors = ['insufficientEthFundsForTx']
 
-export function extractCancelBSErrors(errorMessages: VaultErrorMessage[]) {
+export function extractCancelAutomationErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => cancelAutoBuyErrors.includes(message))
 }
 
@@ -110,6 +110,7 @@ const constantMultipleSliderWarnings = [
   'constantMultipleSellTriggerCloseToStopLossTrigger',
   'constantMultipleAutoSellTriggeredImmediately',
   'constantMultipleAutoBuyTriggeredImmediately',
+  'constantMultipleBuyTriggerGreaterThanAutoTakeProfit',
 ]
 
 export function extractConstantMultipleSliderWarnings(warningMessages: VaultWarningMessage[]) {

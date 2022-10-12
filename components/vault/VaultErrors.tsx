@@ -158,6 +158,8 @@ export function VaultErrors({
         return translate('min-sell-price-will-prevent-sell-trigger')
       case 'maxBuyPriceWillPreventBuyTrigger':
         return translate('max-buy-price-will-prevent-buy-trigger')
+      case 'autoTakeProfitTriggeredImmediately':
+        return translate('auto-take-profit-triggered-immediately')
       case 'autoBuyMaxBuyPriceNotSpecified':
         return (
           <Trans

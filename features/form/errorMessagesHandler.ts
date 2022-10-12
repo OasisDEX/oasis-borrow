@@ -46,6 +46,7 @@ export type VaultErrorMessage =
   | 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled'
   | 'minSellPriceWillPreventSellTrigger'
   | 'maxBuyPriceWillPreventBuyTrigger'
+  | 'autoTakeProfitTriggeredImmediately'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -94,6 +95,7 @@ interface ErrorMessagesHandler {
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled?: boolean
   minSellPriceWillPreventSellTrigger?: boolean
   maxBuyPriceWillPreventBuyTrigger?: boolean
+  autoTakeProfitTriggeredImmediately?: boolean
 }
 
 export function errorMessagesHandler({
@@ -143,6 +145,7 @@ export function errorMessagesHandler({
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
   minSellPriceWillPreventSellTrigger,
   maxBuyPriceWillPreventBuyTrigger,
+  autoTakeProfitTriggeredImmediately,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -327,6 +330,10 @@ export function errorMessagesHandler({
 
   if (maxBuyPriceWillPreventBuyTrigger) {
     errorMessages.push('maxBuyPriceWillPreventBuyTrigger')
+  }
+
+  if (autoTakeProfitTriggeredImmediately) {
+    errorMessages.push('autoTakeProfitTriggeredImmediately')
   }
 
   return errorMessages
