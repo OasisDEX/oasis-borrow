@@ -61,7 +61,6 @@ interface SidebarSetupAutoTakeProfitProps {
   nextCollateralPrice: BigNumber
   txHandler: () => void
   vault: Vault
-  ilkData: IlkData
   ethBalance: BigNumber
 }
 
@@ -89,7 +88,6 @@ export function SidebarSetupAutoTakeProfit({
   nextCollateralPrice,
   txHandler,
   vault,
-  ilkData,
   ethBalance,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()

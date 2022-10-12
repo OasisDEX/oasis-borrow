@@ -142,7 +142,6 @@ export function OptimizationFormControl({
           txHelpers={txHelpers}
           vault={vault}
           priceInfo={priceInfo}
-          ilkData={ilkData}
           balanceInfo={balanceInfo}
         />
       )}

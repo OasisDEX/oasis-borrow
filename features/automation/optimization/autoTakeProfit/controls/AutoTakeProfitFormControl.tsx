@@ -34,7 +34,6 @@ interface AutoTakeProfitFormControlProps {
   priceInfo: PriceInfo
   txHelpers?: TxHelpers
   vault: Vault
-  ilkData: IlkData
   balanceInfo: BalanceInfo
 }
 
@@ -51,7 +50,6 @@ export function AutoTakeProfitFormControl({
   priceInfo: { nextCollateralPrice },
   txHelpers,
   vault,
-  ilkData,
   balanceInfo,
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
@@ -132,7 +130,6 @@ export function AutoTakeProfitFormControl({
           tokenMarketPrice={tokenMarketPrice}
           txHandler={txHandler}
           vault={vault}
-          ilkData={ilkData}
           nextCollateralPrice={nextCollateralPrice}
           ethBalance={balanceInfo.ethBalance}
         />
