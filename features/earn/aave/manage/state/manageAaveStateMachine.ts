@@ -137,6 +137,7 @@ export const createManageAaveStateMachine =
               actions: ['userInputRiskRatio'],
             },
             ADJUST_POSITION: {
+              cond: 'newRiskInputted',
               target: 'reviewingAdjusting',
             },
           },
@@ -194,6 +195,14 @@ export const createManageAaveStateMachine =
       guards: {
         validTransactionParameters: ({ proxyAddress, transactionParameters }) =>
           allDefined(proxyAddress, transactionParameters),
+        newRiskInputted: (state) => {
+          return (
+            allDefined(state.userInput.riskRatio, state.protocolData) &&
+            !state.userInput.riskRatio!.loanToValue.eq(
+              state.protocolData!.position.riskRatio.loanToValue,
+            )
+          )
+        },
       },
       actions: {
         setTokenBalanceFromEvent: assign((context, event) => ({

@@ -170,7 +170,7 @@ export function SidebarManageAaveVault() {
           send={send}
           primaryButton={{
             isLoading: false,
-            disabled: true,
+            disabled: !state.can('ADJUST_POSITION'),
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')

@@ -12,7 +12,7 @@ import {
 } from '../../../../../components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from '../../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
-import { formatPercent } from '../../../../../helpers/formatters/format'
+import { formatBigNumber, formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
@@ -84,6 +84,7 @@ export function AdjustRiskView(props: AdjustRiskViewProps) {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
+        <div>{formatBigNumber(sliderValue || zero, 5)}</div>
         <SliderValuePicker
           sliderPercentageFill={new BigNumber(0)}
           leftBoundry={liquidationPrice}
