@@ -27,15 +27,10 @@ interface ManageAaveStateProps {
   readonly send: Sender<ManageAaveEvent>
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function TransactionInformationContainer({ state, send }: ManageAaveStateProps) {
+function TransactionInformationContainer({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
   return (
     <VaultChangesInformationContainer title="Total fees">
-      <VaultChangesInformationItem
-        label={t('vault-changes.oasis-fee')}
-        value={getEstimatedGasFeeTextOld(state.context.estimatedGasPrice)}
-      />
       <VaultChangesInformationItem
         label={t('transaction-fee')}
         value={getEstimatedGasFeeTextOld(state.context.estimatedGasPrice)}
@@ -44,8 +39,7 @@ function TransactionInformationContainer({ state, send }: ManageAaveStateProps) 
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function EthBalanceAfterClose({ state, send }: ManageAaveStateProps) {
+function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
   const balance = formatCryptoBalance(state.context.balanceAfterClose || zero)
   const fiatBalanceAfterClose = (state.context.balanceAfterClose || zero).times(
