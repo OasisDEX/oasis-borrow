@@ -1,3 +1,4 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
@@ -6,10 +7,12 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { AaveStEthYieldsResponse, CalculateSimulationResult } from '../services'
 
 interface AaveStEthSimulateStateMachineContext {
-  yields?: AaveStEthYieldsResponse
+  yieldsMin?: AaveStEthYieldsResponse
+  yieldsMax?: AaveStEthYieldsResponse
   token?: string
   amount?: BigNumber
-  multiply?: BigNumber
+  riskRatio?: IRiskRatio
+  riskRatioMax?: IRiskRatio
   transactionFee?: BigNumber
   fee?: BigNumber
   simulation?: CalculateSimulationResult
@@ -20,7 +23,7 @@ export type AaveStEthSimulateStateMachineEvents =
       type: 'USER_PARAMETERS_CHANGED'
       token: string
       amount: BigNumber
-      multiply: BigNumber
+      riskRatio: IRiskRatio
     }
   | { type: 'FEE_CHANGED'; fee: BigNumber }
 
@@ -35,7 +38,10 @@ export const aaveStEthSimulateStateMachine = createMachine(
       context: {} as AaveStEthSimulateStateMachineContext,
       services: {} as {
         getYields: {
-          data: AaveStEthYieldsResponse
+          data: {
+            yieldsMin: AaveStEthYieldsResponse
+            yieldsMax: AaveStEthYieldsResponse
+          }
         }
         calculate: {
           data: CalculateSimulationResult
@@ -60,6 +66,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
         on: {
           USER_PARAMETERS_CHANGED: {
             actions: ['assignUserParameters'],
+            target: 'loading',
           },
           FEE_CHANGED: {
             actions: ['assignFees'],
@@ -79,7 +86,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
     },
     on: {
       USER_PARAMETERS_CHANGED: {
-        target: 'calculating',
+        target: 'loading',
         actions: ['assignUserParameters'],
       },
       FEE_CHANGED: {
@@ -90,11 +97,14 @@ export const aaveStEthSimulateStateMachine = createMachine(
   },
   {
     actions: {
-      assignYields: assign((context, event) => ({ yields: event.data })),
+      assignYields: assign((context, event) => ({
+        yieldsMin: event.data.yieldsMin,
+        yieldsMax: event.data.yieldsMax,
+      })),
       assignUserParameters: assign((context, event) => ({
         token: event.token,
         amount: event.amount,
-        multiply: event.multiply,
+        riskRatio: event.riskRatio,
       })),
       assignFees: assign((context, event) => ({
         fee: event.fee,

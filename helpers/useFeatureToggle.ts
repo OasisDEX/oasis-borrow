@@ -21,6 +21,8 @@ export type Feature =
   | 'ProxyCreationDisabled'
   | 'AutoTakeProfit'
   | 'UpdatedPnL'
+  | 'DiscoverOasis'
+  | 'ShowAaveStETHETHProductCard'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -32,7 +34,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossOpenFlow: false,
   BasicBS: true,
   ReadOnlyBasicBS: false,
-  Notifications: false,
+  Notifications: true,
   Referrals: true,
   ConstantMultiple: true,
   ConstantMultipleReadOnly: false,
@@ -40,6 +42,8 @@ const configuredFeatures: Record<Feature, boolean> = {
   ProxyCreationDisabled: false,
   AutoTakeProfit: false,
   UpdatedPnL: false,
+  DiscoverOasis: false,
+  ShowAaveStETHETHProductCard: false,
   // your feature here....
 }
 

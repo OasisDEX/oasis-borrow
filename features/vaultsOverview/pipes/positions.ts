@@ -1,4 +1,3 @@
-import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
@@ -6,7 +5,7 @@ import { map, switchMap } from 'rxjs/operators'
 import {
   AaveUserReserveData,
   AaveUserReserveDataParameters,
-} from '../../../blockchain/calls/aaveProtocolDataProvider'
+} from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
@@ -97,9 +96,7 @@ export function createAavePositions$(
           map((userReserve) => {
             return {
               token: token,
-              contentsUsd: new BigNumber(
-                amountFromWei(new BigNumber(userReserve.currentATokenBalance)),
-              ).times(tokenPrice),
+              contentsUsd: userReserve.currentATokenBalance.times(tokenPrice),
               title: `${token} Aave `,
               url: `/earn/steth/${address}`,
             }

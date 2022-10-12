@@ -1,49 +1,30 @@
+import { IRiskRatio, IStrategy, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
-import { OperationParameters } from '../../../../aave'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { OpenAavePositionData } from '../pipelines/openAavePosition'
+import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
 } from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
-export interface OpenAaveContext {
-  multiply: BigNumber
-  token: string
-  inputDelay: number
-
+export interface OpenAaveContext extends BaseAaveContext {
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
-  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OpenAavePositionData>>
+  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
 
-  currentStep?: number
-  totalSteps?: number
-  tokenBalance?: BigNumber
   amount?: BigNumber
-  tokenPrice?: BigNumber
   auxiliaryAmount?: BigNumber
-  proxyAddress?: string
   strategyName?: string
-
-  strategyInfo?: StrategyInfo
-
-  transactionParameters?: OperationParameters
-  estimatedGasPrice?: HasGasEstimation
-}
-
-type StrategyInfo = {
-  maxMultiple: BigNumber
-  liquidationThreshold: BigNumber
-  assetPrice: BigNumber
 }
 
 export type OpenAaveMachineEvents =
@@ -51,18 +32,16 @@ export type OpenAaveMachineEvents =
   | { type: 'SET_BALANCE'; balance: BigNumber; tokenPrice: BigNumber }
   | { type: 'POSITION_OPENED' }
   | { type: 'NEXT_STEP' }
-  | { type: 'SET_MULTIPLE'; multiple: BigNumber }
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | {
       type: 'UPDATE_STRATEGY_INFO'
-      maxMultiple: BigNumber
-      liquidationThreshold: BigNumber
-      assetPrice: BigNumber
+      strategyInfo: IStrategyInfo
     }
 
 export type OpenAaveTransactionEvents =
   | {
       type: 'TRANSACTION_PARAMETERS_RECEIVED'
-      parameters: OperationParameters
+      parameters: IStrategy
       estimatedGasPrice: HasGasEstimation
     }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }
@@ -156,8 +135,17 @@ export const createOpenAaveStateMachine = createMachine(
           UPDATE_STRATEGY_INFO: {
             actions: ['updateStrategyInfo'],
           },
-          SET_MULTIPLE: {
-            actions: ['setMultiple'],
+          SET_RISK_RATIO: {
+            actions: [
+              'setRiskRatio',
+              'debounceSendingToParametersMachine',
+              'debounceSendingToSimulationMachine',
+              'sendUpdateToParametersMachine',
+              'sendUpdateToSimulationMachine',
+            ],
+          },
+          TRANSACTION_PARAMETERS_RECEIVED: {
+            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
           },
           NEXT_STEP: {
             target: 'reviewing',
@@ -213,8 +201,8 @@ export const createOpenAaveStateMachine = createMachine(
     actions: {
       initContextValues: assign((context) => ({
         currentStep: 1,
-        totalSteps: context.proxyAddress ? 2 : 3,
-        multiply: new BigNumber(2),
+        totalSteps: context.proxyAddress ? 3 : 4,
+        riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
         token: 'ETH',
         inputDelay: 1000,
       })),
@@ -226,62 +214,80 @@ export const createOpenAaveStateMachine = createMachine(
         proxyAddress: event.proxyAddress,
       })),
       sendUpdateToParametersMachine: send(
-        (context): ParametersStateMachineEvents => ({
-          type: 'VARIABLES_RECEIVED',
-          amount: context.amount!,
-          multiply: context.multiply,
-          token: context.token,
-          proxyAddress: context.proxyAddress,
-        }),
+        (context): ParametersStateMachineEvents => {
+          return {
+            type: 'VARIABLES_RECEIVED',
+            amount: context.amount!,
+            riskRatio: context.riskRatio,
+            token: context.token,
+            proxyAddress: context.proxyAddress,
+          }
+        },
         {
           to: (context) => context.refParametersStateMachine!,
           delay: (context) => context.inputDelay,
           id: 'update-parameters-machine',
         },
       ),
-      setMultiple: assign((_, event) => {
+      setRiskRatio: assign((_, event) => {
         return {
-          multiply: event.multiple,
+          riskRatio: event.riskRatio,
         }
       }),
-      updateStrategyInfo: assign((_, event) => {
+      updateTotalSteps: assign((context) => {
         return {
-          strategyInfo: event,
+          totalSteps: context.proxyAddress
+            ? (context.totalSteps || 0) - 1
+            : context.totalSteps || 0,
         }
       }),
-      updateTotalSteps: assign((context) => ({
-        totalSteps: context.proxyAddress ? 2 : 3,
-      })),
-      setAmount: assign((context, event) => ({
-        amount: event.amount,
-      })),
-      calculateAuxiliaryAmount: assign((context) => ({
-        auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
-      })),
+      setAmount: assign((context, event) => {
+        return {
+          amount: event.amount,
+        }
+      }),
+      calculateAuxiliaryAmount: assign((context) => {
+        return {
+          auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
+        }
+      }),
       assignProxyAddress: assign((_, event) => ({
         proxyAddress: event.proxyAddress,
       })),
       setCurrentStepToTwo: assign((_) => ({
         currentStep: 2,
       })),
-      assignTransactionParameters: assign((context, event) => ({
-        transactionParameters: event.parameters,
-        estimatedGasPrice: event.estimatedGasPrice,
+      assignTransactionParameters: assign((context, event) => {
+        return {
+          transactionParameters: event.parameters,
+          estimatedGasPrice: event.estimatedGasPrice,
+        }
+      }),
+      updateStrategyInfo: assign((context, event) => ({
+        strategyInfo: event.strategyInfo,
       })),
       sendFeesToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => ({
-          type: 'FEE_CHANGED',
-          fee: context.transactionParameters?.positionInfo.fee || zero,
-        }),
+        (context): AaveStEthSimulateStateMachineEvents => {
+          const sourceTokenFee =
+            context.transactionParameters?.simulation.swap.sourceTokenFee || zero
+          const targetTokenFee =
+            context.transactionParameters?.simulation.swap.targetTokenFee || zero
+          return {
+            type: 'FEE_CHANGED',
+            fee: sourceTokenFee.plus(targetTokenFee),
+          }
+        },
         { to: (context) => context.refSimulationMachine! },
       ),
       sendUpdateToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => ({
-          type: 'USER_PARAMETERS_CHANGED',
-          amount: context.amount || zero,
-          multiply: context.multiply,
-          token: context.token,
-        }),
+        (context): AaveStEthSimulateStateMachineEvents => {
+          return {
+            type: 'USER_PARAMETERS_CHANGED',
+            amount: context.amount || zero,
+            riskRatio: context.riskRatio,
+            token: context.token,
+          }
+        },
         {
           to: (context) => context.refSimulationMachine!,
           delay: (context) => context.inputDelay,

@@ -3,7 +3,7 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import { getAaveUserReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
+import { getAaveUserReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -167,7 +167,7 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { OpenAavePositionData } from 'features/earn/aave/open/pipelines/openAavePosition'
+import { getAaveStEthYield } from 'features/earn/aave/open/services'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -242,6 +242,7 @@ import { createPositionsList$ } from 'features/vaultsOverview/pipes/positionsLis
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
+import { GraphQLClient } from 'graphql-request'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
 import {
@@ -260,8 +261,17 @@ import {
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
+import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -283,7 +293,7 @@ export type TxData =
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
-  | OpenAavePositionData
+  | OperationExecutorTxMeta
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -488,6 +498,20 @@ export function setupAppContext() {
     initializedAccount$,
     onEveryBlock$,
     connectedContext$,
+  )
+  // saved for later?
+  // const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
+  // const graphQLClient$ = contextForAddress$.pipe(
+  //   distinctUntilKeyChanged('cacheApi'),
+  //   map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  // )
+  const disconnectedGraphQLClient$ = context$.pipe(
+    distinctUntilKeyChanged('cacheApi'),
+    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  )
+  const aaveSthEthYieldsQuery = memoize(
+    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
@@ -1125,6 +1149,8 @@ export function setupAppContext() {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
+    aaveUserReserveData$,
+    aaveSthEthYieldsQuery,
   }
 }
 

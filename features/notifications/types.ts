@@ -42,9 +42,10 @@ export interface NotificationAdditionalData {
 }
 
 export interface NotificationBase {
-  id: number
+  id: string
   notificationType: NotificationTypes
   lastModified: number
+  timestamp: string
   isRead: boolean
 }
 

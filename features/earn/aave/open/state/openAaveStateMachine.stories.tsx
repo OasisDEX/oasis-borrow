@@ -1,3 +1,4 @@
+import { IStrategy } from '@oasisdex/oasis-actions'
 import { TxMeta } from '@oasisdex/transactions'
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
@@ -8,11 +9,14 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 import { ActorRefFrom, assign, sendParent, spawn } from 'xstate'
 
+import {
+  callOperationExecutor,
+  OperationExecutorTxMeta,
+} from '../../../../../blockchain/calls/operationExecutor'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
-import { OperationParameters } from '../../../../aave'
 import {
   createProxyStateMachine,
   ProxyContext,
@@ -24,7 +28,6 @@ import {
   startTransactionService,
   TransactionStateMachine,
 } from '../../../../stateMachines/transaction'
-import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
 import { contextToTransactionParameters } from '../services'
 import { aaveStEthSimulateStateMachine } from './aaveStEthSimulateStateMachine'
 import { createOpenAaveStateMachine, OpenAaveEvent } from './openAaveStateMachine'
@@ -69,7 +72,7 @@ const parametersMachine = createParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OperationParameters
+      return {} as IStrategy
     },
     estimateGasPrice: async () => {
       await delay()
@@ -84,7 +87,7 @@ const mockTxHelpers$ = of({
   sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
 })
 
-const transactionMachine = createTransactionStateMachine(openAavePosition).withConfig({
+const transactionMachine = createTransactionStateMachine(callOperationExecutor).withConfig({
   actions: {
     notifyParent: () => {},
     raiseError: () => {},
@@ -192,7 +195,7 @@ const ParametersView = ({
 const TransactionView = ({
   transactionMachine,
 }: {
-  transactionMachine: ActorRefFrom<TransactionStateMachine<OpenAavePositionData>>
+  transactionMachine: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
 }) => {
   const [state] = useActor(transactionMachine)
 

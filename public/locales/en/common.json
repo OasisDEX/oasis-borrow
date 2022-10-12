@@ -141,6 +141,59 @@
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
+  "discovery": {
+    "heading": "Discover Oasis.app",
+    "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
+    "intro-link": "Learn more about Discover",
+    "navigation": {
+      "high-risk-positions": "High-Risk Positions",
+      "highest-multiply-pnl": "Highest Multiply P&L",
+      "most-yield-earned": "Most Yield Earned",
+      "largest-debt": "Largest Debt"
+    },
+    "table": {
+      "no-entries": "There are no entries available for selected filters.",
+      "vault-number": "Vault #{{cid}}",
+      "view-position": "View Position",
+      "header": {
+        "asset": "Asset",
+        "liquidation-price": "Liquidation price",
+        "next-osm-price": "Next OSM price",
+        "max-liquidation-amount": "Max liquidation amount",
+        "status": "Status",
+        "cid": ""
+      },
+      "status": {
+        "1": "Liquidated",
+        "2": "Being liquidated",
+        "3": "{{tillLiquidation}}% till liquidation",
+        "4": "{{toStopLoss}}% to Stop-loss",
+        "5": "Closed {{closedDaysAgo}} days ago"
+      },
+      "banner": {
+        "high-risk-positions": {
+          "title": "Mutiply your crypto assets with Stop-Loss Vault Protection",
+          "description": "All Multiply Vaults on Oasis.app allow you to protect yourself from liquidation with automated Stop-Loss Protection.",
+          "cta": "Get started with Multiply"
+        },
+        "highest-multiply-pnl": {
+          "title": "Multiply your exposure up to 4x with automated buy and sell actions",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Multiply"
+        },
+        "most-yield-earned": {
+          "title": "Put your crypto to work today and start earning a yield",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Earn"
+        },
+        "largest-debt": {
+          "title": "Borrow against your crypto today.",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Borrow"
+        }
+      }
+    }
+  },
   "earning": "Earning",
   "edit-token-allowance": "Edit {{token}} allowance",
   "edit-vault-details": "Edit Vault details",
@@ -583,7 +636,8 @@
     "cookie": "Cookie Policy",
     "bug-bounty": "Bug Bounty",
     "brand-assets": "Brand assets",
-    "security": "Security"
+    "security": "Security",
+    "discovery": "Discovery"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -675,6 +729,10 @@
     "security": {
       "title": "Security",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
+    },
+    "discovery": {
+      "title": "Discover Oasis.app",
+      "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -1263,6 +1321,12 @@
       "GUNIV3DAIUSDC2-A": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
       "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
     },
+    "aave": {
+      "AAVE-STETH": {
+        "title": "stETH/ETH AAVE",
+        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on AAVE to get more exposure to stETH."
+      }
+    },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
@@ -1278,6 +1342,9 @@
     "guni": {
       "GUNIV3DAIUSDC2-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool",
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
+    },
+    "aave": {
+      "AAVE-STETH": "Get up to {{value}} ETH exposure to stETH"
     }
   },
   "product-card-title": {
@@ -1574,11 +1641,13 @@
   "auto-take-profit": {
     "title": "Take Profit",
     "cancel-summary-title": "Cancel Take Profit order summary",
+    "setting-form-title": "Setting Take Profit",
+    "cancelling-form-title": "Cancelling Take Profit",
     "form-title": "Take Profit Setup",
     "banner": {
-      "header": "Set up Auto-Take Profit",
-      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
-      "button": "Setup Auto-Take Profit"
+      "header": "Set up Take Profit",
+      "content": "Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
+      "button": "Setup Take Profit"
     },
     "trigger-col-price": "Trigger {{token}} Price",
     "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
@@ -1587,6 +1656,7 @@
     "trigger-col-ratio": "Trigger Collateral Ratio",
     "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
     "current-col-ratio": "Current Collateral Ratio {{amount}}",
+    "estimated-at-trigger": "Estimated {{token}} at Trigger",
     "vault-changes": {
       "general-summary": "General summary",
       "trigger-col-price": "Trigger {{token}} Price",
@@ -1597,7 +1667,8 @@
       "estimated-oasis-fee": "Estimated Oasis fee",
       "estimated-gas-fee": "Estimated gas fee",
       "setup-transaction-cost": "Setup transaction cost"
-    }
+    },
+    "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction."
   },
 
   "automation": {
@@ -1759,6 +1830,7 @@
   "manage-earn": {
     "aave": {
       "vault-form": {
+        "adjust-risk": "Adjust Risk",
         "deposit": "Deposit ETH",
         "title": "Your Earn position",
         "close-title": "Close position to ETH",
@@ -1790,11 +1862,13 @@
         "go-to-position": "Go to position",
         "configure-multiple": {
           "title": "Set your risk level",
-          "liquidation-price": "stETH/ETH Liquidation Price",
-          "steth-eth-historial-ratio": "stETH / ETH Historical Ratio",
+          "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
+          "historical-ratio": "{{collateralToken}} / {{debtToken}} Historical Ratio",
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
-          "decrease-risk": "Decrease risk"
+          "decrease-risk": "Decrease risk",
+          "vault-message-ok": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position is unlikely to be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}",
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}"
         }
       }
     }

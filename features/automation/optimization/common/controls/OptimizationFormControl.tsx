@@ -48,12 +48,8 @@ export function OptimizationFormControl({
     autoSellTriggerData,
     constantMultipleTriggerData,
     stopLossTriggerData,
+    autoTakeProfitTriggerData,
   } = useAutomationContext()
-
-  // TODO: TDAutoTakeProfit | to be replaced with data from autoTakeProfitTriggerData from useAutomationContext method
-  const autoTakeProfitTriggerData = {
-    isTriggerEnabled: false,
-  }
 
   const { uiChanges } = useAppContext()
   const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
@@ -68,7 +64,7 @@ export function OptimizationFormControl({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
     isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
-    isAutoTakeProfitOn: autoTakeProfitEnabled, // TODO ŁW automationTriggersData?.autoTakeProfit?.isTriggerEnabled,
+    isAutoTakeProfitOn: autoTakeProfitTriggerData.isTriggerEnabled,
     section: 'form',
   })
 
@@ -81,19 +77,18 @@ export function OptimizationFormControl({
         currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
       })
     }
-    if (autoBuyTriggerData.isTriggerEnabled) {
-      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-        type: 'Optimization',
-        currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
-      })
-    }
     if (constantMultipleTriggerData.isTriggerEnabled) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
       })
     }
-    // TODO ŁW: add autoTakeProfit
+    if (autoBuyTriggerData.isTriggerEnabled) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Optimization',
+        currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
+      })
+    }
   }, [])
 
   return (
@@ -117,6 +112,7 @@ export function OptimizationFormControl({
       <ConstantMultipleFormControl
         autoBuyTriggerData={autoBuyTriggerData}
         autoSellTriggerData={autoSellTriggerData}
+        autoTakeProfitTriggerData={autoTakeProfitTriggerData}
         balanceInfo={balanceInfo}
         constantMultipleTriggerData={constantMultipleTriggerData}
         context={context}
@@ -128,13 +124,21 @@ export function OptimizationFormControl({
         txHelpers={txHelpers}
         vault={vault}
       />
-      <AutoTakeProfitFormControl
-        autoBuyTriggerData={autoBuyTriggerData}
-        constantMultipleTriggerData={constantMultipleTriggerData}
-        isAutoTakeProfitActive={isAutoTakeProfitActive}
-        tokenMarketPrice={tokenMarketPrice}
-        vault={vault}
-      />
+      {autoTakeProfitEnabled && (
+        <AutoTakeProfitFormControl
+          autoBuyTriggerData={autoBuyTriggerData}
+          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
+          constantMultipleTriggerData={constantMultipleTriggerData}
+          context={context}
+          ethMarketPrice={ethMarketPrice}
+          ilkData={ilkData}
+          isAutoTakeProfitActive={isAutoTakeProfitActive}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+          tokenMarketPrice={tokenMarketPrice}
+          txHelpers={txHelpers}
+          vault={vault}
+        />
+      )}
     </>
   )
 }

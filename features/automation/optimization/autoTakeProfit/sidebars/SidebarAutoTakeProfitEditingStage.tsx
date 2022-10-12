@@ -1,64 +1,142 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { EstimationOnClose } from 'components/EstimationOnClose'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
+import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
+import {
+  AutoTakeProfitTriggerData,
+  prepareAutoTakeProfitResetData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { formatAmount } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface SidebarAutoTakeProfitEditingStageProps {
-  vault: Vault
+  autoTakeProfitState: AutoTakeProfitFormChange
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   closePickerConfig: PickCloseStateProps
+  ethMarketPrice: BigNumber
+  isEditing: boolean
   sliderConfig: SliderValuePickerProps
+  tokenMarketPrice: BigNumber
+  vault: Vault
 }
 
 export function SidebarAutoTakeProfitEditingStage({
-  vault,
+  autoTakeProfitState,
+  autoTakeProfitTriggerData,
   closePickerConfig,
+  ethMarketPrice,
+  isEditing,
   sliderConfig,
+  tokenMarketPrice,
+  vault,
 }: SidebarAutoTakeProfitEditingStageProps) {
+  const { t } = useTranslation()
+  const { uiChanges } = useAppContext()
+
+  const { estimatedProfitOnClose } = getOnCloseEstimations({
+    colMarketPrice: autoTakeProfitState.executionPrice,
+    colOraclePrice: autoTakeProfitState.executionPrice,
+    debt: vault.debt,
+    debtOffset: vault.debtOffset,
+    ethMarketPrice,
+    lockedCollateral: vault.lockedCollateral,
+    toCollateral: autoTakeProfitState.toCollateral,
+  })
+  const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
+
   return (
     <>
       <PickCloseState {...closePickerConfig} />
       <SliderValuePicker {...sliderConfig} />
-
       <EstimationOnClose
-        iconCircle={getToken('DAI').iconCircle}
-        label="Estimated DAI at Trigger"
-        value="$3,990,402.00 DAI"
+        iconCircle={getToken(closeToToken).iconCircle}
+        label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
+        value={`${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`}
       />
-      <AutoTakeProfitInfoSectionControl token={vault.token} />
+      {isEditing && (
+        <>
+          <SidebarResetButton
+            clear={() => {
+              uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                type: 'reset',
+                resetData: prepareAutoTakeProfitResetData(
+                  autoTakeProfitState,
+                  autoTakeProfitTriggerData,
+                ),
+              })
+            }}
+          />
+          <AutoTakeProfitInfoSectionControl
+            debt={vault.debt}
+            debtOffset={vault.debtOffset}
+            ethMarketPrice={ethMarketPrice}
+            lockedCollateral={vault.lockedCollateral}
+            toCollateral={autoTakeProfitState.toCollateral}
+            token={vault.token}
+            tokenMarketPrice={tokenMarketPrice}
+            triggerColPrice={autoTakeProfitState.executionPrice}
+            triggerColRatio={autoTakeProfitState.executionCollRatio}
+          />
+        </>
+      )}
     </>
   )
 }
 
 interface AutoTakeProfitInfoSectionControlProps {
+  debt: BigNumber
+  debtOffset: BigNumber
+  ethMarketPrice: BigNumber
+  lockedCollateral: BigNumber
+  toCollateral: boolean
   token: string
+  tokenMarketPrice: BigNumber
+  triggerColPrice: BigNumber
+  triggerColRatio: BigNumber
 }
 
-function AutoTakeProfitInfoSectionControl({ token }: AutoTakeProfitInfoSectionControlProps) {
-  // TODO: TDAutoTakeProfit | to be replaced with data from parent component
-  const triggerColPrice = new BigNumber(2500)
-  const triggerColRatio = new BigNumber(400)
-  const debtRepaid = new BigNumber(45003407)
-  const ethPrice = new BigNumber(1925)
-  const ethPriceImpact = new BigNumber(-0.25)
-  const setupTransactionCost = new BigNumber(3.24)
-  const totalTransactionCost = new BigNumber(388.26)
-  const estimatedOasisFee = new BigNumber(371.75)
-  const estimatedGasFee = new BigNumber(16.51)
+function AutoTakeProfitInfoSectionControl({
+  debt,
+  debtOffset,
+  ethMarketPrice,
+  lockedCollateral,
+  toCollateral,
+  token,
+  triggerColPrice,
+  triggerColRatio,
+}: AutoTakeProfitInfoSectionControlProps) {
+  const {
+    estimatedGasFeeOnTrigger,
+    estimatedOasisFeeOnTrigger,
+    totalTriggerCost,
+  } = getOnCloseEstimations({
+    colMarketPrice: triggerColPrice,
+    colOraclePrice: triggerColPrice,
+    debt: debt,
+    debtOffset: debtOffset,
+    ethMarketPrice,
+    lockedCollateral: lockedCollateral,
+    toCollateral: toCollateral,
+  })
 
   return (
     <AddAutoTakeProfitInfoSection
-      debtRepaid={debtRepaid}
-      estimatedGasFee={estimatedGasFee}
-      estimatedOasisFee={estimatedOasisFee}
-      ethPrice={ethPrice}
-      ethPriceImpact={ethPriceImpact}
-      setupTransactionCost={setupTransactionCost}
+      debtRepaid={debt}
+      estimatedOasisFeeOnTrigger={estimatedOasisFeeOnTrigger}
+      estimatedGasFeeOnTrigger={estimatedGasFeeOnTrigger}
       token={token}
-      totalTransactionCost={totalTransactionCost}
+      totalTriggerCost={totalTriggerCost}
       triggerColPrice={triggerColPrice}
       triggerColRatio={triggerColRatio}
     />

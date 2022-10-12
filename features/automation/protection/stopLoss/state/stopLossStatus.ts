@@ -19,6 +19,7 @@ import {
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
+  StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
@@ -39,7 +40,7 @@ interface StopLossStatus {
   isEditing: boolean
   isDisabled: boolean
   closePickerConfig: PickCloseStateProps
-  resetData: any
+  resetData: StopLossResetData
   executionPrice: BigNumber
 }
 
@@ -85,7 +86,7 @@ export function getStopLossStatus({
   })
     .times(100)
     .decimalPlaces(0, BigNumber.ROUND_DOWN)
-  const resetData = {
+  const resetData: StopLossResetData = {
     stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
     collateralActive: stopLossTriggerData.isToCollateral,
     txDetails: {},
