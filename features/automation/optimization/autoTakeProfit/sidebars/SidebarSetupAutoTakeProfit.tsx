@@ -134,7 +134,7 @@ export function SidebarSetupAutoTakeProfit({
   }
   const sliderPercentageFill = getSliderPercentageFill({
     value: autoTakeProfitState.executionPrice,
-    min: min,
+    min,
     max,
   })
   const targetColRatio = ratioAtCollateralPrice({

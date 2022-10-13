@@ -153,8 +153,8 @@ export function SidebarSetupStopLoss({
 
   const sliderPercentageFill = getSliderPercentageFill({
     value: stopLossState.stopLossLevel,
-    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
-    max,
+    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100),
+    max: max.times(100),
   })
 
   const afterNewLiquidationPrice = stopLossState.stopLossLevel
