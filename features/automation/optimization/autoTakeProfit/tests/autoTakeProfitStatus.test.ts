@@ -21,3 +21,6 @@ describe('createClosePickerConfig', () => {
   })
   // Icon circle is remaining from old component
 })
+
+// Does it make much sense to mock everything to test this method or its fine as all smaller methods called within it are tested? ~Ł
+describe('getAutoTakeProfitStatus', () => {})
