@@ -85,7 +85,9 @@ export function AdjustRiskView({
   )
 
   const sliderValue =
-    state.context.userInput.riskRatio?.loanToValue || position?.riskRatio.loanToValue
+    state.context.userInput.riskRatio?.loanToValue ||
+    position?.riskRatio.loanToValue ||
+    aaveStETHMinimumRiskRatio.loanToValue
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -104,9 +106,9 @@ export function AdjustRiskView({
           onChange={(ltv) => {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
           }}
-          minBoundry={minRisk.loanToValue || zero}
+          minBoundry={minRisk.loanToValue}
           maxBoundry={maxRisk || zero}
-          lastValue={sliderValue || zero}
+          lastValue={sliderValue}
           disabled={viewLocked}
           step={0.01}
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {

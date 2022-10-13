@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { one } from './zero'
 
 async function swapOneInchTokens(
   fromTokenAddress: string,
@@ -62,23 +63,36 @@ export async function oneInchCallMock(
   }
 }
 
-export function getOneInchCall(swapAddress: string) {
-  return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
-    const response = await swapOneInchTokens(
-      from,
-      to,
-      amount.toString(),
-      swapAddress,
-      slippage.toString(),
-    )
+// TODO: export from oasis-earn-sc into @oasisdex/oasis-actions lib and import from there
+export const getOneInchCall = (swapAddress: string, debug?: false) => async (
+  from: string,
+  to: string,
+  amount: BigNumber,
+  slippage: BigNumber,
+) => {
+  const response = await swapOneInchTokens(
+    from,
+    to,
+    amount.toString(),
+    swapAddress,
+    slippage.toString(),
+  )
 
-    return {
-      toTokenAddress: to,
-      fromTokenAddress: from,
-      minToTokenAmount: new BigNumber(response.toTokenAmount),
-      toTokenAmount: new BigNumber(response.toTokenAmount),
-      fromTokenAmount: new BigNumber(response.fromTokenAmount),
-      exchangeCalldata: response.tx.data,
-    }
+  if (debug) {
+    console.log('1inch')
+    console.log('fromTokenAmount', response.fromTokenAmount.toString())
+    console.log('toTokenAmount', response.toTokenAmount.toString())
+    console.log('slippage', slippage.toString())
+  }
+
+  return {
+    toTokenAddress: to,
+    fromTokenAddress: from,
+    minToTokenAmount: new BigNumber(response.toTokenAmount)
+      .times(one.minus(slippage))
+      .integerValue(BigNumber.ROUND_DOWN),
+    toTokenAmount: new BigNumber(response.toTokenAmount),
+    fromTokenAmount: new BigNumber(response.fromTokenAmount),
+    exchangeCalldata: response.tx.data,
   }
 }

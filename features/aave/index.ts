@@ -32,7 +32,7 @@ export async function getOpenAaveParameters(
 
   return await strategies.aave.openStEth(
     {
-      depositAmount: amount,
+      depositAmount: amountToWei(amount, 'ETH'),
       slippage: slippage,
       multiple: riskRatio.multiple,
     },
