@@ -156,12 +156,21 @@
       "vault-number": "Vault #{{cid}}",
       "view-position": "View Position",
       "header": {
+        "30-day-avg-apy": "30 day avg. APY",
+        "activity": "Activity",
         "asset": "Asset",
+        "cdp-id": "",
+        "col-ratio": "Col. ratio",
+        "collateral-value": "Collateral value",
+        "current-multiple": "Current multiple",
+        "earnings-to-date": "Earnings to date",
         "liquidation-price": "Liquidation price",
-        "next-osm-price": "Next OSM price",
         "max-liquidation-amount": "Max liquidation amount",
+        "net-value": "Net value",
+        "next-osm-price": "Next OSM price",
+        "pnl": "P&L",
         "status": "Status",
-        "cid": ""
+        "vault-debt": "Vault debt"
       },
       "status": {
         "1": "Liquidated",
@@ -169,6 +178,14 @@
         "3": "{{tillLiquidation}}% till liquidation",
         "4": "{{toStopLoss}}% to Stop-loss",
         "5": "Closed {{closedDaysAgo}} days ago"
+      },
+      "activity": {
+        "1": "Withdrawn {{daysAgo}} days ago",
+        "2": "Increased risk {{daysAgo}} days ago",
+        "3": "Decreased risk {{daysAgo}} days ago",
+        "4": "Closed {{daysAgo}} days ago",
+        "5": "Opened {{daysAgo}} days ago",
+        "6": "Deposided {{daysAgo}} days ago"
       },
       "banner": {
         "high-risk-positions": {

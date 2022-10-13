@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
-import { DiscoveryTableRowData, DiscoveryTableVaultStatus } from 'features/discovery/types'
+import { DiscoveryTableRowData, DiscoveryTableVaultActivity, DiscoveryTableVaultStatus } from 'features/discovery/types'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -16,6 +16,14 @@ const pillColors: { [key: string]: SxStyleProp } = {
   faded: { color: 'primary30', backgroundColor: 'secondary60' },
 }
 
+const activityColors: { [key in DiscoveryTableVaultActivity]: SxStyleProp } = {
+  [DiscoveryTableVaultActivity.WITHDRAWN]: pillColors.warning,
+  [DiscoveryTableVaultActivity.INCREASED_RISK]: pillColors.critical,
+  [DiscoveryTableVaultActivity.DECREASED_RISK]: pillColors.success,
+  [DiscoveryTableVaultActivity.CLOSED]: pillColors.faded,
+  [DiscoveryTableVaultActivity.OPENED]: pillColors.interactive,
+  [DiscoveryTableVaultActivity.DEPOSITED]: pillColors.interactive,
+}
 const statusColors: { [key in DiscoveryTableVaultStatus]: SxStyleProp } = {
   [DiscoveryTableVaultStatus.LIQUIDATED]: pillColors.critical,
   [DiscoveryTableVaultStatus.BEING_LIQUIDATED]: pillColors.warning,
@@ -50,6 +58,7 @@ export function DiscoveryTableDataCellContent({
           </Flex>
         </Flex>
       )
+    case 'activity':
     case 'status':
       return (
         <Text
@@ -60,22 +69,27 @@ export function DiscoveryTableDataCellContent({
             fontWeight: 'semiBold',
             borderRadius: 'mediumLarge',
             whiteSpace: 'pre',
+            ...(row.activity && { ...activityColors[row.activity?.kind] }),
             ...(row.status && { ...statusColors[row.status?.kind] }),
           }}
         >
-          {t(`discovery.table.status.${row.status?.kind}`, { ...row.status?.additionalData })}
+          {t(`discovery.table.${label}.${row[label]?.kind}`, { ...row[label]?.additionalData })}
         </Text>
       )
-    case 'cid':
+    case 'cdpId':
       return (
         <AppLink href={`/${row?.cid}`}>
           <Button variant="tertiary">{t('discovery.table.view-position')}</Button>
         </AppLink>
       )
+    case 'collateralValue':
     case 'liquidationPrice':
-    case 'nextOsmPrice':
     case 'maxLiquidationAmount':
+    case 'nextOsmPrice':
+    case 'pnl':
       return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
+    case 'currentMultiple':
+      return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
     default:
       return <>{`${row[label]}`}</>
   }
