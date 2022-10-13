@@ -520,6 +520,7 @@
   },
   "manage-earn-vault": {
     "overview-earn": "Overview (Earn ID: {{earnId}})",
+    "overview-earn-aave": "Overview",
     "earnings-to-date": "Earnings to date",
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
     "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Oasis fees. The 'After fees' value is accounting for the earnings including the Oasis fee, and the Ethereum Gas fees.",
@@ -1027,6 +1028,10 @@
       "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
       "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+    },
+    "aave-multi-position": {
+      "header": "Your Maker Vault got liquidated",
+      "subheader": "This Maker Vault got liquidated"
     }
   },
   "vault-banners": {

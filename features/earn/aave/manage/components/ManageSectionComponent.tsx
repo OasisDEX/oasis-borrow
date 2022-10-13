@@ -28,7 +28,7 @@ type ManageSectionComponentProps = {
 
 const mockData = {
   earnId: 3920,
-  pnl: new BigNumber(30000.01),
+  pnl: 'n/a',
   earnings: new BigNumber(34000.21),
   earningsAfterFees: new BigNumber(31000.21),
   APYtotal: new BigNumber(8.3),
@@ -80,7 +80,7 @@ export function ManageSectionComponent({
 
   return (
     <DetailsSection
-      title={t('manage-earn-vault.overview-earn', { earnId: mockData.earnId })}
+      title={t('manage-earn-vault.overview-earn-aave')}
       content={
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
@@ -88,7 +88,7 @@ export function ManageSectionComponent({
             value={formatBigNumber(netValue || zero, 2)}
             unit={state.context.token}
             footnote={t('manage-earn-vault.pnl', {
-              value: formatBigNumber(mockData.pnl, 2),
+              value: mockData.pnl,
               token: state.context.token,
             })}
             modal={<div>Explanation of the thing, probably</div>}

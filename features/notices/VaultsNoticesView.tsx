@@ -423,11 +423,12 @@ export function VaultNoticesView({ id }: { id: BigNumber }) {
 }
 
 export function AavePositionAlreadyOpenedNotice() {
+  const { t } = useTranslation()
   return (
     <Box sx={{ mb: 4 }}>
       <VaultNotice
-        header="This position is affected by other assets on AAVE"
-        subheader="This position is not reflecting the entire position on AAVE, as there are other assets put up as collateral or debt on this same DS-Proxy. Contact us to see what you can do."
+        header={t('vault-notices.aave.multi-position.header')}
+        subheader={t('vault-notices.aave.multi-position.subheader') as string}
         color="banner.warning"
         withClose={false}
       />
