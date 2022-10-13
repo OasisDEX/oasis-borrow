@@ -205,7 +205,7 @@ export const createOpenAaveStateMachine = createMachine(
   },
   {
     guards: {
-      emptyProxyAddress: ({ proxyAddress }) => allDefined(proxyAddress),
+      emptyProxyAddress: ({ proxyAddress }) => !allDefined(proxyAddress),
       validTransactionParameters: ({ userInput, proxyAddress, transactionParameters }) =>
         allDefined(userInput, proxyAddress, transactionParameters),
       enoughBalance: ({ tokenBalance, userInput }) =>
