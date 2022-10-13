@@ -1,4 +1,4 @@
-import { ADDRESSES, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
+import { ADDRESSES, IPosition, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
@@ -21,6 +21,13 @@ function getAddressesFromContext(context: ContextConnected) {
   }
 }
 
+export function logPosition(position: IPosition, name: string) {
+  console.log(`----------- ${name} ------------`)
+  console.log(`collateral: ${position.collateral.amount}`)
+  console.log(`debt: ${position.debt.amount}`)
+  console.log(`ltv: ${position.riskRatio.loanToValue}`)
+}
+
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
@@ -28,9 +35,11 @@ export async function getOpenAaveParameters(
   slippage: BigNumber,
   proxyAddress: string,
 ): Promise<IStrategy> {
+  // console.log(`configured ltv: ${riskRatio.loanToValue}`)
+
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  return await strategies.aave.openStEth(
+  const params = await strategies.aave.openStEth(
     {
       depositAmount: amountToWei(amount, 'ETH'),
       slippage: slippage,
@@ -44,6 +53,10 @@ export async function getOpenAaveParameters(
       getSwapData: getOneInchCall(context.swapAddress),
     },
   )
+
+  logPosition(params.simulation.position, 'new position in getOpenAaveParameters')
+
+  return params
 }
 
 export async function getAdjustAaveParameters(
@@ -52,8 +65,10 @@ export async function getAdjustAaveParameters(
   riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
-  position: IBasePosition,
+  position: IPosition,
 ): Promise<IStrategy> {
+  logPosition(position, 'getAdjustAaveParameters - starting position')
+
   const addresses = {
     DAI: context.tokens['DAI'].address,
     ETH: context.tokens['ETH'].address,
@@ -82,6 +97,8 @@ export async function getAdjustAaveParameters(
       position,
     },
   )
+
+  logPosition(strat.simulation.position, 'getAdjustAaveParameters - target position')
 
   return strat
 }

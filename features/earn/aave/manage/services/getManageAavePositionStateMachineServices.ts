@@ -17,7 +17,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { getAdjustAaveParameters } from '../../../../aave'
+import { getAdjustAaveParameters, logPosition } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 import { callOperationExecutor } from '../../../../../blockchain/calls/operationExecutor'
@@ -63,11 +63,8 @@ export function getManageAavePositionStateMachineServices$(
           reserveConfigurationData,
           aaveUserConfiguration,
           aaveReservesList,
-        ]) => ({
-          positionData: reserveData,
-          accountData: accountData,
-          oraclePrice: oraclePrice,
-          position: new Position(
+        ]) => {
+          const pos = new Position(
             { amount: new BigNumber(accountData.totalDebtETH.toString()) },
             { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
             oraclePrice,
@@ -76,10 +73,19 @@ export function getManageAavePositionStateMachineServices$(
               maxLoanToValue: reserveConfigurationData.ltv,
               liquidationThreshold: reserveConfigurationData.liquidationThreshold,
             },
-          ),
-          aaveUserConfiguration,
-          aaveReservesList,
-        }),
+          )
+
+          logPosition(pos, 'position loaded from aaveProtocolData')
+
+          return {
+            positionData: reserveData,
+            accountData: accountData,
+            oraclePrice: oraclePrice,
+            position: pos,
+            aaveUserConfiguration,
+            aaveReservesList,
+          }
+        },
       ),
     )
   }
