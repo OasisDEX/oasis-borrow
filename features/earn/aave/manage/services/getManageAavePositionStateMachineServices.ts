@@ -50,23 +50,32 @@ export function getManageAavePositionStateMachineServices$(
       aaveUserConfiguration$({ proxyAddress }),
       aaveReservesList$(),
     ).pipe(
-      map(([reserveData, accountData, oraclePrice, reserveConfigurationData, aaveUserConfiguration, aaveReservesList]) => ({
-        positionData: reserveData,
-        accountData: accountData,
-        oraclePrice: oraclePrice,
-        position: new Position(
-          { amount: new BigNumber(accountData.totalDebtETH.toString()) },
-          { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
+      map(
+        ([
+          reserveData,
+          accountData,
           oraclePrice,
-          {
-            dustLimit: new BigNumber(0),
-            maxLoanToValue: reserveConfigurationData.ltv,
-            liquidationThreshold: reserveConfigurationData.liquidationThreshold,
-          },
-        ),
-        aaveUserConfiguration,
-        aaveReservesList,
-      })),
+          reserveConfigurationData,
+          aaveUserConfiguration,
+          aaveReservesList,
+        ]) => ({
+          positionData: reserveData,
+          accountData: accountData,
+          oraclePrice: oraclePrice,
+          position: new Position(
+            { amount: new BigNumber(accountData.totalDebtETH.toString()) },
+            { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
+            oraclePrice,
+            {
+              dustLimit: new BigNumber(0),
+              maxLoanToValue: reserveConfigurationData.ltv,
+              liquidationThreshold: reserveConfigurationData.liquidationThreshold,
+            },
+          ),
+          aaveUserConfiguration,
+          aaveReservesList,
+        }),
+      ),
     )
   }
 

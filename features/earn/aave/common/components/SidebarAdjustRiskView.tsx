@@ -31,7 +31,8 @@ export function AdjustRiskView({
   state,
   send,
   primaryButton,
-  textButton, resetRiskValue,
+  textButton,
+  resetRiskValue,
   viewLocked = false,
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()

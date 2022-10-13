@@ -209,12 +209,6 @@ export const createManageAaveStateMachine =
     {
       guards: {
         validTransactionParameters: ({ proxyAddress, transactionParameters }) => {
-          console.log(
-            `validTransactionParameters ${proxyAddress} ${transactionParameters} ${allDefined(
-              proxyAddress,
-              transactionParameters,
-            )}`,
-          )
           return allDefined(proxyAddress, transactionParameters)
         },
         newRiskInputted: (state) => {

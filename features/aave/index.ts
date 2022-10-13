@@ -54,7 +54,6 @@ export async function getAdjustAaveParameters(
   proxyAddress: string,
   position: IBasePosition,
 ): Promise<IStrategy> {
-  console.log('here')
   const addresses = {
     DAI: context.tokens['DAI'].address,
     ETH: context.tokens['ETH'].address,
@@ -69,7 +68,7 @@ export async function getAdjustAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  return await strategies.aave.adjustStEth(
+  const strat = await strategies.aave.adjustStEth(
     {
       depositAmount: amountToWei(stEthValueLocked, 'ETH'),
       slippage: slippage,
@@ -83,6 +82,10 @@ export async function getAdjustAaveParameters(
       position,
     },
   )
+
+  console.log('calls returned from adjust', strat.calls)
+
+  return strat
 }
 
 export async function getCloseAaveParameters(

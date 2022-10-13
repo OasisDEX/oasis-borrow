@@ -33,6 +33,7 @@ export const callOperationExecutor: TransactionDef<OperationExecutorTxMeta> = {
 }
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
+  console.log(`operationExecutor`, context.operationExecutor)
   return context
     .contract<OperationExecutor>(context.operationExecutor)
     .methods.executeOp(data.calls, data.operationName)
