@@ -94,10 +94,12 @@ export function DiscoveryTableDataCellContent({
       return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
     case 'earningsToDate':
     case 'netValue':
+    case 'vaultDebt':
       return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
     case 'currentMultiple':
       return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
     case '30DayAvgApy':
+    case 'colRatio':
       return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     default:
       return <>{`${row[label]}`}</>

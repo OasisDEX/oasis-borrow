@@ -1,60 +1,66 @@
 {
   "rows": [
     {
-      "asset": "ETH",
-      "liquidationPrice": 1254.39,
-      "nextOsmPrice": 1326.9,
-      "maxLiquidationAmount": 353422.43,
-      "status": {
-        "kind": 1
+      "asset": "WBTC",
+      "collateralValue": 279473.49,
+      "vaultDebt": 180302943.32,
+      "colRatio": 320.2,
+      "activity": {
+        "kind": 3,
+        "additionalData": {
+          "daysAgo": 1
+        }
       },
       "cdpId": 18604
     },
     {
-      "asset": "WBTC",
-      "liquidationPrice": 13500.3,
-      "nextOsmPrice": 19515.03,
-      "maxLiquidationAmount": 43943422.24,
-      "status": {
-        "kind": 2
+      "asset": "ETH",
+      "collateralValue": 893274.49,
+      "vaultDebt": 23905894.32,
+      "colRatio": 180.11,
+      "activity": {
+        "kind": 1,
+        "additionalData": {
+          "daysAgo": 3
+        }
       },
       "cdpId": 17503
     },
     {
-      "asset": "WSTETH",
-      "liquidationPrice": 1320.31,
-      "nextOsmPrice": 1419.48,
-      "maxLiquidationAmount": 9231242.2,
-      "status": {
-        "kind": 3,
+      "asset": "ETH",
+      "collateralValue": 318763.49,
+      "vaultDebt": 68413546.32,
+      "colRatio": 241.68,
+      "activity": {
+        "kind": 2,
         "additionalData": {
-          "tillLiquidation": 1.02
+          "daysAgo": 2
         }
       },
       "cdpId": 6843
     },
     {
-      "asset": "ETH",
-      "liquidationPrice": 1240.74,
-      "nextOsmPrice": 1326.9,
-      "maxLiquidationAmount": 234215463.94,
-      "status": {
-        "kind": 4,
+      "asset": "GUNIV3DAIUSDC1",
+      "collateralValue": 218765.37,
+      "vaultDebt": 9843213542.32,
+      "colRatio": 191.69,
+      "activity": {
+        "kind": 3,
         "additionalData": {
-          "toStopLoss": 12.61
+          "daysAgo": 1
         }
       },
       "cdpId": 24300
     },
     {
-      "asset": "ETH",
-      "liquidationPrice": 1670.75,
-      "nextOsmPrice": 1326.9,
-      "maxLiquidationAmount": 9568049.66,
-      "status": {
-        "kind": 5,
+      "asset": "WSTETH",
+      "collateralValue": 594737.49,
+      "vaultDebt": 50986740.32,
+      "colRatio": 694.02,
+      "activity": {
+        "kind": 6,
         "additionalData": {
-          "closedDaysAgo": 5
+          "daysAgo": 11
         }
       },
       "cdpId": 24985
