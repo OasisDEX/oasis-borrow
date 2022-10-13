@@ -1605,7 +1605,7 @@
     "buy-title": "基础 Auto-Buy 摘要",
     "target-col-ratio-each-buy": "每次购买后的目标抵押率",
     "target-multiple-each-buy": "每次购买后的目标倍率",
-    "trigger-col-ratio-to-perfrom-buy": "触发抵押率执行每次自动化购买",
+    "trigger-col-ratio-to-perform-buy": "触发抵押率执行每次自动化购买",
     "next-buy-prices": "下次购买价格",
     "total-cost-of-next-buy": "下次购买后 ETH 的总成本",
     "collateral-after-next-buy": "下次购买后的抵押品",
@@ -1797,7 +1797,6 @@
     "aave": {
       "vault-form": {
         "adjust-risk": "Adjust Risk",
-
         "deposit": "存入 ETH",
         "title": "你的 Earn 仓位",
         "close-title": "以 ETH 结算并关闭此仓位",

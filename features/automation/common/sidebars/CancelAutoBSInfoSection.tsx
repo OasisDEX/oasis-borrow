@@ -12,6 +12,8 @@ interface CancelAutoBSInfoSectionProps {
   liquidationPrice: BigNumber
   debt: BigNumber
   title: string
+  targetLabel: string
+  triggerLabel: string
   autoBSState: AutoBSFormChange
 }
 
@@ -20,6 +22,8 @@ export function CancelAutoBSInfoSection({
   liquidationPrice,
   debt,
   title,
+  targetLabel,
+  triggerLabel,
   autoBSState,
 }: CancelAutoBSInfoSectionProps) {
   const { t } = useTranslation()
@@ -30,8 +34,8 @@ export function CancelAutoBSInfoSection({
   const collateralizationRatioFormatted = formatPercent(collateralizationRatio.times(100), {
     precision: 2,
   })
-  const ratioToPerformSellFormatted = formatPercent(autoBSState.execCollRatio, { precision: 2 })
-  const colRatioAfterSellFormatted = formatPercent(autoBSState.targetCollRatio, { precision: 2 })
+  const execCollRatioFormatted = formatPercent(autoBSState.execCollRatio, { precision: 2 })
+  const targetCollRatioFormatted = formatPercent(autoBSState.targetCollRatio, { precision: 2 })
 
   return (
     <InfoSection
@@ -40,13 +44,13 @@ export function CancelAutoBSInfoSection({
         ...(isDebtZero || readOnlyAutoBSEnabled
           ? [
               {
-                label: t('auto-sell.target-col-ratio-each-sell'),
-                value: colRatioAfterSellFormatted,
+                label: targetLabel,
+                value: targetCollRatioFormatted,
                 secondaryValue: '0%',
               },
               {
-                label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
-                value: ratioToPerformSellFormatted,
+                label: triggerLabel,
+                value: execCollRatioFormatted,
                 secondaryValue: '0%',
               },
             ]

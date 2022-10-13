@@ -55,6 +55,7 @@ function AutoTakeProfitInfoSectionControl({
     <CancelAutoTakeProfitInfoSection
       collateralizationRatio={vault.collateralizationRatio.times(100)}
       token={vault.token}
+      debt={vault.debt}
       triggerColPrice={autoTakeProfitTriggerData.executionPrice}
     />
   )
