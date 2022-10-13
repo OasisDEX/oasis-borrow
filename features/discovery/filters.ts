@@ -23,7 +23,7 @@ export const discoverySizeFilter: DiscoveryFiltersListItem[] = [
   { value: '<100k', label: 'Under $100,000' },
   { value: '100k-250k', label: '$100,000 - $250,000' },
   { value: '250k-500k', label: '$250,000 - $500,000' },
-  { value: '500k-1m', label: '$500,000 - $1,000,000', },
+  { value: '500k-1m', label: '$500,000 - $1,000,000' },
   { value: '>1m', label: 'Over $1,000,000' },
 ]
 
