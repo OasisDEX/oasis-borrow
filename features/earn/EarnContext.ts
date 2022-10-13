@@ -10,6 +10,7 @@ import { of } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
 import { prepareAaveAvailableLiquidityInUSD$ } from './aave/helpers/aavePrepareAvailableLiquidity'
+import { aavePrepareReserveData } from './aave/helpers/aavePrepareReserveData'
 
 export function setupEarnContext({ context$ }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
@@ -17,18 +18,21 @@ export function setupEarnContext({ context$ }: AppContext) {
   const aaveReserveConfigurationData$ = observe(once$, context$, getAaveReserveConfigurationData)
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
+  const aaveReserveDataETH$ = getAaveReserveData$({ token: 'ETH' })
 
   const aaveAvailableLiquidityETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
-    getAaveReserveData$({ token: 'ETH' }),
+    aaveReserveDataETH$,
     // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  const aaveReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
+  const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
+  const aavePreparedReserveDataETH$ = curry(aavePrepareReserveData())(aaveReserveDataETH$)
 
   return {
-    aaveReserveConfigurationData,
+    aaveSTETHReserveConfigurationData,
     aaveAvailableLiquidityETH$,
+    aavePreparedReserveDataETH$,
   }
 }
 

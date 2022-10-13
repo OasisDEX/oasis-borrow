@@ -1,1 +1,1 @@
-export * from './AaveOverviewSectionComponent'
+export * from './ManageSectionComponent'

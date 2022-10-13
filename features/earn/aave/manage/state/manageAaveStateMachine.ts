@@ -3,7 +3,10 @@ import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveUserAccountData } from '../../../../../blockchain/calls/aave/aaveLendingPool'
+import {
+  AaveConfigurationData,
+  AaveUserAccountData,
+} from '../../../../../blockchain/calls/aave/aaveLendingPool'
 import { AaveUserReserveData } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { amountFromWei } from '../../../../../blockchain/utils'
@@ -42,6 +45,8 @@ export interface AaveProtocolData {
   accountData: AaveUserAccountData
   oraclePrice: BigNumber
   position: IPosition
+  aaveUserConfiguration: AaveConfigurationData
+  aaveReservesList: AaveConfigurationData
 }
 
 export type ManageAaveEvent =

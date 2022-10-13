@@ -144,6 +144,7 @@ export function SidebarOpenAaveVault() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
   const { t } = useTranslation()
+  const { hasOtherAssetsThanETH_STETH } = state.context
 
   switch (true) {
     case state.matches('editing'):
@@ -166,6 +167,7 @@ export function SidebarOpenAaveVault() {
             label: 'Back to enter ETH',
             action: () => send('BACK_TO_EDITING'),
           }}
+          viewLocked={hasOtherAssetsThanETH_STETH}
         />
       )
     case state.matches('reviewing'):

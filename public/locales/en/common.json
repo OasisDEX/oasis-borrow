@@ -562,12 +562,18 @@
   },
   "manage-earn-vault": {
     "overview-earn": "Overview (Earn ID: {{earnId}})",
+    "overview-earn-aave": "Overview",
     "earnings-to-date": "Earnings to date",
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
     "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Oasis fees. The 'After fees' value is accounting for the earnings including the Oasis fee, and the Ethereum Gas fees.",
     "net-apy": "Net APY",
     "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
-    "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed."
+    "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed.",
+    "pnl": "PnL {{value}} {{token}}",
+    "ratio-history": "Ratio history",
+    "position-eth-debt": "Position ETH Debt",
+    "liquidation-price-ratio": "Liquidation price ratio",
+    "has-asset-already": "There is an active AAVE position open in this address. Therefore, you cannot open a stETH earn position. Close your AAVE position first to continue."
   },
   "borrow-to-multiply": {
     "checkmark1": "Multiply your exposure on your {{token}}",
@@ -1069,6 +1075,10 @@
       "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
       "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+    },
+    "aave-multi-position": {
+      "header": "Your Maker Vault got liquidated",
+      "subheader": "This Maker Vault got liquidated"
     }
   },
   "vault-banners": {

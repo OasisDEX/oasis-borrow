@@ -26,9 +26,9 @@ const aaveCalcValueBasis = {
 
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const { aaveReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
+  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
   const { aaveSthEthYieldsQuery } = useAppContext()
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveReserveConfigurationData)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityETH$,
   )
