@@ -102,7 +102,6 @@ import {
   tokenPrices$,
 } from 'blockchain/prices'
 import {
-  createAaveCollateralTokens$,
   createAccountBalance$,
   createAllowance$,
   createBalance$,
@@ -236,10 +235,9 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
-  createAavePositions$,
+  createAavePosition$,
   createMakerPositions$,
   createPositions$,
-  decorateAaveTokensPrice$,
 } from 'features/vaultsOverview/pipes/positions'
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
@@ -278,6 +276,7 @@ import { getAaveUserAccountData } from '../blockchain/calls/aave/aaveLendingPool
 import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import { prepareAaveAvailableLiquidityInUSD$ } from '../features/earn/aave/helpers/aavePrepareAvailableLiquidity'
+import { hasAavePosition$ } from '../features/earn/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -744,7 +743,6 @@ export function setupAppContext() {
   const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
-  const aaveCollateralTokens$ = createAaveCollateralTokens$(context$)
 
   const accountBalances$ = curry(createAccountBalance$)(
     balanceLean$,
@@ -812,9 +810,10 @@ export function setupAppContext() {
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
 
-  const tokensWithValue$ = decorateAaveTokensPrice$(aaveCollateralTokens$, exchangeQuote$)
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
   const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
+
+  const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
@@ -828,11 +827,9 @@ export function setupAppContext() {
   const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
 
   const aavePositions$ = memoize(
-    curry(createAavePositions$)(
-      aaveUserReserveData$,
+    curry(createAavePosition$)(
       aaveUserAccountData$,
       aaveAvailableLiquidityETH$,
-      tokensWithValue$,
       ethPrice$,
       proxyAddress$,
     ),
@@ -1063,7 +1060,7 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(context$),
@@ -1177,6 +1174,7 @@ export function setupAppContext() {
     aaveUserReserveData$,
     aaveSthEthYieldsQuery,
     aaveAvailableLiquidityETH$,
+    aaveUserAccountData$,
   }
 }
 

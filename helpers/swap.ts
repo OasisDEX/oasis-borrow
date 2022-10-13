@@ -1,26 +1,5 @@
 import BigNumber from 'bignumber.js'
 
-export function getOneInchRealCall(swapAddress: string) {
-  return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
-    const response = await swapOneInchTokens(
-      from,
-      to,
-      amount.toString(),
-      swapAddress,
-      slippage.toString(),
-    )
-
-    return {
-      toTokenAddress: to,
-      fromTokenAddress: from,
-      minToTokenAmount: new BigNumber(0),
-      toTokenAmount: new BigNumber(response.toTokenAmount),
-      fromTokenAmount: new BigNumber(response.fromTokenAmount),
-      exchangeCalldata: response.tx.data,
-    }
-  }
-}
-
 async function swapOneInchTokens(
   fromTokenAddress: string,
   toTokenAddress: string,
@@ -78,7 +57,7 @@ export async function oneInchCallMock(
     minToTokenAmount: amount
       .div(marketPrice)
       .times(new BigNumber(1).minus(slippage))
-      .integerValue(BigNumber.ROUND_DOWN), // TODO: figure out slippage
+      .integerValue(BigNumber.ROUND_DOWN),
     exchangeCalldata: 0,
   }
 }

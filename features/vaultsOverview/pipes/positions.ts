@@ -1,15 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, switchMap } from 'rxjs/operators'
+import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
 import {
   AaveUserAccountData,
   AaveUserAccountDataParameters,
+  MINIMAL_COLLATERAL,
 } from '../../../blockchain/calls/aave/aaveLendingPool'
-import {
-  AaveUserReserveData,
-  AaveUserReserveDataParameters,
-} from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
@@ -90,66 +87,51 @@ export type AavePosition = Position & {
   ownerAddress: string
 }
 
-export function createAavePositions$(
-  userReserveData$: (parameters: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
+export function createAavePosition$(
   userAaveAccountData$: (
     parameters: AaveUserAccountDataParameters,
   ) => Observable<AaveUserAccountData>,
   aaveAvailableLiquidityETH$: Observable<BigNumber>,
-  tokenWithValue$: Observable<{ token: string; tokenPrice: BigNumber }[]>,
   ethPrice$: Observable<BigNumber>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
-): Observable<AavePosition[]> {
-  return combineLatest(
-    getUserProxyAddress$(address),
-    tokenWithValue$,
-    aaveAvailableLiquidityETH$,
-    ethPrice$,
-  ).pipe(
-    switchMap(([proxyAddress, tokens, liquidity, ethPrice]) => {
-      if (!proxyAddress) return of([])
-      const tokens$ = tokens.map(({ token }) => {
-        return combineLatest(
-          userReserveData$({
-            token,
-            proxyAddress,
-          }),
-          userAaveAccountData$({ proxyAddress }),
-        ).pipe(
-          filter(([_, accountData]) => accountData.totalCollateralETH.gt(new BigNumber(0.00001))),
-          map(([_, accountData]) => {
-            const netValue = accountData.totalCollateralETH
-              .minus(accountData.totalDebtETH)
-              .times(ethPrice)
-            return {
-              token: token,
-              contentsUsd: netValue,
-              title: 'AAVE-stETH-ETH',
-              url: `/earn/steth/${address}`,
-              netValue: netValue,
-              liquidity: liquidity,
-              pln: 'N/A',
-              ownerAddress: address,
-            }
-          }),
-        )
-      })
-      return tokens$.length === 0 ? of([]) : combineLatest(tokens$)
+): Observable<AavePosition | undefined> {
+  return combineLatest(getUserProxyAddress$(address), aaveAvailableLiquidityETH$, ethPrice$).pipe(
+    switchMap(([proxyAddress, liquidity, ethPrice]) => {
+      if (!proxyAddress) return EMPTY
+      return userAaveAccountData$({ proxyAddress }).pipe(
+        filter((accountData) => accountData.totalCollateralETH.gt(MINIMAL_COLLATERAL)),
+        map((accountData) => {
+          const netValue = accountData.totalCollateralETH
+            .minus(accountData.totalDebtETH)
+            .times(ethPrice)
+          return {
+            token: 'STETH',
+            contentsUsd: netValue,
+            title: 'AAVE-stETH-ETH',
+            url: `/earn/steth/${address}`,
+            netValue: netValue,
+            liquidity: liquidity,
+            pln: 'N/A',
+            ownerAddress: address,
+          }
+        }),
+        startWith(undefined),
+      )
     }),
   )
 }
 
 export function createPositions$(
   makerPositions$: (address: string) => Observable<Position[]>,
-  aavePositions$: (address: string) => Observable<Position[]>,
+  aavePositions$: (address: string) => Observable<Position | undefined>,
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aavePositions$ = aavePositions$(address)
   return combineLatest(_makerPositions$, _aavePositions$).pipe(
-    map(([makerPositions, aavePositions]) => {
-      return makerPositions.concat(aavePositions)
+    map(([makerPositions, aavePosition]) => {
+      return makerPositions.concat(aavePosition ? [aavePosition] : [])
     }),
   )
 }

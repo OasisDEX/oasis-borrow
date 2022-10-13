@@ -28,15 +28,14 @@ export interface VaultsOverview {
 
 export function createVaultsOverview$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
-  aavePositions$: (address: string) => Observable<AavePosition[]>,
+  aavePositions$: (address: string) => Observable<AavePosition | undefined>,
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(makerPositions$(address), aavePositions$(address)).pipe(
     map(([makerPositions, aavePositions]) => {
       const makerVMs = mapToPositionVM(makerPositions)
-      const aaveVMs = mapAavePositions(aavePositions)
+      const aaveVMs = mapAavePositions(aavePositions ? [aavePositions] : [])
 
-      console.log(`Got ${makerVMs.length} maker positions and ${aaveVMs.length} aave positions`)
       return {
         positions: [...makerVMs, ...aaveVMs],
       }
