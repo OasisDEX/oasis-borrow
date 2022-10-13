@@ -48,7 +48,7 @@ export async function getOpenAaveParameters(
 
 export async function getAdjustAaveParameters(
   context: ContextConnected,
-  stEthValueLocked: BigNumber,
+  stEthValueLocked: BigNumber | undefined,
   riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
@@ -70,7 +70,7 @@ export async function getAdjustAaveParameters(
 
   const strat = await strategies.aave.adjustStEth(
     {
-      depositAmount: amountToWei(stEthValueLocked, 'ETH'),
+      depositAmount: stEthValueLocked && amountToWei(stEthValueLocked, 'ETH'),
       slippage: slippage,
       multiple: riskRatio.multiple,
     },
@@ -82,8 +82,6 @@ export async function getAdjustAaveParameters(
       position,
     },
   )
-
-  console.log('calls returned from adjust', strat.calls)
 
   return strat
 }

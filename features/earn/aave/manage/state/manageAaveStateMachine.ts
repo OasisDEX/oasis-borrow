@@ -57,11 +57,6 @@ export type ManageAaveEvent =
       estimatedGasPrice: HasGasEstimation
     }
   | {
-      type: 'ADJUSTING_PARAMETERS_RECEIVED'
-      parameters: IStrategy
-      estimatedGasPrice: HasGasEstimation
-    }
-  | {
       type: 'UPDATE_STRATEGY_INFO'
       strategyInfo: IStrategyInfo
     }
@@ -76,7 +71,7 @@ export const createManageAaveStateMachine =
         events: {} as ManageAaveEvent,
         services: {} as {
           getParameters: {
-            data: IStrategy | undefined
+            data: { adjustParams: IStrategy; estimatedGasPrice: HasGasEstimation } | undefined
           }
           getProxyAddress: {
             data: string
@@ -130,6 +125,13 @@ export const createManageAaveStateMachine =
               src: 'getStrategyInfo',
               id: 'getStrategyInfo',
             },
+            {
+              src: 'getParameters',
+              id: 'getParameters',
+              onDone: {
+                actions: ['assignTransactionParameters'],
+              },
+            },
           ],
           on: {
             UPDATE_STRATEGY_INFO: {
@@ -143,6 +145,7 @@ export const createManageAaveStateMachine =
             },
             SET_RISK_RATIO: {
               actions: ['userInputRiskRatio'],
+              target: 'editing',
             },
             ADJUST_POSITION: {
               cond: 'newRiskInputted',
@@ -250,7 +253,8 @@ export const createManageAaveStateMachine =
           }
         }),
         assignTransactionParameters: assign((context, event) => ({
-          transactionParameters: event.data,
+          transactionParameters: event.data?.adjustParams,
+          estimatedGasPrice: event.data?.estimatedGasPrice,
         })),
         assignClosingTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,

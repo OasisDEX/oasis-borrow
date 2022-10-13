@@ -115,6 +115,8 @@ export function setupAaveContext({
 
   const manageAaveStateMachineServices$ = getManageAavePositionStateMachineServices$(
     contextForAddress$,
+    txHelpers$,
+    gasEstimation$,
     userSettings$,
     tokenBalances$,
     proxyForAccount$,

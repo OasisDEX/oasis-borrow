@@ -1,4 +1,4 @@
-import { Position } from '@oasisdex/oasis-actions'
+import { IStrategy, Position } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
@@ -15,13 +15,18 @@ import {
 } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
-import { zero } from '../../../../../helpers/zero'
+import { TxHelpers } from '../../../../../components/AppContext'
+import { HasGasEstimation } from '../../../../../helpers/form'
 import { getAdjustAaveParameters } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
+import { callOperationExecutor } from '../../../../../blockchain/calls/operationExecutor'
+import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 
 export function getManageAavePositionStateMachineServices$(
   context$: Observable<ContextConnected>,
+  txHelpers$: Observable<TxHelpers>,
+  gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
   userSettings$: Observable<UserSettingsState>,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
@@ -79,21 +84,48 @@ export function getManageAavePositionStateMachineServices$(
     )
   }
 
-  return combineLatest(context$, userSettings$).pipe(
-    map(([contextConnected, userSettings]) => {
+  return combineLatest(context$, userSettings$, txHelpers$).pipe(
+    map(([contextConnected, userSettings, txHelpers]) => {
       return {
-        getParameters: async (context) => {
+        getParameters: async (
+          context,
+        ): Promise<
+          { adjustParams: IStrategy; estimatedGasPrice: HasGasEstimation } | undefined
+        > => {
           if (!context.proxyAddress || !context.protocolData || !context.userInput.riskRatio)
             return undefined
 
-          return await getAdjustAaveParameters(
+          const adjustParams = await getAdjustAaveParameters(
             contextConnected,
-            zero,
+            context.userInput.amount,
             context.userInput.riskRatio,
             userSettings.slippage,
             context.proxyAddress,
             context.protocolData.position,
           )
+
+          let gasQty: number = 0
+          try {
+            // gasQty = 700000
+            gasQty = await txHelpers
+              .estimateGas(callOperationExecutor, {
+                kind: TxMetaKind.operationExecutor,
+                calls: adjustParams.calls as any,
+                operationName: 'CustomOperation',
+                proxyAddress: context.proxyAddress!,
+              })
+              .pipe(first())
+              .toPromise()
+          } catch (e) {
+            // todo: fix this call
+            gasQty = 700000
+          }
+
+          const estimatedGasPrice = await gasEstimation$(gasQty).pipe(first()).toPromise()
+
+          // console.log('gasEstimation', estimatedGasPrice)
+
+          return { adjustParams, estimatedGasPrice }
         },
         getBalance: (context, _): Observable<ManageAaveEvent> => {
           return tokenBalances$.pipe(
