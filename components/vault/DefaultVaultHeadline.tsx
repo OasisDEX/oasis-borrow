@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -11,12 +10,12 @@ export function DefaultVaultHeadline({
   header,
   token,
   priceInfo,
-  colRatio
+  colRatio,
 }: {
   header: VaultHeadlineProps['header']
   token: VaultHeadlineProps['token']
-  priceInfo: PriceInfo,
-  colRatio: string,
+  priceInfo: PriceInfo
+  colRatio: string
 }) {
   const { t } = useTranslation()
   const { currentCollateralPrice, nextCollateralPrice, collateralPricePercentageChange } = priceInfo
