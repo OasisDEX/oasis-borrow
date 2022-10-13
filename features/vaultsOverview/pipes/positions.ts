@@ -1,7 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { filter, map, switchMap } from 'rxjs/operators'
 
+import {
+  AaveUserAccountData,
+  AaveUserAccountDataParameters,
+} from '../../../blockchain/calls/aave/aaveLendingPool'
 import {
   AaveUserReserveData,
   AaveUserReserveDataParameters,
@@ -79,26 +83,54 @@ export function decorateAaveTokensPrice$(
   )
 }
 
+export type AavePosition = Position & {
+  netValue: BigNumber
+  liquidity: BigNumber
+  pln: string
+  ownerAddress: string
+}
+
 export function createAavePositions$(
   userReserveData$: (parameters: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
+  userAaveAccountData$: (
+    parameters: AaveUserAccountDataParameters,
+  ) => Observable<AaveUserAccountData>,
+  aaveAvailableLiquidityETH$: Observable<BigNumber>,
   tokenWithValue$: Observable<{ token: string; tokenPrice: BigNumber }[]>,
+  ethPrice$: Observable<BigNumber>,
   getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
   address: string,
-): Observable<Position[]> {
-  return combineLatest(getUserProxyAddress$(address), tokenWithValue$).pipe(
-    switchMap(([proxyAddress, tokens]) => {
+): Observable<AavePosition[]> {
+  return combineLatest(
+    getUserProxyAddress$(address),
+    tokenWithValue$,
+    aaveAvailableLiquidityETH$,
+    ethPrice$,
+  ).pipe(
+    switchMap(([proxyAddress, tokens, liquidity, ethPrice]) => {
       if (!proxyAddress) return of([])
-      const tokens$ = tokens.map(({ token, tokenPrice }) => {
-        return userReserveData$({
-          token,
-          proxyAddress,
-        }).pipe(
-          map((userReserve) => {
+      const tokens$ = tokens.map(({ token }) => {
+        return combineLatest(
+          userReserveData$({
+            token,
+            proxyAddress,
+          }),
+          userAaveAccountData$({ proxyAddress }),
+        ).pipe(
+          filter(([_, accountData]) => accountData.totalCollateralETH.gt(new BigNumber(0.00001))),
+          map(([_, accountData]) => {
+            const netValue = accountData.totalCollateralETH
+              .minus(accountData.totalDebtETH)
+              .times(ethPrice)
             return {
               token: token,
-              contentsUsd: userReserve.currentATokenBalance.times(tokenPrice),
-              title: `${token} Aave `,
+              contentsUsd: netValue,
+              title: 'AAVE-stETH-ETH',
               url: `/earn/steth/${address}`,
+              netValue: netValue,
+              liquidity: liquidity,
+              pln: 'N/A',
+              ownerAddress: address,
             }
           }),
         )

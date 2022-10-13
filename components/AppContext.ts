@@ -3,7 +3,10 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import { getAaveUserReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import {
+  getAaveReserveData,
+  getAaveUserReserveData,
+} from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -238,7 +241,7 @@ import {
   createPositions$,
   decorateAaveTokensPrice$,
 } from 'features/vaultsOverview/pipes/positions'
-import { createPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
+import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
@@ -271,7 +274,10 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
+import { getAaveUserAccountData } from '../blockchain/calls/aave/aaveLendingPool'
+import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
+import { prepareAaveAvailableLiquidityInUSD$ } from '../features/earn/aave/helpers/aavePrepareAvailableLiquidity'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -808,9 +814,28 @@ export function setupAppContext() {
 
   const tokensWithValue$ = decorateAaveTokensPrice$(aaveCollateralTokens$, exchangeQuote$)
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
+  const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
+
+  const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
+  const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
+
+  const aaveAvailableLiquidityETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
+    getAaveReserveData$({ token: 'ETH' }),
+    // @ts-expect-error
+    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  )
+
+  const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
 
   const aavePositions$ = memoize(
-    curry(createAavePositions$)(aaveUserReserveData$, tokensWithValue$, proxyAddress$),
+    curry(createAavePositions$)(
+      aaveUserReserveData$,
+      aaveUserAccountData$,
+      aaveAvailableLiquidityETH$,
+      tokensWithValue$,
+      ethPrice$,
+      proxyAddress$,
+    ),
   )
 
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
@@ -986,10 +1011,10 @@ export function setupAppContext() {
   )
 
   const positionsList$ = memoize(
-    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
+    curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$))
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$, aavePositions$))
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
@@ -1151,6 +1176,7 @@ export function setupAppContext() {
     checkReferralLocal$,
     aaveUserReserveData$,
     aaveSthEthYieldsQuery,
+    aaveAvailableLiquidityETH$,
   }
 }
 
