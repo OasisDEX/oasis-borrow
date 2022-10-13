@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { extractAutoBSData } from 'features/automation/common/state/autoBSTriggerData'
+import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -104,6 +105,22 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
         stopLossLevel: stopLossData.stopLossLevel,
         isToCollateral: stopLossData.isToCollateral,
       }
+    case 'auto-take-profit':
+      const autoTakeProfitData = extractAutoTakeProfitData({
+        isAutomationEnabled: false,
+        triggers: [
+          {
+            triggerId: Number(event.triggerId),
+            commandAddress: event.commandAddress,
+            executionParams: event.triggerData,
+          },
+        ],
+      })
+
+      return {
+        isToCollateral: autoTakeProfitData.isToCollateral,
+        executionPrice: autoTakeProfitData.executionPrice,
+      }
     default:
       return event
   }
@@ -130,6 +147,7 @@ export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
 
     return {
       ...addOrRemoveEvents[0],
+      autoKind: addOrRemoveEvents[0].kind,
       [historyKey]: addOrRemoveEvents.map((item) => unpackTriggerDataForHistory(item)),
     } as VaultHistoryEvent
   }
@@ -170,6 +188,7 @@ export function getUpdateTrigger(events: VaultHistoryEvent[]) {
       addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
       removeTriggerData: removeEvents.map((item) => unpackTriggerDataForHistory(item)),
       eventType: 'updated',
+      autoKind: autoEvent.kind,
     } as VaultHistoryEvent
   }
 
@@ -204,6 +223,7 @@ export function getOverrideTriggers(events: VaultHistoryEvent[]) {
         ...groupEvent,
         addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
         eventType: 'added',
+        autoKind: groupEvent.kind,
       } as VaultHistoryEvent,
       ...standaloneEvents.map(
         (item) =>
@@ -211,6 +231,7 @@ export function getOverrideTriggers(events: VaultHistoryEvent[]) {
             ...item,
             removeTriggerData: [unpackTriggerDataForHistory(item)],
             eventType: 'removed',
+            autoKind: item.kind,
           } as VaultHistoryEvent),
       ),
     ]
@@ -237,6 +258,7 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
       triggerId: autoEvent.triggerId,
       groupId: 'groupId' in autoEvent && autoEvent.groupId,
       eventType: 'executed',
+      autoKind: autoEvent.kind,
     } as VaultHistoryEvent
   }
 
