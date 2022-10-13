@@ -13,17 +13,17 @@ export type StopLossFormChangeAction =
   | { type: 'stop-loss-level'; stopLossLevel: BigNumber }
   | { type: 'close-type'; toCollateral: boolean }
   | { type: 'current-form'; currentForm: AutomationFormType }
-  | { type: 'is-confirmation'; isConfirmation: boolean }
+  | { type: 'is-awaiting-confirmation'; isAwaitingConfirmation: boolean }
   | { type: 'reset'; resetData: StopLossResetData }
   | {
-    type: 'tx-details'
-    txDetails: {
-      txStatus?: TxStatus
-      txError?: TxError
-      txHash?: string
-      txCost?: BigNumber
+      type: 'tx-details'
+      txDetails: {
+        txStatus?: TxStatus
+        txError?: TxError
+        txHash?: string
+        txCost?: BigNumber
+      }
     }
-  }
 
 export function formChangeReducer(
   state: StopLossFormChange,
@@ -36,8 +36,8 @@ export function formChangeReducer(
       return { ...state, collateralActive: action.toCollateral }
     case 'current-form':
       return { ...state, currentForm: action.currentForm }
-    case 'is-confirmation':
-      return { ...state, isConfirmation: action.isConfirmation }
+    case 'is-awaiting-confirmation':
+      return { ...state, isAwaitingConfirmation: action.isAwaitingConfirmation }
     case 'reset':
       return { ...state, ...action.resetData }
     case 'tx-details':
@@ -51,7 +51,7 @@ export interface StopLossFormChange {
   stopLossLevel: BigNumber
   collateralActive: boolean
   currentForm: AutomationFormType
-  isConfirmation: boolean;
+  isAwaitingConfirmation: boolean
   resetData: StopLossResetData
   txDetails?: {
     txStatus?: TxStatus

@@ -133,6 +133,7 @@ export interface SidebarAdjustStopLossEditingStageProps {
   closePickerConfig: PickCloseStateProps
   sliderConfig: SliderValuePickerProps
   isOpenFlow?: boolean
+  isAwaitingUserConfirmation: boolean
 }
 
 export function SidebarAdjustStopLossEditingStage({
@@ -148,6 +149,7 @@ export function SidebarAdjustStopLossEditingStage({
   stopLossState,
   executionPrice,
   isOpenFlow,
+  isAwaitingUserConfirmation,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -178,26 +180,35 @@ export function SidebarAdjustStopLossEditingStage({
 
   return (
     <>
-      {!vault.debt.isZero() ? (
-        <Grid>
-          <PickCloseState {...closePickerConfig} />
-          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('protection.set-downside-protection-desc')}{' '}
-            <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-              {t('here')}.
-            </AppLink>
-          </Text>
-          <SliderValuePicker {...sliderConfig} />
-        </Grid>
-      ) : (
-        <SidebarFormInfo
-          title={t('protection.closed-vault-existing-sl-header')}
-          description={t('protection.closed-vault-existing-sl-description')}
-        />
+      {!isAwaitingUserConfirmation && (
+        <>
+          {!vault.debt.isZero() ? (
+            <Grid>
+              <PickCloseState {...closePickerConfig} />
+              <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+                {t('protection.set-downside-protection-desc')}{' '}
+                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+                  {t('here')}.
+                </AppLink>
+              </Text>
+              <SliderValuePicker {...sliderConfig} />
+            </Grid>
+          ) : (
+            <SidebarFormInfo
+              title={t('protection.closed-vault-existing-sl-header')}
+              description={t('protection.closed-vault-existing-sl-description')}
+            />
+          )}
+        </>
+      )}
+      {isAwaitingUserConfirmation && (
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+          {t('protection.confirmation-text')}
+        </Text>
       )}
       {isEditing && (
         <>
-          {!isOpenFlow && (
+          {!isOpenFlow && !isAwaitingUserConfirmation && (
             <SidebarResetButton
               clear={() => {
                 uiChanges.publish(STOP_LOSS_FORM_CHANGE, {

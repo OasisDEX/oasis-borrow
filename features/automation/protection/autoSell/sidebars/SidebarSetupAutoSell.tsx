@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -12,7 +13,10 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import {
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
@@ -27,8 +31,11 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+
+import { calculateStepNumber } from '../../stopLoss/helpers'
 
 interface SidebarSetupAutoSellProps {
   vault: Vault
@@ -49,6 +56,7 @@ interface SidebarSetupAutoSellProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
+  isAwaitingConfirmation: boolean
   isFirstSetup: boolean
   debtDelta: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
@@ -86,8 +94,11 @@ export function SidebarSetupAutoSell({
   debtDeltaAtCurrentCollRatio,
   collateralDelta,
   executionPrice,
+  isAwaitingConfirmation,
 }: SidebarSetupAutoSellProps) {
   const gasEstimation = useGasEstimationContext()
+  const { t } = useTranslation()
+  const { uiChanges } = useAppContext()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -170,6 +181,7 @@ export function SidebarSetupAutoSell({
                   sliderMin={min}
                   sliderMax={max}
                   stopLossTriggerData={stopLossTriggerData}
+                  isAwaitingConfirmation={isAwaitingConfirmation}
                 />
               )}
               {isRemoveForm && (
@@ -194,16 +206,40 @@ export function SidebarSetupAutoSell({
         </Grid>
       ),
       primaryButton: {
-        label: primaryButtonLabel,
+        label: `${
+          isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
+        } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isAwaitingConfirmation) {
+            uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            txHandler()
+            uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: false,
+            })
+          }
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: textButtonLabel,
-          hidden: isFirstSetup,
-          action: () => textButtonHandler(),
+          label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

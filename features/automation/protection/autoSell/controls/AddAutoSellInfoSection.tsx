@@ -23,6 +23,7 @@ interface SellInfoSectionProps {
     secondaryValue: BigNumber
   }
   ethToBeSoldAtNextSell: BigNumber
+  maxGasFee?: number
 }
 
 export function AddAutoSellInfoSection({
@@ -36,6 +37,7 @@ export function AddAutoSellInfoSection({
   ethToBeSoldAtNextSell,
   targetRatioWithDeviationFloor,
   targetRatioWithDeviationCeiling,
+  maxGasFee,
 }: SellInfoSectionProps) {
   const { t } = useTranslation()
   const collateralToBeSoldAtNextSellFormatted = formatCryptoBalance(ethToBeSoldAtNextSell)
@@ -97,6 +99,11 @@ export function AddAutoSellInfoSection({
           label: t('auto-sell.estimated-transaction-cost'),
           value: <GasEstimation />,
         },
+        (maxGasFee && {
+          label: 'Max Gas Fee',
+          value: `${maxGasFee.toString()} Gwei`,
+        }) ||
+          {},
       ]}
     />
   )

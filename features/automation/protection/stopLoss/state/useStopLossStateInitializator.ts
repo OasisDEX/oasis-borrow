@@ -37,7 +37,7 @@ export function useStopLossStateInitializator(
       isConfirmation: false,
     })
   }, [])
-  
+
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'close-type',

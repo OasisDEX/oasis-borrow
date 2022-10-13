@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -11,7 +12,10 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import {
+  AUTO_BUY_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { getAutoBuyMinMaxValues } from 'features/automation/optimization/autoBuy/helpers'
@@ -22,11 +26,13 @@ import {
   warningsAutoBuyValidation,
 } from 'features/automation/optimization/autoBuy/validators'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { calculateStepNumber } from 'features/automation/protection/stopLoss/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -56,6 +62,7 @@ interface SidebarSetupAutoBuyProps {
   executionPrice: BigNumber
   isAutoBuyActive: boolean
   feature: AutomationFeatures
+  isAwaitingConfirmation: boolean
 }
 
 export function SidebarSetupAutoBuy({
@@ -82,6 +89,7 @@ export function SidebarSetupAutoBuy({
   isEditing,
   isDisabled,
   isFirstSetup,
+  isAwaitingConfirmation,
 
   debtDelta,
   collateralDelta,
@@ -89,6 +97,8 @@ export function SidebarSetupAutoBuy({
   isAutoBuyActive,
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
+  const { uiChanges } = useAppContext()
+  const { t } = useTranslation()
 
   const isMultiplyVault = vaultType === VaultType.Multiply
 
@@ -144,8 +154,6 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyErrors = extractCancelBSErrors(errors)
   const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
-  console.log('hello there')
-
   if (isAutoBuyActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
@@ -168,6 +176,7 @@ export function SidebarSetupAutoBuy({
                   sliderMin={min}
                   sliderMax={max}
                   stopLossTriggerData={stopLossTriggerData}
+                  isAwaitingConfirmation={isAwaitingConfirmation}
                 />
               )}
               {isRemoveForm && (
@@ -192,12 +201,17 @@ export function SidebarSetupAutoBuy({
         </Grid>
       ),
       primaryButton: {
-        label: primaryButtonLabel,
+        label: `${
+          isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
+        } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if(isEditing) {
-            
+          if (!isAwaitingConfirmation) {
+            uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
           } else {
             txHandler()
           }
@@ -205,9 +219,18 @@ export function SidebarSetupAutoBuy({
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: textButtonLabel,
-          hidden: isFirstSetup,
-          action: () => textButtonHandler(),
+          label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

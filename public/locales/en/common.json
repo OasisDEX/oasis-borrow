@@ -1128,6 +1128,7 @@
   "setup": "Setup",
   "protection": {
     "stop-loss-protection": "Stop-Loss Protection",
+    "confirmation-text": "Confirm your stop-loss setup.",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
@@ -1194,6 +1195,8 @@
     "no-threshold": "No threshold set",
     "set-no-threshold": "Set No Threshold",
     "set-threshold": "Set Threshold",
+    "edit-order": "Edit Order",
+    "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
     "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab",
@@ -1458,6 +1461,7 @@
   "auto-sell": {
     "sell-title": "Basic Auto-Sell Summary",
     "cancel-summary-title": "Cancel Auto-Sell order summary",
+    "confirmation": "Confirm your auto-sell setup.",
     "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
@@ -1511,6 +1515,7 @@
   "auto-buy": {
     "title": "Auto-Buy",
     "cancel-summary-title": "Cancel Auto-Buy order summary",
+    "confirmation-text": "Confirm your auto-buy setup.",
     "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Recurring buy order up to {{amount}}/{{token}}",
     "continual-buy-no-threshold": "Recurring buy order with no max",

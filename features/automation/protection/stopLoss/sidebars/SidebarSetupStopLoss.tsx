@@ -23,7 +23,10 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
-import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import {
+  calculateStepNumber,
+  getSliderPercentageFill,
+} from 'features/automation/protection/stopLoss/helpers'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
@@ -66,7 +69,7 @@ interface SidebarSetupStopLossProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
-  isAwaitingUserConfirmation: boolean;
+  isAwaitingUserConfirmation: boolean
   isFirstSetup: boolean
   closePickerConfig: PickCloseStateProps
   executionPrice: BigNumber
@@ -139,7 +142,7 @@ export function SidebarSetupStopLoss({
     stage,
     feature,
   })
-
+  console.log(isAwaitingUserConfirmation, 'isAwaitingUserConfirmation')
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
@@ -205,8 +208,6 @@ export function SidebarSetupStopLoss({
   const cancelStopLossWarnings = extractCancelBSWarnings(warnings)
   const cancelStopLossErrors = extractCancelBSErrors(errors)
 
-  console.log('hello there')
-
   if (isStopLossActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
@@ -215,7 +216,8 @@ export function SidebarSetupStopLoss({
         <Grid gap={3}>
           {stopLossWriteEnabled ? (
             <>
-              {(stage === 'stopLossEditing' || stage === 'txFailure' && !isAwaitingUserConfirmation) && (
+              {(stage === 'stopLossEditing' ||
+                (stage === 'txFailure' && !isAwaitingUserConfirmation)) && (
                 <>
                   {isAddForm && (
                     <SidebarAdjustStopLossEditingStage
@@ -275,16 +277,25 @@ export function SidebarSetupStopLoss({
         </Grid>
       ),
       primaryButton: {
-        label: primaryButtonLabel,
-        disabled: false,
+        label: `${
+          isAwaitingUserConfirmation ? t('protection.confirm') : primaryButtonLabel
+        } ${calculateStepNumber(isAwaitingUserConfirmation, stage)}`,
+        disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if(!isAwaitingUserConfirmation) {
+          if (!isAwaitingUserConfirmation) {
             uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-              type: 'is-confirmation',
-              isConfirmation: true
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
             })
           } else {
+            if (isAwaitingUserConfirmation) {
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
+
             txHandler({
               callOnSuccess: () => {
                 uiChanges.publish(TAB_CHANGE_SUBJECT, {
@@ -295,13 +306,22 @@ export function SidebarSetupStopLoss({
               },
             })
           }
-        }
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: textButtonLabel,
-          hidden: isFirstSetup,
-          action: () => textButtonHandler(),
+          label: isAwaitingUserConfirmation ? t('protection.edit-order') : textButtonLabel,
+          hidden: isFirstSetup && !isAwaitingUserConfirmation,
+          action: () => {
+            if (isAwaitingUserConfirmation) {
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

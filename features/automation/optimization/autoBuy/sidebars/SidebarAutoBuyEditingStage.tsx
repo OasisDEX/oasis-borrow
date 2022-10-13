@@ -50,6 +50,7 @@ interface SidebarAutoBuyEditingStageProps {
   sliderMin: BigNumber
   sliderMax: BigNumber
   stopLossTriggerData: StopLossTriggerData
+  isAwaitingConfirmation: boolean
 }
 
 export function SidebarAutoBuyEditingStage({
@@ -65,6 +66,7 @@ export function SidebarAutoBuyEditingStage({
   sliderMin,
   sliderMax,
   stopLossTriggerData,
+  isAwaitingConfirmation,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
@@ -168,132 +170,145 @@ export function SidebarAutoBuyEditingStage({
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {autoBuyState.maxBuyOrMinSellPrice !== undefined
-          ? t('auto-buy.set-trigger-description', {
-              targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-              token: vault.token,
-              execCollRatio: autoBuyState.execCollRatio,
-              executionPrice: executionPrice.toFixed(2),
-              minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
-            })
-          : t('auto-buy.set-trigger-description-no-threshold', {
-              targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-              token: vault.token,
-              execCollRatio: autoBuyState.execCollRatio,
-              executionPrice: executionPrice.toFixed(2),
-            })}{' '}
-        <AppLink
-          href="https://kb.oasis.app/help/setting-up-auto-buy-for-your-vault"
-          sx={{ fontSize: 2 }}
-        >
-          {t('here')}.
-        </AppLink>
-      </Text>{' '}
-      <MultipleRangeSlider
-        min={sliderMin.toNumber()}
-        max={sliderMax.toNumber()}
-        onChange={(value) => {
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'target-coll-ratio',
-            targetCollRatio: new BigNumber(value.value0),
-          })
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'execution-coll-ratio',
-            execCollRatio: new BigNumber(value.value1),
-          })
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-        }}
-        value={{
-          value0: autoBuyState.targetCollRatio.toNumber(),
-          value1: autoBuyState.execCollRatio.toNumber(),
-        }}
-        valueColors={{
-          value0: 'primary100',
-          value1: 'success100',
-        }}
-        step={1}
-        leftDescription={t('auto-buy.target-coll-ratio')}
-        rightDescription={t('auto-buy.trigger-coll-ratio')}
-        leftThumbColor="primary100"
-        rightThumbColor="success100"
-      />
-      <VaultActionInput
-        action={t('auto-buy.set-max-buy-price')}
-        amount={autoBuyState.maxBuyOrMinSellPrice}
-        hasAuxiliary={false}
-        hasError={false}
-        currencyCode="USD"
-        onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'max-buy-or-sell-price',
-            maxBuyOrMinSellPrice,
-          })
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-        })}
-        onToggle={(toggleStatus) => {
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'with-threshold',
-            withThreshold: toggleStatus,
-          })
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'max-buy-or-sell-price',
-            maxBuyOrMinSellPrice: !toggleStatus
-              ? undefined
-              : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-              ? zero
-              : autoBuyTriggerData.maxBuyOrMinSellPrice,
-          })
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-        }}
-        showToggle={true}
-        toggleOnLabel={t('protection.set-no-threshold')}
-        toggleOffLabel={t('protection.set-threshold')}
-        toggleOffPlaceholder={t('protection.no-threshold')}
-        defaultToggle={autoBuyState.withThreshold}
-      />
+      {isAwaitingConfirmation && (
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+          {t('auto-buy.confirmation-text')}
+        </Text>
+      )}
+      {!isAwaitingConfirmation && (
+        <>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+            {autoBuyState.maxBuyOrMinSellPrice !== undefined
+              ? t('auto-buy.set-trigger-description', {
+                  targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
+                  token: vault.token,
+                  execCollRatio: autoBuyState.execCollRatio,
+                  executionPrice: executionPrice.toFixed(2),
+                  minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
+                })
+              : t('auto-buy.set-trigger-description-no-threshold', {
+                  targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
+                  token: vault.token,
+                  execCollRatio: autoBuyState.execCollRatio,
+                  executionPrice: executionPrice.toFixed(2),
+                })}{' '}
+            <AppLink
+              href="https://kb.oasis.app/help/setting-up-auto-buy-for-your-vault"
+              sx={{ fontSize: 2 }}
+            >
+              {t('here')}.
+            </AppLink>
+          </Text>{' '}
+          <MultipleRangeSlider
+            min={sliderMin.toNumber()}
+            max={sliderMax.toNumber()}
+            onChange={(value) => {
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'target-coll-ratio',
+                targetCollRatio: new BigNumber(value.value0),
+              })
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'execution-coll-ratio',
+                execCollRatio: new BigNumber(value.value1),
+              })
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'is-editing',
+                isEditing: true,
+              })
+            }}
+            value={{
+              value0: autoBuyState.targetCollRatio.toNumber(),
+              value1: autoBuyState.execCollRatio.toNumber(),
+            }}
+            valueColors={{
+              value0: 'primary100',
+              value1: 'success100',
+            }}
+            step={1}
+            leftDescription={t('auto-buy.target-coll-ratio')}
+            rightDescription={t('auto-buy.trigger-coll-ratio')}
+            leftThumbColor="primary100"
+            rightThumbColor="success100"
+          />
+          <VaultActionInput
+            action={t('auto-buy.set-max-buy-price')}
+            amount={autoBuyState.maxBuyOrMinSellPrice}
+            hasAuxiliary={false}
+            hasError={false}
+            currencyCode="USD"
+            onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'max-buy-or-sell-price',
+                maxBuyOrMinSellPrice,
+              })
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'is-editing',
+                isEditing: true,
+              })
+            })}
+            onToggle={(toggleStatus) => {
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'with-threshold',
+                withThreshold: toggleStatus,
+              })
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'max-buy-or-sell-price',
+                maxBuyOrMinSellPrice: !toggleStatus
+                  ? undefined
+                  : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
+                  ? zero
+                  : autoBuyTriggerData.maxBuyOrMinSellPrice,
+              })
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'is-editing',
+                isEditing: true,
+              })
+            }}
+            showToggle={true}
+            toggleOnLabel={t('protection.set-no-threshold')}
+            toggleOffLabel={t('protection.set-threshold')}
+            toggleOffPlaceholder={t('protection.no-threshold')}
+            defaultToggle={autoBuyState.withThreshold}
+          />
+        </>
+      )}
       {isEditing && (
         <>
           <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Buy" />
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
-      <MaxGasPriceSection
-        onChange={(maxBaseFeeInGwei) => {
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'max-gas-fee-in-gwei',
-            maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
-          })
-          uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-        }}
-        value={autoBuyState.maxBaseFeeInGwei.toNumber()}
-      />
+      {!isAwaitingConfirmation && (
+        <MaxGasPriceSection
+          onChange={(maxBaseFeeInGwei) => {
+            uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+              type: 'max-gas-fee-in-gwei',
+              maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
+            })
+            uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+              type: 'is-editing',
+              isEditing: true,
+            })
+          }}
+          value={autoBuyState.maxBaseFeeInGwei.toNumber()}
+        />
+      )}
       {isEditing && (
         <>
-          <SidebarResetButton
-            clear={() => {
-              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
-                type: 'reset',
-                resetData: prepareAutoBSResetData(
-                  autoBuyTriggerData,
-                  vault.collateralizationRatio,
-                  AUTO_BUY_FORM_CHANGE,
-                ),
-              })
-            }}
-          />
+          {!isAwaitingConfirmation && (
+            <SidebarResetButton
+              clear={() => {
+                uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                  type: 'reset',
+                  resetData: prepareAutoBSResetData(
+                    autoBuyTriggerData,
+                    vault.collateralizationRatio,
+                    AUTO_BUY_FORM_CHANGE,
+                  ),
+                })
+              }}
+            />
+          )}
           <AutoBuyInfoSectionControl
             executionPrice={executionPrice}
             autoBuyState={autoBuyState}

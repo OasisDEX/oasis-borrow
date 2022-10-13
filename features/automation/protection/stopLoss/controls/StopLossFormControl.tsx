@@ -53,9 +53,9 @@ export function StopLossFormControl({
   txHelpers,
   vault,
 }: StopLossFormControlProps) {
-  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE);
+  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const isAwaitingUserConfirmation = stopLossState.isConfirmation;
+  const isAwaitingUserConfirmation = stopLossState.isAwaitingConfirmation
   console.log(isAwaitingUserConfirmation, 'confirmation state')
 
   const feature = AutomationFeatures.STOP_LOSS
