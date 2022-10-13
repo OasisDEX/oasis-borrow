@@ -205,7 +205,7 @@ export function GenericSelect({
           ),
         }}
         onBlur={() => {
-          // setIsOpen(false)
+          setIsOpen(false)
         }}
         onFocus={() => {
           setIsOpen(true)
@@ -214,7 +214,7 @@ export function GenericSelect({
           const currentValue = option as GenericSelectOption
 
           setValue(currentValue)
-          // setIsOpen(false)
+          setIsOpen(false)
           if (onChange) onChange(currentValue)
         }}
         {...(name && { name })}
