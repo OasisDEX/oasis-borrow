@@ -8,10 +8,12 @@ import { WithArrow } from 'components/WithArrow'
 import { maxUint32, maxUint256 } from 'features/automation/common/consts'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,
+  formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
@@ -26,21 +28,22 @@ import { Box, Flex, Text } from 'theme-ui'
 
 import { VaultHistoryEvent } from './vaultHistory'
 
-function resolveTranslationForEventsWithTriggers(event: VaultHistoryEvent) {
-  // TODO to be extend by groupType when available
+function resolveTranslationForEventsWithTriggers(event: AutomationEvent) {
   const isGroup = 'groupId' in event && event.groupId
+  const isExecutionEvent = event.eventType === 'executed'
 
-  switch (event.kind) {
-    case 'DECREASE_MULTIPLE':
-      return isGroup ? 'constant-multiple-sell' : 'basic-sell'
-    case 'INCREASE_MULTIPLE':
-      return isGroup ? 'constant-multiple-buy' : 'basic-buy'
-    case 'CLOSE_VAULT_TO_DAI':
-    case 'CLOSE_VAULT_TO_COLLATERAL':
-      return 'stop-loss'
-    default:
-      return isGroup ? 'constant-multiple' : event.kind
+  if (isGroup) {
+    switch (event.autoKind) {
+      case 'basic-sell':
+        return isExecutionEvent ? 'constant-multiple-sell' : 'constant-multiple'
+      case 'basic-buy':
+        return isExecutionEvent ? 'constant-multiple-buy' : 'constant-multiple'
+      default:
+        return 'constant-multiple'
+    }
   }
+
+  return event.autoKind
 }
 
 export function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
@@ -118,7 +121,7 @@ interface AutomationEntryProps {
   event: AutomationEvent
   isAddOrRemoveEvent: boolean
   isUpdateEvent: boolean
-  addOrRemoveTriggersData: (AutoBSTriggerData | StopLossTriggerData)[]
+  addOrRemoveTriggersData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
 }
 
 function StandaloneAutomationEntry({
@@ -130,6 +133,7 @@ function StandaloneAutomationEntry({
   const { t } = useTranslation()
 
   const isStopLossEvent = event.kind === 'stop-loss'
+  const isAutoTakeProfitEvent = event.kind === 'auto-take-profit'
   const isAutoBSEvent = event.kind === 'basic-buy' || event.kind === 'basic-sell'
   const maxBuyOrMinSellPriceLabel =
     event.kind === 'basic-sell' ? t('history.minimum-sell-price') : t('history.maximum-buy-price')
@@ -171,6 +175,18 @@ function StandaloneAutomationEntry({
                   precision: 2,
                   roundMode: BigNumber.ROUND_DOWN,
                 })}
+              </VaultHistoryEntryDetailsItem>
+              <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
+                {addOrRemoveTriggersData[0].isToCollateral
+                  ? (event as AutomationEvent).token
+                  : 'Dai'}
+              </VaultHistoryEntryDetailsItem>
+            </DefinitionList>
+          )}
+          {isAutoTakeProfitEvent && 'executionPrice' in addOrRemoveTriggersData[0] && (
+            <DefinitionList>
+              <VaultHistoryEntryDetailsItem label={t('history.trigger-price')}>
+                ${formatAmount(addOrRemoveTriggersData[0].executionPrice, 'USD')}
               </VaultHistoryEntryDetailsItem>
               <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
                 {addOrRemoveTriggersData[0].isToCollateral
@@ -241,6 +257,22 @@ function StandaloneAutomationEntry({
                     precision: 2,
                     roundMode: BigNumber.ROUND_DOWN,
                   })}
+                </VaultHistoryEntryDetailsItem>
+                <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
+                  {event.removeTriggerData[0].isToCollateral ? event.token : 'Dai'}
+                  <VaultChangesInformationArrow />
+                  {event.addTriggerData[0].isToCollateral ? event.token : 'Dai'}
+                </VaultHistoryEntryDetailsItem>
+              </DefinitionList>
+            )}
+          {isAutoTakeProfitEvent &&
+            'executionPrice' in event.removeTriggerData[0] &&
+            'executionPrice' in event.addTriggerData[0] && (
+              <DefinitionList>
+                <VaultHistoryEntryDetailsItem label={t('history.trigger-price')}>
+                  ${formatAmount(event.removeTriggerData[0].executionPrice, 'USD')}
+                  <VaultChangesInformationArrow />$
+                  {formatAmount(event.addTriggerData[0].executionPrice, 'USD')}
                 </VaultHistoryEntryDetailsItem>
                 <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
                   {event.removeTriggerData[0].isToCollateral ? event.token : 'Dai'}

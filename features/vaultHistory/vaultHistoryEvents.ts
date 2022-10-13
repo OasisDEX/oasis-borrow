@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
 interface HistoryEventBase {
@@ -220,14 +221,15 @@ interface AutomationBaseEvent {
   timestamp: string
   triggerData: string
   commandAddress: string
-  addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
-  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
-  kind: 'basic-sell' | 'basic-buy' | 'stop-loss'
+  addTriggerData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
+  removeTriggerData: (AutoBSTriggerData | StopLossTriggerData | AutoTakeProfitTriggerData)[]
+  kind: 'basic-sell' | 'basic-buy' | 'stop-loss' | 'auto-take-profit'
   eventType: 'added' | 'updated' | 'removed'
   token: string
   gasFee: BigNumber
   ethPrice: BigNumber
   groupId?: string
+  autoKind: string
 }
 
 type StopLossCloseEvent = CloseVaultExitDaiMultipleEvent | CloseVaultExitCollateralMultipleEvent
@@ -238,7 +240,10 @@ type StopLossExecutedEvent = StopLossCloseEvent & {
   triggerData: string
   addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
   removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  autoKind: string
 }
+
+type AutoTakeProfitExecutedEvent = StopLossExecutedEvent
 
 export interface AutoBuyExecutedEvent extends IncreaseMultipleEvent {
   eventType: 'executed'
@@ -246,6 +251,7 @@ export interface AutoBuyExecutedEvent extends IncreaseMultipleEvent {
   triggerData: string
   addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
   removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  autoKind: string
 }
 
 export interface AutoSellExecutedEvent extends DecreaseMultipleEvent {
@@ -254,6 +260,7 @@ export interface AutoSellExecutedEvent extends DecreaseMultipleEvent {
   triggerData: string
   addTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
   removeTriggerData: (AutoBSTriggerData | StopLossTriggerData)[]
+  autoKind: string
 }
 
 export type MultiplyEvent =
@@ -270,6 +277,7 @@ export type AutomationEvent =
   | AutoBuyExecutedEvent
   | AutoSellExecutedEvent
   | AutomationBaseEvent
+  | AutoTakeProfitExecutedEvent
 
 export interface ReturnedEvent {
   kind: string
