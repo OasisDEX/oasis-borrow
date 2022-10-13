@@ -17,7 +17,7 @@ export type FilterYieldFieldsType =
 const yieldsDateFormat = 'YYYY-MM-DD'
 
 const aaveStEthYield = gql`
-  mutation aaveYieldRate(
+  mutation stEthYields(
     $currentDate: Date!
     $currentDateOffset: Date!
     $date7daysAgo: Date!
@@ -34,56 +34,92 @@ const aaveStEthYield = gql`
     $include90DaysOffset: Boolean!
     $include1Year: Boolean!
     $includeInception: Boolean!
+    $reserveAddress: String!
   ) {
-    yield7days: aaveYieldRateStethEth(
-      input: { startDate: $date7daysAgo, endDate: $currentDate, multiple: $multiply }
+    yield7days: aaveYieldRate(
+      input: {
+        startDate: $date7daysAgo
+        endDate: $currentDate
+        multiple: $multiply
+        reserveAddress: $reserveAddress
+      }
     ) @include(if: $include7Days) {
       yield {
         netAnnualisedYield
       }
     }
 
-    yield7daysOffset: aaveYieldRateStethEth(
-      input: { startDate: $date7daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
+    yield7daysOffset: aaveYieldRate(
+      input: {
+        startDate: $date7daysAgoOffset
+        endDate: $currentDateOffset
+        multiple: $multiply
+        reserveAddress: $reserveAddress
+      }
     ) @include(if: $include7DaysOffset) {
       yield {
         netAnnualisedYield
       }
     }
 
-    yield30days: aaveYieldRateStethEth(
-      input: { startDate: $date30daysAgo, endDate: $currentDate, multiple: $multiply }
+    yield30days: aaveYieldRate(
+      input: {
+        startDate: $date30daysAgo
+        endDate: $currentDate
+        multiple: $multiply
+        reserveAddress: $reserveAddress
+      }
     ) @include(if: $include30Days) {
       yield {
         netAnnualisedYield
       }
     }
 
-    yield90days: aaveYieldRateStethEth(
-      input: { startDate: $date90daysAgo, endDate: $currentDate, multiple: $multiply }
+    yield90days: aaveYieldRate(
+      input: {
+        startDate: $date90daysAgo
+        endDate: $currentDate
+        multiple: $multiply
+        reserveAddress: $reserveAddress
+      }
     ) @include(if: $include90Days) {
       yield {
         netAnnualisedYield
       }
     }
 
-    yield90daysOffset: aaveYieldRateStethEth(
-      input: { startDate: $date90daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
+    yield90daysOffset: aaveYieldRate(
+      input: {
+        startDate: $date90daysAgoOffset
+        endDate: $currentDateOffset
+        multiple: $multiply
+        reserveAddress: $reserveAddress
+      }
     ) @include(if: $include90DaysOffset) {
       yield {
         netAnnualisedYield
       }
     }
 
-    yield1year: aaveYieldRateStethEth(
-      input: { startDate: $date1yearAgo, endDate: $currentDate, multiple: $multiply }
+    yield1year: aaveYieldRate(
+      input: {
+        startDate: $date1yearAgo
+        endDate: $currentDate
+        multiple: $multiply
+        reserveAddress: $reserveAddress
+      }
     ) @include(if: $include1Year) {
       yield {
         netAnnualisedYield
       }
     }
-    yieldSinceInception: aaveYieldRateStethEth(
-      input: { startDate: "2020-11-30", endDate: $currentDate, multiple: $multiply }
+    yieldSinceInception: aaveYieldRate(
+      input: {
+        startDate: "2020-11-30"
+        endDate: $currentDate
+        multiple: $multiply
+        reserveAddress: $reserveAddress
+      }
     ) @include(if: $includeInception) {
       yield {
         netAnnualisedYield
