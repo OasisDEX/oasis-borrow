@@ -14,6 +14,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -23,6 +24,7 @@ interface ProtectionFormControlProps {
   ilkData: IlkData
   priceInfo: PriceInfo
   vault: Vault
+  vaultType: VaultType
   balanceInfo: BalanceInfo
   txHelpers?: TxHelpers
   context: Context
@@ -37,6 +39,7 @@ export function ProtectionFormControl({
   context,
   txHelpers,
   ethMarketPrice,
+  vaultType,
 }: ProtectionFormControlProps) {
   const {
     stopLossTriggerData,
@@ -89,6 +92,7 @@ export function ProtectionFormControl({
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
         shouldRemoveAllowance={shouldRemoveAllowance}
+        vaultType={vaultType}
       />
       <AutoSellFormControl
         vault={vault}
@@ -103,6 +107,7 @@ export function ProtectionFormControl({
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
         shouldRemoveAllowance={shouldRemoveAllowance}
+        vaultType={vaultType}
       />
     </>
   )

@@ -23,6 +23,7 @@ import {
   warningsConstantMultipleValidation,
 } from 'features/automation/optimization/constantMultiple/validators'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
@@ -63,6 +64,7 @@ interface SidebarSetupConstantMultipleProps {
   textButtonHandler: () => void
   txHandler: () => void
   vault: Vault
+  vaultType: VaultType
 }
 
 export function SidebarSetupConstantMultiple({
@@ -96,6 +98,7 @@ export function SidebarSetupConstantMultiple({
   vault,
   debtDeltaWhenSellAtCurrentCollRatio,
   debtDeltaAfterSell,
+  vaultType,
 }: SidebarSetupConstantMultipleProps) {
   const gasEstimation = useGasEstimationContext()
 
@@ -112,6 +115,7 @@ export function SidebarSetupConstantMultiple({
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
+    vaultType,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
