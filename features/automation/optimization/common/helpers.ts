@@ -15,8 +15,6 @@ export function getActiveOptimizationFeature({
   currentOptimizationFeature?: AutomationOptimizationFeatures
   isAutoTakeProfitOn?: boolean
 }) {
-  // const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
-
   if (section === 'form') {
     return {
       isAutoBuyActive:
@@ -32,6 +30,7 @@ export function getActiveOptimizationFeature({
         currentOptimizationFeature === AutomationFeatures.CONSTANT_MULTIPLE,
       isAutoTakeProfitActive:
         (isAutoTakeProfitOn &&
+          !isConstantMultipleOn &&
           currentOptimizationFeature !== AutomationFeatures.AUTO_BUY &&
           currentOptimizationFeature !== AutomationFeatures.CONSTANT_MULTIPLE) ||
         currentOptimizationFeature === AutomationFeatures.AUTO_TAKE_PROFIT,
@@ -52,9 +51,4 @@ export function getActiveOptimizationFeature({
           currentOptimizationFeature === AutomationFeatures.CONSTANT_MULTIPLE,
         isAutoTakeProfitActive: currentOptimizationFeature === AutomationFeatures.AUTO_TAKE_PROFIT,
       }
-
-  // return {
-  //   isAutoBuyActive: false,
-  //   isConstantMultipleActive: false,
-  // }
 }
