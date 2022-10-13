@@ -83,6 +83,8 @@ function useVaultCount() {
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
+  // TODO: Add aave vault.
+
   const count = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
 
   return count && count > 0 ? count : null

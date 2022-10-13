@@ -7,40 +7,47 @@ import {
   PositionVM,
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { PositionDetails } from './pipes/positionsList'
-import { getVaultsSummary, VaultSummary } from './vaultSummary'
+import { AavePosition } from './pipes/positions'
+import { MakerPositionDetails } from './pipes/positionsList'
 
 export interface VaultsOverview {
   positions: PositionVM[]
-  vaultSummary: VaultSummary | undefined
 }
 
 export function createVaultsOverview$(
-  positions$: (address: string) => Observable<PositionDetails[]>,
+  makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
+  aavePositions$: (address: string) => Observable<AavePosition | undefined>,
   address: string,
 ): Observable<VaultsOverview> {
-  return positions$(address).pipe(
-    map((positions) => {
+  return combineLatest(makerPositions$(address), aavePositions$(address)).pipe(
+    map(([makerPositions, aavePositions]) => {
+      const makerVMs = mapToPositionVM(makerPositions)
+      const aaveVMs = mapAavePositions(aavePositions ? [aavePositions] : [])
+
       return {
-        positions: mapToPositionVM(positions),
-        vaultSummary: getVaultsSummary(positions),
+        positions: [...makerVMs, ...aaveVMs],
       }
     }),
   )
 }
 
-function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
+function mapToPositionVM(vaults: MakerPositionDetails[]): PositionVM[] {
   const { borrow, multiply, earn } = vaults.reduce<{
-    borrow: PositionDetails[]
-    multiply: PositionDetails[]
-    earn: PositionDetails[]
+    borrow: MakerPositionDetails[]
+    multiply: MakerPositionDetails[]
+    earn: MakerPositionDetails[]
   }>(
     (acc, vault) => {
       if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
@@ -136,17 +143,38 @@ function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
   return [...borrowVMs, ...multiplyVMs, ...earnVMs]
 }
 
-function getPnl(vault: PositionDetails): BigNumber {
+function mapAavePositions(position: AavePosition[]): PositionVM[] {
+  return position.map((position) => {
+    return {
+      type: 'earn' as const,
+      isOwnerView: true,
+      icon: getToken(position.token).iconCircle,
+      ilk: position.title,
+      positionId: formatAddress(position.ownerAddress),
+      pnl: position.pln,
+      netValue: `$${formatFiatBalance(position.netValue)}`,
+      sevenDayYield: '',
+      liquidity: `${formatCryptoBalance(position.liquidity)} USDC`,
+      editLinkProps: {
+        href: position.url,
+        hash: VaultViewMode.Overview,
+        internalInNewTab: false,
+      },
+    }
+  })
+}
+
+function getPnl(vault: MakerPositionDetails): BigNumber {
   const { lockedCollateralUSD, debt, history } = vault
   const netValueUSD = lockedCollateralUSD.minus(debt)
   return calculatePNL(history, netValueUSD)
 }
 
-function isAutomationEnabled(position: PositionDetails): boolean {
+function isAutomationEnabled(position: MakerPositionDetails): boolean {
   return position.stopLossData.isStopLossEnabled || position.autoSellData.isTriggerEnabled
 }
 
-function getProtectionAmount(position: PositionDetails): string {
+function getProtectionAmount(position: MakerPositionDetails): string {
   let protectionAmount = zero
 
   if (position.stopLossData.stopLossLevel.gt(zero))

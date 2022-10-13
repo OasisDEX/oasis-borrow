@@ -83,6 +83,7 @@ export const tokens = [
     iconCircle: 'weth_circle_color',
     iconColor: 'ether_color',
     coinpaprikaTicker: 'weth-weth',
+    coinpaprikaFallbackTicker: 'eth-ethereum',
     color: '#1AAB9B',
     background: 'linear-gradient(133.41deg, #1AAB9B 17.25%, #22CAB7 86.54%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
