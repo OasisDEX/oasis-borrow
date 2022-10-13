@@ -16,7 +16,7 @@ import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Heading, Text } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../../components/DetailsSection'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
@@ -26,15 +26,6 @@ import { ManageSectionModal } from './ManageSectionModal'
 type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
-}
-
-const mockData = {
-  earnId: 3920,
-  pnl: 'n/a',
-  earnings: new BigNumber(34000.21),
-  earningsAfterFees: new BigNumber(31000.21),
-  APYtotal: new BigNumber(8.3),
-  APYtoDate: new BigNumber(2.2),
 }
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
@@ -90,44 +81,48 @@ export function ManageSectionComponent({
             value={formatBigNumber(netValue || zero, 2)}
             unit={state.context.token}
             footnote={t('manage-earn-vault.pnl', {
-              value: mockData.pnl,
+              value: 'n/a',
               token: state.context.token,
             })}
             modal={
-              <>
-                <Grid gap={2}>
-                  <Heading variant="header3">{t('manage-earn-vault.net-value-modal')}</Heading>
-                  <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
-                    {t('manage-earn-vault.net-value-calculation', {
-                      stETHPrice: formatBigNumber(oraclePrice || zero, 4),
-                    })}
-                  </Text>
-                </Grid>
-                <Grid gap={2} columns={[1, 2]}>
-                  <div />
-                  <Box>ETH Value</Box>
-                  <Box>Collateral value in vault</Box>
-                  <Box>
-                    {formatAmount(accountData.totalCollateralETH || zero, state.context.token)}{' '}
-                    {state.context.token}
-                  </Box>
-                  <Box>Debt value in vault</Box>
-                  <Box>
-                    {formatAmount(accountData.totalDebtETH || zero, state.context.token)}{' '}
-                    {state.context.token}
-                  </Box>
-                  <Box>Net value</Box>
-                  <Box>
-                    {formatAmount(netValue || zero, state.context.token)} {state.context.token}
-                  </Box>
-                </Grid>
-              </>
+              <ManageSectionModal
+                heading={t('net-value')}
+                description={
+                  <>
+                    <Grid gap={2}>
+                      <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
+                        {t('manage-earn-vault.net-value-calculation', {
+                          stETHPrice: formatBigNumber(oraclePrice || zero, 4),
+                        })}
+                      </Text>
+                    </Grid>
+                    <Grid gap={2} columns={[1, 2]}>
+                      <div />
+                      <Box>{t('manage-earn-vault.eth-value')}</Box>
+                      <Box>{t('manage-earn-vault.collateral-value-in-vault')}</Box>
+                      <Box>
+                        {formatAmount(accountData.totalCollateralETH || zero, state.context.token)}{' '}
+                        {state.context.token}
+                      </Box>
+                      <Box>{t('manage-earn-vault.debt-value-in-vault')}</Box>
+                      <Box>
+                        {formatAmount(accountData.totalDebtETH || zero, state.context.token)}{' '}
+                        {state.context.token}
+                      </Box>
+                      <Box>{t('net-value')}</Box>
+                      <Box>
+                        {formatAmount(netValue || zero, state.context.token)} {state.context.token}
+                      </Box>
+                    </Grid>
+                  </>
+                }
+              />
             }
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.net-apy')}
-            value={formatPercent(mockData.APYtotal, { precision: 1 })}
-            footnote={`To date: ${formatPercent(mockData.APYtoDate, { precision: 1 })}`}
+            value="n/a"
+            footnote="To date: 'n/a'"
             modal={
               <ManageSectionModal
                 heading={t('manage-earn-vault.net-apy')}
