@@ -68,22 +68,7 @@ export function getAutoTakeProfitStatus({
     isProgressStage,
     stage,
   })
-  const closePickerConfig = {
-    optionNames: closeVaultOptions,
-    onclickHandler: (optionName: string) => {
-      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-        type: 'close-type',
-        toCollateral: optionName === closeVaultOptions[0],
-      })
-      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-        type: 'is-editing',
-        isEditing: true,
-      })
-    },
-    isCollateralActive: autoTakeProfitState.toCollateral,
-    collateralTokenSymbol: vault.token,
-    collateralTokenIconCircle: getToken(vault.token).iconCircle,
-  }
+  const closePickerConfig = createClosePickerConfig()
   const tokenAth = createTokenAth(vault.token)
   const min = tokenMarketPrice.times(MIN_MULTIPLIER)
   const max = tokenAth
@@ -99,5 +84,24 @@ export function getAutoTakeProfitStatus({
     max,
     min,
     resetData,
+  }
+
+  function createClosePickerConfig() {
+    return {
+      optionNames: closeVaultOptions,
+      onclickHandler: (optionName: string) => {
+        uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+          type: 'close-type',
+          toCollateral: optionName === closeVaultOptions[0],
+        })
+        uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+          type: 'is-editing',
+          isEditing: true,
+        })
+      },
+      isCollateralActive: autoTakeProfitState.toCollateral,
+      collateralTokenSymbol: vault.token,
+      collateralTokenIconCircle: getToken(vault.token).iconCircle,
+    }
   }
 }
