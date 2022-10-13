@@ -17,8 +17,11 @@ export function warningsAutoBuyValidation({
   sliderMin,
   isStopLossEnabled,
   isAutoSellEnabled,
+  isAutoTakeProfitEnabled,
   autoBuyState,
   withThreshold,
+  executionPrice,
+  autoTakeProfitExecutionPrice,
 }: {
   vault: Vault
   ethBalance: BigNumber
@@ -27,9 +30,12 @@ export function warningsAutoBuyValidation({
   gasEstimationUsd?: BigNumber
   isStopLossEnabled: boolean
   isAutoSellEnabled: boolean
+  isAutoTakeProfitEnabled: boolean
   autoBuyState: AutoBSFormChange
   minSellPrice?: BigNumber
   withThreshold: boolean
+  executionPrice: BigNumber
+  autoTakeProfitExecutionPrice: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token: vault.token,
@@ -50,12 +56,16 @@ export function warningsAutoBuyValidation({
     .div(100)
     .lte(vault.collateralizationRatioAtNextPrice)
 
+  const autoBuyTriggerGreaterThanAutoTakeProfit =
+    isAutoTakeProfitEnabled && executionPrice.gt(autoTakeProfitExecutionPrice)
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     settingAutoBuyTriggerWithNoThreshold,
     autoBuyTargetCloseToStopLossTrigger,
     autoBuyTargetCloseToAutoSellTrigger,
     autoBuyTriggeredImmediately,
+    autoBuyTriggerGreaterThanAutoTakeProfit,
   })
 }
 

@@ -1,4 +1,4 @@
-import { DiscoveryFiltersSettings } from 'features/discovery/types'
+import { DiscoveryFiltersSettings, DiscoveryTableRowData } from 'features/discovery/types'
 import { useObservable } from 'helpers/observableHook'
 import { stringify } from 'querystring'
 import { of } from 'ramda'
@@ -8,8 +8,9 @@ import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
 
 export interface DiscoveryDataResponse {
-  // TODO: replace with real discovery data when available
-  data?: any
+  data?: {
+    rows: DiscoveryTableRowData[]
+  }
   error?: boolean
 }
 

@@ -1,5 +1,4 @@
 import { IlkData } from 'blockchain/ilks'
-import { amountFromWei } from 'blockchain/utils'
 import { Vault } from 'blockchain/vaults'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -56,7 +55,7 @@ function AutoTakeProfitInfoSectionControl({
     <CancelAutoTakeProfitInfoSection
       collateralizationRatio={vault.collateralizationRatio.times(100)}
       token={vault.token}
-      triggerColPrice={amountFromWei(autoTakeProfitTriggerData.executionPrice, vault.token)}
+      triggerColPrice={autoTakeProfitTriggerData.executionPrice}
     />
   )
 }

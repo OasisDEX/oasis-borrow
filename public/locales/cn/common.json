@@ -1,1934 +1,1935 @@
 {
-    "404-button": "返回主页",
-    "404-message": "抱歉，页面不存在。",
-    "about": {
-        "heading": "关于我们",
-        "description": "Oasis 的目标是为用户提供最好和最值得信赖的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，而我们的团队是由一群区块链爱好者所组成。",
-        "careers-link": "加入我们",
-        "pics-title": "团队"
+  "404-button": "返回主页",
+  "404-message": "抱歉，页面不存在。",
+  "about": {
+    "heading": "关于我们",
+    "description": "Oasis 的目标是为用户提供最好和最值得信赖的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，而我们的团队是由一群区块链爱好者所组成。",
+    "careers-link": "加入我们",
+    "pics-title": "团队"
+  },
+  "acceptance-check-failed": "授权检查失败",
+  "acceptance-save-failed": "授权保存失败",
+  "acceptance-save-in-progress": "授权保存进行中...",
+  "account": "账户",
+  "account-privacy": "隐私",
+  "account-support": "支持",
+  "account-terms": "条款",
+  "activity": "历史记录",
+  "address": "地址",
+  "address-invalid": "找不到地址",
+  "adjust-your-position": "变更仓位",
+  "after": "继续",
+  "after-next": "继续 + 下一步",
+  "all-assets": "所有资产",
+  "amount": "数量",
+  "approve-allowance": "批准许可额度",
+  "approving-allowance": "正在批准许可额度",
+  "back": "返回",
+  "ok": "好",
+  "back-to-editing": "返回编辑",
+  "balance": "余额",
+  "balance-insufficient": "你钱包中的 Dai 余额不足",
+  "balances": "余额",
+  "buy": "购买",
+  "careers": {
+    "heading": "开放职缺",
+    "intro": "我们重視人才，加入我们打造下一代的 DeFi。",
+    "cta-button": "申請",
+    "back-link": "回到开放职缺页面",
+    "no-open-positions": "目前没有开放的职缺，但我们永远在寻找优秀的人才加入我们。",
+    "no-positions-you-like": "没有找到您有兴趣的职缺吗？告诉我们您感兴趣的职缺，我们永远欢迎最优秀的人才。",
+    "write-us": "发送履历"
+  },
+  "change-your-vault": "切换金库",
+  "close": "关闭",
+  "close-vault": "关闭金库",
+  "coming-soon": "即将上线",
+  "completed": "已完成",
+  "compound": "Compound",
+  "confirm": "确认",
+  "confirmed-proxy-deployment": "代理部署已确认",
+  "connect-confirm": "在 {{ connectionKind }} 上确认",
+  "connect-email": "通过邮件连接",
+  "connect-error": "请授权本网站访问你的以太坊账户。",
+  "connect-wallet": "通过钱包连接",
+  "connect-wallet-button": "连接钱包",
+  "connect-with": " {{ connectionKind }}",
+  "connect-install-metamask": "安装 Metamask",
+  "connected-with": "通过 {{ connectionKind }} 连接",
+  "contact": {
+    "description": "与我们分享反馈和建议",
+    "label": {
+      "email": "邮箱",
+      "message": "消息",
+      "name": "姓名 (可选)",
+      "subject": "主题"
     },
-    "acceptance-check-failed": "授权检查失败",
-    "acceptance-save-failed": "授权保存失败",
-    "acceptance-save-in-progress": "授权保存进行中...",
-    "account": "账户",
-    "account-privacy": "隐私",
-    "account-support": "支持",
-    "account-terms": "条款",
+    "sent": {
+      "failure": "发生了一些错误，请再试一次。",
+      "success": "谢谢联系我们，我们会尽快给您答复。"
+    },
+    "submit": "发送",
+    "title": "联系我们"
+  },
+  "continue": "继续",
+  "conversion-fee": "兑换手续费",
+  "copied": "已复制",
+  "copy-address": "复制地址",
+  "country": "国家",
+  "configure-your-vault": "创建金库",
+  "create-proxy": "创建代理合约",
+  "create-proxy-btn": "创建代理",
+  "create-proxy-desc": "使用 Dai 存款和其他功能之前，你需要设置钱包代理。",
+  "create-vault": "创建金库",
+  "create-your-vault": "创建你的金库",
+  "creating-proxy": "正在创建代理",
+  "creating-vault": "正在创建金库",
+  "currency": "货币",
+  "custom": "自定义",
+  "dai-being-generated": "正在生成 Dai",
+  "dai-paying-back": "正在偿还 ({{amount}}) Dai",
+  "dai-paying-back-label": "赎回 Dai",
+  "dai-savings-rate": "Dai 存款利率",
+  "deposit": "存入",
+  "disconnect": "断开连接",
+  "disconnect-magic": "退出账户",
+  "earning": "收益",
+  "edit-token-allowance": "编辑 {{token}} 许可额度",
+  "edit-vault-details": "编辑金库细节",
+  "email": "邮箱",
+  "email-invalid": "提供的电子邮件无效",
+  "email-required": "需要提供邮箱地址",
+  "erc20-approve-description-pending": "正在授权 {{ token }} 的发送",
+  "erc20-approve-description-recent": "已授权 {{ token }} 的发送",
+  "erc20-approve-description-recent-failed": "授权 {{ token }} 失败",
+  "erc20-approve-notification": "正在授权 {{ token }}",
+  "erc20-approve-notification-past": "已授权 {{ token }}",
+  "erc20-disapprove-description-pending": "正在取消 {{ token }} 的发送授权",
+  "erc20-disapprove-description-recent": "已取消 {{ token }} 的发送授权",
+  "erc20-disapprove-description-recent-failed": "取消 {{ token }} 的发送授权失败",
+  "erc20-disapprove-notification": "正在取消 {{ token }} 授权",
+  "erc20-disapprove-notification-past": "已取消 {{ token }} 授权",
+  "error-message": "发生错误",
+  "error-button": "查看细节",
+  "create-ds-proxy-description-pending": "正在创建 proxy ",
+  "create-ds-proxy-description-recent": "已创建 proxy",
+  "create-ds-proxy-description-recent-failed": "创建 proxy 失败",
+  "set-proxy-owner-description-pending": "正在设置 proxy 所有者",
+  "set-proxy-owner-description-recent": "设置 proxy 所有者",
+  "set-proxy-owner-description-recent-failed": "设置 proxy 所有者失败",
+  "open-vault-description-pending": "正在开启 {{ ilk }} 金库并且存入 {{ depositAmount }} {{ token }} 以生成 {{ generateAmount }} DAI",
+  "open-vault-description-recent": "已开启 {{ ilk }} 金库并且存入 {{ depositAmount }} {{ token }} 以生成 {{ generateAmount }} DAI",
+  "open-vault-description-recent-failed": "开启 {{ ilk }} 失败",
+  "deposit-generate-description-pending": "正在存入 {{ depositAmount }} {{ token }} 到金库 {{ id }} 以生成 {{ generateAmount }} DAI",
+  "deposit-generate-description-recent": "已存入 {{ depositAmount }} {{ token }} 到金库 {{ id }} 以生成 {{ generateAmount }} DAI",
+  "deposit-generate-description-recent-failed": "存入金库 {{ id }} 以生成 Dai 失败 ",
+  "withdraw-payback-description-pending": "正从金库 {{ id }} 提取 {{ withdrawAmount }} {{ token }} 并偿还 {{ paybackAmount }} DAI",
+  "withdraw-payback-description-recent": "已从金库 {{ id }} 提取 {{ withdrawAmount }} {{ token }} 并偿还 {{ paybackAmount }} DAI",
+  "withdraw-payback-description-recent-failed": "从金库 {{ id }} 提取抵押品并偿还债务失败",
+  "reclaim-collateral-description-pending": "正在收回来自金库 {{ id }} 的 {{ amount }} {{ token }} ",
+  "reclaim-collateral-description-recent": "已收回来自金库 {{ id }} 的 {{ amount }} {{ token }} ",
+  "reclaim-collateral-description-recent-failed": "收回来自金库 {{ id }} 的抵押品失败 ",
+  "erc20-send-description-pending": "正在发送 {{ amount }} {{ token }}",
+  "erc20-send-description-recent": "已发送 {{ amount }} {{ token }}",
+  "erc20-send-description-recent-failed": "发送 {{ amount }} {{ token }} 失败",
+  "erc20-send-notification": "正在发送 {{ token }}",
+  "erc20-send-notification-past": "已发送 {{ token }}",
+  "eth-send-description-pending": "正在发送 {{ amount }} ETH",
+  "eth-send-description-recent": "已发送 {{ amount }} ETH",
+  "eth-send-description-recent-failed": "发送 {{ amount }} ETH 失败",
+  "eth-send-notification": "正在发送 ETH",
+  "eth-send-notification-past": "已发送 ETH",
+  "event": {
     "activity": "历史记录",
-    "address": "地址",
-    "address-invalid": "找不到地址",
-    "adjust-your-position": "变更仓位",
-    "after": "继续",
-    "after-next": "继续 + 下一步",
-    "all-assets": "所有资产",
-    "amount": "数量",
-    "approve-allowance": "批准许可额度",
-    "approving-allowance": "正在批准许可额度",
-    "back": "返回",
-    "ok": "好",
-    "back-to-editing": "返回编辑",
-    "balance": "余额",
-    "balance-insufficient": "你钱包中的 Dai 余额不足",
-    "balances": "余额",
-    "buy": "购买",
-    "careers": {
-        "heading": "开放职缺",
-        "intro": "我们重視人才，加入我们打造下一代的 DeFi。",
-        "cta-button": "申請",
-        "back-link": "回到开放职缺页面",
-        "no-open-positions": "目前没有开放的职缺，但我们永远在寻找优秀的人才加入我们。",
-        "no-positions-you-like": "没有找到您有兴趣的职缺吗？告诉我们您感兴趣的职缺，我们永远欢迎最优秀的人才。",
-        "write-us": "发送履历"
-    },
-    "change-your-vault": "切换金库",
-    "close": "关闭",
-    "close-vault": "关闭金库",
-    "coming-soon": "即将上线",
-    "completed": "已完成",
-    "compound": "Compound",
-    "confirm": "确认",
-    "confirmed-proxy-deployment": "代理部署已确认",
-    "connect-confirm": "在 {{ connectionKind }} 上确认",
-    "connect-email": "通过邮件连接",
-    "connect-error": "请授权本网站访问你的以太坊账户。",
-    "connect-wallet": "通过钱包连接",
-    "connect-wallet-button": "连接钱包",
-    "connect-with": " {{ connectionKind }}",
-    "connect-install-metamask": "安装 Metamask",
-    "connected-with": "通过 {{ connectionKind }} 连接",
-    "contact": {
-        "description": "与我们分享反馈和建议",
-        "label": {
-            "email": "邮箱",
-            "message": "消息",
-            "name": "姓名 (可选)",
-            "subject": "主题"
-        },
-        "sent": {
-            "failure": "发生了一些错误，请再试一次。",
-            "success": "谢谢联系我们，我们会尽快给您答复。"
-        },
-        "submit": "发送",
-        "title": "联系我们"
-    },
-    "continue": "继续",
-    "conversion-fee": "兑换手续费",
-    "copied": "已复制",
-    "copy-address": "复制地址",
-    "country": "国家",
-    "configure-your-vault": "创建金库",
-    "create-proxy": "创建代理合约",
-    "create-proxy-btn": "创建代理",
-    "create-proxy-desc": "使用 Dai 存款和其他功能之前，你需要设置钱包代理。",
-    "create-vault": "创建金库",
-    "create-your-vault": "创建你的金库",
-    "creating-proxy": "正在创建代理",
-    "creating-vault": "正在创建金库",
-    "currency": "货币",
-    "custom": "自定义",
-    "dai-being-generated": "正在生成 Dai",
-    "dai-paying-back": "正在偿还 ({{amount}}) Dai",
-    "dai-paying-back-label": "赎回 Dai",
-    "dai-savings-rate": "Dai 存款利率",
-    "deposit": "存入",
-    "disconnect": "断开连接",
-    "disconnect-magic": "退出账户",
-    "earning": "收益",
-    "edit-token-allowance": "编辑 {{token}} 许可额度",
-    "edit-vault-details": "编辑金库细节",
-    "email": "邮箱",
-    "email-invalid": "提供的电子邮件无效",
-    "email-required": "需要提供邮箱地址",
-    "erc20-approve-description-pending": "正在授权 {{ token }} 的发送",
-    "erc20-approve-description-recent": "已授权 {{ token }} 的发送",
-    "erc20-approve-description-recent-failed": "授权 {{ token }} 失败",
-    "erc20-approve-notification": "正在授权 {{ token }}",
-    "erc20-approve-notification-past": "已授权 {{ token }}",
-    "erc20-disapprove-description-pending": "正在取消 {{ token }} 的发送授权",
-    "erc20-disapprove-description-recent": "已取消 {{ token }} 的发送授权",
-    "erc20-disapprove-description-recent-failed": "取消 {{ token }} 的发送授权失败",
-    "erc20-disapprove-notification": "正在取消 {{ token }} 授权",
-    "erc20-disapprove-notification-past": "已取消 {{ token }} 授权",
-    "error-message": "发生错误",
-    "error-button": "查看细节",
-    "create-ds-proxy-description-pending": "正在创建 proxy ",
-    "create-ds-proxy-description-recent": "已创建 proxy",
-    "create-ds-proxy-description-recent-failed": "创建 proxy 失败",
-    "set-proxy-owner-description-pending": "正在设置 proxy 所有者",
-    "set-proxy-owner-description-recent": "设置 proxy 所有者",
-    "set-proxy-owner-description-recent-failed": "设置 proxy 所有者失败",
-    "open-vault-description-pending": "正在开启 {{ ilk }} 金库并且存入 {{ depositAmount }} {{ token }} 以生成 {{ generateAmount }} DAI",
-    "open-vault-description-recent": "已开启 {{ ilk }} 金库并且存入 {{ depositAmount }} {{ token }} 以生成 {{ generateAmount }} DAI",
-    "open-vault-description-recent-failed": "开启 {{ ilk }} 失败",
-    "deposit-generate-description-pending": "正在存入 {{ depositAmount }} {{ token }} 到金库 {{ id }} 以生成 {{ generateAmount }} DAI",
-    "deposit-generate-description-recent": "已存入 {{ depositAmount }} {{ token }} 到金库 {{ id }} 以生成 {{ generateAmount }} DAI",
-    "deposit-generate-description-recent-failed": "存入金库 {{ id }} 以生成 Dai 失败 ",
-    "withdraw-payback-description-pending": "正从金库 {{ id }} 提取 {{ withdrawAmount }} {{ token }} 并偿还 {{ paybackAmount }} DAI",
-    "withdraw-payback-description-recent": "已从金库 {{ id }} 提取 {{ withdrawAmount }} {{ token }} 并偿还 {{ paybackAmount }} DAI",
-    "withdraw-payback-description-recent-failed": "从金库 {{ id }} 提取抵押品并偿还债务失败",
-    "reclaim-collateral-description-pending": "正在收回来自金库 {{ id }} 的 {{ amount }} {{ token }} ",
-    "reclaim-collateral-description-recent": "已收回来自金库 {{ id }} 的 {{ amount }} {{ token }} ",
-    "reclaim-collateral-description-recent-failed": "收回来自金库 {{ id }} 的抵押品失败 ",
-    "erc20-send-description-pending": "正在发送 {{ amount }} {{ token }}",
-    "erc20-send-description-recent": "已发送 {{ amount }} {{ token }}",
-    "erc20-send-description-recent-failed": "发送 {{ amount }} {{ token }} 失败",
-    "erc20-send-notification": "正在发送 {{ token }}",
-    "erc20-send-notification-past": "已发送 {{ token }}",
-    "eth-send-description-pending": "正在发送 {{ amount }} ETH",
-    "eth-send-description-recent": "已发送 {{ amount }} ETH",
-    "eth-send-description-recent-failed": "发送 {{ amount }} ETH 失败",
-    "eth-send-notification": "正在发送 ETH",
-    "eth-send-notification-past": "已发送 ETH",
-    "event": {
-        "activity": "历史记录",
-        "deposit": "已存入",
-        "time": "时间",
-        "type": "类型",
-        "vault-opened": "已开启金库"
-    },
-    "exchange-rate": "兑换率",
-    "failed": "失败",
-    "fees": "手续费",
-    "featured": {
-        "cheapest": "最便宜",
-        "most-popular": "最受欢迎",
-        "new": "最新"
-    },
-    "filters": {
-        "lp-token": "LP 代币",
-        "stablecoin": "稳定币",
-        "popular": "热门资产"
-    },
-    "gas-estimation-error": "错误",
-    "get-dai": "获得 Dai",
-    "get-started": "现在开始",
-    "go-to-vault": "前往金库 #{{id}}",
-    "here": "这里",
-    "history": {
-        "auction_finished_v2": "拍卖 <0>#{{auctionId}}</0>  已完成，剩余 <0>{{remainingCollateral}} {{token}}</0>。",
-        "auction_started": "拍卖已开始，清算 <0>{{collateralAmount}} {{token}}</0> 以偿还 <0>{{daiAmount}} Dai</0>。",
-        "auction_started_v2": "拍卖 <0>#{{auctionId}}</0> 已开始, 清算 <0>{{collateralAmount}} {{token}}</0> 以偿还 <0>{{daiAmount}} Dai</0>。",
-        "bought": "已购买",
-        "deposit": "已将 <0>{{collateralAmount}} {{token}}</0> 存入金库。",
-        "deposited": "已存入",
-        "generate": "已从金库生成 <0>{{daiAmount}}</0> Dai ",
-        "exit-collateral": "赎回抵押品",
-        "exit-dai": "赎回 DAI",
-        "migrate": "金库已迁移",
-        "move_dest": "转移 <0>{{collateralAmount}} {{token}}</0> 和 <0>{{daiAmount}}</0> Dai 债务到该金库。",
-        "move_src": "从金库转移 <0>{{collateralAmount}} {{token}}</0> 和 <0>{{daiAmount}}</0> Dai 债务。",
-        "open": "开启新的金库 ID <0>#{{cdpId}}</0>",
-        "payback": "偿还 <0>{{daiAmount}}</0> Dai 到金库",
-        "transfer": "金库由 <0>{{transferFrom}}</0> 转移到 <0>{{transferTo}}</0>",
-        "withdraw": "从金库取回 <0>{{collateralAmount}} {{token}}</0> ",
-        "open_multiply_vault": "开启 Multiply 金库",
-        "increase_multiple": "提高杠杆倍率",
-        "decrease_multiple": "降低杠杆倍率",
-        "close_vault_to_dai": "关闭金库并兑换成 Dai",
-        "close_vault_to_collateral": "关闭金库并兑换成抵押品",
-        "sold": "已售出",
-        "total-fees": "总手续费",
-        "withdrawn": "已提款",
-        "open_multiply_guni_vault": "已开启 Multiply 金库",
-        "close_guni_vault_to_dai": "关闭金库并换成 Dai",
-        "stop-loss": "启用 Stop-Loss",
-        "basic-buy": "启用 Auto-Buy",
-        "basic-sell": "启用 Auto-Sell",
-        "close-to": "关闭并兑换成",
-        "trigger-col-ratio": "启用自动化的抵押率",
-        "target-col-ratio": "最终清算的目标抵押率",
-        "max-gas-fee-in-gwei": "燃料费的最大值（Gwei）",
-        "minimum-sell-price": "最低出售价格",
-        "maximum-buy-price": "最高购买价格",
-        "constant-multiple": "Constant-Multiple trigger",
-        "constant-multiple-buy": "Constant-Multiple Buy trigger",
-        "constant-multiple-sell": "Constant-Multiple Sell trigger",
-        "buy-trigger-col-ratio": "Buy Trigger Col. Ratio",
-        "sell-trigger-col-ratio": "Sell Trigger Col. Ratio",
-        "target-multiple": "Target multiple"
-    },
-    "jwt-auth-failed": "签名失败",
-    "jwt-auth-in-progress": "等待签名中...",
-    "jwt-auth-rejected": "已拒绝签名",
-    "jwt-auth-waiting-acceptance": "签名消息",
-    "keyWithCount": "{{count}} 项",
-    "keyWithCount_plural": "{{count}} 项",
-    "landing": {
-        "footer": {
-            "blog": "博客",
-            "contact": "联系方式",
-            "resources": "资源",
-            "faq": "常见问题",
-            "knowledge-centre": "知识中心",
-            "oracles": "喂价机",
-            "products": "产品",
-            "dai-wallet": "Dai 钱包",
-            "borrow": "借贷",
-            "language": {
-                "en": "English",
-                "es": "Spanish",
-                "pt": "Português",
-                "cn": "中文"
-            },
-            "about": "关于我们",
-            "team": "团队",
-            "careers": "开放职缺",
-            "privacy": "隐私",
-            "terms": "条款",
-            "trade": "交易"
-        },
-        "hero": {
-            "headlinePreAssetLandingPages": "抵押数字资产，生成 Dai",
-            "subheaderPreAssetLandingPages": "开启 Maker 金库，存入抵押品，生成 Dai。<0/>连接钱包以开始。",
-            "headline": "使用你最爱的加密货币来借贷和进行杠杆交易",
-            "subheader": "超过30种的加密资产选择，包含 ETH 和 WBCT，让您每年赚取 1.5% 收益。<0/>连接钱包开始交易"
-        },
-        "cards": {
-            "dai": {
-                "title": "Dai 钱包",
-                "description": "一站式购买、发送和管理您的 Dai。借由访问许多的提供商，累积您的 Dai。"
-            },
-            "faq": {
-                "title": "有任何疑问吗？",
-                "description": "您可以在我们的常见问题页面了解更多关于 Oasis、Dai 和 DeFi 的信息"
-            }
-        },
-        "stats": {
-            "30-day-volume": "30天交易量",
-            "managed-on-oasis": "Oasis 上的交易量",
-            "median-vault": "金库交易中位数"
-        },
-        "tabs": {
-            "borrow": {
-                "tabLabel": "在 Oasis 借贷",
-                "tabParaContent": "以您最爱的加密货币借出 Dai，随心所意使用它。",
-                "tabParaLinkContent": "查看所有借贷抵押品 →"
-            },
-            "multiply": {
-                "tabLabel": "在 Oasis 开启杠杆",
-                "tabParaContent": "快来浏览我们的特色产品，接着选择您最爱的加密货币来提高风险敞口吧。",
-                "tabParaLinkContent": "查看所有杠杆抵押品 →"
-            },
-            "earn": {
-                "tabLabel": "在 Oasis 赚取奖励",
-                "tabParaContent": "从今天开始创造最佳的流动性挖矿，让加密货币为您赚取奖励。从下方选取您有兴趣的 Earn 产品吧。",
-                "tabParaLinkContent": "进一步了解 Earn →"
-            }
-        },
-        "info-cards": {
-            "have-some-questions": "有任何疑问吗？",
-            "learn": {
-                "learn": "学习",
-                "deep-dive": "深入了解 Oasis.app 的功能和重要概念",
-                "get-started": "开始",
-                "tutorials": "教程",
-                "key-concepts": "重要概念"
-            },
-            "support": {
-                "support": "帮助",
-                "contact-whenever": "任何您需要帮助时，请联系 Oasis.app 团队",
-                "faq": "常见问题",
-                "discord": "Discord",
-                "contact-us": "联系我们",
-                "twitter": "Twitter"
-            },
-            "get-started": "开始使用 Oasis.app",
-            "multiply": {
-                "multiply": "增加你的资产",
-                "subtitle": "您可以经由单一的交易开启 Maker 金库并生成 DAI，接着再购买更多的抵押品。",
-                "open-vault": "开启金库"
-            },
-            "borrow": {
-                "borrow-dai": "借贷 Dai",
-                "choose-your-preferred-token": "选择喜爱的代币作为抵押品，接着开启 Maker 金库来获得 DAI",
-                "open-vault": "开启金库"
-            },
-            "manage": {
-                "manage-your-vault": "管理金库",
-                "make-actions": "随时随地操作您的金库",
-                "connect-your-wallet": "连接钱包"
-            }
-        },
-        "cookie-banner": {
-            "message": "我们使用网站上的 Cookie 功能来改善您的使用体验、基础功能以及分析流量。Cookie 以匿名的方式记录并且不会连接到用户的资料。如果您不愿意使用 Cookie 功能，您仍然可以使用这个网站。想了解更多信息，请阅读我们的 Cookie 政策。</0>.",
-            "settings-toggle": "管理 Cookie 设置",
-            "accept": "接受",
-            "reject": "拒绝",
-            "cookies": {
-                "marketing": {
-                    "title": "行销 Cookies",
-                    "description": "Oasis.app 使用来自 adRoll 的匿名 Cookies 在广告平台上重新定位营销策略。"
-                },
-                "analytics": {
-                    "title": "分析 Cookies",
-                    "description": "这些选项协助我们了解用户是如何使用这个网站并且找出可以改善的地方。"
-                }
-            }
-        }
-    },
-    "ledger-cancel": "选择另一个钱包",
-    "ledger-error": "遇到错误，请重试。",
-    "ledger-legacy": "Ledger Legacy",
-    "ledger-live": "Ledger Live",
-    "ledger-select-address": "选择一个地址",
-    "ledger-select-title": "选择 Ledger Live 或 Legacy",
-    "manage-vault": {
-        "action-option": "通过该交易 {{action}} {{token}} ",
-        "dai-available": "可生成 Dai",
-        "dust-limit": "初始最低生成 Dai 数量",
-        "liquidation-fee": "清算费用",
-        "min-collat-ratio": "最低抵押率",
-        "or": "或者",
-        "stability-fee": "稳定费用",
-        "title": "管理金库",
-        "action": "管理金库",
-        "warnings": {
-            "potential-generate-amount-less-than-debt-floor": "初次开启金库最低需要生成 {{debtFloor}} Dai。请添加更多抵押品生成 {{debtFloor}} Dai。",
-            "debt-is-less-than-debt-floor": "当前您借出的 Dai 低于最低限额  {{debtFloor}} Dai，因此无法使用部分金库的功能。您至少需要借出最低借 Dai 额度，或者偿还所有的债务。",
-            "vault-will-be-at-risk-level-danger": "当前操作会让您的金库抵押率非常接近最低要求。",
-            "vault-will-be-at-risk-level-danger-at-next-price": "当前操作会让您的金库抵押率在下次喂价机更新的时候非常接近最低要求。",
-            "vault-will-be-at-risk-level-warning": "当前操作会让您的金库接近最低抵押率要求",
-            "vault-will-be-at-risk-level-warning-at-next-price": "当前操作会让您的金库抵押率在下次喂价机更新的时候接近最低要求"
-        },
-        "errors": {
-            "deposit-amount-exceeds-collateral-balance": "您无法存入超出钱包余额数量的抵押品。",
-            "withdraw-amount-exceeds-free-collateral": "您最多能够取回 {{maxWithdrawAmount}} {{token}}。",
-            "withdraw-amount-exceeds-free-collateral-at-next-price": "您最多能够取回  {{maxWithdrawAmount}} {{token}}。",
-            "generate-amount-exceeds-dai-yield-from-total-collateral": "该金库的抵押率过低，请尝试生成更少的 Dai。",
-            "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "该金库的抵押率会在下次喂价机更新时过低，请尝试生成更少的 Dai。",
-            "generate-amount-exceeds-debt-ceiling": "您尝试生成 Dai 的数量超过了当前债务上限。当前最多可生成 {{maxGenerateAmount}} {{token}}。",
-            "generate-amount-less-than-debt-floor": "该金库类型最低借出的 Dai 金额为 {{debtFloor}} 。点击<0>这里</0>了解 Dai 的最低借贷额度。",
-            "payback-amount-exceeds-dai-balance": "您的钱包里没有这么多 Dai 用来偿还。",
-            "payback-amount-exceeds-vault-debt": "您希望偿还的金额超出了该金库借 Dai 数量。",
-            "debt-will-be-less-than-debt-floor": "Maker 金库的最低借贷金额要么为零或者高于 {{debtFloor}} Dai。请调整您的偿还数量。",
-            "custom-collateral-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
-            "custom-collateral-allowance-amount-less-than-deposit-amount": "您需要许可存入额度以继续。",
-            "custom-dai-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
-            "custom-dai-allowance-amount-less-than-payback-amount": "您需要许可偿还额度以继续。",
-            "depositing-all-eth-balance": "您需要留一些 ETH 支付燃料费用，请降低你的存入数量。",
-            "ledger-enable-contract-data": "请在 Ledgers Ethereum app 的设置里启用 Contract data ",
-            "withdraw-collateral-on-vault-under-debt-floor": "当低于 Dai 的最低借贷金额时，您无法从金库提取抵押品。若想要提取，请偿还所有的债务。点击<0>这里</0>了解最低债务额度。",
-            "exchange-error": "无法获取交易价格以进行杠杆交易。"
-        },
-        "card": {
-            "collateralization-ratio-calculated": "您的抵押率计算方式为：抵押品的价值 / Dai 债务",
-            "collateralization-ratio-header2": "当前的抵押率：",
-            "collateralization-ratio-description": "从 Maker 喂价机获得的价格会用来计算你的抵押品价值。你的抵押率必须永远高于最低额度以避免被清算。",
-            "collateralization-ratio-next-price": "在下一个价格里，你的抵押率为：",
-            "collateral-locked-amount": "抵押在金库里的抵押品总额：",
-            "collateral-locked-USD": "抵押在金库里的抵押品总额（以美金计价）：",
-            "collateral-locked-oracles": "我们使用从 Maker 喂价机得到的价格来计算抵押品的价值。您的抵押品的当前市场价格有可能会与这个价格不同。"
-        },
-        "variable-annual-fee": "变量性年手续费",
-        "current-price": "当前 {{token}} 价格",
-        "next-price": "下次 {{token}} 价格"
-    },
-    "earn-vault": {
-        "headlines": {
-            "yield-7": "7天净值年收益",
-            "yield-90": "90天净值年收益",
-            "total-value-locked": "总抵押价值"
-        },
-        "simulate": {
-            "header1": "期间",
-            "header2": "扣除手续费后的收益",
-            "header3": "净值",
-            "rowlabel1": "过去 30 天*",
-            "rowlabel2": "过去 90 天*",
-            "rowlabel3": "过去 1 年*",
-            "footnote1": "*过往的收益表现不代表未来的结果。",
-            "footnote2": "**使用 30 天的年收益来预测收支平衡。",
-            "rowlabel4": "自成立以来*"
-        }
-    },
-    "manage-multiply-vault": {
-        "tooltip": {
-            "vaultId": "金库的 ID 是在 Oasis.app 上面专属于你的 Maker 金库而生的独一无二数字码。",
-            "stabilityFee": "从 Maker 金库借出 Dai 的时候，Maker Protocol 会索取稳定费。稳定费是一种变动费率，它会因为 Maker 基金会的风险团队所提的提议及治理者投票后采用的提议而产生改变。",
-            "liquidationFee": "如果你的金库被清算了，清算罚金将会以 Dai 计算，并且加到你金库中尚未结算的总债务里，这将导致更多的抵押品被拍卖以偿还你尚未结算的债务。这个机制是为了鼓励金库拥有者避免被清算。至于清算罚金的金额，是依据金库里的债务而计算出来的清算手续费所决定。",
-            "min-collateral": "最低抵押率也被称为清算率。如果金库低于最低抵押率，就会被视为抵押不足而可能被清算。",
-            "dust-limit": "Dust 限度代表的是在这个类型的金库里，Dai 要被生成的最低数量。这个数值也被称为 “债务底线”"
-        },
-        "card": {
-            "liquidation-price-description": "清算价格指的是可能导致你的金库被清算的抵押品价格。如果您发现金库价值非常接近被清算的价格，可以在你的杠杆金库里调高抵押率，然后增加更多的抵押品。或者，也可以偿还部分债务。",
-            "liquidation-price-current": "当前的清算价格：",
-            "liquidation-percentage-below": "低于当前价格 {{percentageBelow}} ",
-            "buying-power": "购买力",
-            "buying-power-description": "购买力代表的是你当前有多少 Dai 可以购买更多的抵押品。它依据仓位当前状态，得到你可以购买更多抵押品的最大值的 Dai 数值。这个数值会介于当前的抵押率和最小抵押率之间。",
-            "current-price": "当前价格",
-            "current-price-description": "你的金库抵押品价格是由 Maker 价格喂价机所提供。",
-            "next-price": "下一次价格",
-            "next-price-description": "你在这里所看见的下次价格将会在 Maker Protocol 产生影响。在与清算价格比较之后，会看出你的金库是否有可能在下一次价格更新时被清算。",
-            "more-info-oracles": "在<0>这里</0>可以得到关于 Maker 喂价机的信息",
-            "net-value": "净值",
-            "unrealised-pnl": "未实现损益",
-            "based-on-price": "当前净值是依据市场价格计算",
-            "collateral-value-in-vault": "金库的抵押品价值",
-            "dai-debt-in-vault": "金库的Dai 债务",
-            "collateral-value": "抵押品价值",
-            "usd-value": "$ 价值",
-            "gas-fees": "燃料费",
-            "market-price-unavailable": "市场价格暂时无法读取，请稍后再查看",
-            "formula": "由此算式计算未实现损益：\n 未实现损益 = ( (净值 +提款的累积金额 - 已付出的燃料费) - 存款的累积金额) / 存款的累积金额",
-            "deposit-collateral-on-vault-under-debt-floor": "当金库的价值低于最低要求债务 {{debtFloor}}，您无法存款到金库。您必须增加更多的抵押品并生成 Dai 来达到系统要求的最低价值。进一步了解金库最低债务",
-            "liquidation-price-description-AUTO": "清算金额是金库即将要被清算的价格。",
-            "vault-protection-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
-            "based-on-price-lp": "当前净值是由喂价机的价格计算",
-            "net-value-description": "净值的计算方式是当前在您金库的抵押品价值扣除当前的债务。\n 注意：这个价值不完全等于你关闭金库赎回 Dai 所得到的金额。净值是采用 1 inch 上的抵押品价格所计算。",
-            "profit-and-loss": "损益",
-            "profit-and-loss-description": "TBD",
-            "stop-loss-coll-ratio": "Stop-Loss 抵押率",
-            "current-stop-loss-coll-ratio": "当前 Stop-Loss 抵押率是：",
-            "stop-loss-coll-ratio-desc": "Stop-Loss 抵押率是依据下一个 OSM 价格的抵押率在金库实行 Stop-Loss 的触发器。如果下一个 OSM 价格使当前金库的抵押率低于 Stop-Loss 的抵押率，那金库将自动关闭。",
-            "dynamic-stop-price": "变量的 Stop 价格",
-            "dynamic-stop-loss-price": "变量的 Stop-Loss 价格",
-            "dynamic-stop-loss-price-desc": "变量的 Stop-Loss 价格是依据设置的 Stop-Loss 抵押率得出将关闭金库的当前价格。让价格变动的原因是 Stop-Loss 的触发是根据抵押率，因此当更动金库或累积稳定费时，它将自动调整成触发 Stop-Loss 的价格。",
-            "current-dynamic-stop-loss-price": "当前变量的 Stop-Loss 价格：",
-            "max-token-on-stop-loss-trigger": "{{token}} 的 Stop-Loss 预估触发器 ",
-            "max-token-on-stop-loss-trigger-desc": "{{token}} 的 Stop-Loss 预估触发器是当 Stop-Loss 关闭你的金库时，最可能预期拿回的金额。因为有太多因素会触发 Stop-Loss，如：市场价格、可流动量及燃料费用，所以很难提供一个完美的金额，而这个计算方式预设触发价格和市场价格会有 2% 的差异。与清算相比，保留下来的金额是依据不支付目前设置为 {{liquidationPenalty}} 清算罚金的假设。",
-            "current-coll-ratio": "当前抵押率",
-            "next-coll-ratio": "下一个抵押率",
-            "saving-comp-to-liquidation": "和清算相比所留下的金额",
-            "above-liquidation-price": "高于清算价格",
-            "on-next-price": "在下一个价格",
-            "up-to": "至多"
-        },
-        "action-tabs": {
-            "adjust": "修改",
-            "other": "其他",
-            "borrow": "借贷"
-        }
-    },
-    "max": "最大",
-    "min-amount": "最低数量为 {{minAmount}} {{token}}",
-    "moving-into-vault": "前往金库",
-    "moving-out-vault": "离开金库",
-    "net-value": "净值",
-    "multiple": "倍率",
-    "nav": {
-        "blog": "博客",
-        "contact": "联系方式",
-        "faq": "常见问题",
-        "privacy": "隐私",
-        "terms": "条款",
-        "multiply": "杠杆交易",
-        "more": "更多",
-        "about": "关于",
-        "resources": "资源",
-        "products": "产品",
-        "team": "团队",
-        "careers": "职缺信息",
-        "knowledge-centre": "知识中心",
-        "learn": "学习",
-        "oracles": "喂价机",
-        "dai-wallet": "Dai 钱包",
-        "borrow": "抵押借贷",
-        "oasis-borrow": "Oasis Borrow",
-        "assets": "加密资产",
-        "earn": "赚取奖励",
-        "select-an-asset": "选择资产",
-        "referrals": "推荐朋友",
-        "cookie": "Cookie 政策",
-        "bug-bounty": "Bug 赏金计划",
-        "brand-assets": "品牌资产",
-        "security": "安全性"
-    },
-    "new-to-ethereum": "第一次接触以太坊？",
-    "next": "下一步",
-    "no-dai": "没有 Dai",
-    "no-activity": "无历史记录",
-    "notice-privacy": "当使用我们的网站时，即表示同意我们的<0> Cookie 政策</0>。",
-    "notification-status-complete": "已完成",
-    "notification-status-completed": "已完成",
-    "notification-status-expired": "已过期",
-    "notification-status-failed": "失败",
-    "notification-status-incomplete": "未完成",
-    "notification-status-initialized": "初始化",
-    "notification-status-pending": "确认中",
-    "notification-status-rejected": "已拒绝",
-    "notification-status-sign": "签名交易",
-    "of": "的",
-    "one-of-some": "{{some}} 的 {{one}}  ",
-    "onramp-leave-message": "点击购买将离开 Oasis，并访问第三方网站完成购买过程。",
-    "open-new-vault": "开启新金库",
-    "open-vault": {
-        "title": "开启金库",
-        "simulate": "模拟计算",
-        "warnings": {
-            "potential-generate-amount-less-than-debt-floor": "初次开启金库最低需要生成 {{debtFloor}} Dai。请添加更多抵押品生成 {{debtFloor}} Dai。",
-            "vault-will-be-at-risk-level-danger": "当前操作会让金库抵押率非常接近最低要求。",
-            "vault-will-be-at-risk-level-danger-at-next-price": "当前操作会让金库抵押率在下次喂价更新的时候非常接近最低要求。",
-            "vault-will-be-at-risk-level-warning": "当前操作会让金库接近最低抵押率要求。",
-            "vault-will-be-at-risk-level-warning-at-next-price": "当前操作会让金库抵押率在下次喂价更新的时候接近最低要求。"
-        },
-        "errors": {
-            "deposit-amount-exceeds-collateral-balance": "你无法存入超出钱包余额数量的抵押品。",
-            "generate-amount-exceeds-dai-yield-from-depositing-collateral": "该金库的抵押率过低，请尝试生成更少的 Dai。",
-            "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "该金库的抵押率会在下次喂价更新时过低，请尝试生成更少的 Dai。",
-            "generate-amount-exceeds-debt-ceiling": "你尝试生成 Dai 的数量超过了当前债务上限。当前最多可生成 {{maxGenerateAmount}} {{token}}。",
-            "generate-amount-less-than-debt-floor": "该金库类型最低借 Dai 金额为 {{debtFloor}} 。点击<0>这里</0>了解最低借 Dai 额度。",
-            "debt-will-be-less-than-debt-floor": "Maker 金库的最低借贷金额要么为零或者高于 {{debtFloor}} Dai。请调整偿还数量。",
-            "custom-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
-            "custom-allowance-amount-less-than-deposit-amount": "你必须许可存入额度以继续。",
-            "depositing-all-eth-balance": "你必须留一些 ETH 支付 Gas 费用，请降低存入数量。",
-            "ledger-enable-contract-data": "请在 Ledgers Ethereum 应用程序的设置启用 Contract data",
-            "exchange-error": "无法获取交易价格以进行此次杠杆交易。"
-        }
-    },
-    "or": "或者",
-    "outstanding-debt": "未偿还债务",
-    "paste": "粘贴",
-    "pending-transactions": "确认中交易",
-    "permissions": "设置许可",
-    "permissions-btn": "设置许可",
-    "permissions-desc": "这将授权 Oasis 与你钱包中的 Dai 进行交互。",
-    "price": "价格",
-    "powered-by": "Powered by",
-    "proceed": "继续",
-    "readonly-alert-message": "你正在查看",
-    "readonly-user-connecting": "可读模式下浏览...",
-    "readonly-user-no-proxy": "此地址下没有代理",
-    "readonly-user-no-savings": "无存款",
-    "receive": "接收",
-    "received": "已接收",
-    "recent-transactions": "最近交易",
-    "reclaim": "赎回抵押品",
-    "remaining-in-wallet": "钱包中剩余",
-    "retry": "再试一次",
-    "retry-allowance-approval": "重新执行许可额度",
-    "retry-create-proxy": "重新创建代理",
-    "savings": "存款",
-    "savings-earned": "已获得收益",
-    "search-token": "搜索代币",
-    "select-product": "选择一个产品",
-    "send": "发送",
-    "send-amount-empty": "无法发送 0 {{ token }}",
-    "send-amount-exceed-balance": "{{ token }} 余额不足",
-    "send-to": "发送至",
-    "sent": "已发送",
-    "seo": {
-        "contact": {
-            "description": "告知我们反馈、问题和建议。",
-            "title": "联系我们"
-        },
-        "dai": {
-            "description": "智能的数字货币 Dai 的简介",
-            "title": "Dai"
-        },
-        "default": {
-            "description": "以您的加密货币作为抵押品借出 Dai，一种与美元挂钩的稳定币。",
-            "title": "Oasis.app"
-        },
-        "latam500": {
-            "description": "通过 Oasis.app 上的 Latamex 购买 Dai。每月可获得价值 10 美元的 ETH，为期三个月。",
-            "title": "LATAM500"
-        },
-        "support": {
-            "description": "所有常见问题回答",
-            "title": "常见问题"
-        },
-        "careers": {
-            "title": "开放职缺",
-            "description": "我们重視人才，加入我们打造下一代的 DeFi。"
-        },
-        "about": {
-            "title": "关于我们",
-            "description": "Oasis 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。"
-        },
-        "referrals": {
-            "title": "推荐好友使用 Oasis 并赚取 Dai",
-            "description": "我们让 Oasis.app 的用户可以经由推荐朋友而得到回报。您可以邀请好友使用我们的产品，您和朋友都可以因此赚取少许的手续费。"
-        },
-        "brand-assets": {
-            "title": "品牌资产",
-            "description": "在这里可以找到 Oasis.app 的 Logo 和图像。"
-        },
-        "security": {
-            "title": "安全性",
-            "description": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。"
-        }
-    },
-    "set-allowance-for": "设置 {{token}} 许可额度",
-    "setting-allowance-for": "正在设置 {{token}} 许可额度",
-    "setup-proxy": "设置代理",
-    "setup-wallet": "初始化钱包",
-    "show-more": "展开更多",
-    "spots-remaining": "剩余 {{ spots }}",
-    "start-saving": "开始储蓄",
-    "system": {
-        "asset": "资产",
-        "available-to-withdraw": "已取回数量",
-        "available-to-generate": "可生成数量",
-        "coll-locked": "已存入",
-        "coll-ratio": "抵押率",
-        "collateral": "抵押品",
-        "collateral-locked": "已存入抵押品",
-        "collateral-ratio": "抵押率",
-        "collateralization-ratio": "抵押率",
-        "dai": "Dai",
-        "dai-available": "可生成 Dai",
-        "dai-debt": "Dai 债务",
-        "deposited": "已存入",
-        "in-my-wallet": "钱包中",
-        "in-your-wallet": "你的钱包中",
-        "liquidation-penalty": "清算罚金",
-        "liquidation-price": "清算价格",
-        "liquidation-ratio": "清算率",
-        "min-coll-ratio": "最低抵押率",
-        "stability-fee": "稳定费率",
-        "type": "类型",
-        "vault-dai-debt": "该金库 Dai 债务",
-        "vault-id": "金库 ID",
-        "oracle-price": "喂价机价格",
-        "market-price": "市场行情",
-        "max-multiple": "最大倍率",
-        "position-info": "仓位信息",
-        "total-exposure": "{{token}} 的总敞口",
-        "exposure": "敞口",
-        "total-collateral": "总抵押价值",
-        "multiple": "倍率",
-        "est-break-even": "收支平衡预测",
-        "est-break-even-value": "{{days}} 天",
-        "est-entry-fees": "入场费预测",
-        "apy": "年收益率",
-        "faq": "常见问题",
-        "liquidation-fee": "清算费用",
-        "buying-power": "购买力",
-        "net-value": "净值",
-        "net-value-pnl": "净值和损益",
-        "dust-limit": "Dust 限度",
-        "minimum-coll-ratio": "最低抵押率",
-        "origination-fee": "发起费",
-        "liquidity-available": "当前流通量",
-        "protocol": "协议",
-        "variable-annual-fee": "可变年费",
-        "seven-day-average": "7 天年收益净值",
-        "ninety-day-average": "90 天年收益净值",
-        "vault-protection": "金库防护措施",
-        "date": "日期",
-        "overview": "概述",
-        "protection": "金库防护",
-        "optimization": "优化损益",
-        "stop-loss": "Stop-Loss",
-        "basic-sell": "Auto-Sell",
-        "basic-buy": "Auto-Buy",
-        "constant-multiple": "Constant Multiple",
-        "history": "历史",
-        "vaultinfo": "金库信息",
-        "multiply-buy-coll": "以 DAI 购买 ({{token}})",
-        "multiply-reduce-debt": "调降金库债务",
-        "actions": {
-            "common": {
-                "close-vault": "关闭金库",
-                "edit-position": "编辑金库"
-            },
-            "borrow": {
-                "edit-dai": "管理 DAI",
-                "edit-collateral": "管理 ({{token}}) 抵押品",
-                "switch-to-multiply": "转换成 Multiply"
-            },
-            "multiply": {
-                "adjust": "调整",
-                "buy-coll": "购买抵押品",
-                "reduce-debt": "调降债务",
-                "switch-to-borrow": "转换成 Borrow"
-            },
-            "earn": {
-                "vault-overview": "金库概述"
-            }
-        },
-        "cards": {
-            "common": {
-                "after": "（试算后）"
-            },
-            "liquidation-price": {
-                "footnote": "当前价格的 {{amount}} {{level}} ",
-                "modal": {
-                    "price-relation": "这是当前价格的 {{level}} "
-                }
-            },
-            "collateralization-ratio": {
-                "footnote": "下一个价格 {{amount}}"
-            },
-            "stop-loss-collateral-ratio": {
-                "footnote": "{{amount}} 低于当前抵押率"
-            },
-            "dynamic-stop-price": {
-                "footnote": "S/L 抵押率 {{amount}} "
-            }
-        },
-        "remove-trigger": "删除触发器",
-        "add-trigger": "增加触发器",
-        "auto-take-profit": "Auto-Take Profit"
-    },
-    "to-the-following-address": "至此地址",
-    "token-balance": "{{token}} 余额",
-    "token-depositing": "存入 {{amount}}  {{token}}",
-    "tos": "服务条款",
-    "tos-accept-message": "在开始之前，您必须阅读并接受我们的服务条款。",
-    "tos-accept-message-updated": "在继续之前，您必须阅读并接受我们更新后的服务条款。",
-    "tos-acceptance-check-in-progress": "许可检查进行中…",
-    "tos-desc": "通过创建一个储蓄金库，我接受 Oasis",
-    "tos-jwt-signature-message": "您似乎第一次使用 Oasis.app 或正在通过新设备连接。为了安全起见，请用您的钱包签名以继续。",
-    "tos-read": "我已阅读并接受服务条款。",
-    "tos-view": "查看服务条款",
-    "tos-wallet-connection-in-progress": "正在连接钱包…",
-    "tos-welcome": "欢迎",
-    "tos-welcome-updated": "我们已更新条款",
-    "transaction-failed": "交易失败",
-    "transaction-fee": "交易费用",
-    "transaction-fee-tooltip-desc": "交易费用目前使用 ETH 支付，成本约为",
-    "trezor-cancel": "选择另一个钱包",
-    "trezor-error": "遇到错误，请重试",
-    "trezor-loading-accounts": "加载 Trezor 账户…",
-    "trezor-select-address": "选择一个地址",
-    "try-again": "请重试",
-    "unlimited-allowance": "永久许可",
-    "vault": {
-        "current-price": "当前 {{token}}/USD 价格 时间 {{time}}",
-        "header": "{{ilk}} 金库 {{id}}",
-        "next-price": "下次喂价机更新: {{count}} 分钟后",
-        "next-price-any-time": "下次喂价更新: 2 分钟内",
-        "next-price_plural": "下次喂价更新: {{count}} 分钟后",
-        "open-vault": "开启 {{ilk}} 金库",
-        "vault-details": "金库细节",
-        "token-uds-price": "{{token}} / 美元价格",
-        "insti-header": "机构 {{ilk}} 的金库 {{id}}"
-    },
-    "vault-actions": {
-        "deposit": "存入",
-        "generate": "生成",
-        "payback": "偿还",
-        "withdraw": "取回"
-    },
-    "vault-changed": "金库已转换完成!",
-    "vault-history": "金库历史",
-    "vaults": {
-        "after": " ${{price}} 之后",
-        "current-price": "当前 {{token}}/USD 价格",
-        "ilk-does-not-exist": "金库 {{ilk}} 不存在",
-        "next-price": "下一个 {{token}}/USD 价格: {{amount}}"
-    },
-    "ilks-list": {
-        "headers": {
-            "noVaults": "选择一种抵押品类型，创建 Maker 金库并生成 Dai",
-            "withVaults": "创建一个新的 Maker 金库。<0/> 生成 Dai"
-        }
-    },
-    "vaults-overview": {
-        "banner-content": "你可以查看金库。",
-        "banner-header": "你正在查看 {{address}} 的金库。",
-        "headers": {
-            "connected-owner-noVaults": "你没有开启任何金库。",
-            "connected-owner-withVaults": "你的所有金库",
-            "connected-viewer-noVaults": "{{address}} 地址下当前没有 Maker 金库",
-            "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
-            "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
-            "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。",
-            "vault-suggestions": "{{address}} 在 Oasis.app 上更多的可能"
-        },
-        "number-of-vaults": "金库数量",
-        "subheader-no-vaults": "开启 Maker 金库，存入抵押品，生成 Dai。",
-        "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
-        "total-debt": "总债务",
-        "total-locked": "总锁定",
-        "vaults": "所有金库",
-        "vaults-at-risk": "风险金库",
-        "your-vaults": "你的金库",
-        "assets-and-positions": "前 {{number}} 名的资产和仓位",
-        "total-assets": "总资产",
-        "total-assets-subheader": "使用 <0>Oasis 精心规划的代币列表计算 →</0>"
-    },
-    "vault-notices": {
-        "ownership": {
-            "header": "你正在查看 {{address}}  地址下的金库。",
-            "subheader1": "请连接你的钱包以管理并查看所有金库。",
-            "subheader2": "你可以查看所有金库。"
-        },
-        "liquidating": {
-            "header1": "你的 {{ collateral }} Maker 金库 {{ id }} 即将被清算。",
-            "header2": "{{ collateral }} Maker 金库 {{ id }} 即将被清算。",
-            "subheader1": "{{ collateral }} 下一个喂价更新会造成该金库的清算，添加更多抵押品或偿还 Dai 避免清算。",
-            "subheader2": "这是你的 Maker 金库吗？请用该地址 {{ address }} 连接，避免金库清算。",
-            "subheader3": "此金库随时会被清算。"
-        },
-        "liquidated": {
-            "header1": "你的 Maker 金库已被清算。",
-            "header2": "该 Maker 金库已被清算。",
-            "subheader1": "该 Maker 金库已被清算。部分抵押品已被拍卖以偿还你的 Dai 债务。",
-            "subheader2": "你可以赎回  {{ amount }} {{ collateral }}。",
-            "subheader3": "此金库已被清算，部分抵押品已被拍卖以偿还 Dai 债务。",
-            "subheader4": "如果这是你的金库，请连接此地址收回剩下的抵押品：{{ address }} "
-        }
-    },
-    "view": "查看",
-    "view-more": "查看更多",
-    "view-on-etherscan": "在 Etherscan 上查看",
-    "waiting-approval": "等待许可",
-    "waiting-confirmation": "等待交易确认",
-    "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: 代理部署已确认",
-    "withdraw": "取回",
-    "withdrawn": "已取回",
-    "you-are-sending": "你正在发送",
-    "your-vaults": "您的金库",
-    "my-positions": "我的仓位",
-    "no-results": "无结果",
-    "learn-about-wallets": "了解钱包",
-    "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
-    "enter-an-amount": "输入数量",
-    "enter-allowance-amount": "输入许可数量",
-    "set-token-allowance": "设置 {{token}} 许可",
-    "invalid-allowance-amount": "许可数量无效",
-    "vault-form": {
-        "header": {
-            "edit": "初始化你的金库",
-            "proxy": "创建你的智能代理",
-            "allowance": "设置 {{token}} 许可",
-            "daiAllowance": "设置 Dai 同意权",
-            "confirm": "确认金库创建",
-            "confirm-in-progress": "已开启金库",
-            "modified": "已修改金库",
-            "confirm-manage": "确认修改金库",
-            "review-manage": "审查金库的修改",
-            "multiply-transition": "增加你钱包中 {{token}} 的敞口",
-            "go-to-multiply": "做得好，现在你将前往新的 Multiply 界面",
-            "editWithToken": "设置 {{token}} 金库",
-            "proxy-in-progress": "已建立智能代理合约",
-            "proxy-success": "已成功建立智能代理合约",
-            "manage": "管理金库",
-            "success": "完成! 你已拥有一个金库",
-            "success-manage": "完成! 已更新你的金库",
-            "proxyDisabled": "建立智能代理合约目前停用"
-        },
-        "subtext": {
-            "collateral": "在你的金库存款或提款，并且通过合并交易来节省手续费。",
-            "dai": "从你的金库生成 DAI 或偿还 DAI，并且通过合并交易来节省手续费。",
-            "edit": "模拟输入存入抵押品数量和期望生成的 Dai 数量",
-            "proxy": "透过智能代理可以将多个步骤集中于一笔交易完成。该操作只需设置一次。",
-            "allowance": "设置许可金库可以控制的最大代币数量。",
-            "daiAllowance": "设置允许智能合约可以互动的代币限额。",
-            "confirm": "即将更新页面，这将不会要求进行交易。",
-            "review-manage": "你可以在这里查看关于修改金库的详细信息",
-            "confirm-in-progress": "正在开启你的金库",
-            "modified": "正在更新你的金库，请耐心等待。",
-            "edit-multiply": "输入想要存入的抵押品数量，接着调整你想要的杠杆条件来预览你的金库。",
-            "edit-multiply-dai": "你可以只是 <1>存入 DAI </1>来建立这个金库，而这个交易将会基于存入的 DAI 为你建立 {{token}} 的仓位。",
-            "proxy-start": "只需要设定代理合约一次，就可以在一次的交易里执行多项动作。前往 <1>知识中心</1>了解更多。",
-            "proxy-success": "已成功设定智能代理合约。 前往 <1>知识中心</1>了解更多 →</1>",
-            "proxy-progress": "前往 <1>知识中心</1>进一步了解智能代理合约。",
-            "new-proxy-temporally-disabled": "在合并的过程，会暂时无法建立智能代理合约，以避免来自重新组织的非预期错误。请阅读我们的<1>博客</1>以了解进一步的信息。"
-        }
-    },
-    "creating-your-vault": "创建你的 {{token}} 金库！",
-    "vault-created": "金库 #{{id}} 已创建！",
-    "changing-vault": "正在修改金库",
-    "your-wallet": "你的钱包",
-    "welcome": "欢迎来到全新的 Oasis.app",
-    "read-blog-post": "阅览博客",
-    "visit-old-oasis": "前往旧版 Oasis",
-    "oracles": {
-        "header": "喂价机",
-        "description": "可以在下方查看被 Maker 金库所接受的抵押品类型的当前及下一个价格。这边的价格大部分是使用喂价安全模块(Oracle Stability Module, OSM)而得到，该模块一小时只会更新一次。因此，当发生价格骤跌时，用户仍有一小时可以做出反应。",
-        "token": "代币",
-        "current-price": "当前价格",
-        "next-price": "下一个价格",
-        "change": "% 变化",
-        "last-update": "最后更新",
-        "next-update": "下一次更新",
-        "oracle-type": "喂价机类型"
-    },
-    "select-vault-type": {
-        "header": "你想要使用你的代币做什么？",
-        "multiply": {
-            "header": "倍数增加我的代币",
-            "subtext": "使用你的{{balance}} {{token}} 获得最高 {{exposure}} {{token}} 的风险",
-            "button": "執行 {{token}} 的杠杆交易"
-        },
-        "borrow": {
-            "header": "抵押我的 {{token}} 借款",
-            "subtext": "使用 {{balance}} {{token}} 借出最高 {{maxBorrow}} DAI",
-            "button": "抵押 {{token}} 借贷"
-        }
-    },
-    "newsletter": {
-        "title": "获取 Oasis.app 的最新信息",
-        "subtitle": "订阅我们的电子报以获得 Oasis.app 的最新信息 ",
-        "placeholder": "电子邮箱",
-        "button": "订阅",
-        "success": "感谢您订阅我们的电子报",
-        "errors": {
-            "unknown": "发生错误，请再试一次。",
-            "email-is-invalid": "请输入有效的邮箱地址",
-            "email-already-exists": "此邮箱已订阅电子报",
-            "email-pending": "确认邮件已经发送到此地址，请查看您的邮箱。"
-        },
-        "gdpr": "输入您的邮箱地址即表示您明白 Oazo Apps Limited 将会因行销用途搜集和使用您的个人信息（如：电子报、更新）。如想了解更多，请查阅我们的<1>隐私政策</1>。"
-    },
-    "product-card": {
-        "borrow": "此金库适用于抵押 {{token}} 来借贷",
-        "multiply": "此金库适用于增加 {{token}} 風險敞口",
-        "borrow-and-multiply": "此金库适用于抵押 {{token}} 来借贷并增加風險敞口",
-        "lp-tokens": "此金库适用于增加 {{token}} 風險敞口",
-        "medium-exposure-medium-cost": "此金库的風險敞口和花费为一般，适用于借贷和进行杠杆交易",
-        "biggest-multiply": "此杠杆交易有机会最大值化 {{token}} 的风险敞口",
-        "lowest-stabilityFee-and-cheapest": "此为最低的稳定费和最易负担的金库，适用于借贷 {{token}}",
-        "staking-rewards": "非常适用于赚取质押奖励时，执行借贷或杠杆交易",
-        "great-borrowing-and-multiplying": "最适用于执行 {{token}} 的借贷或杠杆交易",
-        "guni": {
-            "GUNIV3DAIUSDC2-A": "让 Dai 的风险敞口在 UNI V3 的 DAI/USDC 1bps 资金池赚取奖励",
-            "GUNIV3DAIUSDC1-A": "让 Dai 的风险敞口在 UNI V3 的 DAI/USDC 5bps 资金池赚取奖励"
-        },
-        "tags": {
-            "lowest-fees-for-borrowing": "最低手续费",
-            "staking-rewards": "质押奖励",
-            "max-exposure": "{{token}} 最大的风险敞口"
-        },
-        "lowest-annual-fee-cheapest-vault": "此为使用质押 ETH 借贷选项中，最低年费和最便宜的金库",
-        "unprofitable-position": "此仓位目前无法获利，但只要您明白现况，仍可以开启金库。"
-    },
-    "product-card-banner": {
-        "with": "以 {{value}} {{token}} 👇",
-        "borrow": "借贷至多 {{value}} DAI",
-        "multiply": "至多 {{value}} {{token}} 的风险敞口",
-        "earn": "一年赚取 {{value}} {{token}}",
-        "guni": {
-            "GUNIV3DAIUSDC2-A": "在 DAI/USDC UNI V3 1bps 资金池里至多 {{value}} 的风险敞口",
-            "GUNIV3DAIUSDC1-A": "在 DAI/USDC UNI V3 5bps 资金池里至多 {{value}} 的风险敞口"
-        }
-    },
-    "product-page": {
-        "multiply": {
-            "title": "Oasis Multiply",
-            "description": "快来浏览我们的产品或者选择您最爱的加密资产来提高风险敞口吧。",
-            "link": "进一步了解 Multiply ->"
-        },
-        "borrow": {
-            "title": "Oasis Borrow",
-            "description": "现在就从下方选择您想抵押的加密资产来提高风险敞口吧。",
-            "link": "进一步了解 Borrow ->"
-        },
-        "earn": {
-            "title": "Oasis Earn",
-            "description": "启用最优质的流动性挖矿，让加密资产开始为您赚取奖励。您可以从下方选择合适的 Earn 产品。",
-            "link": "进一步了解 Earn ->"
-        }
-    },
-    "claim-rewards": {
-        "title": "{{ bonusTokenName }} 仓位奖励",
-        "text1": "当前你在这个仓位赚取{{ bonusTokenName }}奖励。按下按钮来领取 {{ bonusAmount }}。",
-        "link-text": "这里",
-        "text2": "可以获取更多关于奖励的信息。",
-        "claim-button": {
-            "claim-rewards": "领取奖励"
-        },
-        "for-this-position": "你在该仓位赚取 {{ name }} 奖励。",
-        "instructions": {
-            "tokens-to-claim": "按下此按钮获取 {{ readableAmount }}。",
-            "claim-succeeded": "你已获取 {{ readableAmount }}. 这将会花费几分钟来更新你的仓位。",
-            "nothing-to-claim": "你现在没有可以宣告 {{ name }} 的奖励。"
-        },
-        "more-info": {
-            "text1": "更多关于奖励的信息",
-            "link-text": "这里",
-            "text2": "。"
-        }
-    },
-    "simulate-faq": {
-        "contents": "内容",
-        "learn-more-heading": "想了解更多?",
-        "learn-more-body": "你可以前往我的 <0>知识</0> 页面更深入的了解，或是在<1> Discord </1> 上发问。"
-    },
-    "get-started-button": "开始使用 Oasis",
-    "wallet-wrong-network": "你的钱包似乎不在正确的网路里。",
-    "app-wrong-network": "现在的 Oasis.app 似乎不支持你的钱包。",
-    "wallet-wrong-network-desc": "你的钱包似乎在另一个与 Oasis.app 不同的网路里运行，请手动转换你的钱包网路，或者可以直接按下方的按钮。",
-    "app-wrong-network-desc": "Oasis.app 似乎运行在一个你的钱包不支持的网路，请按下方按钮转换网路。",
-    "user-wrong-network-desc": "你的钱包似乎在另一个与 Oasis.app 不同的网路里运行，请手动转换你的钱包网路。",
-    "switch-network": "转换网路",
-    "switch-to-mainnet": "转换成主网",
-    "and": "和",
-    "add-stop-loss": "启用 Stop-Loss",
-    "update-stop-loss": "更新 Stop-Loss",
-    "back-to-vault-overview": "回去金库概述",
-    "cancel-stop-loss": "取消 Stop-Loss",
-    "adding-auto-sell": "正在启用 Auto-Sell",
-    "cancelling-auto-sell": "正在取消 Auto-Sell",
-    "adjust-your-position-additional": "在这个交易调整杠杆倍率",
-    "after-closing": "在关闭之后换成{{token}}",
-    "view-vault-link": "<0>查看金库 -></0>",
-    "adding-auto-buy": "正在增加 Auto-Buy 触发器",
-    "cancelling-auto-buy": "正在移除 Auto-Buy  触发器",
-    "close-notification": "关闭通知",
-    "close-to": "以 {{token}} 结算关闭金库",
-    "see-products": "查看产品",
-    "fact": "因素",
-    "copy": "复制",
-    "edit-vault": "编辑金库",
-    "mark-as-read": "标记为已读",
-    "edit-allowance": "编辑许可额度",
-    "reset": "重置",
-    "finished": "已完成",
-    "smart-proxy-desc": "为了关闭金库，你的部分仓位将会出售以支付尚未偿还的债务，剩余的抵押品将会发送到你的钱包地址。",
-    "proxy-advantages": {
-        "0": "一个账户只需一个代理合约",
-        "1": "让钱包可以与 Maker 协议互动",
-        "2": "有效使用燃料费"
-    },
-    "proxy-advantages-new": {
-        "0": "一个账户只需<1>一个</1>代理合约<1>",
-        "1": "让钱包可以与 Maker 协议互动",
-        "2": "有效使用燃料费"
-    },
-    "proxy-waiting-text": "了解更多关于智能代理合约在",
-    "proxy-waiting-text-link": "知识中心",
-    "creating-proxy-contract": "正在建立你的智能代理合约",
-    "please-try-again-later": "请稍后再试一次",
-    "dai-depositing": "正存入 Dai ({{amount}})",
-    "decide-later": "稍后再决定",
-    "disconnect-wallet": "断开连接钱包",
-    "pending": "进行中...",
-    "error-header": "失去连接",
-    "error-button-reload": "重新载入",
-    "exchange": {
-        "onboarding": {
-            "title": "向 Oasis Swap 打招呼",
-            "body": "在 Oasis 上快速安全兑换代币。 前往 <0>Oasis Swap 的常见问题 →</0>",
-            "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
-            "button": "知道了"
-        }
-    },
-    "multiply-description-pending": "正在创建新的 Multiply 金库",
-    "multiply-description-recent": "已创建 Multiply 金库 {{ id }}",
-    "multiply-description-recent-failed": "创建 Multiply 金库失败",
-    "adjust-position-description-pending": "调整 Multiply 金库 {{ id }}",
-    "adjust-position-description-recent": "已调整 Multiply 金库 {{ id }}",
-    "adjust-position-description-recent-failed": "调整 Multiply 金库 {{ id }} 失败",
-    "close-vault-description-pending": "已以 {{ closeTo }} 结算关闭金库 {{ id }}",
-    "close-vault-description-recent": "已以 {{ closeTo }} 结算关闭金库 {{ id }}",
-    "close-vault-description-recent-failed": "关闭金库 {{ id }} 失败",
-    "fees-plus-gas": "手续费 + (燃料费最大值)",
-    "max-gas-fee": "燃料费最大值",
-    "gas-explanation": "最大值燃料费是用来支付燃料费的最高价格。为确保你的交易成功，我们提供以现价2倍的燃料基本费 + 优先费，使你的交易有 95% 的机会在下一个区块被执行。在多数的情况下，你只会支付少于最大值许多的费用。",
-    "from:": "从",
-    "full": "额满",
-    "triggers": {
-        "added": "已加入",
-        "removed": "已移除",
-        "executed": "已执行",
-        "updated": "已更新"
-    },
-    "active-triggers": "启动中的触发器",
-    "languages": "语言",
-    "lang-dropdown": {
+    "deposit": "已存入",
+    "time": "时间",
+    "type": "类型",
+    "vault-opened": "已开启金库"
+  },
+  "exchange-rate": "兑换率",
+  "failed": "失败",
+  "fees": "手续费",
+  "featured": {
+    "cheapest": "最便宜",
+    "most-popular": "最受欢迎",
+    "new": "最新"
+  },
+  "filters": {
+    "lp-token": "LP 代币",
+    "stablecoin": "稳定币",
+    "popular": "热门资产"
+  },
+  "gas-estimation-error": "错误",
+  "get-dai": "获得 Dai",
+  "get-started": "现在开始",
+  "go-to-vault": "前往金库 #{{id}}",
+  "here": "这里",
+  "history": {
+    "auction_finished_v2": "拍卖 <0>#{{auctionId}}</0>  已完成，剩余 <0>{{remainingCollateral}} {{token}}</0>。",
+    "auction_started": "拍卖已开始，清算 <0>{{collateralAmount}} {{token}}</0> 以偿还 <0>{{daiAmount}} Dai</0>。",
+    "auction_started_v2": "拍卖 <0>#{{auctionId}}</0> 已开始, 清算 <0>{{collateralAmount}} {{token}}</0> 以偿还 <0>{{daiAmount}} Dai</0>。",
+    "bought": "已购买",
+    "deposit": "已将 <0>{{collateralAmount}} {{token}}</0> 存入金库。",
+    "deposited": "已存入",
+    "generate": "已从金库生成 <0>{{daiAmount}}</0> Dai ",
+    "exit-collateral": "赎回抵押品",
+    "exit-dai": "赎回 DAI",
+    "migrate": "金库已迁移",
+    "move_dest": "转移 <0>{{collateralAmount}} {{token}}</0> 和 <0>{{daiAmount}}</0> Dai 债务到该金库。",
+    "move_src": "从金库转移 <0>{{collateralAmount}} {{token}}</0> 和 <0>{{daiAmount}}</0> Dai 债务。",
+    "open": "开启新的金库 ID <0>#{{cdpId}}</0>",
+    "payback": "偿还 <0>{{daiAmount}}</0> Dai 到金库",
+    "transfer": "金库由 <0>{{transferFrom}}</0> 转移到 <0>{{transferTo}}</0>",
+    "withdraw": "从金库取回 <0>{{collateralAmount}} {{token}}</0> ",
+    "open_multiply_vault": "开启 Multiply 金库",
+    "increase_multiple": "提高杠杆倍率",
+    "decrease_multiple": "降低杠杆倍率",
+    "close_vault_to_dai": "关闭金库并兑换成 Dai",
+    "close_vault_to_collateral": "关闭金库并兑换成抵押品",
+    "sold": "已售出",
+    "total-fees": "总手续费",
+    "withdrawn": "已提款",
+    "open_multiply_guni_vault": "已开启 Multiply 金库",
+    "close_guni_vault_to_dai": "关闭金库并换成 Dai",
+    "stop-loss": "启用 Stop-Loss",
+    "basic-buy": "启用 Auto-Buy",
+    "basic-sell": "启用 Auto-Sell",
+    "close-to": "关闭并兑换成",
+    "trigger-col-ratio": "启用自动化的抵押率",
+    "target-col-ratio": "最终清算的目标抵押率",
+    "max-gas-fee-in-gwei": "燃料费的最大值（Gwei）",
+    "minimum-sell-price": "最低出售价格",
+    "maximum-buy-price": "最高购买价格",
+    "constant-multiple": "Constant-Multiple trigger",
+    "constant-multiple-buy": "Constant-Multiple Buy trigger",
+    "constant-multiple-sell": "Constant-Multiple Sell trigger",
+    "buy-trigger-col-ratio": "Buy Trigger Col. Ratio",
+    "sell-trigger-col-ratio": "Sell Trigger Col. Ratio",
+    "target-multiple": "Target multiple"
+  },
+  "jwt-auth-failed": "签名失败",
+  "jwt-auth-in-progress": "等待签名中...",
+  "jwt-auth-rejected": "已拒绝签名",
+  "jwt-auth-waiting-acceptance": "签名消息",
+  "keyWithCount": "{{count}} 项",
+  "keyWithCount_plural": "{{count}} 项",
+  "landing": {
+    "footer": {
+      "blog": "博客",
+      "contact": "联系方式",
+      "resources": "资源",
+      "faq": "常见问题",
+      "knowledge-centre": "知识中心",
+      "oracles": "喂价机",
+      "products": "产品",
+      "dai-wallet": "Dai 钱包",
+      "borrow": "借贷",
+      "language": {
         "en": "English",
-        "es": "Español",
+        "es": "Spanish",
         "pt": "Português",
         "cn": "中文"
+      },
+      "about": "关于我们",
+      "team": "团队",
+      "careers": "开放职缺",
+      "privacy": "隐私",
+      "terms": "条款",
+      "trade": "交易"
     },
-    "manage-insti-vault": {
-        "origination-fee": "发起费",
-        "tooltip": {
-            "origination-fee": "机构金库的发起费"
+    "hero": {
+      "headlinePreAssetLandingPages": "抵押数字资产，生成 Dai",
+      "subheaderPreAssetLandingPages": "开启 Maker 金库，存入抵押品，生成 Dai。<0/>连接钱包以开始。",
+      "headline": "使用你最爱的加密货币来借贷和进行杠杆交易",
+      "subheader": "超过30种的加密资产选择，包含 ETH 和 WBCT，让您每年赚取 1.5% 收益。<0/>连接钱包开始交易"
+    },
+    "cards": {
+      "dai": {
+        "title": "Dai 钱包",
+        "description": "一站式购买、发送和管理您的 Dai。借由访问许多的提供商，累积您的 Dai。"
+      },
+      "faq": {
+        "title": "有任何疑问吗？",
+        "description": "您可以在我们的常见问题页面了解更多关于 Oasis、Dai 和 DeFi 的信息"
+      }
+    },
+    "stats": {
+      "30-day-volume": "30天交易量",
+      "managed-on-oasis": "Oasis 上的交易量",
+      "median-vault": "金库交易中位数"
+    },
+    "tabs": {
+      "borrow": {
+        "tabLabel": "在 Oasis 借贷",
+        "tabParaContent": "以您最爱的加密货币借出 Dai，随心所意使用它。",
+        "tabParaLinkContent": "查看所有借贷抵押品 →"
+      },
+      "multiply": {
+        "tabLabel": "在 Oasis 开启杠杆",
+        "tabParaContent": "快来浏览我们的特色产品，接着选择您最爱的加密货币来提高风险敞口吧。",
+        "tabParaLinkContent": "查看所有杠杆抵押品 →"
+      },
+      "earn": {
+        "tabLabel": "在 Oasis 赚取奖励",
+        "tabParaContent": "从今天开始创造最佳的流动性挖矿，让加密货币为您赚取奖励。从下方选取您有兴趣的 Earn 产品吧。",
+        "tabParaLinkContent": "进一步了解 Earn →"
+      }
+    },
+    "info-cards": {
+      "have-some-questions": "有任何疑问吗？",
+      "learn": {
+        "learn": "学习",
+        "deep-dive": "深入了解 Oasis.app 的功能和重要概念",
+        "get-started": "开始",
+        "tutorials": "教程",
+        "key-concepts": "重要概念"
+      },
+      "support": {
+        "support": "帮助",
+        "contact-whenever": "任何您需要帮助时，请联系 Oasis.app 团队",
+        "faq": "常见问题",
+        "discord": "Discord",
+        "contact-us": "联系我们",
+        "twitter": "Twitter"
+      },
+      "get-started": "开始使用 Oasis.app",
+      "multiply": {
+        "multiply": "增加你的资产",
+        "subtitle": "您可以经由单一的交易开启 Maker 金库并生成 DAI，接着再购买更多的抵押品。",
+        "open-vault": "开启金库"
+      },
+      "borrow": {
+        "borrow-dai": "借贷 Dai",
+        "choose-your-preferred-token": "选择喜爱的代币作为抵押品，接着开启 Maker 金库来获得 DAI",
+        "open-vault": "开启金库"
+      },
+      "manage": {
+        "manage-your-vault": "管理金库",
+        "make-actions": "随时随地操作您的金库",
+        "connect-your-wallet": "连接钱包"
+      }
+    },
+    "cookie-banner": {
+      "message": "我们使用网站上的 Cookie 功能来改善您的使用体验、基础功能以及分析流量。Cookie 以匿名的方式记录并且不会连接到用户的资料。如果您不愿意使用 Cookie 功能，您仍然可以使用这个网站。想了解更多信息，请阅读我们的 Cookie 政策。</0>.",
+      "settings-toggle": "管理 Cookie 设置",
+      "accept": "接受",
+      "reject": "拒绝",
+      "cookies": {
+        "marketing": {
+          "title": "行销 Cookies",
+          "description": "Oasis.app 使用来自 adRoll 的匿名 Cookies 在广告平台上重新定位营销策略。"
         },
-        "card": {
-            "current-fixed-fee": "当前固定费用",
-            "next-fee-change": "下一次费用",
-            "term-end": "Term End",
-            "days-remaining": "剩余 {{days}} 天",
-            "min-active-coll-ratio": {
-                "ratio": "{{percentageRatio}} 最低活跃抵押率",
-                "price": "最低活跃抵押率价格",
-                "modal": {
-                    "para1": "抵押率的计算方式：抵押品的价值 / Dai 债务。最小活跃抵押率是抵押率低于后续会生成的债务或提出的抵押品。这个抵押率和清算率是分开的两种利率。",
-                    "para2": "如果金库低于最低活跃抵押率，就可以存入抵押品并偿还债务。",
-                    "para3": "这里所显示最低活跃抵押率是在这个比率下抵押品的价格。"
-                }
-            }
+        "analytics": {
+          "title": "分析 Cookies",
+          "description": "这些选项协助我们了解用户是如何使用这个网站并且找出可以改善的地方。"
         }
+      }
+    }
+  },
+  "ledger-cancel": "选择另一个钱包",
+  "ledger-error": "遇到错误，请重试。",
+  "ledger-legacy": "Ledger Legacy",
+  "ledger-live": "Ledger Live",
+  "ledger-select-address": "选择一个地址",
+  "ledger-select-title": "选择 Ledger Live 或 Legacy",
+  "manage-vault": {
+    "action-option": "通过该交易 {{action}} {{token}} ",
+    "dai-available": "可生成 Dai",
+    "dust-limit": "初始最低生成 Dai 数量",
+    "liquidation-fee": "清算费用",
+    "min-collat-ratio": "最低抵押率",
+    "or": "或者",
+    "stability-fee": "稳定费用",
+    "title": "管理金库",
+    "action": "管理金库",
+    "warnings": {
+      "potential-generate-amount-less-than-debt-floor": "初次开启金库最低需要生成 {{debtFloor}} Dai。请添加更多抵押品生成 {{debtFloor}} Dai。",
+      "debt-is-less-than-debt-floor": "当前您借出的 Dai 低于最低限额  {{debtFloor}} Dai，因此无法使用部分金库的功能。您至少需要借出最低借 Dai 额度，或者偿还所有的债务。",
+      "vault-will-be-at-risk-level-danger": "当前操作会让您的金库抵押率非常接近最低要求。",
+      "vault-will-be-at-risk-level-danger-at-next-price": "当前操作会让您的金库抵押率在下次喂价机更新的时候非常接近最低要求。",
+      "vault-will-be-at-risk-level-warning": "当前操作会让您的金库接近最低抵押率要求",
+      "vault-will-be-at-risk-level-warning-at-next-price": "当前操作会让您的金库抵押率在下次喂价机更新的时候接近最低要求"
     },
-    "manage-earn-vault": {
-        "overview-earn": "概述 (Earn ID: {{earnId}})",
-        "earnings-to-date": "迄今为止的收益",
-        "earnings-to-date-after-fees": "后手续费 {{ afterFees }} {{ symbol }}",
-        "earnings-to-date-modal": "迄今为止此仓位的收益是由当前的仓位净值减去累积的存款，再加上累积的提款，不包含支付 Oasis 的费用。“后手续费”的价格包含 Oasis 手续费及以太坊的燃料费的收入。",
-        "net-apy": "净值年收益",
-        "net-apy-modal": "年收益已算入手续费，其计算方式是 {{ token }} 代币价格过去七天上涨的百分比，按年计算，并且减去变动的年手续费。",
-        "exposure-modal": "以所部署的资金杠杆倍数表示这个仓位的总敞口。"
+    "errors": {
+      "deposit-amount-exceeds-collateral-balance": "您无法存入超出钱包余额数量的抵押品。",
+      "withdraw-amount-exceeds-free-collateral": "您最多能够取回 {{maxWithdrawAmount}} {{token}}。",
+      "withdraw-amount-exceeds-free-collateral-at-next-price": "您最多能够取回  {{maxWithdrawAmount}} {{token}}。",
+      "generate-amount-exceeds-dai-yield-from-total-collateral": "该金库的抵押率过低，请尝试生成更少的 Dai。",
+      "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "该金库的抵押率会在下次喂价机更新时过低，请尝试生成更少的 Dai。",
+      "generate-amount-exceeds-debt-ceiling": "您尝试生成 Dai 的数量超过了当前债务上限。当前最多可生成 {{maxGenerateAmount}} {{token}}。",
+      "generate-amount-less-than-debt-floor": "该金库类型最低借出的 Dai 金额为 {{debtFloor}} 。点击<0>这里</0>了解 Dai 的最低借贷额度。",
+      "payback-amount-exceeds-dai-balance": "您的钱包里没有这么多 Dai 用来偿还。",
+      "payback-amount-exceeds-vault-debt": "您希望偿还的金额超出了该金库借 Dai 数量。",
+      "debt-will-be-less-than-debt-floor": "Maker 金库的最低借贷金额要么为零或者高于 {{debtFloor}} Dai。请调整您的偿还数量。",
+      "custom-collateral-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
+      "custom-collateral-allowance-amount-less-than-deposit-amount": "您需要许可存入额度以继续。",
+      "custom-dai-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
+      "custom-dai-allowance-amount-less-than-payback-amount": "您需要许可偿还额度以继续。",
+      "depositing-all-eth-balance": "您需要留一些 ETH 支付燃料费用，请降低你的存入数量。",
+      "ledger-enable-contract-data": "请在 Ledgers Ethereum app 的设置里启用 Contract data ",
+      "withdraw-collateral-on-vault-under-debt-floor": "当低于 Dai 的最低借贷金额时，您无法从金库提取抵押品。若想要提取，请偿还所有的债务。点击<0>这里</0>了解最低债务额度。",
+      "exchange-error": "无法获取交易价格以进行杠杆交易。"
     },
-    "borrow-to-multiply": {
-        "checkmark1": "增加你的 {{token}} 的风险敞口",
-        "checkmark2": "一键就能调整风险和敞口",
-        "checkmark3": "为了更好的效率和节省费用，闪电贷款、购买或出售抵押品将会合并成一笔交易。",
-        "checkmark4": "在执行之前，你可以检阅金库修改的细节。",
-        "subheader2": "重要",
-        "paragraph2": "当你在金库执行杠杆交易时，会获得以你的抵押品借来的资金去购买的抵押品，请确定你明白交易的风险。",
-        "button-not-supported": "不支持 {{token}}",
-        "button-start": "执行杠杆交易",
-        "button-confirm": "前往杠杆交易页面",
-        "button-progress": "进行交易中...",
-        "button-failure": "发生错误，请再试一次",
-        "button-success": "完成交易，刷新中...."
+    "card": {
+      "collateralization-ratio-calculated": "您的抵押率计算方式为：抵押品的价值 / Dai 债务",
+      "collateralization-ratio-header2": "当前的抵押率：",
+      "collateralization-ratio-description": "从 Maker 喂价机获得的价格会用来计算你的抵押品价值。你的抵押率必须永远高于最低额度以避免被清算。",
+      "collateralization-ratio-next-price": "在下一个价格里，你的抵押率为：",
+      "collateral-locked-amount": "抵押在金库里的抵押品总额：",
+      "collateral-locked-USD": "抵押在金库里的抵押品总额（以美金计价）：",
+      "collateral-locked-oracles": "我们使用从 Maker 喂价机得到的价格来计算抵押品的价值。您的抵押品的当前市场价格有可能会与这个价格不同。"
     },
-    "multiply-to-borrow": {
-        "title1": "在 Borrow 页面查看你的金库",
-        "title2": "你即将回到 Borrow 的界面",
-        "checkmark1": "为借贷仓位而生",
-        "checkmark2": "任何时候你都可以切换回去 Multiply 界面",
-        "checkmark3": "这不会执行任何交易",
-        "button-start": "前往 Borrow 界面",
-        "button-confirm": "立即前往 Borrow 界面",
-        "button-progress": "交易进行中...",
-        "button-failure": "发生错误，请再试一次",
-        "button-success": "完成交易，刷新中...."
+    "variable-annual-fee": "变量性年手续费",
+    "current-price": "当前 {{token}} 价格",
+    "next-price": "下次 {{token}} 价格"
+  },
+  "earn-vault": {
+    "headlines": {
+      "yield-7": "7天净值年收益",
+      "yield-90": "90天净值年收益",
+      "total-value-locked": "总抵押价值"
     },
-    "field-from": "从",
-    "minimum": "最小值",
-    "metamask-unsupported-network": "你现在的网路不被支持，请转换成主网。",
-    "not-right-now": "不是现在",
-    "slider": {
-        "adjust-multiply": {
-            "introduction-header": "调整杠杆倍率",
-            "introduction-content": "",
-            "left-label": "清算价格",
-            "right-label": "抵押率",
-            "left-footer": "高风险",
-            "right-footer": "低风险"
-        },
-        "set-stoploss": {
-            "left-label": "Stop-Loss 抵押率",
-            "right-label": "变动的 stop 价格",
-            "left-footer": "更多损失",
-            "right-footer": "更可能执行"
-        }
+    "simulate": {
+      "header1": "期间",
+      "header2": "扣除手续费后的收益",
+      "header3": "净值",
+      "rowlabel1": "过去 30 天*",
+      "rowlabel2": "过去 90 天*",
+      "rowlabel3": "过去 1 年*",
+      "footnote1": "*过往的收益表现不代表未来的结果。",
+      "footnote2": "**使用 30 天的年收益来预测收支平衡。",
+      "rowlabel4": "自成立以来*"
+    }
+  },
+  "manage-multiply-vault": {
+    "tooltip": {
+      "vaultId": "金库的 ID 是在 Oasis.app 上面专属于你的 Maker 金库而生的独一无二数字码。",
+      "stabilityFee": "从 Maker 金库借出 Dai 的时候，Maker Protocol 会索取稳定费。稳定费是一种变动费率，它会因为 Maker 基金会的风险团队所提的提议及治理者投票后采用的提议而产生改变。",
+      "liquidationFee": "如果你的金库被清算了，清算罚金将会以 Dai 计算，并且加到你金库中尚未结算的总债务里，这将导致更多的抵押品被拍卖以偿还你尚未结算的债务。这个机制是为了鼓励金库拥有者避免被清算。至于清算罚金的金额，是依据金库里的债务而计算出来的清算手续费所决定。",
+      "min-collateral": "最低抵押率也被称为清算率。如果金库低于最低抵押率，就会被视为抵押不足而可能被清算。",
+      "dust-limit": "Dust 限度代表的是在这个类型的金库里，Dai 要被生成的最低数量。这个数值也被称为 “债务底线”"
     },
-    "cancel-stoploss": {
-        "summary-header": "取消 Stop-Loss 订单概要",
-        "stop-loss-coll-ratio": "Stop-Loss 抵押率",
-        "liquidation": "取消之后的清算价格",
-        "total": "交易的总支出",
-        "max": "最大的交易支出"
+    "card": {
+      "liquidation-price-description": "清算价格指的是可能导致你的金库被清算的抵押品价格。如果您发现金库价值非常接近被清算的价格，可以在你的杠杆金库里调高抵押率，然后增加更多的抵押品。或者，也可以偿还部分债务。",
+      "liquidation-price-current": "当前的清算价格：",
+      "liquidation-percentage-below": "低于当前价格 {{percentageBelow}} ",
+      "buying-power": "购买力",
+      "buying-power-description": "购买力代表的是你当前有多少 Dai 可以购买更多的抵押品。它依据仓位当前状态，得到你可以购买更多抵押品的最大值的 Dai 数值。这个数值会介于当前的抵押率和最小抵押率之间。",
+      "current-price": "当前价格",
+      "current-price-description": "你的金库抵押品价格是由 Maker 价格喂价机所提供。",
+      "next-price": "下一次价格",
+      "next-price-description": "你在这里所看见的下次价格将会在 Maker Protocol 产生影响。在与清算价格比较之后，会看出你的金库是否有可能在下一次价格更新时被清算。",
+      "more-info-oracles": "在<0>这里</0>可以得到关于 Maker 喂价机的信息",
+      "net-value": "净值",
+      "unrealised-pnl": "未实现损益",
+      "based-on-price": "当前净值是依据市场价格计算",
+      "collateral-value-in-vault": "金库的抵押品价值",
+      "dai-debt-in-vault": "金库的Dai 债务",
+      "collateral-value": "抵押品价值",
+      "usd-value": "$ 价值",
+      "gas-fees": "燃料费",
+      "market-price-unavailable": "市场价格暂时无法读取，请稍后再查看",
+      "formula": "由此算式计算未实现损益：\n 未实现损益 = ( (净值 +提款的累积金额 - 已付出的燃料费) - 存款的累积金额) / 存款的累积金额",
+      "deposit-collateral-on-vault-under-debt-floor": "当金库的价值低于最低要求债务 {{debtFloor}}，您无法存款到金库。您必须增加更多的抵押品并生成 Dai 来达到系统要求的最低价值。进一步了解金库最低债务",
+      "liquidation-price-description-AUTO": "清算金额是金库即将要被清算的价格。",
+      "vault-protection-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
+      "based-on-price-lp": "当前净值是由喂价机的价格计算",
+      "net-value-description": "净值的计算方式是当前在您金库的抵押品价值扣除当前的债务。\n 注意：这个价值不完全等于你关闭金库赎回 Dai 所得到的金额。净值是采用 1 inch 上的抵押品价格所计算。",
+      "profit-and-loss": "损益",
+      "profit-and-loss-description": "TBD",
+      "stop-loss-coll-ratio": "Stop-Loss 抵押率",
+      "current-stop-loss-coll-ratio": "当前 Stop-Loss 抵押率是：",
+      "stop-loss-coll-ratio-desc": "Stop-Loss 抵押率是依据下一个 OSM 价格的抵押率在金库实行 Stop-Loss 的触发器。如果下一个 OSM 价格使当前金库的抵押率低于 Stop-Loss 的抵押率，那金库将自动关闭。",
+      "dynamic-stop-price": "变量的 Stop 价格",
+      "dynamic-stop-loss-price": "变量的 Stop-Loss 价格",
+      "dynamic-stop-loss-price-desc": "变量的 Stop-Loss 价格是依据设置的 Stop-Loss 抵押率得出将关闭金库的当前价格。让价格变动的原因是 Stop-Loss 的触发是根据抵押率，因此当更动金库或累积稳定费时，它将自动调整成触发 Stop-Loss 的价格。",
+      "current-dynamic-stop-loss-price": "当前变量的 Stop-Loss 价格：",
+      "max-token-on-stop-loss-trigger": "{{token}} 的 Stop-Loss 预估触发器 ",
+      "max-token-on-stop-loss-trigger-desc": "{{token}} 的 Stop-Loss 预估触发器是当 Stop-Loss 关闭你的金库时，最可能预期拿回的金额。因为有太多因素会触发 Stop-Loss，如：市场价格、可流动量及燃料费用，所以很难提供一个完美的金额，而这个计算方式预设触发价格和市场价格会有 2% 的差异。与清算相比，保留下来的金额是依据不支付目前设置为 {{liquidationPenalty}} 清算罚金的假设。",
+      "current-coll-ratio": "当前抵押率",
+      "next-coll-ratio": "下一个抵押率",
+      "saving-comp-to-liquidation": "和清算相比所留下的金额",
+      "above-liquidation-price": "高于清算价格",
+      "on-next-price": "在下一个价格",
+      "up-to": "至多"
     },
-    "notice": "注意",
-    "unlimited": "无限的",
-    "vault-errors": {
-        "deposit-amount-exceeds-collateral-balance": "无法从你的钱包存入比这个数量更多的抵押品",
-        "deposit-dai-amount-exceeds-dai-balance": "无法从你的钱包存入比这个数量更多的 Dai",
-        "generate-amount-exceeds-dai-yield-from-depositing-collateral": "请减少你希望生成的 Dai 数量以避免该 Maker 金库的抵押率太低。",
-        "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "请减少你希望生成的 Dai 数量以避免该 Maker 金库的抵押率在更新到下一个价格后太低。",
-        "generate-amount-exceeds-debt-ceiling": "你正在生成比当前上限还要多的债务，但目前允許生成的 Dai 的数量是 {{maxGenerateAmount}}",
-        "generate-amount-less-than-debt-floor": "此金库须至少生成 {{debtFloor}} 的 Dai。 进一步了解最低<0>金库债务</0>。",
-        "generate-amount-more-than-max-flash-amount": "此交易超出最大闪电贷款的金额 {{maxFlashAmount}}，请调低杠杆倍率或者存款金额。",
-        "debt-will-be-less-than-debt-floor": "此 Maker 金库的债务金额必须为 0 或者超过 {{debtFloor}} 的 Dai，请修改偿还金额。",
-        "custom-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义额度数量",
-        "custom-allowance-amount-less-than-deposit-amount": "你必须允许至少一组存款的许可额度才能继续",
-        "depositing-all-eth-balance": "你需要一些 ETH 来支付燃料费，请降低存款金额。",
-        "ledger-enable-contract-data": "请在 Ledgers Ethereum app 的设置里启用 Contract data",
-        "insufficient-eth-balance": "你的 ETH 余额不足以支付交易",
-        "exchange-error": "无法获取执行此杠杆交易的兑换价。",
-        "withdraw-amount-exceeds-free-collateral": "你无法提出超过 {{maxWithdrawAmount}} 的 {{token}}",
-        "withdraw-amount-exceeds-free-collateral-at-next-price": "你无法提出超过 {{maxWithdrawAmount}} 的 {{token}}",
-        "generate-amount-exceeds-dai-yield-from-total-collateral": "此 Maker 金库的抵押率太低，请生成少点 Dai",
-        "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "此 Maker 金库的抵押率在下一个价格更新后将太低，请生成少点 Dai",
-        "payback-amount-exceeds-dai-balance": "你无法偿还超过你钱包所拥有的 Dai 数量",
-        "payback-amount-exceeds-vault-debt": "你正尝试偿还超过此 Maker 金库的 Dai 债务",
-        "custom-collateral-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
-        "custom-collateral-allowance-amount-less-than-deposit-amount": "你必须允许至少一组存款的许可额度才能继续",
-        "custom-dai-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
-        "custom-dai-allowance-amount-less-than-payback-amount": "你必须允许至少一组偿还的许可数量才能继续",
-        "withdraw-collateral-on-vault-under-debt-floor": "当金库低于最低要求数量 {{debtFloor}} 的 Dai，你无法从金库提款。如想提出抵押品，请偿还所有的债务。了解更多关于<0>最低金库债务</0>。",
-        "has-to-deposit-collateral-on-empty-vault": "此金库没有人会抵押品，请先从“管理抵押品”增加抵押品。",
-        "deposit-collateral-on-vault-under-debt-floor": "当金库低于最低要求的抵押品数量 {{debtFloor}}，你无法存入抵押品。如要存入更多抵押品，请生成高出最低数量的 Dai。了解更多<0>最低金库债务</0>",
-        "invalid-slippage": "你所设置的自订滑价对于此交易而言太高，请降低自订滑价",
-        "after-coll-ratio-below-stop-loss-ratio": "当你的金库低于你设置的 Stop-Loss 抵押率的当前或下一个价格时，你无法调整金库",
-        "after-coll-ratio-below-basic-sell-ratio": "当你的金库可能触发你所设置的在当前或下一个价格的 Auto-Sell 时，你无法调整金库。你必须先调整你的 Auto-Sell 触发抵押率",
-        "after-coll-ratio-above-basic-buy-ratio": "当你的金库可能触发你所设置的在当前或下一个价格的 Auto-Buy 时，你无法调整金库。你必须先调整你的 Auto-Buy 触发抵押率",
-        "vault-will-be-taken-under-min-active-col-ratio": "当金库低于你当前或洗一个最低的活跃抵押率的价格时候，你无法调整金库的设置。",
-        "stop-loss-near-liquidation-ratio": "你的 Stop-Loss 触发器的抵押率可能会立即触发关闭金库。如果这是你计划中的行动，请关闭金库。",
-        "stop-loss-max-debt": "因为此订单的高价影响，无法设置 Stop-Loass。你的金库总债务必须少于 20m DAI。",
-        "target-coll-ratio-exceeded-dust-limit-coll-ratio": "你无法选取更高的目标抵押率，因为这可能会导致金库达到 Dust 的限制。",
-        "auto-buy-max-price-requred": "请输入最大的购买价或选择<1>不设置门槛<1>",
-        "minimum-sell-price-not-provided": "请输入最小的的售价或选择<1>不设置门槛<1>",
-        "auto-sell-trigger-higher-than-auto-buy-target": "设置你的 Auto-Sell 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
-        "stop-loss-trigger-higher-than-auto-buy-target": "设置你的 Stop-Loss 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
-        "auto-buy-trigger-lower-than-auto-sell-target": "设置你的  Auto-Buy 触发器在这个层级将会导致你的 Auto-Sell 执行它。请先调整你的 Auto-Sell 目标比率。",
-        "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "如果你已经设置 Constant Multiple， 你就无法设置  {{autoType}}。请移除 Constant MultipleYou 再继续设置。",
-        "after-coll-ratio-below-constant-multiple-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 出售触发器比率",
-        "after-coll-ratio-above-constant-multiple-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 的购买触发器比率",
-        "after-coll-ratio-below-auto-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Sell 的金库。请先调整 Auto-sell 的触发器比率。",
-        "after-coll-ratio-above-auto-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Buy 的金库。清先调整 Auto-Buy 的触发器比率。",
-        "min-sell-price-will-prevent-sell-trigger": "此最低出售价格将会防止启动出售触发器",
-        "max-buy-price-will-prevent-buy-trigger": "此最高购买价格将会防止启动购买触发器"
+    "action-tabs": {
+      "adjust": "修改",
+      "other": "其他",
+      "borrow": "借贷"
+    }
+  },
+  "max": "最大",
+  "min-amount": "最低数量为 {{minAmount}} {{token}}",
+  "moving-into-vault": "前往金库",
+  "moving-out-vault": "离开金库",
+  "net-value": "净值",
+  "multiple": "倍率",
+  "nav": {
+    "blog": "博客",
+    "contact": "联系方式",
+    "faq": "常见问题",
+    "privacy": "隐私",
+    "terms": "条款",
+    "multiply": "杠杆交易",
+    "more": "更多",
+    "about": "关于",
+    "resources": "资源",
+    "products": "产品",
+    "team": "团队",
+    "careers": "职缺信息",
+    "knowledge-centre": "知识中心",
+    "learn": "学习",
+    "oracles": "喂价机",
+    "dai-wallet": "Dai 钱包",
+    "borrow": "抵押借贷",
+    "oasis-borrow": "Oasis Borrow",
+    "assets": "加密资产",
+    "earn": "赚取奖励",
+    "select-an-asset": "选择资产",
+    "referrals": "推荐朋友",
+    "cookie": "Cookie 政策",
+    "bug-bounty": "Bug 赏金计划",
+    "brand-assets": "品牌资产",
+    "security": "安全性"
+  },
+  "new-to-ethereum": "第一次接触以太坊？",
+  "next": "下一步",
+  "no-dai": "没有 Dai",
+  "no-activity": "无历史记录",
+  "notice-privacy": "当使用我们的网站时，即表示同意我们的<0> Cookie 政策</0>。",
+  "notification-status-complete": "已完成",
+  "notification-status-completed": "已完成",
+  "notification-status-expired": "已过期",
+  "notification-status-failed": "失败",
+  "notification-status-incomplete": "未完成",
+  "notification-status-initialized": "初始化",
+  "notification-status-pending": "确认中",
+  "notification-status-rejected": "已拒绝",
+  "notification-status-sign": "签名交易",
+  "of": "的",
+  "one-of-some": "{{some}} 的 {{one}}  ",
+  "onramp-leave-message": "点击购买将离开 Oasis，并访问第三方网站完成购买过程。",
+  "open-new-vault": "开启新金库",
+  "open-vault": {
+    "title": "开启金库",
+    "simulate": "模拟计算",
+    "warnings": {
+      "potential-generate-amount-less-than-debt-floor": "初次开启金库最低需要生成 {{debtFloor}} Dai。请添加更多抵押品生成 {{debtFloor}} Dai。",
+      "vault-will-be-at-risk-level-danger": "当前操作会让金库抵押率非常接近最低要求。",
+      "vault-will-be-at-risk-level-danger-at-next-price": "当前操作会让金库抵押率在下次喂价更新的时候非常接近最低要求。",
+      "vault-will-be-at-risk-level-warning": "当前操作会让金库接近最低抵押率要求。",
+      "vault-will-be-at-risk-level-warning-at-next-price": "当前操作会让金库抵押率在下次喂价更新的时候接近最低要求。"
     },
-    "vault-warnings": {
-        "potential-generate-amount-less-than-debt-floor": "开启金库要求的最低 Dai 数量是 {{debtFloor}}，请增加更多抵押品来生成 {{debtFloor}} Dai",
-        "debt-is-less-than-debt-floor": "你当前的 Dai 债务低于最低数量 {{debtFloor}}，因此部分金库的执行无法实现。请生成更多的 Dai 以高于最低数量或偿还所有的债务。",
-        "vault-will-be-at-risk-level-danger": "执行这个操作，你的金库抵押率将会非常接近最低要求的比率",
-        "vault-will-be-at-risk-level-danger-at-next-price": "执行这个操作。你的金库抵押率将会在下一个价格更新时，非常接近最低要求的比率",
-        "vault-will-be-at-risk-level-warning": "执行这个操作，你的金库抵押率将会接近最低要求的比率",
-        "vault-will-be-at-risk-level-warning-at-next-price": "执行这个操作，你的金库抵押率将会在下一个价格更新时，接近最低要求的比率",
-        "vault-is-currently-under-min-active-col-ratio": "你的金库低于当前或下一个价格的最低活跃抵押率，你可以降低仓位的风险而不能提高。",
-        "vault-will-remain-under-min-active-col-ratio": "你正在降低仓位的风险，但它仍然低于最低活跃抵押率。",
-        "insufficient-eth-balance": "你的 ETH 结余有可能不足以支付这个交易",
-        "coll-ratio-close-to-current": "你的 Stop-Loss 触发抵押率非常接近当前的抵押率。如果你确定了解此情况可能让你的金库因微幅的价格变动而关闭，请再继续。 ",
-        "no-min-sell-price-when-stop-loss-enabled": "没有设置在 Stop-Loss 最低售出价格有可能永远不会启动 Stop-Loss ",
-        "auto-buy-with-no-max-price-threshold": "警告：你正在设置没有最高购买价格门槛的 Auto-Buy 触发器",
-        "auto-sell-trigger-close-to-stop-loss-trigger": "设置较低的触发率有可能启动已设置的 Stop-loss。如果想要使用较低的触发率，请先调整 Stop-Loss 触发器。",
-        "auto-sell-target-close-to-auto-buy-trigger": "设置较高的目标率有可能启动已设置的 Auto-Buy。如果想要使用较高的触发率，请先调整你的 Auto-Buy 触发器。",
-        "stop-loss-trigger-close-to-auto-sell-trigger": "设置较高的触发率有可能启动已设置的 Auto-Sell。如果想要使用较高的启动率，请先调整你的 Auto-Sell 触发器。",
-        "auto-buy-target-close-to-stop-loss-trigger": "设置较低的目标率有可能启动已设置的 Stop-loss。如果想要使用较低的目标率，请先调整 Stop-Loss 触发器。",
-        "auto-buy-target-close-to-auto-sell-trigger": "设置较低的目标率有可能启动已设置的  Auto-Sell。如果想要使用较低的目标率，请先调整  Auto-Sell 触发器。",
-        "auto-buy-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Buy 即刻执行。如果这不是你预期的结果，请调降触发率。",
-        "auto-sell-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Sell 即刻执行。如果这不是你预期的结果，请调降触发率。",
-        "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@oasis.app</0>",
-        "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "你无法设置低于你的 Stop-Loss 的 Constant Multiple Sell 触发器。进一步了解此机制<0>如何运作</0>",
-        "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "你无法设置高于已设置的 Constant Multiple 触发器的 Stop-Loss 触发器。进一步了解此机制<0>如何运作</0>",
-        "adding-constant-multiple-when-auto-sell-or-buy-enabled": "设置 Constant Multiple 将移除已存在的 {{enabledTriggers}}。确定继续？",
-        "constant-multiple-auto-sell-triggered-immediately": "设置你的 Sell 触发器在这个比率有可能导致它立刻被执行。",
-        "constant-multiple-auto-buy-triggered-immediately": "设置你的 Buy 触发器在这个比率有可能导致它立刻被执行。"
+    "errors": {
+      "deposit-amount-exceeds-collateral-balance": "你无法存入超出钱包余额数量的抵押品。",
+      "generate-amount-exceeds-dai-yield-from-depositing-collateral": "该金库的抵押率过低，请尝试生成更少的 Dai。",
+      "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "该金库的抵押率会在下次喂价更新时过低，请尝试生成更少的 Dai。",
+      "generate-amount-exceeds-debt-ceiling": "你尝试生成 Dai 的数量超过了当前债务上限。当前最多可生成 {{maxGenerateAmount}} {{token}}。",
+      "generate-amount-less-than-debt-floor": "该金库类型最低借 Dai 金额为 {{debtFloor}} 。点击<0>这里</0>了解最低借 Dai 额度。",
+      "debt-will-be-less-than-debt-floor": "Maker 金库的最低借贷金额要么为零或者高于 {{debtFloor}} Dai。请调整偿还数量。",
+      "custom-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
+      "custom-allowance-amount-less-than-deposit-amount": "你必须许可存入额度以继续。",
+      "depositing-all-eth-balance": "你必须留一些 ETH 支付 Gas 费用，请降低存入数量。",
+      "ledger-enable-contract-data": "请在 Ledgers Ethereum 应用程序的设置启用 Contract data",
+      "exchange-error": "无法获取交易价格以进行此次杠杆交易。"
+    }
+  },
+  "or": "或者",
+  "outstanding-debt": "未偿还债务",
+  "paste": "粘贴",
+  "pending-transactions": "确认中交易",
+  "permissions": "设置许可",
+  "permissions-btn": "设置许可",
+  "permissions-desc": "这将授权 Oasis 与你钱包中的 Dai 进行交互。",
+  "price": "价格",
+  "powered-by": "Powered by",
+  "proceed": "继续",
+  "readonly-alert-message": "你正在查看",
+  "readonly-user-connecting": "可读模式下浏览...",
+  "readonly-user-no-proxy": "此地址下没有代理",
+  "readonly-user-no-savings": "无存款",
+  "receive": "接收",
+  "received": "已接收",
+  "recent-transactions": "最近交易",
+  "reclaim": "赎回抵押品",
+  "remaining-in-wallet": "钱包中剩余",
+  "retry": "再试一次",
+  "retry-allowance-approval": "重新执行许可额度",
+  "retry-create-proxy": "重新创建代理",
+  "savings": "存款",
+  "savings-earned": "已获得收益",
+  "search-token": "搜索代币",
+  "select-product": "选择一个产品",
+  "send": "发送",
+  "send-amount-empty": "无法发送 0 {{ token }}",
+  "send-amount-exceed-balance": "{{ token }} 余额不足",
+  "send-to": "发送至",
+  "sent": "已发送",
+  "seo": {
+    "contact": {
+      "description": "告知我们反馈、问题和建议。",
+      "title": "联系我们"
     },
-    "vault-info-messages": {
-        "earn-overview": "这个 {{token}} 仓位是在 Uniswap V3 赚取交易费用。提供给资金池的 DAI 通过 Maker Protocol 加倍成长，使用户在 Uniswap 资金池里有较大的敞口。目前你可以执行的只有<1>关闭这个金库</1>",
-        "closing": "为了关闭金库，部分仓位将会出售已支付尚未偿还的债务，剩余的抵押品将会发送至你的钱包地址。"
+    "dai": {
+      "description": "智能的数字货币 Dai 的简介",
+      "title": "Dai"
     },
-    "vault-changes": {
-        "order-information": "订单信息",
-        "multiply": "倍率",
-        "close-vault-information": "关闭金库信息",
-        "getting-token": "获得 {{token}}",
-        "buying-token": "购买 {{token}}",
-        "selling-token": "出售 {{token}}",
-        "price-impact": "{{token}} 价格 (影响)",
-        "slippage-limit": "滑点限制",
-        "third-party-fees": "第三方协议手续费",
-        "oasis-fee": "Oasis 手续费"
+    "default": {
+      "description": "以您的加密货币作为抵押品借出 Dai，一种与美元挂钩的稳定币。",
+      "title": "Oasis.app"
     },
-    "vault-information": "金库信息",
-    "vault-banners": {
-        "setup-stop-loss": {
-            "header": "设置金库防护",
-            "content": "设置 Stop-Loss 防护让我们在仓位低于你所选择的抵押率时，可以自动防止仓位被平仓。你可以选择以 {{token}} 或 DAI 结算关闭金库。",
-            "button": "设置 Stop-Loss"
-        },
-        "get-protection": {
-            "header": "保护你的金库",
-            "content": "设置 Stop-Loss 或 Auto-Sell 可以在金库低于你选择的抵押率时，避免你的金库被清算。",
-            "button": "保护金库"
-        },
-        "what-are-the-risks": {
-            "header": "风险是什么",
-            "content": "在常见问题中进一步了解仓位的基本创建、风险、资金所在等",
-            "button": "了解更多"
-        }
+    "latam500": {
+      "description": "通过 Oasis.app 上的 Latamex 购买 Dai。每月可获得价值 10 美元的 ETH，为期三个月。",
+      "title": "LATAM500"
     },
-    "view-on-ethtx": "在 Ethtx 查看",
-    "open-vault-deployment-confirming": "金库已创建。正在等待确认 {{openVaultConfirmations}}/{{safeConfirmations}}",
-    "set-up-stop-loss-tx": "设置 Stop-Loss 交易",
-    "open-vault-two-tx-setup-requirement": "你将会被要求签署两笔交易。一笔是设置金库，另一笔是设置 Stop-Loss。",
-    "open-vault-two-tx-first-step-title": "步骤 1/2: 创建金库",
-    "open-vault-two-tx-second-step-title": "步骤 2/2: Stop-Loss 的设置交易",
-    "open-vault-sl-second-status-title": "交易 2 of 2 (Stop-Loss 设置)",
-    "open-vault-sl-second-status-not-started-desc": "确认1/2后开始交易",
-    "not-started": "尚未开始",
-    "in-progress": "进行中",
-    "vault-creation-confirmed": "确认金库创建",
-    "learn-more-at-oasis": "在 Osis.app 知识中心了解更多",
-    "creating-your-vault-multiply": " 正在创建你的 {{token}} Multiply 金库！",
-    "changing-vault-multiply": "正在修改 Multiply 金库",
-    "adjusting-vault-multiply": "正在倍增你的金库",
-    "closing-vault-multiply": "正在关闭你的 Multiply 金库",
-    "wallet": "钱包",
-    "protection": {
-        "navigate-cancel": "取消下档保护",
-        "navigate-adjust": "返回修改 Stop-Loss",
-        "set-downside-protection": "设置 Stop-Loss 保护",
-        "set-downside-protection-desc": "在你希望金库自动关闭的时间点设置抵押率触发器。进一步了解 Stop-Loss 如何实行。",
-        "cancel-downside-protection": "取消确认",
-        "cancel-downside-protection-desc": "为了取消 Stop-Loss，你必须点击下方的按钮并确认这笔交易。",
-        "setting-downside-protection": "设置 Stop-Loss 保护",
-        "setting-auto-sell": "正在设置你的 Auto-Sell",
-        "cancelling-auto-sell": "正在取消你的 Auto-Sell",
-        "cancelling-downside-protection": "正在取消你的 Stop-Loss",
-        "setting-downside-protection-desc": "你的金库正在新增 Stop-Loss 保护，设置完成后，金库才会受到保护。",
-        "cancelling-downside-protection-desc": "正在取消 Stop-Loss 保护，交易完成后，它将被移除。",
-        "position-again-at-risk": "达到清算价格后，你的仓位会再度陷入清算危机。",
-        "downside-protection-complete": "启用 Stop-Loss 保护",
-        "cancel-protection-complete": "已完成取消 Stop-Loss",
-        "downside-protection-updated": "已更新 Stop-Loss 保护",
-        "downside-protection-complete-desc": "你已成功在金库设置 Stop-Loss 保护。进一步了解 Stop-Loss 如何实行。",
-        "cancel-protection-complete-desc": "已成功取消 Stop-Loss。你可以随时再次设置以保护你的金库。现在你的仓位会在达到清算价格陷入清算危机。",
-        "banner-header": "使用 Stop-Los 保护金库",
-        "banner-content": "依据你的抵押率来设置变量的 Stop-Loss 以保护金库免于清算或产生重大损失。",
-        "banner-button": "设置金库保护 ->",
-        "edit-vault-protection": "编辑金库保护",
-        "dynamic-stop-loss-price": "变动的 Stop-Loss 价格",
-        "dynamic-stop-loss": "变动的 Stop-Loss",
-        "stop-loss-coll-ratio": "Stop-Loss 抵押率",
-        "total-cost": "交易总支出",
-        "max-cost": "最大的交易支出",
-        "token-on-stop-loss-trigger": "Stop-Loss 触发器的 {{token}}",
-        "zero-debt-heading": "在设置自动化保护前，你须先生成 DAI",
-        "zero-debt-description": "Oasis.app 自动化保护依据抵押率，让你在金库设置变量的 Stop-Loss 或 Auto-Sell 策略。这个功保护你的金库免于清算或降低抵押资产的风险敞口，特别是在价格骤跌时。进一步了解它如何实行",
-        "below-dust-limit-heading": "在设置 Stop-Loss 保护前，你必须生成高于最低债务限制的 Dai",
-        "summary-of-protection": "保护功能摘要",
-        "on-stop-loss-trigger": "在触发器上",
-        "estimated-to-receive": "预估收到",
-        "saving-comp-to-liquidation": "和清算相比能保留下的价值",
-        "estimated-fees-on-trigger": "预估在触发器上的手续费",
-        "up-to": "至多",
-        "not-guaranteed": "自动化不保证绝对百分之百保护",
-        "guarantee-factors": "有许多的因素会影响执行是否成功，这其中包含清算价格、波动性和燃料费。",
-        "learn-more-about-automation": "进一步了解自动化以及 Oasis 如何在以太坊上创建最好的自动化产品 →",
-        "automation-fact": "{{total}} 使用自动化的金库的 {{success}} 在过去 90 天已经被成功保存",
-        "modal-description": "你已启用 Stop-Loss 保护。点击此横幅以了解更多。",
-        "your-stop-loss-triggered": "已触发你的 Stop-Loss ",
-        "your-stop-loss-triggered-desc": "查看下方的摘要以了解金库上发生的行为。",
-        "stop-loss-summary": "Stop-Loss 摘要",
-        "token-sold": "已售出 {{token}}",
-        "token-or-dai-withdrawn": "{{token}} / DAI 提款",
-        "reopen-position": "再次开启金库",
-        "stop-loss-triggered": "已触发 Stop-Loss",
-        "stop-loss-triggered-desc": "已触发你金库的 Stop-Loss",
-        "stop-loss-triggered-content": "已触发你金库的 Stop-Loss。你可以右方阅读完整的 Stop-Loss 事件摘要。",
-        "cancel-notice": "取消 Stop-Loss 代表你的金库将不再受到妥善的保护，你必须积极监控抵押率。",
-        "find-more-about-setting-stop-loss": "进一步了解设置 Stop-Loss →",
-        "set-stop-loss-again": "再次设置 Stop-Loss",
-        "sl-triggered-gas-estimation": "这个费用是依当前 ETH 价格和预设的 200 GWEI 燃料所预估的燃料费支出。",
-        "stop-loss-on": "Stop-Loss 启用",
-        "coll-ratio-close-to-current": "你的 Stop-Loss 触发抵押率非常接近当前的抵押率。如果你确定了解此情况有可能让你的金库因微幅的价格变动而关闭，请再继续。",
-        "closed-vault-existing-sl-header": "你的金库已关闭，但 Stop-Loss 仍为启用状态",
-        "closed-vault-existing-sl-description": "你可以在这里取消现有的 Stop-Loss 或在概述分页将抵押品存入金库",
-        "edit-stop-loss": "编辑 Stop-Loss",
-        "enable-stop-loss": "启用 Stop-Loss",
-        "continue-without-stop-loss": "略过 Stop-Loss，继续下一步",
-        "stop-loss-information": "Stop-Loss 信息",
-        "no-threshold": "没有设置门槛",
-        "set-no-threshold": "设置无门槛",
-        "set-threshold": "设置门槛",
-        "unable-to-access-protection": "无法使用保护",
-        "closed-vault-not-existing-trigger-header": "在设置 Stop-Loss前，你必须生成 Dai",
-        "closed-vault-not-existing-trigger-description": "为启用 Stop-Loss，你必须在概述分页生成 Dai",
-        "adding-new-triggers-disabled-description": "由于极端对抗的市场现况，为了保护我们的用户，我们暂时不提供设置新的 Stop-Loss 触发器。如果你想现在就关闭金库，请点击“关闭金库”的选项。",
-        "stop-loss-protection": "Stop-Loss 保护"
+    "support": {
+      "description": "所有常见问题回答",
+      "title": "常见问题"
     },
-    "user-settings": {
-        "button-menu": "滑点",
-        "slippage-limit": {
-            "preset-title": "滑点设置",
-            "preset-description": "选择你想要的滑点金额。",
-            "read-more": "了解更多滑点。",
-            "custom-title": "设置自定义滑点价格",
-            "custom-label": "滑点价格",
-            "errors": {
-                "invalid-slippage": "无效滑点. 滑点价应在 20%，0.1% 范围内"
-            },
-            "warnings": {
-                "high-slippage": "注意：你已经设置高滑点限制，这会导致得到的价格偏离你要求的价格非常多。如果你明白此风险，可以继续。"
-            }
-        },
-        "button": "更新设置",
-        "button-in-progress": "正在更新设置",
-        "update-success": "已更新设置",
-        "update-failure": "发生错误"
+    "careers": {
+      "title": "开放职缺",
+      "description": "我们重視人才，加入我们打造下一代的 DeFi。"
     },
-    "modal-trezor-eip1559-title": "使用 Metamask 连接 Trezor 不支持 EIP-1559",
-    "modal-trezor-eip1559-paragraph1": "Oasis.app 最近已更新所有交易以支持 EIP-155。不支持在 Metamask 连接 Trezor 进行 EIP-1559 交易，详情请见<0>这里</0>.",
-    "modal-trezor-eip1559-paragraph2": "你可以在（<0>legacy.oasis.app</0>）继续使用 Metamask 连接 Trezor 进行旧的交易格式。",
-    "modal-trezor-eip1559-paragraph3": "或者，如果你有 Model T Trezor，你可以直接连接 Oasis.app。",
-    "product-card-title": {
-        "ETH-A": "中等成本和杠杆的 ETH",
-        "ETH-B": "最大杠杆倍率的 ETH 选项",
-        "ETH-C": "最低借贷成本的 ETH",
-        "WBTC-A": "中等成本和杠杆倍率的 wBTC",
-        "WBTC-B": "最大杠杆倍率的 wBTC 选项",
-        "WBTC-C": "最低借贷成本的 wBTC",
-        "RENBTC-A": "Ren Bitcoin (RenBTC)",
-        "WSTETH-A": "中等成本和杠杆倍率的 StETH",
-        "WSTETH-B": "最低借贷成本的 stETH",
-        "UNI-A": "Uniswap (UNI)",
-        "MANA-A": "Decentraland (MANA)",
-        "MATIC-A": "Polygon (MATIC)",
-        "YFI-A": "Yearn (YFI)",
-        "LINK-A": "Chainlink (LINK)",
-        "GUSD-A": "Gemini USD (GUSD)",
-        "GUNIV3DAIUSDC2-A": "50x UNI V3 DAI / USDC 0.01% 等级",
-        "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% 等级",
-        "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
-        "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
-        "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
+    "about": {
+      "title": "关于我们",
+      "description": "Oasis 的目标是为用户提供最好和最值得信任的方式来部署资金。我们开发 Oasis.app 让用户能在 DeFi 的领域获得最大的利益，\\n\\n 而我们的团队是由一群对区块链爱好者所组成。"
     },
-    "learn-more-about": "进一步了解",
-    "assets": {
-        "eth": {
-            "description": "以太币（ETH）促进以太坊网络上的操作，而以太坊参与者使用它来执行他们所要求的操作。我们可以将它想成是以太坊上的“燃料”。你可以倍增风险敞口或抵押 ETH 来借贷以最大化你的 ETH 使用效率。",
-            "link": "https://ethereum.org/en/eth/"
-        },
-        "btc": {
-            "description": "比特币本身无法被直接使用，但如果要使用 DeFi 的服务，必须将它转移到以太坊上。Wrapped Bitcoin (WBTC)和 renBTC 保留着比特币的优势，同时提供 ERC20 代币的弹性，让你充分利用比特币增加风险敞口或借款。",
-            "link": "https://wbtc.network/"
-        },
-        "usdc": {
-            "description": "USDC 由 Circle 所发行并且由美元 1:1 支持的中心化稳定币。它支持许多 Layer 1 的区块链，包含以太坊的 ERC-20 代币、 Algorand 的 ASA 代币、 Solana 的 SPL 代币、TRON 的 TRC-20 代币及 Stellar 的原生资产。",
-            "link": "https://www.circle.com/en/about-circle"
-        },
-        "lp-token": {
-            "description": "当代币存入资金池时，它会自动生成一个新代币，代表存款者在资金池里拥有的份额。这个代币称为资金池流动提供者代币（Liquidity Provider Token， LP token）。它可以用于借贷，并增加你在资金池里份额。",
-            "link": "https://docs.uniswap.org/protocol/V2/guides/smart-contract-integration/providing-liquidity"
-        },
-        "yfi": {
-            "description": "Yearn.finance (YFI) 是 Yearn.finance 平台上的治理代币。这个平台是一个收益优化器，可在去中心化金融系统转移资金产生高回报。你可以增加对 YFI 的风险敞口或抵押借贷。",
-            "link": "https://yearn.finance/"
-        },
-        "dai": {
-            "description": "Dai 是最大的超额抵押去中心稳定币。你可以在 Oasis.app 使用多种抵押资产来生成 Dai。在这里我们展示了让你的 Dai 产生回报的产品。",
-            "link": "https://kb.oasis.app/help/what-is-dai"
-        },
-        "uni": {
-            "description": "UNI 是 Uniswap 协议的治理代币，它由去中心化社群所治理，可以提案和投票升级协议。Uniswap 是一个去中心化的交易协议，提供 ERC20 代币的兑换。",
-            "link": "https://uniswap.org/"
-        },
-        "link": {
-            "description": "Loopring 是以太坊上的代币，它形容自己为“开源、审查和无监管的交易协议“。它的目标是让任何人可以在以太坊上零知识创建无监管、交易委托账本的交易所。",
-            "link": "https://loopring.org/#/"
-        },
-        "matic": {
-            "description": "Polygon (MATIC) 是为 Polygon 网络提供动力的以太坊代币，也是以太坊的一种扩展方案。Polygon 是一个协议，同时也是创建和连接相容于以太坊区块链的框架，它集合在以太坊上扩展解决方案并支持多链以太坊生态。",
-            "link": "https://polygon.technology/"
-        },
-        "mana": {
-            "description": "MANA 是为 Decentraland 而铸造的 ERC-20 代币。Decentraland 是以太坊上的虚拟现实（VR）平台，它主要使用于购买商品、服务和 Decentraland 的 LAND (一种 NFT 代币）",
-            "link": "https://decentraland.org/"
-        }
-    },
-    "guni-slippage-overridden": "你的自定义滑点已经被覆盖，只有在滑点 0.1% 时可以开启 GUNI 金库。",
-    "temporary-guni-message": "你的 GUNI 最大倍增率已由 Maker governance 从 20x 提高至 50x。为了善用这个优势，你将必须关闭这个金库再开启一个新的 GUNI 仓位。进一步信息在 ",
-    "below": "下方",
-    "above": "上方",
-    "earn": {
-        "your-positions": "仓位",
-        "positions-of-type": "{{type}} 仓位",
-        "edit-vault": "编辑金库",
-        "view-vault": "查看金库",
-        "automation-button-on": "已启用",
-        "automation-button-off": "启用",
-        "automation-button-off-disabled": "关闭保护",
-        "position-headers": {
-            "asset": {
-                "label": "资产",
-                "tooltip": "仓位资产类型的标识符，使用协议的命名规则。"
-            },
-            "position-id": {
-                "label": "倉位 ID",
-                "tooltip": "倉位 ID 是用來在 Oasis.app 上的仓位指引"
-            },
-            "collateral-ratio": {
-                "label": "抵押率",
-                "tooltip": "抵押品相对于债务金额的价值，必须高于最低限制以避免被清算。"
-            },
-            "dai-debt": {
-                "label": "Dai 债务",
-                "tooltip": "在这个仓位的 Dai 债务"
-            },
-            "collateral-locked": {
-                "label": "抵押品",
-                "tooltip": "这个仓位的抵押品数量"
-            },
-            "variable-perc": {
-                "label": "变量 %",
-                "tooltip": "为该仓位偿还债务的变量年利率，它可通过协议的治理而更改。"
-            },
-            "protection": {
-                "label": "保护金库",
-                "tooltip": "显示此仓位是否受大 Stop-Loss 保护。若没有，你可以在保护金库页面点击按钮启用它。"
-            },
-            "net-value": {
-                "label": "净值",
-                "tooltip": "当前仓位的净值，通过此仓位的抵押品在喂价机的价格减去债务而得。"
-            },
-            "multiple": {
-                "label": "杠杆交易",
-                "tooltip": "该仓位当前的杠杆倍数，与没有使用杠杆交易的抵押品相比，该基础抵押品的额外风险敞口。"
-            },
-            "liquidation-price": {
-                "label": "清算价格",
-                "tooltip": "该仓位抵押品的亿被清算的价格。"
-            },
-            "funding-cost": {
-                "label": "资金成本",
-                "tooltip": "若你开启金库一年，且抵押品的价格没有发生变化，你的杠杆交易仓位在净值中所占的成本百分比。此公式为：Dai 债务 / 净值 * 变量年手续费。"
-            },
-            "pnl": {
-                "label": "损益",
-                "tooltip": "当前在仓位的获利或亏损百分比，包含燃料成本。想知道损益的细节，请查看此仓位。"
-            },
-            "seven-day-yield": {
-                "label": "七天流动性挖矿",
-                "tooltip": "七天流动性挖矿是过去七天的平均收益，按年计算，减去任何须被支付的变动利率。"
-            },
-            "liquidity": {
-                "label": "流动性",
-                "tooltip": "当前可增加仓位的可用流动性。"
-            }
-        }
-    },
-    "help-shape-the-future-of-multiply": "协助我们塑造 Mulitply 的未来",
-    "basic-buy-sell-generic": {
-        "max-gas-fee-trans-value": "最大燃料费",
-        "max-gas-fee-trans-subheading": "选择你愿意为每笔交易支付的最大值的燃料费（Gwei)。"
-    },
-    "auto-sell": {
-        "sell-title": "基础 Sell 摘要",
-        "cancel-summary-title": "取消 Auto-Sell 订单摘要",
-        "cancel-summary-description": "为了取消 Auto-Sell，你必须点击下方按钮并确认交易。",
-        "target-col-ratio-each-sell": "每次出售后的目标抵押率",
-        "target-multiple-each-sell": "每次出售后的目标倍率",
-        "trigger-col-ratio-to-perfrom-sell": "触发抵押率执行每次自动销售",
-        "next-sell-prices": "下次出售价格",
-        "setup-transaction-cost": "设置交易成本",
-        "slippage-limit": "滑点限制",
-        "collateral-after-next-sell": "下次出售后的抵押品",
-        "outstanding-debt-after-next-sell": "下次出售后的未偿还债务",
-        "col-to-be-sold": "在下次出售的 {{token}}",
-        "estimated-transaction-cost": "预估交易成本",
-        "target-ratio-with-deviation": "目标比率偏差",
-        "title": "Auto-Sell",
-        "add-form-title": "Auto-Sell 设置",
-        "edit-form-title": "编辑 Auto-Sell",
-        "setting-form-title": "正在设置 Auto-Sell",
-        "cancelling-form-title": "正在取消 Auto-Sell",
-        "cancel-form-title": "取消确认",
-        "trigger-added": "启用 Basic-Sell 保护",
-        "trigger-cancelled": "已取消 Basic-Sell",
-        "trigger-updated": "已更新 Basic-Sell 保护",
-        "next-sell-price": "下次出售价格: {{amount}}",
-        "continual-sell-threshold": "周期性出售订单最低至 {{amount}}/{{token}}",
-        "continual-sell-no-threshold": "周期性出售订单无最低限制",
-        "target-col-ratio-after-selling": "出后的目标抵押率",
-        "trigger-col-ratio-to-sell-token": "触发抵押率以出售 {{token}}",
-        "sell-trigger-ratio": "出售触发率",
-        "target-coll-ratio": "出售目标率",
-        "set-min-sell-price": "设置最低出售价格",
-        "set-trigger-description": "你正在创建一个在 {{execCollRatio}}% 抵押率时，会触发周期性出售的行动，并增加它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，而最低出售价格为 ${{minSellPrice}}/{{token}} 。了解更多",
-        "set-trigger-description-no-threshold": "你正在创建一个在 {{execCollRatio}}% 抵押率时，會触发周期性出售的行动，并增加它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 的价格执行，没有最低出售限制。了解更多",
-        "closed-vault-existing-trigger-header": "你的金库已关闭,但 Auto-Sell 仍为活跃状态",
-        "closed-vault-existing-trigger-description": "你可以在这里取消现有的 Auto-Sell 或在概述分页存入抵押品至你的金库。",
-        "closed-vault-not-existing-trigger-header": "在设置 Auto-Sell 前，你必须生成 Dai。",
-        "closed-vault-not-existing-trigger-description": "为了启用 Auto-Sell，你必须在概述页面生成 Dai。",
-        "adding-new-triggers-disabled": "目前关闭创建新的 Auto-Sell 触发器的功能",
-        "adding-new-triggers-disabled-description": "由于极端对抗的市场现况，为了保护我们的用户，我们目前不开放设置新的 Auto-Sell 触发器。",
-        "add-content": "正在新增 Auto-Sell 到你的金库。完成更新后，Auto-Sell 才会正式启用。",
-        "add-complete-content": "你已成功在金库设置 Auto-Sell。进一步了解它如何执行",
-        "remove-content": "正在取消你的 Auto-Sell。在交易完成后，你的 Auto-Sell 将被移除。",
-        "remove-complete-content": "已成功取消你的 Auto-Sell。",
-        "banner": {
-            "header": "设置 Auto-Sell",
-            "content": "设置 Auto-Sell 以确保你的金库抵押率高于特定层级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
-            "button": "设置 Auto Sell",
-            "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Sell。"
-        },
-        "sl-too-high": "当你现有的 Stop-Loss 保护触发点过高时，Auto-Sell 将无法使用。在使用 Stop-Loss 触发器前，请将<0>讓你的 Stop-Loss 触发器调低于</0>{{maxStopLoss}}%。",
-        "coll-ratio-too-high": "当你的抵押率太高时，Auto-Sell 将无法使用。在使用 Auto-Sell 前，请先<0>降低你的抵押率</0>。"
-    },
-    "auto-buy": {
-        "title": "Auto-Buy",
-        "cancel-summary-title": "取消 Auto-Buy order 摘要",
-        "form-title": "Auto-Buy 设置",
-        "continual-buy-threshold": "重复购买订单至多 {{amount}}/{{token}}",
-        "continual-buy-no-threshold": "没有最高限额的重复购买订单",
-        "min-ratio": "最低 Stop-Loss/Auto-Sell 比率",
-        "next-buy-price": "下次购买价格： {{amount}}",
-        "set-max-buy-price": "设置最大购买价格",
-        "target-col-ratio-after-buying": "购买后的目标抵押率",
-        "target-coll-ratio": "购买的目前比率",
-        "trigger-col-ratio-to-buy-token": "购买  {{token}} 的触发器抵押比率",
-        "trigger-coll-ratio": "触发购买比率",
-        "buy-title": "基础 Auto-Buy 摘要",
-        "target-col-ratio-each-buy": "每次购买后的目标抵押率",
-        "target-multiple-each-buy": "每次购买后的目标倍率",
-        "trigger-col-ratio-to-perfrom-buy": "触发抵押率执行每次自动化购买",
-        "next-buy-prices": "下次购买价格",
-        "total-cost-of-next-buy": "下次购买后 ETH 的总成本",
-        "collateral-after-next-buy": "下次购买后的抵押品",
-        "target-ratio-with-deviation": "目标比率偏差",
-        "outstanding-debt-after-next-buy": "下次购买后未偿还的债务",
-        "col-to-be-purchased": "下次购买时买入 {{token}}",
-        "closed-vault-existing-trigger-header": "你的金库已关闭，但 Auto-Buy 仍为活跃状态。",
-        "closed-vault-existing-trigger-description": "你可以在这里取消现有的 Auto-Buy 或在概述分页存入抵押品至你的金库",
-        "adding-new-triggers-disabled": "目前关闭创建新的 Auto-Buy 触发器的功能",
-        "add-content": "正在新增你的 Auto-Buy 到金库。完成更新后，Auto-Buy 才会正式启用。",
-        "add-complete-content": "你已成功在金库设置 Auto-Buy。进一步了解它如何执行",
-        "remove-content": "正在取消你的 Auto-Buy。交易完成后，你的 Auto-Buy 将会被移除。",
-        "remove-complete-content": "已成功取消你的 Auto-Buy。",
-        "banner": {
-            "header": "设置 Auto-Buy",
-            "content": "设置 Auto-Buy 以确保你的金库抵押率高于特点等级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
-            "button": "设置 Auto Buy",
-            "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Buy。"
-        },
-        "setting-auto-buy": "正在设置 Auto-Buy",
-        "cancelling-auto-buy": "正在取消 Auto-Buy",
-        "set-trigger-description": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，而最高购买价格为${{minBuyPrice}}/{{token}}。了解更多",
-        "set-trigger-description-no-threshold": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，没有最低购买价格。了解更多",
-        "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Auto-Buy 触发器",
-        "add-form-title": "Auto-Buy 设置",
-        "edit-form-title": "编辑 Auto-Buy",
-        "setting-form-title": "正在设置 Auto-Buy",
-        "cancelling-form-title": "正在取消 Auto-Buy",
-        "cancel-form-title": "已取消",
-        "trigger-added": "已启用 Auto-Buy ",
-        "trigger-cancelled": "已取消 Auto-Buy",
-        "trigger-updated": "已更新 Auto-Buy",
-        "sl-too-high": "当你现有的 Stop-Loss 保护触发器比率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 前，请先 <0>讓你的 Stop-Loss 触发器低于</0> {{maxStopLoss}}%。",
-        "coll-ratio-too-high": "当你的抵押率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 之前，请先<0>讓你的抵押率</0>低于 {{maxAutoBuyCollRatio}}%。"
-    },
-    "optimization": {
-        "zero-debt-heading": "在设置 Optimization 前，你必须生成 DAI。",
-        "zero-debt-description": "Oasis.app Optimization 会以抵押率为基础，让你在金库设置变量的 Auto-Buy 策略。当价格上升时，它会增加抵押品的风险敞口。进一步了解它如何执行",
-        "adding-new-triggers-disabled": "目前关闭创建新的 Optimization 触发器的功能。",
-        "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Optimization 触发器。",
-        "unable-to-access-auto-buy": "无法使用 Auto-Buy",
-        "unable-to-access-optimization": "无法使用 Optimization"
-    },
-    "constant-multiple": {
-        "title": "连续倍率",
-        "target-multiple": "目标倍率",
-        "target-col-ratio": "目标抵押率 {{amount}}",
-        "total-cost-of-feature": "功能的总成本",
-        "pnl-since-enabled": "启用后的损益： {{amount}}",
-        "banner": {
-            "header": "设置连续倍率",
-            "content": " 设置连续倍率以确保你的金库抵押率保持在你选择的特定范围内",
-            "button": "设置连续倍率",
-            "header-no-multiply": "想要设置 Constant Multiple?",
-            "content-no-multiply": "Constant Multiple 让你的金库维持在你选定的倍率。这项功能只可以在杠杆交易的金库上使用，若你想使用此功能，可以到总览页面更改金库类型。了解更多",
-            "button-no-multiply": "前往金库总览"
-        },
-        "vault-changes": {
-            "general-summary": "一般摘要",
-            "buy-sell-trigger-summary": "Buy/Sell 触发器摘要",
-            "target-col-ratio-after-buy-sell": "每次购买或出售后的抵押率",
-            "target-multiple-ratio-after-buy-sell": "每次购买或出售后的目标倍率",
-            "cost-per-adjustment": "单一调整的预估交易成本",
-            "max-price-buy": "执行 Auto-Buy 的最高价格",
-            "max-price-sell": "执行 Auto-Sell 的最低价格",
-            "estimated-oasis-fee": "预估的 Oasis 手续费",
-            "estimated-max-gas-fee": "预估的最高燃料费",
-            "cancel-summary": "取消摘要"
-        },
-        "set-trigger-description": "Constant Mulitple Automation 將以 {{sellExecutionCollRatio}}% 的抵押率出售 {{token}}，並且以 {{buyExecutionCollRatio}}% 的抵押率購買 {{token}}，讓你的金庫倍率回到 {{multiplier}}x。",
-        "set-trigger-risk": "注意：Constant Multiple 属于进阶策略，建议你在设置之前，必须充分须明白它的风险。了解更多",
-        "operating-cost": "操作成本",
-        "operating-cost-desc": "设置和执行你的 Constant Multiple 的成本。\n设置成本 + 执行成本 = 操作成本",
-        "cancel-instructions": "你必须点击下方的按钮并确认交易以取消 Constant Multiple。",
-        "adding-constant-multiple": "正在新增 Constant Multiple 触发器",
-        "adjusting-constant-multiple": "正在更改 Constant Multiple 触发器",
-        "removing-constant-multiple": "正在移除 Constant Multiple 触发器",
-        "setting-constant-multiple": "正在设置 Constant Multiple",
-        "cancelling-constant-multiple": "正在取消 Constant Multiple",
-        "adding-new-triggers-disabled": "目前关闭创建新的 Constant Multiple 触发器的功能",
-        "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Constant Multiple 觸發器",
-        "sl-too-high": "由于你现有的 Stop-Loss 触发器过高，所以暂停 Constant Multiple 的服务。請<0>讓 Stop-Loss 觸發器低於</0>{{maxStopLoss}}% 以使用 Constant Multiple。",
-        "coll-ratio-too-close-to-dust-limit": "由於当前的抵押率非常接近 Dust 限度，所以暂停 Constant Multiple 的服务。请调整 <0>你的抵押率</0>以使用 Constant Multiple。",
-        "closed-vault-existing-trigger-header": "你的金库已被关闭，但 Constant Multiple 仍处于活跃状态",
-        "closed-vault-existing-trigger-description": "你可以在这里取消已设置的 Constant Multiple 或在总览页面存入抵押品至你的金库。",
-        "add-form-title": "Constant Multiple Setup",
-        "setting-form-title": "正在設置 Constant Multiple",
-        "cancelling-form-title": "正在取消 Constant Multiple",
-        "edit-form-title": "編輯 Constant Multiple",
-        "cancel-form-title": "取消确认",
-        "trigger-added": "已啟用Constant Multiple",
-        "trigger-cancelled": "已取消 Constant Multiple",
-        "trigger-updated": "已更新 Constant Multiple"
-    },
-    "ref": {
-        "banner": "推荐你的好友，一起来赚取 DAI",
-        "ref-a-friend": "推荐好友",
-        "intro-1": "只要你推荐好友使用 Oasis.app，你和你的好友就可以永远赚取 5% 共享的手续费奖励。进一步了解",
-        "intro-link": "Oasis 推荐好友",
-        "total": "已赚取的 DAI 手续费总金额",
-        "not-claimed": "尚未领取的 DAI",
-        "claim": "领取 DAI",
-        "claimed": "已领取",
-        "no-claim": "尚无奖励",
-        "claiming": "领取中",
-        "top": "顶尖赚取者",
-        "link": "你的 Oasis.app 推荐链接",
-        "copy": "复制",
-        "copied": "已复制",
-        "explanation": "只要你的好友点击你的推荐连接并接受邀请，你就会看见他们显示在下方的”你已推荐的账户“。如此一来，手续费奖励立即生效！只要你想要，你可以无限次分享你的推荐链接。",
-        "faq-link": "进一步了解 Oasis 推荐规则",
-        "you-referred": "你已推荐的账户",
-        "not-referred-yet": "你尚未推荐任何人",
-        "you-were-not-referred": "还没有人推荐你使用 Oasis.app",
-        "you-have-been-invited": "已邀请你的账户",
-        "accept-invite": "接受邀请",
-        "reject-invite": "拒绝邀请",
-        "referred-you": "推荐你的账户",
-        "get-started": "立即开始",
-        "how": "如何运作",
-        "how-p1-not-connected": "1. 连接你的以太坊钱包到 Oasis.app",
-        "how-p1-connected": "1. 点击下方的<1>“立即开始”</1>",
-        "how-p2": "2. 分享你的连接给潜在的 Oasis.app 用户",
-        "how-p3": "3. 双方皆永远获得来自 Oasis.app 上手续费的 5% 奖励！",
-        "need-help": "需要协助？",
-        "help-link-1": "Oasis 推荐规则",
-        "help-link-2": "前往 Oasis 知识中心",
-        "etherscan": "Etherscan",
-        "modal": {
-            "you-have-been-ref": "你已经受邀加入 Oasis.app 好友推荐计划，推荐人是",
-            "body-text": "Oasis.app 是部署资金到 DeFi 上最值得信赖的平台。加入我们的好友推荐计划，你可以：",
-            "p1_1": "收到全部在 Oasis.app 上产生的",
-            "p1_2": "5%手续费的奖励",
-            "p2": "完全免费、随时获取",
-            "p3": "以 DAI 支付的所有手续费",
-            "dont-earn": "不想赚取共享的手续费奖励",
-            "read": "了解更多",
-            "accept": "接受邀请",
-            "later": "稍后再决定",
-            "joined": "你已成功加入 Oasis.app 的推荐好友计划。",
-            "joined-body": "你将获得所有你在 Oasis.app 上产生的手续费的 5%。现在可以马上前往 Oasis.app 的主页，开始探索我们的产品并不是你的资金到 DeFi 上。",
-            "go-home": "前往 Oasis.app 主页",
-            "go-dashboard": "前往推荐好友仪表板",
-            "link-1": "Oasis.app 推荐好友计划博客文章, ",
-            "link-2": "推荐好友规则",
-            "successful-body": "你将获得所有你在 Oasis.app 上产生的手续费的 5%。现在可以马上前往 Oasis.app 的主页或前往推荐好友仪表板。",
-            "successful-head": "你已成功推荐<1>{{referred}}</1>加入 Oasis.app 推荐好友计划。",
-            "successful-join": "你已成功加入 Oasis.app 推荐好友计划。"
-        }
-    },
-    "notifications": {
-        "enable-notifications-email-heading": "启用邮件通知",
-        "enable-notifications-email-description": "你将会收到关于 Oasis.app 更新的邮件",
-        "enable-notifications-email-placeholder": "输入邮箱...",
-        "confirm-btn": "确定",
-        "change-btn": "更改",
-        "email-entered": "你已成功设置邮件通知",
-        "enable-notifications-email-label": "设置你的邮箱",
-        "approaching-liquidation": "你的金库 #{{vaultId}} 抵押率在 {{humanDate}} 于 5% 的清算价格内。",
-        "approaching-trigger": "你的金库 #{{vaultId}} 接近触发 {{trigger}}。<1><2>查看金库</2></1>",
-        "email-save-failure": "我们无法储存你的邮箱地址，请再试一次。",
-        "invalid-email": "此为无效邮箱地址，请再试一次。",
-        "vault-liquidated": "你的金库 #{{vaultId}} 在 {{humanDate}} 以 ${{usdPrice}} 被清算。",
-        "stop-loss-executed": "你在金库 #{{vaultId}} 的 Stop-Loss 保护已于 {{humanDate}} 以 ${{usdPrice}} 被执行。",
-        "auto-buy-executed": "你在金库 #{{vaultId}} 的 Auto-Buy 已于 {{humanDate}} 以 ${{usdPrice}} 被执行。",
-        "auto-sell-executed": "你在金库 #{{vaultId}} 的 Auto-Sell 已于 {{humanDate}} 以 ${{usdPrice}} 被执行。",
-        "oracle-price-changed": "喂价机价格更动为 ${{usdPrice}}.",
-        "action-notifications": "金库操作通知",
-        "action-notifications-description": "你将会收到关于自动化触发、清算和开启金库的通知。",
-        "info-notifications": "金库信息通知",
-        "info-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-        "user-communication-notifications": "Oasis.app  用户沟通通知",
-        "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-        "news-notifications": "Oasis.app 新消息通知",
-        "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-        "service-not-available": "目前不提供通知服务，请稍后再试一次。"
-    },
-    "manage": "管理",
-    "tos-jwt-signature-expired-title": "更新你的签名",
-    "tos-jwt-signature-expired-message": "有可能是你的签名过期或者因为我们更新服务而要求新的签名。请在信息签名以继续。",
-    "setup": "设置",
-    "automation-creation": {
-        "add-content": "你的金库目前正在更新以添加 {{featureName}}。更新完成后，{{featureName}} 才会启动。",
-        "remove-content": "正在取消 {{featureName}}。当交易完成，你的 {{featureName}} 触发器将会被移除。",
-        "add-complete-content": "你已成功在金库设置 {{featureName}}。 进一步了解此功能如何执行",
-        "remove-complete-content": "已成功取消 {{featureName}}。"
-    },
-    "manage-earn": {
-        "aave": {
-            "vault-form": {
-              "adjust-risk": "Adjust Risk",
-
-              "deposit": "存入 ETH",
-                "title": "你的 Earn 仓位",
-                "close-title": "以 ETH 结算并关闭此仓位",
-                "close": "关闭金库",
-                "confirm-btn": "确认",
-                "close-description": "为了关闭你的金库，你的部分仓位将会出售以付清尚未偿还的债务，而剩余的抵押品将会发送至你的钱包地址。",
-                "stop-close": "下次再说",
-                "eth-after-closing": "关闭金库后的 ETH",
-                "retry-btn": "再试一次"
-            }
-        }
-    },
-    "open-earn": {
-        "product-header": {
-          "token-pair-list": {
-            "aave-steth-eth": "AAVE stETH 质押杠杆"
-          },
-          "current-yield": "当前收益率",
-          "90-day-avg-yield": "90 天平均收益率",
-          "total-value-locked": "总质押价值"
-        },
-        "aave": {
-            "vault-form": {
-                "title": "设置 Earn 策略",
-                "open-btn": "开启 Earn 仓位",
-                "confirm-btn": "确认",
-                "retry-btn": "再试一次",
-                "success-title": "完成！你已开启仓位",
-                "go-to-position": "前往仓位",
-                "configure-multiple": {
-                    "title": "设置风险等级",
-                    "liquidation-price": "{{collateralToken}}/{{debtToken}} 清算价格",
-                    "historical-ratio": "{{collateralToken}} / {{debtToken}} 历史比率",
-                    "back-to-enter-eth": "回到进入 ETH",
-                    "increase-risk": "增加风险",
-                    "decrease-risk": "降低风险",
-                    "vault-message-ok": "在你选择的风险等级下，如果 {{collateralToken}} 的价格相对于 {{debtToken}} 移动 {{priceMovement}}，则此 Earn 仓位有可能被清算。AAVE 的最低清算罚金为 {{liquidationPenalty}}",
-                    "vault-message-warning": "在你选择的风险等级下，如果 {{collateralToken}} 的价格相对于 {{debtToken}} 移动 {{priceMovement}}，则此 Earn 仓位会被清算。AAVE 的最低清算罚金为 {{liquidationPenalty}}"
-                }
-            }
-        }
-    },
-    "auto-take-profit": {
-        "title": "Auto-Take Profit",
-        "cancel-summary-title": "取消 Auto-Take Profit 订单摘要",
-        "form-title": "Auto-Take Profit 设置",
-        "banner": {
-            "header": "设置 Auto-Take Profit",
-            "content": "Auto-Take Profit 让你设置一个退出的策略，当你的抵押品达到你的目标价格时，它将自动帮你关闭金库并赚取获利。",
-            "button": "设置 Auto-Take Profit"
-        },
-        "trigger-col-price": "触发 {{token}} 的价格",
-        "trigger-col-price-explanation": "若要讓 Auto-Take profit 執行，{{token}} 必須達到的價格。",
-        "estimated-profit": "在關閉 {{amount}} 的預測獲利",
-        "estimated-profit-explanation": "在關閉時的預測獲利 = 触发的抵押品價值(USD) - 须偿还的债务 - 预测的交易手续费",
-        "trigger-col-ratio": "触发抵押率",
-        "trigger-col-ratio-explanation": "你的金库必须达到触发抵押率才会执行 Auto-Take profit。",
-        "current-col-ratio": "当前抵押率 {{amount}}"
-    },
-    "automation": {
-        "setup": "{{feature}} 设置",
-        "trigger-added": "已启用 {{feature}} ",
-        "trigger-cancelled": "已取消 {{feature}}",
-        "trigger-updated": "已更新 {{feature}}",
-        "add-trigger": "增加 {{feature}}",
-        "edit-trigger": "编辑 {{feature}}",
-        "setting": "正在设置 {{feature}}",
-        "updating": "正在更新 {{feature}}",
-        "cancelling": "正在取消 {{feature}}",
-        "update-trigger": "更新 {{feature}}",
-        "cancel-trigger": "取消 {{feature}}"
+    "referrals": {
+      "title": "推荐好友使用 Oasis 并赚取 Dai",
+      "description": "我们让 Oasis.app 的用户可以经由推荐朋友而得到回报。您可以邀请好友使用我们的产品，您和朋友都可以因此赚取少许的手续费。"
     },
     "brand-assets": {
-        "heading": "品牌资产",
-        "intro": "在这里可以找到 Oasis.app 的 Logo 和图像。",
-        "intro-cta": "下载所有档案",
-        "category": {
-            "logo": {
-                "heading": "Logo",
-                "info": "请勿修改、编辑或扭曲 Logo。"
-            },
-            "palm-leaf": {
-                "heading": "椰子叶图标",
-                "info": "请只有在以下情况时才单独使用图标：完整的 Logo 难以阅读、在有限的空间展示完整的 Logo，或者 Oasis.app 的品牌形象已完整建立。"
-            },
-            "minimum-size": {
-                "heading": "最小尺寸",
-                "info": "为了避免因 Logo 太小而难以辨识，请至少使用我们建议的最小尺寸。",
-                "digital": "数位",
-                "print": "印刷",
-                "digital-minimum-size": "72px",
-                "print-minimum-size": "2cm",
-                "width": "(宽)"
-            },
-            "best-practices": {
-                "heading": "范例",
-                "info": "在使用我们的 Logo 时请避免以下的使用方式。",
-                "no-gradient": "请勿在标准字体上使用渐层色",
-                "no-shadow": "请勿使用阴影",
-                "no-rotate": "请勿旋转 Logo",
-                "no-alone": "请勿单独使用标准字体",
-                "no-stack": "请勿堆叠 Logo",
-                "no-ratio": "请勿改变比例"
-            }
-        }
+      "title": "品牌资产",
+      "description": "在这里可以找到 Oasis.app 的 Logo 和图像。"
     },
     "security": {
-        "heading": "用户相信我们的原因",
-        "intro": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。",
-        "category": {
-            "people": {
-                "header": "我们有最顶尖的人才",
-                "description": "一群对于 DeFi 经验丰富并热于其中的建造者，某些您使用过的 DeFi 协议或产品都是来自我们。",
-                "link-about": "认识团队"
-            },
-            "audit": {
-                "header": "独立于公司之外的审计",
-                "description": "我们内部与外部严谨的审计过程，让我们拥有安全和严格的审查流程。",
-                "link-multiply": "多分审计报告",
-                "link-multiply-fmm": "Multiply FMM 外挂审计报告",
-                "link-automation": "Automation 审计报告"
-            },
-            "bug": {
-                "header": "Bug 赏金计划",
-                "description": "我们与程式码审查者、符合道义的白帽骇客的社群合作，给予那些找出 Bug 的人最多 10 万美元的赏金。",
-                "link-bug-bounty": "前往赏金计划"
-            },
-            "shield": {
-                "header": "保护隐私",
-                "description": "我们从不搜集任何可辨识的个人信息，也不追踪或储存任何 IP 地址和地点。",
-                "link-privacy": "阅读隐私政策"
-            }
-        }
+      "title": "安全性",
+      "description": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。"
     }
+  },
+  "set-allowance-for": "设置 {{token}} 许可额度",
+  "setting-allowance-for": "正在设置 {{token}} 许可额度",
+  "setup-proxy": "设置代理",
+  "setup-wallet": "初始化钱包",
+  "show-more": "展开更多",
+  "spots-remaining": "剩余 {{ spots }}",
+  "start-saving": "开始储蓄",
+  "system": {
+    "asset": "资产",
+    "available-to-withdraw": "已取回数量",
+    "available-to-generate": "可生成数量",
+    "coll-locked": "已存入",
+    "coll-ratio": "抵押率",
+    "collateral": "抵押品",
+    "collateral-locked": "已存入抵押品",
+    "collateral-ratio": "抵押率",
+    "collateralization-ratio": "抵押率",
+    "dai": "Dai",
+    "dai-available": "可生成 Dai",
+    "dai-debt": "Dai 债务",
+    "deposited": "已存入",
+    "in-my-wallet": "钱包中",
+    "in-your-wallet": "你的钱包中",
+    "liquidation-penalty": "清算罚金",
+    "liquidation-price": "清算价格",
+    "liquidation-ratio": "清算率",
+    "min-coll-ratio": "最低抵押率",
+    "stability-fee": "稳定费率",
+    "type": "类型",
+    "vault-dai-debt": "该金库 Dai 债务",
+    "vault-id": "金库 ID",
+    "oracle-price": "喂价机价格",
+    "market-price": "市场行情",
+    "max-multiple": "最大倍率",
+    "position-info": "仓位信息",
+    "total-exposure": "{{token}} 的总敞口",
+    "exposure": "敞口",
+    "total-collateral": "总抵押价值",
+    "multiple": "倍率",
+    "est-break-even": "收支平衡预测",
+    "est-break-even-value": "{{days}} 天",
+    "est-entry-fees": "入场费预测",
+    "apy": "年收益率",
+    "faq": "常见问题",
+    "liquidation-fee": "清算费用",
+    "buying-power": "购买力",
+    "net-value": "净值",
+    "net-value-pnl": "净值和损益",
+    "dust-limit": "Dust 限度",
+    "minimum-coll-ratio": "最低抵押率",
+    "origination-fee": "发起费",
+    "liquidity-available": "当前流通量",
+    "protocol": "协议",
+    "variable-annual-fee": "可变年费",
+    "seven-day-average": "7 天年收益净值",
+    "ninety-day-average": "90 天年收益净值",
+    "vault-protection": "金库防护措施",
+    "date": "日期",
+    "overview": "概述",
+    "protection": "金库防护",
+    "optimization": "优化损益",
+    "stop-loss": "Stop-Loss",
+    "basic-sell": "Auto-Sell",
+    "basic-buy": "Auto-Buy",
+    "constant-multiple": "Constant Multiple",
+    "history": "历史",
+    "vaultinfo": "金库信息",
+    "multiply-buy-coll": "以 DAI 购买 ({{token}})",
+    "multiply-reduce-debt": "调降金库债务",
+    "actions": {
+      "common": {
+        "close-vault": "关闭金库",
+        "edit-position": "编辑金库"
+      },
+      "borrow": {
+        "edit-dai": "管理 DAI",
+        "edit-collateral": "管理 ({{token}}) 抵押品",
+        "switch-to-multiply": "转换成 Multiply"
+      },
+      "multiply": {
+        "adjust": "调整",
+        "buy-coll": "购买抵押品",
+        "reduce-debt": "调降债务",
+        "switch-to-borrow": "转换成 Borrow"
+      },
+      "earn": {
+        "vault-overview": "金库概述"
+      }
+    },
+    "cards": {
+      "common": {
+        "after": "（试算后）"
+      },
+      "liquidation-price": {
+        "footnote": "当前价格的 {{amount}} {{level}} ",
+        "modal": {
+          "price-relation": "这是当前价格的 {{level}} "
+        }
+      },
+      "collateralization-ratio": {
+        "footnote": "下一个价格 {{amount}}"
+      },
+      "stop-loss-collateral-ratio": {
+        "footnote": "{{amount}} 低于当前抵押率"
+      },
+      "dynamic-stop-price": {
+        "footnote": "S/L 抵押率 {{amount}} "
+      }
+    },
+    "remove-trigger": "删除触发器",
+    "add-trigger": "增加触发器",
+    "auto-take-profit": "Auto-Take Profit"
+  },
+  "to-the-following-address": "至此地址",
+  "token-balance": "{{token}} 余额",
+  "token-depositing": "存入 {{amount}}  {{token}}",
+  "tos": "服务条款",
+  "tos-accept-message": "在开始之前，您必须阅读并接受我们的服务条款。",
+  "tos-accept-message-updated": "在继续之前，您必须阅读并接受我们更新后的服务条款。",
+  "tos-acceptance-check-in-progress": "许可检查进行中…",
+  "tos-desc": "通过创建一个储蓄金库，我接受 Oasis",
+  "tos-jwt-signature-message": "您似乎第一次使用 Oasis.app 或正在通过新设备连接。为了安全起见，请用您的钱包签名以继续。",
+  "tos-read": "我已阅读并接受服务条款。",
+  "tos-view": "查看服务条款",
+  "tos-wallet-connection-in-progress": "正在连接钱包…",
+  "tos-welcome": "欢迎",
+  "tos-welcome-updated": "我们已更新条款",
+  "transaction-failed": "交易失败",
+  "transaction-fee": "交易费用",
+  "transaction-fee-tooltip-desc": "交易费用目前使用 ETH 支付，成本约为",
+  "trezor-cancel": "选择另一个钱包",
+  "trezor-error": "遇到错误，请重试",
+  "trezor-loading-accounts": "加载 Trezor 账户…",
+  "trezor-select-address": "选择一个地址",
+  "try-again": "请重试",
+  "unlimited-allowance": "永久许可",
+  "vault": {
+    "current-price": "当前 {{token}}/USD 价格 时间 {{time}}",
+    "header": "{{ilk}} 金库 {{id}}",
+    "next-price": "下次喂价机更新: {{count}} 分钟后",
+    "next-price-any-time": "下次喂价更新: 2 分钟内",
+    "next-price_plural": "下次喂价更新: {{count}} 分钟后",
+    "open-vault": "开启 {{ilk}} 金库",
+    "vault-details": "金库细节",
+    "token-uds-price": "{{token}} / 美元价格",
+    "insti-header": "机构 {{ilk}} 的金库 {{id}}"
+  },
+  "vault-actions": {
+    "deposit": "存入",
+    "generate": "生成",
+    "payback": "偿还",
+    "withdraw": "取回"
+  },
+  "vault-changed": "金库已转换完成!",
+  "vault-history": "金库历史",
+  "vaults": {
+    "after": " ${{price}} 之后",
+    "current-price": "当前 {{token}}/USD 价格",
+    "ilk-does-not-exist": "金库 {{ilk}} 不存在",
+    "next-price": "下一个 {{token}}/USD 价格: {{amount}}"
+  },
+  "ilks-list": {
+    "headers": {
+      "noVaults": "选择一种抵押品类型，创建 Maker 金库并生成 Dai",
+      "withVaults": "创建一个新的 Maker 金库。<0/> 生成 Dai"
+    }
+  },
+  "vaults-overview": {
+    "banner-content": "你可以查看金库。",
+    "banner-header": "你正在查看 {{address}} 的金库。",
+    "headers": {
+      "connected-owner-noVaults": "你没有开启任何金库。",
+      "connected-owner-withVaults": "你的所有金库",
+      "connected-viewer-noVaults": "{{address}} 地址下当前没有 Maker 金库",
+      "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
+      "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
+      "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。",
+      "vault-suggestions": "{{address}} 在 Oasis.app 上更多的可能"
+    },
+    "number-of-vaults": "金库数量",
+    "subheader-no-vaults": "开启 Maker 金库，存入抵押品，生成 Dai。",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+    "total-debt": "总债务",
+    "total-locked": "总锁定",
+    "vaults": "所有金库",
+    "vaults-at-risk": "风险金库",
+    "your-vaults": "你的金库",
+    "assets-and-positions": "前 {{number}} 名的资产和仓位",
+    "total-assets": "总资产",
+    "total-assets-subheader": "使用 <0>Oasis 精心规划的代币列表计算 →</0>"
+  },
+  "vault-notices": {
+    "ownership": {
+      "header": "你正在查看 {{address}}  地址下的金库。",
+      "subheader1": "请连接你的钱包以管理并查看所有金库。",
+      "subheader2": "你可以查看所有金库。"
+    },
+    "liquidating": {
+      "header1": "你的 {{ collateral }} Maker 金库 {{ id }} 即将被清算。",
+      "header2": "{{ collateral }} Maker 金库 {{ id }} 即将被清算。",
+      "subheader1": "{{ collateral }} 下一个喂价更新会造成该金库的清算，添加更多抵押品或偿还 Dai 避免清算。",
+      "subheader2": "这是你的 Maker 金库吗？请用该地址 {{ address }} 连接，避免金库清算。",
+      "subheader3": "此金库随时会被清算。"
+    },
+    "liquidated": {
+      "header1": "你的 Maker 金库已被清算。",
+      "header2": "该 Maker 金库已被清算。",
+      "subheader1": "该 Maker 金库已被清算。部分抵押品已被拍卖以偿还你的 Dai 债务。",
+      "subheader2": "你可以赎回  {{ amount }} {{ collateral }}。",
+      "subheader3": "此金库已被清算，部分抵押品已被拍卖以偿还 Dai 债务。",
+      "subheader4": "如果这是你的金库，请连接此地址收回剩下的抵押品：{{ address }} "
+    }
+  },
+  "view": "查看",
+  "view-more": "查看更多",
+  "view-on-etherscan": "在 Etherscan 上查看",
+  "waiting-approval": "等待许可",
+  "waiting-confirmation": "等待交易确认",
+  "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: 代理部署已确认",
+  "withdraw": "取回",
+  "withdrawn": "已取回",
+  "you-are-sending": "你正在发送",
+  "your-vaults": "您的金库",
+  "my-positions": "我的仓位",
+  "no-results": "无结果",
+  "learn-about-wallets": "了解钱包",
+  "learn-more-link": "https://ethereum.org/en/wallets/find-wallet/",
+  "enter-an-amount": "输入数量",
+  "enter-allowance-amount": "输入许可数量",
+  "set-token-allowance": "设置 {{token}} 许可",
+  "invalid-allowance-amount": "许可数量无效",
+  "vault-form": {
+    "header": {
+      "edit": "初始化你的金库",
+      "proxy": "创建你的智能代理",
+      "allowance": "设置 {{token}} 许可",
+      "daiAllowance": "设置 Dai 同意权",
+      "confirm": "确认金库创建",
+      "confirm-in-progress": "已开启金库",
+      "modified": "已修改金库",
+      "confirm-manage": "确认修改金库",
+      "review-manage": "审查金库的修改",
+      "multiply-transition": "增加你钱包中 {{token}} 的敞口",
+      "go-to-multiply": "做得好，现在你将前往新的 Multiply 界面",
+      "editWithToken": "设置 {{token}} 金库",
+      "proxy-in-progress": "已建立智能代理合约",
+      "proxy-success": "已成功建立智能代理合约",
+      "manage": "管理金库",
+      "success": "完成! 你已拥有一个金库",
+      "success-manage": "完成! 已更新你的金库",
+      "proxyDisabled": "建立智能代理合约目前停用"
+    },
+    "subtext": {
+      "collateral": "在你的金库存款或提款，并且通过合并交易来节省手续费。",
+      "dai": "从你的金库生成 DAI 或偿还 DAI，并且通过合并交易来节省手续费。",
+      "edit": "模拟输入存入抵押品数量和期望生成的 Dai 数量",
+      "proxy": "透过智能代理可以将多个步骤集中于一笔交易完成。该操作只需设置一次。",
+      "allowance": "设置许可金库可以控制的最大代币数量。",
+      "daiAllowance": "设置允许智能合约可以互动的代币限额。",
+      "confirm": "即将更新页面，这将不会要求进行交易。",
+      "review-manage": "你可以在这里查看关于修改金库的详细信息",
+      "confirm-in-progress": "正在开启你的金库",
+      "modified": "正在更新你的金库，请耐心等待。",
+      "edit-multiply": "输入想要存入的抵押品数量，接着调整你想要的杠杆条件来预览你的金库。",
+      "edit-multiply-dai": "你可以只是 <1>存入 DAI </1>来建立这个金库，而这个交易将会基于存入的 DAI 为你建立 {{token}} 的仓位。",
+      "proxy-start": "只需要设定代理合约一次，就可以在一次的交易里执行多项动作。前往 <1>知识中心</1>了解更多。",
+      "proxy-success": "已成功设定智能代理合约。 前往 <1>知识中心</1>了解更多 →</1>",
+      "proxy-progress": "前往 <1>知识中心</1>进一步了解智能代理合约。",
+      "new-proxy-temporally-disabled": "在合并的过程，会暂时无法建立智能代理合约，以避免来自重新组织的非预期错误。请阅读我们的<1>博客</1>以了解进一步的信息。"
+    }
+  },
+  "creating-your-vault": "创建你的 {{token}} 金库！",
+  "vault-created": "金库 #{{id}} 已创建！",
+  "changing-vault": "正在修改金库",
+  "your-wallet": "你的钱包",
+  "welcome": "欢迎来到全新的 Oasis.app",
+  "read-blog-post": "阅览博客",
+  "visit-old-oasis": "前往旧版 Oasis",
+  "oracles": {
+    "header": "喂价机",
+    "description": "可以在下方查看被 Maker 金库所接受的抵押品类型的当前及下一个价格。这边的价格大部分是使用喂价安全模块(Oracle Stability Module, OSM)而得到，该模块一小时只会更新一次。因此，当发生价格骤跌时，用户仍有一小时可以做出反应。",
+    "token": "代币",
+    "current-price": "当前价格",
+    "next-price": "下一个价格",
+    "change": "% 变化",
+    "last-update": "最后更新",
+    "next-update": "下一次更新",
+    "oracle-type": "喂价机类型"
+  },
+  "select-vault-type": {
+    "header": "你想要使用你的代币做什么？",
+    "multiply": {
+      "header": "倍数增加我的代币",
+      "subtext": "使用你的{{balance}} {{token}} 获得最高 {{exposure}} {{token}} 的风险",
+      "button": "執行 {{token}} 的杠杆交易"
+    },
+    "borrow": {
+      "header": "抵押我的 {{token}} 借款",
+      "subtext": "使用 {{balance}} {{token}} 借出最高 {{maxBorrow}} DAI",
+      "button": "抵押 {{token}} 借贷"
+    }
+  },
+  "newsletter": {
+    "title": "获取 Oasis.app 的最新信息",
+    "subtitle": "订阅我们的电子报以获得 Oasis.app 的最新信息 ",
+    "placeholder": "电子邮箱",
+    "button": "订阅",
+    "success": "感谢您订阅我们的电子报",
+    "errors": {
+      "unknown": "发生错误，请再试一次。",
+      "email-is-invalid": "请输入有效的邮箱地址",
+      "email-already-exists": "此邮箱已订阅电子报",
+      "email-pending": "确认邮件已经发送到此地址，请查看您的邮箱。"
+    },
+    "gdpr": "输入您的邮箱地址即表示您明白 Oazo Apps Limited 将会因行销用途搜集和使用您的个人信息（如：电子报、更新）。如想了解更多，请查阅我们的<1>隐私政策</1>。"
+  },
+  "product-card": {
+    "borrow": "此金库适用于抵押 {{token}} 来借贷",
+    "multiply": "此金库适用于增加 {{token}} 風險敞口",
+    "borrow-and-multiply": "此金库适用于抵押 {{token}} 来借贷并增加風險敞口",
+    "lp-tokens": "此金库适用于增加 {{token}} 風險敞口",
+    "medium-exposure-medium-cost": "此金库的風險敞口和花费为一般，适用于借贷和进行杠杆交易",
+    "biggest-multiply": "此杠杆交易有机会最大值化 {{token}} 的风险敞口",
+    "lowest-stabilityFee-and-cheapest": "此为最低的稳定费和最易负担的金库，适用于借贷 {{token}}",
+    "staking-rewards": "非常适用于赚取质押奖励时，执行借贷或杠杆交易",
+    "great-borrowing-and-multiplying": "最适用于执行 {{token}} 的借贷或杠杆交易",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "让 Dai 的风险敞口在 UNI V3 的 DAI/USDC 1bps 资金池赚取奖励",
+      "GUNIV3DAIUSDC1-A": "让 Dai 的风险敞口在 UNI V3 的 DAI/USDC 5bps 资金池赚取奖励"
+    },
+    "tags": {
+      "lowest-fees-for-borrowing": "最低手续费",
+      "staking-rewards": "质押奖励",
+      "max-exposure": "{{token}} 最大的风险敞口"
+    },
+    "lowest-annual-fee-cheapest-vault": "此为使用质押 ETH 借贷选项中，最低年费和最便宜的金库",
+    "unprofitable-position": "此仓位目前无法获利，但只要您明白现况，仍可以开启金库。"
+  },
+  "product-card-banner": {
+    "with": "以 {{value}} {{token}} 👇",
+    "borrow": "借贷至多 {{value}} DAI",
+    "multiply": "至多 {{value}} {{token}} 的风险敞口",
+    "earn": "一年赚取 {{value}} {{token}}",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "在 DAI/USDC UNI V3 1bps 资金池里至多 {{value}} 的风险敞口",
+      "GUNIV3DAIUSDC1-A": "在 DAI/USDC UNI V3 5bps 资金池里至多 {{value}} 的风险敞口"
+    }
+  },
+  "product-page": {
+    "multiply": {
+      "title": "Oasis Multiply",
+      "description": "快来浏览我们的产品或者选择您最爱的加密资产来提高风险敞口吧。",
+      "link": "进一步了解 Multiply ->"
+    },
+    "borrow": {
+      "title": "Oasis Borrow",
+      "description": "现在就从下方选择您想抵押的加密资产来提高风险敞口吧。",
+      "link": "进一步了解 Borrow ->"
+    },
+    "earn": {
+      "title": "Oasis Earn",
+      "description": "启用最优质的流动性挖矿，让加密资产开始为您赚取奖励。您可以从下方选择合适的 Earn 产品。",
+      "link": "进一步了解 Earn ->"
+    }
+  },
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} 仓位奖励",
+    "text1": "当前你在这个仓位赚取{{ bonusTokenName }}奖励。按下按钮来领取 {{ bonusAmount }}。",
+    "link-text": "这里",
+    "text2": "可以获取更多关于奖励的信息。",
+    "claim-button": {
+      "claim-rewards": "领取奖励"
+    },
+    "for-this-position": "你在该仓位赚取 {{ name }} 奖励。",
+    "instructions": {
+      "tokens-to-claim": "按下此按钮获取 {{ readableAmount }}。",
+      "claim-succeeded": "你已获取 {{ readableAmount }}. 这将会花费几分钟来更新你的仓位。",
+      "nothing-to-claim": "你现在没有可以宣告 {{ name }} 的奖励。"
+    },
+    "more-info": {
+      "text1": "更多关于奖励的信息",
+      "link-text": "这里",
+      "text2": "。"
+    }
+  },
+  "simulate-faq": {
+    "contents": "内容",
+    "learn-more-heading": "想了解更多?",
+    "learn-more-body": "你可以前往我的 <0>知识</0> 页面更深入的了解，或是在<1> Discord </1> 上发问。"
+  },
+  "get-started-button": "开始使用 Oasis",
+  "wallet-wrong-network": "你的钱包似乎不在正确的网路里。",
+  "app-wrong-network": "现在的 Oasis.app 似乎不支持你的钱包。",
+  "wallet-wrong-network-desc": "你的钱包似乎在另一个与 Oasis.app 不同的网路里运行，请手动转换你的钱包网路，或者可以直接按下方的按钮。",
+  "app-wrong-network-desc": "Oasis.app 似乎运行在一个你的钱包不支持的网路，请按下方按钮转换网路。",
+  "user-wrong-network-desc": "你的钱包似乎在另一个与 Oasis.app 不同的网路里运行，请手动转换你的钱包网路。",
+  "switch-network": "转换网路",
+  "switch-to-mainnet": "转换成主网",
+  "and": "和",
+  "add-stop-loss": "启用 Stop-Loss",
+  "update-stop-loss": "更新 Stop-Loss",
+  "back-to-vault-overview": "回去金库概述",
+  "cancel-stop-loss": "取消 Stop-Loss",
+  "adding-auto-sell": "正在启用 Auto-Sell",
+  "cancelling-auto-sell": "正在取消 Auto-Sell",
+  "adjust-your-position-additional": "在这个交易调整杠杆倍率",
+  "after-closing": "在关闭之后换成{{token}}",
+  "view-vault-link": "<0>查看金库 -></0>",
+  "adding-auto-buy": "正在增加 Auto-Buy 触发器",
+  "cancelling-auto-buy": "正在移除 Auto-Buy  触发器",
+  "close-notification": "关闭通知",
+  "close-to": "以 {{token}} 结算关闭金库",
+  "see-products": "查看产品",
+  "fact": "因素",
+  "copy": "复制",
+  "edit-vault": "编辑金库",
+  "mark-as-read": "标记为已读",
+  "edit-allowance": "编辑许可额度",
+  "reset": "重置",
+  "finished": "已完成",
+  "smart-proxy-desc": "为了关闭金库，你的部分仓位将会出售以支付尚未偿还的债务，剩余的抵押品将会发送到你的钱包地址。",
+  "proxy-advantages": {
+    "0": "一个账户只需一个代理合约",
+    "1": "让钱包可以与 Maker 协议互动",
+    "2": "有效使用燃料费"
+  },
+  "proxy-advantages-new": {
+    "0": "一个账户只需<1>一个</1>代理合约<1>",
+    "1": "让钱包可以与 Maker 协议互动",
+    "2": "有效使用燃料费"
+  },
+  "proxy-waiting-text": "了解更多关于智能代理合约在",
+  "proxy-waiting-text-link": "知识中心",
+  "creating-proxy-contract": "正在建立你的智能代理合约",
+  "please-try-again-later": "请稍后再试一次",
+  "dai-depositing": "正存入 Dai ({{amount}})",
+  "decide-later": "稍后再决定",
+  "disconnect-wallet": "断开连接钱包",
+  "pending": "进行中...",
+  "error-header": "失去连接",
+  "error-button-reload": "重新载入",
+  "exchange": {
+    "onboarding": {
+      "title": "向 Oasis Swap 打招呼",
+      "body": "在 Oasis 上快速安全兑换代币。 前往 <0>Oasis Swap 的常见问题 →</0>",
+      "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
+      "button": "知道了"
+    }
+  },
+  "multiply-description-pending": "正在创建新的 Multiply 金库",
+  "multiply-description-recent": "已创建 Multiply 金库 {{ id }}",
+  "multiply-description-recent-failed": "创建 Multiply 金库失败",
+  "adjust-position-description-pending": "调整 Multiply 金库 {{ id }}",
+  "adjust-position-description-recent": "已调整 Multiply 金库 {{ id }}",
+  "adjust-position-description-recent-failed": "调整 Multiply 金库 {{ id }} 失败",
+  "close-vault-description-pending": "已以 {{ closeTo }} 结算关闭金库 {{ id }}",
+  "close-vault-description-recent": "已以 {{ closeTo }} 结算关闭金库 {{ id }}",
+  "close-vault-description-recent-failed": "关闭金库 {{ id }} 失败",
+  "fees-plus-gas": "手续费 + (燃料费最大值)",
+  "max-gas-fee": "燃料费最大值",
+  "gas-explanation": "最大值燃料费是用来支付燃料费的最高价格。为确保你的交易成功，我们提供以现价2倍的燃料基本费 + 优先费，使你的交易有 95% 的机会在下一个区块被执行。在多数的情况下，你只会支付少于最大值许多的费用。",
+  "from:": "从",
+  "full": "额满",
+  "triggers": {
+    "added": "已加入",
+    "removed": "已移除",
+    "executed": "已执行",
+    "updated": "已更新"
+  },
+  "active-triggers": "启动中的触发器",
+  "languages": "语言",
+  "lang-dropdown": {
+    "en": "English",
+    "es": "Español",
+    "pt": "Português",
+    "cn": "中文"
+  },
+  "manage-insti-vault": {
+    "origination-fee": "发起费",
+    "tooltip": {
+      "origination-fee": "机构金库的发起费"
+    },
+    "card": {
+      "current-fixed-fee": "当前固定费用",
+      "next-fee-change": "下一次费用",
+      "term-end": "Term End",
+      "days-remaining": "剩余 {{days}} 天",
+      "min-active-coll-ratio": {
+        "ratio": "{{percentageRatio}} 最低活跃抵押率",
+        "price": "最低活跃抵押率价格",
+        "modal": {
+          "para1": "抵押率的计算方式：抵押品的价值 / Dai 债务。最小活跃抵押率是抵押率低于后续会生成的债务或提出的抵押品。这个抵押率和清算率是分开的两种利率。",
+          "para2": "如果金库低于最低活跃抵押率，就可以存入抵押品并偿还债务。",
+          "para3": "这里所显示最低活跃抵押率是在这个比率下抵押品的价格。"
+        }
+      }
+    }
+  },
+  "manage-earn-vault": {
+    "overview-earn": "概述 (Earn ID: {{earnId}})",
+    "overview-earn-aave": "概述",
+    "earnings-to-date": "迄今为止的收益",
+    "earnings-to-date-after-fees": "后手续费 {{ afterFees }} {{ symbol }}",
+    "earnings-to-date-modal": "迄今为止此仓位的收益是由当前的仓位净值减去累积的存款，再加上累积的提款，不包含支付 Oasis 的费用。“后手续费”的价格包含 Oasis 手续费及以太坊的燃料费的收入。",
+    "net-apy": "净值年收益",
+    "net-apy-modal": "年收益已算入手续费，其计算方式是 {{ token }} 代币价格过去七天上涨的百分比，按年计算，并且减去变动的年手续费。",
+    "exposure-modal": "以所部署的资金杠杆倍数表示这个仓位的总敞口。"
+  },
+  "borrow-to-multiply": {
+    "checkmark1": "增加你的 {{token}} 的风险敞口",
+    "checkmark2": "一键就能调整风险和敞口",
+    "checkmark3": "为了更好的效率和节省费用，闪电贷款、购买或出售抵押品将会合并成一笔交易。",
+    "checkmark4": "在执行之前，你可以检阅金库修改的细节。",
+    "subheader2": "重要",
+    "paragraph2": "当你在金库执行杠杆交易时，会获得以你的抵押品借来的资金去购买的抵押品，请确定你明白交易的风险。",
+    "button-not-supported": "不支持 {{token}}",
+    "button-start": "执行杠杆交易",
+    "button-confirm": "前往杠杆交易页面",
+    "button-progress": "进行交易中...",
+    "button-failure": "发生错误，请再试一次",
+    "button-success": "完成交易，刷新中...."
+  },
+  "multiply-to-borrow": {
+    "title1": "在 Borrow 页面查看你的金库",
+    "title2": "你即将回到 Borrow 的界面",
+    "checkmark1": "为借贷仓位而生",
+    "checkmark2": "任何时候你都可以切换回去 Multiply 界面",
+    "checkmark3": "这不会执行任何交易",
+    "button-start": "前往 Borrow 界面",
+    "button-confirm": "立即前往 Borrow 界面",
+    "button-progress": "交易进行中...",
+    "button-failure": "发生错误，请再试一次",
+    "button-success": "完成交易，刷新中...."
+  },
+  "field-from": "从",
+  "minimum": "最小值",
+  "metamask-unsupported-network": "你现在的网路不被支持，请转换成主网。",
+  "not-right-now": "不是现在",
+  "slider": {
+    "adjust-multiply": {
+      "introduction-header": "调整杠杆倍率",
+      "introduction-content": "",
+      "left-label": "清算价格",
+      "right-label": "抵押率",
+      "left-footer": "高风险",
+      "right-footer": "低风险"
+    },
+    "set-stoploss": {
+      "left-label": "Stop-Loss 抵押率",
+      "right-label": "变动的 stop 价格",
+      "left-footer": "更多损失",
+      "right-footer": "更可能执行"
+    }
+  },
+  "cancel-stoploss": {
+    "summary-header": "取消 Stop-Loss 订单概要",
+    "stop-loss-coll-ratio": "Stop-Loss 抵押率",
+    "liquidation": "取消之后的清算价格",
+    "total": "交易的总支出",
+    "max": "最大的交易支出"
+  },
+  "notice": "注意",
+  "unlimited": "无限的",
+  "vault-errors": {
+    "deposit-amount-exceeds-collateral-balance": "无法从你的钱包存入比这个数量更多的抵押品",
+    "deposit-dai-amount-exceeds-dai-balance": "无法从你的钱包存入比这个数量更多的 Dai",
+    "generate-amount-exceeds-dai-yield-from-depositing-collateral": "请减少你希望生成的 Dai 数量以避免该 Maker 金库的抵押率太低。",
+    "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "请减少你希望生成的 Dai 数量以避免该 Maker 金库的抵押率在更新到下一个价格后太低。",
+    "generate-amount-exceeds-debt-ceiling": "你正在生成比当前上限还要多的债务，但目前允許生成的 Dai 的数量是 {{maxGenerateAmount}}",
+    "generate-amount-less-than-debt-floor": "此金库须至少生成 {{debtFloor}} 的 Dai。 进一步了解最低<0>金库债务</0>。",
+    "generate-amount-more-than-max-flash-amount": "此交易超出最大闪电贷款的金额 {{maxFlashAmount}}，请调低杠杆倍率或者存款金额。",
+    "debt-will-be-less-than-debt-floor": "此 Maker 金库的债务金额必须为 0 或者超过 {{debtFloor}} 的 Dai，请修改偿还金额。",
+    "custom-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义额度数量",
+    "custom-allowance-amount-less-than-deposit-amount": "你必须允许至少一组存款的许可额度才能继续",
+    "depositing-all-eth-balance": "你需要一些 ETH 来支付燃料费，请降低存款金额。",
+    "ledger-enable-contract-data": "请在 Ledgers Ethereum app 的设置里启用 Contract data",
+    "insufficient-eth-balance": "你的 ETH 余额不足以支付交易",
+    "exchange-error": "无法获取执行此杠杆交易的兑换价。",
+    "withdraw-amount-exceeds-free-collateral": "你无法提出超过 {{maxWithdrawAmount}} 的 {{token}}",
+    "withdraw-amount-exceeds-free-collateral-at-next-price": "你无法提出超过 {{maxWithdrawAmount}} 的 {{token}}",
+    "generate-amount-exceeds-dai-yield-from-total-collateral": "此 Maker 金库的抵押率太低，请生成少点 Dai",
+    "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "此 Maker 金库的抵押率在下一个价格更新后将太低，请生成少点 Dai",
+    "payback-amount-exceeds-dai-balance": "你无法偿还超过你钱包所拥有的 Dai 数量",
+    "payback-amount-exceeds-vault-debt": "你正尝试偿还超过此 Maker 金库的 Dai 债务",
+    "custom-collateral-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
+    "custom-collateral-allowance-amount-less-than-deposit-amount": "你必须允许至少一组存款的许可额度才能继续",
+    "custom-dai-allowance-amount-exceeds-maxuint256": "许可额度过大，请降低自定义许可数量。",
+    "custom-dai-allowance-amount-less-than-payback-amount": "你必须允许至少一组偿还的许可数量才能继续",
+    "withdraw-collateral-on-vault-under-debt-floor": "当金库低于最低要求数量 {{debtFloor}} 的 Dai，你无法从金库提款。如想提出抵押品，请偿还所有的债务。了解更多关于<0>最低金库债务</0>。",
+    "has-to-deposit-collateral-on-empty-vault": "此金库没有人会抵押品，请先从“管理抵押品”增加抵押品。",
+    "deposit-collateral-on-vault-under-debt-floor": "当金库低于最低要求的抵押品数量 {{debtFloor}}，你无法存入抵押品。如要存入更多抵押品，请生成高出最低数量的 Dai。了解更多<0>最低金库债务</0>",
+    "invalid-slippage": "你所设置的自订滑价对于此交易而言太高，请降低自订滑价",
+    "after-coll-ratio-below-stop-loss-ratio": "当你的金库低于你设置的 Stop-Loss 抵押率的当前或下一个价格时，你无法调整金库",
+    "after-coll-ratio-below-basic-sell-ratio": "当你的金库可能触发你所设置的在当前或下一个价格的 Auto-Sell 时，你无法调整金库。你必须先调整你的 Auto-Sell 触发抵押率",
+    "after-coll-ratio-above-basic-buy-ratio": "当你的金库可能触发你所设置的在当前或下一个价格的 Auto-Buy 时，你无法调整金库。你必须先调整你的 Auto-Buy 触发抵押率",
+    "vault-will-be-taken-under-min-active-col-ratio": "当金库低于你当前或洗一个最低的活跃抵押率的价格时候，你无法调整金库的设置。",
+    "stop-loss-near-liquidation-ratio": "你的 Stop-Loss 触发器的抵押率可能会立即触发关闭金库。如果这是你计划中的行动，请关闭金库。",
+    "stop-loss-max-debt": "因为此订单的高价影响，无法设置 Stop-Loass。你的金库总债务必须少于 20m DAI。",
+    "target-coll-ratio-exceeded-dust-limit-coll-ratio": "你无法选取更高的目标抵押率，因为这可能会导致金库达到 Dust 的限制。",
+    "auto-buy-max-price-requred": "请输入最大的购买价或选择<1>不设置门槛<1>",
+    "minimum-sell-price-not-provided": "请输入最小的的售价或选择<1>不设置门槛<1>",
+    "auto-sell-trigger-higher-than-auto-buy-target": "设置你的 Auto-Sell 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
+    "stop-loss-trigger-higher-than-auto-buy-target": "设置你的 Stop-Loss 触发器在这个层级将会导致你的 Auto-Buy 执行它。请先调整你的 Auto-Buy 目标比率。",
+    "auto-buy-trigger-lower-than-auto-sell-target": "设置你的  Auto-Buy 触发器在这个层级将会导致你的 Auto-Sell 执行它。请先调整你的 Auto-Sell 目标比率。",
+    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "如果你已经设置 Constant Multiple， 你就无法设置  {{autoType}}。请移除 Constant MultipleYou 再继续设置。",
+    "after-coll-ratio-below-constant-multiple-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 出售触发器比率",
+    "after-coll-ratio-above-constant-multiple-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Constant-Multiple 的金库。请先调整 Constant-Multiple 的购买触发器比率",
+    "after-coll-ratio-below-auto-sell-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Sell 的金库。请先调整 Auto-sell 的触发器比率。",
+    "after-coll-ratio-above-auto-buy-ratio": "你无法调整在当前或下一个价格可能会触发 Auto-Buy 的金库。清先调整 Auto-Buy 的触发器比率。",
+    "min-sell-price-will-prevent-sell-trigger": "此最低出售价格将会防止启动出售触发器",
+    "max-buy-price-will-prevent-buy-trigger": "此最高购买价格将会防止启动购买触发器"
+  },
+  "vault-warnings": {
+    "potential-generate-amount-less-than-debt-floor": "开启金库要求的最低 Dai 数量是 {{debtFloor}}，请增加更多抵押品来生成 {{debtFloor}} Dai",
+    "debt-is-less-than-debt-floor": "你当前的 Dai 债务低于最低数量 {{debtFloor}}，因此部分金库的执行无法实现。请生成更多的 Dai 以高于最低数量或偿还所有的债务。",
+    "vault-will-be-at-risk-level-danger": "执行这个操作，你的金库抵押率将会非常接近最低要求的比率",
+    "vault-will-be-at-risk-level-danger-at-next-price": "执行这个操作。你的金库抵押率将会在下一个价格更新时，非常接近最低要求的比率",
+    "vault-will-be-at-risk-level-warning": "执行这个操作，你的金库抵押率将会接近最低要求的比率",
+    "vault-will-be-at-risk-level-warning-at-next-price": "执行这个操作，你的金库抵押率将会在下一个价格更新时，接近最低要求的比率",
+    "vault-is-currently-under-min-active-col-ratio": "你的金库低于当前或下一个价格的最低活跃抵押率，你可以降低仓位的风险而不能提高。",
+    "vault-will-remain-under-min-active-col-ratio": "你正在降低仓位的风险，但它仍然低于最低活跃抵押率。",
+    "insufficient-eth-balance": "你的 ETH 结余有可能不足以支付这个交易",
+    "coll-ratio-close-to-current": "你的 Stop-Loss 触发抵押率非常接近当前的抵押率。如果你确定了解此情况可能让你的金库因微幅的价格变动而关闭，请再继续。 ",
+    "no-min-sell-price-when-stop-loss-enabled": "没有设置在 Stop-Loss 最低售出价格有可能永远不会启动 Stop-Loss ",
+    "auto-buy-with-no-max-price-threshold": "警告：你正在设置没有最高购买价格门槛的 Auto-Buy 触发器",
+    "auto-sell-trigger-close-to-stop-loss-trigger": "设置较低的触发率有可能启动已设置的 Stop-loss。如果想要使用较低的触发率，请先调整 Stop-Loss 触发器。",
+    "auto-sell-target-close-to-auto-buy-trigger": "设置较高的目标率有可能启动已设置的 Auto-Buy。如果想要使用较高的触发率，请先调整你的 Auto-Buy 触发器。",
+    "stop-loss-trigger-close-to-auto-sell-trigger": "设置较高的触发率有可能启动已设置的 Auto-Sell。如果想要使用较高的启动率，请先调整你的 Auto-Sell 触发器。",
+    "auto-buy-target-close-to-stop-loss-trigger": "设置较低的目标率有可能启动已设置的 Stop-loss。如果想要使用较低的目标率，请先调整 Stop-Loss 触发器。",
+    "auto-buy-target-close-to-auto-sell-trigger": "设置较低的目标率有可能启动已设置的  Auto-Sell。如果想要使用较低的目标率，请先调整  Auto-Sell 触发器。",
+    "auto-buy-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Buy 即刻执行。如果这不是你预期的结果，请调降触发率。",
+    "auto-sell-triggered-immediately": "设置你的启动率在这个层级将导致 Auto-Sell 即刻执行。如果这不是你预期的结果，请调降触发率。",
+    "auto-sell-override": "为了避免金库被清算，Auto-Sell 已更新至包含最高的燃料费。为了使用这个保护机制，请移除你的 Auto-Sell 再设置一个新的。燃料费将会退还给你，再请你联络 <0>support@oasis.app</0>",
+    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "你无法设置低于你的 Stop-Loss 的 Constant Multiple Sell 触发器。进一步了解此机制<0>如何运作</0>",
+    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "你无法设置高于已设置的 Constant Multiple 触发器的 Stop-Loss 触发器。进一步了解此机制<0>如何运作</0>",
+    "adding-constant-multiple-when-auto-sell-or-buy-enabled": "设置 Constant Multiple 将移除已存在的 {{enabledTriggers}}。确定继续？",
+    "constant-multiple-auto-sell-triggered-immediately": "设置你的 Sell 触发器在这个比率有可能导致它立刻被执行。",
+    "constant-multiple-auto-buy-triggered-immediately": "设置你的 Buy 触发器在这个比率有可能导致它立刻被执行。"
+  },
+  "vault-info-messages": {
+    "earn-overview": "这个 {{token}} 仓位是在 Uniswap V3 赚取交易费用。提供给资金池的 DAI 通过 Maker Protocol 加倍成长，使用户在 Uniswap 资金池里有较大的敞口。目前你可以执行的只有<1>关闭这个金库</1>",
+    "closing": "为了关闭金库，部分仓位将会出售已支付尚未偿还的债务，剩余的抵押品将会发送至你的钱包地址。"
+  },
+  "vault-changes": {
+    "order-information": "订单信息",
+    "multiply": "倍率",
+    "close-vault-information": "关闭金库信息",
+    "getting-token": "获得 {{token}}",
+    "buying-token": "购买 {{token}}",
+    "selling-token": "出售 {{token}}",
+    "price-impact": "{{token}} 价格 (影响)",
+    "slippage-limit": "滑点限制",
+    "third-party-fees": "第三方协议手续费",
+    "oasis-fee": "Oasis 手续费"
+  },
+  "vault-information": "金库信息",
+  "vault-banners": {
+    "setup-stop-loss": {
+      "header": "设置金库防护",
+      "content": "设置 Stop-Loss 防护让我们在仓位低于你所选择的抵押率时，可以自动防止仓位被平仓。你可以选择以 {{token}} 或 DAI 结算关闭金库。",
+      "button": "设置 Stop-Loss"
+    },
+    "get-protection": {
+      "header": "保护你的金库",
+      "content": "设置 Stop-Loss 或 Auto-Sell 可以在金库低于你选择的抵押率时，避免你的金库被清算。",
+      "button": "保护金库"
+    },
+    "what-are-the-risks": {
+      "header": "风险是什么",
+      "content": "在常见问题中进一步了解仓位的基本创建、风险、资金所在等",
+      "button": "了解更多"
+    }
+  },
+  "view-on-ethtx": "在 Ethtx 查看",
+  "open-vault-deployment-confirming": "金库已创建。正在等待确认 {{openVaultConfirmations}}/{{safeConfirmations}}",
+  "set-up-stop-loss-tx": "设置 Stop-Loss 交易",
+  "open-vault-two-tx-setup-requirement": "你将会被要求签署两笔交易。一笔是设置金库，另一笔是设置 Stop-Loss。",
+  "open-vault-two-tx-first-step-title": "步骤 1/2: 创建金库",
+  "open-vault-two-tx-second-step-title": "步骤 2/2: Stop-Loss 的设置交易",
+  "open-vault-sl-second-status-title": "交易 2 of 2 (Stop-Loss 设置)",
+  "open-vault-sl-second-status-not-started-desc": "确认1/2后开始交易",
+  "not-started": "尚未开始",
+  "in-progress": "进行中",
+  "vault-creation-confirmed": "确认金库创建",
+  "learn-more-at-oasis": "在 Osis.app 知识中心了解更多",
+  "creating-your-vault-multiply": " 正在创建你的 {{token}} Multiply 金库！",
+  "changing-vault-multiply": "正在修改 Multiply 金库",
+  "adjusting-vault-multiply": "正在倍增你的金库",
+  "closing-vault-multiply": "正在关闭你的 Multiply 金库",
+  "wallet": "钱包",
+  "protection": {
+    "navigate-cancel": "取消下档保护",
+    "navigate-adjust": "返回修改 Stop-Loss",
+    "set-downside-protection": "设置 Stop-Loss 保护",
+    "set-downside-protection-desc": "在你希望金库自动关闭的时间点设置抵押率触发器。进一步了解 Stop-Loss 如何实行。",
+    "cancel-downside-protection": "取消确认",
+    "cancel-downside-protection-desc": "为了取消 Stop-Loss，你必须点击下方的按钮并确认这笔交易。",
+    "setting-downside-protection": "设置 Stop-Loss 保护",
+    "setting-auto-sell": "正在设置你的 Auto-Sell",
+    "cancelling-auto-sell": "正在取消你的 Auto-Sell",
+    "cancelling-downside-protection": "正在取消你的 Stop-Loss",
+    "setting-downside-protection-desc": "你的金库正在新增 Stop-Loss 保护，设置完成后，金库才会受到保护。",
+    "cancelling-downside-protection-desc": "正在取消 Stop-Loss 保护，交易完成后，它将被移除。",
+    "position-again-at-risk": "达到清算价格后，你的仓位会再度陷入清算危机。",
+    "downside-protection-complete": "启用 Stop-Loss 保护",
+    "cancel-protection-complete": "已完成取消 Stop-Loss",
+    "downside-protection-updated": "已更新 Stop-Loss 保护",
+    "downside-protection-complete-desc": "你已成功在金库设置 Stop-Loss 保护。进一步了解 Stop-Loss 如何实行。",
+    "cancel-protection-complete-desc": "已成功取消 Stop-Loss。你可以随时再次设置以保护你的金库。现在你的仓位会在达到清算价格陷入清算危机。",
+    "banner-header": "使用 Stop-Los 保护金库",
+    "banner-content": "依据你的抵押率来设置变量的 Stop-Loss 以保护金库免于清算或产生重大损失。",
+    "banner-button": "设置金库保护 ->",
+    "edit-vault-protection": "编辑金库保护",
+    "dynamic-stop-loss-price": "变动的 Stop-Loss 价格",
+    "dynamic-stop-loss": "变动的 Stop-Loss",
+    "stop-loss-coll-ratio": "Stop-Loss 抵押率",
+    "total-cost": "交易总支出",
+    "max-cost": "最大的交易支出",
+    "token-on-stop-loss-trigger": "Stop-Loss 触发器的 {{token}}",
+    "zero-debt-heading": "在设置自动化保护前，你须先生成 DAI",
+    "zero-debt-description": "Oasis.app 自动化保护依据抵押率，让你在金库设置变量的 Stop-Loss 或 Auto-Sell 策略。这个功保护你的金库免于清算或降低抵押资产的风险敞口，特别是在价格骤跌时。进一步了解它如何实行",
+    "below-dust-limit-heading": "在设置 Stop-Loss 保护前，你必须生成高于最低债务限制的 Dai",
+    "summary-of-protection": "保护功能摘要",
+    "on-stop-loss-trigger": "在触发器上",
+    "estimated-to-receive": "预估收到",
+    "saving-comp-to-liquidation": "和清算相比能保留下的价值",
+    "estimated-fees-on-trigger": "预估在触发器上的手续费",
+    "up-to": "至多",
+    "not-guaranteed": "自动化不保证绝对百分之百保护",
+    "guarantee-factors": "有许多的因素会影响执行是否成功，这其中包含清算价格、波动性和燃料费。",
+    "learn-more-about-automation": "进一步了解自动化以及 Oasis 如何在以太坊上创建最好的自动化产品 →",
+    "automation-fact": "{{total}} 使用自动化的金库的 {{success}} 在过去 90 天已经被成功保存",
+    "modal-description": "你已启用 Stop-Loss 保护。点击此横幅以了解更多。",
+    "your-stop-loss-triggered": "已触发你的 Stop-Loss ",
+    "your-stop-loss-triggered-desc": "查看下方的摘要以了解金库上发生的行为。",
+    "stop-loss-summary": "Stop-Loss 摘要",
+    "token-sold": "已售出 {{token}}",
+    "token-or-dai-withdrawn": "{{token}} / DAI 提款",
+    "reopen-position": "再次开启金库",
+    "stop-loss-triggered": "已触发 Stop-Loss",
+    "stop-loss-triggered-desc": "已触发你金库的 Stop-Loss",
+    "stop-loss-triggered-content": "已触发你金库的 Stop-Loss。你可以右方阅读完整的 Stop-Loss 事件摘要。",
+    "cancel-notice": "取消 Stop-Loss 代表你的金库将不再受到妥善的保护，你必须积极监控抵押率。",
+    "find-more-about-setting-stop-loss": "进一步了解设置 Stop-Loss →",
+    "set-stop-loss-again": "再次设置 Stop-Loss",
+    "sl-triggered-gas-estimation": "这个费用是依当前 ETH 价格和预设的 200 GWEI 燃料所预估的燃料费支出。",
+    "stop-loss-on": "Stop-Loss 启用",
+    "coll-ratio-close-to-current": "你的 Stop-Loss 触发抵押率非常接近当前的抵押率。如果你确定了解此情况有可能让你的金库因微幅的价格变动而关闭，请再继续。",
+    "closed-vault-existing-sl-header": "你的金库已关闭，但 Stop-Loss 仍为启用状态",
+    "closed-vault-existing-sl-description": "你可以在这里取消现有的 Stop-Loss 或在概述分页将抵押品存入金库",
+    "edit-stop-loss": "编辑 Stop-Loss",
+    "enable-stop-loss": "启用 Stop-Loss",
+    "continue-without-stop-loss": "略过 Stop-Loss，继续下一步",
+    "stop-loss-information": "Stop-Loss 信息",
+    "no-threshold": "没有设置门槛",
+    "set-no-threshold": "设置无门槛",
+    "set-threshold": "设置门槛",
+    "unable-to-access-protection": "无法使用保护",
+    "closed-vault-not-existing-trigger-header": "在设置 Stop-Loss前，你必须生成 Dai",
+    "closed-vault-not-existing-trigger-description": "为启用 Stop-Loss，你必须在概述分页生成 Dai",
+    "adding-new-triggers-disabled-description": "由于极端对抗的市场现况，为了保护我们的用户，我们暂时不提供设置新的 Stop-Loss 触发器。如果你想现在就关闭金库，请点击“关闭金库”的选项。",
+    "stop-loss-protection": "Stop-Loss 保护"
+  },
+  "user-settings": {
+    "button-menu": "滑点",
+    "slippage-limit": {
+      "preset-title": "滑点设置",
+      "preset-description": "选择你想要的滑点金额。",
+      "read-more": "了解更多滑点。",
+      "custom-title": "设置自定义滑点价格",
+      "custom-label": "滑点价格",
+      "errors": {
+        "invalid-slippage": "无效滑点. 滑点价应在 20%，0.1% 范围内"
+      },
+      "warnings": {
+        "high-slippage": "注意：你已经设置高滑点限制，这会导致得到的价格偏离你要求的价格非常多。如果你明白此风险，可以继续。"
+      }
+    },
+    "button": "更新设置",
+    "button-in-progress": "正在更新设置",
+    "update-success": "已更新设置",
+    "update-failure": "发生错误"
+  },
+  "modal-trezor-eip1559-title": "使用 Metamask 连接 Trezor 不支持 EIP-1559",
+  "modal-trezor-eip1559-paragraph1": "Oasis.app 最近已更新所有交易以支持 EIP-155。不支持在 Metamask 连接 Trezor 进行 EIP-1559 交易，详情请见<0>这里</0>.",
+  "modal-trezor-eip1559-paragraph2": "你可以在（<0>legacy.oasis.app</0>）继续使用 Metamask 连接 Trezor 进行旧的交易格式。",
+  "modal-trezor-eip1559-paragraph3": "或者，如果你有 Model T Trezor，你可以直接连接 Oasis.app。",
+  "product-card-title": {
+    "ETH-A": "中等成本和杠杆的 ETH",
+    "ETH-B": "最大杠杆倍率的 ETH 选项",
+    "ETH-C": "最低借贷成本的 ETH",
+    "WBTC-A": "中等成本和杠杆倍率的 wBTC",
+    "WBTC-B": "最大杠杆倍率的 wBTC 选项",
+    "WBTC-C": "最低借贷成本的 wBTC",
+    "RENBTC-A": "Ren Bitcoin (RenBTC)",
+    "WSTETH-A": "中等成本和杠杆倍率的 StETH",
+    "WSTETH-B": "最低借贷成本的 stETH",
+    "UNI-A": "Uniswap (UNI)",
+    "MANA-A": "Decentraland (MANA)",
+    "MATIC-A": "Polygon (MATIC)",
+    "YFI-A": "Yearn (YFI)",
+    "LINK-A": "Chainlink (LINK)",
+    "GUSD-A": "Gemini USD (GUSD)",
+    "GUNIV3DAIUSDC2-A": "50x UNI V3 DAI / USDC 0.01% 等级",
+    "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% 等级",
+    "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
+    "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
+    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
+  },
+  "learn-more-about": "进一步了解",
+  "assets": {
+    "eth": {
+      "description": "以太币（ETH）促进以太坊网络上的操作，而以太坊参与者使用它来执行他们所要求的操作。我们可以将它想成是以太坊上的“燃料”。你可以倍增风险敞口或抵押 ETH 来借贷以最大化你的 ETH 使用效率。",
+      "link": "https://ethereum.org/en/eth/"
+    },
+    "btc": {
+      "description": "比特币本身无法被直接使用，但如果要使用 DeFi 的服务，必须将它转移到以太坊上。Wrapped Bitcoin (WBTC)和 renBTC 保留着比特币的优势，同时提供 ERC20 代币的弹性，让你充分利用比特币增加风险敞口或借款。",
+      "link": "https://wbtc.network/"
+    },
+    "usdc": {
+      "description": "USDC 由 Circle 所发行并且由美元 1:1 支持的中心化稳定币。它支持许多 Layer 1 的区块链，包含以太坊的 ERC-20 代币、 Algorand 的 ASA 代币、 Solana 的 SPL 代币、TRON 的 TRC-20 代币及 Stellar 的原生资产。",
+      "link": "https://www.circle.com/en/about-circle"
+    },
+    "lp-token": {
+      "description": "当代币存入资金池时，它会自动生成一个新代币，代表存款者在资金池里拥有的份额。这个代币称为资金池流动提供者代币（Liquidity Provider Token， LP token）。它可以用于借贷，并增加你在资金池里份额。",
+      "link": "https://docs.uniswap.org/protocol/V2/guides/smart-contract-integration/providing-liquidity"
+    },
+    "yfi": {
+      "description": "Yearn.finance (YFI) 是 Yearn.finance 平台上的治理代币。这个平台是一个收益优化器，可在去中心化金融系统转移资金产生高回报。你可以增加对 YFI 的风险敞口或抵押借贷。",
+      "link": "https://yearn.finance/"
+    },
+    "dai": {
+      "description": "Dai 是最大的超额抵押去中心稳定币。你可以在 Oasis.app 使用多种抵押资产来生成 Dai。在这里我们展示了让你的 Dai 产生回报的产品。",
+      "link": "https://kb.oasis.app/help/what-is-dai"
+    },
+    "uni": {
+      "description": "UNI 是 Uniswap 协议的治理代币，它由去中心化社群所治理，可以提案和投票升级协议。Uniswap 是一个去中心化的交易协议，提供 ERC20 代币的兑换。",
+      "link": "https://uniswap.org/"
+    },
+    "link": {
+      "description": "Loopring 是以太坊上的代币，它形容自己为“开源、审查和无监管的交易协议“。它的目标是让任何人可以在以太坊上零知识创建无监管、交易委托账本的交易所。",
+      "link": "https://loopring.org/#/"
+    },
+    "matic": {
+      "description": "Polygon (MATIC) 是为 Polygon 网络提供动力的以太坊代币，也是以太坊的一种扩展方案。Polygon 是一个协议，同时也是创建和连接相容于以太坊区块链的框架，它集合在以太坊上扩展解决方案并支持多链以太坊生态。",
+      "link": "https://polygon.technology/"
+    },
+    "mana": {
+      "description": "MANA 是为 Decentraland 而铸造的 ERC-20 代币。Decentraland 是以太坊上的虚拟现实（VR）平台，它主要使用于购买商品、服务和 Decentraland 的 LAND (一种 NFT 代币）",
+      "link": "https://decentraland.org/"
+    }
+  },
+  "guni-slippage-overridden": "你的自定义滑点已经被覆盖，只有在滑点 0.1% 时可以开启 GUNI 金库。",
+  "temporary-guni-message": "你的 GUNI 最大倍增率已由 Maker governance 从 20x 提高至 50x。为了善用这个优势，你将必须关闭这个金库再开启一个新的 GUNI 仓位。进一步信息在 ",
+  "below": "下方",
+  "above": "上方",
+  "earn": {
+    "your-positions": "仓位",
+    "positions-of-type": "{{type}} 仓位",
+    "edit-vault": "编辑金库",
+    "view-vault": "查看金库",
+    "automation-button-on": "已启用",
+    "automation-button-off": "启用",
+    "automation-button-off-disabled": "关闭保护",
+    "position-headers": {
+      "asset": {
+        "label": "资产",
+        "tooltip": "仓位资产类型的标识符，使用协议的命名规则。"
+      },
+      "position-id": {
+        "label": "倉位 ID",
+        "tooltip": "倉位 ID 是用來在 Oasis.app 上的仓位指引"
+      },
+      "collateral-ratio": {
+        "label": "抵押率",
+        "tooltip": "抵押品相对于债务金额的价值，必须高于最低限制以避免被清算。"
+      },
+      "dai-debt": {
+        "label": "Dai 债务",
+        "tooltip": "在这个仓位的 Dai 债务"
+      },
+      "collateral-locked": {
+        "label": "抵押品",
+        "tooltip": "这个仓位的抵押品数量"
+      },
+      "variable-perc": {
+        "label": "变量 %",
+        "tooltip": "为该仓位偿还债务的变量年利率，它可通过协议的治理而更改。"
+      },
+      "protection": {
+        "label": "保护金库",
+        "tooltip": "显示此仓位是否受大 Stop-Loss 保护。若没有，你可以在保护金库页面点击按钮启用它。"
+      },
+      "net-value": {
+        "label": "净值",
+        "tooltip": "当前仓位的净值，通过此仓位的抵押品在喂价机的价格减去债务而得。"
+      },
+      "multiple": {
+        "label": "杠杆交易",
+        "tooltip": "该仓位当前的杠杆倍数，与没有使用杠杆交易的抵押品相比，该基础抵押品的额外风险敞口。"
+      },
+      "liquidation-price": {
+        "label": "清算价格",
+        "tooltip": "该仓位抵押品的亿被清算的价格。"
+      },
+      "funding-cost": {
+        "label": "资金成本",
+        "tooltip": "若你开启金库一年，且抵押品的价格没有发生变化，你的杠杆交易仓位在净值中所占的成本百分比。此公式为：Dai 债务 / 净值 * 变量年手续费。"
+      },
+      "pnl": {
+        "label": "损益",
+        "tooltip": "当前在仓位的获利或亏损百分比，包含燃料成本。想知道损益的细节，请查看此仓位。"
+      },
+      "seven-day-yield": {
+        "label": "七天流动性挖矿",
+        "tooltip": "七天流动性挖矿是过去七天的平均收益，按年计算，减去任何须被支付的变动利率。"
+      },
+      "liquidity": {
+        "label": "流动性",
+        "tooltip": "当前可增加仓位的可用流动性。"
+      }
+    }
+  },
+  "help-shape-the-future-of-multiply": "协助我们塑造 Mulitply 的未来",
+  "basic-buy-sell-generic": {
+    "max-gas-fee-trans-value": "最大燃料费",
+    "max-gas-fee-trans-subheading": "选择你愿意为每笔交易支付的最大值的燃料费（Gwei)。"
+  },
+  "auto-sell": {
+    "sell-title": "基础 Sell 摘要",
+    "cancel-summary-title": "取消 Auto-Sell 订单摘要",
+    "cancel-summary-description": "为了取消 Auto-Sell，你必须点击下方按钮并确认交易。",
+    "target-col-ratio-each-sell": "每次出售后的目标抵押率",
+    "target-multiple-each-sell": "每次出售后的目标倍率",
+    "trigger-col-ratio-to-perfrom-sell": "触发抵押率执行每次自动销售",
+    "next-sell-prices": "下次出售价格",
+    "setup-transaction-cost": "设置交易成本",
+    "slippage-limit": "滑点限制",
+    "collateral-after-next-sell": "下次出售后的抵押品",
+    "outstanding-debt-after-next-sell": "下次出售后的未偿还债务",
+    "col-to-be-sold": "在下次出售的 {{token}}",
+    "estimated-transaction-cost": "预估交易成本",
+    "target-ratio-with-deviation": "目标比率偏差",
+    "title": "Auto-Sell",
+    "add-form-title": "Auto-Sell 设置",
+    "edit-form-title": "编辑 Auto-Sell",
+    "setting-form-title": "正在设置 Auto-Sell",
+    "cancelling-form-title": "正在取消 Auto-Sell",
+    "cancel-form-title": "取消确认",
+    "trigger-added": "启用 Basic-Sell 保护",
+    "trigger-cancelled": "已取消 Basic-Sell",
+    "trigger-updated": "已更新 Basic-Sell 保护",
+    "next-sell-price": "下次出售价格: {{amount}}",
+    "continual-sell-threshold": "周期性出售订单最低至 {{amount}}/{{token}}",
+    "continual-sell-no-threshold": "周期性出售订单无最低限制",
+    "target-col-ratio-after-selling": "出后的目标抵押率",
+    "trigger-col-ratio-to-sell-token": "触发抵押率以出售 {{token}}",
+    "sell-trigger-ratio": "出售触发率",
+    "target-coll-ratio": "出售目标率",
+    "set-min-sell-price": "设置最低出售价格",
+    "set-trigger-description": "你正在创建一个在 {{execCollRatio}}% 抵押率时，会触发周期性出售的行动，并增加它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，而最低出售价格为 ${{minSellPrice}}/{{token}} 。了解更多",
+    "set-trigger-description-no-threshold": "你正在创建一个在 {{execCollRatio}}% 抵押率时，會触发周期性出售的行动，并增加它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 的价格执行，没有最低出售限制。了解更多",
+    "closed-vault-existing-trigger-header": "你的金库已关闭,但 Auto-Sell 仍为活跃状态",
+    "closed-vault-existing-trigger-description": "你可以在这里取消现有的 Auto-Sell 或在概述分页存入抵押品至你的金库。",
+    "closed-vault-not-existing-trigger-header": "在设置 Auto-Sell 前，你必须生成 Dai。",
+    "closed-vault-not-existing-trigger-description": "为了启用 Auto-Sell，你必须在概述页面生成 Dai。",
+    "adding-new-triggers-disabled": "目前关闭创建新的 Auto-Sell 触发器的功能",
+    "adding-new-triggers-disabled-description": "由于极端对抗的市场现况，为了保护我们的用户，我们目前不开放设置新的 Auto-Sell 触发器。",
+    "add-content": "正在新增 Auto-Sell 到你的金库。完成更新后，Auto-Sell 才会正式启用。",
+    "add-complete-content": "你已成功在金库设置 Auto-Sell。进一步了解它如何执行",
+    "remove-content": "正在取消你的 Auto-Sell。在交易完成后，你的 Auto-Sell 将被移除。",
+    "remove-complete-content": "已成功取消你的 Auto-Sell。",
+    "banner": {
+      "header": "设置 Auto-Sell",
+      "content": "设置 Auto-Sell 以确保你的金库抵押率高于特定层级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
+      "button": "设置 Auto Sell",
+      "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Sell。"
+    },
+    "sl-too-high": "当你现有的 Stop-Loss 保护触发点过高时，Auto-Sell 将无法使用。在使用 Stop-Loss 触发器前，请将<0>讓你的 Stop-Loss 触发器调低于</0>{{maxStopLoss}}%。",
+    "coll-ratio-too-high": "当你的抵押率太高时，Auto-Sell 将无法使用。在使用 Auto-Sell 前，请先<0>降低你的抵押率</0>。"
+  },
+  "auto-buy": {
+    "title": "Auto-Buy",
+    "cancel-summary-title": "取消 Auto-Buy order 摘要",
+    "form-title": "Auto-Buy 设置",
+    "continual-buy-threshold": "重复购买订单至多 {{amount}}/{{token}}",
+    "continual-buy-no-threshold": "没有最高限额的重复购买订单",
+    "min-ratio": "最低 Stop-Loss/Auto-Sell 比率",
+    "next-buy-price": "下次购买价格： {{amount}}",
+    "set-max-buy-price": "设置最大购买价格",
+    "target-col-ratio-after-buying": "购买后的目标抵押率",
+    "target-coll-ratio": "购买的目前比率",
+    "trigger-col-ratio-to-buy-token": "购买  {{token}} 的触发器抵押比率",
+    "trigger-coll-ratio": "触发购买比率",
+    "buy-title": "基础 Auto-Buy 摘要",
+    "target-col-ratio-each-buy": "每次购买后的目标抵押率",
+    "target-multiple-each-buy": "每次购买后的目标倍率",
+    "trigger-col-ratio-to-perfrom-buy": "触发抵押率执行每次自动化购买",
+    "next-buy-prices": "下次购买价格",
+    "total-cost-of-next-buy": "下次购买后 ETH 的总成本",
+    "collateral-after-next-buy": "下次购买后的抵押品",
+    "target-ratio-with-deviation": "目标比率偏差",
+    "outstanding-debt-after-next-buy": "下次购买后未偿还的债务",
+    "col-to-be-purchased": "下次购买时买入 {{token}}",
+    "closed-vault-existing-trigger-header": "你的金库已关闭，但 Auto-Buy 仍为活跃状态。",
+    "closed-vault-existing-trigger-description": "你可以在这里取消现有的 Auto-Buy 或在概述分页存入抵押品至你的金库",
+    "adding-new-triggers-disabled": "目前关闭创建新的 Auto-Buy 触发器的功能",
+    "add-content": "正在新增你的 Auto-Buy 到金库。完成更新后，Auto-Buy 才会正式启用。",
+    "add-complete-content": "你已成功在金库设置 Auto-Buy。进一步了解它如何执行",
+    "remove-content": "正在取消你的 Auto-Buy。交易完成后，你的 Auto-Buy 将会被移除。",
+    "remove-complete-content": "已成功取消你的 Auto-Buy。",
+    "banner": {
+      "header": "设置 Auto-Buy",
+      "content": "设置 Auto-Buy 以确保你的金库抵押率高于特点等级，这可能有利于你面对熊市中抵押品价值的减少。进一步了解它如何执行",
+      "button": "设置 Auto Buy",
+      "cm-warning": "当 Constant Multiple 启用时，你无法使用 Auto-Buy。"
+    },
+    "setting-auto-buy": "正在设置 Auto-Buy",
+    "cancelling-auto-buy": "正在取消 Auto-Buy",
+    "set-trigger-description": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，而最高购买价格为${{minBuyPrice}}/{{token}}。了解更多",
+    "set-trigger-description-no-threshold": "你正在创建以 {{execCollRatio}}% 的抵押率触发的定期购买行为，调降它至你的目标率 {{targetCollRatio}}%。起初它会以 ${{executionPrice}}/{{token}} 执行，没有最低购买价格。了解更多",
+    "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Auto-Buy 触发器",
+    "add-form-title": "Auto-Buy 设置",
+    "edit-form-title": "编辑 Auto-Buy",
+    "setting-form-title": "正在设置 Auto-Buy",
+    "cancelling-form-title": "正在取消 Auto-Buy",
+    "cancel-form-title": "已取消",
+    "trigger-added": "已启用 Auto-Buy ",
+    "trigger-cancelled": "已取消 Auto-Buy",
+    "trigger-updated": "已更新 Auto-Buy",
+    "sl-too-high": "当你现有的 Stop-Loss 保护触发器比率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 前，请先 <0>讓你的 Stop-Loss 触发器低于</0> {{maxStopLoss}}%。",
+    "coll-ratio-too-high": "当你的抵押率过高时，Auto-Buy 将无法使用。在使用 Auto-Buy 之前，请先<0>讓你的抵押率</0>低于 {{maxAutoBuyCollRatio}}%。"
+  },
+  "optimization": {
+    "zero-debt-heading": "在设置 Optimization 前，你必须生成 DAI。",
+    "zero-debt-description": "Oasis.app Optimization 会以抵押率为基础，让你在金库设置变量的 Auto-Buy 策略。当价格上升时，它会增加抵押品的风险敞口。进一步了解它如何执行",
+    "adding-new-triggers-disabled": "目前关闭创建新的 Optimization 触发器的功能。",
+    "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Optimization 触发器。",
+    "unable-to-access-auto-buy": "无法使用 Auto-Buy",
+    "unable-to-access-optimization": "无法使用 Optimization"
+  },
+  "constant-multiple": {
+    "title": "连续倍率",
+    "target-multiple": "目标倍率",
+    "target-col-ratio": "目标抵押率 {{amount}}",
+    "total-cost-of-feature": "功能的总成本",
+    "pnl-since-enabled": "启用后的损益： {{amount}}",
+    "banner": {
+      "header": "设置连续倍率",
+      "content": " 设置连续倍率以确保你的金库抵押率保持在你选择的特定范围内",
+      "button": "设置连续倍率",
+      "header-no-multiply": "想要设置 Constant Multiple?",
+      "content-no-multiply": "Constant Multiple 让你的金库维持在你选定的倍率。这项功能只可以在杠杆交易的金库上使用，若你想使用此功能，可以到总览页面更改金库类型。了解更多",
+      "button-no-multiply": "前往金库总览"
+    },
+    "vault-changes": {
+      "general-summary": "一般摘要",
+      "buy-sell-trigger-summary": "Buy/Sell 触发器摘要",
+      "target-col-ratio-after-buy-sell": "每次购买或出售后的抵押率",
+      "target-multiple-ratio-after-buy-sell": "每次购买或出售后的目标倍率",
+      "cost-per-adjustment": "单一调整的预估交易成本",
+      "max-price-buy": "执行 Auto-Buy 的最高价格",
+      "max-price-sell": "执行 Auto-Sell 的最低价格",
+      "estimated-oasis-fee": "预估的 Oasis 手续费",
+      "estimated-max-gas-fee": "预估的最高燃料费",
+      "cancel-summary": "取消摘要"
+    },
+    "set-trigger-description": "Constant Mulitple Automation 將以 {{sellExecutionCollRatio}}% 的抵押率出售 {{token}}，並且以 {{buyExecutionCollRatio}}% 的抵押率購買 {{token}}，讓你的金庫倍率回到 {{multiplier}}x。",
+    "set-trigger-risk": "注意：Constant Multiple 属于进阶策略，建议你在设置之前，必须充分须明白它的风险。了解更多",
+    "operating-cost": "操作成本",
+    "operating-cost-desc": "设置和执行你的 Constant Multiple 的成本。\n设置成本 + 执行成本 = 操作成本",
+    "cancel-instructions": "你必须点击下方的按钮并确认交易以取消 Constant Multiple。",
+    "adding-constant-multiple": "正在新增 Constant Multiple 触发器",
+    "adjusting-constant-multiple": "正在更改 Constant Multiple 触发器",
+    "removing-constant-multiple": "正在移除 Constant Multiple 触发器",
+    "setting-constant-multiple": "正在设置 Constant Multiple",
+    "cancelling-constant-multiple": "正在取消 Constant Multiple",
+    "adding-new-triggers-disabled": "目前关闭创建新的 Constant Multiple 触发器的功能",
+    "adding-new-triggers-disabled-description": "由于极端对立的市场现况，为了保护我们的用户，我们目前不开放设置新的 Constant Multiple 觸發器",
+    "sl-too-high": "由于你现有的 Stop-Loss 触发器过高，所以暂停 Constant Multiple 的服务。請<0>讓 Stop-Loss 觸發器低於</0>{{maxStopLoss}}% 以使用 Constant Multiple。",
+    "coll-ratio-too-close-to-dust-limit": "由於当前的抵押率非常接近 Dust 限度，所以暂停 Constant Multiple 的服务。请调整 <0>你的抵押率</0>以使用 Constant Multiple。",
+    "closed-vault-existing-trigger-header": "你的金库已被关闭，但 Constant Multiple 仍处于活跃状态",
+    "closed-vault-existing-trigger-description": "你可以在这里取消已设置的 Constant Multiple 或在总览页面存入抵押品至你的金库。",
+    "add-form-title": "Constant Multiple Setup",
+    "setting-form-title": "正在設置 Constant Multiple",
+    "cancelling-form-title": "正在取消 Constant Multiple",
+    "edit-form-title": "編輯 Constant Multiple",
+    "cancel-form-title": "取消确认",
+    "trigger-added": "已啟用Constant Multiple",
+    "trigger-cancelled": "已取消 Constant Multiple",
+    "trigger-updated": "已更新 Constant Multiple"
+  },
+  "ref": {
+    "banner": "推荐你的好友，一起来赚取 DAI",
+    "ref-a-friend": "推荐好友",
+    "intro-1": "只要你推荐好友使用 Oasis.app，你和你的好友就可以永远赚取 5% 共享的手续费奖励。进一步了解",
+    "intro-link": "Oasis 推荐好友",
+    "total": "已赚取的 DAI 手续费总金额",
+    "not-claimed": "尚未领取的 DAI",
+    "claim": "领取 DAI",
+    "claimed": "已领取",
+    "no-claim": "尚无奖励",
+    "claiming": "领取中",
+    "top": "顶尖赚取者",
+    "link": "你的 Oasis.app 推荐链接",
+    "copy": "复制",
+    "copied": "已复制",
+    "explanation": "只要你的好友点击你的推荐连接并接受邀请，你就会看见他们显示在下方的”你已推荐的账户“。如此一来，手续费奖励立即生效！只要你想要，你可以无限次分享你的推荐链接。",
+    "faq-link": "进一步了解 Oasis 推荐规则",
+    "you-referred": "你已推荐的账户",
+    "not-referred-yet": "你尚未推荐任何人",
+    "you-were-not-referred": "还没有人推荐你使用 Oasis.app",
+    "you-have-been-invited": "已邀请你的账户",
+    "accept-invite": "接受邀请",
+    "reject-invite": "拒绝邀请",
+    "referred-you": "推荐你的账户",
+    "get-started": "立即开始",
+    "how": "如何运作",
+    "how-p1-not-connected": "1. 连接你的以太坊钱包到 Oasis.app",
+    "how-p1-connected": "1. 点击下方的<1>“立即开始”</1>",
+    "how-p2": "2. 分享你的连接给潜在的 Oasis.app 用户",
+    "how-p3": "3. 双方皆永远获得来自 Oasis.app 上手续费的 5% 奖励！",
+    "need-help": "需要协助？",
+    "help-link-1": "Oasis 推荐规则",
+    "help-link-2": "前往 Oasis 知识中心",
+    "etherscan": "Etherscan",
+    "modal": {
+      "you-have-been-ref": "你已经受邀加入 Oasis.app 好友推荐计划，推荐人是",
+      "body-text": "Oasis.app 是部署资金到 DeFi 上最值得信赖的平台。加入我们的好友推荐计划，你可以：",
+      "p1_1": "收到全部在 Oasis.app 上产生的",
+      "p1_2": "5%手续费的奖励",
+      "p2": "完全免费、随时获取",
+      "p3": "以 DAI 支付的所有手续费",
+      "dont-earn": "不想赚取共享的手续费奖励",
+      "read": "了解更多",
+      "accept": "接受邀请",
+      "later": "稍后再决定",
+      "joined": "你已成功加入 Oasis.app 的推荐好友计划。",
+      "joined-body": "你将获得所有你在 Oasis.app 上产生的手续费的 5%。现在可以马上前往 Oasis.app 的主页，开始探索我们的产品并不是你的资金到 DeFi 上。",
+      "go-home": "前往 Oasis.app 主页",
+      "go-dashboard": "前往推荐好友仪表板",
+      "link-1": "Oasis.app 推荐好友计划博客文章, ",
+      "link-2": "推荐好友规则",
+      "successful-body": "你将获得所有你在 Oasis.app 上产生的手续费的 5%。现在可以马上前往 Oasis.app 的主页或前往推荐好友仪表板。",
+      "successful-head": "你已成功推荐<1>{{referred}}</1>加入 Oasis.app 推荐好友计划。",
+      "successful-join": "你已成功加入 Oasis.app 推荐好友计划。"
+    }
+  },
+  "notifications": {
+    "enable-notifications-email-heading": "启用邮件通知",
+    "enable-notifications-email-description": "你将会收到关于 Oasis.app 更新的邮件",
+    "enable-notifications-email-placeholder": "输入邮箱...",
+    "confirm-btn": "确定",
+    "change-btn": "更改",
+    "email-entered": "你已成功设置邮件通知",
+    "enable-notifications-email-label": "设置你的邮箱",
+    "approaching-liquidation": "你的金库 #{{vaultId}} 抵押率在 {{humanDate}} 于 5% 的清算价格内。",
+    "approaching-trigger": "你的金库 #{{vaultId}} 接近触发 {{trigger}}。<1><2>查看金库</2></1>",
+    "email-save-failure": "我们无法储存你的邮箱地址，请再试一次。",
+    "invalid-email": "此为无效邮箱地址，请再试一次。",
+    "vault-liquidated": "你的金库 #{{vaultId}} 在 {{humanDate}} 以 ${{usdPrice}} 被清算。",
+    "stop-loss-executed": "你在金库 #{{vaultId}} 的 Stop-Loss 保护已于 {{humanDate}} 以 ${{usdPrice}} 被执行。",
+    "auto-buy-executed": "你在金库 #{{vaultId}} 的 Auto-Buy 已于 {{humanDate}} 以 ${{usdPrice}} 被执行。",
+    "auto-sell-executed": "你在金库 #{{vaultId}} 的 Auto-Sell 已于 {{humanDate}} 以 ${{usdPrice}} 被执行。",
+    "oracle-price-changed": "喂价机价格更动为 ${{usdPrice}}.",
+    "action-notifications": "金库操作通知",
+    "action-notifications-description": "你将会收到关于自动化触发、清算和开启金库的通知。",
+    "info-notifications": "金库信息通知",
+    "info-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+    "user-communication-notifications": "Oasis.app  用户沟通通知",
+    "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+    "news-notifications": "Oasis.app 新消息通知",
+    "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+    "service-not-available": "目前不提供通知服务，请稍后再试一次。"
+  },
+  "manage": "管理",
+  "tos-jwt-signature-expired-title": "更新你的签名",
+  "tos-jwt-signature-expired-message": "有可能是你的签名过期或者因为我们更新服务而要求新的签名。请在信息签名以继续。",
+  "setup": "设置",
+  "automation-creation": {
+    "add-content": "你的金库目前正在更新以添加 {{featureName}}。更新完成后，{{featureName}} 才会启动。",
+    "remove-content": "正在取消 {{featureName}}。当交易完成，你的 {{featureName}} 触发器将会被移除。",
+    "add-complete-content": "你已成功在金库设置 {{featureName}}。 进一步了解此功能如何执行",
+    "remove-complete-content": "已成功取消 {{featureName}}。"
+  },
+  "manage-earn": {
+    "aave": {
+      "vault-form": {
+        "adjust-risk": "Adjust Risk",
+
+        "deposit": "存入 ETH",
+        "title": "你的 Earn 仓位",
+        "close-title": "以 ETH 结算并关闭此仓位",
+        "close": "关闭金库",
+        "confirm-btn": "确认",
+        "close-description": "为了关闭你的金库，你的部分仓位将会出售以付清尚未偿还的债务，而剩余的抵押品将会发送至你的钱包地址。",
+        "stop-close": "下次再说",
+        "eth-after-closing": "关闭金库后的 ETH",
+        "retry-btn": "再试一次"
+      }
+    }
+  },
+  "open-earn": {
+    "product-header": {
+      "token-pair-list": {
+        "aave-steth-eth": "AAVE stETH 质押杠杆"
+      },
+      "current-yield": "当前收益率",
+      "90-day-avg-yield": "90 天平均收益率",
+      "total-value-locked": "总质押价值"
+    },
+    "aave": {
+      "vault-form": {
+        "title": "设置 Earn 策略",
+        "open-btn": "开启 Earn 仓位",
+        "confirm-btn": "确认",
+        "retry-btn": "再试一次",
+        "success-title": "完成！你已开启仓位",
+        "go-to-position": "前往仓位",
+        "configure-multiple": {
+          "title": "设置风险等级",
+          "liquidation-price": "{{collateralToken}}/{{debtToken}} 清算价格",
+          "historical-ratio": "{{collateralToken}} / {{debtToken}} 历史比率",
+          "back-to-enter-eth": "回到进入 ETH",
+          "increase-risk": "增加风险",
+          "decrease-risk": "降低风险",
+          "vault-message-ok": "在你选择的风险等级下，如果 {{collateralToken}} 的价格相对于 {{debtToken}} 移动 {{priceMovement}}，则此 Earn 仓位有可能被清算。AAVE 的最低清算罚金为 {{liquidationPenalty}}",
+          "vault-message-warning": "在你选择的风险等级下，如果 {{collateralToken}} 的价格相对于 {{debtToken}} 移动 {{priceMovement}}，则此 Earn 仓位会被清算。AAVE 的最低清算罚金为 {{liquidationPenalty}}"
+        }
+      }
+    }
+  },
+  "auto-take-profit": {
+    "title": "Auto-Take Profit",
+    "cancel-summary-title": "取消 Auto-Take Profit 订单摘要",
+    "form-title": "Auto-Take Profit 设置",
+    "banner": {
+      "header": "设置 Auto-Take Profit",
+      "content": "Auto-Take Profit 让你设置一个退出的策略，当你的抵押品达到你的目标价格时，它将自动帮你关闭金库并赚取获利。",
+      "button": "设置 Auto-Take Profit"
+    },
+    "trigger-col-price": "触发 {{token}} 的价格",
+    "trigger-col-price-explanation": "若要讓 Auto-Take profit 執行，{{token}} 必須達到的價格。",
+    "estimated-profit": "在關閉 {{amount}} 的預測獲利",
+    "estimated-profit-explanation": "在關閉時的預測獲利 = 触发的抵押品價值(USD) - 须偿还的债务 - 预测的交易手续费",
+    "trigger-col-ratio": "触发抵押率",
+    "trigger-col-ratio-explanation": "你的金库必须达到触发抵押率才会执行 Auto-Take profit。",
+    "current-col-ratio": "当前抵押率 {{amount}}"
+  },
+  "automation": {
+    "setup": "{{feature}} 设置",
+    "trigger-added": "已启用 {{feature}} ",
+    "trigger-cancelled": "已取消 {{feature}}",
+    "trigger-updated": "已更新 {{feature}}",
+    "add-trigger": "增加 {{feature}}",
+    "edit-trigger": "编辑 {{feature}}",
+    "setting": "正在设置 {{feature}}",
+    "updating": "正在更新 {{feature}}",
+    "cancelling": "正在取消 {{feature}}",
+    "update-trigger": "更新 {{feature}}",
+    "cancel-trigger": "取消 {{feature}}"
+  },
+  "brand-assets": {
+    "heading": "品牌资产",
+    "intro": "在这里可以找到 Oasis.app 的 Logo 和图像。",
+    "intro-cta": "下载所有档案",
+    "category": {
+      "logo": {
+        "heading": "Logo",
+        "info": "请勿修改、编辑或扭曲 Logo。"
+      },
+      "palm-leaf": {
+        "heading": "椰子叶图标",
+        "info": "请只有在以下情况时才单独使用图标：完整的 Logo 难以阅读、在有限的空间展示完整的 Logo，或者 Oasis.app 的品牌形象已完整建立。"
+      },
+      "minimum-size": {
+        "heading": "最小尺寸",
+        "info": "为了避免因 Logo 太小而难以辨识，请至少使用我们建议的最小尺寸。",
+        "digital": "数位",
+        "print": "印刷",
+        "digital-minimum-size": "72px",
+        "print-minimum-size": "2cm",
+        "width": "(宽)"
+      },
+      "best-practices": {
+        "heading": "范例",
+        "info": "在使用我们的 Logo 时请避免以下的使用方式。",
+        "no-gradient": "请勿在标准字体上使用渐层色",
+        "no-shadow": "请勿使用阴影",
+        "no-rotate": "请勿旋转 Logo",
+        "no-alone": "请勿单独使用标准字体",
+        "no-stack": "请勿堆叠 Logo",
+        "no-ratio": "请勿改变比例"
+      }
+    }
+  },
+  "security": {
+    "heading": "用户相信我们的原因",
+    "intro": "Oasis.app 是非常资深的 DeFi 产品，我们非常严谨地维护用户安全。来自世界各地的用户因对我们的信任，而将他们数十亿的资金存放在 Oasis.app。",
+    "category": {
+      "people": {
+        "header": "我们有最顶尖的人才",
+        "description": "一群对于 DeFi 经验丰富并热于其中的建造者，某些您使用过的 DeFi 协议或产品都是来自我们。",
+        "link-about": "认识团队"
+      },
+      "audit": {
+        "header": "独立于公司之外的审计",
+        "description": "我们内部与外部严谨的审计过程，让我们拥有安全和严格的审查流程。",
+        "link-multiply": "多分审计报告",
+        "link-multiply-fmm": "Multiply FMM 外挂审计报告",
+        "link-automation": "Automation 审计报告"
+      },
+      "bug": {
+        "header": "Bug 赏金计划",
+        "description": "我们与程式码审查者、符合道义的白帽骇客的社群合作，给予那些找出 Bug 的人最多 10 万美元的赏金。",
+        "link-bug-bounty": "前往赏金计划"
+      },
+      "shield": {
+        "header": "保护隐私",
+        "description": "我们从不搜集任何可辨识的个人信息，也不追踪或储存任何 IP 地址和地点。",
+        "link-privacy": "阅读隐私政策"
+      }
+    }
+  }
 }

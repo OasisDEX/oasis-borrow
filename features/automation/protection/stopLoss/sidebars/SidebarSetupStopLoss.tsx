@@ -39,7 +39,10 @@ import {
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
@@ -200,8 +203,8 @@ export function SidebarSetupStopLoss({
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
   })
-  const cancelStopLossWarnings = extractCancelBSWarnings(warnings)
-  const cancelStopLossErrors = extractCancelBSErrors(errors)
+  const cancelStopLossWarnings = extractCancelAutomationWarnings(warnings)
+  const cancelStopLossErrors = extractCancelAutomationErrors(errors)
 
   if (isStopLossActive) {
     const sidebarSectionProps: SidebarSectionProps = {

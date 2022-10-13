@@ -7,8 +7,8 @@ import React from 'react'
 export function DiscoveryView({ kind }: { kind: DiscoveryPages }) {
   return (
     <DiscoveryWrapperWithIntro>
-      <DiscoveryNavigation active={kind} />
-      <DiscoveryControl active={kind} />
+      <DiscoveryNavigation kind={kind} />
+      <DiscoveryControl kind={kind} />
     </DiscoveryWrapperWithIntro>
   )
 }

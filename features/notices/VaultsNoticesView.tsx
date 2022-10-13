@@ -421,3 +421,17 @@ export function VaultNoticesView({ id }: { id: BigNumber }) {
       return null
   }
 }
+
+export function AavePositionAlreadyOpenedNotice() {
+  const { t } = useTranslation()
+  return (
+    <Box sx={{ mb: 4 }}>
+      <VaultNotice
+        header={t('vault-notices.aave.multi-position.header')}
+        subheader={t('vault-notices.aave.multi-position.subheader') as string}
+        color="banner.warning"
+        withClose={false}
+      />
+    </Box>
+  )
+}

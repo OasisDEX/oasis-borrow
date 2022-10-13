@@ -26,6 +26,7 @@ export interface OpenAaveContext extends BaseAaveContext {
 
   auxiliaryAmount?: BigNumber
   strategyName?: string
+  hasOtherAssetsThanETH_STETH?: boolean
 }
 
 export type OpenAaveMachineEvents =
@@ -37,6 +38,10 @@ export type OpenAaveMachineEvents =
   | {
       type: 'UPDATE_STRATEGY_INFO'
       strategyInfo: IStrategyInfo
+    }
+  | {
+      type: 'UPDATE_META_INFO'
+      hasOtherAssetsThanETH_STETH: boolean
     }
 
 export type OpenAaveTransactionEvents =
@@ -131,10 +136,17 @@ export const createOpenAaveStateMachine = createMachine(
             src: 'getStrategyInfo',
             id: 'getStrategyInfo',
           },
+          {
+            src: 'getHasOtherAssets',
+            id: 'getHasOtherAssets',
+          },
         ],
         on: {
           UPDATE_STRATEGY_INFO: {
             actions: ['updateStrategyInfo'],
+          },
+          UPDATE_META_INFO: {
+            actions: ['updateMetaInfo'],
           },
           SET_RISK_RATIO: {
             actions: [
@@ -272,6 +284,9 @@ export const createOpenAaveStateMachine = createMachine(
       }),
       updateStrategyInfo: assign((context, event) => ({
         strategyInfo: event.strategyInfo,
+      })),
+      updateMetaInfo: assign((context, event) => ({
+        hasOtherAssetsThanETH_STETH: event.hasOtherAssetsThanETH_STETH,
       })),
       sendFeesToSimulationMachine: send(
         (context): AaveStEthSimulateStateMachineEvents => {

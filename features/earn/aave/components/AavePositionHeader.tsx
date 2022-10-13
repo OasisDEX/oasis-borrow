@@ -10,20 +10,24 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ActorRefFrom } from 'xstate'
 
-import { useAaveContext } from '../../AaveContextProvider'
-import { PreparedAaveReserveData } from '../../helpers/aavePrepareAaveTotalValueLocked'
-import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { AaveStEthSimulateStateMachine } from '../state'
+import { useAaveContext } from '../AaveContextProvider'
+import { PreparedAaveTotalValueLocked } from '../helpers/aavePrepareAaveTotalValueLocked'
+import { useOpenAaveStateMachineContext } from '../open/containers/AaveOpenStateMachineContext'
+import { AaveStEthSimulateStateMachine } from '../open/state'
 
-export function AaveOpenHeader({
+type AavePositionHeaderPropsBase = {
+  simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
+  aaveTVL?: PreparedAaveTotalValueLocked
+  strategyName: string
+  noDetails?: boolean
+}
+
+export function AavePositionHeader({
   simulationActor,
   strategyName,
   aaveTVL,
-}: {
-  simulationActor: ActorRefFrom<AaveStEthSimulateStateMachine>
-  aaveTVL: PreparedAaveReserveData
-  strategyName: string
-}) {
+  noDetails = false,
+}: AavePositionHeaderPropsBase) {
   const { t } = useTranslation()
   const tokenPairList = {
     'aave-steth': {
@@ -32,8 +36,13 @@ export function AaveOpenHeader({
     },
   } as Record<string, { name: string; tokenList: string[] }>
 
-  const [simulationState] = useActor(simulationActor)
+  const tokenData = tokenPairList[strategyName]
+  if (noDetails && (!simulationActor || !aaveTVL)) {
+    // this should never change during runtime
+    return <VaultHeadline header={tokenData.name} token={tokenData.tokenList} details={[]} />
+  }
 
+  const [simulationState] = useActor(simulationActor!)
   const { context: simulationContext } = simulationState
 
   const headlineDetails = []
@@ -96,7 +105,7 @@ export function AaveOpenHeader({
   )
 }
 
-export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string }) {
+export function AavePositionHeaderWithDetails({ strategyName }: { strategyName: string }) {
   const { stateMachine: openAaveStateMachine } = useOpenAaveStateMachineContext()
   const simulationMachine = useSelector(openAaveStateMachine, (state) => {
     return state.context.refSimulationMachine
@@ -109,7 +118,7 @@ export function AaveOpenHeaderComponent({ strategyName }: { strategyName: string
     <WithErrorHandler error={[tvlStateError]}>
       <WithLoadingIndicator value={[tvlState, simulationMachine]} customLoader={<AppSpinner />}>
         {([_tvlState, _simulationMachine]) => (
-          <AaveOpenHeader
+          <AavePositionHeader
             strategyName={strategyName}
             simulationActor={_simulationMachine}
             aaveTVL={_tvlState}

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -6,6 +7,8 @@ import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseSt
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { EstimationOnClose } from 'components/EstimationOnClose'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
 import {
@@ -16,6 +19,8 @@ import {
   AutoTakeProfitTriggerData,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -29,6 +34,9 @@ interface SidebarAutoTakeProfitEditingStageProps {
   sliderConfig: SliderValuePickerProps
   tokenMarketPrice: BigNumber
   vault: Vault
+  ilkData: IlkData
+  errors: VaultErrorMessage[]
+  warnings: VaultWarningMessage[]
 }
 
 export function SidebarAutoTakeProfitEditingStage({
@@ -40,6 +48,9 @@ export function SidebarAutoTakeProfitEditingStage({
   sliderConfig,
   tokenMarketPrice,
   vault,
+  ilkData,
+  errors,
+  warnings,
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -59,6 +70,12 @@ export function SidebarAutoTakeProfitEditingStage({
     <>
       <PickCloseState {...closePickerConfig} />
       <SliderValuePicker {...sliderConfig} />
+      {isEditing && (
+        <>
+          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+        </>
+      )}
       <EstimationOnClose
         iconCircle={getToken(closeToToken).iconCircle}
         label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}

@@ -106,7 +106,9 @@ export function OptimizationControl({
   balanceInfo,
   vaultHistory,
 }: OptimizationControlProps) {
-  const { context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
+  const { context$, txHelpers$, tokenPriceUSD$, priceInfo$ } = useAppContext()
+  const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
+  const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
   const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
   const [contextData, contextError] = useObservable(context$)
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
@@ -143,12 +145,14 @@ export function OptimizationControl({
   }
 
   return (
-    <WithErrorHandler error={[ethAndTokenPricesError, contextError, txHelpersError]}>
+    <WithErrorHandler
+      error={[ethAndTokenPricesError, contextError, txHelpersError, priceInfoError]}
+    >
       <WithLoadingIndicator
-        value={[contextData, ethAndTokenPricesData]}
+        value={[contextData, ethAndTokenPricesData, priceInfoData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([context, ethAndTokenPrices]) => (
+        {([context, ethAndTokenPrices, priceInfo]) => (
           <DefaultVaultLayout
             detailsViewControl={
               <OptimizationDetailsControl
@@ -169,6 +173,7 @@ export function OptimizationControl({
                 balanceInfo={balanceInfo}
                 ethMarketPrice={ethAndTokenPrices['ETH']}
                 tokenMarketPrice={ethAndTokenPrices[vault.token]}
+                priceInfo={priceInfo}
               />
             }
           />

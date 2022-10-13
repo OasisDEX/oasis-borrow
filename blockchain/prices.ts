@@ -108,12 +108,18 @@ export function createTokenPriceInUSD$(
       forkJoin(
         tokens.map((token) => {
           try {
-            const { coinpaprikaTicker, coinbaseTicker, coinGeckoTicker } = getToken(token)
+            const {
+              coinpaprikaTicker,
+              coinbaseTicker,
+              coinGeckoTicker,
+              coinpaprikaFallbackTicker,
+            } = getToken(token)
 
             const tokenPrice = getPrice(tickers, [
               coinbaseTicker,
               coinpaprikaTicker,
               coinGeckoTicker,
+              coinpaprikaFallbackTicker,
             ])
 
             return of({

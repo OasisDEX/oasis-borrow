@@ -16,8 +16,11 @@ export function warningsConstantMultipleValidation({
   isStopLossEnabled,
   isAutoBuyEnabled,
   isAutoSellEnabled,
+  isAutoTakeProfitEnabled,
   constantMultipleState,
   debtDeltaWhenSellAtCurrentCollRatio,
+  autoTakeProfitExecutionPrice,
+  constantMultipleBuyExecutionPrice,
 }: {
   vault: Vault
   ethBalance: BigNumber
@@ -29,7 +32,10 @@ export function warningsConstantMultipleValidation({
   isStopLossEnabled: boolean
   isAutoBuyEnabled: boolean
   isAutoSellEnabled: boolean
+  isAutoTakeProfitEnabled: boolean
   constantMultipleState: ConstantMultipleFormChange
+  autoTakeProfitExecutionPrice: BigNumber
+  constantMultipleBuyExecutionPrice: BigNumber
 }) {
   const {
     sellExecutionCollRatio,
@@ -62,6 +68,9 @@ export function warningsConstantMultipleValidation({
 
   const settingAutoBuyTriggerWithNoThreshold = !buyWithThreshold
 
+  const constantMultipleBuyTriggerGreaterThanAutoTakeProfit =
+    isAutoTakeProfitEnabled && constantMultipleBuyExecutionPrice.gt(autoTakeProfitExecutionPrice)
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     settingAutoBuyTriggerWithNoThreshold,
@@ -70,6 +79,7 @@ export function warningsConstantMultipleValidation({
     constantMultipleAutoSellTriggeredImmediately,
     constantMultipleAutoBuyTriggeredImmediately,
     noMinSellPriceWhenStopLossEnabled,
+    constantMultipleBuyTriggerGreaterThanAutoTakeProfit,
   })
 }
 

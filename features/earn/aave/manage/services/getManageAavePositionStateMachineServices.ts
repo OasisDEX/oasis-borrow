@@ -4,6 +4,7 @@ import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
 import {
+  AaveConfigurationData,
   AaveUserAccountData,
   AaveUserAccountDataParameters,
 } from '../../../../../blockchain/calls/aave/aaveLendingPool'
@@ -33,6 +34,12 @@ export function getManageAavePositionStateMachineServices$(
     token: string
   }) => Observable<AaveReserveConfigurationData>,
   aaveOraclePrice$: ({ token }: { token: string }) => Observable<BigNumber>,
+  aaveUserConfiguration$: ({
+    proxyAddress,
+  }: {
+    proxyAddress: string
+  }) => Observable<AaveConfigurationData>,
+  aaveReservesList$: () => Observable<AaveConfigurationData>,
 ): Observable<ManageAaveStateMachineServices> {
   function aaveProtocolData(token: string, proxyAddress: string) {
     return combineLatest(
@@ -40,8 +47,10 @@ export function getManageAavePositionStateMachineServices$(
       aaveUserAccountData$({ proxyAddress }),
       aaveOraclePrice$({ token }),
       aaveReserveConfigurationData$({ token }),
+      aaveUserConfiguration$({ proxyAddress }),
+      aaveReservesList$(),
     ).pipe(
-      map(([reserveData, accountData, oraclePrice, reserveConfigurationData]) => ({
+      map(([reserveData, accountData, oraclePrice, reserveConfigurationData, aaveUserConfiguration, aaveReservesList]) => ({
         positionData: reserveData,
         accountData: accountData,
         oraclePrice: oraclePrice,
@@ -55,6 +64,8 @@ export function getManageAavePositionStateMachineServices$(
             liquidationThreshold: reserveConfigurationData.liquidationThreshold,
           },
         ),
+        aaveUserConfiguration,
+        aaveReservesList,
       })),
     )
   }

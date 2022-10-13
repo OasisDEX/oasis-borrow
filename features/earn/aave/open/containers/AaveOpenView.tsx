@@ -9,7 +9,8 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { AaveOpenHeaderComponent, SimulateSectionComponent } from '../components'
+import { AavePositionHeaderWithDetails } from '../../components'
+import { SimulateSectionComponent } from '../components'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from '../state'
 import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
@@ -29,7 +30,7 @@ function AaveOpenContainer({
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine}>
       <Container variant="vaultPageContainer">
-        <AaveOpenHeaderComponent strategyName={strategyName} />
+        <AavePositionHeaderWithDetails strategyName={strategyName} />
         <TabBar
           variant="underline"
           sections={[

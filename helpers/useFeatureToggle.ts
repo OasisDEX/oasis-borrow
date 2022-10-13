@@ -20,6 +20,7 @@ export type Feature =
   | 'DisableSidebarScroll'
   | 'ProxyCreationDisabled'
   | 'AutoTakeProfit'
+  | 'UpdatedPnL'
   | 'DiscoverOasis'
   | 'ShowAaveStETHETHProductCard'
 
@@ -40,6 +41,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   DisableSidebarScroll: false,
   ProxyCreationDisabled: false,
   AutoTakeProfit: false,
+  UpdatedPnL: false,
   DiscoverOasis: false,
   ShowAaveStETHETHProductCard: false,
   // your feature here....

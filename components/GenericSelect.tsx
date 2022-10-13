@@ -3,7 +3,7 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
-import { Box, SxProps } from 'theme-ui'
+import { Box, SxProps, Text } from 'theme-ui'
 
 import { styleFn, Styles } from 'react-select/src/styles'
 
@@ -63,17 +63,28 @@ export function GenericSelect({
       },
     }),
     valueContainer: () => ({
-      padding: `0 ${theme.space[3]}px`,
+      width: '100%',
+      height: '100%',
+      padding: '0 42px 0 16px',
       overflow: 'visible',
+      input: {
+        position: 'absolute',
+      },
     }),
     singleValue: () => ({
-      display: 'flex',
+      position: 'relative',
+      display: 'block',
+      top: 'auto',
+      width: '100%',
+      maxWidth: 'none',
+      padding: '12px 0',
       alignItems: 'center',
       margin: 0,
       fontSize: theme.fontSizes[2],
       fontWeight: theme.fontWeights.semiBold,
       color: theme.colors.primary100,
-      overflow: 'visible',
+      overflow: 'hidden',
+      transform: 'none',
     }),
     placeholder: () => ({
       fontSize: theme.fontSizes[2],
@@ -81,6 +92,7 @@ export function GenericSelect({
       color: theme.colors.neutral80,
     }),
     input: () => ({
+      position: 'absolute',
       fontSize: theme.fontSizes[2],
       color: theme.colors.primary100,
     }),
@@ -101,9 +113,8 @@ export function GenericSelect({
     }),
     option: ({ isSelected }) => ({
       display: 'flex',
-      minHeight: '48px',
       alignItems: 'center',
-      padding: '0 16px',
+      padding: '12px 16px',
       fontSize: theme.fontSizes[3],
       fontWeight: theme.fontWeights.regular,
       color: theme.colors.primary100,
@@ -113,6 +124,9 @@ export function GenericSelect({
       '&:hover': {
         backgroundColor: theme.colors.neutral30,
       },
+    }),
+    indicatorsContainer: () => ({
+      display: 'none',
     }),
   }
   const combinedStyles: Styles = [...Object.keys(defaultStyles), ...Object.keys(customStyles)]
@@ -150,14 +164,16 @@ export function GenericSelect({
           SingleValue: ({ children, data, ...props }) => (
             <components.SingleValue data={data} {...props}>
               {data.icon ? (
-                <Box sx={{ pl: `${iconSize + 12}px` }}>
+                <>
                   <Icon
                     size={iconSize}
                     sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, m: 'auto' }}
                     name={data.icon}
                   />
-                  {children}
-                </Box>
+                  <Text as="span" sx={{ pl: `${iconSize + 12}px` }}>
+                    {children}
+                  </Text>
+                </>
               ) : (
                 children
               )}
@@ -165,7 +181,9 @@ export function GenericSelect({
           ),
           Option: ({ children, data, ...props }) => (
             <components.Option data={data} {...props}>
-              {data.icon && <Icon size={iconSize} sx={{ mr: '12px' }} name={data.icon} />}
+              {data.icon && (
+                <Icon size={iconSize} sx={{ flexShrink: 0, mr: '12px' }} name={data.icon} />
+              )}
               {children}
             </components.Option>
           ),

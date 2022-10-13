@@ -21,12 +21,16 @@ import {
   errorsAutoBuyValidation,
   warningsAutoBuyValidation,
 } from 'features/automation/optimization/autoBuy/validators'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -39,6 +43,7 @@ interface SidebarSetupAutoBuyProps {
   autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -71,6 +76,7 @@ export function SidebarSetupAutoBuy({
   autoBuyTriggerData,
   stopLossTriggerData,
   constantMultipleTriggerData,
+  autoTakeProfitTriggerData,
 
   autoBuyState,
   txHandler,
@@ -129,9 +135,12 @@ export function SidebarSetupAutoBuy({
     minSellPrice: autoBuyState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     autoBuyState,
     sliderMin: min,
     withThreshold: autoBuyState.withThreshold,
+    executionPrice,
+    autoTakeProfitExecutionPrice: autoTakeProfitTriggerData.executionPrice,
   })
   const errors = errorsAutoBuyValidation({
     autoBuyState,
@@ -140,8 +149,8 @@ export function SidebarSetupAutoBuy({
     isRemoveForm,
     executionPrice,
   })
-  const cancelAutoBuyWarnings = extractCancelBSWarnings(warnings)
-  const cancelAutoBuyErrors = extractCancelBSErrors(errors)
+  const cancelAutoBuyWarnings = extractCancelAutomationWarnings(warnings)
+  const cancelAutoBuyErrors = extractCancelAutomationErrors(errors)
   const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
   if (isAutoBuyActive) {
