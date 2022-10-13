@@ -65,7 +65,7 @@ export function GenericSelect({
     valueContainer: () => ({
       width: '100%',
       height: '100%',
-      padding: `0 42px 0 16px`,
+      padding: '0 42px 0 16px',
       overflow: 'visible',
       input: {
         position: 'absolute',
@@ -110,22 +110,6 @@ export function GenericSelect({
     menuList: () => ({
       paddingTop: '12px',
       paddingBottom: '12px',
-      // '&::-webkit-scrollbar': {
-      //   width: '6px',
-      //   borderRadius: theme.radii.large,
-      // },
-      // '&::-webkit-scrollbar-thumb': {
-      //   marginTop: '12px',
-      //   marginBottom: '12px',
-      //   backgroundColor: theme.colors.secondary100,
-      //   borderRadius: theme.radii.large,
-      // },
-      // '&::-webkit-scrollbar-track': {
-      //   marginTop: '12px',
-      //   marginBottom: '12px',
-      //   backgroundColor: theme.colors.secondary60,
-      //   borderRadius: theme.radii.large,
-      // },
     }),
     option: ({ isSelected }) => ({
       display: 'flex',
