@@ -10,7 +10,6 @@ import { shareReplay } from 'rxjs/operators'
 
 import { aavePrepareReserveData } from './aave/helpers/aavePrepareReserveData'
 
-
 export function setupEarnContext({ context$, aaveAvailableLiquidityETH$ }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
 
