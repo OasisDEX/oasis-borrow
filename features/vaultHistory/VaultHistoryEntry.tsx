@@ -57,7 +57,10 @@ export function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEven
       'collateralAmount' in event && event.collateralAmount
         ? formatCryptoBalance(event.collateralAmount.abs())
         : 0,
-    daiAmount: 'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
+    daiAmount:
+      'daiAmount' in event
+        ? formatCryptoBalance((event.daiAmount && event.daiAmount.abs()) || zero)
+        : 0,
     remainingCollateral:
       'remainingCollateral' in event && event.remainingCollateral
         ? formatCryptoBalance(event.remainingCollateral)
