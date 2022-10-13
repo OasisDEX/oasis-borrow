@@ -221,11 +221,8 @@ const protoMain = {
     mainnetAddresses.AAVE_PRICE_ORACLE,
   ),
   aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
-  operationExecutor: contractDesc(
-    operationExecutor,
-    getConfig()?.publicRuntimeConfig.operationExecutorTemp,
-  ),
-  swapAddress: getConfig()?.publicRuntimeConfig.swapAddress,
+  operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
+  swapAddress: mainnetAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
 }
 
@@ -421,11 +418,8 @@ const goerli: NetworkConfig = {
     goerliAddresses.AAVE_PRICE_ORACLE,
   ),
   aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
-  operationExecutor: contractDesc(
-    operationExecutor,
-    getConfig()?.publicRuntimeConfig.operationExecutorTemp,
-  ),
-  swapAddress: main.swapAddress,
+  operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
+  swapAddress: goerliAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
 }
 
