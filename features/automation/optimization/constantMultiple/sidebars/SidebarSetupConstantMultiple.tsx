@@ -25,7 +25,10 @@ import {
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -144,11 +147,14 @@ export function SidebarSetupConstantMultiple({
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     constantMultipleState,
     debtDeltaWhenSellAtCurrentCollRatio,
+    constantMultipleBuyExecutionPrice: nextBuyPrice,
+    autoTakeProfitExecutionPrice: autoTakeProfitTriggerData.executionPrice,
   })
-  const cancelConstantMultipleErrors = extractCancelBSErrors(errors)
-  const cancelConstantMultipleWarnings = extractCancelBSWarnings(warnings)
+  const cancelConstantMultipleErrors = extractCancelAutomationErrors(errors)
+  const cancelConstantMultipleWarnings = extractCancelAutomationWarnings(warnings)
   const validationErrors = isAddForm ? errors : cancelConstantMultipleErrors
 
   if (isConstantMultipleActive) {

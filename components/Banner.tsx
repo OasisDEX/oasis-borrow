@@ -54,15 +54,15 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
             {title}
           </Heading>
           <Grid gap={2} mb={3}>
-            {descriptionsArray.map((item, idx) => (
+            {descriptionsArray.map((item, index) => (
               <Text
+                key={`banner-description-${index}`}
                 as="p"
                 sx={{
                   fontSize: 2,
                   lineHeight: 1.571,
                   color: 'neutral80',
                 }}
-                key={idx}
               >
                 {item}
               </Text>

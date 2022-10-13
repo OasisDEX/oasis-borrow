@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
@@ -15,6 +16,8 @@ import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTa
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -24,11 +27,14 @@ interface AutoTakeProfitFormControlProps {
   constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
   ethMarketPrice: BigNumber
+  ilkData: IlkData
   isAutoTakeProfitActive: boolean
   shouldRemoveAllowance: boolean
   tokenMarketPrice: BigNumber
+  priceInfo: PriceInfo
   txHelpers?: TxHelpers
   vault: Vault
+  balanceInfo: BalanceInfo
 }
 
 export function AutoTakeProfitFormControl({
@@ -37,19 +43,22 @@ export function AutoTakeProfitFormControl({
   constantMultipleTriggerData,
   context,
   ethMarketPrice,
+  ilkData,
   isAutoTakeProfitActive,
   shouldRemoveAllowance,
   tokenMarketPrice,
+  priceInfo: { nextCollateralPrice },
   txHelpers,
   vault,
+  balanceInfo,
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
 
   const {
     isAddForm,
     isFirstSetup,
-    // isOwner,
-    // isProgressStage,
+    isOwner,
+    isProgressStage,
     isRemoveForm,
     stage,
   } = getAutomationFeatureStatus({
@@ -61,11 +70,18 @@ export function AutoTakeProfitFormControl({
     vaultController: vault.controller,
   })
   const feature = AutomationFeatures.AUTO_TAKE_PROFIT
-  const { closePickerConfig, isEditing, min, max, resetData } = getAutoTakeProfitStatus({
-    autoTakeProfitState,
-    tokenMarketPrice,
-    vault,
-  })
+  const { closePickerConfig, isEditing, isDisabled, min, max, resetData } = getAutoTakeProfitStatus(
+    {
+      autoTakeProfitState,
+      autoTakeProfitTriggerData,
+      isOwner,
+      isProgressStage,
+      isRemoveForm,
+      stage,
+      tokenMarketPrice,
+      vault,
+    },
+  )
   const { addTxData, textButtonHandlerExtension } = getAutoTakeProfitTxHandlers({
     autoTakeProfitState,
     autoTakeProfitTriggerData,
@@ -88,7 +104,7 @@ export function AutoTakeProfitFormControl({
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoTakeProfitTriggerData.triggerId.toNumber()]}
-      txHelpers={txHelpers!}
+      txHelpers={txHelpers}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoTakeProfit
@@ -97,10 +113,13 @@ export function AutoTakeProfitFormControl({
           autoTakeProfitTriggerData={autoTakeProfitTriggerData}
           closePickerConfig={closePickerConfig}
           constantMultipleTriggerData={constantMultipleTriggerData}
+          context={context}
           ethMarketPrice={ethMarketPrice}
           feature={feature}
+          ilkData={ilkData}
           isAddForm={isAddForm}
           isAutoTakeProfitActive={isAutoTakeProfitActive}
+          isDisabled={isDisabled}
           isEditing={isEditing}
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
@@ -111,6 +130,8 @@ export function AutoTakeProfitFormControl({
           tokenMarketPrice={tokenMarketPrice}
           txHandler={txHandler}
           vault={vault}
+          nextCollateralPrice={nextCollateralPrice}
+          ethBalance={balanceInfo.ethBalance}
         />
       )}
     </AddAndRemoveTriggerControl>

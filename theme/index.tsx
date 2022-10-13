@@ -570,6 +570,9 @@ export const oasisBaseTheme = {
       '&:focus': {
         outline: 'none',
       },
+      '&:disabled': {
+        opacity: 0.5,
+      },
     },
     textualSmall: {
       variant: 'buttons.textual',

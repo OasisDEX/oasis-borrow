@@ -5,8 +5,6 @@ import { amountFromWei } from 'blockchain/utils'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-export type PreparedAaveReserveData = BigNumber
-
 type PrepareAaveAvailableLiquidityProps = [AaveReserveDataReply, BigNumber[]]
 
 export function prepareAaveAvailableLiquidityInUSD$(
@@ -14,7 +12,7 @@ export function prepareAaveAvailableLiquidityInUSD$(
 ): (
   getAaveReserveData$: Observable<AaveReserveDataReply>,
   getAaveAssetsPrices$: Observable<string[]>,
-) => Observable<PreparedAaveReserveData> {
+) => Observable<BigNumber> {
   return (getAaveReserveData$, getAaveAssetsPrices$) =>
     combineLatest(getAaveReserveData$, getAaveAssetsPrices$).pipe(
       map(([reserveData, [USDC_ETH_price]]: PrepareAaveAvailableLiquidityProps) => {

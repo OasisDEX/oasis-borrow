@@ -35,7 +35,7 @@ const aaveStEthYield = gql`
     $include1Year: Boolean!
     $includeInception: Boolean!
   ) {
-    yield7days: aaveYieldRateStethEth(
+    yield7days: aaveYieldRate(
       input: { startDate: $date7daysAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include7Days) {
       yield {
@@ -43,7 +43,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield7daysOffset: aaveYieldRateStethEth(
+    yield7daysOffset: aaveYieldRate(
       input: { startDate: $date7daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
     ) @include(if: $include7DaysOffset) {
       yield {
@@ -51,7 +51,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield30days: aaveYieldRateStethEth(
+    yield30days: aaveYieldRate(
       input: { startDate: $date30daysAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include30Days) {
       yield {
@@ -59,7 +59,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield90days: aaveYieldRateStethEth(
+    yield90days: aaveYieldRate(
       input: { startDate: $date90daysAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include90Days) {
       yield {
@@ -67,7 +67,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield90daysOffset: aaveYieldRateStethEth(
+    yield90daysOffset: aaveYieldRate(
       input: { startDate: $date90daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
     ) @include(if: $include90DaysOffset) {
       yield {
@@ -75,14 +75,14 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield1year: aaveYieldRateStethEth(
+    yield1year: aaveYieldRate(
       input: { startDate: $date1yearAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include1Year) {
       yield {
         netAnnualisedYield
       }
     }
-    yieldSinceInception: aaveYieldRateStethEth(
+    yieldSinceInception: aaveYieldRate(
       input: { startDate: "2020-11-30", endDate: $currentDate, multiple: $multiply }
     ) @include(if: $includeInception) {
       yield {
@@ -108,8 +108,10 @@ export async function getAaveStEthYield(
   riskRatio: IRiskRatio,
   fields: FilterYieldFieldsType[],
 ): Promise<AaveStEthYieldsResponse> {
+  const reserveAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
+    reserveAddress,
     multiply: riskRatio.multiple.toString(),
     currentDate: currentDate.utc().format(yieldsDateFormat),
     currentDateOffset: currentDate.utc().subtract(1, 'days').format(yieldsDateFormat),

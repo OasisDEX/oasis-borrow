@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { AaveConfigurationData } from 'blockchain/calls/aave/aaveLendingPool'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
@@ -11,6 +12,7 @@ import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { ProxyContext, ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
+import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import {
   AaveStEthSimulateStateMachine,
   createOpenAaveStateMachine,
@@ -31,6 +33,12 @@ export function getOpenAavePositionStateMachineServices(
   }: {
     token: string
   }) => Observable<AaveReserveConfigurationData>,
+  aaveUserConfiguration$: ({
+    proxyAddress,
+  }: {
+    proxyAddress: string
+  }) => Observable<AaveConfigurationData>,
+  aaveReservesList$: () => Observable<AaveConfigurationData>,
 ): OpenAaveStateMachineServices {
   return {
     getBalance: (context, _) => {
@@ -69,6 +77,22 @@ export function getOpenAavePositionStateMachineServices(
         }),
       )
     },
+    getHasOtherAssets: ({ proxyAddress }) => {
+      return combineLatest(
+        aaveUserConfiguration$({ proxyAddress: proxyAddress! }),
+        aaveReservesList$(),
+      ).pipe(
+        map(([aaveUserConfiguration, aaveReservesList]) => {
+          return {
+            type: 'UPDATE_META_INFO',
+            hasOtherAssetsThanETH_STETH: hasOtherAssets(
+              createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList),
+              ['ETH', 'STETH'],
+            ),
+          }
+        }),
+      )
+    },
   }
 }
 
@@ -88,10 +112,10 @@ export function getOpenAaveStateMachine$(
   parametersMachine$: Observable<ParametersStateMachine>,
   proxyMachine$: Observable<ProxyStateMachine>,
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
-  simulationMachine: AaveStEthSimulateStateMachine,
+  simulationMachine$: Observable<AaveStEthSimulateStateMachine>,
 ) {
-  return combineLatest(parametersMachine$, proxyMachine$).pipe(
-    map(([parametersMachine, proxyMachine]) => {
+  return combineLatest(parametersMachine$, proxyMachine$, simulationMachine$).pipe(
+    map(([parametersMachine, proxyMachine, simulationMachine]) => {
       return createOpenAaveStateMachine.withConfig({
         services: {
           ...services,

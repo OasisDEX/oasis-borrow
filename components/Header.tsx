@@ -83,6 +83,8 @@ function useVaultCount() {
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
+  // TODO: Add aave vault.
+
   const count = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
 
   return count && count > 0 ? count : null
@@ -610,7 +612,7 @@ function HeaderList({
       sx={{ p: 0, listStyle: 'none', ...(columns && { columnCount: columns, columnGap: '24px' }) }}
     >
       {links.map(({ label, link, icon }, i) => (
-        <Box as="li" sx={{ mt: i > 0 ? '24px' : 0 }}>
+        <Box key={i} as="li" sx={{ mt: i > 0 ? '24px' : 0 }}>
           <AppLink
             href={link}
             sx={{

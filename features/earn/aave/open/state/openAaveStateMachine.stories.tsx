@@ -1,3 +1,4 @@
+import { IStrategy } from '@oasisdex/oasis-actions'
 import { TxMeta } from '@oasisdex/transactions'
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
@@ -16,7 +17,6 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
-import { OpenStEthReturn } from '../../../../aave'
 import {
   createProxyStateMachine,
   ProxyContext,
@@ -72,7 +72,7 @@ const parametersMachine = createParametersStateMachine.withConfig({
     },
     getParameters: async () => {
       await delay()
-      return {} as OpenStEthReturn
+      return {} as IStrategy
     },
     estimateGasPrice: async () => {
       await delay()
@@ -171,6 +171,7 @@ const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
     getBalance: (() => {}) as any,
     getProxyAddress: (() => {}) as any,
     getStrategyInfo: (() => {}) as any,
+    getHasOtherAssets: (() => {}) as any,
   },
 })
 

@@ -16,6 +16,7 @@ export function createAccountData(
   context$: Observable<Web3Context>,
   balance$: (token: string, address: string) => Observable<BigNumber>,
   vaults$: (address: string) => Observable<Vault[]>,
+  hasAavePosition$: (address: string) => Observable<boolean>,
   ensName$: (address: string) => Observable<string>,
 ): Observable<AccountDetails> {
   return context$.pipe(
@@ -25,9 +26,10 @@ export function createAccountData(
         startWithDefault(balance$('DAI', context.account), undefined),
         startWithDefault(vaults$(context.account).pipe(map((vault) => vault.length)), undefined),
         startWithDefault(ensName$(context.account), null),
+        startWithDefault(hasAavePosition$(context.account), false),
       ).pipe(
-        map(([balance, numberOfVaults, ensName]) => ({
-          numberOfVaults,
+        map(([balance, numberOfVaults, ensName, hasAavePosition]) => ({
+          numberOfVaults: hasAavePosition ? (numberOfVaults || 0) + 1 : numberOfVaults,
           daiBalance: balance,
           ensName,
         })),

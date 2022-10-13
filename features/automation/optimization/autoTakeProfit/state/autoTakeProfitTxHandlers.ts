@@ -1,9 +1,8 @@
 import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { amountToWei } from 'blockchain/utils'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { maxUint32 } from 'features/automation/common/consts'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
@@ -16,10 +15,10 @@ import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
 interface GetAutoTakeProfitTxHandlersParams {
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  vault: Vault
-  isAddForm: boolean
   autoTakeProfitState: AutoTakeProfitFormChange
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+  isAddForm: boolean
+  vault: Vault
 }
 
 interface AutoTakeProfitTxHandlers {
@@ -40,14 +39,10 @@ export function getAutoTakeProfitTxHandlers({
     () =>
       prepareAddAutoTakeProfitTriggerData(
         vault,
-        amountToWei(
-          autoTakeProfitState.executionPrice.decimalPlaces(0, BigNumber.ROUND_DOWN),
-          'ETH',
-        ),
-        zero, // autoTakeProfitState.maxBaseFeeInGwei,
+        autoTakeProfitState.executionPrice,
+        maxUint32,
         autoTakeProfitState.toCollateral,
-        0,
-        // autoTakeProfitTriggerData.triggerId.toNumber(),
+        autoTakeProfitState.triggerId.toNumber(),
       ),
     [
       autoTakeProfitState.toCollateral,
@@ -56,7 +51,7 @@ export function getAutoTakeProfitTxHandlers({
       autoTakeProfitTriggerData.triggerId.toNumber(),
     ],
   )
-  // TODO ŁW
+
   function textButtonHandlerExtension() {
     if (isAddForm) {
       uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {

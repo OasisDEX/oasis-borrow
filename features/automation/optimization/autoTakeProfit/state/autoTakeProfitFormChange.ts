@@ -7,9 +7,12 @@ import { TxError } from 'helpers/types'
 export const AUTO_TAKE_PROFIT_FORM_CHANGE = 'AUTO_TAKE_PROFIT_FORM_CHANGE'
 
 export type AutoTakeProfitFormChangeAction =
+  | { type: 'trigger-id'; triggerId: BigNumber }
   | { type: 'execution-price'; executionPrice: BigNumber; executionCollRatio: BigNumber }
   | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'close-type'; toCollateral: boolean }
+  | { type: 'is-editing'; isEditing: boolean }
+  | { type: 'reset'; resetData: AutoTakeProfitResetData }
   | {
       type: 'form-defaults'
       executionPrice: BigNumber
@@ -31,6 +34,8 @@ export function autoTakeProfitFormChangeReducer(
   action: AutoTakeProfitFormChangeAction,
 ): AutoTakeProfitFormChange {
   switch (action.type) {
+    case 'trigger-id':
+      return { ...state, triggerId: action.triggerId }
     case 'execution-price':
       return {
         ...state,
@@ -41,16 +46,21 @@ export function autoTakeProfitFormChangeReducer(
       return { ...state, currentForm: action.currentForm }
     case 'close-type':
       return { ...state, toCollateral: action.toCollateral }
+    case 'tx-details':
+      return { ...state, txDetails: action.txDetails }
+    case 'is-editing':
+      return { ...state, isEditing: action.isEditing }
+    case 'reset':
+      return { ...state, ...action.resetData }
     case 'form-defaults':
       return {
         ...state,
+        defaultExecutionPrice: action.executionPrice,
+        defaultExecutionCollRatio: action.executionCollRatio,
         executionPrice: action.executionPrice,
         executionCollRatio: action.executionCollRatio,
         toCollateral: action.toCollateral,
       }
-    // TODO ŁW
-    //     case 'reset':
-    //       return { ...state, ...action.resetData }
     default:
       return state
   }
@@ -58,12 +68,14 @@ export function autoTakeProfitFormChangeReducer(
 
 export type AutoTakeProfitResetData = Pick<
   AutoTakeProfitFormChange,
-  'executionPrice' | 'executionCollRatio' | 'toCollateral' | 'txDetails'
+  'executionPrice' | 'executionCollRatio' | 'toCollateral' | 'txDetails' | 'isEditing'
 >
 
 export type AutoTakeProfitFormChange = AutomationFormChange & {
-  executionPrice: BigNumber
-  executionCollRatio: BigNumber
   currentForm: AutomationFormType
+  defaultExecutionCollRatio: BigNumber
+  defaultExecutionPrice: BigNumber
+  executionCollRatio: BigNumber
+  executionPrice: BigNumber
   toCollateral: boolean
 }

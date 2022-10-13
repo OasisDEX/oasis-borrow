@@ -7,7 +7,11 @@ import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, shareReplay, switchMap } from 'rxjs/operators'
 
-import { getAaveUserAccountData } from '../../../blockchain/calls/aave/aaveLendingPool'
+import {
+  getAaveReservesList,
+  getAaveUserAccountData,
+  getAaveUserConfiguration,
+} from '../../../blockchain/calls/aave/aaveLendingPool'
 import { getAaveOracleAssetPriceData } from '../../../blockchain/calls/aave/aavePriceOracle'
 import {
   getAaveReserveConfigurationData,
@@ -67,6 +71,8 @@ export function setupAaveContext({
   const aaveOracleAssetPriceData$ = observe(once$, connectedContext$, getAaveOracleAssetPriceData)
 
   const aaveUserAccountData$ = observe(once$, connectedContext$, getAaveUserAccountData)
+  const aaveUserConfiguration$ = observe(once$, connectedContext$, getAaveUserConfiguration)
+  const aaveReservesList$ = observe(once$, connectedContext$, getAaveReservesList)
 
   const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
@@ -94,6 +100,8 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
+  const aaveReserveStEthData$ = aaveReserveConfigurationData$({ token: 'STETH' })
+
   const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
     contextForAddress$,
     txHelpers$,
@@ -101,6 +109,8 @@ export function setupAaveContext({
     proxyForAccount$,
     aaveOracleAssetPriceData$,
     aaveReserveConfigurationData$,
+    aaveUserConfiguration$,
+    aaveReservesList$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
@@ -111,11 +121,15 @@ export function setupAaveContext({
     aaveUserReserveData$,
     aaveUserAccountData$,
     aaveOracleAssetPriceData$,
+    aaveReserveConfigurationData$,
+    aaveOracleAssetPriceData$,
+    aaveUserConfiguration$,
+    aaveReservesList$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
 
-  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYieldsQuery)
+  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYieldsQuery, aaveReserveStEthData$)
 
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
@@ -148,7 +162,7 @@ export function setupAaveContext({
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
-    aaveReserveStEthData$: aaveReserveConfigurationData$({ token: 'STETH' }),
+    aaveReserveStEthData$,
   }
 }
 
