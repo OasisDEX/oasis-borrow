@@ -30,7 +30,7 @@ export const discoverySizeFilter: DiscoveryFiltersListItem[] = [
 export const discoveryMultipleFilter: DiscoveryFiltersListItem[] = [
   { value: '1-2', label: 'Multiple: 1-2x' },
   { value: '2-3', label: 'Multiple: 2-3x' },
-  { value: '>3', label: 'Multiple: >3x' },
+  { value: '>3', label: 'Multiple: over 3x' },
 ]
 
 export const discoveryTimeFilter: DiscoveryFiltersListItem[] = [

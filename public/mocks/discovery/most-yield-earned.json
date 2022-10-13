@@ -1,63 +1,56 @@
 {
   "rows": [
     {
-      "asset": "ETH",
-      "liquidationPrice": 1254.39,
-      "nextOsmPrice": 1326.9,
-      "maxLiquidationAmount": 353422.43,
-      "status": {
-        "kind": 1
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 8743546.39,
+      "earningsToDate": 13244.9,
+      "30DayAvgApy": 1.2,
+      "activity": {
+        "kind": 6,
+        "additionalData": {
+          "daysAgo": 3
+        }
       },
       "cdpId": 18604
     },
     {
-      "asset": "WBTC",
-      "liquidationPrice": 13500.3,
-      "nextOsmPrice": 19515.03,
-      "maxLiquidationAmount": 43943422.24,
-      "status": {
-        "kind": 2
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 6874653.31,
+      "earningsToDate": 7456.03,
+      "30DayAvgApy": 4.23,
+      "activity": {
+        "kind": 4,
+        "additionalData": {
+          "daysAgo": 4
+        }
       },
       "cdpId": 17503
     },
     {
-      "asset": "WSTETH",
-      "liquidationPrice": 1320.31,
-      "nextOsmPrice": 1419.48,
-      "maxLiquidationAmount": 9231242.2,
-      "status": {
-        "kind": 3,
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 23056.95,
+      "earningsToDate": 4353.48,
+      "30DayAvgApy": 1.89,
+      "activity": {
+        "kind": 1,
         "additionalData": {
-          "tillLiquidation": 1.02
+          "daysAgo": 1
         }
       },
       "cdpId": 6843
     },
     {
-      "asset": "ETH",
-      "liquidationPrice": 1240.74,
-      "nextOsmPrice": 1326.9,
-      "maxLiquidationAmount": 234215463.94,
-      "status": {
-        "kind": 4,
+      "asset": "GUNIV3DAIUSDC1",
+      "netValue": 3246829.95,
+      "earningsToDate": 14657.9,
+      "30DayAvgApy": 0.94,
+      "activity": {
+        "kind": 2,
         "additionalData": {
-          "toStopLoss": 12.61
+          "daysAgo": 1
         }
       },
       "cdpId": 24300
-    },
-    {
-      "asset": "ETH",
-      "liquidationPrice": 1670.75,
-      "nextOsmPrice": 1326.9,
-      "maxLiquidationAmount": 9568049.66,
-      "status": {
-        "kind": 5,
-        "additionalData": {
-          "closedDaysAgo": 5
-        }
-      },
-      "cdpId": 24985
     }
   ]
 }

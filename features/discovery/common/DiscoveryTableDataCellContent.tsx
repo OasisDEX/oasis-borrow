@@ -2,8 +2,12 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
-import { DiscoveryTableRowData, DiscoveryTableVaultActivity, DiscoveryTableVaultStatus } from 'features/discovery/types'
-import { formatCryptoBalance } from 'helpers/formatters/format'
+import {
+  DiscoveryTableRowData,
+  DiscoveryTableVaultActivity,
+  DiscoveryTableVaultStatus,
+} from 'features/discovery/types'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, SxStyleProp, Text } from 'theme-ui'
@@ -88,8 +92,13 @@ export function DiscoveryTableDataCellContent({
     case 'nextOsmPrice':
     case 'pnl':
       return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
+    case 'earningsToDate':
+    case 'netValue':
+      return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
     case 'currentMultiple':
       return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
+    case '30DayAvgApy':
+      return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     default:
       return <>{`${row[label]}`}</>
   }
