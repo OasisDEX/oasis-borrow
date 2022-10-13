@@ -17,7 +17,7 @@ export type FilterYieldFieldsType =
 const yieldsDateFormat = 'YYYY-MM-DD'
 
 const aaveStEthYield = gql`
-  mutation stEthYields(
+  mutation aaveYieldRate(
     $currentDate: Date!
     $currentDateOffset: Date!
     $date7daysAgo: Date!
@@ -35,7 +35,7 @@ const aaveStEthYield = gql`
     $include1Year: Boolean!
     $includeInception: Boolean!
   ) {
-    yield7days: aaveYieldRate(
+    yield7days: aaveYieldRateStethEth(
       input: { startDate: $date7daysAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include7Days) {
       yield {
@@ -43,7 +43,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield7daysOffset: aaveYieldRate(
+    yield7daysOffset: aaveYieldRateStethEth(
       input: { startDate: $date7daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
     ) @include(if: $include7DaysOffset) {
       yield {
@@ -51,7 +51,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield30days: aaveYieldRate(
+    yield30days: aaveYieldRateStethEth(
       input: { startDate: $date30daysAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include30Days) {
       yield {
@@ -59,7 +59,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield90days: aaveYieldRate(
+    yield90days: aaveYieldRateStethEth(
       input: { startDate: $date90daysAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include90Days) {
       yield {
@@ -67,7 +67,7 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield90daysOffset: aaveYieldRate(
+    yield90daysOffset: aaveYieldRateStethEth(
       input: { startDate: $date90daysAgoOffset, endDate: $currentDateOffset, multiple: $multiply }
     ) @include(if: $include90DaysOffset) {
       yield {
@@ -75,14 +75,14 @@ const aaveStEthYield = gql`
       }
     }
 
-    yield1year: aaveYieldRate(
+    yield1year: aaveYieldRateStethEth(
       input: { startDate: $date1yearAgo, endDate: $currentDate, multiple: $multiply }
     ) @include(if: $include1Year) {
       yield {
         netAnnualisedYield
       }
     }
-    yieldSinceInception: aaveYieldRate(
+    yieldSinceInception: aaveYieldRateStethEth(
       input: { startDate: "2020-11-30", endDate: $currentDate, multiple: $multiply }
     ) @include(if: $includeInception) {
       yield {
