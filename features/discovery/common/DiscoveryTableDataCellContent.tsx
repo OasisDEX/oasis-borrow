@@ -91,24 +91,26 @@ export function DiscoveryTableDataCellContent({
     case 'maxLiquidationAmount':
     case 'nextOsmPrice':
     case 'pnl':
-      return `$${formatCryptoBalance(new BigNumber(row[label]))}`
+      return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
     case 'earningsToDate':
     case 'netValue':
     case 'vaultDebt':
-      return `${formatCryptoBalance(new BigNumber(row[label]))} DAI`
+      return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
     case 'currentMultiple':
-      return `${(row.currentMultiple as number)?.toFixed(2)}x`
+      return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
     case '30DayAvgApy':
-      return formatPercent(new BigNumber(row[label]), { precision: 2 })
+      return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     case 'colRatio':
       return (
-        row.colRatio && (
-          <Text as="span" sx={{ color: row.colRatio.isAtRisk ? 'warning100' : 'success100' }}>
-            {formatPercent(new BigNumber(row.colRatio.level), { precision: 2 })}
-          </Text>
-        )
+        <>
+          {row.colRatio && (
+            <Text as="span" sx={{ color: row.colRatio.isAtRisk ? 'warning100' : 'success100' }}>
+              {formatPercent(new BigNumber(row.colRatio.level), { precision: 2 })}
+            </Text>
+          )}
+        </>
       )
     default:
-      return `${row[label]}`
+      return <>${row[label]}</>
   }
 }
