@@ -5,7 +5,7 @@ import { getDefaultSettingsState } from 'features/discovery/helpers'
 import { discoveryPagesMeta } from 'features/discovery/meta'
 import { DiscoveryFiltersSettings, DiscoveryPages } from 'features/discovery/types'
 import { keyBy } from 'lodash'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box } from 'theme-ui'
 
 interface DiscoveryControlProps {
@@ -17,7 +17,12 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
   const [settings, setSettings] = useState<DiscoveryFiltersSettings>(
     getDefaultSettingsState({ filters }),
   )
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const discoveryData = getDiscoveryData(endpoint, settings)
+
+  useEffect(() => {
+    setIsLoading(false)
+  }, [discoveryData])
 
   return (
     <Box
@@ -31,15 +36,19 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
       <DiscoveryFilters
         filters={filters}
         onChange={(key, currentValue) => {
+          setIsLoading(true)
           setSettings({
             ...settings,
             [key]: currentValue.value,
           })
         }}
       />
-      {discoveryData?.data?.rows && (
-        <DiscoveryTable banner={banner} kind={kind} rows={discoveryData.data.rows} />
-      )}
+      <DiscoveryTable
+        banner={banner}
+        isLoading={isLoading}
+        kind={kind}
+        rows={discoveryData?.data?.rows}
+      />
     </Box>
   )
 }
