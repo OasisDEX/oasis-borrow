@@ -33,16 +33,16 @@ export async function getOpenAaveParameters(
 ): Promise<IStrategy> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
+  const weiAmount = amountToWei(amount, 'ETH')
   return await strategies.aave.openStEth(
     {
-      depositAmount: amount,
+      depositAmount: weiAmount,
       slippage: slippage,
       multiple: riskRatio.multiple,
     },
     {
       addresses: getAddressesFromContext(context),
       provider: provider,
-      // getSwapData: oneInchCallMock,
       dsProxy: proxyAddress,
       getSwapData: getOneInchCall(context.swapAddress),
     },
