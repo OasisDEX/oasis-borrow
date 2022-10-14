@@ -64,7 +64,7 @@ export function AddAutoBuyInfoSection({
           value: `${multipleAfterBuy.toFixed(2)}x`,
         },
         {
-          label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
+          label: t('auto-buy.trigger-col-ratio-to-perform-buy'),
           value: ratioToPerformBuyFormatted,
         },
         {

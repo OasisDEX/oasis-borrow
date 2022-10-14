@@ -21,6 +21,7 @@ export type Feature =
   | 'ProxyCreationDisabled'
   | 'AutoTakeProfit'
   | 'UpdatedPnL'
+  | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
   | 'ShowAaveStETHETHProductCard'
 
@@ -42,6 +43,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ProxyCreationDisabled: false,
   AutoTakeProfit: false,
   UpdatedPnL: false,
+  ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: false,
   ShowAaveStETHETHProductCard: false,
   // your feature here....
