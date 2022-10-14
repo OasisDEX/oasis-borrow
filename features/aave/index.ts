@@ -48,7 +48,6 @@ export async function getOpenAaveParameters(
     {
       addresses: getAddressesFromContext(context),
       provider: provider,
-      // getSwapData: oneInchCallMock,
       dsProxy: proxyAddress,
       getSwapData: getOneInchCall(context.swapAddress),
     },

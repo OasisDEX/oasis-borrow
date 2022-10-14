@@ -10,29 +10,22 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
+import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Heading, Text } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../../components/DetailsSection'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
+import { ManageSectionModal } from './ManageSectionModal'
 
 type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
-}
-
-const mockData = {
-  earnId: 3920,
-  pnl: 'n/a',
-  earnings: new BigNumber(34000.21),
-  earningsAfterFees: new BigNumber(31000.21),
-  APYtotal: new BigNumber(8.3),
-  APYtoDate: new BigNumber(2.2),
 }
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
@@ -76,7 +69,7 @@ export function ManageSectionComponent({
     ? accountData.totalCollateralETH.minus(accountData.totalDebtETH)
     : zero
 
-  const totalCollateral = oraclePrice.times(accountData.totalCollateralETH)
+  const totalCollateralInStEth = oraclePrice.times(accountData.totalCollateralETH)
 
   return (
     <DetailsSection
@@ -88,31 +81,54 @@ export function ManageSectionComponent({
             value={formatBigNumber(netValue || zero, 2)}
             unit={state.context.token}
             footnote={t('manage-earn-vault.pnl', {
-              value: mockData.pnl,
+              value: 'n/a',
               token: state.context.token,
             })}
-            modal={<div>Explanation of the thing, probably</div>}
-          />
-          <DetailsSectionContentCard
-            title={t('manage-earn-vault.earnings-to-date')}
-            value={formatBigNumber(mockData.earnings, 2)}
-            unit={state.context.token}
-            footnote={t('manage-earn-vault.earnings-to-date-after-fees', {
-              afterFees: formatBigNumber(mockData.earningsAfterFees, 2),
-              symbol: state.context.token,
-            })}
             modal={
-              <Grid gap={2}>
-                <Heading variant="header3">{t('manage-earn-vault.earnings-to-date')}</Heading>
-                <Text variant="paragraph2">{t('manage-earn-vault.earnings-to-date-modal')}</Text>
-              </Grid>
+              <ManageSectionModal
+                heading={t('net-value')}
+                description={
+                  <>
+                    <Grid gap={2}>
+                      <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
+                        {t('manage-earn-vault.net-value-calculation', {
+                          stETHPrice: formatBigNumber(oraclePrice || zero, 4),
+                        })}
+                      </Text>
+                    </Grid>
+                    <Grid gap={2} columns={[1, 2]}>
+                      <div />
+                      <Box>{t('manage-earn-vault.eth-value')}</Box>
+                      <Box>{t('manage-earn-vault.collateral-value-in-vault')}</Box>
+                      <Box>
+                        {formatAmount(accountData.totalCollateralETH || zero, state.context.token)}{' '}
+                        {state.context.token}
+                      </Box>
+                      <Box>{t('manage-earn-vault.debt-value-in-vault')}</Box>
+                      <Box>
+                        {formatAmount(accountData.totalDebtETH || zero, state.context.token)}{' '}
+                        {state.context.token}
+                      </Box>
+                      <Box>{t('net-value')}</Box>
+                      <Box>
+                        {formatAmount(netValue || zero, state.context.token)} {state.context.token}
+                      </Box>
+                    </Grid>
+                  </>
+                }
+              />
             }
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.net-apy')}
-            value={formatPercent(mockData.APYtotal, { precision: 1 })}
-            footnote={`To date: ${formatPercent(mockData.APYtoDate, { precision: 1 })}`}
-            modal={<div>Explanation of the thing, probably</div>}
+            value="n/a"
+            footnote="To date: 'n/a'"
+            modal={
+              <ManageSectionModal
+                heading={t('manage-earn-vault.net-apy')}
+                description={t('manage-earn-vault.net-apy-modal-aave')}
+              />
+            }
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.liquidation-price-ratio')}
@@ -126,7 +142,20 @@ export function ManageSectionComponent({
             customUnitStyle={{
               fontSize: 3,
             }}
-            modal={<div>Explanation of the thing, probably</div>}
+            modal={
+              <ManageSectionModal
+                heading={t('manage-earn-vault.liquidation-price-ratio')}
+                description={
+                  <Trans
+                    i18nKey="manage-earn-vault.liquidation-price-ratio-modal-aave"
+                    components={[
+                      <AppLink target="_blank" href="https://dune.com/dataalways/stETH-De-Peg" />,
+                      <br />,
+                    ]}
+                  />
+                }
+              />
+            }
             customBackground={getLiquidationPriceRatioColor(managedPosition.liquidationPrice)}
             link={{
               label: t('manage-earn-vault.ratio-history'),
@@ -139,7 +168,7 @@ export function ManageSectionComponent({
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
             title={t('system.total-collateral')}
-            value={`${formatAmount(totalCollateral, 'STETH')} stETH`}
+            value={`${formatAmount(totalCollateralInStEth, 'STETH')} stETH`}
           />
           <DetailsSectionFooterItem
             title={t('manage-earn-vault.position-eth-debt')}
