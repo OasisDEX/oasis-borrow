@@ -24,6 +24,7 @@ import {
   warningsAutoSellValidation,
 } from 'features/automation/protection/autoSell/validators'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
@@ -35,6 +36,7 @@ import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoSellProps {
   vault: Vault
+  vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
   autoSellTriggerData: AutoBSTriggerData
@@ -62,6 +64,7 @@ interface SidebarSetupAutoSellProps {
 
 export function SidebarSetupAutoSell({
   vault,
+  vaultType,
   ilkData,
   balanceInfo,
   context,
@@ -105,6 +108,7 @@ export function SidebarSetupAutoSell({
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+    vaultType,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })

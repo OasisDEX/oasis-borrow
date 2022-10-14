@@ -37,6 +37,7 @@ import {
   warningsStopLossValidation,
 } from 'features/automation/protection/stopLoss/validators'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
@@ -51,6 +52,7 @@ import { Grid, Text } from 'theme-ui'
 
 interface SidebarSetupStopLossProps {
   vault: Vault
+  vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
   autoSellTriggerData: AutoBSTriggerData
@@ -77,6 +79,7 @@ interface SidebarSetupStopLossProps {
 
 export function SidebarSetupStopLoss({
   vault,
+  vaultType,
   ilkData,
   balanceInfo,
   context,
@@ -126,6 +129,7 @@ export function SidebarSetupStopLoss({
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+    vaultType,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -153,8 +157,8 @@ export function SidebarSetupStopLoss({
 
   const sliderPercentageFill = getSliderPercentageFill({
     value: stopLossState.stopLossLevel,
-    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
-    max,
+    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100),
+    max: max.times(100),
   })
 
   const afterNewLiquidationPrice = stopLossState.stopLossLevel

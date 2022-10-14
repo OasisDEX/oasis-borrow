@@ -30,6 +30,7 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/validators'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import {
@@ -65,6 +66,7 @@ interface SidebarSetupAutoTakeProfitProps {
   txHandler: () => void
   vault: Vault
   ethBalance: BigNumber
+  vaultType: VaultType
 }
 
 export function SidebarSetupAutoTakeProfit({
@@ -92,6 +94,7 @@ export function SidebarSetupAutoTakeProfit({
   txHandler,
   vault,
   ethBalance,
+  vaultType,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
@@ -110,6 +113,7 @@ export function SidebarSetupAutoTakeProfit({
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
+    vaultType,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -134,7 +138,7 @@ export function SidebarSetupAutoTakeProfit({
   }
   const sliderPercentageFill = getSliderPercentageFill({
     value: autoTakeProfitState.executionPrice,
-    min: min,
+    min,
     max,
   })
   const targetColRatio = ratioAtCollateralPrice({

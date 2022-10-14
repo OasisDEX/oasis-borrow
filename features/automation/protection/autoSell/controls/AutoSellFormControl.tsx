@@ -17,6 +17,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
@@ -34,6 +35,7 @@ interface AutoSellFormControlProps {
   stopLossTriggerData: StopLossTriggerData
   txHelpers?: TxHelpers
   vault: Vault
+  vaultType: VaultType
 }
 
 export function AutoSellFormControl({
@@ -49,6 +51,7 @@ export function AutoSellFormControl({
   stopLossTriggerData,
   txHelpers,
   vault,
+  vaultType,
 }: AutoSellFormControlProps) {
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
@@ -138,6 +141,7 @@ export function AutoSellFormControl({
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
           vault={vault}
+          vaultType={vaultType}
           executionPrice={executionPrice}
         />
       )}
