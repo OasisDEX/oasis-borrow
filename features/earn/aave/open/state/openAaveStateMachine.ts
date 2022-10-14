@@ -1,4 +1,5 @@
 import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -168,9 +169,10 @@ export const createOpenAaveStateMachine = createMachine(
             target: 'editing',
           },
         },
+        onEntry: ['eventConfirmDeposit'],
       },
       reviewing: {
-        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine'],
+        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine', 'eventConfirmRiskRatio'],
         on: {
           NEXT_STEP: {
             target: 'txInProgress',
@@ -186,7 +188,7 @@ export const createOpenAaveStateMachine = createMachine(
       },
 
       txInProgress: {
-        entry: ['spawnTransactionMachine'],
+        entry: ['spawnTransactionMachine', 'eventConfirmTransaction'],
         on: {
           POSITION_OPENED: {
             target: 'txSuccess',
@@ -320,6 +322,15 @@ export const createOpenAaveStateMachine = createMachine(
       ),
       debounceSendingToParametersMachine: cancel('update-parameters-machine'),
       debounceSendingToSimulationMachine: cancel('update-simulate-machine'),
+      eventConfirmDeposit: ({ amount }) => {
+        trackingEvents.earn.stETHOpenPositionConfirmDeposit(amount!.toString())
+      },
+      eventConfirmRiskRatio: ({ amount }) => {
+        trackingEvents.earn.stETHOpenPositionConfirmRisk(amount!.toString())
+      },
+      eventConfirmTransaction: ({ amount }) => {
+        trackingEvents.earn.stETHOpenPositionConfirmTransaction(amount!.toString())
+      },
     },
   },
 )
