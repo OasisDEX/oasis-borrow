@@ -436,7 +436,7 @@ function createUIChangesSubject(): UIChanges {
   }
 }
 
-function initializeUIChanges() {
+export function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
   uiChangesSubject.configureSubject(STOP_LOSS_FORM_CHANGE, formChangeReducer)

@@ -1,6 +1,26 @@
+import BigNumber from 'bignumber.js'
+import { Vault } from 'blockchain/vaults'
 import { expect } from 'chai'
+import { initializeUIChanges } from 'components/AppContext'
+import { mockVaults } from 'helpers/mocks/vaults.mock'
 // Not sure if the test should be for reducer itself or check whole forms, what components are mounted,rendered etc. ~Ł
+const hundredThousand = new BigNumber('100000')
+const fiftyMillion = new BigNumber('50000000')
+const mockVault = mockVaults({
+    collateral: hundredThousand,
+    debt: fiftyMillion,
+  })
+
+const mockUiChanges = initializeUIChanges()
+
+// prapare mock AutoTakeProfitTriggerData
+// mock return of useAppContext to return mock uiChanges?
+// then call useAutoTakeProfitStateInitializator
 describe('autoTakeProfitFormChangeReducer', () => {
+
+  before(() => {})
+  beforeEach(() => {})
+
   describe('given user has no trigger', () => {
     it('should render form with default values values', () => {
       expect(true).to.be.true // this is just to pass the linter check
@@ -29,3 +49,4 @@ describe('autoTakeProfitFormChangeReducer', () => {
     })
   })
 })
+
