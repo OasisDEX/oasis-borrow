@@ -770,7 +770,9 @@ export const trackingEvents = {
 
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    STETHOpenPositionDepositAmount: (depositAmount: string) => {
+  },
+  earn: {
+    stETHOpenPositionDepositAmount: (depositAmount: string) => {
       const eventBody = {
         id: 'DepositAmount',
         depositAmount,
@@ -779,7 +781,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
-    STETHOpenPositionConfirmDeposit: (depositAmount: string) => {
+    stETHOpenPositionConfirmDeposit: (depositAmount: string) => {
       const eventBody = {
         id: 'ConfirmDeposit',
         depositAmount,
@@ -788,7 +790,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    STETHOpenPositionMoveSlider: (depositAmount: string) => {
+    stETHOpenPositionMoveSlider: (depositAmount: string) => {
       const eventBody = {
         id: 'MoveSlider',
         depositAmount,
@@ -797,7 +799,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
-    STETHOpenPositionConfirmRisk: (depositAmount: string) => {
+    stETHOpenPositionConfirmRisk: (depositAmount: string) => {
       const eventBody = {
         id: 'ConfirmRisk',
         depositAmount,
@@ -806,7 +808,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    STETHOpenPositionConfirmTransaction: (depositAmount: string) => {
+    stETHOpenPositionConfirmTransaction: (depositAmount: string) => {
       const eventBody = {
         id: 'ConfirmTransaction',
         depositAmount,
@@ -815,7 +817,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    STETHAdjustRiskMoveSlider: () => {
+    stETHAdjustRiskMoveSlider: () => {
       const eventBody = {
         id: 'MoveSlider',
         page: Pages.OpenEarnSTETH,
@@ -823,7 +825,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
-    STETHAdjustRiskConfirmRisk: () => {
+    stETHAdjustRiskConfirmRisk: () => {
       const eventBody = {
         id: 'ConfirmRisk',
         page: Pages.OpenEarnSTETH,
@@ -831,7 +833,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    STETHAdjustRiskConfirmTransaction: () => {
+    stETHAdjustRiskConfirmTransaction: () => {
       const eventBody = {
         id: 'ConfirmTransaction',
         page: Pages.OpenEarnSTETH,
@@ -839,7 +841,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    STETHClosePositionConfirm: () => {
+    stETHClosePositionConfirm: () => {
       const eventBody = {
         id: 'Confirm',
         page: Pages.OpenEarnSTETH,
@@ -847,7 +849,7 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    STETHClosePositionConfirmTransaction: () => {
+    stETHClosePositionConfirmTransaction: () => {
       const eventBody = {
         id: 'ConfirmTransaction',
         page: Pages.OpenEarnSTETH,
