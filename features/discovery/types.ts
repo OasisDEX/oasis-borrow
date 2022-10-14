@@ -29,6 +29,11 @@ export interface DiscoveryFiltersSettings {
 export type DiscoveryTableRowData = {
   [key: string]: string | number
 } & {
+  colRatio?: {
+    level: number
+    isAtRisk: boolean
+  }
+} & {
   activity?: {
     kind: DiscoveryTableVaultActivity
     additionalData?: {
