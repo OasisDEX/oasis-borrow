@@ -8,7 +8,7 @@
       "status": {
         "kind": 1
       },
-      "cid": 18604
+      "cdpId": 18604
     },
     {
       "asset": "WBTC",
@@ -18,7 +18,7 @@
       "status": {
         "kind": 2
       },
-      "cid": 17503
+      "cdpId": 17503
     },
     {
       "asset": "WSTETH",
@@ -31,7 +31,7 @@
           "tillLiquidation": 1.02
         }
       },
-      "cid": 6843
+      "cdpId": 6843
     },
     {
       "asset": "ETH",
@@ -44,7 +44,7 @@
           "toStopLoss": 12.61
         }
       },
-      "cid": 24300
+      "cdpId": 24300
     },
     {
       "asset": "ETH",
@@ -57,7 +57,7 @@
           "closedDaysAgo": 5
         }
       },
-      "cid": 24985
+      "cdpId": 24985
     }
   ]
 }

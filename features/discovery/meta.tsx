@@ -1,4 +1,9 @@
-import { getToken } from 'blockchain/tokensMetadata'
+import {
+  discoveryFiltersAssetItems,
+  discoveryMultipleFilter,
+  discoverySizeFilter,
+  discoveryTimeFilter,
+} from 'features/discovery/filters'
 import { discoveryBannerIcons, discoveryNavigationIconContent } from 'features/discovery/icons'
 import { DiscoveryPages } from 'features/discovery/types'
 
@@ -31,17 +36,18 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
     iconContent: discoveryNavigationIconContent[DiscoveryPages.HIGH_RISK_POSITIONS],
     filters: {
       asset: [
-        { value: 'all', label: 'All asset' },
-        { value: 'eth', label: 'ETH', icon: getToken('ETH').iconCircle },
-        { value: 'dai', label: 'DAI', icon: getToken('DAI').iconCircle },
-        { value: 'wbtc', label: 'WBTC', icon: getToken('WBTC').iconCircle },
+        discoveryFiltersAssetItems.all,
+        discoveryFiltersAssetItems.eth,
+        discoveryFiltersAssetItems.wbtc,
+        discoveryFiltersAssetItems.uni,
+        discoveryFiltersAssetItems.link,
+        discoveryFiltersAssetItems.mana,
+        discoveryFiltersAssetItems.matic,
+        discoveryFiltersAssetItems.gusd,
+        discoveryFiltersAssetItems.curve,
+        discoveryFiltersAssetItems.yfi,
       ],
-      value: [
-        { value: '>100k', label: 'Over $100' },
-        { value: '75k-100k', label: '$75,000 - $100,000' },
-        { value: '50k-75k', label: '$50,000 - $75,000' },
-        { value: '<50k', label: 'Below $50,000' },
-      ],
+      size: discoverySizeFilter,
     },
     banner: {
       link: '/multiply',
@@ -53,10 +59,23 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
     endpoint: '/highest-multiply-pnl.json',
     iconColor: '#FFC700',
     iconContent: discoveryNavigationIconContent[DiscoveryPages.HIGHEST_MULTIPLY_PNL],
-    filters: {},
+    filters: {
+      asset: [
+        discoveryFiltersAssetItems.all,
+        discoveryFiltersAssetItems.eth,
+        discoveryFiltersAssetItems.wbtc,
+        discoveryFiltersAssetItems.link,
+        discoveryFiltersAssetItems.mana,
+        discoveryFiltersAssetItems.matic,
+        discoveryFiltersAssetItems.yfi,
+      ],
+      multiple: discoveryMultipleFilter,
+      size: discoverySizeFilter,
+      time: discoveryTimeFilter,
+    },
     banner: {
       link: '/multiply',
-      icon: discoveryBannerIcons[DiscoveryPages.HIGH_RISK_POSITIONS],
+      icon: discoveryBannerIcons[DiscoveryPages.HIGHEST_MULTIPLY_PNL],
     },
   },
   {
@@ -64,7 +83,15 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
     endpoint: '/most-yield-earned.json',
     iconColor: '#00E2BA',
     iconContent: discoveryNavigationIconContent[DiscoveryPages.MOST_YIELD_EARNED],
-    filters: {},
+    filters: {
+      asset: [
+        discoveryFiltersAssetItems.all,
+        discoveryFiltersAssetItems.univ3daiusdc,
+        discoveryFiltersAssetItems.stetheth,
+      ],
+      size: discoverySizeFilter,
+      time: discoveryTimeFilter,
+    },
     banner: {
       link: '/earn',
       icon: discoveryBannerIcons[DiscoveryPages.MOST_YIELD_EARNED],
@@ -75,9 +102,23 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
     endpoint: '/largest-debt.json',
     iconColor: '#FF4DB8',
     iconContent: discoveryNavigationIconContent[DiscoveryPages.LARGEST_DEBT],
-    filters: {},
+    filters: {
+      asset: [
+        discoveryFiltersAssetItems.all,
+        discoveryFiltersAssetItems.eth,
+        discoveryFiltersAssetItems.wbtc,
+        discoveryFiltersAssetItems.uni,
+        discoveryFiltersAssetItems.link,
+        discoveryFiltersAssetItems.mana,
+        discoveryFiltersAssetItems.matic,
+        discoveryFiltersAssetItems.gusd,
+        discoveryFiltersAssetItems.curve,
+        discoveryFiltersAssetItems.yfi,
+      ],
+      size: discoverySizeFilter,
+    },
     banner: {
-      link: '/multiply',
+      link: '/borrow',
       icon: discoveryBannerIcons[DiscoveryPages.LARGEST_DEBT],
     },
   },

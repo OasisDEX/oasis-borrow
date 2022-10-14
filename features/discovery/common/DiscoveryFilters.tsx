@@ -12,7 +12,12 @@ export function DiscoveryFilters({
 }) {
   return (
     <Box sx={{ p: 4 }}>
-      <Grid columns="repeat(4, 205px)" gap="12px">
+      <Grid
+        gap="12px"
+        sx={{
+          gridTemplateColumns: ['100%', 'repeat(2, 1fr)', null, 'repeat(4, 230px)'],
+        }}
+      >
         {Object.keys(filters).map((key) => (
           <GenericSelect
             key={key}

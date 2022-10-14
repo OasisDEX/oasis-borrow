@@ -1,0 +1,69 @@
+{
+  "rows": [
+    {
+      "asset": "WBTC",
+      "collateralValue": 279473.49,
+      "vaultDebt": 180302943.32,
+      "colRatio": { "level": 320.2, "isAtRisk": false },
+      "activity": {
+        "kind": 3,
+        "additionalData": {
+          "daysAgo": 1
+        }
+      },
+      "cdpId": 18604
+    },
+    {
+      "asset": "ETH",
+      "collateralValue": 893274.49,
+      "vaultDebt": 23905894.32,
+      "colRatio": { "level": 180.11, "isAtRisk": true },
+      "activity": {
+        "kind": 1,
+        "additionalData": {
+          "daysAgo": 3
+        }
+      },
+      "cdpId": 17503
+    },
+    {
+      "asset": "ETH",
+      "collateralValue": 318763.49,
+      "vaultDebt": 68413546.32,
+      "colRatio": { "level": 241.68, "isAtRisk": false },
+      "activity": {
+        "kind": 2,
+        "additionalData": {
+          "daysAgo": 2
+        }
+      },
+      "cdpId": 6843
+    },
+    {
+      "asset": "GUNIV3DAIUSDC1",
+      "collateralValue": 218765.37,
+      "vaultDebt": 9843213542.32,
+      "colRatio": { "level": 191.69, "isAtRisk": true },
+      "activity": {
+        "kind": 3,
+        "additionalData": {
+          "daysAgo": 1
+        }
+      },
+      "cdpId": 24300
+    },
+    {
+      "asset": "WSTETH",
+      "collateralValue": 594737.49,
+      "vaultDebt": 50986740.32,
+      "colRatio": { "level": 694.02, "isAtRisk": false },
+      "activity": {
+        "kind": 6,
+        "additionalData": {
+          "daysAgo": 11
+        }
+      },
+      "cdpId": 24985
+    }
+  ]
+}

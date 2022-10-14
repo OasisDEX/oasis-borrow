@@ -6,7 +6,7 @@ import React from 'react'
 
 export function DiscoveryView({ kind }: { kind: DiscoveryPages }) {
   return (
-    <DiscoveryWrapperWithIntro>
+    <DiscoveryWrapperWithIntro key={kind}>
       <DiscoveryNavigation kind={kind} />
       <DiscoveryControl kind={kind} />
     </DiscoveryWrapperWithIntro>
