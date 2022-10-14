@@ -33,6 +33,8 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
 
+  const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
+
   const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, stopLossTriggerData)
   const isAutoSellEnabled = useAutoBSstateInitialization(
@@ -70,6 +72,7 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
         header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
         token={[vault.token]}
         priceInfo={priceInfo}
+        colRatio={colRatioPercnentage}
       />
     )
 
