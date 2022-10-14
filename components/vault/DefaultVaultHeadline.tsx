@@ -42,7 +42,7 @@ export function DefaultVaultHeadline({
           subColor: priceChangeColor,
         },
         {
-          label: 'Collateral Ratio',
+          label: t('system.collateral-ratio'),
           value: `${colRatio}%`,
         },
       ]}
