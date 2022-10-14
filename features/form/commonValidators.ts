@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { mapAutomationEvents, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
 import { isNullish } from '../../helpers/functions'
@@ -485,11 +485,16 @@ export function stopLossTriggeredValidator({
 }: {
   vaultHistory: VaultHistoryEvent[]
 }) {
+  if (!vaultHistory.length) {
+    return false
+  }
+
+  const mappedAuto = mapAutomationEvents(vaultHistory)
+  const potentialExecutionEvent = mappedAuto[0]
+
   return (
-    !!vaultHistory[1] &&
-    'triggerId' in vaultHistory[1] &&
-    vaultHistory[1].eventType === 'executed' &&
-    (vaultHistory[0].kind === 'CLOSE_VAULT_TO_COLLATERAL' ||
-      vaultHistory[0].kind === 'CLOSE_VAULT_TO_DAI')
+    'autoKind' in potentialExecutionEvent &&
+    potentialExecutionEvent.autoKind === 'stop-loss' &&
+    potentialExecutionEvent.eventType === 'executed'
   )
 }

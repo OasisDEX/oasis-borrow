@@ -311,7 +311,7 @@
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
     "basic-sell": "Auto-Sell trigger",
-    "auto-take-profit": "Auto-Take-Profit trigger",
+    "auto-take-profit": "Auto-Take Profit trigger",
     "constant-multiple": "Constant-Multiple trigger",
     "constant-multiple-buy": "Constant-Multiple Buy trigger",
     "constant-multiple-sell": "Constant-Multiple Sell trigger",
