@@ -1,4 +1,11 @@
-import { ADDRESSES, IPosition, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
+import {
+  ADDRESSES,
+  IPosition,
+  IRiskRatio,
+  IStrategy,
+  Position,
+  strategies,
+} from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
@@ -82,9 +89,29 @@ export async function getAdjustAaveParameters(
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
+  const depositAmount = stEthValueLocked && amountToWei(stEthValueLocked, 'ETH')
+
+  const transformedPosition: IBasePosition = {
+    debt: { amount: amountToWei(position.debt.amount, 'ETH'), denomination: 'ETH' },
+    collateral: { amount: amountToWei(position.collateral.amount, 'ETH'), denomination: 'ETH' },
+    category: position.category,
+  }
+
+  console.log(' -- params -- ')
+  console.log(`depositAmount ${depositAmount}`)
+  console.log(`slippage ${slippage}`)
+  console.log(`multiple ${riskRatio.multiple} (ltv ${riskRatio.loanToValue})`)
+
+  console.log(' ----- transformed position (inputting) ------')
+  console.log(`collateral: ${transformedPosition.collateral.amount}`)
+  console.log(`debt: ${transformedPosition.debt.amount}`)
+  console.log(`liquidationThreshold: ${transformedPosition.category.liquidationThreshold}`)
+  console.log(`maxLoanToValue: ${transformedPosition.category.maxLoanToValue}`)
+  console.log(`dustLimit: ${transformedPosition.category.dustLimit}`)
+
   const strat = await strategies.aave.adjustStEth(
     {
-      depositAmount: stEthValueLocked && amountToWei(stEthValueLocked, 'ETH'),
+      depositAmount: depositAmount,
       slippage: slippage,
       multiple: riskRatio.multiple,
     },
@@ -93,11 +120,11 @@ export async function getAdjustAaveParameters(
       provider: provider,
       getSwapData: getOneInchCall(proxyAddress),
       dsProxy: proxyAddress,
-      position,
+      position: transformedPosition,
     },
   )
 
-  logPosition(strat.simulation.position, 'getAdjustAaveParameters - target position')
+  logPosition(strat.simulation.position, 'getAdjustAaveParameters - target position from lib')
 
   return strat
 }
