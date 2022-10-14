@@ -14,6 +14,7 @@ import {
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AutomationKinds } from 'features/automation/common/types'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -249,4 +250,18 @@ export function adjustDefaultValuesIfOutsideSlider({
       execCollRatio: sliderValuesMap[publishType].execCollRatio,
     })
   }
+}
+
+export function getAutomationThatClosedVault({
+  stopLossTriggered,
+  autoTakeProfitTriggered,
+}: {
+  stopLossTriggered: boolean
+  autoTakeProfitTriggered: boolean
+}) {
+  return stopLossTriggered
+    ? AutomationKinds.STOP_LOSS
+    : autoTakeProfitTriggered
+    ? AutomationKinds.AUTO_TAKE_PROFIT
+    : undefined
 }

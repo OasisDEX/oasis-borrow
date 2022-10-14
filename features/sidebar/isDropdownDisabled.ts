@@ -2,11 +2,14 @@ import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 interface IsDropdownDisabledParams {
   stage: SidebarVaultStages
-  isSLPanelVisible?: boolean
+  isClosedVaultPanelVisible?: boolean
 }
 
-export function isDropdownDisabled({ stage, isSLPanelVisible = false }: IsDropdownDisabledParams) {
-  if (isSLPanelVisible) return true
+export function isDropdownDisabled({
+  stage,
+  isClosedVaultPanelVisible = false,
+}: IsDropdownDisabledParams) {
+  if (isClosedVaultPanelVisible) return true
 
   switch (stage) {
     case 'proxyWaitingForApproval':

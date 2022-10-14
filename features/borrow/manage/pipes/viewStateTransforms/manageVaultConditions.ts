@@ -2,6 +2,7 @@ import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
   afterCollRatioThresholdRatioValidator,
+  automationTriggeredValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -20,7 +21,6 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
-  stopLossTriggeredValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -214,6 +214,7 @@ export interface ManageVaultConditions {
   depositCollateralOnVaultUnderDebtFloor: boolean
 
   stopLossTriggered: boolean
+  autoTakeProfitTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
   afterCollRatioBelowAutoSellRatio: boolean
   afterCollRatioAboveAutoBuyRatio: boolean
@@ -276,6 +277,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   depositCollateralOnVaultUnderDebtFloor: false,
 
   stopLossTriggered: false,
+  autoTakeProfitTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
   afterCollRatioBelowAutoSellRatio: false,
   afterCollRatioAboveAutoBuyRatio: false,
@@ -624,7 +626,9 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     'multiplyTransitionFailure',
   ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered = stopLossTriggeredValidator({ vaultHistory })
+  const { stopLossTriggered, autoTakeProfitTriggered } = automationTriggeredValidator({
+    vaultHistory,
+  })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
@@ -679,6 +683,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     depositCollateralOnVaultUnderDebtFloor,
 
     stopLossTriggered,
+    autoTakeProfitTriggered,
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowAutoSellRatio,
     afterCollRatioAboveAutoBuyRatio,

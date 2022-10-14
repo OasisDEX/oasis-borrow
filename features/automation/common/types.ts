@@ -14,6 +14,14 @@ export enum AutomationFeatures {
   STOP_LOSS = 'stopLoss',
   AUTO_TAKE_PROFIT = 'autoTakeProfit',
 }
+
+export enum AutomationKinds {
+  AUTO_BUY = 'auto-buy',
+  AUTO_SELL = 'auto-sell',
+  STOP_LOSS = 'stop-loss',
+  AUTO_TAKE_PROFIT = 'auto-take-profit',
+}
+
 export type SidebarAutomationFlow =
   | 'addSl'
   | 'editSl'

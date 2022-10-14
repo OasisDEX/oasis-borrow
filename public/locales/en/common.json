@@ -1237,6 +1237,7 @@
   },
   "setup": "Setup",
   "protection": {
+    "stop-loss": "Stop-Loss",
     "stop-loss-protection": "Stop-Loss Protection",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
@@ -1727,7 +1728,12 @@
     "updating": "Updating {{feature}}",
     "cancelling": "Cancelling {{feature}}",
     "update-trigger": "Update {{feature}}",
-    "cancel-trigger": "Cancel {{feature}}"
+    "cancel-trigger": "Cancel {{feature}}",
+    "trigger-executed-banner-title": "{{feature}} triggered",
+    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
+    "summary": "{{feature}} summary",
+    "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
+    "trigger-executed": "Your {{feature}} was triggered"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
