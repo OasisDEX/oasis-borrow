@@ -13,6 +13,8 @@ import {
   AaveUserReserveData,
   AaveUserReserveDataParameters,
 } from '../../../../../blockchain/calls/aave/aaveProtocolDataProvider'
+import { callOperationExecutor } from '../../../../../blockchain/calls/operationExecutor'
+import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
@@ -20,8 +22,6 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { getAdjustAaveParameters, logPosition } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
-import { callOperationExecutor } from '../../../../../blockchain/calls/operationExecutor'
-import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 
 export function getManageAavePositionStateMachineServices$(
   context$: Observable<ContextConnected>,
