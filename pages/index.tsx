@@ -8,11 +8,25 @@ import React from 'react'
 
 import { HomepageView } from '../features/homepage/HomepageView'
 
-export const getStaticProps = async ({ locale }: { locale: string }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-})
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  console.log(' ')
+  console.log(' ')
+  console.log(' ')
+  console.log(' ')
+  console.log(
+    'serverSideTranslations(locale, ["common"])',
+    JSON.stringify(await serverSideTranslations(locale, ['common']), null, 4),
+  )
+  console.log(' ')
+  console.log(' ')
+  console.log(' ')
+  console.log(' ')
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
 
 function LandingPage() {
   return (

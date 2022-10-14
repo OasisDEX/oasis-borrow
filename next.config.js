@@ -14,6 +14,7 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 const { withSentryConfig } = require('@sentry/nextjs')
 const { publicRuntimeConfig } = require('./runtime.config.js')
+const path = require('path')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
@@ -98,6 +99,14 @@ const conf = withBundleAnalyzer(
               failOnError: false,
               allowAsyncCycles: false,
               cwd: process.cwd(),
+            }),
+          )
+        }
+        if (config.mode === 'development') {
+          const { I18NextHMRPlugin } = require('i18next-hmr/plugin')
+          config.plugins.push(
+            new I18NextHMRPlugin({
+              localesDir: path.resolve('./public/locales'),
             }),
           )
         }
