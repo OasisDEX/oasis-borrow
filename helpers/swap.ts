@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 
+import { one } from './zero'
+
 async function swapOneInchTokens(
   fromTokenAddress: string,
   toTokenAddress: string,
@@ -75,7 +77,7 @@ export function getOneInchCall(swapAddress: string) {
     return {
       toTokenAddress: to,
       fromTokenAddress: from,
-      minToTokenAmount: new BigNumber(response.toTokenAmount),
+      minToTokenAmount: new BigNumber(response.toTokenAmount).times(one.minus(slippage)),
       toTokenAmount: new BigNumber(response.toTokenAmount),
       fromTokenAmount: new BigNumber(response.fromTokenAmount),
       exchangeCalldata: response.tx.data,

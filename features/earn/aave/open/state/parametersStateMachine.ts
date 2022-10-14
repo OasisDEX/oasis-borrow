@@ -62,6 +62,7 @@ export const createParametersStateMachine = createMachine(
       idle: {
         on: {
           VARIABLES_RECEIVED: {
+            cond: 'hasAllVariables',
             target: 'gettingParameters',
             actions: ['assignReceivedParameters'],
           },
@@ -73,7 +74,7 @@ export const createParametersStateMachine = createMachine(
           id: 'getParameters',
           onDone: {
             target: 'estimatingGas',
-            actions: ['assignTransactionParameters'],
+            actions: ['assignTransactionParameters', 'notifyParent'],
           },
           onError: {
             actions: ['logError'],
@@ -130,6 +131,16 @@ export const createParametersStateMachine = createMachine(
     },
   },
   {
+    guards: {
+      hasAllVariables: (_, event) => {
+        return (
+          event.proxyAddress !== undefined &&
+          event.amount !== undefined &&
+          event.amount.gt(0) &&
+          event.token !== undefined
+        )
+      },
+    },
     actions: {
       assignReceivedParameters: assign((context, event) => {
         return {
