@@ -83,7 +83,7 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
   const assetFilter: string = asset.toUpperCase() || 'all'
   const timeIndex = Object.keys(timeFilter)[0]
   try {
-    let data: LargestDebt[] | HighestPnl[] | HighRisk[] | MostYield[] = []
+    let data: HighRisk[] | LargestDebt[] | HighestPnl[] | MostYield[] = []
     switch (table) {
       case DiscoveryPages.HIGH_RISK_POSITIONS: {
         data = (await prisma.highRisk.findMany({
@@ -104,6 +104,15 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
         data = (await prisma.largestDebt.findMany({
           take: 10,
           where: { collateral_type: assetFilter, collateral_value: sizeFilter },
+          select: {
+            protocol_id: true,
+            position_id: true,
+            collateral_type: true,
+            collateral_value: true,
+            vault_debt: true,
+            coll_ratio: true,
+            last_action: true,
+          },
         })) as LargestDebt[]
         break
       }
@@ -125,6 +134,11 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             last_action: true,
           },
         })) as HighestPnl[]
+        data.map((e: any) => {
+          const replacedData = e[timeIndex]
+          delete e[timeIndex]
+          e['pnl'] = replacedData
+        })
         break
       }
       case DiscoveryPages.MOST_YIELD_EARNED: {
@@ -142,7 +156,11 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             last_action: true,
           },
         })) as MostYield[]
-
+        data.map((e: any) => {
+          const replacedData = e[timeIndex]
+          delete e[timeIndex]
+          e['earned'] = replacedData
+        })
         break
       }
       default: {
