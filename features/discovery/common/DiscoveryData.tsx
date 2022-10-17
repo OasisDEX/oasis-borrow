@@ -41,8 +41,10 @@ export function DiscoveryData({ banner, response, isLoading, kind }: DiscoveryDa
             />
           )}
         </>
+      ) : isLoading ? (
+        <DiscoveryPreloader isContentLoaded={false} />
       ) : (
-        <>{isLoading ? <DiscoveryPreloader isContentLoaded={false} /> : <DiscoveryError />}</>
+        <DiscoveryError />
       )}
     </Box>
   )
