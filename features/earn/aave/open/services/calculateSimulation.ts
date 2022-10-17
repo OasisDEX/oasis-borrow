@@ -38,7 +38,7 @@ export function calculateSimulation({
     yields.annualisedYield1Year &&
     amount.times(yields.annualisedYield1Year.plus(one)).minus(amount).div(365)
   return {
-    apy: yields.annualisedYield1Year,
+    apy: yields.annualisedYield7days,
     breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
     previous7Days:
