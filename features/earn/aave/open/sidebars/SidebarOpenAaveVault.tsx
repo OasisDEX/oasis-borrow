@@ -11,6 +11,7 @@ import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { OpenAaveInformationContainer } from '../../common/components/OpenAaveInformationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
+import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
@@ -156,6 +157,7 @@ export function SidebarOpenAaveVault() {
         <AdjustRiskView
           state={state}
           send={send}
+          resetRiskValue={aaveStETHMinimumRiskRatio}
           primaryButton={{
             steps: [2, state.context.totalSteps!],
             isLoading: false,

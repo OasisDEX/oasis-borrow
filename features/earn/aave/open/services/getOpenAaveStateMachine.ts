@@ -103,7 +103,7 @@ export function contextToTransactionParameters(context: OpenAaveContext): Operat
     operationName: 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
-    amount: context.amount!,
+    amount: context.userInput.amount!,
   }
 }
 

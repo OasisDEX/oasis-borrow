@@ -1890,7 +1890,12 @@
         "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
         "stop-close": "Not right now",
         "eth-after-closing": "ETH after closing",
-        "retry-btn": "Retry"
+        "retry-btn": "Retry",
+        "adjust-title": "Confirm adjustment",
+        "adjust-description": "You are about to adjust the risk level of your vault. Please confirm the changes below.",
+        "back-to-editing": "Back to editing",
+        "success-title": "Success!",
+        "position-adjusted-btn": "OK"
       }
     }
   },

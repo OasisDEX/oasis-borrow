@@ -3,6 +3,12 @@ import BigNumber from 'bignumber.js'
 import { EventObject, Sender } from 'xstate'
 
 import { HasGasEstimation } from '../../../../helpers/form'
+import { AaveProtocolData } from '../manage/state'
+
+type UserInput = {
+  riskRatio?: IRiskRatio
+  amount?: BigNumber
+}
 
 export type IStrategyInfo = {
   oracleAssetPrice: BigNumber
@@ -21,7 +27,9 @@ export interface BaseAaveContext {
   token: string
   proxyAddress?: string
   strategyInfo?: IStrategyInfo
-  riskRatio: IRiskRatio
+  resetRiskRatio?: IRiskRatio
+  userInput: UserInput
+  protocolData?: AaveProtocolData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
-import { Awaited } from 'ts-essentials'
 
 import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
@@ -33,10 +30,9 @@ export async function getOpenAaveParameters(
 ): Promise<IStrategy> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const weiAmount = amountToWei(amount, 'ETH')
-  return await strategies.aave.openStEth(
+  const params = await strategies.aave.openStEth(
     {
-      depositAmount: weiAmount,
+      depositAmount: amountToWei(amount, 'ETH'),
       slippage: slippage,
       multiple: riskRatio.multiple,
     },
@@ -47,9 +43,45 @@ export async function getOpenAaveParameters(
       getSwapData: getOneInchCall(context.swapAddress),
     },
   )
+
+  return params
 }
 
-export type CloseStEthReturn = Awaited<ReturnType<typeof strategies.aave.closeStEth>>
+export async function getAdjustAaveParameters(
+  context: ContextConnected,
+  stEthValueLocked: BigNumber | undefined,
+  riskRatio: IRiskRatio,
+  slippage: BigNumber,
+  proxyAddress: string,
+  position: IPosition,
+): Promise<IStrategy> {
+  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+
+  const depositAmount = stEthValueLocked && amountToWei(stEthValueLocked, 'ETH')
+
+  const transformedPosition: IBasePosition = {
+    debt: { amount: amountToWei(position.debt.amount, 'ETH'), denomination: 'ETH' },
+    collateral: { amount: amountToWei(position.collateral.amount, 'ETH'), denomination: 'ETH' },
+    category: position.category,
+  }
+
+  const strat = await strategies.aave.adjustStEth(
+    {
+      depositAmount: depositAmount,
+      slippage: slippage,
+      multiple: riskRatio.multiple,
+    },
+    {
+      addresses: getAddressesFromContext(context),
+      provider: provider,
+      getSwapData: getOneInchCall(context.swapAddress),
+      dsProxy: proxyAddress,
+      position: transformedPosition,
+    },
+  )
+
+  return strat
+}
 
 export async function getCloseAaveParameters(
   context: ContextConnected,
@@ -57,7 +89,7 @@ export async function getCloseAaveParameters(
   slippage: BigNumber,
   proxyAddress: string,
   position: IBasePosition,
-): Promise<CloseStEthReturn> {
+): Promise<IStrategy> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
   return await strategies.aave.closeStEth(

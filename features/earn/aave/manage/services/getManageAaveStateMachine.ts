@@ -1,6 +1,4 @@
-import { RiskRatio } from '@oasisdex/oasis-actions'
-import BigNumber from 'bignumber.js'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
@@ -27,13 +25,13 @@ function contextToTransactionParameters(context: ManageAaveContext): OperationEx
 }
 
 export function getManageAaveStateMachine$(
-  services: ManageAaveStateMachineServices,
+  services$: Observable<ManageAaveStateMachineServices>,
   closePositionParametersStateMachine$: Observable<ClosePositionParametersStateMachine>,
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
   { token, address, strategy }: { token: string; address: string; strategy: string },
 ): Observable<ManageAaveStateMachine> {
-  return closePositionParametersStateMachine$.pipe(
-    map((closePositionParametersStateMachine) => {
+  return combineLatest(closePositionParametersStateMachine$, services$).pipe(
+    map(([closePositionParametersStateMachine, services]) => {
       return createManageAaveStateMachine
         .withConfig({
           services: {
@@ -90,11 +88,7 @@ export function getManageAaveStateMachine$(
         })
         .withContext({
           token,
-          riskRatio: new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE),
-          userInput: {
-            riskRatio: new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE),
-            amount: new BigNumber(0),
-          },
+          userInput: {},
           inputDelay: 1000,
           address,
           strategy,

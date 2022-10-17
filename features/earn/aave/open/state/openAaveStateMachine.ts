@@ -5,11 +5,13 @@ import { cancel } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
+import { allDefined } from '../../../../../helpers/allDefined'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
+import { aaveStETHMinimumRiskRatio } from '../../constants'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
@@ -22,7 +24,6 @@ export interface OpenAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
 
-  amount?: BigNumber
   auxiliaryAmount?: BigNumber
   strategyName?: string
   hasOtherAssetsThanETH_STETH?: boolean
@@ -204,11 +205,11 @@ export const createOpenAaveStateMachine = createMachine(
   },
   {
     guards: {
-      emptyProxyAddress: ({ proxyAddress }) => proxyAddress === undefined,
-      validTransactionParameters: ({ amount, proxyAddress, transactionParameters }) =>
-        amount !== undefined && proxyAddress !== undefined && transactionParameters !== undefined,
-      enoughBalance: ({ tokenBalance, amount }) =>
-        tokenBalance !== undefined && amount !== undefined && tokenBalance.gt(amount),
+      emptyProxyAddress: ({ proxyAddress }) => !allDefined(proxyAddress),
+      validTransactionParameters: ({ userInput, proxyAddress, transactionParameters }) =>
+        allDefined(userInput, proxyAddress, transactionParameters),
+      enoughBalance: ({ tokenBalance, userInput }) =>
+        allDefined(tokenBalance, userInput.amount) && tokenBalance!.gt(userInput.amount!),
     },
     actions: {
       initContextValues: assign((context) => ({
@@ -218,6 +219,7 @@ export const createOpenAaveStateMachine = createMachine(
         token: 'ETH',
         inputDelay: 1000,
         strategyName: 'stETHeth',
+        userInput: {},
       })),
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,
@@ -230,8 +232,8 @@ export const createOpenAaveStateMachine = createMachine(
         (context): ParametersStateMachineEvents => {
           return {
             type: 'VARIABLES_RECEIVED',
-            amount: context.amount!,
-            riskRatio: context.riskRatio,
+            amount: context.userInput?.amount!,
+            riskRatio: context.userInput.riskRatio || aaveStETHMinimumRiskRatio,
             token: context.token,
             proxyAddress: context.proxyAddress,
           }
@@ -242,9 +244,12 @@ export const createOpenAaveStateMachine = createMachine(
           id: 'update-parameters-machine',
         },
       ),
-      setRiskRatio: assign((_, event) => {
+      setRiskRatio: assign((context, event) => {
         return {
-          riskRatio: event.riskRatio,
+          userInput: {
+            ...context.userInput,
+            riskRatio: event.riskRatio,
+          },
         }
       }),
       updateTotalSteps: assign((context) => {
@@ -256,12 +261,15 @@ export const createOpenAaveStateMachine = createMachine(
       }),
       setAmount: assign((context, event) => {
         return {
-          amount: event.amount,
+          userInput: {
+            ...context.userInput,
+            amount: event.amount,
+          },
         }
       }),
       calculateAuxiliaryAmount: assign((context) => {
         return {
-          auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
+          auxiliaryAmount: context.userInput.amount?.times(context.tokenPrice || zero),
         }
       }),
       assignProxyAddress: assign((_, event) => ({
@@ -299,8 +307,8 @@ export const createOpenAaveStateMachine = createMachine(
         (context): AaveStEthSimulateStateMachineEvents => {
           return {
             type: 'USER_PARAMETERS_CHANGED',
-            amount: context.amount || zero,
-            riskRatio: context.riskRatio,
+            amount: context.userInput.amount || zero,
+            riskRatio: context.userInput.riskRatio || aaveStETHMinimumRiskRatio,
             token: context.token,
           }
         },

@@ -14,6 +14,7 @@ import { SidebarSectionFooterButtonSettings } from '../../../../../components/si
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
+import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
 import { OpenAaveInformationContainer } from './OpenAaveInformationContainer'
 
@@ -22,6 +23,7 @@ type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
 type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
   textButton: SidebarSectionFooterButtonSettings
+  resetRiskValue: IRiskRatio
   viewLocked?: boolean // locks whole view + displays warning
 }
 
@@ -30,18 +32,26 @@ export function AdjustRiskView({
   send,
   primaryButton,
   textButton,
+  resetRiskValue,
   viewLocked = false,
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
-  const maxRisk = state.context.transactionParameters?.simulation.position.category.maxLoanToValue
+  const position = state.context.protocolData
+    ? state.context.protocolData.position
+    : state.context.transactionParameters?.simulation.position
+
+  const maxRisk = position?.category.maxLoanToValue
 
   const minRisk =
-    state.context.transactionParameters?.simulation.minConfigurableRiskRatio ||
-    new RiskRatio(zero, RiskRatio.TYPE.LTV)
+    (state.context.transactionParameters?.simulation.minConfigurableRiskRatio &&
+      BigNumber.max(
+        state.context.transactionParameters?.simulation.minConfigurableRiskRatio.loanToValue,
+        aaveStETHMinimumRiskRatio.loanToValue,
+      )) ||
+    aaveStETHMinimumRiskRatio.loanToValue
 
-  const liquidationPrice =
-    state.context.transactionParameters?.simulation.position.liquidationPrice || zero
+  const liquidationPrice = position?.liquidationPrice || zero
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
@@ -50,7 +60,7 @@ export function AdjustRiskView({
     AT_RISK = 'AT_RISK',
   }
 
-  const healthFactor = state.context.transactionParameters?.simulation.position.healthFactor
+  const healthFactor = position?.healthFactor
 
   const warningHealthFactor = new BigNumber('1.25')
 
@@ -77,8 +87,12 @@ export function AdjustRiskView({
       precision: 2,
     },
   )
-  console.log(`minRisk: ${minRisk.loanToValue}`)
-  console.log(`maxRisk: ${maxRisk}`)
+
+  const sliderValue =
+    state.context.userInput.riskRatio?.loanToValue ||
+    position?.riskRatio.loanToValue ||
+    aaveStETHMinimumRiskRatio.loanToValue
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
@@ -95,9 +109,9 @@ export function AdjustRiskView({
           onChange={(ltv) => {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
           }}
-          minBoundry={minRisk.loanToValue || zero}
+          minBoundry={minRisk}
           maxBoundry={maxRisk || zero}
-          lastValue={state.context.riskRatio.loanToValue}
+          lastValue={sliderValue}
           disabled={viewLocked}
           step={0.01}
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {
@@ -156,7 +170,7 @@ export function AdjustRiskView({
 
         <SidebarResetButton
           clear={() => {
-            send({ type: 'SET_RISK_RATIO', riskRatio: minRisk })
+            send({ type: 'SET_RISK_RATIO', riskRatio: resetRiskValue })
           }}
           disabled={viewLocked}
         />
