@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
+import { useToggle } from 'helpers/useToggle'
 import { keyBy } from 'lodash'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
@@ -52,7 +53,7 @@ export function GenericSelect({
 }: GenericSelectProps) {
   const isMobile = useOnMobile() && window && 'ontouchstart' in window
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const [value, setValue] = useState<GenericSelectOption | undefined>(defaultValue)
 
   const optionsByValue = keyBy(options, 'value')
@@ -202,12 +203,7 @@ export function GenericSelect({
         components={{
           DropdownIndicator: null,
           Control: (props) => (
-            <Box
-              ref={componentRef}
-              onClick={() => {
-                setIsOpen(!isOpen)
-              }}
-            >
+            <Box ref={componentRef} onClick={toggleIsOpen}>
               <components.Control {...props} />
             </Box>
           ),
