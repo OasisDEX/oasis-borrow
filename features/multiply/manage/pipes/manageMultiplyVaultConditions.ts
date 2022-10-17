@@ -9,6 +9,7 @@ import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
   afterCollRatioThresholdRatioValidator,
+  automationTriggeredValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -27,7 +28,6 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
-  stopLossTriggeredValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -231,6 +231,7 @@ export interface ManageVaultConditions {
   highSlippage: boolean
   invalidSlippage: boolean
   stopLossTriggered: boolean
+  autoTakeProfitTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
   afterCollRatioBelowAutoSellRatio: boolean
   afterCollRatioAboveAutoBuyRatio: boolean
@@ -301,6 +302,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   highSlippage: false,
   invalidSlippage: false,
   stopLossTriggered: false,
+  autoTakeProfitTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
   afterCollRatioBelowAutoSellRatio: false,
   afterCollRatioAboveAutoBuyRatio: false,
@@ -708,7 +710,9 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered = stopLossTriggeredValidator({ vaultHistory })
+  const { stopLossTriggered, autoTakeProfitTriggered } = automationTriggeredValidator({
+    vaultHistory,
+  })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
@@ -769,6 +773,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
 
     highSlippage,
     stopLossTriggered,
+    autoTakeProfitTriggered,
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowAutoSellRatio,
     afterCollRatioAboveAutoBuyRatio,

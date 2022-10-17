@@ -8,12 +8,10 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { StopLossTriggeredFormControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredFormControl'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Divider, Grid, Text } from 'theme-ui'
 
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
@@ -65,57 +63,39 @@ export function ManageVaultForm(
     collateralAllowanceTxHash,
     vault: { token },
     stage,
-    stopLossTriggered,
-    vaultHistory,
   } = props
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
-  const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
 
   const gasData = extractGasDataFromState(props)
-  const mostRecentEvent = vaultHistory[0]
-
-  const isVaultClosed =
-    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_DAI' ||
-    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && stopLossReadEnabled && isVaultClosed ? (
-        <StopLossTriggeredFormControl
-          closeEvent={mostRecentEvent}
-          onClick={() => setReopenPositionClicked(true)}
-        />
-      ) : (
+      <ManageVaultFormHeader {...props} />
+      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
+      {isEditingStage && <ManageVaultEditing {...props} />}
+      {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
+      {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
+      {isManageStage && <ManageVaultConfirmation {...props} />}
+      {isMultiplyTransitionStage && <ManageVaultMultiplyTransition {...props} />}
+      {accountIsConnected && (
         <>
-          <ManageVaultFormHeader {...props} />
-          {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
-          {isEditingStage && <ManageVaultEditing {...props} />}
-          {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
-          {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
-          {isManageStage && <ManageVaultConfirmation {...props} />}
-          {isMultiplyTransitionStage && <ManageVaultMultiplyTransition {...props} />}
-          {accountIsConnected && (
-            <>
-              <VaultErrors {...props} />
-              <VaultWarnings {...props} />
-              {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
-              <ManageVaultButton {...props} />
-            </>
-          )}
-          {isProxyStage && <VaultProxyStatusCard {...props} />}
-          {isCollateralAllowanceStage && (
-            <VaultAllowanceStatus
-              {...props}
-              allowanceTxHash={collateralAllowanceTxHash}
-              token={token}
-            />
-          )}
-          {isDaiAllowanceStage && (
-            <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
-          )}
-          {isManageStage && <ManageVaultConfirmationStatus {...props} />}
+          <VaultErrors {...props} />
+          <VaultWarnings {...props} />
+          {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
+          <ManageVaultButton {...props} />
         </>
       )}
+      {isProxyStage && <VaultProxyStatusCard {...props} />}
+      {isCollateralAllowanceStage && (
+        <VaultAllowanceStatus
+          {...props}
+          allowanceTxHash={collateralAllowanceTxHash}
+          token={token}
+        />
+      )}
+      {isDaiAllowanceStage && (
+        <VaultAllowanceStatus {...props} allowanceTxHash={daiAllowanceTxHash} token={'DAI'} />
+      )}
+      {isManageStage && <ManageVaultConfirmationStatus {...props} />}
     </VaultFormContainer>
   )
 }

@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { autoKindToCopyMap } from 'features/automation/common/consts'
+import { AutomationKinds } from 'features/automation/common/types'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -8,9 +10,10 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
-  isSLPanelVisible?: boolean
+  isClosedVaultPanelVisible?: boolean
   openFlowWithStopLoss?: boolean
   isStopLossEnabled?: boolean
+  automationThatClosedVault?: AutomationKinds.AUTO_TAKE_PROFIT | AutomationKinds.STOP_LOSS
 }
 
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
@@ -92,14 +95,19 @@ export function getSidebarTitle({
   flow,
   stage,
   token,
-  isSLPanelVisible = false,
+  isClosedVaultPanelVisible = false,
   openFlowWithStopLoss = false,
   isStopLossEnabled = false,
+  automationThatClosedVault,
 }: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
-  if (isSLPanelVisible) return t('protection.your-stop-loss-triggered')
+
+  if (isClosedVaultPanelVisible && automationThatClosedVault)
+    return t('automation.trigger-executed', {
+      feature: t(autoKindToCopyMap[automationThatClosedVault]),
+    })
 
   switch (stage) {
     case 'editing':

@@ -328,7 +328,7 @@
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
     "basic-sell": "Auto-Sell trigger",
-    "auto-take-profit": "Auto-Take Profit trigger",
+    "auto-take-profit": "Take Profit trigger",
     "constant-multiple": "Constant-Multiple trigger",
     "constant-multiple-buy": "Constant-Multiple Buy trigger",
     "constant-multiple-sell": "Constant-Multiple Sell trigger",
@@ -861,7 +861,7 @@
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
-    "auto-take-profit": "Auto-Take Profit",
+    "auto-take-profit": "Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -1237,6 +1237,7 @@
   },
   "setup": "Setup",
   "protection": {
+    "stop-loss": "Stop-Loss",
     "stop-loss-protection": "Stop-Loss Protection",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
@@ -1691,11 +1692,11 @@
       "button": "Setup Take Profit"
     },
     "trigger-col-price": "Trigger {{token}} Price",
-    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
+    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Take profit.",
     "estimated-profit": "Estimated Profit at close {{amount}}",
     "estimated-profit-explanation": "Estimated Profit at Close = Collateral value (USD) at trigger - Debt value to be repaid - estimated Tx Fees",
     "trigger-col-ratio": "Trigger Collateral Ratio",
-    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
+    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Take profit.",
     "current-col-ratio": "Current Collateral Ratio {{amount}}",
     "estimated-at-trigger": "Estimated {{token}} at Trigger",
     "vault-changes": {
@@ -1727,7 +1728,12 @@
     "updating": "Updating {{feature}}",
     "cancelling": "Cancelling {{feature}}",
     "update-trigger": "Update {{feature}}",
-    "cancel-trigger": "Cancel {{feature}}"
+    "cancel-trigger": "Cancel {{feature}}",
+    "trigger-executed-banner-title": "{{feature}} triggered",
+    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
+    "summary": "{{feature}} summary",
+    "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
+    "trigger-executed": "Your {{feature}} was triggered"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",

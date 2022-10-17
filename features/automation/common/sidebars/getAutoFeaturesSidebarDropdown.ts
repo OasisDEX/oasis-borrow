@@ -3,9 +3,9 @@ import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionH
 import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
 import {
   AUTOMATION_CHANGE_FEATURE,
-  AutomationKinds,
   AutomationOptimizationFeatures,
   AutomationProtectionFeatures,
+  AutomationTypes,
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -13,7 +13,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
 interface GetAutoFeaturesSidebarDropdownProps {
-  type: AutomationKinds
+  type: AutomationTypes
   forcePanel: AutomationProtectionFeatures | AutomationOptimizationFeatures
   vaultType: VaultType
   disabled?: boolean
@@ -25,7 +25,7 @@ interface GetAutoFeaturesSidebarDropdownProps {
 }
 interface GetAutoFeaturesSidebarDropdownItemProps {
   translationKey: string
-  type: AutomationKinds
+  type: AutomationTypes
   panel: AutomationProtectionFeatures | AutomationOptimizationFeatures
   isFeatureEnabled?: boolean
 }

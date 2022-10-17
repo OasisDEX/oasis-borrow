@@ -1,6 +1,6 @@
 import { AutomationFeatures } from 'features/automation/common/types'
 
-export type AutomationKinds = 'Protection' | 'Optimization'
+export type AutomationTypes = 'Protection' | 'Optimization'
 export type AutomationProtectionFeatures =
   | AutomationFeatures.STOP_LOSS
   | AutomationFeatures.AUTO_SELL
@@ -13,7 +13,7 @@ export type AutomationFormType = 'add' | 'remove'
 export const AUTOMATION_CHANGE_FEATURE = 'automationChangeFeature'
 
 export type AutomationChangeFeatureAction = {
-  type: AutomationKinds
+  type: AutomationTypes
   currentProtectionFeature?: AutomationProtectionFeatures
   currentOptimizationFeature?: AutomationOptimizationFeatures
 }
