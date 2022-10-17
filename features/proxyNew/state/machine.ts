@@ -63,9 +63,6 @@ export function createProxyStateMachine(
             onError: 'proxyFailure',
           },
           on: {
-            CONFIRMED: {
-              actions: [nameOfAction('assignProxyConfirmations')],
-            },
             IN_PROGRESS: {
               actions: [nameOfAction('assignTxHash')],
             },

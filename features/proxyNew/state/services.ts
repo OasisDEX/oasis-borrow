@@ -1,6 +1,6 @@
 /* eslint-disable func-style */
 import { TxStatus } from '@oasisdex/transactions'
-import { iif, of } from 'rxjs'
+import { of } from 'rxjs'
 import { filter, first, map, switchMap } from 'rxjs/operators'
 
 import { createDsProxy, CreateDsProxyData } from '../../../blockchain/calls/proxy'
@@ -35,22 +35,13 @@ const createProxy: ProxyObservableService = ({ dependencies }: ProxyContext, _: 
               ? txState.error
               : undefined,
         }),
-      (txState) =>
+      () =>
         proxyAddress$.pipe(
           filter((proxyAddress) => !!proxyAddress),
-          switchMap((proxyAddress) =>
-            iif(
-              () => (txState as any).confirmations > 0,
-              of({
-                type: 'CONFIRMED',
-                proxyConfirmations: (txState as any).confirmations,
-              }),
-              of({
-                type: 'SUCCESS',
-                proxyAddress: proxyAddress!,
-              }),
-            ),
-          ),
+          map((proxyAddress) => ({
+            type: 'SUCCESS',
+            proxyAddress: proxyAddress!,
+          })),
         ),
       safeConfirmations,
     ),
