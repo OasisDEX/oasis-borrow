@@ -4,6 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { LANDING_PILLS } from 'content/landing'
+import { DISCOVERY_URL } from 'features/discovery/helpers'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import {
@@ -444,7 +445,7 @@ const LINKS = {
   multiply: `/multiply`,
   borrow: `/borrow`,
   earn: '/earn',
-  discovery: '/discovery',
+  discovery: DISCOVERY_URL,
 }
 
 function ConnectedHeader() {

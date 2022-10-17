@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { SystemStyleObject } from '@styled-system/css'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
@@ -24,7 +25,7 @@ export interface GenericSelectProps {
   customStyles?: ReactSelectSimplifiedStyles
   defaultValue?: GenericSelectOption
   expandableArrowSize?: number
-  expandableArrowSx?: SxProps
+  expandableArrowSx?: SystemStyleObject & SxProps
   iconSize?: number
   isDisabled?: boolean
   isSearchable?: boolean
@@ -32,6 +33,7 @@ export interface GenericSelectProps {
   onChange?: (value: GenericSelectOption) => void
   options: GenericSelectOption[]
   placeholder?: string
+  wrapperSx?: SystemStyleObject & SxProps
 }
 
 export function GenericSelect({
@@ -46,6 +48,7 @@ export function GenericSelect({
   onChange,
   options,
   placeholder,
+  wrapperSx,
 }: GenericSelectProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [value, setValue] = useState<GenericSelectOption | undefined>(defaultValue)
@@ -148,7 +151,7 @@ export function GenericSelect({
     )
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative', ...wrapperSx }}>
       <ReactSelect
         blurInputOnSelect={true}
         isDisabled={isDisabled}
