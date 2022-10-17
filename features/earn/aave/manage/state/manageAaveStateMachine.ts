@@ -18,7 +18,7 @@ import {
   TransactionStateMachine,
   TransactionStateMachineEvents,
 } from '../../../../stateMachines/transaction'
-import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
+import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
 import {
   ClosePositionParametersStateMachine,
   ClosePositionParametersStateMachineEvents,
@@ -62,6 +62,7 @@ export type ManageAaveEvent =
       strategyInfo: IStrategyInfo
     }
   | { type: 'GO_TO_EDITING' }
+  | BaseAaveEvent
 
 export const createManageAaveStateMachine =
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
@@ -118,6 +119,7 @@ export const createManageAaveStateMachine =
           },
         },
         editing: {
+          entry: ['spawnPricesObservable', 'spawnUserSettingsObservable'],
           invoke: [
             {
               src: 'getBalance',
@@ -212,6 +214,14 @@ export const createManageAaveStateMachine =
           },
         },
       },
+      on: {
+        PRICES_RECEIVED: {
+          actions: ['setPricesFromEvent'],
+        },
+        USER_SETTINGS_CHANGED: {
+          actions: ['setUserSettingsFromEvent'],
+        },
+      },
     },
     {
       guards: {
@@ -256,6 +266,7 @@ export const createManageAaveStateMachine =
         assignProtocolData: assign((context, event) => {
           return {
             protocolData: event.data,
+            currentPosition: event.data.position,
           }
         }),
         assignTransactionParameters: assign((context, event) => ({
@@ -284,6 +295,12 @@ export const createManageAaveStateMachine =
           }),
           { to: (context) => context.refTransactionStateMachine! },
         ),
+        setPricesFromEvent: assign((context, event) => ({
+          collateralPrice: event.collateralPrice,
+        })),
+        setUserSettingsFromEvent: assign((context, event) => ({
+          slippage: event.userSettings.slippage,
+        })),
       },
     },
   )
