@@ -15,15 +15,17 @@ export function DiscoveryTableBanner({
   return (
     <Flex
       sx={{
+        flexWrap: ['wrap', null, 'nowrap'],
+        gap: ['24px', null, 4],
         alignItems: 'center',
-        py: 3,
-        px: 4,
+        py: ['24px', null, 3],
+        px: ['24px', null, 4],
         borderRadius: 'medium',
         boxShadow: 'vaultDetailsCard',
       }}
     >
       <Box sx={{ flexShrink: 0, svg: { display: 'block' } }}>{icon}</Box>
-      <Box sx={{ mx: 4 }}>
+      <Box>
         <Heading as="h3" variant="boldParagraph2">
           {t(`discovery.table.banner.${kind}.title`)}
         </Heading>

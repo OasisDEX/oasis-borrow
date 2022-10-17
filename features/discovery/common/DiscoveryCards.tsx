@@ -1,7 +1,6 @@
 import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBanner'
 import { DiscoveryBanner } from 'features/discovery/meta'
 import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
-import { useTranslation } from 'next-i18next'
 import { Fragment } from 'react'
 import { Box } from 'theme-ui'
 
@@ -16,7 +15,7 @@ export function DiscoveryCards({
   kind: DiscoveryPages
   rows?: DiscoveryTableRowData[]
 }) {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
 
   return (
     <Box
