@@ -72,7 +72,7 @@ export function getOneInchCall(swapAddress: string, debug?: false) {
       to,
       amount.toString(),
       swapAddress,
-      slippage.toString(),
+      slippage.times('100').toString(), // 1inch expects slippage in percentage format
     )
 
     if (debug) {
