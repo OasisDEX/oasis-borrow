@@ -20,7 +20,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function OpenVault({ strategy }: { strategy: string }) {
-  // TODO: Move to dynamic props once earn paths agreed
   return (
     <AaveContextProvider>
       <WithWalletConnection>
