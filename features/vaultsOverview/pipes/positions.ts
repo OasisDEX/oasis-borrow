@@ -109,7 +109,7 @@ export function createAavePosition$(
             token: 'STETH',
             contentsUsd: netValue,
             title: 'AAVE-stETH-ETH',
-            url: `/earn/steth/${address}`,
+            url: `/aave/${address}`,
             netValue: netValue,
             liquidity: liquidity,
             pln: 'N/A',
