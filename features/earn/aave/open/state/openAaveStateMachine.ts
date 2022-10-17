@@ -217,6 +217,7 @@ export const createOpenAaveStateMachine = createMachine(
         riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
         token: 'ETH',
         inputDelay: 1000,
+        strategyName: 'stETHeth',
       })),
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,

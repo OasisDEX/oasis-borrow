@@ -640,7 +640,7 @@ export const tokens = [
     tags: ['lp-token'],
   },
   {
-    symbol: 'AAVE-STETH',
+    symbol: 'stETHeth',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
