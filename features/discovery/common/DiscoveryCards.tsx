@@ -4,7 +4,7 @@ import { DiscoveryBanner } from 'features/discovery/meta'
 import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
 const fullWidthColumns = ['asset', 'cdpId']
