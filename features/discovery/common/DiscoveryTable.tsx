@@ -25,7 +25,7 @@ export function DiscoveryTable({
     <Box
       sx={{
         position: 'relative',
-        px: 4,
+        px: ['24px', null, null, 4],
         pb: 1,
         minHeight: '80px',
         borderTop: '1px solid',
@@ -106,6 +106,7 @@ export function DiscoveryTableHeaderCell({ label }: { label: string }) {
         color: 'neutral80',
         lineHeight: '10px',
         textAlign: 'right',
+        whiteSpace: 'nowrap',
         '&:first-child': {
           textAlign: 'left',
         },
@@ -148,6 +149,7 @@ export function DiscoveryTableDataCell({
       sx={{
         p: '8px 12px',
         textAlign: 'right',
+        whiteSpace: 'nowrap',
         '&:first-child': {
           textAlign: 'left',
         },

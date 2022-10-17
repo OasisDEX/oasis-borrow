@@ -1,4 +1,5 @@
 import { getDiscoveryData } from 'features/discovery/api'
+import { DiscoveryCards } from 'features/discovery/common/DiscoveryCards'
 import { DiscoveryFilters } from 'features/discovery/common/DiscoveryFilters'
 import { DiscoveryTable } from 'features/discovery/common/DiscoveryTable'
 import { getDefaultSettingsState } from 'features/discovery/helpers'
@@ -42,6 +43,12 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
             [key]: currentValue.value,
           })
         }}
+      />
+      <DiscoveryCards
+        banner={banner}
+        isLoading={isLoading}
+        kind={kind}
+        rows={discoveryData?.data?.rows}
       />
       <DiscoveryTable
         banner={banner}

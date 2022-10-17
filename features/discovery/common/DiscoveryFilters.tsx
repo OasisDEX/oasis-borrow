@@ -11,7 +11,7 @@ export function DiscoveryFilters({
   onChange: (key: string, currentValue: DiscoveryFiltersListItem) => void
 }) {
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ p: ['24px', null, null, 4] }}>
       <Grid
         gap="12px"
         sx={{
