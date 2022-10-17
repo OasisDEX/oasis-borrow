@@ -15,7 +15,7 @@ interface DiscoveryControlProps {
 export function DiscoveryControl({ kind }: DiscoveryControlProps) {
   const { banner, endpoint, filters } = keyBy(discoveryPagesMeta, 'kind')[kind]
   const [settings, setSettings] = useState<DiscoveryFiltersSettings>(
-    getDefaultSettingsState({ filters }),
+    getDefaultSettingsState({ filters, kind }),
   )
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const discoveryData = getDiscoveryData(endpoint, settings)
