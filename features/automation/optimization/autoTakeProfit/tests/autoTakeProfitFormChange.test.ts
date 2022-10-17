@@ -9,6 +9,7 @@ import { defaultAutoTakeProfitData } from 'features/automation/optimization/auto
 import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
 import { mockVaults } from 'helpers/mocks/vaults.mock'
 import { useUIChanges } from 'helpers/uiChangesHook'
+
 // Not sure if the test should be for reducer itself or check whole forms, what components are mounted,rendered etc. ~Ł
 const hundredThousand = new BigNumber('100000')
 const fiftyMillion = new BigNumber('50000000')
@@ -32,12 +33,13 @@ describe('autoTakeProfitFormChangeReducer', () => {
   beforeEach(() => {})
 
   describe('given user has no trigger', () => {
-    // This scenario seems feature envy with tests for AutoTakeProfitFormControl ~Ł
+    // This scenario seems feature envy with tests for AutoTakeProfitFormControl or sidebar itself ~Ł
     // eslint-disable-next-line no-only-tests/no-only-tests
-    it.only('should prepare default form values', () => {
+    it('should prepare default form values', () => {
       const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(
         AUTO_TAKE_PROFIT_FORM_CHANGE,
       )
+      // doest it make sense to try just test the hook or its better to test whole component reendered headlessly
 
       // here just assert that state contains correct default
       expect(autoTakeProfitState.currentForm).to.equal('add')
