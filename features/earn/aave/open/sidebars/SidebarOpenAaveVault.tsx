@@ -119,8 +119,6 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
 function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
-  console.log('state.context', state.context)
-
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.success-title'),
     content: (
