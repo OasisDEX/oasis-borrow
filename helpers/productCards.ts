@@ -266,7 +266,7 @@ export const productCardsConfig: {
     featuredAaveCards: {
       borrow: [],
       multiply: [],
-      earn: ['AAVE-STETH'],
+      earn: ['stETHeth'],
     },
   },
   descriptionCustomKeys: {
@@ -391,7 +391,7 @@ export const productCardsConfig: {
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
       name: 'Maker/Curve/Lido',
     },
-    'AAVE-STETH': {
+    stETHeth: {
       link: '#',
       name: 'Link goes here',
     },
