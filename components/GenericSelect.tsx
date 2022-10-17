@@ -1,9 +1,13 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
+import { useToggle } from 'helpers/useToggle'
+import { keyBy } from 'lodash'
 import React, { useState } from 'react'
 import ReactSelect, { components } from 'react-select'
 import { theme } from 'theme'
 import { Box, SxProps, Text } from 'theme-ui'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { styleFn, Styles } from 'react-select/src/styles'
 
@@ -47,20 +51,20 @@ export function GenericSelect({
   options,
   placeholder,
 }: GenericSelectProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const isMobile = useOnMobile() && window && 'ontouchstart' in window
+  const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
+  const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const [value, setValue] = useState<GenericSelectOption | undefined>(defaultValue)
 
+  const optionsByValue = keyBy(options, 'value')
+
   const defaultStyles: ReactSelectSimplifiedStyles = {
-    control: ({ isFocused }) => ({
+    control: () => ({
       height: '54px',
-      border: `1px solid ${isFocused ? theme.colors.primary100 : theme.colors.secondary100}`,
+      border: 'none',
       boxShadow: 'none',
       borderRadius: theme.radii.medium,
       cursor: 'pointer',
-      transition: 'border-color 200ms',
-      '&:hover': {
-        borderColor: isFocused ? theme.colors.primary100 : theme.colors.neutral70,
-      },
     }),
     valueContainer: () => ({
       width: '100%',
@@ -148,7 +152,44 @@ export function GenericSelect({
     )
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box
+      sx={{
+        position: 'relative',
+        border: `1px solid ${isOpen ? theme.colors.primary100 : theme.colors.secondary100}`,
+        borderRadius: 'medium',
+        transition: 'border-color 2000ms',
+        '&:hover': {
+          borderColor: isOpen ? theme.colors.primary100 : theme.colors.neutral70,
+        },
+      }}
+    >
+      {isMobile && (
+        <select
+          name={name}
+          defaultValue={value?.value}
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            zIndex: 3,
+            opacity: 0,
+          }}
+          onChange={(e) => {
+            const currentValue = optionsByValue[e.target.value]
+
+            setValue(currentValue)
+            if (onChange) onChange(currentValue)
+          }}
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      )}
       <ReactSelect
         blurInputOnSelect={true}
         isDisabled={isDisabled}
@@ -161,6 +202,11 @@ export function GenericSelect({
         value={value}
         components={{
           DropdownIndicator: null,
+          Control: (props) => (
+            <Box ref={componentRef} onClick={toggleIsOpen}>
+              <components.Control {...props} />
+            </Box>
+          ),
           SingleValue: ({ children, data, ...props }) => (
             <components.SingleValue data={data} {...props}>
               {data.icon ? (
@@ -187,12 +233,6 @@ export function GenericSelect({
               {children}
             </components.Option>
           ),
-        }}
-        onBlur={() => {
-          setIsOpen(false)
-        }}
-        onFocus={() => {
-          setIsOpen(true)
         }}
         onChange={(option) => {
           const currentValue = option as GenericSelectOption
