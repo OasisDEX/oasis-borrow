@@ -1,7 +1,6 @@
 import { getDiscoveryData } from 'features/discovery/api'
-import { DiscoveryCards } from 'features/discovery/common/DiscoveryCards'
+import { DiscoveryData } from 'features/discovery/common/DiscoveryData'
 import { DiscoveryFilters } from 'features/discovery/common/DiscoveryFilters'
-import { DiscoveryTable } from 'features/discovery/common/DiscoveryTable'
 import { getDefaultSettingsState } from 'features/discovery/helpers'
 import { discoveryPagesMeta } from 'features/discovery/meta'
 import { DiscoveryFiltersSettings, DiscoveryPages } from 'features/discovery/types'
@@ -19,11 +18,12 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
     getDefaultSettingsState({ filters, kind }),
   )
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const discoveryData = getDiscoveryData(endpoint, settings)
+
+  const response = getDiscoveryData(endpoint, settings)
 
   useEffect(() => {
-    setIsLoading(false)
-  }, [discoveryData])
+    if (response) setIsLoading(false)
+  }, [response])
 
   return (
     <Box
@@ -44,29 +44,7 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
           })
         }}
       />
-      <DiscoveryCards
-        banner={banner}
-        isLoading={isLoading}
-        kind={kind}
-        rows={discoveryData?.data?.rows}
-      />
-      <DiscoveryTable
-        banner={banner}
-        isLoading={isLoading}
-        kind={kind}
-        rows={discoveryData?.data?.rows}
-      />
-      {/* {isLoading && (
-        <AppSpinner
-          sx={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, margin: 'auto' }}
-          variant="extraLarge"
-        />
-      )} */}
-      {/* {rows.length === 0 && !isLoading && (
-        <Text as="p" variant="paragraph2" sx={{ py: 4 }}>
-          {t('discovery.table.no-entries')}
-        </Text>
-      )} */}
+      <DiscoveryData banner={banner} response={response} isLoading={isLoading} kind={kind} />
     </Box>
   )
 }

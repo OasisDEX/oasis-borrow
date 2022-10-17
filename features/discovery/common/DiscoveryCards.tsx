@@ -11,43 +11,53 @@ const fullWidthColumns = ['asset', 'cdpId']
 
 export function DiscoveryCards({
   banner,
-  // isLoading,
+  isLoading,
   kind,
   rows = [],
 }: {
   banner?: DiscoveryBanner
   isLoading: boolean
   kind: DiscoveryPages
-  rows?: DiscoveryTableRowData[]
+  rows: DiscoveryTableRowData[]
 }) {
   return (
-    <Flex
-      as="ul"
+    <Box
       sx={{
-        flexDirection: 'column',
         mt: '12px',
-        pt: 4,
-        gap: 4,
         px: ['24px', null, null, 4],
+        pt: 4,
+        pb: '24px',
         borderTop: '1px solid',
         borderTopColor: 'neutral20',
-        listStyle: 'none',
-        button: {
-          width: '100%',
-        },
       }}
     >
-      {rows.map((row, i) => (
-        <Fragment key={i}>
-          <DiscoveryCard row={row} />
-          {banner && i === Math.floor((rows.length - 1) / 2) && (
-            <Box as="li">
-              <DiscoveryTableBanner kind={kind} {...banner} />
-            </Box>
-          )}
-        </Fragment>
-      ))}
-    </Flex>
+      <Flex
+        as="ul"
+        sx={{
+          listStyle: 'none',
+          flexDirection: 'column',
+          gap: 4,
+          p: 0,
+          opacity: isLoading ? 0.5 : 1,
+          pointerEvents: isLoading ? 'none' : 'auto',
+          transition: '200ms opacity',
+          button: {
+            width: '100%',
+          },
+        }}
+      >
+        {rows.map((row, i) => (
+          <Fragment key={i}>
+            <DiscoveryCard row={row} />
+            {banner && i === Math.floor((rows.length - 1) / 2) && (
+              <Box as="li">
+                <DiscoveryTableBanner kind={kind} {...banner} />
+              </Box>
+            )}
+          </Fragment>
+        ))}
+      </Flex>
+    </Box>
   )
 }
 
