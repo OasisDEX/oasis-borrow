@@ -19,7 +19,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { getAdjustAaveParameters, logPosition } from '../../../../aave'
+import { getAdjustAaveParameters } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
@@ -74,8 +74,6 @@ export function getManageAavePositionStateMachineServices$(
               liquidationThreshold: reserveConfigurationData.liquidationThreshold,
             },
           )
-
-          logPosition(pos, 'position loaded from aaveProtocolData')
 
           return {
             positionData: reserveData,
@@ -147,6 +145,7 @@ export function getManageAavePositionStateMachineServices$(
         },
         getProxyAddress: async (): Promise<string> => {
           const proxy = await proxyAddress$.pipe(first()).toPromise()
+          console.log(`proxyAddress: ${proxy}`)
           if (proxy === undefined) throw new Error('Proxy address not found')
           return proxy
         },

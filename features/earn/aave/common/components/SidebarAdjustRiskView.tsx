@@ -12,7 +12,7 @@ import {
 } from '../../../../../components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from '../../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
-import { formatBigNumber, formatPercent } from '../../../../../helpers/formatters/format'
+import { formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'

@@ -21,13 +21,6 @@ function getAddressesFromContext(context: ContextConnected) {
   }
 }
 
-export function logPosition(position: IPosition, name: string) {
-  console.log(`----------- ${name} ------------`)
-  console.log(`collateral: ${position.collateral.amount}`)
-  console.log(`debt: ${position.debt.amount}`)
-  console.log(`ltv: ${position.riskRatio.loanToValue}`)
-}
-
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
@@ -35,8 +28,6 @@ export async function getOpenAaveParameters(
   slippage: BigNumber,
   proxyAddress: string,
 ): Promise<IStrategy> {
-  // console.log(`configured ltv: ${riskRatio.loanToValue}`)
-
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
   const params = await strategies.aave.openStEth(
@@ -53,8 +44,6 @@ export async function getOpenAaveParameters(
     },
   )
 
-  logPosition(params.simulation.position, 'new position in getOpenAaveParameters')
-
   return params
 }
 
@@ -66,8 +55,6 @@ export async function getAdjustAaveParameters(
   proxyAddress: string,
   position: IPosition,
 ): Promise<IStrategy> {
-  logPosition(position, 'getAdjustAaveParameters - starting position')
-
   const addresses = {
     DAI: context.tokens['DAI'].address,
     ETH: context.tokens['ETH'].address,
@@ -90,18 +77,6 @@ export async function getAdjustAaveParameters(
     category: position.category,
   }
 
-  console.log(' -- params -- ')
-  console.log(`depositAmount ${depositAmount}`)
-  console.log(`slippage ${slippage}`)
-  console.log(`multiple ${riskRatio.multiple} (ltv ${riskRatio.loanToValue})`)
-
-  console.log(' ----- transformed position (inputting) ------')
-  console.log(`collateral: ${transformedPosition.collateral.amount}`)
-  console.log(`debt: ${transformedPosition.debt.amount}`)
-  console.log(`liquidationThreshold: ${transformedPosition.category.liquidationThreshold}`)
-  console.log(`maxLoanToValue: ${transformedPosition.category.maxLoanToValue}`)
-  console.log(`dustLimit: ${transformedPosition.category.dustLimit}`)
-
   const strat = await strategies.aave.adjustStEth(
     {
       depositAmount: depositAmount,
@@ -111,13 +86,11 @@ export async function getAdjustAaveParameters(
     {
       addresses,
       provider: provider,
-      getSwapData: getOneInchCall(proxyAddress),
+      getSwapData: getOneInchCall(context.swapAddress),
       dsProxy: proxyAddress,
       position: transformedPosition,
     },
   )
-
-  logPosition(strat.simulation.position, 'getAdjustAaveParameters - target position from lib')
 
   return strat
 }
