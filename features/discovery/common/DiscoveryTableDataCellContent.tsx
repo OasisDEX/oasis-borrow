@@ -54,9 +54,9 @@ export function DiscoveryTableDataCellContent({
             <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
               {row.asset}
             </Text>
-            {row.cid && (
+            {row.cdpId && (
               <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-                {t('discovery.table.vault-number', { cid: row.cid })}
+                {t('discovery.table.vault-number', { cdpId: row.cdpId })}
               </Text>
             )}
           </Flex>

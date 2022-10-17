@@ -153,7 +153,7 @@
     },
     "table": {
       "no-entries": "There are no entries available for selected filters.",
-      "vault-number": "Vault #{{cid}}",
+      "vault-number": "Vault #{{cdpId}}",
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
