@@ -54,6 +54,6 @@ ENV COMMIT_SHA=$COMMIT_SHA \
 COPY . .
 
 RUN chmod +x ./scripts/wait-for-it.sh \
-    && npm run build
+    && yarn run build
 
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "yarn", "start:prod" ]
