@@ -8,27 +8,25 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-import { AaveContextProvider } from '../../../features/earn/aave/AaveContextProvider'
+import { AaveContextProvider } from '../../../../features/earn/aave/AaveContextProvider'
 
-export async function getStaticProps(ctx: GetServerSidePropsContext) {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
+      strategy: ctx.query.strategy || null,
     },
   }
 }
 
-function OpenVault() {
-  // TODO: Move to dynamic props once earn paths agreed
-  const strategyName = 'aave-steth'
-
+function OpenVault({ strategy }: { strategy: string }) {
   return (
     <AaveContextProvider>
       <WithWalletConnection>
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView strategyName={strategyName} />
+          <AaveOpenView strategyName={strategy} />
 
           <Survey for="earn" />
         </WithTermsOfService>

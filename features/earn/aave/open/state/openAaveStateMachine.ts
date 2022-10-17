@@ -212,17 +212,15 @@ export const createOpenAaveStateMachine = createMachine(
         allDefined(tokenBalance, userInput.amount) && tokenBalance!.gt(userInput.amount!),
     },
     actions: {
-      initContextValues: assign(
-        (context) =>
-          ({
-            currentStep: 1,
-            totalSteps: context.proxyAddress ? 3 : 4,
-            riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
-            token: 'ETH',
-            inputDelay: 1000,
-            userInput: {},
-          } as OpenAaveContext),
-      ),
+      initContextValues: assign((context) => ({
+        currentStep: 1,
+        totalSteps: context.proxyAddress ? 3 : 4,
+        riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
+        token: 'ETH',
+        inputDelay: 1000,
+        strategyName: 'stETHeth',
+        userInput: {},
+      })),
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,
         tokenPrice: event.tokenPrice,

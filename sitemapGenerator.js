@@ -13,7 +13,7 @@ try {
       '/privacy',
       '/save',
       '/errors',
-      '/earn/open/aave-steth',
+      '/aave/[address]',
     ],
     // other apps routes from Oasis Suite
     extraPaths: ['/blog'],
