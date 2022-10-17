@@ -1687,8 +1687,8 @@
     "cancelling-form-title": "Cancelling Take Profit",
     "form-title": "Take Profit Setup",
     "banner": {
-      "header": "Set up Take Profit",
-      "content": "Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
+      "header": "Automate your exit strategy",
+      "content": "Setup Take Profit to create an exit strategy for your position and take emotion out of the equation. Take Profit automatically closes your position and locks in profits when your collateral hits your target price.",
       "button": "Setup Take Profit"
     },
     "trigger-col-price": "Trigger {{token}} Price",
