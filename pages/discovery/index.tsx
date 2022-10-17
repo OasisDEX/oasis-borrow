@@ -1,3 +1,4 @@
+import { DISCOVERY_URL } from 'features/discovery/helpers'
 import { discoveryPagesMeta } from 'features/discovery/meta'
 import { GetServerSidePropsContext } from 'next'
 import React from 'react'
@@ -12,7 +13,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     redirect: {
-      destination: `/discovery/${defaultDiscoveryPage.kind}${network}`,
+      destination: `${DISCOVERY_URL}/${defaultDiscoveryPage.kind}${network}`,
       permanent: true,
     },
   }

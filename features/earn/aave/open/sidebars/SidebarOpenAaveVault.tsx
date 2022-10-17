@@ -133,7 +133,7 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
     ),
     primaryButton: {
       label: t('open-earn.aave.vault-form.go-to-position'),
-      url: `/earn/${state.context.strategyName}/${state.context.proxyAddress}`,
+      url: `/aave/${state.context.proxyAddress}`,
     },
   }
 

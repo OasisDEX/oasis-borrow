@@ -30,7 +30,7 @@ export function AavePositionHeader({
 }: AavePositionHeaderPropsBase) {
   const { t } = useTranslation()
   const tokenPairList = {
-    'aave-steth': {
+    stETHeth: {
       name: t('open-earn.aave.product-header.token-pair-list.aave-steth-eth'),
       tokenList: ['AAVE', 'STETH', 'ETH'],
     },

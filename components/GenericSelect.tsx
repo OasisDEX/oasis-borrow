@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { SystemStyleObject } from '@styled-system/css'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
@@ -28,7 +29,7 @@ export interface GenericSelectProps {
   customStyles?: ReactSelectSimplifiedStyles
   defaultValue?: GenericSelectOption
   expandableArrowSize?: number
-  expandableArrowSx?: SxProps
+  expandableArrowSx?: SystemStyleObject & SxProps
   iconSize?: number
   isDisabled?: boolean
   isSearchable?: boolean
@@ -36,6 +37,7 @@ export interface GenericSelectProps {
   onChange?: (value: GenericSelectOption) => void
   options: GenericSelectOption[]
   placeholder?: string
+  wrapperSx?: SystemStyleObject & SxProps
 }
 
 export function GenericSelect({
@@ -50,6 +52,7 @@ export function GenericSelect({
   onChange,
   options,
   placeholder,
+  wrapperSx,
 }: GenericSelectProps) {
   const isMobile = useOnMobile() && window && 'ontouchstart' in window
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
@@ -157,10 +160,11 @@ export function GenericSelect({
         position: 'relative',
         border: `1px solid ${isOpen ? theme.colors.primary100 : theme.colors.secondary100}`,
         borderRadius: 'medium',
-        transition: 'border-color 2000ms',
+        transition: 'border-color 200ms',
         '&:hover': {
           borderColor: isOpen ? theme.colors.primary100 : theme.colors.neutral70,
         },
+        ...wrapperSx,
       }}
     >
       {isMobile && (

@@ -1,6 +1,8 @@
 import { DiscoveryFiltersList } from 'features/discovery/meta'
 import { DiscoveryPages } from 'features/discovery/types'
 
+export const DISCOVERY_URL = '/discovery'
+
 export function getDefaultSettingsState({
   filters,
   kind,
