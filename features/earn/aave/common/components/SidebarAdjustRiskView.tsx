@@ -44,8 +44,12 @@ export function AdjustRiskView({
   const maxRisk = position?.category.maxLoanToValue
 
   const minRisk =
-    state.context.transactionParameters?.simulation.minConfigurableRiskRatio ||
-    aaveStETHMinimumRiskRatio
+    (state.context.transactionParameters?.simulation.minConfigurableRiskRatio &&
+      BigNumber.max(
+        state.context.transactionParameters?.simulation.minConfigurableRiskRatio.loanToValue,
+        aaveStETHMinimumRiskRatio.loanToValue,
+      )) ||
+    aaveStETHMinimumRiskRatio.loanToValue
 
   const liquidationPrice = position?.liquidationPrice || zero
 
@@ -106,7 +110,7 @@ export function AdjustRiskView({
           onChange={(ltv) => {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
           }}
-          minBoundry={minRisk.loanToValue}
+          minBoundry={minRisk}
           maxBoundry={maxRisk || zero}
           lastValue={sliderValue}
           disabled={viewLocked}
