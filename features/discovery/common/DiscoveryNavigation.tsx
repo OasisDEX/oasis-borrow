@@ -1,31 +1,59 @@
+import { GenericSelect } from 'components/GenericSelect'
 import { AppLink } from 'components/Links'
+import { DISCOVERY_URL } from 'features/discovery/helpers'
 import { DiscoveryPageMeta, discoveryPagesMeta } from 'features/discovery/meta'
 import { DiscoveryPages } from 'features/discovery/types'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { theme } from 'theme'
 import { Box, Flex, Text } from 'theme-ui'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 
 interface DiscoveryNavigationProps {
   kind: DiscoveryPages
 }
 
 export function DiscoveryNavigation({ kind }: DiscoveryNavigationProps) {
+  const { t } = useTranslation()
+  const { push } = useRedirect()
+  const onMobile = useOnMobile()
+
+  const mobileLinks = discoveryPagesMeta.map((item) => ({
+    label: t(`discovery.navigation.${item.kind}`),
+    value: `${DISCOVERY_URL}/${item.kind}`,
+    kind: item.kind,
+  }))
+  const selectedLink = mobileLinks.filter((item) => item.kind === kind)[0]
+
   return (
-    <Flex
-      as="ul"
-      sx={{
-        flexWrap: 'wrap',
-        justifyContent: ['space-around', 'space-around', 'center'],
-        mb: '48px',
-        p: 0,
-        listStyle: 'none',
-      }}
-    >
-      {discoveryPagesMeta.map((item, i) => (
-        <DiscoveryNavigationItem key={i} isActive={kind === item.kind} {...item} />
-      ))}
-    </Flex>
+    <>
+      {onMobile ? (
+        <GenericSelect
+          options={mobileLinks}
+          defaultValue={selectedLink}
+          onChange={(currentValue) => {
+            push(currentValue.value)
+          }}
+          wrapperSx={{ mb: 3 }}
+        />
+      ) : (
+        <Flex
+          as="ul"
+          sx={{
+            flexWrap: 'wrap',
+            justifyContent: ['space-around', 'space-around', 'center'],
+            mb: '48px',
+            p: 0,
+            listStyle: 'none',
+          }}
+        >
+          {discoveryPagesMeta.map((item, i) => (
+            <DiscoveryNavigationItem key={i} isActive={kind === item.kind} {...item} />
+          ))}
+        </Flex>
+      )}
+    </>
   )
 }
 
@@ -50,7 +78,7 @@ export function DiscoveryNavigationItem({
       }}
     >
       <AppLink
-        href={`/discovery/${kind}`}
+        href={`${DISCOVERY_URL}/${kind}`}
         sx={{
           display: 'flex',
           flexDirection: 'column',
