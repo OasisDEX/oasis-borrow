@@ -790,28 +790,31 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHOpenPositionMoveSlider: (depositAmount: string) => {
+    stETHOpenPositionMoveSlider: (depositAmount: string, riskRatio: string) => {
       const eventBody = {
         id: 'MoveSlider',
         depositAmount,
+        riskRatio,
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
-    stETHOpenPositionConfirmRisk: (depositAmount: string) => {
+    stETHOpenPositionConfirmRisk: (depositAmount: string, riskRatio: string) => {
       const eventBody = {
         id: 'ConfirmRisk',
         depositAmount,
+        riskRatio,
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHOpenPositionConfirmTransaction: (depositAmount: string) => {
+    stETHOpenPositionConfirmTransaction: (depositAmount: string, riskRatio: string) => {
       const eventBody = {
         id: 'ConfirmTransaction',
         depositAmount,
+        riskRatio,
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }

@@ -109,10 +109,13 @@ export const aaveStEthSimulateStateMachine = createMachine(
         context.amount !== event.amount &&
           event.amount &&
           trackingEvents.earn.stETHOpenPositionDepositAmount(event.amount.toString())
+
         event.amount &&
-          event.riskRatio &&
           context.riskRatio !== event.riskRatio &&
-          trackingEvents.earn.stETHOpenPositionMoveSlider(event.amount!.toString())
+          trackingEvents.earn.stETHOpenPositionMoveSlider(
+            event.amount!.toString(),
+            event.riskRatio!.loanToValue.toString(),
+          )
         return {
           token: event.token,
           amount: event.amount,

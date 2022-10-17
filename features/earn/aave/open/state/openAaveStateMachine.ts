@@ -325,11 +325,17 @@ export const createOpenAaveStateMachine = createMachine(
       eventConfirmDeposit: ({ amount }) => {
         trackingEvents.earn.stETHOpenPositionConfirmDeposit(amount!.toString())
       },
-      eventConfirmRiskRatio: ({ amount }) => {
-        trackingEvents.earn.stETHOpenPositionConfirmRisk(amount!.toString())
+      eventConfirmRiskRatio: ({ amount, riskRatio }) => {
+        trackingEvents.earn.stETHOpenPositionConfirmRisk(
+          amount!.toString(),
+          riskRatio!.loanToValue.toString(),
+        )
       },
-      eventConfirmTransaction: ({ amount }) => {
-        trackingEvents.earn.stETHOpenPositionConfirmTransaction(amount!.toString())
+      eventConfirmTransaction: ({ amount, riskRatio }) => {
+        trackingEvents.earn.stETHOpenPositionConfirmTransaction(
+          amount!.toString(),
+          riskRatio!.loanToValue.toString(),
+        )
       },
     },
   },
