@@ -1,4 +1,4 @@
-import { IRiskRatio, IStrategy, RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -215,7 +215,7 @@ export const createOpenAaveStateMachine = createMachine(
       initContextValues: assign((context) => ({
         currentStep: 1,
         totalSteps: context.proxyAddress ? 3 : 4,
-        riskRatio: new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
+        riskRatio: aaveStETHMinimumRiskRatio,
         token: 'ETH',
         inputDelay: 1000,
         strategyName: 'stETHeth',
