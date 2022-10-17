@@ -1,16 +1,9 @@
-import { Banner } from 'components/Banner'
+import { Banner, BannerProps } from 'components/Banner'
 import { useSessionStorage } from 'helpers/useSessionStorage'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 
-interface AutomationTriggeredBannerControlProps {
-  title: string
-  description: string
-  image: {
-    src: string
-    backgroundColor: string
-    backgroundColorEnd: string
-  }
+interface AutomationTriggeredBannerControlProps extends BannerProps {
   sessionStorageKey: string
 }
 
