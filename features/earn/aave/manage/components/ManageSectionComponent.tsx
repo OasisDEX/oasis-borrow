@@ -29,10 +29,13 @@ type ManageSectionComponentProps = {
 }
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
-  if (ratio.isLessThanOrEqualTo(0.05)) {
+  const critical = new BigNumber(5)
+  const warning = new BigNumber(20)
+
+  if (ratio.isLessThanOrEqualTo(critical)) {
     return 'critical10'
   }
-  return ratio.isLessThanOrEqualTo(0.2) ? 'warning10' : 'success10'
+  return ratio.isLessThanOrEqualTo(warning) ? 'warning10' : 'success10'
 }
 
 export function ManageSectionComponent({
@@ -70,6 +73,7 @@ export function ManageSectionComponent({
     : zero
 
   const totalCollateralInStEth = oraclePrice.times(accountData.totalCollateralETH)
+  const belowCurrentRatio = oraclePrice.minus(managedPosition.liquidationPrice).times(100)
 
   return (
     <DetailsSection
@@ -133,12 +137,11 @@ export function ManageSectionComponent({
           <DetailsSectionContentCard
             title={t('manage-earn-vault.liquidation-price-ratio')}
             value={formatBigNumber(managedPosition.liquidationPrice, 2)}
-            unit={`(${formatPercent(
-              oraclePrice.minus(managedPosition.liquidationPrice).times(100),
-              {
+            unit={t('manage-earn-vault.below-current-ratio', {
+              percentage: formatPercent(belowCurrentRatio, {
                 precision: 0,
-              },
-            )} below current ratio)`}
+              }),
+            })}
             customUnitStyle={{
               fontSize: 3,
             }}
@@ -156,7 +159,7 @@ export function ManageSectionComponent({
                 }
               />
             }
-            customBackground={getLiquidationPriceRatioColor(managedPosition.liquidationPrice)}
+            customBackground={getLiquidationPriceRatioColor(belowCurrentRatio)}
             link={{
               label: t('manage-earn-vault.ratio-history'),
               url: 'https://dune.com/dataalways/stETH-De-Peg', // should we move this url to a file? an env?
