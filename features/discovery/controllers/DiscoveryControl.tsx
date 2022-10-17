@@ -56,6 +56,17 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
         kind={kind}
         rows={discoveryData?.data?.rows}
       />
+      {/* {isLoading && (
+        <AppSpinner
+          sx={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, margin: 'auto' }}
+          variant="extraLarge"
+        />
+      )} */}
+      {/* {rows.length === 0 && !isLoading && (
+        <Text as="p" variant="paragraph2" sx={{ py: 4 }}>
+          {t('discovery.table.no-entries')}
+        </Text>
+      )} */}
     </Box>
   )
 }

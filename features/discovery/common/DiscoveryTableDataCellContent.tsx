@@ -68,10 +68,10 @@ export function DiscoveryTableDataCellContent({
         <Text
           as="span"
           sx={{
-            p: '4px 12px',
+            p: '6px 12px',
             fontSize: 1,
             fontWeight: 'semiBold',
-            borderRadius: 'mediumLarge',
+            borderRadius: 'large',
             whiteSpace: 'pre',
             ...(row.activity && { ...activityColors[row.activity?.kind] }),
             ...(row.status && { ...statusColors[row.status?.kind] }),

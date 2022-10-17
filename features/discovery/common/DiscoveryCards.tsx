@@ -1,8 +1,13 @@
 import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBanner'
+import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
 import { DiscoveryBanner } from 'features/discovery/meta'
 import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
+import { kebabCase } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { Fragment } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex, Grid } from 'theme-ui'
+
+const fullWidthColumns = ['asset', 'cdpId']
 
 export function DiscoveryCards({
   banner,
@@ -15,14 +20,21 @@ export function DiscoveryCards({
   kind: DiscoveryPages
   rows?: DiscoveryTableRowData[]
 }) {
-  // const { t } = useTranslation()
-
   return (
-    <Box
+    <Flex
       as="ul"
       sx={{
+        flexDirection: 'column',
+        mt: '12px',
+        pt: 4,
+        gap: 4,
         px: ['24px', null, null, 4],
+        borderTop: '1px solid',
+        borderTopColor: 'neutral20',
         listStyle: 'none',
+        button: {
+          width: '100%',
+        },
       }}
     >
       {rows.map((row, i) => (
@@ -35,16 +47,46 @@ export function DiscoveryCards({
           )}
         </Fragment>
       ))}
-    </Box>
+    </Flex>
   )
 }
 
 export function DiscoveryCard({ row }: { row: DiscoveryTableRowData }) {
+  const { t } = useTranslation()
+
   return (
     <Box as="li">
-      {Object.keys(row).map((label, i) => (
-        <Box key={i}>{label}</Box>
-      ))}
+      <Grid
+        as="ul"
+        sx={{ gridTemplateColumns: ['100%', 'repeat(2, 1fr)'], gap: 4, p: 0, listStyle: 'none' }}
+      >
+        {Object.keys(row).map((label, i) => (
+          <Box
+            as="li"
+            key={i}
+            sx={{
+              ...(fullWidthColumns.includes(label) && {
+                gridColumnStart: ['span 1', 'span 2'],
+              }),
+            }}
+          >
+            {!fullWidthColumns.includes(label) && (
+              <Box
+                as="p"
+                sx={{
+                  mb: 2,
+                  fontSize: 1,
+                  fontWeight: 'semiBold',
+                  color: 'neutral80',
+                }}
+              >
+                {t(`discovery.table.header.${kebabCase(label)}`)}
+              </Box>
+            )}
+            <DiscoveryTableDataCellContent label={label} row={row} />
+          </Box>
+        ))}
+      </Grid>
     </Box>
   )
 }

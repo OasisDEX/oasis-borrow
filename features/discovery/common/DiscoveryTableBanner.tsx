@@ -33,7 +33,7 @@ export function DiscoveryTableBanner({
           {t(`discovery.table.banner.${kind}.description`)}
         </Text>
       </Box>
-      <Box sx={{ flexShrink: 0 }}>
+      <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'] }}>
         <AppLink href={link}>
           <Button variant="action">{t(`discovery.table.banner.${kind}.cta`)}</Button>
         </AppLink>
