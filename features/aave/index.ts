@@ -1,11 +1,4 @@
-import {
-  ADDRESSES,
-  IPosition,
-  IRiskRatio,
-  IStrategy,
-  Position,
-  strategies,
-} from '@oasisdex/oasis-actions'
+import { ADDRESSES, IPosition, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
