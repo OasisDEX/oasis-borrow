@@ -117,7 +117,7 @@ export function startTransactionService<T extends TxMeta>(
         if (context.transactionParameters === undefined) {
           throw new Error('transactionParameters not set')
         }
-        console.log('startTransactionService', context.transactionParameters)
+
         return sendWithGasEstimation(context.transactionDef, context.transactionParameters).pipe(
           transactionToX<TransactionStateMachineEvents<T>, T>(
             {

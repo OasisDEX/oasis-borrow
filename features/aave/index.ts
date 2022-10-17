@@ -1,4 +1,4 @@
-import { ADDRESSES, IPosition, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
@@ -55,18 +55,6 @@ export async function getAdjustAaveParameters(
   proxyAddress: string,
   position: IPosition,
 ): Promise<IStrategy> {
-  const addresses = {
-    DAI: context.tokens['DAI'].address,
-    ETH: context.tokens['ETH'].address,
-    WETH: context.tokens['WETH'].address,
-    stETH: context.tokens['STETH'].address,
-    chainlinkEthUsdPriceFeed: ADDRESSES.main.chainlinkEthUsdPriceFeed, // TODO: Add this to context.
-    aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
-    aavePriceOracle: context.aavePriceOracle.address,
-    aaveLendingPool: context.aaveLendingPool.address,
-    operationExecutor: context.operationExecutor.address,
-  }
-
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
   const depositAmount = stEthValueLocked && amountToWei(stEthValueLocked, 'ETH')
@@ -84,7 +72,7 @@ export async function getAdjustAaveParameters(
       multiple: riskRatio.multiple,
     },
     {
-      addresses,
+      addresses: getAddressesFromContext(context),
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
       dsProxy: proxyAddress,

@@ -108,26 +108,17 @@ export function getManageAavePositionStateMachineServices$(
             context.protocolData.position,
           )
 
-          let gasQty: number = 0
-          try {
-            // gasQty = 700000
-            gasQty = await txHelpers
-              .estimateGas(callOperationExecutor, {
-                kind: TxMetaKind.operationExecutor,
-                calls: adjustParams.calls as any,
-                operationName: 'CustomOperation',
-                proxyAddress: context.proxyAddress!,
-              })
-              .pipe(first())
-              .toPromise()
-          } catch (e) {
-            // todo: fix this call
-            gasQty = 700000
-          }
+          const gasQty = await txHelpers
+            .estimateGas(callOperationExecutor, {
+              kind: TxMetaKind.operationExecutor,
+              calls: adjustParams.calls as any,
+              operationName: 'CustomOperation',
+              proxyAddress: context.proxyAddress!,
+            })
+            .pipe(first())
+            .toPromise()
 
           const estimatedGasPrice = await gasEstimation$(gasQty).pipe(first()).toPromise()
-
-          // console.log('gasEstimation', estimatedGasPrice)
 
           return { adjustParams, estimatedGasPrice }
         },
@@ -145,11 +136,10 @@ export function getManageAavePositionStateMachineServices$(
         },
         getProxyAddress: async (): Promise<string> => {
           const proxy = await proxyAddress$.pipe(first()).toPromise()
-          console.log(`proxyAddress: ${proxy}`)
           if (proxy === undefined) throw new Error('Proxy address not found')
           return proxy
         },
-        getStrategyInfo: () => {
+        getStrategyInfo: (): Observable<ManageAaveEvent> => {
           const collateralToken = 'STETH'
           return combineLatest(
             aaveOracleAssetPriceData$({ token: collateralToken }),
@@ -168,10 +158,9 @@ export function getManageAavePositionStateMachineServices$(
           )
         },
         getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
-          const result = await aaveProtocolData(context.strategy!, context.proxyAddress!)
+          return await aaveProtocolData(context.strategy!, context.proxyAddress!)
             .pipe(first())
             .toPromise()
-          return result
         },
       }
     }),

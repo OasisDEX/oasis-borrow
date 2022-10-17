@@ -38,18 +38,6 @@ export function getOpenAaveParametersStateMachineServices$(
             return 0
           }
 
-          // const thing = await txHelpers
-          //   .send(callOperationExecutor, {
-          //     kind: TxMetaKind.operationExecutor,
-          //     calls: context.transactionParameters!.calls as any,
-          //     operationName: 'CustomOperation',
-          //     token: context.token!,
-          //     amount: context.amount!,
-          //     proxyAddress: context.proxyAddress!,
-          //   })
-          //   .pipe(first())
-          //   .toPromise()
-
           return await txHelpers
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
