@@ -1,6 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
 import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
@@ -57,9 +58,11 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     autoSellTriggerData,
     stopLossTriggerData,
   )
+  const { uiChanges } = useAppContext()
   const isAutoTakeProfitEnabled = useAutoTakeProfitStateInitializator(
     vault,
     autoTakeProfitTriggerData,
+    uiChanges,
   )
 
   const headlineElement =

@@ -1,7 +1,8 @@
 import { InstiVault } from 'blockchain/instiVault'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
+import { UIChanges } from 'components/AppContext'
+// import { useAppContext } from 'components/AppContextProvider'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { useEffect } from 'react'
 
@@ -12,8 +13,10 @@ const INITIAL_SELECTED_PRICE_MULTIPLIER = 1.2
 export function useAutoTakeProfitStateInitializator(
   vault: Vault | InstiVault,
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData,
+  uiChanges: UIChanges
 ) {
-  const { uiChanges } = useAppContext()
+  // const { uiChanges } = useAppContext()
+  // ŁW added ui changes as a parameter to bea bale to test it
   const { executionPrice, isToCollateral, isTriggerEnabled, triggerId } = autoTakeProfitTriggerData
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
