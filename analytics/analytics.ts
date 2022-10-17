@@ -1,5 +1,7 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
+import BigNumber from 'bignumber.js'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { formatPrecision } from 'helpers/formatters/format'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
@@ -772,49 +774,49 @@ export const trackingEvents = {
     },
   },
   earn: {
-    stETHOpenPositionDepositAmount: (depositAmount: string) => {
+    stETHOpenPositionDepositAmount: (depositAmount: BigNumber) => {
       const eventBody = {
         id: 'DepositAmount',
-        depositAmount,
+        depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
-    stETHOpenPositionConfirmDeposit: (depositAmount: string) => {
+    stETHOpenPositionConfirmDeposit: (depositAmount: BigNumber) => {
       const eventBody = {
         id: 'ConfirmDeposit',
-        depositAmount,
+        depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHOpenPositionMoveSlider: (depositAmount: string, riskRatio: string) => {
+    stETHOpenPositionMoveSlider: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
         id: 'MoveSlider',
-        depositAmount,
-        riskRatio,
+        depositAmount: depositAmount.toString(),
+        riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
-    stETHOpenPositionConfirmRisk: (depositAmount: string, riskRatio: string) => {
+    stETHOpenPositionConfirmRisk: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
         id: 'ConfirmRisk',
-        depositAmount,
-        riskRatio,
+        depositAmount: depositAmount.toString(),
+        riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHOpenPositionConfirmTransaction: (depositAmount: string, riskRatio: string) => {
+    stETHOpenPositionConfirmTransaction: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
         id: 'ConfirmTransaction',
-        depositAmount,
-        riskRatio,
+        depositAmount: depositAmount.toString(),
+        riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
       }

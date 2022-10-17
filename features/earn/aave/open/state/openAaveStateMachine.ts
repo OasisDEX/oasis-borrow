@@ -322,20 +322,24 @@ export const createOpenAaveStateMachine = createMachine(
       ),
       debounceSendingToParametersMachine: cancel('update-parameters-machine'),
       debounceSendingToSimulationMachine: cancel('update-simulate-machine'),
-      eventConfirmDeposit: ({ amount }) => {
-        trackingEvents.earn.stETHOpenPositionConfirmDeposit(amount!.toString())
+      eventConfirmDeposit: ({ userInput }) => {
+        userInput.amount && trackingEvents.earn.stETHOpenPositionConfirmDeposit(userInput.amount)
       },
-      eventConfirmRiskRatio: ({ amount, riskRatio }) => {
-        trackingEvents.earn.stETHOpenPositionConfirmRisk(
-          amount!.toString(),
-          riskRatio!.loanToValue.toString(),
-        )
+      eventConfirmRiskRatio: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmRisk(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
       },
-      eventConfirmTransaction: ({ amount, riskRatio }) => {
-        trackingEvents.earn.stETHOpenPositionConfirmTransaction(
-          amount!.toString(),
-          riskRatio!.loanToValue.toString(),
-        )
+      eventConfirmTransaction: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmTransaction(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
       },
     },
   },

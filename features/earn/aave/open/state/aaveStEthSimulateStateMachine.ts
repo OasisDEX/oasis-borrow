@@ -108,13 +108,13 @@ export const aaveStEthSimulateStateMachine = createMachine(
         // sends '123' and not '1', '12', and '123'
         context.amount !== event.amount &&
           event.amount &&
-          trackingEvents.earn.stETHOpenPositionDepositAmount(event.amount.toString())
+          trackingEvents.earn.stETHOpenPositionDepositAmount(event.amount)
 
         event.amount &&
           context.riskRatio !== event.riskRatio &&
           trackingEvents.earn.stETHOpenPositionMoveSlider(
-            event.amount!.toString(),
-            event.riskRatio!.loanToValue.toString(),
+            event.amount!,
+            event.riskRatio!.loanToValue,
           )
         return {
           token: event.token,
