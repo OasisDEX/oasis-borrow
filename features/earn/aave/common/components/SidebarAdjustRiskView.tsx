@@ -97,7 +97,6 @@ export function AdjustRiskView({
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <div>{formatBigNumber(sliderValue || zero, 5)}</div>
         <SliderValuePicker
           sliderPercentageFill={new BigNumber(0)}
           leftBoundry={liquidationPrice}
