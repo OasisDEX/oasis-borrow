@@ -119,6 +119,8 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
 function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
+  console.log('state.context', state.context)
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.success-title'),
     content: (
@@ -133,7 +135,7 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
     ),
     primaryButton: {
       label: t('open-earn.aave.vault-form.go-to-position'),
-      url: `/earn/${state.context.strategyName}/${state.context.proxyAddress}`,
+      url: `/aave/${state.context.proxyAddress}`,
     },
   }
 
