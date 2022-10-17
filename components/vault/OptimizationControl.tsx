@@ -60,18 +60,31 @@ function ZeroDebtOptimizationBanner({
 function getZeroDebtOptimizationBannerProps({
   readOnlyAutoBSEnabled,
   constantMultipleReadOnlyEnabled,
+  readOnlyAutoTakeProfitEnabled,
   isVaultDebtZero,
   vaultHasNoActiveBuyTrigger,
   vaultHasNoActiveConstantMultipleTriggers,
+  vaultHasNoActiveAutoTakeProfitTrigger,
 }: {
   readOnlyAutoBSEnabled: boolean
   constantMultipleReadOnlyEnabled: boolean
+  readOnlyAutoTakeProfitEnabled: boolean
   isVaultDebtZero: boolean
   vaultHasNoActiveBuyTrigger?: boolean
   vaultHasNoActiveConstantMultipleTriggers?: boolean
+  vaultHasNoActiveAutoTakeProfitTrigger?: boolean
 }): ZeroDebtOptimizationBannerProps {
-  if (!readOnlyAutoBSEnabled && !constantMultipleReadOnlyEnabled) {
-    if (isVaultDebtZero && vaultHasNoActiveBuyTrigger && vaultHasNoActiveConstantMultipleTriggers) {
+  if (
+    !readOnlyAutoBSEnabled &&
+    !constantMultipleReadOnlyEnabled &&
+    !readOnlyAutoTakeProfitEnabled
+  ) {
+    if (
+      isVaultDebtZero &&
+      vaultHasNoActiveBuyTrigger &&
+      vaultHasNoActiveConstantMultipleTriggers &&
+      vaultHasNoActiveAutoTakeProfitTrigger
+    ) {
       return {
         header: 'optimization.zero-debt-heading',
         description: 'optimization.zero-debt-description',
@@ -115,19 +128,28 @@ export function OptimizationControl({
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
-  const { autoBuyTriggerData, constantMultipleTriggerData } = useAutomationContext()
+  const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+  const {
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+    autoTakeProfitTriggerData,
+  } = useAutomationContext()
 
   const vaultHasActiveAutoBuyTrigger = autoBuyTriggerData.isTriggerEnabled
   const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData.isTriggerEnabled
+  const vaultHasActiveAutoTakeProfitTrigger = autoTakeProfitTriggerData.isTriggerEnabled
 
   if (
     (!vaultHasActiveAutoBuyTrigger &&
       !vaultHasActiveConstantMultipleTrigger &&
+      !vaultHasActiveAutoTakeProfitTrigger &&
       vault.debt.isZero()) ||
     (!vaultHasActiveAutoBuyTrigger &&
       !vaultHasActiveConstantMultipleTrigger &&
+      !vaultHasActiveAutoTakeProfitTrigger &&
       readOnlyAutoBSEnabled &&
-      constantMultipleReadOnlyEnabled)
+      constantMultipleReadOnlyEnabled &&
+      readOnlyAutoTakeProfitEnabled)
   ) {
     return (
       <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
@@ -137,7 +159,9 @@ export function OptimizationControl({
             isVaultDebtZero: vault.debt.isZero(),
             vaultHasNoActiveBuyTrigger: !vaultHasActiveAutoBuyTrigger,
             constantMultipleReadOnlyEnabled,
+            readOnlyAutoTakeProfitEnabled,
             vaultHasNoActiveConstantMultipleTriggers: !vaultHasActiveConstantMultipleTrigger,
+            vaultHasNoActiveAutoTakeProfitTrigger: !vaultHasActiveAutoTakeProfitTrigger,
           })}
         />
       </Container>

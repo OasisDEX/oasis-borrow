@@ -127,6 +127,7 @@ export function OptimizationFormControl({
         stopLossTriggerData={stopLossTriggerData}
         txHelpers={txHelpers}
         vault={vault}
+        vaultType={vaultType}
       />
       {autoTakeProfitEnabled && (
         <AutoTakeProfitFormControl
@@ -143,6 +144,7 @@ export function OptimizationFormControl({
           vault={vault}
           priceInfo={priceInfo}
           balanceInfo={balanceInfo}
+          vaultType={vaultType}
         />
       )}
     </>

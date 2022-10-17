@@ -2,6 +2,7 @@ import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBa
 import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
 import { DiscoveryBanner } from 'features/discovery/meta'
 import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
@@ -9,12 +10,14 @@ import { Box, Text } from 'theme-ui'
 
 export function DiscoveryTable({
   banner,
+  isLoading,
   kind,
-  rows,
+  rows = [],
 }: {
   banner?: DiscoveryBanner
+  isLoading: boolean
   kind: DiscoveryPages
-  rows: DiscoveryTableRowData[]
+  rows?: DiscoveryTableRowData[]
 }) {
   const { t } = useTranslation()
 
@@ -24,6 +27,7 @@ export function DiscoveryTable({
         position: 'relative',
         px: 4,
         pb: 1,
+        minHeight: '80px',
         borderTop: '1px solid',
         borderTopColor: 'neutral20',
         ...(rows.length > 0 && {
@@ -39,8 +43,17 @@ export function DiscoveryTable({
         }),
       }}
     >
-      {rows.length > 0 ? (
-        <Box as="table" sx={{ width: '100%', borderSpacing: '0 20px' }}>
+      {rows.length > 0 && (
+        <Box
+          as="table"
+          sx={{
+            width: '100%',
+            borderSpacing: '0 20px',
+            opacity: isLoading ? 0.5 : 1,
+            pointerEvents: isLoading ? 'none' : 'auto',
+            transition: '200ms opacity',
+          }}
+        >
           <Box as="thead">
             <tr>
               {Object.keys(rows[0]).map((label, i) => (
@@ -63,10 +76,17 @@ export function DiscoveryTable({
             ))}
           </Box>
         </Box>
-      ) : (
+      )}
+      {rows.length === 0 && !isLoading && (
         <Text as="p" variant="paragraph2" sx={{ py: 4 }}>
           {t('discovery.table.no-entries')}
         </Text>
+      )}
+      {isLoading && (
+        <AppSpinner
+          sx={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, margin: 'auto' }}
+          variant="extraLarge"
+        />
       )}
     </Box>
   )

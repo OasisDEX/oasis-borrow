@@ -1,22 +1,30 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import { StopLossSummaryInformation } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredFormLayout'
+import { autoKindToCopyMap } from 'features/automation/common/consts'
+import { AutomationKinds } from 'features/automation/common/types'
+import { StopLossSummaryInformation } from 'features/automation/protection/stopLoss/controls/StopLossSummaryInformation'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {
-  CloseVaultExitCollateralMultipleEvent,
-  CloseVaultExitDaiMultipleEvent,
+  AutoTakeProfitExecutedEvent,
+  StopLossExecutedEvent,
 } from 'features/vaultHistory/vaultHistoryEvents'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-interface SidebarVaultSLTriggeredProps {
+interface SidebarAutomationVaultCloseTriggeredProps {
   closeEvent: VaultHistoryEvent
 }
 
-export function SidebarVaultSLTriggered({ closeEvent }: SidebarVaultSLTriggeredProps) {
+export function SidebarAutomationVaultCloseTriggered({
+  closeEvent,
+}: SidebarAutomationVaultCloseTriggeredProps) {
   const { t } = useTranslation()
+
+  if (!('triggerId' in closeEvent)) {
+    return null
+  }
 
   const {
     beforeCollateralizationRatio,
@@ -30,7 +38,7 @@ export function SidebarVaultSLTriggered({ closeEvent }: SidebarVaultSLTriggeredP
     timestamp,
     token,
     totalFee,
-  } = closeEvent as CloseVaultExitDaiMultipleEvent | CloseVaultExitCollateralMultipleEvent
+  } = closeEvent as StopLossExecutedEvent | AutoTakeProfitExecutedEvent
 
   const offerPrice = oraclePrice.isZero() ? marketPrice : oraclePrice
   const isToCollateral = closeEvent.kind === 'CLOSE_VAULT_TO_COLLATERAL'
@@ -41,7 +49,7 @@ export function SidebarVaultSLTriggered({ closeEvent }: SidebarVaultSLTriggeredP
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('protection.your-stop-loss-triggered-desc')}
+        {t('automation.what-happened-to-the-vault')}
       </Text>
       <StopLossSummaryInformation
         token={token}
@@ -54,6 +62,7 @@ export function SidebarVaultSLTriggered({ closeEvent }: SidebarVaultSLTriggeredP
         tokensSold={sold}
         totalFee={fee}
         collRatio={beforeCollateralizationRatio}
+        feature={t(autoKindToCopyMap[closeEvent.autoKind as AutomationKinds])}
       />
     </>
   )

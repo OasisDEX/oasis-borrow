@@ -33,7 +33,7 @@ export function CancelConstantMultipleInfoSection({
                 secondaryValue: '0%',
               },
               {
-                label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
+                label: t('auto-buy.trigger-col-ratio-to-perform-buy'),
                 value: `${constantMultipleTriggerData.buyExecutionCollRatio}%`,
                 secondaryValue: '0%',
               },

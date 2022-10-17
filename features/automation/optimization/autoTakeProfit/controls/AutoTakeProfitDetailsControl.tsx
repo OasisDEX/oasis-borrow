@@ -9,6 +9,7 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 import { AutoTakeProfitDetailsLayout } from './AutoTakeProfitDetailsLayout'
@@ -25,6 +26,7 @@ export function AutoTakeProfitDetailsControl({
   vault,
 }: AutoTakeProfitDetailsControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
+  const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
 
   const { debt, debtOffset, lockedCollateral } = vault
   const { isTriggerEnabled, executionPrice } = autoTakeProfitTriggerData
@@ -62,7 +64,7 @@ export function AutoTakeProfitDetailsControl({
     currentColRatio: vault.collateralizationRatio.times(100),
   }
 
-  if (isDebtZero) return null
+  if (readOnlyAutoTakeProfitEnabled || isDebtZero) return null
 
   return (
     <AutoTakeProfitDetailsLayout

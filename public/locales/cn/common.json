@@ -719,7 +719,7 @@
     },
     "remove-trigger": "删除触发器",
     "add-trigger": "增加触发器",
-    "auto-take-profit": "Auto-Take Profit"
+    "auto-take-profit": "Take Profit"
   },
   "to-the-following-address": "至此地址",
   "token-balance": "{{token}} 余额",
@@ -1605,7 +1605,7 @@
     "buy-title": "基础 Auto-Buy 摘要",
     "target-col-ratio-each-buy": "每次购买后的目标抵押率",
     "target-multiple-each-buy": "每次购买后的目标倍率",
-    "trigger-col-ratio-to-perfrom-buy": "触发抵押率执行每次自动化购买",
+    "trigger-col-ratio-to-perform-buy": "触发抵押率执行每次自动化购买",
     "next-buy-prices": "下次购买价格",
     "total-cost-of-next-buy": "下次购买后 ETH 的总成本",
     "collateral-after-next-buy": "下次购买后的抵押品",
@@ -1797,7 +1797,6 @@
     "aave": {
       "vault-form": {
         "adjust-risk": "Adjust Risk",
-
         "deposit": "存入 ETH",
         "title": "你的 Earn 仓位",
         "close-title": "以 ETH 结算并关闭此仓位",
@@ -1841,20 +1840,20 @@
     }
   },
   "auto-take-profit": {
-    "title": "Auto-Take Profit",
-    "cancel-summary-title": "取消 Auto-Take Profit 订单摘要",
-    "form-title": "Auto-Take Profit 设置",
+    "title": "Take Profit",
+    "cancel-summary-title": "取消 Take Profit 订单摘要",
+    "form-title": "Take Profit 设置",
     "banner": {
-      "header": "设置 Auto-Take Profit",
-      "content": "Auto-Take Profit 让你设置一个退出的策略，当你的抵押品达到你的目标价格时，它将自动帮你关闭金库并赚取获利。",
-      "button": "设置 Auto-Take Profit"
+      "header": "设置 Take Profit",
+      "content": "Take Profit 让你设置一个退出的策略，当你的抵押品达到你的目标价格时，它将自动帮你关闭金库并赚取获利。",
+      "button": "设置 Take Profit"
     },
     "trigger-col-price": "触发 {{token}} 的价格",
-    "trigger-col-price-explanation": "若要讓 Auto-Take profit 執行，{{token}} 必須達到的價格。",
+    "trigger-col-price-explanation": "若要讓 Take profit 執行，{{token}} 必須達到的價格。",
     "estimated-profit": "在關閉 {{amount}} 的預測獲利",
     "estimated-profit-explanation": "在關閉時的預測獲利 = 触发的抵押品價值(USD) - 须偿还的债务 - 预测的交易手续费",
     "trigger-col-ratio": "触发抵押率",
-    "trigger-col-ratio-explanation": "你的金库必须达到触发抵押率才会执行 Auto-Take profit。",
+    "trigger-col-ratio-explanation": "你的金库必须达到触发抵押率才会执行 Take profit。",
     "current-col-ratio": "当前抵押率 {{amount}}"
   },
   "automation": {

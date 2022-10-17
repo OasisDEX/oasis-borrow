@@ -7,6 +7,7 @@ import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseSt
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { EstimationOnClose } from 'components/EstimationOnClose'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
@@ -22,6 +23,7 @@ import {
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatAmount } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -54,6 +56,9 @@ export function SidebarAutoTakeProfitEditingStage({
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+
+  const isVaultEmpty = vault.debt.isZero()
 
   const { estimatedProfitOnClose } = getOnCloseEstimations({
     colMarketPrice: autoTakeProfitState.executionPrice,
@@ -65,6 +70,24 @@ export function SidebarAutoTakeProfitEditingStage({
     toCollateral: autoTakeProfitState.toCollateral,
   })
   const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
+
+  if (readOnlyAutoTakeProfitEnabled && !isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-take-profit.adding-new-triggers-disabled')}
+        description={t('auto-take-profit.adding-new-triggers-disabled-description')}
+      />
+    )
+  }
+
+  if (isVaultEmpty && autoTakeProfitTriggerData.isTriggerEnabled) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-take-profit.closed-vault-existing-trigger-header')}
+        description={t('auto-take-profit.closed-vault-existing-trigger-description')}
+      />
+    )
+  }
 
   return (
     <>

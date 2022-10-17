@@ -12,8 +12,9 @@ import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCard
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { UpdatedContentCardNetValue } from 'components/vault/detailsSection/UpdatedContentCardNetvalue'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
-import { StopLossTriggeredBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBannerControl'
+import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -49,6 +50,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     totalGasSpentUSD,
     priceInfo,
     stopLossTriggered,
+    autoTakeProfitTriggered,
     vaultHistory,
   } = props
   const { t } = useTranslation()
@@ -58,6 +60,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
@@ -69,7 +72,8 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
 
   return (
     <Grid>
-      {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBannerControl />}</>}
+      {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
+      {autoTakeProfitEnabled && <>{autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}</>}
       <DetailsSection
         title={t('system.overview')}
         content={

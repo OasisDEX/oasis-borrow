@@ -49,6 +49,8 @@ function AutoBuyInfoSectionControl({ vault, autoBuyState }: AutoBuyInfoSectionCo
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
       title={t('auto-buy.cancel-summary-title')}
+      targetLabel={t('auto-buy.target-col-ratio-each-buy')}
+      triggerLabel={t('auto-buy.trigger-col-ratio-to-perform-buy')}
       autoBSState={autoBuyState}
       debt={vault.debt}
     />

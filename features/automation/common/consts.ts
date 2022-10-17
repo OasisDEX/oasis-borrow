@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { AutomationFeatures } from 'features/automation/common/types'
+import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
 import { FixedSizeArray } from 'helpers/types'
 import { one } from 'helpers/zero'
 
@@ -47,4 +47,11 @@ export const sidebarAutomationFeatureCopyMap = {
   [AutomationFeatures.AUTO_SELL]: 'auto-sell.title',
   [AutomationFeatures.CONSTANT_MULTIPLE]: 'constant-multiple.title',
   [AutomationFeatures.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
+}
+
+export const autoKindToCopyMap = {
+  [AutomationKinds.STOP_LOSS]: 'protection.stop-loss-protection',
+  [AutomationKinds.AUTO_BUY]: 'auto-buy.title',
+  [AutomationKinds.AUTO_SELL]: 'auto-sell.title',
+  [AutomationKinds.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
 }

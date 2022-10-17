@@ -96,8 +96,8 @@ export function getDataForStopLoss(
 
   const sliderPercentageFill = getSliderPercentageFill({
     value: stopLossLevel,
-    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)),
-    max: afterCollateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100)),
+    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100),
+    max: afterCollateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100)).times(100),
   })
 
   const afterNewLiquidationPrice = stopLossLevel

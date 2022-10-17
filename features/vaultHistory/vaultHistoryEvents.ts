@@ -234,7 +234,7 @@ interface AutomationBaseEvent {
 
 type StopLossCloseEvent = CloseVaultExitDaiMultipleEvent | CloseVaultExitCollateralMultipleEvent
 
-type StopLossExecutedEvent = StopLossCloseEvent & {
+export type StopLossExecutedEvent = StopLossCloseEvent & {
   eventType: 'executed'
   triggerId: string
   triggerData: string
@@ -243,7 +243,7 @@ type StopLossExecutedEvent = StopLossCloseEvent & {
   autoKind: string
 }
 
-type AutoTakeProfitExecutedEvent = StopLossExecutedEvent
+export type AutoTakeProfitExecutedEvent = StopLossExecutedEvent
 
 export interface AutoBuyExecutedEvent extends IncreaseMultipleEvent {
   eventType: 'executed'

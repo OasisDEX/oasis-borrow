@@ -153,15 +153,24 @@
     },
     "table": {
       "no-entries": "There are no entries available for selected filters.",
-      "vault-number": "Vault #{{cid}}",
+      "vault-number": "Vault #{{cdpId}}",
       "view-position": "View Position",
       "header": {
+        "30-day-avg-apy": "30 day avg. APY",
+        "activity": "Activity",
         "asset": "Asset",
+        "cdp-id": "",
+        "col-ratio": "Col. ratio",
+        "collateral-value": "Collateral value",
+        "current-multiple": "Current multiple",
+        "earnings-to-date": "Earnings to date",
         "liquidation-price": "Liquidation price",
-        "next-osm-price": "Next OSM price",
         "max-liquidation-amount": "Max liquidation amount",
+        "net-value": "Net value",
+        "next-osm-price": "Next OSM price",
+        "pnl": "P&L",
         "status": "Status",
-        "cid": ""
+        "vault-debt": "Vault debt"
       },
       "status": {
         "1": "Liquidated",
@@ -169,6 +178,14 @@
         "3": "{{tillLiquidation}}% till liquidation",
         "4": "{{toStopLoss}}% to Stop-loss",
         "5": "Closed {{closedDaysAgo}} days ago"
+      },
+      "activity": {
+        "1": "Withdrawn {{daysAgo}} days ago",
+        "2": "Increased risk {{daysAgo}} days ago",
+        "3": "Decreased risk {{daysAgo}} days ago",
+        "4": "Closed {{daysAgo}} days ago",
+        "5": "Opened {{daysAgo}} days ago",
+        "6": "Deposided {{daysAgo}} days ago"
       },
       "banner": {
         "high-risk-positions": {
@@ -311,7 +328,7 @@
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
     "basic-sell": "Auto-Sell trigger",
-    "auto-take-profit": "Auto-Take-Profit trigger",
+    "auto-take-profit": "Take Profit trigger",
     "constant-multiple": "Constant-Multiple trigger",
     "constant-multiple-buy": "Constant-Multiple Buy trigger",
     "constant-multiple-sell": "Constant-Multiple Sell trigger",
@@ -844,7 +861,7 @@
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
-    "auto-take-profit": "Auto-Take Profit",
+    "auto-take-profit": "Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -1220,6 +1237,7 @@
   },
   "setup": "Setup",
   "protection": {
+    "stop-loss": "Stop-Loss",
     "stop-loss-protection": "Stop-Loss Protection",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
@@ -1634,7 +1652,7 @@
     "trigger-updated": "Auto-Buy Updated",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
-    "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
+    "trigger-col-ratio-to-perform-buy": "Trigger Col. Ratio to perform each automated buy",
     "next-buy-prices": "Next buy price(s)",
     "total-cost-of-next-buy": "Total cost of next ETH buy",
     "collateral-after-next-buy": "Collateral after next buy",
@@ -1674,11 +1692,11 @@
       "button": "Setup Take Profit"
     },
     "trigger-col-price": "Trigger {{token}} Price",
-    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
+    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Take profit.",
     "estimated-profit": "Estimated Profit at close {{amount}}",
     "estimated-profit-explanation": "Estimated Profit at Close = Collateral value (USD) at trigger - Debt value to be repaid - estimated Tx Fees",
     "trigger-col-ratio": "Trigger Collateral Ratio",
-    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
+    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Take profit.",
     "current-col-ratio": "Current Collateral Ratio {{amount}}",
     "estimated-at-trigger": "Estimated {{token}} at Trigger",
     "vault-changes": {
@@ -1692,7 +1710,11 @@
       "estimated-gas-fee": "Estimated gas fee",
       "setup-transaction-cost": "Setup transaction cost"
     },
-    "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction."
+    "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction.",
+    "adding-new-triggers-disabled": "Creation of the new Take Profit trigger is currently disabled.",
+    "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
+    "closed-vault-existing-trigger-header": "Your vault is closed but Take Profit is still active",
+    "closed-vault-existing-trigger-description": "You can cancel your existing Take Profit here or deposit into your vault in overview tab"
   },
 
   "automation": {
@@ -1706,7 +1728,12 @@
     "updating": "Updating {{feature}}",
     "cancelling": "Cancelling {{feature}}",
     "update-trigger": "Update {{feature}}",
-    "cancel-trigger": "Cancel {{feature}}"
+    "cancel-trigger": "Cancel {{feature}}",
+    "trigger-executed-banner-title": "{{feature}} triggered",
+    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
+    "summary": "{{feature}} summary",
+    "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
+    "trigger-executed": "Your {{feature}} was triggered"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",

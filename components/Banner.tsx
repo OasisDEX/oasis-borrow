@@ -19,7 +19,7 @@ type BannerButtonProps = {
   action: (() => void) | undefined
 }
 
-type BannerProps = {
+export type BannerProps = {
   title: string | ReactNode
   description: ReactNode | ReactNode[]
   button?: BannerButtonProps

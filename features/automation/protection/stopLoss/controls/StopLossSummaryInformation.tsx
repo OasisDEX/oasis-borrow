@@ -1,4 +1,4 @@
-import { Button, Text } from '@theme-ui/components'
+import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
@@ -10,7 +10,7 @@ import { zero } from 'helpers/zero'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid } from 'theme-ui'
+import { Flex } from 'theme-ui'
 
 interface StopLossSummaryInformationProps {
   date: string
@@ -23,6 +23,7 @@ interface StopLossSummaryInformationProps {
   tokensSold: BigNumber
   collRatio: BigNumber
   totalFee: BigNumber
+  feature: string
 }
 
 export function StopLossSummaryInformation({
@@ -36,6 +37,7 @@ export function StopLossSummaryInformation({
   tokensSold,
   totalFee,
   collRatio,
+  feature,
 }: StopLossSummaryInformationProps) {
   const { t } = useTranslation()
 
@@ -86,7 +88,7 @@ export function StopLossSummaryInformation({
   const totalCost = `$${formatAmount(totalFee, 'USD')}`
 
   return (
-    <VaultChangesInformationContainer title={t('protection.stop-loss-summary')}>
+    <VaultChangesInformationContainer title={t('automation.summary', { feature })}>
       <VaultChangesInformationItem
         label={`${t('system.date')}`}
         value={<Flex>{moment(date).format('MMM D YYYY, h:mm A')}</Flex>}
@@ -134,67 +136,5 @@ export function StopLossSummaryInformation({
         value={<Flex>{totalCost}</Flex>}
       />
     </VaultChangesInformationContainer>
-  )
-}
-
-interface StopLossTriggeredFormLayoutProps {
-  token: string
-  onClick: () => void
-  paybackAmount: BigNumber
-  withdrawAmount: BigNumber
-  tokensSold: BigNumber
-  tokenPrice: BigNumber
-  priceImpact: BigNumber
-  date: string
-  collRatio: BigNumber
-  isToCollateral: boolean
-  totalFee: BigNumber
-}
-
-export function StopLossTriggeredFormLayout({
-  token,
-  onClick,
-  paybackAmount,
-  withdrawAmount,
-  tokensSold,
-  tokenPrice,
-  priceImpact,
-  date,
-  collRatio,
-  isToCollateral,
-  totalFee,
-}: StopLossTriggeredFormLayoutProps) {
-  const { t } = useTranslation()
-
-  return (
-    <Grid columns={[1]}>
-      <Box>
-        <Text variant="boldParagraph2" mb={2}>
-          {t('protection.your-stop-loss-triggered')}
-        </Text>
-        <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('protection.your-stop-loss-triggered-desc')}
-        </Text>
-      </Box>
-      <StopLossSummaryInformation
-        token={token}
-        date={date}
-        isToCollateral={isToCollateral}
-        tokenPrice={tokenPrice}
-        priceImpact={priceImpact}
-        paybackAmount={paybackAmount}
-        withdrawAmount={withdrawAmount}
-        tokensSold={tokensSold}
-        totalFee={totalFee}
-        collRatio={collRatio}
-      />
-      <Button
-        sx={{ width: '100%', justifySelf: 'center', mt: 3 }}
-        variant="primary"
-        onClick={onClick}
-      >
-        {t('protection.reopen-position')}
-      </Button>
-    </Grid>
   )
 }

@@ -17,6 +17,7 @@ import {
 import { getStopLossStatus } from 'features/automation/protection/stopLoss/state/stopLossStatus'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -36,6 +37,7 @@ interface StopLossFormControlProps {
   stopLossTriggerData: StopLossTriggerData
   txHelpers?: TxHelpers
   vault: Vault
+  vaultType: VaultType
 }
 
 export function StopLossFormControl({
@@ -52,6 +54,7 @@ export function StopLossFormControl({
   stopLossTriggerData,
   txHelpers,
   vault,
+  vaultType,
 }: StopLossFormControlProps) {
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
@@ -134,6 +137,7 @@ export function StopLossFormControl({
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
           vault={vault}
+          vaultType={vaultType}
         />
       )}
     </AddAndRemoveTriggerControl>

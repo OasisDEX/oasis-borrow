@@ -85,7 +85,7 @@ export function AddConstantMultipleInfoSection({
           isHeading: true,
           dropdownValues: [
             {
-              label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
+              label: t('auto-buy.trigger-col-ratio-to-perform-buy'),
               value: `${buyExecutionCollRatio}%`,
             },
             {

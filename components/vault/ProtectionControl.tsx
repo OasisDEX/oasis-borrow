@@ -4,6 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { ProtectionDetailsControl } from 'features/automation/protection/common/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/common/controls/ProtectionFormControl'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -60,6 +61,7 @@ interface ProtectionControlProps {
   vault: Vault
   ilkData: IlkData
   balanceInfo: BalanceInfo
+  vaultType: VaultType
 }
 
 function getZeroDebtProtectionBannerProps({
@@ -101,7 +103,12 @@ function getZeroDebtProtectionBannerProps({
   }
 }
 
-export function ProtectionControl({ vault, ilkData, balanceInfo }: ProtectionControlProps) {
+export function ProtectionControl({
+  vault,
+  ilkData,
+  balanceInfo,
+  vaultType,
+}: ProtectionControlProps) {
   const { priceInfo$, context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
   const { stopLossTriggerData, autoSellTriggerData } = useAutomationContext()
 
@@ -141,6 +148,7 @@ export function ProtectionControl({ vault, ilkData, balanceInfo }: ProtectionCon
                   txHelpers={txHelpersData}
                   context={context}
                   ethMarketPrice={ethAndTokenPrices['ETH']}
+                  vaultType={vaultType}
                 />
               }
             />

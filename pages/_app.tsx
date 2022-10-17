@@ -16,7 +16,7 @@ import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { appWithTranslation } from 'next-i18next'
+import { appWithTranslation, i18n } from 'next-i18next'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -33,6 +33,16 @@ import { mixpanelInit } from '../analytics/mixpanel'
 import { loadFeatureToggles } from '../helpers/useFeatureToggle'
 import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
+
+if (process.env.NODE_ENV !== 'production') {
+  if (typeof window !== 'undefined') {
+    const { applyClientHMR } = require('i18next-hmr/client')
+    applyClientHMR(() => i18n)
+  } else {
+    const { applyServerHMR } = require('i18next-hmr/server')
+    applyServerHMR(() => i18n)
+  }
+}
 
 function getLibrary(provider: any, connector: AbstractConnector | undefined): Web3 {
   const chainIdPromise = connector!.getChainId()

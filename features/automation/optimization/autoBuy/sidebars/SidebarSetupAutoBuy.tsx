@@ -96,8 +96,6 @@ export function SidebarSetupAutoBuy({
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
 
-  const isMultiplyVault = vaultType === VaultType.Multiply
-
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
     flow,
@@ -110,6 +108,8 @@ export function SidebarSetupAutoBuy({
     disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+    isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
+    vaultType,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
@@ -156,7 +156,7 @@ export function SidebarSetupAutoBuy({
   if (isAutoBuyActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
-      ...(isMultiplyVault && { dropdown }),
+      dropdown,
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
