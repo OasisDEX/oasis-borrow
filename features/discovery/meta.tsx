@@ -31,7 +31,7 @@ export interface DiscoveryPageMeta {
 export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   {
     kind: DiscoveryPages.HIGH_RISK_POSITIONS,
-    endpoint: '/high-risk-positions.json',
+    endpoint: '/mocks/discovery/high-risk-positions.json',
     iconColor: '#FE665C',
     iconContent: discoveryNavigationIconContent[DiscoveryPages.HIGH_RISK_POSITIONS],
     filters: {
@@ -56,7 +56,7 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   },
   {
     kind: DiscoveryPages.HIGHEST_MULTIPLY_PNL,
-    endpoint: '/highest-multiply-pnl.json',
+    endpoint: '/mocks/discovery/highest-multiply-pnl.json',
     iconColor: '#FFC700',
     iconContent: discoveryNavigationIconContent[DiscoveryPages.HIGHEST_MULTIPLY_PNL],
     filters: {
@@ -80,7 +80,7 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   },
   {
     kind: DiscoveryPages.MOST_YIELD_EARNED,
-    endpoint: '/most-yield-earned.json',
+    endpoint: '/mocks/discovery/most-yield-earned.json',
     iconColor: '#00E2BA',
     iconContent: discoveryNavigationIconContent[DiscoveryPages.MOST_YIELD_EARNED],
     filters: {
@@ -99,7 +99,7 @@ export const discoveryPagesMeta: DiscoveryPageMeta[] = [
   },
   {
     kind: DiscoveryPages.LARGEST_DEBT,
-    endpoint: '/largest-debt.json',
+    endpoint: '/mocks/discovery/largest-debt.json',
     iconColor: '#FF4DB8',
     iconContent: discoveryNavigationIconContent[DiscoveryPages.LARGEST_DEBT],
     filters: {
