@@ -1042,7 +1042,9 @@
     "price-impact": "{{token}} Price (impact)",
     "slippage-limit": "Slippage Limit",
     "third-party-fees": "3rd party protocol fees",
-    "oasis-fee": "Oasis fee"
+    "oasis-fee": "Oasis fee",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt"
   },
   "vault-actions": {
     "deposit": "Deposit",

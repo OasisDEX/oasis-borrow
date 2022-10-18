@@ -9,7 +9,7 @@ import { Sender } from 'xstate'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
-import { OpenAaveInformationContainer } from '../../common/components/OpenAaveInformationContainer'
+import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
@@ -33,7 +33,7 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -54,7 +54,7 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -76,7 +76,7 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -102,7 +102,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     content: (
       <Grid gap={3}>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -129,7 +129,7 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {

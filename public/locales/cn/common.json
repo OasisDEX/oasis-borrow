@@ -1261,7 +1261,9 @@
     "price-impact": "{{token}} 价格 (影响)",
     "slippage-limit": "滑点限制",
     "third-party-fees": "第三方协议手续费",
-    "oasis-fee": "Oasis 手续费"
+    "oasis-fee": "Oasis 手续费",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt"
   },
   "vault-information": "金库信息",
   "vault-banners": {
