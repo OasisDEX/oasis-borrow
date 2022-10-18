@@ -1,6 +1,6 @@
 describe('autoTakeProfitFormChangeReducer', () => {
   describe('user with AutoTakeProfit trigger', () => {
-    it('should recive trigger-id event', () => {})
+    it('should recive trigger-id event on form initialisation', () => {})
   });
   describe('AutoTakeProfit Add form initialisation', () => {
     it('should recive execution-price event with properties set to 0', () => {})
