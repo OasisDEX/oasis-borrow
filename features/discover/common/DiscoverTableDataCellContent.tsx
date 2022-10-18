@@ -3,10 +3,10 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import {
-  DiscoveryTableRowData,
-  DiscoveryTableVaultActivity,
-  DiscoveryTableVaultStatus,
-} from 'features/discovery/types'
+  DiscoverTableRowData,
+  DiscoverTableVaultActivity,
+  DiscoverTableVaultStatus,
+} from 'features/discover/types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -20,28 +20,28 @@ const pillColors: { [key: string]: SxStyleProp } = {
   faded: { color: 'primary30', backgroundColor: 'secondary60' },
 }
 
-const activityColors: { [key in DiscoveryTableVaultActivity]: SxStyleProp } = {
-  [DiscoveryTableVaultActivity.WITHDRAWN]: pillColors.warning,
-  [DiscoveryTableVaultActivity.INCREASED_RISK]: pillColors.critical,
-  [DiscoveryTableVaultActivity.DECREASED_RISK]: pillColors.success,
-  [DiscoveryTableVaultActivity.CLOSED]: pillColors.faded,
-  [DiscoveryTableVaultActivity.OPENED]: pillColors.interactive,
-  [DiscoveryTableVaultActivity.DEPOSITED]: pillColors.interactive,
+const activityColors: { [key in DiscoverTableVaultActivity]: SxStyleProp } = {
+  [DiscoverTableVaultActivity.WITHDRAWN]: pillColors.warning,
+  [DiscoverTableVaultActivity.INCREASED_RISK]: pillColors.critical,
+  [DiscoverTableVaultActivity.DECREASED_RISK]: pillColors.success,
+  [DiscoverTableVaultActivity.CLOSED]: pillColors.faded,
+  [DiscoverTableVaultActivity.OPENED]: pillColors.interactive,
+  [DiscoverTableVaultActivity.DEPOSITED]: pillColors.interactive,
 }
-const statusColors: { [key in DiscoveryTableVaultStatus]: SxStyleProp } = {
-  [DiscoveryTableVaultStatus.LIQUIDATED]: pillColors.critical,
-  [DiscoveryTableVaultStatus.BEING_LIQUIDATED]: pillColors.warning,
-  [DiscoveryTableVaultStatus.TILL_LIQUIDATION]: pillColors.success,
-  [DiscoveryTableVaultStatus.TO_STOP_LOSS]: pillColors.interactive,
-  [DiscoveryTableVaultStatus.CLOSED_LONG_TIME_AGO]: pillColors.faded,
+const statusColors: { [key in DiscoverTableVaultStatus]: SxStyleProp } = {
+  [DiscoverTableVaultStatus.LIQUIDATED]: pillColors.critical,
+  [DiscoverTableVaultStatus.BEING_LIQUIDATED]: pillColors.warning,
+  [DiscoverTableVaultStatus.TILL_LIQUIDATION]: pillColors.success,
+  [DiscoverTableVaultStatus.TO_STOP_LOSS]: pillColors.interactive,
+  [DiscoverTableVaultStatus.CLOSED_LONG_TIME_AGO]: pillColors.faded,
 }
 
-export function DiscoveryTableDataCellContent({
+export function DiscoverTableDataCellContent({
   label,
   row,
 }: {
   label: string
-  row: DiscoveryTableRowData
+  row: DiscoverTableRowData
 }) {
   const { t } = useTranslation()
 
@@ -56,7 +56,7 @@ export function DiscoveryTableDataCellContent({
             </Text>
             {row.cdpId && (
               <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-                {t('discovery.table.vault-number', { cdpId: row.cdpId })}
+                {t('discover.table.vault-number', { cdpId: row.cdpId })}
               </Text>
             )}
           </Flex>
@@ -77,13 +77,13 @@ export function DiscoveryTableDataCellContent({
             ...(row.status && { ...statusColors[row.status?.kind] }),
           }}
         >
-          {t(`discovery.table.${label}.${row[label]?.kind}`, { ...row[label]?.additionalData })}
+          {t(`discover.table.${label}.${row[label]?.kind}`, { ...row[label]?.additionalData })}
         </Text>
       )
     case 'cdpId':
       return (
         <AppLink href={`/${row?.cdpId}`}>
-          <Button variant="tertiary">{t('discovery.table.view-position')}</Button>
+          <Button variant="tertiary">{t('discover.table.view-position')}</Button>
         </AppLink>
       )
     case 'collateralValue':

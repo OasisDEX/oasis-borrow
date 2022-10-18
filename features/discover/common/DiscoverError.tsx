@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-export function DiscoveryError() {
+export function DiscoverError() {
   const { t } = useTranslation()
 
   return (
@@ -16,7 +16,7 @@ export function DiscoveryError() {
         borderTopColor: 'neutral20',
       }}
     >
-      {t('discovery.table.no-entries')}
+      {t('discover.table.no-entries')}
     </Text>
   )
 }

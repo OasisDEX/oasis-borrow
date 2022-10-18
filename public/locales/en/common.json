@@ -141,7 +141,7 @@
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
-  "discovery": {
+  "discover": {
     "heading": "Discover Oasis.app",
     "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
     "intro-link": "Learn more about Discover",
@@ -670,7 +670,7 @@
     "bug-bounty": "Bug Bounty",
     "brand-assets": "Brand assets",
     "security": "Security",
-    "discovery": "Discovery"
+    "discover": "Discover"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -763,7 +763,7 @@
       "title": "Security",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     },
-    "discovery": {
+    "discover": {
       "title": "Discover Oasis.app",
       "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
     }

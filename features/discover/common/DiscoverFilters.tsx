@@ -1,14 +1,14 @@
 import { GenericSelect } from 'components/GenericSelect'
-import { DiscoveryFiltersList, DiscoveryFiltersListItem } from 'features/discovery/meta'
+import { DiscoverFiltersList, DiscoverFiltersListItem } from 'features/discover/meta'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-export function DiscoveryFilters({
+export function DiscoverFilters({
   filters,
   onChange,
 }: {
-  filters: DiscoveryFiltersList
-  onChange: (key: string, currentValue: DiscoveryFiltersListItem) => void
+  filters: DiscoverFiltersList
+  onChange: (key: string, currentValue: DiscoverFiltersListItem) => void
 }) {
   return (
     <Box sx={{ p: ['24px', null, null, 4] }}>

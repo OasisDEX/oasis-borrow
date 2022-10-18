@@ -1,23 +1,23 @@
-import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBanner'
-import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
-import { getRowKey } from 'features/discovery/helpers'
-import { DiscoveryBanner } from 'features/discovery/meta'
-import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
+import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
+import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
+import { getRowKey } from 'features/discover/helpers'
+import { DiscoverBanner } from 'features/discover/meta'
+import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
 import { Box } from 'theme-ui'
 
-export function DiscoveryTable({
+export function DiscoverTable({
   banner,
   isLoading,
   kind,
   rows = [],
 }: {
-  banner?: DiscoveryBanner
+  banner?: DiscoverBanner
   isLoading: boolean
-  kind: DiscoveryPages
-  rows: DiscoveryTableRowData[]
+  kind: DiscoverPages
+  rows: DiscoverTableRowData[]
 }) {
   return (
     <Box
@@ -48,7 +48,7 @@ export function DiscoveryTable({
         <Box as="thead">
           <tr>
             {Object.keys(rows[0]).map((label, i) => (
-              <DiscoveryTableHeaderCell key={getRowKey(i, rows[0])} label={label} />
+              <DiscoverTableHeaderCell key={getRowKey(i, rows[0])} label={label} />
             ))}
           </tr>
         </Box>
@@ -63,11 +63,11 @@ export function DiscoveryTable({
         >
           {rows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <DiscoveryTableDataRow row={row} />
+              <DiscoverTableDataRow row={row} />
               {banner && i === Math.floor((rows.length - 1) / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
-                    <DiscoveryTableBanner kind={kind} {...banner} />
+                    <DiscoverTableBanner kind={kind} {...banner} />
                   </td>
                 </tr>
               )}
@@ -79,7 +79,7 @@ export function DiscoveryTable({
   )
 }
 
-export function DiscoveryTableHeaderCell({ label }: { label: string }) {
+export function DiscoverTableHeaderCell({ label }: { label: string }) {
   const { t } = useTranslation()
 
   return (
@@ -99,12 +99,12 @@ export function DiscoveryTableHeaderCell({ label }: { label: string }) {
         },
       }}
     >
-      {t(`discovery.table.header.${kebabCase(label)}`)}
+      {t(`discover.table.header.${kebabCase(label)}`)}
     </Box>
   )
 }
 
-export function DiscoveryTableDataRow({ row }: { row: DiscoveryTableRowData }) {
+export function DiscoverTableDataRow({ row }: { row: DiscoverTableRowData }) {
   return (
     <Box
       as="tr"
@@ -117,18 +117,18 @@ export function DiscoveryTableDataRow({ row }: { row: DiscoveryTableRowData }) {
       }}
     >
       {Object.keys(row).map((label, i) => (
-        <DiscoveryTableDataCell key={getRowKey(i, row)} label={label} row={row} />
+        <DiscoverTableDataCell key={getRowKey(i, row)} label={label} row={row} />
       ))}
     </Box>
   )
 }
 
-export function DiscoveryTableDataCell({
+export function DiscoverTableDataCell({
   label,
   row,
 }: {
   label: string
-  row: DiscoveryTableRowData
+  row: DiscoverTableRowData
 }) {
   return (
     <Box
@@ -142,7 +142,7 @@ export function DiscoveryTableDataCell({
         },
       }}
     >
-      <DiscoveryTableDataCellContent label={label} row={row} />
+      <DiscoverTableDataCellContent label={label} row={row} />
     </Box>
   )
 }

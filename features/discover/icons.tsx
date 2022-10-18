@@ -1,10 +1,10 @@
-import { DiscoveryPages } from 'features/discovery/types'
+import { DiscoverPages } from 'features/discover/types'
 import React from 'react'
 
-type DiscoveryIconsList = { [key in DiscoveryPages]: JSX.Element }
+type DiscoverIconsList = { [key in DiscoverPages]: JSX.Element }
 
-export const discoveryNavigationIconContent: DiscoveryIconsList = {
-  [DiscoveryPages.HIGH_RISK_POSITIONS]: (
+export const discoverNavigationIconContent: DiscoverIconsList = {
+  [DiscoverPages.HIGH_RISK_POSITIONS]: (
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -12,7 +12,7 @@ export const discoveryNavigationIconContent: DiscoveryIconsList = {
       fill="white"
     />
   ),
-  [DiscoveryPages.HIGHEST_MULTIPLY_PNL]: (
+  [DiscoverPages.HIGHEST_MULTIPLY_PNL]: (
     <>
       <path
         fillRule="evenodd"
@@ -25,7 +25,7 @@ export const discoveryNavigationIconContent: DiscoveryIconsList = {
       <circle opacity="0.8" cx="22.6875" cy="12" r="1" fill="white" />
     </>
   ),
-  [DiscoveryPages.MOST_YIELD_EARNED]: (
+  [DiscoverPages.MOST_YIELD_EARNED]: (
     <>
       <path
         d="M15.6658 8.476C15.8658 8.23034 16.241 8.23034 16.4411 8.476L21.4975 14.6842C21.7635 15.0109 21.5311 15.5 21.1098 15.5H10.9971C10.5758 15.5 10.3433 15.0109 10.6094 14.6842L15.6658 8.476Z"
@@ -34,7 +34,7 @@ export const discoveryNavigationIconContent: DiscoveryIconsList = {
       <rect opacity="0.8" x="14.0391" y="14" width="4.03053" height="10" rx="2" fill="white" />
     </>
   ),
-  [DiscoveryPages.LARGEST_DEBT]: (
+  [DiscoverPages.LARGEST_DEBT]: (
     <>
       <path
         fillRule="evenodd"
@@ -53,8 +53,8 @@ export const discoveryNavigationIconContent: DiscoveryIconsList = {
   ),
 }
 
-export const discoveryBannerIcons: DiscoveryIconsList = {
-  [DiscoveryPages.HIGH_RISK_POSITIONS]: (
+export const discoverBannerIcons: DiscoverIconsList = {
+  [DiscoverPages.HIGH_RISK_POSITIONS]: (
     <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect y="0.259247" width="60" height="60" rx="8" fill="url(#paint0_linear_1020_8047)" />
       <g filter="url(#filter0_d_1020_8047)">
@@ -116,7 +116,7 @@ export const discoveryBannerIcons: DiscoveryIconsList = {
       </defs>
     </svg>
   ),
-  [DiscoveryPages.HIGHEST_MULTIPLY_PNL]: (
+  [DiscoverPages.HIGHEST_MULTIPLY_PNL]: (
     <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect y="0.259247" width="60" height="60" rx="8" fill="white" />
       <rect y="0.259247" width="60" height="60" rx="8" fill="url(#paint0_linear_1020_8063)" />
@@ -204,7 +204,7 @@ export const discoveryBannerIcons: DiscoveryIconsList = {
       </defs>
     </svg>
   ),
-  [DiscoveryPages.MOST_YIELD_EARNED]: (
+  [DiscoverPages.MOST_YIELD_EARNED]: (
     <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect y="0.259247" width="60" height="60" rx="8" fill="white" />
       <rect y="0.259247" width="60" height="60" rx="8" fill="url(#paint0_linear_1028_8053)" />
@@ -290,7 +290,7 @@ export const discoveryBannerIcons: DiscoveryIconsList = {
       </defs>
     </svg>
   ),
-  [DiscoveryPages.LARGEST_DEBT]: (
+  [DiscoverPages.LARGEST_DEBT]: (
     <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect y="0.259247" width="60" height="60" rx="8" fill="url(#paint0_linear_1028_8019)" />
       <path

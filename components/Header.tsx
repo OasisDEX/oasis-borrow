@@ -4,7 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { LANDING_PILLS } from 'content/landing'
-import { DISCOVERY_URL } from 'features/discovery/helpers'
+import { DISCOVER_URL } from 'features/discover/helpers'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import {
@@ -445,7 +445,7 @@ const LINKS = {
   multiply: `/multiply`,
   borrow: `/borrow`,
   earn: '/earn',
-  discovery: DISCOVERY_URL,
+  discover: DISCOVER_URL,
 }
 
 function ConnectedHeader() {
@@ -768,7 +768,7 @@ function MobileMenu() {
     { labelKey: 'nav.multiply', url: LINKS.multiply },
     { labelKey: 'nav.borrow', url: LINKS.borrow },
     { labelKey: 'nav.earn', url: LINKS.earn },
-    { labelKey: 'nav.discovery', url: LINKS.discovery },
+    { labelKey: 'nav.discover', url: LINKS.discover },
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -990,7 +990,7 @@ function MainNavigation() {
           <HeaderLink label={t('nav.assets')}>
             <HeaderList links={LANDING_PILLS} columns={2} />
           </HeaderLink>
-          <HeaderLink label={t('nav.discovery')} link={LINKS.discovery} />
+          <HeaderLink label={t('nav.discover')} link={LINKS.discover} />
         </Grid>
       )}
     </Flex>

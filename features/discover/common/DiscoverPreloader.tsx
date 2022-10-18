@@ -1,7 +1,7 @@
 import { AppSpinner } from 'helpers/AppSpinner'
 import React from 'react'
 
-export function DiscoveryPreloader({ isContentLoaded }: { isContentLoaded: boolean }) {
+export function DiscoverPreloader({ isContentLoaded }: { isContentLoaded: boolean }) {
   return (
     <AppSpinner
       sx={{
