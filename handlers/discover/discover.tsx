@@ -191,7 +191,7 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
 
     if (!data.length) return res.status(404).json({ error: 'discover/no-data-found' })
 
-    return res.status(200).json(data)
+    return res.status(200).json({ rows: data })
   } catch (error) {
     if (typeof error === 'string') {
       return res.status(500).json({ error })
