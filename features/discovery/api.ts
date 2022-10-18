@@ -16,7 +16,7 @@ export interface DiscoveryDataResponse {
 
 function getDiscoveryData$(endpoint: string, query: string): Observable<DiscoveryDataResponse> {
   return ajax({
-    url: `/mocks/discovery${endpoint}?${query}`,
+    url: `${endpoint}?${query}`,
     method: 'GET',
   }).pipe(
     map(({ response }) => ({ data: response })),
