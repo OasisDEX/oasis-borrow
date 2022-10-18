@@ -111,6 +111,6 @@ export function DiscoverTableDataCellContent({
         </>
       )
     default:
-      return <>${row[label]}</>
+      return <>{row[label]}</>
   }
 }
