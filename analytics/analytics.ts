@@ -840,9 +840,10 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHAdjustRiskConfirmTransaction: () => {
+    stETHAdjustRiskConfirmTransaction: (riskRatio: BigNumber) => {
       const eventBody = {
         id: 'ConfirmTransaction',
+        riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.ManageSTETH,
         section: 'AdjustRisk',
       }

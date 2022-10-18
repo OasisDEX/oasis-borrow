@@ -185,6 +185,7 @@ export const createManageAaveStateMachine =
             START_TRANSACTION: {
               cond: 'validTransactionParameters',
               target: 'txInProgress',
+              actions: ['riskRatioConfirmTransactionEvent'],
             },
           },
         },
@@ -193,6 +194,7 @@ export const createManageAaveStateMachine =
           on: {
             POSITION_CLOSED: {
               target: 'txSuccess',
+              actions: ['closePositionTransactionEvent'],
             },
           },
         },
@@ -210,6 +212,7 @@ export const createManageAaveStateMachine =
           entry: [
             'spawnClosePositionParametersMachine',
             'sendVariablesToClosePositionParametersMachine',
+            'closePositionEvent',
           ],
           on: {
             CLOSING_PARAMETERS_RECEIVED: {
@@ -274,6 +277,13 @@ export const createManageAaveStateMachine =
         riskRatioConfirmEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskConfirmRisk(context.userInput.riskRatio!.loanToValue)
         },
+        riskRatioConfirmTransactionEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
+            context.userInput.riskRatio!.loanToValue,
+          )
+        },
+        closePositionEvent: trackingEvents.earn.stETHClosePositionConfirm,
+        closePositionTransactionEvent: trackingEvents.earn.stETHClosePositionConfirmTransaction,
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
         })),
