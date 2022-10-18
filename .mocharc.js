@@ -23,6 +23,7 @@ module.exports = {
     './helpers/**/*.test.tsx',
     './components/**/*.test.ts',
     './features/**/*.test.ts',
+    './features/**/*.test.tsx',
     './blockchain/**/*.test.ts',
     './locales.test.ts',
   ],
