@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
@@ -22,11 +21,11 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
+import { theme } from 'theme'
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
@@ -60,17 +59,6 @@ export function SidebarAutoTakeProfitEditingStage({
 
   const isVaultEmpty = vault.debt.isZero()
 
-  const { estimatedProfitOnClose } = getOnCloseEstimations({
-    colMarketPrice: autoTakeProfitState.executionPrice,
-    colOraclePrice: autoTakeProfitState.executionPrice,
-    debt: vault.debt,
-    debtOffset: vault.debtOffset,
-    ethMarketPrice,
-    lockedCollateral: vault.lockedCollateral,
-    toCollateral: autoTakeProfitState.toCollateral,
-  })
-  const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
-
   if (readOnlyAutoTakeProfitEnabled && !isVaultEmpty) {
     return (
       <SidebarFormInfo
@@ -100,9 +88,9 @@ export function SidebarAutoTakeProfitEditingStage({
         </>
       )}
       <EstimationOnClose
-        iconCircle={getToken(closeToToken).iconCircle}
-        label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
-        value={`${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`}
+        label={t('automation.estimated-col-ratio-at-trigger')}
+        value={formatPercent(autoTakeProfitState.executionCollRatio, { precision: 2 })}
+        valueSx={{ color: theme.colors.success100 }}
       />
       {isEditing && (
         <>
@@ -126,7 +114,6 @@ export function SidebarAutoTakeProfitEditingStage({
             token={vault.token}
             tokenMarketPrice={tokenMarketPrice}
             triggerColPrice={autoTakeProfitState.executionPrice}
-            triggerColRatio={autoTakeProfitState.executionCollRatio}
           />
         </>
       )}
@@ -143,7 +130,6 @@ interface AutoTakeProfitInfoSectionControlProps {
   token: string
   tokenMarketPrice: BigNumber
   triggerColPrice: BigNumber
-  triggerColRatio: BigNumber
 }
 
 function AutoTakeProfitInfoSectionControl({
@@ -154,7 +140,6 @@ function AutoTakeProfitInfoSectionControl({
   toCollateral,
   token,
   triggerColPrice,
-  triggerColRatio,
 }: AutoTakeProfitInfoSectionControlProps) {
   const {
     estimatedGasFeeOnTrigger,
@@ -178,7 +163,6 @@ function AutoTakeProfitInfoSectionControl({
       token={token}
       totalTriggerCost={totalTriggerCost}
       triggerColPrice={triggerColPrice}
-      triggerColRatio={triggerColRatio}
     />
   )
 }
