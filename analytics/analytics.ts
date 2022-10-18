@@ -822,43 +822,44 @@ export const trackingEvents = {
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
-    stETHAdjustRiskMoveSlider: () => {
+    stETHAdjustRiskMoveSlider: (riskRatio: BigNumber) => {
       const eventBody = {
         id: 'MoveSlider',
-        page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        riskRatio: formatPrecision(riskRatio, 4),
+        page: Pages.ManageSTETH,
+        section: 'AdjustRisk',
       }
       mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
     stETHAdjustRiskConfirmRisk: () => {
       const eventBody = {
         id: 'ConfirmRisk',
-        page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        page: Pages.ManageSTETH,
+        section: 'AdjustRisk',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     stETHAdjustRiskConfirmTransaction: () => {
       const eventBody = {
         id: 'ConfirmTransaction',
-        page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        page: Pages.ManageSTETH,
+        section: 'AdjustRisk',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     stETHClosePositionConfirm: () => {
       const eventBody = {
         id: 'Confirm',
-        page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        page: Pages.ManageSTETH,
+        section: 'ClosePosition',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
     stETHClosePositionConfirmTransaction: () => {
       const eventBody = {
         id: 'ConfirmTransaction',
-        page: Pages.OpenEarnSTETH,
-        section: 'OpenPosition',
+        page: Pages.ManageSTETH,
+        section: 'ClosePosition',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
