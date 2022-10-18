@@ -40,7 +40,7 @@ export function getClosePositionParametersStateMachineServices$(
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
               calls: context.transactionParameters!.calls as any,
-              operationName: 'CloseAAVEPosition',
+              operationName: 'CustomOperation',
               proxyAddress: context.proxyAddress!,
             })
             .pipe(first())
