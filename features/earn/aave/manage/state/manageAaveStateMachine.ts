@@ -126,7 +126,8 @@ export const createManageAaveStateMachine =
         },
         editing: {
           entry: [
-            //'clearTransactionParameters',
+            'clearTransactionParameters',
+            'setLoadingTrue',
             'spawnPricesObservable',
             'spawnUserSettingsObservable',
           ],
@@ -143,7 +144,7 @@ export const createManageAaveStateMachine =
               src: 'getParameters',
               id: 'getParameters',
               onDone: {
-                actions: ['assignTransactionParameters'],
+                actions: ['assignTransactionParameters', 'setLoadingFalse'],
               },
             },
           ],
@@ -160,11 +161,14 @@ export const createManageAaveStateMachine =
             SET_RISK_RATIO: {
               actions: ['userInputRiskRatio', 'cancelDebouncedGoToEditing', 'debounceGoToEditing'],
             },
+            RESET_RISK_RATIO: {
+              actions: ['clearTransactionParameters', 'clearRiskRatio', 'setLoadingFalse'],
+            },
             GO_TO_EDITING: {
               target: 'editing',
             },
             ADJUST_POSITION: {
-              cond: 'newRiskInputted',
+              cond: 'validTransactionParameters',
               target: 'reviewingAdjusting',
             },
           },
@@ -246,16 +250,10 @@ export const createManageAaveStateMachine =
         validTransactionParameters: ({ proxyAddress, transactionParameters }) => {
           return allDefined(proxyAddress, transactionParameters)
         },
-        newRiskInputted: (state) => {
-          return (
-            allDefined(state.userInput.riskRatio, state.protocolData) &&
-            !state.userInput.riskRatio!.loanToValue.eq(
-              state.protocolData!.position.riskRatio.loanToValue,
-            )
-          )
-        },
       },
       actions: {
+        setLoadingTrue: assign((_) => ({ loading: true })),
+        setLoadingFalse: assign((_) => ({ loading: false })),
         cancelDebouncedGoToEditing: cancel('debounced-filter'),
         debounceGoToEditing: send('GO_TO_EDITING', { delay: 1000, id: 'debounced-filter' }),
         setTokenBalanceFromEvent: assign((context, event) => ({
@@ -278,6 +276,14 @@ export const createManageAaveStateMachine =
             },
           }
         }),
+        clearRiskRatio: assign((context) => {
+          return {
+            userInput: {
+              ...context.userInput,
+              riskRatio: undefined,
+            },
+          }
+        }),
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
         })),
@@ -291,10 +297,10 @@ export const createManageAaveStateMachine =
           transactionParameters: event.data?.adjustParams,
           estimatedGasPrice: event.data?.estimatedGasPrice,
         })),
-        // clearTransactionParameters: assign((context, event) => ({
-        //   transactionParameters: undefined,
-        //   estimatedGasPrice: undefined,
-        // })),
+        clearTransactionParameters: assign((_) => ({
+          transactionParameters: undefined,
+          estimatedGasPrice: undefined,
+        })),
         assignClosingTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,
           estimatedGasPrice: event.estimatedGasPrice,

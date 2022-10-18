@@ -107,7 +107,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     ),
     primaryButton: {
       steps: [1, state.context.totalSteps!],
-      isLoading: false,
+      isLoading: state.context.loading,
       disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
       label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
       action: () => send('NEXT_STEP'),
@@ -160,8 +160,8 @@ export function SidebarOpenAaveVault() {
           resetRiskValue={aaveStETHMinimumRiskRatio}
           primaryButton={{
             steps: [2, state.context.totalSteps!],
-            isLoading: false,
-            disabled: false,
+            isLoading: state.context.loading,
+            disabled: !state.can('NEXT_STEP'),
             label: t('open-earn.aave.vault-form.open-btn'),
             action: () => send('NEXT_STEP'),
           }}

@@ -124,6 +124,7 @@ export function getManageAaveStateMachine$(
           collateralToken: 'STETH',
           slippage: userSettings.slippage,
           currentPosition: EMPTY_POSITION,
+          loading: false,
         })
     }),
   )

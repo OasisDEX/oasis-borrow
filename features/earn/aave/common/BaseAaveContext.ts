@@ -20,6 +20,7 @@ export type IStrategyInfo = {
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
+  | { type: 'RESET_RISK_RATIO' }
 
 export interface BaseAaveContext {
   refPriceObservable?: ActorRef<BaseAaveEvent, BaseAaveEvent>
@@ -42,6 +43,7 @@ export interface BaseAaveContext {
   collateralPrice?: BigNumber
   slippage: BigNumber
   currentPosition: IPosition
+  loading: boolean
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
