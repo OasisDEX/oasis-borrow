@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -12,6 +12,7 @@ interface AddAutoTakeProfitInfoSectionProps {
   token: string
   totalTriggerCost?: BigNumber
   triggerColPrice: BigNumber
+  triggerColRatio: BigNumber
 }
 
 export function AddAutoTakeProfitInfoSection({
@@ -21,6 +22,7 @@ export function AddAutoTakeProfitInfoSection({
   token,
   totalTriggerCost,
   triggerColPrice,
+  triggerColRatio,
 }: AddAutoTakeProfitInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -31,6 +33,10 @@ export function AddAutoTakeProfitInfoSection({
         {
           label: t('auto-take-profit.vault-changes.trigger-col-price', { token }),
           value: `$${formatAmount(triggerColPrice, 'USD')}`,
+        },
+        {
+          label: t('auto-take-profit.vault-changes.trigger-collateral-ratio'),
+          value: `${formatPercent(triggerColRatio, { precision: 2 })}`,
         },
         {
           label: t('auto-take-profit.vault-changes.debt-repaid'),

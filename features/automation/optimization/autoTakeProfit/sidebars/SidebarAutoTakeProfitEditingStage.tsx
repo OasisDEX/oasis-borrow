@@ -4,7 +4,6 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import { EstimationOnClose } from 'components/EstimationOnClose'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
@@ -21,11 +20,9 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { theme } from 'theme'
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
@@ -87,11 +84,6 @@ export function SidebarAutoTakeProfitEditingStage({
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
-      <EstimationOnClose
-        label={t('automation.estimated-col-ratio-at-trigger')}
-        value={formatPercent(autoTakeProfitState.executionCollRatio, { precision: 2 })}
-        valueSx={{ color: theme.colors.success100 }}
-      />
       {isEditing && (
         <>
           <SidebarResetButton
@@ -114,6 +106,7 @@ export function SidebarAutoTakeProfitEditingStage({
             token={vault.token}
             tokenMarketPrice={tokenMarketPrice}
             triggerColPrice={autoTakeProfitState.executionPrice}
+            triggerColRatio={autoTakeProfitState.executionCollRatio}
           />
         </>
       )}
@@ -130,6 +123,7 @@ interface AutoTakeProfitInfoSectionControlProps {
   token: string
   tokenMarketPrice: BigNumber
   triggerColPrice: BigNumber
+  triggerColRatio: BigNumber
 }
 
 function AutoTakeProfitInfoSectionControl({
@@ -140,6 +134,7 @@ function AutoTakeProfitInfoSectionControl({
   toCollateral,
   token,
   triggerColPrice,
+  triggerColRatio,
 }: AutoTakeProfitInfoSectionControlProps) {
   const {
     estimatedGasFeeOnTrigger,
@@ -163,6 +158,7 @@ function AutoTakeProfitInfoSectionControl({
       token={token}
       totalTriggerCost={totalTriggerCost}
       triggerColPrice={triggerColPrice}
+      triggerColRatio={triggerColRatio}
     />
   )
 }
