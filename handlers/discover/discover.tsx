@@ -80,7 +80,25 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
   const sizeFilter = getSizeFilter(size)
   const timeFilter = getTimeFilter(time)
   const multipleFilter = getMultipleFilter(multiple)
-  const assetFilter: string = asset.toUpperCase() || 'all'
+
+  const assetFilter =
+    asset !== 'all'
+      ? asset.toUpperCase()
+      : {
+          in: [
+            'CURVE',
+            'ETH',
+            'GUSD',
+            'LINK',
+            'MANA',
+            'MATIC',
+            'STETHETH',
+            'UNI',
+            'WBTC',
+            'YIFI',
+            'UNIV3DAIUSDC',
+          ],
+        }
   const timeIndex = Object.keys(timeFilter)[0]
   try {
     let data: HighRisk[] | LargestDebt[] | HighestPnl[] | MostYield[] = []
@@ -88,7 +106,7 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
       case DiscoveryPages.HIGH_RISK_POSITIONS: {
         data = (await prisma.highRisk.findMany({
           take: 10,
-          where: { collateral_type: assetFilter, collateral_value: sizeFilter },
+          where: { collateral_type: { in: ['MANA'] }, collateral_value: sizeFilter },
           select: {
             protocol_id: true,
             position_id: true,
