@@ -24,6 +24,11 @@ import {
   ClosePositionParametersStateMachineEvents,
 } from './closePositionParametersStateMachine'
 
+export enum OperationType {
+  CLOSE_POSITION,
+  ADJUST_POSITION,
+}
+
 export interface ManageAaveContext extends BaseAaveContext {
   strategy: string // TODO: Consider changing name to reserve token
   address: string
@@ -32,6 +37,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
 
   balanceAfterClose?: BigNumber
+  operationType?: OperationType
 }
 
 export interface AaveProtocolData {
@@ -164,7 +170,7 @@ export const createManageAaveStateMachine =
             src: 'getParameters',
             id: 'getParameters',
             onDone: {
-              actions: ['assignTransactionParameters'],
+              actions: ['assignTransactionParameters', 'setAdjustOperationType'],
             },
           },
           on: {
@@ -202,7 +208,11 @@ export const createManageAaveStateMachine =
           ],
           on: {
             CLOSING_PARAMETERS_RECEIVED: {
-              actions: ['assignClosingTransactionParameters', 'updateBalanceAfterClose'],
+              actions: [
+                'assignClosingTransactionParameters',
+                'updateBalanceAfterClose',
+                'setClosingOperationType',
+              ],
             },
             START_TRANSACTION: {
               cond: 'validTransactionParameters',
@@ -300,6 +310,12 @@ export const createManageAaveStateMachine =
         })),
         setUserSettingsFromEvent: assign((context, event) => ({
           slippage: event.userSettings.slippage,
+        })),
+        setClosingOperationType: assign((_) => ({
+          operationType: OperationType.CLOSE_POSITION,
+        })),
+        setAdjustOperationType: assign((_) => ({
+          operationType: OperationType.ADJUST_POSITION,
         })),
       },
     },

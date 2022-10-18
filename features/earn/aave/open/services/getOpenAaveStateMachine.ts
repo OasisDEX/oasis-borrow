@@ -1,3 +1,4 @@
+import { OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { AaveConfigurationData } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
@@ -105,7 +106,7 @@ export function contextToTransactionParameters(context: OpenAaveContext): Operat
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
-    operationName: 'CustomOperation',
+    operationName: OPERATION_NAMES.aave.OPEN_POSITION,
     token: context.token,
     proxyAddress: context.proxyAddress!,
     amount: context.userInput.amount!,

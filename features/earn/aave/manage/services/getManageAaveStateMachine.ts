@@ -1,3 +1,4 @@
+import { OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
@@ -19,13 +20,17 @@ import {
   ManageAaveEvent,
   ManageAaveStateMachine,
   ManageAaveStateMachineServices,
+  OperationType,
 } from '../state'
 
 function contextToTransactionParameters(context: ManageAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
-    operationName: 'CustomOperation',
+    operationName:
+      context.operationType === OperationType.CLOSE_POSITION
+        ? OPERATION_NAMES.aave.CLOSE_POSITION
+        : 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
   }
