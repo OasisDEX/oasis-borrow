@@ -12,6 +12,7 @@ import { defaultAutoTakeProfitData } from 'features/automation/optimization/auto
 import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
 import { mockVaults } from 'helpers/mocks/vaults.mock'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import React from 'react'
 // Not sure if the test should be for reducer itself or check whole forms, what components are mounted,rendered etc. ~Ł
 const hundredThousand = new BigNumber('100000')
 const fiftyMillion = new BigNumber('50000000')
@@ -19,8 +20,10 @@ const mockVault = mockVaults({
   collateral: hundredThousand,
   debt: fiftyMillion,
 })
-
+// 
 const mockUiChanges = initializeUIChanges()
+// use this publish to set initial state
+// const mockUiChanges = initializeUIChanges().publish()
 const mockAutoTakeProfitTriggerDataNoTrigger = defaultAutoTakeProfitData
 const isAutoTakeProfitEnabled = useAutoTakeProfitStateInitializator(
   mockVault(),
@@ -39,13 +42,16 @@ const ilkData = {
   debtScalingFactor: new BigNumber('8000630'),
   maxDebtPerUnitCollateral: new BigNumber('8000630'),
 }
+
 describe('given user has no trigger', () => {
   // This scenario seems feature envy with tests for AutoTakeProfitFormControl ~Ł
   // eslint-disable-next-line no-only-tests/no-only-tests
   it.only('should render form with default values', () => {
-    const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(
-      AUTO_TAKE_PROFIT_FORM_CHANGE,
-    )
+    // CANT DO IT THIS WAY NEED TO CREATE PROVIDER
+    // could do wrapper over sidebar
+    // const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(
+    //   AUTO_TAKE_PROFIT_FORM_CHANGE,
+    // )
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {
       closePickerConfig,
@@ -65,19 +71,21 @@ describe('given user has no trigger', () => {
       vault: mockVault(),
     })
     render(
-      <SidebarAutoTakeProfitEditingStage
-        autoTakeProfitState={autoTakeProfitState}
-        autoTakeProfitTriggerData={mockAutoTakeProfitTriggerDataNoTrigger}
-        closePickerConfig={closePickerConfig}
-        ethMarketPrice={tokenMarketPrice}
-        isEditing={isEditing}
-        sliderConfig={sliderConfig}
-        tokenMarketPrice={tokenMarketPrice}
-        vault={mockVault()}
-        ilkData={ilkData}
-        errors={errors}
-        warnings={warnings}
-      />,
+      <AppContext.Provider value={{ addItem }}>
+    </AppContext.Provider>
+      // <SidebarAutoTakeProfitEditingStage
+      //   autoTakeProfitState={autoTakeProfitState}
+      //   autoTakeProfitTriggerData={mockAutoTakeProfitTriggerDataNoTrigger}
+      //   closePickerConfig={closePickerConfig}
+      //   ethMarketPrice={tokenMarketPrice}
+      //   isEditing={isEditing}
+      //   sliderConfig={sliderConfig}
+      //   tokenMarketPrice={tokenMarketPrice}
+      //   vault={mockVault()}
+      //   ilkData={ilkData}
+      //   errors={errors}
+      //   warnings={warnings}
+      // />,
     )
     // here just assert that state contains correct default
     expect(autoTakeProfitState.currentForm).to.equal('add')
