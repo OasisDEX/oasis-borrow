@@ -790,7 +790,7 @@
     },
     "set-auto-take-profit": {
       "left-label": "Trigger {{token}} price",
-      "right-label": "Trigger collateral ratio",
+      "right-label": "Estimated {{token}} at Close",
       "left-footer": "Lower price",
       "right-footer": "Higher price"
     }
@@ -1734,7 +1734,8 @@
     "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
-    "trigger-executed": "Your {{feature}} was triggered"
+    "trigger-executed": "Your {{feature}} was triggered",
+    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",

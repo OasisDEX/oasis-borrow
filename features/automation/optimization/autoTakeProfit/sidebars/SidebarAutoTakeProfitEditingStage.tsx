@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import { EstimationOnClose } from 'components/EstimationOnClose'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
@@ -22,11 +20,9 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
@@ -60,17 +56,6 @@ export function SidebarAutoTakeProfitEditingStage({
 
   const isVaultEmpty = vault.debt.isZero()
 
-  const { estimatedProfitOnClose } = getOnCloseEstimations({
-    colMarketPrice: autoTakeProfitState.executionPrice,
-    colOraclePrice: autoTakeProfitState.executionPrice,
-    debt: vault.debt,
-    debtOffset: vault.debtOffset,
-    ethMarketPrice,
-    lockedCollateral: vault.lockedCollateral,
-    toCollateral: autoTakeProfitState.toCollateral,
-  })
-  const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
-
   if (readOnlyAutoTakeProfitEnabled && !isVaultEmpty) {
     return (
       <SidebarFormInfo
@@ -99,11 +84,6 @@ export function SidebarAutoTakeProfitEditingStage({
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
-      <EstimationOnClose
-        iconCircle={getToken(closeToToken).iconCircle}
-        label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
-        value={`${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`}
-      />
       {isEditing && (
         <>
           <SidebarResetButton
