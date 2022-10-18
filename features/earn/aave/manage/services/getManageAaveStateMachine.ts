@@ -1,10 +1,18 @@
+import { OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
+import { distinctUntilChanged } from 'rxjs/internal/operators'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
+import { Tickers } from '../../../../../blockchain/prices'
+import { EMPTY_POSITION } from '../../../../aave'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
+import { UserSettingsState } from '../../../../userSettings/userSettings'
+import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { OpenAaveEvent } from '../../open/state'
 import {
   ClosePositionParametersStateMachine,
   createManageAaveStateMachine,
@@ -12,13 +20,17 @@ import {
   ManageAaveEvent,
   ManageAaveStateMachine,
   ManageAaveStateMachineServices,
+  OperationType,
 } from '../state'
 
 function contextToTransactionParameters(context: ManageAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
-    operationName: 'CustomOperation',
+    operationName:
+      context.operationType === OperationType.CLOSE_POSITION
+        ? OPERATION_NAMES.aave.CLOSE_POSITION
+        : 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
   }
@@ -28,16 +40,33 @@ export function getManageAaveStateMachine$(
   services$: Observable<ManageAaveStateMachineServices>,
   closePositionParametersStateMachine$: Observable<ClosePositionParametersStateMachine>,
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
+  userSettings$: Observable<UserSettingsState>,
+  prices$: (tokens: string[]) => Observable<Tickers>,
   { token, address, strategy }: { token: string; address: string; strategy: string },
 ): Observable<ManageAaveStateMachine> {
-  return combineLatest(closePositionParametersStateMachine$, services$).pipe(
-    map(([closePositionParametersStateMachine, services]) => {
+  const pricesFeed$ = getPricesFeed$(prices$)
+  return combineLatest(closePositionParametersStateMachine$, services$, userSettings$).pipe(
+    map(([closePositionParametersStateMachine, services, userSettings]) => {
       return createManageAaveStateMachine
         .withConfig({
           services: {
             ...services,
           },
           actions: {
+            spawnPricesObservable: assign((context) => {
+              return {
+                refPriceObservable: spawn(pricesFeed$(context.collateralToken), 'pricesFeed'),
+              }
+            }),
+            spawnUserSettingsObservable: assign((_) => {
+              const settings$: Observable<OpenAaveEvent> = userSettings$.pipe(
+                distinctUntilChanged(isEqual),
+                map((settings) => ({ type: 'USER_SETTINGS_CHANGED', userSettings: settings })),
+              )
+              return {
+                refUserSettingsObservable: spawn(settings$, 'userSettings'),
+              }
+            }),
             spawnClosePositionParametersMachine: assign((context) => ({
               refClosePositionParametersStateMachine: spawn(
                 closePositionParametersStateMachine
@@ -92,6 +121,9 @@ export function getManageAaveStateMachine$(
           inputDelay: 1000,
           address,
           strategy,
+          collateralToken: 'STETH',
+          slippage: userSettings.slippage,
+          currentPosition: EMPTY_POSITION,
         })
     }),
   )

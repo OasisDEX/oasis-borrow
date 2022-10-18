@@ -46,6 +46,7 @@ export function setupAaveContext({
   onEveryBlock$,
   context$,
   aaveSthEthYieldsQuery,
+  tokenPriceUSD$,
 }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
@@ -139,6 +140,8 @@ export function setupAaveContext({
     proxyStateMachine$,
     transactionMachine,
     simulationMachine,
+    userSettings$,
+    tokenPriceUSD$,
   )
 
   const aaveManageStateMachine$ = memoize(
@@ -146,6 +149,8 @@ export function setupAaveContext({
       manageAaveStateMachineServices$,
       closePositionParametersStateMachine$,
       transactionMachine,
+      userSettings$,
+      tokenPriceUSD$,
     ),
     ({ token, address, strategy }) => `${address}-${token}-${strategy}`,
   )

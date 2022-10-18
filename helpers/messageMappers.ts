@@ -57,6 +57,7 @@ const commonErrors = [
   'afterCollRatioAboveConstantMultipleBuyRatio',
   'vaultWillBeTakenUnderMinActiveColRatio',
   'stopLossOnNearLiquidationRatio',
+  'takeProfitWillTriggerImmediatelyAfterVaultReopen',
 
   'customDaiAllowanceAmountLessThanPaybackAmount',
   'customAllowanceAmountExceedsMaxUint256',
@@ -88,6 +89,7 @@ const commonWarnings = [
   'vaultWillRemainUnderMinActiveColRatio',
   'potentialInsufficientEthFundsForTx',
   'nextCollRatioCloseToCurrentSl',
+  'existingTakeProfitTriggerAfterVaultReopen',
 ]
 
 export function extractCommonWarnings(warningMessages: VaultWarningMessage[]) {

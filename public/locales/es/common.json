@@ -764,7 +764,9 @@
     "price-impact": "(Impacto en el) Precio del {{token}}",
     "slippage-limit": "Límite de deslizamiento",
     "third-party-fees": "Tasas de protocolos de terceros",
-    "oasis-fee": "Tasa de Oasis"
+    "oasis-fee": "Tasa de Oasis",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt"
   },
   "vault-actions": {
     "deposit": "Deposita",

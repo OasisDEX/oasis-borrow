@@ -89,6 +89,8 @@ export function VaultWarnings({
         return translate('constant-multiple-auto-sell-triggered-immediately')
       case 'constantMultipleAutoBuyTriggeredImmediately':
         return translate('constant-multiple-auto-buy-triggered-immediately')
+      case 'existingTakeProfitTriggerAfterVaultReopen':
+        return translate('existing-take-profit-trigger-after-vault-reopen')
       case 'constantMultipleSellTriggerCloseToStopLossTrigger':
         return (
           <Trans

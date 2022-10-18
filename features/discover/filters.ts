@@ -1,7 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { DiscoveryFiltersListItem } from 'features/discovery/meta'
+import { DiscoverFiltersListItem } from 'features/discover/meta'
 
-export const discoveryFiltersAssetItems = {
+export const discoverFiltersAssetItems = {
   all: { value: 'all', label: 'All assets' },
   // TODO: update with nicer cuvre icon when available
   curve: { value: 'curve', label: 'CURVE', icon: getToken('CRVV1ETHSTETH').iconCircle },
@@ -19,7 +19,7 @@ export const discoveryFiltersAssetItems = {
   yfi: { value: 'yfi', label: 'YFI', icon: getToken('YFI').iconCircle },
 }
 
-export const discoverySizeFilter: DiscoveryFiltersListItem[] = [
+export const discoverSizeFilter: DiscoverFiltersListItem[] = [
   { value: '<100k', label: 'Under $100,000' },
   { value: '100k-250k', label: '$100,000 - $250,000' },
   { value: '250k-500k', label: '$250,000 - $500,000' },
@@ -27,13 +27,13 @@ export const discoverySizeFilter: DiscoveryFiltersListItem[] = [
   { value: '>1m', label: 'Over $1,000,000' },
 ]
 
-export const discoveryMultipleFilter: DiscoveryFiltersListItem[] = [
+export const discoverMultipleFilter: DiscoverFiltersListItem[] = [
   { value: '1-2', label: 'Multiple: 1-2x' },
   { value: '2-3', label: 'Multiple: 2-3x' },
   { value: '>3', label: 'Multiple: over 3x' },
 ]
 
-export const discoveryTimeFilter: DiscoveryFiltersListItem[] = [
+export const discoverTimeFilter: DiscoverFiltersListItem[] = [
   { value: 'all', label: 'All time' },
   { value: '1d', label: '1 day' },
   { value: '7d', label: '7 days' },

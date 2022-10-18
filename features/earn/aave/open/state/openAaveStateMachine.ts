@@ -11,7 +11,7 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
+import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import {
   AaveStEthSimulateStateMachine,
@@ -66,6 +66,7 @@ export type OpenAaveEvent =
   | { type: 'RETRY' }
   | OpenAaveMachineEvents
   | OpenAaveTransactionEvents
+  | BaseAaveEvent
 
 export const createOpenAaveStateMachine = createMachine(
   {
@@ -81,7 +82,13 @@ export const createOpenAaveStateMachine = createMachine(
     initial: 'editing',
     states: {
       editing: {
-        entry: ['initContextValues', 'spawnParametersMachine', 'spawnSimulationMachine'],
+        entry: [
+          'initContextValues',
+          'spawnParametersMachine',
+          'spawnSimulationMachine',
+          'spawnPricesObservable',
+          'spawnUserSettingsObservable',
+        ],
         invoke: [
           {
             src: 'getBalance',
@@ -202,6 +209,14 @@ export const createOpenAaveStateMachine = createMachine(
       },
       txSuccess: {
         type: 'final',
+      },
+    },
+    on: {
+      PRICES_RECEIVED: {
+        actions: ['setPricesFromEvent'],
+      },
+      USER_SETTINGS_CHANGED: {
+        actions: ['setUserSettingsFromEvent'],
       },
     },
   },
@@ -341,6 +356,12 @@ export const createOpenAaveStateMachine = createMachine(
             userInput.riskRatio.loanToValue,
           )
       },
+      setPricesFromEvent: assign((context, event) => ({
+        collateralPrice: event.collateralPrice,
+      })),
+      setUserSettingsFromEvent: assign((context, event) => ({
+        slippage: event.userSettings.slippage,
+      })),
     },
   },
 )

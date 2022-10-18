@@ -5,15 +5,11 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import {
-  getEstimatedGasFeeTextOld,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
+import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
@@ -26,18 +22,6 @@ export interface ManageAaveVaultProps {
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
   readonly send: Sender<ManageAaveEvent>
-}
-
-function TransactionInformationContainer({ state }: ManageAaveStateProps) {
-  const { t } = useTranslation()
-  return (
-    <VaultChangesInformationContainer title="Total fees">
-      <VaultChangesInformationItem
-        label={t('transaction-fee')}
-        value={getEstimatedGasFeeTextOld(state.context.estimatedGasPrice)}
-      />
-    </VaultChangesInformationContainer>
-  )
 }
 
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
@@ -59,7 +43,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   )
 }
 
-function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -67,7 +51,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -91,7 +75,7 @@ function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStatePro
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -99,6 +83,10 @@ function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStatePro
       disabled: !state.can('START_TRANSACTION'),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
       action: () => send('START_TRANSACTION'),
+    },
+    textButton: {
+      label: t('manage-earn.aave.vault-form.back-to-editing'),
+      action: () => send('BACK_TO_EDITING'),
     },
   }
 
@@ -115,7 +103,7 @@ function ManageAaveReviewingAdjustingStateView({ state, send }: ManageAaveStateP
         <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
           {t('manage-earn.aave.vault-form.adjust-description')}
         </Text>
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -144,7 +132,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -158,7 +146,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveSuccessStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -170,7 +158,7 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {

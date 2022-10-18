@@ -1,10 +1,11 @@
-import { IPosition, IRiskRatio, IStrategy, strategies } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy, Position, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
+import { zero } from '../../helpers/zero'
 import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
 
 function getAddressesFromContext(context: ContextConnected) {
@@ -106,3 +107,9 @@ export async function getCloseAaveParameters(
     },
   )
 }
+
+export const EMPTY_POSITION = new Position({ amount: zero }, { amount: zero }, zero, {
+  maxLoanToValue: zero,
+  liquidationThreshold: zero,
+  dustLimit: zero,
+})

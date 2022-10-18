@@ -1,8 +1,9 @@
-import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { EventObject, Sender } from 'xstate'
+import { ActorRef, EventObject, Sender } from 'xstate'
 
 import { HasGasEstimation } from '../../../../helpers/form'
+import { UserSettingsState } from '../../../userSettings/userSettings'
 import { AaveProtocolData } from '../manage/state'
 
 type UserInput = {
@@ -16,7 +17,14 @@ export type IStrategyInfo = {
   collateralToken: string
 }
 
+export type BaseAaveEvent =
+  | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
+  | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
+
 export interface BaseAaveContext {
+  refPriceObservable?: ActorRef<BaseAaveEvent, BaseAaveEvent>
+  refUserSettingsObservable?: ActorRef<BaseAaveEvent, BaseAaveEvent>
+
   transactionParameters?: IStrategy
   estimatedGasPrice?: HasGasEstimation
   currentStep?: number
@@ -30,6 +38,10 @@ export interface BaseAaveContext {
   resetRiskRatio?: IRiskRatio
   userInput: UserInput
   protocolData?: AaveProtocolData
+  collateralToken: string
+  collateralPrice?: BigNumber
+  slippage: BigNumber
+  currentPosition: IPosition
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
