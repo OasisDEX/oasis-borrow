@@ -125,7 +125,11 @@ export const createManageAaveStateMachine =
           },
         },
         editing: {
-          entry: ['spawnPricesObservable', 'spawnUserSettingsObservable'],
+          entry: [
+            //'clearTransactionParameters',
+            'spawnPricesObservable',
+            'spawnUserSettingsObservable',
+          ],
           invoke: [
             {
               src: 'getBalance',
@@ -199,7 +203,11 @@ export const createManageAaveStateMachine =
           },
         },
         txSuccess: {
-          type: 'final',
+          on: {
+            GO_TO_EDITING: {
+              target: 'editing',
+            },
+          },
         },
         reviewingClosing: {
           entry: [
@@ -283,6 +291,10 @@ export const createManageAaveStateMachine =
           transactionParameters: event.data?.adjustParams,
           estimatedGasPrice: event.data?.estimatedGasPrice,
         })),
+        // clearTransactionParameters: assign((context, event) => ({
+        //   transactionParameters: undefined,
+        //   estimatedGasPrice: undefined,
+        // })),
         assignClosingTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,
           estimatedGasPrice: event.estimatedGasPrice,
