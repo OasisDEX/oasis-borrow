@@ -1,5 +1,6 @@
 import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBanner'
 import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
+import { getRowKey } from 'features/discovery/helpers'
 import { DiscoveryBanner } from 'features/discovery/meta'
 import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
 import { kebabCase } from 'lodash'
@@ -47,7 +48,7 @@ export function DiscoveryTable({
         <Box as="thead">
           <tr>
             {Object.keys(rows[0]).map((label, i) => (
-              <DiscoveryTableHeaderCell key={i} label={label} />
+              <DiscoveryTableHeaderCell key={getRowKey(i, rows[0])} label={label} />
             ))}
           </tr>
         </Box>
@@ -61,7 +62,7 @@ export function DiscoveryTable({
           }}
         >
           {rows.map((row, i) => (
-            <Fragment key={i}>
+            <Fragment key={getRowKey(i, row)}>
               <DiscoveryTableDataRow row={row} />
               {banner && i === Math.floor((rows.length - 1) / 2) && (
                 <tr>
@@ -116,7 +117,7 @@ export function DiscoveryTableDataRow({ row }: { row: DiscoveryTableRowData }) {
       }}
     >
       {Object.keys(row).map((label, i) => (
-        <DiscoveryTableDataCell key={i} label={label} row={row} />
+        <DiscoveryTableDataCell key={getRowKey(i, row)} label={label} row={row} />
       ))}
     </Box>
   )

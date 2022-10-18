@@ -1,5 +1,6 @@
 import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBanner'
 import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
+import { getRowKey } from 'features/discovery/helpers'
 import { DiscoveryBanner } from 'features/discovery/meta'
 import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
 import { kebabCase } from 'lodash'
@@ -47,7 +48,7 @@ export function DiscoveryCards({
         }}
       >
         {rows.map((row, i) => (
-          <Fragment key={i}>
+          <Fragment key={getRowKey(i, row)}>
             <DiscoveryCard row={row} />
             {banner && i === Math.floor((rows.length - 1) / 2) && (
               <Box as="li">
