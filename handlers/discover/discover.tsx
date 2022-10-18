@@ -1,8 +1,12 @@
 import { HighestPnl, HighRisk, LargestDebt, MostYield, Prisma } from '@prisma/client'
-import { DiscoveryPages } from 'features/discovery/types'
+import { discoverFiltersAssetItems } from 'features/discover/filters'
+import { DiscoverPages } from 'features/discover/types'
+import { values } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
+
+const AMOUNT_OF_ROWS = 10
 
 const querySchema = z.object({
   table: z.string(),
@@ -12,29 +16,15 @@ const querySchema = z.object({
   time: z.string(),
 })
 
-const getTimeFilter = (time: string): { [key: string]: 'desc' } => {
-  switch (time) {
-    case '1d': {
-      return { t_1d: 'desc' }
-    }
-    case '7d': {
-      return { t_7d: 'desc' }
-    }
-    case '30d': {
-      return { t_30d: 'desc' }
-    }
-    case '1y': {
-      return { t_365d: 'desc' }
-    }
-    case 'all': {
-      return { t_all: 'desc' }
-    }
-    default: {
-      return { t_all: 'desc' }
-    }
-  }
+const getAssetFilter = (asset: string): string | Prisma.StringFilter => {
+  return asset !== 'all'
+    ? asset.toUpperCase()
+    : {
+        in: values(discoverFiltersAssetItems)
+          .map((item) => item.value)
+          .filter((item) => item !== 'all'),
+      }
 }
-
 const getSizeFilter = (size: string): Prisma.StringFilter => {
   switch (size) {
     case '<100k': {
@@ -73,40 +63,46 @@ const getMultipleFilter = (time: string): Prisma.StringFilter => {
     }
   }
 }
+const getTimeFilter = (time: string): { [key: string]: 'desc' } => {
+  switch (time) {
+    case '1d': {
+      return { t_1d: 'desc' }
+    }
+    case '7d': {
+      return { t_7d: 'desc' }
+    }
+    case '30d': {
+      return { t_30d: 'desc' }
+    }
+    case '1y': {
+      return { t_365d: 'desc' }
+    }
+    case 'all': {
+      return { t_all: 'desc' }
+    }
+    default: {
+      return { t_all: 'desc' }
+    }
+  }
+}
 
 export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse) {
   const { table, asset, size, multiple, time } = querySchema.parse(req.query)
 
+  const assetFilter = getAssetFilter(asset)
   const sizeFilter = getSizeFilter(size)
-  const timeFilter = getTimeFilter(time)
   const multipleFilter = getMultipleFilter(multiple)
-
-  const assetFilter =
-    asset !== 'all'
-      ? asset.toUpperCase()
-      : {
-          in: [
-            'CURVE',
-            'ETH',
-            'GUSD',
-            'LINK',
-            'MANA',
-            'MATIC',
-            'STETHETH',
-            'UNI',
-            'WBTC',
-            'YIFI',
-            'UNIV3DAIUSDC',
-          ],
-        }
+  const timeFilter = getTimeFilter(time)
   const timeIndex = Object.keys(timeFilter)[0]
+
   try {
     let data: HighRisk[] | LargestDebt[] | HighestPnl[] | MostYield[] = []
+
     switch (table) {
-      case DiscoveryPages.HIGH_RISK_POSITIONS: {
+      case DiscoverPages.HIGH_RISK_POSITIONS: {
         data = (await prisma.highRisk.findMany({
-          take: 10,
-          where: { collateral_type: { in: ['MANA'] }, collateral_value: sizeFilter },
+          take: AMOUNT_OF_ROWS,
+          where: { collateral_type: assetFilter, collateral_value: sizeFilter },
           select: {
             protocol_id: true,
             position_id: true,
@@ -117,11 +113,12 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             status: true,
           },
         })) as HighRisk[]
+
         break
       }
-      case DiscoveryPages.LARGEST_DEBT: {
+      case DiscoverPages.LARGEST_DEBT: {
         data = (await prisma.largestDebt.findMany({
-          take: 10,
+          take: AMOUNT_OF_ROWS,
           where: { collateral_type: assetFilter, collateral_value: sizeFilter },
           select: {
             protocol_id: true,
@@ -133,11 +130,12 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             last_action: true,
           },
         })) as LargestDebt[]
+
         break
       }
-      case DiscoveryPages.HIGHEST_MULTIPLY_PNL: {
+      case DiscoverPages.HIGHEST_MULTIPLY_PNL: {
         data = (await prisma.highestPnl.findMany({
-          take: 10,
+          take: AMOUNT_OF_ROWS,
           where: {
             collateral_type: assetFilter,
             collateral_value: sizeFilter,
@@ -155,14 +153,16 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
         })) as HighestPnl[]
         data.map((e: any) => {
           const replacedData = e[timeIndex]
+
           delete e[timeIndex]
           e['pnl'] = replacedData
         })
+
         break
       }
-      case DiscoveryPages.MOST_YIELD_EARNED: {
+      case DiscoverPages.MOST_YIELD_EARNED: {
         data = (await prisma.mostYield.findMany({
-          take: 10,
+          take: AMOUNT_OF_ROWS,
           where: { collateral_type: assetFilter, collateral_value: sizeFilter },
           orderBy: timeFilter,
           select: {
@@ -177,9 +177,11 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
         })) as MostYield[]
         data.map((e: any) => {
           const replacedData = e[timeIndex]
+
           delete e[timeIndex]
           e['earned'] = replacedData
         })
+
         break
       }
       default: {
