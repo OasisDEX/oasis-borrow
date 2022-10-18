@@ -1109,8 +1109,8 @@
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
     },
     "aave-multi-position": {
-      "header": "Your Maker Vault got liquidated",
-      "subheader": "This Maker Vault got liquidated"
+      "header": "This position is affected by other assets on AAVE",
+      "subheader": "This position is not reflecting the entire position on AAVE, as there are other assets put up as collateral or debt on this same DS-Proxy. Contact us to see what you can do."
     }
   },
   "vault-banners": {
