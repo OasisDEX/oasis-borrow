@@ -70,6 +70,7 @@ export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>
       autoSellData: change.autoSellData,
       autoBuyData: change.autoBuyData,
       constantMultipleData: change.constantMultipleData,
+      autoTakeProfitData: change.autoTakeProfitData,
     }
   }
 

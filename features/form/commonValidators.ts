@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { AutomationKinds } from 'features/automation/common/types'
 import { mapAutomationEvents, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
@@ -464,37 +465,62 @@ export function afterCollRatioThresholdRatioValidator({
   }
 }
 
-export function stopLossCloseToCollRatioValidator({
-  currentCollRatio,
-  stopLossLevel,
+export function vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
+  debt,
+  afterDebt,
+  nextCollateralPrice,
+  type,
+  isTriggerEnabled,
+  executionPrice,
 }: {
-  currentCollRatio: BigNumber
-  stopLossLevel: BigNumber
+  debt: BigNumber
+  afterDebt: BigNumber
+  nextCollateralPrice: BigNumber
+  type: 'below' | 'above'
+  isTriggerEnabled?: boolean
+  executionPrice?: BigNumber
 }) {
-  const alertRange = 3
-  const currentCollRatioFloor = currentCollRatio
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-    .minus(alertRange)
+  if (!(isTriggerEnabled && executionPrice && debt.isZero() && !afterDebt.isZero())) {
+    return false
+  }
 
-  return stopLossLevel.gte(currentCollRatioFloor)
+  switch (type) {
+    case 'above':
+      return nextCollateralPrice.gte(executionPrice)
+    case 'below':
+      return nextCollateralPrice.lt(executionPrice)
+
+    default:
+      return false
+  }
 }
 
-export function stopLossTriggeredValidator({
+export function automationTriggeredValidator({
   vaultHistory,
 }: {
   vaultHistory: VaultHistoryEvent[]
 }) {
+  const notTriggered = {
+    stopLossTriggered: false,
+    autoTakeProfitTriggered: false,
+  }
+
   if (!vaultHistory.length) {
-    return false
+    return notTriggered
   }
 
   const mappedAuto = mapAutomationEvents(vaultHistory)
   const potentialExecutionEvent = mappedAuto[0]
 
-  return (
-    'autoKind' in potentialExecutionEvent &&
-    potentialExecutionEvent.autoKind === 'stop-loss' &&
-    potentialExecutionEvent.eventType === 'executed'
-  )
+  if (
+    !('autoKind' in potentialExecutionEvent) ||
+    potentialExecutionEvent.eventType !== 'executed'
+  ) {
+    return notTriggered
+  }
+
+  return {
+    stopLossTriggered: potentialExecutionEvent.autoKind === AutomationKinds.STOP_LOSS,
+    autoTakeProfitTriggered: potentialExecutionEvent.autoKind === AutomationKinds.AUTO_TAKE_PROFIT,
+  }
 }

@@ -10,6 +10,7 @@ import { DetailsSectionContentTable } from '../../../../../components/DetailsSec
 import { DetailsSectionFooterItemWrapper } from '../../../../../components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from '../../../../../components/vault/detailsSection/ContentFooterItemsEarnSimulate'
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
+import { useHash } from '../../../../../helpers/useHash'
 import { zero } from '../../../../../helpers/zero'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { Simulation } from '../services'
@@ -27,6 +28,7 @@ function mapSimulation(simulation?: Simulation): string[] {
 function SimulationSection({ actor }: { actor: ActorRefFrom<AaveStEthSimulateStateMachine> }) {
   const [state] = useActor(actor)
   const { t } = useTranslation()
+  const [, setHash] = useHash<string>()
 
   const { simulation, amount, token } = state.context
 
@@ -69,7 +71,9 @@ function SimulationSection({ actor }: { actor: ActorRefFrom<AaveStEthSimulateSta
         description={t('vault-banners.what-are-the-risks.content')}
         button={{
           text: t('vault-banners.what-are-the-risks.button'),
-          action: () => {}, // TODO: Set proper action for this button to open the FAQ page
+          action: () => {
+            setHash('position-info')
+          },
         }}
         image={{
           src: '/static/img/setup-banner/stop-loss.svg',

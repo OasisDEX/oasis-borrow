@@ -8,6 +8,7 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
@@ -32,7 +33,7 @@ import { ConstantMultipleTriggerData } from 'features/automation/optimization/co
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount } from 'helpers/formatters/format'
 import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
@@ -129,11 +130,24 @@ export function SidebarSetupAutoTakeProfit({
     feature,
   })
 
+  const { estimatedProfitOnClose } = getOnCloseEstimations({
+    colMarketPrice: autoTakeProfitState.executionPrice,
+    colOraclePrice: autoTakeProfitState.executionPrice,
+    debt: vault.debt,
+    debtOffset: vault.debtOffset,
+    ethMarketPrice,
+    lockedCollateral: vault.lockedCollateral,
+    toCollateral: autoTakeProfitState.toCollateral,
+  })
+
+  const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
+
   const autoTakeSliderBasicConfig = {
     disabled: false,
     leftBoundryFormatter: (x: BigNumber) =>
       x.isZero() ? '-' : `$${formatAmount(x, 'USD')} ${vault.token}`,
-    rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
+    rightBoundryFormatter: (x: BigNumber) =>
+      x.isZero() ? '-' : `${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`,
     step: 1,
   }
   const sliderPercentageFill = getSliderPercentageFill({
@@ -182,9 +196,9 @@ export function SidebarSetupAutoTakeProfit({
     ...autoTakeSliderBasicConfig,
     sliderPercentageFill,
     leftLabel: t('slider.set-auto-take-profit.left-label', { token: vault.token }),
-    rightLabel: t('slider.set-auto-take-profit.right-label'),
+    rightLabel: t('slider.set-auto-take-profit.right-label', { token: closeToToken }),
     leftBoundry: autoTakeProfitState.executionPrice,
-    rightBoundry: autoTakeProfitState.executionCollRatio,
+    rightBoundry: estimatedProfitOnClose,
     lastValue: autoTakeProfitState.executionPrice,
     maxBoundry: max,
     minBoundry: min,

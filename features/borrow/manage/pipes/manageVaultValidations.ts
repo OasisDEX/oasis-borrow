@@ -33,6 +33,7 @@ export function validateErrors(
     afterCollRatioBelowConstantMultipleSellRatio,
     afterCollRatioAboveConstantMultipleBuyRatio,
     insufficientEthFundsForTx,
+    takeProfitWillTriggerImmediatelyAfterVaultReopen,
   } = state
 
   const errorMessages: VaultErrorMessage[] = []
@@ -58,6 +59,7 @@ export function validateErrors(
         afterCollRatioAboveAutoBuyRatio,
         afterCollRatioBelowConstantMultipleSellRatio,
         afterCollRatioAboveConstantMultipleBuyRatio,
+        takeProfitWillTriggerImmediatelyAfterVaultReopen,
       }),
     )
   }
@@ -109,6 +111,7 @@ export function validateWarnings(
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     debtIsLessThanDebtFloor,
     potentialGenerateAmountLessThanDebtFloor,
+    existingTakeProfitTriggerAfterVaultReopen,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -124,6 +127,7 @@ export function validateWarnings(
         vaultWillBeAtRiskLevelDangerAtNextPrice,
         vaultWillBeAtRiskLevelWarning,
         vaultWillBeAtRiskLevelWarningAtNextPrice,
+        existingTakeProfitTriggerAfterVaultReopen,
       }),
     )
   }

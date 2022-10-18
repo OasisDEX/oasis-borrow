@@ -427,8 +427,8 @@ export function AavePositionAlreadyOpenedNotice() {
   return (
     <Box sx={{ mb: 4 }}>
       <VaultNotice
-        header={t('vault-notices.aave.multi-position.header')}
-        subheader={t('vault-notices.aave.multi-position.subheader') as string}
+        header={t('vault-notices.aave-multi-position.header')}
+        subheader={t('vault-notices.aave-multi-position.subheader') as string}
         color="banner.warning"
         withClose={false}
       />

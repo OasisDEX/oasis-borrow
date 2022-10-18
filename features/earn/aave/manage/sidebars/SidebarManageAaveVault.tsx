@@ -5,16 +5,13 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import {
-  getEstimatedGasFeeTextOld,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
+import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
+import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
 
@@ -25,18 +22,6 @@ export interface ManageAaveVaultProps {
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
   readonly send: Sender<ManageAaveEvent>
-}
-
-function TransactionInformationContainer({ state }: ManageAaveStateProps) {
-  const { t } = useTranslation()
-  return (
-    <VaultChangesInformationContainer title="Total fees">
-      <VaultChangesInformationItem
-        label={t('transaction-fee')}
-        value={getEstimatedGasFeeTextOld(state.context.estimatedGasPrice)}
-      />
-    </VaultChangesInformationContainer>
-  )
 }
 
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
@@ -58,7 +43,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   )
 }
 
-function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -66,7 +51,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -79,7 +64,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -90,7 +75,7 @@ function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -98,6 +83,38 @@ function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
       disabled: !state.can('START_TRANSACTION'),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
       action: () => send('START_TRANSACTION'),
+    },
+    textButton: {
+      label: t('manage-earn.aave.vault-form.back-to-editing'),
+      action: () => send('BACK_TO_EDITING'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+function ManageAaveReviewingAdjustingStateView({ state, send }: ManageAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('manage-earn.aave.vault-form.adjust-title'),
+    content: (
+      <Grid gap={3}>
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+          {t('manage-earn.aave.vault-form.adjust-description')}
+        </Text>
+        <StrategyInformationContainer state={state} />
+      </Grid>
+    ),
+    primaryButton: {
+      isLoading: false,
+      disabled: !state.can('START_TRANSACTION'),
+      label: t('manage-earn.aave.vault-form.confirm-btn'),
+      action: () => send('START_TRANSACTION'),
+    },
+    textButton: {
+      label: t('manage-earn.aave.vault-form.back-to-editing'),
+      action: () => send('BACK_TO_EDITING'),
     },
   }
 
@@ -115,7 +132,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -129,7 +146,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveSuccessStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -141,11 +158,11 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
-      label: t('manage-earn.aave.vault-form.go-to-position'),
+      label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
       url: ``,
     },
   }
@@ -163,10 +180,13 @@ export function SidebarManageAaveVault() {
       return (
         <AdjustRiskView
           state={state}
+          resetRiskValue={
+            state.context.protocolData?.position.riskRatio || aaveStETHMinimumRiskRatio
+          }
           send={send}
           primaryButton={{
             isLoading: false,
-            disabled: true,
+            disabled: !state.can('ADJUST_POSITION'),
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')
@@ -182,10 +202,10 @@ export function SidebarManageAaveVault() {
           }}
         />
       )
-    case state.matches('reviewingClosing'):
-      return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('reviewingAdjusting'):
-      return <ManageAaveReviewingStateView state={state} send={send} />
+      return <ManageAaveReviewingAdjustingStateView state={state} send={send} />
+    case state.matches('reviewingClosing'):
+      return <ManageAaveReviewingClosingStateView state={state} send={send} />
     case state.matches('txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('txFailure'):

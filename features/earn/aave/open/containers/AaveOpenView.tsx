@@ -1,5 +1,5 @@
 import { TabBar } from 'components/TabBar'
-import { aaveFaq } from 'features/content/faqs/aave'
+import { AaveFaq } from 'features/content/faqs/aave'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -47,9 +47,13 @@ function AaveOpenContainer({
               ),
             },
             {
-              value: 'faq',
-              label: t('system.faq'),
-              content: <Card variant="faq">{aaveFaq}</Card>,
+              value: 'position-info',
+              label: t('system.position-info'),
+              content: (
+                <Card variant="faq">
+                  <AaveFaq />
+                </Card>
+              ),
             },
           ]}
         />

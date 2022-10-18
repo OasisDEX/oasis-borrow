@@ -61,6 +61,7 @@ export function applyManageVaultEnvironment<VaultState extends ManageStandardBor
       autoSellData: change.autoSellData,
       autoBuyData: change.autoBuyData,
       constantMultipleData: change.constantMultipleData,
+      autoTakeProfitData: change.autoTakeProfitData,
     }
   }
 

@@ -21,7 +21,7 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
     <Grid gap={3}>
       <VaultActionInput
         action={'Deposit'}
-        amount={state.context.amount}
+        amount={state.context.userInput?.amount}
         hasAuxiliary={true}
         auxiliaryAmount={state.context.auxiliaryAmount}
         hasError={false}

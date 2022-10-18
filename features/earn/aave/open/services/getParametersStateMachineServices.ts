@@ -37,6 +37,7 @@ export function getOpenAaveParametersStateMachineServices$(
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
             return 0
           }
+
           return await txHelpers
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,

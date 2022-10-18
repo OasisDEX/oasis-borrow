@@ -1,14 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React, { ReactNode } from 'react'
-import { Text } from 'theme-ui'
+import { SxStyleProp, Text } from 'theme-ui'
 
 interface EstimationOnCloseProps {
-  iconCircle: string
   label: string
   value: ReactNode
+  iconCircle?: string
+  valueSx?: SxStyleProp
 }
 
-export function EstimationOnClose({ iconCircle, label, value }: EstimationOnCloseProps) {
+export function EstimationOnClose({ iconCircle, label, value, valueSx }: EstimationOnCloseProps) {
   return (
     <Text
       as="p"
@@ -21,10 +22,10 @@ export function EstimationOnClose({ iconCircle, label, value }: EstimationOnClos
       }}
     >
       <Text as="span" sx={{ display: 'flex', color: 'neutral80' }}>
-        <Icon name={iconCircle} size="24px" sx={{ mt: '-1px', mr: 1 }} />
+        {iconCircle && <Icon name={iconCircle} size="24px" sx={{ mt: '-1px', mr: 1 }} />}
         {label}
       </Text>
-      <Text as="span" sx={{ display: 'block', height: '100%' }}>
+      <Text as="span" sx={{ display: 'block', height: '100%', ...valueSx }}>
         {value}
       </Text>
     </Text>

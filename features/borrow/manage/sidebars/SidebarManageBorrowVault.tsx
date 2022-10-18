@@ -1,9 +1,10 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS, getToken, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarAutomationVaultCloseTriggered } from 'components/vault/sidebar/SidebarAutomationVaultCloseTriggered'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
-import { SidebarVaultSLTriggered } from 'components/vault/sidebar/SidebarVaultSLTriggered'
+import { getAutomationThatClosedVault } from 'features/automation/common/helpers'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -12,12 +13,12 @@ import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { mapAutomationEvents } from 'features/vaultHistory/vaultHistory'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -28,7 +29,6 @@ import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVa
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const {
     accountIsConnected,
@@ -48,6 +48,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     regress,
     stage,
     stopLossTriggered,
+    autoTakeProfitTriggered,
     toggle,
     totalSteps,
     vault: { token },
@@ -67,8 +68,8 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   const isVaultClosed =
     vaultHistory[0]?.kind === 'CLOSE_VAULT_TO_DAI' ||
     vaultHistory[0]?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
-  const [isSLPanelVisible, setIsSLPanelVisible] = useState<boolean>(
-    stopLossTriggered && stopLossReadEnabled && isVaultClosed,
+  const [isClosedVaultPanelVisible, setIsClosedVaultPanelVisible] = useState<boolean>(
+    (stopLossTriggered || autoTakeProfitTriggered) && isVaultClosed,
   )
 
   useEffect(() => {
@@ -86,10 +87,19 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   }, [stage])
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token, isSLPanelVisible }),
+    title: getSidebarTitle({
+      flow,
+      stage,
+      token,
+      isClosedVaultPanelVisible,
+      automationThatClosedVault: getAutomationThatClosedVault({
+        stopLossTriggered,
+        autoTakeProfitTriggered,
+      }),
+    }),
     dropdown: {
       forcePanel,
-      disabled: isDropdownDisabled({ stage, isSLPanelVisible }),
+      disabled: isDropdownDisabled({ stage, isClosedVaultPanelVisible }),
       items: [
         {
           label: t('system.actions.borrow.edit-collateral', { token }),
@@ -124,7 +134,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     },
     content: (
       <Grid gap={3}>
-        {!isSLPanelVisible ? (
+        {!isClosedVaultPanelVisible ? (
           <>
             {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
             {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
@@ -137,20 +147,24 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
             {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
           </>
         ) : (
-          <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />
+          <SidebarAutomationVaultCloseTriggered closeEvent={mapAutomationEvents(vaultHistory)[0]} />
         )}
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, isSLPanelVisible, ...primaryButtonLabelParams }),
-      disabled: (!canProgress || !accountIsConnected) && !isSLPanelVisible,
-      steps: !isSuccessStage && !isSLPanelVisible ? [currentStep, totalSteps] : undefined,
+      label: getPrimaryButtonLabel({
+        flow,
+        isClosedVaultPanelVisible,
+        ...primaryButtonLabelParams,
+      }),
+      disabled: (!canProgress || !accountIsConnected) && !isClosedVaultPanelVisible,
+      steps: !isSuccessStage && !isClosedVaultPanelVisible ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,
       action: () => {
-        if (!isSLPanelVisible) {
+        if (!isClosedVaultPanelVisible) {
           progress!()
           progressTrackingEvent({ props })
-        } else setIsSLPanelVisible(false)
+        } else setIsClosedVaultPanelVisible(false)
       },
     },
     textButton: {

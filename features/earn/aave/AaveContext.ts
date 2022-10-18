@@ -23,7 +23,7 @@ import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValu
 import {
   getClosePositionParametersStateMachine$,
   getClosePositionParametersStateMachineServices$,
-  getManageAavePositionStateMachineServices,
+  getManageAavePositionStateMachineServices$,
   getManageAaveStateMachine$,
 } from './manage/services'
 import {
@@ -46,6 +46,7 @@ export function setupAaveContext({
   onEveryBlock$,
   context$,
   aaveSthEthYieldsQuery,
+  tokenPriceUSD$,
 }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
@@ -113,9 +114,11 @@ export function setupAaveContext({
     aaveReservesList$,
   )
 
-  const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
+  const manageAaveStateMachineServices$ = getManageAavePositionStateMachineServices$(
     contextForAddress$,
     txHelpers$,
+    gasEstimation$,
+    userSettings$,
     tokenBalances$,
     proxyForAccount$,
     aaveUserReserveData$,
@@ -137,13 +140,17 @@ export function setupAaveContext({
     proxyStateMachine$,
     transactionMachine,
     simulationMachine,
+    userSettings$,
+    tokenPriceUSD$,
   )
 
   const aaveManageStateMachine$ = memoize(
     curry(getManageAaveStateMachine$)(
-      manageAaveStateMachineServices,
+      manageAaveStateMachineServices$,
       closePositionParametersStateMachine$,
       transactionMachine,
+      userSettings$,
+      tokenPriceUSD$,
     ),
     ({ token, address, strategy }) => `${address}-${token}-${strategy}`,
   )

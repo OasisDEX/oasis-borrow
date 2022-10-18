@@ -17,8 +17,9 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
-import { StopLossTriggeredBannerControl } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBannerControl'
+import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -127,6 +128,7 @@ export function ManageVaultDetails(
     inputAmountsEmpty,
     stage,
     stopLossTriggered,
+    autoTakeProfitTriggered,
   } = props
   const { t } = useTranslation()
   const { stopLossTriggerData } = useAutomationContext()
@@ -136,10 +138,12 @@ export function ManageVaultDetails(
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
 
   return (
     <Grid>
-      {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBannerControl />}</>}
+      {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
+      {autoTakeProfitEnabled && <>{autoTakeProfitTriggered && <AutoTakeProfitTriggeredBanner />}</>}
       <DetailsSection
         title={t('system.overview')}
         content={

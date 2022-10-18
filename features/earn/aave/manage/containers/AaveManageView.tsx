@@ -1,7 +1,7 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { TabBar } from 'components/TabBar'
-import { aaveFaq } from 'features/content/faqs/aave'
+import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
@@ -64,9 +64,13 @@ function AaveManageContainer({
               ),
             },
             {
-              value: 'faq',
-              label: t('system.faq'),
-              content: <Card variant="faq">{aaveFaq}</Card>,
+              value: 'position-info',
+              label: t('system.position-info'),
+              content: (
+                <Card variant="faq">
+                  <AaveFaq />
+                </Card>
+              ),
             },
           ]}
         />
