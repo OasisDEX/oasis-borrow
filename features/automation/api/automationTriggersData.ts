@@ -8,7 +8,10 @@ import {
   AutoBSTriggerData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
-import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import {
+  AutoTakeProfitTriggerData,
+  extractAutoTakeProfitData,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import {
   ConstantMultipleTriggerData,
   extractConstantMultipleData,
@@ -94,4 +97,5 @@ export interface AutomationTriggersChange {
   autoSellData: AutoBSTriggerData
   autoBuyData: AutoBSTriggerData
   constantMultipleData: ConstantMultipleTriggerData
+  autoTakeProfitData: AutoTakeProfitTriggerData
 }

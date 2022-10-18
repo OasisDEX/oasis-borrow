@@ -1,11 +1,11 @@
-export enum DiscoveryPages {
+export enum DiscoverPages {
   HIGH_RISK_POSITIONS = 'high-risk-positions',
   HIGHEST_MULTIPLY_PNL = 'highest-multiply-pnl',
   MOST_YIELD_EARNED = 'most-yield-earned',
   LARGEST_DEBT = 'largest-debt',
 }
 
-export enum DiscoveryTableVaultActivity {
+export enum DiscoverTableVaultActivity {
   WITHDRAWN = 1,
   INCREASED_RISK = 2,
   DECREASED_RISK = 3,
@@ -14,7 +14,7 @@ export enum DiscoveryTableVaultActivity {
   DEPOSITED = 6,
 }
 
-export enum DiscoveryTableVaultStatus {
+export enum DiscoverTableVaultStatus {
   LIQUIDATED = 1,
   BEING_LIQUIDATED = 2,
   TILL_LIQUIDATION = 3,
@@ -22,11 +22,11 @@ export enum DiscoveryTableVaultStatus {
   CLOSED_LONG_TIME_AGO = 5,
 }
 
-export interface DiscoveryFiltersSettings {
+export interface DiscoverFiltersSettings {
   [key: string]: string
 }
 
-export type DiscoveryTableRowData = {
+export type DiscoverTableRowData = {
   [key: string]: string | number
 } & {
   colRatio?: {
@@ -35,14 +35,14 @@ export type DiscoveryTableRowData = {
   }
 } & {
   activity?: {
-    kind: DiscoveryTableVaultActivity
+    kind: DiscoverTableVaultActivity
     additionalData?: {
       daysAgo: number
     }
   }
 } & {
   status?: {
-    kind: DiscoveryTableVaultStatus
+    kind: DiscoverTableVaultStatus
     additionalData?: {
       tillLiquidation?: number
       toStopLoss?: number

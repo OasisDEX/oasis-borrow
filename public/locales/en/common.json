@@ -141,7 +141,7 @@
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
-  "discovery": {
+  "discover": {
     "heading": "Discover Oasis.app",
     "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
     "intro-link": "Learn more about Discover",
@@ -670,7 +670,7 @@
     "bug-bounty": "Bug Bounty",
     "brand-assets": "Brand assets",
     "security": "Security",
-    "discovery": "Discovery"
+    "discover": "Discover"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -763,7 +763,7 @@
       "title": "Security",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     },
-    "discovery": {
+    "discover": {
       "title": "Discover Oasis.app",
       "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
     }
@@ -790,7 +790,7 @@
     },
     "set-auto-take-profit": {
       "left-label": "Trigger {{token}} price",
-      "right-label": "Trigger collateral ratio",
+      "right-label": "Estimated {{token}} at Close",
       "left-footer": "Lower price",
       "right-footer": "Higher price"
     }
@@ -993,7 +993,8 @@
     "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing.",
     "min-sell-price-will-prevent-sell-trigger": "This Min Sell Price will prevent the Sell Trigger from executing",
     "max-buy-price-will-prevent-buy-trigger": "This Max Buy Price will prevent the Buy Trigger from executing",
-    "auto-take-profit-triggered-immediately": "Please raise your trigger price. The current trigger price would cause your auto-profit sell to execute immediately."
+    "auto-take-profit-triggered-immediately": "Please raise your trigger price. The current trigger price would cause your auto-profit sell to execute immediately.",
+    "take-profit-will-trigger-immediately-after-vault-reopen": "You have an existing Take Profit Trigger that will trigger immediately on reopening this vault. Please remove your Take Profit Trigger before continuing."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -1024,7 +1025,8 @@
     "auto-take-profit-trigger-lower-than-auto-buy-trigger": "Setting your Target Price at this level may result in your Auto-Buy not executing. Find out more <0>here</0>.",
     "auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger": "Setting your Target Price at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
     "auto-buy-trigger-greater-than-auto-take-profit": "Setting your trigger ratio at this level may result in your Auto-Buy Trigger not executing. Find out more <0>here</0>.",
-    "constant-multiple-buy-trigger-greater-than-auto-take-profit": "Setting your buy trigger ratio at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>."
+    "constant-multiple-buy-trigger-greater-than-auto-take-profit": "Setting your buy trigger ratio at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
+    "existing-take-profit-trigger-after-vault-reopen": "You have an existing Take Profit Trigger, it will remain active after you reopen this vault."
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -1040,7 +1042,9 @@
     "price-impact": "{{token}} Price (impact)",
     "slippage-limit": "Slippage Limit",
     "third-party-fees": "3rd party protocol fees",
-    "oasis-fee": "Oasis fee"
+    "oasis-fee": "Oasis fee",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -1109,8 +1113,8 @@
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
     },
     "aave-multi-position": {
-      "header": "Your Maker Vault got liquidated",
-      "subheader": "This Maker Vault got liquidated"
+      "header": "This position is affected by other assets on AAVE",
+      "subheader": "This position is not reflecting the entire position on AAVE, as there are other assets put up as collateral or debt on this same DS-Proxy. Contact us to see what you can do."
     }
   },
   "vault-banners": {
@@ -1734,7 +1738,8 @@
     "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
-    "trigger-executed": "Your {{feature}} was triggered"
+    "trigger-executed": "Your {{feature}} was triggered",
+    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",

@@ -16,7 +16,7 @@ import { formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
-import { OpenAaveInformationContainer } from './OpenAaveInformationContainer'
+import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
 
@@ -140,7 +140,7 @@ export function AdjustRiskView({
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
         </Flex>
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
         {viewLocked ? (
           <MessageCard
             messages={[t('manage-earn-vault.has-asset-already')]}

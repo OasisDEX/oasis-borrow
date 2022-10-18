@@ -14,13 +14,6 @@ const assignGasCostData = assign<ProxyContext, ProxyEvent>((_, event) => {
   }
 })
 
-const assignProxyConfirmations = assign<ProxyContext, ProxyEvent>((_, event) => {
-  if (event.type !== 'CONFIRMED') return {}
-  return {
-    proxyConfirmations: event.proxyConfirmations,
-  }
-})
-
 const assignTxHash = assign<ProxyContext, ProxyEvent>((_, event) => {
   if (event.type !== 'IN_PROGRESS') return {}
   return {
@@ -45,7 +38,6 @@ const assignTxError = assign<ProxyContext, ProxyEvent>((_, event) => {
 export const actions = {
   initGasData,
   assignGasCostData,
-  assignProxyConfirmations,
   assignTxHash,
   assignProxyAddress,
   assignTxError,
