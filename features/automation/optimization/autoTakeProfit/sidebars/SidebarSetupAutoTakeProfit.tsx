@@ -3,6 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
+import { UIChanges } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
@@ -36,7 +37,7 @@ import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
-import { useTranslation } from 'next-i18next'
+import { TFunction, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -125,14 +126,14 @@ export function SidebarSetupAutoTakeProfit({
     feature,
   })
 
-  const autoTakeSliderBasicConfig = {
+   const autoTakeSliderBasicConfig = {
     disabled: false,
     leftBoundryFormatter: (x: BigNumber) =>
       x.isZero() ? '-' : `$${formatAmount(x, 'USD')} ${vault.token}`,
     rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     step: 1,
   }
-  const sliderPercentageFill = getSliderPercentageFill({
+   const sliderPercentageFill = getSliderPercentageFill({
     value: autoTakeProfitState.executionPrice,
     min: min,
     max,
@@ -174,34 +175,17 @@ export function SidebarSetupAutoTakeProfit({
 
   const validationErrors = isAddForm ? errors : cancelAutoTakeProfitErrors
 
-  const sliderConfig: SliderValuePickerProps = {
-    ...autoTakeSliderBasicConfig,
+  const sliderConfig: SliderValuePickerProps = createSliderConfig(
+    autoTakeSliderBasicConfig,
     sliderPercentageFill,
-    leftLabel: t('slider.set-auto-take-profit.left-label', { token: vault.token }),
-    rightLabel: t('slider.set-auto-take-profit.right-label'),
-    leftBoundry: autoTakeProfitState.executionPrice,
-    rightBoundry: autoTakeProfitState.executionCollRatio,
-    lastValue: autoTakeProfitState.executionPrice,
-    maxBoundry: max,
-    minBoundry: min,
-    onChange: (value) => {
-      if (autoTakeProfitState.toCollateral === undefined) {
-        uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-          type: 'close-type',
-          toCollateral: false,
-        })
-      }
-      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-        type: 'execution-price',
-        executionPrice: value.decimalPlaces(0, BigNumber.ROUND_DOWN),
-        executionCollRatio: targetColRatio,
-      })
-      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-        type: 'is-editing',
-        isEditing: true,
-      })
-    },
-  }
+    t,
+    vault,
+    autoTakeProfitState,
+    max,
+    min,
+    uiChanges,
+    targetColRatio,
+  )
 
   if (isAutoTakeProfitActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -267,4 +251,49 @@ export function SidebarSetupAutoTakeProfit({
     return <SidebarSection {...sidebarSectionProps} />
   }
   return null
+}
+export function createSliderConfig(
+  autoTakeSliderBasicConfig: {
+    disabled: boolean
+    leftBoundryFormatter: (x: BigNumber) => string
+    rightBoundryFormatter: (x: BigNumber) => string
+    step: number
+  },
+  sliderPercentageFill: BigNumber,
+  t: TFunction,
+  vault: Vault,
+  autoTakeProfitState: AutoTakeProfitFormChange,
+  max: BigNumber,
+  min: BigNumber,
+  uiChanges: UIChanges,
+  targetColRatio: BigNumber,
+): SliderValuePickerProps {
+  return {
+    ...autoTakeSliderBasicConfig,
+    sliderPercentageFill,
+    leftLabel: t('slider.set-auto-take-profit.left-label', { token: vault.token }),
+    rightLabel: t('slider.set-auto-take-profit.right-label'),
+    leftBoundry: autoTakeProfitState.executionPrice,
+    rightBoundry: autoTakeProfitState.executionCollRatio,
+    lastValue: autoTakeProfitState.executionPrice,
+    maxBoundry: max,
+    minBoundry: min,
+    onChange: (value) => {
+      if (autoTakeProfitState.toCollateral === undefined) {
+        uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+          type: 'close-type',
+          toCollateral: false,
+        })
+      }
+      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+        type: 'execution-price',
+        executionPrice: value.decimalPlaces(0, BigNumber.ROUND_DOWN),
+        executionCollRatio: targetColRatio,
+      })
+      uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+        type: 'is-editing',
+        isEditing: true,
+      })
+    },
+  }
 }
