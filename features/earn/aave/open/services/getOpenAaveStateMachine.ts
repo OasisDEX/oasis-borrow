@@ -100,7 +100,7 @@ export function contextToTransactionParameters(context: OpenAaveContext): Operat
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
-    operationName: 'CustomOperation',
+    operationName: 'OpenAAVEPosition',
     token: context.token,
     proxyAddress: context.proxyAddress!,
     amount: context.userInput.amount!,
