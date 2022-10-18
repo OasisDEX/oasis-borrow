@@ -160,6 +160,8 @@ export function VaultErrors({
         return translate('max-buy-price-will-prevent-buy-trigger')
       case 'autoTakeProfitTriggeredImmediately':
         return translate('auto-take-profit-triggered-immediately')
+      case 'takeProfitWillTriggerImmediatelyAfterVaultReopen':
+        return translate('take-profit-will-trigger-immediately-after-vault-reopen')
       case 'autoBuyMaxBuyPriceNotSpecified':
         return (
           <Trans

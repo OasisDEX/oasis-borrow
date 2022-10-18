@@ -465,6 +465,36 @@ export function afterCollRatioThresholdRatioValidator({
   }
 }
 
+export function vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator({
+  debt,
+  afterDebt,
+  nextCollateralPrice,
+  type,
+  isTriggerEnabled,
+  executionPrice,
+}: {
+  debt: BigNumber
+  afterDebt: BigNumber
+  nextCollateralPrice: BigNumber
+  type: 'below' | 'above'
+  isTriggerEnabled?: boolean
+  executionPrice?: BigNumber
+}) {
+  if (!(isTriggerEnabled && executionPrice && debt.isZero() && !afterDebt.isZero())) {
+    return false
+  }
+
+  switch (type) {
+    case 'above':
+      return nextCollateralPrice.gte(executionPrice)
+    case 'below':
+      return nextCollateralPrice.lt(executionPrice)
+
+    default:
+      return false
+  }
+}
+
 export function automationTriggeredValidator({
   vaultHistory,
 }: {
