@@ -1,8 +1,8 @@
 import { GenericSelect } from 'components/GenericSelect'
 import { AppLink } from 'components/Links'
-import { DISCOVERY_URL } from 'features/discovery/helpers'
-import { DiscoveryPageMeta, discoveryPagesMeta } from 'features/discovery/meta'
-import { DiscoveryPages } from 'features/discovery/types'
+import { DISCOVER_URL } from 'features/discover/helpers'
+import { DiscoverPageMeta, discoverPagesMeta } from 'features/discover/meta'
+import { DiscoverPages } from 'features/discover/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -10,18 +10,18 @@ import { theme } from 'theme'
 import { Box, Flex, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
-interface DiscoveryNavigationProps {
-  kind: DiscoveryPages
+interface DiscoverNavigationProps {
+  kind: DiscoverPages
 }
 
-export function DiscoveryNavigation({ kind }: DiscoveryNavigationProps) {
+export function DiscoverNavigation({ kind }: DiscoverNavigationProps) {
   const { t } = useTranslation()
   const { push } = useRedirect()
   const onMobile = useOnMobile()
 
-  const mobileLinks = discoveryPagesMeta.map((item) => ({
-    label: t(`discovery.navigation.${item.kind}`),
-    value: `${DISCOVERY_URL}/${item.kind}`,
+  const mobileLinks = discoverPagesMeta.map((item) => ({
+    label: t(`discover.navigation.${item.kind}`),
+    value: `${DISCOVER_URL}/${item.kind}`,
     kind: item.kind,
   }))
   const selectedLink = mobileLinks.filter((item) => item.kind === kind)[0]
@@ -48,8 +48,8 @@ export function DiscoveryNavigation({ kind }: DiscoveryNavigationProps) {
             listStyle: 'none',
           }}
         >
-          {discoveryPagesMeta.map((item, i) => (
-            <DiscoveryNavigationItem key={i} isActive={kind === item.kind} {...item} />
+          {discoverPagesMeta.map((item, i) => (
+            <DiscoverNavigationItem key={i} isActive={kind === item.kind} {...item} />
           ))}
         </Flex>
       )}
@@ -57,12 +57,12 @@ export function DiscoveryNavigation({ kind }: DiscoveryNavigationProps) {
   )
 }
 
-export function DiscoveryNavigationItem({
+export function DiscoverNavigationItem({
   isActive,
   kind,
   iconColor,
   iconContent,
-}: { isActive: boolean } & DiscoveryPageMeta) {
+}: { isActive: boolean } & DiscoverPageMeta) {
   const { t } = useTranslation()
   const [isMouseOver, setIsMouseOver] = useState<boolean>(false)
 
@@ -78,7 +78,7 @@ export function DiscoveryNavigationItem({
       }}
     >
       <AppLink
-        href={`${DISCOVERY_URL}/${kind}`}
+        href={`${DISCOVER_URL}/${kind}`}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -105,7 +105,7 @@ export function DiscoveryNavigationItem({
           {iconContent}
         </svg>
         <Text as="span" sx={{ mt: 2 }}>
-          {t(`discovery.navigation.${kind}`)}
+          {t(`discover.navigation.${kind}`)}
         </Text>
       </AppLink>
     </Box>

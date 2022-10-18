@@ -1,8 +1,8 @@
-import { DiscoveryTableBanner } from 'features/discovery/common/DiscoveryTableBanner'
-import { DiscoveryTableDataCellContent } from 'features/discovery/common/DiscoveryTableDataCellContent'
-import { getRowKey } from 'features/discovery/helpers'
-import { DiscoveryBanner } from 'features/discovery/meta'
-import { DiscoveryPages, DiscoveryTableRowData } from 'features/discovery/types'
+import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
+import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
+import { getRowKey } from 'features/discover/helpers'
+import { DiscoverBanner } from 'features/discover/meta'
+import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
@@ -10,16 +10,16 @@ import { Box, Flex, Grid } from 'theme-ui'
 
 const fullWidthColumns = ['asset', 'cdpId']
 
-export function DiscoveryCards({
+export function DiscoverCards({
   banner,
   isLoading,
   kind,
   rows = [],
 }: {
-  banner?: DiscoveryBanner
+  banner?: DiscoverBanner
   isLoading: boolean
-  kind: DiscoveryPages
-  rows: DiscoveryTableRowData[]
+  kind: DiscoverPages
+  rows: DiscoverTableRowData[]
 }) {
   return (
     <Box
@@ -49,10 +49,10 @@ export function DiscoveryCards({
       >
         {rows.map((row, i) => (
           <Fragment key={getRowKey(i, row)}>
-            <DiscoveryCard row={row} />
+            <DiscoverCard row={row} />
             {banner && i === Math.floor((rows.length - 1) / 2) && (
               <Box as="li">
-                <DiscoveryTableBanner kind={kind} {...banner} />
+                <DiscoverTableBanner kind={kind} {...banner} />
               </Box>
             )}
           </Fragment>
@@ -62,7 +62,7 @@ export function DiscoveryCards({
   )
 }
 
-export function DiscoveryCard({ row }: { row: DiscoveryTableRowData }) {
+export function DiscoverCard({ row }: { row: DiscoverTableRowData }) {
   const { t } = useTranslation()
 
   return (
@@ -91,10 +91,10 @@ export function DiscoveryCard({ row }: { row: DiscoveryTableRowData }) {
                   color: 'neutral80',
                 }}
               >
-                {t(`discovery.table.header.${kebabCase(label)}`)}
+                {t(`discover.table.header.${kebabCase(label)}`)}
               </Box>
             )}
-            <DiscoveryTableDataCellContent label={label} row={row} />
+            <DiscoverTableDataCellContent label={label} row={row} />
           </Box>
         ))}
       </Grid>

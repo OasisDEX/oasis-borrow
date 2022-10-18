@@ -1,15 +1,15 @@
 import { AppLink } from 'components/Links'
-import { DiscoveryBanner } from 'features/discovery/meta'
-import { DiscoveryPages } from 'features/discovery/types'
+import { DiscoverBanner } from 'features/discover/meta'
+import { DiscoverPages } from 'features/discover/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Heading, Text } from 'theme-ui'
 
-export function DiscoveryTableBanner({
+export function DiscoverTableBanner({
   kind,
   icon,
   link,
-}: { kind: DiscoveryPages } & DiscoveryBanner) {
+}: { kind: DiscoverPages } & DiscoverBanner) {
   const { t } = useTranslation()
 
   return (
@@ -27,15 +27,15 @@ export function DiscoveryTableBanner({
       <Box sx={{ flexShrink: 0, svg: { display: 'block' } }}>{icon}</Box>
       <Box>
         <Heading as="h3" variant="boldParagraph2">
-          {t(`discovery.table.banner.${kind}.title`)}
+          {t(`discover.table.banner.${kind}.title`)}
         </Heading>
         <Text as="p" variant="paragraph3" sx={{ mt: 1, color: 'neutral80' }}>
-          {t(`discovery.table.banner.${kind}.description`)}
+          {t(`discover.table.banner.${kind}.description`)}
         </Text>
       </Box>
       <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'] }}>
         <AppLink href={link}>
-          <Button variant="action">{t(`discovery.table.banner.${kind}.cta`)}</Button>
+          <Button variant="action">{t(`discover.table.banner.${kind}.cta`)}</Button>
         </AppLink>
       </Box>
     </Flex>
