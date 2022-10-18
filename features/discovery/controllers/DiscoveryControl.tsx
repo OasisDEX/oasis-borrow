@@ -1,6 +1,6 @@
 import { getDiscoveryData } from 'features/discovery/api'
+import { DiscoveryData } from 'features/discovery/common/DiscoveryData'
 import { DiscoveryFilters } from 'features/discovery/common/DiscoveryFilters'
-import { DiscoveryTable } from 'features/discovery/common/DiscoveryTable'
 import { getDefaultSettingsState } from 'features/discovery/helpers'
 import { discoveryPagesMeta } from 'features/discovery/meta'
 import { DiscoveryFiltersSettings, DiscoveryPages } from 'features/discovery/types'
@@ -18,11 +18,12 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
     getDefaultSettingsState({ filters, kind }),
   )
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const discoveryData = getDiscoveryData(endpoint, settings)
+
+  const response = getDiscoveryData(endpoint, settings)
 
   useEffect(() => {
-    setIsLoading(false)
-  }, [discoveryData])
+    if (response) setIsLoading(false)
+  }, [response])
 
   return (
     <Box
@@ -43,12 +44,7 @@ export function DiscoveryControl({ kind }: DiscoveryControlProps) {
           })
         }}
       />
-      <DiscoveryTable
-        banner={banner}
-        isLoading={isLoading}
-        kind={kind}
-        rows={discoveryData?.data?.rows}
-      />
+      <DiscoveryData banner={banner} response={response} isLoading={isLoading} kind={kind} />
     </Box>
   )
 }
