@@ -89,6 +89,40 @@ model WalletRisk {
     @@map("wallet_risk")
 }
 
+model Discover {
+    protocol_id       String
+    position_id       String
+    collateral_type   String
+    liquidation_price Decimal
+    liquidation_value Decimal
+    collateral_value  Decimal
+    vault_multiple    Decimal
+    next_price        Decimal
+    net_value         Decimal
+    yield_30d         Decimal
+    vault_debt        Decimal
+    coll_ratio        Decimal
+    status            Json
+    last_action       Json
+
+    profit_and_loss_all  Decimal
+    profit_and_loss_1d   Decimal
+    profit_and_loss_7d   Decimal
+    profit_and_loss_30d  Decimal
+    profit_and_loss_365d Decimal
+    earned_to_date_all   Decimal
+    earned_to_date_1d    Decimal
+    earned_to_date_7d    Decimal
+    earned_to_date_30d   Decimal
+    earned_to_date_365d  Decimal
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([protocol_id, position_id], name: "protocol_id_position_id")
+    @@map("discover")
+}
+
 model HighRisk {
     protocol_id     String
     position_id     String
@@ -99,7 +133,7 @@ model HighRisk {
     liquidation_value Decimal
     next_price        Decimal
 
-    status String
+    status Json
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("high_risk")
@@ -114,7 +148,7 @@ model LargestDebt {
     vault_debt       Decimal
     coll_ratio       Decimal
 
-    last_action String
+    last_action Json
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("largest_debt")
@@ -132,7 +166,7 @@ model HighestPnl {
     t_30d            Decimal
     t_365d           Decimal
     t_all            Decimal
-    last_action      String
+    last_action      Json
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("highest_pnl")
@@ -151,7 +185,7 @@ model MostYield {
     t_365d           Decimal
     t_all            Decimal
     yield_30d        Decimal
-    last_action      String
+    last_action      Json
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("most_yield")

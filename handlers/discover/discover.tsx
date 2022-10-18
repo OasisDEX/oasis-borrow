@@ -95,6 +95,7 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             collateral_type: true,
             liquidation_price: true,
             liquidation_value: true,
+            next_price: true,
             status: true,
           },
         })) as HighRisk[]
@@ -172,7 +173,10 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json(data)
   } catch (error) {
-    // @ts-ignore
-    return res.status(500).json({ error: error.message || error.toString() })
+    if (typeof error === 'string') {
+      return res.status(500).json({ error })
+    } else if (error instanceof Error) {
+      return res.status(500).json({ error: error.message })
+    }
   }
 }
