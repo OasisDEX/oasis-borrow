@@ -170,6 +170,7 @@ export const createManageAaveStateMachine =
           },
         },
         reviewingAdjusting: {
+          onEntry: ['riskRatioConfirmEvent'],
           invoke: {
             src: 'getParameters',
             id: 'getParameters',
@@ -269,6 +270,9 @@ export const createManageAaveStateMachine =
         }),
         riskRatioEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
+        },
+        riskRatioConfirmEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskConfirmRisk(context.userInput.riskRatio!.loanToValue)
         },
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
