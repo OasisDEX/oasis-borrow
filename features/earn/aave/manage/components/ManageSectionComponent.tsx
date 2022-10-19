@@ -12,7 +12,7 @@ import {
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
-import { useSimulation } from 'helpers/useSimulation'
+import { useSimulationYields } from 'helpers/useSimulationYields'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -51,7 +51,7 @@ export function ManageSectionComponent({
     position,
   } = state.context.protocolData || {}
 
-  const simulations = useSimulation({
+  const simulations = useSimulationYields({
     amount: accountData?.totalCollateralETH,
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
