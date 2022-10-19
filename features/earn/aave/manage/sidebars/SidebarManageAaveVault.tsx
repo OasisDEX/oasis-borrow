@@ -9,6 +9,7 @@ import { Sender } from 'xstate'
 import { amountFromWei, amountToWei } from '../../../../../blockchain/utils'
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
@@ -21,7 +22,13 @@ interface ManageAaveStateProps {
   readonly send: Sender<ManageAaveEvent>
 }
 
-function getAmountGetFromPositionAfterClose(strategy: IStrategy, currentPosition: IPosition) {
+function getAmountGetFromPositionAfterClose(
+  strategy: IStrategy | undefined,
+  currentPosition: IPosition,
+) {
+  if (!strategy) {
+    return zero
+  }
   const currentDebt = amountToWei(currentPosition.debt.amount, currentPosition.debt.denomination || 'ETH')
   const amountFromSwap = strategy.simulation.swap.toTokenAmount
   const fee = strategy.simulation.swap.targetTokenFee
@@ -34,7 +41,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountGetFromPositionAfterClose(
-        state.context.transactionParameters!,
+        state.context.transactionParameters,
         state.context.currentPosition,
       ),
       state.context.token,
