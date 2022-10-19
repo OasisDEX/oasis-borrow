@@ -1,30 +1,38 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { calculateSimulation, FilterYieldFieldsType } from 'features/earn/aave/open/services'
+import {
+  AaveStEthYieldsResponse,
+  calculateSimulation,
+  FilterYieldFieldsType,
+} from 'features/earn/aave/open/services'
 import { useEffect, useState } from 'react'
 
-type useSimulationParams = {
+type useSimulationYieldsParams = {
   amount?: BigNumber
   riskRatio?: IRiskRatio
   fields: FilterYieldFieldsType[]
 }
 
-export function useSimulation({ amount, riskRatio, fields }: useSimulationParams) {
-  const [simulations, setSimulations] = useState<ReturnType<typeof calculateSimulation>>()
+export function useSimulationYields({ amount, riskRatio, fields }: useSimulationYieldsParams) {
+  const [simulations, setSimulations] = useState<
+    ReturnType<typeof calculateSimulation> & { yields: AaveStEthYieldsResponse }
+  >()
   const { aaveSthEthYieldsQuery } = useAppContext()
 
   useEffect(() => {
     if (riskRatio && amount && !simulations) {
       void (async () => {
-        setSimulations(
-          calculateSimulation({
+        const yields = await aaveSthEthYieldsQuery(riskRatio, fields)
+        setSimulations({
+          ...calculateSimulation({
             amount,
             token: 'ETH',
-            yields: await aaveSthEthYieldsQuery(riskRatio, fields),
+            yields,
             riskRatio,
           }),
-        )
+          yields,
+        })
       })()
     }
   }, [amount, riskRatio])
