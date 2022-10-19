@@ -6,7 +6,9 @@ import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
 
+import { MessageCard } from '../../../../../components/MessageCard'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
@@ -15,8 +17,6 @@ import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
-import { MessageCard } from '../../../../../components/MessageCard'
-import { zero } from '../../../../../helpers/zero'
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine

@@ -29,7 +29,10 @@ function getAmountGetFromPositionAfterClose(
   if (!strategy) {
     return zero
   }
-  const currentDebt = amountToWei(currentPosition.debt.amount, currentPosition.debt.denomination || 'ETH')
+  const currentDebt = amountToWei(
+    currentPosition.debt.amount,
+    currentPosition.debt.denomination || 'ETH',
+  )
   const amountFromSwap = strategy.simulation.swap.toTokenAmount
   const fee = strategy.simulation.swap.targetTokenFee
 
