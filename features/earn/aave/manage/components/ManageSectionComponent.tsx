@@ -183,7 +183,7 @@ export function ManageSectionComponent({
             title={t('system.variable-annual-fee')}
             value={
               aaveReserveDataETH?.variableBorrowRate
-                ? formatPercent(aaveReserveDataETH.variableBorrowRate, { precision: 2 })
+                ? formatPercent(aaveReserveDataETH.variableBorrowRate.times(100), { precision: 2 })
                 : zero.toString()
             }
           />
