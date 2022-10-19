@@ -187,7 +187,7 @@ export const createOpenAaveStateMachine = createMachine(
             target: 'editing',
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters'],
+            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
           },
         },
       },
@@ -306,14 +306,14 @@ export const createOpenAaveStateMachine = createMachine(
         hasOtherAssetsThanETH_STETH: event.hasOtherAssetsThanETH_STETH,
       })),
       sendFeesToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => {
-          const sourceTokenFee =
-            context.transactionParameters?.simulation.swap.sourceTokenFee || zero
-          const targetTokenFee =
-            context.transactionParameters?.simulation.swap.targetTokenFee || zero
+        (_, event): AaveStEthSimulateStateMachineEvents => {
+          const sourceTokenFee = event.parameters.simulation.swap.sourceTokenFee || zero
+          const targetTokenFee = event.parameters.simulation.swap.targetTokenFee || zero
+
+          const gasFee = event.estimatedGasPrice?.gasEstimationEth || zero
           return {
             type: 'FEE_CHANGED',
-            fee: sourceTokenFee.plus(targetTokenFee),
+            fee: sourceTokenFee.plus(targetTokenFee).plus(gasFee),
           }
         },
         { to: (context) => context.refSimulationMachine! },

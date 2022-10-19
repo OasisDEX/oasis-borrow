@@ -37,8 +37,8 @@ export function calculateSimulation({
   yields: AaveStEthYieldsResponse
 }): CalculateSimulationResult {
   const earningsPerDay =
-    yields.annualisedYield1Year &&
-    amount.times(yields.annualisedYield1Year.div(100).plus(one)).minus(amount).div(365)
+    yields.annualisedYield7days &&
+    amount.times(yields.annualisedYield7days.div(100).plus(one)).minus(amount).div(365)
   return {
     apy: yields.annualisedYield7days,
     breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
