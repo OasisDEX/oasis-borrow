@@ -7,7 +7,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useSimulation } from 'helpers/useSimulation'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -30,11 +29,12 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityETH$,
   )
-  const maximumMultiple = aaveReserveState ? one.div(one.minus(aaveReserveState!.ltv)) : undefined
+  const maximumMultiple =
+    aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
   const simulations = useSimulation({
     amount: aaveCalcValueBasis.amount,
-    riskRatio: maximumMultiple && new RiskRatio(maximumMultiple, RiskRatio.TYPE.MULITPLE),
+    riskRatio: maximumMultiple,
     fields: ['7Days', '90Days'],
   })
 
@@ -56,7 +56,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
                 token: aaveCalcValueBasis.token,
               }),
               description: t(`product-card-banner.aave.${cardData.symbol}`, {
-                value: _maximumMultiple.times(aaveCalcValueBasis.amount).toFormat(0),
+                value: _maximumMultiple.multiple.times(aaveCalcValueBasis.amount).toFormat(0),
                 token: cardData.symbol,
               }),
             }}
