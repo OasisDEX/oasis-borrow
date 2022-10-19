@@ -52,110 +52,111 @@ export function SidebarAutoTakeProfitEditingStage({
   errors,
   warnings,
 }: SidebarAutoTakeProfitEditingStageProps) {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
-  const { estimatedProfitOnClose } = getOnCloseEstimations({
-    colMarketPrice: autoTakeProfitState.executionPrice,
-    colOraclePrice: autoTakeProfitState.executionPrice,
-    debt: vault.debt,
-    debtOffset: vault.debtOffset,
-    ethMarketPrice,
-    lockedCollateral: vault.lockedCollateral,
-    toCollateral: autoTakeProfitState.toCollateral,
-  })
-  const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
+//   const { estimatedProfitOnClose } = getOnCloseEstimations({
+//     colMarketPrice: autoTakeProfitState.executionPrice,
+//     colOraclePrice: autoTakeProfitState.executionPrice,
+//     debt: vault.debt,
+//     debtOffset: vault.debtOffset,
+//     ethMarketPrice,
+//     lockedCollateral: vault.lockedCollateral,
+//     toCollateral: autoTakeProfitState.toCollateral,
+//   })
+//   const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
 
-  return (
-    <>
-      <PickCloseState {...closePickerConfig} />
-      <SliderValuePicker {...sliderConfig} />
-      {isEditing && (
-        <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} />
-          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-        </>
-      )}
-      <EstimationOnClose
-        iconCircle={getToken(closeToToken).iconCircle}
-        label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
-        value={`${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`}
-      />
-      {isEditing && (
-        <>
-          <SidebarResetButton
-            clear={() => {
-              uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-                type: 'reset',
-                resetData: prepareAutoTakeProfitResetData(
-                  autoTakeProfitState,
-                  autoTakeProfitTriggerData,
-                ),
-              })
-            }}
-          />
-          <AutoTakeProfitInfoSectionControl
-            debt={vault.debt}
-            debtOffset={vault.debtOffset}
-            ethMarketPrice={ethMarketPrice}
-            lockedCollateral={vault.lockedCollateral}
-            toCollateral={autoTakeProfitState.toCollateral}
-            token={vault.token}
-            tokenMarketPrice={tokenMarketPrice}
-            triggerColPrice={autoTakeProfitState.executionPrice}
-            triggerColRatio={autoTakeProfitState.executionCollRatio}
-          />
-        </>
-      )}
-    </>
-  )
-}
+//   return (
+//     <>
+//       <PickCloseState {...closePickerConfig} />
+//       <SliderValuePicker {...sliderConfig} />
+//       {isEditing && (
+//         <>
+//           <VaultErrors errorMessages={errors} ilkData={ilkData} />
+//           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+//         </>
+//       )}
+//       <EstimationOnClose
+//         iconCircle={getToken(closeToToken).iconCircle}
+//         label={t('auto-take-profit.estimated-at-trigger', { token: closeToToken })}
+//         value={`${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`}
+//       />
+//       {isEditing && (
+//         <>
+//           <SidebarResetButton
+//             clear={() => {
+//               uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+//                 type: 'reset',
+//                 resetData: prepareAutoTakeProfitResetData(
+//                   autoTakeProfitState,
+//                   autoTakeProfitTriggerData,
+//                 ),
+//               })
+//             }}
+//           />
+//           <AutoTakeProfitInfoSectionControl
+//             debt={vault.debt}
+//             debtOffset={vault.debtOffset}
+//             ethMarketPrice={ethMarketPrice}
+//             lockedCollateral={vault.lockedCollateral}
+//             toCollateral={autoTakeProfitState.toCollateral}
+//             token={vault.token}
+//             tokenMarketPrice={tokenMarketPrice}
+//             triggerColPrice={autoTakeProfitState.executionPrice}
+//             triggerColRatio={autoTakeProfitState.executionCollRatio}
+//           />
+//         </>
+//       )}
+//     </>
+//   )
+// }
 
-interface AutoTakeProfitInfoSectionControlProps {
-  debt: BigNumber
-  debtOffset: BigNumber
-  ethMarketPrice: BigNumber
-  lockedCollateral: BigNumber
-  toCollateral: boolean
-  token: string
-  tokenMarketPrice: BigNumber
-  triggerColPrice: BigNumber
-  triggerColRatio: BigNumber
-}
+// interface AutoTakeProfitInfoSectionControlProps {
+//   debt: BigNumber
+//   debtOffset: BigNumber
+//   ethMarketPrice: BigNumber
+//   lockedCollateral: BigNumber
+//   toCollateral: boolean
+//   token: string
+//   tokenMarketPrice: BigNumber
+//   triggerColPrice: BigNumber
+//   triggerColRatio: BigNumber
+// }
 
-function AutoTakeProfitInfoSectionControl({
-  debt,
-  debtOffset,
-  ethMarketPrice,
-  lockedCollateral,
-  toCollateral,
-  token,
-  triggerColPrice,
-  triggerColRatio,
-}: AutoTakeProfitInfoSectionControlProps) {
-  const {
-    estimatedGasFeeOnTrigger,
-    estimatedOasisFeeOnTrigger,
-    totalTriggerCost,
-  } = getOnCloseEstimations({
-    colMarketPrice: triggerColPrice,
-    colOraclePrice: triggerColPrice,
-    debt: debt,
-    debtOffset: debtOffset,
-    ethMarketPrice,
-    lockedCollateral: lockedCollateral,
-    toCollateral: toCollateral,
-  })
+// function AutoTakeProfitInfoSectionControl({
+//   debt,
+//   debtOffset,
+//   ethMarketPrice,
+//   lockedCollateral,
+//   toCollateral,
+//   token,
+//   triggerColPrice,
+//   triggerColRatio,
+// }: AutoTakeProfitInfoSectionControlProps) {
+//   const {
+//     estimatedGasFeeOnTrigger,
+//     estimatedOasisFeeOnTrigger,
+//     totalTriggerCost,
+//   } = getOnCloseEstimations({
+//     colMarketPrice: triggerColPrice,
+//     colOraclePrice: triggerColPrice,
+//     debt: debt,
+//     debtOffset: debtOffset,
+//     ethMarketPrice,
+//     lockedCollateral: lockedCollateral,
+//     toCollateral: toCollateral,
+//   })
 
-  return (
-    <AddAutoTakeProfitInfoSection
-      debtRepaid={debt}
-      estimatedOasisFeeOnTrigger={estimatedOasisFeeOnTrigger}
-      estimatedGasFeeOnTrigger={estimatedGasFeeOnTrigger}
-      token={token}
-      totalTriggerCost={totalTriggerCost}
-      triggerColPrice={triggerColPrice}
-      triggerColRatio={triggerColRatio}
-    />
-  )
+  // return (
+  //   <AddAutoTakeProfitInfoSection
+  //     debtRepaid={debt}
+  //     estimatedOasisFeeOnTrigger={estimatedOasisFeeOnTrigger}
+  //     estimatedGasFeeOnTrigger={estimatedGasFeeOnTrigger}
+  //     token={token}
+  //     totalTriggerCost={totalTriggerCost}
+  //     triggerColPrice={triggerColPrice}
+  //     triggerColRatio={triggerColRatio}
+  //   />
+  // )
+  return null
 }
