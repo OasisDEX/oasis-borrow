@@ -1,6 +1,6 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
+import { getMixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { LANDING_PILLS } from 'content/landing'
@@ -525,7 +525,12 @@ function ConnectedHeader() {
   )
 }
 
-function HeaderLink({ label, link, children }: { label: string; link?: string } & WithChildren) {
+function HeaderLink({
+  label,
+  link,
+  children,
+  onClick,
+}: { label: string; link?: string; onClick?: () => void } & WithChildren) {
   const { asPath } = useRouter()
   const [isMouseOver, setIsMouseOver] = useState<boolean>(false)
   const isActive = link ? asPath.includes(link) : false
@@ -552,7 +557,7 @@ function HeaderLink({ label, link, children }: { label: string; link?: string } 
       }}
     >
       {link ? (
-        <AppLink href={link} sx={itemSx}>
+        <AppLink href={link} sx={itemSx} onClick={onClick}>
           {label}
         </AppLink>
       ) : (
@@ -925,10 +930,13 @@ function DisconnectedHeader() {
 }
 
 function MainNavigation() {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { context$ } = useAppContext()
+  const [context] = useObservable(context$)
+  const { pathname } = useRouter()
 
   const discoverOasisEnabled = useFeatureToggle('DiscoverOasis')
-  const { pathname } = useRouter()
+  const userContext = getMixpanelUserContext(i18n.language, context)
 
   return (
     <Flex
@@ -990,7 +998,13 @@ function MainNavigation() {
           <HeaderLink label={t('nav.assets')}>
             <HeaderList links={LANDING_PILLS} columns={2} />
           </HeaderLink>
-          <HeaderLink label={t('nav.discover')} link={LINKS.discover} />
+          <HeaderLink
+            label={t('nav.discover')}
+            link={LINKS.discover}
+            onClick={() => {
+              trackingEvents.discover.selectedInNavigation(userContext)
+            }}
+          />
         </Grid>
       )}
     </Flex>

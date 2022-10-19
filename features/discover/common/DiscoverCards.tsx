@@ -1,3 +1,4 @@
+import { MixpanelUserContext } from 'analytics/analytics'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
@@ -15,11 +16,13 @@ export function DiscoverCards({
   isLoading,
   kind,
   rows = [],
+  userContext,
 }: {
   banner?: DiscoverBanner
   isLoading: boolean
   kind: DiscoverPages
   rows: DiscoverTableRowData[]
+  userContext: MixpanelUserContext
 }) {
   return (
     <Box
@@ -52,7 +55,7 @@ export function DiscoverCards({
             <DiscoverCard row={row} />
             {banner && i === Math.floor((rows.length - 1) / 2) && (
               <Box as="li">
-                <DiscoverTableBanner kind={kind} {...banner} />
+                <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
               </Box>
             )}
           </Fragment>

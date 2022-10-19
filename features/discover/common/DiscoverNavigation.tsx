@@ -1,3 +1,4 @@
+import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { GenericSelect } from 'components/GenericSelect'
 import { AppLink } from 'components/Links'
 import { DISCOVER_URL } from 'features/discover/helpers'
@@ -12,9 +13,10 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 
 interface DiscoverNavigationProps {
   kind: DiscoverPages
+  userContext: MixpanelUserContext
 }
 
-export function DiscoverNavigation({ kind }: DiscoverNavigationProps) {
+export function DiscoverNavigation({ kind, userContext }: DiscoverNavigationProps) {
   const { t } = useTranslation()
   const { push } = useRedirect()
   const onMobile = useOnMobile()
@@ -33,6 +35,7 @@ export function DiscoverNavigation({ kind }: DiscoverNavigationProps) {
           options={mobileLinks}
           defaultValue={selectedLink}
           onChange={(currentValue) => {
+            trackingEvents.discover.selectedCategory(kind, userContext)
             push(currentValue.value)
           }}
           wrapperSx={{ mb: 3 }}
@@ -49,7 +52,12 @@ export function DiscoverNavigation({ kind }: DiscoverNavigationProps) {
           }}
         >
           {discoverPagesMeta.map((item, i) => (
-            <DiscoverNavigationItem key={i} isActive={kind === item.kind} {...item} />
+            <DiscoverNavigationItem
+              key={i}
+              isActive={kind === item.kind}
+              userContext={userContext}
+              {...item}
+            />
           ))}
         </Flex>
       )}
@@ -62,7 +70,8 @@ export function DiscoverNavigationItem({
   kind,
   iconColor,
   iconContent,
-}: { isActive: boolean } & DiscoverPageMeta) {
+  userContext,
+}: { isActive: boolean; userContext: MixpanelUserContext } & DiscoverPageMeta) {
   const { t } = useTranslation()
   const [isMouseOver, setIsMouseOver] = useState<boolean>(false)
 
@@ -86,6 +95,9 @@ export function DiscoverNavigationItem({
           fontSize: 3,
           color: isActive || isMouseOver ? 'primary100' : 'neutral80',
           transition: '200ms color',
+        }}
+        onClick={() => {
+          trackingEvents.discover.selectedCategory(kind, userContext)
         }}
       >
         <svg

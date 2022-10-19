@@ -1,3 +1,4 @@
+import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { getDiscoverData } from 'features/discover/api'
 import { DiscoverData } from 'features/discover/common/DiscoverData'
 import { DiscoverFilters } from 'features/discover/common/DiscoverFilters'
@@ -10,9 +11,10 @@ import { Box } from 'theme-ui'
 
 interface DiscoverControlProps {
   kind: DiscoverPages
+  userContext: MixpanelUserContext
 }
 
-export function DiscoverControl({ kind }: DiscoverControlProps) {
+export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
   const { banner, endpoint, filters } = keyBy(discoverPagesMeta, 'kind')[kind]
   const [settings, setSettings] = useState<DiscoverFiltersSettings>(
     getDefaultSettingsState({ filters, kind }),
@@ -37,6 +39,7 @@ export function DiscoverControl({ kind }: DiscoverControlProps) {
       <DiscoverFilters
         filters={filters}
         onChange={(key, currentValue) => {
+          trackingEvents.discover.selectedFilter(kind, key, currentValue.label, userContext)
           setIsLoading(true)
           setSettings({
             ...settings,
@@ -44,7 +47,13 @@ export function DiscoverControl({ kind }: DiscoverControlProps) {
           })
         }}
       />
-      <DiscoverData banner={banner} response={response} isLoading={isLoading} kind={kind} />
+      <DiscoverData
+        banner={banner}
+        isLoading={isLoading}
+        kind={kind}
+        response={response}
+        userContext={userContext}
+      />
     </Box>
   )
 }

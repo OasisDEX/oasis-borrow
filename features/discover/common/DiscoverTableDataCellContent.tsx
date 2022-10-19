@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
@@ -82,7 +83,9 @@ export function DiscoverTableDataCellContent({
       )
     case 'cdpId':
       return (
-        <AppLink href={`/${row?.cdpId}`}>
+        <AppLink href={`/${row?.cdpId}`} onClick={() => {
+          trackingEvents.discover.viewPosition(row?.cdpId)
+        }}>
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
         </AppLink>
       )
