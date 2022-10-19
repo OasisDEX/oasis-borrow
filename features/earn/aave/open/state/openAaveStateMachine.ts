@@ -1,4 +1,5 @@
 import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -175,9 +176,10 @@ export const createOpenAaveStateMachine = createMachine(
             target: 'editing',
           },
         },
+        onEntry: ['eventConfirmDeposit'],
       },
       reviewing: {
-        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine'],
+        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine', 'eventConfirmRiskRatio'],
         on: {
           NEXT_STEP: {
             target: 'txInProgress',
@@ -193,7 +195,7 @@ export const createOpenAaveStateMachine = createMachine(
       },
 
       txInProgress: {
-        entry: ['spawnTransactionMachine'],
+        entry: ['spawnTransactionMachine', 'eventConfirmTransaction'],
         on: {
           POSITION_OPENED: {
             target: 'txSuccess',
@@ -335,6 +337,25 @@ export const createOpenAaveStateMachine = createMachine(
       ),
       debounceSendingToParametersMachine: cancel('update-parameters-machine'),
       debounceSendingToSimulationMachine: cancel('update-simulate-machine'),
+      eventConfirmDeposit: ({ userInput }) => {
+        userInput.amount && trackingEvents.earn.stETHOpenPositionConfirmDeposit(userInput.amount)
+      },
+      eventConfirmRiskRatio: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmRisk(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
+      },
+      eventConfirmTransaction: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmTransaction(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
+      },
       setPricesFromEvent: assign((context, event) => ({
         collateralPrice: event.collateralPrice,
       })),

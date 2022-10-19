@@ -1,4 +1,5 @@
 import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -68,6 +69,7 @@ export type ManageAaveEvent =
       strategyInfo: IStrategyInfo
     }
   | { type: 'GO_TO_EDITING' }
+  | { type: 'REPORT_NEW_RISK_RATIO' }
   | BaseAaveEvent
 
 export const createManageAaveStateMachine =
@@ -154,10 +156,20 @@ export const createManageAaveStateMachine =
               target: 'reviewingClosing',
             },
             SET_RISK_RATIO: {
-              actions: ['userInputRiskRatio', 'cancelDebouncedGoToEditing', 'debounceGoToEditing'],
+              actions: [
+                'userInputRiskRatio',
+                'cancelDebouncedGoToEditing',
+                'debounceGoToEditing',
+                'cancelRiskRatioEvent',
+                'debouncedRiskRatioEvent',
+              ],
             },
             GO_TO_EDITING: {
               target: 'editing',
+            },
+            REPORT_NEW_RISK_RATIO: {
+              cond: 'newRiskInputted',
+              actions: ['riskRatioEvent'],
             },
             ADJUST_POSITION: {
               cond: 'newRiskInputted',
@@ -166,6 +178,7 @@ export const createManageAaveStateMachine =
           },
         },
         reviewingAdjusting: {
+          onEntry: ['riskRatioConfirmEvent'],
           invoke: {
             src: 'getParameters',
             id: 'getParameters',
@@ -180,6 +193,7 @@ export const createManageAaveStateMachine =
             START_TRANSACTION: {
               cond: 'validTransactionParameters',
               target: 'txInProgress',
+              actions: ['riskRatioConfirmTransactionEvent'],
             },
           },
         },
@@ -188,6 +202,7 @@ export const createManageAaveStateMachine =
           on: {
             POSITION_CLOSED: {
               target: 'txSuccess',
+              actions: ['closePositionTransactionEvent'],
             },
           },
         },
@@ -205,6 +220,7 @@ export const createManageAaveStateMachine =
           entry: [
             'spawnClosePositionParametersMachine',
             'sendVariablesToClosePositionParametersMachine',
+            'closePositionEvent',
           ],
           on: {
             CLOSING_PARAMETERS_RECEIVED: {
@@ -250,6 +266,11 @@ export const createManageAaveStateMachine =
       actions: {
         cancelDebouncedGoToEditing: cancel('debounced-filter'),
         debounceGoToEditing: send('GO_TO_EDITING', { delay: 1000, id: 'debounced-filter' }),
+        cancelRiskRatioEvent: cancel('new-risk-ratio'),
+        debouncedRiskRatioEvent: send('REPORT_NEW_RISK_RATIO', {
+          delay: 1000,
+          id: 'new-risk-ratio',
+        }),
         setTokenBalanceFromEvent: assign((context, event) => ({
           tokenBalance: event.balance,
           tokenPrice: event.tokenPrice,
@@ -270,6 +291,19 @@ export const createManageAaveStateMachine =
             },
           }
         }),
+        riskRatioEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
+        },
+        riskRatioConfirmEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskConfirmRisk(context.userInput.riskRatio!.loanToValue)
+        },
+        riskRatioConfirmTransactionEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
+            context.userInput.riskRatio!.loanToValue,
+          )
+        },
+        closePositionEvent: trackingEvents.earn.stETHClosePositionConfirm,
+        closePositionTransactionEvent: trackingEvents.earn.stETHClosePositionConfirmTransaction,
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
         })),
