@@ -22,13 +22,12 @@ export function OutstandingDebtInformation({
   const { t } = useTranslation()
 
   const { amount, denomination = 'ETH' } = transactionParameters.simulation.position.debt
-
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.outstanding-debt')}
       value={
         <Flex>
-          {formatCryptoBalance(amountFromWei(currentPosition.debt.amount, denomination))}{' '}
+          {formatCryptoBalance(currentPosition.debt.amount)} {denomination}
           <VaultChangesInformationArrow />
           {formatCryptoBalance(amountFromWei(amount, denomination))} {denomination}
         </Flex>
