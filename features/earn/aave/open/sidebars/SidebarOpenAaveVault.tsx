@@ -99,7 +99,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   const hasProxy = state.context.proxyAddress !== undefined
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
-  const amountToHigh =
+  const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -107,7 +107,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     content: (
       <Grid gap={3}>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
-        {amountToHigh && (
+        {amountTooHigh && (
           <MessageCard
             messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
             type="error"
