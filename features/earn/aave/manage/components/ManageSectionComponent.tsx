@@ -1,4 +1,3 @@
-import { Position } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
@@ -13,6 +12,7 @@ import {
 import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
+import { useSimulation } from 'helpers/useSimulation'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -48,22 +48,18 @@ export function ManageSectionComponent({
   const {
     accountData,
     oraclePrice, // STETH price data
+    position,
   } = state.context.protocolData || {}
+
+  const simulations = useSimulation({
+    amount: accountData?.totalCollateralETH,
+    riskRatio: position?.riskRatio,
+    fields: ['7Days'],
+  })
 
   if (!accountData?.totalDebtETH || !aaveReserveState?.liquidationThreshold || !oraclePrice) {
     return <AppSpinner />
   }
-
-  const managedPosition = new Position(
-    { amount: accountData.totalDebtETH },
-    { amount: accountData.totalCollateralETH },
-    oraclePrice, // oracle price for STETH, not needed/used to calculate liquidation price ratio
-    {
-      liquidationThreshold: aaveReserveState.liquidationThreshold,
-      dustLimit: new BigNumber(0), // not needed/used to calculate liquidation price ratio
-      maxLoanToValue: new BigNumber(0), // not needed/used to calculate liquidation price ratio
-    },
-  )
 
   // Net value (= in ETH terms is:Calculated the same as for other earn positions,
   // but then in eth terms: stETH collateral times the stETH/ETH price, minus the ETH debt.)
@@ -73,7 +69,9 @@ export function ManageSectionComponent({
     : zero
 
   const totalCollateralInStEth = oraclePrice.times(accountData.totalCollateralETH)
-  const belowCurrentRatio = oraclePrice.minus(managedPosition.liquidationPrice).times(100)
+  const belowCurrentRatio = position
+    ? oraclePrice.minus(position.liquidationPrice).times(100)
+    : zero
 
   return (
     <DetailsSection
@@ -84,10 +82,6 @@ export function ManageSectionComponent({
             title={t('net-value')}
             value={formatBigNumber(netValue || zero, 2)}
             unit={state.context.token}
-            footnote={t('manage-earn-vault.pnl', {
-              value: 'n/a',
-              token: state.context.token,
-            })}
             modal={
               <ManageSectionModal
                 heading={t('net-value')}
@@ -125,8 +119,7 @@ export function ManageSectionComponent({
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.net-apy')}
-            value="n/a"
-            footnote="To date: 'n/a'"
+            value={simulations?.apy ? formatPercent(simulations.apy, { precision: 2 }) : '-'}
             modal={
               <ManageSectionModal
                 heading={t('manage-earn-vault.net-apy')}
@@ -136,7 +129,7 @@ export function ManageSectionComponent({
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.liquidation-price-ratio')}
-            value={formatBigNumber(managedPosition.liquidationPrice, 2)}
+            value={formatBigNumber(position ? position.liquidationPrice : zero, 2)}
             unit={t('manage-earn-vault.below-current-ratio', {
               percentage: formatPercent(belowCurrentRatio, {
                 precision: 0,
