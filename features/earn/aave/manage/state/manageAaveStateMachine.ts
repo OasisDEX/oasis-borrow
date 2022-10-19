@@ -266,6 +266,14 @@ export const createManageAaveStateMachine =
         validTransactionParameters: ({ proxyAddress, transactionParameters }) => {
           return allDefined(proxyAddress, transactionParameters)
         },
+        newRiskInputted: (state) => {
+          return (
+            allDefined(state.userInput.riskRatio, state.protocolData) &&
+            !state.userInput.riskRatio!.loanToValue.eq(
+              state.protocolData!.position.riskRatio.loanToValue,
+            )
+          )
+        },
       },
       actions: {
         setLoadingTrue: assign((_) => ({ loading: true })),
