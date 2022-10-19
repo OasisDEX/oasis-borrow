@@ -1,4 +1,5 @@
 import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -185,9 +186,10 @@ export const createOpenAaveStateMachine = createMachine(
             target: 'editing',
           },
         },
+        onEntry: ['eventConfirmDeposit'],
       },
       reviewing: {
-        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine'],
+        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine', 'eventConfirmRiskRatio'],
         on: {
           NEXT_STEP: {
             target: 'txInProgress',
@@ -197,13 +199,13 @@ export const createOpenAaveStateMachine = createMachine(
             target: 'editing',
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters'],
+            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
           },
         },
       },
 
       txInProgress: {
-        entry: ['spawnTransactionMachine'],
+        entry: ['spawnTransactionMachine', 'eventConfirmTransaction'],
         on: {
           POSITION_OPENED: {
             target: 'txSuccess',
@@ -319,14 +321,14 @@ export const createOpenAaveStateMachine = createMachine(
         hasOtherAssetsThanETH_STETH: event.hasOtherAssetsThanETH_STETH,
       })),
       sendFeesToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => {
-          const sourceTokenFee =
-            context.transactionParameters?.simulation.swap.sourceTokenFee || zero
-          const targetTokenFee =
-            context.transactionParameters?.simulation.swap.targetTokenFee || zero
+        (_, event): AaveStEthSimulateStateMachineEvents => {
+          const sourceTokenFee = event.parameters.simulation.swap.sourceTokenFee || zero
+          const targetTokenFee = event.parameters.simulation.swap.targetTokenFee || zero
+
+          const gasFee = event.estimatedGasPrice?.gasEstimationEth || zero
           return {
             type: 'FEE_CHANGED',
-            fee: sourceTokenFee.plus(targetTokenFee),
+            fee: sourceTokenFee.plus(targetTokenFee).plus(gasFee),
           }
         },
         { to: (context) => context.refSimulationMachine! },
@@ -348,6 +350,25 @@ export const createOpenAaveStateMachine = createMachine(
       ),
       debounceSendingToParametersMachine: cancel('update-parameters-machine'),
       debounceSendingToSimulationMachine: cancel('update-simulate-machine'),
+      eventConfirmDeposit: ({ userInput }) => {
+        userInput.amount && trackingEvents.earn.stETHOpenPositionConfirmDeposit(userInput.amount)
+      },
+      eventConfirmRiskRatio: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmRisk(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
+      },
+      eventConfirmTransaction: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmTransaction(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
+      },
       setPricesFromEvent: assign((context, event) => ({
         collateralPrice: event.collateralPrice,
       })),
