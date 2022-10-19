@@ -13,11 +13,7 @@ import { StrategyInformationContainer } from '../../common/components/informatio
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
-
-export interface ManageAaveVaultProps {
-  readonly aaveStateMachine: ManageAaveStateMachine
-}
+import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
@@ -146,7 +142,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessStateView({ state }: ManageAaveStateProps) {
+function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -163,7 +159,7 @@ function ManageAaveSuccessStateView({ state }: ManageAaveStateProps) {
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: ``,
+      action: () => send('GO_TO_EDITING'),
     },
   }
 
@@ -185,7 +181,7 @@ export function SidebarManageAaveVault() {
           }
           send={send}
           primaryButton={{
-            isLoading: false,
+            isLoading: state.context.loading,
             disabled: !state.can('ADJUST_POSITION'),
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {

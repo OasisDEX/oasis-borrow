@@ -127,7 +127,12 @@ export const createManageAaveStateMachine =
           },
         },
         editing: {
-          entry: ['spawnPricesObservable', 'spawnUserSettingsObservable'],
+          entry: [
+            'clearTransactionParameters',
+            'setLoadingTrue',
+            'spawnPricesObservable',
+            'spawnUserSettingsObservable',
+          ],
           invoke: [
             {
               src: 'getBalance',
@@ -141,7 +146,7 @@ export const createManageAaveStateMachine =
               src: 'getParameters',
               id: 'getParameters',
               onDone: {
-                actions: ['assignTransactionParameters'],
+                actions: ['assignTransactionParameters', 'setLoadingFalse'],
               },
             },
           ],
@@ -164,6 +169,9 @@ export const createManageAaveStateMachine =
                 'debouncedRiskRatioEvent',
               ],
             },
+            RESET_RISK_RATIO: {
+              actions: ['clearTransactionParameters', 'clearRiskRatio', 'setLoadingFalse'],
+            },
             GO_TO_EDITING: {
               target: 'editing',
             },
@@ -172,7 +180,7 @@ export const createManageAaveStateMachine =
               actions: ['riskRatioEvent'],
             },
             ADJUST_POSITION: {
-              cond: 'newRiskInputted',
+              cond: 'validTransactionParameters',
               target: 'reviewingAdjusting',
             },
           },
@@ -214,7 +222,11 @@ export const createManageAaveStateMachine =
           },
         },
         txSuccess: {
-          type: 'final',
+          on: {
+            GO_TO_EDITING: {
+              target: 'editing',
+            },
+          },
         },
         reviewingClosing: {
           entry: [
@@ -264,6 +276,8 @@ export const createManageAaveStateMachine =
         },
       },
       actions: {
+        setLoadingTrue: assign((_) => ({ loading: true })),
+        setLoadingFalse: assign((_) => ({ loading: false })),
         cancelDebouncedGoToEditing: cancel('debounced-filter'),
         debounceGoToEditing: send('GO_TO_EDITING', { delay: 1000, id: 'debounced-filter' }),
         cancelRiskRatioEvent: cancel('new-risk-ratio'),
@@ -288,6 +302,14 @@ export const createManageAaveStateMachine =
             userInput: {
               ...context.userInput,
               riskRatio: event.riskRatio,
+            },
+          }
+        }),
+        clearRiskRatio: assign((context) => {
+          return {
+            userInput: {
+              ...context.userInput,
+              riskRatio: undefined,
             },
           }
         }),
@@ -316,6 +338,10 @@ export const createManageAaveStateMachine =
         assignTransactionParameters: assign((context, event) => ({
           transactionParameters: event.data?.adjustParams,
           estimatedGasPrice: event.data?.estimatedGasPrice,
+        })),
+        clearTransactionParameters: assign((_) => ({
+          transactionParameters: undefined,
+          estimatedGasPrice: undefined,
         })),
         assignClosingTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,

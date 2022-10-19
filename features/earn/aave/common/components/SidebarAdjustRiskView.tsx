@@ -18,7 +18,7 @@ import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
-type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 'RESET_RISK_RATIO' }
 
 type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
@@ -32,7 +32,6 @@ export function AdjustRiskView({
   send,
   primaryButton,
   textButton,
-  resetRiskValue,
   viewLocked = false,
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()
@@ -170,7 +169,7 @@ export function AdjustRiskView({
 
         <SidebarResetButton
           clear={() => {
-            send({ type: 'SET_RISK_RATIO', riskRatio: resetRiskValue })
+            send({ type: 'RESET_RISK_RATIO' })
           }}
           disabled={viewLocked}
         />

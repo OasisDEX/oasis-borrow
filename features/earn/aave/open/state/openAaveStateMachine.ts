@@ -118,6 +118,7 @@ export const createOpenAaveStateMachine = createMachine(
               'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
               'sendUpdateToSimulationMachine',
+              'setIsLoadingTrue',
             ],
           },
           NEXT_STEP: [
@@ -125,7 +126,11 @@ export const createOpenAaveStateMachine = createMachine(
             { cond: 'enoughBalance', target: 'settingMultiple' },
           ],
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
+            actions: [
+              'setIsLoadingFalse',
+              'assignTransactionParameters',
+              'sendFeesToSimulationMachine',
+            ],
           },
         },
       },
@@ -163,14 +168,19 @@ export const createOpenAaveStateMachine = createMachine(
               'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
               'sendUpdateToSimulationMachine',
+              'setIsLoadingTrue',
             ],
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
+            actions: [
+              'assignTransactionParameters',
+              'sendFeesToSimulationMachine',
+              'setIsLoadingFalse',
+            ],
           },
           NEXT_STEP: {
             target: 'reviewing',
-            // TODO: validate multiple here cond: 'validTransactionParameters'
+            cond: 'validTransactionParameters',
           },
           BACK_TO_EDITING: {
             target: 'editing',
@@ -223,8 +233,8 @@ export const createOpenAaveStateMachine = createMachine(
   {
     guards: {
       emptyProxyAddress: ({ proxyAddress }) => !allDefined(proxyAddress),
-      validTransactionParameters: ({ userInput, proxyAddress, transactionParameters }) =>
-        allDefined(userInput, proxyAddress, transactionParameters),
+      validTransactionParameters: ({ userInput, proxyAddress, transactionParameters, loading }) =>
+        allDefined(userInput, proxyAddress, transactionParameters) && loading === false,
       enoughBalance: ({ tokenBalance, userInput }) =>
         allDefined(tokenBalance, userInput.amount) && tokenBalance!.gt(userInput.amount!),
     },
@@ -237,6 +247,7 @@ export const createOpenAaveStateMachine = createMachine(
         inputDelay: 1000,
         strategyName: 'stETHeth',
         userInput: {},
+        loading: false,
       })),
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,
@@ -261,6 +272,8 @@ export const createOpenAaveStateMachine = createMachine(
           id: 'update-parameters-machine',
         },
       ),
+      setIsLoadingTrue: assign((_) => ({ loading: true })),
+      setIsLoadingFalse: assign((_) => ({ loading: false })),
       setRiskRatio: assign((context, event) => {
         return {
           userInput: {
