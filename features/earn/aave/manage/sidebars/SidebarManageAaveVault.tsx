@@ -1,3 +1,4 @@
+import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -5,7 +6,8 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
+import { amountFromWei, amountToWei } from '../../../../../blockchain/utils'
+import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
@@ -20,20 +22,39 @@ interface ManageAaveStateProps {
   readonly send: Sender<ManageAaveEvent>
 }
 
+function getAmountGetFromPositionAfterClose(
+  strategy: IStrategy | undefined,
+  currentPosition: IPosition,
+) {
+  if (!strategy) {
+    return zero
+  }
+  const currentDebt = amountToWei(currentPosition.debt.amount, currentPosition.debt.denomination || 'ETH')
+  const amountFromSwap = strategy.simulation.swap.toTokenAmount
+  const fee = strategy.simulation.swap.targetTokenFee
+
+  return amountFromSwap.minus(currentDebt).minus(fee)
+}
+
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
-  const balance = formatCryptoBalance(state.context.balanceAfterClose || zero)
-  const fiatBalanceAfterClose = (state.context.balanceAfterClose || zero).times(
-    state.context.tokenPrice || zero,
+  const balance = formatCryptoBalance(
+    amountFromWei(
+      getAmountGetFromPositionAfterClose(
+        state.context.transactionParameters,
+        state.context.currentPosition,
+      ),
+      state.context.token,
+    ),
   )
-  const fiatBalance = formatFiatBalance(fiatBalanceAfterClose)
+
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
         {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
       <Text variant="boldParagraph3">
-        {balance} {state.context.token} (${fiatBalance})
+        {balance} {state.context.token}
       </Text>
     </Flex>
   )
