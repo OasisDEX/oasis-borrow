@@ -146,13 +146,6 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             last_action: true,
           },
         })) as HighestPnl[]
-        data.map((e: any) => {
-          const replacedData = e[timeIndex]
-
-          delete e[timeIndex]
-          e['pnl'] = replacedData
-        })
-
         break
       case DiscoverPages.MOST_YIELD_EARNED:
         data = (await prisma.mostYield.findMany({
@@ -169,13 +162,6 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             last_action: true,
           },
         })) as MostYield[]
-        data.map((e: any) => {
-          const replacedData = e[timeIndex]
-
-          delete e[timeIndex]
-          e['earned'] = replacedData
-        })
-
         break
       default:
         break
