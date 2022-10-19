@@ -36,9 +36,12 @@ export function DiscoverTableBanner({
         </Text>
       </Box>
       <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'] }}>
-        <AppLink href={link} onClick={() => {
-          trackingEvents.discover.clickedTableBanner(kind, link, userContext)
-        }}>
+        <AppLink
+          href={link}
+          onClick={() => {
+            trackingEvents.discover.clickedTableBanner(kind, link, userContext)
+          }}
+        >
           <Button variant="action">{t(`discover.table.banner.${kind}.cta`)}</Button>
         </AppLink>
       </Box>

@@ -83,9 +83,12 @@ export function DiscoverTableDataCellContent({
       )
     case 'cdpId':
       return (
-        <AppLink href={`/${row?.cdpId}`} onClick={() => {
-          trackingEvents.discover.viewPosition(row?.cdpId)
-        }}>
+        <AppLink
+          href={`/${row?.cdpId}`}
+          onClick={() => {
+            trackingEvents.discover.viewPosition(row?.cdpId)
+          }}
+        >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
         </AppLink>
       )
