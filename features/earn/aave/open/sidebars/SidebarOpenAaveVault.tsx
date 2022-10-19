@@ -15,6 +15,8 @@ import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
+import { MessageCard } from '../../../../../components/MessageCard'
+import { zero } from '../../../../../helpers/zero'
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
@@ -97,11 +99,20 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   const hasProxy = state.context.proxyAddress !== undefined
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
+  const amountToHigh =
+    state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
+        {amountToHigh && (
+          <MessageCard
+            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            type="error"
+          />
+        )}
         <StrategyInformationContainer state={state} />
       </Grid>
     ),
