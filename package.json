@@ -171,6 +171,7 @@
     "@storybook/builder-webpack5": "^6.4.22",
     "@storybook/manager-webpack5": "^6.4.22",
     "@storybook/react": "^6.4.22",
+    "@testing-library/dom": "^8.19.0",
     "@types/bn.js": "^4.11.1",
     "@types/body-parser": "^1.19.0",
     "@types/chai": "^4.2.11",

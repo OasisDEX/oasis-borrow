@@ -16,15 +16,15 @@ export function useAppContext(): AppContext {
   return ac
 }
 
-export function AppContextProvider({ children }: WithChildren) {
-  const [uiChanges] = useState<AppContext | undefined>(undefined)
+export function AppContextProvider(uiChanges: any, { children }: WithChildren) {
+  // const [uiChanges] = useState<AppContext | undefined>(undefined)
   //   const [context, setContext] = useState<AppContext | undefined>(undefined)
 
-  useEffect(() => {
-    // uiChanges
-    // publish here or in tests like SidebarAutoTakeProfitEditingStage.test use as below
-    // const mockUiChanges = initializeUIChanges().publish()
-  }, [])
+  // useEffect(() => {
+  //   // uiChanges
+  //   // publish here or in tests like SidebarAutoTakeProfitEditingStage.test use as below
+  //   // const mockUiChanges = initializeUIChanges().publish()
+  // }, [])
 
   return <testAppContext.Provider value={uiChanges}>{children}</testAppContext.Provider>
   //   return <testAppContext.Provider value={context}>{children}</testAppContext.Provider>

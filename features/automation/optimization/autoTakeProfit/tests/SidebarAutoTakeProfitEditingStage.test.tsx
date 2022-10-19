@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js'
 import { initializeUIChanges } from 'components/AppContext'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import { render } from 'enzyme'
+import { mount } from 'enzyme'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { createSliderConfig } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarSetupAutoTakeProfit'
 import {
@@ -91,12 +91,12 @@ const sliderConfig: SliderValuePickerProps = createSliderConfig(
 )
 describe('given user has no trigger', () => {
   beforeEach(() => {
-    mockUiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-      type: 'form-defaults',
-      executionPrice: initialSelectedPrice,
-      executionCollRatio: initialSelectedColRatio,
-      toCollateral: true,
-    })
+    // mockUiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+    //   type: 'form-defaults',
+    //   executionPrice: initialSelectedPrice,
+    //   executionCollRatio: initialSelectedColRatio,
+    //   toCollateral: true,
+    // })
   })
   // This scenario seems feature envy with tests for AutoTakeProfitFormControl ~Ł
   // eslint-disable-next-line no-only-tests/no-only-tests
@@ -108,8 +108,11 @@ describe('given user has no trigger', () => {
     // )
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-    render(
-      <AppContextProvider>
+    // TODO ŁW
+    // tried mount, render from enzyme
+    // idea is to try render from testing-library instead
+    mount(
+      <AppContextProvider uiChanges={{}}>
         <SidebarAutoTakeProfitEditingStage
           autoTakeProfitState={autoTakeProfitState}
           autoTakeProfitTriggerData={mockAutoTakeProfitTriggerDataNoTrigger}
