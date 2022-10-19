@@ -12,7 +12,7 @@ import {
 } from '../../../../../components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from '../../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
-import { formatPercent } from '../../../../../helpers/formatters/format'
+import { formatBigNumber, formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
@@ -100,9 +100,9 @@ export function AdjustRiskView({
         <SliderValuePicker
           sliderPercentageFill={new BigNumber(0)}
           leftBoundry={liquidationPrice}
-          leftBoundryFormatter={(value) => value.toFixed(2)}
+          leftBoundryFormatter={(value) => formatBigNumber(value, 2)}
           rightBoundry={oracleAssetPrice}
-          rightBoundryFormatter={(value) => `Current: ${value.toFixed(2)}`}
+          rightBoundryFormatter={(value) => `Current: ${formatBigNumber(value, 2)}`}
           rightBoundryStyling={{
             color: riskTrafficLight === RiskLevel.OK ? 'success100' : 'warning100',
           }}
@@ -137,8 +137,8 @@ export function AdjustRiskView({
             color: 'neutral80',
           }}
         >
-          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
+          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
         </Flex>
         <StrategyInformationContainer state={state} />
         {viewLocked ? (
