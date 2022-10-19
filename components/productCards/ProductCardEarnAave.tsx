@@ -1,16 +1,15 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
-import { calculateSimulation } from 'features/earn/aave/open/services'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useSimulation } from 'helpers/useSimulation'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
@@ -27,28 +26,17 @@ const aaveCalcValueBasis = {
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
   const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
-  const { aaveSthEthYieldsQuery } = useAppContext()
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityETH$,
   )
-  const [simulations, setSimulations] = useState<ReturnType<typeof calculateSimulation>>()
   const maximumMultiple = aaveReserveState ? one.div(one.minus(aaveReserveState!.ltv)) : undefined
 
-  useEffect(() => {
-    if (maximumMultiple && !simulations) {
-      const maxRisk = new RiskRatio(maximumMultiple, RiskRatio.TYPE.MULITPLE)
-      void (async () => {
-        setSimulations(
-          calculateSimulation({
-            ...aaveCalcValueBasis,
-            yields: await aaveSthEthYieldsQuery(maxRisk, ['7Days', '90Days']),
-            riskRatio: maxRisk,
-          }),
-        )
-      })()
-    }
-  }, [maximumMultiple, simulations])
+  const simulations = useSimulation({
+    amount: aaveCalcValueBasis.amount,
+    riskRatio: maximumMultiple && new RiskRatio(maximumMultiple, RiskRatio.TYPE.MULITPLE),
+    fields: ['7Days', '90Days'],
+  })
 
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
