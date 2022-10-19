@@ -6,6 +6,7 @@ import { cancel } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
+import { amountFromGwei } from '../../../../../blockchain/utils'
 import { allDefined } from '../../../../../helpers/allDefined'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
@@ -325,7 +326,11 @@ export const createOpenAaveStateMachine = createMachine(
           const sourceTokenFee = event.parameters.simulation.swap.sourceTokenFee || zero
           const targetTokenFee = event.parameters.simulation.swap.targetTokenFee || zero
 
-          const gasFee = event.estimatedGasPrice?.gasEstimationEth || zero
+          const gasFee =
+            (event.estimatedGasPrice?.gasEstimation &&
+              amountFromGwei(new BigNumber(event.estimatedGasPrice.gasEstimation))) ||
+            zero
+
           return {
             type: 'FEE_CHANGED',
             fee: sourceTokenFee.plus(targetTokenFee).plus(gasFee),

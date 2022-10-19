@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { RAD } from 'components/constants'
 import { one } from 'helpers/zero'
 
-import { amountFromRad, amountFromRay } from './utils'
+import { amountFromGwei, amountFromRad, amountFromRay } from './utils'
 
 describe('utils$', () => {
   it('should not reconfigure global precision for bignumber', () => {
@@ -27,5 +27,9 @@ describe('utils$', () => {
 
     expect(halfRadValueUnits.toFixed()).to.eq('0.500000000000000000000000000000000000000000001')
     expect(radValueUnits.div(2).toFixed()).to.eq(halfRadValueUnits.toFixed())
+  })
+
+  it('should convert from gwei correctly', () => {
+    expect(amountFromGwei(new BigNumber('1')).toString()).to.eq('0.000000001')
   })
 })
