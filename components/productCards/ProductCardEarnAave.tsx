@@ -41,8 +41,6 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
     fields: ['7Days', '90Days'],
   })
 
-  console.log('aaveActivePosition', aaveActivePosition)
-
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
       <WithLoadingIndicator
