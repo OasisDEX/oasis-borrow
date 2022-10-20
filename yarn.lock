@@ -5470,10 +5470,10 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
-"@oasisdex/oasis-actions@0.0.4-alpha.10":
-  version "0.0.4-alpha.10"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.0.4-alpha.10.tgz#985d64b663c3eeb5abd56e2f3bed71540bb8a233"
-  integrity sha512-1iPi2zZBdb79KKxjj34EjprUvqzbG8ExE7OAICq0s+pU+46kVdMsomQQZvycxLJM3JtHwmkTqdsSaYNnSpLYCw==
+"@oasisdex/oasis-actions@0.0.4-alpha.16":
+  version "0.0.4-alpha.16"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.0.4-alpha.16.tgz#eb5fb0a62f15ada11c24ac25560a41b10229170d"
+  integrity sha512-9njsmgv9euhODjzv3uI75zvk6a5WupM98xcqYHBHY9kCRW1UBr71Q8a9o8bfP14KbtqyTj5+Umf/n+uy1lufKg==
   dependencies:
     bignumber.js "^9.0.1"
     ethers "^5.0.19"
