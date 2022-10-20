@@ -107,6 +107,7 @@ export function getManageAavePositionStateMachineServices$(
           }
 
           return from(
+            // get position simulation params and calldata to adjust
             getAdjustAaveParameters(
               contextConnected,
               context.userInput.amount,
@@ -117,6 +118,7 @@ export function getManageAavePositionStateMachineServices$(
             ),
           ).pipe(
             flatMap((adjustParams) => {
+              // do gas estimation separately
               return from(
                 txHelpers.estimateGas(callOperationExecutor, {
                   kind: TxMetaKind.operationExecutor,
@@ -133,6 +135,7 @@ export function getManageAavePositionStateMachineServices$(
                     estimatedGasPrice,
                   }
                 }),
+                // pass through position call data before gas estimation
                 startWith({
                   adjustParams,
                   estimatedGasPrice: undefined,
