@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { of } from 'rxjs'
-import sinon from 'sinon'
 
 import { getStateUnpacker } from '../../../helpers/testHelpers'
 import { zero } from '../../../helpers/zero'
@@ -14,11 +13,10 @@ describe('positionsOverviewSummary', () => {
       WBTC: new BigNumber(5),
     }
 
-    const walletBalance$ = sinon
-      .stub()
+    const walletBalance$ = jest.fn()
       .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
 
-    const tokenPriceUsd$ = sinon.stub().returns(
+    const tokenPriceUsd$ = jest.fn().mockReturnValue(
       of({
         ETH: new BigNumber(2),
         WBTC: new BigNumber(6),
@@ -57,11 +55,10 @@ describe('positionsOverviewSummary', () => {
       RENBTC: new BigNumber(4),
     }
 
-    const walletBalance$ = sinon
-      .stub()
+    const walletBalance$ = jest.fn()
       .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
 
-    const tokenPriceUsd$ = sinon.stub().returns(
+    const tokenPriceUsd$ = jest.fn().mockReturnValue(
       of({
         ETH: new BigNumber(1),
         WBTC: new BigNumber(1),
@@ -82,7 +79,7 @@ describe('positionsOverviewSummary', () => {
 
     const state = getStateUnpacker(obsv$)
 
-    expect(state().percentageOther.toString()).eq('10')
+    expect(state().percentageOther.function toString() { [native code] }()).eq('10')
   })
 
   it('includes the maker positions', () => {
@@ -90,11 +87,10 @@ describe('positionsOverviewSummary', () => {
       ETH: new BigNumber(1),
     }
 
-    const walletBalance$ = sinon
-      .stub()
+    const walletBalance$ = jest.fn()
       .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
 
-    const tokenPriceUsd$ = sinon.stub().returns(
+    const tokenPriceUsd$ = jest.fn().mockReturnValue(
       of({
         ETH: new BigNumber(6),
       }),
@@ -144,6 +140,6 @@ describe('positionsOverviewSummary', () => {
     expect((multiplyPosition as PositionView).title).eq('ETH-A Oasis Multiply')
     expect((multiplyPosition as PositionView).url).eq('example.com/eth')
 
-    expect(state().totalValueUsd.toString()).eq('18')
+    expect(state().totalValueUsd.function toString() { [native code] }()).eq('18')
   })
 })

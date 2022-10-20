@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import moment from 'moment'
 import { Observable, of, throwError } from 'rxjs'
-import sinon from 'sinon'
 
 import { mockContextConnected } from '../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../helpers/testHelpers'
@@ -68,18 +67,17 @@ describe('createTokenPriceInUSD$', () => {
 })
 
 describe('createOraclePriceData$', () => {
-  let getCodeStub: sinon.SinonStub
+  let getCodeStub: jest.Mock
+  // TODO ŁW figure out how to replace callsFake with mockImplementation, or decide to keep using sinon with jest
   beforeEach(() => {
-    getCodeStub = sinon
-      .stub(mockContextConnected.web3.eth, 'getCode')
-      // @ts-ignore
+    getCodeStub = jest.spyOn(mockContextConnected.web3.eth, 'getCode').mockClear().mockImplementation()
       .callsFake((address, callback?: (error: Error, code: string) => void) => {
         // @ts-ignore
         callback && callback(null, Array(6001).fill(0).join(''))
       })
   })
   afterEach(() => {
-    getCodeStub.restore()
+    getCodeStub.mockRestore()
   })
   it('does not regress', () => {
     const oraclePriceData$ = createOraclePriceData$(
@@ -121,10 +119,10 @@ describe('createOraclePriceData$', () => {
     }
     beforeEach(() => {
       pipes = {
-        peek$: sinon.stub().returns(of(['1000', true])),
-        peep$: sinon.stub().returns(of(['100000000', true])),
-        zzz$: sinon.stub().returns(of(new BigNumber('1657811932000'))),
-        hop$: sinon.stub().returns(of(new BigNumber('3600000'))),
+        peek$: jest.fn().mockReturnValue(of(['1000', true])),
+        peep$: jest.fn().mockReturnValue(of(['100000000', true])),
+        zzz$: jest.fn().mockReturnValue(of(new BigNumber('1657811932000'))),
+        hop$: jest.fn().mockReturnValue(of(new BigNumber('3600000'))),
       }
     })
 

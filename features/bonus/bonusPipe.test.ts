@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { BehaviorSubject, Observable, of } from 'rxjs'
-import sinon from 'sinon'
+import { BehaviorSubject,  of } from 'rxjs'
 
 import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
@@ -33,7 +32,7 @@ describe('bonusPipe', () => {
 
   describe('claiming the rewards', () => {
     it('calls claim interface and updates state when claiming', () => {
-      const claimAllStub = sinon.stub().returns(of(ClaimTxnState.PENDING))
+      const claimAllStub = jest.fn().mockReturnValue(of(ClaimTxnState.PENDING))
       function bonusAdapterStub() {
         return {
           bonus$: of({
@@ -46,7 +45,7 @@ describe('bonusPipe', () => {
           claimAll$: of(claimAllStub),
         }
       }
-      const bonusAdapterSpy = sinon.spy(bonusAdapterStub)
+      const bonusAdapterSpy = jest.fn(bonusAdapterStub)
       const bonusPipe = createBonusPipe$(bonusAdapterSpy, new BigNumber(123))
       const state = getStateUnpacker(bonusPipe)
 
@@ -66,7 +65,7 @@ describe('bonusPipe', () => {
         readableAmount: '0CSH',
       })
       const claimTxnState$mock = new BehaviorSubject<ClaimTxnState>(ClaimTxnState.PENDING)
-      const claimAllStub = sinon.stub<[], Observable<ClaimTxnState>>().returns(claimTxnState$mock)
+      const claimAllStub = jest.fn().mockReturnValue(claimTxnState$mock)
       const bonusPipe = createBonusPipe$(
         () => ({
           bonus$: bonusMock$,
@@ -125,7 +124,7 @@ describe('bonusPipe', () => {
     })
 
     it('calls claim once', () => {
-      const claimAllStub = sinon.stub().returns(of(ClaimTxnState.PENDING))
+      const claimAllStub = jest.fn().mockReturnValue(of(ClaimTxnState.PENDING))
       const bonusPipe = createBonusPipe$(
         () => ({
           bonus$: of({
@@ -147,7 +146,7 @@ describe('bonusPipe', () => {
     })
 
     it('allows user to claim again after a failed transaction', () => {
-      const claimAllStub = sinon.stub().returns(of(ClaimTxnState.FAILED))
+      const claimAllStub = jest.fn().mockReturnValue(of(ClaimTxnState.FAILED))
       const bonusPipe = createBonusPipe$(
         () => ({
           bonus$: of({

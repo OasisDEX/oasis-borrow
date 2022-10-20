@@ -1,25 +1,22 @@
 import { expect } from 'chai'
 import NodeCache from 'node-cache'
-import sinon from 'sinon'
 
 import { BatchManager, Request } from './BatchManager'
 
 const mockConnection = 'https://www.goingnowhere.com'
 
 describe('BatchManager', () => {
-  let clock: sinon.SinonFakeTimers
-
   beforeEach(function () {
-    clock = sinon.useFakeTimers()
+    jest.useFakeTimers()
   })
 
   afterEach(function () {
-    clock.restore()
+    jest.useRealTimers()
   })
 
   it('should batch call into single request', async () => {
     const mockBatch = createMockBatch()
-    const mockFetchJson = sinon.stub().resolves([]) as any
+    const mockFetchJson = jest.fn().resolves([]) as any
 
     const batchManager = createBatchManager(mockFetchJson)
     await batchManager.batchCall(mockBatch)
@@ -30,7 +27,7 @@ describe('BatchManager', () => {
 
   it('should exclude cache hits', async () => {
     const mockBatch = createMockBatch()
-    const mockFetchJson = sinon.stub().resolves(
+    const mockFetchJson = jest.fn().resolves(
       mockBatch.map(() => ({
         result: 'cached-result',
       })),
@@ -52,7 +49,7 @@ describe('BatchManager', () => {
     const resolvesTo = mockBatch.map(() => ({
       result: 'cached-result',
     }))
-    const mockFetchJson = sinon.stub().resolves(resolvesTo) as any
+    const mockFetchJson = jest.fn().resolves(resolvesTo) as any
     mockFetchJson.onSecondCall().resolves(resolvesTo)
 
     const batchManager = createBatchManager(mockFetchJson)
@@ -60,13 +57,13 @@ describe('BatchManager', () => {
     // First call
     await batchManager.batchCall(mockBatch)
     const defaultCacheTtlPlus100ms = 15100
-    clock.tick(defaultCacheTtlPlus100ms)
+    jest.advanceTimersByTime(defaultCacheTtlPlus100ms)
 
     // Second call
     await batchManager.batchCall(mockBatch)
 
     expect(mockFetchJson).to.have.been.calledTwice
-    expect(mockFetchJson.getCall(1)).to.have.been.calledWith(
+    expect(mockFetchJson.mock.calls[1]).to.have.been.calledWith(
       mockConnection,
       JSON.stringify(mockBatch),
     )
@@ -77,7 +74,7 @@ describe('BatchManager', () => {
       const fetchJsonMockResult = mockBatch.map((requestInsideBatch) => ({
         result: requestInsideBatch,
       }))
-      const mockFetchJson = sinon.stub().resolves(fetchJsonMockResult) as any
+      const mockFetchJson = jest.fn().resolves(fetchJsonMockResult) as any
       mockFetchJson.onSecondCall().resolves(fetchJsonMockResult)
       const batchManager = createBatchManager(mockFetchJson)
 
@@ -98,7 +95,7 @@ describe('BatchManager', () => {
       const fetchJsonMockResult = mockBatch.map((requestInsideBatch) => ({
         result: requestInsideBatch,
       }))
-      const mockFetchJson = sinon.stub().resolves(fetchJsonMockResult) as any
+      const mockFetchJson = jest.fn().resolves(fetchJsonMockResult) as any
       mockFetchJson.onSecondCall().resolves(fetchJsonMockResult)
       const batchManager = createBatchManager(mockFetchJson)
 
@@ -119,7 +116,7 @@ describe('BatchManager', () => {
       const secondBatch = createMockBatch(6, 9)
       const thirdBatch = createMockBatch(3, 6)
 
-      const mockFetchJson = sinon.stub().resolves(
+      const mockFetchJson = jest.fn().resolves(
         firstBatch.map((requestInsideBatch) => ({
           result: requestInsideBatch,
         })),

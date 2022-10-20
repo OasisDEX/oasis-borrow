@@ -2,7 +2,6 @@ import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { NEVER, Observable, of } from 'rxjs'
-import sinon from 'sinon'
 
 import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
 import {
@@ -78,7 +77,7 @@ describe('makerProtocolBonusAdapter', () => {
 
   describe('claiming bonuses', () => {
     it('passes correct args to proxy actions call when calling stream', () => {
-      const txHelpersMock = { ...protoTxHelpers, sendWithGasEstimation: sinon.spy() }
+      const txHelpersMock = { ...protoTxHelpers, sendWithGasEstimation: jest.fn() }
 
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
 
@@ -91,8 +90,8 @@ describe('makerProtocolBonusAdapter', () => {
       getStateUnpacker(claimAllCbState!())
 
       expect(txHelpersMock.sendWithGasEstimation).to.have.been.calledWith(
-        sinon.match(mockVaultActions.claimReward),
-        sinon.match({
+        expect.objectContaining(mockVaultActions.claimReward),
+        expect.objectContaining({
           cdpId: new BigNumber(123),
           gemJoinAddress: '0x775787933e92b709f2a3C70aa87999696e74A9F8',
           kind: 'claimReward',
@@ -140,7 +139,7 @@ describe('makerProtocolBonusAdapter', () => {
       testCases.forEach(({ txStatus, claimTxStatus }) => {
         const txHelpersMock = {
           ...protoTxHelpers,
-          sendWithGasEstimation: sinon.stub().returns(of({ status: txStatus })),
+          sendWithGasEstimation: jest.fn().mockReturnValue(of({ status: txStatus })),
         }
 
         const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
