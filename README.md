@@ -249,6 +249,14 @@ yarn test:fix
 ```
 
 <br>
+To run jest example run the following command:
+
+```sh
+yarn jest --watch
+```
+
+<br>
+
 
 ## License
 

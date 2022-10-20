@@ -21,13 +21,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
+    "incremental": true
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "runtimeConfig.js",
-    "next-i18next.config.js"
-  ],
+    "next-i18next.config.js",
+    "jest.config.js"
+, "jest.setup.js"  ],
   "exclude": ["node_modules"]
 }
