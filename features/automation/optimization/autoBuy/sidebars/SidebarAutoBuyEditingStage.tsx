@@ -1,3 +1,4 @@
+import { Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -14,6 +15,8 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import {
   adjustDefaultValuesIfOutsideSlider,
+  automationInputsAnalytics,
+  automationMultipleRangeSliderAnalytics,
   prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
@@ -88,6 +91,20 @@ export function SidebarAutoBuyEditingStage({
       publishType: AUTO_BUY_FORM_CHANGE,
     })
   }, [vault.collateralizationRatio.toNumber()])
+
+  automationMultipleRangeSliderAnalytics({
+    leftValue: autoBuyState.targetCollRatio,
+    rightValue: autoBuyState.execCollRatio,
+    vault,
+    type: AutomationFeatures.AUTO_BUY,
+  })
+
+  automationInputsAnalytics({
+    maxBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
+    withMaxBuyPriceThreshold: autoBuyState.withThreshold,
+    vault,
+    type: AutomationFeatures.AUTO_BUY,
+  })
 
   const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
     .times(100)
@@ -279,6 +296,10 @@ export function SidebarAutoBuyEditingStage({
           })
         }}
         value={autoBuyState.maxBaseFeeInGwei.toNumber()}
+        analytics={{
+          page: Pages.AutoBuy,
+          additionalParams: { vaultId: vault.id.toString(), ilk: vault.ilk },
+        }}
       />
       {isEditing && (
         <>

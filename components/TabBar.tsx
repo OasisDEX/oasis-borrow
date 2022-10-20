@@ -16,6 +16,7 @@ export type TabSection = {
   }
   topContent?: JSX.Element | string
   content: JSX.Element
+  callback?: () => void
 }
 
 interface TabBarProps {
@@ -140,7 +141,10 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
               selected={isSelected(section)}
               tag={section.tag}
               variant={variant}
-              onClick={() => setHash(section.value)}
+              onClick={() => {
+                section.callback && section.callback()
+                setHash(section.value)
+              }}
             />
           ))}
         </Flex>

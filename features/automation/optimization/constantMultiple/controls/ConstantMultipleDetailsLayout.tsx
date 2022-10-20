@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
@@ -20,6 +26,8 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 export interface ConstantMultipleDetailsLayoutProps {
+  ilk: string
+  vaultId: BigNumber
   token: string
   vaultType: VaultType
   isTriggerEnabled: boolean
@@ -37,6 +45,8 @@ export interface ConstantMultipleDetailsLayoutProps {
 }
 
 export function ConstantMultipleDetailsLayout({
+  ilk,
+  vaultId,
   token,
   vaultType,
   isTriggerEnabled,
@@ -119,6 +129,12 @@ export function ConstantMultipleDetailsLayout({
                     type: 'Optimization',
                     currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
                   })
+                  trackingEvents.automation.buttonClick(
+                    AutomationEventIds.SelectConstantMultiple,
+                    Pages.OptimizationTab,
+                    CommonAnalyticsSections.Banner,
+                    { vaultId: vaultId.toString(), ilk },
+                  )
                 },
                 text: t('constant-multiple.banner.button'),
               }}

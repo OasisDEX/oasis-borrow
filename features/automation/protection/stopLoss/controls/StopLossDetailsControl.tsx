@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -80,6 +86,12 @@ export function StopLossDetailsControl({
                 type: 'Protection',
                 currentProtectionFeature: AutomationFeatures.STOP_LOSS,
               })
+              trackingEvents.automation.buttonClick(
+                AutomationEventIds.SelectStopLoss,
+                Pages.ProtectionTab,
+                CommonAnalyticsSections.Banner,
+                { vaultId: vault.id.toString(), ilk: vault.ilk },
+              )
             },
             text: t('vault-banners.setup-stop-loss.button'),
           }}

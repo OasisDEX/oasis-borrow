@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
@@ -16,6 +22,8 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 export interface AutoTakeProfitDetailsLayoutProps {
+  ilk: string
+  vaultId: BigNumber
   afterTriggerColPrice?: BigNumber
   afterTriggerColRatio?: BigNumber
   currentColRatio: BigNumber
@@ -27,6 +35,8 @@ export interface AutoTakeProfitDetailsLayoutProps {
 }
 
 export function AutoTakeProfitDetailsLayout({
+  ilk,
+  vaultId,
   afterTriggerColPrice,
   afterTriggerColRatio,
   currentColRatio,
@@ -80,6 +90,12 @@ export function AutoTakeProfitDetailsLayout({
                 type: 'Optimization',
                 currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
               })
+              trackingEvents.automation.buttonClick(
+                AutomationEventIds.SelectTakeProfit,
+                Pages.OptimizationTab,
+                CommonAnalyticsSections.Banner,
+                { vaultId: vaultId.toString(), ilk },
+              )
             },
             text: t('auto-take-profit.banner.button'),
           }}

@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -22,6 +28,7 @@ import {
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 
 interface GetStopLossStatusParams {
   stopLossTriggerData: StopLossTriggerData
@@ -104,6 +111,16 @@ export function getStopLossStatus({
         type: 'close-type',
         toCollateral: optionName === closeVaultOptions[0],
       })
+      trackingEvents.automation.buttonClick(
+        AutomationEventIds.CloseToX,
+        Pages.StopLoss,
+        CommonAnalyticsSections.Form,
+        {
+          vaultId: vault.id.toString(),
+          ilk: vault.ilk,
+          closeTo: optionName as CloseVaultTo,
+        },
+      )
     },
     isCollateralActive: stopLossState.collateralActive,
     collateralTokenSymbol: vault.token,

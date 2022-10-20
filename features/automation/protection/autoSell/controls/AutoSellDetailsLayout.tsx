@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
@@ -18,6 +24,8 @@ import React from 'react'
 import { Text } from 'theme-ui'
 
 interface AutoSellDetailsLayoutProps {
+  ilk: string
+  vaultId: BigNumber
   token: string
   autoSellTriggerData: AutoBSTriggerData
   triggerColRatio?: BigNumber
@@ -30,6 +38,8 @@ interface AutoSellDetailsLayoutProps {
 }
 
 export function AutoSellDetailsLayout({
+  ilk,
+  vaultId,
   token,
   triggerColRatio,
   nextSellPrice,
@@ -101,6 +111,12 @@ export function AutoSellDetailsLayout({
                 type: 'Protection',
                 currentProtectionFeature: AutomationFeatures.AUTO_SELL,
               })
+              trackingEvents.automation.buttonClick(
+                AutomationEventIds.SelectAutoSell,
+                Pages.ProtectionTab,
+                CommonAnalyticsSections.Banner,
+                { vaultId: vaultId.toString(), ilk },
+              )
             },
             text: t('auto-sell.banner.button'),
             disabled: isconstantMultipleEnabled,

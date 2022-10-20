@@ -115,6 +115,7 @@ export function ManageVaultDetails(
       lockedCollateralUSD,
       collateralizationRatio,
       ilk,
+      id,
     },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
@@ -196,7 +197,7 @@ export function ManageVaultDetails(
       />
 
       {stopLossReadEnabled && stopLossWriteEnabled && (
-        <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} />
+        <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
       <BonusContainer cdpId={props.vault.id} />
     </Grid>

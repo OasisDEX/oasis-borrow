@@ -38,6 +38,14 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
   return mixpanel
 }
 
+export function logMixpanelEventInDevelopmentMode(eventType: string, payload: any) {
+  const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
+
+  if (env !== 'production' && env !== 'staging') {
+    console.info('Mixpanel Event: ', eventType, payload)
+  }
+}
+
 type MixpanelType = MixpanelDevelopmentType | typeof mixpanelBrowser
 let mixpanel: MixpanelType = mixpanelBrowser
 
@@ -58,6 +66,73 @@ export enum Pages {
   AdjustPosition = 'AdjustPosition',
   OtherActions = 'OtherActions',
   CloseVault = 'CloseVault',
+  ProtectionTab = 'ProtectionTab',
+  OptimizationTab = 'OptimizationTab',
+  OpenVault = 'OpenVault',
+  StopLoss = 'StopLoss',
+  AutoBuy = 'AutoBuy',
+  AutoSell = 'AutoSell',
+  ConstantMultiple = 'ConstantMultiple',
+  TakeProfit = 'TakeProfit',
+}
+
+export enum AutomationEventIds {
+  SelectProtection = 'SelectProtection',
+  SelectOptimization = 'SelectOptimization',
+
+  SelectStopLoss = 'SelectStopLoss',
+  SelectAutoSell = 'SelectAutoSell',
+  SelectAutoBuy = 'SelectAutoBuy',
+  SelectConstantMultiple = 'SelectConstantMultiple',
+  SelectTakeProfit = 'SelectTakeProfit',
+
+  AddStopLoss = 'AddStopLoss',
+  EditStopLoss = 'EditStopLoss',
+  RemoveStopLoss = 'RemoveStopLoss',
+
+  AddAutoBuy = 'AddAutoBuy',
+  EditAutoBuy = 'EditAutoBuy',
+  RemoveAutoBuy = 'RemoveAutoBuy',
+
+  AddAutoSell = 'AddAutoSell',
+  EditAutoSell = 'EditAutoSell',
+  RemoveAutoSell = 'RemoveAutoSell',
+
+  AddConstantMultiple = 'AddConstantMultiple',
+  EditConstantMultiple = 'EditConstantMultiple',
+  RemoveConstantMultiple = 'RemoveConstantMultiple',
+
+  AddTakeProfit = 'AddTakeProfit',
+  EditTakeProfit = 'EditTakeProfit',
+  RemoveTakeProfit = 'RemoveAutoTakeProfit',
+
+  CloseToX = 'CloseToX',
+  MoveSlider = 'MoveSlider',
+  MinSellPrice = 'MinSellPrice',
+  MaxBuyPrice = 'MaxBuyPrice',
+  MaxGasFee = 'MaxGasFee',
+  TargetMultiplier = 'TargetMultiplier',
+}
+
+export interface AutomationEventsAdditionalParams {
+  vaultId: string
+  ilk: string
+  collateralRatio?: string
+  triggerValue?: string
+  triggerBuyValue?: string
+  triggerSellValue?: string
+  targetValue?: string
+  minSellPrice?: string
+  maxBuyPrice?: string
+  maxGasFee?: string
+  targetMultiple?: string
+  closeTo?: CloseVaultTo
+}
+
+export enum CommonAnalyticsSections {
+  HeaderTabs = 'HeaderTabs',
+  Banner = 'Banner',
+  Form = 'Form',
 }
 
 // https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -79,6 +154,8 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
   } else {
     win = window
   }
+
+  logMixpanelEventInDevelopmentMode(eventName, eventBody)
 
   const distinctId = mixpanel.get_distinct_id()
   const currentUrl = win.location.href
@@ -804,6 +881,30 @@ export const trackingEvents = {
       }
 
       mixpanelInternalAPI(eventName, eventBody)
+    },
+  },
+  automation: {
+    inputChange: (
+      id: AutomationEventIds,
+      page: string,
+      section: CommonAnalyticsSections.Form,
+      additionalParams: AutomationEventsAdditionalParams,
+    ) => {
+      const eventName = 'input-change'
+      const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    },
+    buttonClick: (
+      id: AutomationEventIds,
+      page: string,
+      section: CommonAnalyticsSections,
+      additionalParams: AutomationEventsAdditionalParams,
+    ) => {
+      const eventName = 'btn-click'
+      const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
     },
   },
 }

@@ -1,4 +1,10 @@
 import { Box } from '@theme-ui/components'
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
@@ -28,6 +34,7 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
+import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -151,6 +158,22 @@ export function SidebarAdjustStopLossEditingStage({
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+
+  useDebouncedCallback(
+    (value) =>
+      trackingEvents.automation.inputChange(
+        AutomationEventIds.MoveSlider,
+        vault.id ? Pages.StopLoss : Pages.OpenVault,
+        CommonAnalyticsSections.Form,
+        {
+          vaultId: vault.id ? vault.id.toString() : 'n/a',
+          ilk: vault.ilk,
+          collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+          triggerValue: value,
+        },
+      ),
+    stopLossState.stopLossLevel.decimalPlaces(2).toString(),
+  )
 
   const isVaultEmpty = vault.debt.isZero()
 

@@ -4,10 +4,14 @@ import {
   AutomationBotAddAggregatorTriggerData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
+import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
-import { getAutomationFeatureTxHandlers } from 'features/automation/common/state/automationFeatureTxHandlers'
+import {
+  AutomationTxHandlerAnalytics,
+  getAutomationFeatureTxHandlers,
+} from 'features/automation/common/state/automationFeatureTxHandlers'
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
 import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
@@ -25,7 +29,6 @@ interface AddAndRemoveTriggerControlProps {
   isAddForm: boolean
   isEditing: boolean
   isRemoveForm: boolean
-  proxyAddress: string
   publishType: AutomationPublishType
   resetData: StopLossResetData | AutoTakeProfitResetData | AutoBSTriggerResetData
   shouldRemoveAllowance: boolean
@@ -37,6 +40,8 @@ interface AddAndRemoveTriggerControlProps {
     txHandler: (options?: AddAndRemoveTxHandler) => void,
     textButtonHandler: () => void,
   ) => ReactElement
+  vault: Vault
+  analytics: AutomationTxHandlerAnalytics
 }
 
 export function AddAndRemoveTriggerControl({
@@ -47,7 +52,6 @@ export function AddAndRemoveTriggerControl({
   isAddForm,
   isEditing,
   isRemoveForm,
-  proxyAddress,
   publishType,
   resetData,
   shouldRemoveAllowance,
@@ -55,6 +59,8 @@ export function AddAndRemoveTriggerControl({
   textButtonHandlerExtension,
   triggersId,
   txHelpers,
+  vault,
+  analytics,
 }: AddAndRemoveTriggerControlProps) {
   const { uiChanges } = useAppContext()
 
@@ -63,7 +69,7 @@ export function AddAndRemoveTriggerControl({
     ethMarketPrice,
     isAddForm,
     isRemoveForm,
-    proxyAddress,
+    proxyAddress: vault.owner,
     publishType,
     resetData,
     shouldRemoveAllowance,
@@ -71,6 +77,10 @@ export function AddAndRemoveTriggerControl({
     textButtonHandlerExtension,
     triggersId,
     txHelpers,
+    vaultId: vault.id,
+    ilk: vault.ilk,
+    collateralizationRatio: vault.collateralizationRatio,
+    analytics,
   })
 
   useEffect(() => {
