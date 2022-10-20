@@ -36,21 +36,24 @@ export function AdjustRiskView({
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
+  const transactionParametersSimulation = state.context.transactionParameters?.simulation
+
   const position = state.context.protocolData
     ? state.context.protocolData.position
-    : state.context.transactionParameters?.simulation.position
+    : transactionParametersSimulation?.position
 
   const maxRisk = position?.category.maxLoanToValue
 
   const minRisk =
-    (state.context.transactionParameters?.simulation.minConfigurableRiskRatio &&
+    (transactionParametersSimulation?.minConfigurableRiskRatio &&
       BigNumber.max(
-        state.context.transactionParameters?.simulation.minConfigurableRiskRatio.loanToValue,
+        transactionParametersSimulation?.minConfigurableRiskRatio.loanToValue,
         aaveStETHMinimumRiskRatio.loanToValue,
       )) ||
     aaveStETHMinimumRiskRatio.loanToValue
 
-  const liquidationPrice = position?.liquidationPrice || zero
+  const liquidationPrice =
+    transactionParametersSimulation?.position.liquidationPrice || position?.liquidationPrice || zero
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
