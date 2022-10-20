@@ -117,12 +117,12 @@
   "creating-vault": "Creating Vault",
   "proxy-advantages": [
     "Just one proxy needed per account",
-    "Enables your wallet to interact with the Maker protocol",
+    "Enables your wallet to interact with the DeFi protocols",
     "More gas efficient"
   ],
   "proxy-advantages-new": [
     "<1>Just one</1> proxy needed per account",
-    "Enables your wallet to interact with the Maker protocol",
+    "Enables your wallet to interact with the DeFi protocols",
     "More gas efficient"
   ],
   "proxy-waiting-text": "Read more on smart proxy in the",
@@ -654,7 +654,7 @@
     "contact": "Contact",
     "blog": "Blog",
     "faq": "FAQ",
-    "knowledge-centre": "Knowledge Centre",
+    "knowledge-centre": "Knowledge Base",
     "learn": "Learn",
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
@@ -1827,7 +1827,7 @@
     "how-p3": "3. Both receive 5% of the Oasis.app fees generated forever!",
     "need-help": "Need help?",
     "help-link-1": "Oasis Referrals Guide",
-    "help-link-2": "Visit Oasis Knowledge Centre",
+    "help-link-2": "Visit Oasis Knowledge Base",
     "etherscan": "Etherscan",
     "modal": {
       "you-have-been-ref": "You have been invited to the Oasis.app Refer a Friend program by ",
@@ -1930,8 +1930,8 @@
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
           "decrease-risk": "Decrease risk",
-          "vault-message-ok": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position is unlikely to be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}",
-          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}"
+          "vault-message-ok": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{priceMovement}} with respect to {{debtToken}} for this position to be available for liquidation. AAVE's liquidations penalty is at least {{liquidationPenalty}}.",
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}."
         }
       }
     }
@@ -1988,7 +1988,7 @@
       },
       "bug": {
         "header": "Bug bounty",
-        "description": "Working with a community of code reviewers, ethical and white hat hackers we are giving rewards of up to $100k indentify any bugs.",
+        "description": "Working with a community of code reviewers, ethical and white hat hackers we are giving rewards of up to $100k identify any bugs.",
         "link-bug-bounty": "Go to Bug Bounty"
       },
       "shield": {
