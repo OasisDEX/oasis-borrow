@@ -15,7 +15,7 @@ describe('BatchManager', () => {
 
   it('should batch call into single request', async () => {
     const mockBatch = createMockBatch()
-    const mockFetchJson = jest.fn().resolves([]) as any
+    const mockFetchJson = jest.fn(() => []) as any
 
     const batchManager = createBatchManager(mockFetchJson)
     await batchManager.batchCall(mockBatch)
@@ -26,7 +26,7 @@ describe('BatchManager', () => {
 
   it('should exclude cache hits', async () => {
     const mockBatch = createMockBatch()
-    const mockFetchJson = jest.fn().resolves(
+    const mockFetchJson = jest.fn(() => 
       mockBatch.map(() => ({
         result: 'cached-result',
       })),
@@ -50,7 +50,7 @@ describe('BatchManager', () => {
       const resolvesTo = mockBatch.map(() => ({
         result: 'cached-result',
       }))
-      const mockFetchJson = jest.fn().resolves(resolvesTo) as any
+      const mockFetchJson = jest.fn(() => resolvesTo) as any
       mockFetchJson.onSecondCall().resolves(resolvesTo)
 
       const batchManager = createBatchManager(mockFetchJson)
@@ -73,7 +73,7 @@ describe('BatchManager', () => {
       const fetchJsonMockResult = mockBatch.map((requestInsideBatch) => ({
         result: requestInsideBatch,
       }))
-      const mockFetchJson = jest.fn().resolves(fetchJsonMockResult) as any
+      const mockFetchJson = jest.fn(() => fetchJsonMockResult) as any
       mockFetchJson.onSecondCall().resolves(fetchJsonMockResult)
       const batchManager = createBatchManager(mockFetchJson)
 
@@ -96,7 +96,7 @@ describe('BatchManager', () => {
         const fetchJsonMockResult = mockBatch.map((requestInsideBatch) => ({
           result: requestInsideBatch,
         }))
-        const mockFetchJson = jest.fn().resolves(fetchJsonMockResult) as any
+        const mockFetchJson = jest.fn(() => fetchJsonMockResult) as any
         mockFetchJson.onSecondCall().resolves(fetchJsonMockResult)
         const batchManager = createBatchManager(mockFetchJson)
 
@@ -120,7 +120,7 @@ describe('BatchManager', () => {
         const secondBatch = createMockBatch(6, 9)
         const thirdBatch = createMockBatch(3, 6)
 
-        const mockFetchJson = jest.fn().resolves(
+        const mockFetchJson = jest.fn(() =>
           firstBatch.map((requestInsideBatch) => ({
             result: requestInsideBatch,
           })),
