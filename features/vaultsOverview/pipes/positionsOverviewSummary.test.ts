@@ -12,9 +12,8 @@ describe('positionsOverviewSummary', () => {
       ETH: new BigNumber(1),
       WBTC: new BigNumber(5),
     }
-
-    const walletBalance$ = jest.fn()
-      .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
+// TODO ŁW figure out how to replace callsFake with mockImplementation, or decide to keep using sinon with jest
+    const walletBalance$ = jest.fn((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
 
     const tokenPriceUsd$ = jest.fn().mockReturnValue(
       of({
@@ -22,6 +21,7 @@ describe('positionsOverviewSummary', () => {
         WBTC: new BigNumber(6),
       }),
     )
+    // TODO how to mock walletBalance$ Ł
     const obsv$ = createPositionsOverviewSummary$(
       walletBalance$,
       tokenPriceUsd$,
@@ -55,8 +55,7 @@ describe('positionsOverviewSummary', () => {
       RENBTC: new BigNumber(4),
     }
 
-    const walletBalance$ = jest.fn()
-      .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
+    const walletBalance$ = jest.fn((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
 
     const tokenPriceUsd$ = jest.fn().mockReturnValue(
       of({
@@ -79,7 +78,7 @@ describe('positionsOverviewSummary', () => {
 
     const state = getStateUnpacker(obsv$)
 
-    expect(state().percentageOther.function toString() { [native code] }()).eq('10')
+    expect(state().percentageOther.toString().eq('10'))
   })
 
   it('includes the maker positions', () => {
@@ -87,8 +86,7 @@ describe('positionsOverviewSummary', () => {
       ETH: new BigNumber(1),
     }
 
-    const walletBalance$ = jest.fn()
-      .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
+    const walletBalance$ = jest.fn((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
 
     const tokenPriceUsd$ = jest.fn().mockReturnValue(
       of({
@@ -140,6 +138,6 @@ describe('positionsOverviewSummary', () => {
     expect((multiplyPosition as PositionView).title).eq('ETH-A Oasis Multiply')
     expect((multiplyPosition as PositionView).url).eq('example.com/eth')
 
-    expect(state().totalValueUsd.function toString() { [native code] }()).eq('18')
+    expect(state().totalValueUsd.toString()).eq('18')
   })
 })
