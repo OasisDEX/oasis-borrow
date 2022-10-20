@@ -1,3 +1,4 @@
+// jest.mock('components/AppContextProvider', () => useAppContext())
 import { AppContext, initializeUIChanges } from 'components/AppContext'
 import { WithChildren } from 'helpers/types'
 import React, { useContext } from 'react'

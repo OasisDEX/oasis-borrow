@@ -6,6 +6,7 @@ import { useAppContext } from 'features/automation/optimization/autoTakeProfit/t
 import { DummyComponent } from 'features/automation/optimization/autoTakeProfit/tests/DummyComponent'
 import React from 'react'
 // not sure which syntax is correct, keep getting  Cannot find module 'components/AppContextProvider' from 'features/automation/optimization/autoTakeProfit/tests/SidebarAutoTakeProfitEditingStage.test.tsx'
+// same for jest.doMock
 jest.mock('components/AppContextProvider', () => useAppContext())
 // jest.mock<typeof import('components/AppContextProvider')>('components/AppContextProvider', () => useAppContext())
 
