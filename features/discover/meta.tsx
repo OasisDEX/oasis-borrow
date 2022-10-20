@@ -31,7 +31,7 @@ export interface DiscoverPageMeta {
 export const discoverPagesMeta: DiscoverPageMeta[] = [
   {
     kind: DiscoverPages.HIGH_RISK_POSITIONS,
-    endpoint: '/mocks/discover/high-risk-positions.json',
+    endpoint: '/api/discover',
     iconColor: '#FE665C',
     iconContent: discoverNavigationIconContent[DiscoverPages.HIGH_RISK_POSITIONS],
     filters: {
@@ -99,7 +99,7 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
   },
   {
     kind: DiscoverPages.LARGEST_DEBT,
-    endpoint: '/mocks/discover/largest-debt.json',
+    endpoint: '/api/discover',
     iconColor: '#FF4DB8',
     iconContent: discoverNavigationIconContent[DiscoverPages.LARGEST_DEBT],
     filters: {

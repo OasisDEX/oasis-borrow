@@ -1,6 +1,8 @@
 import { HighestPnl, HighRisk, LargestDebt, MostYield, Prisma } from '@prisma/client'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
-import { DiscoverPages } from 'features/discover/types'
+import { DiscoverApiErrors, DiscoverPages } from 'features/discover/types'
+import { getDiscoverDatabaseData } from 'handlers/discover/dataHandlers'
+import { getDiscoverApiErrorResponse } from 'handlers/discover/helpers'
 import { values } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
@@ -92,6 +94,12 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
   const timeFilter = getTimeFilter(time)
   const timeIndex = Object.keys(timeFilter)[0]
 
+  if (table && Object.values<string>(DiscoverPages).includes(table)) {
+    const response = await getDiscoverDatabaseData(table, req.query)
+
+    return res.status(200).json(response)
+  }
+
   try {
     let data: HighRisk[] | LargestDebt[] | HighestPnl[] | MostYield[] = []
 
@@ -167,14 +175,10 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
         break
     }
 
-    if (!data.length) return res.status(404).json({ error: 'discover/no-data-found' })
-
-    return res.status(200).json({ rows: data })
-  } catch (error) {
-    if (typeof error === 'string') {
-      return res.status(500).json({ error })
-    } else if (error instanceof Error) {
-      return res.status(500).json({ error: error.message })
-    }
+    return data.length
+      ? res.status(200).json({ rows: data })
+      : res.status(404).json(getDiscoverApiErrorResponse(DiscoverApiErrors.NO_DATA))
+  } catch {
+    return res.status(500).json(getDiscoverApiErrorResponse(DiscoverApiErrors.UNKNOWN_ERROR))
   }
 }

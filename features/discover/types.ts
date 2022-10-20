@@ -5,6 +5,11 @@ export enum DiscoverPages {
   LARGEST_DEBT = 'largest-debt',
 }
 
+export enum DiscoverApiErrors {
+  NO_DATA = 1,
+  UNKNOWN_ERROR = 2,
+}
+
 export enum DiscoverTableVaultActivity {
   WITHDRAWN = 1,
   INCREASED_RISK = 2,
@@ -26,22 +31,13 @@ export interface DiscoverFiltersSettings {
   [key: string]: string
 }
 
-export type DiscoverTableRowData = {
-  [key: string]: string | number
-} & {
-  colRatio?: {
-    level: number
-    isAtRisk: boolean
-  }
-} & {
-  activity?: {
-    kind: DiscoverTableVaultActivity
-    additionalData?: {
-      daysAgo: number
-    }
-  }
-} & {
-  status?: {
+interface DiscoverTableRowCommon {
+  asset: string
+  cdpId: number
+}
+
+interface DiscoverTableRowStatus {
+  status: {
     kind: DiscoverTableVaultStatus
     additionalData?: {
       tillLiquidation?: number
@@ -49,3 +45,45 @@ export type DiscoverTableRowData = {
     }
   }
 }
+
+interface DiscoverTableRowActivity {
+  activity: {
+    kind: DiscoverTableVaultActivity
+    additionalData?: {
+      daysAgo: number
+    }
+  }
+}
+
+export type DiscoverTableRowHighRisk = DiscoverTableRowCommon &
+  DiscoverTableRowStatus & {
+    liquidationPrice: number
+    nextOsmPrice: number
+    maxLiquidationAmount: number
+  }
+
+export type DiscoverTableRowHighestPnl = DiscoverTableRowCommon &
+  DiscoverTableRowActivity & {
+    collateralValue: number
+    currentMultiple: number
+    pnl: number
+  }
+
+export type DiscoverTableRowMostYield = DiscoverTableRowCommon &
+  DiscoverTableRowActivity & {
+    netValue: number
+    earningsToDate: number
+    '30DayAvgApy': number
+  }
+
+export type DiscoverTableRowLargestDebt = DiscoverTableRowCommon &
+  DiscoverTableRowActivity & {
+    collateralValue: number
+    vaultDebt: number
+    colRatio: {
+      level: number
+      isAtRisk: boolean
+    }
+  }
+
+export type DiscoverTableRowData = DiscoverTableRowHighRisk | DiscoverTableRowHighestPnl | DiscoverTableRowMostYield | DiscoverTableRowLargestDebt

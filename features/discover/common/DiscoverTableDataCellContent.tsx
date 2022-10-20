@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
+import { discoverFiltersAssetItems } from 'features/discover/filters'
 import {
   DiscoverTableRowData,
   DiscoverTableVaultActivity,
@@ -45,14 +45,22 @@ export function DiscoverTableDataCellContent({
 }) {
   const { t } = useTranslation()
 
+  const value = row[label as keyof DiscoverTableRowData]
+
   switch (label) {
     case 'asset':
+      const asset = Object.values(discoverFiltersAssetItems).filter(
+        (item) => item.value === row.asset,
+      )[0]
+
+      console.log(asset)
+
       return (
         <Flex sx={{ alignItems: 'center' }}>
-          <Icon size={44} name={getToken(row.asset as string).iconCircle} />
+          {asset && asset.icon && <Icon size={44} name={asset.icon} />}
           <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
             <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
-              {row.asset}
+              {asset ? asset.label : row.asset}
             </Text>
             {row.cdpId && (
               <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
@@ -73,16 +81,19 @@ export function DiscoverTableDataCellContent({
             fontWeight: 'semiBold',
             borderRadius: 'large',
             whiteSpace: 'pre',
-            ...(row.activity && { ...activityColors[row.activity?.kind] }),
-            ...(row.status && { ...statusColors[row.status?.kind] }),
+            ...('activity' in row && { ...activityColors[row.activity?.kind] }),
+            ...('status' in row && { ...statusColors[row.status?.kind] }),
           }}
         >
-          {t(`discover.table.${label}.${row[label]?.kind}`, { ...row[label]?.additionalData })}
+          {'activity' in row &&
+            t(`discover.table.activity.${row.activity.kind}`, { ...row.activity.additionalData })}
+          {'status' in row &&
+            t(`discover.table.status.${row.status.kind}`, { ...row.status.additionalData })}
         </Text>
       )
     case 'cdpId':
       return (
-        <AppLink href={`/${row?.cdpId}`}>
+        <AppLink href={`/${row.cdpId}`}>
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
         </AppLink>
       )
@@ -91,19 +102,19 @@ export function DiscoverTableDataCellContent({
     case 'maxLiquidationAmount':
     case 'nextOsmPrice':
     case 'pnl':
-      return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
+      return <>${formatCryptoBalance(new BigNumber(value))}</>
     case 'earningsToDate':
     case 'netValue':
     case 'vaultDebt':
-      return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
+      return <>{formatCryptoBalance(new BigNumber(value))} DAI</>
     case 'currentMultiple':
-      return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
+      return <>{formatPercent(new BigNumber(value), { precision: 2 })}x</>
     case '30DayAvgApy':
-      return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
+      return <>{formatPercent(new BigNumber(value), { precision: 2 })}</>
     case 'colRatio':
       return (
         <>
-          {row.colRatio && (
+          {'colRatio' in row && (
             <Text as="span" sx={{ color: row.colRatio.isAtRisk ? 'warning100' : 'success100' }}>
               {formatPercent(new BigNumber(row.colRatio.level), { precision: 2 })}
             </Text>
@@ -111,6 +122,6 @@ export function DiscoverTableDataCellContent({
         </>
       )
     default:
-      return <>{row[label]}</>
+      return <>{value}</>
   }
 }

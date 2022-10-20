@@ -1,8 +1,10 @@
+import { DiscoverDataErrorResponse } from 'features/discover/api'
+import { DiscoverApiErrors } from 'features/discover/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-export function DiscoverError() {
+export function DiscoverError({ error }: { error?: DiscoverDataErrorResponse }) {
   const { t } = useTranslation()
 
   return (
@@ -16,7 +18,7 @@ export function DiscoverError() {
         borderTopColor: 'neutral20',
       }}
     >
-      {t('discover.table.no-entries')}
+      {t(`discover.api-erorr.${error ? error?.code : DiscoverApiErrors.UNKNOWN_ERROR}`)}
     </Text>
   )
 }

@@ -22,7 +22,7 @@ export function DiscoverData({ banner, response, isLoading, kind }: DiscoverData
 
   return (
     <Box sx={{ position: 'relative' }}>
-      {response?.data?.rows && response?.data?.rows.length > 0 ? (
+      {response?.rows && response?.rows.length > 0 ? (
         <>
           {isLoading && <DiscoverPreloader isContentLoaded={true} />}
           {isSmallerScreen ? (
@@ -30,21 +30,21 @@ export function DiscoverData({ banner, response, isLoading, kind }: DiscoverData
               banner={banner}
               isLoading={isLoading}
               kind={kind}
-              rows={response.data.rows}
+              rows={response.rows}
             />
           ) : (
             <DiscoverTable
               banner={banner}
               isLoading={isLoading}
               kind={kind}
-              rows={response.data.rows}
+              rows={response.rows}
             />
           )}
         </>
       ) : isLoading ? (
         <DiscoverPreloader isContentLoaded={false} />
       ) : (
-        <DiscoverError />
+        <DiscoverError error={response?.error} />
       )}
     </Box>
   )
