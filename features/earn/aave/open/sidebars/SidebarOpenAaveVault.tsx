@@ -14,6 +14,7 @@ import { ProxyView } from '../../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
+import { useAaveRedirect } from '../../helpers/useAaveRedirect'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
@@ -95,6 +96,7 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
 
 function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  useAaveRedirect() // redirects to active position if user has one
 
   const hasProxy = state.context.proxyAddress !== undefined
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
