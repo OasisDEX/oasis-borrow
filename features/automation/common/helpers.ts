@@ -329,36 +329,6 @@ export function automationMultipleRangeSliderAnalytics({
       },
     )
   }, JSON.stringify({ leftValue: leftValue.toString(), rightValue: rightValue.toString() }))
-
-  // useDebouncedCallback(
-  //   (value) =>
-  //     trackingEvents.automation.inputChange(
-  //       AutomationEventIds.MoveSlider,
-  //       analyticsPageMap[type],
-  //       CommonAnalyticsSections.Form,
-  //       {
-  //         ...analyticsAdditionalParams,
-  //         [leftValueKeyMap[type]]: value,
-  //         [rightValueKeyMap[type]]: rightValue.toString(),
-  //       },
-  //     ),
-  //   leftValue.toString(),
-  // )
-
-  // useDebouncedCallback(
-  //   (value) =>
-  //     trackingEvents.automation.inputChange(
-  //       AutomationEventIds.MoveSlider,
-  //       analyticsPageMap[type],
-  //       CommonAnalyticsSections.Form,
-  //       {
-  //         ...analyticsAdditionalParams,
-  //         [leftValueKeyMap[type]]: leftValue.toString(),
-  //         [rightValueKeyMap[type]]: value,
-  //       },
-  //     ),
-  //   rightValue.toString(),
-  // )
 }
 
 const noThreshold = 'NoThreshold'
