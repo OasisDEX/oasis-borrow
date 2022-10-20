@@ -1,7 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { DiscoverFiltersListItem } from 'features/discover/meta'
 
-export const discoverFiltersAssetItems: {[key: string]: DiscoverFiltersListItem} = {
+export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem } = {
   all: { value: 'all', label: 'All assets' },
   // TODO: update with nicer cuvre icon when available
   curve: { value: 'CURVE_LP', label: 'CURVE', icon: getToken('CRVV1ETHSTETH').iconCircle },
