@@ -1,6 +1,7 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -25,6 +26,8 @@ const aaveCalcValueBasis = {
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
   const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
+  const { hasActiveAavePosition$ } = useAppContext()
+  const [aaveActivePosition] = useObservable(hasActiveAavePosition$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityETH$,
@@ -41,10 +44,10 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
       <WithLoadingIndicator
-        value={[aaveReserveState, aaveAvailableLiquidityETH, maximumMultiple]}
+        value={[aaveReserveState, aaveAvailableLiquidityETH, maximumMultiple, aaveActivePosition]}
         customLoader={<ProductCardsLoader />}
       >
-        {([_aaveReserveState, _availableLiquidity, _maximumMultiple]) => (
+        {([_aaveReserveState, _availableLiquidity, _maximumMultiple, _aaveActivePosition]) => (
           <ProductCard
             tokenImage={cardData.bannerIcon}
             tokenGif={cardData.bannerGif}
@@ -92,7 +95,9 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               },
             ]}
             button={{
-              link: `/earn/aave/open/${cardData.symbol}`,
+              link: _aaveActivePosition
+                ? `/aave/${_aaveActivePosition}`
+                : `/earn/aave/open/${cardData.symbol}`,
               text: t('nav.earn'),
             }}
             background={cardData.background}
