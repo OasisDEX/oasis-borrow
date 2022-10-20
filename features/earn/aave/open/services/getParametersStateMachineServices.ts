@@ -34,10 +34,10 @@ export function getOpenAaveParametersStateMachineServices$(
           )
         },
         estimateGas: async (context) => {
+          // estimates the quantity of gas required
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
             return 0
           }
-
           return await txHelpers
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
@@ -51,6 +51,7 @@ export function getOpenAaveParametersStateMachineServices$(
             .toPromise()
         },
         estimateGasPrice: async (context) => {
+          // given the gas price and gas quantity, estimates the gas cost for the transaction
           return await gasEstimation$(context.estimatedGas!).pipe(first()).toPromise()
         },
       }
