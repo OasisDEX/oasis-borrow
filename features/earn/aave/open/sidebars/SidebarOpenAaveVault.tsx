@@ -6,7 +6,9 @@ import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
 
+import { MessageCard } from '../../../../../components/MessageCard'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
@@ -97,11 +99,20 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   const hasProxy = state.context.proxyAddress !== undefined
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
+  const amountTooHigh =
+    state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
+        {amountTooHigh && (
+          <MessageCard
+            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            type="error"
+          />
+        )}
         <StrategyInformationContainer state={state} />
       </Grid>
     ),
