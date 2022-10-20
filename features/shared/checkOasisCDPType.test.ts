@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { of } from 'rxjs'
 
 import { getStateUnpacker } from '../../helpers/testHelpers'
@@ -16,7 +15,7 @@ describe('checkOasisPositionType', () => {
         new BigNumber(1),
       ),
     )
-    expect(state()).to.eq(VaultType.Multiply)
+    expect(state()).toBe(VaultType.Multiply)
   })
   it('returns insti type vault if hardcoded as a charter ilk', () => {
     const state = getStateUnpacker(
@@ -27,6 +26,6 @@ describe('checkOasisPositionType', () => {
         new BigNumber(1),
       ),
     )
-    expect(state()).to.eq(VaultType.Insti)
+    expect(state()).toBe(VaultType.Insti)
   })
 })

@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { expect } from 'chai'
 import { mockIlkData } from 'helpers/mocks/ilks.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of } from 'rxjs'
@@ -145,7 +144,7 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of(['WBTC-A']), mockIlkData$, mockOraclePriceData$, ['WBTC-A']),
     )
 
-    expect(state()[0]).to.eql({
+    expect(state()[0]).toEqual({
       background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
       bannerIcon: '/static/img/tokens/wbtc.png',
       bannerGif: '/static/img/tokens/wbtc.gif',
@@ -173,7 +172,7 @@ describe('createProductCardsData$', () => {
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
 
-    expect(landingPageData).to.eql([
+    expect(landingPageData).toEqual([
       {
         token: wbtcB.token,
         ilk: wbtcB.ilk,
@@ -234,7 +233,7 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'Featured',
     })
 
-    expect(multiplyPageData).to.eql([
+    expect(multiplyPageData).toEqual([
       {
         token: wbtcB.token,
         ilk: wbtcB.ilk,
@@ -293,7 +292,7 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'ETH',
     })
 
-    expect(multiplyPageData).to.eql([
+    expect(multiplyPageData).toEqual([
       {
         token: ethA.token,
         ilk: ethA.ilk,
@@ -335,7 +334,7 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'Featured',
     })
 
-    expect(borrowPageData[0]).to.eql({
+    expect(borrowPageData[0]).toEqual({
       token: wbtcC.token,
       ilk: wbtcC.ilk,
       liquidationRatio: wbtcC.liquidationRatio,
@@ -366,10 +365,10 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'Featured',
     })
 
-    expect(borrowPageData[0].ilk).to.eql(wbtcC.ilk)
-    expect(borrowPageData[1].ilk).to.eql(ethC.ilk)
-    expect(borrowPageData[2].ilk).to.eql(wstethB.ilk)
-    expect(borrowPageData[3].ilk).to.eql(crv.ilk)
+    expect(borrowPageData[0].ilk).toEqual(wbtcC.ilk)
+    expect(borrowPageData[1].ilk).toEqual(ethC.ilk)
+    expect(borrowPageData[2].ilk).toEqual(wstethB.ilk)
+    expect(borrowPageData[3].ilk).toEqual(crv.ilk)
   })
 
   it('should return correct borrow page token product data', () => {
@@ -382,7 +381,7 @@ describe('createProductCardsData$', () => {
 
     const borrowPageData = borrowPageCardsData({ ilkToTokenMapping: state(), cardsFilter: 'BTC' })
 
-    expect(borrowPageData).to.eql([
+    expect(borrowPageData).toEqual([
       {
         token: renbtc.token,
         ilk: renbtc.ilk,
@@ -420,19 +419,19 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'ETH',
     })
 
-    expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
-    expect(borrowPageData[1].ilk).to.eql(ethA.ilk)
-    expect(borrowPageData[2].ilk).to.eql(wstethA.ilk)
-    expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
+    expect(borrowPageData[0].ilk).toEqual(ethC.ilk)
+    expect(borrowPageData[1].ilk).toEqual(ethA.ilk)
+    expect(borrowPageData[2].ilk).toEqual(wstethA.ilk)
+    expect(borrowPageData[3].ilk).toEqual(ethB.ilk)
 
     const multiplyCardData = multiplyPageCardsData({
       ilkToTokenMapping: ilkToEntryToken,
       cardsFilter: 'BTC',
     })
 
-    expect(multiplyCardData[0].ilk).to.eql(wbtcB.ilk)
-    expect(multiplyCardData[1].ilk).to.eql(wbtcA.ilk)
-    expect(multiplyCardData[2].ilk).to.eql(renbtc.ilk)
-    expect(multiplyCardData[3].ilk).to.eql(wbtcC.ilk)
+    expect(multiplyCardData[0].ilk).toEqual(wbtcB.ilk)
+    expect(multiplyCardData[1].ilk).toEqual(wbtcA.ilk)
+    expect(multiplyCardData[2].ilk).toEqual(renbtc.ilk)
+    expect(multiplyCardData[3].ilk).toEqual(wbtcC.ilk)
   })
 })

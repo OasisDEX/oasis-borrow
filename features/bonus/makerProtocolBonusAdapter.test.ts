@@ -1,6 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { NEVER, Observable, of } from 'rxjs'
 
 import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
@@ -66,12 +65,12 @@ describe('makerProtocolBonusAdapter', () => {
       const bonusStreamState = getStateUnpacker(makerdaoBonusAdapter.bonus$)
       const claimFuncStreamState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)
 
-      expect(bonusStreamState()?.symbol).eq('CSH')
-      expect(bonusStreamState()?.name).eq('token name')
+      expect(bonusStreamState()?.symbol).toBe('CSH')
+      expect(bonusStreamState()?.name).toBe('token name')
       // 938.763165226365499211
-      expect(bonusStreamState()?.amountToClaim.toFixed(4)).eq('938.7632')
-      expect(claimFuncStreamState).to.exist
-      expect(bonusStreamState()?.readableAmount).to.eq('939CSH')
+      expect(bonusStreamState()?.amountToClaim.toFixed(4)).toBe('938.7632')
+      expect(claimFuncStreamState).toBeDefined()
+      expect(bonusStreamState()?.readableAmount).toBe('939CSH')
     })
   })
 
@@ -89,14 +88,14 @@ describe('makerProtocolBonusAdapter', () => {
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
       getStateUnpacker(claimAllCbState!())
 
-      expect(txHelpersMock.sendWithGasEstimation).to.have.been.calledWith(
+      expect(txHelpersMock.sendWithGasEstimation).toBeCalledWith(
         expect.objectContaining(mockVaultActions.claimReward),
         expect.objectContaining({
           cdpId: new BigNumber(123),
           gemJoinAddress: '0x775787933e92b709f2a3C70aa87999696e74A9F8',
           kind: 'claimReward',
           proxyAddress: '0xProxyAddress',
-        }),
+        })
       )
     })
 
@@ -149,10 +148,8 @@ describe('makerProtocolBonusAdapter', () => {
         const claimRewardFunc$ = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
         const claimRewardState = getStateUnpacker(claimRewardFunc$!())
 
-        expect(
-          claimRewardState(),
-          `TxStatus ${txStatus} should map to ClaimTxnState ${claimTxStatus}`,
-        ).to.equal(claimTxStatus)
+        // TxStatus ${txStatus} should map to ClaimTxnState ${claimTxStatus}
+        expect(claimRewardState()).toBe(claimTxStatus)
       })
     })
 
@@ -163,17 +160,20 @@ describe('makerProtocolBonusAdapter', () => {
       })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
-      expect(claimAllCbState).to.be.undefined
+      expect(claimAllCbState).toBeUndefined()
     })
 
-    it('does not provide claim function if the connected wallet is not the same as the vault controller', () => {
-      const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
-        customVaultResolverImp: () =>
-          createMockVaultResolver$({ controller: '0xDifferentAddress' }),
-      })
+    it(
+      'does not provide claim function if the connected wallet is not the same as the vault controller',
+      () => {
+        const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
+          customVaultResolverImp: () =>
+            createMockVaultResolver$({ controller: '0xDifferentAddress' }),
+        })
 
-      const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
-      expect(claimAllCbState).to.be.undefined
-    })
+        const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+        expect(claimAllCbState).toBeUndefined()
+      }
+    )
   })
 })

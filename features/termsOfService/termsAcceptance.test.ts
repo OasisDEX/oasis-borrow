@@ -1,8 +1,6 @@
 import { Web3Context } from '@oasisdex/web3-context'
-import { expect } from 'chai'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { mapValues } from 'lodash'
-import { describe, it } from 'mocha'
 import { NEVER, Observable, of, throwError } from 'rxjs'
 import Web3 from 'web3'
 
@@ -72,36 +70,39 @@ describe('termsAcceptance', () => {
         web3Context$: of({ status: 'connecting', connectionKind: 'injected' }),
       }),
     )
-    expect(state().stage).to.be.deep.eq('walletConnectionInProgress')
+    expect(state().stage).toEqual('walletConnectionInProgress')
   })
 
   it('Wallet connection: wallet connected', () => {
     const state = getStateUnpacker(createState$())
-    expect(state().stage).to.be.deep.eq('jwtAuthWaiting4Acceptance')
+    expect(state().stage).toEqual('jwtAuthWaiting4Acceptance')
   })
 
   it('Terms of Service: accepting ', () => {
     const state = getStateUnpacker(createState$())
     ;(state() as any).acceptJwtAuth()
-    expect(state().stage).to.be.deep.eq('jwtAuthInProgress')
+    expect(state().stage).toEqual('jwtAuthInProgress')
   })
 
   it('Acceptance lookup: when signature exists locally, checks db', () => {
     localStorage.setItem('token-b/0x123', 'xxx')
     const state = getStateUnpacker(createState$({}))
-    expect(state().stage).to.be.deep.eq('acceptanceCheckInProgress')
+    expect(state().stage).toEqual('acceptanceCheckInProgress')
   })
 
-  it('Acceptance lookup: when a signature exists locally and matches db, end of flow', () => {
-    localStorage.setItem('token-b/0x123', 'xxx')
-    const state = getStateUnpacker(
-      createState$({
-        checkAcceptance$: () => of({ acceptance: true }),
-        saveAcceptance$: () => new Observable<void>(),
-      }),
-    )
-    expect(state().stage).to.be.deep.eq('acceptanceAccepted')
-  })
+  it(
+    'Acceptance lookup: when a signature exists locally and matches db, end of flow',
+    () => {
+      localStorage.setItem('token-b/0x123', 'xxx')
+      const state = getStateUnpacker(
+        createState$({
+          checkAcceptance$: () => of({ acceptance: true }),
+          saveAcceptance$: () => new Observable<void>(),
+        }),
+      )
+      expect(state().stage).toEqual('acceptanceAccepted')
+    }
+  )
 
   it('Acceptance lookup: no signature exists in db', () => {
     localStorage.setItem('token-b/0x123', 'xxx')
@@ -113,8 +114,8 @@ describe('termsAcceptance', () => {
       }),
     )
     ;(state() as any).acceptJwtAuth()
-    expect(state().stage).to.be.deep.eq('acceptanceWaiting4TOSAcceptance')
-    expect(state().updated).to.be.deep.eq(undefined)
+    expect(state().stage).toEqual('acceptanceWaiting4TOSAcceptance')
+    expect(state().updated).toBeUndefined()
   })
 
   it('Acceptance lookup: signature exists in db but terms are updated', () => {
@@ -126,23 +127,29 @@ describe('termsAcceptance', () => {
         jwtAuthSetupToken$: () => of('xxx'),
       }),
     )
-    expect(state().stage).to.be.deep.eq('acceptanceWaiting4TOSAcceptance')
-    expect(state().updated).to.be.deep.eq(true)
+    expect(state().stage).toEqual('acceptanceWaiting4TOSAcceptance')
+    expect(state().updated).toEqual(true)
   })
 
-  it('Acceptance authentication: rejecting signature wallet and try again', () => {
-    const state = getStateUnpacker(createState$())
-    ;(state() as any).rejectJwtAuth()
-    expect(state().stage).to.be.deep.eq('jwtAuthRejected')
-    ;(state() as any).tryAgain()
-    expect(state().stage).to.be.deep.eq('jwtAuthWaiting4Acceptance')
-  })
+  it(
+    'Acceptance authentication: rejecting signature wallet and try again',
+    () => {
+      const state = getStateUnpacker(createState$())
+      ;(state() as any).rejectJwtAuth()
+      expect(state().stage).toEqual('jwtAuthRejected')
+      ;(state() as any).tryAgain()
+      expect(state().stage).toEqual('jwtAuthWaiting4Acceptance')
+    }
+  )
 
-  it('Acceptance authentication: accepting triggers signature procedure', () => {
-    const state = getStateUnpacker(createState$())
-    ;(state() as any).acceptJwtAuth()
-    expect(state().stage).to.be.deep.eq('jwtAuthInProgress')
-  })
+  it(
+    'Acceptance authentication: accepting triggers signature procedure',
+    () => {
+      const state = getStateUnpacker(createState$())
+      ;(state() as any).acceptJwtAuth()
+      expect(state().stage).toEqual('jwtAuthInProgress')
+    }
+  )
 
   it('Acceptance signing: checking if signature exists after signing', () => {
     const state = getStateUnpacker(
@@ -151,7 +158,7 @@ describe('termsAcceptance', () => {
       }),
     )
     ;(state() as any).acceptJwtAuth()
-    expect(state().stage).to.be.deep.eq('acceptanceCheckInProgress')
+    expect(state().stage).toEqual('acceptanceCheckInProgress')
   })
 
   it('Acceptance signing: signature throws error', () => {
@@ -161,30 +168,36 @@ describe('termsAcceptance', () => {
       }),
     )
     ;(state() as any).acceptJwtAuth()
-    expect(state().stage).to.be.deep.eq('jwtAuthFailed')
+    expect(state().stage).toEqual('jwtAuthFailed')
   })
 
-  it('Acceptance signing: checking db returned error after issuing JWT', () => {
-    const state = getStateUnpacker(
-      createState$({
-        jwtAuthSetupToken$: () => of('xxx'),
-        checkAcceptance$: () => throwError('error'),
-      }),
-    )
-    ;(state() as any).acceptJwtAuth()
-    expect(state().stage).to.be.deep.eq('acceptanceCheckFailed')
-  })
+  it(
+    'Acceptance signing: checking db returned error after issuing JWT',
+    () => {
+      const state = getStateUnpacker(
+        createState$({
+          jwtAuthSetupToken$: () => of('xxx'),
+          checkAcceptance$: () => throwError('error'),
+        }),
+      )
+      ;(state() as any).acceptJwtAuth()
+      expect(state().stage).toEqual('acceptanceCheckFailed')
+    }
+  )
 
-  it('Acceptance signing: checking db returned error with existing JWT', () => {
-    localStorage.setItem('token-b/0x123', 'xxx')
-    const state = getStateUnpacker(
-      createState$({
-        checkAcceptance$: () => throwError('error'),
-      }),
-    )
+  it(
+    'Acceptance signing: checking db returned error with existing JWT',
+    () => {
+      localStorage.setItem('token-b/0x123', 'xxx')
+      const state = getStateUnpacker(
+        createState$({
+          checkAcceptance$: () => throwError('error'),
+        }),
+      )
 
-    expect(state().stage).to.be.deep.eq('acceptanceCheckFailed')
-  })
+      expect(state().stage).toEqual('acceptanceCheckFailed')
+    }
+  )
 
   it('Acceptance signing: saving to db returned error', () => {
     const state = getStateUnpacker(
@@ -197,7 +210,7 @@ describe('termsAcceptance', () => {
     ;(state() as any).acceptJwtAuth()
     ;(state() as any).acceptTOS()
 
-    expect(state().stage).to.be.deep.eq('acceptanceSaveFailed')
+    expect(state().stage).toEqual('acceptanceSaveFailed')
   })
 
   it('Acceptance signing: signature does not exist, saving to db', () => {
@@ -210,7 +223,7 @@ describe('termsAcceptance', () => {
     ;(state() as any).acceptJwtAuth()
     ;(state() as any).acceptTOS()
 
-    expect(state().stage).to.be.deep.eq('acceptanceSaveInProgress')
+    expect(state().stage).toEqual('acceptanceSaveInProgress')
   })
 
   it('Acceptance signing: signature already exists', () => {
@@ -222,7 +235,7 @@ describe('termsAcceptance', () => {
     )
     ;(state() as any).acceptJwtAuth()
 
-    expect(state().stage).to.be.deep.eq('acceptanceAccepted')
+    expect(state().stage).toEqual('acceptanceAccepted')
   })
 
   it('Acceptance signing: successfully saved signature to db', () => {
@@ -236,6 +249,6 @@ describe('termsAcceptance', () => {
     ;(state() as any).acceptJwtAuth()
     ;(state() as any).acceptTOS()
 
-    expect(state().stage).to.be.deep.eq('acceptanceAccepted')
+    expect(state().stage).toEqual('acceptanceAccepted')
   })
 })

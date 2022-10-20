@@ -1,4 +1,3 @@
-import { expect } from 'chai'
 import {
   debtScalingFactor$,
   DEFAULT_DEBT_SCALING_FACTOR,
@@ -14,18 +13,18 @@ describe('ilkData$', () => {
   it('should produce IlkData state', () => {
     const state = mockIlkData()
 
-    expect(state()).to.not.be.undefined
+    expect(state()).toBeDefined()
   })
 
   it('should account for accrued debt', () => {
     const state = mockIlkData()
 
-    expect(state().ilkDebt).to.deep.equal(defaultIlkDebt)
+    expect(state().ilkDebt).toEqual(defaultIlkDebt)
     const expectedIlkDebtAvailable = defaultIlkDebt.times(2.5).minus(defaultIlkDebt)
-    expect(state().ilkDebtAvailable).to.deep.equal(expectedIlkDebtAvailable)
+    expect(state().ilkDebtAvailable).toEqual(expectedIlkDebtAvailable)
 
     debtScalingFactor$.next(RANDOM_DEBT_SCALING_FACTOR)
-    expect(state().ilkDebt.gt(defaultIlkDebt)).to.be.true
-    expect(state().ilkDebtAvailable.lt(expectedIlkDebtAvailable)).to.be.true
+    expect(state().ilkDebt.gt(defaultIlkDebt)).toBe(true)
+    expect(state().ilkDebtAvailable.lt(expectedIlkDebtAvailable)).toBe(true)
   })
 })

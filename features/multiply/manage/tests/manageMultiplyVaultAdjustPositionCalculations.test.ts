@@ -1,7 +1,6 @@
 /* eslint-disable func-style */
 
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -40,7 +39,7 @@ describe('Adjust multiply calculations', () => {
       .times(oraclePrice)
       .div(debt.plus(debtDelta).plus(loanFee))
 
-    expect(afterCollateralizationRatio).to.deep.eq(requiredCollRatio)
+    expect(afterCollateralizationRatio).toEqual(requiredCollRatio)
   })
 
   it('Increase multiply deposit collateral', () => {
@@ -75,7 +74,7 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
   it('Increase multiply deposit dai', () => {
@@ -111,7 +110,7 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
   it('Decrease multiply', () => {
@@ -145,7 +144,7 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
   it('Decrease multiply withdraw collateral', () => {
@@ -180,7 +179,7 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
   it('Decrease multiply withdraw dai', () => {
@@ -215,43 +214,42 @@ describe('Adjust multiply calculations', () => {
 
     expect(
       roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
-    ).to.deep.eq(requiredCollRatio)
+    ).toEqual(requiredCollRatio)
   })
 
-  it('Calculates net value USD, after net value USD, after collateral delta USD using market price', () => {
-    const expectedNetValueUSD = new BigNumber('2500')
+  it(
+    'Calculates net value USD, after net value USD, after collateral delta USD using market price',
+    () => {
+      const expectedNetValueUSD = new BigNumber('2500')
 
-    const afterCollRatio = new BigNumber('2')
-    const expectedAfterCollateralDelta = new BigNumber('4.59317941753432925909')
-    const expectedAfterCollateralDeltaUSD = new BigNumber('4593.17941753432925909159')
-    const expectedAfterNetValueUSD = new BigNumber('2467.78331069865700920477')
+      const afterCollRatio = new BigNumber('2')
+      const expectedAfterCollateralDelta = new BigNumber('4.59317941753432925909')
+      const expectedAfterCollateralDeltaUSD = new BigNumber('4593.17941753432925909159')
+      const expectedAfterNetValueUSD = new BigNumber('2467.78331069865700920477')
 
-    const state = getStateUnpacker(
-      mockManageMultiplyVault$({
-        vault: {
-          collateral: new BigNumber('3'),
-          debt: new BigNumber('500'),
-          ilk: 'ETH-A',
-        },
-        exchangeQuote: {
-          marketPrice: new BigNumber('1000'),
-        },
-      }),
-    )
+      const state = getStateUnpacker(
+        mockManageMultiplyVault$({
+          vault: {
+            collateral: new BigNumber('3'),
+            debt: new BigNumber('500'),
+            ilk: 'ETH-A',
+          },
+          exchangeQuote: {
+            marketPrice: new BigNumber('1000'),
+          },
+        }),
+      )
 
-    // expect to have different market price and oracle price for this test
-    expect(state().priceInfo.currentCollateralPrice.decimalPlaces(20)).to.not.deep.equal(
-      state().marketPrice,
-    )
-    expect(state().collateralDelta).to.deep.equal(zero)
-    expect(state().collateralDeltaUSD).to.deep.equal(zero)
-    expect(state().netValueUSD.decimalPlaces(20)).to.deep.equal(expectedNetValueUSD)
+      // expect to have different market price and oracle price for this test
+      expect(state().priceInfo.currentCollateralPrice.decimalPlaces(20)).not.toEqual(state().marketPrice)
+      expect(state().collateralDelta).toEqual(zero)
+      expect(state().collateralDeltaUSD).toEqual(zero)
+      expect(state().netValueUSD.decimalPlaces(20)).toEqual(expectedNetValueUSD)
 
-    state().updateRequiredCollRatio!(afterCollRatio)
-    expect(state().collateralDelta!.decimalPlaces(20)).to.deep.equal(expectedAfterCollateralDelta)
-    expect(state().collateralDeltaUSD!.decimalPlaces(20)).to.deep.equal(
-      expectedAfterCollateralDeltaUSD,
-    )
-    expect(state().afterNetValueUSD.decimalPlaces(20)).to.deep.equal(expectedAfterNetValueUSD)
-  })
+      state().updateRequiredCollRatio!(afterCollRatio)
+      expect(state().collateralDelta!.decimalPlaces(20)).toEqual(expectedAfterCollateralDelta)
+      expect(state().collateralDeltaUSD!.decimalPlaces(20)).toEqual(expectedAfterCollateralDeltaUSD)
+      expect(state().afterNetValueUSD.decimalPlaces(20)).toEqual(expectedAfterNetValueUSD)
+    }
+  )
 })

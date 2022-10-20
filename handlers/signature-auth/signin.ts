@@ -107,7 +107,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     const token = jwt.sign(userJwtPayload, options.userJWTSecret, { algorithm: 'HS512' })
 
     res.status(200).json({ jwt: token })
-  }
+  };
 }
 
 const GnosisSafeABI = [

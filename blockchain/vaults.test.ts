@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { expect } from 'chai'
 import {
   debtScalingFactor$,
   DEFAULT_DEBT_SCALING_FACTOR,
@@ -15,7 +14,7 @@ describe('vaults$', () => {
 
   it('should produce some vault state', () => {
     const state = mockVaults()
-    expect(state()).to.not.be.undefined
+    expect(state()).toBeDefined()
   })
 
   it('should account for accrued debt', () => {
@@ -26,10 +25,10 @@ describe('vaults$', () => {
       debt: fiftyMillion,
     })
 
-    expect(state().lockedCollateral).to.deep.equal(hundredThousand)
-    expect(state().debt).to.deep.equal(fiftyMillion)
+    expect(state().lockedCollateral).toEqual(hundredThousand)
+    expect(state().debt).toEqual(fiftyMillion)
     debtScalingFactor$.next(RANDOM_DEBT_SCALING_FACTOR)
-    expect(state().lockedCollateral).to.deep.equal(hundredThousand)
-    expect(state().debt.gt(fiftyMillion.plus(one))).to.be.true
+    expect(state().lockedCollateral).toEqual(hundredThousand)
+    expect(state().debt.gt(fiftyMillion.plus(one))).toBe(true)
   })
 })

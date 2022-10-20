@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 
 import { amountFromRay } from '../../blockchain/utils'
 import { SECONDS_PER_YEAR } from '../../components/constants'
@@ -24,7 +23,7 @@ describe('Yield Calculations', async () => {
 
     const expected = new BigNumber('0.060767268119203480765725028777122528')
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 
   it('Should return correct value for 30 days period', () => {
@@ -35,7 +34,7 @@ describe('Yield Calculations', async () => {
 
     const expected = new BigNumber('0.236036362226332613195601087768901528')
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 })
 
@@ -50,7 +49,7 @@ describe('Breakeven Calculations', async () => {
     const result = calculateBreakeven({ depositAmount, entryFees, apy })
     const expected = new BigNumber(146.0) // days
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 })
 
@@ -66,6 +65,6 @@ describe('Earnings Calculations', async () => {
 
     const expected = new BigNumber(100821.917808)
 
-    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+    expect(result.toFixed(precision)).toBe(expected.toFixed(precision))
   })
 })

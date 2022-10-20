@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { expect } from 'chai'
 import { BehaviorSubject, of } from 'rxjs'
 
 import { mockVault$ } from '../helpers/mocks/vaults.mock'
@@ -31,23 +30,26 @@ describe('instiVault$', () => {
     charterPeace$.next(new BigNumber(6))
     charterUline$.next(new BigNumber(11))
 
-    expect(state().originationFeePercent.toString()).to.eq('2')
-    expect(state().activeCollRatio.toString()).to.eq('6')
+    expect(state().originationFeePercent.toString()).toBe('2')
+    expect(state().activeCollRatio.toString()).toBe('6')
   })
 
-  it('takes the debt ceiling/available ilk debt from the charter contract', () => {
-    const debt = new BigNumber(100000000)
-    const collateral = new BigNumber(1e15) // big enough that we are limited by ilkDebtAvailable rather than collateral
-    const chartedDebtCeiling = new BigNumber(900000000) // realistic number for debt ceiling
+  it(
+    'takes the debt ceiling/available ilk debt from the charter contract',
+    () => {
+      const debt = new BigNumber(100000000)
+      const collateral = new BigNumber(1e15) // big enough that we are limited by ilkDebtAvailable rather than collateral
+      const chartedDebtCeiling = new BigNumber(900000000) // realistic number for debt ceiling
 
-    const { instiVault$ } = mockVault$({
-      collateral,
-      _charterUline$: of(chartedDebtCeiling),
-      _charterNib$: of(zero), // remove origination fee for this test,
-      debt,
-    })
+      const { instiVault$ } = mockVault$({
+        collateral,
+        _charterUline$: of(chartedDebtCeiling),
+        _charterNib$: of(zero), // remove origination fee for this test,
+        debt,
+      })
 
-    const state = getStateUnpacker(instiVault$)
-    expect(state().daiYieldFromLockedCollateral.toString()).to.eq('800000000')
-  })
+      const state = getStateUnpacker(instiVault$)
+      expect(state().daiYieldFromLockedCollateral.toString()).toBe('800000000')
+    }
+  )
 })

@@ -1,5 +1,3 @@
-import { expect } from 'chai'
-
 import { getToken, getTokens, tokens } from './tokensMetadata'
 
 const tokenKeys = [
@@ -19,17 +17,17 @@ const tokenKeys = [
 
 describe('tokens metadata', () => {
   it('hardcoded tokens should have proper keys', () => {
-    expect(tokens).to.be.an('array')
+    expect(Array.isArray(tokens)).toBe(true)
     tokens.forEach((tokenData) => {
-      expect(tokenData).to.include.keys(tokenKeys)
+      expect(Object.keys(tokenData)).toContain(tokenKeys)
     })
   })
   it('should return token metadata', () => {
-    expect(getToken('ETH')).to.include.keys(tokenKeys)
+    expect(Object.keys(getToken('ETH'))).toContain(tokenKeys)
   })
   it('should return metadata for multiple tokens', () => {
     getTokens(tokens.map((token) => token.symbol)).forEach((tokenData) => {
-      expect(tokenData).to.include.keys(tokenKeys)
+      expect(Object.keys(tokenData)).toContain(tokenKeys)
     })
   })
 })

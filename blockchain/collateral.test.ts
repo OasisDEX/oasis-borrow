@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { Observable, of, throwError } from 'rxjs'
 
 import { getStateUnpacker } from '../helpers/testHelpers'
@@ -23,7 +22,7 @@ describe('getCollateralLocked$', () => {
 
     const result = getCollateralLocked$(of(context), ilkToToken$, balance$, ilk)
 
-    expect(getStateUnpacker(result)).to.throw()
+    expect(getStateUnpacker(result)).toThrowError()
   })
   it('should return balance of token for ilk', () => {
     const context = ({
@@ -48,7 +47,7 @@ describe('getCollateralLocked$', () => {
 
     const state = getStateUnpacker(result)()
 
-    expect(state).to.eql({
+    expect(state).toEqual({
       ilk: 'ilk',
       token: 'token',
       collateral: new BigNumber(1),
@@ -81,7 +80,7 @@ describe('getTotalValueLocked$', () => {
 
     const state = getStateUnpacker(result)()
 
-    expect(state).to.eql({
+    expect(state).toEqual({
       value: new BigNumber(6),
     })
   })

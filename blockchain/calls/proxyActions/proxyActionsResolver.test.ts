@@ -1,5 +1,3 @@
-import { expect } from 'chai'
-
 import { getStateUnpacker } from '../../../helpers/testHelpers'
 import { MakerVaultType } from '../vaultResolver'
 import { ProxyActionsAdapterType } from './adapters/ProxyActionsSmartContractAdapterInterface'
@@ -12,22 +10,22 @@ describe('proxyActionsAdapterResolver', () => {
 
       const state = getStateUnpacker(adapter$)
 
-      expect(state().AdapterType).to.eq(ProxyActionsAdapterType.CROPJOIN)
+      expect(state().AdapterType).toBe(ProxyActionsAdapterType.CROPJOIN)
     })
     it('returns default proxy actions for other ilks', () => {
       const adapter$ = proxyActionsAdapterResolver$({ ilk: 'ETH-A' })
 
       const state = getStateUnpacker(adapter$)
 
-      expect(state().AdapterType).to.eq(ProxyActionsAdapterType.STANDARD)
+      expect(state().AdapterType).toBe(ProxyActionsAdapterType.STANDARD)
     })
     it('throws when trying to open a charter vault', () => {
       const adapter$ = proxyActionsAdapterResolver$({ ilk: 'INST-ETH-A' })
 
       const state = getStateUnpacker(adapter$)
 
-      expect(state).to.throw(
-        'can not create a proxy actions adapter from an INST-ETH-A ilk - adapter is not tested for opening vaults',
+      expect(state).toThrowError(
+        'can not create a proxy actions adapter from an INST-ETH-A ilk - adapter is not tested for opening vaults'
       )
     })
   })
@@ -38,21 +36,21 @@ describe('proxyActionsAdapterResolver', () => {
 
       const state = getStateUnpacker(adapter$)
 
-      expect(state().AdapterType).to.eq(ProxyActionsAdapterType.CROPJOIN)
+      expect(state().AdapterType).toBe(ProxyActionsAdapterType.CROPJOIN)
     })
     it('returns CHARTER proxy actions for CHARTER vault type', () => {
       const adapter$ = proxyActionsAdapterResolver$({ makerVaultType: MakerVaultType.CHARTER })
 
       const state = getStateUnpacker(adapter$)
 
-      expect(state().AdapterType).to.eq(ProxyActionsAdapterType.CHARTER)
+      expect(state().AdapterType).toBe(ProxyActionsAdapterType.CHARTER)
     })
     it('returns standard proxy actions in all other cases', () => {
       const adapter$ = proxyActionsAdapterResolver$({ makerVaultType: MakerVaultType.STANDARD })
 
       const state = getStateUnpacker(adapter$)
 
-      expect(state().AdapterType).to.eq(ProxyActionsAdapterType.STANDARD)
+      expect(state().AdapterType).toBe(ProxyActionsAdapterType.STANDARD)
     })
   })
 })

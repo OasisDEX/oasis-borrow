@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { BehaviorSubject,  of } from 'rxjs'
 
 import { getStateUnpacker } from '../../helpers/testHelpers'
@@ -7,27 +6,30 @@ import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
 
 describe('bonusPipe', () => {
   describe('showing the blockchain state', () => {
-    it('does not provide claimAll function if there are no bonuses to claim', () => {
-      const bonusPipe = createBonusPipe$(
-        () => ({
-          bonus$: of({
-            amountToClaim: new BigNumber(0),
-            symbol: 'CSH',
-            name: 'token name',
-            moreInfoLink: 'https://example.com',
-            readableAmount: '0CSH',
+    it(
+      'does not provide claimAll function if there are no bonuses to claim',
+      () => {
+        const bonusPipe = createBonusPipe$(
+          () => ({
+            bonus$: of({
+              amountToClaim: new BigNumber(0),
+              symbol: 'CSH',
+              name: 'token name',
+              moreInfoLink: 'https://example.com',
+              readableAmount: '0CSH',
+            }),
+            claimAll$: of(undefined),
           }),
-          claimAll$: of(undefined),
-        }),
-        new BigNumber(123),
-      )
+          new BigNumber(123),
+        )
 
-      const state = getStateUnpacker(bonusPipe)
+        const state = getStateUnpacker(bonusPipe)
 
-      expect(state().bonus).to.not.be.undefined
-      expect(state().claimAll).to.be.undefined
-      expect(state().claimTxnState).to.be.undefined
-    })
+        expect(state().bonus).toBeDefined()
+        expect(state().claimAll).toBeUndefined()
+        expect(state().claimTxnState).toBeUndefined()
+      }
+    )
   })
 
   describe('claiming the rewards', () => {
@@ -51,9 +53,9 @@ describe('bonusPipe', () => {
 
       state().claimAll!()
 
-      expect(bonusAdapterSpy).to.have.been.calledWith(new BigNumber(123))
-      expect(claimAllStub).to.have.been.called
-      expect(state().claimAll).eq(undefined)
+      expect(bonusAdapterSpy).toBeCalledWith(new BigNumber(123))
+      expect(claimAllStub).toBeCalled()
+      expect(state().claimAll).toBeUndefined()
     })
 
     it('updates bonuses and bonus state when claim is successful', () => {
@@ -87,9 +89,9 @@ describe('bonusPipe', () => {
       })
       claimTxnState$mock.next(ClaimTxnState.SUCCEEDED)
 
-      expect(state().bonus?.amountToClaim.toString()).eq('0')
-      expect(state().claimAll).to.be.undefined
-      expect(state().claimTxnState).eq(ClaimTxnState.SUCCEEDED)
+      expect(state().bonus?.amountToClaim.toString()).toBe('0')
+      expect(state().claimAll).toBeUndefined()
+      expect(state().claimTxnState).toBe(ClaimTxnState.SUCCEEDED)
     })
 
     it('pipes new bonus values', () => {
@@ -109,7 +111,7 @@ describe('bonusPipe', () => {
       )
       const state = getStateUnpacker(bonusPipe)
 
-      expect(state().bonus?.amountToClaim.toString()).eq('30')
+      expect(state().bonus?.amountToClaim.toString()).toBe('30')
 
       // new bonus value
       bonusMock$.next({
@@ -120,7 +122,7 @@ describe('bonusPipe', () => {
         readableAmount: '0CSH',
       })
 
-      expect(state().bonus?.amountToClaim.toString()).eq('40')
+      expect(state().bonus?.amountToClaim.toString()).toBe('40')
     })
 
     it('calls claim once', () => {
@@ -142,7 +144,7 @@ describe('bonusPipe', () => {
 
       state().claimAll!()
 
-      expect(claimAllStub).to.have.been.calledOnce
+      expect(claimAllStub).toBeCalledTimes(1)
     })
 
     it('allows user to claim again after a failed transaction', () => {
@@ -164,7 +166,7 @@ describe('bonusPipe', () => {
 
       state().claimAll!()
 
-      expect(state().claimAll).to.not.be.undefined
+      expect(state().claimAll).toBeDefined()
     })
 
     it('does not allow user to claim without a claim function', () => {
@@ -183,7 +185,7 @@ describe('bonusPipe', () => {
       )
       const state = getStateUnpacker(bonusPipe)
 
-      expect(state().claimAll).to.be.undefined
+      expect(state().claimAll).toBeUndefined()
     })
   })
 })

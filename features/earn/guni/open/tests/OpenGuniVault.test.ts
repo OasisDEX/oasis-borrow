@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
 import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
@@ -104,6 +103,6 @@ describe('OpenGuniVault', () => {
 
     const state = getStateUnpacker(openGuniVault$)()
 
-    expect(state.slippage).to.equal(GUNI_SLIPPAGE)
+    expect(state.slippage).toBe(GUNI_SLIPPAGE)
   })
 })
