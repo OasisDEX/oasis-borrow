@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import {
+  formatGasEstimationETH,
   getEstimatedGasFeeTextOld,
   VaultChangesInformationItem,
 } from '../../../../../../components/vault/VaultChangesInformation'
@@ -37,7 +38,9 @@ export function FeesInformation({
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
             {`${formatAmount(fee, token)} ${token} +`}
-            <Text ml={1}>{getEstimatedGasFeeTextOld(estimatedGasPrice, true)}</Text>
+            <Text ml={1}>
+              {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
+            </Text>
             <Icon
               name={`chevron_${showBreakdown ? 'up' : 'down'}`}
               size="auto"
@@ -55,7 +58,7 @@ export function FeesInformation({
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}
-            value={getEstimatedGasFeeTextOld(estimatedGasPrice)}
+            value={getEstimatedGasFeeTextOld(estimatedGasPrice, false, formatGasEstimationETH)}
             tooltip={<Box>{t('gas-explanation')}</Box>}
           />
         </Grid>

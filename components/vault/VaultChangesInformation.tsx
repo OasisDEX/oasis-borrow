@@ -105,7 +105,29 @@ export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   )
 }
 
-export function getEstimatedGasFeeTextOld(gasEstimation?: HasGasEstimation, withBrackets = false) {
+export const formatGasEstimationUSD = (gasEstimation: HasGasEstimation) => {
+  if (!gasEstimation.gasEstimationUsd) {
+    throw new Error(
+      `could not format formatGasEstimationUSD:  gasEstimation.gasEstimationUsd is ${gasEstimation.gasEstimationUsd}`,
+    )
+  }
+  return `$${formatAmount(gasEstimation.gasEstimationUsd, 'USD')}`
+}
+
+export const formatGasEstimationETH = (gasEstimation: HasGasEstimation) => {
+  if (!gasEstimation.gasEstimationEth) {
+    throw new Error(
+      `could not format formatGasEstimationETH:  gasEstimation.gasEstimationEth is ${gasEstimation.gasEstimationEth}`,
+    )
+  }
+  return `${formatAmount(gasEstimation.gasEstimationEth, 'ETH')} ETH`
+}
+
+export function getEstimatedGasFeeTextOld(
+  gasEstimation?: HasGasEstimation,
+  withBrackets = false,
+  formatFunction: (gasEstimation: HasGasEstimation) => string = formatGasEstimationUSD,
+) {
   if (!gasEstimation) {
     return <EstimationError withBrackets={withBrackets} />
   }
@@ -122,7 +144,7 @@ export function getEstimatedGasFeeTextOld(gasEstimation?: HasGasEstimation, with
     case GasEstimationStatus.unset:
       return <EstimationError withBrackets={withBrackets} />
     case GasEstimationStatus.calculated:
-      const textGas = `$${formatAmount(gasEstimation.gasEstimationUsd!, 'USD')}`
+      const textGas = formatFunction(gasEstimation)
 
       return withBrackets ? `(${textGas})` : textGas
   }
