@@ -21,6 +21,7 @@ export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
   | { type: 'RESET_RISK_RATIO' }
+  | { type: 'TRANSACTION_FAILED'; error?: string | unknown }
 
 export interface BaseAaveContext {
   refPriceObservable?: ActorRef<BaseAaveEvent, BaseAaveEvent>

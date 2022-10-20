@@ -212,6 +212,10 @@ export const createManageAaveStateMachine =
               target: 'txSuccess',
               actions: ['closePositionTransactionEvent'],
             },
+            TRANSACTION_FAILED: {
+              target: 'txFailure',
+              actions: ['assignError'],
+            },
           },
         },
         txFailure: {
@@ -376,6 +380,9 @@ export const createManageAaveStateMachine =
         })),
         setAdjustOperationType: assign((_) => ({
           operationType: OperationType.ADJUST_POSITION,
+        })),
+        assignError: assign((_, event) => ({
+          error: event.error,
         })),
       },
     },

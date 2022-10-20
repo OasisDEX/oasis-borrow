@@ -52,7 +52,6 @@ export type OpenAaveTransactionEvents =
       estimatedGasPrice: HasGasEstimation
     }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }
-  | { type: 'TRANSACTION_FAILED'; error?: string | unknown }
 
 export type OpenAaveEvent =
   | {
@@ -182,7 +181,7 @@ export const createOpenAaveStateMachine = createMachine(
         onEntry: ['eventConfirmDeposit'],
       },
       reviewing: {
-        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine', 'eventConfirmRiskRatio'],
+        entry: ['sendUpdateToParametersMachine', 'eventConfirmRiskRatio'],
         on: {
           NEXT_STEP: {
             target: 'txInProgress',

@@ -1278,6 +1278,7 @@
         "retry-btn": "Reintentar",
         "success-title": "¡Todo listo! Has abierto una posición",
         "go-to-position": "Ir a posición",
+        "back-to-editing": "Regresar a edición",
         "configure-multiple": {
           "title": "Configurar tu nivel de riesgo",
           "liquidation-price": "Precio de liquidación en {{collateralToken}}/{{debtToken}}",

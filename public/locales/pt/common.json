@@ -895,6 +895,7 @@
         "retry-btn": "Retry",
         "success-title": "All done! You've opened a position",
         "go-to-position": "Go to position",
+        "back-to-editing": "Voltar a editar",
         "configure-multiple": {
           "title": "Set your risk level",
           "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
