@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { AppContextProvider } from 'components/AppContextProvider'
+import { render } from 'enzyme'
 import { useAppContext } from 'features/automation/optimization/autoTakeProfit/test-helpers'
 import { DummyComponent } from 'features/automation/optimization/autoTakeProfit/tests/DummyComponent'
-import { mock } from 'jest'
 import React from 'react'
 jest.mock('components/AppContextProvider', () => useAppContext())
 

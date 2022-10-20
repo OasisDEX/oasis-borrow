@@ -9,6 +9,7 @@ export function isAppContextAvailable(): boolean {
 }
 
 export function useAppContext(): AppContext {
+  console.log('using mock app context')
   const ac = useContext(testAppContext)
   if (!ac) {
     throw new Error("test apud AppContext not available! useAppContext can't be used serverside")
@@ -16,7 +17,7 @@ export function useAppContext(): AppContext {
   return ac
 }
 
-export function AppContextProvider( { children }: WithChildren) {
+export function AppContextProvider({ children }: WithChildren) {
   // const [uiChanges] = useState<AppContext | undefined>(undefined)
   //   const [context, setContext] = useState<AppContext | undefined>(undefined)
 
