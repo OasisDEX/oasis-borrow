@@ -1,16 +1,14 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
-import { useAppContext } from 'components/AppContextProvider'
-import { calculateSimulation } from 'features/earn/aave/open/services'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { one } from 'helpers/zero'
+import { useSimulationYields } from 'helpers/useSimulationYields'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
@@ -27,28 +25,18 @@ const aaveCalcValueBasis = {
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
   const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
-  const { aaveSthEthYieldsQuery } = useAppContext()
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityETH$,
   )
-  const [simulations, setSimulations] = useState<ReturnType<typeof calculateSimulation>>()
-  const maximumMultiple = aaveReserveState ? one.div(one.minus(aaveReserveState!.ltv)) : undefined
+  const maximumMultiple =
+    aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
-  useEffect(() => {
-    if (maximumMultiple && !simulations) {
-      const maxRisk = new RiskRatio(maximumMultiple, RiskRatio.TYPE.MULITPLE)
-      void (async () => {
-        setSimulations(
-          calculateSimulation({
-            ...aaveCalcValueBasis,
-            yields: await aaveSthEthYieldsQuery(maxRisk, ['7Days', '90Days']),
-            riskRatio: maxRisk,
-          }),
-        )
-      })()
-    }
-  }, [maximumMultiple, simulations])
+  const simulationYields = useSimulationYields({
+    amount: aaveCalcValueBasis.amount,
+    riskRatio: maximumMultiple,
+    fields: ['7Days', '90Days'],
+  })
 
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
@@ -68,16 +56,16 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
                 token: aaveCalcValueBasis.token,
               }),
               description: t(`product-card-banner.aave.${cardData.symbol}`, {
-                value: _maximumMultiple.times(aaveCalcValueBasis.amount).toFormat(0),
+                value: _maximumMultiple.multiple.times(aaveCalcValueBasis.amount).toFormat(0),
                 token: cardData.symbol,
               }),
             }}
             labels={[
               {
                 title: '7 day net APY',
-                value: simulations?.previous7Days ? (
+                value: simulationYields?.yields?.annualisedYield7days ? (
                   // this takes a while, so we show a spinner until it's ready
-                  formatPercent(simulations?.previous7Days.earningAfterFees, {
+                  formatPercent(simulationYields.yields.annualisedYield7days, {
                     precision: 2,
                   })
                 ) : (
@@ -86,8 +74,8 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               },
               {
                 title: '90 day net APY',
-                value: simulations?.previous90Days ? (
-                  formatPercent(simulations?.previous90Days.earningAfterFees, {
+                value: simulationYields?.yields?.annualisedYield90days ? (
+                  formatPercent(simulationYields.yields.annualisedYield90days, {
                     precision: 2,
                   })
                 ) : (

@@ -1,5 +1,7 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
+import BigNumber from 'bignumber.js'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { formatPrecision } from 'helpers/formatters/format'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
@@ -18,7 +20,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
   if (env !== 'production' && env !== 'staging') {
     return {
       track: function (eventType: string, payload: any) {
-        console.info('Mixpanel Event: ', eventType, payload)
+        console.info('\n✨ Mixpanel Event: ', eventType, payload, '\n')
       },
       get_distinct_id: () => 'test_id',
       has_opted_out_tracking: () => false,
@@ -133,6 +135,15 @@ export enum CommonAnalyticsSections {
   HeaderTabs = 'HeaderTabs',
   Banner = 'Banner',
   Form = 'Form',
+  OpenEarnSTETH = 'OpenEarnSTETH',
+  ManageSTETH = 'ManageSTETH',
+}
+
+export enum EventTypes {
+  Pageview = 'Pageview',
+  AccountChange = 'account-change',
+  InputChange = 'input-change',
+  ButtonClick = 'btn-click',
 }
 
 // https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -187,17 +198,15 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
 
 export const trackingEvents = {
   pageView: (location: string) => {
-    const eventName = 'Pageview'
     const eventBody = {
       product,
       id: location,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.Pageview, eventBody)
   },
 
   accountChange: (account: string, network: string, walletType: string) => {
-    const eventName = 'account-change'
     const eventBody = {
       id: 'AccountChange',
       account,
@@ -206,14 +215,13 @@ export const trackingEvents = {
       walletType,
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    mixpanelInternalAPI(EventTypes.AccountChange, eventBody)
   },
 
   searchToken: (
     page: Pages.LandingPage | Pages.OpenVaultOverview | Pages.VaultsOverview,
     query: string,
   ) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'SearchToken',
       product,
@@ -222,11 +230,10 @@ export const trackingEvents = {
       section: 'SelectCollateral',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   openVault: (page: Pages.LandingPage | Pages.OpenVaultOverview, ilk: string) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'OpenVault',
       product,
@@ -235,11 +242,10 @@ export const trackingEvents = {
       section: 'SelectCollateral',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   createVaultDeposit: (firstCDP: boolean | undefined, amount: string) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'Deposit',
       product,
@@ -249,11 +255,10 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   createVaultGenerate: (firstCDP: boolean | undefined, amount: string) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'Generate',
       product,
@@ -263,7 +268,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   createVaultSetupProxy: (
@@ -271,7 +276,6 @@ export const trackingEvents = {
     depositAmount: string,
     generateAmount: string,
   ) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'SetupProxy',
       product,
@@ -282,11 +286,10 @@ export const trackingEvents = {
       section: 'Configure',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   createProxy: (firstCDP: boolean | undefined) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'CreateProxy',
       product,
@@ -295,11 +298,10 @@ export const trackingEvents = {
       section: 'ProxyDeploy',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   pickAllowance: (firstCDP: boolean | undefined, type: string, amount: string) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'PickAllowance',
       product,
@@ -310,11 +312,10 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   setTokenAllowance: (firstCDP: boolean | undefined) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'SetAllowance',
       product,
@@ -323,11 +324,10 @@ export const trackingEvents = {
       section: 'Configure',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   approveAllowance: (firstCDP: boolean | undefined) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'ApproveAllowance',
       product,
@@ -336,11 +336,10 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   createVaultConfirm: (firstCDP: boolean | undefined) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Confirm',
       product,
@@ -349,7 +348,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   confirmVaultConfirm: (
@@ -358,7 +357,6 @@ export const trackingEvents = {
     daiAmount: string,
     firstCDP: boolean | undefined,
   ) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Confirm',
       product,
@@ -370,7 +368,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   confirmVaultConfirmTransaction: (
@@ -382,7 +380,6 @@ export const trackingEvents = {
     network: string,
     walletType: ConnectionKind,
   ) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'ConfirmTransaction',
       product,
@@ -397,11 +394,10 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   confirmVaultEdit: (firstCDP: boolean | undefined) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'EditVault',
       product,
@@ -410,11 +406,10 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   overviewManage: (vaultId: string, ilk: string) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Manage',
       product,
@@ -424,11 +419,10 @@ export const trackingEvents = {
       section: 'Table',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   createNewVault: (firstCDP: boolean | undefined) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'createNewVault',
       product,
@@ -436,22 +430,20 @@ export const trackingEvents = {
       section: 'NavBar',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   yourVaults: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'YourVaults',
       product,
       section: 'NavBar',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   switchToDai: (ControllerIsConnected: boolean) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'SwitchToDai',
       product,
@@ -460,11 +452,10 @@ export const trackingEvents = {
       section: 'Dai',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   switchToCollateral: (ControllerIsConnected: boolean) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'SwitchToCollateral',
       product,
@@ -473,7 +464,7 @@ export const trackingEvents = {
       section: 'Collateral',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   manageVaultDepositAmount: (
@@ -481,7 +472,6 @@ export const trackingEvents = {
     amount: string,
     setMax: boolean,
   ) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'DepositAmount',
       product,
@@ -490,7 +480,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   manageVaultGenerateAmount: (
@@ -498,7 +488,6 @@ export const trackingEvents = {
     amount: string,
     setMax: boolean,
   ) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'GenerateAmount',
       product,
@@ -507,7 +496,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   manageVaultWithdrawAmount: (
@@ -515,7 +504,6 @@ export const trackingEvents = {
     amount: string,
     setMax: boolean,
   ) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'WithdrawAmount',
       product,
@@ -524,7 +512,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   manageVaultPaybackAmount: (
@@ -532,7 +520,6 @@ export const trackingEvents = {
     amount: string,
     setMax: boolean,
   ) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'PaybackAmount',
       product,
@@ -541,18 +528,17 @@ export const trackingEvents = {
       setMax,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   manageVaultConfirmVaultEdit: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'EditVault',
       product,
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   // Can we distinguish if went through collateral/daiEditing?
@@ -562,7 +548,6 @@ export const trackingEvents = {
     collateralAmount: string,
     daiAmount: string,
   ) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Confirm',
       product,
@@ -573,7 +558,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   manageVaultConfirmTransaction: (
@@ -585,7 +570,6 @@ export const trackingEvents = {
     network: string,
     walletType: ConnectionKind,
   ) => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'ConfirmTransaction',
       product,
@@ -599,11 +583,10 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   manageCollateralPickAllowance: (type: string, amount: string) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'PickAllowance',
       product,
@@ -613,11 +596,10 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   manageCollateralApproveAllowance: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'ApproveAllowance',
       product,
@@ -625,11 +607,10 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   manageDaiPickAllowance: (type: string, amount: string) => {
-    const eventName = 'input-change'
     const eventBody = {
       id: 'PickAllowance',
       product,
@@ -639,11 +620,10 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
   },
 
   manageDaiApproveAllowance: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'ApproveAllowance',
       product,
@@ -651,12 +631,11 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   // First Confirm button when the user is on Collateral and type into Deposit
   manageCollateralDepositConfirm: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Confirm',
       product,
@@ -664,12 +643,11 @@ export const trackingEvents = {
       section: 'Deposit',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   // Confirm button when the user is on Collateral and type into Withdraw
   manageCollateralWithdrawConfirm: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Confirm',
       product,
@@ -677,12 +655,11 @@ export const trackingEvents = {
       section: 'Withdraw',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   // First Confirm button when the user is on Dai and type into Generate
   manageDaiGenerateConfirm: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Confirm',
       product,
@@ -690,12 +667,11 @@ export const trackingEvents = {
       section: 'Generate',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   // Confirm button when the user is on Dai and type into Payback
   manageDaiPaybackConfirm: () => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'Confirm',
       product,
@@ -703,18 +679,17 @@ export const trackingEvents = {
       section: 'Payback',
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   newsletterSubscribe: (section: 'Footer' | 'Homepage') => {
-    const eventName = 'btn-click'
     const eventBody = {
       id: 'NewsletterSubscribe',
       product,
       section,
     }
 
-    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+    !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
   },
 
   multiply: {
@@ -724,7 +699,6 @@ export const trackingEvents = {
       collAmount: string,
       multiply: string,
     ) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'Confirm',
         product,
@@ -736,7 +710,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
 
     confirmOpenMultiplyConfirmTransaction: (
@@ -748,7 +722,6 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'ConfirmTransaction',
         product,
@@ -763,11 +736,10 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
 
     adjustPositionConfirm: (ilk: string, multiply: string) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'Confirm',
         product,
@@ -777,7 +749,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
 
     adjustPositionConfirmTransaction: (
@@ -787,7 +759,6 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'ConfirmTransaction',
         product,
@@ -800,11 +771,10 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
 
     otherActionsConfirm: (ilk: string, collateralAmount: string, daiAmount: string) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'Confirm',
         product,
@@ -815,7 +785,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
 
     otherActionsConfirmTransaction: (
@@ -826,7 +796,6 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'ConfirmTransaction',
         product,
@@ -840,11 +809,10 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
 
     closeVaultConfirm: (ilk: string, debt: string, closeTo: CloseVaultTo) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'Confirm',
         product,
@@ -855,7 +823,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
 
     closeVaultConfirmTransaction: (
@@ -866,7 +834,6 @@ export const trackingEvents = {
       network: string,
       walletType: ConnectionKind,
     ) => {
-      const eventName = 'btn-click'
       const eventBody = {
         id: 'ConfirmTransaction',
         product,
@@ -880,7 +847,100 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+  },
+  earn: {
+    stETHOpenPositionDepositAmount: (depositAmount: BigNumber) => {
+      const eventBody = {
+        id: 'DepositAmount',
+        depositAmount: depositAmount.toString(),
+        page: Pages.OpenEarnSTETH,
+        section: 'OpenPosition',
+      }
+      mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    },
+    stETHOpenPositionConfirmDeposit: (depositAmount: BigNumber) => {
+      const eventBody = {
+        id: 'ConfirmDeposit',
+        depositAmount: depositAmount.toString(),
+        page: Pages.OpenEarnSTETH,
+        section: 'OpenPosition',
+      }
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+    stETHOpenPositionMoveSlider: (depositAmount: BigNumber, riskRatio: BigNumber) => {
+      const eventBody = {
+        id: 'MoveSlider',
+        depositAmount: depositAmount.toString(),
+        riskRatio: formatPrecision(riskRatio, 4),
+        page: Pages.OpenEarnSTETH,
+        section: 'OpenPosition',
+      }
+      mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    },
+    stETHOpenPositionConfirmRisk: (depositAmount: BigNumber, riskRatio: BigNumber) => {
+      const eventBody = {
+        id: 'ConfirmRisk',
+        depositAmount: depositAmount.toString(),
+        riskRatio: formatPrecision(riskRatio, 4),
+        page: Pages.OpenEarnSTETH,
+        section: 'OpenPosition',
+      }
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+    stETHOpenPositionConfirmTransaction: (depositAmount: BigNumber, riskRatio: BigNumber) => {
+      const eventBody = {
+        id: 'ConfirmTransaction',
+        depositAmount: depositAmount.toString(),
+        riskRatio: formatPrecision(riskRatio, 4),
+        page: Pages.OpenEarnSTETH,
+        section: 'OpenPosition',
+      }
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+    stETHAdjustRiskMoveSlider: (riskRatio: BigNumber) => {
+      const eventBody = {
+        id: 'MoveSlider',
+        riskRatio: formatPrecision(riskRatio, 4),
+        page: Pages.ManageSTETH,
+        section: 'AdjustRisk',
+      }
+      mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    },
+    stETHAdjustRiskConfirmRisk: (riskRatio: BigNumber) => {
+      const eventBody = {
+        id: 'ConfirmRisk',
+        riskRatio: formatPrecision(riskRatio, 4),
+        page: Pages.ManageSTETH,
+        section: 'AdjustRisk',
+      }
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+    stETHAdjustRiskConfirmTransaction: (riskRatio: BigNumber) => {
+      const eventBody = {
+        id: 'ConfirmTransaction',
+        riskRatio: formatPrecision(riskRatio, 4),
+        page: Pages.ManageSTETH,
+        section: 'AdjustRisk',
+      }
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+    stETHClosePositionConfirm: () => {
+      const eventBody = {
+        id: 'Confirm',
+        page: Pages.ManageSTETH,
+        section: 'ClosePosition',
+      }
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+    stETHClosePositionConfirmTransaction: () => {
+      const eventBody = {
+        id: 'ConfirmTransaction',
+        page: Pages.ManageSTETH,
+        section: 'ClosePosition',
+      }
+      mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
   },
   automation: {
@@ -890,10 +950,9 @@ export const trackingEvents = {
       section: CommonAnalyticsSections.Form,
       additionalParams: AutomationEventsAdditionalParams,
     ) => {
-      const eventName = 'input-change'
       const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
     },
     buttonClick: (
       id: AutomationEventIds,
@@ -901,10 +960,9 @@ export const trackingEvents = {
       section: CommonAnalyticsSections,
       additionalParams: AutomationEventsAdditionalParams,
     ) => {
-      const eventName = 'btn-click'
       const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
 
-      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(eventName, eventBody)
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
   },
 }

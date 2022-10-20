@@ -28,6 +28,7 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
+  vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -237,6 +238,8 @@ export interface ManageVaultConditions {
   afterCollRatioAboveAutoBuyRatio: boolean
   afterCollRatioBelowConstantMultipleSellRatio: boolean
   afterCollRatioAboveConstantMultipleBuyRatio: boolean
+  takeProfitWillTriggerImmediatelyAfterVaultReopen: boolean
+  existingTakeProfitTriggerAfterVaultReopen: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
@@ -308,6 +311,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   afterCollRatioAboveAutoBuyRatio: false,
   afterCollRatioBelowConstantMultipleSellRatio: false,
   afterCollRatioAboveConstantMultipleBuyRatio: false,
+  takeProfitWillTriggerImmediatelyAfterVaultReopen: false,
+  existingTakeProfitTriggerAfterVaultReopen: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -337,6 +342,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     daiAllowance,
     shouldPaybackAll,
     balanceInfo: { collateralBalance, daiBalance },
+    priceInfo: { nextCollateralPrice },
     isEditingStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
@@ -370,6 +376,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     autoSellData,
     autoBuyData,
     constantMultipleData,
+    autoTakeProfitData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -629,6 +636,28 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       type: 'above',
     })
 
+  const takeProfitWillTriggerImmediatelyAfterVaultReopen = vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator(
+    {
+      debt,
+      afterDebt,
+      nextCollateralPrice,
+      type: 'above',
+      isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
+      executionPrice: autoTakeProfitData?.executionPrice,
+    },
+  )
+
+  const existingTakeProfitTriggerAfterVaultReopen = vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator(
+    {
+      debt,
+      afterDebt,
+      nextCollateralPrice,
+      type: 'below',
+      isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
+      executionPrice: autoTakeProfitData?.executionPrice,
+    },
+  )
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -655,7 +684,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       afterCollRatioBelowAutoSellRatio ||
       afterCollRatioAboveAutoBuyRatio ||
       afterCollRatioBelowConstantMultipleSellRatio ||
-      afterCollRatioAboveConstantMultipleBuyRatio)
+      afterCollRatioAboveConstantMultipleBuyRatio ||
+      takeProfitWillTriggerImmediatelyAfterVaultReopen)
 
   const editingProgressionDisabledForUncontrolled =
     !accountIsController &&
@@ -779,6 +809,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     afterCollRatioAboveAutoBuyRatio,
     afterCollRatioBelowConstantMultipleSellRatio,
     afterCollRatioAboveConstantMultipleBuyRatio,
+    takeProfitWillTriggerImmediatelyAfterVaultReopen,
+    existingTakeProfitTriggerAfterVaultReopen,
 
     insufficientEthFundsForTx,
   }

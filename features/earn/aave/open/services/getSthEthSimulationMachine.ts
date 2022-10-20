@@ -27,6 +27,7 @@ export function getSthEthSimulationMachine(
                 token: context.token!,
                 yields: context.yieldsMin!, // previously it was 'yields' and they were calculated using minimum risk ratio so i'll leave it like that
                 riskRatio: context.riskRatio!,
+                fees: context.fee!,
               })
             },
             getYields: async (context) => {

@@ -1,4 +1,5 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
@@ -101,11 +102,26 @@ export const aaveStEthSimulateStateMachine = createMachine(
         yieldsMin: event.data.yieldsMin,
         yieldsMax: event.data.yieldsMax,
       })),
-      assignUserParameters: assign((context, event) => ({
-        token: event.token,
-        amount: event.amount,
-        riskRatio: event.riskRatio,
-      })),
+      assignUserParameters: assign((context, event) => {
+        // reporting the event here ensures that the data is
+        // final(-ish) - for example when inputting '123' it
+        // sends '123' and not '1', '12', and '123'
+        context.amount !== event.amount &&
+          event.amount &&
+          trackingEvents.earn.stETHOpenPositionDepositAmount(event.amount)
+
+        event.amount &&
+          context.riskRatio !== event.riskRatio &&
+          trackingEvents.earn.stETHOpenPositionMoveSlider(
+            event.amount!,
+            event.riskRatio!.loanToValue,
+          )
+        return {
+          token: event.token,
+          amount: event.amount,
+          riskRatio: event.riskRatio,
+        }
+      }),
       assignFees: assign((context, event) => ({
         fee: event.fee,
       })),

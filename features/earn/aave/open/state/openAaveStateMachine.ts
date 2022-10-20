@@ -1,16 +1,18 @@
 import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
 import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
+import { amountFromGwei } from '../../../../../blockchain/utils'
 import { allDefined } from '../../../../../helpers/allDefined'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { BaseAaveContext, IStrategyInfo } from '../../common/BaseAaveContext'
+import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import {
   AaveStEthSimulateStateMachine,
@@ -65,6 +67,7 @@ export type OpenAaveEvent =
   | { type: 'RETRY' }
   | OpenAaveMachineEvents
   | OpenAaveTransactionEvents
+  | BaseAaveEvent
 
 export const createOpenAaveStateMachine = createMachine(
   {
@@ -80,7 +83,13 @@ export const createOpenAaveStateMachine = createMachine(
     initial: 'editing',
     states: {
       editing: {
-        entry: ['initContextValues', 'spawnParametersMachine', 'spawnSimulationMachine'],
+        entry: [
+          'initContextValues',
+          'spawnParametersMachine',
+          'spawnSimulationMachine',
+          'spawnPricesObservable',
+          'spawnUserSettingsObservable',
+        ],
         invoke: [
           {
             src: 'getBalance',
@@ -110,6 +119,7 @@ export const createOpenAaveStateMachine = createMachine(
               'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
               'sendUpdateToSimulationMachine',
+              'setIsLoadingTrue',
             ],
           },
           NEXT_STEP: [
@@ -117,7 +127,11 @@ export const createOpenAaveStateMachine = createMachine(
             { cond: 'enoughBalance', target: 'settingMultiple' },
           ],
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
+            actions: [
+              'setIsLoadingFalse',
+              'assignTransactionParameters',
+              'sendFeesToSimulationMachine',
+            ],
           },
         },
       },
@@ -155,22 +169,28 @@ export const createOpenAaveStateMachine = createMachine(
               'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
               'sendUpdateToSimulationMachine',
+              'setIsLoadingTrue',
             ],
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
+            actions: [
+              'assignTransactionParameters',
+              'sendFeesToSimulationMachine',
+              'setIsLoadingFalse',
+            ],
           },
           NEXT_STEP: {
             target: 'reviewing',
-            // TODO: validate multiple here cond: 'validTransactionParameters'
+            cond: 'validTransactionParameters',
           },
           BACK_TO_EDITING: {
             target: 'editing',
           },
         },
+        onEntry: ['eventConfirmDeposit'],
       },
       reviewing: {
-        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine'],
+        entry: ['setCurrentStepToTwo', 'sendUpdateToParametersMachine', 'eventConfirmRiskRatio'],
         on: {
           NEXT_STEP: {
             target: 'txInProgress',
@@ -180,13 +200,13 @@ export const createOpenAaveStateMachine = createMachine(
             target: 'editing',
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters'],
+            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
           },
         },
       },
 
       txInProgress: {
-        entry: ['spawnTransactionMachine'],
+        entry: ['spawnTransactionMachine', 'eventConfirmTransaction'],
         on: {
           POSITION_OPENED: {
             target: 'txSuccess',
@@ -202,12 +222,20 @@ export const createOpenAaveStateMachine = createMachine(
         type: 'final',
       },
     },
+    on: {
+      PRICES_RECEIVED: {
+        actions: ['setPricesFromEvent'],
+      },
+      USER_SETTINGS_CHANGED: {
+        actions: ['setUserSettingsFromEvent'],
+      },
+    },
   },
   {
     guards: {
       emptyProxyAddress: ({ proxyAddress }) => !allDefined(proxyAddress),
-      validTransactionParameters: ({ userInput, proxyAddress, transactionParameters }) =>
-        allDefined(userInput, proxyAddress, transactionParameters),
+      validTransactionParameters: ({ userInput, proxyAddress, transactionParameters, loading }) =>
+        allDefined(userInput, proxyAddress, transactionParameters) && loading === false,
       enoughBalance: ({ tokenBalance, userInput }) =>
         allDefined(tokenBalance, userInput.amount) && tokenBalance!.gt(userInput.amount!),
     },
@@ -220,6 +248,7 @@ export const createOpenAaveStateMachine = createMachine(
         inputDelay: 1000,
         strategyName: 'stETHeth',
         userInput: {},
+        loading: false,
       })),
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,
@@ -244,6 +273,8 @@ export const createOpenAaveStateMachine = createMachine(
           id: 'update-parameters-machine',
         },
       ),
+      setIsLoadingTrue: assign((_) => ({ loading: true })),
+      setIsLoadingFalse: assign((_) => ({ loading: false })),
       setRiskRatio: assign((context, event) => {
         return {
           userInput: {
@@ -291,14 +322,18 @@ export const createOpenAaveStateMachine = createMachine(
         hasOtherAssetsThanETH_STETH: event.hasOtherAssetsThanETH_STETH,
       })),
       sendFeesToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => {
-          const sourceTokenFee =
-            context.transactionParameters?.simulation.swap.sourceTokenFee || zero
-          const targetTokenFee =
-            context.transactionParameters?.simulation.swap.targetTokenFee || zero
+        (_, event): AaveStEthSimulateStateMachineEvents => {
+          const sourceTokenFee = event.parameters.simulation.swap.sourceTokenFee || zero
+          const targetTokenFee = event.parameters.simulation.swap.targetTokenFee || zero
+
+          const gasFee =
+            (event.estimatedGasPrice?.gasEstimation &&
+              amountFromGwei(new BigNumber(event.estimatedGasPrice.gasEstimation))) ||
+            zero
+
           return {
             type: 'FEE_CHANGED',
-            fee: sourceTokenFee.plus(targetTokenFee),
+            fee: sourceTokenFee.plus(targetTokenFee).plus(gasFee),
           }
         },
         { to: (context) => context.refSimulationMachine! },
@@ -320,6 +355,31 @@ export const createOpenAaveStateMachine = createMachine(
       ),
       debounceSendingToParametersMachine: cancel('update-parameters-machine'),
       debounceSendingToSimulationMachine: cancel('update-simulate-machine'),
+      eventConfirmDeposit: ({ userInput }) => {
+        userInput.amount && trackingEvents.earn.stETHOpenPositionConfirmDeposit(userInput.amount)
+      },
+      eventConfirmRiskRatio: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmRisk(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
+      },
+      eventConfirmTransaction: ({ userInput }) => {
+        userInput.amount &&
+          userInput.riskRatio?.loanToValue &&
+          trackingEvents.earn.stETHOpenPositionConfirmTransaction(
+            userInput.amount,
+            userInput.riskRatio.loanToValue,
+          )
+      },
+      setPricesFromEvent: assign((context, event) => ({
+        collateralPrice: event.collateralPrice,
+      })),
+      setUserSettingsFromEvent: assign((context, event) => ({
+        slippage: event.userSettings.slippage,
+      })),
     },
   },
 )

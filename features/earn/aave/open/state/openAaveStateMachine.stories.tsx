@@ -111,6 +111,12 @@ const simulationMachine = aaveStEthSimulateStateMachine.withConfig({
 
 const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
   actions: {
+    spawnPricesObservable: assign(() => {
+      return {}
+    }),
+    spawnUserSettingsObservable: assign(() => {
+      return {}
+    }),
     spawnSimulationMachine: assign((_) => ({
       refSimulationMachine: spawn(simulationMachine, { name: 'simulationMachine' }),
     })),

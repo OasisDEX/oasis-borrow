@@ -1,3 +1,4 @@
+import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -5,61 +6,64 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import {
-  getEstimatedGasFeeTextOld,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from '../../../../../components/vault/VaultChangesInformation'
-import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
+import { amountFromWei, amountToWei } from '../../../../../blockchain/utils'
+import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
+import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
-
-export interface ManageAaveVaultProps {
-  readonly aaveStateMachine: ManageAaveStateMachine
-}
+import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
   readonly send: Sender<ManageAaveEvent>
 }
 
-function TransactionInformationContainer({ state }: ManageAaveStateProps) {
-  const { t } = useTranslation()
-  return (
-    <VaultChangesInformationContainer title="Total fees">
-      <VaultChangesInformationItem
-        label={t('transaction-fee')}
-        value={getEstimatedGasFeeTextOld(state.context.estimatedGasPrice)}
-      />
-    </VaultChangesInformationContainer>
+function getAmountGetFromPositionAfterClose(
+  strategy: IStrategy | undefined,
+  currentPosition: IPosition,
+) {
+  if (!strategy) {
+    return zero
+  }
+  const currentDebt = amountToWei(
+    currentPosition.debt.amount,
+    currentPosition.debt.denomination || 'ETH',
   )
+  const amountFromSwap = strategy.simulation.swap.toTokenAmount
+  const fee = strategy.simulation.swap.targetTokenFee
+
+  return amountFromSwap.minus(currentDebt).minus(fee)
 }
 
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
-  const balance = formatCryptoBalance(state.context.balanceAfterClose || zero)
-  const fiatBalanceAfterClose = (state.context.balanceAfterClose || zero).times(
-    state.context.tokenPrice || zero,
+  const balance = formatCryptoBalance(
+    amountFromWei(
+      getAmountGetFromPositionAfterClose(
+        state.context.transactionParameters,
+        state.context.currentPosition,
+      ),
+      state.context.token,
+    ),
   )
-  const fiatBalance = formatFiatBalance(fiatBalanceAfterClose)
+
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
         {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
       <Text variant="boldParagraph3">
-        {balance} {state.context.token} (${fiatBalance})
+        {balance} {state.context.token}
       </Text>
     </Flex>
   )
 }
 
-function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -67,7 +71,7 @@ function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveSta
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -91,7 +95,7 @@ function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStatePro
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -99,6 +103,10 @@ function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStatePro
       disabled: !state.can('START_TRANSACTION'),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
       action: () => send('START_TRANSACTION'),
+    },
+    textButton: {
+      label: t('manage-earn.aave.vault-form.back-to-editing'),
+      action: () => send('BACK_TO_EDITING'),
     },
   }
 
@@ -115,7 +123,7 @@ function ManageAaveReviewingAdjustingStateView({ state, send }: ManageAaveStateP
         <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
           {t('manage-earn.aave.vault-form.adjust-description')}
         </Text>
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -144,7 +152,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
           {t('manage-earn.aave.vault-form.close-description')}
         </Text>
         <EthBalanceAfterClose state={state} send={send} />
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -170,12 +178,12 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <TransactionInformationContainer state={state} send={send} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: ``,
+      action: () => send('GO_TO_EDITING'),
     },
   }
 
@@ -197,7 +205,7 @@ export function SidebarManageAaveVault() {
           }
           send={send}
           primaryButton={{
-            isLoading: false,
+            isLoading: state.context.loading,
             disabled: !state.can('ADJUST_POSITION'),
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {

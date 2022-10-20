@@ -6,10 +6,12 @@ import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
 
+import { MessageCard } from '../../../../../components/MessageCard'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
-import { OpenAaveInformationContainer } from '../../common/components/OpenAaveInformationContainer'
+import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
@@ -33,7 +35,7 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -54,7 +56,7 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -76,7 +78,7 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -97,17 +99,26 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   const hasProxy = state.context.proxyAddress !== undefined
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
+  const amountTooHigh =
+    state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
-        <OpenAaveInformationContainer state={state} />
+        {amountTooHigh && (
+          <MessageCard
+            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            type="error"
+          />
+        )}
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
       steps: [1, state.context.totalSteps!],
-      isLoading: false,
+      isLoading: state.context.loading,
       disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
       label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
       action: () => send('NEXT_STEP'),
@@ -129,7 +140,7 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <OpenAaveInformationContainer state={state} />
+        <StrategyInformationContainer state={state} />
       </Grid>
     ),
     primaryButton: {
@@ -160,8 +171,8 @@ export function SidebarOpenAaveVault() {
           resetRiskValue={aaveStETHMinimumRiskRatio}
           primaryButton={{
             steps: [2, state.context.totalSteps!],
-            isLoading: false,
-            disabled: false,
+            isLoading: state.context.loading,
+            disabled: !state.can('NEXT_STEP'),
             label: t('open-earn.aave.vault-form.open-btn'),
             action: () => send('NEXT_STEP'),
           }}
