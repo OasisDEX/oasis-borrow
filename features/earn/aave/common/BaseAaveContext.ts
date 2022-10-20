@@ -28,8 +28,8 @@ export interface BaseAaveContext {
 
   transactionParameters?: IStrategy
   estimatedGasPrice?: HasGasEstimation
-  currentStep?: number
-  totalSteps?: number
+  currentStep: number
+  totalSteps: number
   tokenBalance?: BigNumber
   tokenPrice?: BigNumber
   inputDelay: number
@@ -44,6 +44,8 @@ export interface BaseAaveContext {
   slippage: BigNumber
   currentPosition: IPosition
   loading: boolean
+
+  error?: string | unknown
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

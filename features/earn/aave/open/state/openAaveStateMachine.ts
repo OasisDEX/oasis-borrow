@@ -52,6 +52,7 @@ export type OpenAaveTransactionEvents =
       estimatedGasPrice: HasGasEstimation
     }
   | { type: 'TRANSACTION_PARAMETERS_CHANGED'; amount: BigNumber; multiply: number; token: string }
+  | { type: 'TRANSACTION_FAILED'; error?: string | unknown }
 
 export type OpenAaveEvent =
   | {
@@ -80,36 +81,26 @@ export const createOpenAaveStateMachine = createMachine(
     },
     key: 'aaveOpen',
     initial: 'editing',
+    invoke: [
+      {
+        src: 'getBalance',
+        id: 'getBalance',
+      },
+      {
+        src: 'getProxyAddress',
+        id: 'getProxyAddress',
+      },
+    ],
+    entry: [
+      'spawnParametersMachine',
+      'spawnSimulationMachine',
+      'spawnPricesObservable',
+      'spawnUserSettingsObservable',
+    ],
     states: {
       editing: {
-        entry: [
-          'initContextValues',
-          'spawnParametersMachine',
-          'spawnSimulationMachine',
-          'spawnPricesObservable',
-          'spawnUserSettingsObservable',
-        ],
-        invoke: [
-          {
-            src: 'getBalance',
-            id: 'getBalance',
-          },
-          {
-            src: 'getProxyAddress',
-            id: 'getProxyAddress',
-          },
-        ],
+        entry: ['resetCurrentStep'],
         on: {
-          SET_BALANCE: {
-            actions: ['setTokenBalanceFromEvent'],
-          },
-          PROXY_ADDRESS_RECEIVED: {
-            actions: [
-              'setReceivedProxyAddress',
-              'updateTotalSteps',
-              'sendUpdateToParametersMachine',
-            ],
-          },
           SET_AMOUNT: {
             actions: [
               'setAmount',
@@ -122,8 +113,8 @@ export const createOpenAaveStateMachine = createMachine(
             ],
           },
           NEXT_STEP: [
-            { cond: 'emptyProxyAddress', target: 'proxyCreating' },
-            { cond: 'enoughBalance', target: 'settingMultiple' },
+            { cond: 'emptyProxyAddress', target: 'proxyCreating', actions: 'incrementCurrentStep' },
+            { cond: 'enoughBalance', target: 'settingMultiple', actions: 'incrementCurrentStep' },
           ],
           TRANSACTION_PARAMETERS_RECEIVED: {
             actions: [
@@ -181,9 +172,11 @@ export const createOpenAaveStateMachine = createMachine(
           NEXT_STEP: {
             target: 'reviewing',
             cond: 'validTransactionParameters',
+            actions: 'incrementCurrentStep',
           },
           BACK_TO_EDITING: {
             target: 'editing',
+            actions: 'decrementCurrentStep',
           },
         },
         onEntry: ['eventConfirmDeposit'],
@@ -197,6 +190,7 @@ export const createOpenAaveStateMachine = createMachine(
           },
           BACK_TO_EDITING: {
             target: 'editing',
+            actions: 'decrementCurrentStep',
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
             actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
@@ -210,11 +204,20 @@ export const createOpenAaveStateMachine = createMachine(
           POSITION_OPENED: {
             target: 'txSuccess',
           },
+          TRANSACTION_FAILED: {
+            target: 'txFailure',
+            actions: ['assignError'],
+          },
         },
       },
       txFailure: {
         on: {
-          RETRY: 'reviewing',
+          RETRY: {
+            target: 'reviewing',
+          },
+          BACK_TO_EDITING: {
+            target: 'editing',
+          },
         },
       },
       txSuccess: {
@@ -228,6 +231,12 @@ export const createOpenAaveStateMachine = createMachine(
       USER_SETTINGS_CHANGED: {
         actions: ['setUserSettingsFromEvent'],
       },
+      SET_BALANCE: {
+        actions: ['setTokenBalanceFromEvent'],
+      },
+      PROXY_ADDRESS_RECEIVED: {
+        actions: ['setReceivedProxyAddress', 'decreaseTotalSteps', 'sendUpdateToParametersMachine'],
+      },
     },
   },
   {
@@ -239,16 +248,6 @@ export const createOpenAaveStateMachine = createMachine(
         allDefined(tokenBalance, userInput.amount) && tokenBalance!.gt(userInput.amount!),
     },
     actions: {
-      initContextValues: assign((context) => ({
-        currentStep: 1,
-        totalSteps: context.proxyAddress ? 3 : 4,
-        riskRatio: aaveStETHMinimumRiskRatio,
-        token: 'ETH',
-        inputDelay: 1000,
-        strategyName: 'stETHeth',
-        userInput: {},
-        loading: false,
-      })),
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,
         tokenPrice: event.tokenPrice,
@@ -282,11 +281,9 @@ export const createOpenAaveStateMachine = createMachine(
           },
         }
       }),
-      updateTotalSteps: assign((context) => {
+      decreaseTotalSteps: assign((context) => {
         return {
-          totalSteps: context.proxyAddress
-            ? (context.totalSteps || 0) - 1
-            : context.totalSteps || 0,
+          totalSteps: context.totalSteps - 1,
         }
       }),
       setAmount: assign((context, event) => {
@@ -305,8 +302,14 @@ export const createOpenAaveStateMachine = createMachine(
       assignProxyAddress: assign((_, event) => ({
         proxyAddress: event.proxyAddress,
       })),
-      setCurrentStepToTwo: assign((_) => ({
-        currentStep: 2,
+      resetCurrentStep: assign((_) => ({
+        currentStep: 1,
+      })),
+      incrementCurrentStep: assign((context) => ({
+        currentStep: context.currentStep + 1,
+      })),
+      decrementCurrentStep: assign((context) => ({
+        currentStep: context.currentStep - 1,
       })),
       assignTransactionParameters: assign((context, event) => {
         return {
@@ -375,6 +378,9 @@ export const createOpenAaveStateMachine = createMachine(
       })),
       setUserSettingsFromEvent: assign((context, event) => ({
         slippage: event.userSettings.slippage,
+      })),
+      assignError: assign((_, event) => ({
+        error: event.error,
       })),
     },
   },
