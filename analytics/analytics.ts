@@ -68,6 +68,8 @@ export enum Pages {
   AdjustPosition = 'AdjustPosition',
   OtherActions = 'OtherActions',
   CloseVault = 'CloseVault',
+  OpenEarnSTETH = 'OpenEarnSTETH',
+  ManageSTETH = 'ManageSTETH',
   ProtectionTab = 'ProtectionTab',
   OptimizationTab = 'OptimizationTab',
   OpenVault = 'OpenVault',
