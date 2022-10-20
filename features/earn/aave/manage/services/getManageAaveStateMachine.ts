@@ -102,6 +102,12 @@ export function getManageAaveStateMachine$(
                           type: 'POSITION_CLOSED',
                         }),
                       ),
+                      raiseError: sendParent(
+                        (context): ManageAaveEvent => ({
+                          type: 'TRANSACTION_FAILED',
+                          error: context.txError,
+                        }),
+                      ),
                     },
                   })
                   .withContext({
@@ -116,6 +122,8 @@ export function getManageAaveStateMachine$(
           },
         })
         .withContext({
+          currentStep: 1,
+          totalSteps: 2,
           token,
           userInput: {},
           inputDelay: 1000,

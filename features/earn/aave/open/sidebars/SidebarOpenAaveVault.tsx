@@ -40,7 +40,7 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: [3, state.context.totalSteps!],
+      steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: true,
       disabled: true,
       label: t('open-earn.aave.vault-form.confirm-btn'),
@@ -61,7 +61,7 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: [3, state.context.totalSteps!],
+      steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: false,
       disabled: !state.can('NEXT_STEP'),
       label: t('open-earn.aave.vault-form.confirm-btn'),
@@ -69,7 +69,15 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return (
+    <SidebarSection
+      {...sidebarSectionProps}
+      textButton={{
+        label: t('open-earn.aave.vault-form.back-to-editing'),
+        action: () => send('BACK_TO_EDITING'),
+      }}
+    />
+  )
 }
 
 function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
@@ -83,7 +91,6 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: [1, state.context.totalSteps!],
       isLoading: false,
       disabled: false,
       label: t('open-earn.aave.vault-form.retry-btn'),
@@ -91,7 +98,15 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
     },
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
+  return (
+    <SidebarSection
+      {...sidebarSectionProps}
+      textButton={{
+        label: t('open-earn.aave.vault-form.back-to-editing'),
+        action: () => send('BACK_TO_EDITING'),
+      }}
+    />
+  )
 }
 
 function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
@@ -119,7 +134,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: [1, state.context.totalSteps!],
+      steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: state.context.loading,
       disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
       label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
@@ -179,7 +194,7 @@ export function SidebarOpenAaveVault() {
             action: () => send('NEXT_STEP'),
           }}
           textButton={{
-            label: 'Back to enter ETH',
+            label: t('open-earn.aave.vault-form.back-to-editing'),
             action: () => send('BACK_TO_EDITING'),
           }}
           viewLocked={hasOtherAssetsThanETH_STETH}

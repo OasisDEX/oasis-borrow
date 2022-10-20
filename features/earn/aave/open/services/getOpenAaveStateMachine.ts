@@ -188,6 +188,12 @@ export function getOpenAaveStateMachine$(
                           type: 'POSITION_OPENED',
                         }),
                       ),
+                      raiseError: sendParent(
+                        (context): OpenAaveEvent => ({
+                          type: 'TRANSACTION_FAILED',
+                          error: context.txError,
+                        }),
+                      ),
                     },
                   })
                   .withContext({
@@ -211,6 +217,13 @@ export function getOpenAaveStateMachine$(
           collateralToken: 'STETH',
           slippage: userSettings.slippage,
           currentPosition: EMPTY_POSITION,
+          currentStep: 1,
+          totalSteps: 4,
+          token: 'ETH',
+          inputDelay: 1000,
+          strategyName: 'stETHeth',
+          userInput: {},
+          loading: false,
         })
     }),
   )
