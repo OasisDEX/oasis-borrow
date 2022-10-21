@@ -70,6 +70,11 @@ export type ManageAaveEvent =
     }
   | { type: 'GO_TO_EDITING' }
   | { type: 'REPORT_NEW_RISK_RATIO' }
+  | {
+      type: 'PARAMETERS_RECEIVED'
+      adjustParams: IStrategy | undefined
+      estimatedGasPrice: HasGasEstimation | undefined
+    }
   | BaseAaveEvent
 
 export const createManageAaveStateMachine =
@@ -82,7 +87,10 @@ export const createManageAaveStateMachine =
         events: {} as ManageAaveEvent,
         services: {} as {
           getParameters: {
-            data: { adjustParams: IStrategy; estimatedGasPrice: HasGasEstimation } | undefined
+            data: {
+              adjustParams: IStrategy | undefined
+              estimatedGasPrice: HasGasEstimation | undefined
+            }
           }
           getProxyAddress: {
             data: string
@@ -151,6 +159,9 @@ export const createManageAaveStateMachine =
             },
           ],
           on: {
+            PARAMETERS_RECEIVED: {
+              actions: ['assignTransactionParameters', 'setLoadingFalse'],
+            },
             UPDATE_STRATEGY_INFO: {
               actions: ['updateStrategyInfo'],
             },
@@ -339,10 +350,20 @@ export const createManageAaveStateMachine =
             currentPosition: event.data.position,
           }
         }),
-        assignTransactionParameters: assign((context, event) => ({
-          transactionParameters: event.data?.adjustParams,
-          estimatedGasPrice: event.data?.estimatedGasPrice,
-        })),
+        assignTransactionParameters: assign((context, event) => {
+          if (event.type === 'PARAMETERS_RECEIVED') {
+            return {
+              transactionParameters: event.adjustParams,
+              estimatedGasPrice: event.estimatedGasPrice,
+            }
+          } else {
+            // ¯\_(ツ)_/¯
+            return {
+              transactionParameters: event.data?.adjustParams,
+              estimatedGasPrice: event.data?.estimatedGasPrice,
+            }
+          }
+        }),
         clearTransactionParameters: assign((_) => ({
           transactionParameters: undefined,
           estimatedGasPrice: undefined,

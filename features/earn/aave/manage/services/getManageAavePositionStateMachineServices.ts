@@ -1,7 +1,7 @@
 import { IStrategy, Position } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
-import { combineLatest, Observable } from 'rxjs'
-import { first, map } from 'rxjs/operators'
+import { combineLatest, from, Observable, of } from 'rxjs'
+import { first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 
 import {
   AaveConfigurationData,
@@ -91,36 +91,59 @@ export function getManageAavePositionStateMachineServices$(
   return combineLatest(context$, userSettings$, txHelpers$).pipe(
     map(([contextConnected, userSettings, txHelpers]) => {
       return {
-        getParameters: async (
+        getParameters: (
           context,
-        ): Promise<
-          { adjustParams: IStrategy; estimatedGasPrice: HasGasEstimation } | undefined
-        > => {
-          if (!context.proxyAddress || !context.protocolData || !context.userInput.riskRatio)
-            return undefined
-
-          const adjustParams = await getAdjustAaveParameters(
-            contextConnected,
-            context.userInput.amount,
-            context.userInput.riskRatio,
-            userSettings.slippage,
-            context.proxyAddress,
-            context.protocolData.position,
-          )
-
-          const gasQty = await txHelpers
-            .estimateGas(callOperationExecutor, {
-              kind: TxMetaKind.operationExecutor,
-              calls: adjustParams.calls as any,
-              operationName: 'CustomOperation',
-              proxyAddress: context.proxyAddress!,
+        ): Observable<{
+          type: string
+          adjustParams: IStrategy | undefined
+          estimatedGasPrice: HasGasEstimation | undefined
+        }> => {
+          if (!context.proxyAddress || !context.protocolData || !context.userInput.riskRatio) {
+            return of({
+              type: 'PARAMETERS_RECEIVED',
+              adjustParams: undefined,
+              estimatedGasPrice: undefined,
             })
-            .pipe(first())
-            .toPromise()
+          }
 
-          const estimatedGasPrice = await gasEstimation$(gasQty).pipe(first()).toPromise()
-
-          return { adjustParams, estimatedGasPrice }
+          return from(
+            // get position simulation params and calldata to adjust
+            getAdjustAaveParameters(
+              contextConnected,
+              context.userInput.amount,
+              context.userInput.riskRatio,
+              userSettings.slippage,
+              context.proxyAddress,
+              context.protocolData.position,
+            ),
+          ).pipe(
+            flatMap((adjustParams) => {
+              // do gas estimation separately
+              return from(
+                txHelpers.estimateGas(callOperationExecutor, {
+                  kind: TxMetaKind.operationExecutor,
+                  calls: adjustParams.calls as any,
+                  operationName: 'CustomOperation',
+                  proxyAddress: context.proxyAddress!,
+                }),
+              ).pipe(
+                switchMap((gasQty) => gasEstimation$(gasQty)),
+                map((estimatedGasPrice) => {
+                  return {
+                    type: 'PARAMETERS_RECEIVED',
+                    adjustParams,
+                    estimatedGasPrice,
+                  }
+                }),
+                // pass through position call data before gas estimation
+                startWith({
+                  adjustParams,
+                  estimatedGasPrice: undefined,
+                  type: 'PARAMETERS_RECEIVED',
+                }),
+              )
+            }),
+          )
         },
         getBalance: (context, _): Observable<ManageAaveEvent> => {
           return tokenBalances$.pipe(
