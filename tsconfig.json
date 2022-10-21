@@ -24,7 +24,8 @@
       "handlers/*": ["handlers/*"],
       "content/*": ["content/*"],
       "theme/*": ["theme/*"],
-      "theme": ["theme"]
+      "theme": ["theme"],
+      "config/*": ["config/*"]
     },
     "noEmit": true,
     "esModuleInterop": true,
