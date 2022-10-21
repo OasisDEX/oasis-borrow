@@ -137,8 +137,6 @@ export enum CommonAnalyticsSections {
   HeaderTabs = 'HeaderTabs',
   Banner = 'Banner',
   Form = 'Form',
-  OpenEarnSTETH = 'OpenEarnSTETH',
-  ManageSTETH = 'ManageSTETH',
 }
 
 export enum EventTypes {
