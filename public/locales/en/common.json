@@ -1693,9 +1693,10 @@
     "form-title": "Take Profit Setup",
     "banner": {
       "header": "Automate your exit strategy",
-      "content": "Setup Take Profit to create an exit strategy for your position and take emotion out of the equation. Take Profit automatically closes your position and locks in profits when your collateral hits your target price.",
+      "content": "Setup Take Profit to create an exit strategy for your position and take emotion out of the equation. Take Profit automatically closes your position and locks in profits when your collateral hits your target price. Find out more about how this works",
       "button": "Setup Take Profit"
     },
+    "set-trigger-description": "You are setting up a Take Profit that will close your position and take your profit when the {{token}} Price reaches ${{executionPrice}}. Learn more about how Take Profit works ",
     "trigger-col-price": "Trigger {{token}} Price",
     "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Take profit.",
     "estimated-profit": "Estimated Profit at close {{amount}}",

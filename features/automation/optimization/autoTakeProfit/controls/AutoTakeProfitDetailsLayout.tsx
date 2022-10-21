@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
+import { AppLink } from 'components/Links'
 import { ContentCardTriggerColPrice } from 'components/vault/detailsSection/ContentCardTriggerColPrice'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import {
@@ -68,7 +69,14 @@ export function AutoTakeProfitDetailsLayout({
       ) : (
         <Banner
           title={t('auto-take-profit.banner.header')}
-          description={t('auto-take-profit.banner.content')}
+          description={
+            <>
+              {t('auto-take-profit.banner.content')}{' '}
+              <AppLink href="https://kb.oasis.app/help/take-profit" sx={{ fontSize: 2 }}>
+                {t('here')}.
+              </AppLink>
+            </>
+          }
           image={{
             src: '/static/img/setup-banner/auto-take-profit.svg',
             backgroundColor: bannerGradientPresets.autoTakeProfit[0],
