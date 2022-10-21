@@ -83,11 +83,6 @@ export function AdjustRiskView({
 
   const priceMovementWarningThreshold = new BigNumber(20)
 
-  const priceMovementToDisplay = formatPercent(
-    BigNumber.min(priceMovementUntilLiquidation, priceMovementWarningThreshold),
-    { precision: 2 },
-  )
-
   const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
 
   const liquidationPenalty = formatPercent(
