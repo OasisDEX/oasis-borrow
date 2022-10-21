@@ -885,13 +885,13 @@ export const trackingEvents = {
 
   discover: {
     selectedInNavigation: (userContext: MixpanelUserContext) => {
-      mixpanelInternalAPI('btn-click', {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
         id: 'Discover',
         ...userContext,
       })
     },
     selectedCategory: (kind: DiscoverPages, userContext: MixpanelUserContext) => {
-      mixpanelInternalAPI('btn-click', {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
         id: upperFirst(camelCase(kind)),
         ...userContext,
       })
@@ -902,7 +902,7 @@ export const trackingEvents = {
       value: string,
       userContext: MixpanelUserContext,
     ) => {
-      mixpanelInternalAPI('input-change', {
+      mixpanelInternalAPI(EventTypes.InputChange, {
         id: `${upperFirst(camelCase(label))}Filter`,
         table: kind,
         [label]: value,
@@ -910,7 +910,7 @@ export const trackingEvents = {
       })
     },
     clickedTableBanner: (kind: DiscoverPages, link: string, userContext: MixpanelUserContext) => {
-      mixpanelInternalAPI('btn-click', {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
         id: 'TableBanner',
         table: kind,
         link,
@@ -918,7 +918,7 @@ export const trackingEvents = {
       })
     },
     viewPosition: (vaultId: string | number) => {
-      mixpanelInternalAPI('btn-click', {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
         id: 'ViewPosition',
         vaultId,
       })
