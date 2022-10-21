@@ -1,7 +1,7 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
@@ -36,27 +36,31 @@ export function AdjustRiskView({
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
-  // onChain position
-  // target position
+  const onChainPosition = state.context.protocolData?.position
+  const simulation = state.context.transactionParameters?.simulation
+  const targetPosition = simulation?.position
 
-  const transactionParametersSimulation = state.context.transactionParameters?.simulation
-
-  const position = state.context.protocolData
-    ? state.context.protocolData.position
-    : transactionParametersSimulation?.position
-
-  const maxRisk = position?.category.maxLoanToValue
+  const maxRisk = targetPosition
+    ? targetPosition?.category.maxLoanToValue
+    : onChainPosition?.category.maxLoanToValue
 
   const minRisk =
-    (transactionParametersSimulation?.minConfigurableRiskRatio &&
+    (simulation?.minConfigurableRiskRatio &&
       BigNumber.max(
-        transactionParametersSimulation?.minConfigurableRiskRatio.loanToValue,
+        simulation?.minConfigurableRiskRatio.loanToValue,
         aaveStETHMinimumRiskRatio.loanToValue,
       )) ||
     aaveStETHMinimumRiskRatio.loanToValue
 
-  const liquidationPrice =
-    transactionParametersSimulation?.position.liquidationPrice || position?.liquidationPrice || zero
+  // avoid liquidation price value jumping back to default when getting new txn params
+  const [liquidationPrice, setLiquidationPrice] = useState(
+    targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero,
+  )
+  useEffect(() => {
+    if (targetPosition) {
+      setLiquidationPrice(targetPosition.liquidationPrice)
+    }
+  }, [targetPosition])
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
@@ -65,7 +69,7 @@ export function AdjustRiskView({
     AT_RISK = 'AT_RISK',
   }
 
-  const healthFactor = position?.healthFactor
+  const healthFactor = targetPosition ? targetPosition?.healthFactor : onChainPosition?.healthFactor
 
   const warningHealthFactor = new BigNumber('1.25')
 
@@ -95,7 +99,7 @@ export function AdjustRiskView({
 
   const sliderValue =
     state.context.userInput.riskRatio?.loanToValue ||
-    position?.riskRatio.loanToValue ||
+    onChainPosition?.riskRatio.loanToValue ||
     aaveStETHMinimumRiskRatio.loanToValue
 
   const sidebarSectionProps: SidebarSectionProps = {
