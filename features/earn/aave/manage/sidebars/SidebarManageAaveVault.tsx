@@ -15,7 +15,7 @@ import { StrategyInformationContainer } from '../../common/components/informatio
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
+import { ManageAaveEvent, ManageAaveStateMachineState, OperationType } from '../state'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
@@ -166,7 +166,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -184,6 +184,30 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
       action: () => send('GO_TO_EDITING'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('manage-earn.aave.vault-form.success-title'),
+    content: (
+      <Grid gap={3}>
+        <Box>
+          <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
+          </Flex>
+        </Box>
+        <StrategyInformationContainer state={state} />
+      </Grid>
+    ),
+    primaryButton: {
+      label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
+      url: `/earn/aave/open/${state.context.strategy}`,
     },
   }
 
@@ -230,8 +254,11 @@ export function SidebarManageAaveVault() {
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
-    case state.matches('txSuccess'):
-      return <ManageAaveSuccessStateView state={state} send={send} />
+    case state.matches('txSuccess') &&
+      state.context.operationType === OperationType.ADJUST_POSITION:
+      return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
+    case state.matches('txSuccess') && state.context.operationType === OperationType.CLOSE_POSITION:
+      return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     default: {
       return <></>
     }
