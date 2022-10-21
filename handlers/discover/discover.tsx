@@ -1,6 +1,10 @@
-import { HighestPnl, HighRisk, LargestDebt, MostYield, Prisma } from '@prisma/client'
+import { HighestPnl, MostYield, Prisma } from '@prisma/client'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
-import { DiscoverPages } from 'features/discover/types'
+import {
+  DiscoverPages,
+  DiscoverTableVaultActivity,
+  DiscoverTableVaultStatus,
+} from 'features/discover/types'
 import { values } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
@@ -15,6 +19,39 @@ const querySchema = z.object({
   time: z.string().optional(),
   table: z.string().optional(),
 })
+
+type OmitNonDecimal<T> = { [K in keyof T]: T[K] extends Prisma.Decimal ? K : never }[keyof T]
+type DiscoverLite = OmitNonDecimal<HighestPnl | MostYield>
+
+type Status = {
+  kind: DiscoverTableVaultActivity
+  additionalData: {
+    toStopLoss?: number
+    tillLiquidation?: number
+  }
+}
+type Activity = {
+  kind: DiscoverTableVaultStatus
+  additionalData: {
+    timestamp?: number
+  }
+}
+type DiscoverResponse = {
+  protocolId: string
+  positionId: string
+  collateralType: string
+  collateralValue?: number
+  liquidationPrice?: number
+  liquidationValue?: number
+  vaultDebt?: number
+  collRatio?: number
+  netValue?: number
+  pnl?: number
+  yield_30d?: number
+  vaultMultiple?: number
+  status?: Status
+  activity?: Activity
+}
 
 const getAssetFilter = (asset?: string): string | Prisma.StringFilter => {
   return !asset || asset === 'all'
@@ -66,19 +103,19 @@ const getMultipleFilter = (time?: string): Prisma.StringFilter => {
 const getTimeFilter = (time?: string): { [key: string]: 'desc' } => {
   switch (time) {
     case '1d': {
-      return { t_1d: 'desc' }
+      return { pnl_1d: 'desc' }
     }
     case '7d': {
-      return { t_7d: 'desc' }
+      return { pnl_7d: 'desc' }
     }
     case '30d': {
-      return { t_30d: 'desc' }
+      return { pnl_30d: 'desc' }
     }
     case '1y': {
-      return { t_365d: 'desc' }
+      return { pnl_365d: 'desc' }
     }
     default: {
-      return { t_all: 'desc' }
+      return { pnl_all: 'desc' }
     }
   }
 }
@@ -90,46 +127,44 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
   const sizeFilter = getSizeFilter(size)
   const multipleFilter = getMultipleFilter(multiple)
   const timeFilter = getTimeFilter(time)
-  const timeIndex = Object.keys(timeFilter)[0]
+  const timeIndex = Object.keys(timeFilter)[0] as DiscoverLite
 
   try {
-    let data: HighRisk[] | LargestDebt[] | HighestPnl[] | MostYield[] = []
+    let data: DiscoverResponse[] = []
 
     switch (table) {
-      case DiscoverPages.HIGH_RISK_POSITIONS:
-        data = (await prisma.highRisk.findMany({
+      case DiscoverPages.HIGH_RISK_POSITIONS: {
+        const resp = await prisma.highRisk.findMany({
           take: AMOUNT_OF_ROWS,
           where: { collateral_type: assetFilter, collateral_value: sizeFilter },
-          select: {
-            protocol_id: true,
-            position_id: true,
-            collateral_type: true,
-            liquidation_price: true,
-            liquidation_value: true,
-            next_price: true,
-            status: true,
-          },
-        })) as HighRisk[]
-
+        })
+        data = resp.map((i) => ({
+          protocolId: i.protocol_id,
+          positionId: i.position_id,
+          collateralType: i.collateral_type,
+          LiquidationPrice: i.liquidation_price.toNumber(),
+          liquidationValue: i.liquidation_value.toNumber(),
+          status: i.status as Status,
+        }))
         break
-      case DiscoverPages.LARGEST_DEBT:
-        data = (await prisma.largestDebt.findMany({
+      }
+      case DiscoverPages.LARGEST_DEBT: {
+        const resp = await prisma.largestDebt.findMany({
           take: AMOUNT_OF_ROWS,
           where: { collateral_type: assetFilter, collateral_value: sizeFilter },
-          select: {
-            protocol_id: true,
-            position_id: true,
-            collateral_type: true,
-            collateral_value: true,
-            vault_debt: true,
-            coll_ratio: true,
-            last_action: true,
-          },
-        })) as LargestDebt[]
-
+        })
+        data = resp.map((i) => ({
+          protocolId: i.protocol_id,
+          positionId: i.position_id,
+          collateralType: i.collateral_type,
+          collateralValue: i.collateral_value.toNumber(),
+          vaultDebt: i.vault_debt.toNumber(),
+          collRatio: i.collateral_value.div(i.vault_debt).toNumber(),
+        }))
         break
-      case DiscoverPages.HIGHEST_MULTIPLY_PNL:
-        data = (await prisma.highestPnl.findMany({
+      }
+      case DiscoverPages.HIGHEST_MULTIPLY_PNL: {
+        const resp = await prisma.highestPnl.findMany({
           take: AMOUNT_OF_ROWS,
           where: {
             collateral_type: assetFilter,
@@ -137,32 +172,34 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
             vault_multiple: multipleFilter,
           },
           orderBy: timeFilter,
-          select: {
-            protocol_id: true,
-            position_id: true,
-            collateral_type: true,
-            vault_multiple: true,
-            [timeIndex]: true,
-            last_action: true,
-          },
-        })) as HighestPnl[]
+        })
+        data = resp.map((i) => ({
+          protocolId: i.protocol_id,
+          positionId: i.position_id,
+          collateralType: i.collateral_type,
+          pnl: i[timeIndex].toNumber(),
+          vaultMultiple: i.vault_multiple.toNumber(),
+          activity: i.last_action as Activity,
+        }))
         break
-      case DiscoverPages.MOST_YIELD_EARNED:
-        data = (await prisma.mostYield.findMany({
+      }
+      case DiscoverPages.MOST_YIELD_EARNED: {
+        const resp = await prisma.mostYield.findMany({
           take: AMOUNT_OF_ROWS,
           where: { collateral_type: assetFilter, collateral_value: sizeFilter },
           orderBy: timeFilter,
-          select: {
-            protocol_id: true,
-            position_id: true,
-            collateral_type: true,
-            net_value: true,
-            [timeIndex]: true,
-            yield_30d: true,
-            last_action: true,
-          },
-        })) as MostYield[]
+        })
+        data = resp.map((i) => ({
+          protocolId: i.protocol_id,
+          positionId: i.position_id,
+          collateralType: i.collateral_type,
+          netValue: i.net_value.toNumber(),
+          pnl: i[timeIndex].toNumber(),
+          yield_30d: i.yield_30d.toNumber(),
+          activity: i.last_action as Activity,
+        }))
         break
+      }
       default:
         break
     }

@@ -89,83 +89,81 @@ model WalletRisk {
     @@map("wallet_risk")
 }
 
+model CollateralType {
+    collateral_name     String   @unique
+    next_price          Decimal
+    current_price       Decimal
+    liquidation_ratio   Decimal
+    liquidation_penalty Decimal
+    rate                Decimal?
+    market_price        Decimal?
+
+    @@map("collateral_type")
+}
+
 model Discover {
-    protocol_id       String
-    position_id       String
-    collateral_type   String
-    liquidation_price Decimal
-    liquidation_value Decimal
-    collateral_value  Decimal
-    vault_multiple    Decimal
-    next_price        Decimal
-    net_value         Decimal
-    yield_30d         Decimal
-    vault_debt        Decimal
-    coll_ratio        Decimal
-    status            Json
-    last_action       Json
+    protocol_id           String
+    position_id           String
+    collateral_type       String
+    vault_debt            Decimal
+    vault_normalized_debt Decimal?
+    vault_collateral      Decimal
 
-    profit_and_loss_all  Decimal
-    profit_and_loss_1d   Decimal
-    profit_and_loss_7d   Decimal
-    profit_and_loss_30d  Decimal
-    profit_and_loss_365d Decimal
-    earned_to_date_all   Decimal
-    earned_to_date_1d    Decimal
-    earned_to_date_7d    Decimal
-    earned_to_date_30d   Decimal
-    earned_to_date_365d  Decimal
+    yield_30d   Decimal
+    status      Json
+    last_action Json
+    pnl_all     Decimal
+    pnl_1d      Decimal
+    pnl_7d      Decimal
+    pnl_30d     Decimal
+    pnl_365d    Decimal
+    pnl_ytd     Decimal
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@unique([protocol_id, position_id], name: "protocol_id_position_id")
+    @@unique([protocol_id, position_id])
     @@map("discover")
 }
 
 model HighRisk {
-    protocol_id     String
-    position_id     String
-    collateral_type String
-
+    protocol_id       String
+    position_id       String
+    collateral_type   String
     collateral_value  Decimal
     liquidation_price Decimal
     liquidation_value Decimal
     next_price        Decimal
-
-    status Json
+    status            Json
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("high_risk")
 }
 
 model LargestDebt {
-    protocol_id     String
-    position_id     String
-    collateral_type String
-
+    protocol_id      String
+    position_id      String
+    collateral_type  String
     collateral_value Decimal
     vault_debt       Decimal
     coll_ratio       Decimal
-
-    last_action Json
+    last_action      Json
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("largest_debt")
 }
 
 model HighestPnl {
-    protocol_id     String
-    position_id     String
-    collateral_type String
-
+    protocol_id      String
+    position_id      String
+    collateral_type  String
     collateral_value Decimal
     vault_multiple   Decimal
-    t_1d             Decimal
-    t_7d             Decimal
-    t_30d            Decimal
-    t_365d           Decimal
-    t_all            Decimal
+    pnl_all          Decimal
+    pnl_1d           Decimal
+    pnl_7d           Decimal
+    pnl_30d          Decimal
+    pnl_365d         Decimal
+    pnl_ytd          Decimal
     last_action      Json
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
@@ -173,17 +171,17 @@ model HighestPnl {
 }
 
 model MostYield {
-    protocol_id     String
-    position_id     String
-    collateral_type String
-
+    protocol_id      String
+    position_id      String
+    collateral_type  String
     collateral_value Decimal
     net_value        Decimal
-    t_1d             Decimal
-    t_7d             Decimal
-    t_30d            Decimal
-    t_365d           Decimal
-    t_all            Decimal
+    pnl_all          Decimal
+    pnl_1d           Decimal
+    pnl_7d           Decimal
+    pnl_30d          Decimal
+    pnl_365d         Decimal
+    pnl_ytd          Decimal
     yield_30d        Decimal
     last_action      Json
 
