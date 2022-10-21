@@ -52,15 +52,8 @@ export function AdjustRiskView({
       )) ||
     aaveStETHMinimumRiskRatio.loanToValue
 
-  // avoid liquidation price value jumping back to default when getting new txn params
-  const [liquidationPrice, setLiquidationPrice] = useState(
-    targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero,
-  )
-  useEffect(() => {
-    if (targetPosition) {
-      setLiquidationPrice(targetPosition.liquidationPrice)
-    }
-  }, [targetPosition])
+  const liquidationPrice =
+    targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
@@ -104,7 +97,13 @@ export function AdjustRiskView({
         <SliderValuePicker
           sliderPercentageFill={new BigNumber(0)}
           leftBoundry={liquidationPrice}
-          leftBoundryFormatter={(value) => formatBigNumber(value, 2)}
+          leftBoundryFormatter={(value) => {
+            if (state.context.loading) {
+              return '...'
+            } else {
+              return formatBigNumber(value, 2)
+            }
+          }}
           rightBoundry={oracleAssetPrice}
           rightBoundryFormatter={(value) => `Current: ${formatBigNumber(value, 2)}`}
           rightBoundryStyling={{

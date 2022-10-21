@@ -44,6 +44,7 @@ export type OpenAaveMachineEvents =
       type: 'UPDATE_META_INFO'
       hasOtherAssetsThanETH_STETH: boolean
     }
+  | { type: 'RESET_RISK_RATIO' }
 
 export type OpenAaveTransactionEvents =
   | {
@@ -154,6 +155,17 @@ export const createOpenAaveStateMachine = createMachine(
           SET_RISK_RATIO: {
             actions: [
               'setRiskRatio',
+              'debounceSendingToParametersMachine',
+              'debounceSendingToSimulationMachine',
+              'sendUpdateToParametersMachine',
+              'sendUpdateToSimulationMachine',
+              'setIsLoadingTrue',
+            ],
+          },
+          RESET_RISK_RATIO: {
+            actions: [
+              'resetRiskRatio',
+              'clearTransactionParameters',
               'debounceSendingToParametersMachine',
               'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
@@ -277,6 +289,14 @@ export const createOpenAaveStateMachine = createMachine(
           userInput: {
             ...context.userInput,
             riskRatio: event.riskRatio,
+          },
+        }
+      }),
+      resetRiskRatio: assign((context) => {
+        return {
+          userInput: {
+            ...context.userInput,
+            riskRatio: aaveStETHMinimumRiskRatio,
           },
         }
       }),

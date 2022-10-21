@@ -182,6 +182,7 @@ export const createManageAaveStateMachine =
             },
             RESET_RISK_RATIO: {
               actions: ['clearTransactionParameters', 'clearRiskRatio', 'setLoadingFalse'],
+              target: 'editing',
             },
             GO_TO_EDITING: {
               target: 'editing',
@@ -237,11 +238,7 @@ export const createManageAaveStateMachine =
           },
         },
         txSuccess: {
-          on: {
-            GO_TO_EDITING: {
-              target: 'editing',
-            },
-          },
+          type: 'final',
         },
         reviewingClosing: {
           entry: [

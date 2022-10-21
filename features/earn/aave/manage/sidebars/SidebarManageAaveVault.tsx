@@ -183,7 +183,7 @@ function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      action: () => send('GO_TO_EDITING'),
+      action: () => location && location.reload(),
     },
   }
 
