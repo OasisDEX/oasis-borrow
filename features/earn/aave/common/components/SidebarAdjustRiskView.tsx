@@ -36,6 +36,9 @@ export function AdjustRiskView({
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
+  // onChain position
+  // target position
+
   const transactionParametersSimulation = state.context.transactionParameters?.simulation
 
   const position = state.context.protocolData
@@ -150,24 +153,26 @@ export function AdjustRiskView({
             withBullet={false}
           />
         ) : (
-          <MessageCard
-            messages={[
-              isWarning
-                ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
-                    collateralToken,
-                    priceMovement: priceMovementToDisplay,
-                    debtToken,
-                    liquidationPenalty,
-                  })
-                : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
-                    collateralToken,
-                    priceMovement: priceMovementToDisplay,
-                    debtToken,
-                    liquidationPenalty,
-                  }),
-            ]}
-            type={isWarning ? 'warning' : 'ok'}
-          />
+          state.context.transactionParameters && (
+            <MessageCard
+              messages={[
+                isWarning
+                  ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                      collateralToken,
+                      priceMovement: formatPercent(priceMovementUntilLiquidation, { precision: 2 }),
+                      debtToken,
+                      liquidationPenalty,
+                    })
+                  : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                      collateralToken,
+                      priceMovement: formatPercent(priceMovementUntilLiquidation, { precision: 2 }),
+                      debtToken,
+                      liquidationPenalty,
+                    }),
+              ]}
+              type={isWarning ? 'warning' : 'ok'}
+            />
+          )
         )}
 
         <SidebarResetButton
