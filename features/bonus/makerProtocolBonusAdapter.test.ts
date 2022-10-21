@@ -167,14 +167,17 @@ describe('makerProtocolBonusAdapter', () => {
       expect(claimAllCbState).to.be.undefined
     })
 
-    it('does not provide claim function if the connected wallet is not the same as the vault controller', () => {
-      const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
-        customVaultResolverImp: () =>
-          createMockVaultResolver$({ controller: '0xDifferentAddress' }),
-      })
+    it(
+      'does not provide claim function if the connected wallet is not the same as the vault controller',
+      () => {
+        const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
+          customVaultResolverImp: () =>
+            createMockVaultResolver$({ controller: '0xDifferentAddress' }),
+        })
 
-      const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
-      expect(claimAllCbState).to.be.undefined
-    })
+        const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+        expect(claimAllCbState).to.be.undefined
+      }
+    )
   })
 })

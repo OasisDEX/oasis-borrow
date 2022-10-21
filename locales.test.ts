@@ -1,6 +1,5 @@
 import { expect } from 'chai'
 import { readFileSync } from 'fs'
-import { describe, it } from 'mocha'
 
 import nextConfig from './next-i18next.config'
 

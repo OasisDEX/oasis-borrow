@@ -13,10 +13,8 @@ export function isNullish(amount: BigNumber | undefined | null): boolean {
 export function checkIfVaultEmptyAndProtectionActive(
   position: BorrowPositionVM | MultiplyPositionVM,
 ) {
-  return (
-    position.collateralLocked &&
-    Number(position.collateralLocked.replace(/[^0-9]+/g, '')) === 0.0 &&
-    position.protectionAmount &&
-    Number(position.protectionAmount.replace(/[^0-9]+/g, '')) > 0
-  )
+  return position.collateralLocked &&
+  Number(position.collateralLocked.replace(/[^0-9]+/g, '')) === 0.0 &&
+  position.protectionAmount &&
+  Number(position.protectionAmount.replace(/[^0-9]+/g, '')) > 0;
 }

@@ -8,7 +8,7 @@ export interface Career {
   slug: string
 }
 export function slugify(name: string) {
-  return name.replace(/\.mdx$/, '')
+  return name.replace(/\.mdx$/, '');
 }
 
 export function getCareerFileNames() {

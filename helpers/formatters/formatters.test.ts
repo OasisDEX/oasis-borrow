@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
-import { beforeEach, describe, it } from 'mocha'
 
 import { billion, million, thousand, zero } from '../zero'
 import {
@@ -41,10 +40,13 @@ describe('Formatting numbers as shorthand ones', () => {
   })
 
   // tslint:disable-next-line:max-line-length
-  it('should format billions and not remove trailing zeroes if any after precicion format on number with digits after the precision point', () => {
-    const number = new BigNumber(23.45900002).times(billion)
-    expect(formatAsShorthandNumbers(number, 5)).to.eq('23.45900B')
-  })
+  it(
+    'should format billions and not remove trailing zeroes if any after precicion format on number with digits after the precision point',
+    () => {
+      const number = new BigNumber(23.45900002).times(billion)
+      expect(formatAsShorthandNumbers(number, 5)).to.eq('23.45900B')
+    }
+  )
 
   it('should format millions', () => {
     const number = new BigNumber(999.999).times(million)
@@ -72,10 +74,13 @@ describe('Formatting numbers as shorthand ones', () => {
   })
 
   // tslint:disable-next-line:max-line-length
-  it('should format millions and not remove trailing zeroes if any after precicion format on number with digits after the precision point', () => {
-    const number = new BigNumber(243.45900002).times(million)
-    expect(formatAsShorthandNumbers(number, 5)).to.eq('243.45900M')
-  })
+  it(
+    'should format millions and not remove trailing zeroes if any after precicion format on number with digits after the precision point',
+    () => {
+      const number = new BigNumber(243.45900002).times(million)
+      expect(formatAsShorthandNumbers(number, 5)).to.eq('243.45900M')
+    }
+  )
 
   it('should format thousands', () => {
     const number = new BigNumber(123.4567).times(thousand)
@@ -103,10 +108,13 @@ describe('Formatting numbers as shorthand ones', () => {
   })
 
   // tslint:disable-next-line:max-line-length
-  it('should format thousands and not remove trailing zeroes if any after precicion format on number with digits after the precision point', () => {
-    const number = new BigNumber(23.45900002).times(thousand)
-    expect(formatAsShorthandNumbers(number, 4)).to.eq('23.4590K')
-  })
+  it(
+    'should format thousands and not remove trailing zeroes if any after precicion format on number with digits after the precision point',
+    () => {
+      const number = new BigNumber(23.45900002).times(thousand)
+      expect(formatAsShorthandNumbers(number, 4)).to.eq('23.4590K')
+    }
+  )
 
   it('should not shorthand the number', () => {
     const number = new BigNumber(923.45900002)
@@ -124,10 +132,13 @@ describe('Formatting numbers as shorthand ones', () => {
   })
 
   // tslint:disable-next-line:max-line-length
-  it('should not shorthand the number but format to precision and not remove trailing zeroes if any', () => {
-    const number = new BigNumber(923.45900002)
-    expect(formatAsShorthandNumbers(number, 4)).to.eq('923.4590')
-  })
+  it(
+    'should not shorthand the number but format to precision and not remove trailing zeroes if any',
+    () => {
+      const number = new BigNumber(923.45900002)
+      expect(formatAsShorthandNumbers(number, 4)).to.eq('923.4590')
+    }
+  )
 
   it('should format 0', () => {
     expect(formatAsShorthandNumbers(zero, 4)).to.eq('0.0000')
@@ -192,15 +203,21 @@ describe('Formatting crypto balances according to number formatting spec', () =>
     expect(formatCryptoBalance(amount)).to.eq('-10.01')
   })
 
-  it('should format number with precision 2 and not shorthand thousands', () => {
-    const amount = new BigNumber(9.991235).times(thousand)
-    expect(formatCryptoBalance(amount)).to.eq('9,991.23')
-  })
+  it(
+    'should format number with precision 2 and not shorthand thousands',
+    () => {
+      const amount = new BigNumber(9.991235).times(thousand)
+      expect(formatCryptoBalance(amount)).to.eq('9,991.23')
+    }
+  )
 
-  it('should format number with precision 2 and not shorthand thousands (negative number)', () => {
-    const amount = new BigNumber(-999.991235).times(thousand)
-    expect(formatCryptoBalance(amount)).to.eq('-999,991.23')
-  })
+  it(
+    'should format number with precision 2 and not shorthand thousands (negative number)',
+    () => {
+      const amount = new BigNumber(-999.991235).times(thousand)
+      expect(formatCryptoBalance(amount)).to.eq('-999,991.23')
+    }
+  )
 
   it('should have precision of 2 and suffix M', () => {
     const amount = new BigNumber('10.012').times(million)
@@ -275,20 +292,26 @@ describe('Formatting fiat balances according to number formatting spec', () => {
     expect(formatFiatBalance(amount)).to.eq('234.98M')
   })
 
-  it('should format number with precision 2 and suffix M (negative number)', () => {
-    const amount = new BigNumber(-234.985623423).times(million)
-    expect(formatFiatBalance(amount)).to.eq('-234.98M')
-  })
+  it(
+    'should format number with precision 2 and suffix M (negative number)',
+    () => {
+      const amount = new BigNumber(-234.985623423).times(million)
+      expect(formatFiatBalance(amount)).to.eq('-234.98M')
+    }
+  )
 
   it('should format number with precision 2 and suffix B', () => {
     const amount = new BigNumber(1234.12345).times(million)
     expect(formatFiatBalance(amount)).to.eq('1.23B')
   })
 
-  it('should format number with precision 2 and suffix B (negative number)', () => {
-    const amount = new BigNumber(-1234.985623423).times(million)
-    expect(formatFiatBalance(amount)).to.eq('-1.23B')
-  })
+  it(
+    'should format number with precision 2 and suffix B (negative number)',
+    () => {
+      const amount = new BigNumber(-1234.985623423).times(million)
+      expect(formatFiatBalance(amount)).to.eq('-1.23B')
+    }
+  )
 
   it('should format zero balance', () => {
     const amount = new BigNumber('0.000000000000').times(billion)

@@ -8,27 +8,30 @@ import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
 
 describe('bonusPipe', () => {
   describe('showing the blockchain state', () => {
-    it('does not provide claimAll function if there are no bonuses to claim', () => {
-      const bonusPipe = createBonusPipe$(
-        () => ({
-          bonus$: of({
-            amountToClaim: new BigNumber(0),
-            symbol: 'CSH',
-            name: 'token name',
-            moreInfoLink: 'https://example.com',
-            readableAmount: '0CSH',
+    it(
+      'does not provide claimAll function if there are no bonuses to claim',
+      () => {
+        const bonusPipe = createBonusPipe$(
+          () => ({
+            bonus$: of({
+              amountToClaim: new BigNumber(0),
+              symbol: 'CSH',
+              name: 'token name',
+              moreInfoLink: 'https://example.com',
+              readableAmount: '0CSH',
+            }),
+            claimAll$: of(undefined),
           }),
-          claimAll$: of(undefined),
-        }),
-        new BigNumber(123),
-      )
+          new BigNumber(123),
+        )
 
-      const state = getStateUnpacker(bonusPipe)
+        const state = getStateUnpacker(bonusPipe)
 
-      expect(state().bonus).to.not.be.undefined
-      expect(state().claimAll).to.be.undefined
-      expect(state().claimTxnState).to.be.undefined
-    })
+        expect(state().bonus).to.not.be.undefined
+        expect(state().claimAll).to.be.undefined
+        expect(state().claimTxnState).to.be.undefined
+      }
+    )
   })
 
   describe('claiming the rewards', () => {

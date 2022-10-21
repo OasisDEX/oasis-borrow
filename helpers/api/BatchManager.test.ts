@@ -9,11 +9,11 @@ const mockConnection = 'https://www.goingnowhere.com'
 describe('BatchManager', () => {
   let clock: sinon.SinonFakeTimers
 
-  beforeEach(function () {
+  beforeEach(() => {
     clock = sinon.useFakeTimers()
   })
 
-  afterEach(function () {
+  afterEach(() => {
     clock.restore()
   })
 
@@ -47,30 +47,33 @@ describe('BatchManager', () => {
     expect(mockFetchJson).to.have.been.calledOnce
   })
 
-  it('should skip cache if cache ttl is exceeded between batches', async () => {
-    const mockBatch = createMockBatch()
-    const resolvesTo = mockBatch.map(() => ({
-      result: 'cached-result',
-    }))
-    const mockFetchJson = sinon.stub().resolves(resolvesTo) as any
-    mockFetchJson.onSecondCall().resolves(resolvesTo)
+  it(
+    'should skip cache if cache ttl is exceeded between batches',
+    async () => {
+      const mockBatch = createMockBatch()
+      const resolvesTo = mockBatch.map(() => ({
+        result: 'cached-result',
+      }))
+      const mockFetchJson = sinon.stub().resolves(resolvesTo) as any
+      mockFetchJson.onSecondCall().resolves(resolvesTo)
 
-    const batchManager = createBatchManager(mockFetchJson)
+      const batchManager = createBatchManager(mockFetchJson)
 
-    // First call
-    await batchManager.batchCall(mockBatch)
-    const defaultCacheTtlPlus100ms = 15100
-    clock.tick(defaultCacheTtlPlus100ms)
+      // First call
+      await batchManager.batchCall(mockBatch)
+      const defaultCacheTtlPlus100ms = 15100
+      clock.tick(defaultCacheTtlPlus100ms)
 
-    // Second call
-    await batchManager.batchCall(mockBatch)
+      // Second call
+      await batchManager.batchCall(mockBatch)
 
-    expect(mockFetchJson).to.have.been.calledTwice
-    expect(mockFetchJson.getCall(1)).to.have.been.calledWith(
-      mockConnection,
-      JSON.stringify(mockBatch),
-    )
-  })
+      expect(mockFetchJson).to.have.been.calledTwice
+      expect(mockFetchJson.getCall(1)).to.have.been.calledWith(
+        mockConnection,
+        JSON.stringify(mockBatch),
+      )
+    }
+  )
   describe('ordering results', () => {
     it('should maintain request order when served 100% via cache', async () => {
       const mockBatch = createMockBatch()
@@ -93,74 +96,80 @@ describe('BatchManager', () => {
       expect(batchResults.map((batchResult) => batchResult.data)).to.deep.equal(mockBatch)
     })
 
-    it('should maintain the request order when all requests skip cache', async () => {
-      const mockBatch = createMockBatch()
-      const fetchJsonMockResult = mockBatch.map((requestInsideBatch) => ({
-        result: requestInsideBatch,
-      }))
-      const mockFetchJson = sinon.stub().resolves(fetchJsonMockResult) as any
-      mockFetchJson.onSecondCall().resolves(fetchJsonMockResult)
-      const batchManager = createBatchManager(mockFetchJson)
-
-      // ACT
-      const batchResults = await batchManager.batchCall(mockBatch)
-
-      // ASSERT
-      batchResults.forEach(function (result, index) {
-        expect(result?.requestIdx).to.equal(index)
-      })
-      expect(batchResults.map((batchResult) => batchResult.data)).to.deep.equal(mockBatch)
-    })
-
-    it('should maintain request order when served partially <100% by the cache', async () => {
-      // ARRANGE
-
-      const firstBatch = createMockBatch(0, 3)
-      const secondBatch = createMockBatch(6, 9)
-      const thirdBatch = createMockBatch(3, 6)
-
-      const mockFetchJson = sinon.stub().resolves(
-        firstBatch.map((requestInsideBatch) => ({
+    it(
+      'should maintain the request order when all requests skip cache',
+      async () => {
+        const mockBatch = createMockBatch()
+        const fetchJsonMockResult = mockBatch.map((requestInsideBatch) => ({
           result: requestInsideBatch,
-        })),
-      ) as any
-      mockFetchJson.onSecondCall().resolves(
-        secondBatch.map((requestInsideBatch) => ({
-          result: requestInsideBatch,
-        })),
-      ) as any
+        }))
+        const mockFetchJson = sinon.stub().resolves(fetchJsonMockResult) as any
+        mockFetchJson.onSecondCall().resolves(fetchJsonMockResult)
+        const batchManager = createBatchManager(mockFetchJson)
 
-      mockFetchJson.onCall(2).resolves(
-        thirdBatch.map((requestInsideBatch) => ({
-          result: requestInsideBatch,
-        })),
-      ) as any
+        // ACT
+        const batchResults = await batchManager.batchCall(mockBatch)
 
-      const batchManager = createBatchManager(mockFetchJson)
+        // ASSERT
+        batchResults.forEach(function (result, index) {
+          expect(result?.requestIdx).to.equal(index)
+        })
+        expect(batchResults.map((batchResult) => batchResult.data)).to.deep.equal(mockBatch)
+      }
+    )
 
-      await batchManager.batchCall(firstBatch)
-      await batchManager.batchCall(secondBatch)
+    it(
+      'should maintain request order when served partially <100% by the cache',
+      async () => {
+        // ARRANGE
 
-      // ACT
+        const firstBatch = createMockBatch(0, 3)
+        const secondBatch = createMockBatch(6, 9)
+        const thirdBatch = createMockBatch(3, 6)
 
-      // Final call with cached requests interwoven with uncached
-      const batchResults = await batchManager.batchCall([
-        ...firstBatch,
-        ...thirdBatch,
-        ...secondBatch,
-      ])
+        const mockFetchJson = sinon.stub().resolves(
+          firstBatch.map((requestInsideBatch) => ({
+            result: requestInsideBatch,
+          })),
+        ) as any
+        mockFetchJson.onSecondCall().resolves(
+          secondBatch.map((requestInsideBatch) => ({
+            result: requestInsideBatch,
+          })),
+        ) as any
 
-      // ASSERT
+        mockFetchJson.onCall(2).resolves(
+          thirdBatch.map((requestInsideBatch) => ({
+            result: requestInsideBatch,
+          })),
+        ) as any
 
-      batchResults.forEach(function (result, index) {
-        expect(result?.requestIdx).to.equal(index)
-      })
-      expect(batchResults.map((batchResult) => batchResult.data)).to.deep.equal([
-        ...firstBatch,
-        ...thirdBatch,
-        ...secondBatch,
-      ])
-    })
+        const batchManager = createBatchManager(mockFetchJson)
+
+        await batchManager.batchCall(firstBatch)
+        await batchManager.batchCall(secondBatch)
+
+        // ACT
+
+        // Final call with cached requests interwoven with uncached
+        const batchResults = await batchManager.batchCall([
+          ...firstBatch,
+          ...thirdBatch,
+          ...secondBatch,
+        ])
+
+        // ASSERT
+
+        batchResults.forEach(function (result, index) {
+          expect(result?.requestIdx).to.equal(index)
+        })
+        expect(batchResults.map((batchResult) => batchResult.data)).to.deep.equal([
+          ...firstBatch,
+          ...thirdBatch,
+          ...secondBatch,
+        ])
+      }
+    )
   })
 })
 

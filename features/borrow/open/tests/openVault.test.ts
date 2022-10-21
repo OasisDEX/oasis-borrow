@@ -77,49 +77,58 @@ describe('openVault', () => {
       expect(state().depositAmountUSD!).to.deep.equal(depositAmount.times(collateralPrice))
     })
 
-    it('should update generate amount only when a depositAmount is specified and the showGenerateOption is toggled', () => {
-      const depositAmount = new BigNumber('5')
-      const generateAmount = new BigNumber('2000')
-      const state = getStateUnpacker(mockOpenVault$())
-      state().updateGenerate!(generateAmount)
-      expect(state().generateAmount).to.be.undefined
-      state().updateDeposit!(depositAmount)
-      state().updateGenerate!(generateAmount)
-      expect(state().generateAmount).to.be.undefined
-      state().toggleGenerateOption!()
-      state().updateGenerate!(generateAmount)
-      expect(state().depositAmount!).to.deep.equal(depositAmount)
-      expect(state().generateAmount!).to.deep.equal(generateAmount)
-    })
+    it(
+      'should update generate amount only when a depositAmount is specified and the showGenerateOption is toggled',
+      () => {
+        const depositAmount = new BigNumber('5')
+        const generateAmount = new BigNumber('2000')
+        const state = getStateUnpacker(mockOpenVault$())
+        state().updateGenerate!(generateAmount)
+        expect(state().generateAmount).to.be.undefined
+        state().updateDeposit!(depositAmount)
+        state().updateGenerate!(generateAmount)
+        expect(state().generateAmount).to.be.undefined
+        state().toggleGenerateOption!()
+        state().updateGenerate!(generateAmount)
+        expect(state().depositAmount!).to.deep.equal(depositAmount)
+        expect(state().generateAmount!).to.deep.equal(generateAmount)
+      }
+    )
 
-    it('should update generate max only when a depositAmount is specified and the showGenerateOption is toggled', () => {
-      const depositAmount = new BigNumber('5')
+    it(
+      'should update generate max only when a depositAmount is specified and the showGenerateOption is toggled',
+      () => {
+        const depositAmount = new BigNumber('5')
 
-      const state = getStateUnpacker(mockOpenVault$())
+        const state = getStateUnpacker(mockOpenVault$())
 
-      state().updateGenerateMax!()
-      expect(state().generateAmount).to.be.undefined
-      state().updateDeposit!(depositAmount)
-      state().updateGenerateMax!()
-      expect(state().generateAmount).to.be.undefined
-      state().toggleGenerateOption!()
-      state().updateGenerateMax!()
-      expect(state().depositAmount!).to.deep.equal(depositAmount)
-      expect(state().generateAmount!).to.deep.equal(state().maxGenerateAmount)
-    })
+        state().updateGenerateMax!()
+        expect(state().generateAmount).to.be.undefined
+        state().updateDeposit!(depositAmount)
+        state().updateGenerateMax!()
+        expect(state().generateAmount).to.be.undefined
+        state().toggleGenerateOption!()
+        state().updateGenerateMax!()
+        expect(state().depositAmount!).to.deep.equal(depositAmount)
+        expect(state().generateAmount!).to.deep.equal(state().maxGenerateAmount)
+      }
+    )
 
-    it('should deposit the max amount of collateral when updateDepositMax is triggered', () => {
-      const collateralBalance = new BigNumber('10')
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          balanceInfo: {
-            collateralBalance,
-          },
-        }),
-      )
-      state().updateDepositMax!()
-      expect(state().depositAmount!).to.deep.equal(collateralBalance)
-    })
+    it(
+      'should deposit the max amount of collateral when updateDepositMax is triggered',
+      () => {
+        const collateralBalance = new BigNumber('10')
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            balanceInfo: {
+              collateralBalance,
+            },
+          }),
+        )
+        state().updateDepositMax!()
+        expect(state().depositAmount!).to.deep.equal(collateralBalance)
+      }
+    )
 
     it('should update depositAmountUSD', () => {
       const depositAmountUSD = new BigNumber('5')
@@ -216,40 +225,46 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('editing')
     })
 
-    it('should skip allowance flow from editing when allowance is insufficent and ilk is ETH-*', () => {
-      const depositAmount = new BigNumber('100')
-      const generateAmount = new BigNumber('20000')
+    it(
+      'should skip allowance flow from editing when allowance is insufficent and ilk is ETH-*',
+      () => {
+        const depositAmount = new BigNumber('100')
+        const generateAmount = new BigNumber('20000')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: zero,
-          ilk: 'ETH-A',
-        }),
-      )
-      state().updateDeposit!(depositAmount)
-      state().updateGenerate!(generateAmount)
-      state().progress!()
-      expect(state().stage).to.not.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
-    })
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            allowance: zero,
+            ilk: 'ETH-A',
+          }),
+        )
+        state().updateDeposit!(depositAmount)
+        state().updateGenerate!(generateAmount)
+        state().progress!()
+        expect(state().stage).to.not.deep.equal('allowanceWaitingForConfirmation')
+        expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      }
+    )
 
-    it('should progress to allowance flow from editing when allowance is insufficent and ilk is not ETH-*', () => {
-      const depositAmount = new BigNumber('100')
-      const generateAmount = new BigNumber('20000')
+    it(
+      'should progress to allowance flow from editing when allowance is insufficent and ilk is not ETH-*',
+      () => {
+        const depositAmount = new BigNumber('100')
+        const generateAmount = new BigNumber('20000')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: zero,
-          ilk: 'WBTC-A',
-        }),
-      )
-      state().updateDeposit!(depositAmount)
-      state().updateGenerate!(generateAmount)
-      state().progress!()
-      expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
-    })
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            allowance: zero,
+            ilk: 'WBTC-A',
+          }),
+        )
+        state().updateDeposit!(depositAmount)
+        state().updateGenerate!(generateAmount)
+        state().progress!()
+        expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
+      }
+    )
 
     it('should handle set allowance to maximum and progress to editing', () => {
       const depositAmount = new BigNumber('100')
@@ -375,24 +390,27 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
     })
 
-    it('should progress to open vault tx flow from editing with proxyAddress and validAllowance', () => {
-      const depositAmount = new BigNumber('100')
-      const generateAmount = new BigNumber('20000')
+    it(
+      'should progress to open vault tx flow from editing with proxyAddress and validAllowance',
+      () => {
+        const depositAmount = new BigNumber('100')
+        const generateAmount = new BigNumber('20000')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: maxUint256,
-          ilk: 'WBTC-A',
-        }),
-      )
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            allowance: maxUint256,
+            ilk: 'WBTC-A',
+          }),
+        )
 
-      expect(state().totalSteps).to.deep.equal(2)
-      state().updateDeposit!(depositAmount)
-      state().updateGenerate!(generateAmount)
-      state().progress!()
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
-    })
+        expect(state().totalSteps).to.deep.equal(2)
+        state().updateDeposit!(depositAmount)
+        state().updateGenerate!(generateAmount)
+        state().progress!()
+        expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      }
+    )
 
     it('should skip stop loss step', () => {
       localStorage.setItem('features', '{"StopLossWrite":true}')
@@ -534,23 +552,26 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('editing')
     })
 
-    it('shold update totalSteps if allowance amount is less than deposit amount', () => {
-      const depositAmount = new BigNumber('100')
-      const startingAllowanceAmount = new BigNumber('99')
+    it(
+      'shold update totalSteps if allowance amount is less than deposit amount',
+      () => {
+        const depositAmount = new BigNumber('100')
+        const startingAllowanceAmount = new BigNumber('99')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: startingAllowanceAmount,
-          ilk: 'WBTC-A',
-        }),
-      )
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            allowance: startingAllowanceAmount,
+            ilk: 'WBTC-A',
+          }),
+        )
 
-      expect(state().totalSteps).to.deep.equal(2)
+        expect(state().totalSteps).to.deep.equal(2)
 
-      state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
-    })
+        state().updateDeposit!(depositAmount)
+        expect(state().totalSteps).to.deep.equal(3)
+      }
+    )
 
     it('should clear form values and go to editing stage', () => {
       const depositAmount = new BigNumber('100')
@@ -575,132 +596,150 @@ describe('openVault', () => {
   })
 
   describe('validation and errors', () => {
-    it('should add meaningful message when ledger throws error with disabled contract data', () => {
-      const _proxyAddress$ = new Subject<string>()
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          _proxyAddress$,
-          _txHelpers$: of({
-            ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockTxState(meta, TxStatus.Error).pipe(
-                map((txState) => ({
-                  ...txState,
-                  error: { name: 'EthAppPleaseEnableContractData' },
-                })),
-              ),
+    it(
+      'should add meaningful message when ledger throws error with disabled contract data',
+      () => {
+        const _proxyAddress$ = new Subject<string>()
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            _proxyAddress$,
+            _txHelpers$: of({
+              ...protoTxHelpers,
+              sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+                mockTxState(meta, TxStatus.Error).pipe(
+                  map((txState) => ({
+                    ...txState,
+                    error: { name: 'EthAppPleaseEnableContractData' },
+                  })),
+                ),
+            }),
           }),
-        }),
-      )
+        )
 
-      _proxyAddress$.next()
-      state().progress!()
-      state().progress!()
-      expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
-    })
+        _proxyAddress$.next()
+        state().progress!()
+        state().progress!()
+        expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
+      }
+    )
 
-    it('should add meaningful message when user has insufficient ETH funds to pay for tx', () => {
-      const _proxyAddress$ = new Subject<string>()
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          _proxyAddress$,
-          _txHelpers$: of({
-            ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockTxState(meta, TxStatus.Error).pipe(
-                map((txState) => ({
-                  ...txState,
-                  error: { message: 'insufficient funds for gas * price + value' },
-                })),
-              ),
+    it(
+      'should add meaningful message when user has insufficient ETH funds to pay for tx',
+      () => {
+        const _proxyAddress$ = new Subject<string>()
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            _proxyAddress$,
+            _txHelpers$: of({
+              ...protoTxHelpers,
+              sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+                mockTxState(meta, TxStatus.Error).pipe(
+                  map((txState) => ({
+                    ...txState,
+                    error: { message: 'insufficient funds for gas * price + value' },
+                  })),
+                ),
+            }),
+            balanceInfo: { ethBalance: new BigNumber(0.001) },
           }),
-          balanceInfo: { ethBalance: new BigNumber(0.001) },
-        }),
-      )
-      _proxyAddress$.next()
-      state().progress!()
-      state().progress!()
+        )
+        _proxyAddress$.next()
+        state().progress!()
+        state().progress!()
 
-      expect(state().errorMessages).to.deep.equal(['insufficientEthFundsForTx'])
-    })
+        expect(state().errorMessages).to.deep.equal(['insufficientEthFundsForTx'])
+      }
+    )
 
-    it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
-      const depositAmountExceeds = new BigNumber('2')
-      const depositAmountAll = new BigNumber('1')
+    it(
+      'validates if deposit amount exceeds collateral balance or depositing all ETH',
+      () => {
+        const depositAmountExceeds = new BigNumber('2')
+        const depositAmountAll = new BigNumber('1')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          ilks: ['ETH-A'],
-          ilk: 'ETH-A',
-          balanceInfo: {
-            collateralBalance: new BigNumber('1'),
-          },
-        }),
-      )
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            ilks: ['ETH-A'],
+            ilk: 'ETH-A',
+            balanceInfo: {
+              collateralBalance: new BigNumber('1'),
+            },
+          }),
+        )
 
-      state().updateDeposit!(depositAmountExceeds)
-      expect(state().errorMessages).to.deep.equal(['depositAmountExceedsCollateralBalance'])
-      state().updateDeposit!(depositAmountAll)
-      expect(state().errorMessages).to.deep.equal(['depositingAllEthBalance'])
-    })
+        state().updateDeposit!(depositAmountExceeds)
+        expect(state().errorMessages).to.deep.equal(['depositAmountExceedsCollateralBalance'])
+        state().updateDeposit!(depositAmountAll)
+        expect(state().errorMessages).to.deep.equal(['depositingAllEthBalance'])
+      }
+    )
 
-    it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
-      const depositAlmostAll = new BigNumber(10.9999)
+    it(
+      'validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)',
+      () => {
+        const depositAlmostAll = new BigNumber(10.9999)
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          ilks: ['ETH-A'],
-          ilk: 'ETH-A',
-          balanceInfo: {
-            ethBalance: new BigNumber(11),
-          },
-          gasEstimationUsd: new BigNumber(30),
-        }),
-      )
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            ilks: ['ETH-A'],
+            ilk: 'ETH-A',
+            balanceInfo: {
+              ethBalance: new BigNumber(11),
+            },
+            gasEstimationUsd: new BigNumber(30),
+          }),
+        )
 
-      state().updateDeposit!(depositAlmostAll)
-      expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
-    })
+        state().updateDeposit!(depositAlmostAll)
+        expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
+      }
+    )
 
-    it('validates if deposit amount leads to potential insufficient ETH funds for tx (other ilk case)', () => {
-      const depositAmount = new BigNumber('10')
+    it(
+      'validates if deposit amount leads to potential insufficient ETH funds for tx (other ilk case)',
+      () => {
+        const depositAmount = new BigNumber('10')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          ilk: 'WBTC-A',
-          balanceInfo: {
-            ethBalance: new BigNumber(0.001),
-          },
-          gasEstimationUsd: new BigNumber(30),
-        }),
-      )
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            ilk: 'WBTC-A',
+            balanceInfo: {
+              ethBalance: new BigNumber(0.001),
+            },
+            gasEstimationUsd: new BigNumber(30),
+          }),
+        )
 
-      state().updateDeposit!(depositAmount)
-      expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
-    })
+        state().updateDeposit!(depositAmount)
+        expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
+      }
+    )
 
-    it(`validates if generate doesn't exceeds debt ceiling and debt floor`, () => {
-      const depositAmount = new BigNumber('2')
-      const generateAmountAboveCeiling = new BigNumber('30')
-      const generateAmountBelowFloor = new BigNumber('9')
+    it(
+      `validates if generate doesn't exceeds debt ceiling and debt floor`,
+      () => {
+        const depositAmount = new BigNumber('2')
+        const generateAmountAboveCeiling = new BigNumber('30')
+        const generateAmountBelowFloor = new BigNumber('9')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          ilkData: {
-            debtCeiling: new BigNumber('8000025'),
-            debtFloor: new BigNumber('10'),
-          },
-        }),
-      )
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            ilkData: {
+              debtCeiling: new BigNumber('8000025'),
+              debtFloor: new BigNumber('10'),
+            },
+          }),
+        )
 
-      state().updateDeposit!(depositAmount)
-      state().toggleGenerateOption!()
-      state().updateGenerate!(generateAmountAboveCeiling)
-      expect(state().errorMessages).to.deep.equal(['generateAmountExceedsDebtCeiling'])
+        state().updateDeposit!(depositAmount)
+        state().toggleGenerateOption!()
+        state().updateGenerate!(generateAmountAboveCeiling)
+        expect(state().errorMessages).to.deep.equal(['generateAmountExceedsDebtCeiling'])
 
-      state().updateGenerate!(generateAmountBelowFloor)
-      expect(state().errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
-    })
+        state().updateGenerate!(generateAmountBelowFloor)
+        expect(state().errorMessages).to.deep.equal(['generateAmountLessThanDebtFloor'])
+      }
+    )
 
     it('validates custom allowance setting', () => {
       const depositAmount = new BigNumber('100')
@@ -727,47 +766,50 @@ describe('openVault', () => {
       expect(state().errorMessages).to.deep.equal(['customAllowanceAmountExceedsMaxUint256'])
     })
 
-    it('validates vault risk warnings and exceeding liquidation ratio on next price', () => {
-      const depositAmount = new BigNumber('6')
-      const generateAmountCurrentPriceDanger = new BigNumber('4700')
-      const generateAmountCurrentPriceWarning = new BigNumber('4300')
+    it(
+      'validates vault risk warnings and exceeding liquidation ratio on next price',
+      () => {
+        const depositAmount = new BigNumber('6')
+        const generateAmountCurrentPriceDanger = new BigNumber('4700')
+        const generateAmountCurrentPriceWarning = new BigNumber('4300')
 
-      const generateAmountNextPriceDanger = new BigNumber('4470')
-      const generateAmountNextPriceWarning = new BigNumber('3570')
+        const generateAmountNextPriceDanger = new BigNumber('4470')
+        const generateAmountNextPriceWarning = new BigNumber('3570')
 
-      const generateAmountNextPriceDangerTest = new BigNumber('5370')
+        const generateAmountNextPriceDangerTest = new BigNumber('5370')
 
-      const state = getStateUnpacker(
-        mockOpenVault$({
-          ilks: ['ETH-A'],
-          ilk: 'ETH-A',
-          priceInfo: {
-            ethChangePercentage: new BigNumber(-0.01),
-          },
-        }),
-      )
+        const state = getStateUnpacker(
+          mockOpenVault$({
+            ilks: ['ETH-A'],
+            ilk: 'ETH-A',
+            priceInfo: {
+              ethChangePercentage: new BigNumber(-0.01),
+            },
+          }),
+        )
 
-      state().updateDeposit!(depositAmount)
-      state().toggleGenerateOption!()
-      state().updateGenerate!(generateAmountCurrentPriceWarning)
-      expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelWarning'])
+        state().updateDeposit!(depositAmount)
+        state().toggleGenerateOption!()
+        state().updateGenerate!(generateAmountCurrentPriceWarning)
+        expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelWarning'])
 
-      state().updateGenerate!(generateAmountCurrentPriceDanger)
-      expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelDanger'])
+        state().updateGenerate!(generateAmountCurrentPriceDanger)
+        expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelDanger'])
 
-      state().updateGenerate!(generateAmountNextPriceWarning)
-      expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelWarningAtNextPrice'])
+        state().updateGenerate!(generateAmountNextPriceWarning)
+        expect(state().warningMessages).to.deep.equal(['vaultWillBeAtRiskLevelWarningAtNextPrice'])
 
-      state().updateGenerate!(generateAmountNextPriceDanger)
-      expect(state().warningMessages).to.deep.equal([
-        'vaultWillBeAtRiskLevelDangerAtNextPrice',
-        'vaultWillBeAtRiskLevelWarning',
-      ])
+        state().updateGenerate!(generateAmountNextPriceDanger)
+        expect(state().warningMessages).to.deep.equal([
+          'vaultWillBeAtRiskLevelDangerAtNextPrice',
+          'vaultWillBeAtRiskLevelWarning',
+        ])
 
-      state().updateGenerate!(generateAmountNextPriceDangerTest)
-      expect(state().errorMessages).to.deep.equal([
-        'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice',
-      ])
-    })
+        state().updateGenerate!(generateAmountNextPriceDangerTest)
+        expect(state().errorMessages).to.deep.equal([
+          'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice',
+        ])
+      }
+    )
   })
 })
