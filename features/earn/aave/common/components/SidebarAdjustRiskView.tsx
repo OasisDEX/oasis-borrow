@@ -1,5 +1,6 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { isEmpty } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
@@ -143,13 +144,14 @@ export function AdjustRiskView({
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
         </Flex>
         <StrategyInformationContainer state={state} />
-        {viewLocked ? (
+        {viewLocked && (
           <MessageCard
             messages={[t('manage-earn-vault.has-asset-already')]}
             type="error"
             withBullet={false}
           />
-        ) : (
+        )}
+        {!isEmpty(state.context.userInput) && !viewLocked && (
           <MessageCard
             messages={[
               isWarning
