@@ -46,12 +46,12 @@ export function AavePositionHeader({
   const { context: simulationContext } = simulationState
 
   const headlineDetails = []
-  if (simulationContext.yieldsMin && simulationContext.yieldsMax) {
+  if (simulationContext.baseYieldsMin && simulationContext.yieldsMax) {
     const formatYield = (yieldVal: BigNumber) =>
       formatPercent(yieldVal, {
         precision: 2,
       })
-    const yield7DaysMin = simulationContext.yieldsMin.annualisedYield7days!
+    const yield7DaysMin = simulationContext.baseYieldsMin.annualisedYield7days!
     const yield7DaysMax = simulationContext.yieldsMax.annualisedYield7days!
 
     const yield7DaysDiff = simulationContext.yieldsMax.annualisedYield7days!.minus(
@@ -100,7 +100,7 @@ export function AavePositionHeader({
       header={tokenPairList[strategyName].name}
       token={tokenPairList[strategyName].tokenList}
       details={headlineDetails}
-      loading={!aaveTVL?.totalValueLocked || simulationState.value === 'loading'}
+      loading={!aaveTVL?.totalValueLocked}
     />
   )
 }
