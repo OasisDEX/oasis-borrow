@@ -14,7 +14,7 @@ import {
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
-import { zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
@@ -88,7 +88,7 @@ export function getAutoTakeProfitStatus({
   const tokenAth = createTokenAth(vault.token)
   // TODO: bring back proper min slider value after testing
   // const min = tokenMarketPrice.times(MIN_MULTIPLIER)
-  const min = zero
+  const min = one
   const max = tokenAth
     ? tokenAth.times(MAX_MULTIPLIER_WITH_ATH)
     : tokenMarketPrice.times(MAX_MULTIPLIER_WITH_PRICE)
