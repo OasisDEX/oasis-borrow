@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one } from 'helpers/zero'
-import { describe } from 'mocha'
 
 import { TxMetaKind } from '../txMeta'
 import { MockProxyActionsSmartContractAdapter } from './adapters/mockProxyActionsSmartContractAdapter'
