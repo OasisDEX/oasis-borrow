@@ -15,6 +15,11 @@ const ConstantMultipleKBLink = (
   />
 )
 
+// TODO UPDATE LINK BEFORE RELEASE
+const AutoTakeProfitKBLink = (
+  <AppLink sx={{ color: 'warning100' }} href="https://kb.oasis.app/help/" />
+)
+
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]
   ilkData: IlkData
@@ -84,11 +89,41 @@ export function VaultWarnings({
         return translate('constant-multiple-auto-sell-triggered-immediately')
       case 'constantMultipleAutoBuyTriggeredImmediately':
         return translate('constant-multiple-auto-buy-triggered-immediately')
+      case 'existingTakeProfitTriggerAfterVaultReopen':
+        return translate('existing-take-profit-trigger-after-vault-reopen')
       case 'constantMultipleSellTriggerCloseToStopLossTrigger':
         return (
           <Trans
             i18nKey="vault-warnings.constant-multiple-sell-trigger-close-to-stop-loss-trigger"
             components={[ConstantMultipleKBLink]}
+          />
+        )
+      case 'autoTakeProfitTriggerLowerThanAutoBuyTrigger':
+        return (
+          <Trans
+            i18nKey="vault-warnings.auto-take-profit-trigger-lower-than-auto-buy-trigger"
+            components={[AutoTakeProfitKBLink]}
+          />
+        )
+      case 'autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger':
+        return (
+          <Trans
+            i18nKey="vault-warnings.auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger"
+            components={[AutoTakeProfitKBLink]}
+          />
+        )
+      case 'autoBuyTriggerGreaterThanAutoTakeProfit':
+        return (
+          <Trans
+            i18nKey="vault-warnings.auto-buy-trigger-greater-than-auto-take-profit"
+            components={[AutoTakeProfitKBLink]}
+          />
+        )
+      case 'constantMultipleBuyTriggerGreaterThanAutoTakeProfit':
+        return (
+          <Trans
+            i18nKey="vault-warnings.constant-multiple-buy-trigger-greater-than-auto-take-profit"
+            components={[AutoTakeProfitKBLink]}
           />
         )
       case 'addingConstantMultipleWhenAutoSellOrBuyEnabled':

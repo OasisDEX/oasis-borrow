@@ -46,6 +46,8 @@ export type VaultErrorMessage =
   | 'cantSetupAutoBuyOrSellWhenConstantMultipleEnabled'
   | 'minSellPriceWillPreventSellTrigger'
   | 'maxBuyPriceWillPreventBuyTrigger'
+  | 'autoTakeProfitTriggeredImmediately'
+  | 'takeProfitWillTriggerImmediatelyAfterVaultReopen'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -94,6 +96,8 @@ interface ErrorMessagesHandler {
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled?: boolean
   minSellPriceWillPreventSellTrigger?: boolean
   maxBuyPriceWillPreventBuyTrigger?: boolean
+  autoTakeProfitTriggeredImmediately?: boolean
+  takeProfitWillTriggerImmediatelyAfterVaultReopen?: boolean
 }
 
 export function errorMessagesHandler({
@@ -143,6 +147,8 @@ export function errorMessagesHandler({
   cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
   minSellPriceWillPreventSellTrigger,
   maxBuyPriceWillPreventBuyTrigger,
+  autoTakeProfitTriggeredImmediately,
+  takeProfitWillTriggerImmediatelyAfterVaultReopen,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -327,6 +333,14 @@ export function errorMessagesHandler({
 
   if (maxBuyPriceWillPreventBuyTrigger) {
     errorMessages.push('maxBuyPriceWillPreventBuyTrigger')
+  }
+
+  if (autoTakeProfitTriggeredImmediately) {
+    errorMessages.push('autoTakeProfitTriggeredImmediately')
+  }
+
+  if (takeProfitWillTriggerImmediatelyAfterVaultReopen) {
+    errorMessages.push('takeProfitWillTriggerImmediatelyAfterVaultReopen')
   }
 
   return errorMessages

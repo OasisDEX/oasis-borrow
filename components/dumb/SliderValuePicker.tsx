@@ -17,8 +17,8 @@ export interface SliderValuePickerProps {
   leftBoundryStyling?: SxStyleProp
   rightBoundryStyling?: SxStyleProp
   step: number
-  leftLabel?: string
-  rightLabel?: string
+  leftLabel?: string | JSX.Element
+  rightLabel?: string | JSX.Element
 }
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
@@ -60,7 +60,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       </Flex>
       <Box my={1}>
         <Slider
-          sx={{ ...props.rightBoundryStyling, background }}
+          sx={{ background }}
           disabled={props.disabled}
           step={props.step}
           min={props.minBoundry?.toNumber()}

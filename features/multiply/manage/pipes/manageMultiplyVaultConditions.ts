@@ -9,6 +9,7 @@ import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
   afterCollRatioThresholdRatioValidator,
+  automationTriggeredValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -27,7 +28,7 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
-  stopLossTriggeredValidator,
+  vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -231,11 +232,14 @@ export interface ManageVaultConditions {
   highSlippage: boolean
   invalidSlippage: boolean
   stopLossTriggered: boolean
+  autoTakeProfitTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
   afterCollRatioBelowAutoSellRatio: boolean
   afterCollRatioAboveAutoBuyRatio: boolean
   afterCollRatioBelowConstantMultipleSellRatio: boolean
   afterCollRatioAboveConstantMultipleBuyRatio: boolean
+  takeProfitWillTriggerImmediatelyAfterVaultReopen: boolean
+  existingTakeProfitTriggerAfterVaultReopen: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
@@ -301,11 +305,14 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   highSlippage: false,
   invalidSlippage: false,
   stopLossTriggered: false,
+  autoTakeProfitTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
   afterCollRatioBelowAutoSellRatio: false,
   afterCollRatioAboveAutoBuyRatio: false,
   afterCollRatioBelowConstantMultipleSellRatio: false,
   afterCollRatioAboveConstantMultipleBuyRatio: false,
+  takeProfitWillTriggerImmediatelyAfterVaultReopen: false,
+  existingTakeProfitTriggerAfterVaultReopen: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -335,6 +342,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     daiAllowance,
     shouldPaybackAll,
     balanceInfo: { collateralBalance, daiBalance },
+    priceInfo: { nextCollateralPrice },
     isEditingStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
@@ -368,6 +376,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     autoSellData,
     autoBuyData,
     constantMultipleData,
+    autoTakeProfitData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -627,6 +636,28 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       type: 'above',
     })
 
+  const takeProfitWillTriggerImmediatelyAfterVaultReopen = vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator(
+    {
+      debt,
+      afterDebt,
+      nextCollateralPrice,
+      type: 'above',
+      isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
+      executionPrice: autoTakeProfitData?.executionPrice,
+    },
+  )
+
+  const existingTakeProfitTriggerAfterVaultReopen = vaultEmptyNextPriceAboveOrBelowTakeProfitPriceValidator(
+    {
+      debt,
+      afterDebt,
+      nextCollateralPrice,
+      type: 'below',
+      isTriggerEnabled: autoTakeProfitData?.isTriggerEnabled,
+      executionPrice: autoTakeProfitData?.executionPrice,
+    },
+  )
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -653,7 +684,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       afterCollRatioBelowAutoSellRatio ||
       afterCollRatioAboveAutoBuyRatio ||
       afterCollRatioBelowConstantMultipleSellRatio ||
-      afterCollRatioAboveConstantMultipleBuyRatio)
+      afterCollRatioAboveConstantMultipleBuyRatio ||
+      takeProfitWillTriggerImmediatelyAfterVaultReopen)
 
   const editingProgressionDisabledForUncontrolled =
     !accountIsController &&
@@ -708,7 +740,9 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered = stopLossTriggeredValidator({ vaultHistory })
+  const { stopLossTriggered, autoTakeProfitTriggered } = automationTriggeredValidator({
+    vaultHistory,
+  })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
@@ -769,11 +803,14 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
 
     highSlippage,
     stopLossTriggered,
+    autoTakeProfitTriggered,
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowAutoSellRatio,
     afterCollRatioAboveAutoBuyRatio,
     afterCollRatioBelowConstantMultipleSellRatio,
     afterCollRatioAboveConstantMultipleBuyRatio,
+    takeProfitWillTriggerImmediatelyAfterVaultReopen,
+    existingTakeProfitTriggerAfterVaultReopen,
 
     insufficientEthFundsForTx,
   }

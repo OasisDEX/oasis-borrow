@@ -13,6 +13,7 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
@@ -22,15 +23,20 @@ import {
   warningsConstantMultipleValidation,
 } from 'features/automation/optimization/constantMultiple/validators'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupConstantMultipleProps {
   autoBuyTriggerData: AutoBSTriggerData
   autoSellTriggerData: AutoBSTriggerData
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   balanceInfo: BalanceInfo
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
@@ -58,11 +64,13 @@ interface SidebarSetupConstantMultipleProps {
   textButtonHandler: () => void
   txHandler: () => void
   vault: Vault
+  vaultType: VaultType
 }
 
 export function SidebarSetupConstantMultiple({
   autoBuyTriggerData,
   autoSellTriggerData,
+  autoTakeProfitTriggerData,
   balanceInfo,
   collateralToBePurchased,
   collateralToBeSold,
@@ -90,6 +98,7 @@ export function SidebarSetupConstantMultiple({
   vault,
   debtDeltaWhenSellAtCurrentCollRatio,
   debtDeltaAfterSell,
+  vaultType,
 }: SidebarSetupConstantMultipleProps) {
   const gasEstimation = useGasEstimationContext()
 
@@ -105,6 +114,8 @@ export function SidebarSetupConstantMultiple({
     disabled: isDropdownDisabled({ stage }),
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+    isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
+    vaultType,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -140,11 +151,14 @@ export function SidebarSetupConstantMultiple({
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     constantMultipleState,
     debtDeltaWhenSellAtCurrentCollRatio,
+    constantMultipleBuyExecutionPrice: nextBuyPrice,
+    autoTakeProfitExecutionPrice: autoTakeProfitTriggerData.executionPrice,
   })
-  const cancelConstantMultipleErrors = extractCancelBSErrors(errors)
-  const cancelConstantMultipleWarnings = extractCancelBSWarnings(warnings)
+  const cancelConstantMultipleErrors = extractCancelAutomationErrors(errors)
+  const cancelConstantMultipleWarnings = extractCancelAutomationWarnings(warnings)
   const validationErrors = isAddForm ? errors : cancelConstantMultipleErrors
 
   if (isConstantMultipleActive) {

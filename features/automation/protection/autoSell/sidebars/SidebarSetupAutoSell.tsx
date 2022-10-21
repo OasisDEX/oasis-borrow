@@ -28,10 +28,14 @@ import {
   warningsAutoSellValidation,
 } from 'features/automation/protection/autoSell/validators'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
+import {
+  extractCancelAutomationErrors,
+  extractCancelAutomationWarnings,
+} from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -39,6 +43,7 @@ import { calculateStepNumber } from '../../stopLoss/helpers'
 
 interface SidebarSetupAutoSellProps {
   vault: Vault
+  vaultType: VaultType
   ilkData: IlkData
   balanceInfo: BalanceInfo
   autoSellTriggerData: AutoBSTriggerData
@@ -67,6 +72,7 @@ interface SidebarSetupAutoSellProps {
 
 export function SidebarSetupAutoSell({
   vault,
+  vaultType,
   ilkData,
   balanceInfo,
   context,
@@ -113,6 +119,7 @@ export function SidebarSetupAutoSell({
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
+    vaultType,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
@@ -155,8 +162,8 @@ export function SidebarSetupAutoSell({
     constantMultipleTriggerData,
     isRemoveForm,
   })
-  const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
-  const cancelAutoSellErrors = extractCancelBSErrors(errors)
+  const cancelAutoSellWarnings = extractCancelAutomationWarnings(warnings)
+  const cancelAutoSellErrors = extractCancelAutomationErrors(errors)
   const validationErrors = isAddForm ? errors : cancelAutoSellErrors
 
   if (isAutoSellActive) {

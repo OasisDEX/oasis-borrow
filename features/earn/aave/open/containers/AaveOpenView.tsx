@@ -1,5 +1,5 @@
 import { TabBar } from 'components/TabBar'
-import { aaveFaq } from 'features/content/faqs/aave'
+import { AaveFaq } from 'features/content/faqs/aave'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -9,7 +9,8 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { AaveOpenHeaderComponent, SimulateSectionComponent } from '../components'
+import { AavePositionHeaderWithDetails } from '../../components'
+import { SimulateSectionComponent } from '../components'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from '../state'
 import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
@@ -29,7 +30,7 @@ function AaveOpenContainer({
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine}>
       <Container variant="vaultPageContainer">
-        <AaveOpenHeaderComponent strategyName={strategyName} />
+        <AavePositionHeaderWithDetails strategyName={strategyName} />
         <TabBar
           variant="underline"
           sections={[
@@ -46,9 +47,13 @@ function AaveOpenContainer({
               ),
             },
             {
-              value: 'faq',
-              label: t('system.faq'),
-              content: <Card variant="faq">{aaveFaq}</Card>,
+              value: 'position-info',
+              label: t('system.position-info'),
+              content: (
+                <Card variant="faq">
+                  <AaveFaq />
+                </Card>
+              ),
             },
           ]}
         />

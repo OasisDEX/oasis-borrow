@@ -6,17 +6,17 @@ import { Context } from '../../../blockchain/network'
 import { IlkWithBalance } from '../../ilks/ilksWithBalances'
 import { VaultWithHistory } from '../../vaultHistory/vaultsHistory'
 
-export type PositionDetails = VaultWithHistory &
+export type MakerPositionDetails = VaultWithHistory &
   IlkWithBalance & {
     isOwner: boolean
   }
 
-export function createPositionsList$(
+export function createMakerPositionsList$(
   context$: Observable<Context>,
   ilksListWithBalances$: Observable<IlkWithBalance[]>,
   vaultsWithHistory$: (address: string) => Observable<VaultWithHistory[]>,
   address: string,
-): Observable<PositionDetails[]> {
+): Observable<MakerPositionDetails[]> {
   return vaultsWithHistory$(address).pipe(
     switchMap((vaultsWithHistory) =>
       combineLatest(context$, ilksListWithBalances$).pipe(

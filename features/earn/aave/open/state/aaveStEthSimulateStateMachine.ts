@@ -1,3 +1,5 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { assign, createMachine } from 'xstate'
 import { log } from 'xstate/lib/actions'
@@ -6,10 +8,12 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { AaveStEthYieldsResponse, CalculateSimulationResult } from '../services'
 
 interface AaveStEthSimulateStateMachineContext {
-  yields?: AaveStEthYieldsResponse
+  yieldsMin?: AaveStEthYieldsResponse
+  yieldsMax?: AaveStEthYieldsResponse
   token?: string
   amount?: BigNumber
-  multiply?: BigNumber
+  riskRatio?: IRiskRatio
+  riskRatioMax?: IRiskRatio
   transactionFee?: BigNumber
   fee?: BigNumber
   simulation?: CalculateSimulationResult
@@ -20,7 +24,7 @@ export type AaveStEthSimulateStateMachineEvents =
       type: 'USER_PARAMETERS_CHANGED'
       token: string
       amount: BigNumber
-      multiply: BigNumber
+      riskRatio: IRiskRatio
     }
   | { type: 'FEE_CHANGED'; fee: BigNumber }
 
@@ -35,7 +39,10 @@ export const aaveStEthSimulateStateMachine = createMachine(
       context: {} as AaveStEthSimulateStateMachineContext,
       services: {} as {
         getYields: {
-          data: AaveStEthYieldsResponse
+          data: {
+            yieldsMin: AaveStEthYieldsResponse
+            yieldsMax: AaveStEthYieldsResponse
+          }
         }
         calculate: {
           data: CalculateSimulationResult
@@ -60,6 +67,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
         on: {
           USER_PARAMETERS_CHANGED: {
             actions: ['assignUserParameters'],
+            target: 'loading',
           },
           FEE_CHANGED: {
             actions: ['assignFees'],
@@ -79,7 +87,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
     },
     on: {
       USER_PARAMETERS_CHANGED: {
-        target: 'calculating',
+        target: 'loading',
         actions: ['assignUserParameters'],
       },
       FEE_CHANGED: {
@@ -90,12 +98,30 @@ export const aaveStEthSimulateStateMachine = createMachine(
   },
   {
     actions: {
-      assignYields: assign((context, event) => ({ yields: event.data })),
-      assignUserParameters: assign((context, event) => ({
-        token: event.token,
-        amount: event.amount,
-        multiply: event.multiply,
+      assignYields: assign((context, event) => ({
+        yieldsMin: event.data.yieldsMin,
+        yieldsMax: event.data.yieldsMax,
       })),
+      assignUserParameters: assign((context, event) => {
+        // reporting the event here ensures that the data is
+        // final(-ish) - for example when inputting '123' it
+        // sends '123' and not '1', '12', and '123'
+        context.amount !== event.amount &&
+          event.amount &&
+          trackingEvents.earn.stETHOpenPositionDepositAmount(event.amount)
+
+        event.amount &&
+          context.riskRatio !== event.riskRatio &&
+          trackingEvents.earn.stETHOpenPositionMoveSlider(
+            event.amount!,
+            event.riskRatio!.loanToValue,
+          )
+        return {
+          token: event.token,
+          amount: event.amount,
+          riskRatio: event.riskRatio,
+        }
+      }),
       assignFees: assign((context, event) => ({
         fee: event.fee,
       })),

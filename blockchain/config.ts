@@ -4,6 +4,7 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
+import * as aaveLendingPool from './abi/aave-lending-pool.json'
 import * as aavePriceOracle from './abi/aave-price-oracle.json'
 import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
@@ -182,7 +183,7 @@ const protoMain = {
   ),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
-  lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
+  lowerFeesExchange: contractDesc(exchange, '0xf22f17b1d2354b4f4f52e4d164e4eb5e1f0a6ba6'),
   fmm: mainnetAddresses.MCD_FLASH,
   etherscan: {
     url: 'https://etherscan.io',
@@ -212,18 +213,17 @@ const protoMain = {
   aaveProtocolDataProvider: contractDesc(
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+    mainnetAddresses.AAVE_PROTOCOL_DATA_PROVIDER,
   ),
   aavePriceOracle: contractDesc(
     aavePriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    '0xA50ba011c48153De246E5192C8f9258A2ba79Ca9',
+    mainnetAddresses.AAVE_PRICE_ORACLE,
   ),
-  // TODO: Replace with mainnet address (current val has been used for testing only)
-  operationExecutor: contractDesc(
-    operationExecutor,
-    getConfig()?.publicRuntimeConfig.operationExecutorTemp,
-  ),
+  aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
+  operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
+  swapAddress: mainnetAddresses.SWAP,
+  chainlinkEthUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
 }
 
 export type NetworkConfig = typeof protoMain
@@ -309,17 +309,20 @@ const kovan: NetworkConfig = {
   aaveProtocolDataProvider: contractDesc(
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+    '0x0',
   ),
   aavePriceOracle: contractDesc(
     aavePriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x',
   ),
+  aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
   operationExecutor: contractDesc(
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
   ),
+  swapAddress: main.swapAddress,
+  chainlinkEthUsdPriceFeedAddress: '0x0',
 }
 
 const goerli: NetworkConfig = {
@@ -407,17 +410,17 @@ const goerli: NetworkConfig = {
   aaveProtocolDataProvider: contractDesc(
     aaveProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+    goerliAddresses.AAVE_PROTOCOL_DATA_PROVIDER,
   ),
   aavePriceOracle: contractDesc(
     aavePriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    '0xc1c6f3b788FE7F4bB896a2Fad65F5a8c0Ad509C9',
+    goerliAddresses.AAVE_PRICE_ORACLE,
   ),
-  operationExecutor: contractDesc(
-    operationExecutor,
-    getConfig()?.publicRuntimeConfig.operationExecutorTemp,
-  ),
+  aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
+  operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
+  swapAddress: goerliAddresses.SWAP,
+  chainlinkEthUsdPriceFeedAddress: goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
 }
 
 const hardhat: NetworkConfig = {

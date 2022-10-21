@@ -3,6 +3,7 @@ import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
+import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
 import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
 import { guniFaq } from 'features/content/faqs/guni'
@@ -27,9 +28,12 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     autoSellTriggerData,
     autoBuyTriggerData,
     constantMultipleTriggerData,
+    autoTakeProfitTriggerData,
   } = useAutomationContext()
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
+
+  const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
 
   const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, stopLossTriggerData)
@@ -55,6 +59,10 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     autoSellTriggerData,
     stopLossTriggerData,
   )
+  const isAutoTakeProfitEnabled = useAutoTakeProfitStateInitializator(
+    vault,
+    autoTakeProfitTriggerData,
+  )
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
@@ -64,11 +72,13 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
         header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
         token={[vault.token]}
         priceInfo={priceInfo}
+        colRatio={colRatioPercnentage}
       />
     )
 
   const protectionEnabled = isStopLossEnabled || isAutoSellEnabled
-  const optimizationEnabled = isAutoBuyEnabled || isConstantMultipleEnabled
+  const optimizationEnabled =
+    isAutoBuyEnabled || isConstantMultipleEnabled || isAutoTakeProfitEnabled
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 

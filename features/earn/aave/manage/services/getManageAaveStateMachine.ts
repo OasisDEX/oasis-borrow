@@ -1,57 +1,94 @@
-import BigNumber from 'bignumber.js'
-import { Observable } from 'rxjs'
+import { OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import { isEqual } from 'lodash'
+import { combineLatest, Observable } from 'rxjs'
+import { distinctUntilChanged } from 'rxjs/internal/operators'
 import { map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
+import { OperationExecutorTxMeta } from '../../../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
+import { Tickers } from '../../../../../blockchain/prices'
+import { EMPTY_POSITION } from '../../../../aave'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { ParametersStateMachine } from '../../open/state'
-import { ManageAavePositionData } from '../pipelines/manageAavePosition'
+import { UserSettingsState } from '../../../../userSettings/userSettings'
+import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { OpenAaveEvent } from '../../open/state'
 import {
+  ClosePositionParametersStateMachine,
   createManageAaveStateMachine,
   ManageAaveContext,
   ManageAaveEvent,
   ManageAaveStateMachine,
   ManageAaveStateMachineServices,
+  OperationType,
 } from '../state'
 
-function contextToTransactionParameters(context: ManageAaveContext): ManageAavePositionData {
+function contextToTransactionParameters(context: ManageAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.transactionParameters!.calls as any,
-    operationName: context.transactionParameters!.operationName,
+    operationName:
+      context.operationType === OperationType.CLOSE_POSITION
+        ? OPERATION_NAMES.aave.CLOSE_POSITION
+        : 'CustomOperation',
     token: context.token,
     proxyAddress: context.proxyAddress!,
-    amount: context.amount!,
   }
 }
 
 export function getManageAaveStateMachine$(
-  services: ManageAaveStateMachineServices,
-  parametersMachine$: Observable<ParametersStateMachine>,
-  transactionStateMachine: TransactionStateMachine<ManageAavePositionData>,
+  services$: Observable<ManageAaveStateMachineServices>,
+  closePositionParametersStateMachine$: Observable<ClosePositionParametersStateMachine>,
+  transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
+  userSettings$: Observable<UserSettingsState>,
+  prices$: (tokens: string[]) => Observable<Tickers>,
+  { token, address, strategy }: { token: string; address: string; strategy: string },
 ): Observable<ManageAaveStateMachine> {
-  return parametersMachine$.pipe(
-    map((parametersMachine) => {
+  const pricesFeed$ = getPricesFeed$(prices$)
+  return combineLatest(closePositionParametersStateMachine$, services$, userSettings$).pipe(
+    map(([closePositionParametersStateMachine, services, userSettings]) => {
       return createManageAaveStateMachine
         .withConfig({
           services: {
             ...services,
           },
           actions: {
-            spawnParametersMachine: assign((_) => ({
-              refParametersStateMachine: spawn(
-                parametersMachine.withConfig({
-                  actions: {
-                    notifyParent: sendParent(
-                      (context): ManageAaveEvent => ({
-                        type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                        parameters: context.transactionParameters!,
-                        estimatedGasPrice: context.gasPriceEstimation!,
-                      }),
-                    ),
-                  },
-                }),
+            spawnPricesObservable: assign((context) => {
+              return {
+                refPriceObservable: spawn(pricesFeed$(context.collateralToken), 'pricesFeed'),
+              }
+            }),
+            spawnUserSettingsObservable: assign((_) => {
+              const settings$: Observable<OpenAaveEvent> = userSettings$.pipe(
+                distinctUntilChanged(isEqual),
+                map((settings) => ({ type: 'USER_SETTINGS_CHANGED', userSettings: settings })),
+              )
+              return {
+                refUserSettingsObservable: spawn(settings$, 'userSettings'),
+              }
+            }),
+            spawnClosePositionParametersMachine: assign((context) => ({
+              refClosePositionParametersStateMachine: spawn(
+                closePositionParametersStateMachine
+                  .withConfig({
+                    actions: {
+                      notifyParent: sendParent(
+                        (context): ManageAaveEvent => {
+                          return {
+                            type: 'CLOSING_PARAMETERS_RECEIVED',
+                            parameters: context.transactionParameters!,
+                            estimatedGasPrice: context.gasPriceEstimation!,
+                          }
+                        },
+                      ),
+                    },
+                  })
+                  .withContext({
+                    ...closePositionParametersStateMachine.context,
+                    proxyAddress: context.proxyAddress!,
+                    token: context.strategy!,
+                    position: context.protocolData!.position,
+                  }),
                 { name: 'parametersMachine' },
               ),
             })),
@@ -65,6 +102,12 @@ export function getManageAaveStateMachine$(
                           type: 'POSITION_CLOSED',
                         }),
                       ),
+                      raiseError: sendParent(
+                        (context): ManageAaveEvent => ({
+                          type: 'TRANSACTION_FAILED',
+                          error: context.txError,
+                        }),
+                      ),
                     },
                   })
                   .withContext({
@@ -75,28 +118,21 @@ export function getManageAaveStateMachine$(
                   name: 'transactionMachine',
                 },
               ),
-              refParametersStateMachine: spawn(
-                parametersMachine.withConfig({
-                  actions: {
-                    notifyParent: sendParent(
-                      (context): ManageAaveEvent => ({
-                        type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                        parameters: context.transactionParameters!,
-                        estimatedGasPrice: context.gasPriceEstimation!,
-                      }),
-                    ),
-                  },
-                }),
-                { name: 'parametersMachine' },
-              ),
             })),
           },
         })
         .withContext({
-          token: 'ETH',
-          multiply: new BigNumber(2),
+          currentStep: 1,
+          totalSteps: 2,
+          token,
+          userInput: {},
           inputDelay: 1000,
-          amount: new BigNumber(0),
+          address,
+          strategy,
+          collateralToken: 'STETH',
+          slippage: userSettings.slippage,
+          currentPosition: EMPTY_POSITION,
+          loading: false,
         })
     }),
   )

@@ -1,7 +1,11 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import moment from 'moment/moment'
 
 import { one, zero } from '../../../../../helpers/zero'
 import { AaveStEthYieldsResponse } from './stEthYield'
+
+const AAVE_INCEPTION_DATE = moment('2022-02-28')
 
 export interface Simulation {
   earningAfterFees: BigNumber
@@ -10,17 +14,16 @@ export interface Simulation {
 }
 
 export interface CalculateSimulationResult {
-  breakEven: BigNumber
-  entryFees: BigNumber
-  apy: BigNumber
-  previous7Days: Simulation
-  previous30Days: Simulation
-  previous90Days: Simulation
-  previous1Year: Simulation
-  sinceInception: Simulation
+  breakEven?: BigNumber
+  entryFees?: BigNumber
+  apy?: BigNumber
+  previous7Days?: Simulation
+  previous30Days?: Simulation
+  previous90Days?: Simulation
+  previous1Year?: Simulation
+  sinceInception?: Simulation
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function calculateSimulation({
   amount,
   yields,
@@ -30,39 +33,56 @@ export function calculateSimulation({
   fees?: BigNumber
   amount: BigNumber
   token: string
-  multiply: BigNumber
+  riskRatio: IRiskRatio
   yields: AaveStEthYieldsResponse
 }): CalculateSimulationResult {
-  const earningsPerDay = amount.times(yields.annualisedYield1Year.plus(one)).minus(amount).div(365)
+  const earningsPerDay =
+    yields.annualisedYield7days &&
+    amount.times(yields.annualisedYield7days.div(100).plus(one)).minus(amount).div(365)
   return {
-    apy: yields.annualisedYield1Year,
-    breakEven: (fees || zero).div(earningsPerDay),
+    apy: yields.annualisedYield7days,
+    breakEven: earningsPerDay && (fees || zero).div(earningsPerDay),
     entryFees: fees || zero,
-    previous7Days: getSimulation({
-      amount,
-      annualizedYield: yields.annualisedYield7days,
-      token,
-    }),
-    previous30Days: getSimulation({
-      amount,
-      annualizedYield: yields.annualisedYield30days,
-      token,
-    }),
-    previous90Days: getSimulation({
-      amount,
-      annualizedYield: yields.annualisedYield90days,
-      token,
-    }),
-    previous1Year: getSimulation({
-      amount,
-      annualizedYield: yields.annualisedYield1Year,
-      token,
-    }),
-    sinceInception: getSimulation({
-      amount,
-      annualizedYield: yields.annualisedYieldSinceInception,
-      token,
-    }),
+    previous7Days:
+      yields.annualisedYield7days &&
+      getSimulation({
+        amount,
+        annualizedYield: yields.annualisedYield7days,
+        token,
+        days: 7,
+      }),
+    previous30Days:
+      yields.annualisedYield30days &&
+      getSimulation({
+        amount,
+        annualizedYield: yields.annualisedYield30days,
+        token,
+        days: 30,
+      }),
+    previous90Days:
+      yields.annualisedYield90days &&
+      getSimulation({
+        amount,
+        annualizedYield: yields.annualisedYield90days,
+        token,
+        days: 90,
+      }),
+    previous1Year:
+      yields.annualisedYield1Year &&
+      getSimulation({
+        amount,
+        annualizedYield: yields.annualisedYield1Year,
+        token,
+        days: 365,
+      }),
+    sinceInception:
+      yields.annualisedYieldSinceInception &&
+      getSimulation({
+        amount,
+        annualizedYield: yields.annualisedYieldSinceInception,
+        token,
+        days: moment().diff(AAVE_INCEPTION_DATE, 'days'),
+      }),
   }
 }
 
@@ -70,15 +90,18 @@ function getSimulation({
   amount,
   annualizedYield,
   token,
+  days,
 }: {
   amount: BigNumber
   annualizedYield: BigNumber
   token: string
+  days: number
 }): Simulation {
-  const earnigs = amount.times(annualizedYield.div(100))
+  const earningsPerDay = amount.times(annualizedYield.div(100).plus(one)).minus(amount).div(365)
+  const earnings = earningsPerDay.times(days)
   return {
-    earningAfterFees: earnigs,
-    netValue: earnigs.plus(amount),
+    earningAfterFees: earnings,
+    netValue: earnings.plus(amount),
     token,
   }
 }

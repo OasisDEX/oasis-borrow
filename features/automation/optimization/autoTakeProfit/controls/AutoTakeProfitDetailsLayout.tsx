@@ -16,25 +16,25 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 export interface AutoTakeProfitDetailsLayoutProps {
-  isTriggerEnabled: boolean
-  triggerColPrice?: BigNumber
-  estimatedProfit?: BigNumber
   afterTriggerColPrice?: BigNumber
-  triggerColRatio?: BigNumber
   afterTriggerColRatio?: BigNumber
   currentColRatio: BigNumber
+  estimatedProfit?: BigNumber
+  isTriggerEnabled: boolean
   token: string
+  triggerColPrice?: BigNumber
+  triggerColRatio?: BigNumber
 }
 
 export function AutoTakeProfitDetailsLayout({
-  isTriggerEnabled,
-  triggerColPrice,
-  estimatedProfit,
   afterTriggerColPrice,
-  triggerColRatio,
   afterTriggerColRatio,
   currentColRatio,
+  estimatedProfit,
+  isTriggerEnabled,
   token,
+  triggerColPrice,
+  triggerColRatio,
 }: AutoTakeProfitDetailsLayoutProps) {
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { t } = useTranslation()

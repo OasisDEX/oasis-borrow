@@ -11,11 +11,11 @@ import React from 'react'
 
 export function getNotificationTitle({
   type,
-  lastModified,
+  timestamp,
   additionalData,
 }: {
   type: NotificationTypes
-  lastModified: number
+  timestamp: string
   additionalData: NotificationAdditionalData
 }) {
   const priceInDai = amountFromWei(new BigNumber(additionalData?.usdPrice || 0), 'DAI')
@@ -28,7 +28,7 @@ export function getNotificationTitle({
     minute: 'numeric',
   }
 
-  const humanDate = new Date(lastModified).toLocaleDateString('en-US', options)
+  const humanDate = new Date(parseInt(timestamp, 10)).toLocaleDateString('en-US', options)
   const vaultId = additionalData?.vaultId || 'n/a'
 
   switch (type) {
@@ -79,6 +79,17 @@ export function getNotificationTitle({
       return (
         <Trans
           i18nKey="notifications.auto-sell-executed"
+          values={{
+            vaultId,
+            usdPrice,
+            humanDate,
+          }}
+        />
+      )
+    case NotificationTypes.CONSTANT_MULTIPLE_TRIGGERED:
+      return (
+        <Trans
+          i18nKey="notifications.constant-multiple-executed"
           values={{
             vaultId,
             usdPrice,

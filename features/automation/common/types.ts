@@ -3,6 +3,7 @@ import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
 } from 'features/automation/common/state/autoBSFormChange'
+import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
@@ -13,6 +14,14 @@ export enum AutomationFeatures {
   STOP_LOSS = 'stopLoss',
   AUTO_TAKE_PROFIT = 'autoTakeProfit',
 }
+
+export enum AutomationKinds {
+  AUTO_BUY = 'auto-buy',
+  AUTO_SELL = 'auto-sell',
+  STOP_LOSS = 'stop-loss',
+  AUTO_TAKE_PROFIT = 'auto-take-profit',
+}
+
 export type SidebarAutomationFlow =
   | 'addSl'
   | 'editSl'
@@ -26,6 +35,9 @@ export type SidebarAutomationFlow =
   | 'addConstantMultiple'
   | 'cancelConstantMultiple'
   | 'editConstantMultiple'
+  | 'addAutoTakeProfit'
+  | 'cancelAutoTakeProfit'
+  | 'editAutoTakeProfit'
 
 export type SidebarAutomationStages =
   | 'txSuccess'
@@ -55,5 +67,6 @@ export type AutomationPublishType =
   | AutomationBSPublishType
   | typeof CONSTANT_MULTIPLE_FORM_CHANGE
   | typeof STOP_LOSS_FORM_CHANGE
+  | typeof AUTO_TAKE_PROFIT_FORM_CHANGE
 
 export type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell

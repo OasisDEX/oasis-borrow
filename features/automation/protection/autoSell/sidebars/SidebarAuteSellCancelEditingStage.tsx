@@ -23,6 +23,8 @@ function AutoSellInfoSectionControl({ vault, autoSellState }: AutoSellInfoSectio
       liquidationPrice={vault.liquidationPrice}
       debt={vault.debt}
       title={t('auto-sell.cancel-summary-title')}
+      targetLabel={t('auto-sell.target-col-ratio-each-sell')}
+      triggerLabel={t('auto-sell.trigger-col-ratio-to-perfrom-sell')}
       autoBSState={autoSellState}
     />
   )

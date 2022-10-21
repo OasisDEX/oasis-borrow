@@ -1,25 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-export function getOneInchRealCall(swapAddress: string) {
-  return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
-    const response = await swapOneInchTokens(
-      from,
-      to,
-      amount.toString(),
-      swapAddress,
-      slippage.toString(),
-    )
-
-    return {
-      toTokenAddress: to,
-      fromTokenAddress: from,
-      minToTokenAmount: new BigNumber(0),
-      toTokenAmount: new BigNumber(response.toTokenAmount),
-      fromTokenAmount: new BigNumber(response.fromTokenAmount),
-      exchangeCalldata: response.tx.data,
-    }
-  }
-}
+import { one } from './zero'
 
 async function swapOneInchTokens(
   fromTokenAddress: string,
@@ -78,7 +59,38 @@ export async function oneInchCallMock(
     minToTokenAmount: amount
       .div(marketPrice)
       .times(new BigNumber(1).minus(slippage))
-      .integerValue(BigNumber.ROUND_DOWN), // TODO: figure out slippage
+      .integerValue(BigNumber.ROUND_DOWN),
     exchangeCalldata: 0,
+  }
+}
+
+// TODO: export from oasis-earn-sc into @oasisdex/oasis-actions lib and import from there
+export function getOneInchCall(swapAddress: string, debug?: false) {
+  return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
+    const response = await swapOneInchTokens(
+      from,
+      to,
+      amount.toString(),
+      swapAddress,
+      slippage.times('100').toString(), // 1inch expects slippage in percentage format
+    )
+
+    if (debug) {
+      console.log('1inch')
+      console.log('fromTokenAmount', response.fromTokenAmount.toString())
+      console.log('toTokenAmount', response.toTokenAmount.toString())
+      console.log('slippage', slippage.toString())
+    }
+
+    return {
+      toTokenAddress: to,
+      fromTokenAddress: from,
+      minToTokenAmount: new BigNumber(response.toTokenAmount)
+        .times(one.minus(slippage))
+        .integerValue(BigNumber.ROUND_DOWN),
+      toTokenAmount: new BigNumber(response.toTokenAmount),
+      fromTokenAmount: new BigNumber(response.fromTokenAmount),
+      exchangeCalldata: response.tx.data,
+    }
   }
 }

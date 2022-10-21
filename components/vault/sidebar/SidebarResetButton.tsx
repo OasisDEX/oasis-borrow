@@ -5,9 +5,10 @@ import { Box, Button } from 'theme-ui'
 
 interface SidebarResetButtonProps {
   clear: () => void
+  disabled?: boolean
 }
 
-export function SidebarResetButton({ clear }: SidebarResetButtonProps) {
+export function SidebarResetButton({ clear, disabled = false }: SidebarResetButtonProps) {
   const { t } = useTranslation()
 
   return (
@@ -15,6 +16,7 @@ export function SidebarResetButton({ clear }: SidebarResetButtonProps) {
       <Button
         onClick={clear}
         variant="textual"
+        disabled={disabled}
         sx={{
           display: 'flex',
           alignItems: 'center',

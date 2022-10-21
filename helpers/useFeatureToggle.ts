@@ -20,6 +20,10 @@ export type Feature =
   | 'DisableSidebarScroll'
   | 'ProxyCreationDisabled'
   | 'AutoTakeProfit'
+  | 'UpdatedPnL'
+  | 'ReadOnlyAutoTakeProfit'
+  | 'DiscoverOasis'
+  | 'ShowAaveStETHETHProductCard'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -31,13 +35,17 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossOpenFlow: false,
   BasicBS: true,
   ReadOnlyBasicBS: false,
-  Notifications: false,
+  Notifications: true,
   Referrals: true,
   ConstantMultiple: true,
   ConstantMultipleReadOnly: false,
   DisableSidebarScroll: false,
   ProxyCreationDisabled: false,
   AutoTakeProfit: false,
+  UpdatedPnL: false,
+  ReadOnlyAutoTakeProfit: false,
+  DiscoverOasis: false,
+  ShowAaveStETHETHProductCard: false,
   // your feature here....
 }
 

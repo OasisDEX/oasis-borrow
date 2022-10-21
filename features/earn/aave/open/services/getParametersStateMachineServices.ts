@@ -1,7 +1,9 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
+import { callOperationExecutor } from '../../../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TxHelpers } from '../../../../../components/AppContext'
@@ -9,7 +11,6 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { one, zero } from '../../../../../helpers/zero'
 import { getOpenAaveParameters } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
-import { openAavePosition } from '../pipelines/openAavePosition'
 import { createParametersStateMachine, ParametersStateMachineServices } from '../state'
 
 export function getOpenAaveParametersStateMachineServices$(
@@ -27,20 +28,21 @@ export function getOpenAaveParametersStateMachineServices$(
           return await getOpenAaveParameters(
             contextConnected,
             context.amount || zero,
-            context.multiply || new BigNumber(2),
+            context.riskRatio || new RiskRatio(new BigNumber(2), RiskRatio.TYPE.MULITPLE),
             userSettings.slippage,
             context.proxyAddress,
           )
         },
         estimateGas: async (context) => {
+          // estimates the quantity of gas required
           if (context.proxyAddress === undefined || (context.amount || zero) < one) {
             return 0
           }
           return await txHelpers
-            .estimateGas(openAavePosition, {
+            .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
               calls: context.transactionParameters!.calls as any,
-              operationName: context.transactionParameters!.operationName,
+              operationName: 'CustomOperation',
               token: context.token!,
               amount: context.amount!,
               proxyAddress: context.proxyAddress!,
@@ -49,6 +51,7 @@ export function getOpenAaveParametersStateMachineServices$(
             .toPromise()
         },
         estimateGasPrice: async (context) => {
+          // given the gas price and gas quantity, estimates the gas cost for the transaction
           return await gasEstimation$(context.estimatedGas!).pipe(first()).toPromise()
         },
       }
@@ -66,7 +69,9 @@ export function getParametersStateMachine$(services$: Observable<ParametersState
           estimateGasPrice: services.estimateGasPrice,
         },
         actions: {
-          notifyParent: () => {},
+          notifyParent: () => {
+            // overridden in parent when machine is consumed
+          },
         },
       })
     }),

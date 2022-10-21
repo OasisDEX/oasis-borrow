@@ -10,6 +10,7 @@ import {
   TriggersData,
 } from 'features/automation/api/automationTriggersData'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
@@ -265,6 +266,7 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     autoBuyData?: AutoBSTriggerData
     autoSellData?: AutoBSTriggerData
     constantMultipleData?: ConstantMultipleTriggerData
+    autoTakeProfitData?: AutoTakeProfitTriggerData
   } & HasGasEstimation
 
 function addTransitions(
@@ -595,7 +597,7 @@ export function createManageMultiplyVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                    switchMap(curry(applyEstimateGas)(context, addGasEstimation$)),
                     map(finalValidation),
                     map((state) =>
                       addTransitions(

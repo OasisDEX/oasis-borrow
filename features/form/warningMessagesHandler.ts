@@ -25,6 +25,11 @@ export type VaultWarningMessage =
   | 'addingConstantMultipleWhenAutoSellOrBuyEnabled'
   | 'constantMultipleAutoSellTriggeredImmediately'
   | 'constantMultipleAutoBuyTriggeredImmediately'
+  | 'autoTakeProfitTriggerLowerThanAutoBuyTrigger'
+  | 'autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger'
+  | 'autoBuyTriggerGreaterThanAutoTakeProfit'
+  | 'constantMultipleBuyTriggerGreaterThanAutoTakeProfit'
+  | 'existingTakeProfitTriggerAfterVaultReopen'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -51,6 +56,11 @@ interface WarningMessagesHandler {
   addingConstantMultipleWhenAutoSellOrBuyEnabled?: boolean
   constantMultipleAutoSellTriggeredImmediately?: boolean
   constantMultipleAutoBuyTriggeredImmediately?: boolean
+  autoTakeProfitTriggerLowerThanAutoBuyTrigger?: boolean
+  autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger?: boolean
+  autoBuyTriggerGreaterThanAutoTakeProfit?: boolean
+  constantMultipleBuyTriggerGreaterThanAutoTakeProfit?: boolean
+  existingTakeProfitTriggerAfterVaultReopen?: boolean
 }
 
 export function warningMessagesHandler({
@@ -76,6 +86,11 @@ export function warningMessagesHandler({
   addingConstantMultipleWhenAutoSellOrBuyEnabled,
   constantMultipleAutoSellTriggeredImmediately,
   constantMultipleAutoBuyTriggeredImmediately,
+  autoTakeProfitTriggerLowerThanAutoBuyTrigger,
+  autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger,
+  autoBuyTriggerGreaterThanAutoTakeProfit,
+  constantMultipleBuyTriggerGreaterThanAutoTakeProfit,
+  existingTakeProfitTriggerAfterVaultReopen,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -164,6 +179,26 @@ export function warningMessagesHandler({
 
   if (constantMultipleAutoBuyTriggeredImmediately) {
     warningMessages.push('constantMultipleAutoBuyTriggeredImmediately')
+  }
+
+  if (autoTakeProfitTriggerLowerThanAutoBuyTrigger) {
+    warningMessages.push('autoTakeProfitTriggerLowerThanAutoBuyTrigger')
+  }
+
+  if (autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger) {
+    warningMessages.push('autoTakeProfitTriggerLowerThanConstantMultipleBuyTrigger')
+  }
+
+  if (autoBuyTriggerGreaterThanAutoTakeProfit) {
+    warningMessages.push('autoBuyTriggerGreaterThanAutoTakeProfit')
+  }
+
+  if (constantMultipleBuyTriggerGreaterThanAutoTakeProfit) {
+    warningMessages.push('constantMultipleBuyTriggerGreaterThanAutoTakeProfit')
+  }
+
+  if (existingTakeProfitTriggerAfterVaultReopen) {
+    warningMessages.push('existingTakeProfitTriggerAfterVaultReopen')
   }
 
   return warningMessages

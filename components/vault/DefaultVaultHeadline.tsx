@@ -10,10 +10,12 @@ export function DefaultVaultHeadline({
   header,
   token,
   priceInfo,
+  colRatio,
 }: {
   header: VaultHeadlineProps['header']
   token: VaultHeadlineProps['token']
   priceInfo: PriceInfo
+  colRatio: string
 }) {
   const { t } = useTranslation()
   const { currentCollateralPrice, nextCollateralPrice, collateralPricePercentageChange } = priceInfo
@@ -38,6 +40,10 @@ export function DefaultVaultHeadline({
           value: `$${nextPrice}`,
           sub: priceChange,
           subColor: priceChangeColor,
+        },
+        {
+          label: t('system.collateral-ratio'),
+          value: `${colRatio}%`,
         },
       ]}
     />

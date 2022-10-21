@@ -1,79 +1,115 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { ADDRESSES, strategy } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy, Position, strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
 import { ContextConnected } from '../../blockchain/network'
-import { oneInchCallMock } from '../../helpers/swap'
+import { amountToWei } from '../../blockchain/utils'
+import { getOneInchCall } from '../../helpers/swap'
+import { zero } from '../../helpers/zero'
+import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculations/Position'
 
-export interface ActionCall {
-  targetHash: string
-  callData: string
-}
-
-export interface PositionInfo {
-  flashLoanAmount: BigNumber
-  borrowedAmount: BigNumber
-  fee: BigNumber
-  depositedAmount: BigNumber
-}
-
-export interface OperationParameters {
-  calls: ActionCall[]
-  operationName: string
-  positionInfo: PositionInfo
-  isAllowanceNeeded: boolean
+function getAddressesFromContext(context: ContextConnected) {
+  return {
+    DAI: context.tokens['DAI'].address,
+    ETH: context.tokens['ETH'].address,
+    WETH: context.tokens['WETH'].address,
+    stETH: context.tokens['STETH'].address,
+    chainlinkEthUsdPriceFeed: context.chainlinkEthUsdPriceFeedAddress,
+    aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
+    aavePriceOracle: context.aavePriceOracle.address,
+    aaveLendingPool: context.aaveLendingPool.address,
+    operationExecutor: context.operationExecutor.address,
+  }
 }
 
 export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
-  multiply: BigNumber,
+  riskRatio: IRiskRatio,
   slippage: BigNumber,
   proxyAddress: string,
-): Promise<OperationParameters> {
-  const mainnetAddresses = {
-    DAI: ADDRESSES.main.DAI,
-    ETH: ADDRESSES.main.ETH,
-    WETH: ADDRESSES.main.WETH,
-    stETH: ADDRESSES.main.stETH,
-    chainlinkEthUsdPriceFeed: ADDRESSES.main.chainlinkEthUsdPriceFeed,
-    aavePriceOracle: ADDRESSES.main.aavePriceOracle,
-    aaveLendingPool: ADDRESSES.main.aave.MainnetLendingPool,
-    operationExecutor: context.operationExecutor.address,
-  }
-
-  const addresses = {
-    ...mainnetAddresses,
-  }
-
+): Promise<IStrategy> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const strategyReturn = await strategy.openStEth(
+  const params = await strategies.aave.openStEth(
     {
-      depositAmount: amount,
+      depositAmount: amountToWei(amount, 'ETH'),
       slippage: slippage,
-      multiply: new BigNumber(multiply),
+      multiple: riskRatio.multiple,
     },
     {
-      addresses,
+      addresses: getAddressesFromContext(context),
       provider: provider,
-      getSwapData: oneInchCallMock,
       dsProxy: proxyAddress,
-      // getSwapData: getOneInchRealCall('0x7C8BaafA542c57fF9B2B90612bf8aB9E86e22C09'),
+      getSwapData: getOneInchCall(context.swapAddress),
     },
   )
 
-  return {
-    calls: strategyReturn.calls,
-    operationName: 'CustomOperation',
-    positionInfo: {
-      flashLoanAmount: strategyReturn.flashLoanAmount,
-      borrowedAmount: strategyReturn.borrowEthAmount,
-      fee: strategyReturn.feeAmount,
-      depositedAmount: amount,
-    },
-    isAllowanceNeeded: false,
-  }
+  return params
 }
+
+export async function getAdjustAaveParameters(
+  context: ContextConnected,
+  stEthValueLocked: BigNumber | undefined,
+  riskRatio: IRiskRatio,
+  slippage: BigNumber,
+  proxyAddress: string,
+  position: IPosition,
+): Promise<IStrategy> {
+  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+
+  const depositAmount = stEthValueLocked && amountToWei(stEthValueLocked, 'ETH')
+
+  const transformedPosition: IBasePosition = {
+    debt: { amount: amountToWei(position.debt.amount, 'ETH'), denomination: 'ETH' },
+    collateral: { amount: amountToWei(position.collateral.amount, 'ETH'), denomination: 'ETH' },
+    category: position.category,
+  }
+
+  const strat = await strategies.aave.adjustStEth(
+    {
+      depositAmount: depositAmount,
+      slippage: slippage,
+      multiple: riskRatio.multiple,
+    },
+    {
+      addresses: getAddressesFromContext(context),
+      provider: provider,
+      getSwapData: getOneInchCall(context.swapAddress),
+      dsProxy: proxyAddress,
+      position: transformedPosition,
+    },
+  )
+
+  return strat
+}
+
+export async function getCloseAaveParameters(
+  context: ContextConnected,
+  stEthValueLocked: BigNumber,
+  slippage: BigNumber,
+  proxyAddress: string,
+  position: IBasePosition,
+): Promise<IStrategy> {
+  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+
+  return await strategies.aave.closeStEth(
+    {
+      stEthAmountLockedInAave: amountToWei(stEthValueLocked, 'STETH'),
+      slippage: slippage,
+    },
+    {
+      addresses: getAddressesFromContext(context),
+      provider: provider,
+      getSwapData: getOneInchCall(context.swapAddress),
+      dsProxy: proxyAddress,
+      position,
+    },
+  )
+}
+
+export const EMPTY_POSITION = new Position({ amount: zero }, { amount: zero }, zero, {
+  maxLoanToValue: zero,
+  liquidationThreshold: zero,
+  dustLimit: zero,
+})

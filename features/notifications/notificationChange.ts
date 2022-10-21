@@ -36,17 +36,15 @@ export function notificationReducer(state: NotificationChange, action: Notificat
       return { ...state, numberOfNotifications: action.numberOfNotifications }
     case 'all-notifications':
       const merged = [...action.allNotifications, ...state.allNotifications]
-      const allNotifications = merged
-        .reduce((acc, curr) => {
-          const duplicatedNotification = acc.find((item) => item.id === curr.id)
+      const allNotifications = merged.reduce((acc, curr) => {
+        const duplicatedNotification = acc.find((item) => item.id === curr.id)
 
-          if (duplicatedNotification) {
-            return acc
-          }
+        if (duplicatedNotification) {
+          return acc
+        }
 
-          return [...acc, curr]
-        }, [] as Notification[])
-        .sort((a, b) => b.id - a.id)
+        return [...acc, curr]
+      }, [] as Notification[])
       return { ...state, allNotifications }
     case 'all-active-subscriptions':
       return { ...state, allActiveSubscriptions: action.allActiveSubscriptions }

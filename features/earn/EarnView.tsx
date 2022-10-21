@@ -1,9 +1,12 @@
+import { getTokens } from 'blockchain/tokensMetadata'
+import { ProductCardEarnAave } from 'components/productCards/ProductCardEarnAave'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
+import { ProductCardEarnMaker } from '../../components/productCards/ProductCardEarnMaker'
 import {
   ProductCardsLoader,
   ProductCardsWrapper,
@@ -13,14 +16,17 @@ import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { supportedEarnIlks } from '../../helpers/productCards'
+import { aaveStrategiesList } from './aave/constants'
 
 export function EarnView() {
+  const showAaveStETHETHProductCard = useFeatureToggle('ShowAaveStETHETHProductCard')
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(
+  const [productCardsIlksData, productCardsIlksDataError] = useObservable(
     productCardsData$(supportedEarnIlks),
   )
 
+  const aaveStrategiesTokens = getTokens(aaveStrategiesList)
   return (
     <Grid
       sx={{
@@ -38,13 +44,21 @@ export function EarnView() {
         }}
       />
 
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
-          {([productCardsData]) => (
+      <WithErrorHandler error={[productCardsIlksDataError]}>
+        <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
+          {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
-              {productCardsData.map((cardData) => (
-                <ProductCardEarn cardData={cardData} key={cardData.ilk} />
+              {_productCardsIlksData.map((cardData) => (
+                <ProductCardEarnMaker cardData={cardData} key={cardData.ilk} />
               ))}
+              {showAaveStETHETHProductCard &&
+              _productCardsIlksData.length && // just to show them simultanously
+                aaveStrategiesTokens.map((cardData) => (
+                  <ProductCardEarnAave
+                    key={`ProductCardEarnAave_${cardData.symbol}`}
+                    cardData={cardData}
+                  />
+                ))}
             </ProductCardsWrapper>
           )}
         </WithLoadingIndicator>

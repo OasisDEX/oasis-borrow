@@ -3,7 +3,10 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import { getAaveUserReserveData } from 'blockchain/calls/aaveProtocolDataProvider'
+import {
+  getAaveReserveData,
+  getAaveUserReserveData,
+} from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -99,7 +102,6 @@ import {
   tokenPrices$,
 } from 'blockchain/prices'
 import {
-  createAaveCollateralTokens$,
   createAccountBalance$,
   createAllowance$,
   createBalance$,
@@ -129,6 +131,12 @@ import {
   AutomationChangeFeatureAction,
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
+import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+  AutoTakeProfitFormChangeAction,
+  autoTakeProfitFormChangeReducer,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleChangeAction,
@@ -161,7 +169,8 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { OpenAavePositionData } from 'features/earn/aave/open/pipelines/openAavePosition'
+import { hasActiveAavePosition } from 'features/earn/aave/helpers/hasActiveAavePosition'
+import { getAaveStEthYield } from 'features/earn/aave/open/services'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -227,15 +236,15 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
-  createAavePositions$,
+  createAavePosition$,
   createMakerPositions$,
   createPositions$,
-  decorateAaveTokensPrice$,
 } from 'features/vaultsOverview/pipes/positions'
-import { createPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
+import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
+import { GraphQLClient } from 'graphql-request'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
 import {
@@ -254,8 +263,21 @@ import {
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
+import { getAaveUserAccountData } from '../blockchain/calls/aave/aaveLendingPool'
+import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
+import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
+import { prepareAaveAvailableLiquidityInUSD$ } from '../features/earn/aave/helpers/aavePrepareAvailableLiquidity'
+import { hasAavePosition$ } from '../features/earn/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -277,7 +299,7 @@ export type TxData =
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
-  | OpenAavePositionData
+  | OperationExecutorTxMeta
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -325,6 +347,7 @@ export type SupportedUIChangeType =
   | AutomationChangeFeature
   | NotificationChange
   | TxPayloadChange
+  | AutoTakeProfitFormChange
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
@@ -336,6 +359,7 @@ export type LegalUiChanges = {
   ConstantMultipleChangeAction: ConstantMultipleChangeAction
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
+  AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
 }
 
 export type UIChanges = {
@@ -429,6 +453,7 @@ function initializeUIChanges() {
   )
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
+  uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
 
   return uiChangesSubject
 }
@@ -479,6 +504,20 @@ export function setupAppContext() {
     initializedAccount$,
     onEveryBlock$,
     connectedContext$,
+  )
+  // saved for later?
+  // const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
+  // const graphQLClient$ = contextForAddress$.pipe(
+  //   distinctUntilKeyChanged('cacheApi'),
+  //   map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  // )
+  const disconnectedGraphQLClient$ = context$.pipe(
+    distinctUntilKeyChanged('cacheApi'),
+    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  )
+  const aaveSthEthYieldsQuery = memoize(
+    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
@@ -705,7 +744,6 @@ export function setupAppContext() {
   const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
-  const aaveCollateralTokens$ = createAaveCollateralTokens$(context$)
 
   const accountBalances$ = curry(createAccountBalance$)(
     balanceLean$,
@@ -773,11 +811,29 @@ export function setupAppContext() {
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
 
-  const tokensWithValue$ = decorateAaveTokensPrice$(aaveCollateralTokens$, exchangeQuote$)
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
+  const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
+
+  const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
+
+  const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
+  const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
+
+  const aaveAvailableLiquidityETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
+    getAaveReserveData$({ token: 'ETH' }),
+    // @ts-expect-error
+    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  )
+
+  const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
 
   const aavePositions$ = memoize(
-    curry(createAavePositions$)(aaveUserReserveData$, tokensWithValue$, proxyAddress$),
+    curry(createAavePosition$)(
+      aaveUserAccountData$,
+      aaveAvailableLiquidityETH$,
+      ethPrice$,
+      proxyAddress$,
+    ),
   )
 
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
@@ -953,10 +1009,10 @@ export function setupAppContext() {
   )
 
   const positionsList$ = memoize(
-    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
+    curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$))
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$, aavePositions$))
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
@@ -1005,7 +1061,7 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(context$),
@@ -1062,6 +1118,8 @@ export function setupAppContext() {
     ),
   )
 
+  const hasActiveAavePosition$ = hasActiveAavePosition(web3Context$, hasAave$)
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1116,6 +1174,11 @@ export function setupAppContext() {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
+    aaveUserReserveData$,
+    aaveSthEthYieldsQuery,
+    aaveAvailableLiquidityETH$,
+    aaveUserAccountData$,
+    hasActiveAavePosition$,
   }
 }
 

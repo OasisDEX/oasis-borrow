@@ -7,6 +7,7 @@ import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { SidebarSetupConstantMultiple } from 'features/automation/optimization/constantMultiple/sidebars/SidebarSetupConstantMultiple'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -16,6 +17,7 @@ import { getConstantMultipleStatus } from 'features/automation/optimization/cons
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getConstantMultipleTxHandlers } from 'features/automation/optimization/constantMultiple/state/constantMultipleTxHandlers'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
@@ -23,6 +25,7 @@ import React from 'react'
 interface ConstantMultipleFormControlProps {
   autoBuyTriggerData: AutoBSTriggerData
   autoSellTriggerData: AutoBSTriggerData
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   balanceInfo: BalanceInfo
   constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
@@ -33,11 +36,13 @@ interface ConstantMultipleFormControlProps {
   stopLossTriggerData: StopLossTriggerData
   txHelpers?: TxHelpers
   vault: Vault
+  vaultType: VaultType
 }
 
 export function ConstantMultipleFormControl({
   autoBuyTriggerData,
   autoSellTriggerData,
+  autoTakeProfitTriggerData,
   balanceInfo,
   constantMultipleTriggerData,
   context,
@@ -48,6 +53,7 @@ export function ConstantMultipleFormControl({
   stopLossTriggerData,
   txHelpers,
   vault,
+  vaultType,
 }: ConstantMultipleFormControlProps) {
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -117,12 +123,13 @@ export function ConstantMultipleFormControl({
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={constantMultipleTriggerData.triggersId.map((id) => id.toNumber())}
-      txHelpers={txHelpers!}
+      txHelpers={txHelpers}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupConstantMultiple
           autoBuyTriggerData={autoBuyTriggerData}
           autoSellTriggerData={autoSellTriggerData}
+          autoTakeProfitTriggerData={autoTakeProfitTriggerData}
           balanceInfo={balanceInfo}
           collateralToBePurchased={collateralToBePurchased}
           collateralToBeSold={collateralToBeSold}
@@ -150,6 +157,7 @@ export function ConstantMultipleFormControl({
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
           vault={vault}
+          vaultType={vaultType}
         />
       )}
     </AddAndRemoveTriggerControl>

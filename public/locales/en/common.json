@@ -117,12 +117,12 @@
   "creating-vault": "Creating Vault",
   "proxy-advantages": [
     "Just one proxy needed per account",
-    "Enables your wallet to interact with the Maker protocol",
+    "Enables your wallet to interact with the DeFi protocols",
     "More gas efficient"
   ],
   "proxy-advantages-new": [
     "<1>Just one</1> proxy needed per account",
-    "Enables your wallet to interact with the Maker protocol",
+    "Enables your wallet to interact with the DeFi protocols",
     "More gas efficient"
   ],
   "proxy-waiting-text": "Read more on smart proxy in the",
@@ -141,6 +141,76 @@
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
   "disconnect-wallet": "Disconnect Wallet",
+  "discover": {
+    "heading": "Discover Oasis.app",
+    "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
+    "intro-link": "Learn more about Discover",
+    "navigation": {
+      "high-risk-positions": "High-Risk Positions",
+      "highest-multiply-pnl": "Highest Multiply P&L",
+      "most-yield-earned": "Most Yield Earned",
+      "largest-debt": "Largest Debt"
+    },
+    "table": {
+      "no-entries": "There are no entries available for selected filters.",
+      "vault-number": "Vault #{{cdpId}}",
+      "view-position": "View Position",
+      "header": {
+        "30-day-avg-apy": "30 day avg. APY",
+        "activity": "Activity",
+        "asset": "Asset",
+        "cdp-id": "",
+        "col-ratio": "Col. ratio",
+        "collateral-value": "Collateral value",
+        "current-multiple": "Current multiple",
+        "earnings-to-date": "Earnings to date",
+        "liquidation-price": "Liquidation price",
+        "max-liquidation-amount": "Max liquidation amount",
+        "net-value": "Net value",
+        "next-osm-price": "Next OSM price",
+        "pnl": "P&L",
+        "status": "Status",
+        "vault-debt": "Vault debt"
+      },
+      "status": {
+        "1": "Liquidated",
+        "2": "Being liquidated",
+        "3": "{{tillLiquidation}}% till liquidation",
+        "4": "{{toStopLoss}}% to Stop-loss",
+        "5": "Closed {{closedDaysAgo}} days ago"
+      },
+      "activity": {
+        "1": "Withdrawn {{daysAgo}} days ago",
+        "2": "Increased risk {{daysAgo}} days ago",
+        "3": "Decreased risk {{daysAgo}} days ago",
+        "4": "Closed {{daysAgo}} days ago",
+        "5": "Opened {{daysAgo}} days ago",
+        "6": "Deposided {{daysAgo}} days ago"
+      },
+      "banner": {
+        "high-risk-positions": {
+          "title": "Mutiply your crypto assets with Stop-Loss Vault Protection",
+          "description": "All Multiply Vaults on Oasis.app allow you to protect yourself from liquidation with automated Stop-Loss Protection.",
+          "cta": "Get started with Multiply"
+        },
+        "highest-multiply-pnl": {
+          "title": "Multiply your exposure up to 4x with automated buy and sell actions",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Multiply"
+        },
+        "most-yield-earned": {
+          "title": "Put your crypto to work today and start earning a yield",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Earn"
+        },
+        "largest-debt": {
+          "title": "Borrow against your crypto today.",
+          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "cta": "Get started with Borrow"
+        }
+      }
+    }
+  },
   "earning": "Earning",
   "edit-token-allowance": "Edit {{token}} allowance",
   "edit-vault-details": "Edit Vault details",
@@ -258,11 +328,13 @@
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
     "basic-sell": "Auto-Sell trigger",
+    "auto-take-profit": "Take Profit trigger",
     "constant-multiple": "Constant-Multiple trigger",
     "constant-multiple-buy": "Constant-Multiple Buy trigger",
     "constant-multiple-sell": "Constant-Multiple Sell trigger",
     "close-to": "Close to",
     "trigger-col-ratio": "Trigger Col. Ratio",
+    "trigger-price": "Trigger price",
     "buy-trigger-col-ratio": "Buy Trigger Col. Ratio",
     "sell-trigger-col-ratio": "Sell Trigger Col. Ratio",
     "target-col-ratio": "Target Col. Ratio",
@@ -470,17 +542,22 @@
       "next-price": "Next Price",
       "next-price-description": "Here you can see the next price that will go into effect in the Maker Protocol. Compare this with the Liquidation Price to see whether your vault will be liquidated on the next price update.\n{{nextPrice}}",
       "more-info-oracles": "More information on Maker oracles can be found <0>here</0>",
-      "net-value": "Net Value & P&L",
-      "unrealised-pnl": "P&L",
+      "net-value": "Net Value & Unrealised P&L",
+      "unrealised-pnl": "Unrealised Profit & Loss",
       "based-on-price": "The current net value is calculated based on the market price of",
       "based-on-price-lp": "The current net value is calculated based on the oracle price of",
+      "total-col": "Total Col:",
+      "debt": "Debt",
       "collateral-value-in-vault": "Collateral value in vault",
       "dai-debt-in-vault": "Dai debt in vault",
       "collateral-value": "Collateral Value",
       "usd-value": "$ Value",
-      "gas-fees": "Gas fees",
+      "deposits": "Deposits",
+      "withdraws": "Withdraws",
+      "gas-fees": "Gas Fees spent",
       "market-price-unavailable": "Market price temporally unavailable, please check later",
-      "formula": "The profit & loss is calculated by the following formula: P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
+      "formula": "Unrealised P&L = ((Net value + Cumulative withdrawals - Gas fees spent) - Cumulative deposits) / Cumulative  deposits",
+      "formula-note": "Note: The values to calculate deposits, withdraws and Gas Fees takes the price of ETH or the Collateral at the time of the transaction.",
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
@@ -509,12 +586,26 @@
   },
   "manage-earn-vault": {
     "overview-earn": "Overview (Earn ID: {{earnId}})",
+    "overview-earn-aave": "Overview",
     "earnings-to-date": "Earnings to date",
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
     "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Oasis fees. The 'After fees' value is accounting for the earnings including the Oasis fee, and the Ethereum Gas fees.",
     "net-apy": "Net APY",
     "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
-    "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed."
+    "net-apy-modal-aave": "The annual percentage yield, accounting for fees. Calculated as the yield on the stETH token over the last 7 days, annualised, and subtracting the variable annual fee paid in AAVE for the ETH.",
+    "eth-value": "ETH Value",
+    "collateral-value-in-vault": "Collateral value in vault",
+    "debt-value-in-vault": "Debt value in vault",
+    "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed.",
+    "pnl": "PnL {{value}} {{token}}",
+    "ratio-history": "Ratio history",
+    "position-eth-debt": "Position ETH Debt",
+    "liquidation-price-ratio": "Liquidation price ratio",
+    "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
+    "below-current-ratio": "({{percentage}} below current ratio)",
+    "has-asset-already": "There is an active AAVE position open in this address. Therefore, you cannot open a stETH earn position. Close your AAVE position first to continue.",
+    "net-value-modal": "Net Value",
+    "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH."
   },
   "borrow-to-multiply": {
     "checkmark1": "Multiply your exposure on your {{token}}",
@@ -563,7 +654,7 @@
     "contact": "Contact",
     "blog": "Blog",
     "faq": "FAQ",
-    "knowledge-centre": "Knowledge Centre",
+    "knowledge-centre": "Knowledge Base",
     "learn": "Learn",
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
@@ -578,7 +669,8 @@
     "cookie": "Cookie Policy",
     "bug-bounty": "Bug Bounty",
     "brand-assets": "Brand assets",
-    "security": "Security"
+    "security": "Security",
+    "discover": "Discover"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -670,6 +762,10 @@
     "security": {
       "title": "Security",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
+    },
+    "discover": {
+      "title": "Discover Oasis.app",
+      "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -691,6 +787,12 @@
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
       "right-footer": "More likely execution"
+    },
+    "set-auto-take-profit": {
+      "left-label": "Trigger {{token}} price",
+      "right-label": "Estimated {{token}} at Close",
+      "left-footer": "Lower price",
+      "right-footer": "Higher price"
     }
   },
   "cancel-stoploss": {
@@ -760,7 +862,7 @@
     "basic-sell": "Auto-Sell",
     "basic-buy": "Auto-Buy",
     "constant-multiple": "Constant Multiple",
-    "auto-take-profit": "Auto-Take Profit",
+    "auto-take-profit": "Take Profit",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -890,7 +992,9 @@
     "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first",
     "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing.",
     "min-sell-price-will-prevent-sell-trigger": "This Min Sell Price will prevent the Sell Trigger from executing",
-    "max-buy-price-will-prevent-buy-trigger": "This Max Buy Price will prevent the Buy Trigger from executing"
+    "max-buy-price-will-prevent-buy-trigger": "This Max Buy Price will prevent the Buy Trigger from executing",
+    "auto-take-profit-triggered-immediately": "Please raise your trigger price. The current trigger price would cause your auto-profit sell to execute immediately.",
+    "take-profit-will-trigger-immediately-after-vault-reopen": "You have an existing Take Profit Trigger that will trigger immediately on reopening this vault. Please remove your Take Profit Trigger before continuing."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -917,7 +1021,12 @@
     "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
     "constant-multiple-auto-sell-triggered-immediately": "Setting your Sell Trigger at this ratio would result in it being executed immediately",
-    "constant-multiple-auto-buy-triggered-immediately": "Setting your Buy Trigger at this ratio would result in it being executed immediately"
+    "constant-multiple-auto-buy-triggered-immediately": "Setting your Buy Trigger at this ratio would result in it being executed immediately",
+    "auto-take-profit-trigger-lower-than-auto-buy-trigger": "Setting your Target Price at this level may result in your Auto-Buy not executing. Find out more <0>here</0>.",
+    "auto-take-profit-trigger-lower-than-constant-multiple-buy-trigger": "Setting your Target Price at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
+    "auto-buy-trigger-greater-than-auto-take-profit": "Setting your trigger ratio at this level may result in your Auto-Buy Trigger not executing. Find out more <0>here</0>.",
+    "constant-multiple-buy-trigger-greater-than-auto-take-profit": "Setting your buy trigger ratio at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
+    "existing-take-profit-trigger-after-vault-reopen": "You have an existing Take Profit Trigger, it will remain active after you reopen this vault."
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -933,7 +1042,9 @@
     "price-impact": "{{token}} Price (impact)",
     "slippage-limit": "Slippage Limit",
     "third-party-fees": "3rd party protocol fees",
-    "oasis-fee": "Oasis fee"
+    "oasis-fee": "Oasis fee",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -1000,6 +1111,10 @@
       "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
       "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+    },
+    "aave-multi-position": {
+      "header": "This position is affected by other assets on AAVE",
+      "subheader": "This position is not reflecting the entire position on AAVE, as there are other assets put up as collateral or debt on this same DS-Proxy. Contact us to see what you can do."
     }
   },
   "vault-banners": {
@@ -1127,6 +1242,7 @@
   },
   "setup": "Setup",
   "protection": {
+    "stop-loss": "Stop-Loss",
     "stop-loss-protection": "Stop-Loss Protection",
     "confirmation-text": "Confirm your stop-loss setup.",
     "navigate-cancel": "Cancel downside protection",
@@ -1255,6 +1371,12 @@
       "GUNIV3DAIUSDC2-A": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
       "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
     },
+    "aave": {
+      "stETHeth": {
+        "title": "stETH/ETH AAVE",
+        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on AAVE to get more exposure to stETH."
+      }
+    },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
@@ -1270,6 +1392,9 @@
     "guni": {
       "GUNIV3DAIUSDC2-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool",
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
+    },
+    "aave": {
+      "stETHeth": "Get up to {{value}} ETH exposure to stETH"
     }
   },
   "product-card-title": {
@@ -1537,7 +1662,7 @@
     "trigger-updated": "Auto-Buy Updated",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
-    "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
+    "trigger-col-ratio-to-perform-buy": "Trigger Col. Ratio to perform each automated buy",
     "next-buy-prices": "Next buy price(s)",
     "total-cost-of-next-buy": "Total cost of next ETH buy",
     "collateral-after-next-buy": "Collateral after next buy",
@@ -1566,21 +1691,24 @@
     "coll-ratio-too-high": "Auto-Buy is not available as your Collateral Ratio is too high. Please <0>lower your collateral ratio</0> below {{maxAutoBuyCollRatio}}% before using Auto-Buy."
   },
   "auto-take-profit": {
-    "title": "Auto-Take Profit",
-    "cancel-summary-title": "Cancel Auto-Take Profit order summary",
-    "form-title": "Auto-Take Profit Setup",
+    "title": "Take Profit",
+    "cancel-summary-title": "Cancel Take Profit order summary",
+    "setting-form-title": "Setting Take Profit",
+    "cancelling-form-title": "Cancelling Take Profit",
+    "form-title": "Take Profit Setup",
     "banner": {
-      "header": "Set up Auto-Take Profit",
-      "content": "Auto-Take Profit allows you to set up an exit strategy that will automatically close your vault and take profits when your collateral hits your target price.",
-      "button": "Setup Auto-Take Profit"
+      "header": "Automate your exit strategy",
+      "content": "Setup Take Profit to create an exit strategy for your position and take emotion out of the equation. Take Profit automatically closes your position and locks in profits when your collateral hits your target price.",
+      "button": "Setup Take Profit"
     },
     "trigger-col-price": "Trigger {{token}} Price",
-    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Auto-Take profit.",
+    "trigger-col-price-explanation": "The price that {{token}} must reach in order to execute the Take profit.",
     "estimated-profit": "Estimated Profit at close {{amount}}",
     "estimated-profit-explanation": "Estimated Profit at Close = Collateral value (USD) at trigger - Debt value to be repaid - estimated Tx Fees",
     "trigger-col-ratio": "Trigger Collateral Ratio",
-    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Auto-Take profit.",
+    "trigger-col-ratio-explanation": "The collateralization ratio that your Vault must reach in order to execute the Take profit.",
     "current-col-ratio": "Current Collateral Ratio {{amount}}",
+    "estimated-at-trigger": "Estimated {{token}} at Trigger",
     "vault-changes": {
       "general-summary": "General summary",
       "trigger-col-price": "Trigger {{token}} Price",
@@ -1591,7 +1719,12 @@
       "estimated-oasis-fee": "Estimated Oasis fee",
       "estimated-gas-fee": "Estimated gas fee",
       "setup-transaction-cost": "Setup transaction cost"
-    }
+    },
+    "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction.",
+    "adding-new-triggers-disabled": "Creation of the new Take Profit trigger is currently disabled.",
+    "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
+    "closed-vault-existing-trigger-header": "Your vault is closed but Take Profit is still active",
+    "closed-vault-existing-trigger-description": "You can cancel your existing Take Profit here or deposit into your vault in overview tab"
   },
 
   "automation": {
@@ -1605,7 +1738,13 @@
     "updating": "Updating {{feature}}",
     "cancelling": "Cancelling {{feature}}",
     "update-trigger": "Update {{feature}}",
-    "cancel-trigger": "Cancel {{feature}}"
+    "cancel-trigger": "Cancel {{feature}}",
+    "trigger-executed-banner-title": "{{feature}} triggered",
+    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
+    "summary": "{{feature}} summary",
+    "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
+    "trigger-executed": "Your {{feature}} was triggered",
+    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1693,7 +1832,7 @@
     "how-p3": "3. Both receive 5% of the Oasis.app fees generated forever!",
     "need-help": "Need help?",
     "help-link-1": "Oasis Referrals Guide",
-    "help-link-2": "Visit Oasis Knowledge Centre",
+    "help-link-2": "Visit Oasis Knowledge Base",
     "etherscan": "Etherscan",
     "modal": {
       "you-have-been-ref": "You have been invited to the Oasis.app Refer a Friend program by ",
@@ -1718,6 +1857,8 @@
     }
   },
   "notifications": {
+    "notifications-center": "Notifications",
+    "notifications-preferences": "Notifications preferences",
     "enable-notifications-email-heading": "Enable email notifications",
     "enable-notifications-email-description": "You are able to receive the email updates on Oasis.app",
     "enable-notifications-email-placeholder": "Enter email...",
@@ -1733,6 +1874,7 @@
     "stop-loss-executed": "Your Stop-Loss Protection on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-buy-executed": "Your Auto-Buy on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "constant-multiple-executed": "Your Constant Multiple on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
     "oracle-price-changed": "Oracle price changed ${{usdPrice}}.",
     "action-notifications": "Vault action notifications",
     "action-notifications-description": "Receive a notification when an action occurs on your Vault.",
@@ -1742,11 +1884,15 @@
     "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "news-notifications": "Oasis.app news notifications",
     "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
-    "service-not-available": "Notification service not available, please try again later."
+    "service-not-available": "Notification service not available, please try again later.",
+    "welcome-to-notifications": "Welcome to your Notification Center!",
+    "zero-notifications": "When available, your notifications will appear here.",
+    "zero-notifications-no-active-subscriptions": "Enable notifications in settings to allow them to appear here."
   },
   "manage-earn": {
     "aave": {
       "vault-form": {
+        "adjust-risk": "Adjust Risk",
         "deposit": "Deposit ETH",
         "title": "Your Earn position",
         "close-title": "Close position to ETH",
@@ -1755,7 +1901,12 @@
         "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
         "stop-close": "Not right now",
         "eth-after-closing": "ETH after closing",
-        "retry-btn": "Retry"
+        "retry-btn": "Retry",
+        "adjust-title": "Confirm adjustment",
+        "adjust-description": "You are about to adjust the risk level of your vault. Please confirm the changes below.",
+        "back-to-editing": "Back to editing",
+        "success-title": "Success!",
+        "position-adjusted-btn": "OK"
       }
     }
   },
@@ -1776,13 +1927,16 @@
         "retry-btn": "Retry",
         "success-title": "All done! You've opened a position",
         "go-to-position": "Go to position",
+        "back-to-editing": "Back to editing",
         "configure-multiple": {
           "title": "Set your risk level",
-          "liquidation-price": "stETH/ETH Liquidation Price",
-          "steth-eth-historial-ratio": "stETH / ETH Historical Ratio",
+          "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
+          "historical-ratio": "{{collateralToken}} / {{debtToken}} Historical Ratio",
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
-          "decrease-risk": "Decrease risk"
+          "decrease-risk": "Decrease risk",
+          "vault-message-ok": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{priceMovement}} with respect to {{debtToken}} for this position to be available for liquidation. AAVE's liquidations penalty is at least {{liquidationPenalty}}.",
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}."
         }
       }
     }
@@ -1839,7 +1993,7 @@
       },
       "bug": {
         "header": "Bug bounty",
-        "description": "Working with a community of code reviewers, ethical and white hat hackers we are giving rewards of up to $100k indentify any bugs.",
+        "description": "Working with a community of code reviewers, ethical and white hat hackers we are giving rewards of up to $100k identify any bugs.",
         "link-bug-bounty": "Go to Bug Bounty"
       },
       "shield": {

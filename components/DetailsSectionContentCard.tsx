@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { SystemStyleObject } from '@styled-system/css'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
@@ -28,6 +29,8 @@ export interface ContentCardProps {
   footnote?: string
   link?: DetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
+  customBackground?: string
+  customUnitStyle?: SystemStyleObject
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
@@ -111,6 +114,8 @@ export function DetailsSectionContentCard({
   footnote,
   link,
   modal,
+  customBackground = '',
+  customUnitStyle = {},
 }: ContentCardProps) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
@@ -122,6 +127,11 @@ export function DetailsSectionContentCard({
     onMouseLeave: () => setIsHighlighted(false),
     onClick: modalHandler,
   }
+  let cardBackgroundColor = modal && isHighlighted ? 'neutral30' : 'neutral10'
+  if (customBackground) {
+    cardBackgroundColor = customBackground
+  }
+  const cursorStyle = { cursor: modal ? 'pointer' : 'auto' }
 
   return (
     <Flex
@@ -130,7 +140,7 @@ export function DetailsSectionContentCard({
         alignItems: 'flex-start',
         p: '12px',
         borderRadius: 'medium',
-        backgroundColor: modal && isHighlighted ? 'neutral30' : 'neutral10',
+        backgroundColor: cardBackgroundColor,
         transition: 'background-color 200ms',
         wordWrap: 'break-word',
       }}
@@ -139,7 +149,7 @@ export function DetailsSectionContentCard({
         as="h3"
         variant="paragraph4"
         color="neutral80"
-        sx={{ cursor: modal ? 'pointer' : 'auto' }}
+        sx={cursorStyle}
         {...hightlightableItemEvents}
       >
         {title}
@@ -157,21 +167,18 @@ export function DetailsSectionContentCard({
       <Text
         as="p"
         variant="header3"
-        sx={{ maxWidth: '100%', lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
+        sx={{ maxWidth: '100%', lineHeight: 'loose', ...cursorStyle }}
         {...hightlightableItemEvents}
       >
         {value || '-'}
         {unit && (
-          <Text as="small" sx={{ ml: 1, fontSize: 5 }}>
+          <Text as="small" sx={{ ml: 1, fontSize: 5, ...customUnitStyle }}>
             {unit}
           </Text>
         )}
       </Text>
       {change && (
-        <Box
-          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }}
-          {...hightlightableItemEvents}
-        >
+        <Box sx={{ maxWidth: '100%', pt: 2, ...cursorStyle }} {...hightlightableItemEvents}>
           <DetailsSectionContentCardChangePill {...change} />
         </Box>
       )}
@@ -179,7 +186,7 @@ export function DetailsSectionContentCard({
         <Text
           as="p"
           variant="paragraph4"
-          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto', fontSize: '12px' }}
+          sx={{ maxWidth: '100%', pt: 2, fontSize: '12px', ...cursorStyle }}
           {...hightlightableItemEvents}
         >
           {footnote}
