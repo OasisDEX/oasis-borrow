@@ -1,7 +1,7 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
 import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'

@@ -166,7 +166,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveSuccessStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
