@@ -1,6 +1,7 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { getDiscoverMixpanelPage } from 'features/discover/helpers'
 import { DiscoverPages } from 'features/discover/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatPrecision } from 'helpers/formatters/format'
@@ -65,6 +66,11 @@ export enum Pages {
   CloseVault = 'CloseVault',
   OpenEarnSTETH = 'OpenEarnSTETH',
   ManageSTETH = 'ManageSTETH',
+  DiscoverOasis = 'DiscoverOasis',
+  DiscoverHighRiskPositions = 'DiscoverHighRiskPositions',
+  DiscoverHighestMultiplyPnl = 'DiscoverHighestMultiplyPnl',
+  DiscoverMostYieldEarned = 'DiscoverMostYieldEarned',
+  DiscoverLargestDebt = 'DiscoverLargestDebt',
 }
 
 export enum EventTypes {
@@ -886,12 +892,18 @@ export const trackingEvents = {
   discover: {
     selectedInNavigation: (userContext: MixpanelUserContext) => {
       mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: Pages.LandingPage,
+        section: 'Header/tabs',
         id: 'Discover',
         ...userContext,
       })
     },
     selectedCategory: (kind: DiscoverPages, userContext: MixpanelUserContext) => {
       mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: Pages.DiscoverOasis,
+        section: 'Categories',
         id: upperFirst(camelCase(kind)),
         ...userContext,
       })
@@ -903,22 +915,29 @@ export const trackingEvents = {
       userContext: MixpanelUserContext,
     ) => {
       mixpanelInternalAPI(EventTypes.InputChange, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Filters',
         id: `${upperFirst(camelCase(label))}Filter`,
-        table: kind,
         [label]: value,
         ...userContext,
       })
     },
     clickedTableBanner: (kind: DiscoverPages, link: string, userContext: MixpanelUserContext) => {
       mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Table',
         id: 'TableBanner',
-        table: kind,
         link,
         ...userContext,
       })
     },
-    viewPosition: (vaultId: string | number) => {
+    viewPosition: (kind: DiscoverPages, vaultId: string | number) => {
       mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Table',
         id: 'ViewPosition',
         vaultId,
       })

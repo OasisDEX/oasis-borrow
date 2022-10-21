@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import {
+  DiscoverPages,
   DiscoverTableRowData,
   DiscoverTableVaultActivity,
   DiscoverTableVaultStatus,
@@ -38,9 +39,11 @@ const statusColors: { [key in DiscoverTableVaultStatus]: SxStyleProp } = {
 }
 
 export function DiscoverTableDataCellContent({
+  kind,
   label,
   row,
 }: {
+  kind: DiscoverPages
   label: string
   row: DiscoverTableRowData
 }) {
@@ -86,7 +89,7 @@ export function DiscoverTableDataCellContent({
         <AppLink
           href={`/${row?.cdpId}`}
           onClick={() => {
-            trackingEvents.discover.viewPosition(row?.cdpId)
+            trackingEvents.discover.viewPosition(kind, row?.cdpId)
           }}
         >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
