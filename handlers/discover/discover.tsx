@@ -159,7 +159,7 @@ export async function getDiscoverData(req: NextApiRequest, res: NextApiResponse)
           collateralType: i.collateral_type,
           collateralValue: i.collateral_value.toNumber(),
           vaultDebt: i.vault_debt.toNumber(),
-          collRatio: i.collateral_value.div(i.vault_debt).toNumber(),
+          collRatio: i.coll_ratio.toNumber(),
         }))
         break
       }
