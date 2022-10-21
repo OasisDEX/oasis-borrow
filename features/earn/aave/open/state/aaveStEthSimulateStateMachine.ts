@@ -8,6 +8,7 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { AaveStEthYieldsResponse, CalculateSimulationResult } from '../services'
 
 interface AaveStEthSimulateStateMachineContext {
+  baseYieldsMin?: AaveStEthYieldsResponse
   yieldsMin?: AaveStEthYieldsResponse
   yieldsMax?: AaveStEthYieldsResponse
   token?: string
@@ -99,6 +100,7 @@ export const aaveStEthSimulateStateMachine = createMachine(
   {
     actions: {
       assignYields: assign((context, event) => ({
+        baseYieldsMin: context.baseYieldsMin ? context.baseYieldsMin : event.data.yieldsMin,
         yieldsMin: event.data.yieldsMin,
         yieldsMax: event.data.yieldsMax,
       })),
