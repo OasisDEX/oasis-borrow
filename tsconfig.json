@@ -22,13 +22,15 @@
       "features/*": ["features/*"],
       "pages/*": ["pages/*"],
       "handlers/*": ["handlers/*"],
-      "content/*": ["content/*"]
+      "content/*": ["content/*"],
+      "theme/*": ["theme/*"],
+      "theme": ["theme"]
     },
     "noEmit": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true
   },
   "include": [
