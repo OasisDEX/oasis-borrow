@@ -1,8 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import {
+  DiscoverPages,
   DiscoverTableRowData,
   DiscoverTableVaultActivity,
   DiscoverTableVaultStatus,
@@ -37,9 +39,11 @@ const statusColors: { [key in DiscoverTableVaultStatus]: SxStyleProp } = {
 }
 
 export function DiscoverTableDataCellContent({
+  kind,
   label,
   row,
 }: {
+  kind: DiscoverPages
   label: string
   row: DiscoverTableRowData
 }) {
@@ -86,7 +90,12 @@ export function DiscoverTableDataCellContent({
       )
     case 'cdpId':
       return (
-        <AppLink href={`/${row?.cdpId}`}>
+        <AppLink
+          href={`/${row?.cdpId}`}
+          onClick={() => {
+            trackingEvents.discover.viewPosition(kind, row?.cdpId)
+          }}
+        >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
         </AppLink>
       )

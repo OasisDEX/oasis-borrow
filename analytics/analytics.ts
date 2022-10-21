@@ -1,7 +1,11 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
+import { getDiscoverMixpanelPage } from 'features/discover/helpers'
+import { DiscoverPages } from 'features/discover/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatPrecision } from 'helpers/formatters/format'
+import { camelCase, upperFirst } from 'lodash'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
@@ -62,6 +66,11 @@ export enum Pages {
   CloseVault = 'CloseVault',
   OpenEarnSTETH = 'OpenEarnSTETH',
   ManageSTETH = 'ManageSTETH',
+  DiscoverOasis = 'DiscoverOasis',
+  DiscoverHighRiskPositions = 'DiscoverHighRiskPositions',
+  DiscoverHighestMultiplyPnl = 'DiscoverHighestMultiplyPnl',
+  DiscoverMostYieldEarned = 'DiscoverMostYieldEarned',
+  DiscoverLargestDebt = 'DiscoverLargestDebt',
 }
 
 export enum EventTypes {
@@ -117,6 +126,19 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       userId,
     }),
   })
+}
+
+export interface MixpanelUserContext {
+  walletAddres: string
+  walletType: string
+  browserLanguage: string
+}
+export function getMixpanelUserContext(language: string, context?: Context): MixpanelUserContext {
+  return {
+    walletAddres: context?.status === 'connected' ? context.account : 'not-connected',
+    walletType: context?.status === 'connected' ? context.connectionKind : 'not-connected',
+    browserLanguage: language,
+  }
 }
 
 export const trackingEvents = {
@@ -864,6 +886,61 @@ export const trackingEvents = {
         section: 'ClosePosition',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+  },
+
+  discover: {
+    selectedInNavigation: (userContext: MixpanelUserContext) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: Pages.LandingPage,
+        section: 'Header/tabs',
+        id: 'Discover',
+        ...userContext,
+      })
+    },
+    selectedCategory: (kind: DiscoverPages, userContext: MixpanelUserContext) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: Pages.DiscoverOasis,
+        section: 'Categories',
+        id: upperFirst(camelCase(kind)),
+        ...userContext,
+      })
+    },
+    selectedFilter: (
+      kind: DiscoverPages,
+      label: string,
+      value: string,
+      userContext: MixpanelUserContext,
+    ) => {
+      mixpanelInternalAPI(EventTypes.InputChange, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Filters',
+        id: `${upperFirst(camelCase(label))}Filter`,
+        [label]: value,
+        ...userContext,
+      })
+    },
+    clickedTableBanner: (kind: DiscoverPages, link: string, userContext: MixpanelUserContext) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Table',
+        id: 'TableBanner',
+        link,
+        ...userContext,
+      })
+    },
+    viewPosition: (kind: DiscoverPages, vaultId: string | number) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Table',
+        id: 'ViewPosition',
+        vaultId,
+      })
     },
   },
 }
