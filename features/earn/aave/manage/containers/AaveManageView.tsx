@@ -100,7 +100,7 @@ export function AaveManagePositionView({ address, strategy }: AaveManageViewPosi
   const { aaveManageStateMachine$ } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
   const [stateMachine, stateMachineError] = useObservable(
-    aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'STETH' }),
+    aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'stETHeth' }),
   ) // TODO: should be created with strategy and address. Then should be more generic.
   const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
