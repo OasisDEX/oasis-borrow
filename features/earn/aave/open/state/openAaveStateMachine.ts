@@ -12,7 +12,7 @@ import { zero } from '../../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
-import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
+import { aaveStETHDefaultRiskRatio } from '../../constants'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
@@ -165,7 +165,6 @@ export const createOpenAaveStateMachine = createMachine(
           RESET_RISK_RATIO: {
             actions: [
               'resetRiskRatio',
-              'clearTransactionParameters',
               'debounceSendingToParametersMachine',
               'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
@@ -296,7 +295,7 @@ export const createOpenAaveStateMachine = createMachine(
         return {
           userInput: {
             ...context.userInput,
-            riskRatio: aaveStETHMinimumRiskRatio,
+            riskRatio: aaveStETHDefaultRiskRatio,
           },
         }
       }),
@@ -361,7 +360,7 @@ export const createOpenAaveStateMachine = createMachine(
           return {
             type: 'USER_PARAMETERS_CHANGED',
             amount: context.userInput.amount || zero,
-            riskRatio: context.userInput.riskRatio || aaveStETHMinimumRiskRatio,
+            riskRatio: context.userInput.riskRatio || aaveStETHDefaultRiskRatio,
             token: context.token,
           }
         },

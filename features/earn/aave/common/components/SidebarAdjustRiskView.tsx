@@ -14,7 +14,7 @@ import { SidebarSectionFooterButtonSettings } from '../../../../../components/si
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import { formatBigNumber, formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
-import { aaveStETHMinimumRiskRatio } from '../../constants'
+import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
@@ -88,7 +88,7 @@ export function AdjustRiskView({
   const sliderValue =
     state.context.userInput.riskRatio?.loanToValue ||
     onChainPosition?.riskRatio.loanToValue ||
-    aaveStETHMinimumRiskRatio.loanToValue
+    aaveStETHDefaultRiskRatio.loanToValue
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
