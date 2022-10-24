@@ -23,14 +23,21 @@ interface TabBarProps {
   useDropdownOnMobile?: boolean
   variant: TabVariant
   switchEvent?: { value: string }
+  defaultTab?: string
 }
 
-export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: TabBarProps) {
+export function TabBar({
+  sections,
+  variant,
+  useDropdownOnMobile,
+  switchEvent,
+  defaultTab,
+}: TabBarProps) {
   const [hash, setHash] = useHash<string>()
 
   useEffect(() => {
-    if (!hash) {
-      setHash(sections[0]?.value)
+    if (!hash || !!defaultTab) {
+      setHash(defaultTab || sections[0]?.value)
     }
   }, [])
 
