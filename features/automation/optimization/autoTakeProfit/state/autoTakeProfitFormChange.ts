@@ -12,6 +12,7 @@ export type AutoTakeProfitFormChangeAction =
   | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'close-type'; toCollateral: boolean }
   | { type: 'is-editing'; isEditing: boolean }
+  | { type: 'is-awaiting-confirmation'; isAwaitingConfirmation: boolean }
   | { type: 'reset'; resetData: AutoTakeProfitResetData }
   | {
       type: 'form-defaults'
@@ -50,6 +51,8 @@ export function autoTakeProfitFormChangeReducer(
       return { ...state, txDetails: action.txDetails }
     case 'is-editing':
       return { ...state, isEditing: action.isEditing }
+    case 'is-awaiting-confirmation':
+      return { ...state, isAwaitingConfirmation: action.isAwaitingConfirmation }
     case 'reset':
       return { ...state, ...action.resetData }
     case 'form-defaults':
@@ -78,4 +81,5 @@ export type AutoTakeProfitFormChange = AutomationFormChange & {
   executionCollRatio: BigNumber
   executionPrice: BigNumber
   toCollateral: boolean
+  isAwaitingConfirmation: boolean
 }

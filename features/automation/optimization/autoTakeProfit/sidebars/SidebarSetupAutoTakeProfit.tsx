@@ -30,7 +30,7 @@ import {
   warningsAutoTakeProfitValidation,
 } from 'features/automation/optimization/autoTakeProfit/validators'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import { calculateStepNumber, getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount } from 'helpers/formatters/format'
@@ -68,6 +68,7 @@ interface SidebarSetupAutoTakeProfitProps {
   vault: Vault
   ethBalance: BigNumber
   vaultType: VaultType
+  isAwaitingConfirmation: boolean
 }
 
 export function SidebarSetupAutoTakeProfit({
@@ -96,6 +97,7 @@ export function SidebarSetupAutoTakeProfit({
   vault,
   ethBalance,
   vaultType,
+  isAwaitingConfirmation
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
@@ -242,6 +244,7 @@ export function SidebarSetupAutoTakeProfit({
                   ilkData={ilkData}
                   errors={errors}
                   warnings={warnings}
+                  isAwaitingConfirmation={isAwaitingConfirmation}
                 />
               )}
               {isRemoveForm && (
@@ -266,17 +269,37 @@ export function SidebarSetupAutoTakeProfit({
         </Grid>
       ),
       primaryButton: {
-        label: primaryButtonLabel,
+        label: `${
+          isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
+        } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if(!isAwaitingConfirmation) {
+            uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true
+            })
+          } else {
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
           textButton: {
-            label: textButtonLabel,
-            hidden: isFirstSetup,
-            action: () => textButtonHandler(),
+            label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+            hidden: isFirstSetup && !isAwaitingConfirmation,
+            action: () => {
+              if (isAwaitingConfirmation) {
+                uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                  type: 'is-awaiting-confirmation',
+                  isAwaitingConfirmation: false,
+                })
+              } else {
+                textButtonHandler()
+              }
+            },
           },
         }),
       status: sidebarStatus,

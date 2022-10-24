@@ -22,6 +22,7 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
+import { Text } from 'theme-ui';
 import React from 'react'
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
@@ -35,6 +36,7 @@ interface SidebarAutoTakeProfitEditingStageProps {
   ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
+  isAwaitingConfirmation: boolean
 }
 
 export function SidebarAutoTakeProfitEditingStage({
@@ -49,6 +51,7 @@ export function SidebarAutoTakeProfitEditingStage({
   ilkData,
   errors,
   warnings,
+  isAwaitingConfirmation
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -76,8 +79,19 @@ export function SidebarAutoTakeProfitEditingStage({
 
   return (
     <>
-      <PickCloseState {...closePickerConfig} />
-      <SliderValuePicker {...sliderConfig} />
+      {!isAwaitingConfirmation && (
+        <>
+          <PickCloseState {...closePickerConfig} />
+          <SliderValuePicker {...sliderConfig} />
+        </>
+      )}
+
+        {isAwaitingConfirmation && (
+          <Text  as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+            You are setting an Auto-Take Profit order to trigger at an ETH price of ${ethMarketPrice.toString()}. Your vault will be closed and your expected profit of $1.8m paid will be paid out in DAI.
+          </Text>
+        )}
+
       {isEditing && (
         <>
           <VaultErrors errorMessages={errors} ilkData={ilkData} />
@@ -86,17 +100,19 @@ export function SidebarAutoTakeProfitEditingStage({
       )}
       {isEditing && (
         <>
-          <SidebarResetButton
-            clear={() => {
-              uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-                type: 'reset',
-                resetData: prepareAutoTakeProfitResetData(
-                  autoTakeProfitState,
-                  autoTakeProfitTriggerData,
-                ),
-              })
-            }}
-          />
+          {!isAwaitingConfirmation && (
+            <SidebarResetButton
+              clear={() => {
+                uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                  type: 'reset',
+                  resetData: prepareAutoTakeProfitResetData(
+                    autoTakeProfitState,
+                    autoTakeProfitTriggerData,
+                  ),
+                })
+              }}
+            />
+          )}
           <AutoTakeProfitInfoSectionControl
             debt={vault.debt}
             debtOffset={vault.debtOffset}

@@ -136,6 +136,7 @@ export function AutoTakeProfitFormControl({
           nextCollateralPrice={nextCollateralPrice}
           ethBalance={balanceInfo.ethBalance}
           vaultType={vaultType}
+          isAwaitingConfirmation={autoTakeProfitState.isAwaitingConfirmation}
         />
       )}
     </AddAndRemoveTriggerControl>

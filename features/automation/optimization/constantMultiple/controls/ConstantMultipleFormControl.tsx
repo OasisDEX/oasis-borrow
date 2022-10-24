@@ -158,6 +158,7 @@ export function ConstantMultipleFormControl({
           txHandler={txHandler}
           vault={vault}
           vaultType={vaultType}
+          isAwaitingConfirmation={constantMultipleState.isAwaitingConfirmation}
         />
       )}
     </AddAndRemoveTriggerControl>

@@ -33,6 +33,13 @@ export function useAutoTakeProfitStateInitializator(
 
   useEffect(() => {
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+      type: 'is-awaiting-confirmation',
+      isAwaitingConfirmation: false,
+    })
+  }, [])
+
+  useEffect(() => {
+    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'trigger-id',
       triggerId,
     })

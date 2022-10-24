@@ -67,6 +67,7 @@ interface SidebaConstantMultiplerEditingStageProps {
   estimatedGasCostOnTrigger?: BigNumber
   estimatedBuyFee: BigNumber
   estimatedSellFee: BigNumber
+  isAwaitingConfirmation: boolean
 }
 
 export function SidebarConstantMultipleEditingStage({
@@ -88,6 +89,7 @@ export function SidebarConstantMultipleEditingStage({
   estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
+  isAwaitingConfirmation
 }: SidebaConstantMultiplerEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -116,80 +118,88 @@ export function SidebarConstantMultipleEditingStage({
 
   return constantMultipleState.eligibleMultipliers.length ? (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('constant-multiple.set-trigger-description', {
-          token,
-          buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio.toNumber(),
-          sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio.toNumber(),
-          multiplier: constantMultipleState.multiplier,
-        })}
-      </Text>
-      <Text as="p" variant="boldParagraph3" sx={{ color: 'neutral80' }}>
-        {t('constant-multiple.set-trigger-risk')}
-        <AppLink
-          href="https://kb.oasis.app/help/what-are-the-risks-associated-with-constant-multiple"
-          sx={{ fontSize: 2 }}
-        >
-          {t('here')}.
-        </AppLink>
-      </Text>
-      <Box sx={{ mb: 2 }}>
-        <ActionPills
-          active={constantMultipleState.multiplier.toString()}
-          variant="secondary"
-          items={constantMultipleState.multipliers.map((multiplier) => ({
-            id: multiplier.toString(),
-            label: `${multiplier}x`,
-            disabled: !constantMultipleState.eligibleMultipliers.includes(multiplier),
-            action: () => {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'is-editing',
-                isEditing: true,
-              })
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'multiplier',
-                multiplier: multiplier,
-              })
-            },
-          }))}
+      {!isAwaitingConfirmation && (
+        <>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+            {t('constant-multiple.set-trigger-description', {
+              token,
+              buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio.toNumber(),
+              sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio.toNumber(),
+              multiplier: constantMultipleState.multiplier,
+            })}
+          </Text>
+          <Text as="p" variant="boldParagraph3" sx={{ color: 'neutral80' }}>
+            {t('constant-multiple.set-trigger-risk')}
+            <AppLink
+              href="https://kb.oasis.app/help/what-are-the-risks-associated-with-constant-multiple"
+              sx={{ fontSize: 2 }}
+            >
+              {t('here')}.
+            </AppLink>
+          </Text>
+        </>
+      )}
+      {!isAwaitingConfirmation && (
+        <Box sx={{ mb: 2 }}>
+          <ActionPills
+            active={constantMultipleState.multiplier.toString()}
+            variant="secondary"
+            items={constantMultipleState.multipliers.map((multiplier) => ({
+              id: multiplier.toString(),
+              label: `${multiplier}x`,
+              disabled: !constantMultipleState.eligibleMultipliers.includes(multiplier),
+              action: () => {
+                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                  type: 'is-editing',
+                  isEditing: true,
+                })
+                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                  type: 'multiplier',
+                  multiplier: multiplier,
+                })
+              },
+            }))}
+          />
+        </Box>
+      )}
+      {!isAwaitingConfirmation && (
+        <MultipleRangeSlider
+          min={constantMultipleState.minTargetRatio.toNumber()}
+          max={constantMultipleState.maxTargetRatio.toNumber()}
+          onChange={(value) => {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-editing',
+              isEditing: true,
+            })
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'sell-execution-coll-ratio',
+              sellExecutionCollRatio: new BigNumber(value.value0),
+            })
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'buy-execution-coll-ratio',
+              buyExecutionCollRatio: new BigNumber(value.value1),
+            })
+          }}
+          value={{
+            value0: constantMultipleState.sellExecutionCollRatio.toNumber(),
+            value1: constantMultipleState.buyExecutionCollRatio.toNumber(),
+          }}
+          valueColors={{
+            value0: 'warning100',
+            value1: 'success100',
+          }}
+          step={1}
+          leftDescription={t('auto-sell.sell-trigger-ratio')}
+          rightDescription={t('auto-buy.trigger-coll-ratio')}
+          leftThumbColor="warning100"
+          rightThumbColor="success100"
+          middleMark={{
+            text: `${constantMultipleState.multiplier}x`,
+            value: constantMultipleState.targetCollRatio.toNumber(),
+          }}
+          isResetAction={constantMultipleState.isResetAction}
         />
-      </Box>
-      <MultipleRangeSlider
-        min={constantMultipleState.minTargetRatio.toNumber()}
-        max={constantMultipleState.maxTargetRatio.toNumber()}
-        onChange={(value) => {
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'sell-execution-coll-ratio',
-            sellExecutionCollRatio: new BigNumber(value.value0),
-          })
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'buy-execution-coll-ratio',
-            buyExecutionCollRatio: new BigNumber(value.value1),
-          })
-        }}
-        value={{
-          value0: constantMultipleState.sellExecutionCollRatio.toNumber(),
-          value1: constantMultipleState.buyExecutionCollRatio.toNumber(),
-        }}
-        valueColors={{
-          value0: 'warning100',
-          value1: 'success100',
-        }}
-        step={1}
-        leftDescription={t('auto-sell.sell-trigger-ratio')}
-        rightDescription={t('auto-buy.trigger-coll-ratio')}
-        leftThumbColor="warning100"
-        rightThumbColor="success100"
-        middleMark={{
-          text: `${constantMultipleState.multiplier}x`,
-          value: constantMultipleState.targetCollRatio.toNumber(),
-        }}
-        isResetAction={constantMultipleState.isResetAction}
-      />
+      )}
       <VaultWarnings
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
         ilkData={ilkData}
@@ -200,75 +210,79 @@ export function SidebarConstantMultipleEditingStage({
         )}
         ilkData={ilkData}
       />
-      <VaultActionInput
-        action={t('auto-buy.set-max-buy-price')}
-        amount={constantMultipleState?.maxBuyPrice}
-        hasAuxiliary={false}
-        hasError={false}
-        currencyCode="USD"
-        onChange={handleNumericInput((maxBuyPrice) => {
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'max-buy-price',
-            maxBuyPrice: maxBuyPrice,
-          })
-        })}
-        onToggle={(toggleStatus) => {
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'buy-with-threshold',
-            buyWithThreshold: toggleStatus,
-          })
-        }}
-        showToggle={true}
-        toggleOnLabel={t('protection.set-no-threshold')}
-        toggleOffLabel={t('protection.set-threshold')}
-        toggleOffPlaceholder={t('protection.no-threshold')}
-        defaultToggle={constantMultipleState?.buyWithThreshold}
-      />
+      {!isAwaitingConfirmation && (
+        <VaultActionInput
+          action={t('auto-buy.set-max-buy-price')}
+          amount={constantMultipleState?.maxBuyPrice}
+          hasAuxiliary={false}
+          hasError={false}
+          currencyCode="USD"
+          onChange={handleNumericInput((maxBuyPrice) => {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-editing',
+              isEditing: true,
+            })
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'max-buy-price',
+              maxBuyPrice: maxBuyPrice,
+            })
+          })}
+          onToggle={(toggleStatus) => {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-editing',
+              isEditing: true,
+            })
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'buy-with-threshold',
+              buyWithThreshold: toggleStatus,
+            })
+          }}
+          showToggle={true}
+          toggleOnLabel={t('protection.set-no-threshold')}
+          toggleOffLabel={t('protection.set-threshold')}
+          toggleOffPlaceholder={t('protection.no-threshold')}
+          defaultToggle={constantMultipleState?.buyWithThreshold}
+        />
+      )}
       <VaultErrors errorMessages={extractConstantMultipleMaxBuyErrors(errors)} ilkData={ilkData} />
       <VaultWarnings
         warningMessages={warnings.filter((item) => item === 'settingAutoBuyTriggerWithNoThreshold')}
         ilkData={ilkData}
       />
-      <VaultActionInput
-        action={t('auto-sell.set-min-sell-price')}
-        amount={constantMultipleState?.minSellPrice}
-        hasAuxiliary={false}
-        hasError={false}
-        currencyCode="USD"
-        onChange={handleNumericInput((minSellPrice) => {
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'min-sell-price',
-            minSellPrice,
-          })
-        })}
-        onToggle={(toggleStatus) => {
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'sell-with-threshold',
-            sellWithThreshold: toggleStatus,
-          })
-        }}
-        defaultToggle={constantMultipleState?.sellWithThreshold}
-        showToggle={true}
-        toggleOnLabel={t('protection.set-no-threshold')}
-        toggleOffLabel={t('protection.set-threshold')}
-        toggleOffPlaceholder={t('protection.no-threshold')}
-      />
+      {!isAwaitingConfirmation && (
+        <VaultActionInput
+          action={t('auto-sell.set-min-sell-price')}
+          amount={constantMultipleState?.minSellPrice}
+          hasAuxiliary={false}
+          hasError={false}
+          currencyCode="USD"
+          onChange={handleNumericInput((minSellPrice) => {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-editing',
+              isEditing: true,
+            })
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'min-sell-price',
+              minSellPrice,
+            })
+          })}
+          onToggle={(toggleStatus) => {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-editing',
+              isEditing: true,
+            })
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'sell-with-threshold',
+              sellWithThreshold: toggleStatus,
+            })
+          }}
+          defaultToggle={constantMultipleState?.sellWithThreshold}
+          showToggle={true}
+          toggleOnLabel={t('protection.set-no-threshold')}
+          toggleOffLabel={t('protection.set-threshold')}
+          toggleOffPlaceholder={t('protection.no-threshold')}
+        />
+      )}
       <VaultErrors errorMessages={extractConstantMultipleMinSellErrors(errors)} ilkData={ilkData} />
       <VaultWarnings
         warningMessages={extractConstantMultipleCommonWarnings(warnings)}
@@ -277,37 +291,41 @@ export function SidebarConstantMultipleEditingStage({
         isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
       />
       <VaultErrors errorMessages={extractConstantMultipleCommonErrors(errors)} ilkData={ilkData} />
-      <MaxGasPriceSection
-        onChange={(maxBaseFeeInGwei) => {
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'is-editing',
-            isEditing: true,
-          })
-          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-            type: 'max-gas-fee-in-gwei',
-            maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
-          })
-        }}
-        value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
-      />
+      {!isAwaitingConfirmation && (
+        <MaxGasPriceSection
+          onChange={(maxBaseFeeInGwei) => {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-editing',
+              isEditing: true,
+            })
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'max-gas-fee-in-gwei',
+              maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
+            })
+          }}
+          value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
+        />
+      )}
       {isEditing && (
         <>
-          <SidebarResetButton
-            clear={() => {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'is-reset-action',
-                isResetAction: true,
-              })
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'reset',
-                resetData: prepareConstantMultipleResetData({
-                  defaultMultiplier: constantMultipleState.defaultMultiplier,
-                  defaultCollRatio: constantMultipleState.defaultCollRatio,
-                  constantMultipleTriggerData,
-                }),
-              })
-            }}
-          />
+          {!isAwaitingConfirmation && (
+            <SidebarResetButton
+              clear={() => {
+                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                  type: 'is-reset-action',
+                  isResetAction: true,
+                })
+                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                  type: 'reset',
+                  resetData: prepareConstantMultipleResetData({
+                    defaultMultiplier: constantMultipleState.defaultMultiplier,
+                    defaultCollRatio: constantMultipleState.defaultCollRatio,
+                    constantMultipleTriggerData,
+                  }),
+                })
+              }}
+            />
+          )}
           <ConstantMultipleInfoSectionControl
             token={token}
             nextBuyPrice={nextBuyPrice}

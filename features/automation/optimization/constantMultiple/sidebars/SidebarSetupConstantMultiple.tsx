@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -16,12 +17,13 @@ import { AutomationFeatures, SidebarAutomationStages } from 'features/automation
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import { ConstantMultipleFormChange, CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import {
   errorsConstantMultipleValidation,
   warningsConstantMultipleValidation,
 } from 'features/automation/optimization/constantMultiple/validators'
+import { calculateStepNumber } from 'features/automation/protection/stopLoss/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -30,6 +32,7 @@ import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -65,6 +68,7 @@ interface SidebarSetupConstantMultipleProps {
   txHandler: () => void
   vault: Vault
   vaultType: VaultType
+  isAwaitingConfirmation: boolean
 }
 
 export function SidebarSetupConstantMultiple({
@@ -99,8 +103,11 @@ export function SidebarSetupConstantMultiple({
   debtDeltaWhenSellAtCurrentCollRatio,
   debtDeltaAfterSell,
   vaultType,
+  isAwaitingConfirmation
 }: SidebarSetupConstantMultipleProps) {
   const gasEstimation = useGasEstimationContext()
+  const { uiChanges } = useAppContext();
+  const { t } = useTranslation();
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -189,6 +196,7 @@ export function SidebarSetupConstantMultiple({
                   estimatedBuyFee={estimatedBuyFee}
                   estimatedSellFee={estimatedSellFee}
                   stopLossTriggerData={stopLossTriggerData}
+                  isAwaitingConfirmation={isAwaitingConfirmation}
                 />
               )}
               {isRemoveForm && (
@@ -213,19 +221,38 @@ export function SidebarSetupConstantMultiple({
         </Grid>
       ),
       primaryButton: {
-        label: primaryButtonLabel,
+        label: `${isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
+          } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isAwaitingConfirmation) {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
-          textButton: {
-            label: textButtonLabel,
-            hidden: isFirstSetup,
-            action: () => textButtonHandler(),
+        textButton: {
+          label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
           },
-        }),
+        },
+      }),
       status: sidebarStatus,
     }
 
