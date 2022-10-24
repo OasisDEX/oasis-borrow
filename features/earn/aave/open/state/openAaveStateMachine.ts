@@ -12,7 +12,7 @@ import { zero } from '../../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
-import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
+import { aaveStETHDefaultRiskRatio } from '../../constants'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
@@ -44,6 +44,7 @@ export type OpenAaveMachineEvents =
       type: 'UPDATE_META_INFO'
       hasOtherAssetsThanETH_STETH: boolean
     }
+  | { type: 'RESET_RISK_RATIO' }
 
 export type OpenAaveTransactionEvents =
   | {
@@ -154,6 +155,16 @@ export const createOpenAaveStateMachine = createMachine(
           SET_RISK_RATIO: {
             actions: [
               'setRiskRatio',
+              'debounceSendingToParametersMachine',
+              'debounceSendingToSimulationMachine',
+              'sendUpdateToParametersMachine',
+              'sendUpdateToSimulationMachine',
+              'setIsLoadingTrue',
+            ],
+          },
+          RESET_RISK_RATIO: {
+            actions: [
+              'resetRiskRatio',
               'debounceSendingToParametersMachine',
               'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
@@ -280,6 +291,14 @@ export const createOpenAaveStateMachine = createMachine(
           },
         }
       }),
+      resetRiskRatio: assign((context) => {
+        return {
+          userInput: {
+            ...context.userInput,
+            riskRatio: aaveStETHDefaultRiskRatio,
+          },
+        }
+      }),
       decreaseTotalSteps: assign((context) => {
         return {
           totalSteps: context.totalSteps - 1,
@@ -341,7 +360,7 @@ export const createOpenAaveStateMachine = createMachine(
           return {
             type: 'USER_PARAMETERS_CHANGED',
             amount: context.userInput.amount || zero,
-            riskRatio: context.userInput.riskRatio || aaveStETHMinimumRiskRatio,
+            riskRatio: context.userInput.riskRatio || aaveStETHDefaultRiskRatio,
             token: context.token,
           }
         },

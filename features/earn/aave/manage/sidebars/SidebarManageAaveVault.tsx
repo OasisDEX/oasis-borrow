@@ -166,7 +166,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveSuccessAdjustPositionStateView({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -183,7 +183,7 @@ function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveSta
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      action: () => send('GO_TO_EDITING'),
+      action: () => location && location.reload(),
     },
   }
 
