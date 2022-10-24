@@ -45,7 +45,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   UpdatedPnL: false,
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: false,
-  ShowAaveStETHETHProductCard: false,
+  ShowAaveStETHETHProductCard: true,
   // your feature here....
 }
 
