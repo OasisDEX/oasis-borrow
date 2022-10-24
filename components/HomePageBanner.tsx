@@ -5,12 +5,12 @@ import { Flex, Text } from 'theme-ui'
 import { AppLink } from './Links'
 import { Notice } from './Notice'
 
-interface ReferralBannerProps {
+interface HomePageBannerProps {
   heading: string
   link: string
 }
 const handleClose = () => null
-export function ReferralBanner({ heading, link }: ReferralBannerProps) {
+export function HomePageBanner({ heading, link }: HomePageBannerProps) {
   return (
     <Notice
       close={() => {
@@ -20,7 +20,7 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
         marginBottom: 0,
         overflow: 'hidden',
         borderRadius: '50px',
-        maxWidth: ['230px', '335px'],
+        maxWidth: ['400px', '520px'],
         p: '3px 8px 3px 4px',
         '&:hover': {
           opacity: '80%',
@@ -34,8 +34,8 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
           sx={{
             justifySelf: 'center',
             alignItems: 'center',
-            textAlign: 'center',
-            flexDirection: 'row',
+            textAlign: 'left',
+            flexDirection: ['row'],
             justifyContent: ['start', 'space-between', 'space-between', 'space-between'],
             minHeight: '44px',
             '&:hover svg': {
@@ -45,27 +45,25 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
         >
           <Flex
             sx={{
-              background: '#fee9bf',
+              background: '#D3F3F5',
               borderRadius: '50px',
               flexDirection: 'row',
               justifySelf: 'center',
               alignItems: 'center',
-              textAlign: 'center',
+              textAlign: 'left',
               minHeight: '42px',
+              minWidth: '44px',
               px: '8px',
               mr: '8px',
             }}
           >
             <Icon
-              name="dai_circle_color"
+              name="steth_circle_color"
               size="30px"
               sx={{
                 transform: 'none !important',
               }}
             />
-            <Text color="#5a4e3b" mx="4px" sx={{ fontSize: '14px', fontWeight: 'semiBold' }}>
-              5%
-            </Text>
           </Flex>
           <Flex
             sx={{
