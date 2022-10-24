@@ -51,7 +51,7 @@ export function getSthEthSimulationMachine(
           },
         })
         .withContext({
-          amount: new BigNumber(100000),
+          amount: new BigNumber(100),
           token: 'ETH',
           riskRatio: aaveStETHMinimumRiskRatio,
           riskRatioMax: new RiskRatio(aaveReserveStEthData.ltv, RiskRatio.TYPE.LTV),
