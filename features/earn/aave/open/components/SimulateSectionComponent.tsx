@@ -48,7 +48,6 @@ function SimulationSection({ actor }: { actor: ActorRefFrom<AaveStEthSimulateSta
                 [t('earn-vault.simulate.rowlabel1'), ...mapSimulation(simulation?.previous30Days)],
                 [t('earn-vault.simulate.rowlabel2'), ...mapSimulation(simulation?.previous90Days)],
                 [t('earn-vault.simulate.rowlabel3'), ...mapSimulation(simulation?.previous1Year)],
-                [t('earn-vault.simulate.rowlabel4'), ...mapSimulation(simulation?.sinceInception)],
               ]}
               footnote={<>{t('earn-vault.simulate.footnote1')}</>}
             />

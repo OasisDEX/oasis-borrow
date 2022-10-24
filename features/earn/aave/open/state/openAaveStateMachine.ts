@@ -12,7 +12,7 @@ import { zero } from '../../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
-import { aaveStETHMinimumRiskRatio } from '../../constants'
+import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
 import {
   AaveStEthSimulateStateMachine,
   AaveStEthSimulateStateMachineEvents,
@@ -259,7 +259,7 @@ export const createOpenAaveStateMachine = createMachine(
           return {
             type: 'VARIABLES_RECEIVED',
             amount: context.userInput?.amount!,
-            riskRatio: context.userInput.riskRatio || aaveStETHMinimumRiskRatio,
+            riskRatio: context.userInput.riskRatio || aaveStETHDefaultRiskRatio,
             token: context.token,
             proxyAddress: context.proxyAddress,
           }
