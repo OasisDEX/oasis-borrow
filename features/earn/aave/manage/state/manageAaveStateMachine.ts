@@ -146,7 +146,7 @@ export const createManageAaveStateMachine =
           ],
           on: {
             PARAMETERS_RECEIVED: {
-              actions: ['assignTransactionParameters', 'setLoadingFalse'],
+              actions: ['assignTransactionParameters', 'setLoadingFalse', 'setAdjustOperationType'],
             },
             UPDATE_STRATEGY_INFO: {
               actions: ['updateStrategyInfo'],
@@ -188,9 +188,6 @@ export const createManageAaveStateMachine =
           invoke: {
             src: 'getParameters',
             id: 'getParameters',
-            onDone: {
-              actions: ['assignTransactionParameters', 'setAdjustOperationType'],
-            },
           },
           on: {
             BACK_TO_EDITING: {
