@@ -1,7 +1,16 @@
 import { IStrategy, Position } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { isEqual } from 'lodash'
 import { combineLatest, from, Observable, of } from 'rxjs'
-import { first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  first,
+  flatMap,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs/operators'
 
 import {
   AaveConfigurationData,
@@ -21,7 +30,7 @@ import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { getAdjustAaveParameters } from '../../../../aave'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
-import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
+import { ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
 export function getManageAavePositionStateMachineServices$(
   context$: Observable<ContextConnected>,
@@ -85,6 +94,7 @@ export function getManageAavePositionStateMachineServices$(
           }
         },
       ),
+      distinctUntilChanged(isEqual),
     )
   }
 
@@ -162,11 +172,10 @@ export function getManageAavePositionStateMachineServices$(
           if (proxy === undefined) throw new Error('Proxy address not found')
           return proxy
         },
-        getStrategyInfo: (): Observable<ManageAaveEvent> => {
-          const collateralToken = 'STETH'
+        getStrategyInfo: (context): Observable<ManageAaveEvent> => {
           return combineLatest(
-            aaveOracleAssetPriceData$({ token: collateralToken }),
-            aaveReserveConfigurationData$({ token: collateralToken }),
+            aaveOracleAssetPriceData$({ token: context.collateralToken }),
+            aaveReserveConfigurationData$({ token: context.collateralToken }),
           ).pipe(
             map(([oracleAssetPrice, reserveConfigurationData]) => {
               return {
@@ -174,16 +183,18 @@ export function getManageAavePositionStateMachineServices$(
                 strategyInfo: {
                   oracleAssetPrice,
                   liquidationBonus: reserveConfigurationData.liquidationBonus,
-                  collateralToken,
+                  collateralToken: context.collateralToken,
                 },
               }
             }),
           )
         },
-        getAaveProtocolData: async (context): Promise<AaveProtocolData> => {
-          return await aaveProtocolData(context.strategy!, context.proxyAddress!)
-            .pipe(first())
-            .toPromise()
+        aaveProtocolDataObservable: (context) => {
+          return proxyAddress$.pipe(
+            filter((proxyAddress) => proxyAddress !== undefined),
+            switchMap((proxyAddress) => aaveProtocolData(context.collateralToken, proxyAddress!)),
+            map((data) => ({ type: 'AAVE_POSITION_DATA_RECEIVED', data })),
+          )
         },
       }
     }),

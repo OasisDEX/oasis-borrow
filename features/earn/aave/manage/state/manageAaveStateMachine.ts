@@ -75,6 +75,7 @@ export type ManageAaveEvent =
       adjustParams: IStrategy | undefined
       estimatedGasPrice: HasGasEstimation | undefined
     }
+  | { type: 'AAVE_POSITION_DATA_RECEIVED'; data: AaveProtocolData }
   | BaseAaveEvent
 
 export const createManageAaveStateMachine =
@@ -95,9 +96,6 @@ export const createManageAaveStateMachine =
           getProxyAddress: {
             data: string
           }
-          getAaveProtocolData: {
-            data: AaveProtocolData
-          }
         },
       },
       preserveActionOrder: true,
@@ -114,19 +112,7 @@ export const createManageAaveStateMachine =
                 id: 'getProxyAddress',
                 onDone: [
                   {
-                    actions: 'assignProxyAddress',
-                    target: 'gettingAavePosition',
-                  },
-                ],
-              },
-            },
-            gettingAavePosition: {
-              invoke: {
-                src: 'getAaveProtocolData',
-                id: 'getAaveProtocolData',
-                onDone: [
-                  {
-                    actions: ['assignProtocolData'],
+                    actions: ['assignProxyAddress'],
                     target: '#manageAave.editing',
                   },
                 ],
@@ -274,7 +260,16 @@ export const createManageAaveStateMachine =
         USER_SETTINGS_CHANGED: {
           actions: ['setUserSettingsFromEvent'],
         },
+        AAVE_POSITION_DATA_RECEIVED: {
+          actions: ['assignProtocolData'],
+        },
       },
+      invoke: [
+        {
+          src: 'aaveProtocolDataObservable',
+          id: 'aaveProtocolDataObservable',
+        },
+      ],
     },
     {
       guards: {
