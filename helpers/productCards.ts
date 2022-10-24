@@ -392,8 +392,8 @@ export const productCardsConfig: {
       name: 'Maker/Curve/Lido',
     },
     stETHeth: {
-      link: '#',
-      name: 'Link goes here',
+      link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
+      name: 'AAVE stETH / ETH',
     },
   },
 }

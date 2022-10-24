@@ -15,9 +15,8 @@ const ConstantMultipleKBLink = (
   />
 )
 
-// TODO UPDATE LINK BEFORE RELEASE
 const AutoTakeProfitKBLink = (
-  <AppLink sx={{ color: 'warning100' }} href="https://kb.oasis.app/help/" />
+  <AppLink sx={{ color: 'warning100' }} href="https://kb.oasis.app/help/take-profit" />
 )
 
 interface VaultWarningsProps {

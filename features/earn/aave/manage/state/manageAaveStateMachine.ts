@@ -1,4 +1,5 @@
 import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
 import { cancel } from 'xstate/lib/actions'
@@ -68,6 +69,13 @@ export type ManageAaveEvent =
       strategyInfo: IStrategyInfo
     }
   | { type: 'GO_TO_EDITING' }
+  | { type: 'REPORT_NEW_RISK_RATIO' }
+  | {
+      type: 'PARAMETERS_RECEIVED'
+      adjustParams: IStrategy | undefined
+      estimatedGasPrice: HasGasEstimation | undefined
+    }
+  | { type: 'AAVE_POSITION_DATA_RECEIVED'; data: AaveProtocolData }
   | BaseAaveEvent
 
 export const createManageAaveStateMachine =
@@ -80,13 +88,13 @@ export const createManageAaveStateMachine =
         events: {} as ManageAaveEvent,
         services: {} as {
           getParameters: {
-            data: { adjustParams: IStrategy; estimatedGasPrice: HasGasEstimation } | undefined
+            data: {
+              adjustParams: IStrategy | undefined
+              estimatedGasPrice: HasGasEstimation | undefined
+            }
           }
           getProxyAddress: {
             data: string
-          }
-          getAaveProtocolData: {
-            data: AaveProtocolData
           }
         },
       },
@@ -104,19 +112,7 @@ export const createManageAaveStateMachine =
                 id: 'getProxyAddress',
                 onDone: [
                   {
-                    actions: 'assignProxyAddress',
-                    target: 'gettingAavePosition',
-                  },
-                ],
-              },
-            },
-            gettingAavePosition: {
-              invoke: {
-                src: 'getAaveProtocolData',
-                id: 'getAaveProtocolData',
-                onDone: [
-                  {
-                    actions: ['assignProtocolData'],
+                    actions: ['assignProxyAddress'],
                     target: '#manageAave.editing',
                   },
                 ],
@@ -125,7 +121,12 @@ export const createManageAaveStateMachine =
           },
         },
         editing: {
-          entry: ['spawnPricesObservable', 'spawnUserSettingsObservable'],
+          entry: [
+            'clearTransactionParameters',
+            'setLoadingTrue',
+            'spawnPricesObservable',
+            'spawnUserSettingsObservable',
+          ],
           invoke: [
             {
               src: 'getBalance',
@@ -139,11 +140,14 @@ export const createManageAaveStateMachine =
               src: 'getParameters',
               id: 'getParameters',
               onDone: {
-                actions: ['assignTransactionParameters'],
+                actions: ['assignTransactionParameters', 'setLoadingFalse'],
               },
             },
           ],
           on: {
+            PARAMETERS_RECEIVED: {
+              actions: ['assignTransactionParameters', 'setLoadingFalse'],
+            },
             UPDATE_STRATEGY_INFO: {
               actions: ['updateStrategyInfo'],
             },
@@ -154,18 +158,32 @@ export const createManageAaveStateMachine =
               target: 'reviewingClosing',
             },
             SET_RISK_RATIO: {
-              actions: ['userInputRiskRatio', 'cancelDebouncedGoToEditing', 'debounceGoToEditing'],
+              actions: [
+                'userInputRiskRatio',
+                'cancelDebouncedGoToEditing',
+                'debounceGoToEditing',
+                'cancelRiskRatioEvent',
+                'debouncedRiskRatioEvent',
+              ],
+            },
+            RESET_RISK_RATIO: {
+              actions: ['clearTransactionParameters', 'clearRiskRatio', 'setLoadingFalse'],
             },
             GO_TO_EDITING: {
               target: 'editing',
             },
-            ADJUST_POSITION: {
+            REPORT_NEW_RISK_RATIO: {
               cond: 'newRiskInputted',
+              actions: ['riskRatioEvent'],
+            },
+            ADJUST_POSITION: {
+              cond: 'validTransactionParameters',
               target: 'reviewingAdjusting',
             },
           },
         },
         reviewingAdjusting: {
+          onEntry: ['riskRatioConfirmEvent'],
           invoke: {
             src: 'getParameters',
             id: 'getParameters',
@@ -180,6 +198,7 @@ export const createManageAaveStateMachine =
             START_TRANSACTION: {
               cond: 'validTransactionParameters',
               target: 'txInProgress',
+              actions: ['riskRatioConfirmTransactionEvent'],
             },
           },
         },
@@ -188,6 +207,11 @@ export const createManageAaveStateMachine =
           on: {
             POSITION_CLOSED: {
               target: 'txSuccess',
+              actions: ['closePositionTransactionEvent'],
+            },
+            TRANSACTION_FAILED: {
+              target: 'txFailure',
+              actions: ['assignError'],
             },
           },
         },
@@ -199,12 +223,17 @@ export const createManageAaveStateMachine =
           },
         },
         txSuccess: {
-          type: 'final',
+          on: {
+            GO_TO_EDITING: {
+              target: 'editing',
+            },
+          },
         },
         reviewingClosing: {
           entry: [
             'spawnClosePositionParametersMachine',
             'sendVariablesToClosePositionParametersMachine',
+            'closePositionEvent',
           ],
           on: {
             CLOSING_PARAMETERS_RECEIVED: {
@@ -231,7 +260,16 @@ export const createManageAaveStateMachine =
         USER_SETTINGS_CHANGED: {
           actions: ['setUserSettingsFromEvent'],
         },
+        AAVE_POSITION_DATA_RECEIVED: {
+          actions: ['assignProtocolData'],
+        },
       },
+      invoke: [
+        {
+          src: 'aaveProtocolDataObservable',
+          id: 'aaveProtocolDataObservable',
+        },
+      ],
     },
     {
       guards: {
@@ -248,8 +286,15 @@ export const createManageAaveStateMachine =
         },
       },
       actions: {
+        setLoadingTrue: assign((_) => ({ loading: true })),
+        setLoadingFalse: assign((_) => ({ loading: false })),
         cancelDebouncedGoToEditing: cancel('debounced-filter'),
         debounceGoToEditing: send('GO_TO_EDITING', { delay: 1000, id: 'debounced-filter' }),
+        cancelRiskRatioEvent: cancel('new-risk-ratio'),
+        debouncedRiskRatioEvent: send('REPORT_NEW_RISK_RATIO', {
+          delay: 1000,
+          id: 'new-risk-ratio',
+        }),
         setTokenBalanceFromEvent: assign((context, event) => ({
           tokenBalance: event.balance,
           tokenPrice: event.tokenPrice,
@@ -270,6 +315,27 @@ export const createManageAaveStateMachine =
             },
           }
         }),
+        clearRiskRatio: assign((context) => {
+          return {
+            userInput: {
+              ...context.userInput,
+              riskRatio: undefined,
+            },
+          }
+        }),
+        riskRatioEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
+        },
+        riskRatioConfirmEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskConfirmRisk(context.userInput.riskRatio!.loanToValue)
+        },
+        riskRatioConfirmTransactionEvent: (context) => {
+          trackingEvents.earn.stETHAdjustRiskConfirmTransaction(
+            context.userInput.riskRatio!.loanToValue,
+          )
+        },
+        closePositionEvent: trackingEvents.earn.stETHClosePositionConfirm,
+        closePositionTransactionEvent: trackingEvents.earn.stETHClosePositionConfirmTransaction,
         assignProxyAddress: assign((context, event) => ({
           proxyAddress: event.data,
         })),
@@ -279,9 +345,23 @@ export const createManageAaveStateMachine =
             currentPosition: event.data.position,
           }
         }),
-        assignTransactionParameters: assign((context, event) => ({
-          transactionParameters: event.data?.adjustParams,
-          estimatedGasPrice: event.data?.estimatedGasPrice,
+        assignTransactionParameters: assign((context, event) => {
+          if (event.type === 'PARAMETERS_RECEIVED') {
+            return {
+              transactionParameters: event.adjustParams,
+              estimatedGasPrice: event.estimatedGasPrice,
+            }
+          } else {
+            // ¯\_(ツ)_/¯
+            return {
+              transactionParameters: event.data?.adjustParams,
+              estimatedGasPrice: event.data?.estimatedGasPrice,
+            }
+          }
+        }),
+        clearTransactionParameters: assign((_) => ({
+          transactionParameters: undefined,
+          estimatedGasPrice: undefined,
         })),
         assignClosingTransactionParameters: assign((context, event) => ({
           transactionParameters: event.parameters,
@@ -316,6 +396,9 @@ export const createManageAaveStateMachine =
         })),
         setAdjustOperationType: assign((_) => ({
           operationType: OperationType.ADJUST_POSITION,
+        })),
+        assignError: assign((_, event) => ({
+          error: event.error,
         })),
       },
     },

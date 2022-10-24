@@ -1,3 +1,4 @@
+import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -5,7 +6,8 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { formatCryptoBalance, formatFiatBalance } from '../../../../../helpers/formatters/format'
+import { amountFromWei, amountToWei } from '../../../../../blockchain/utils'
+import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { zero } from '../../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
@@ -13,31 +15,49 @@ import { StrategyInformationContainer } from '../../common/components/informatio
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveEvent, ManageAaveStateMachine, ManageAaveStateMachineState } from '../state'
-
-export interface ManageAaveVaultProps {
-  readonly aaveStateMachine: ManageAaveStateMachine
-}
+import { ManageAaveEvent, ManageAaveStateMachineState, OperationType } from '../state'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
   readonly send: Sender<ManageAaveEvent>
 }
 
+function getAmountGetFromPositionAfterClose(
+  strategy: IStrategy | undefined,
+  currentPosition: IPosition,
+) {
+  if (!strategy) {
+    return zero
+  }
+  const currentDebt = amountToWei(
+    currentPosition.debt.amount,
+    currentPosition.debt.denomination || 'ETH',
+  )
+  const amountFromSwap = strategy.simulation.swap.toTokenAmount
+  const fee = strategy.simulation.swap.targetTokenFee
+
+  return amountFromSwap.minus(currentDebt).minus(fee)
+}
+
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
-  const balance = formatCryptoBalance(state.context.balanceAfterClose || zero)
-  const fiatBalanceAfterClose = (state.context.balanceAfterClose || zero).times(
-    state.context.tokenPrice || zero,
+  const balance = formatCryptoBalance(
+    amountFromWei(
+      getAmountGetFromPositionAfterClose(
+        state.context.transactionParameters,
+        state.context.currentPosition,
+      ),
+      state.context.token,
+    ),
   )
-  const fiatBalance = formatFiatBalance(fiatBalanceAfterClose)
+
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
         {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
       <Text variant="boldParagraph3">
-        {balance} {state.context.token} (${fiatBalance})
+        {balance} {state.context.token}
       </Text>
     </Flex>
   )
@@ -146,7 +166,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessStateView({ state }: ManageAaveStateProps) {
+function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -163,7 +183,31 @@ function ManageAaveSuccessStateView({ state }: ManageAaveStateProps) {
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: ``,
+      action: () => send('GO_TO_EDITING'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('manage-earn.aave.vault-form.success-title'),
+    content: (
+      <Grid gap={3}>
+        <Box>
+          <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
+          </Flex>
+        </Box>
+        <StrategyInformationContainer state={state} />
+      </Grid>
+    ),
+    primaryButton: {
+      label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
+      url: `/earn/aave/open/${state.context.strategy}`,
     },
   }
 
@@ -185,7 +229,7 @@ export function SidebarManageAaveVault() {
           }
           send={send}
           primaryButton={{
-            isLoading: false,
+            isLoading: state.context.loading,
             disabled: !state.can('ADJUST_POSITION'),
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
@@ -210,8 +254,11 @@ export function SidebarManageAaveVault() {
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
-    case state.matches('txSuccess'):
-      return <ManageAaveSuccessStateView state={state} send={send} />
+    case state.matches('txSuccess') &&
+      state.context.operationType === OperationType.ADJUST_POSITION:
+      return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
+    case state.matches('txSuccess') && state.context.operationType === OperationType.CLOSE_POSITION:
+      return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     default: {
       return <></>
     }

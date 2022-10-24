@@ -20,6 +20,8 @@ export type IStrategyInfo = {
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
+  | { type: 'RESET_RISK_RATIO' }
+  | { type: 'TRANSACTION_FAILED'; error?: string | unknown }
 
 export interface BaseAaveContext {
   refPriceObservable?: ActorRef<BaseAaveEvent, BaseAaveEvent>
@@ -27,8 +29,8 @@ export interface BaseAaveContext {
 
   transactionParameters?: IStrategy
   estimatedGasPrice?: HasGasEstimation
-  currentStep?: number
-  totalSteps?: number
+  currentStep: number
+  totalSteps: number
   tokenBalance?: BigNumber
   tokenPrice?: BigNumber
   inputDelay: number
@@ -42,6 +44,9 @@ export interface BaseAaveContext {
   collateralPrice?: BigNumber
   slippage: BigNumber
   currentPosition: IPosition
+  loading: boolean
+
+  error?: string | unknown
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

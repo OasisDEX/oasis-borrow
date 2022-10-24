@@ -1,3 +1,4 @@
+import { MixpanelUserContext } from 'analytics/analytics'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
@@ -12,12 +13,14 @@ export function DiscoverTable({
   banner,
   isLoading,
   kind,
-  rows = [],
+  rows,
+  userContext,
 }: {
   banner?: DiscoverBanner
   isLoading: boolean
   kind: DiscoverPages
   rows: DiscoverTableRowData[]
+  userContext: MixpanelUserContext
 }) {
   return (
     <Box
@@ -63,11 +66,11 @@ export function DiscoverTable({
         >
           {rows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <DiscoverTableDataRow row={row} />
+              <DiscoverTableDataRow kind={kind} row={row} />
               {banner && i === Math.floor((rows.length - 1) / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
-                    <DiscoverTableBanner kind={kind} {...banner} />
+                    <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
                   </td>
                 </tr>
               )}
@@ -104,7 +107,13 @@ export function DiscoverTableHeaderCell({ label }: { label: string }) {
   )
 }
 
-export function DiscoverTableDataRow({ row }: { row: DiscoverTableRowData }) {
+export function DiscoverTableDataRow({
+  kind,
+  row,
+}: {
+  kind: DiscoverPages
+  row: DiscoverTableRowData
+}) {
   return (
     <Box
       as="tr"
@@ -117,16 +126,18 @@ export function DiscoverTableDataRow({ row }: { row: DiscoverTableRowData }) {
       }}
     >
       {Object.keys(row).map((label, i) => (
-        <DiscoverTableDataCell key={getRowKey(i, row)} label={label} row={row} />
+        <DiscoverTableDataCell key={getRowKey(i, row)} kind={kind} label={label} row={row} />
       ))}
     </Box>
   )
 }
 
 export function DiscoverTableDataCell({
+  kind,
   label,
   row,
 }: {
+  kind: DiscoverPages
   label: string
   row: DiscoverTableRowData
 }) {
@@ -142,7 +153,7 @@ export function DiscoverTableDataCell({
         },
       }}
     >
-      <DiscoverTableDataCellContent label={label} row={row} />
+      <DiscoverTableDataCellContent kind={kind} label={label} row={row} />
     </Box>
   )
 }

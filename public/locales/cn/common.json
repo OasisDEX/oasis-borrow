@@ -1828,6 +1828,7 @@
         "retry-btn": "再试一次",
         "success-title": "完成！你已开启仓位",
         "go-to-position": "前往仓位",
+        "back-to-editing": "返回编辑",
         "configure-multiple": {
           "title": "设置风险等级",
           "liquidation-price": "{{collateralToken}}/{{debtToken}} 清算价格",

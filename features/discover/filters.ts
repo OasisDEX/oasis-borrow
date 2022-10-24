@@ -1,10 +1,10 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { DiscoverFiltersListItem } from 'features/discover/meta'
 
-export const discoverFiltersAssetItems = {
+export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem } = {
   all: { value: 'all', label: 'All assets' },
   // TODO: update with nicer cuvre icon when available
-  curve: { value: 'CURVE', label: 'CURVE', icon: getToken('CRVV1ETHSTETH').iconCircle },
+  curve: { value: 'CURVE_LP', label: 'CURVE', icon: getToken('CRVV1ETHSTETH').iconCircle },
   eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
   gusd: { value: 'GUSD', label: 'GUSD', icon: getToken('GUSD').iconCircle },
   link: { value: 'LINK', label: 'LINK', icon: getToken('LINK').iconCircle },
@@ -12,7 +12,7 @@ export const discoverFiltersAssetItems = {
   matic: { value: 'MATIC', label: 'MATIC', icon: getToken('MATIC').iconCircle },
   // TODO: update with dedicated icon when it's decided what to display here
   stetheth: { value: 'STETHETH', label: 'STETH/ETH', icon: getToken('ETH').iconCircle },
-  uni: { value: 'UNI', label: 'UNI LP', icon: getToken('UNI').iconCircle },
+  uni: { value: 'UNI_LP', label: 'UNI LP', icon: getToken('UNI').iconCircle },
   // TODO: update with dedicated icon when it's decided what to display here
   univ3daiusdc: { value: 'UNIV3DAIUSDC', label: 'UNIV3DAI/USDC', icon: getToken('ETH').iconCircle },
   wbtc: { value: 'WBTC', label: 'WBTC', icon: getToken('WBTC').iconCircle },
