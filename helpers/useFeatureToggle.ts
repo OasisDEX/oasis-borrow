@@ -41,7 +41,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ConstantMultipleReadOnly: false,
   DisableSidebarScroll: false,
   ProxyCreationDisabled: false,
-  AutoTakeProfit: false,
+  AutoTakeProfit: true,
   UpdatedPnL: false,
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: false,
