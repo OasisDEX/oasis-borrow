@@ -1,9 +1,9 @@
-import { ActorRefFrom } from 'xstate'
+
+import {  IRiskRatio } from '@oasisdex/oasis-actions'
 
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveTotalValueLocked } from '../helpers/aavePrepareAaveTotalValueLocked'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
-import { AaveStEthSimulateStateMachine } from '../open/state'
 
 export interface StrategyConfig {
   name: string
@@ -17,7 +17,7 @@ export interface StrategyConfig {
 }
 
 export type AavePositionHeaderPropsBase = {
-  simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
+  maxRisk?: IRiskRatio
   aaveTVL?: PreparedAaveTotalValueLocked
   strategyName: string
   noDetails?: boolean

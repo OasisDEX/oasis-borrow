@@ -32,7 +32,6 @@ import {
   getOpenAavePositionStateMachineServices,
   getOpenAaveTransactionMachine,
   getParametersStateMachine$,
-  getSthEthSimulationMachine,
 } from './open/services'
 import { getOpenAaveStateMachine$ } from './open/services'
 import { strategies } from './strategyConfig'
@@ -134,14 +133,11 @@ export function setupAaveContext({
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
 
-  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYieldsQuery, aaveReserveStEthData$)
-
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
     parametersStateMachine$,
     proxyStateMachine$,
     transactionMachine,
-    simulationMachine,
     userSettings$,
     tokenPriceUSD$,
   )
@@ -178,6 +174,7 @@ export function setupAaveContext({
     aaveTotalValueLocked$,
     aaveReserveStEthData$,
     detectAaveStrategy$,
+    aaveSthEthYieldsQuery,
   }
 }
 
