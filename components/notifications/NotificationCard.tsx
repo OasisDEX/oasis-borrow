@@ -55,7 +55,7 @@ function getEditVaultLinkHash(type: NotificationTypes) {
 
 export type NotificationCardProps = {
   title: ReactNode
-  editHandler: (id: string) => void
+  editHandler: (id: string, isRead: boolean) => void
   markReadHandler: (id: string) => void
 } & Notification
 
@@ -137,7 +137,7 @@ export function NotificationCard({
             <Button
               variant="bean"
               sx={{ px: '24px', py: 1, height: '28px' }}
-              onClick={() => editHandler(id)}
+              onClick={() => editHandler(id, isRead)}
             >
               {t('go-to-vault-generic')}
             </Button>

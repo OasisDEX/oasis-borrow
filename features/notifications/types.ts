@@ -15,8 +15,8 @@ export enum NotificationTypes {
 export enum NotificationSubscriptionTypes {
   VAULT_ACTION_NOTIFICATIONS = 1,
   VAULT_INFO_NOTIFICATIONS = 2,
-  OASIS_DIRECT_NOTIFICATIONS = 3,
-  OASIS_NEWS_NOTIFICATIONS = 4,
+  // OASIS_DIRECT_NOTIFICATIONS = 3,
+  // OASIS_NEWS_NOTIFICATIONS = 4,
 }
 
 export interface NotificationSubscription {
