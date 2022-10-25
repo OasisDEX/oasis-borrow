@@ -1,3 +1,4 @@
+import { NotificationsEventAdditionalParams } from 'analytics/analytics'
 import { NetworkIds } from 'blockchain/network'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import {
@@ -10,6 +11,7 @@ import {
   notificationInitialState,
 } from 'features/notifications/notificationChange'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -19,6 +21,7 @@ import io, { Socket } from 'socket.io-client'
 
 interface WebSocket {
   socket?: Socket
+  analyticsData: NotificationsEventAdditionalParams
 }
 
 export const NotificationSocketContext = createContext<WebSocket | {}>({})
@@ -41,7 +44,14 @@ export function NotificationSocketProvider({ children }: WithChildren) {
       : getConfig()?.publicRuntimeConfig?.notificationsHost
 
   const account = context?.status === 'connected' ? context.account : ''
+  const connectionKind = context?.connectionKind
   const jwtToken = jwtAuthGetToken(account)
+
+  const analyticsData = {
+    walletAddress: account,
+    walletType: connectionKind,
+    browserType: getBrowserName(),
+  }
 
   const {
     numberOfNotificationsHandler,
@@ -49,6 +59,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
     allActiveSubscriptionsHandler,
     allActiveChannelsHandler,
   } = prepareNotificationMessageHandlers(uiChanges)
+
   useEffect(() => {
     if (jwtToken && notificationsToggle) {
       if (jwtToken !== token && socket) {
@@ -109,7 +120,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
   }, [jwtToken, socket])
 
   return (
-    <NotificationSocketContext.Provider value={{ socket }}>
+    <NotificationSocketContext.Provider value={{ socket, analyticsData }}>
       {children}
     </NotificationSocketContext.Provider>
   )

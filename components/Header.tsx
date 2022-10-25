@@ -13,6 +13,7 @@ import {
   SwapWidgetState,
 } from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
+import { getShouldHideHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -247,11 +248,7 @@ function UserDesktopMenu() {
 
   const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
-  const shouldHideSettings =
-    !context ||
-    context.status === 'connectedReadonly' ||
-    !accountData ||
-    web3Context?.status !== 'connected'
+  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
 
   const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
@@ -355,13 +352,9 @@ function MobileSettings() {
   const [web3Context] = useObservable(web3Context$)
   const componentRef = useOutsideElementClickHandler(() => setOpened(false))
 
-  if (
-    !context ||
-    context.status === 'connectedReadonly' ||
-    !accountData ||
-    web3Context?.status !== 'connected'
-  )
-    return null
+  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
+
+  if (shouldHideSettings) return null
 
   return (
     <>
@@ -763,11 +756,17 @@ function MobileMenu() {
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [showAssets, setShowAssets] = useState(false)
+  const { accountData$, context$, web3Context$ } = useAppContext()
+  const [context] = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
 
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
+
+  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
 
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
@@ -860,7 +859,7 @@ function MobileMenu() {
           <Icon name="mobile_menu_close" size="auto" width="50" />
         </Box>
       </Box>
-      {notificationsToggle && (
+      {!shouldHideSettings && notificationsToggle && (
         <NotificationsIconButton
           notificationsRef={notificationsRef}
           onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}

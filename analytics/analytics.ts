@@ -142,10 +142,29 @@ export interface AutomationEventsAdditionalParams {
   closeTo?: CloseVaultTo
 }
 
+export enum NotificationsEventIds {
+  OpenNotificationCenter = 'OpenNotificationCenter',
+  ScrollNotificationCenter = 'ScrollNotificationCenter',
+  MarkAsRead = 'MarkAsRead',
+  GoToVault = 'GoToVault',
+  NotificationPreferences = 'NotificationPreferences',
+  VaultActionNotificationSwitch = 'VaultActionNotificationSwitch',
+  VaultInfoNotificationSwitch = 'VaultInfoNotificationSwitch',
+}
+
+export interface NotificationsEventAdditionalParams {
+  walletAddress: string
+  walletType: string
+  browserType: string
+  notificationSwitch?: 'on' | 'off'
+}
+
 export enum CommonAnalyticsSections {
   HeaderTabs = 'HeaderTabs',
   Banner = 'Banner',
   Form = 'Form',
+  NotificationCenter = 'NotificationCenter',
+  NotificationPreferences = 'NotificationPreferences',
 }
 
 export enum EventTypes {
@@ -153,6 +172,7 @@ export enum EventTypes {
   AccountChange = 'account-change',
   InputChange = 'input-change',
   ButtonClick = 'btn-click',
+  OnScroll = 'on-scroll',
 }
 
 // https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -1038,6 +1058,29 @@ export const trackingEvents = {
       additionalParams: AutomationEventsAdditionalParams,
     ) => {
       const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+  },
+  notifications: {
+    scroll: (
+      id: NotificationsEventIds,
+      section: CommonAnalyticsSections.NotificationCenter,
+      additionalParams: NotificationsEventAdditionalParams,
+    ) => {
+      const eventBody = { id, section, product: 'Notifications', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.OnScroll, eventBody)
+    },
+    buttonClick: (
+      id: NotificationsEventIds,
+      section:
+        | CommonAnalyticsSections.HeaderTabs
+        | CommonAnalyticsSections.NotificationCenter
+        | CommonAnalyticsSections.NotificationPreferences,
+      additionalParams: NotificationsEventAdditionalParams,
+    ) => {
+      const eventBody = { id, section, product: 'Notifications', ...additionalParams }
 
       !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
