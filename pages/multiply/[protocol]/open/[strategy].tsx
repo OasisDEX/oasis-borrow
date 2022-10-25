@@ -9,12 +9,9 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { ManageSectionComponent } from '../../../../features/aave/manage/components'
-import { SimulateSectionComponent } from '../../../../features/aave/open/components'
-import {
-  AavePositionHeader,
-  AavePositionHeaderWithDetails,
-} from '../../../../features/earn/aave/components/AavePositionHeader'
+import { AaveMultiplyHeader } from '../../../../features/multiply/aave/components/AaveMultiplyHeader'
+import { AaveMultiplyManageComponent } from '../../../../features/multiply/aave/components/AaveMultiplyManageComponent'
+import { AaveMultiplySimulate } from '../../../../features/multiply/aave/components/AaveMultiplySimulate'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -34,13 +31,13 @@ function OpenVault({ strategy: _strategy }: { strategy: string }) {
 
           <AaveOpenView
             config={{
-              urlSlug: 'stETHeth',
-              name: 'stETHeth',
+              name: 'stETHusdc',
+              urlSlug: 'stETHusdc',
               viewComponents: {
-                headerOpen: AavePositionHeaderWithDetails,
-                headerManage: AavePositionHeader,
-                simulateSection: SimulateSectionComponent,
-                vaultDetails: ManageSectionComponent,
+                headerOpen: AaveMultiplyHeader,
+                headerManage: AaveMultiplyHeader,
+                simulateSection: AaveMultiplySimulate,
+                vaultDetails: AaveMultiplyManageComponent,
               },
             }}
           />

@@ -115,6 +115,8 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
+import { getAaveStEthYield } from 'features/aave/open/services'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
@@ -169,8 +171,6 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import { hasActiveAavePosition } from 'features/earn/aave/helpers/hasActiveAavePosition'
-import { getAaveStEthYield } from 'features/earn/aave/open/services'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -276,8 +276,8 @@ import {
 import { getAaveUserAccountData } from '../blockchain/calls/aave/aaveLendingPool'
 import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
-import { prepareAaveAvailableLiquidityInUSD$ } from '../features/earn/aave/helpers/aavePrepareAvailableLiquidity'
-import { hasAavePosition$ } from '../features/earn/aave/helpers/hasAavePosition'
+import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
+import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData

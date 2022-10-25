@@ -16,7 +16,7 @@ import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { supportedEarnIlks } from '../../helpers/productCards'
-import { aaveStrategiesList } from './aave/constants'
+import { aaveStrategiesList } from '../aave/constants'
 
 export function EarnView() {
   const showAaveStETHETHProductCard = useFeatureToggle('ShowAaveStETHETHProductCard')
