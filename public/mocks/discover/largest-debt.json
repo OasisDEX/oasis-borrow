@@ -8,7 +8,7 @@
       "activity": {
         "kind": 3,
         "additionalData": {
-          "daysAgo": 1
+          "timestamp": 1666620026298
         }
       },
       "cdpId": 18604
@@ -21,7 +21,7 @@
       "activity": {
         "kind": 1,
         "additionalData": {
-          "daysAgo": 3
+          "timestamp": 1666566439888
         }
       },
       "cdpId": 17503
@@ -34,7 +34,7 @@
       "activity": {
         "kind": 2,
         "additionalData": {
-          "daysAgo": 2
+          "timestamp": 1666449055228
         }
       },
       "cdpId": 6843
@@ -47,7 +47,7 @@
       "activity": {
         "kind": 3,
         "additionalData": {
-          "daysAgo": 1
+          "timestamp": 1666617730998
         }
       },
       "cdpId": 24300
@@ -60,10 +60,23 @@
       "activity": {
         "kind": 6,
         "additionalData": {
-          "daysAgo": 11
+          "timestamp": 1666579801018
         }
       },
       "cdpId": 24985
+    },
+    {
+      "asset": "ETH",
+      "collateralValue": 674523.87,
+      "vaultDebt": 4029834520.59,
+      "colRatio": { "level": 680.64, "isAtRisk": false },
+      "activity": {
+        "kind": 1,
+        "additionalData": {
+          "timestamp": 1666370144926
+        }
+      },
+      "cdpId": 4356
     }
   ]
 }

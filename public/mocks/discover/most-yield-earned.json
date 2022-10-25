@@ -8,7 +8,7 @@
       "activity": {
         "kind": 6,
         "additionalData": {
-          "daysAgo": 3
+          "timestamp": 1666711347163
         }
       },
       "cdpId": 18604
@@ -21,7 +21,7 @@
       "activity": {
         "kind": 4,
         "additionalData": {
-          "daysAgo": 4
+          "timestamp": 1666694078669
         }
       },
       "cdpId": 17503
@@ -34,7 +34,7 @@
       "activity": {
         "kind": 1,
         "additionalData": {
-          "daysAgo": 1
+          "timestamp": 1666344750148
         }
       },
       "cdpId": 6843
@@ -47,7 +47,7 @@
       "activity": {
         "kind": 2,
         "additionalData": {
-          "daysAgo": 1
+          "timestamp": 1666675762966
         }
       },
       "cdpId": 24300
