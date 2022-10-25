@@ -281,7 +281,10 @@ export const createOpenAaveStateMachine = createMachine(
           id: 'update-parameters-machine',
         },
       ),
-      setIsLoadingTrue: assign((_) => ({ loading: true })),
+      setIsLoadingTrue: assign((context) =>
+        // no spinner before user has the proxy (otherwise it will be stuck there forever)
+        context.proxyAddress ? { loading: true } : { loading: false },
+      ),
       setIsLoadingFalse: assign((_) => ({ loading: false })),
       setRiskRatio: assign((context, event) => {
         return {
