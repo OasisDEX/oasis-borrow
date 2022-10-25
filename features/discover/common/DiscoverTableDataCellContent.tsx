@@ -2,41 +2,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
+import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
-import {
-  DiscoverPages,
-  DiscoverTableRowData,
-  DiscoverTableVaultActivity,
-  DiscoverTableVaultStatus,
-} from 'features/discover/types'
+import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Button, Flex, SxStyleProp, Text } from 'theme-ui'
-
-const pillColors: { [key: string]: SxStyleProp } = {
-  critical: { color: 'critical100', backgroundColor: 'critical10' },
-  warning: { color: 'warning100', backgroundColor: 'warning10' },
-  success: { color: 'success100', backgroundColor: 'success10' },
-  interactive: { color: 'interactive100', backgroundColor: 'interactive10' },
-  faded: { color: 'primary30', backgroundColor: 'secondary60' },
-}
-
-const activityColors: { [key in DiscoverTableVaultActivity]: SxStyleProp } = {
-  [DiscoverTableVaultActivity.WITHDRAWN]: pillColors.warning,
-  [DiscoverTableVaultActivity.INCREASED_RISK]: pillColors.critical,
-  [DiscoverTableVaultActivity.DECREASED_RISK]: pillColors.success,
-  [DiscoverTableVaultActivity.CLOSED]: pillColors.faded,
-  [DiscoverTableVaultActivity.OPENED]: pillColors.interactive,
-  [DiscoverTableVaultActivity.DEPOSITED]: pillColors.interactive,
-}
-const statusColors: { [key in DiscoverTableVaultStatus]: SxStyleProp } = {
-  [DiscoverTableVaultStatus.LIQUIDATED]: pillColors.critical,
-  [DiscoverTableVaultStatus.BEING_LIQUIDATED]: pillColors.warning,
-  [DiscoverTableVaultStatus.TILL_LIQUIDATION]: pillColors.success,
-  [DiscoverTableVaultStatus.TO_STOP_LOSS]: pillColors.interactive,
-  [DiscoverTableVaultStatus.CLOSED_LONG_TIME_AGO]: pillColors.faded,
-}
+import { Button, Flex, Text } from 'theme-ui'
+import { timeAgo } from 'utils'
 
 export function DiscoverTableDataCellContent({
   kind,
@@ -47,7 +20,7 @@ export function DiscoverTableDataCellContent({
   label: string
   row: DiscoverTableRowData
 }) {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
 
   switch (label) {
     case 'asset':
@@ -70,23 +43,27 @@ export function DiscoverTableDataCellContent({
           </Flex>
         </Flex>
       )
-    case 'activity':
     case 'status':
       return (
-        <Text
-          as="span"
-          sx={{
-            p: '6px 12px',
-            fontSize: 1,
-            fontWeight: 'semiBold',
-            borderRadius: 'large',
-            whiteSpace: 'pre',
-            ...(row.activity && { ...activityColors[row.activity?.kind] }),
-            ...(row.status && { ...statusColors[row.status?.kind] }),
-          }}
-        >
-          {t(`discover.table.${label}.${row[label]?.kind}`, { ...row[label]?.additionalData })}
-        </Text>
+        <DiscoverTableDataCellPill status={row.status?.kind}>
+          {t(`discover.table.status.${row.status?.kind}`, { ...row.status?.additionalData })}
+        </DiscoverTableDataCellPill>
+      )
+    case 'activity':
+      const additionalData = {
+        ...row.activity?.additionalData,
+        ...(row.activity?.additionalData?.timestamp && {
+          timeAgo: timeAgo({
+            lang: i18n.language,
+            to: new Date(row.activity?.additionalData?.timestamp),
+          }),
+        }),
+      }
+
+      return (
+        <DiscoverTableDataCellPill activity={row.activity?.kind}>
+          {t(`discover.table.activity.${row.activity?.kind}`, { ...additionalData })}
+        </DiscoverTableDataCellPill>
       )
     case 'cdpId':
       return (

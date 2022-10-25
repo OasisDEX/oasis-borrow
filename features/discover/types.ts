@@ -37,7 +37,7 @@ export type DiscoverTableRowData = {
   activity?: {
     kind: DiscoverTableVaultActivity
     additionalData?: {
-      daysAgo: number
+      timestamp?: number
     }
   }
 } & {
