@@ -1,8 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
+import { discoverFiltersAssetItems } from 'features/discover/filters'
 import {
+  DiscoverPages,
   DiscoverTableRowData,
   DiscoverTableVaultActivity,
   DiscoverTableVaultStatus,
@@ -37,9 +39,11 @@ const statusColors: { [key in DiscoverTableVaultStatus]: SxStyleProp } = {
 }
 
 export function DiscoverTableDataCellContent({
+  kind,
   label,
   row,
 }: {
+  kind: DiscoverPages
   label: string
   row: DiscoverTableRowData
 }) {
@@ -47,12 +51,16 @@ export function DiscoverTableDataCellContent({
 
   switch (label) {
     case 'asset':
+      const asset = Object.values(discoverFiltersAssetItems).filter(
+        (item) => item.value === row.asset,
+      )[0]
+
       return (
         <Flex sx={{ alignItems: 'center' }}>
-          <Icon size={44} name={getToken(row.asset as string).iconCircle} />
+          {asset && asset.icon && <Icon size={44} name={asset.icon} />}
           <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
             <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
-              {row.asset}
+              {asset ? asset.label : row.asset}
             </Text>
             {row.cdpId && (
               <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
@@ -82,7 +90,12 @@ export function DiscoverTableDataCellContent({
       )
     case 'cdpId':
       return (
-        <AppLink href={`/${row?.cdpId}`}>
+        <AppLink
+          href={`/${row?.cdpId}`}
+          onClick={() => {
+            trackingEvents.discover.viewPosition(kind, row?.cdpId)
+          }}
+        >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
         </AppLink>
       )
@@ -111,6 +124,6 @@ export function DiscoverTableDataCellContent({
         </>
       )
     default:
-      return <>${row[label]}</>
+      return <>{row[label]}</>
   }
 }

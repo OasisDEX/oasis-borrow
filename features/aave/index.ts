@@ -11,7 +11,7 @@ import { IBasePosition } from '@oasisdex/oasis-actions/lib/src/helpers/calculati
 function getAddressesFromContext(context: ContextConnected) {
   return {
     DAI: context.tokens['DAI'].address,
-    ETH: context.tokens['ETH'].address,
+    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     WETH: context.tokens['WETH'].address,
     stETH: context.tokens['STETH'].address,
     chainlinkEthUsdPriceFeed: context.chainlinkEthUsdPriceFeedAddress,

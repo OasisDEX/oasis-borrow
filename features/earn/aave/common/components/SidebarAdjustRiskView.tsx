@@ -14,7 +14,7 @@ import { SidebarSectionFooterButtonSettings } from '../../../../../components/si
 import { SidebarResetButton } from '../../../../../components/vault/sidebar/SidebarResetButton'
 import { formatBigNumber, formatPercent } from '../../../../../helpers/formatters/format'
 import { one, zero } from '../../../../../helpers/zero'
-import { aaveStETHMinimumRiskRatio } from '../../constants'
+import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
@@ -36,24 +36,24 @@ export function AdjustRiskView({
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
-  const transactionParametersSimulation = state.context.transactionParameters?.simulation
+  const onChainPosition = state.context.protocolData?.position
+  const simulation = state.context.transactionParameters?.simulation
+  const targetPosition = simulation?.position
 
-  const position = state.context.protocolData
-    ? state.context.protocolData.position
-    : transactionParametersSimulation?.position
-
-  const maxRisk = position?.category.maxLoanToValue
+  const maxRisk = targetPosition
+    ? targetPosition?.category.maxLoanToValue
+    : onChainPosition?.category.maxLoanToValue
 
   const minRisk =
-    (transactionParametersSimulation?.minConfigurableRiskRatio &&
+    (simulation?.minConfigurableRiskRatio &&
       BigNumber.max(
-        transactionParametersSimulation?.minConfigurableRiskRatio.loanToValue,
+        simulation?.minConfigurableRiskRatio.loanToValue,
         aaveStETHMinimumRiskRatio.loanToValue,
       )) ||
     aaveStETHMinimumRiskRatio.loanToValue
 
   const liquidationPrice =
-    transactionParametersSimulation?.position.liquidationPrice || position?.liquidationPrice || zero
+    targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero
 
   const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
@@ -62,7 +62,7 @@ export function AdjustRiskView({
     AT_RISK = 'AT_RISK',
   }
 
-  const healthFactor = position?.healthFactor
+  const healthFactor = targetPosition ? targetPosition?.healthFactor : onChainPosition?.healthFactor
 
   const warningHealthFactor = new BigNumber('1.25')
 
@@ -76,11 +76,6 @@ export function AdjustRiskView({
 
   const priceMovementWarningThreshold = new BigNumber(20)
 
-  const priceMovementToDisplay = formatPercent(
-    BigNumber.min(priceMovementUntilLiquidation, priceMovementWarningThreshold),
-    { precision: 2 },
-  )
-
   const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
 
   const liquidationPenalty = formatPercent(
@@ -92,8 +87,8 @@ export function AdjustRiskView({
 
   const sliderValue =
     state.context.userInput.riskRatio?.loanToValue ||
-    position?.riskRatio.loanToValue ||
-    aaveStETHMinimumRiskRatio.loanToValue
+    onChainPosition?.riskRatio.loanToValue ||
+    aaveStETHDefaultRiskRatio.loanToValue
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -102,7 +97,13 @@ export function AdjustRiskView({
         <SliderValuePicker
           sliderPercentageFill={new BigNumber(0)}
           leftBoundry={liquidationPrice}
-          leftBoundryFormatter={(value) => formatBigNumber(value, 2)}
+          leftBoundryFormatter={(value) => {
+            if (state.context.loading) {
+              return '...'
+            } else {
+              return formatBigNumber(value, 2)
+            }
+          }}
           rightBoundry={oracleAssetPrice}
           rightBoundryFormatter={(value) => `Current: ${formatBigNumber(value, 2)}`}
           rightBoundryStyling={{
@@ -150,24 +151,26 @@ export function AdjustRiskView({
             withBullet={false}
           />
         ) : (
-          <MessageCard
-            messages={[
-              isWarning
-                ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
-                    collateralToken,
-                    priceMovement: priceMovementToDisplay,
-                    debtToken,
-                    liquidationPenalty,
-                  })
-                : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
-                    collateralToken,
-                    priceMovement: priceMovementToDisplay,
-                    debtToken,
-                    liquidationPenalty,
-                  }),
-            ]}
-            type={isWarning ? 'warning' : 'ok'}
-          />
+          state.context.transactionParameters && (
+            <MessageCard
+              messages={[
+                isWarning
+                  ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                      collateralToken,
+                      priceMovement: formatPercent(priceMovementUntilLiquidation, { precision: 2 }),
+                      debtToken,
+                      liquidationPenalty,
+                    })
+                  : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                      collateralToken,
+                      priceMovement: formatPercent(priceMovementUntilLiquidation, { precision: 2 }),
+                      debtToken,
+                      liquidationPenalty,
+                    }),
+              ]}
+              type={isWarning ? 'warning' : 'ok'}
+            />
+          )
         )}
 
         <SidebarResetButton

@@ -116,9 +116,9 @@ export function createAavePosition$(
             ownerAddress: address,
           }
         }),
-        startWith(undefined),
       )
     }),
+    startWith(undefined),
   )
 }
 

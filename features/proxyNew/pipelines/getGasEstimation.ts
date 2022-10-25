@@ -8,19 +8,20 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 export function getGasEstimation$(
   gasPrice$: Observable<GasPriceParams>,
   tokenPriceInUSD$: Observable<Tickers>,
-  estimatedGasCost: number,
+  estimatedGasQtyRequired: number,
 ): Observable<HasGasEstimation> {
   return combineLatest(gasPrice$, tokenPriceInUSD$).pipe(
     map(([gasPrice, { ETH: ETHUsd, DAI: DAIUsd }]) => {
-      const gasCost = amountFromWei(gasPrice.maxFeePerGas.times(estimatedGasCost))
+      const gasCost = amountFromWei(gasPrice.maxFeePerGas.times(estimatedGasQtyRequired))
       const gasEstimationUsd = ETHUsd ? gasCost.times(ETHUsd) : undefined
       const gasEstimationDai = gasEstimationUsd && DAIUsd ? gasEstimationUsd.div(DAIUsd) : undefined
 
       return {
-        gasEstimation: estimatedGasCost,
+        gasEstimation: estimatedGasQtyRequired,
         gasEstimationUsd,
         gasEstimationStatus: GasEstimationStatus.calculated,
         gasEstimationDai,
+        gasEstimationEth: gasCost,
       }
     }),
   )

@@ -169,6 +169,7 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { hasActiveAavePosition } from 'features/earn/aave/helpers/hasActiveAavePosition'
 import { getAaveStEthYield } from 'features/earn/aave/open/services'
 import {
   getTotalSupply,
@@ -1117,6 +1118,8 @@ export function setupAppContext() {
     ),
   )
 
+  const hasActiveAavePosition$ = hasActiveAavePosition(web3Context$, hasAave$)
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1175,6 +1178,7 @@ export function setupAppContext() {
     aaveSthEthYieldsQuery,
     aaveAvailableLiquidityETH$,
     aaveUserAccountData$,
+    hasActiveAavePosition$,
   }
 }
 
