@@ -1,5 +1,10 @@
+import { useAppContext } from 'components/AppContextProvider'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { AavePositionView } from 'features/aave/view/containers/AavePositionView'
 import { earnContext, EarnContextProvider } from 'features/earn/EarnContextProvider'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -22,6 +27,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function Position({ address }: { address: string }) {
+  const { web3Context$ } = useAppContext()
+  const [web3Context, web3ContextError] = useObservable(web3Context$)
+
   return (
     <AaveContextProvider>
       <EarnContextProvider>
@@ -30,7 +38,23 @@ function Position({ address }: { address: string }) {
             <WithTermsOfService>
               <Grid gap={0} sx={{ width: '100%' }}>
                 <BackgroundLight />
-                <AaveManagePositionView address={address} />
+                <WithErrorHandler error={[web3ContextError]}>
+                  <WithLoadingIndicator
+                    value={[
+                      web3Context,
+                      ['connectedReadonly', 'connected'].includes(web3Context?.status || ''),
+                    ]}
+                    customLoader={<VaultContainerSpinner />}
+                  >
+                    {([_web3Context, _]) =>
+                      _web3Context.status === 'connectedReadonly' ? (
+                        <AavePositionView address={address} />
+                      ) : (
+                        <AaveManagePositionView address={address} />
+                      )
+                    }
+                  </WithLoadingIndicator>
+                </WithErrorHandler>
               </Grid>
             </WithTermsOfService>
           </WithConnection>
