@@ -7,8 +7,8 @@ import { Grid } from 'theme-ui'
 
 import { WithConnection } from '../../components/connectWallet/ConnectWallet'
 import { AppLayout } from '../../components/Layouts'
-import { AaveContextProvider } from '../../features/earn/aave/AaveContextProvider'
-import { AaveManagePositionView } from '../../features/earn/aave/manage/containers/AaveManageView'
+import { AaveContextProvider } from '../../features/aave/AaveContextProvider'
+import { AaveManagePositionView } from '../../features/aave/manage/containers/AaveManageView'
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
 import { BackgroundLight } from '../../theme/BackgroundLight'
 
