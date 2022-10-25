@@ -9,12 +9,7 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { ManageSectionComponent } from '../../../../features/aave/manage/components'
-import { SimulateSectionComponent } from '../../../../features/aave/open/components'
-import {
-  AavePositionHeader,
-  AavePositionHeaderWithDetails,
-} from '../../../../features/earn/aave/components/AavePositionHeader'
+import { strategies } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -32,18 +27,7 @@ function OpenVault({ strategy: _strategy }: { strategy: string }) {
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView
-            config={{
-              urlSlug: 'stETHeth',
-              name: 'stETHeth',
-              viewComponents: {
-                headerOpen: AavePositionHeaderWithDetails,
-                headerManage: AavePositionHeader,
-                simulateSection: SimulateSectionComponent,
-                vaultDetails: ManageSectionComponent,
-              },
-            }}
-          />
+          <AaveOpenView config={strategies['aave-earn']} />
 
           <Survey for="earn" />
         </WithTermsOfService>

@@ -9,23 +9,13 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Observable, of } from 'rxjs'
 import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../helpers/observableHook'
-import {
-  AavePositionHeader,
-  AavePositionHeaderWithDetails,
-} from '../../../earn/aave/components/AavePositionHeader'
-import { AaveMultiplyHeader } from '../../../multiply/aave/components/AaveMultiplyHeader'
-import { AaveMultiplyManageComponent } from '../../../multiply/aave/components/AaveMultiplyManageComponent'
-import { AaveMultiplySimulate } from '../../../multiply/aave/components/AaveMultiplySimulate'
 import { useAaveContext } from '../../AaveContextProvider'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
-import { SimulateSectionComponent } from '../../open/components'
-import { ManageSectionComponent } from '../components'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { ManageAaveStateMachine } from '../state'
 import {
@@ -107,43 +97,15 @@ function AavePositionNotice() {
   return null
 }
 
-function getAaveStrategy$(_address: string): Observable<StrategyConfig> {
-  // TODO: properly detect fom chain or georgi method
-  return of(strategyConfig['aave-earn'])
-}
-
-export const strategyConfig: Record<string, StrategyConfig> = {
-  'aave-earn': {
-    urlSlug: 'stETHeth',
-    name: 'stETHeth',
-    viewComponents: {
-      headerOpen: AavePositionHeaderWithDetails,
-      headerManage: AavePositionHeader,
-      simulateSection: SimulateSectionComponent,
-      vaultDetails: ManageSectionComponent,
-    },
-  },
-  'aave-multiply': {
-    name: 'stETHusdc',
-    urlSlug: 'stETHusdc',
-    viewComponents: {
-      headerOpen: AaveMultiplyHeader,
-      headerManage: AaveMultiplyHeader,
-      simulateSection: AaveMultiplySimulate,
-      vaultDetails: AaveMultiplyManageComponent,
-    },
-  },
-}
-
 export function AaveManagePositionView({ address }: AaveManageViewPositionViewProps) {
-  const { aaveManageStateMachine$ } = useAaveContext()
+  const { aaveManageStateMachine$, detectAaveStrategy$ } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
   const [stateMachine, stateMachineError] = useObservable(
     aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'stETHeth' }),
   ) // TODO: should be created with strategy and address. Then should be more generic.
   const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
-  const [aaveStrategy, aaveStrategyError] = useObservable(getAaveStrategy$(address))
+  const [aaveStrategy, aaveStrategyError] = useObservable(detectAaveStrategy$(address))
   return (
     <WithErrorHandler error={[stateMachineError, aaveReserveStateError, aaveStrategyError]}>
       <WithLoadingIndicator

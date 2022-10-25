@@ -9,9 +9,7 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { AaveMultiplyHeader } from '../../../../features/multiply/aave/components/AaveMultiplyHeader'
-import { AaveMultiplyManageComponent } from '../../../../features/multiply/aave/components/AaveMultiplyManageComponent'
-import { AaveMultiplySimulate } from '../../../../features/multiply/aave/components/AaveMultiplySimulate'
+import { strategies } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -29,18 +27,7 @@ function OpenVault({ strategy: _strategy }: { strategy: string }) {
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView
-            config={{
-              name: 'stETHusdc',
-              urlSlug: 'stETHusdc',
-              viewComponents: {
-                headerOpen: AaveMultiplyHeader,
-                headerManage: AaveMultiplyHeader,
-                simulateSection: AaveMultiplySimulate,
-                vaultDetails: AaveMultiplyManageComponent,
-              },
-            }}
-          />
+          <AaveOpenView config={strategies['aave-multiply']} />
 
           <Survey for="earn" />
         </WithTermsOfService>
