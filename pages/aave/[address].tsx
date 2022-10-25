@@ -30,8 +30,7 @@ function Position({ address }: { address: string }) {
             <WithTermsOfService>
               <Grid gap={0} sx={{ width: '100%' }}>
                 <BackgroundLight />
-                {/* TODO: read strategy from blockchain */}
-                <AaveManagePositionView address={address} strategy="stETHeth" />
+                <AaveManagePositionView address={address} />
               </Grid>
             </WithTermsOfService>
           </WithConnection>

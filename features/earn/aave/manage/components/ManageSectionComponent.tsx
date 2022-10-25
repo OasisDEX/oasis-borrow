@@ -23,7 +23,7 @@ import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageSectionModal } from './ManageSectionModal'
 
-type ManageSectionComponentProps = {
+export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
 }

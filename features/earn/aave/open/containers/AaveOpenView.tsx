@@ -9,28 +9,41 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { AavePositionHeaderWithDetails } from '../../components'
-import { SimulateSectionComponent } from '../components'
+import { AavePositionHeaderPropsBase } from '../../components/AavePositionHeader'
+import { ManageSectionComponentProps } from '../../manage/components'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from '../state'
 import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
 
-interface OpenAaveViewProps {
-  strategyName: string
+export interface StrategyConfig {
+  name: string
+  urlSlug: string
+  viewComponents: {
+    headerOpen: AaveHeader
+    headerManage: AaveHeader
+    simulateSection: SimulateSection
+    vaultDetails: VaultDetails
+  }
 }
+
+type AaveHeader = (props: AavePositionHeaderPropsBase) => JSX.Element
+type SimulateSection = () => JSX.Element
+type VaultDetails = (props: ManageSectionComponentProps) => JSX.Element
 
 function AaveOpenContainer({
   aaveStateMachine,
-  strategyName,
+  config,
 }: {
-  strategyName: string
   aaveStateMachine: OpenAaveStateMachine
+  config: StrategyConfig
 }) {
   const { t } = useTranslation()
+  const Header = config.viewComponents.headerOpen
+  const SimulateSection = config.viewComponents.simulateSection
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine}>
       <Container variant="vaultPageContainer">
-        <AavePositionHeaderWithDetails strategyName={strategyName} />
+        <Header strategyName={config.name} />
         <TabBar
           variant="underline"
           sections={[
@@ -40,7 +53,7 @@ function AaveOpenContainer({
               content: (
                 <Grid variant="vaultContainer">
                   <Box>
-                    <SimulateSectionComponent />
+                    <SimulateSection />
                   </Box>
                   <Box>{<SidebarOpenAaveVault />}</Box>
                 </Grid>
@@ -64,7 +77,7 @@ function AaveOpenContainer({
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function AaveOpenView({ strategyName }: OpenAaveViewProps) {
+export function AaveOpenView({ config }: { config: StrategyConfig }) {
   const { aaveStateMachine$ } = useAaveContext()
   const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
 
@@ -72,7 +85,7 @@ export function AaveOpenView({ strategyName }: OpenAaveViewProps) {
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
         {([_stateMachine]) => {
-          return <AaveOpenContainer aaveStateMachine={_stateMachine} strategyName={strategyName} />
+          return <AaveOpenContainer aaveStateMachine={_stateMachine} config={config} />
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>

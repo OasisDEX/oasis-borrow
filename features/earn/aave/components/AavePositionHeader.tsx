@@ -15,7 +15,7 @@ import { PreparedAaveTotalValueLocked } from '../helpers/aavePrepareAaveTotalVal
 import { useOpenAaveStateMachineContext } from '../open/containers/AaveOpenStateMachineContext'
 import { AaveStEthSimulateStateMachine } from '../open/state'
 
-type AavePositionHeaderPropsBase = {
+export type AavePositionHeaderPropsBase = {
   simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
   aaveTVL?: PreparedAaveTotalValueLocked
   strategyName: string
