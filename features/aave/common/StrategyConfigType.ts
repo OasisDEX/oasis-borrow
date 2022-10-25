@@ -10,9 +10,6 @@ export interface StrategyConfig {
     simulateSection: SimulateSection
     vaultDetails: VaultDetails
   }
-  collateralToken: ''
-  debtToken: ''
-  displayDenomination: 'USD'
 }
 
 type AaveHeader = (props: AavePositionHeaderPropsBase) => JSX.Element
