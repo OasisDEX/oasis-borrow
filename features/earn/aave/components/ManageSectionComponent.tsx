@@ -1,6 +1,5 @@
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
-import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   DetailsSectionContentCard,
   DetailsSectionContentCardWrapper,
@@ -19,14 +18,9 @@ import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../components/DetailsSection'
-import { PreparedAaveReserveData } from '../../../aave/helpers/aavePrepareReserveData'
+import { ManageSectionComponentProps } from '../../../aave/common/StrategyConfigTypes'
 import { ManageSectionModal } from '../../../aave/manage/components/ManageSectionModal'
 import { useManageAaveStateMachineContext } from '../../../aave/manage/containers/AaveManageStateMachineContext'
-
-export type ManageSectionComponentProps = {
-  aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
-}
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
   const critical = new BigNumber(5)

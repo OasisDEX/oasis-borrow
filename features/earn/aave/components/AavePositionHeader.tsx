@@ -8,19 +8,10 @@ import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { ActorRefFrom } from 'xstate'
 
 import { useAaveContext } from '../../../aave/AaveContextProvider'
-import { PreparedAaveTotalValueLocked } from '../../../aave/helpers/aavePrepareAaveTotalValueLocked'
+import { AavePositionHeaderPropsBase } from '../../../aave/common/StrategyConfigTypes'
 import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
-import { AaveStEthSimulateStateMachine } from '../../../aave/open/state'
-
-export type AavePositionHeaderPropsBase = {
-  simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
-  aaveTVL?: PreparedAaveTotalValueLocked
-  strategyName: string
-  noDetails?: boolean
-}
 
 export function AavePositionHeader({
   simulationActor,

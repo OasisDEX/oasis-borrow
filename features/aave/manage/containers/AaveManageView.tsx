@@ -21,7 +21,7 @@ import { AaveMultiplyHeader } from '../../../multiply/aave/components/AaveMultip
 import { AaveMultiplyManageComponent } from '../../../multiply/aave/components/AaveMultiplyManageComponent'
 import { AaveMultiplySimulate } from '../../../multiply/aave/components/AaveMultiplySimulate'
 import { useAaveContext } from '../../AaveContextProvider'
-import { StrategyConfig } from '../../common/StrategyConfigType'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { SimulateSectionComponent } from '../../open/components'
