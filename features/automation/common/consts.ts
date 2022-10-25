@@ -55,3 +55,8 @@ export const autoKindToCopyMap = {
   [AutomationKinds.AUTO_SELL]: 'auto-sell.title',
   [AutomationKinds.AUTO_TAKE_PROFIT]: 'auto-take-profit.title',
 }
+
+export enum CloseVaultToEnum {
+  DAI = 'dai',
+  COLLATERAL = 'collateral',
+}

@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import {
@@ -12,8 +18,24 @@ import {
   removeAutomationTrigger,
 } from 'features/automation/api/automationTxHandlers'
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useMemo } from 'react'
 
+export interface AutomationTxHandlerAnalytics {
+  id: { add: AutomationEventIds; edit: AutomationEventIds; remove: AutomationEventIds }
+  page: Pages
+  additionalParams: {
+    triggerValue?: string
+    triggerBuyValue?: string
+    triggerSellValue?: string
+    targetMultiple?: string
+    targetValue?: string
+    maxBuyPrice?: string
+    minSellPrice?: string
+    maxGasFee?: string
+    closeTo?: CloseVaultTo
+  }
+}
 interface TxHandlerParams {
   callOnSuccess?: () => void
 }
@@ -30,6 +52,10 @@ interface GetAutomationFeatureTxHandlersParams {
   stage: SidebarAutomationStages
   textButtonHandlerExtension?: () => void
   triggersId: number[]
+  vaultId: BigNumber
+  collateralizationRatio: BigNumber
+  ilk: string
+  analytics: AutomationTxHandlerAnalytics
   txHelpers?: TxHelpers
 }
 
@@ -52,8 +78,22 @@ export function getAutomationFeatureTxHandlers({
   textButtonHandlerExtension,
   triggersId,
   txHelpers,
+  vaultId,
+  ilk,
+  collateralizationRatio,
+  analytics,
 }: GetAutomationFeatureTxHandlersParams): AutomationFeatureTxHandlers {
   const { uiChanges } = useAppContext()
+  const triggerEnabled = !!triggersId.filter((item) => item).length
+
+  const analyticsAdditionalParams = {
+    vaultId: vaultId.toString(),
+    ilk,
+    collateralRatio: collateralizationRatio
+      .times(100)
+      .decimalPlaces(2, BigNumber.ROUND_DOWN)
+      .toString(),
+  }
 
   const removeTxData: AutomationBotRemoveTriggersData = useMemo(
     () => ({
@@ -84,9 +124,26 @@ export function getAutomationFeatureTxHandlers({
       } else {
         if (isAddForm) {
           addAutomationTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, publishType)
+
+          trackingEvents.automation.buttonClick(
+            triggerEnabled ? analytics.id.edit : analytics.id.add,
+            analytics.page,
+            CommonAnalyticsSections.Form,
+            { ...analyticsAdditionalParams, ...analytics.additionalParams },
+          )
         }
         if (isRemoveForm) {
           removeAutomationTrigger(txHelpers, removeTxData, uiChanges, ethMarketPrice, publishType)
+
+          trackingEvents.automation.buttonClick(
+            analytics.id.remove,
+            analytics.page,
+            CommonAnalyticsSections.Form,
+            {
+              ...analyticsAdditionalParams,
+              ...analytics.additionalParams,
+            },
+          )
         }
       }
     }

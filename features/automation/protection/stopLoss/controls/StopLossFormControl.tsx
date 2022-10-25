@@ -1,9 +1,10 @@
+import { AutomationEventIds, Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
+import { CloseVaultToEnum, MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
@@ -103,7 +104,6 @@ export function StopLossFormControl({
       isAddForm={isAddForm}
       isEditing={isEditing}
       isRemoveForm={isRemoveForm}
-      proxyAddress={vault.owner}
       publishType={STOP_LOSS_FORM_CHANGE}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
@@ -111,6 +111,21 @@ export function StopLossFormControl({
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[stopLossTriggerData.triggerId.toNumber()]}
       txHelpers={txHelpers}
+      vault={vault}
+      analytics={{
+        id: {
+          add: AutomationEventIds.AddStopLoss,
+          edit: AutomationEventIds.EditStopLoss,
+          remove: AutomationEventIds.RemoveStopLoss,
+        },
+        page: Pages.StopLoss,
+        additionalParams: {
+          triggerValue: stopLossState.stopLossLevel.toString(),
+          closeTo: stopLossState.collateralActive
+            ? CloseVaultToEnum.COLLATERAL
+            : CloseVaultToEnum.DAI,
+        },
+      }}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupStopLoss

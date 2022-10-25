@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
@@ -21,6 +27,7 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -55,6 +62,22 @@ export function SidebarAutoTakeProfitEditingStage({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+
+  useDebouncedCallback(
+    (value) =>
+      trackingEvents.automation.inputChange(
+        AutomationEventIds.MoveSlider,
+        Pages.TakeProfit,
+        CommonAnalyticsSections.Form,
+        {
+          vaultId: vault.id.toString(),
+          ilk: vault.ilk,
+          collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+          triggerValue: value,
+        },
+      ),
+    autoTakeProfitState.executionPrice.decimalPlaces(2).toString(),
+  )
 
   const isVaultEmpty = vault.debt.isZero()
 

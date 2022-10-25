@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
@@ -13,6 +19,7 @@ import {
   AutoTakeProfitTriggerData,
   prepareAutoTakeProfitResetData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createTokenAth } from 'features/tokenAth/tokenAth'
 import { one } from 'helpers/zero'
 
@@ -80,6 +87,17 @@ export function getAutoTakeProfitStatus({
         type: 'is-editing',
         isEditing: true,
       })
+
+      trackingEvents.automation.buttonClick(
+        AutomationEventIds.CloseToX,
+        Pages.TakeProfit,
+        CommonAnalyticsSections.Form,
+        {
+          vaultId: vault.id.toString(),
+          ilk: vault.ilk,
+          closeTo: optionName as CloseVaultTo,
+        },
+      )
     },
     isCollateralActive: autoTakeProfitState.toCollateral,
     collateralTokenSymbol: vault.token,

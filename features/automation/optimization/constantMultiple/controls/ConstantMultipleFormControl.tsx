@@ -1,9 +1,15 @@
+import { AutomationEventIds, Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
+import {
+  calculateMultipleFromTargetCollRatio,
+  resolveMaxBuyPriceAnalytics,
+  resolveMinSellPriceAnalytics,
+} from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
@@ -116,7 +122,6 @@ export function ConstantMultipleFormControl({
       isAddForm={isAddForm}
       isEditing={isEditing}
       isRemoveForm={isRemoveForm}
-      proxyAddress={vault.owner}
       publishType={CONSTANT_MULTIPLE_FORM_CHANGE}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
@@ -124,6 +129,34 @@ export function ConstantMultipleFormControl({
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={constantMultipleTriggerData.triggersId.map((id) => id.toNumber())}
       txHelpers={txHelpers}
+      vault={vault}
+      analytics={{
+        id: {
+          add: AutomationEventIds.AddConstantMultiple,
+          edit: AutomationEventIds.EditConstantMultiple,
+          remove: AutomationEventIds.RemoveConstantMultiple,
+        },
+        page: Pages.ConstantMultiple,
+        additionalParams: {
+          triggerBuyValue: constantMultipleState.buyExecutionCollRatio.toString(),
+          triggerSellValue: constantMultipleState.sellExecutionCollRatio.toString(),
+          targetValue: constantMultipleState.targetCollRatio.toString(),
+          targetMultiple: calculateMultipleFromTargetCollRatio(
+            constantMultipleState.targetCollRatio,
+          )
+            .decimalPlaces(2)
+            .toString(),
+          minSellPrice: resolveMinSellPriceAnalytics({
+            withMinSellPriceThreshold: constantMultipleState.sellWithThreshold,
+            minSellPrice: constantMultipleState.minSellPrice,
+          }),
+          maxBuyPrice: resolveMaxBuyPriceAnalytics({
+            withMaxBuyPriceThreshold: constantMultipleState.buyWithThreshold,
+            maxBuyPrice: constantMultipleState.maxBuyPrice,
+          }),
+          maxGasFee: constantMultipleState.maxBaseFeeInGwei.toString(),
+        },
+      }}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupConstantMultiple

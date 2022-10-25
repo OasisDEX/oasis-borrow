@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
@@ -15,7 +21,12 @@ import {
   ACCEPTABLE_FEE_DIFF,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
+import {
+  automationInputsAnalytics,
+  automationMultipleRangeSliderAnalytics,
+  calculateCollRatioFromMultiple,
+  calculateMultipleFromTargetCollRatio,
+} from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
@@ -93,6 +104,25 @@ export function SidebarConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
 
+  automationMultipleRangeSliderAnalytics({
+    leftValue: constantMultipleState.sellExecutionCollRatio,
+    rightValue: constantMultipleState.buyExecutionCollRatio,
+    vault,
+    type: AutomationFeatures.CONSTANT_MULTIPLE,
+    targetMultiple: calculateMultipleFromTargetCollRatio(
+      constantMultipleState.targetCollRatio,
+    ).decimalPlaces(2),
+  })
+
+  automationInputsAnalytics({
+    minSellPrice: constantMultipleState.minSellPrice,
+    withMinSellPriceThreshold: constantMultipleState.sellWithThreshold,
+    maxBuyPrice: constantMultipleState.maxBuyPrice,
+    withMaxBuyPriceThreshold: constantMultipleState.buyWithThreshold,
+    vault,
+    type: AutomationFeatures.CONSTANT_MULTIPLE,
+  })
+
   const isVaultEmpty = vault.debt.isZero()
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
@@ -150,6 +180,17 @@ export function SidebarConstantMultipleEditingStage({
                 type: 'multiplier',
                 multiplier: multiplier,
               })
+
+              trackingEvents.automation.buttonClick(
+                AutomationEventIds.TargetMultiplier,
+                Pages.ConstantMultiple,
+                CommonAnalyticsSections.Form,
+                {
+                  vaultId: vault.id.toString(),
+                  ilk: vault.ilk,
+                  targetMultiple: multiplier.toString(),
+                },
+              )
             },
           }))}
         />
@@ -289,6 +330,10 @@ export function SidebarConstantMultipleEditingStage({
           })
         }}
         value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
+        analytics={{
+          page: Pages.ConstantMultiple,
+          additionalParams: { vaultId: vault.id.toString(), ilk: vault.ilk },
+        }}
       />
       {isEditing && (
         <>

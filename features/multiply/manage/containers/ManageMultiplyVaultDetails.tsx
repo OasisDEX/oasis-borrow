@@ -29,7 +29,7 @@ import {
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice, debt, lockedCollateral, lockedCollateralUSD, ilk },
+    vault: { token, liquidationPrice, debt, lockedCollateral, lockedCollateralUSD, ilk, id },
     ilkData: { liquidationRatio },
     afterDebt,
     afterLockedCollateral,
@@ -153,7 +153,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       />
 
       {stopLossReadEnabled && stopLossWriteEnabled && (
-        <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} />
+        <GetProtectionBannerControl token={token} ilk={ilk} debt={debt} vaultId={id} />
       )}
     </Grid>
   )
