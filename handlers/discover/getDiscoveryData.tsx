@@ -1,4 +1,4 @@
-import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
+import { DiscoverApiErrors, DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { getAssetFilter, getGenericRangeFilter, getTimeSignature } from 'handlers/discover/helpers'
 import { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
@@ -13,23 +13,6 @@ const querySchema = z.object({
   time: z.string().optional(),
   table: z.string().optional(),
 })
-
-// type DiscoverResponse = {
-//   activity?: DiscoverTableRowData['activity']
-//   collateralType: string
-//   collateralValue?: number
-//   collRatio?: number
-//   liquidationPrice?: number
-//   liquidationValue?: number
-//   netValue?: number
-//   pnl?: number
-//   positionId: string
-//   protocolId: string
-//   status?: DiscoverTableRowData['status']
-//   vaultDebt?: number
-//   vaultMultiple?: number
-//   yield_30d?: number
-// }
 
 export async function getDiscoveryData(query: NextApiRequest['query']) {
   const { table, asset, size, multiple, time } = querySchema.parse(query)
@@ -127,9 +110,13 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
           })),
         }
       default:
-        return { error: true }
+        return {
+          error: { code: DiscoverApiErrors.NO_ENTRIES, reason: 'discover/no-data-found' },
+        }
     }
   } catch (error) {
-    return { error: true }
+    return {
+      error: { code: DiscoverApiErrors.UNKNOWN_ERROR, reason: 'discover/unknown-error' },
+    }
   }
 }
