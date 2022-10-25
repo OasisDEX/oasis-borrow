@@ -31,7 +31,8 @@ export type DiscoverTableRowData = {
 } & {
   colRatio?: {
     level: number
-    isAtRisk: boolean
+    isAtRiskDanger: boolean
+    isAtRiskWarning: boolean
   }
 } & {
   activity?: {
