@@ -68,6 +68,8 @@ export function AutoTakeProfitDetailsControl({
 
   return (
     <AutoTakeProfitDetailsLayout
+      ilk={vault.ilk}
+      vaultId={vault.id}
       isTriggerEnabled={isTriggerEnabled}
       token={vault.token}
       {...autoTakeProfitDetailsLayoutOptionalParams}

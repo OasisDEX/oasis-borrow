@@ -1,8 +1,15 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
+import { AppLink } from 'components/Links'
 import { ContentCardTriggerColPrice } from 'components/vault/detailsSection/ContentCardTriggerColPrice'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import {
@@ -16,6 +23,8 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 export interface AutoTakeProfitDetailsLayoutProps {
+  ilk: string
+  vaultId: BigNumber
   afterTriggerColPrice?: BigNumber
   afterTriggerColRatio?: BigNumber
   currentColRatio: BigNumber
@@ -27,6 +36,8 @@ export interface AutoTakeProfitDetailsLayoutProps {
 }
 
 export function AutoTakeProfitDetailsLayout({
+  ilk,
+  vaultId,
   afterTriggerColPrice,
   afterTriggerColRatio,
   currentColRatio,
@@ -68,7 +79,14 @@ export function AutoTakeProfitDetailsLayout({
       ) : (
         <Banner
           title={t('auto-take-profit.banner.header')}
-          description={t('auto-take-profit.banner.content')}
+          description={
+            <>
+              {t('auto-take-profit.banner.content')}{' '}
+              <AppLink href="https://kb.oasis.app/help/take-profit" sx={{ fontSize: 2 }}>
+                {t('here')}.
+              </AppLink>
+            </>
+          }
           image={{
             src: '/static/img/setup-banner/auto-take-profit.svg',
             backgroundColor: bannerGradientPresets.autoTakeProfit[0],
@@ -80,6 +98,12 @@ export function AutoTakeProfitDetailsLayout({
                 type: 'Optimization',
                 currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
               })
+              trackingEvents.automation.buttonClick(
+                AutomationEventIds.SelectTakeProfit,
+                Pages.OptimizationTab,
+                CommonAnalyticsSections.Banner,
+                { vaultId: vaultId.toString(), ilk },
+              )
             },
             text: t('auto-take-profit.banner.button'),
           }}

@@ -5430,10 +5430,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oasisdex/automation@1.1.17":
-  version "1.1.17"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.1.17.tgz#647af0c90139bf92920ed74098331879ebc94f32"
-  integrity sha512-zt1yJ8UIFN2MfCLPklYCYvtdtuo86IPUjdLvTHYDVJoaHGtXryD29bELE0RHylIYuIlXkwgabyp3Lr6Chv2Oqw==
+"@oasisdex/automation@1.2.5":
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.2.5.tgz#478516be0e35d1132fc2b0b0f160825960e3c7e7"
+  integrity sha512-sfe3Miy7p3F1l6HzjNcSSqWD4sPf7yGtUOeD5hbRdDD45zbH9Y9npl39g+RmTJkpRuv8+ZOF2d8Jxrwy9biaxQ==
   dependencies:
     ethers "^5.6.2"
 
@@ -5470,10 +5470,10 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
-"@oasisdex/oasis-actions@0.0.4-alpha.7":
-  version "0.0.4-alpha.7"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.0.4-alpha.7.tgz#b9829a55d0fca7c52f3b36802ffcf21e501d6a54"
-  integrity sha512-KZi1hehP/PoUL1qttqcTsaU5qOhHp1JVBPeopTyDzsj+lgKbEdGiK3dH/B9PKpAj8+a0UTIDlfVPGpsVtjz00w==
+"@oasisdex/oasis-actions@0.0.4-alpha.16":
+  version "0.0.4-alpha.16"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.0.4-alpha.16.tgz#eb5fb0a62f15ada11c24ac25560a41b10229170d"
+  integrity sha512-9njsmgv9euhODjzv3uI75zvk6a5WupM98xcqYHBHY9kCRW1UBr71Q8a9o8bfP14KbtqyTj5+Umf/n+uy1lufKg==
   dependencies:
     bignumber.js "^9.0.1"
     ethers "^5.0.19"

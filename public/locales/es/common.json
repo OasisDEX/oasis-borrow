@@ -764,7 +764,9 @@
     "price-impact": "(Impacto en el) Precio del {{token}}",
     "slippage-limit": "Límite de deslizamiento",
     "third-party-fees": "Tasas de protocolos de terceros",
-    "oasis-fee": "Tasa de Oasis"
+    "oasis-fee": "Tasa de Oasis",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt"
   },
   "vault-actions": {
     "deposit": "Deposita",
@@ -1276,6 +1278,7 @@
         "retry-btn": "Reintentar",
         "success-title": "¡Todo listo! Has abierto una posición",
         "go-to-position": "Ir a posición",
+        "back-to-editing": "Regresar a edición",
         "configure-multiple": {
           "title": "Configurar tu nivel de riesgo",
           "liquidation-price": "Precio de liquidación en {{collateralToken}}/{{debtToken}}",

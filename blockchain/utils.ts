@@ -52,3 +52,7 @@ export function amountToWeiRoundDown(amount: BigNumber, token: string): BigNumbe
   const { precision } = getToken(token)
   return amount.times(new BigNumber(10).pow(precision)).decimalPlaces(0, BigNumber.ROUND_DOWN)
 }
+
+export function amountFromGwei(amount: BigNumber): BigNumber {
+  return amount.div(new BigNumber(10).pow(9))
+}

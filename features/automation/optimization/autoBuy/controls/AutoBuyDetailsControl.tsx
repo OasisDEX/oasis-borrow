@@ -62,6 +62,8 @@ export function AutoBuyDetailsControl({
 
   return (
     <AutoBuyDetailsLayout
+      ilk={vault.ilk}
+      vaultId={vault.id}
       token={vault.token}
       autoBuyTriggerData={autoBuyTriggerData}
       isconstantMultipleEnabled={isconstantMultipleEnabled}

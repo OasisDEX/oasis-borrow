@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
@@ -18,6 +24,8 @@ import React from 'react'
 import { Text } from 'theme-ui'
 
 export interface AutoBuyDetailsLayoutProps {
+  ilk: string
+  vaultId: BigNumber
   token: string
   autoBuyTriggerData: AutoBSTriggerData
   triggerColRatio?: BigNumber
@@ -30,6 +38,8 @@ export interface AutoBuyDetailsLayoutProps {
 }
 
 export function AutoBuyDetailsLayout({
+  ilk,
+  vaultId,
   token,
   triggerColRatio,
   autoBuyTriggerData,
@@ -101,6 +111,12 @@ export function AutoBuyDetailsLayout({
                 type: 'Optimization',
                 currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
               })
+              trackingEvents.automation.buttonClick(
+                AutomationEventIds.SelectAutoBuy,
+                Pages.OptimizationTab,
+                CommonAnalyticsSections.Banner,
+                { vaultId: vaultId.toString(), ilk },
+              )
             },
             text: t('auto-buy.banner.button'),
             disabled: isconstantMultipleEnabled,

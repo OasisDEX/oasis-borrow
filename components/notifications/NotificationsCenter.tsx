@@ -1,9 +1,10 @@
-import { useAppContext } from 'components/AppContextProvider'
+import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
 import { NotificationsError } from 'components/notifications/NotificationsError'
+import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
-import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { throttle } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { theme } from 'theme'
@@ -15,14 +16,11 @@ import { NotificationsCenterHeader } from './NotificationsCenterHeader'
 import { NotificationPreferenceCardWrapper } from './NotificationsPrefrenceCardWrapper'
 
 export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
+  const { analyticsData } = useNotificationSocket()
   const onMobile = useOnMobile()
   const [showPreferencesTab, setShowPrefencesTab] = useState(false)
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
-  const { context$ } = useAppContext()
-  const [context] = useObservable(context$)
   const { t } = useTranslation()
-
-  const account = context?.status === 'connected' ? context.account : ''
 
   const notificationCenterStyles = useMemo(
     () => ({
@@ -34,7 +32,15 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
 
   useEffect(() => {
     setShowPrefencesTab(false)
-  }, [account, isOpen])
+  }, [analyticsData.walletAddress, isOpen])
+
+  const handleScroll = throttle(() => {
+    trackingEvents.notifications.scroll(
+      NotificationsEventIds.ScrollNotificationCenter,
+      CommonAnalyticsSections.NotificationCenter,
+      analyticsData,
+    )
+  }, 500)
 
   return (
     <Box
@@ -55,7 +61,14 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
       }}
     >
       <NotificationsCenterHeader
-        onButtonClick={() => setShowPrefencesTab(!showPreferencesTab)}
+        onButtonClick={() => {
+          trackingEvents.notifications.buttonClick(
+            NotificationsEventIds.NotificationPreferences,
+            CommonAnalyticsSections.NotificationCenter,
+            analyticsData,
+          )
+          setShowPrefencesTab(!showPreferencesTab)
+        }}
         showPreferencesTab={showPreferencesTab}
       />
       {notificationsState?.error && (
@@ -64,12 +77,12 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         </Box>
       )}
       {!!notificationsState && (
-        <NotificationsCenterContent>
+        <NotificationsCenterContent onScroll={handleScroll}>
           <Grid as="ul" p={3} gap="12px">
             {showPreferencesTab ? (
-              <NotificationPreferenceCardWrapper account={account} />
+              <NotificationPreferenceCardWrapper />
             ) : (
-              <NotificationCardsWrapper account={account} />
+              <NotificationCardsWrapper />
             )}
           </Grid>
         </NotificationsCenterContent>

@@ -1,10 +1,10 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
+import { getMixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { LANDING_PILLS } from 'content/landing'
-import { DISCOVERY_URL } from 'features/discovery/helpers'
+import { DISCOVER_URL } from 'features/discover/helpers'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import {
@@ -13,6 +13,7 @@ import {
   SwapWidgetState,
 } from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
+import { getShouldHideHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -247,11 +248,7 @@ function UserDesktopMenu() {
 
   const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
-  const shouldHideSettings =
-    !context ||
-    context.status === 'connectedReadonly' ||
-    !accountData ||
-    web3Context?.status !== 'connected'
+  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
 
   const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
@@ -355,13 +352,9 @@ function MobileSettings() {
   const [web3Context] = useObservable(web3Context$)
   const componentRef = useOutsideElementClickHandler(() => setOpened(false))
 
-  if (
-    !context ||
-    context.status === 'connectedReadonly' ||
-    !accountData ||
-    web3Context?.status !== 'connected'
-  )
-    return null
+  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
+
+  if (shouldHideSettings) return null
 
   return (
     <>
@@ -445,7 +438,7 @@ const LINKS = {
   multiply: `/multiply`,
   borrow: `/borrow`,
   earn: '/earn',
-  discovery: DISCOVERY_URL,
+  discover: DISCOVER_URL,
 }
 
 function ConnectedHeader() {
@@ -525,7 +518,12 @@ function ConnectedHeader() {
   )
 }
 
-function HeaderLink({ label, link, children }: { label: string; link?: string } & WithChildren) {
+function HeaderLink({
+  label,
+  link,
+  children,
+  onClick,
+}: { label: string; link?: string; onClick?: () => void } & WithChildren) {
   const { asPath } = useRouter()
   const [isMouseOver, setIsMouseOver] = useState<boolean>(false)
   const isActive = link ? asPath.includes(link) : false
@@ -552,7 +550,7 @@ function HeaderLink({ label, link, children }: { label: string; link?: string } 
       }}
     >
       {link ? (
-        <AppLink href={link} sx={itemSx}>
+        <AppLink href={link} sx={itemSx} onClick={onClick}>
           {label}
         </AppLink>
       ) : (
@@ -758,17 +756,23 @@ function MobileMenu() {
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [showAssets, setShowAssets] = useState(false)
+  const { accountData$, context$, web3Context$ } = useAppContext()
+  const [context] = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
 
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
+  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
+
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
     { labelKey: 'nav.borrow', url: LINKS.borrow },
     { labelKey: 'nav.earn', url: LINKS.earn },
-    { labelKey: 'nav.discovery', url: LINKS.discovery },
+    { labelKey: 'nav.discover', url: LINKS.discover },
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -855,7 +859,7 @@ function MobileMenu() {
           <Icon name="mobile_menu_close" size="auto" width="50" />
         </Box>
       </Box>
-      {notificationsToggle && (
+      {!shouldHideSettings && notificationsToggle && (
         <NotificationsIconButton
           notificationsRef={notificationsRef}
           onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
@@ -925,10 +929,13 @@ function DisconnectedHeader() {
 }
 
 function MainNavigation() {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
+  const { context$ } = useAppContext()
+  const [context] = useObservable(context$)
+  const { pathname } = useRouter()
 
   const discoverOasisEnabled = useFeatureToggle('DiscoverOasis')
-  const { pathname } = useRouter()
+  const userContext = getMixpanelUserContext(i18n.language, context)
 
   return (
     <Flex
@@ -990,7 +997,13 @@ function MainNavigation() {
           <HeaderLink label={t('nav.assets')}>
             <HeaderList links={LANDING_PILLS} columns={2} />
           </HeaderLink>
-          <HeaderLink label={t('nav.discovery')} link={LINKS.discovery} />
+          <HeaderLink
+            label={t('nav.discover')}
+            link={LINKS.discover}
+            onClick={() => {
+              trackingEvents.discover.selectedInNavigation(userContext)
+            }}
+          />
         </Grid>
       )}
     </Flex>

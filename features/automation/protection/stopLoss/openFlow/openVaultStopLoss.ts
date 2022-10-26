@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -77,10 +83,12 @@ export function getDataForStopLoss(
     token,
     priceInfo: { currentEthPrice, nextCollateralPrice },
     ilkData,
+    afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     totalExposure,
     depositAmount,
+    ilkData: { ilk },
 
     setStopLossCloseType,
     setStopLossLevel,
@@ -113,10 +121,12 @@ export function getDataForStopLoss(
 
   const sidebarProps: SidebarAdjustStopLossEditingStageProps = {
     vault: {
+      collateralizationRatio: afterCollateralizationRatio,
       liquidationPrice: afterLiquidationPrice,
       lockedCollateral,
       debt,
       token,
+      ilk,
     } as Vault,
     ilkData,
     ethMarketPrice: currentEthPrice,
@@ -132,7 +142,19 @@ export function getDataForStopLoss(
     isEditing: true,
     closePickerConfig: {
       optionNames: closeVaultOptions,
-      onclickHandler: (optionName: string) => setStopLossCloseType(optionName as CloseVaultTo),
+      onclickHandler: (optionName: string) => {
+        setStopLossCloseType(optionName as CloseVaultTo)
+        trackingEvents.automation.buttonClick(
+          AutomationEventIds.CloseToX,
+          Pages.OpenVault,
+          CommonAnalyticsSections.Form,
+          {
+            vaultId: 'n/a',
+            ilk,
+            closeTo: optionName as CloseVaultTo,
+          },
+        )
+      },
       isCollateralActive: stopLossCloseType === 'collateral',
       collateralTokenSymbol: token,
       collateralTokenIconCircle: tokenData.iconCircle,

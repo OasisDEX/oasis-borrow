@@ -525,6 +525,20 @@
     "payback": "Pagar",
     "withdraw": "Retirar"
   },
+  "vault-changes": {
+    "order-information": "Order information",
+    "multiply": "Multiply",
+    "close-vault-information": "Close Vault Information",
+    "getting-token": "Getting {{token}}",
+    "buying-token": "Buying {{token}}",
+    "selling-token": "Selling {{token}}",
+    "price-impact": "{{token}} Price (impact)",
+    "slippage-limit": "Slippage Limit",
+    "third-party-fees": "3rd party protocol fees",
+    "oasis-fee": "Oasis fee",
+    "ltv": "LTV",
+    "outstanding-debt": "Outstanding debt"
+  },
   "vault-changed": "Cofre alterado!",
   "vault-history": "Histório do Cofre",
   "vaults": {
@@ -881,6 +895,7 @@
         "retry-btn": "Retry",
         "success-title": "All done! You've opened a position",
         "go-to-position": "Go to position",
+        "back-to-editing": "Voltar a editar",
         "configure-multiple": {
           "title": "Set your risk level",
           "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",

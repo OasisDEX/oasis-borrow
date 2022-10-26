@@ -1,3 +1,4 @@
+import { CommonAnalyticsSections, NotificationsEventIds, trackingEvents } from 'analytics/analytics'
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
 import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { notificationPreferences } from 'features/notifications/consts'
@@ -9,15 +10,18 @@ import {
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useCallback, useEffect } from 'react'
 
-interface NotificationPreferenceCardWrapperProps {
-  account: string
-}
-
-export function NotificationPreferenceCardWrapper({
-  account,
-}: NotificationPreferenceCardWrapperProps) {
-  const { socket } = useNotificationSocket()
+export function NotificationPreferenceCardWrapper() {
+  const { socket, analyticsData } = useNotificationSocket()
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
+
+  const subscriptionTypeToAnalyticsIdMap = {
+    [NotificationSubscriptionTypes.VAULT_ACTION_NOTIFICATIONS]:
+      NotificationsEventIds.VaultActionNotificationSwitch,
+    [NotificationSubscriptionTypes.VAULT_INFO_NOTIFICATIONS]:
+      NotificationsEventIds.VaultInfoNotificationSwitch,
+  }
+
+  const account = analyticsData.walletAddress
 
   useEffect(() => {
     if (
@@ -45,6 +49,11 @@ export function NotificationPreferenceCardWrapper({
             subscriptionType,
           ],
         })
+        trackingEvents.notifications.buttonClick(
+          subscriptionTypeToAnalyticsIdMap[subscriptionType],
+          CommonAnalyticsSections.NotificationPreferences,
+          { ...analyticsData, notificationSwitch: 'on' },
+        )
       } else {
         const afterSubscriptions = notificationsState.allActiveSubscriptions
           .filter((item) => item.id !== subscriptionType)
@@ -54,6 +63,12 @@ export function NotificationPreferenceCardWrapper({
           address: account,
           subscriptionTypes: afterSubscriptions,
         })
+
+        trackingEvents.notifications.buttonClick(
+          subscriptionTypeToAnalyticsIdMap[subscriptionType],
+          CommonAnalyticsSections.NotificationPreferences,
+          { ...analyticsData, notificationSwitch: 'off' },
+        )
       }
     },
     [socket, notificationsState],
