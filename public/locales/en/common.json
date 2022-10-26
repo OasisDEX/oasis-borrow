@@ -151,6 +151,10 @@
       "most-yield-earned": "Most Yield Earned",
       "largest-debt": "Largest Debt"
     },
+    "api-error": {
+      "1": "Unknown error occurred, please try again later.",
+      "2": "There are no entries available for selected filters."
+    },
     "table": {
       "no-entries": "There are no entries available for selected filters.",
       "vault-number": "Vault #{{cdpId}}",

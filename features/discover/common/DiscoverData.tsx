@@ -29,8 +29,8 @@ export function DiscoverData({
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
   return (
-    <Box sx={{ position: 'relative' }}>
-      {response?.data?.rows && response?.data?.rows.length > 0 ? (
+    <Box sx={{ position: 'relative', borderTop: '1px solid', borderTopColor: 'neutral20' }}>
+      {response?.rows ? (
         <>
           {isLoading && <DiscoverPreloader isContentLoaded={true} />}
           {isSmallerScreen ? (
@@ -38,7 +38,7 @@ export function DiscoverData({
               banner={banner}
               isLoading={isLoading}
               kind={kind}
-              rows={response.data.rows}
+              rows={response.rows}
               userContext={userContext}
             />
           ) : (
@@ -46,7 +46,7 @@ export function DiscoverData({
               banner={banner}
               isLoading={isLoading}
               kind={kind}
-              rows={response.data.rows}
+              rows={response.rows}
               userContext={userContext}
             />
           )}
@@ -54,7 +54,7 @@ export function DiscoverData({
       ) : isLoading ? (
         <DiscoverPreloader isContentLoaded={false} />
       ) : (
-        <DiscoverError />
+        <DiscoverError error={response?.error} />
       )}
     </Box>
   )

@@ -175,7 +175,7 @@ export function Footer() {
   const { t } = useTranslation()
 
   return (
-    <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
+    <Box as="footer" sx={{ position: 'relative' }}>
       <Container sx={{ maxWidth: '1200px', mb: 5, pb: 0, pt: 2 }}>
         <Grid
           sx={{

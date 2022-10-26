@@ -27,12 +27,9 @@ export function DiscoverCards({
   return (
     <Box
       sx={{
-        mt: '12px',
         px: ['24px', null, null, 4],
         pt: 4,
         pb: '24px',
-        borderTop: '1px solid',
-        borderTopColor: 'neutral20',
       }}
     >
       <Flex
