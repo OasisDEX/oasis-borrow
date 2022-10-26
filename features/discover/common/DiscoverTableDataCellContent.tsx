@@ -117,7 +117,16 @@ export function DiscoverTableDataCellContent({
       return (
         <>
           {row.colRatio && (
-            <Text as="span" sx={{ color: row.colRatio.isAtRisk ? 'warning100' : 'success100' }}>
+            <Text
+              as="span"
+              sx={{
+                color: row.colRatio.isAtRiskDanger
+                  ? 'critical100'
+                  : row.colRatio.isAtRiskWarning
+                  ? 'warning100'
+                  : 'success100',
+              }}
+            >
               {formatPercent(new BigNumber(row.colRatio.level), { precision: 2 })}
             </Text>
           )}
