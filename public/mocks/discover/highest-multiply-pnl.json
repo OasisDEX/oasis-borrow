@@ -8,7 +8,7 @@
       "activity": {
         "kind": 1,
         "additionalData": {
-          "daysAgo": 1
+          "timestamp": 1666269559536
         }
       },
       "cdpId": 18604
@@ -21,7 +21,7 @@
       "activity": {
         "kind": 2,
         "additionalData": {
-          "daysAgo": 3
+          "timestamp": 1666445181492
         }
       },
       "cdpId": 17503
@@ -34,7 +34,7 @@
       "activity": {
         "kind": 3,
         "additionalData": {
-          "daysAgo": 2
+          "timestamp": 1666417150813
         }
       },
       "cdpId": 6843
@@ -47,7 +47,7 @@
       "activity": {
         "kind": 4,
         "additionalData": {
-          "daysAgo": 5
+          "timestamp": 1666696833318
         }
       },
       "cdpId": 24300
@@ -60,7 +60,7 @@
       "activity": {
         "kind": 5,
         "additionalData": {
-          "daysAgo": 4
+          "timestamp": 1666661517734
         }
       },
       "cdpId": 24985
@@ -73,7 +73,7 @@
       "activity": {
         "kind": 6,
         "additionalData": {
-          "daysAgo": 9
+          "timestamp": 1666409330548
         }
       },
       "cdpId": 19321
