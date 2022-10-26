@@ -5,7 +5,7 @@ import {
   AaveStEthYieldsResponse,
   calculateSimulation,
   FilterYieldFieldsType,
-} from 'features/earn/aave/open/services'
+} from 'features/aave/open/services'
 import { useEffect, useState } from 'react'
 
 type useSimulationYieldsParams = {

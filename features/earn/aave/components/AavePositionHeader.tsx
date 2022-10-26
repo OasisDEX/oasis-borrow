@@ -10,12 +10,12 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ActorRefFrom } from 'xstate'
 
-import { useAaveContext } from '../AaveContextProvider'
-import { PreparedAaveTotalValueLocked } from '../helpers/aavePrepareAaveTotalValueLocked'
-import { useOpenAaveStateMachineContext } from '../open/containers/AaveOpenStateMachineContext'
-import { AaveStEthSimulateStateMachine } from '../open/state'
+import { useAaveContext } from '../../../aave/AaveContextProvider'
+import { PreparedAaveTotalValueLocked } from '../../../aave/helpers/aavePrepareAaveTotalValueLocked'
+import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
+import { AaveStEthSimulateStateMachine } from '../../../aave/open/state'
 
-type AavePositionHeaderPropsBase = {
+export type AavePositionHeaderPropsBase = {
   simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
   aaveTVL?: PreparedAaveTotalValueLocked
   strategyName: string

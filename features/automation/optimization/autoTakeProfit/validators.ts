@@ -46,8 +46,8 @@ export function warningsAutoTakeProfitValidation({
 }
 
 export function errorsAutoTakeProfitValidation({
-  // nextCollateralPrice,
-  // executionPrice,
+  nextCollateralPrice,
+  executionPrice,
   txError,
 }: {
   nextCollateralPrice: BigNumber
@@ -58,9 +58,7 @@ export function errorsAutoTakeProfitValidation({
     txError,
   })
 
-  // TODO: bring back proper validation after testing
-  // const autoTakeProfitTriggeredImmediately = executionPrice.lte(nextCollateralPrice)
-  const autoTakeProfitTriggeredImmediately = false
+  const autoTakeProfitTriggeredImmediately = executionPrice.lte(nextCollateralPrice)
 
   return errorMessagesHandler({ autoTakeProfitTriggeredImmediately, insufficientEthFundsForTx })
 }

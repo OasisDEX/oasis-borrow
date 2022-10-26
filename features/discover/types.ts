@@ -5,6 +5,11 @@ export enum DiscoverPages {
   LARGEST_DEBT = 'largest-debt',
 }
 
+export enum DiscoverApiErrors {
+  UNKNOWN_ERROR = 1,
+  NO_ENTRIES = 2,
+}
+
 export enum DiscoverTableVaultActivity {
   WITHDRAWN = 1,
   INCREASED_RISK = 2,
@@ -31,7 +36,8 @@ export type DiscoverTableRowData = {
 } & {
   colRatio?: {
     level: number
-    isAtRisk: boolean
+    isAtRiskDanger: boolean
+    isAtRiskWarning: boolean
   }
 } & {
   activity?: {
