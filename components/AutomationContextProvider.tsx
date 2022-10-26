@@ -26,7 +26,7 @@ import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import React, { useContext, useEffect, useState } from 'react'
 
-interface AutomationContext {
+export interface AutomationContext {
   autoSellTriggerData: AutoBSTriggerData
   autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData

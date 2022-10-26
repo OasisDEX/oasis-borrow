@@ -1,3 +1,5 @@
+import { TxStatus } from '@oasisdex/transactions'
+import { useActor } from '@xstate/react'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
@@ -18,6 +20,7 @@ import {
 import { getStopLossStatus } from 'features/automation/protection/stopLoss/state/stopLossStatus'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
+import { useStopLossContext } from 'features/automation/protection/stopLoss/StopLossContextProvider'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -58,6 +61,8 @@ export function StopLossFormControl({
   vaultType,
 }: StopLossFormControlProps) {
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+  const { stateMachine } = useStopLossContext()
+  const [, send] = useActor(stateMachine)
 
   const feature = AutomationFeatures.STOP_LOSS
   const {
@@ -125,6 +130,12 @@ export function StopLossFormControl({
             ? CloseVaultToEnum.COLLATERAL
             : CloseVaultToEnum.DAI,
         },
+      }}
+      xstateSend={(txDetails) => {
+        send({ type: 'updateTxDetails', value: txDetails })
+        if (txDetails.txStatus === TxStatus.Success) {
+          send({ type: 'success' })
+        }
       }}
     >
       {(textButtonHandler, txHandler) => (

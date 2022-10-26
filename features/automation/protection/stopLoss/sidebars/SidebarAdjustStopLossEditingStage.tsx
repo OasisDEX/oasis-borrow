@@ -1,4 +1,5 @@
 import { Box } from '@theme-ui/components'
+import { useActor } from '@xstate/react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -31,6 +32,7 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { useStopLossContext } from 'features/automation/protection/stopLoss/StopLossContextProvider'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
@@ -158,6 +160,8 @@ export function SidebarAdjustStopLossEditingStage({
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const { stateMachine } = useStopLossContext()
+  const [, send] = useActor(stateMachine)
 
   useDebouncedCallback(
     (value) =>
@@ -231,6 +235,7 @@ export function SidebarAdjustStopLossEditingStage({
                   type: 'stop-loss-level',
                   stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
                 })
+                send({ type: 'reset' })
               }}
             />
           )}

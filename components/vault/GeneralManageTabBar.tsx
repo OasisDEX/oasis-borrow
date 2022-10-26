@@ -1,3 +1,4 @@
+import { useActor } from '@xstate/react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -5,7 +6,9 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
+import { useStopLossContext } from 'features/automation/protection/stopLoss/StopLossContextProvider'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
@@ -52,6 +55,9 @@ export function GeneralManageTabBar({
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const autoBSEnabled = useFeatureToggle('BasicBS')
+  const { stateMachine } = useStopLossContext()
+  const [, send] = useActor(stateMachine)
+  const automationContext = useAutomationContext()
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -67,6 +73,14 @@ export function GeneralManageTabBar({
     vaultId: vault.id.toString(),
     ilk: vault.ilk,
   }
+
+  // PUSH AUTOMATION DATA TO STOP LOSS STATE MACHINE
+  const debt = generalManageVault.state.vault.debt
+  useEffect(() => {
+    console.log('HEEREEE')
+    send({ type: 'loadAutomationData', data: automationContext })
+    send({ type: 'loadCommonData', data: { debt } })
+  }, [automationContext, debt.toString()])
 
   return (
     <TabBar

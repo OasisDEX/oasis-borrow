@@ -5,7 +5,9 @@ import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
 import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
 import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
+import { stopLossStateMachine } from 'features/automation/protection/stopLoss/state/stopLossStateMachine'
 import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
+import { StopLossContextProvider } from 'features/automation/protection/stopLoss/StopLossContextProvider'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
@@ -83,16 +85,18 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
   return (
-    <Grid gap={0} sx={{ width: '100%' }}>
-      <VaultNoticesView id={vault.id} />
-      <Box sx={{ zIndex: 0, mt: 4 }}>{headlineElement}</Box>
-      <GeneralManageTabBar
-        positionInfo={positionInfo}
-        generalManageVault={generalManageVault}
-        showAutomationTabs={showAutomationTabs}
-        protectionEnabled={protectionEnabled}
-        optimizationEnabled={optimizationEnabled}
-      />
-    </Grid>
+    <StopLossContextProvider machine={stopLossStateMachine}>
+      <Grid gap={0} sx={{ width: '100%' }}>
+        <VaultNoticesView id={vault.id} />
+        <Box sx={{ zIndex: 0, mt: 4 }}>{headlineElement}</Box>
+        <GeneralManageTabBar
+          positionInfo={positionInfo}
+          generalManageVault={generalManageVault}
+          showAutomationTabs={showAutomationTabs}
+          protectionEnabled={protectionEnabled}
+          optimizationEnabled={optimizationEnabled}
+        />
+      </Grid>
+    </StopLossContextProvider>
   )
 }

@@ -1,3 +1,4 @@
+import { useActor } from '@xstate/react'
 import {
   AutomationEventIds,
   CommonAnalyticsSections,
@@ -28,6 +29,7 @@ import {
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { useStopLossContext } from 'features/automation/protection/stopLoss/StopLossContextProvider'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 
 interface GetStopLossStatusParams {
@@ -64,6 +66,8 @@ export function getStopLossStatus({
   ilkData,
 }: GetStopLossStatusParams): StopLossStatus {
   const { uiChanges } = useAppContext()
+  const { stateMachine } = useStopLossContext()
+  const [, send] = useActor(stateMachine)
 
   const isEditing = checkIfIsEditingStopLoss({
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
@@ -111,6 +115,7 @@ export function getStopLossStatus({
         type: 'close-type',
         toCollateral: optionName === closeVaultOptions[0],
       })
+      send({ type: 'closeToChange', value: optionName as CloseVaultTo })
       trackingEvents.automation.buttonClick(
         AutomationEventIds.CloseToX,
         Pages.StopLoss,

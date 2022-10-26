@@ -1,4 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
+import { useActor } from '@xstate/react'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -10,6 +11,7 @@ import {
   prepareAddStopLossTriggerData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { useStopLossContext } from 'features/automation/protection/stopLoss/StopLossContextProvider'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
@@ -33,6 +35,8 @@ export function getStopLossTxHandlers({
   isAddForm,
 }: GetStopLossTxHandlersParams): StopLossTxHandlers {
   const { uiChanges } = useAppContext()
+  const { stateMachine } = useStopLossContext()
+  const [, send] = useActor(stateMachine)
 
   const addTxData = useMemo(
     () =>
@@ -56,6 +60,7 @@ export function getStopLossTxHandlers({
         stopLossLevel: zero,
       })
     }
+    send({ type: 'switchForm', value: isAddForm ? 'remove' : 'add' })
   }
 
   return {

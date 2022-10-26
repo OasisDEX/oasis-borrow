@@ -1,3 +1,4 @@
+import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
@@ -32,6 +33,7 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { useStopLossContext } from 'features/automation/protection/stopLoss/StopLossContextProvider'
 import {
   errorsStopLossValidation,
   warningsStopLossValidation,
@@ -109,6 +111,17 @@ export function SidebarSetupStopLoss({
   nextCollateralPrice,
 }: SidebarSetupStopLossProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const { stateMachine } = useStopLossContext()
+  const [state, send] = useActor(stateMachine)
+
+  console.log('formState', {
+    state: state.value,
+    triggerLevel: state.context.triggerLevel.toString(),
+    closeTo: state.context.closeTo,
+    currentForm: state.context.currentForm,
+    txDetails: state.context.txDetails,
+    stopLossTriggerData: state.context.automationContext.stopLossTriggerData,
+  })
 
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -188,6 +201,7 @@ export function SidebarSetupStopLoss({
         type: 'stop-loss-level',
         stopLossLevel: slCollRatio,
       })
+      send({ type: 'sliderChange', value: slCollRatio })
     },
   }
 
@@ -280,7 +294,8 @@ export function SidebarSetupStopLoss({
         label: primaryButtonLabel,
         disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
-        action: () =>
+        action: () => {
+          send({ type: 'submit' })
           txHandler({
             callOnSuccess: () => {
               uiChanges.publish(TAB_CHANGE_SUBJECT, {
@@ -288,8 +303,10 @@ export function SidebarSetupStopLoss({
                 currentMode: VaultViewMode.Overview,
               })
               setHash(VaultViewMode.Overview)
+              send({ type: 'backToForm' })
             },
-          }),
+          })
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {

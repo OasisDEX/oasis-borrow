@@ -18,6 +18,7 @@ import {
   removeAutomationTrigger,
 } from 'features/automation/api/automationTxHandlers'
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import { TxDetails } from 'features/automation/protection/stopLoss/state/stopLossStateMachine'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useMemo } from 'react'
 
@@ -57,6 +58,7 @@ interface GetAutomationFeatureTxHandlersParams {
   ilk: string
   analytics: AutomationTxHandlerAnalytics
   txHelpers?: TxHelpers
+  xstateSend?: (txDetails: TxDetails) => void
 }
 
 interface AutomationFeatureTxHandlers {
@@ -82,8 +84,10 @@ export function getAutomationFeatureTxHandlers({
   ilk,
   collateralizationRatio,
   analytics,
+  xstateSend,
 }: GetAutomationFeatureTxHandlersParams): AutomationFeatureTxHandlers {
   const { uiChanges } = useAppContext()
+
   const triggerEnabled = !!triggersId.filter((item) => item).length
 
   const analyticsAdditionalParams = {
@@ -123,7 +127,14 @@ export function getAutomationFeatureTxHandlers({
         options?.callOnSuccess && options.callOnSuccess()
       } else {
         if (isAddForm) {
-          addAutomationTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, publishType)
+          addAutomationTrigger(
+            txHelpers,
+            addTxData,
+            uiChanges,
+            ethMarketPrice,
+            publishType,
+            xstateSend,
+          )
 
           trackingEvents.automation.buttonClick(
             triggerEnabled ? analytics.id.edit : analytics.id.add,
@@ -133,7 +144,14 @@ export function getAutomationFeatureTxHandlers({
           )
         }
         if (isRemoveForm) {
-          removeAutomationTrigger(txHelpers, removeTxData, uiChanges, ethMarketPrice, publishType)
+          removeAutomationTrigger(
+            txHelpers,
+            removeTxData,
+            uiChanges,
+            ethMarketPrice,
+            publishType,
+            xstateSend,
+          )
 
           trackingEvents.automation.buttonClick(
             analytics.id.remove,

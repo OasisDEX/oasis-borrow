@@ -15,6 +15,7 @@ import {
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
 import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { TxDetails } from 'features/automation/protection/stopLoss/state/stopLossStateMachine'
 import { addTransactionMap, TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { ReactElement, useEffect } from 'react'
 
@@ -42,6 +43,7 @@ interface AddAndRemoveTriggerControlProps {
   ) => ReactElement
   vault: Vault
   analytics: AutomationTxHandlerAnalytics
+  xstateSend?: (txDetails: TxDetails) => void
 }
 
 export function AddAndRemoveTriggerControl({
@@ -61,6 +63,7 @@ export function AddAndRemoveTriggerControl({
   txHelpers,
   vault,
   analytics,
+  xstateSend,
 }: AddAndRemoveTriggerControlProps) {
   const { uiChanges } = useAppContext()
 
@@ -81,6 +84,7 @@ export function AddAndRemoveTriggerControl({
     ilk: vault.ilk,
     collateralizationRatio: vault.collateralizationRatio,
     analytics,
+    xstateSend,
   })
 
   useEffect(() => {
