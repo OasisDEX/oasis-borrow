@@ -101,15 +101,15 @@ export const stopLossStateMachine =
             txError: {
               target: 'formStage',
             },
-            updateTxDetails: {
-              actions: 'assignTxDetails',
-            },
             success: {
               target: 'txSuccess',
               cond: 'txSucceed',
             },
             loadAutomationData: {
               actions: 'assignAutomationContext',
+            },
+            updateTxDetails: {
+              actions: 'assignTxDetails',
             },
           },
         },

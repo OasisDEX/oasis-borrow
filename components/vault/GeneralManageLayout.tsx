@@ -85,7 +85,7 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
   return (
-    <StopLossContextProvider machine={stopLossStateMachine}>
+    <StopLossContextProvider machine={stopLossStateMachine} commonData={{ debt: vault.debt }}>
       <Grid gap={0} sx={{ width: '100%' }}>
         <VaultNoticesView id={vault.id} />
         <Box sx={{ zIndex: 0, mt: 4 }}>{headlineElement}</Box>

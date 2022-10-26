@@ -1,8 +1,10 @@
-import { useInterpret } from '@xstate/react'
+import { useActor, useInterpret } from '@xstate/react'
+import BigNumber from 'bignumber.js'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { StopLossStateMachine } from 'features/automation/protection/stopLoss/state/stopLossStateMachine'
 import { WithChildren } from 'helpers/types'
 import { env } from 'process'
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useEffect } from 'react'
 
 export const stopLossContext = createContext<StopLossStateMachineContext | undefined>(undefined)
 
@@ -26,8 +28,17 @@ export function useStopLossContext(): StopLossStateMachineContext {
 export function StopLossContextProvider({
   children,
   machine,
-}: WithChildren & { machine: StopLossStateMachine }) {
+  commonData,
+}: WithChildren & { machine: StopLossStateMachine; commonData: { debt: BigNumber } }) {
   const stateMachine = useInterpret(machine, { devTools: env.NODE_ENV !== 'production' }).start()
+  const automationContext = useAutomationContext()
+  const [, send] = useActor(stateMachine)
+
+  // PUSH DEPENDENCIES TO MACHINE
+  useEffect(() => {
+    send({ type: 'loadAutomationData', data: automationContext })
+    send({ type: 'loadCommonData', data: { debt: commonData.debt } })
+  }, [automationContext, commonData.debt.toString()])
 
   return <stopLossContext.Provider value={{ stateMachine }}>{children}</stopLossContext.Provider>
 }

@@ -6,7 +6,11 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { CloseVaultToEnum, MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
+import {
+  CloseVaultToEnum,
+  failedStatuses,
+  MAX_DEBT_FOR_SETTING_STOP_LOSS,
+} from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
@@ -135,6 +139,9 @@ export function StopLossFormControl({
         send({ type: 'updateTxDetails', value: txDetails })
         if (txDetails.txStatus === TxStatus.Success) {
           send({ type: 'success' })
+        }
+        if (failedStatuses.includes(txDetails.txStatus!)) {
+          send({ type: 'txError' })
         }
       }}
     >
