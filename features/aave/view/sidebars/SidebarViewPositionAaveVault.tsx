@@ -23,7 +23,9 @@ export function SidebarViewPositionAaveVault({
     AT_RISK = 'AT_RISK',
   }
   const warningHealthFactor = new BigNumber('1.25')
-  const liquidationPrice = aaveProtocolData.position.liquidationPrice || zero
+  const liquidationPrice = !aaveProtocolData.position.liquidationPrice.isNaN()
+    ? aaveProtocolData.position.liquidationPrice
+    : zero
   const healthFactor = aaveProtocolData.position.healthFactor
   const riskTrafficLight = healthFactor?.gt(warningHealthFactor) ? RiskLevel.OK : RiskLevel.AT_RISK
   const maxRisk = aaveProtocolData.position.category.maxLoanToValue

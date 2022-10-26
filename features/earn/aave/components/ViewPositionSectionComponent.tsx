@@ -56,7 +56,7 @@ export function ViewPositionSectionComponent({
 
   const netValue = accountData.totalCollateralETH.minus(accountData.totalDebtETH)
   const totalCollateralInStEth = oraclePrice.times(accountData.totalCollateralETH)
-  const belowCurrentRatio = position
+  const belowCurrentRatio = !position.liquidationPrice.isNaN()
     ? oraclePrice.minus(position.liquidationPrice).times(100)
     : zero
 
@@ -123,7 +123,10 @@ export function ViewPositionSectionComponent({
           />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.liquidation-price-ratio')}
-            value={formatBigNumber(position ? position.liquidationPrice : zero, 2)}
+            value={formatBigNumber(
+              !position.liquidationPrice.isNaN() ? position.liquidationPrice : zero,
+              2,
+            )}
             unit={t('manage-earn-vault.below-current-ratio', {
               percentage: formatPercent(belowCurrentRatio, {
                 precision: 0,
@@ -146,7 +149,11 @@ export function ViewPositionSectionComponent({
                 }
               />
             }
-            customBackground={getLiquidationPriceRatioColor(belowCurrentRatio)}
+            customBackground={
+              !position.liquidationPrice.isNaN()
+                ? getLiquidationPriceRatioColor(belowCurrentRatio)
+                : ''
+            }
             link={{
               label: t('manage-earn-vault.ratio-history'),
               url: 'https://dune.com/dataalways/stETH-De-Peg', // should we move this url to a file? an env?
