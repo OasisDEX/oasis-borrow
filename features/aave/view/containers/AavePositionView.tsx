@@ -51,9 +51,17 @@ function AavePositionContainer({
                     aaveReserveState={aaveReserveState}
                     aaveReserveDataETH={aaveReserveDataETH}
                     aaveProtocolData={aaveProtocolData}
+                    strategyConfig={strategyConfig}
                   />
                 </Box>
-                <Box>{<SidebarViewPositionAaveVault aaveProtocolData={aaveProtocolData} />}</Box>
+                <Box>
+                  {
+                    <SidebarViewPositionAaveVault
+                      aaveProtocolData={aaveProtocolData}
+                      strategyConfig={strategyConfig}
+                    />
+                  }
+                </Box>
               </Grid>
             ),
           },

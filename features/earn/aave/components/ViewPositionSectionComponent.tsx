@@ -9,8 +9,10 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
 import { AaveProtocolData } from 'features/aave/manage/state'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
+import { useSimulationYields } from 'helpers/useSimulationYields'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -23,7 +25,8 @@ import { ManageSectionModal } from '../../../aave/manage/components/ManageSectio
 export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
-  aaveProtocolData: AaveProtocolData
+  aaveProtocolData?: AaveProtocolData
+  strategyConfig?: StrategyConfig
 }
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
@@ -39,17 +42,23 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 export function ViewPositionSectionComponent({
   aaveReserveDataETH,
   aaveProtocolData,
+  strategyConfig,
 }: ViewPositionSectionComponentProps) {
   const { t } = useTranslation()
 
-  const { accountData, oraclePrice, position } = aaveProtocolData
+  const { accountData, oraclePrice, position } = aaveProtocolData!
+
+  const simulations = useSimulationYields({
+    amount: accountData?.totalCollateralETH,
+    riskRatio: position?.riskRatio,
+    fields: ['7Days'],
+  })
 
   const netValue = accountData.totalCollateralETH.minus(accountData.totalDebtETH)
   const totalCollateralInStEth = oraclePrice.times(accountData.totalCollateralETH)
   const belowCurrentRatio = position
     ? oraclePrice.minus(position.liquidationPrice).times(100)
     : zero
-  const hardCodedToken = 'ETH'
 
   return (
     <DetailsSection
@@ -59,7 +68,7 @@ export function ViewPositionSectionComponent({
           <DetailsSectionContentCard
             title={t('net-value')}
             value={formatBigNumber(netValue || zero, 2)}
-            unit={hardCodedToken}
+            unit={strategyConfig!.tokens!.debt}
             modal={
               <ManageSectionModal
                 heading={t('net-value')}
@@ -77,17 +86,24 @@ export function ViewPositionSectionComponent({
                       <Box>{t('manage-earn-vault.eth-value')}</Box>
                       <Box>{t('manage-earn-vault.collateral-value-in-vault')}</Box>
                       <Box>
-                        {formatAmount(accountData.totalCollateralETH || zero, hardCodedToken)}{' '}
-                        {hardCodedToken}
+                        {formatAmount(
+                          accountData.totalCollateralETH || zero,
+                          strategyConfig!.tokens!.debt,
+                        )}{' '}
+                        {strategyConfig!.tokens!.debt}
                       </Box>
                       <Box>{t('manage-earn-vault.debt-value-in-vault')}</Box>
                       <Box>
-                        {formatAmount(accountData.totalDebtETH || zero, hardCodedToken)}{' '}
-                        {hardCodedToken}
+                        {formatAmount(
+                          accountData.totalDebtETH || zero,
+                          strategyConfig!.tokens!.debt,
+                        )}{' '}
+                        {strategyConfig!.tokens!.debt}
                       </Box>
                       <Box>{t('net-value')}</Box>
                       <Box>
-                        {formatAmount(netValue || zero, hardCodedToken)} {hardCodedToken}
+                        {formatAmount(netValue || zero, strategyConfig!.tokens!.debt)}{' '}
+                        {strategyConfig!.tokens!.debt}
                       </Box>
                     </Grid>
                   </>
@@ -95,7 +111,7 @@ export function ViewPositionSectionComponent({
               />
             }
           />
-          {/* <DetailsSectionContentCard
+          <DetailsSectionContentCard
             title={t('manage-earn-vault.net-apy')}
             value={simulations?.apy ? formatPercent(simulations.apy, { precision: 2 }) : '-'}
             modal={
@@ -104,7 +120,7 @@ export function ViewPositionSectionComponent({
                 description={t('manage-earn-vault.net-apy-modal-aave')}
               />
             }
-          /> */}
+          />
           <DetailsSectionContentCard
             title={t('manage-earn-vault.liquidation-price-ratio')}
             value={formatBigNumber(position ? position.liquidationPrice : zero, 2)}
@@ -142,11 +158,15 @@ export function ViewPositionSectionComponent({
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
             title={t('system.total-collateral')}
-            value={`${formatAmount(totalCollateralInStEth, 'STETH')} stETH`}
+            value={`${formatAmount(totalCollateralInStEth, strategyConfig!.tokens!.debt)} ${
+              strategyConfig!.tokens!.collateral
+            }`}
           />
           <DetailsSectionFooterItem
             title={t('manage-earn-vault.position-eth-debt')}
-            value={`${formatAmount(accountData.totalDebtETH, hardCodedToken)} ${hardCodedToken}`}
+            value={`${formatAmount(accountData.totalDebtETH, strategyConfig!.tokens!.debt)} ${
+              strategyConfig!.tokens!.debt
+            }`}
           />
           <DetailsSectionFooterItem
             title={t('system.variable-annual-fee')}

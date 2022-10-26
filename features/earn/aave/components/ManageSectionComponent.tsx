@@ -10,6 +10,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { useSimulationYields } from 'helpers/useSimulationYields'
@@ -26,6 +27,7 @@ import { useManageAaveStateMachineContext } from '../../../aave/manage/container
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
+  strategyConfig?: StrategyConfig
 }
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
@@ -41,6 +43,7 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 export function ManageSectionComponent({
   aaveReserveState,
   aaveReserveDataETH,
+  strategyConfig,
 }: ManageSectionComponentProps) {
   const { t } = useTranslation()
   const { stateMachine } = useManageAaveStateMachineContext()
@@ -164,7 +167,9 @@ export function ManageSectionComponent({
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
             title={t('system.total-collateral')}
-            value={`${formatAmount(totalCollateralInStEth, 'STETH')} stETH`}
+            value={`${formatAmount(totalCollateralInStEth, strategyConfig!.tokens!.debt)} ${
+              strategyConfig!.tokens!.debt
+            }`}
           />
           <DetailsSectionFooterItem
             title={t('manage-earn-vault.position-eth-debt')}

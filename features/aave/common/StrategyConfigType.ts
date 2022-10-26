@@ -14,6 +14,10 @@ export interface StrategyConfig {
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
   }
+  tokens?: {
+    collateral: string
+    debt: string
+  }
 }
 
 type AaveHeader = (props: AavePositionHeaderPropsBase) => JSX.Element

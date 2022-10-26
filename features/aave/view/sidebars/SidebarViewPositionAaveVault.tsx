@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
 import { aaveStETHMinimumRiskRatio } from 'features/aave/constants'
 import { AaveProtocolData } from 'features/aave/manage/state'
 import { formatBigNumber } from 'helpers/formatters/format'
@@ -11,8 +12,10 @@ import { Flex, Grid, Link, Text } from 'theme-ui'
 
 export function SidebarViewPositionAaveVault({
   aaveProtocolData,
+  strategyConfig,
 }: {
   aaveProtocolData: AaveProtocolData
+  strategyConfig?: StrategyConfig
 }) {
   const { t } = useTranslation()
   enum RiskLevel {
@@ -46,15 +49,15 @@ export function SidebarViewPositionAaveVault({
           disabled={true}
           step={0.01}
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {
-            collateralToken: 'collateralToken',
-            debtToken: 'debtToken',
+            collateralToken: strategyConfig!.tokens!.collateral,
+            debtToken: strategyConfig!.tokens!.debt,
           })}
           rightLabel={
             <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
               <Text variant="paragraph4" color="interactive100">
                 {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
-                  collateralToken: 'collateralToken',
-                  debtToken: 'debtToken',
+                  collateralToken: strategyConfig!.tokens!.collateral,
+                  debtToken: strategyConfig!.tokens!.debt,
                 })}{' '}
                 &gt;
               </Text>

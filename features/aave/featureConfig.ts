@@ -26,5 +26,9 @@ export const strategyConfig: Record<string, StrategyConfig> = {
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
     },
+    tokens: {
+      collateral: 'STETH',
+      debt: 'ETH',
+    },
   },
 }
