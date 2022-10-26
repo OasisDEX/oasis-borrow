@@ -5,6 +5,7 @@ import { getAaveStrategy$ } from 'features/aave/featureConfig'
 import { AaveProtocolData } from 'features/aave/manage/state'
 import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
+import { PositionOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -26,17 +27,20 @@ function AavePositionContainer({
   aaveReserveState,
   aaveReserveDataETH,
   aaveProtocolData,
+  address,
 }: {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
   strategyConfig: StrategyConfig
   aaveProtocolData: AaveProtocolData
+  address: string
 }) {
   const { t } = useTranslation()
   const Header = strategyConfig.viewComponents.headerView
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsView
   return (
     <Container variant="vaultPageContainer">
+      <PositionOwnershipBanner account={address} />
       <Header strategyName={strategyConfig.name} noDetails />
       <TabBar
         variant="underline"
@@ -104,6 +108,7 @@ export function AavePositionView({ address }: AaveManageViewPositionViewProps) {
               aaveReserveState={_aaveReserveState}
               aaveReserveDataETH={_aaveReserveDataETH}
               aaveProtocolData={_aaveProtocolData}
+              address={address}
             />
           )
         }}

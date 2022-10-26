@@ -1,5 +1,6 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
+import { strategyConfig } from 'features/aave/featureConfig'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -9,9 +10,6 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { AaveMultiplyHeader } from '../../../../features/multiply/aave/components/AaveMultiplyHeader'
-import { AaveMultiplyManageComponent } from '../../../../features/multiply/aave/components/AaveMultiplyManageComponent'
-import { AaveMultiplySimulate } from '../../../../features/multiply/aave/components/AaveMultiplySimulate'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -29,18 +27,7 @@ function OpenVault({ strategy: _strategy }: { strategy: string }) {
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView
-            config={{
-              name: 'stETHusdc',
-              urlSlug: 'stETHusdc',
-              viewComponents: {
-                headerOpen: AaveMultiplyHeader,
-                headerManage: AaveMultiplyHeader,
-                simulateSection: AaveMultiplySimulate,
-                vaultDetails: AaveMultiplyManageComponent,
-              },
-            }}
-          />
+          <AaveOpenView config={strategyConfig['aave-usdc']} />
 
           <Survey for="earn" />
         </WithTermsOfService>

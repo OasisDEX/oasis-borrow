@@ -48,13 +48,14 @@ export function VaultNotice({
   subheader,
   color,
   withClose = true,
-}: VaultNoticeProps & { color: string }) {
+  mb = 0,
+}: VaultNoticeProps & { color: string; mb?: number }) {
   const [isVisible, setIsVisible] = useState(true)
 
   return (
     <>
       {isVisible && (
-        <Notice close={() => setIsVisible(false)} withClose={withClose}>
+        <Notice close={() => setIsVisible(false)} withClose={withClose} sx={{ mb }}>
           <Flex sx={{ py: 2, pr: [2, 5] }}>
             {status && <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>}
             <Grid gap={2} sx={{ alignItems: 'center' }}>
@@ -159,6 +160,23 @@ export function VaultOwnershipBanner({
         )
       }
       color="banner.muted"
+    />
+  )
+}
+
+export function PositionOwnershipBanner({ account }: { account: string }) {
+  const { t } = useTranslation()
+  return (
+    <VaultNotice
+      status={
+        <StatusFrame>
+          <Icon size="auto" width="24" height="24" name="bannerWallet" />
+        </StatusFrame>
+      }
+      header={t('vault-notices.position.header', { address: formatAddress(account) })}
+      subheader={t('vault-notices.position.subheader1')}
+      color="banner.muted"
+      mb={4}
     />
   )
 }
