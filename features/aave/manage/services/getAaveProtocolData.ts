@@ -16,21 +16,27 @@ import { distinctUntilChanged, map } from 'rxjs/operators'
 
 import { AaveProtocolData } from '../state'
 
+export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
+
+export type AaveUserConfigurationType = ({
+  proxyAddress,
+}: {
+  proxyAddress: string
+}) => Observable<AaveConfigurationData>
+
+export type AaveReserveConfigurationDataType = ({
+  token,
+}: {
+  token: string
+}) => Observable<AaveReserveConfigurationData>
+
 export function getAaveProtocolData$(
   aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
   aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
-  aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
-  aaveUserConfiguration$: ({
-    proxyAddress,
-  }: {
-    proxyAddress: string
-  }) => Observable<AaveConfigurationData>,
+  aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
+  aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
-  aaveReserveConfigurationData$: ({
-    token,
-  }: {
-    token: string
-  }) => Observable<AaveReserveConfigurationData>,
+  aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
   token: string,
   proxyAddress: string,
 ): Observable<AaveProtocolData> {
