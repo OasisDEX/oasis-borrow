@@ -6,6 +6,9 @@ const relativeTimeUnits = {
   minute: 60 * 1000,
   second: 1000,
 }
+const languagesMap = {
+  cn: 'chi',
+}
 
 export function timeAgo({
   from = new Date(),
@@ -20,12 +23,15 @@ export function timeAgo({
   style?: Intl.RelativeTimeFormatStyle
   to: Date
 }) {
+  const mappedLang = Object.keys(languagesMap).includes(lang)
+    ? languagesMap[lang as keyof typeof languagesMap]
+    : lang
   const elapsed = to.getTime() - from.getTime()
   const closestUnit = Object.keys(relativeTimeUnits).filter((unit) => {
     return Math.abs(elapsed) > relativeTimeUnits[unit as keyof typeof relativeTimeUnits]
   }) as (keyof typeof relativeTimeUnits)[]
 
-  return new Intl.RelativeTimeFormat(lang, { numeric, style }).format(
+  return new Intl.RelativeTimeFormat(mappedLang, { numeric, style }).format(
     Math.round(elapsed / relativeTimeUnits[closestUnit[0]]),
     closestUnit[0],
   )
