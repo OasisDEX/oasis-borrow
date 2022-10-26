@@ -290,7 +290,7 @@ export function SidebarSetupAutoTakeProfit({
             label: textButtonLabel,
             hidden: isFirstSetup && !isAwaitingConfirmation,
             action: () => {
-              if (!isAwaitingConfirmation) {
+              if (isAwaitingConfirmation) {
                 uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
                   type: 'is-awaiting-confirmation',
                   isAwaitingConfirmation: false,
