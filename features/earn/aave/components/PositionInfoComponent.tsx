@@ -37,7 +37,7 @@ type PositionInfoComponentProps = {
   oraclePrice: BigNumber
   accountData: AaveUserAccountData
   apy?: BigNumber
-  position: IPosition
+  position?: IPosition
 }
 
 export const PositionInfoComponent = ({
