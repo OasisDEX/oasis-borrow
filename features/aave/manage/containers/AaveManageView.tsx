@@ -1,6 +1,7 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { TabBar } from 'components/TabBar'
+import { getAaveStrategy$ } from 'features/aave/featureConfig'
 import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
@@ -9,23 +10,13 @@ import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Observable, of } from 'rxjs'
 import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../helpers/observableHook'
-import {
-  AavePositionHeader,
-  AavePositionHeaderWithDetails,
-} from '../../../earn/aave/components/AavePositionHeader'
-import { AaveMultiplyHeader } from '../../../multiply/aave/components/AaveMultiplyHeader'
-import { AaveMultiplyManageComponent } from '../../../multiply/aave/components/AaveMultiplyManageComponent'
-import { AaveMultiplySimulate } from '../../../multiply/aave/components/AaveMultiplySimulate'
 import { useAaveContext } from '../../AaveContextProvider'
 import { StrategyConfig } from '../../common/StrategyConfigType'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
-import { SimulateSectionComponent } from '../../open/components'
-import { ManageSectionComponent } from '../components'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { ManageAaveStateMachine } from '../state'
 import {
@@ -50,7 +41,7 @@ function AaveManageContainer({
 }) {
   const { t } = useTranslation()
   const Header = strategyConfig.viewComponents.headerManage
-  const VaultDetails = strategyConfig.viewComponents.vaultDetails
+  const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   return (
     <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
       <Container variant="vaultPageContainer">
@@ -68,6 +59,7 @@ function AaveManageContainer({
                     <VaultDetails
                       aaveReserveState={aaveReserveState}
                       aaveReserveDataETH={aaveReserveDataETH}
+                      strategyConfig={strategyConfig}
                     />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>
@@ -105,34 +97,6 @@ function AavePositionNotice() {
     return <AavePositionAlreadyOpenedNotice />
   }
   return null
-}
-
-function getAaveStrategy$(_address: string): Observable<StrategyConfig> {
-  // TODO: properly detect fom chain or georgi method
-  return of(strategyConfig['aave-earn'])
-}
-
-export const strategyConfig: Record<string, StrategyConfig> = {
-  'aave-earn': {
-    urlSlug: 'stETHeth',
-    name: 'stETHeth',
-    viewComponents: {
-      headerOpen: AavePositionHeaderWithDetails,
-      headerManage: AavePositionHeader,
-      simulateSection: SimulateSectionComponent,
-      vaultDetails: ManageSectionComponent,
-    },
-  },
-  'aave-multiply': {
-    name: 'stETHusdc',
-    urlSlug: 'stETHusdc',
-    viewComponents: {
-      headerOpen: AaveMultiplyHeader,
-      headerManage: AaveMultiplyHeader,
-      simulateSection: AaveMultiplySimulate,
-      vaultDetails: AaveMultiplyManageComponent,
-    },
-  },
 }
 
 export function AaveManagePositionView({ address }: AaveManageViewPositionViewProps) {

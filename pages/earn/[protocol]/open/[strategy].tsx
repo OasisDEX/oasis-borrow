@@ -1,5 +1,6 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
+import { strategyConfig } from 'features/aave/featureConfig'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -9,12 +10,6 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { ManageSectionComponent } from '../../../../features/aave/manage/components'
-import { SimulateSectionComponent } from '../../../../features/aave/open/components'
-import {
-  AavePositionHeader,
-  AavePositionHeaderWithDetails,
-} from '../../../../features/earn/aave/components/AavePositionHeader'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -32,18 +27,7 @@ function OpenVault({ strategy: _strategy }: { strategy: string }) {
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView
-            config={{
-              urlSlug: 'stETHeth',
-              name: 'stETHeth',
-              viewComponents: {
-                headerOpen: AavePositionHeaderWithDetails,
-                headerManage: AavePositionHeader,
-                simulateSection: SimulateSectionComponent,
-                vaultDetails: ManageSectionComponent,
-              },
-            }}
-          />
+          <AaveOpenView config={strategyConfig['aave-earn']} />
 
           <Survey for="earn" />
         </WithTermsOfService>

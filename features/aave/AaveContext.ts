@@ -26,6 +26,7 @@ import {
   getManageAavePositionStateMachineServices$,
   getManageAaveStateMachine$,
 } from './manage/services'
+import { getAaveProtocolData$ } from './manage/services/getAaveProtocolData'
 import {
   getOpenAaveParametersStateMachineServices$,
   getOpenAavePositionStateMachineServices,
@@ -67,13 +68,13 @@ export function setupAaveContext({
     ({ token }) => token,
   )
 
-  const aaveUserReserveData$ = observe(once$, connectedContext$, getAaveUserReserveData)
+  const aaveUserReserveData$ = observe(once$, context$, getAaveUserReserveData)
 
-  const aaveOracleAssetPriceData$ = observe(once$, connectedContext$, getAaveOracleAssetPriceData)
+  const aaveOracleAssetPriceData$ = observe(once$, context$, getAaveOracleAssetPriceData)
 
-  const aaveUserAccountData$ = observe(once$, connectedContext$, getAaveUserAccountData)
-  const aaveUserConfiguration$ = observe(once$, connectedContext$, getAaveUserConfiguration)
-  const aaveReservesList$ = observe(once$, connectedContext$, getAaveReservesList)
+  const aaveUserAccountData$ = observe(once$, context$, getAaveUserAccountData)
+  const aaveUserConfiguration$ = observe(once$, context$, getAaveUserConfiguration)
+  const aaveReservesList$ = observe(once$, context$, getAaveReservesList)
 
   const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     contextForAddress$,
@@ -114,6 +115,18 @@ export function setupAaveContext({
     aaveReservesList$,
   )
 
+  const aaveProtocolData$ = memoize(
+    curry(getAaveProtocolData$)(
+      aaveUserReserveData$,
+      aaveUserAccountData$,
+      aaveOracleAssetPriceData$,
+      aaveUserConfiguration$,
+      aaveReservesList$,
+      aaveReserveConfigurationData$,
+    ),
+    (token, proxyAddress) => `${token}-${proxyAddress}`,
+  )
+
   const manageAaveStateMachineServices$ = getManageAavePositionStateMachineServices$(
     contextForAddress$,
     txHelpers$,
@@ -121,13 +134,9 @@ export function setupAaveContext({
     userSettings$,
     tokenBalances$,
     proxyForAccount$,
-    aaveUserReserveData$,
-    aaveUserAccountData$,
     aaveOracleAssetPriceData$,
     aaveReserveConfigurationData$,
-    aaveOracleAssetPriceData$,
-    aaveUserConfiguration$,
-    aaveReservesList$,
+    aaveProtocolData$,
   )
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
@@ -170,6 +179,7 @@ export function setupAaveContext({
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
     aaveReserveStEthData$,
+    aaveProtocolData$,
   }
 }
 

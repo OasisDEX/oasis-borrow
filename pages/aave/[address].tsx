@@ -1,5 +1,11 @@
+import { useAppContext } from 'components/AppContextProvider'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
+import { AavePositionView } from 'features/aave/view/containers/AavePositionView'
 import { earnContext, EarnContextProvider } from 'features/earn/EarnContextProvider'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -8,7 +14,6 @@ import { Grid } from 'theme-ui'
 import { WithConnection } from '../../components/connectWallet/ConnectWallet'
 import { AppLayout } from '../../components/Layouts'
 import { AaveContextProvider } from '../../features/aave/AaveContextProvider'
-import { AaveManagePositionView } from '../../features/aave/manage/containers/AaveManageView'
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
 import { BackgroundLight } from '../../theme/BackgroundLight'
 
@@ -22,6 +27,10 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function Position({ address }: { address: string }) {
+  const { web3Context$, connectedContext$ } = useAppContext()
+  const [web3Context, web3ContextError] = useObservable(web3Context$)
+  const [connectedContext, connectedContextError] = useObservable(connectedContext$)
+
   return (
     <AaveContextProvider>
       <EarnContextProvider>
@@ -30,7 +39,29 @@ function Position({ address }: { address: string }) {
             <WithTermsOfService>
               <Grid gap={0} sx={{ width: '100%' }}>
                 <BackgroundLight />
-                <AaveManagePositionView address={address} />
+                <WithErrorHandler error={[web3ContextError, connectedContextError]}>
+                  <WithLoadingIndicator
+                    value={[
+                      web3Context,
+                      ['connectedReadonly', 'connected'].includes(web3Context?.status || ''),
+                    ]}
+                    customLoader={<VaultContainerSpinner />}
+                  >
+                    {([_web3Context, _]) => {
+                      if (
+                        _web3Context.status === 'connected' &&
+                        connectedContext?.account === address
+                      ) {
+                        return <AaveManagePositionView address={address} />
+                      }
+                      if (['connectedReadonly', 'connected'].includes(_web3Context.status)) {
+                        return <AavePositionView address={address} />
+                      }
+                      // theoretically should never happen (unless web3Context fails)
+                      return <div />
+                    }}
+                  </WithLoadingIndicator>
+                </WithErrorHandler>
               </Grid>
             </WithTermsOfService>
           </WithConnection>
