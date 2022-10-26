@@ -1,11 +1,11 @@
-import BigNumber from "bignumber.js"
-import { Vault } from "blockchain/vaults"
-import { Text } from 'theme-ui';
-import React from 'react';
-import { useTranslation } from "next-i18next"
-import { IlkData } from "blockchain/ilks"
-import { SetDownsideProtectionInformation } from "./SidebarAdjustStopLossEditingStage";
+import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Text } from 'theme-ui'
 
+import { SetDownsideProtectionInformation } from './SidebarAdjustStopLossEditingStage'
 
 interface SidebarStopLossAwaitingConfirmationProps {
   vault: Vault
@@ -24,9 +24,9 @@ export function SidebarStopLossAwaitingConfirmation({
   isCollateralActive,
   executionPrice,
   ethPrice,
-  isOpenFlow
+  isOpenFlow,
 }: SidebarStopLossAwaitingConfirmationProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <>

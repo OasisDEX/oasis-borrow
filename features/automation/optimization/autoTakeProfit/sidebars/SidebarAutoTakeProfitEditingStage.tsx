@@ -30,8 +30,8 @@ import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import { Text } from 'theme-ui';
 import React from 'react'
+import { Text } from 'theme-ui'
 
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
@@ -60,7 +60,7 @@ export function SidebarAutoTakeProfitEditingStage({
   ilkData,
   errors,
   warnings,
-  isAwaitingConfirmation
+  isAwaitingConfirmation,
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -122,7 +122,9 @@ export function SidebarAutoTakeProfitEditingStage({
 
       {isAwaitingConfirmation && (
         <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          You are setting an Auto-Take Profit order to trigger at an ETH price of ${ethMarketPrice.toString()}. Your vault will be closed and your expected profit of $1.8m paid will be paid out in DAI.
+          You are setting an Auto-Take Profit order to trigger at an ETH price of $
+          {ethMarketPrice.toString()}. Your vault will be closed and your expected profit of $1.8m
+          paid will be paid out in DAI.
         </Text>
       )}
 

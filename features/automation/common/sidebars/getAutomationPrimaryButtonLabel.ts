@@ -85,15 +85,15 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationF
   }
 }
 
-function generateAutomationPrimaryButtonLabelTtext ({
+function generateAutomationPrimaryButtonLabelTtext({
   stage,
   flow,
   feature,
-  isAwaitingConfirmation
+  isAwaitingConfirmation,
 }: AutomationSidebarCopiesParams) {
   const { t } = useTranslation()
 
-  if (isAwaitingConfirmation) return t('protection.confirm');
+  if (isAwaitingConfirmation) return t('protection.confirm')
 
   switch (stage) {
     case 'editing':
@@ -118,17 +118,16 @@ function generateAutomationPrimaryButtonLabelTtext ({
   }
 }
 
-
 export function getAutomationPrimaryButtonLabel({
   stage,
   flow,
   feature,
-  isAwaitingConfirmation
+  isAwaitingConfirmation,
 }: AutomationSidebarCopiesParams) {
- return `${generateAutomationPrimaryButtonLabelTtext({
-  stage,
-  flow,
-  feature,
-  isAwaitingConfirmation
- })} ${calculateStepNumber(isAwaitingConfirmation || false, stage)}`
+  return `${generateAutomationPrimaryButtonLabelTtext({
+    stage,
+    flow,
+    feature,
+    isAwaitingConfirmation,
+  })} ${calculateStepNumber(isAwaitingConfirmation || false, stage)}`
 }

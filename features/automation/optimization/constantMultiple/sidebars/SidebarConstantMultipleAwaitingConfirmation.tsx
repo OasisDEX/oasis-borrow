@@ -1,9 +1,9 @@
-import { Text } from 'theme-ui';
-import React from 'react';
-import { useTranslation } from "next-i18next"
-import { ConstantMultipleInfoSectionControl } from "./ConstantMultipleInfoSectionControl";
-import { ConstantMultipleInfoSectionControlProps } from "./SidebarConstantMultipleEditingStage";
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Text } from 'theme-ui'
 
+import { ConstantMultipleInfoSectionControl } from './ConstantMultipleInfoSectionControl'
+import { ConstantMultipleInfoSectionControlProps } from './SidebarConstantMultipleEditingStage'
 
 export function SidebarConstantMultipleAwaitingConfirmation({
   token,
@@ -16,7 +16,7 @@ export function SidebarConstantMultipleAwaitingConfirmation({
   estimatedSellFee,
   constantMultipleState,
 }: ConstantMultipleInfoSectionControlProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <>

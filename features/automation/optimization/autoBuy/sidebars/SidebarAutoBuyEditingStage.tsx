@@ -197,18 +197,18 @@ export function SidebarAutoBuyEditingStage({
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {autoBuyState.maxBuyOrMinSellPrice !== undefined
               ? t('auto-buy.set-trigger-description', {
-                targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-                token: vault.token,
-                execCollRatio: autoBuyState.execCollRatio,
-                executionPrice: executionPrice.toFixed(2),
-                minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
-              })
+                  targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
+                  token: vault.token,
+                  execCollRatio: autoBuyState.execCollRatio,
+                  executionPrice: executionPrice.toFixed(2),
+                  minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
+                })
               : t('auto-buy.set-trigger-description-no-threshold', {
-                targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-                token: vault.token,
-                execCollRatio: autoBuyState.execCollRatio,
-                executionPrice: executionPrice.toFixed(2),
-              })}{' '}
+                  targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
+                  token: vault.token,
+                  execCollRatio: autoBuyState.execCollRatio,
+                  executionPrice: executionPrice.toFixed(2),
+                })}{' '}
             <AppLink
               href="https://kb.oasis.app/help/setting-up-auto-buy-for-your-vault"
               sx={{ fontSize: 2 }}
@@ -273,8 +273,8 @@ export function SidebarAutoBuyEditingStage({
                 maxBuyOrMinSellPrice: !toggleStatus
                   ? undefined
                   : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-                    ? zero
-                    : autoBuyTriggerData.maxBuyOrMinSellPrice,
+                  ? zero
+                  : autoBuyTriggerData.maxBuyOrMinSellPrice,
               })
               uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
                 type: 'is-editing',

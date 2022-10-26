@@ -19,14 +19,14 @@ export type ConstantMultipleChangeAction =
   | { type: 'is-editing'; isEditing: boolean }
   | { type: 'is-awaiting-confirmation'; isAwaitingConfirmation: boolean }
   | {
-    type: 'form-defaults'
-    multipliers: number[]
-    eligibleMultipliers: number[]
-    defaultMultiplier: number
-    defaultCollRatio: BigNumber
-    minTargetRatio: BigNumber
-    maxTargetRatio: BigNumber
-  }
+      type: 'form-defaults'
+      multipliers: number[]
+      eligibleMultipliers: number[]
+      defaultMultiplier: number
+      defaultCollRatio: BigNumber
+      minTargetRatio: BigNumber
+      maxTargetRatio: BigNumber
+    }
   | { type: 'is-reset-action'; isResetAction: boolean }
 
 export type ConstantMultipleFormChange = AutomationFormChange & {

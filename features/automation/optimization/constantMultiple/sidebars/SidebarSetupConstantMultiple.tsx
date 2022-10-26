@@ -17,13 +17,15 @@ import { AutomationFeatures, SidebarAutomationStages } from 'features/automation
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
-import { ConstantMultipleFormChange, CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import {
+  CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleFormChange,
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import {
   errorsConstantMultipleValidation,
   warningsConstantMultipleValidation,
 } from 'features/automation/optimization/constantMultiple/validators'
-import { calculateStepNumber } from 'features/automation/protection/stopLoss/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -32,9 +34,9 @@ import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
 } from 'helpers/messageMappers'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+
 import { SidebarConstantMultipleAwaitingConfirmation } from './SidebarConstantMultipleAwaitingConfirmation'
 
 interface SidebarSetupConstantMultipleProps {
@@ -104,11 +106,10 @@ export function SidebarSetupConstantMultiple({
   debtDeltaWhenSellAtCurrentCollRatio,
   debtDeltaAfterSell,
   vaultType,
-  isAwaitingConfirmation
+  isAwaitingConfirmation,
 }: SidebarSetupConstantMultipleProps) {
   const gasEstimation = useGasEstimationContext()
-  const { uiChanges } = useAppContext();
-  const { t } = useTranslation();
+  const { uiChanges } = useAppContext()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -129,7 +130,7 @@ export function SidebarSetupConstantMultiple({
     flow,
     stage,
     feature,
-    isAwaitingConfirmation
+    isAwaitingConfirmation,
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
@@ -253,21 +254,21 @@ export function SidebarSetupConstantMultiple({
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
-        textButton: {
-          label: textButtonLabel,
-          hidden: isFirstSetup && !isAwaitingConfirmation,
-          action: () => {
-            if (isAwaitingConfirmation) {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'is-awaiting-confirmation',
-                isAwaitingConfirmation: false,
-              })
-            } else {
-              textButtonHandler()
-            }
+          textButton: {
+            label: textButtonLabel,
+            hidden: isFirstSetup && !isAwaitingConfirmation,
+            action: () => {
+              if (isAwaitingConfirmation) {
+                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                  type: 'is-awaiting-confirmation',
+                  isAwaitingConfirmation: false,
+                })
+              } else {
+                textButtonHandler()
+              }
+            },
           },
-        },
-      }),
+        }),
       status: sidebarStatus,
     }
 

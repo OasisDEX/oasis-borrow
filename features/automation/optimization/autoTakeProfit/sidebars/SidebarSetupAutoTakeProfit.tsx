@@ -8,7 +8,6 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { Console } from 'console'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
@@ -31,7 +30,7 @@ import {
   warningsAutoTakeProfitValidation,
 } from 'features/automation/optimization/autoTakeProfit/validators'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { calculateStepNumber, getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount } from 'helpers/formatters/format'
@@ -98,7 +97,7 @@ export function SidebarSetupAutoTakeProfit({
   vault,
   ethBalance,
   vaultType,
-  isAwaitingConfirmation
+  isAwaitingConfirmation,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
@@ -123,7 +122,7 @@ export function SidebarSetupAutoTakeProfit({
     flow,
     stage,
     feature,
-    isAwaitingConfirmation
+    isAwaitingConfirmation,
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
@@ -275,10 +274,10 @@ export function SidebarSetupAutoTakeProfit({
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if(!isAwaitingConfirmation && stage !== 'txSuccess') {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess') {
             uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
-              isAwaitingConfirmation: true
+              isAwaitingConfirmation: true,
             })
           } else {
             txHandler()

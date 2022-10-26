@@ -23,10 +23,7 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
-import {
-  calculateStepNumber,
-  getSliderPercentageFill,
-} from 'features/automation/protection/stopLoss/helpers'
+import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
@@ -52,6 +49,7 @@ import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
+
 import { SidebarStopLossAwaitingConfirmation } from './SidebarStopLossAwaitingConfirmation'
 
 interface SidebarSetupStopLossProps {
@@ -141,9 +139,12 @@ export function SidebarSetupStopLoss({
     flow,
     stage,
     feature,
-    isAwaitingConfirmation: isAwaitingUserConfirmation
+    isAwaitingConfirmation: isAwaitingUserConfirmation,
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation: isAwaitingUserConfirmation })
+  const textButtonLabel = getAutomationTextButtonLabel({
+    isAddForm,
+    isAwaitingConfirmation: isAwaitingUserConfirmation,
+  })
   const sidebarStatus = getAutomationStatusTitle({
     flow,
     txHash: stopLossState.txDetails?.txHash,
@@ -155,10 +156,10 @@ export function SidebarSetupStopLoss({
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
-      ? constantMultipleTriggerData.sellExecutionCollRatio
+    ? constantMultipleTriggerData.sellExecutionCollRatio
         .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
         .div(100)
-      : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
   const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
   const liqRatio = ilkData.liquidationRatio
 
@@ -225,8 +226,10 @@ export function SidebarSetupStopLoss({
         <Grid gap={3}>
           {stopLossWriteEnabled ? (
             <>
-                <>
-                  {isAddForm && !isAwaitingUserConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
+              <>
+                {isAddForm &&
+                  !isAwaitingUserConfirmation &&
+                  ['stopLossEditing', 'txFailure'].includes(stage) && (
                     <SidebarAdjustStopLossEditingStage
                       vault={vault}
                       ilkData={ilkData}
@@ -242,27 +245,27 @@ export function SidebarSetupStopLoss({
                     />
                   )}
 
-                  {isAwaitingUserConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
-                    <SidebarStopLossAwaitingConfirmation
-                      vault={vault}
-                      ilkData={ilkData}
-                      afterStopLossRatio={stopLossState.stopLossLevel}
-                      executionPrice={executionPrice}
-                      ethPrice={ethMarketPrice}
-                      isCollateralActive={closePickerConfig.isCollateralActive}
-                    />
-                  )}
+                {isAwaitingUserConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
+                  <SidebarStopLossAwaitingConfirmation
+                    vault={vault}
+                    ilkData={ilkData}
+                    afterStopLossRatio={stopLossState.stopLossLevel}
+                    executionPrice={executionPrice}
+                    ethPrice={ethMarketPrice}
+                    isCollateralActive={closePickerConfig.isCollateralActive}
+                  />
+                )}
 
-                  {isRemoveForm && (
-                    <SidebarCancelStopLossEditingStage
-                      vault={vault}
-                      ilkData={ilkData}
-                      errors={cancelStopLossErrors}
-                      warnings={cancelStopLossWarnings}
-                      stopLossLevel={stopLossTriggerData.stopLossLevel}
-                    />
-                  )}
-                </>
+                {isRemoveForm && (
+                  <SidebarCancelStopLossEditingStage
+                    vault={vault}
+                    ilkData={ilkData}
+                    errors={cancelStopLossErrors}
+                    warnings={cancelStopLossWarnings}
+                    stopLossLevel={stopLossTriggerData.stopLossLevel}
+                  />
+                )}
+              </>
             </>
           ) : (
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>

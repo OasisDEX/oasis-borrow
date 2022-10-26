@@ -27,7 +27,6 @@ import {
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { AddAutoSellInfoSection } from 'features/automation/protection/autoSell/controls/AddAutoSellInfoSection'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -35,12 +34,11 @@ import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
-import { one } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
-import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
+import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
 interface SidebarAutoSellAddEditingStageProps {
   vault: Vault
@@ -55,7 +53,6 @@ interface SidebarAutoSellAddEditingStageProps {
   sliderMin: BigNumber
   sliderMax: BigNumber
   stopLossTriggerData: StopLossTriggerData
-  isAwaitingConfirmation: boolean
 }
 
 export function SidebarAutoSellAddEditingStage({
@@ -71,7 +68,6 @@ export function SidebarAutoSellAddEditingStage({
   sliderMin,
   sliderMax,
   stopLossTriggerData,
-  isAwaitingConfirmation,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -198,27 +194,24 @@ export function SidebarAutoSellAddEditingStage({
 
   return (
     <>
-
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('auto-sell.confirmation')}
       </Text>
-
-
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {autoSellState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-sell.set-trigger-description', {
-            targetCollRatio: autoSellState.targetCollRatio.toNumber(),
-            token: vault.token,
-            execCollRatio: autoSellState.execCollRatio,
-            executionPrice: executionPrice.toFixed(2),
-            minSellPrice: autoSellState.maxBuyOrMinSellPrice,
-          })
+              targetCollRatio: autoSellState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: autoSellState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+              minSellPrice: autoSellState.maxBuyOrMinSellPrice,
+            })
           : t('auto-sell.set-trigger-description-no-threshold', {
-            targetCollRatio: autoSellState.targetCollRatio.toNumber(),
-            token: vault.token,
-            execCollRatio: autoSellState.execCollRatio,
-            executionPrice: executionPrice.toFixed(2),
-          })}{' '}
+              targetCollRatio: autoSellState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: autoSellState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+            })}{' '}
         <AppLink
           href="https://kb.oasis.app/help/setting-up-auto-sell-for-your-vault"
           sx={{ fontSize: 2 }}
@@ -295,13 +288,10 @@ export function SidebarAutoSellAddEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
-
-
       <>
         <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Sell" />
         <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
       </>
-
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
@@ -319,10 +309,8 @@ export function SidebarAutoSellAddEditingStage({
           additionalParams: { vaultId: vault.id.toString(), ilk: vault.ilk },
         }}
       />
-
       {isEditing && (
         <>
-
           <SidebarResetButton
             clear={() => {
               uiChanges.publish(AUTO_SELL_FORM_CHANGE, {

@@ -27,12 +27,10 @@ import {
 } from 'features/automation/optimization/autoBuy/validators'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { calculateStepNumber } from 'features/automation/protection/stopLoss/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { useTranslation } from 'next-i18next'
 import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
@@ -104,7 +102,6 @@ export function SidebarSetupAutoBuy({
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
   const { uiChanges } = useAppContext()
-  const { t } = useTranslation()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -121,7 +118,12 @@ export function SidebarSetupAutoBuy({
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
   })
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature, isAwaitingConfirmation })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
+    isAwaitingConfirmation,
+  })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,

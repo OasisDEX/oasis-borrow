@@ -48,7 +48,6 @@ export function useAutoBSstateInitialization(
   })
 
   useEffect(() => {
-
     uiChanges.publish(publishKey, {
       type: 'trigger-id',
       triggerId,

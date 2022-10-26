@@ -31,7 +31,6 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { useTranslation } from 'next-i18next'
 import {
   extractCancelAutomationErrors,
   extractCancelAutomationWarnings,
@@ -39,7 +38,6 @@ import {
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { calculateStepNumber } from '../../stopLoss/helpers'
 import { SidebarAutoSellAwaitingConfirmation } from './SidebarAutoSellAwaitingConfirmation'
 
 interface SidebarSetupAutoSellProps {
@@ -104,7 +102,7 @@ export function SidebarSetupAutoSell({
   isAwaitingConfirmation,
 }: SidebarSetupAutoSellProps) {
   const gasEstimation = useGasEstimationContext()
-  const { t } = useTranslation()
+
   const { uiChanges } = useAppContext()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
@@ -122,7 +120,12 @@ export function SidebarSetupAutoSell({
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     vaultType,
   })
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature, isAwaitingConfirmation })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
+    isAwaitingConfirmation,
+  })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
@@ -175,7 +178,7 @@ export function SidebarSetupAutoSell({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && !isAwaitingConfirmation &&(
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoSellAddEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -189,16 +192,15 @@ export function SidebarSetupAutoSell({
                   sliderMin={min}
                   sliderMax={max}
                   stopLossTriggerData={stopLossTriggerData}
-                  isAwaitingConfirmation={isAwaitingConfirmation}
                 />
               )}
               {isAwaitingConfirmation && (
-                <SidebarAutoSellAwaitingConfirmation 
-                  vault={vault} 
-                  autoSellState={autoSellState} 
-                  debtDelta={debtDelta} 
-                  collateralDelta={collateralDelta} 
-                  isAwaitingConfirmation={false}                  
+                <SidebarAutoSellAwaitingConfirmation
+                  vault={vault}
+                  autoSellState={autoSellState}
+                  debtDelta={debtDelta}
+                  collateralDelta={collateralDelta}
+                  isAwaitingConfirmation={false}
                 />
               )}
               {isRemoveForm && (

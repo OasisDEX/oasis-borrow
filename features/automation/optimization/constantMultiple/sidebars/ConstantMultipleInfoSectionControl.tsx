@@ -1,8 +1,9 @@
-import BigNumber from "bignumber.js"
-import { ACCEPTABLE_FEE_DIFF } from "features/automation/common/consts"
-import { zero } from "helpers/zero"
-import { AddConstantMultipleInfoSection } from "../controls/AddConstantMultipleInfoSection"
-import { ConstantMultipleFormChange } from "../state/constantMultipleFormChange"
+import BigNumber from 'bignumber.js'
+import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/consts'
+import { zero } from 'helpers/zero'
+
+import { AddConstantMultipleInfoSection } from '../controls/AddConstantMultipleInfoSection'
+import { ConstantMultipleFormChange } from '../state/constantMultipleFormChange'
 
 interface ConstantMultipleInfoSectionControlProps {
   token: string
