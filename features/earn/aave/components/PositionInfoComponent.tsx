@@ -69,7 +69,7 @@ export const PositionInfoComponent = ({
           <DetailsSectionContentCard
             title={t('net-value')}
             value={formatBigNumber(netValue || zero, 2)}
-            unit={tokens!.collateral}
+            unit={tokens!.debt}
             modal={
               <ManageSectionModal
                 heading={t('net-value')}
@@ -87,17 +87,17 @@ export const PositionInfoComponent = ({
                       <Box>{t('manage-earn-vault.eth-value')}</Box>
                       <Box>{t('manage-earn-vault.collateral-value-in-vault')}</Box>
                       <Box>
-                        {formatAmount(accountData.totalCollateralETH || zero, tokens!.collateral)}{' '}
-                        {tokens!.collateral}
+                        {formatAmount(accountData.totalCollateralETH || zero, tokens!.debt)}{' '}
+                        {tokens!.debt}
                       </Box>
                       <Box>{t('manage-earn-vault.debt-value-in-vault')}</Box>
                       <Box>
-                        {formatAmount(accountData.totalDebtETH || zero, tokens!.collateral)}{' '}
-                        {tokens!.collateral}
+                        {formatAmount(accountData.totalDebtETH || zero, tokens!.debt)}{' '}
+                        {tokens!.debt}
                       </Box>
                       <Box>{t('net-value')}</Box>
                       <Box>
-                        {formatAmount(netValue || zero, tokens!.collateral)} {tokens!.collateral}
+                        {formatAmount(netValue || zero, tokens!.debt)} {tokens!.debt}
                       </Box>
                     </Grid>
                   </>
@@ -152,13 +152,13 @@ export const PositionInfoComponent = ({
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
             title={t('system.total-collateral')}
-            value={`${formatAmount(totalCollateralInStEth, tokens!.debt)} ${tokens!.debt}`}
+            value={`${formatAmount(totalCollateralInStEth, tokens!.collateral)} ${
+              tokens!.collateral
+            }`}
           />
           <DetailsSectionFooterItem
             title={t('manage-earn-vault.position-eth-debt')}
-            value={`${formatAmount(accountData.totalDebtETH, tokens!.collateral)} ${
-              tokens!.collateral
-            }`}
+            value={`${formatAmount(accountData.totalDebtETH, tokens!.debt)} ${tokens!.debt}`}
           />
           <DetailsSectionFooterItem
             title={t('system.variable-annual-fee')}
