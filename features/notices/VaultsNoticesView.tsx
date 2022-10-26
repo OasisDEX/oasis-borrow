@@ -164,7 +164,13 @@ export function VaultOwnershipBanner({
   )
 }
 
-export function PositionOwnershipBanner({ account }: { account: string }) {
+export function PositionOwnershipBanner({
+  account,
+  connectedWalletAddress,
+}: {
+  account: string
+  connectedWalletAddress?: string
+}) {
   const { t } = useTranslation()
   return (
     <VaultNotice
@@ -174,7 +180,18 @@ export function PositionOwnershipBanner({ account }: { account: string }) {
         </StatusFrame>
       }
       header={t('vault-notices.position.header', { address: formatAddress(account) })}
-      subheader={t('vault-notices.position.subheader1')}
+      subheader={
+        !connectedWalletAddress ? (
+          t('vault-notices.position.subheader1')
+        ) : (
+          <Text>
+            {t('vault-notices.position.subheader2')}{' '}
+            <AppLink href={`/owner/${connectedWalletAddress}`} target="_blank">
+              {t('here')}
+            </AppLink>
+          </Text>
+        )
+      }
       color="banner.muted"
       mb={4}
     />

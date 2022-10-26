@@ -1099,7 +1099,8 @@
     },
     "position": {
       "header": "You are viewing {{address}} position",
-      "subheader1": "Please connect your wallet to open, manage or view your positions."
+      "subheader1": "Please connect your wallet to open, manage or view your positions.",
+      "subheader2": "You can view your positions"
     },
     "liquidating": {
       "header1": "Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",

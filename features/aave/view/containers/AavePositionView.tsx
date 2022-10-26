@@ -1,4 +1,5 @@
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { useAppContext } from 'components/AppContextProvider'
 import { TabBar } from 'components/TabBar'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { getAaveStrategy$ } from 'features/aave/featureConfig'
@@ -28,19 +29,21 @@ function AavePositionContainer({
   aaveReserveDataETH,
   aaveProtocolData,
   address,
+  connectedWalletAddress,
 }: {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
   strategyConfig: StrategyConfig
   aaveProtocolData: AaveProtocolData
   address: string
+  connectedWalletAddress?: string
 }) {
   const { t } = useTranslation()
   const Header = strategyConfig.viewComponents.headerView
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsView
   return (
     <Container variant="vaultPageContainer">
-      <PositionOwnershipBanner account={address} />
+      <PositionOwnershipBanner account={address} connectedWalletAddress={connectedWalletAddress} />
       <Header strategyName={strategyConfig.name} noDetails />
       <TabBar
         variant="underline"
@@ -86,8 +89,10 @@ function AavePositionContainer({
 }
 
 export function AavePositionView({ address }: AaveManageViewPositionViewProps) {
+  const { connectedContext$ } = useAppContext()
   const { aaveProtocolData$ } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
+  const [connectedContext] = useObservable(connectedContext$)
   const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveStrategy, aaveStrategyError] = useObservable(getAaveStrategy$(address))
@@ -109,6 +114,7 @@ export function AavePositionView({ address }: AaveManageViewPositionViewProps) {
               aaveReserveDataETH={_aaveReserveDataETH}
               aaveProtocolData={_aaveProtocolData}
               address={address}
+              connectedWalletAddress={connectedContext?.account}
             />
           )
         }}
