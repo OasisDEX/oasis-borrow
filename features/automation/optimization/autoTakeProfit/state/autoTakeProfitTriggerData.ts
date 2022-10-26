@@ -97,7 +97,7 @@ export function prepareAddAutoTakeProfitTriggerData(
   }
 }
 
-function pickTriggerWithLowestExecutionPrice(
+export function pickTriggerWithLowestExecutionPrice(
   autoTakeProfitTriggersData: {
     // TODO is sth like this required here ?
     triggerId: number

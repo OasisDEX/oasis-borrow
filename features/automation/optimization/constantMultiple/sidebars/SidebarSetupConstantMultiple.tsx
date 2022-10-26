@@ -128,8 +128,9 @@ export function SidebarSetupConstantMultiple({
     flow,
     stage,
     feature,
+    isAwaitingConfirmation
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: constantMultipleState.txDetails?.txHash,
@@ -221,12 +222,11 @@ export function SidebarSetupConstantMultiple({
         </Grid>
       ),
       primaryButton: {
-        label: `${isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
-          } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
+        label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (!isAwaitingConfirmation) {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess') {
             uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,
@@ -239,7 +239,7 @@ export function SidebarSetupConstantMultiple({
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
         textButton: {
-          label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+          label: textButtonLabel,
           hidden: isFirstSetup && !isAwaitingConfirmation,
           action: () => {
             if (isAwaitingConfirmation) {

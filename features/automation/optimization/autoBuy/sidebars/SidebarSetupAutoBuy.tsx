@@ -121,8 +121,8 @@ export function SidebarSetupAutoBuy({
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
   })
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature, isAwaitingConfirmation })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoBuyState.txDetails?.txHash,
@@ -210,13 +210,11 @@ export function SidebarSetupAutoBuy({
         </Grid>
       ),
       primaryButton: {
-        label: `${
-          isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
-        } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
+        label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (!isAwaitingConfirmation) {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess') {
             uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,
@@ -228,7 +226,7 @@ export function SidebarSetupAutoBuy({
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+          label: textButtonLabel,
           hidden: isFirstSetup && !isAwaitingConfirmation,
           action: () => {
             if (isAwaitingConfirmation) {

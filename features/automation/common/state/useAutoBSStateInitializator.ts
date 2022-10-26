@@ -48,6 +48,7 @@ export function useAutoBSstateInitialization(
   })
 
   useEffect(() => {
+
     uiChanges.publish(publishKey, {
       type: 'trigger-id',
       triggerId,
@@ -90,6 +91,11 @@ export function useAutoBSstateInitialization(
     uiChanges.publish(publishKey, {
       type: 'is-editing',
       isEditing: false,
+    })
+
+    uiChanges.publish(publishKey, {
+      type: 'is-awaiting-confirmation',
+      isAwaitingConfirmation: false,
     })
   }, [
     triggerId.toNumber(),

@@ -52,6 +52,7 @@ import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
+import { SidebarStopLossAwaitingConfirmation } from './SidebarStopLossAwaitingConfirmation'
 
 interface SidebarSetupStopLossProps {
   vault: Vault
@@ -140,8 +141,9 @@ export function SidebarSetupStopLoss({
     flow,
     stage,
     feature,
+    isAwaitingConfirmation: isAwaitingUserConfirmation
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation: isAwaitingUserConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     flow,
     txHash: stopLossState.txDetails?.txHash,
@@ -149,14 +151,14 @@ export function SidebarSetupStopLoss({
     stage,
     feature,
   })
-  console.log(isAwaitingUserConfirmation, 'isAwaitingUserConfirmation')
+
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
-    ? constantMultipleTriggerData.sellExecutionCollRatio
+      ? constantMultipleTriggerData.sellExecutionCollRatio
         .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
         .div(100)
-    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+      : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
   const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
   const liqRatio = ilkData.liquidationRatio
 
@@ -223,10 +225,8 @@ export function SidebarSetupStopLoss({
         <Grid gap={3}>
           {stopLossWriteEnabled ? (
             <>
-              {(stage === 'stopLossEditing' ||
-                (stage === 'txFailure' && !isAwaitingUserConfirmation)) && (
                 <>
-                  {isAddForm && (
+                  {isAddForm && !isAwaitingUserConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
                     <SidebarAdjustStopLossEditingStage
                       vault={vault}
                       ilkData={ilkData}
@@ -238,10 +238,21 @@ export function SidebarSetupStopLoss({
                       stopLossState={stopLossState}
                       isEditing={isEditing}
                       closePickerConfig={closePickerConfig}
-                      isAwaitingUserConfirmation={isAwaitingUserConfirmation}
                       sliderConfig={sliderConfig}
                     />
                   )}
+
+                  {isAwaitingUserConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
+                    <SidebarStopLossAwaitingConfirmation
+                      vault={vault}
+                      ilkData={ilkData}
+                      afterStopLossRatio={stopLossState.stopLossLevel}
+                      executionPrice={executionPrice}
+                      ethPrice={ethMarketPrice}
+                      isCollateralActive={closePickerConfig.isCollateralActive}
+                    />
+                  )}
+
                   {isRemoveForm && (
                     <SidebarCancelStopLossEditingStage
                       vault={vault}
@@ -252,7 +263,6 @@ export function SidebarSetupStopLoss({
                     />
                   )}
                 </>
-              )}
             </>
           ) : (
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -284,13 +294,12 @@ export function SidebarSetupStopLoss({
         </Grid>
       ),
       primaryButton: {
-        label: `${
-          isAwaitingUserConfirmation ? t('protection.confirm') : primaryButtonLabel
-        } ${calculateStepNumber(isAwaitingUserConfirmation, stage)}`,
+        label: primaryButtonLabel,
         disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (!isAwaitingUserConfirmation) {
+          console.log(stage, 'stage')
+          if (!isAwaitingUserConfirmation && stage !== 'txSuccess') {
             uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,

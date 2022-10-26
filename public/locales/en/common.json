@@ -1244,7 +1244,7 @@
   "protection": {
     "stop-loss": "Stop-Loss",
     "stop-loss-protection": "Stop-Loss Protection",
-    "confirmation-text": "Confirm your stop-loss setup.",
+    "confirmation-text": "Confirm your Stop-Loss setup.",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
@@ -1640,7 +1640,7 @@
   "auto-buy": {
     "title": "Auto-Buy",
     "cancel-summary-title": "Cancel Auto-Buy order summary",
-    "confirmation-text": "Confirm your auto-buy setup.",
+    "confirmation-text": "Confirm your Auto-Buy setup.",
     "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Recurring buy order up to {{amount}}/{{token}}",
     "continual-buy-no-threshold": "Recurring buy order with no max",

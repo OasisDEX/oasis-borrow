@@ -8,6 +8,7 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { Console } from 'console'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
@@ -122,8 +123,9 @@ export function SidebarSetupAutoTakeProfit({
     flow,
     stage,
     feature,
+    isAwaitingConfirmation
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoTakeProfitState.txDetails?.txHash,
@@ -269,13 +271,11 @@ export function SidebarSetupAutoTakeProfit({
         </Grid>
       ),
       primaryButton: {
-        label: `${
-          isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
-        } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
+        label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if(!isAwaitingConfirmation) {
+          if(!isAwaitingConfirmation && stage !== 'txSuccess') {
             uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true
@@ -288,10 +288,10 @@ export function SidebarSetupAutoTakeProfit({
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
           textButton: {
-            label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+            label: textButtonLabel,
             hidden: isFirstSetup && !isAwaitingConfirmation,
             action: () => {
-              if (isAwaitingConfirmation) {
+              if (!isAwaitingConfirmation) {
                 uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
                   type: 'is-awaiting-confirmation',
                   isAwaitingConfirmation: false,

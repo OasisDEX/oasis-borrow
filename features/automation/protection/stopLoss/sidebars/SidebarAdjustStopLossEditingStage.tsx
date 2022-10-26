@@ -133,7 +133,6 @@ export interface SidebarAdjustStopLossEditingStageProps {
   closePickerConfig: PickCloseStateProps
   sliderConfig: SliderValuePickerProps
   isOpenFlow?: boolean
-  isAwaitingUserConfirmation: boolean
 }
 
 export function SidebarAdjustStopLossEditingStage({
@@ -149,7 +148,6 @@ export function SidebarAdjustStopLossEditingStage({
   stopLossState,
   executionPrice,
   isOpenFlow,
-  isAwaitingUserConfirmation,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -180,7 +178,6 @@ export function SidebarAdjustStopLossEditingStage({
 
   return (
     <>
-      {!isAwaitingUserConfirmation && (
         <>
           {!vault.debt.isZero() ? (
             <Grid>
@@ -200,15 +197,10 @@ export function SidebarAdjustStopLossEditingStage({
             />
           )}
         </>
-      )}
-      {isAwaitingUserConfirmation && (
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('protection.confirmation-text')}
-        </Text>
-      )}
+
       {isEditing && (
         <>
-          {!isOpenFlow && !isAwaitingUserConfirmation && (
+          {!isOpenFlow && (
             <SidebarResetButton
               clear={() => {
                 uiChanges.publish(STOP_LOSS_FORM_CHANGE, {

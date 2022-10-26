@@ -40,6 +40,7 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { calculateStepNumber } from '../../stopLoss/helpers'
+import { SidebarAutoSellAwaitingConfirmation } from './SidebarAutoSellAwaitingConfirmation'
 
 interface SidebarSetupAutoSellProps {
   vault: Vault
@@ -121,8 +122,8 @@ export function SidebarSetupAutoSell({
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     vaultType,
   })
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature, isAwaitingConfirmation })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoSellState.txDetails?.txHash,
@@ -174,7 +175,7 @@ export function SidebarSetupAutoSell({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation &&(
                 <SidebarAutoSellAddEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -189,6 +190,15 @@ export function SidebarSetupAutoSell({
                   sliderMax={max}
                   stopLossTriggerData={stopLossTriggerData}
                   isAwaitingConfirmation={isAwaitingConfirmation}
+                />
+              )}
+              {isAwaitingConfirmation && (
+                <SidebarAutoSellAwaitingConfirmation 
+                  vault={vault} 
+                  autoSellState={autoSellState} 
+                  debtDelta={debtDelta} 
+                  collateralDelta={collateralDelta} 
+                  isAwaitingConfirmation={false}                  
                 />
               )}
               {isRemoveForm && (
@@ -213,13 +223,11 @@ export function SidebarSetupAutoSell({
         </Grid>
       ),
       primaryButton: {
-        label: `${
-          isAwaitingConfirmation ? t('protection.confirm') : primaryButtonLabel
-        } ${calculateStepNumber(isAwaitingConfirmation, stage)}`,
+        label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (!isAwaitingConfirmation) {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess') {
             uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,
@@ -235,7 +243,7 @@ export function SidebarSetupAutoSell({
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: isAwaitingConfirmation ? t('protection.edit-order') : textButtonLabel,
+          label: textButtonLabel,
           hidden: isFirstSetup && !isAwaitingConfirmation,
           action: () => {
             if (isAwaitingConfirmation) {

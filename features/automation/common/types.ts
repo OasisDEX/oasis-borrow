@@ -51,6 +51,7 @@ export interface AutomationSidebarCopiesParams {
   stage: SidebarAutomationStages
   flow: SidebarAutomationFlow
   feature: AutomationFeatures
+  isAwaitingConfirmation?: boolean
 }
 
 export interface AutomationSidebarStatusParams {
