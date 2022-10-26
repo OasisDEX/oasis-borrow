@@ -1,10 +1,12 @@
 import { TriggerType } from '@oasisdex/automation'
+import { AutomationEventIds, Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
+import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers'
 import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
@@ -107,7 +109,6 @@ export function AutoSellFormControl({
       isAddForm={isAddForm}
       isEditing={isEditing}
       isRemoveForm={isRemoveForm}
-      proxyAddress={vault.owner}
       publishType={publishType}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
@@ -115,6 +116,24 @@ export function AutoSellFormControl({
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoSellTriggerData.triggerId.toNumber()]}
       txHelpers={txHelpers}
+      vault={vault}
+      analytics={{
+        id: {
+          add: AutomationEventIds.AddAutoSell,
+          edit: AutomationEventIds.EditAutoSell,
+          remove: AutomationEventIds.RemoveAutoSell,
+        },
+        page: Pages.AutoSell,
+        additionalParams: {
+          triggerSellValue: autoSellState.execCollRatio.toString(),
+          targetValue: autoSellState.targetCollRatio.toString(),
+          minSellPrice: resolveMinSellPriceAnalytics({
+            withMinSellPriceThreshold: autoSellState.withThreshold,
+            minSellPrice: autoSellState.maxBuyOrMinSellPrice,
+          }),
+          maxGasFee: autoSellState.maxBaseFeeInGwei.toString(),
+        },
+      }}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoSell

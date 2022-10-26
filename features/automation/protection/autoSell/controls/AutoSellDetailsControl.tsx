@@ -63,6 +63,8 @@ export function AutoSellDetailsControl({
 
   return (
     <AutoSellDetailsLayout
+      ilk={vault.ilk}
+      vaultId={vault.id}
       token={vault.token}
       autoSellTriggerData={autoSellTriggerData}
       isconstantMultipleEnabled={isconstantMultipleEnabled}

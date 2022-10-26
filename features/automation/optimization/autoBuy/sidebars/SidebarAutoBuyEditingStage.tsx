@@ -1,3 +1,4 @@
+import { Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -14,6 +15,8 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import {
   adjustDefaultValuesIfOutsideSlider,
+  automationInputsAnalytics,
+  automationMultipleRangeSliderAnalytics,
   prepareAutoBSResetData,
 } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
@@ -90,6 +93,20 @@ export function SidebarAutoBuyEditingStage({
       publishType: AUTO_BUY_FORM_CHANGE,
     })
   }, [vault.collateralizationRatio.toNumber()])
+
+  automationMultipleRangeSliderAnalytics({
+    leftValue: autoBuyState.targetCollRatio,
+    rightValue: autoBuyState.execCollRatio,
+    vault,
+    type: AutomationFeatures.AUTO_BUY,
+  })
+
+  automationInputsAnalytics({
+    maxBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
+    withMaxBuyPriceThreshold: autoBuyState.withThreshold,
+    vault,
+    type: AutomationFeatures.AUTO_BUY,
+  })
 
   const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
     .times(100)
@@ -180,18 +197,18 @@ export function SidebarAutoBuyEditingStage({
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {autoBuyState.maxBuyOrMinSellPrice !== undefined
               ? t('auto-buy.set-trigger-description', {
-                  targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-                  token: vault.token,
-                  execCollRatio: autoBuyState.execCollRatio,
-                  executionPrice: executionPrice.toFixed(2),
-                  minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
-                })
+                targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
+                token: vault.token,
+                execCollRatio: autoBuyState.execCollRatio,
+                executionPrice: executionPrice.toFixed(2),
+                minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
+              })
               : t('auto-buy.set-trigger-description-no-threshold', {
-                  targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-                  token: vault.token,
-                  execCollRatio: autoBuyState.execCollRatio,
-                  executionPrice: executionPrice.toFixed(2),
-                })}{' '}
+                targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
+                token: vault.token,
+                execCollRatio: autoBuyState.execCollRatio,
+                executionPrice: executionPrice.toFixed(2),
+              })}{' '}
             <AppLink
               href="https://kb.oasis.app/help/setting-up-auto-buy-for-your-vault"
               sx={{ fontSize: 2 }}
@@ -256,8 +273,8 @@ export function SidebarAutoBuyEditingStage({
                 maxBuyOrMinSellPrice: !toggleStatus
                   ? undefined
                   : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-                  ? zero
-                  : autoBuyTriggerData.maxBuyOrMinSellPrice,
+                    ? zero
+                    : autoBuyTriggerData.maxBuyOrMinSellPrice,
               })
               uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
                 type: 'is-editing',
@@ -291,8 +308,13 @@ export function SidebarAutoBuyEditingStage({
             })
           }}
           value={autoBuyState.maxBaseFeeInGwei.toNumber()}
+          analytics={{
+            page: Pages.AutoBuy,
+            additionalParams: { vaultId: vault.id.toString(), ilk: vault.ilk },
+          }}
         />
       )}
+
       {isEditing && (
         <>
           {!isAwaitingConfirmation && (

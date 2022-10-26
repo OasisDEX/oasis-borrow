@@ -3,6 +3,7 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVaultStopLossStage'
+import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpers'
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
@@ -53,6 +54,9 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
     openFlowWithStopLoss,
     isAddStopLossStage,
     skipStopLoss,
+    stopLossLevel,
+    stopLossCloseType,
+    afterCollateralizationRatio,
   } = props
 
   const flow: SidebarFlow = !isStopLossEditingStage ? 'openMultiply' : 'addSl'
@@ -90,6 +94,15 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       action: () => {
         if (!isSuccessStage && !isStopLossSuccessStage) progress!()
         progressTrackingEvent({ props, firstCDP })
+        if (isAddStopLossStage) {
+          openVaultWithStopLossAnalytics({
+            id,
+            ilk,
+            stopLossLevel,
+            stopLossCloseType,
+            afterCollateralizationRatio,
+          })
+        }
       },
       url:
         (isSuccessStage && !openFlowWithStopLoss) || isStopLossSuccessStage ? `/${id}` : undefined,

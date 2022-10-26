@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { HomePageBanner } from 'components/HomePageBanner'
 import { InfoCard } from 'components/InfoCard'
 import { AppLink } from 'components/Links'
 import {
@@ -8,7 +9,6 @@ import {
   EarnProductCardsContainer,
   MultiplyProductCardsContainer,
 } from 'components/productCards/ProductCardsContainer'
-import { ReferralBanner } from 'components/ReferralBanner'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
@@ -174,20 +174,15 @@ export function HomepageView() {
         flex: 1,
       }}
     >
-      {referralsEnabled && (
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            mt: '80px',
-            mb: 0,
-          }}
-        >
-          <ReferralBanner
-            heading={t('ref.banner')}
-            link={userReferral?.user ? `/referrals/${userReferral.user.address}` : '/referrals'}
-          ></ReferralBanner>
-        </Flex>
-      )}
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          mt: '80px',
+          mb: 0,
+        }}
+      >
+        <HomePageBanner heading={t('ref.banner')} link="/earn/aave/open/stETHeth" />
+      </Flex>
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
@@ -234,6 +229,7 @@ export function HomepageView() {
         <TabBar
           variant="large"
           useDropdownOnMobile
+          defaultTab="earn"
           sections={[
             {
               label: t('landing.tabs.multiply.tabLabel'),

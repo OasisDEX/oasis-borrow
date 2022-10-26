@@ -1,7 +1,11 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
+import { getDiscoverMixpanelPage } from 'features/discover/helpers'
+import { DiscoverPages } from 'features/discover/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatPrecision } from 'helpers/formatters/format'
+import { camelCase, upperFirst } from 'lodash'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 
@@ -40,6 +44,14 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
   return mixpanel
 }
 
+export function logMixpanelEventInDevelopmentMode(eventType: string, payload: any) {
+  const env = getConfig()?.publicRuntimeConfig.mixpanelEnv || process.env.MIXPANEL_ENV
+
+  if (env !== 'production' && env !== 'staging') {
+    console.info('Mixpanel Event: ', eventType, payload)
+  }
+}
+
 type MixpanelType = MixpanelDevelopmentType | typeof mixpanelBrowser
 let mixpanel: MixpanelType = mixpanelBrowser
 
@@ -62,6 +74,97 @@ export enum Pages {
   CloseVault = 'CloseVault',
   OpenEarnSTETH = 'OpenEarnSTETH',
   ManageSTETH = 'ManageSTETH',
+  DiscoverOasis = 'DiscoverOasis',
+  DiscoverHighRiskPositions = 'DiscoverHighRiskPositions',
+  DiscoverHighestMultiplyPnl = 'DiscoverHighestMultiplyPnl',
+  DiscoverMostYieldEarned = 'DiscoverMostYieldEarned',
+  DiscoverLargestDebt = 'DiscoverLargestDebt',
+  ProtectionTab = 'ProtectionTab',
+  OptimizationTab = 'OptimizationTab',
+  OpenVault = 'OpenVault',
+  StopLoss = 'StopLoss',
+  AutoBuy = 'AutoBuy',
+  AutoSell = 'AutoSell',
+  ConstantMultiple = 'ConstantMultiple',
+  TakeProfit = 'TakeProfit',
+}
+
+export enum AutomationEventIds {
+  SelectProtection = 'SelectProtection',
+  SelectOptimization = 'SelectOptimization',
+
+  SelectStopLoss = 'SelectStopLoss',
+  SelectAutoSell = 'SelectAutoSell',
+  SelectAutoBuy = 'SelectAutoBuy',
+  SelectConstantMultiple = 'SelectConstantMultiple',
+  SelectTakeProfit = 'SelectTakeProfit',
+
+  AddStopLoss = 'AddStopLoss',
+  EditStopLoss = 'EditStopLoss',
+  RemoveStopLoss = 'RemoveStopLoss',
+
+  AddAutoBuy = 'AddAutoBuy',
+  EditAutoBuy = 'EditAutoBuy',
+  RemoveAutoBuy = 'RemoveAutoBuy',
+
+  AddAutoSell = 'AddAutoSell',
+  EditAutoSell = 'EditAutoSell',
+  RemoveAutoSell = 'RemoveAutoSell',
+
+  AddConstantMultiple = 'AddConstantMultiple',
+  EditConstantMultiple = 'EditConstantMultiple',
+  RemoveConstantMultiple = 'RemoveConstantMultiple',
+
+  AddTakeProfit = 'AddTakeProfit',
+  EditTakeProfit = 'EditTakeProfit',
+  RemoveTakeProfit = 'RemoveAutoTakeProfit',
+
+  CloseToX = 'CloseToX',
+  MoveSlider = 'MoveSlider',
+  MinSellPrice = 'MinSellPrice',
+  MaxBuyPrice = 'MaxBuyPrice',
+  MaxGasFee = 'MaxGasFee',
+  TargetMultiplier = 'TargetMultiplier',
+}
+
+export interface AutomationEventsAdditionalParams {
+  vaultId: string
+  ilk: string
+  collateralRatio?: string
+  triggerValue?: string
+  triggerBuyValue?: string
+  triggerSellValue?: string
+  targetValue?: string
+  minSellPrice?: string
+  maxBuyPrice?: string
+  maxGasFee?: string
+  targetMultiple?: string
+  closeTo?: CloseVaultTo
+}
+
+export enum NotificationsEventIds {
+  OpenNotificationCenter = 'OpenNotificationCenter',
+  ScrollNotificationCenter = 'ScrollNotificationCenter',
+  MarkAsRead = 'MarkAsRead',
+  GoToVault = 'GoToVault',
+  NotificationPreferences = 'NotificationPreferences',
+  VaultActionNotificationSwitch = 'VaultActionNotificationSwitch',
+  VaultInfoNotificationSwitch = 'VaultInfoNotificationSwitch',
+}
+
+export interface NotificationsEventAdditionalParams {
+  walletAddress: string
+  walletType: string
+  browserType: string
+  notificationSwitch?: 'on' | 'off'
+}
+
+export enum CommonAnalyticsSections {
+  HeaderTabs = 'HeaderTabs',
+  Banner = 'Banner',
+  Form = 'Form',
+  NotificationCenter = 'NotificationCenter',
+  NotificationPreferences = 'NotificationPreferences',
 }
 
 export enum EventTypes {
@@ -69,6 +172,7 @@ export enum EventTypes {
   AccountChange = 'account-change',
   InputChange = 'input-change',
   ButtonClick = 'btn-click',
+  OnScroll = 'on-scroll',
 }
 
 // https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -90,6 +194,8 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
   } else {
     win = window
   }
+
+  logMixpanelEventInDevelopmentMode(eventName, eventBody)
 
   const distinctId = mixpanel.get_distinct_id()
   const currentUrl = win.location.href
@@ -117,6 +223,19 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       userId,
     }),
   })
+}
+
+export interface MixpanelUserContext {
+  walletAddres: string
+  walletType: string
+  browserLanguage: string
+}
+export function getMixpanelUserContext(language: string, context?: Context): MixpanelUserContext {
+  return {
+    walletAddres: context?.status === 'connected' ? context.account : 'not-connected',
+    walletType: context?.status === 'connected' ? context.connectionKind : 'not-connected',
+    browserLanguage: language,
+  }
 }
 
 export const trackingEvents = {
@@ -864,6 +983,106 @@ export const trackingEvents = {
         section: 'ClosePosition',
       }
       mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+  },
+
+  discover: {
+    selectedInNavigation: (userContext: MixpanelUserContext) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: Pages.LandingPage,
+        section: 'Header/tabs',
+        id: 'Discover',
+        ...userContext,
+      })
+    },
+    selectedCategory: (kind: DiscoverPages, userContext: MixpanelUserContext) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: Pages.DiscoverOasis,
+        section: 'Categories',
+        id: upperFirst(camelCase(kind)),
+        ...userContext,
+      })
+    },
+    selectedFilter: (
+      kind: DiscoverPages,
+      label: string,
+      value: string,
+      userContext: MixpanelUserContext,
+    ) => {
+      mixpanelInternalAPI(EventTypes.InputChange, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Filters',
+        id: `${upperFirst(camelCase(label))}Filter`,
+        [label]: value,
+        ...userContext,
+      })
+    },
+    clickedTableBanner: (kind: DiscoverPages, link: string, userContext: MixpanelUserContext) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Table',
+        id: 'TableBanner',
+        link,
+        ...userContext,
+      })
+    },
+    viewPosition: (kind: DiscoverPages, vaultId: string | number) => {
+      mixpanelInternalAPI(EventTypes.ButtonClick, {
+        product: Pages.DiscoverOasis,
+        page: getDiscoverMixpanelPage(kind),
+        section: 'Table',
+        id: 'ViewPosition',
+        vaultId,
+      })
+    },
+  },
+  automation: {
+    inputChange: (
+      id: AutomationEventIds,
+      page: string,
+      section: CommonAnalyticsSections.Form,
+      additionalParams: AutomationEventsAdditionalParams,
+    ) => {
+      const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.InputChange, eventBody)
+    },
+    buttonClick: (
+      id: AutomationEventIds,
+      page: string,
+      section: CommonAnalyticsSections,
+      additionalParams: AutomationEventsAdditionalParams,
+    ) => {
+      const eventBody = { id, page, section, product: 'Automation', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
+    },
+  },
+  notifications: {
+    scroll: (
+      id: NotificationsEventIds,
+      section: CommonAnalyticsSections.NotificationCenter,
+      additionalParams: NotificationsEventAdditionalParams,
+    ) => {
+      const eventBody = { id, section, product: 'Notifications', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.OnScroll, eventBody)
+    },
+    buttonClick: (
+      id: NotificationsEventIds,
+      section:
+        | CommonAnalyticsSections.HeaderTabs
+        | CommonAnalyticsSections.NotificationCenter
+        | CommonAnalyticsSections.NotificationPreferences,
+      additionalParams: NotificationsEventAdditionalParams,
+    ) => {
+      const eventBody = { id, section, product: 'Notifications', ...additionalParams }
+
+      !mixpanel.has_opted_out_tracking() && mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
     },
   },
 }

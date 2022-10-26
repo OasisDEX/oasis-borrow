@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { aaveStrategiesList } from 'features/earn/aave/constants'
+import { aaveStrategiesList } from 'features/aave/constants'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -392,8 +392,8 @@ export const productCardsConfig: {
       name: 'Maker/Curve/Lido',
     },
     stETHeth: {
-      link: '#',
-      name: 'Link goes here',
+      link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
+      name: 'AAVE stETH / ETH',
     },
   },
 }

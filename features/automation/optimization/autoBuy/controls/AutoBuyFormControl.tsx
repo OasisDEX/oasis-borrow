@@ -1,10 +1,12 @@
 import { TriggerType } from '@oasisdex/automation'
+import { AutomationEventIds, Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
+import { resolveMaxBuyPriceAnalytics } from 'features/automation/common/helpers'
 import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
@@ -111,7 +113,6 @@ export function AutoBuyFormControl({
       isAddForm={isAddForm}
       isEditing={isEditing}
       isRemoveForm={isRemoveForm}
-      proxyAddress={vault.owner}
       publishType={publishType}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
@@ -119,6 +120,24 @@ export function AutoBuyFormControl({
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoBuyTriggerData.triggerId.toNumber()]}
       txHelpers={txHelpers}
+      vault={vault}
+      analytics={{
+        id: {
+          add: AutomationEventIds.AddAutoBuy,
+          edit: AutomationEventIds.EditAutoBuy,
+          remove: AutomationEventIds.RemoveAutoBuy,
+        },
+        page: Pages.AutoBuy,
+        additionalParams: {
+          triggerBuyValue: autoBuyState.execCollRatio.toString(),
+          targetValue: autoBuyState.targetCollRatio.toString(),
+          maxBuyPrice: resolveMaxBuyPriceAnalytics({
+            withMaxBuyPriceThreshold: autoBuyState.withThreshold,
+            maxBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
+          }),
+          maxGasFee: autoBuyState.maxBaseFeeInGwei.toString(),
+        },
+      }}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoBuy

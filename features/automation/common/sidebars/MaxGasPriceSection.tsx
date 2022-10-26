@@ -1,3 +1,10 @@
+import {
+  AutomationEventIds,
+  AutomationEventsAdditionalParams,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'
 import { maxUint32 } from 'features/automation/common/consts'
@@ -7,14 +14,28 @@ import React, { useCallback } from 'react'
 interface MaxGasPriceSectionProps {
   onChange: (item: number) => void
   value: number
+  analytics: {
+    page: Pages
+    additionalParams: Pick<AutomationEventsAdditionalParams, 'vaultId' | 'ilk'>
+  }
 }
 
-export function MaxGasPriceSection({ onChange, value }: MaxGasPriceSectionProps) {
+export function MaxGasPriceSection({ onChange, value, analytics }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
 
   const handleChange = useCallback(
     (item: number) => {
       onChange(item)
+
+      trackingEvents.automation.buttonClick(
+        AutomationEventIds.MaxGasFee,
+        analytics.page,
+        CommonAnalyticsSections.Form,
+        {
+          ...analytics.additionalParams,
+          maxGasFee: item.toString(),
+        },
+      )
     },
     [onChange],
   )

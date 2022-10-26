@@ -35,6 +35,7 @@ import {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+import { SidebarConstantMultipleAwaitingConfirmation } from './SidebarConstantMultipleAwaitingConfirmation'
 
 interface SidebarSetupConstantMultipleProps {
   autoBuyTriggerData: AutoBSTriggerData
@@ -177,7 +178,7 @@ export function SidebarSetupConstantMultiple({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarConstantMultipleEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -197,9 +198,23 @@ export function SidebarSetupConstantMultiple({
                   estimatedBuyFee={estimatedBuyFee}
                   estimatedSellFee={estimatedSellFee}
                   stopLossTriggerData={stopLossTriggerData}
-                  isAwaitingConfirmation={isAwaitingConfirmation}
                 />
               )}
+
+              {isAwaitingConfirmation && (
+                <SidebarConstantMultipleAwaitingConfirmation
+                  token={vault.token}
+                  nextBuyPrice={nextBuyPrice}
+                  nextSellPrice={nextSellPrice}
+                  collateralToBePurchased={collateralToBePurchased}
+                  collateralToBeSold={collateralToBeSold}
+                  estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+                  estimatedBuyFee={estimatedBuyFee}
+                  estimatedSellFee={estimatedSellFee}
+                  constantMultipleState={constantMultipleState}
+                />
+              )}
+
               {isRemoveForm && (
                 <SidebarConstantMultipleRemovalEditingStage
                   vault={vault}

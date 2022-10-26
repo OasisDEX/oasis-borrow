@@ -1,3 +1,9 @@
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { TabBar } from 'components/TabBar'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
@@ -57,6 +63,11 @@ export function GeneralManageTabBar({
     }
   }, [])
 
+  const analyticsAdditionalParams = {
+    vaultId: vault.id.toString(),
+    ilk: vault.ilk,
+  }
+
   return (
     <TabBar
       variant="underline"
@@ -81,6 +92,14 @@ export function GeneralManageTabBar({
                     vaultType={generalManageVault.type}
                   />
                 ),
+                callback: () => {
+                  trackingEvents.automation.buttonClick(
+                    AutomationEventIds.SelectProtection,
+                    Pages.VaultsOverview,
+                    CommonAnalyticsSections.HeaderTabs,
+                    analyticsAdditionalParams,
+                  )
+                },
               },
             ]
           : []),
@@ -99,6 +118,14 @@ export function GeneralManageTabBar({
                     vaultHistory={vaultHistory}
                   />
                 ),
+                callback: () => {
+                  trackingEvents.automation.buttonClick(
+                    AutomationEventIds.SelectOptimization,
+                    Pages.VaultsOverview,
+                    CommonAnalyticsSections.HeaderTabs,
+                    analyticsAdditionalParams,
+                  )
+                },
               },
             ]
           : []),

@@ -86,6 +86,8 @@ export function ConstantMultipleDetailsControl({
 
   return (
     <ConstantMultipleDetailsLayout
+      vaultId={vault.id}
+      ilk={vault.ilk}
       vaultType={vaultType}
       token={token}
       isTriggerEnabled={isTriggerEnabled}

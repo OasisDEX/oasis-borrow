@@ -1,4 +1,10 @@
 import { getNetworkName } from '@oasisdex/web3-context'
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { useAutomationContext } from 'components/AutomationContextProvider'
@@ -10,11 +16,17 @@ import React from 'react'
 
 interface GetProtectionBannerProps {
   ilk: string
+  vaultId: BigNumber
   debt: BigNumber
   token?: string
 }
 
-export function GetProtectionBannerControl({ token, ilk, debt }: GetProtectionBannerProps) {
+export function GetProtectionBannerControl({
+  vaultId,
+  token,
+  ilk,
+  debt,
+}: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const setHash = useHash()[1]
   const { stopLossTriggerData } = useAutomationContext()
@@ -32,7 +44,15 @@ export function GetProtectionBannerControl({ token, ilk, debt }: GetProtectionBa
           backgroundColorEnd: bannerGradientPresets.stopLoss[1],
         }}
         button={{
-          action: () => setHash(VaultViewMode.Protection),
+          action: () => {
+            trackingEvents.automation.buttonClick(
+              AutomationEventIds.SelectStopLoss,
+              Pages.VaultsOverview,
+              CommonAnalyticsSections.Banner,
+              { vaultId: vaultId.toString(), ilk },
+            )
+            setHash(VaultViewMode.Protection)
+          },
           text: t('vault-banners.get-protection.button'),
         }}
       />

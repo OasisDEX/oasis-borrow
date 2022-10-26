@@ -1,8 +1,10 @@
+import { AutomationEventIds, Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { CloseVaultToEnum } from 'features/automation/common/consts'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
@@ -100,7 +102,6 @@ export function AutoTakeProfitFormControl({
       isAddForm={isAddForm}
       isEditing={isEditing}
       isRemoveForm={isRemoveForm}
-      proxyAddress={vault.owner}
       publishType={AUTO_TAKE_PROFIT_FORM_CHANGE}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
@@ -108,6 +109,21 @@ export function AutoTakeProfitFormControl({
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoTakeProfitTriggerData.triggerId.toNumber()]}
       txHelpers={txHelpers}
+      vault={vault}
+      analytics={{
+        id: {
+          add: AutomationEventIds.AddTakeProfit,
+          edit: AutomationEventIds.EditTakeProfit,
+          remove: AutomationEventIds.RemoveTakeProfit,
+        },
+        page: Pages.TakeProfit,
+        additionalParams: {
+          triggerValue: autoTakeProfitState.executionPrice.toString(),
+          closeTo: autoTakeProfitState.toCollateral
+            ? CloseVaultToEnum.COLLATERAL
+            : CloseVaultToEnum.DAI,
+        },
+      }}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoTakeProfit

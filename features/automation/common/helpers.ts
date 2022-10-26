@@ -1,7 +1,14 @@
 import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
+import {
+  AutomationEventIds,
+  CommonAnalyticsSections,
+  Pages,
+  trackingEvents,
+} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
+import { Vault } from 'blockchain/vaults'
 import { UIChanges } from 'components/AppContext'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -14,10 +21,12 @@ import {
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationKinds } from 'features/automation/common/types'
+import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
+import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 
 export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
@@ -264,4 +273,176 @@ export function getAutomationThatClosedVault({
     : autoTakeProfitTriggered
     ? AutomationKinds.AUTO_TAKE_PROFIT
     : undefined
+}
+
+const analyticsPageMap = {
+  [AutomationFeatures.AUTO_SELL]: Pages.AutoSell,
+  [AutomationFeatures.AUTO_BUY]: Pages.AutoBuy,
+  [AutomationFeatures.CONSTANT_MULTIPLE]: Pages.ConstantMultiple,
+}
+
+export function automationMultipleRangeSliderAnalytics({
+  leftValue,
+  rightValue,
+  vault,
+  type,
+  targetMultiple,
+}: {
+  leftValue: BigNumber
+  rightValue: BigNumber
+  vault: Vault
+  type:
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.CONSTANT_MULTIPLE
+  targetMultiple?: BigNumber
+}) {
+  const analyticsAdditionalParams = {
+    vaultId: vault.id.toString(),
+    ilk: vault.ilk,
+    collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+    ...(targetMultiple && { targetMultiple: targetMultiple.toString() }),
+  }
+
+  const leftValueKeyMap = {
+    [AutomationFeatures.AUTO_SELL]: 'triggerSellValue',
+    [AutomationFeatures.AUTO_BUY]: 'targetValue',
+    [AutomationFeatures.CONSTANT_MULTIPLE]: 'triggerSellValue',
+  }
+
+  const rightValueKeyMap = {
+    [AutomationFeatures.AUTO_SELL]: 'targetValue',
+    [AutomationFeatures.AUTO_BUY]: 'triggerBuyValue',
+    [AutomationFeatures.CONSTANT_MULTIPLE]: 'triggerBuyValue',
+  }
+
+  useDebouncedCallback((value) => {
+    const parsedValues = JSON.parse(value)
+    trackingEvents.automation.inputChange(
+      AutomationEventIds.MoveSlider,
+      analyticsPageMap[type],
+      CommonAnalyticsSections.Form,
+      {
+        ...analyticsAdditionalParams,
+        [leftValueKeyMap[type]]: parsedValues.leftValue,
+        [rightValueKeyMap[type]]: parsedValues.rightValue,
+      },
+    )
+  }, JSON.stringify({ leftValue: leftValue.toString(), rightValue: rightValue.toString() }))
+}
+
+const noThreshold = 'NoThreshold'
+
+export function resolveMinSellPriceAnalytics({
+  withMinSellPriceThreshold,
+  minSellPrice,
+}: {
+  withMinSellPriceThreshold?: boolean
+  minSellPrice?: BigNumber
+}) {
+  return !withMinSellPriceThreshold ? noThreshold : minSellPrice ? minSellPrice.toString() : '0'
+}
+
+export function resolveMaxBuyPriceAnalytics({
+  withMaxBuyPriceThreshold,
+  maxBuyPrice,
+}: {
+  withMaxBuyPriceThreshold?: boolean
+  maxBuyPrice?: BigNumber
+}) {
+  return !withMaxBuyPriceThreshold ? noThreshold : maxBuyPrice ? maxBuyPrice.toString() : '0'
+}
+
+export function automationInputsAnalytics({
+  minSellPrice,
+  withMinSellPriceThreshold,
+  withMaxBuyPriceThreshold,
+  maxBuyPrice,
+  vault,
+  type,
+}: {
+  minSellPrice?: BigNumber
+  withMinSellPriceThreshold?: boolean
+  maxBuyPrice?: BigNumber
+  withMaxBuyPriceThreshold?: boolean
+  vault: Vault
+  type:
+    | AutomationFeatures.AUTO_SELL
+    | AutomationFeatures.AUTO_BUY
+    | AutomationFeatures.CONSTANT_MULTIPLE
+}) {
+  const shouldTrackMinSellInput =
+    type === AutomationFeatures.CONSTANT_MULTIPLE || type === AutomationFeatures.AUTO_SELL
+  const shouldTrackMaxBuyInput =
+    type === AutomationFeatures.CONSTANT_MULTIPLE || type === AutomationFeatures.AUTO_BUY
+
+  const analyticsAdditionalParams = {
+    vaultId: vault.id.toString(),
+    ilk: vault.ilk,
+    collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+  }
+
+  const resolvedMinSellPrice = resolveMinSellPriceAnalytics({
+    withMinSellPriceThreshold,
+    minSellPrice,
+  })
+
+  const resolvedMaxBuyPrice = resolveMaxBuyPriceAnalytics({ withMaxBuyPriceThreshold, maxBuyPrice })
+
+  shouldTrackMinSellInput &&
+    useDebouncedCallback(
+      (value) =>
+        trackingEvents.automation.inputChange(
+          AutomationEventIds.MinSellPrice,
+          analyticsPageMap[type],
+          CommonAnalyticsSections.Form,
+          {
+            ...analyticsAdditionalParams,
+            minSellPrice: value,
+          },
+        ),
+      resolvedMinSellPrice,
+    )
+
+  shouldTrackMaxBuyInput &&
+    useDebouncedCallback(
+      (value) =>
+        trackingEvents.automation.inputChange(
+          AutomationEventIds.MaxBuyPrice,
+          analyticsPageMap[type],
+          CommonAnalyticsSections.Form,
+          {
+            ...analyticsAdditionalParams,
+            maxBuyPrice: value,
+          },
+        ),
+      resolvedMaxBuyPrice,
+    )
+}
+
+export function openVaultWithStopLossAnalytics({
+  id,
+  ilk,
+  stopLossLevel,
+  stopLossCloseType,
+  afterCollateralizationRatio,
+}: {
+  id?: BigNumber
+  ilk: string
+  stopLossLevel: BigNumber
+  stopLossCloseType: CloseVaultTo
+  afterCollateralizationRatio: BigNumber
+}) {
+  trackingEvents.automation.buttonClick(
+    AutomationEventIds.AddStopLoss,
+    Pages.OpenVault,
+    CommonAnalyticsSections.Form,
+    {
+      vaultId: id!.toString(),
+      ilk,
+      triggerValue: stopLossLevel.toString(),
+      closeTo: stopLossCloseType,
+      collateralRatio: afterCollateralizationRatio.times(100).decimalPlaces(2).toString(),
+    },
+  )
 }

@@ -1,3 +1,4 @@
+import { MixpanelUserContext } from 'analytics/analytics'
 import { DiscoverDataResponse } from 'features/discover/api'
 import { DiscoverCards } from 'features/discover/common/DiscoverCards'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
@@ -15,9 +16,16 @@ interface DiscoverDataProps {
   response?: DiscoverDataResponse
   isLoading: boolean
   kind: DiscoverPages
+  userContext: MixpanelUserContext
 }
 
-export function DiscoverData({ banner, response, isLoading, kind }: DiscoverDataProps) {
+export function DiscoverData({
+  banner,
+  isLoading,
+  kind,
+  response,
+  userContext,
+}: DiscoverDataProps) {
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
   return (
@@ -31,6 +39,7 @@ export function DiscoverData({ banner, response, isLoading, kind }: DiscoverData
               isLoading={isLoading}
               kind={kind}
               rows={response.data.rows}
+              userContext={userContext}
             />
           ) : (
             <DiscoverTable
@@ -38,6 +47,7 @@ export function DiscoverData({ banner, response, isLoading, kind }: DiscoverData
               isLoading={isLoading}
               kind={kind}
               rows={response.data.rows}
+              userContext={userContext}
             />
           )}
         </>
