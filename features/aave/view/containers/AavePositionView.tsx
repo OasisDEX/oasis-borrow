@@ -56,8 +56,8 @@ function AavePositionContainer({
                 <Box>
                   <VaultDetails
                     aaveReserveState={aaveReserveState}
-                    aaveReserveDataETH={aaveReserveDataETH}
                     aaveProtocolData={aaveProtocolData}
+                    aaveReserveDataETH={aaveReserveDataETH}
                     strategyConfig={strategyConfig}
                   />
                 </Box>
