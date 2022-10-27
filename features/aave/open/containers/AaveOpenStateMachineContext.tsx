@@ -1,11 +1,29 @@
 import { useInterpret } from '@xstate/react'
-import { env } from 'process'
 import React from 'react'
 
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import { OpenAaveStateMachine } from '../state'
 
-function setupOpenAaveStateContext({ machine }: { machine: OpenAaveStateMachine }) {
-  const stateMachine = useInterpret(machine, { devTools: env.NODE_ENV !== 'production' }).start()
+function setupOpenAaveStateContext({
+  machine,
+  config,
+}: {
+  machine: OpenAaveStateMachine
+  config: StrategyConfig
+}) {
+  const stateMachine = useInterpret(
+    machine.withContext({
+      strategyConfig: config,
+      userInput: {},
+      token: config.tokens.debt,
+      collateralToken: config.tokens.collateral,
+      currentStep: 1,
+      totalSteps: 4,
+      currentPosition: EMPTY_POSITION,
+    }),
+    { devTools: process.env.NODE_ENV !== 'production' },
+  ).start()
   return {
     stateMachine,
   }
@@ -25,7 +43,8 @@ export function useOpenAaveStateMachineContext(): OpenAaveStateMachineContext {
 export function OpenAaveStateMachineContextProvider({
   children,
   machine,
-}: React.PropsWithChildren<{ machine: OpenAaveStateMachine }>) {
-  const context = setupOpenAaveStateContext({ machine })
+  config,
+}: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: StrategyConfig }>) {
+  const context = setupOpenAaveStateContext({ machine, config })
   return <openAaveStateContext.Provider value={context}>{children}</openAaveStateContext.Provider>
 }

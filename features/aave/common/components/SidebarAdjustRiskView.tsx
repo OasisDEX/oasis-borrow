@@ -66,6 +66,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   return function AdjustRiskView({
     state,
     send,
+    isLoading,
     primaryButton,
     textButton,
     viewLocked = false,
@@ -73,7 +74,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
-    const simulation = state.context.transactionParameters?.simulation
+    const simulation = state.context.strategy?.simulation
     const targetPosition = simulation?.position
 
     const maxRisk = targetPosition
@@ -138,7 +139,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
             leftBoundry={liquidationPrice}
             leftBoundryFormatter={(value) => {
-              if (state.context.loading) {
+              if (isLoading()) {
                 return '...'
               } else {
                 return viewConfig.liquidationPriceFormatter(value)
@@ -196,7 +197,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               withBullet={false}
             />
           ) : (
-            state.context.transactionParameters && (
+            state.context.strategy && (
               <MessageCard
                 messages={[
                   isWarning

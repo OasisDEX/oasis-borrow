@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { zeroAddress } from 'ethereumjs-util'
 
 import { AaveLendingPool } from '../../../types/web3-v1-contracts/aave-lending-pool'
 import { amountFromWei } from '../../utils'
@@ -16,7 +17,7 @@ export interface AaveUserAccountData {
 }
 
 export interface AaveUserAccountDataParameters {
-  address: string
+  address: string | undefined
 }
 
 export type AaveUserConfigurationsParameters = {
@@ -29,7 +30,7 @@ export const getAaveUserAccountData: CallDef<AaveUserAccountDataParameters, Aave
     return contract<AaveLendingPool>(aaveLendingPool).methods.getUserAccountData
   },
   prepareArgs: ({ address }) => {
-    return [address]
+    return [address || zeroAddress()]
   },
   postprocess: (result) => {
     return {

@@ -1,4 +1,4 @@
-import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -12,20 +12,31 @@ import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveEvent, ManageAaveStateMachineState, OperationType } from '../state'
+import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
   readonly send: Sender<ManageAaveEvent>
 }
 
+function isLoading(state: ManageAaveStateMachineState) {
+  return state.matches('background.loading')
+}
+
+function isLocked(state: ManageAaveStateMachineState) {
+  return (
+    state.context.proxyAddress === undefined ||
+    state.context.connectedProxyAddress === undefined ||
+    state.context.connectedProxyAddress !== state.context.proxyAddress
+  )
+}
+
 function getAmountGetFromPositionAfterClose(
   strategy: IStrategy | undefined,
-  currentPosition: IPosition,
+  currentPosition: IPosition | undefined,
 ) {
-  if (!strategy) {
+  if (!strategy || !currentPosition) {
     return zero
   }
   const currentDebt = amountToWei(
@@ -42,10 +53,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
   const balance = formatCryptoBalance(
     amountFromWei(
-      getAmountGetFromPositionAfterClose(
-        state.context.transactionParameters,
-        state.context.currentPosition,
-      ),
+      getAmountGetFromPositionAfterClose(state.context.strategy, state.context.currentPosition),
       state.context.token,
     ),
   )
@@ -99,7 +107,7 @@ function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStatePro
     ),
     primaryButton: {
       isLoading: false,
-      disabled: !state.can('START_TRANSACTION'),
+      disabled: !state.can('START_TRANSACTION') || isLocked(state),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
       action: () => send('START_TRANSACTION'),
     },
@@ -127,7 +135,7 @@ function ManageAaveReviewingAdjustingStateView({ state, send }: ManageAaveStateP
     ),
     primaryButton: {
       isLoading: false,
-      disabled: !state.can('START_TRANSACTION'),
+      disabled: !state.can('START_TRANSACTION') || isLocked(state),
       label: t('manage-earn.aave.vault-form.confirm-btn'),
       action: () => send('START_TRANSACTION'),
     },
@@ -213,22 +221,28 @@ function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarManageAaveVault({ config }: { config: StrategyConfig }) {
+export function SidebarManageAaveVault() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
   const { t } = useTranslation()
-  const AdjustRiskView = config.viewComponents.adjustRiskView
+
+  function loading(): boolean {
+    return isLoading(state)
+  }
+
+  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
 
   switch (true) {
-    case state.matches('editing'):
+    case state.matches('frontend.editing'):
       return (
         <AdjustRiskView
           state={state}
           onChainPosition={state.context.protocolData?.position}
+          isLoading={loading}
           send={send}
           primaryButton={{
-            isLoading: state.context.loading,
-            disabled: !state.can('ADJUST_POSITION'),
+            isLoading: loading(),
+            disabled: !state.can('ADJUST_POSITION') || isLocked(state),
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')
@@ -236,27 +250,28 @@ export function SidebarManageAaveVault({ config }: { config: StrategyConfig }) {
           }}
           textButton={{
             isLoading: false,
-            disabled: false,
+            disabled: isLocked(state),
             label: t('manage-earn.aave.vault-form.close'),
             action: () => {
               send('CLOSE_POSITION')
             },
           }}
+          viewLocked={isLocked(state)}
         />
       )
-    case state.matches('reviewingAdjusting'):
+    case state.matches('frontend.reviewingAdjusting'):
       return <ManageAaveReviewingAdjustingStateView state={state} send={send} />
-    case state.matches('reviewingClosing'):
+    case state.matches('frontend.reviewingClosing'):
       return <ManageAaveReviewingClosingStateView state={state} send={send} />
-    case state.matches('txInProgress'):
+    case state.matches('frontend.txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
-    case state.matches('txFailure'):
+    case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
-    case state.matches('txSuccess') &&
-      state.context.operationType === OperationType.ADJUST_POSITION:
-      return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
-    case state.matches('txSuccess') && state.context.operationType === OperationType.CLOSE_POSITION:
+    case state.matches('frontend.txSuccess') &&
+      state.context.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
+    case state.matches('frontend.txSuccess'):
+      return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
     default: {
       return <></>
     }

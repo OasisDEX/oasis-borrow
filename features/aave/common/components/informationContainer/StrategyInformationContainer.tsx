@@ -5,6 +5,7 @@ import React from 'react'
 
 import { VaultChangesInformationContainer } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { FeesInformation } from './FeesInformation'
 import { LtvInformation } from './LtvInformation'
 import { MultiplyInformation } from './MultiplyInformation'
@@ -21,9 +22,9 @@ type OpenAaveInformationContainerProps = {
       collateralPrice?: BigNumber
       tokenPrice?: BigNumber
       estimatedGasPrice?: HasGasEstimation
-      transactionParameters?: IStrategy
-      slippage: BigNumber
-      currentPosition: IPosition
+      strategy?: IStrategy
+      userSettings?: UserSettingsState
+      currentPosition?: IPosition
     }
   }
 }
@@ -31,20 +32,29 @@ type OpenAaveInformationContainerProps = {
 export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { transactionParameters } = state.context
+  const { strategy, currentPosition } = state.context
 
-  return transactionParameters ? (
+  return strategy && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
-      <TransactionTokenAmount {...state.context} transactionParameters={transactionParameters} />
-      <PriceImpact {...state.context} transactionParameters={transactionParameters} />
-      <SlippageInformation {...state.context} />
-      <MultiplyInformation {...state.context} transactionParameters={transactionParameters} />
+      <TransactionTokenAmount {...state.context} transactionParameters={strategy} />
+      <PriceImpact {...state.context} transactionParameters={strategy} />
+      <SlippageInformation {...state.context.userSettings!} />
+      <MultiplyInformation
+        {...state.context}
+        transactionParameters={strategy}
+        currentPosition={currentPosition}
+      />
       <OutstandingDebtInformation
         {...state.context}
-        transactionParameters={transactionParameters}
+        transactionParameters={strategy}
+        currentPosition={currentPosition}
       />
-      <LtvInformation {...state.context} transactionParameters={transactionParameters} />
-      <FeesInformation {...state.context} transactionParameters={transactionParameters} />
+      <LtvInformation
+        {...state.context}
+        transactionParameters={strategy}
+        currentPosition={currentPosition}
+      />
+      <FeesInformation {...state.context} transactionParameters={strategy} />
     </VaultChangesInformationContainer>
   ) : (
     <></>

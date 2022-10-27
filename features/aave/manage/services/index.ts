@@ -1,3 +1,3 @@
 export * from './getManageAavePositionStateMachineServices'
 export * from './getManageAaveStateMachine'
-export * from './getClosePositionParametersStateMachine'
+export * from './getAaveProtocolData'

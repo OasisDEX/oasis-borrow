@@ -1,18 +1,21 @@
 import { Observable } from 'rxjs'
-import { Machine } from 'xstate'
+import { Machine, sendParent } from 'xstate'
 
+import { ContextConnected } from '../../../blockchain/network'
 import { TxHelpers } from '../../../components/AppContext'
-import { HasGasEstimation } from '../../../helpers/form'
+import { allDefined } from '../../../helpers/allDefined'
+import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 import { nameofFactory } from '../../../utils'
 import { actions } from './actions'
 import { services } from './services'
-import { ProxyContext, ProxyEvent } from './types'
+import { ProxyContext, ProxyEvent, ProxyResultEvent } from './types'
 
 const nameOfService = nameofFactory<typeof services>()
 const nameOfAction = nameofFactory<typeof actions>()
 
 export interface ProxyMachineSchema {
   states: {
+    loading: {}
     proxyIdle: {}
     proxyInProgress: {}
     proxySuccess: {}
@@ -21,10 +24,10 @@ export interface ProxyMachineSchema {
 }
 
 export function createProxyStateMachine(
-  txHelper: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>,
-  safeConfirmations: number,
+  context$: Observable<ContextConnected>,
 ) {
   return Machine<ProxyContext, ProxyMachineSchema, ProxyEvent>(
     {
@@ -32,14 +35,33 @@ export function createProxyStateMachine(
       id: 'proxy',
       context: {
         dependencies: {
-          txHelper,
+          txHelpers$,
           proxyAddress$,
           getGasEstimation$,
-          safeConfirmations,
+          context$,
+        },
+        gasData: {
+          gasEstimationStatus: GasEstimationStatus.calculating,
         },
       },
-      initial: 'proxyIdle',
+      invoke: [
+        {
+          src: nameOfService('context$'),
+          id: nameOfService('context$'),
+        },
+        {
+          src: nameOfService('txHelpers$'),
+          id: nameOfService('txHelpers$'),
+        },
+      ],
+      initial: 'loading',
       states: {
+        loading: {
+          always: {
+            cond: 'hasContextAndTxHelper',
+            target: 'proxyIdle',
+          },
+        },
         proxyIdle: {
           invoke: {
             src: nameOfService('estimateGas'),
@@ -77,7 +99,7 @@ export function createProxyStateMachine(
           },
         },
         proxySuccess: {
-          entry: ['raiseSuccess'],
+          entry: ['sendProxyCreatedEvent'],
           type: 'final',
           data: {
             proxyAddress: (context: ProxyContext) => context.proxyAddress!,
@@ -91,12 +113,28 @@ export function createProxyStateMachine(
           },
         },
       },
+      on: {
+        CONNECTED_CONTEXT_CHANGED: {
+          actions: [nameOfAction('assignContextConnected')],
+        },
+        TX_HELPERS_CHANGED: {
+          actions: [nameOfAction('assignTxHelper')],
+        },
+      },
     },
     {
+      guards: {
+        hasContextAndTxHelper: (context: ProxyContext) =>
+          allDefined(context.txHelpers, context.contextConnected),
+      },
       actions: {
         ...actions,
-        // to override in parent machine
-        raiseSuccess: (_) => {},
+        sendProxyCreatedEvent: sendParent(
+          (context: ProxyContext): ProxyResultEvent => ({
+            type: 'PROXY_CREATED',
+            connectedProxyAddress: context.proxyAddress!,
+          }),
+        ),
       },
       services: {
         ...services,

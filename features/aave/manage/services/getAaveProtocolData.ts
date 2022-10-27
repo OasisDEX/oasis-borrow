@@ -1,4 +1,4 @@
-import { Position } from '@oasisdex/oasis-actions'
+import { IPosition, Position } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import {
   AaveConfigurationData,
@@ -14,7 +14,14 @@ import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 
-import { AaveProtocolData } from '../state'
+export interface AaveProtocolData {
+  positionData: AaveUserReserveData
+  accountData: AaveUserAccountData
+  oraclePrice: BigNumber
+  position: IPosition
+  aaveUserConfiguration: AaveConfigurationData
+  aaveReservesList: AaveConfigurationData
+}
 
 export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
 

@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -35,7 +34,6 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
         })}
         currencyCode={state.context.token!}
         disabled={false}
-        tokenUsdPrice={new BigNumber(10)}
       />
     </Grid>
   )
