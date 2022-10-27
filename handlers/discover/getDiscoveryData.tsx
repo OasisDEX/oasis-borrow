@@ -19,10 +19,10 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
 
   try {
     switch (table) {
-      case DiscoverPages.HIGH_RISK_POSITIONS:
+      case DiscoverPages.HIGHEST_RISK_POSITIONS:
         return {
           rows: (
-            await prisma.highRisk.findMany({
+            await prisma.highestRiskPositions.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
                 collateral_type: getAssetFilter(asset),
@@ -43,7 +43,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
 
         return {
           rows: (
-            await prisma.highestPnl.findMany({
+            await prisma.highestMultiplyPnl.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
                 collateral_type: getAssetFilter(asset),
@@ -67,7 +67,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
 
         return {
           rows: (
-            await prisma.mostYield.findMany({
+            await prisma.mostYieldEarned.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
                 collateral_type: getAssetFilter(asset),

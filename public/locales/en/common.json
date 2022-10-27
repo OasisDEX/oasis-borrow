@@ -146,7 +146,7 @@
     "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
     "intro-link": "Learn more about Discover",
     "navigation": {
-      "high-risk-positions": "High-Risk Positions",
+      "highest-risk-positions": "Highest-Risk Positions",
       "highest-multiply-pnl": "Highest Multiply P&L",
       "most-yield-earned": "Most Yield Earned",
       "largest-debt": "Largest Debt"
@@ -192,7 +192,7 @@
         "6": "Deposided {{timeAgo}}"
       },
       "banner": {
-        "high-risk-positions": {
+        "highest-risk-positions": {
           "title": "Mutiply your crypto assets with Stop-Loss Vault Protection",
           "description": "All Multiply Vaults on Oasis.app allow you to protect yourself from liquidation with automated Stop-Loss Protection.",
           "cta": "Get started with Multiply"
