@@ -43,7 +43,7 @@ export function AavePositionHeader({
     async function fetchYields() {
       return await aaveSthEthYieldsQuery(aaveStETHMinimumRiskRatio, ['7Days'])
     }
-    fetchYields().then(setMinYields)
+    void fetchYields().then(setMinYields)
   }, [])
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function AavePositionHeader({
         '90DaysOffset',
       ])
     }
-    fetchYields().then(setMaxYields)
+    void fetchYields().then(setMaxYields)
   }, [maxRisk?.toString()])
 
   const headlineDetails = []
