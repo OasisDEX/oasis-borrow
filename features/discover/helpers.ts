@@ -6,8 +6,8 @@ export const DISCOVER_URL = '/discover'
 
 export function getDiscoverMixpanelPage(kind: DiscoverPages): Pages {
   switch (kind) {
-    case DiscoverPages.HIGH_RISK_POSITIONS:
-      return Pages.DiscoverHighRiskPositions
+    case DiscoverPages.HIGHEST_RISK_POSITIONS:
+      return Pages.DiscoverHighestRiskPositions
     case DiscoverPages.HIGHEST_MULTIPLY_PNL:
       return Pages.DiscoverHighestMultiplyPnl
     case DiscoverPages.MOST_YIELD_EARNED:

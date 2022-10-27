@@ -75,7 +75,7 @@ export enum Pages {
   OpenEarnSTETH = 'OpenEarnSTETH',
   ManageSTETH = 'ManageSTETH',
   DiscoverOasis = 'DiscoverOasis',
-  DiscoverHighRiskPositions = 'DiscoverHighRiskPositions',
+  DiscoverHighestRiskPositions = 'DiscoverHighestRiskPositions',
   DiscoverHighestMultiplyPnl = 'DiscoverHighestMultiplyPnl',
   DiscoverMostYieldEarned = 'DiscoverMostYieldEarned',
   DiscoverLargestDebt = 'DiscoverLargestDebt',
