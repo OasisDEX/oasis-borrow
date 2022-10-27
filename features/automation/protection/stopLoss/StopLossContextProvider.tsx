@@ -35,10 +35,12 @@ export function StopLossContextProvider({
   const [, send] = useActor(stateMachine)
 
   // PUSH DEPENDENCIES TO MACHINE
+  // MOST LIKELY SHOULD BE CONVERTED TO ACTORS AND SPAWN IN STOP LOSS MACHINE WITH THEIR CONTEXT
   useEffect(() => {
     send({ type: 'loadAutomationData', data: automationContext })
     send({ type: 'loadCommonData', data: { debt: commonData.debt } })
   }, [automationContext, commonData.debt.toString()])
 
+  // GIVEN EXAMPLE DOES NOT INCLUDE HANDLING FOR DEFAULT FORM STATE WHEN TRIGGER IS NOT CREATED YET
   return <stopLossContext.Provider value={{ stateMachine }}>{children}</stopLossContext.Provider>
 }
