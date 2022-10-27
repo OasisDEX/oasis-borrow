@@ -180,8 +180,7 @@
         "1": "Liquidated {{timeAgo}}",
         "2": "Being liquidated",
         "3": "{{tillLiquidation}}% till liquidation",
-        "4": "{{toStopLoss}}% to Stop-loss",
-        "5": "Closed {{closedDaysAgo}} days ago"
+        "4": "{{toStopLoss}}% to Stop-loss"
       },
       "activity": {
         "1": "Withdrawn {{timeAgo}}",
