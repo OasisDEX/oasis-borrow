@@ -28,15 +28,7 @@ export function DiscoverTable({
         position: 'relative',
         px: ['24px', null, null, 4],
         pb: 1,
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: '51px',
-          left: 0,
-          right: 0,
-          height: '1px',
-          backgroundColor: 'neutral20',
-        },
+        mt: '-20px',
       }}
     >
       <Box
@@ -46,17 +38,38 @@ export function DiscoverTable({
           borderSpacing: '0 20px',
         }}
       >
-        <Box as="thead">
-          <tr>
+        <Box
+          as="thead"
+          sx={{
+            position: 'sticky',
+            zIndex: 1,
+            top: '120px',
+            '&::before, &::after': {
+              content: '""',
+              position: 'absolute',
+              left: -4,
+              right: -4,
+              bottom: 0,
+            },
+            '&::before': {
+              top: 0,
+              backgroundColor: 'neutral10',
+            },
+            '&::after': {
+              height: '1px',
+              backgroundColor: 'neutral20',
+            },
+          }}
+        >
+          <Box as="tr" sx={{ position: 'relative', zIndex: 2 }}>
             {Object.keys(rows[0]).map((label, i) => (
               <DiscoverTableHeaderCell key={getRowKey(i, rows[0])} label={label} />
             ))}
-          </tr>
+          </Box>
         </Box>
         <Box
           as="tbody"
           sx={{
-            borderSpacing: '12px 0',
             opacity: isLoading ? 0.5 : 1,
             pointerEvents: isLoading ? 'none' : 'auto',
             transition: '200ms opacity',
@@ -88,7 +101,6 @@ export function DiscoverTableHeaderCell({ label }: { label: string }) {
       as="th"
       sx={{
         px: '12px',
-        pb: '20px',
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',

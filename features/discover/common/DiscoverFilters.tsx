@@ -11,7 +11,19 @@ export function DiscoverFilters({
   onChange: (key: string, currentValue: DiscoverFiltersListItem) => void
 }) {
   return (
-    <Box sx={{ p: ['24px', null, null, 4] }}>
+    <Box
+      sx={{
+        position: 'sticky',
+        top: 0,
+        p: ['24px', null, null, 4],
+        backgroundColor: 'neutral10',
+        borderBottom: '1px solid',
+        borderBottomColor: 'neutral20',
+        borderTopLeftRadius: 'large',
+        borderTopRightRadius: 'large',
+        zIndex: 2,
+      }}
+    >
       <Grid
         gap="12px"
         sx={{

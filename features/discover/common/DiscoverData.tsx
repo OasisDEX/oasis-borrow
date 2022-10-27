@@ -29,7 +29,7 @@ export function DiscoverData({
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
   return (
-    <Box sx={{ position: 'relative', borderTop: '1px solid', borderTopColor: 'neutral20' }}>
+    <Box sx={{ position: 'relative' }}>
       {response?.rows ? (
         <>
           {isLoading && <DiscoverPreloader isContentLoaded={true} />}
