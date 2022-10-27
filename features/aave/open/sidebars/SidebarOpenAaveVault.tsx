@@ -1,5 +1,7 @@
 import { useActor } from '@xstate/react'
+import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -26,6 +28,7 @@ export interface OpenAaveVaultProps {
 interface OpenAaveStateProps {
   readonly state: OpenAaveStateMachineState
   readonly send: Sender<OpenAaveEvent>
+  redirectAddress?: string
 }
 
 function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
@@ -145,7 +148,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
+function OpenAaveSuccessStateView({ state, redirectAddress }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -162,7 +165,7 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
     ),
     primaryButton: {
       label: t('open-earn.aave.vault-form.go-to-position'),
-      url: `/aave/${state.context.proxyAddress}`,
+      url: `/aave/${redirectAddress}`,
     },
   }
 
@@ -170,8 +173,10 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
 }
 
 export function SidebarOpenAaveVault() {
+  const { connectedContext$ } = useAppContext()
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
+  const [connectedContext] = useObservable(connectedContext$)
   const { t } = useTranslation()
   const { hasOtherAssetsThanETH_STETH } = state.context
 
@@ -207,7 +212,13 @@ export function SidebarOpenAaveVault() {
     case state.matches('txFailure'):
       return <OpenAaveFailureStateView state={state} send={send} />
     case state.matches('txSuccess'):
-      return <OpenAaveSuccessStateView state={state} send={send} />
+      return (
+        <OpenAaveSuccessStateView
+          state={state}
+          send={send}
+          redirectAddress={connectedContext?.account}
+        />
+      )
     default: {
       return <></>
     }

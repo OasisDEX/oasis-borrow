@@ -1,27 +1,9 @@
-import { IStrategy, Position } from '@oasisdex/oasis-actions'
+import { IStrategy } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
-import { isEqual } from 'lodash'
 import { combineLatest, from, Observable, of } from 'rxjs'
-import {
-  distinctUntilChanged,
-  filter,
-  first,
-  flatMap,
-  map,
-  startWith,
-  switchMap,
-} from 'rxjs/operators'
+import { filter, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 
-import {
-  AaveConfigurationData,
-  AaveUserAccountData,
-  AaveUserAccountDataParameters,
-} from '../../../../blockchain/calls/aave/aaveLendingPool'
-import {
-  AaveReserveConfigurationData,
-  AaveUserReserveData,
-  AaveUserReserveDataParameters,
-} from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { callOperationExecutor } from '../../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../blockchain/network'
@@ -30,7 +12,7 @@ import { TxHelpers } from '../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../helpers/form'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { getAdjustAaveParameters } from '../../oasisActionsLibWrapper'
-import { ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
+import { AaveProtocolData, ManageAaveEvent, ManageAaveStateMachineServices } from '../state'
 
 export function getManageAavePositionStateMachineServices$(
   context$: Observable<ContextConnected>,
@@ -39,65 +21,14 @@ export function getManageAavePositionStateMachineServices$(
   userSettings$: Observable<UserSettingsState>,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
-  aaveUserReserveData$: (args: AaveUserReserveDataParameters) => Observable<AaveUserReserveData>,
-  aaveUserAccountData$: (args: AaveUserAccountDataParameters) => Observable<AaveUserAccountData>,
   aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
   aaveReserveConfigurationData$: ({
     token,
   }: {
     token: string
   }) => Observable<AaveReserveConfigurationData>,
-  aaveOraclePrice$: ({ token }: { token: string }) => Observable<BigNumber>,
-  aaveUserConfiguration$: ({
-    proxyAddress,
-  }: {
-    proxyAddress: string
-  }) => Observable<AaveConfigurationData>,
-  aaveReservesList$: () => Observable<AaveConfigurationData>,
+  aaveProtocolData$: (token: string, proxyAddress: string) => Observable<AaveProtocolData>,
 ): Observable<ManageAaveStateMachineServices> {
-  function aaveProtocolData(token: string, proxyAddress: string) {
-    return combineLatest(
-      aaveUserReserveData$({ token, proxyAddress }),
-      aaveUserAccountData$({ proxyAddress }),
-      aaveOraclePrice$({ token }),
-      aaveReserveConfigurationData$({ token }),
-      aaveUserConfiguration$({ proxyAddress }),
-      aaveReservesList$(),
-    ).pipe(
-      map(
-        ([
-          reserveData,
-          accountData,
-          oraclePrice,
-          reserveConfigurationData,
-          aaveUserConfiguration,
-          aaveReservesList,
-        ]) => {
-          const pos = new Position(
-            { amount: new BigNumber(accountData.totalDebtETH.toString()) },
-            { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
-            oraclePrice,
-            {
-              dustLimit: new BigNumber(0),
-              maxLoanToValue: reserveConfigurationData.ltv,
-              liquidationThreshold: reserveConfigurationData.liquidationThreshold,
-            },
-          )
-
-          return {
-            positionData: reserveData,
-            accountData: accountData,
-            oraclePrice: oraclePrice,
-            position: pos,
-            aaveUserConfiguration,
-            aaveReservesList,
-          }
-        },
-      ),
-      distinctUntilChanged(isEqual),
-    )
-  }
-
   return combineLatest(context$, userSettings$, txHelpers$).pipe(
     map(([contextConnected, userSettings, txHelpers]) => {
       return {
@@ -192,7 +123,7 @@ export function getManageAavePositionStateMachineServices$(
         aaveProtocolDataObservable: (context) => {
           return proxyAddress$.pipe(
             filter((proxyAddress) => proxyAddress !== undefined),
-            switchMap((proxyAddress) => aaveProtocolData(context.collateralToken, proxyAddress!)),
+            switchMap((proxyAddress) => aaveProtocolData$(context.collateralToken, proxyAddress!)),
             map((data) => ({ type: 'AAVE_POSITION_DATA_RECEIVED', data })),
           )
         },

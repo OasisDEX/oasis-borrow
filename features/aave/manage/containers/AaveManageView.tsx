@@ -1,6 +1,7 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { TabBar } from 'components/TabBar'
+import { getAaveStrategy$ } from 'features/aave/featureConfig'
 import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
@@ -40,7 +41,7 @@ function AaveManageContainer({
 }) {
   const { t } = useTranslation()
   const Header = strategyConfig.viewComponents.headerManage
-  const VaultDetails = strategyConfig.viewComponents.vaultDetails
+  const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   return (
     <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
       <Container variant="vaultPageContainer">
@@ -58,6 +59,7 @@ function AaveManageContainer({
                     <VaultDetails
                       aaveReserveState={aaveReserveState}
                       aaveReserveDataETH={aaveReserveDataETH}
+                      strategyConfig={strategyConfig}
                     />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>

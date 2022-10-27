@@ -1,42 +1,31 @@
-import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
-import { AppSpinner } from 'helpers/AppSpinner'
+import { AaveProtocolData } from 'features/aave/manage/state'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import React from 'react'
 
 import { PreparedAaveReserveData } from '../../../aave/helpers/aavePrepareReserveData'
-import { useManageAaveStateMachineContext } from '../../../aave/manage/containers/AaveManageStateMachineContext'
 import { PositionInfoComponent } from './PositionInfoComponent'
 
-export type ManageSectionComponentProps = {
+export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
+  aaveProtocolData?: AaveProtocolData
   strategyConfig?: StrategyConfig
 }
 
-export function ManageSectionComponent({
-  aaveReserveState,
+export function ViewPositionSectionComponent({
   aaveReserveDataETH,
+  aaveProtocolData,
   strategyConfig,
-}: ManageSectionComponentProps) {
-  const { stateMachine } = useManageAaveStateMachineContext()
-  const [state] = useActor(stateMachine)
-  const {
-    accountData,
-    oraclePrice, // STETH price data
-    position,
-  } = state.context.protocolData || {}
+}: ViewPositionSectionComponentProps) {
+  const { accountData, oraclePrice, position } = aaveProtocolData!
 
   const simulations = useSimulationYields({
     amount: accountData?.totalCollateralETH,
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
   })
-
-  if (!accountData?.totalDebtETH || !aaveReserveState?.liquidationThreshold || !oraclePrice) {
-    return <AppSpinner />
-  }
 
   return (
     <PositionInfoComponent

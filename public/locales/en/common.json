@@ -180,12 +180,12 @@
         "5": "Closed {{closedDaysAgo}} days ago"
       },
       "activity": {
-        "1": "Withdrawn {{daysAgo}} days ago",
-        "2": "Increased risk {{daysAgo}} days ago",
-        "3": "Decreased risk {{daysAgo}} days ago",
-        "4": "Closed {{daysAgo}} days ago",
-        "5": "Opened {{daysAgo}} days ago",
-        "6": "Deposided {{daysAgo}} days ago"
+        "1": "Withdrawn {{timeAgo}}",
+        "2": "Increased risk {{timeAgo}}",
+        "3": "Decreased risk {{timeAgo}}",
+        "4": "Closed {{timeAgo}}",
+        "5": "Opened {{timeAgo}}",
+        "6": "Deposided {{timeAgo}}"
       },
       "banner": {
         "high-risk-positions": {
@@ -1096,6 +1096,11 @@
       "header": "You are viewing {{address}} Vault",
       "subheader1": "Please connect your wallet to open, manage or view your Vaults.",
       "subheader2": "You can view your vaults"
+    },
+    "position": {
+      "header": "You are viewing {{address}} position",
+      "subheader1": "Please connect your wallet to open, manage or view your positions.",
+      "subheader2": "You can view your positions"
     },
     "liquidating": {
       "header1": "Your {{ collateral }} Maker Vault {{ id }} is about to get liquidated.",

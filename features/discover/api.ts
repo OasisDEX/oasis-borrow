@@ -1,4 +1,8 @@
-import { DiscoverFiltersSettings, DiscoverTableRowData } from 'features/discover/types'
+import {
+  DiscoverApiErrors,
+  DiscoverFiltersSettings,
+  DiscoverTableRowData,
+} from 'features/discover/types'
 import { useObservable } from 'helpers/observableHook'
 import { stringify } from 'querystring'
 import { of } from 'ramda'
@@ -11,7 +15,10 @@ export interface DiscoverDataResponse {
   data?: {
     rows: DiscoverTableRowData[]
   }
-  error?: boolean
+  error?: {
+    code: DiscoverApiErrors
+    reason?: string
+  }
 }
 
 function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverDataResponse> {
@@ -20,7 +27,7 @@ function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverD
     method: 'GET',
   }).pipe(
     map(({ response }) => ({ data: response })),
-    catchError(() => of({ error: true })),
+    catchError(() => of({ error: { code: DiscoverApiErrors.UNKNOWN_ERROR } })),
   )
 }
 
