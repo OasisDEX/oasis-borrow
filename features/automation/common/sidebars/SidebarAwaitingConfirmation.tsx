@@ -1,17 +1,17 @@
-import { useTranslation } from 'next-i18next';
-import React from 'react';
-import { Text } from 'theme-ui';
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Text } from 'theme-ui'
 
 interface SidebarAwaitingConfirmationProps {
-  feature: string | JSX.Element;
-  children: JSX.Element;
+  feature: string | JSX.Element
+  children: JSX.Element
 }
 
 export function SidebarAwaitingConfirmation({
   feature,
-  children
+  children,
 }: SidebarAwaitingConfirmationProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <>
@@ -20,9 +20,7 @@ export function SidebarAwaitingConfirmation({
           {t('automation.confirmation-text', { feature })}
         </Text>
       ) : (
-        <>
-          {feature}
-        </>
+        <>{feature}</>
       )}
       {children}
     </>

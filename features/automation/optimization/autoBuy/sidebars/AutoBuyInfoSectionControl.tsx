@@ -1,9 +1,9 @@
-import BigNumber from "bignumber.js"
-import { Vault } from "blockchain/vaults"
-import { AutoBSFormChange } from "features/automation/common/state/autoBSFormChange"
-import { one } from "helpers/zero"
+import BigNumber from 'bignumber.js'
+import { Vault } from 'blockchain/vaults'
+import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { one } from 'helpers/zero'
 
-import { AddAutoBuyInfoSection } from "../controls/AddAutoBuyInfoSection"
+import { AddAutoBuyInfoSection } from '../controls/AddAutoBuyInfoSection'
 
 interface AutoBuyInfoSectionControlProps {
   executionPrice: BigNumber

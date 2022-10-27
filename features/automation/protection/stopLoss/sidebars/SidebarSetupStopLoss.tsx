@@ -25,7 +25,10 @@ import { AutomationFeatures, SidebarAutomationStages } from 'features/automation
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
-import { SetDownsideProtectionInformation, SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import {
+  SetDownsideProtectionInformation,
+  SidebarAdjustStopLossEditingStage,
+} from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import {
@@ -155,10 +158,10 @@ export function SidebarSetupStopLoss({
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
-      ? constantMultipleTriggerData.sellExecutionCollRatio
+    ? constantMultipleTriggerData.sellExecutionCollRatio
         .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
         .div(100)
-      : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
   const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
   const liqRatio = ilkData.liquidationRatio
 
@@ -246,7 +249,7 @@ export function SidebarSetupStopLoss({
 
                 {isAwaitingConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
                   <SidebarAwaitingConfirmation
-                    feature='Auto-Sell'
+                    feature="Auto-Sell"
                     children={
                       <SetDownsideProtectionInformation
                         vault={vault}

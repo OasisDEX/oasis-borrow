@@ -1,7 +1,7 @@
-import BigNumber from "bignumber.js"
-import { getOnCloseEstimations } from "features/automation/common/estimations/onCloseEstimations"
+import BigNumber from 'bignumber.js'
+import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 
-import { AddAutoTakeProfitInfoSection } from "./AddAutoTakeProfitInfoSection"
+import { AddAutoTakeProfitInfoSection } from './AddAutoTakeProfitInfoSection'
 
 interface AutoTakeProfitInfoSectionControlProps {
   debt: BigNumber

@@ -254,7 +254,10 @@ export function SidebarSetupAutoTakeProfit({
                 <SidebarAwaitingConfirmation
                   feature={
                     <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-                      {t('automation.auto-take-profit-confirmation-text', { price: ethMarketPrice.toString(), profit: estimatedProfitOnClose.toFixed(2).toString() })}
+                      {t('automation.auto-take-profit-confirmation-text', {
+                        price: ethMarketPrice.toString(),
+                        profit: estimatedProfitOnClose.toFixed(2).toString(),
+                      })}
                     </Text>
                   }
                   children={
@@ -310,21 +313,21 @@ export function SidebarSetupAutoTakeProfit({
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
-        textButton: {
-          label: textButtonLabel,
-          hidden: isFirstSetup && !isAwaitingConfirmation,
-          action: () => {
-            if (isAwaitingConfirmation) {
-              uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-                type: 'is-awaiting-confirmation',
-                isAwaitingConfirmation: false,
-              })
-            } else {
-              textButtonHandler()
-            }
+          textButton: {
+            label: textButtonLabel,
+            hidden: isFirstSetup && !isAwaitingConfirmation,
+            action: () => {
+              if (isAwaitingConfirmation) {
+                uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                  type: 'is-awaiting-confirmation',
+                  isAwaitingConfirmation: false,
+                })
+              } else {
+                textButtonHandler()
+              }
+            },
           },
-        },
-      }),
+        }),
       status: sidebarStatus,
     }
 

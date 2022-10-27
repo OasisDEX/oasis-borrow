@@ -260,21 +260,21 @@ export function SidebarSetupConstantMultiple({
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
-        textButton: {
-          label: textButtonLabel,
-          hidden: isFirstSetup && !isAwaitingConfirmation,
-          action: () => {
-            if (isAwaitingConfirmation) {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'is-awaiting-confirmation',
-                isAwaitingConfirmation: false,
-              })
-            } else {
-              textButtonHandler()
-            }
+          textButton: {
+            label: textButtonLabel,
+            hidden: isFirstSetup && !isAwaitingConfirmation,
+            action: () => {
+              if (isAwaitingConfirmation) {
+                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                  type: 'is-awaiting-confirmation',
+                  isAwaitingConfirmation: false,
+                })
+              } else {
+                textButtonHandler()
+              }
+            },
           },
-        },
-      }),
+        }),
       status: sidebarStatus,
     }
 

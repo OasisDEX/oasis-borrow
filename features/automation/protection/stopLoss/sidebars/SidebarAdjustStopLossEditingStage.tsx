@@ -201,7 +201,6 @@ export function SidebarAdjustStopLossEditingStage({
 
   return (
     <>
-    
       {!vault.debt.isZero() ? (
         <Grid>
           <PickCloseState {...closePickerConfig} />
@@ -219,7 +218,6 @@ export function SidebarAdjustStopLossEditingStage({
           description={t('protection.closed-vault-existing-sl-description')}
         />
       )}
-
 
       {isEditing && (
         <>

@@ -197,7 +197,7 @@ export function SidebarSetupAutoSell({
               )}
               {isAwaitingConfirmation && (
                 <SidebarAwaitingConfirmation
-                  feature='Auto-Sell'
+                  feature="Auto-Sell"
                   children={
                     <AutoSellInfoSectionControl
                       autoSellState={autoSellState}

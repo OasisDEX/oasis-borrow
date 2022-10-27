@@ -17,9 +17,7 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import {
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
-} from 'features/automation/common/consts'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import {
   automationInputsAnalytics,
   automationMultipleRangeSliderAnalytics,

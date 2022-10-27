@@ -194,7 +194,7 @@ export function SidebarSetupAutoBuy({
               )}
               {isAwaitingConfirmation && (
                 <SidebarAwaitingConfirmation
-                  feature='Auto-Buy'
+                  feature="Auto-Buy"
                   children={
                     <AutoBuyInfoSectionControl
                       executionPrice={executionPrice}
