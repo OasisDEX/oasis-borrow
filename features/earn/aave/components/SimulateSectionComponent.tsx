@@ -1,5 +1,5 @@
 import { IPosition } from '@oasisdex/oasis-actions'
-import {  useSelector } from '@xstate/react'
+import { useSelector } from '@xstate/react'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

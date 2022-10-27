@@ -174,7 +174,7 @@ export function setupAaveContext({
 
   function detectAaveStrategy$(_address: string): Observable<StrategyConfig> {
     // TODO: properly detect fom chain or georgi method
-    return of(strategies['aave-earn'])
+    return of(strategies['aave-earn-steth-eth'])
   }
 
   return {

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { aaveStETHMinimumRiskRatio } from 'features/aave/constants'
 import { AaveProtocolData } from 'features/aave/manage/state'
 import { formatBigNumber } from 'helpers/formatters/format'
