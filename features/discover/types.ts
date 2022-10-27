@@ -31,27 +31,34 @@ export interface DiscoverFiltersSettings {
   [key: string]: string
 }
 
+export type DiscoverTableColRatioRowData = {
+  level: number
+  isAtRiskDanger: boolean
+  isAtRiskWarning: boolean
+}
+
+export type DiscoverTableActivityRowData = {
+  kind: DiscoverTableVaultActivity
+  additionalData?: {
+    timestamp?: number
+  }
+}
+
+export type DiscoverTableStatusRowData = {
+  kind: DiscoverTableVaultStatus
+  additionalData?: {
+    timestamp?: number
+    tillLiquidation?: number
+    toStopLoss?: number
+  }
+}
+
 export type DiscoverTableRowData = {
   [key: string]: string | number
 } & {
-  colRatio?: {
-    level: number
-    isAtRiskDanger: boolean
-    isAtRiskWarning: boolean
-  }
+  colRatio?: DiscoverTableColRatioRowData
 } & {
-  activity?: {
-    kind: DiscoverTableVaultActivity
-    additionalData?: {
-      timestamp?: number
-    }
-  }
+  activity?: DiscoverTableActivityRowData
 } & {
-  status?: {
-    kind: DiscoverTableVaultStatus
-    additionalData?: {
-      tillLiquidation?: number
-      toStopLoss?: number
-    }
-  }
+  status?: DiscoverTableStatusRowData
 }

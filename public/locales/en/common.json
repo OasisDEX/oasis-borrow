@@ -177,7 +177,7 @@
         "vault-debt": "Vault debt"
       },
       "status": {
-        "1": "Liquidated",
+        "1": "Liquidated {{timeAgo}}",
         "2": "Being liquidated",
         "3": "{{tillLiquidation}}% till liquidation",
         "4": "{{toStopLoss}}% to Stop-loss",
