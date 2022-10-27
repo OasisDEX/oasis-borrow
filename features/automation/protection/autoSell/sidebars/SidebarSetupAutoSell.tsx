@@ -13,6 +13,7 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
@@ -38,7 +39,7 @@ import {
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarAutoSellAwaitingConfirmation } from './SidebarAutoSellAwaitingConfirmation'
+import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
 interface SidebarSetupAutoSellProps {
   vault: Vault
@@ -195,12 +196,18 @@ export function SidebarSetupAutoSell({
                 />
               )}
               {isAwaitingConfirmation && (
-                <SidebarAutoSellAwaitingConfirmation
-                  vault={vault}
-                  autoSellState={autoSellState}
-                  debtDelta={debtDelta}
-                  collateralDelta={collateralDelta}
-                  isAwaitingConfirmation={false}
+                <SidebarAwaitingConfirmation
+                  feature='Auto-Sell'
+                  children={
+                    <AutoSellInfoSectionControl
+                      autoSellState={autoSellState}
+                      vault={vault}
+                      debtDelta={debtDelta}
+                      collateralDelta={collateralDelta}
+                      executionPrice={executionPrice}
+                      maxGasFee={autoSellState.maxBaseFeeInGwei.toNumber()}
+                    />
+                  }
                 />
               )}
               {isRemoveForm && (

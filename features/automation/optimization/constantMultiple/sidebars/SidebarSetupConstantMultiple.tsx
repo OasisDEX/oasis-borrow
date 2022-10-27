@@ -12,6 +12,7 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
@@ -37,7 +38,7 @@ import {
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarConstantMultipleAwaitingConfirmation } from './SidebarConstantMultipleAwaitingConfirmation'
+import { ConstantMultipleInfoSectionControl } from './ConstantMultipleInfoSectionControl'
 
 interface SidebarSetupConstantMultipleProps {
   autoBuyTriggerData: AutoBSTriggerData
@@ -203,16 +204,21 @@ export function SidebarSetupConstantMultiple({
               )}
 
               {isAwaitingConfirmation && (
-                <SidebarConstantMultipleAwaitingConfirmation
-                  token={vault.token}
-                  nextBuyPrice={nextBuyPrice}
-                  nextSellPrice={nextSellPrice}
-                  collateralToBePurchased={collateralToBePurchased}
-                  collateralToBeSold={collateralToBeSold}
-                  estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
-                  estimatedBuyFee={estimatedBuyFee}
-                  estimatedSellFee={estimatedSellFee}
-                  constantMultipleState={constantMultipleState}
+                <SidebarAwaitingConfirmation
+                  feature={'Constant-Multiple'}
+                  children={
+                    <ConstantMultipleInfoSectionControl
+                      token={vault.token}
+                      nextBuyPrice={nextBuyPrice}
+                      nextSellPrice={nextSellPrice}
+                      collateralToBePurchased={collateralToBePurchased}
+                      collateralToBeSold={collateralToBeSold}
+                      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+                      estimatedBuyFee={estimatedBuyFee}
+                      estimatedSellFee={estimatedSellFee}
+                      constantMultipleState={constantMultipleState}
+                    />
+                  }
                 />
               )}
 
@@ -254,21 +260,21 @@ export function SidebarSetupConstantMultiple({
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
-          textButton: {
-            label: textButtonLabel,
-            hidden: isFirstSetup && !isAwaitingConfirmation,
-            action: () => {
-              if (isAwaitingConfirmation) {
-                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                  type: 'is-awaiting-confirmation',
-                  isAwaitingConfirmation: false,
-                })
-              } else {
-                textButtonHandler()
-              }
-            },
+        textButton: {
+          label: textButtonLabel,
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
           },
-        }),
+        },
+      }),
       status: sidebarStatus,
     }
 

@@ -102,7 +102,7 @@ function generateAutomationPrimaryButtonLabelTtext({
         flow,
       })
 
-      return `${t(translationKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })}`
+      return t(translationKey, { feature: t(sidebarAutomationFeatureCopyMap[feature]) })
     case 'txFailure':
       return t('retry')
     case 'txInProgress':

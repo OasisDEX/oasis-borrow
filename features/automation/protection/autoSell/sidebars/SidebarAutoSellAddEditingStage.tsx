@@ -200,18 +200,18 @@ export function SidebarAutoSellAddEditingStage({
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {autoSellState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-sell.set-trigger-description', {
-              targetCollRatio: autoSellState.targetCollRatio.toNumber(),
-              token: vault.token,
-              execCollRatio: autoSellState.execCollRatio,
-              executionPrice: executionPrice.toFixed(2),
-              minSellPrice: autoSellState.maxBuyOrMinSellPrice,
-            })
+            targetCollRatio: autoSellState.targetCollRatio.toNumber(),
+            token: vault.token,
+            execCollRatio: autoSellState.execCollRatio,
+            executionPrice: executionPrice.toFixed(2),
+            minSellPrice: autoSellState.maxBuyOrMinSellPrice,
+          })
           : t('auto-sell.set-trigger-description-no-threshold', {
-              targetCollRatio: autoSellState.targetCollRatio.toNumber(),
-              token: vault.token,
-              execCollRatio: autoSellState.execCollRatio,
-              executionPrice: executionPrice.toFixed(2),
-            })}{' '}
+            targetCollRatio: autoSellState.targetCollRatio.toNumber(),
+            token: vault.token,
+            execCollRatio: autoSellState.execCollRatio,
+            executionPrice: executionPrice.toFixed(2),
+          })}{' '}
         <AppLink
           href="https://kb.oasis.app/help/setting-up-auto-sell-for-your-vault"
           sx={{ fontSize: 2 }}
@@ -288,10 +288,14 @@ export function SidebarAutoSellAddEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
-      <>
-        <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Sell" />
-        <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-      </>
+    
+      {isEditing && (
+        <>
+          <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Sell" />
+          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+        </>
+      )}
+      
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(AUTO_SELL_FORM_CHANGE, {

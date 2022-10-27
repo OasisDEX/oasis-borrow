@@ -16,6 +16,7 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
@@ -40,7 +41,9 @@ import {
 } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
+
+import { AutoTakeProfitInfoSectionControl } from '../controls/AutoTakeProfitInfoSectionControl'
 
 interface SidebarSetupAutoTakeProfitProps {
   autoBuyTriggerData: AutoBSTriggerData
@@ -232,7 +235,7 @@ export function SidebarSetupAutoTakeProfit({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoTakeProfitEditingStage
                   autoTakeProfitState={autoTakeProfitState}
                   autoTakeProfitTriggerData={autoTakeProfitTriggerData}
@@ -245,7 +248,28 @@ export function SidebarSetupAutoTakeProfit({
                   ilkData={ilkData}
                   errors={errors}
                   warnings={warnings}
-                  isAwaitingConfirmation={isAwaitingConfirmation}
+                />
+              )}
+              {isAwaitingConfirmation && (
+                <SidebarAwaitingConfirmation
+                  feature={
+                    <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+                      {t('automation.auto-take-profit-confirmation-text', { price: ethMarketPrice.toString(), profit: estimatedProfitOnClose.toFixed(2).toString() })}
+                    </Text>
+                  }
+                  children={
+                    <AutoTakeProfitInfoSectionControl
+                      debt={vault.debt}
+                      debtOffset={vault.debtOffset}
+                      ethMarketPrice={ethMarketPrice}
+                      lockedCollateral={vault.lockedCollateral}
+                      toCollateral={autoTakeProfitState.toCollateral}
+                      token={vault.token}
+                      tokenMarketPrice={tokenMarketPrice}
+                      triggerColPrice={autoTakeProfitState.executionPrice}
+                      triggerColRatio={autoTakeProfitState.executionCollRatio}
+                    />
+                  }
                 />
               )}
               {isRemoveForm && (
@@ -286,21 +310,21 @@ export function SidebarSetupAutoTakeProfit({
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
-          textButton: {
-            label: textButtonLabel,
-            hidden: isFirstSetup && !isAwaitingConfirmation,
-            action: () => {
-              if (isAwaitingConfirmation) {
-                uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-                  type: 'is-awaiting-confirmation',
-                  isAwaitingConfirmation: false,
-                })
-              } else {
-                textButtonHandler()
-              }
-            },
+        textButton: {
+          label: textButtonLabel,
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
           },
-        }),
+        },
+      }),
       status: sidebarStatus,
     }
 

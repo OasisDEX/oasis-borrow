@@ -12,6 +12,7 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
@@ -37,6 +38,8 @@ import {
 } from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
+
+import { AutoBuyInfoSectionControl } from './AutoBuyInfoSectionControl'
 
 interface SidebarSetupAutoBuyProps {
   vault: Vault
@@ -173,7 +176,7 @@ export function SidebarSetupAutoBuy({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoBuyEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -187,7 +190,20 @@ export function SidebarSetupAutoBuy({
                   sliderMin={min}
                   sliderMax={max}
                   stopLossTriggerData={stopLossTriggerData}
-                  isAwaitingConfirmation={isAwaitingConfirmation}
+                />
+              )}
+              {isAwaitingConfirmation && (
+                <SidebarAwaitingConfirmation
+                  feature='Auto-Buy'
+                  children={
+                    <AutoBuyInfoSectionControl
+                      executionPrice={executionPrice}
+                      autoBuyState={autoBuyState}
+                      vault={vault}
+                      debtDelta={debtDelta}
+                      collateralDelta={collateralDelta}
+                    />
+                  }
                 />
               )}
               {isRemoveForm && (

@@ -19,12 +19,13 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
-import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import { SetDownsideProtectionInformation, SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import {
@@ -50,8 +51,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
-import { SidebarStopLossAwaitingConfirmation } from './SidebarStopLossAwaitingConfirmation'
-
 interface SidebarSetupStopLossProps {
   vault: Vault
   vaultType: VaultType
@@ -73,7 +72,7 @@ interface SidebarSetupStopLossProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
-  isAwaitingUserConfirmation: boolean
+  isAwaitingConfirmation: boolean
   isFirstSetup: boolean
   closePickerConfig: PickCloseStateProps
   executionPrice: BigNumber
@@ -105,7 +104,7 @@ export function SidebarSetupStopLoss({
   isEditing,
   isDisabled,
   isFirstSetup,
-  isAwaitingUserConfirmation,
+  isAwaitingConfirmation,
 
   isStopLossActive,
 
@@ -139,11 +138,11 @@ export function SidebarSetupStopLoss({
     flow,
     stage,
     feature,
-    isAwaitingConfirmation: isAwaitingUserConfirmation,
+    isAwaitingConfirmation,
   })
   const textButtonLabel = getAutomationTextButtonLabel({
     isAddForm,
-    isAwaitingConfirmation: isAwaitingUserConfirmation,
+    isAwaitingConfirmation,
   })
   const sidebarStatus = getAutomationStatusTitle({
     flow,
@@ -156,10 +155,10 @@ export function SidebarSetupStopLoss({
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
-    ? constantMultipleTriggerData.sellExecutionCollRatio
+      ? constantMultipleTriggerData.sellExecutionCollRatio
         .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
         .div(100)
-    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+      : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
   const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
   const liqRatio = ilkData.liquidationRatio
 
@@ -228,7 +227,7 @@ export function SidebarSetupStopLoss({
             <>
               <>
                 {isAddForm &&
-                  !isAwaitingUserConfirmation &&
+                  !isAwaitingConfirmation &&
                   ['stopLossEditing', 'txFailure'].includes(stage) && (
                     <SidebarAdjustStopLossEditingStage
                       vault={vault}
@@ -245,14 +244,19 @@ export function SidebarSetupStopLoss({
                     />
                   )}
 
-                {isAwaitingUserConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
-                  <SidebarStopLossAwaitingConfirmation
-                    vault={vault}
-                    ilkData={ilkData}
-                    afterStopLossRatio={stopLossState.stopLossLevel}
-                    executionPrice={executionPrice}
-                    ethPrice={ethMarketPrice}
-                    isCollateralActive={closePickerConfig.isCollateralActive}
+                {isAwaitingConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
+                  <SidebarAwaitingConfirmation
+                    feature='Auto-Sell'
+                    children={
+                      <SetDownsideProtectionInformation
+                        vault={vault}
+                        ilkData={ilkData}
+                        afterStopLossRatio={stopLossState.stopLossLevel}
+                        executionPrice={executionPrice}
+                        ethPrice={ethMarketPrice}
+                        isCollateralActive={closePickerConfig.isCollateralActive}
+                      />
+                    }
                   />
                 )}
 
@@ -301,14 +305,13 @@ export function SidebarSetupStopLoss({
         disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          console.log(stage, 'stage')
-          if (!isAwaitingUserConfirmation && stage !== 'txSuccess') {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
             uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,
             })
           } else {
-            if (isAwaitingUserConfirmation) {
+            if (isAwaitingConfirmation) {
               uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
                 type: 'is-awaiting-confirmation',
                 isAwaitingConfirmation: false,
@@ -329,10 +332,10 @@ export function SidebarSetupStopLoss({
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
-          label: isAwaitingUserConfirmation ? t('protection.edit-order') : textButtonLabel,
-          hidden: isFirstSetup && !isAwaitingUserConfirmation,
+          label: textButtonLabel,
+          hidden: isFirstSetup && !isAwaitingConfirmation,
           action: () => {
-            if (isAwaitingUserConfirmation) {
+            if (isAwaitingConfirmation) {
               uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
                 type: 'is-awaiting-confirmation',
                 isAwaitingConfirmation: false,

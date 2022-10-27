@@ -59,7 +59,7 @@ export function StopLossFormControl({
 }: StopLossFormControlProps) {
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const isAwaitingUserConfirmation = stopLossState.isAwaitingConfirmation
+  const isAwaitingConfirmation = stopLossState.isAwaitingConfirmation
 
   const feature = AutomationFeatures.STOP_LOSS
   const {
@@ -144,7 +144,7 @@ export function StopLossFormControl({
           isAddForm={isAddForm}
           isDisabled={isDisabled}
           isEditing={isEditing}
-          isAwaitingUserConfirmation={isAwaitingUserConfirmation}
+          isAwaitingConfirmation={isAwaitingConfirmation}
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
           isStopLossActive={isStopLossActive}

@@ -46,7 +46,7 @@ export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTri
   return defaultAutoTakeProfitData
 }
 
-export function prepareAutoTakeProfitTriggerData({
+function prepareAutoTakeProfitTriggerData({
   executionPrice,
   isCloseToCollateral,
   maxBaseFeeInGwei,

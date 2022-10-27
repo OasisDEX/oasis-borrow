@@ -1745,7 +1745,9 @@
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
     "trigger-executed": "Your {{feature}} was triggered",
-    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger"
+    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger",
+    "confirmation-text": "Confirm your {{feature}} setup",
+    "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
