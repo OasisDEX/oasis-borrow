@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import moment from 'moment/moment'
 
 import { one, zero } from '../../../../helpers/zero'
-import { AaveStEthYieldsResponse } from './stEthYield'
+import { AaveStEthYieldsResponse } from '../../common'
 
 const AAVE_INCEPTION_DATE = moment('2022-02-28')
 
