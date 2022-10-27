@@ -55,13 +55,13 @@ function handleTriggerTx({
 }
 
 export function removeAutomationTrigger(
-  { send }: TxHelpers,
+  { sendWithGasEstimation }: TxHelpers,
   txData: AutomationBotRemoveTriggersData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
   publishType: AutomationPublishType,
 ) {
-  send(removeAutomationBotAggregatorTriggers, txData)
+  sendWithGasEstimation(removeAutomationBotAggregatorTriggers, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
     .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, publishType }))
 }
