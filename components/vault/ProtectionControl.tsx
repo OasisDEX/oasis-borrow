@@ -156,22 +156,4 @@ export function ProtectionControl({ vaultType }: ProtectionControlProps) {
       }
     </WithLoadingIndicator>
   )
-  // return vaultHasActiveTrigger ||
-  //   (!debt.isZero() && debt.gt(debtFloor) && (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
-  //   <DefaultVaultLayout
-  //     detailsViewControl={<ProtectionDetailsControl />}
-  //     editForm={<ProtectionFormControl txHelpers={txHelpersData} vaultType={vaultType} />}
-  //   />
-  // ) : (
-  //   <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-  //     <ZeroDebtProtectionBanner
-  //       {...getZeroDebtProtectionBannerProps({
-  //         stopLossWriteEnabled,
-  //         isVaultDebtZero: debt.isZero(),
-  //         isVaultDebtBelowDustLumit: debt.lte(debtFloor),
-  //         vaultHasNoProtection: !vaultHasActiveTrigger,
-  //       })}
-  //     />
-  //   </Container>
-  // )
 }
