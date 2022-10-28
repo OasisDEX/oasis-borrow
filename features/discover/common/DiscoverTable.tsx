@@ -48,7 +48,7 @@ export function DiscoverTable({
             }),
           }}
         >
-          <Box as="tr">
+          <tr>
             {Object.keys(rows[0]).map((label, i) => (
               <DiscoverTableHeaderCell
                 key={getRowKey(i, rows[0])}
@@ -57,7 +57,7 @@ export function DiscoverTable({
                 label={label}
               />
             ))}
-          </Box>
+          </tr>
         </Box>
         <Box
           as="tbody"

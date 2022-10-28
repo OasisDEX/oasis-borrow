@@ -37,7 +37,7 @@ export function TableContainer({
       as="table"
     >
       <Box sx={{ display: ['none', 'table-header-group'] }} as="thead">
-        <Box as="tr">{header}</Box>
+        <tr>{header}</tr>
       </Box>
       <Box sx={{ width: '100%' }} as="tbody">
         {children}
