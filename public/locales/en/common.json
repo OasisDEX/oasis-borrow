@@ -1935,7 +1935,8 @@
         "back-to-editing": "Back to editing",
         "configure-multiple": {
           "title": "Set your risk level",
-          "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
+          "liquidation-price": "Liquidation Price",
+          "current-price": "Current Price",
           "historical-ratio": "{{collateralToken}} / {{debtToken}} Historical Ratio",
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
