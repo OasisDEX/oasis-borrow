@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { WithArrow } from 'components/WithArrow'
 import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
 import { aaveStETHMinimumRiskRatio } from 'features/aave/constants'
 import { AaveProtocolData } from 'features/aave/manage/state'
@@ -31,40 +32,48 @@ export function SidebarViewPositionAaveVault({
   const maxRisk = aaveProtocolData.position.category.maxLoanToValue
   const sliderValue = aaveProtocolData.position.riskRatio.loanToValue
 
+  const tokensRatioText = (
+    <Text as="span" variant="paragraph4" color="neutral80">
+      {strategyConfig!.tokens!.collateral}/{strategyConfig!.tokens!.debt}
+    </Text>
+  )
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <SliderValuePicker
-          sliderPercentageFill={new BigNumber(0)}
+          sliderPercentageFill={
+            maxRisk
+              ? sliderValue
+                  .minus(aaveStETHMinimumRiskRatio.loanToValue)
+                  .times(100)
+                  .dividedBy(maxRisk.minus(aaveStETHMinimumRiskRatio.loanToValue))
+              : new BigNumber(0)
+          }
           leftBoundry={liquidationPrice}
-          leftBoundryFormatter={(value) => formatBigNumber(value, 2)}
-          rightBoundry={aaveProtocolData.oraclePrice}
-          rightBoundryFormatter={(value) => `Current: ${formatBigNumber(value, 2)}`}
-          rightBoundryStyling={{
-            color: riskTrafficLight === RiskLevel.OK ? 'success100' : 'warning100',
+          leftBoundryFormatter={(value) => (
+            <>
+              {formatBigNumber(value, 2)} {tokensRatioText}
+            </>
+          )}
+          leftBoundryStyling={{
+            color: riskTrafficLight !== RiskLevel.OK ? 'warning100' : 'neutral100',
           }}
+          rightBoundry={aaveProtocolData.oraclePrice}
+          rightBoundryFormatter={(value) => (
+            <>
+              {formatBigNumber(value, 2)} {tokensRatioText}
+            </>
+          )}
           onChange={() => {}}
           minBoundry={aaveStETHMinimumRiskRatio.loanToValue}
           maxBoundry={maxRisk || zero}
           lastValue={sliderValue}
           disabled={true}
           step={0.01}
-          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price', {
-            collateralToken: strategyConfig!.tokens!.collateral,
-            debtToken: strategyConfig!.tokens!.debt,
-          })}
-          rightLabel={
-            <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
-              <Text variant="paragraph4" color="interactive100">
-                {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
-                  collateralToken: strategyConfig!.tokens!.collateral,
-                  debtToken: strategyConfig!.tokens!.debt,
-                })}{' '}
-                &gt;
-              </Text>
-            </Link>
-          }
+          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
+          rightLabel={t('open-earn.aave.vault-form.configure-multiple.current-price')}
         />
         <Flex
           sx={{
@@ -76,6 +85,16 @@ export function SidebarViewPositionAaveVault({
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
           <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
         </Flex>
+        {strategyConfig!.tokens!.collateral && strategyConfig!.tokens!.debt && (
+          <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
+            <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
+              {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
+                collateralToken: strategyConfig!.tokens!.collateral,
+                debtToken: strategyConfig!.tokens!.debt,
+              })}
+            </WithArrow>
+          </Link>
+        )}
       </Grid>
     ),
     primaryButton: {
