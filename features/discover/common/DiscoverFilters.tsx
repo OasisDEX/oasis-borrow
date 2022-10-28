@@ -5,16 +5,20 @@ import { Box, Grid } from 'theme-ui'
 
 export function DiscoverFilters({
   filters,
+  isSmallerScreen,
   onChange,
 }: {
   filters: DiscoverFiltersList
+  isSmallerScreen: boolean
   onChange: (key: string, currentValue: DiscoverFiltersListItem) => void
 }) {
   return (
     <Box
       sx={{
-        position: 'sticky',
-        top: 0,
+        ...(!isSmallerScreen && {
+          position: 'sticky',
+          top: 0,
+        }),
         p: ['24px', null, null, 4],
         backgroundColor: 'neutral10',
         borderBottom: '1px solid',

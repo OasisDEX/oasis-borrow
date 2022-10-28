@@ -7,7 +7,9 @@ import { discoverPagesMeta } from 'features/discover/meta'
 import { DiscoverFiltersSettings, DiscoverPages } from 'features/discover/types'
 import { keyBy } from 'lodash'
 import React, { useEffect, useState } from 'react'
+import { theme } from 'theme'
 import { Box } from 'theme-ui'
+import { useMediaQuery } from 'usehooks-ts'
 
 interface DiscoverControlProps {
   kind: DiscoverPages
@@ -15,6 +17,7 @@ interface DiscoverControlProps {
 }
 
 export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
   const { banner, endpoint, filters } = keyBy(discoverPagesMeta, 'kind')[kind]
   const [settings, setSettings] = useState<DiscoverFiltersSettings>(
     getDefaultSettingsState({ filters, kind }),
@@ -38,6 +41,7 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
     >
       <DiscoverFilters
         filters={filters}
+        isSmallerScreen={isSmallerScreen}
         onChange={(key, currentValue) => {
           trackingEvents.discover.selectedFilter(kind, key, currentValue.label, userContext)
           setIsLoading(true)
@@ -50,6 +54,7 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
       <DiscoverData
         banner={banner}
         isLoading={isLoading}
+        isSmallerScreen={isSmallerScreen}
         kind={kind}
         response={response}
         userContext={userContext}
