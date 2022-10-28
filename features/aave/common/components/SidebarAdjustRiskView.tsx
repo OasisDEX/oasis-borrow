@@ -1,5 +1,6 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { WithArrow } from 'components/WithArrow'
 import { allDefined } from 'helpers/allDefined'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -158,16 +159,14 @@ export function AdjustRiskView({
         </Flex>
         {collateralToken && debtToken && (
           <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
-            <Text variant="paragraph4" color="interactive100">
+            <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
               {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
                 collateralToken,
                 debtToken,
-              })}{' '}
-              &gt;
-            </Text>
+              })}
+            </WithArrow>
           </Link>
         )}
-        <StrategyInformationContainer state={state} />
         {viewLocked ? (
           <MessageCard
             messages={[t('manage-earn-vault.has-asset-already')]}
@@ -192,10 +191,12 @@ export function AdjustRiskView({
                       liquidationPenalty,
                     }),
               ]}
+              withBullet={false}
               type={isWarning ? 'warning' : 'ok'}
             />
           )
         )}
+        <StrategyInformationContainer state={state} />
 
         <SidebarResetButton
           clear={() => {
