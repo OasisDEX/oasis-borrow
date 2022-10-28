@@ -117,6 +117,7 @@ export function GenericSelect({
     menuList: () => ({
       paddingTop: '12px',
       paddingBottom: '12px',
+      maxHeight: '340px',
     }),
     option: ({ isSelected }) => ({
       display: 'flex',
