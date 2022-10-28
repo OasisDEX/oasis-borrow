@@ -122,7 +122,7 @@ export function DiscoverTableHeaderCell({
             bottom: 0,
           },
           '&::before': {
-            top: 0,
+            top: -20,
             backgroundColor: 'neutral10',
           },
           '&::after': {
