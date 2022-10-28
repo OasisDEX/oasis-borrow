@@ -44,26 +44,11 @@ export function DiscoverTable({
             position: 'sticky',
             zIndex: 1,
             top: '120px',
-            '&::before, &::after': {
-              content: '""',
-              position: 'absolute',
-              left: -4,
-              right: -4,
-              bottom: 0,
-            },
-            '&::before': {
-              top: 0,
-              backgroundColor: 'neutral10',
-            },
-            '&::after': {
-              height: '1px',
-              backgroundColor: 'neutral20',
-            },
           }}
         >
-          <Box as="tr" sx={{ position: 'relative', zIndex: 2 }}>
+          <Box as="tr">
             {Object.keys(rows[0]).map((label, i) => (
-              <DiscoverTableHeaderCell key={getRowKey(i, rows[0])} label={label} />
+              <DiscoverTableHeaderCell key={getRowKey(i, rows[0])} first={i === 0} label={label} />
             ))}
           </Box>
         </Box>
@@ -93,7 +78,7 @@ export function DiscoverTable({
   )
 }
 
-export function DiscoverTableHeaderCell({ label }: { label: string }) {
+export function DiscoverTableHeaderCell({ first, label }: { first: boolean; label: string }) {
   const { t } = useTranslation()
 
   return (
@@ -101,6 +86,7 @@ export function DiscoverTableHeaderCell({ label }: { label: string }) {
       as="th"
       sx={{
         px: '12px',
+        py: '20px',
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',
@@ -112,7 +98,30 @@ export function DiscoverTableHeaderCell({ label }: { label: string }) {
         },
       }}
     >
-      {t(`discover.table.header.${kebabCase(label)}`)}
+      {first && (
+        <Box
+          sx={{
+            '&::before, &::after': {
+              content: '""',
+              position: 'absolute',
+              left: -4,
+              right: -4,
+              bottom: 0,
+            },
+            '&::before': {
+              top: 0,
+              backgroundColor: 'neutral10',
+            },
+            '&::after': {
+              height: '1px',
+              backgroundColor: 'neutral20',
+            },
+          }}
+        />
+      )}
+      <Box as="span" sx={{ position: 'relative' }}>
+        {t(`discover.table.header.${kebabCase(label)}`)}
+      </Box>
     </Box>
   )
 }
