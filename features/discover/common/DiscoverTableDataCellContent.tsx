@@ -4,12 +4,12 @@ import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
+import { parsePillAdditionalData } from 'features/discover/helpers'
 import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
-import { timeAgo } from 'utils'
 
 export function DiscoverTableDataCellContent({
   kind,
@@ -46,23 +46,17 @@ export function DiscoverTableDataCellContent({
     case 'status':
       return (
         <DiscoverTableDataCellPill status={row.status?.kind}>
-          {t(`discover.table.status.${row.status?.kind}`, { ...row.status?.additionalData })}
+          {t(`discover.table.status.${row.status?.kind}`, {
+            ...parsePillAdditionalData(i18n.language, row.status),
+          })}
         </DiscoverTableDataCellPill>
       )
     case 'activity':
-      const additionalData = {
-        ...row.activity?.additionalData,
-        ...(row.activity?.additionalData?.timestamp && {
-          timeAgo: timeAgo({
-            lang: i18n.language,
-            to: new Date(row.activity?.additionalData?.timestamp),
-          }),
-        }),
-      }
-
       return (
         <DiscoverTableDataCellPill activity={row.activity?.kind}>
-          {t(`discover.table.activity.${row.activity?.kind}`, { ...additionalData })}
+          {t(`discover.table.activity.${row.activity?.kind}`, {
+            ...parsePillAdditionalData(i18n.language, row.activity),
+          })}
         </DiscoverTableDataCellPill>
       )
     case 'cdpId':

@@ -1,6 +1,12 @@
 import { Pages } from 'analytics/analytics'
 import { DiscoverFiltersList } from 'features/discover/meta'
-import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
+import {
+  DiscoverPages,
+  DiscoverTableActivityRowData,
+  DiscoverTableRowData,
+  DiscoverTableStatusRowData,
+} from 'features/discover/types'
+import { timeAgo } from 'utils'
 
 export const DISCOVER_URL = '/discover'
 
@@ -34,4 +40,19 @@ export function getDefaultSettingsState({
 
 export function getRowKey(i: number, row: DiscoverTableRowData) {
   return [...(row.asset ? [row.asset] : []), ...(row.cdpId ? [row.cdpId] : []), i].join('-')
+}
+
+export function parsePillAdditionalData(
+  lang: string,
+  content?: DiscoverTableActivityRowData | DiscoverTableStatusRowData,
+) {
+  return {
+    ...content?.additionalData,
+    ...(content?.additionalData?.timestamp && {
+      timeAgo: timeAgo({
+        lang,
+        to: new Date(Number(content.additionalData?.timestamp)),
+      }),
+    }),
+  }
 }
