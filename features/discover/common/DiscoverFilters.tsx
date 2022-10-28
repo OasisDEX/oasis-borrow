@@ -4,10 +4,12 @@ import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export function DiscoverFilters({
+  amountOfRows,
   filters,
   isSmallerScreen,
   onChange,
 }: {
+  amountOfRows: number
   filters: DiscoverFiltersList
   isSmallerScreen: boolean
   onChange: (key: string, currentValue: DiscoverFiltersListItem) => void
@@ -16,7 +18,7 @@ export function DiscoverFilters({
     <Box
       sx={{
         ...(!isSmallerScreen && {
-          position: 'sticky',
+          position: amountOfRows > 2 ? 'sticky' : 'relative',
           top: 0,
         }),
         p: ['24px', null, null, 4],

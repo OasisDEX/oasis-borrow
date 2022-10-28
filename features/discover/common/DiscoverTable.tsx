@@ -41,9 +41,11 @@ export function DiscoverTable({
         <Box
           as="thead"
           sx={{
-            position: 'sticky',
-            zIndex: 1,
-            top: '120px',
+            ...(rows.length > 2 && {
+              position: 'sticky',
+              zIndex: 1,
+              top: '120px',
+            }),
           }}
         >
           <Box as="tr">

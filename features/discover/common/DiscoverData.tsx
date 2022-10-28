@@ -11,10 +11,10 @@ import { Box } from 'theme-ui'
 
 interface DiscoverDataProps {
   banner?: DiscoverBanner
-  response?: DiscoverDataResponse
   isLoading: boolean
   isSmallerScreen: boolean
   kind: DiscoverPages
+  response?: DiscoverDataResponse
   userContext: MixpanelUserContext
 }
 
