@@ -1,7 +1,6 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { WithArrow } from 'components/WithArrow'
-import { allDefined } from 'helpers/allDefined'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
@@ -89,16 +88,6 @@ export function AdjustRiskView({
     onChainPosition?.riskRatio.loanToValue ||
     aaveStETHDefaultRiskRatio.loanToValue
 
-  const isSliderMoved = allDefined(onChainPosition)
-    ? allDefined(state.context.userInput.riskRatio?.loanToValue) &&
-      !onChainPosition?.riskRatio.loanToValue.isEqualTo(
-        state.context.userInput.riskRatio!.loanToValue,
-      )
-    : allDefined(state.context.userInput.riskRatio?.loanToValue) &&
-      !aaveStETHDefaultRiskRatio.loanToValue.isEqualTo(
-        state.context.userInput.riskRatio!.loanToValue,
-      )
-
   const tokensRatioText = (
     <Text as="span" variant="paragraph4" color="neutral80">
       {collateralToken}/{debtToken}
@@ -140,7 +129,7 @@ export function AdjustRiskView({
           disabled={viewLocked}
           step={0.01}
           sliderPercentageFill={
-            maxRisk && isSliderMoved
+            maxRisk
               ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
               : new BigNumber(0)
           }
