@@ -22,6 +22,8 @@ export function DiscoverTable({
   rows: DiscoverTableRowData[]
   userContext: MixpanelUserContext
 }) {
+  const rowsForBanner = Math.min(rows.length - 1, 9)
+
   return (
     <Box
       sx={{
@@ -70,7 +72,7 @@ export function DiscoverTable({
           {rows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
               <DiscoverTableDataRow kind={kind} row={row} />
-              {banner && i === Math.floor((rows.length - 1) / 2) && (
+              {banner && i === Math.floor(rowsForBanner / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
                     <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
