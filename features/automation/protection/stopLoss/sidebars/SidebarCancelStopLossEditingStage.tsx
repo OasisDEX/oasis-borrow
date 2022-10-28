@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { MessageCard } from 'components/MessageCard'
 import {
@@ -55,31 +55,31 @@ export function CancelDownsideProtectionInformation({
 }
 
 interface SidebarCancelStopLossEditingStageProps {
-  vault: Vault
-  ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   stopLossLevel: BigNumber
 }
 
 export function SidebarCancelStopLossEditingStage({
-  vault,
-  ilkData,
   errors,
   warnings,
   stopLossLevel,
 }: SidebarCancelStopLossEditingStageProps) {
   const { t } = useTranslation()
-
+  const {
+    commonData: {
+      positionInfo: { token, debtFloor, liquidationPrice },
+    },
+  } = useAutomationContext()
   return (
     <Grid>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.cancel-downside-protection-desc')}
       </Text>
-      <VaultErrors errorMessages={errors} ilkData={ilkData} />
-      <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token } as IlkData} />
+      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
       <CancelDownsideProtectionInformation
-        liquidationPrice={vault.liquidationPrice}
+        liquidationPrice={liquidationPrice}
         stopLossLevel={stopLossLevel.times(100)}
       />
       <MessageCard

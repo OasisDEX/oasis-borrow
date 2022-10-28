@@ -1,5 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
+import { Tickers } from 'blockchain/prices'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -7,24 +9,56 @@ import {
   defaultAutoBSData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
+import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
 import {
   AutoTakeProfitTriggerData,
   defaultAutoTakeProfitData,
   extractAutoTakeProfitData,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
 import {
   ConstantMultipleTriggerData,
   defaultConstantMultipleData,
   extractConstantMultipleData,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
+import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 import {
   defaultStopLossData,
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
+import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+
+// TODO INTERFACE THAT HAS TO BE ADJUSTED FOR ALL PROTOCOLS
+interface AutomationCommonData {
+  environmentInfo: {
+    canInteract: boolean
+    ethBalance: BigNumber
+    ethMarketPrice: BigNumber
+    tokenMarketPrice: BigNumber
+    nextCollateralPrice: BigNumber
+    etherscanUrl: string
+  }
+  positionInfo: {
+    id: BigNumber
+    token: string
+    ilk: string
+    debt: BigNumber
+    debtOffset: BigNumber
+    debtFloor: BigNumber
+    lockedCollateral: BigNumber
+    collateralizationRatio: BigNumber
+    collateralizationRatioAtNextPrice: BigNumber
+    liquidationRatio: BigNumber
+    owner: string
+    liquidationPenalty: BigNumber
+    liquidationPrice: BigNumber
+  }
+}
 
 interface AutomationContext {
   autoSellTriggerData: AutoBSTriggerData
@@ -33,6 +67,7 @@ interface AutomationContext {
   constantMultipleTriggerData: ConstantMultipleTriggerData
   automationTriggersData: TriggersData
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+  commonData: AutomationCommonData
 }
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
@@ -60,20 +95,138 @@ const automationContextInitialState = {
   automationTriggersData: { isAutomationEnabled: false, triggers: [] },
 }
 
-export function AutomationContextProvider({ children, id }: { id: BigNumber } & WithChildren) {
-  const [context, setContext] = useState<AutomationContext>(automationContextInitialState)
+export function AutomationContextProvider({
+  children,
+  generalManageVault,
+  context,
+  ethAndTokenPricesData,
+}: {
+  generalManageVault: GeneralManageVaultState
+  context: Context
+  ethAndTokenPricesData: Tickers
+} & WithChildren) {
+  const {
+    balanceInfo: { ethBalance },
+    vault: {
+      id,
+      token,
+      ilk,
+      debt,
+      debtOffset,
+      owner,
+      controller,
+      lockedCollateral,
+      collateralizationRatio,
+      collateralizationRatioAtNextPrice,
+      liquidationPrice,
+    },
+    priceInfo: { nextCollateralPrice },
+    ilkData: { liquidationRatio, debtFloor, liquidationPenalty },
+  } = generalManageVault.state
 
   if (!isAppContextAvailable()) {
     return null
   }
 
+  const commonData = useMemo(
+    () => ({
+      environmentInfo: {
+        canInteract: context.status === 'connected' && context.account === controller,
+        etherscanUrl: context.etherscan.url,
+        ethBalance,
+        nextCollateralPrice,
+        ethMarketPrice: ethAndTokenPricesData['ETH'],
+        tokenMarketPrice: ethAndTokenPricesData[token],
+      },
+      positionInfo: {
+        id,
+        token,
+        ilk,
+        debt,
+        debtFloor,
+        debtOffset,
+        lockedCollateral,
+        collateralizationRatio,
+        collateralizationRatioAtNextPrice,
+        owner,
+        liquidationRatio,
+        liquidationPrice,
+        liquidationPenalty,
+      },
+    }),
+    [
+      context.status,
+      controller,
+      ethBalance.toString(),
+      nextCollateralPrice.toString(),
+      liquidationRatio.toString(),
+      liquidationPrice.toString(),
+      liquidationPenalty.toString(),
+      token,
+      id.toString(),
+      ilk,
+      debt.toString(),
+      lockedCollateral.toString(),
+      collateralizationRatio.toString(),
+      collateralizationRatioAtNextPrice.toString(),
+      owner,
+      ethAndTokenPricesData['ETH'].toString(),
+      ethAndTokenPricesData[token].toString(),
+    ],
+  )
+
+  const [autoContext, setAutoContext] = useState<AutomationContext>({
+    ...automationContextInitialState,
+    commonData,
+  })
+
   const { automationTriggersData$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(id)
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
+  useStopLossStateInitializator({
+    liquidationRatio,
+    collateralizationRatio,
+    stopLossTriggerData: autoContext.stopLossTriggerData,
+  })
+
+  useAutoBSstateInitialization({
+    autoTriggersData: autoContext.autoSellTriggerData,
+    stopLossTriggerData: autoContext.stopLossTriggerData,
+    collateralizationRatio,
+    type: TriggerType.BasicSell,
+  })
+
+  useAutoBSstateInitialization({
+    autoTriggersData: autoContext.autoBuyTriggerData,
+    stopLossTriggerData: autoContext.stopLossTriggerData,
+    collateralizationRatio,
+    type: TriggerType.BasicBuy,
+  })
+
+  useConstantMultipleStateInitialization({
+    ilk,
+    debt,
+    debtFloor,
+    liquidationRatio,
+    collateralizationRatio,
+    lockedCollateral,
+    stopLossTriggerData: autoContext.stopLossTriggerData,
+    autoSellTriggerData: autoContext.autoSellTriggerData,
+    autoBuyTriggerData: autoContext.autoBuyTriggerData,
+    constantMultipleTriggerData: autoContext.constantMultipleTriggerData,
+  })
+
+  useAutoTakeProfitStateInitializator({
+    debt,
+    lockedCollateral,
+    collateralizationRatio,
+    autoTakeProfitTriggerData: autoContext.autoTakeProfitTriggerData,
+  })
+
   useEffect(() => {
     if (automationTriggersData) {
-      setContext({
+      setAutoContext({
         autoBuyTriggerData: extractAutoBSData({
           triggersData: automationTriggersData,
           triggerType: TriggerType.BasicBuy,
@@ -86,9 +239,10 @@ export function AutomationContextProvider({ children, id }: { id: BigNumber } & 
         constantMultipleTriggerData: extractConstantMultipleData(automationTriggersData),
         autoTakeProfitTriggerData: extractAutoTakeProfitData(automationTriggersData),
         automationTriggersData,
+        commonData,
       })
     }
-  }, [automationTriggersData])
+  }, [automationTriggersData, commonData])
 
-  return <automationContext.Provider value={context}>{children}</automationContext.Provider>
+  return <automationContext.Provider value={autoContext}>{children}</automationContext.Provider>
 }

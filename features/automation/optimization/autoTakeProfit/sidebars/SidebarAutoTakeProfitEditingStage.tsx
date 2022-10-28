@@ -6,8 +6,8 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
@@ -21,10 +21,7 @@ import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import {
-  AutoTakeProfitTriggerData,
-  prepareAutoTakeProfitResetData,
-} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { prepareAutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
@@ -32,36 +29,34 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
+
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   closePickerConfig: PickCloseStateProps
-  ethMarketPrice: BigNumber
   isEditing: boolean
   sliderConfig: SliderValuePickerProps
-  tokenMarketPrice: BigNumber
-  vault: Vault
-  ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
 }
 
 export function SidebarAutoTakeProfitEditingStage({
   autoTakeProfitState,
-  autoTakeProfitTriggerData,
   closePickerConfig,
-  ethMarketPrice,
   isEditing,
   sliderConfig,
-  tokenMarketPrice,
-  vault,
-  ilkData,
   errors,
   warnings,
 }: SidebarAutoTakeProfitEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+
+  const {
+    autoTakeProfitTriggerData,
+    commonData: {
+      positionInfo: { ilk, id, collateralizationRatio, debt, debtFloor, token },
+    },
+  } = useAutomationContext()
 
   useDebouncedCallback(
     (value) =>
@@ -70,16 +65,16 @@ export function SidebarAutoTakeProfitEditingStage({
         Pages.TakeProfit,
         CommonAnalyticsSections.Form,
         {
-          vaultId: vault.id.toString(),
-          ilk: vault.ilk,
-          collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+          vaultId: id.toString(),
+          ilk: ilk,
+          collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },
       ),
     autoTakeProfitState.executionPrice.decimalPlaces(2).toString(),
   )
 
-  const isVaultEmpty = vault.debt.isZero()
+  const isVaultEmpty = debt.isZero()
 
   if (readOnlyAutoTakeProfitEnabled && !isVaultEmpty) {
     return (
@@ -104,7 +99,7 @@ export function SidebarAutoTakeProfitEditingStage({
       <PickCloseState {...closePickerConfig} />
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('auto-take-profit.set-trigger-description', {
-          token: vault.token,
+          token,
           executionPrice: autoTakeProfitState.executionPrice.decimalPlaces(2),
         })}
         <AppLink href="https://kb.oasis.app/help/take-profit" sx={{ fontSize: 2 }}>
@@ -114,8 +109,8 @@ export function SidebarAutoTakeProfitEditingStage({
       <SliderValuePicker {...sliderConfig} />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} />
-          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+          <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token } as IlkData} />
+          <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
         </>
       )}
       {isEditing && (
@@ -132,13 +127,7 @@ export function SidebarAutoTakeProfitEditingStage({
             }}
           />
           <AutoTakeProfitInfoSectionControl
-            debt={vault.debt}
-            debtOffset={vault.debtOffset}
-            ethMarketPrice={ethMarketPrice}
-            lockedCollateral={vault.lockedCollateral}
             toCollateral={autoTakeProfitState.toCollateral}
-            token={vault.token}
-            tokenMarketPrice={tokenMarketPrice}
             triggerColPrice={autoTakeProfitState.executionPrice}
             triggerColRatio={autoTakeProfitState.executionCollRatio}
           />
@@ -149,27 +138,23 @@ export function SidebarAutoTakeProfitEditingStage({
 }
 
 interface AutoTakeProfitInfoSectionControlProps {
-  debt: BigNumber
-  debtOffset: BigNumber
-  ethMarketPrice: BigNumber
-  lockedCollateral: BigNumber
   toCollateral: boolean
-  token: string
-  tokenMarketPrice: BigNumber
   triggerColPrice: BigNumber
   triggerColRatio: BigNumber
 }
 
 function AutoTakeProfitInfoSectionControl({
-  debt,
-  debtOffset,
-  ethMarketPrice,
-  lockedCollateral,
   toCollateral,
-  token,
   triggerColPrice,
   triggerColRatio,
 }: AutoTakeProfitInfoSectionControlProps) {
+  const {
+    commonData: {
+      positionInfo: { debt, debtOffset, token, lockedCollateral },
+      environmentInfo: { ethMarketPrice },
+    },
+  } = useAutomationContext()
+
   const {
     estimatedGasFeeOnTrigger,
     estimatedOasisFeeOnTrigger,

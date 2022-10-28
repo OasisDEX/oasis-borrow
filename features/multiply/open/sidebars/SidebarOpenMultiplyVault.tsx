@@ -1,4 +1,6 @@
+import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
+import { AutomationContextProvider } from 'components/AutomationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
@@ -6,6 +8,7 @@ import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVault
 import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpers'
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { SidebarOpenMultiplyVaultEditingState } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultEditingState'
 import { SidebarOpenMultiplyVaultOpenStage } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultOpenStage'
@@ -23,6 +26,7 @@ import {
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -57,6 +61,14 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
     stopLossLevel,
     stopLossCloseType,
     afterCollateralizationRatio,
+    afterOutstandingDebt,
+    proxyAddress,
+    totalExposure,
+    afterCollateralizationRatioAtNextPrice,
+    afterLiquidationPrice,
+    priceInfo: { nextCollateralPrice, currentEthPrice, currentCollateralPrice },
+    ilkData: { liquidationRatio, debtFloor, liquidationPenalty },
+    balanceInfo: { ethBalance },
   } = props
 
   const flow: SidebarFlow = !isStopLossEditingStage ? 'openMultiply' : 'addSl'
@@ -73,7 +85,36 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenMultiplyVaultEditingState {...props} />}
-        {isStopLossEditingStage && <SidebarAdjustStopLossEditingStage {...stopLossData} />}
+        {isStopLossEditingStage && (
+          <AutomationContextProvider
+            generalManageVault={
+              {
+                state: {
+                  balanceInfo: { ethBalance },
+                  vault: {
+                    id: zero,
+                    token,
+                    ilk,
+                    debt: afterOutstandingDebt,
+                    debtOffset: zero,
+                    owner: proxyAddress,
+                    controller: '0x0',
+                    lockedCollateral: totalExposure,
+                    collateralizationRatio: afterCollateralizationRatio,
+                    collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
+                    liquidationPrice: afterLiquidationPrice,
+                  },
+                  priceInfo: { nextCollateralPrice },
+                  ilkData: { liquidationRatio, debtFloor, liquidationPenalty },
+                },
+              } as GeneralManageVaultState
+            }
+            context={{ status: 'connected', account: '0x0', etherscan: { url: '' } } as Context}
+            ethAndTokenPricesData={{ ETH: currentEthPrice, [token]: currentCollateralPrice }}
+          >
+            <SidebarAdjustStopLossEditingStage {...stopLossData} />{' '}
+          </AutomationContextProvider>
+        )}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenMultiplyVaultOpenStage {...props} />}

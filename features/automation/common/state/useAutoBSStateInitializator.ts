@@ -1,7 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
-import { IlkData } from 'blockchain/ilks'
-import { InstiVault } from 'blockchain/instiVault'
-import { Vault } from 'blockchain/vaults'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import {
   prepareAutoBSSliderDefaults,
@@ -16,13 +14,17 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useEffect } from 'react'
 
-export function useAutoBSstateInitialization(
-  ilkData: IlkData,
-  vault: Vault | InstiVault,
-  autoTriggersData: AutoBSTriggerData,
-  stopLossTriggerData: StopLossTriggerData,
-  type: TriggerType,
-) {
+export function useAutoBSstateInitialization({
+  autoTriggersData,
+  stopLossTriggerData,
+  type,
+  collateralizationRatio,
+}: {
+  collateralizationRatio: BigNumber
+  autoTriggersData: AutoBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
+  type: TriggerType
+}) {
   const { uiChanges } = useAppContext()
   const {
     triggerId,
@@ -34,7 +36,6 @@ export function useAutoBSstateInitialization(
     isTriggerEnabled,
     maxBaseFeeInGwei,
   } = autoTriggersData
-  const { collateralizationRatio } = vault
 
   const publishKey = type === TriggerType.BasicBuy ? AUTO_BUY_FORM_CHANGE : AUTO_SELL_FORM_CHANGE
   const maxBuyOrMinSellPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice)

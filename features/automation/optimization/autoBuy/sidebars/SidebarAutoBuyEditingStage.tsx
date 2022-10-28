@@ -2,8 +2,8 @@ import { Pages } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
@@ -24,11 +24,9 @@ import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { AddAutoBuyInfoSection } from 'features/automation/optimization/autoBuy/controls/AddAutoBuyInfoSection'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
@@ -41,43 +39,42 @@ import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
 
 interface SidebarAutoBuyEditingStageProps {
-  vault: Vault
-  ilkData: IlkData
   isEditing: boolean
   autoBuyState: AutoBSFormChange
-  autoBuyTriggerData: AutoBSTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   debtDelta: BigNumber
   collateralDelta: BigNumber
   sliderMin: BigNumber
   sliderMax: BigNumber
-  stopLossTriggerData: StopLossTriggerData
 }
 
 export function SidebarAutoBuyEditingStage({
-  vault,
-  ilkData,
   isEditing,
   autoBuyState,
-  autoBuyTriggerData,
   errors,
   warnings,
   debtDelta,
   collateralDelta,
   sliderMin,
   sliderMax,
-  stopLossTriggerData,
 }: SidebarAutoBuyEditingStageProps) {
+  const {
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    commonData: {
+      positionInfo: { id, ilk, token, debt, debtFloor, lockedCollateral, collateralizationRatio },
+    },
+  } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
   const { t } = useTranslation()
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
-  const isVaultEmpty = vault.debt.isZero()
+  const isVaultEmpty = debt.isZero()
   const executionPrice = collateralPriceAtRatio({
     colRatio: autoBuyState.execCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
 
   const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
@@ -90,25 +87,27 @@ export function SidebarAutoBuyEditingStage({
       uiChanges,
       publishType: AUTO_BUY_FORM_CHANGE,
     })
-  }, [vault.collateralizationRatio.toNumber()])
+  }, [collateralizationRatio.toNumber()])
 
   automationMultipleRangeSliderAnalytics({
     leftValue: autoBuyState.targetCollRatio,
     rightValue: autoBuyState.execCollRatio,
-    vault,
     type: AutomationFeatures.AUTO_BUY,
+    ilk,
+    vaultId: id,
+    collateralizationRatio,
   })
 
   automationInputsAnalytics({
     maxBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
     withMaxBuyPriceThreshold: autoBuyState.withThreshold,
-    vault,
     type: AutomationFeatures.AUTO_BUY,
+    vaultId: id,
+    ilk,
+    collateralizationRatio,
   })
 
-  const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
-    .times(100)
-    .gt(sliderMax)
+  const isCurrentCollRatioHigherThanSliderMax = collateralizationRatio.times(100).gt(sliderMax)
 
   if (
     isStopLossEnabled &&
@@ -189,14 +188,14 @@ export function SidebarAutoBuyEditingStage({
         {autoBuyState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-buy.set-trigger-description', {
               targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-              token: vault.token,
+              token,
               execCollRatio: autoBuyState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
               minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
             })
           : t('auto-buy.set-trigger-description-no-threshold', {
               targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-              token: vault.token,
+              token,
               execCollRatio: autoBuyState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
             })}{' '}
@@ -280,8 +279,12 @@ export function SidebarAutoBuyEditingStage({
       />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Buy" />
-          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+          <VaultErrors
+            errorMessages={errors}
+            ilkData={{ debtFloor, token } as IlkData}
+            autoType="Auto-Buy"
+          />
+          <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
         </>
       )}
       <MaxGasPriceSection
@@ -298,7 +301,7 @@ export function SidebarAutoBuyEditingStage({
         value={autoBuyState.maxBaseFeeInGwei.toNumber()}
         analytics={{
           page: Pages.AutoBuy,
-          additionalParams: { vaultId: vault.id.toString(), ilk: vault.ilk },
+          additionalParams: { vaultId: id.toString(), ilk },
         }}
       />
       {isEditing && (
@@ -309,7 +312,7 @@ export function SidebarAutoBuyEditingStage({
                 type: 'reset',
                 resetData: prepareAutoBSResetData(
                   autoBuyTriggerData,
-                  vault.collateralizationRatio,
+                  collateralizationRatio,
                   AUTO_BUY_FORM_CHANGE,
                 ),
               })
@@ -318,7 +321,6 @@ export function SidebarAutoBuyEditingStage({
           <AutoBuyInfoSectionControl
             executionPrice={executionPrice}
             autoBuyState={autoBuyState}
-            vault={vault}
             debtDelta={debtDelta}
             collateralDelta={collateralDelta}
           />
@@ -330,7 +332,6 @@ export function SidebarAutoBuyEditingStage({
 
 interface AutoBuyInfoSectionControlProps {
   executionPrice: BigNumber
-  vault: Vault
   autoBuyState: AutoBSFormChange
   debtDelta: BigNumber
   collateralDelta: BigNumber
@@ -338,11 +339,16 @@ interface AutoBuyInfoSectionControlProps {
 
 function AutoBuyInfoSectionControl({
   executionPrice,
-  vault,
   autoBuyState,
   debtDelta,
   collateralDelta,
 }: AutoBuyInfoSectionControlProps) {
+  const {
+    commonData: {
+      positionInfo: { debt, lockedCollateral, token },
+    },
+  } = useAutomationContext()
+
   const deviationPercent = autoBuyState.deviation.div(100)
 
   const targetRatioWithDeviationFloor = one
@@ -354,18 +360,18 @@ function AutoBuyInfoSectionControl({
 
   return (
     <AddAutoBuyInfoSection
-      token={vault.token}
+      token={token}
       colRatioAfterBuy={autoBuyState.targetCollRatio}
       multipleAfterBuy={one.div(autoBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={autoBuyState.execCollRatio}
       nextBuyPrice={executionPrice}
       collateralAfterNextBuy={{
-        value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
+        value: lockedCollateral,
+        secondaryValue: lockedCollateral.plus(collateralDelta),
       }}
       outstandingDebtAfterNextBuy={{
-        value: vault.debt,
-        secondaryValue: vault.debt.plus(debtDelta),
+        value: debt,
+        secondaryValue: debt.plus(debtDelta),
       }}
       collateralToBePurchased={collateralDelta.abs()}
       targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}

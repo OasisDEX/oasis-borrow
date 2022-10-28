@@ -373,6 +373,7 @@ export type UIChanges = {
   >(
     subject: string,
     reducer: (prev: T, event: K) => T,
+    initialState?: T,
   ) => void
 }
 
@@ -424,8 +425,11 @@ function createUIChangesSubject(): UIChanges {
   function configureSubject<
     T extends SupportedUIChangeType,
     K extends LegalUiChanges[keyof LegalUiChanges]
-  >(subject: string, reducer: (prev: T, event: K) => T): void {
+  >(subject: string, reducer: (prev: T, event: K) => T, initialState?: T): void {
     reducers[subject] = reducer
+    if (initialState) {
+      latest[subject] = initialState
+    }
   }
 
   return {

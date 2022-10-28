@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -13,7 +13,9 @@ interface GetAutoBSTxHandlersParams {
   isAddForm: boolean
   publishType: AutomationBSPublishType
   triggerType: AutoBSTriggerTypes
-  vault: Vault
+  collateralizationRatio: BigNumber
+  id: BigNumber
+  owner: string
 }
 
 interface AutoBSTxHandlers {
@@ -27,14 +29,17 @@ export function getAutoBSTxHandlers({
   isAddForm,
   publishType,
   triggerType,
-  vault,
+  collateralizationRatio,
+  id,
+  owner,
 }: GetAutoBSTxHandlersParams): AutoBSTxHandlers {
   const { uiChanges } = useAppContext()
 
   const addTxData = useMemo(
     () =>
       prepareAddAutoBSTriggerData({
-        vaultData: vault,
+        id,
+        owner,
         triggerType,
         execCollRatio: autoBSState.execCollRatio,
         targetCollRatio: autoBSState.targetCollRatio,
@@ -52,7 +57,7 @@ export function getAutoBSTxHandlers({
       autoBSState.maxBuyOrMinSellPrice?.toNumber(),
       autoBSState.triggerId.toNumber(),
       autoBSState.maxBaseFeeInGwei.toNumber(),
-      vault.collateralizationRatio.toNumber(),
+      collateralizationRatio.toNumber(),
     ],
   )
 

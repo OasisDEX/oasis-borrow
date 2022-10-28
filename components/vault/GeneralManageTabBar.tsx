@@ -5,6 +5,7 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
@@ -32,18 +33,14 @@ interface GeneralManageTabBarProps {
   generalManageVault: GeneralManageVaultState
   positionInfo?: JSX.Element
   showAutomationTabs: boolean
-  protectionEnabled: boolean
-  optimizationEnabled: boolean
 }
 
 export function GeneralManageTabBar({
   generalManageVault,
   positionInfo,
   showAutomationTabs,
-  protectionEnabled,
-  optimizationEnabled,
 }: GeneralManageTabBarProps): JSX.Element {
-  const { ilkData, vault, balanceInfo, vaultHistory } = generalManageVault.state
+  const { vault, vaultHistory } = generalManageVault.state
   const [hash] = useHash()
   const initialMode = Object.values<string>(VaultViewMode).includes(hash)
     ? (hash as VaultViewMode)
@@ -52,6 +49,20 @@ export function GeneralManageTabBar({
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const autoBSEnabled = useFeatureToggle('BasicBS')
+  const {
+    stopLossTriggerData,
+    autoSellTriggerData,
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+    autoTakeProfitTriggerData,
+  } = useAutomationContext()
+
+  const protectionEnabled =
+    stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled
+  const optimizationEnabled =
+    autoBuyTriggerData.isTriggerEnabled ||
+    constantMultipleTriggerData.isTriggerEnabled ||
+    autoTakeProfitTriggerData.isTriggerEnabled
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -84,14 +95,7 @@ export function GeneralManageTabBar({
                 label: t('system.protection'),
                 value: 'protection',
                 tag: { include: true, active: protectionEnabled },
-                content: (
-                  <ProtectionControl
-                    vault={vault}
-                    ilkData={ilkData}
-                    balanceInfo={balanceInfo}
-                    vaultType={generalManageVault.type}
-                  />
-                ),
+                content: <ProtectionControl vaultType={generalManageVault.type} />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
                     AutomationEventIds.SelectProtection,
@@ -111,10 +115,7 @@ export function GeneralManageTabBar({
                 tag: { include: true, active: optimizationEnabled },
                 content: (
                   <OptimizationControl
-                    vault={vault}
                     vaultType={generalManageVault.type}
-                    ilkData={ilkData}
-                    balanceInfo={balanceInfo}
                     vaultHistory={vaultHistory}
                   />
                 ),

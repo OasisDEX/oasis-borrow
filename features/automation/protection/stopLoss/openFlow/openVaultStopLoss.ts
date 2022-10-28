@@ -8,7 +8,6 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import {
   closeVaultOptions,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
@@ -18,7 +17,6 @@ import { getSliderPercentageFill } from 'features/automation/protection/stopLoss
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -81,11 +79,11 @@ export function getDataForStopLoss(
 
   const {
     token,
-    priceInfo: { currentEthPrice, nextCollateralPrice },
+    priceInfo: { nextCollateralPrice },
     ilkData,
-    afterCollateralizationRatio,
+    // afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
-    afterLiquidationPrice,
+    // afterLiquidationPrice,
     totalExposure,
     depositAmount,
     ilkData: { ilk },
@@ -120,20 +118,20 @@ export function getDataForStopLoss(
   })
 
   const sidebarProps: SidebarAdjustStopLossEditingStageProps = {
-    vault: {
-      collateralizationRatio: afterCollateralizationRatio,
-      liquidationPrice: afterLiquidationPrice,
-      lockedCollateral,
-      debt,
-      token,
-      ilk,
-    } as Vault,
-    ilkData,
-    ethMarketPrice: currentEthPrice,
+    // vault: {
+    //   collateralizationRatio: afterCollateralizationRatio,
+    //   liquidationPrice: afterLiquidationPrice,
+    //   lockedCollateral,
+    //   debt,
+    //   token,
+    //   ilk,
+    // } as Vault,
+    // ilkData,
+    // ethMarketPrice: currentEthPrice,
     executionPrice,
     errors: [],
     warnings: [],
-    stopLossTriggerData: defaultStopLossData,
+    // stopLossTriggerData: defaultStopLossData,
     stopLossState: {
       stopLossLevel,
       collateralActive: stopLossCloseType === 'collateral',

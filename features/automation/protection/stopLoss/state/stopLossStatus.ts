@@ -5,10 +5,8 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import {
@@ -31,6 +29,12 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 
 interface GetStopLossStatusParams {
+  id: BigNumber
+  ilk: string
+  token: string
+  debt: BigNumber
+  lockedCollateral: BigNumber
+  liquidationRatio: BigNumber
   stopLossTriggerData: StopLossTriggerData
   stopLossState: StopLossFormChange
   isRemoveForm: boolean
@@ -38,9 +42,7 @@ interface GetStopLossStatusParams {
   isOwner: boolean
   isAddForm: boolean
   maxDebtForSettingStopLoss: boolean
-  vault: Vault
   stage: SidebarAutomationStages
-  ilkData: IlkData
 }
 
 interface StopLossStatus {
@@ -52,6 +54,12 @@ interface StopLossStatus {
 }
 
 export function getStopLossStatus({
+  id,
+  ilk,
+  token,
+  debt,
+  lockedCollateral,
+  liquidationRatio,
   stopLossTriggerData,
   stopLossState,
   isRemoveForm,
@@ -59,9 +67,7 @@ export function getStopLossStatus({
   isOwner,
   isAddForm,
   maxDebtForSettingStopLoss,
-  vault,
   stage,
-  ilkData,
 }: GetStopLossStatusParams): StopLossStatus {
   const { uiChanges } = useAppContext()
 
@@ -82,7 +88,7 @@ export function getStopLossStatus({
     stage,
   })
 
-  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
   const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
     DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   )
@@ -101,8 +107,8 @@ export function getStopLossStatus({
 
   const executionPrice = collateralPriceAtRatio({
     colRatio: stopLossState.stopLossLevel.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
   const closePickerConfig = {
     optionNames: closeVaultOptions,
@@ -116,15 +122,15 @@ export function getStopLossStatus({
         Pages.StopLoss,
         CommonAnalyticsSections.Form,
         {
-          vaultId: vault.id.toString(),
-          ilk: vault.ilk,
+          vaultId: id.toString(),
+          ilk: ilk,
           closeTo: optionName as CloseVaultTo,
         },
       )
     },
     isCollateralActive: stopLossState.collateralActive,
-    collateralTokenSymbol: vault.token,
-    collateralTokenIconCircle: getToken(vault.token).iconCircle, // Isn't this icon redundant? ~Ł
+    collateralTokenSymbol: token,
+    collateralTokenIconCircle: getToken(token).iconCircle, // Isn't this icon redundant? ~Ł
   }
 
   return {
