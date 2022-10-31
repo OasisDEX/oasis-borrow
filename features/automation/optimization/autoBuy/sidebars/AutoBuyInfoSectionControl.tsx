@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { one } from 'helpers/zero'
+import React from 'react'
 
 import { AddAutoBuyInfoSection } from '../controls/AddAutoBuyInfoSection'
 

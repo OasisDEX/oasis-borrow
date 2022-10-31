@@ -12,6 +12,7 @@ import {
   resolveMaxBuyOrMinSellPrice,
 } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
@@ -156,7 +157,7 @@ export function checkIfIsDisabledConstantMultiple({
   isEditing: boolean
   isAddForm: boolean
   state: ConstantMultipleFormChange
-  stage: SidebarVaultStages
+  stage: SidebarVaultStages | SidebarAutomationStages
 }) {
   return (
     (isProgressStage ||

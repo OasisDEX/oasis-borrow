@@ -21,7 +21,11 @@ import {
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
+import {
+  AutomationFeatures,
+  AutomationKinds,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
@@ -163,7 +167,7 @@ export function checkIfIsDisabledAutoBS({
   isEditing: boolean
   isAddForm: boolean
   autoBSState: AutoBSFormChange
-  stage: SidebarVaultStages
+  stage: SidebarVaultStages | SidebarAutomationStages
 }) {
   return (
     (isProgressStage ||

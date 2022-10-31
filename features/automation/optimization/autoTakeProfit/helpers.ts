@@ -1,3 +1,4 @@
+import { SidebarAutomationStages } from 'features/automation/common/types'
 import { AutoTakeProfitFormChange } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
@@ -29,7 +30,7 @@ export function checkIfIsDisabledAutoTakeProfit({
   isEditing: boolean
   isOwner: boolean
   isProgressStage?: boolean
-  stage: SidebarVaultStages
+  stage: SidebarVaultStages | SidebarAutomationStages
 }) {
   return (isProgressStage || !isOwner || !isEditing) && stage !== 'txSuccess'
 }
