@@ -114,7 +114,7 @@ function generateAutomationPrimaryButtonLabelTtext({
 
       return t(txSuccessKey)
     default:
-      throw new UnreachableCaseError(stage)
+      throw new UnreachableCaseError(stage as never)
   }
 }
 
