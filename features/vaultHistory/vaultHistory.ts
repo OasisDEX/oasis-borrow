@@ -6,7 +6,6 @@ import { extractAutoBSData } from 'features/automation/common/state/autoBSTrigge
 import { extractAutoTakeProfitData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { extractStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { equals } from 'ramda'
@@ -448,28 +447,6 @@ const triggerEventsQuery = gql`
         timestamp
         triggerData
         commandAddress
-      }
-    }
-  }
-`
-// TODO to be used eventually as default when CM cache will be released
-const triggerEventsQueryConstantMultiple = gql`
-  query triggerEvents($cdpId: BigFloat) {
-    allTriggerEvents(
-      filter: { cdpId: { equalTo: $cdpId } }
-      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
-    ) {
-      nodes {
-        id
-        triggerId
-        cdpId
-        number
-        kind
-        eventType
-        hash
-        timestamp
-        triggerData
-        commandAddress
         groupId
         groupType
         gasFee
@@ -541,12 +518,7 @@ async function getVaultAutomationHistory(
   client: GraphQLClient,
   id: BigNumber,
 ): Promise<ReturnedAutomationEvent[]> {
-  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
-  const resolvedQuery = constantMultipleEnabled
-    ? triggerEventsQueryConstantMultiple
-    : triggerEventsQuery
-
-  const triggersData = await client.request(resolvedQuery, { cdpId: id.toNumber() })
+  const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
   return triggersData.allTriggerEvents.nodes
 }
 

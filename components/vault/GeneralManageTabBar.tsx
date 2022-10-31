@@ -10,7 +10,6 @@ import { TabBar } from 'components/TabBar'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -48,7 +47,7 @@ export function GeneralManageTabBar({
   const [mode, setMode] = useState<VaultViewMode>(initialMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-  const autoBSEnabled = useFeatureToggle('BasicBS')
+
   const {
     stopLossTriggerData,
     autoSellTriggerData,
@@ -107,7 +106,7 @@ export function GeneralManageTabBar({
               },
             ]
           : []),
-        ...(autoBSEnabled && showAutomationTabs
+        ...(showAutomationTabs
           ? [
               {
                 label: t('system.optimization'),

@@ -1,6 +1,5 @@
 import { AutomationProtectionFeatures } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getActiveProtectionFeature({
   isAutoSellOn,
@@ -13,8 +12,6 @@ export function getActiveProtectionFeature({
   section: 'form' | 'details'
   currentProtectionFeature?: AutomationProtectionFeatures
 }) {
-  const autoBSEnabled = useFeatureToggle('BasicBS')
-
   if (section === 'form') {
     return {
       isAutoSellActive:
@@ -31,8 +28,7 @@ export function getActiveProtectionFeature({
   if (section === 'details') {
     return {
       isAutoSellActive: isAutoSellOn || currentProtectionFeature === AutomationFeatures.AUTO_SELL,
-      isStopLossActive:
-        isStopLossOn || currentProtectionFeature === AutomationFeatures.STOP_LOSS || !autoBSEnabled,
+      isStopLossActive: isStopLossOn || currentProtectionFeature === AutomationFeatures.STOP_LOSS,
     }
   }
 
