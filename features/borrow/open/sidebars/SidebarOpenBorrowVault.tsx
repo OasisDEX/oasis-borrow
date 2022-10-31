@@ -1,4 +1,3 @@
-import { Context } from 'blockchain/network'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { AutomationContextProvider } from 'components/AutomationContextProvider'
@@ -10,7 +9,6 @@ import { openVaultWithStopLossAnalytics } from 'features/automation/common/helpe
 import { getDataForStopLoss } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLoss'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -25,7 +23,6 @@ import {
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -63,14 +60,6 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     stopLossLevel,
     stopLossCloseType,
     afterCollateralizationRatio,
-    afterCollateralizationRatioAtNextPrice,
-    afterLiquidationPrice,
-    priceInfo: { currentEthPrice, currentCollateralPrice, nextCollateralPrice },
-    ilkData: { liquidationRatio, debtFloor, liquidationPenalty },
-    generateAmount,
-    depositAmount,
-    proxyAddress,
-    balanceInfo: { ethBalance },
   } = props
 
   const flow: SidebarFlow = !isStopLossEditingStage ? 'openBorrow' : 'addSl'
@@ -79,7 +68,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
-  const stopLossData = getDataForStopLoss(props, 'borrow')
+  const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'borrow')
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -88,33 +77,8 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
         {isStopLossEditingStage && (
-          <AutomationContextProvider
-            generalManageVault={
-              {
-                state: {
-                  balanceInfo: { ethBalance },
-                  vault: {
-                    id: zero,
-                    token,
-                    ilk,
-                    debt: generateAmount,
-                    debtOffset: zero,
-                    owner: proxyAddress,
-                    controller: '0x0',
-                    lockedCollateral: depositAmount,
-                    collateralizationRatio: afterCollateralizationRatio,
-                    collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
-                    liquidationPrice: afterLiquidationPrice,
-                  },
-                  priceInfo: { nextCollateralPrice },
-                  ilkData: { liquidationRatio, debtFloor, liquidationPenalty },
-                },
-              } as GeneralManageVaultState
-            }
-            context={{ status: 'connected', account: '0x0', etherscan: { url: '' } } as Context}
-            ethAndTokenPricesData={{ ETH: currentEthPrice, [token]: currentCollateralPrice }}
-          >
-            <SidebarAdjustStopLossEditingStage {...stopLossData} />{' '}
+          <AutomationContextProvider {...automationContextProps}>
+            <SidebarAdjustStopLossEditingStage {...stopLossSidebarProps} />{' '}
           </AutomationContextProvider>
         )}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}

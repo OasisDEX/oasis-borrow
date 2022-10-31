@@ -30,8 +30,7 @@ import {
 import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { useObservable } from 'helpers/observableHook'
-import { WithChildren } from 'helpers/types'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
 // TODO INTERFACE THAT HAS TO BE ADJUSTED FOR ALL PROTOCOLS
 interface AutomationCommonData {
@@ -95,16 +94,18 @@ const automationContextInitialState = {
   automationTriggersData: { isAutomationEnabled: false, triggers: [] },
 }
 
+export interface AutomationContextProviderProps {
+  generalManageVault: GeneralManageVaultState
+  context: Context
+  ethAndTokenPricesData: Tickers
+}
+
 export function AutomationContextProvider({
   children,
   generalManageVault,
   context,
   ethAndTokenPricesData,
-}: {
-  generalManageVault: GeneralManageVaultState
-  context: Context
-  ethAndTokenPricesData: Tickers
-} & WithChildren) {
+}: PropsWithChildren<AutomationContextProviderProps>) {
   const {
     balanceInfo: { ethBalance },
     vault: {
