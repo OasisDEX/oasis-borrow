@@ -32,7 +32,6 @@ import {
   warningsStopLossValidation,
 } from 'features/automation/protection/stopLoss/validators'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
   extractCancelAutomationErrors,
@@ -45,7 +44,6 @@ import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 interface SidebarSetupStopLossProps {
-  vaultType: VaultType
   isStopLossActive: boolean
   feature: AutomationFeatures
   stopLossState: StopLossFormChange
@@ -62,7 +60,6 @@ interface SidebarSetupStopLossProps {
 }
 
 export function SidebarSetupStopLoss({
-  vaultType,
   executionPrice,
   feature,
 
@@ -91,7 +88,7 @@ export function SidebarSetupStopLoss({
     autoBuyTriggerData,
     constantMultipleTriggerData,
     commonData: {
-      positionInfo: { debt, token, liquidationRatio, collateralizationRatioAtNextPrice },
+      positionInfo: { debt, token, liquidationRatio, collateralizationRatioAtNextPrice, vaultType },
       environmentInfo: { nextCollateralPrice, ethBalance, ethMarketPrice, etherscanUrl },
     },
   } = useAutomationContext()

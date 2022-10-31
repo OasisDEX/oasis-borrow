@@ -12,7 +12,6 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { getAutoTakeProfitStatus } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitStatus'
 import { getAutoTakeProfitTxHandlers } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTxHandlers'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -20,14 +19,12 @@ interface AutoTakeProfitFormControlProps {
   isAutoTakeProfitActive: boolean
   shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
-  vaultType: VaultType
 }
 
 export function AutoTakeProfitFormControl({
   isAutoTakeProfitActive,
   shouldRemoveAllowance,
   txHelpers,
-  vaultType,
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
   const {
@@ -118,7 +115,6 @@ export function AutoTakeProfitFormControl({
           stage={stage}
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
-          vaultType={vaultType}
         />
       )}
     </AddAndRemoveTriggerControl>

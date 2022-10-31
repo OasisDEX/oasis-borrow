@@ -19,7 +19,6 @@ import {
   errorsAutoSellValidation,
   warningsAutoSellValidation,
 } from 'features/automation/protection/autoSell/validators'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
   extractCancelAutomationErrors,
@@ -29,7 +28,6 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoSellProps {
-  vaultType: VaultType
   isAutoSellActive: boolean
   autoSellState: AutoBSFormChange
   txHandler: (options?: AddAndRemoveTxHandler) => void
@@ -48,7 +46,6 @@ interface SidebarSetupAutoSellProps {
 }
 
 export function SidebarSetupAutoSell({
-  vaultType,
   feature,
 
   isAutoSellActive,
@@ -76,7 +73,14 @@ export function SidebarSetupAutoSell({
     constantMultipleTriggerData,
     autoSellTriggerData,
     commonData: {
-      positionInfo: { debt, collateralizationRatioAtNextPrice, token, debtFloor, liquidationRatio },
+      positionInfo: {
+        debt,
+        collateralizationRatioAtNextPrice,
+        token,
+        debtFloor,
+        liquidationRatio,
+        vaultType,
+      },
       environmentInfo: { ethBalance, ethMarketPrice, etherscanUrl },
     },
   } = useAutomationContext()

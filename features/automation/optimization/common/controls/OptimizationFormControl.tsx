@@ -11,16 +11,14 @@ import { AutoBuyFormControl } from 'features/automation/optimization/autoBuy/con
 import { AutoTakeProfitFormControl } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/optimization/common/helpers'
 import { ConstantMultipleFormControl } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleFormControl'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
 interface OptimizationFormControlProps {
   txHelpers?: TxHelpers
-  vaultType: VaultType
 }
 
-export function OptimizationFormControl({ txHelpers, vaultType }: OptimizationFormControlProps) {
+export function OptimizationFormControl({ txHelpers }: OptimizationFormControlProps) {
   const {
     autoBuyTriggerData,
     automationTriggersData,
@@ -73,19 +71,16 @@ export function OptimizationFormControl({ txHelpers, vaultType }: OptimizationFo
         isAutoBuyActive={isAutoBuyActive}
         shouldRemoveAllowance={shouldRemoveAllowance}
         txHelpers={txHelpers}
-        vaultType={vaultType}
       />
       <ConstantMultipleFormControl
         isConstantMultipleActive={isConstantMultipleActive}
         shouldRemoveAllowance={shouldRemoveAllowance}
         txHelpers={txHelpers}
-        vaultType={vaultType}
       />
       <AutoTakeProfitFormControl
         isAutoTakeProfitActive={isAutoTakeProfitActive}
         shouldRemoveAllowance={shouldRemoveAllowance}
         txHelpers={txHelpers}
-        vaultType={vaultType}
       />
     </>
   )

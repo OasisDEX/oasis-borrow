@@ -29,6 +29,7 @@ import {
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import { useObservable } from 'helpers/observableHook'
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
@@ -56,6 +57,7 @@ interface AutomationCommonData {
     owner: string
     liquidationPenalty: BigNumber
     liquidationPrice: BigNumber
+    vaultType: VaultType
   }
 }
 
@@ -153,6 +155,7 @@ export function AutomationContextProvider({
         liquidationRatio,
         liquidationPrice,
         liquidationPenalty,
+        vaultType: generalManageVault.type,
       },
     }),
     [
@@ -160,19 +163,22 @@ export function AutomationContextProvider({
       controller,
       ethBalance.toString(),
       nextCollateralPrice.toString(),
-      liquidationRatio.toString(),
-      liquidationPrice.toString(),
-      liquidationPenalty.toString(),
-      token,
+      ethAndTokenPricesData['ETH'].toString(),
+      ethAndTokenPricesData[token].toString(),
       id.toString(),
+      token,
       ilk,
       debt.toString(),
+      debtFloor.toString(),
+      debtOffset.toString(),
       lockedCollateral.toString(),
       collateralizationRatio.toString(),
       collateralizationRatioAtNextPrice.toString(),
       owner,
-      ethAndTokenPricesData['ETH'].toString(),
-      ethAndTokenPricesData[token].toString(),
+      liquidationRatio.toString(),
+      liquidationPrice.toString(),
+      liquidationPenalty.toString(),
+      generalManageVault.type,
     ],
   )
 

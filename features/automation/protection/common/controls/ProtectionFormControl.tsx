@@ -10,16 +10,14 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
 interface ProtectionFormControlProps {
-  vaultType: VaultType
   txHelpers?: TxHelpers
 }
 
-export function ProtectionFormControl({ txHelpers, vaultType }: ProtectionFormControlProps) {
+export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps) {
   const {
     stopLossTriggerData,
     autoSellTriggerData,
@@ -59,13 +57,11 @@ export function ProtectionFormControl({ txHelpers, vaultType }: ProtectionFormCo
         isStopLossActive={isStopLossActive}
         txHelpers={txHelpers}
         shouldRemoveAllowance={shouldRemoveAllowance}
-        vaultType={vaultType}
       />
       <AutoSellFormControl
         isAutoSellActive={isAutoSellActive}
         txHelpers={txHelpers}
         shouldRemoveAllowance={shouldRemoveAllowance}
-        vaultType={vaultType}
       />
     </>
   )

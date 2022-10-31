@@ -18,7 +18,6 @@ import {
   errorsAutoBuyValidation,
   warningsAutoBuyValidation,
 } from 'features/automation/optimization/autoBuy/validators'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
   extractCancelAutomationErrors,
@@ -28,7 +27,6 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoBuyProps {
-  vaultType: VaultType
   autoBuyState: AutoBSFormChange
   txHandler: () => void
   textButtonHandler: () => void
@@ -46,7 +44,6 @@ interface SidebarSetupAutoBuyProps {
 }
 
 export function SidebarSetupAutoBuy({
-  vaultType,
   feature,
 
   autoBuyState,
@@ -73,7 +70,7 @@ export function SidebarSetupAutoBuy({
     stopLossTriggerData,
     autoSellTriggerData,
     commonData: {
-      positionInfo: { collateralizationRatioAtNextPrice, token, liquidationRatio },
+      positionInfo: { collateralizationRatioAtNextPrice, token, liquidationRatio, vaultType },
       environmentInfo: { ethBalance, ethMarketPrice, etherscanUrl },
     },
   } = useAutomationContext()

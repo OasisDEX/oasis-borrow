@@ -16,7 +16,6 @@ import {
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { getConstantMultipleStatus } from 'features/automation/optimization/constantMultiple/state/constantMultipleStatus'
 import { getConstantMultipleTxHandlers } from 'features/automation/optimization/constantMultiple/state/constantMultipleTxHandlers'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -24,14 +23,12 @@ interface ConstantMultipleFormControlProps {
   isConstantMultipleActive: boolean
   shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
-  vaultType: VaultType
 }
 
 export function ConstantMultipleFormControl({
   isConstantMultipleActive,
   shouldRemoveAllowance,
   txHelpers,
-  vaultType,
 }: ConstantMultipleFormControlProps) {
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -161,7 +158,6 @@ export function ConstantMultipleFormControl({
           stage={stage}
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
-          vaultType={vaultType}
         />
       )}
     </AddAndRemoveTriggerControl>

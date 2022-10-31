@@ -95,7 +95,7 @@ export function GeneralManageTabBar({
                 label: t('system.protection'),
                 value: 'protection',
                 tag: { include: true, active: protectionEnabled },
-                content: <ProtectionControl vaultType={generalManageVault.type} />,
+                content: <ProtectionControl />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
                     AutomationEventIds.SelectProtection,
@@ -113,12 +113,7 @@ export function GeneralManageTabBar({
                 label: t('system.optimization'),
                 value: VaultViewMode.Optimization,
                 tag: { include: true, active: optimizationEnabled },
-                content: (
-                  <OptimizationControl
-                    vaultType={generalManageVault.type}
-                    vaultHistory={vaultHistory}
-                  />
-                ),
+                content: <OptimizationControl vaultHistory={vaultHistory} />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
                     AutomationEventIds.SelectOptimization,

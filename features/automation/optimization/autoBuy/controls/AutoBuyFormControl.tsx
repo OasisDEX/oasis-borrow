@@ -13,7 +13,6 @@ import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHa
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/autoBuy/sidebars/SidebarSetupAutoBuy'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -21,14 +20,12 @@ interface AutoBuyFormControlProps {
   isAutoBuyActive: boolean
   shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
-  vaultType: VaultType
 }
 
 export function AutoBuyFormControl({
   isAutoBuyActive,
   shouldRemoveAllowance,
   txHelpers,
-  vaultType,
 }: AutoBuyFormControlProps) {
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const {
@@ -130,7 +127,6 @@ export function AutoBuyFormControl({
           stage={stage}
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
-          vaultType={vaultType}
           executionPrice={executionPrice}
         />
       )}

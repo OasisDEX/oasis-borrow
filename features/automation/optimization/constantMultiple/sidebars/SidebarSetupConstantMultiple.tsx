@@ -17,7 +17,6 @@ import {
   errorsConstantMultipleValidation,
   warningsConstantMultipleValidation,
 } from 'features/automation/optimization/constantMultiple/validators'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
   extractCancelAutomationErrors,
@@ -47,7 +46,6 @@ interface SidebarSetupConstantMultipleProps {
   stage: SidebarAutomationStages
   textButtonHandler: () => void
   txHandler: () => void
-  vaultType: VaultType
 }
 
 export function SidebarSetupConstantMultiple({
@@ -71,7 +69,6 @@ export function SidebarSetupConstantMultiple({
   txHandler,
   debtDeltaWhenSellAtCurrentCollRatio,
   debtDeltaAfterSell,
-  vaultType,
 }: SidebarSetupConstantMultipleProps) {
   const gasEstimation = useGasEstimationContext()
   const {
@@ -81,7 +78,7 @@ export function SidebarSetupConstantMultiple({
     stopLossTriggerData,
     autoSellTriggerData,
     commonData: {
-      positionInfo: { debt, debtFloor, collateralizationRatioAtNextPrice, token },
+      positionInfo: { debt, debtFloor, collateralizationRatioAtNextPrice, token, vaultType },
       environmentInfo: { ethBalance, ethMarketPrice, etherscanUrl },
     },
   } = useAutomationContext()

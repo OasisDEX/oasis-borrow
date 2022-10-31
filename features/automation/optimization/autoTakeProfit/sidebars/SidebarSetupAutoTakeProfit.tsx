@@ -26,7 +26,6 @@ import {
   warningsAutoTakeProfitValidation,
 } from 'features/automation/optimization/autoTakeProfit/validators'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount } from 'helpers/formatters/format'
 import {
@@ -52,7 +51,6 @@ interface SidebarSetupAutoTakeProfitProps {
   stage: SidebarAutomationStages
   textButtonHandler: () => void
   txHandler: () => void
-  vaultType: VaultType
 }
 
 export function SidebarSetupAutoTakeProfit({
@@ -70,7 +68,6 @@ export function SidebarSetupAutoTakeProfit({
   stage,
   textButtonHandler,
   txHandler,
-  vaultType,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
@@ -81,13 +78,7 @@ export function SidebarSetupAutoTakeProfit({
     autoTakeProfitTriggerData,
     constantMultipleTriggerData,
     commonData: {
-      positionInfo: {
-        debt,
-        debtOffset,
-        token,
-
-        lockedCollateral,
-      },
+      positionInfo: { debt, debtOffset, token, vaultType, lockedCollateral },
       environmentInfo: { ethMarketPrice, etherscanUrl, nextCollateralPrice, ethBalance },
     },
   } = useAutomationContext()

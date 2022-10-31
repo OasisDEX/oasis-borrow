@@ -10,7 +10,6 @@ import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
@@ -62,10 +61,6 @@ function ZeroDebtProtectionBanner({
   )
 }
 
-interface ProtectionControlProps {
-  vaultType: VaultType
-}
-
 function getZeroDebtProtectionBannerProps({
   stopLossWriteEnabled,
   isVaultDebtZero,
@@ -105,7 +100,7 @@ function getZeroDebtProtectionBannerProps({
   }
 }
 
-export function ProtectionControl({ vaultType }: ProtectionControlProps) {
+export function ProtectionControl() {
   const { txHelpers$ } = useAppContext()
   const {
     stopLossTriggerData,
@@ -134,7 +129,7 @@ export function ProtectionControl({ vaultType }: ProtectionControlProps) {
           (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
           <DefaultVaultLayout
             detailsViewControl={<ProtectionDetailsControl />}
-            editForm={<ProtectionFormControl txHelpers={txHelpersData} vaultType={vaultType} />}
+            editForm={<ProtectionFormControl txHelpers={txHelpersData} />}
           />
         ) : (
           <Container

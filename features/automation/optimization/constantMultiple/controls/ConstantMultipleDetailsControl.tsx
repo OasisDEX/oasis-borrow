@@ -7,7 +7,6 @@ import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {
   calculatePNLFromAddConstantMultipleEvent,
@@ -18,12 +17,10 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 interface ConstantMultipleDetailsControlProps {
-  vaultType: VaultType
   vaultHistory: VaultHistoryEvent[]
 }
 
 export function ConstantMultipleDetailsControl({
-  vaultType,
   vaultHistory,
 }: ConstantMultipleDetailsControlProps) {
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
@@ -87,7 +84,6 @@ export function ConstantMultipleDetailsControl({
     <ConstantMultipleDetailsLayout
       vaultId={id}
       ilk={ilk}
-      vaultType={vaultType}
       token={token}
       isTriggerEnabled={isTriggerEnabled}
       {...constantMultipleDetailsLayoutOptionalParams}

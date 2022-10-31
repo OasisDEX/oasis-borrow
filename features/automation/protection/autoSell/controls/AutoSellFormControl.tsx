@@ -13,7 +13,6 @@ import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHa
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
@@ -21,14 +20,12 @@ interface AutoSellFormControlProps {
   isAutoSellActive: boolean
   shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
-  vaultType: VaultType
 }
 
 export function AutoSellFormControl({
   isAutoSellActive,
   shouldRemoveAllowance,
   txHelpers,
-  vaultType,
 }: AutoSellFormControlProps) {
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
@@ -133,7 +130,6 @@ export function AutoSellFormControl({
           stage={stage}
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
-          vaultType={vaultType}
           executionPrice={executionPrice}
         />
       )}

@@ -16,7 +16,6 @@ import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -114,11 +113,10 @@ function getZeroDebtOptimizationBannerProps({
 }
 
 interface OptimizationControlProps {
-  vaultType: VaultType
   vaultHistory: VaultHistoryEvent[]
 }
 
-export function OptimizationControl({ vaultType, vaultHistory }: OptimizationControlProps) {
+export function OptimizationControl({ vaultHistory }: OptimizationControlProps) {
   const {
     constantMultipleTriggerData,
     autoTakeProfitTriggerData,
@@ -174,10 +172,8 @@ export function OptimizationControl({ vaultType, vaultHistory }: OptimizationCon
           </Container>
         ) : (
           <DefaultVaultLayout
-            detailsViewControl={
-              <OptimizationDetailsControl vaultType={vaultType} vaultHistory={vaultHistory} />
-            }
-            editForm={<OptimizationFormControl vaultType={vaultType} txHelpers={txHelpersData} />}
+            detailsViewControl={<OptimizationDetailsControl vaultHistory={vaultHistory} />}
+            editForm={<OptimizationFormControl txHelpers={txHelpersData} />}
           />
         )
       }
