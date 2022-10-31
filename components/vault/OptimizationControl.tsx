@@ -125,14 +125,14 @@ export function OptimizationControl({ vaultHistory }: OptimizationControlProps) 
       positionInfo: { debt },
     },
   } = useAutomationContext()
+  const { txHelpers$ } = useAppContext()
+  const [txHelpersData] = useObservable(txHelpers$)
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
 
-  const { txHelpers$ } = useAppContext()
-  const [txHelpersData] = useObservable(txHelpers$)
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')

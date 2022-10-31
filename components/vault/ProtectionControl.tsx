@@ -109,14 +109,15 @@ export function ProtectionControl() {
       positionInfo: { debt, debtFloor },
     },
   } = useAutomationContext()
+  const [txHelpersData] = useObservable(txHelpers$)
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
-  const [txHelpersData] = useObservable(txHelpers$)
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const vaultHasActiveTrigger =
     stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled
+
   return (
     <WithLoadingIndicator
       value={[stopLossState, autoSellState]}
