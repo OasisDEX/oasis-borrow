@@ -45,25 +45,29 @@ export function OptimizationFormControl({ txHelpers }: OptimizationFormControlPr
   const shouldRemoveAllowance = getShouldRemoveAllowance(automationTriggersData)
 
   useEffect(() => {
-    if (autoTakeProfitTriggerData.isTriggerEnabled) {
+    if (isAutoTakeProfitActive) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: AutomationFeatures.AUTO_TAKE_PROFIT,
       })
     }
-    if (constantMultipleTriggerData.isTriggerEnabled) {
+    if (isConstantMultipleActive) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: AutomationFeatures.CONSTANT_MULTIPLE,
       })
     }
-    if (autoBuyTriggerData.isTriggerEnabled) {
+    if (isAutoBuyActive) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: AutomationFeatures.AUTO_BUY,
       })
     }
-  }, [])
+  }, [
+    autoTakeProfitTriggerData.isTriggerEnabled,
+    constantMultipleTriggerData.isTriggerEnabled,
+    autoBuyTriggerData.isTriggerEnabled,
+  ])
 
   return (
     <>
