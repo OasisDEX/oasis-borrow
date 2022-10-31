@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
+import React from 'react'
 
 import { AddAutoTakeProfitInfoSection } from './AddAutoTakeProfitInfoSection'
 
