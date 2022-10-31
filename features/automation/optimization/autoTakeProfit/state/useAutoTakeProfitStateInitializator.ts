@@ -38,10 +38,6 @@ export function useAutoTakeProfitStateInitializator({
 
   useEffect(() => {
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-      type: 'trigger-id',
-      triggerId,
-    })
-    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'form-defaults',
       executionPrice: initialSelectedPrice,
       executionCollRatio: initialSelectedColRatio,
@@ -51,6 +47,9 @@ export function useAutoTakeProfitStateInitializator({
       type: 'close-type',
       toCollateral: isToCollateral,
     })
+  }, [triggerId.toNumber(), collateralizationRatio.toNumber()])
+
+  useEffect(() => {
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'current-form',
       currentForm: 'add',
@@ -59,7 +58,7 @@ export function useAutoTakeProfitStateInitializator({
       type: 'tx-details',
       txDetails: {},
     })
-  }, [triggerId.toNumber(), collateralizationRatio.toNumber()])
+  }, [collateralizationRatio.toNumber()])
 
   return isTriggerEnabled
 }

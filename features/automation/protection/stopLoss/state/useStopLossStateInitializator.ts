@@ -52,7 +52,7 @@ export function useStopLossStateInitializator({
       type: 'current-form',
       currentForm: 'add',
     })
-  }, [collateralizationRatio])
+  }, [collateralizationRatio.toNumber()])
 
   return isStopLossEnabled
 }

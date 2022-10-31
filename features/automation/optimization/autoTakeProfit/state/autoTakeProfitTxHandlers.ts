@@ -45,12 +45,11 @@ export function getAutoTakeProfitTxHandlers({
         executionPrice: autoTakeProfitState.executionPrice,
         maxBaseFeeInGwei: maxUint32,
         isCloseToCollateral: autoTakeProfitState.toCollateral,
-        replacedTriggerId: autoTakeProfitState.triggerId.toNumber(),
+        replacedTriggerId: autoTakeProfitTriggerData.triggerId.toNumber(),
       }),
     [
       autoTakeProfitState.toCollateral,
-      autoTakeProfitState.executionCollRatio,
-      autoTakeProfitState.executionPrice,
+      autoTakeProfitState.executionPrice.toNumber(),
       autoTakeProfitTriggerData.triggerId.toNumber(),
     ],
   )
