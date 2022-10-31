@@ -1,4 +1,3 @@
-import { IlkData } from 'blockchain/ilks'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -32,8 +31,8 @@ export function SidebarAutoBuyRemovalEditingStage({
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         To cancel the Auto-Buy you’ll need to click the button below and confirm the transaction.
       </Text>
-      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token } as IlkData} />
-      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
+      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
       <AutoBuyInfoSectionControl autoBuyState={autoBuyState} />
     </>
   )

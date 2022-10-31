@@ -1,6 +1,5 @@
 import { Pages } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
@@ -335,12 +334,8 @@ export function SidebarAutoSellAddEditingStage({
       />
       {isEditing && (
         <>
-          <VaultErrors
-            errorMessages={errors}
-            ilkData={{ debtFloor, token } as IlkData}
-            autoType="Auto-Sell"
-          />
-          <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
+          <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} autoType="Auto-Sell" />
+          <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
         </>
       )}
       <MaxGasPriceSection

@@ -5,7 +5,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
@@ -227,13 +226,13 @@ export function SidebarConstantMultipleEditingStage({
       />
       <VaultWarnings
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
-        ilkData={{ debtFloor } as IlkData}
+        ilkData={{ debtFloor }}
       />
       <VaultErrors
         errorMessages={errors.filter(
           (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
         )}
-        ilkData={{ debtFloor, token } as IlkData}
+        ilkData={{ debtFloor, token }}
       />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
@@ -269,11 +268,11 @@ export function SidebarConstantMultipleEditingStage({
       />
       <VaultErrors
         errorMessages={extractConstantMultipleMaxBuyErrors(errors)}
-        ilkData={{ debtFloor, token } as IlkData}
+        ilkData={{ debtFloor, token }}
       />
       <VaultWarnings
         warningMessages={warnings.filter((item) => item === 'settingAutoBuyTriggerWithNoThreshold')}
-        ilkData={{ debtFloor } as IlkData}
+        ilkData={{ debtFloor }}
       />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
@@ -309,17 +308,17 @@ export function SidebarConstantMultipleEditingStage({
       />
       <VaultErrors
         errorMessages={extractConstantMultipleMinSellErrors(errors)}
-        ilkData={{ debtFloor, token } as IlkData}
+        ilkData={{ debtFloor, token }}
       />
       <VaultWarnings
         warningMessages={extractConstantMultipleCommonWarnings(warnings)}
-        ilkData={{ debtFloor } as IlkData}
+        ilkData={{ debtFloor }}
         isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
         isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
       />
       <VaultErrors
         errorMessages={extractConstantMultipleCommonErrors(errors)}
-        ilkData={{ debtFloor, token } as IlkData}
+        ilkData={{ debtFloor, token }}
       />
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {

@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { MessageCard } from 'components/MessageCard'
@@ -76,8 +75,8 @@ export function SidebarCancelStopLossEditingStage({
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.cancel-downside-protection-desc')}
       </Text>
-      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token } as IlkData} />
-      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
+      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
       <CancelDownsideProtectionInformation
         liquidationPrice={liquidationPrice}
         stopLossLevel={stopLossLevel.times(100)}

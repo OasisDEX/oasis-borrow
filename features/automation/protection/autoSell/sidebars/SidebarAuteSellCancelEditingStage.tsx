@@ -1,4 +1,3 @@
-import { IlkData } from 'blockchain/ilks'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -58,8 +57,8 @@ export function SidebarAutoSellCancelEditingStage({
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('auto-sell.cancel-summary-description')}
       </Text>
-      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token } as IlkData} />
-      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
+      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
       <AutoSellInfoSectionControl autoSellState={autoSellState} />
     </>
   )

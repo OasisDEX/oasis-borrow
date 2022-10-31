@@ -5,7 +5,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
@@ -109,8 +108,8 @@ export function SidebarAutoTakeProfitEditingStage({
       <SliderValuePicker {...sliderConfig} />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token } as IlkData} />
-          <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor } as IlkData} />
+          <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+          <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
         </>
       )}
       {isEditing && (
