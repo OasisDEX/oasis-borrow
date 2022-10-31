@@ -11,14 +11,13 @@ import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { catchError, map } from 'rxjs/operators'
 
+export interface DiscoverDataResponseError {
+  code: DiscoverApiErrors
+  reason?: string
+}
 export interface DiscoverDataResponse {
-  data?: {
-    rows: DiscoverTableRowData[]
-  }
-  error?: {
-    code: DiscoverApiErrors
-    reason?: string
-  }
+  rows: DiscoverTableRowData[]
+  error?: DiscoverDataResponseError
 }
 
 function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverDataResponse> {
@@ -26,7 +25,7 @@ function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverD
     url: `${endpoint}?${query}`,
     method: 'GET',
   }).pipe(
-    map(({ response }) => ({ data: response })),
+    map(({ response }) => response),
     catchError(() => of({ error: { code: DiscoverApiErrors.UNKNOWN_ERROR } })),
   )
 }

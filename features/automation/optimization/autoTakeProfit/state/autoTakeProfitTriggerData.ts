@@ -31,6 +31,7 @@ export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
 }
 
 export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTriggerData {
+  console.log(data)
   if (data.triggers && data.triggers.length > 0) {
     const autoTakeProfitTriggersData = getTriggersByType(data.triggers, [
       TriggerType.AutoTakeProfitToCollateral,
@@ -107,7 +108,7 @@ export function prepareAddAutoTakeProfitTriggerData({
   }
 }
 
-function pickTriggerWithLowestExecutionPrice(
+export function pickTriggerWithLowestExecutionPrice(
   autoTakeProfitTriggersData: {
     // TODO is sth like this required here ?
     triggerId: number

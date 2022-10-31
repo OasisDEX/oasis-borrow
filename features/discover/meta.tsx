@@ -30,10 +30,10 @@ export interface DiscoverPageMeta {
 
 export const discoverPagesMeta: DiscoverPageMeta[] = [
   {
-    kind: DiscoverPages.HIGH_RISK_POSITIONS,
-    endpoint: '/mocks/discover/high-risk-positions.json',
+    kind: DiscoverPages.HIGHEST_RISK_POSITIONS,
+    endpoint: '/mocks/discover/highest-risk-positions.json',
     iconColor: '#FE665C',
-    iconContent: discoverNavigationIconContent[DiscoverPages.HIGH_RISK_POSITIONS],
+    iconContent: discoverNavigationIconContent[DiscoverPages.HIGHEST_RISK_POSITIONS],
     filters: {
       asset: [
         discoverFiltersAssetItems.all,
@@ -51,7 +51,7 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
     },
     banner: {
       link: '/multiply',
-      icon: discoverBannerIcons[DiscoverPages.HIGH_RISK_POSITIONS],
+      icon: discoverBannerIcons[DiscoverPages.HIGHEST_RISK_POSITIONS],
     },
   },
   {

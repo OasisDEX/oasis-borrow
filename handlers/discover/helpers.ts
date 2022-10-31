@@ -1,9 +1,9 @@
-import { HighestPnl, MostYield, Prisma } from '@prisma/client'
+import { HighestMultiplyPnl, MostYieldEarned, Prisma } from '@prisma/client'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { values } from 'lodash'
 
 type OmitNonDecimal<T> = { [K in keyof T]: T[K] extends Prisma.Decimal ? K : never }[keyof T]
-type DiscoverLite = OmitNonDecimal<HighestPnl | MostYield>
+type DiscoverLite = OmitNonDecimal<HighestMultiplyPnl | MostYieldEarned>
 
 const ELIGIBLE_TIME_SIGNATURES = ['1d', '7d', '30d', '365d']
 

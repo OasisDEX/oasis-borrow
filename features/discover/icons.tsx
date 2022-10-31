@@ -4,7 +4,7 @@ import React from 'react'
 type DiscoverIconsList = { [key in DiscoverPages]: JSX.Element }
 
 export const discoverNavigationIconContent: DiscoverIconsList = {
-  [DiscoverPages.HIGH_RISK_POSITIONS]: (
+  [DiscoverPages.HIGHEST_RISK_POSITIONS]: (
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -54,7 +54,7 @@ export const discoverNavigationIconContent: DiscoverIconsList = {
 }
 
 export const discoverBannerIcons: DiscoverIconsList = {
-  [DiscoverPages.HIGH_RISK_POSITIONS]: (
+  [DiscoverPages.HIGHEST_RISK_POSITIONS]: (
     <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect y="0.259247" width="60" height="60" rx="8" fill="url(#paint0_linear_1020_8047)" />
       <g filter="url(#filter0_d_1020_8047)">

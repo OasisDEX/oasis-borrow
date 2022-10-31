@@ -1,5 +1,5 @@
 export enum DiscoverPages {
-  HIGH_RISK_POSITIONS = 'high-risk-positions',
+  HIGHEST_RISK_POSITIONS = 'highest-risk-positions',
   HIGHEST_MULTIPLY_PNL = 'highest-multiply-pnl',
   MOST_YIELD_EARNED = 'most-yield-earned',
   LARGEST_DEBT = 'largest-debt',
@@ -31,27 +31,34 @@ export interface DiscoverFiltersSettings {
   [key: string]: string
 }
 
+export type DiscoverTableColRatioRowData = {
+  level: number
+  isAtRiskDanger: boolean
+  isAtRiskWarning: boolean
+}
+
+export type DiscoverTableActivityRowData = {
+  kind: DiscoverTableVaultActivity
+  additionalData?: {
+    timestamp?: number
+  }
+}
+
+export type DiscoverTableStatusRowData = {
+  kind: DiscoverTableVaultStatus
+  additionalData?: {
+    timestamp?: number
+    tillLiquidation?: number
+    toStopLoss?: number
+  }
+}
+
 export type DiscoverTableRowData = {
   [key: string]: string | number
 } & {
-  colRatio?: {
-    level: number
-    isAtRiskDanger: boolean
-    isAtRiskWarning: boolean
-  }
+  colRatio?: DiscoverTableColRatioRowData
 } & {
-  activity?: {
-    kind: DiscoverTableVaultActivity
-    additionalData?: {
-      timestamp?: number
-    }
-  }
+  activity?: DiscoverTableActivityRowData
 } & {
-  status?: {
-    kind: DiscoverTableVaultStatus
-    additionalData?: {
-      tillLiquidation?: number
-      toStopLoss?: number
-    }
-  }
+  status?: DiscoverTableStatusRowData
 }
