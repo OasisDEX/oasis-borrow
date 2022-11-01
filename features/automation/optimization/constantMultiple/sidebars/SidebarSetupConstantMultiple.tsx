@@ -245,10 +245,10 @@ export function SidebarSetupConstantMultiple({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!validationErrors.length,
+        disabled: false,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (!isAwaitingConfirmation && stage !== 'txSuccess') {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
             uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,

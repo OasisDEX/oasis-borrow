@@ -52,6 +52,7 @@ export interface AutomationSidebarCopiesParams {
   flow: SidebarAutomationFlow
   feature: AutomationFeatures
   isAwaitingConfirmation?: boolean
+  isRemoveForm?: boolean;
 }
 
 export interface AutomationSidebarStatusParams {

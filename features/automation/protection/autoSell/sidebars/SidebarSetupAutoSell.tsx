@@ -126,6 +126,7 @@ export function SidebarSetupAutoSell({
     stage,
     feature,
     isAwaitingConfirmation,
+    isRemoveForm
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
@@ -236,7 +237,7 @@ export function SidebarSetupAutoSell({
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (!isAwaitingConfirmation && stage !== 'txSuccess') {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
             uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,

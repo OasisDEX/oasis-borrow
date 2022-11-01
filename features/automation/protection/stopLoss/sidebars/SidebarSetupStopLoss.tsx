@@ -142,6 +142,7 @@ export function SidebarSetupStopLoss({
     stage,
     feature,
     isAwaitingConfirmation,
+    isRemoveForm
   })
   const textButtonLabel = getAutomationTextButtonLabel({
     isAddForm,
@@ -158,10 +159,10 @@ export function SidebarSetupStopLoss({
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
-    ? constantMultipleTriggerData.sellExecutionCollRatio
+      ? constantMultipleTriggerData.sellExecutionCollRatio
         .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
         .div(100)
-    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+      : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
   const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
   const liqRatio = ilkData.liquidationRatio
 
@@ -228,51 +229,53 @@ export function SidebarSetupStopLoss({
         <Grid gap={3}>
           {stopLossWriteEnabled ? (
             <>
-              <>
-                {isAddForm &&
-                  !isAwaitingConfirmation &&
-                  ['stopLossEditing', 'txFailure'].includes(stage) && (
-                    <SidebarAdjustStopLossEditingStage
-                      vault={vault}
-                      ilkData={ilkData}
-                      ethMarketPrice={ethMarketPrice}
-                      executionPrice={executionPrice}
-                      errors={errors}
-                      warnings={warnings}
-                      stopLossTriggerData={stopLossTriggerData}
-                      stopLossState={stopLossState}
-                      isEditing={isEditing}
-                      closePickerConfig={closePickerConfig}
-                      sliderConfig={sliderConfig}
+              {(stage === 'stopLossEditing' || stage === 'txFailure') && (
+                <>
+                  {isAddForm &&
+                    !isAwaitingConfirmation &&
+                    ['stopLossEditing', 'txFailure'].includes(stage) && (
+                      <SidebarAdjustStopLossEditingStage
+                        vault={vault}
+                        ilkData={ilkData}
+                        ethMarketPrice={ethMarketPrice}
+                        executionPrice={executionPrice}
+                        errors={errors}
+                        warnings={warnings}
+                        stopLossTriggerData={stopLossTriggerData}
+                        stopLossState={stopLossState}
+                        isEditing={isEditing}
+                        closePickerConfig={closePickerConfig}
+                        sliderConfig={sliderConfig}
+                      />
+                    )}
+
+                  {isAwaitingConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
+                    <SidebarAwaitingConfirmation
+                      feature="Stop-Loss"
+                      children={
+                        <SetDownsideProtectionInformation
+                          vault={vault}
+                          ilkData={ilkData}
+                          afterStopLossRatio={stopLossState.stopLossLevel}
+                          executionPrice={executionPrice}
+                          ethPrice={ethMarketPrice}
+                          isCollateralActive={closePickerConfig.isCollateralActive}
+                        />
+                      }
                     />
                   )}
 
-                {isAwaitingConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
-                  <SidebarAwaitingConfirmation
-                    feature="Auto-Sell"
-                    children={
-                      <SetDownsideProtectionInformation
-                        vault={vault}
-                        ilkData={ilkData}
-                        afterStopLossRatio={stopLossState.stopLossLevel}
-                        executionPrice={executionPrice}
-                        ethPrice={ethMarketPrice}
-                        isCollateralActive={closePickerConfig.isCollateralActive}
-                      />
-                    }
-                  />
-                )}
-
-                {isRemoveForm && (
-                  <SidebarCancelStopLossEditingStage
-                    vault={vault}
-                    ilkData={ilkData}
-                    errors={cancelStopLossErrors}
-                    warnings={cancelStopLossWarnings}
-                    stopLossLevel={stopLossTriggerData.stopLossLevel}
-                  />
-                )}
-              </>
+                  {isRemoveForm && (
+                    <SidebarCancelStopLossEditingStage
+                      vault={vault}
+                      ilkData={ilkData}
+                      errors={cancelStopLossErrors}
+                      warnings={cancelStopLossWarnings}
+                      stopLossLevel={stopLossTriggerData.stopLossLevel}
+                    />
+                  )}
+                </>
+              )}
             </>
           ) : (
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -314,13 +317,6 @@ export function SidebarSetupStopLoss({
               isAwaitingConfirmation: true,
             })
           } else {
-            if (isAwaitingConfirmation) {
-              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-                type: 'is-awaiting-confirmation',
-                isAwaitingConfirmation: false,
-              })
-            }
-
             txHandler({
               callOnSuccess: () => {
                 uiChanges.publish(TAB_CHANGE_SUBJECT, {

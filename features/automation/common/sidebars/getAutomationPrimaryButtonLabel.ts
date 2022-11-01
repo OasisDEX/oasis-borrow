@@ -92,7 +92,7 @@ function generateAutomationPrimaryButtonLabelTtext({
   isAwaitingConfirmation,
 }: AutomationSidebarCopiesParams) {
   const { t } = useTranslation()
-
+  console.log(isAwaitingConfirmation)
   if (isAwaitingConfirmation) return t('protection.confirm')
 
   switch (stage) {
@@ -123,11 +123,12 @@ export function getAutomationPrimaryButtonLabel({
   flow,
   feature,
   isAwaitingConfirmation,
+  isRemoveForm
 }: AutomationSidebarCopiesParams) {
   return `${generateAutomationPrimaryButtonLabelTtext({
     stage,
     flow,
     feature,
     isAwaitingConfirmation,
-  })} ${calculateStepNumber(isAwaitingConfirmation || false, stage)}`
+  })} ${isRemoveForm ? '' : calculateStepNumber(isAwaitingConfirmation || false, stage)}`
 }

@@ -33,13 +33,6 @@ export function useStopLossStateInitializator(
 
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-      type: 'is-awaiting-confirmation',
-      isAwaitingConfirmation: false,
-    })
-  }, [])
-
-  useEffect(() => {
-    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'close-type',
       toCollateral: isToCollateral,
     })
@@ -57,6 +50,10 @@ export function useStopLossStateInitializator(
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'current-form',
       currentForm: 'add',
+    })
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      type: 'is-awaiting-confirmation',
+      isAwaitingConfirmation: false,
     })
   }, [collateralizationRatio])
 
