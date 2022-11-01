@@ -20,8 +20,11 @@ DiscoverPage.seoTags = discoverPageSeoTags
 
 export default DiscoverPage
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = discoverPagesMeta.map(({ kind }) => ({ params: { slug: kind } }))
+export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
+  const paths =
+    locales
+      ?.map((locale) => discoverPagesMeta.map(({ kind }) => ({ params: { slug: kind }, locale })))
+      .flat() || []
 
   return {
     paths,

@@ -20,11 +20,11 @@ export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem
 }
 
 export const discoverSizeFilter: DiscoverFiltersListItem[] = [
-  { value: '<100k', label: 'Under $100,000' },
-  { value: '100k-250k', label: '$100,000 - $250,000' },
-  { value: '250k-500k', label: '$250,000 - $500,000' },
-  { value: '500k-1m', label: '$500,000 - $1,000,000' },
-  { value: '>1m', label: 'Over $1,000,000' },
+  { value: '<100000', label: 'Under $100,000' },
+  { value: '100000-250000', label: '$100,000 - $250,000' },
+  { value: '250000-500000', label: '$250,000 - $500,000' },
+  { value: '500000-1000000', label: '$500,000 - $1,000,000' },
+  { value: '>1000000', label: 'Over $1,000,000' },
 ]
 
 export const discoverMultipleFilter: DiscoverFiltersListItem[] = [

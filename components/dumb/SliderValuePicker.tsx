@@ -6,9 +6,9 @@ import { Flex, SxStyleProp, useThemeUI } from 'theme-ui'
 export interface SliderValuePickerProps {
   sliderPercentageFill: BigNumber
   leftBoundry: BigNumber
-  leftBoundryFormatter: (input: BigNumber) => string
+  leftBoundryFormatter: (input: BigNumber) => string | JSX.Element
   rightBoundry: BigNumber
-  rightBoundryFormatter: (input: BigNumber) => string
+  rightBoundryFormatter: (input: BigNumber) => string | JSX.Element
   onChange: (input: BigNumber) => void
   minBoundry: BigNumber
   maxBoundry: BigNumber

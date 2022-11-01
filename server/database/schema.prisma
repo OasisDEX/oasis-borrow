@@ -125,7 +125,7 @@ model Discover {
     @@map("discover")
 }
 
-model HighRisk {
+model HighestRiskPositions {
     protocol_id       String
     position_id       String
     collateral_type   String
@@ -139,20 +139,7 @@ model HighRisk {
     @@map("high_risk")
 }
 
-model LargestDebt {
-    protocol_id      String
-    position_id      String
-    collateral_type  String
-    collateral_value Decimal
-    vault_debt       Decimal
-    coll_ratio       Decimal
-    last_action      Json
-
-    @@unique([protocol_id, position_id], name: "protocol_id_position_id")
-    @@map("largest_debt")
-}
-
-model HighestPnl {
+model HighestMultiplyPnl {
     protocol_id      String
     position_id      String
     collateral_type  String
@@ -170,7 +157,7 @@ model HighestPnl {
     @@map("highest_pnl")
 }
 
-model MostYield {
+model MostYieldEarned {
     protocol_id      String
     position_id      String
     collateral_type  String
@@ -187,4 +174,17 @@ model MostYield {
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("most_yield")
+}
+
+model LargestDebt {
+    protocol_id      String
+    position_id      String
+    collateral_type  String
+    collateral_value Decimal
+    vault_debt       Decimal
+    coll_ratio       Decimal
+    last_action      Json
+
+    @@unique([protocol_id, position_id], name: "protocol_id_position_id")
+    @@map("largest_debt")
 }

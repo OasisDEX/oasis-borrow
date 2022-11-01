@@ -139,7 +139,7 @@ Some of the values that are used you can check in the `.env` file.
   feature if you'd like to remove that functionality at all. The values are either `0` (disabled) or
   `1` (enabled).
 
-- `SHOW_BUILD_INFO` - The value will determine whether an information about the build is diplayed in
+- `SHOW_BUILD_INFO` - The value will determine whether an information about the build is displayed in
   the footer. Currently we display only the build time and commit from which it is built. This
   targets deployments to staging environments so that the tam can see which version the UI reflects.
   The value is either `0` (disabled) or `1` (enabled)
@@ -178,7 +178,7 @@ at _run time_
 - `NEXT_PUBLIC_SENTRY_ENV` - The environment that sentry events are tagged as.  `production` | `staging` | `pullrequest` | `development`
 
 _Note: Make sure that you call the process that build the project with the `build-time` vars and
-make sure that you call the proces that runs the application with the `run-time` vars._
+make sure that you call the process that runs the application with the `run-time` vars._
 
 <br>
 
@@ -226,7 +226,7 @@ The configuration params for `multiply-proxy-actions` container are as follows:
 - `PRIV_KEY_MAINNET` - The private key of the first wallet address from the signer that is used
 - `TENDERLY_USERNAME` - This is the username in tenderly. It is advised to create your own registration and use your own username. Register [here](https://tenderly.co/).
 - `TENDERLY_PROJECT` - Once you have an account there is a default project - `project`. You can create other project names as well.
-- `USE_DUMMY` - By defailt this value is `0`. If it is set to `1` then instead of the real 1inch Exchange implementation being used, you will use the DummyExchange implementation.
+- `USE_DUMMY` - By default this value is `0`. If it is set to `1` then instead of the real 1inch Exchange implementation being used, you will use the DummyExchange implementation.
 - `BLOCK_NUMBER` - There is a hardcoded number currently used - `13008355`. If you want to fork from a different one, please use this parameter.
 
 <br>

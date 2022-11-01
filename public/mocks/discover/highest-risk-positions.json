@@ -6,7 +6,10 @@
       "nextOsmPrice": 1326.9,
       "maxLiquidationAmount": 353422.43,
       "status": {
-        "kind": 1
+        "kind": 1,
+        "additionalData": {
+          "timestamp": 1666876948181
+        }
       },
       "cdpId": 18604
     },
