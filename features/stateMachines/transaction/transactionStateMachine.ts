@@ -113,12 +113,12 @@ export function startTransactionService<T extends TxMeta>(
   return (context) => {
     return combineLatest(context$, txHelpers$).pipe(
       first(),
-      switchMap(([{ safeConfirmations }, { sendWithGasEstimation }]) => {
+      switchMap(([{ safeConfirmations }, { send }]) => {
         if (context.transactionParameters === undefined) {
           throw new Error('transactionParameters not set')
         }
 
-        return sendWithGasEstimation(context.transactionDef, context.transactionParameters).pipe(
+        return send(context.transactionDef, context.transactionParameters).pipe(
           transactionToX<TransactionStateMachineEvents<T>, T>(
             {
               type: 'WAITING_FOR_APPROVAL',
