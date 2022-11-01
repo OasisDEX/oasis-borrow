@@ -99,7 +99,7 @@ export function createAavePosition$(
   return combineLatest(getUserProxyAddress$(address), aaveAvailableLiquidityETH$, ethPrice$).pipe(
     switchMap(([proxyAddress, liquidity, ethPrice]) => {
       if (!proxyAddress) return EMPTY
-      return userAaveAccountData$({ proxyAddress }).pipe(
+      return userAaveAccountData$({ address: proxyAddress }).pipe(
         filter((accountData) => accountData.totalCollateralETH.gt(MINIMAL_COLLATERAL)),
         map((accountData) => {
           const netValue = accountData.totalCollateralETH
