@@ -64,22 +64,32 @@ export async function oneInchCallMock(
   }
 }
 
+const DEFAULT_PROTOCOLS = ['UNISWAP_V3', 'PMM4', 'UNISWAP_V2', 'SUSHI', 'CURVE', 'PSM']
+
 // TODO: export from oasis-earn-sc into @oasisdex/oasis-actions lib and import from there
-export function getOneInchCall(swapAddress: string, debug?: false) {
-  return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
+export function getOneInchCall(swapAddress: string, debug?: true) {
+  return async (
+    from: string,
+    to: string,
+    amount: BigNumber,
+    slippage: BigNumber,
+    protocols: string[] = DEFAULT_PROTOCOLS,
+  ) => {
     const response = await swapOneInchTokens(
       from,
       to,
       amount.toString(),
       swapAddress,
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
+      amount.toString() === '1' ? [] : protocols,
     )
 
+    console.log('1inch')
     if (debug) {
       console.log('1inch')
       console.log('fromTokenAmount', response.fromTokenAmount.toString())
       console.log('toTokenAmount', response.toTokenAmount.toString())
-      console.log('slippage', slippage.toString())
+      console.log('slippage', slippage.times('100').toString())
     }
 
     return {
