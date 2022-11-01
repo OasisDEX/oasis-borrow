@@ -16,11 +16,11 @@ export interface AaveUserAccountData {
 }
 
 export interface AaveUserAccountDataParameters {
-  proxyAddress: string
+  address: string
 }
 
 export type AaveUserConfigurationsParameters = {
-  proxyAddress: string
+  address: string
 }
 export type AaveConfigurationData = string[]
 
@@ -28,8 +28,8 @@ export const getAaveUserAccountData: CallDef<AaveUserAccountDataParameters, Aave
   call: (args, { contract, aaveLendingPool }) => {
     return contract<AaveLendingPool>(aaveLendingPool).methods.getUserAccountData
   },
-  prepareArgs: ({ proxyAddress }) => {
-    return [proxyAddress]
+  prepareArgs: ({ address }) => {
+    return [address]
   },
   postprocess: (result) => {
     return {
@@ -53,8 +53,8 @@ export const getAaveUserConfiguration: CallDef<
   call: (args, { contract, aaveLendingPool }) => {
     return contract<AaveLendingPool>(aaveLendingPool).methods.getUserConfiguration
   },
-  prepareArgs: ({ proxyAddress }) => {
-    return [proxyAddress]
+  prepareArgs: ({ address }) => {
+    return [address]
   },
 }
 

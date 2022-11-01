@@ -19,9 +19,9 @@ import { AaveProtocolData } from '../state'
 export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
 
 export type AaveUserConfigurationType = ({
-  proxyAddress,
+  address,
 }: {
-  proxyAddress: string
+  address: string
 }) => Observable<AaveConfigurationData>
 
 export type AaveReserveConfigurationDataType = ({
@@ -38,14 +38,14 @@ export function getAaveProtocolData$(
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
   token: string,
-  proxyAddress: string,
+  address: string,
 ): Observable<AaveProtocolData> {
   return combineLatest(
-    aaveUserReserveData$({ token, proxyAddress }),
-    aaveUserAccountData$({ proxyAddress }),
+    aaveUserReserveData$({ token, address }),
+    aaveUserAccountData$({ address }),
     aaveOracleAssetPriceData$({ token }),
     aaveReserveConfigurationData$({ token }),
-    aaveUserConfiguration$({ proxyAddress }),
+    aaveUserConfiguration$({ address }),
     aaveReservesList$(),
   ).pipe(
     map(
