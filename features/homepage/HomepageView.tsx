@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { DomainBanner } from 'components/DomainBanner'
 import { HomePageBanner } from 'components/HomePageBanner'
 import { InfoCard } from 'components/InfoCard'
 import { AppLink } from 'components/Links'
@@ -157,6 +158,8 @@ export function HomepageView() {
 
   const router = useRouter()
   const standardAnimationDuration = '0.7s'
+  // TODO: check if user has domain connected to current wallet
+  const doesUserHasDomain = false
 
   useEffect(() => {
     if (!localReferral && referralsEnabled) {
@@ -181,7 +184,11 @@ export function HomepageView() {
           mb: 0,
         }}
       >
-        <HomePageBanner heading={t('ref.banner')} link="/earn/aave/open/stETHeth" />
+        {doesUserHasDomain ? (
+          <HomePageBanner heading={t('ref.banner')} link="/earn/aave/open/stETHeth" />
+        ) : (
+          <DomainBanner heading="Claim your NFT domain here!" link="/domain" />
+        )}
       </Flex>
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
