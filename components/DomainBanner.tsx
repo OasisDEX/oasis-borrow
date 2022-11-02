@@ -51,7 +51,7 @@ export function DomainBanner({ heading, link }: DomainBannerProps) {
               justifyContent: 'space-between',
               minHeight: '44px',
               '&:hover svg': {
-                transform: 'translateX(10px)',
+                transform: 'translateX(8px)',
               },
             }}
           >
