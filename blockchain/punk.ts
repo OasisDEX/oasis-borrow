@@ -14,6 +14,7 @@ const resolverInterface = new ethers.utils.Interface([
 
 export function resolvePunkName$(context$: Observable<Context>, address: string) {
   return context$.pipe(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     switchMap(async (context) => {
       return await arbitrumGoerliHttpProvider
         .call({

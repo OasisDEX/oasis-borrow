@@ -620,7 +620,7 @@ export function setupAppContext() {
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
-  const oasisName$ = memoize(curry(resolvePunkName$)(context$), (address) => address)
+  const punkName$ = memoize(curry(resolvePunkName$)(context$), (address) => address)
   // console.log('oasisName', oasisName)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
@@ -1064,9 +1064,8 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  // just temp to check if it will work with punk domain then add check for both domains standards ~Ł
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, oasisName$)
-  // const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
+
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$, punkName$)
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(context$),

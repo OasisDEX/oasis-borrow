@@ -18,6 +18,7 @@ export function createAccountData(
   vaults$: (address: string) => Observable<Vault[]>,
   hasAavePosition$: (address: string) => Observable<boolean>,
   ensName$: (address: string) => Observable<string>,
+  punkName$: (address: string) => Observable<string>,
 ): Observable<AccountDetails> {
   return context$.pipe(
     filter((context): context is ContextConnected => context.status === 'connected'),
@@ -26,12 +27,13 @@ export function createAccountData(
         startWithDefault(balance$('DAI', context.account), undefined),
         startWithDefault(vaults$(context.account).pipe(map((vault) => vault.length)), undefined),
         startWithDefault(ensName$(context.account), null),
+        startWithDefault(punkName$(context.account), null),
         startWithDefault(hasAavePosition$(context.account), false),
       ).pipe(
-        map(([balance, numberOfVaults, ensName, hasAavePosition]) => ({
+        map(([balance, numberOfVaults, ensName, punkName, hasAavePosition]) => ({
           numberOfVaults: hasAavePosition ? (numberOfVaults || 0) + 1 : numberOfVaults,
           daiBalance: balance,
-          ensName,
+          ensName: ensName || punkName,
         })),
       ),
     ),
