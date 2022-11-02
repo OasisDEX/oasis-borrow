@@ -427,7 +427,7 @@ const arbitrumGoerli: NetworkConfig = {
   id: '421613',
   name: 'arbitrum-goerli',
   label: 'arbitrum-goerli',
-  infuraUrl: `https://goerli-rollup.arbitrum.io/rpc`,
+  infuraUrl: `https://arbitrum-goerli.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://arbitrum-goerli.infura.io/ws/v3/${infuraProjectId}`,
   // below is just copied from goerli ot make types match ~Ł
   safeConfirmations: 6,
