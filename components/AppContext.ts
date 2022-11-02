@@ -101,6 +101,7 @@ import {
   GasPriceParams,
   tokenPrices$,
 } from 'blockchain/prices'
+import { resolvePunkName } from 'blockchain/punk'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -619,6 +620,8 @@ export function setupAppContext() {
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
+  const oasisName = resolvePunkName('0x497CB171dDF49af82250D7723195D7E47Ca38A95') // KISS Ł
+  console.log('oasisName', oasisName)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
