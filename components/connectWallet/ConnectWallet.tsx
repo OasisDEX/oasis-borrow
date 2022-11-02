@@ -621,6 +621,8 @@ export function WithConnection({ children }: WithChildren) {
     }
   }, [web3Context?.status])
 
+  console.log('getNetworkId()')
+  console.log(getNetworkId())
   useEffect(() => autoConnect(web3Context$, getNetworkId(), connectReadonly), [])
 
   return children
