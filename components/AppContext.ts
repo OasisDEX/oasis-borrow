@@ -101,7 +101,7 @@ import {
   GasPriceParams,
   tokenPrices$,
 } from 'blockchain/prices'
-import { resolvePunkName } from 'blockchain/punk'
+import { resolvePunkName$ } from 'blockchain/punk'
 import {
   createAccountBalance$,
   createAllowance$,
@@ -620,8 +620,8 @@ export function setupAppContext() {
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
-  const oasisName = resolvePunkName('0x497CB171dDF49af82250D7723195D7E47Ca38A95') // KISS Ł
-  console.log('oasisName', oasisName)
+  const oasisName$ = memoize(curry(resolvePunkName$)(context$), (address) => address)
+  // console.log('oasisName', oasisName)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
@@ -1064,7 +1064,9 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
+  // just temp to check if it will work with punk domain then add check for both domains standards ~Ł
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, oasisName$)
+  // const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(context$),
