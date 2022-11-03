@@ -41,7 +41,8 @@ export function NFTDomainForm() {
     // TODO: run transaction
     setTimeout(() => {
       setIsLoading(false)
-      if (shouldTransactionFail) setErrors(['Unable to process transaction, please try again later'])
+      if (shouldTransactionFail)
+        setErrors(['Unable to process transaction, please try again later'])
       else {
         setErrors([])
         setStep(3)
