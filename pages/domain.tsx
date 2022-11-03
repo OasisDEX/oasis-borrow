@@ -1,7 +1,7 @@
 import { PageSEOTags } from 'components/HeadTags'
+import { NFTDomainForm } from 'components/l2-hackaton-nft/NFTDomainForm'
 import { MarketingLayout } from 'components/Layouts'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useScrollToTop } from 'helpers/useScrollToTop'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { Fragment } from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
@@ -13,7 +13,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 function DomainPage() {
-  useScrollToTop()
+  // useScrollToTop()
 
   const securityCategories = [
     {
@@ -49,10 +49,11 @@ function DomainPage() {
           gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(1, 100px calc(100% - 120px))'],
           columnGap: 4,
           rowGap: [2, 5],
+          mb: 5,
         }}
       >
         {securityCategories.map((category) => (
-          <Fragment key={`SecurityCategories_${category.name}`}>
+          <Fragment key={`domain-benefit-${category.name}`}>
             <Box sx={{ textAlign: ['center', 'left'] }}>
               <Image
                 src={staticFilesRuntimeUrl(`/static/img/domain/${category.name}.svg`)}
@@ -71,6 +72,7 @@ function DomainPage() {
           </Fragment>
         ))}
       </Grid>
+      <NFTDomainForm />
     </Box>
   )
 }
