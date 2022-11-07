@@ -91,6 +91,7 @@ model WalletRisk {
 
 model CollateralType {
     collateral_name     String   @unique
+    token               String
     next_price          Decimal
     current_price       Decimal
     liquidation_ratio   Decimal
@@ -126,14 +127,16 @@ model Discover {
 }
 
 model HighestRiskPositions {
-    protocol_id       String
-    position_id       String
-    collateral_type   String
-    collateral_value  Decimal
-    liquidation_price Decimal
-    liquidation_value Decimal
-    next_price        Decimal
-    status            Json
+    protocol_id           String
+    position_id           String
+    collateral_type       String
+    collateral_value      Decimal
+    liquidation_proximity Decimal
+    liquidation_price     Decimal
+    liquidation_value     Decimal
+    next_price            Decimal
+    status                Json
+    type                  VaultType
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("high_risk")
@@ -152,6 +155,7 @@ model HighestMultiplyPnl {
     pnl_365d         Decimal
     pnl_ytd          Decimal
     last_action      Json
+    type             VaultType
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("highest_pnl")
@@ -171,6 +175,7 @@ model MostYieldEarned {
     pnl_ytd          Decimal
     yield_30d        Decimal
     last_action      Json
+    type             VaultType
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("most_yield")
@@ -184,6 +189,7 @@ model LargestDebt {
     vault_debt       Decimal
     coll_ratio       Decimal
     last_action      Json
+    type             VaultType
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("largest_debt")
