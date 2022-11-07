@@ -22,21 +22,15 @@ export function DiscoverTable({
   rows: DiscoverTableRowData[]
   userContext: MixpanelUserContext
 }) {
+  const rowsForBanner = Math.min(rows.length - 1, 9)
+
   return (
     <Box
       sx={{
         position: 'relative',
         px: ['24px', null, null, 4],
         pb: 1,
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: '51px',
-          left: 0,
-          right: 0,
-          height: '1px',
-          backgroundColor: 'neutral20',
-        },
+        mt: '-20px',
       }}
     >
       <Box
@@ -46,17 +40,30 @@ export function DiscoverTable({
           borderSpacing: '0 20px',
         }}
       >
-        <Box as="thead">
+        <Box
+          as="thead"
+          sx={{
+            ...(rows.length > 2 && {
+              position: 'sticky',
+              zIndex: 1,
+              top: '120px',
+            }),
+          }}
+        >
           <tr>
             {Object.keys(rows[0]).map((label, i) => (
-              <DiscoverTableHeaderCell key={getRowKey(i, rows[0])} label={label} />
+              <DiscoverTableHeaderCell
+                key={getRowKey(i, rows[0])}
+                first={i === 0}
+                last={i + 1 === Object.keys(rows[0]).length}
+                label={label}
+              />
             ))}
           </tr>
         </Box>
         <Box
           as="tbody"
           sx={{
-            borderSpacing: '12px 0',
             opacity: isLoading ? 0.5 : 1,
             pointerEvents: isLoading ? 'none' : 'auto',
             transition: '200ms opacity',
@@ -65,7 +72,7 @@ export function DiscoverTable({
           {rows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
               <DiscoverTableDataRow kind={kind} row={row} />
-              {banner && i === Math.floor((rows.length - 1) / 2) && (
+              {banner && i === Math.floor(rowsForBanner / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
                     <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
@@ -80,15 +87,24 @@ export function DiscoverTable({
   )
 }
 
-export function DiscoverTableHeaderCell({ label }: { label: string }) {
+export function DiscoverTableHeaderCell({
+  first,
+  last,
+  label,
+}: {
+  first: boolean
+  last: boolean
+  label: string
+}) {
   const { t } = useTranslation()
 
   return (
     <Box
       as="th"
       sx={{
+        position: 'relative',
         px: '12px',
-        pb: '20px',
+        py: '20px',
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',
@@ -100,7 +116,28 @@ export function DiscoverTableHeaderCell({ label }: { label: string }) {
         },
       }}
     >
-      {t(`discover.table.header.${kebabCase(label)}`)}
+      <Box
+        sx={{
+          '&::before, &::after': {
+            content: '""',
+            position: 'absolute',
+            left: first ? -4 : 0,
+            right: last ? -4 : 0,
+            bottom: 0,
+          },
+          '&::before': {
+            top: '-20px',
+            backgroundColor: 'neutral10',
+          },
+          '&::after': {
+            height: '1px',
+            backgroundColor: 'neutral20',
+          },
+        }}
+      />
+      <Box as="span" sx={{ position: 'relative' }}>
+        {t(`discover.table.header.${kebabCase(label)}`)}
+      </Box>
     </Box>
   )
 }

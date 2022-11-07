@@ -6,8 +6,10 @@ import { getDefaultSettingsState } from 'features/discover/helpers'
 import { discoverPagesMeta } from 'features/discover/meta'
 import { DiscoverFiltersSettings, DiscoverPages } from 'features/discover/types'
 import { keyBy } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { theme } from 'theme'
 import { Box } from 'theme-ui'
+import { useMediaQuery } from 'usehooks-ts'
 
 interface DiscoverControlProps {
   kind: DiscoverPages
@@ -15,6 +17,8 @@ interface DiscoverControlProps {
 }
 
 export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
+  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
+  const anchor = useRef<HTMLDivElement>(null)
   const { banner, endpoint, filters } = keyBy(discoverPagesMeta, 'kind')[kind]
   const [settings, setSettings] = useState<DiscoverFiltersSettings>(
     getDefaultSettingsState({ filters, kind }),
@@ -23,12 +27,33 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
 
   const response = getDiscoverData(endpoint, settings)
 
+  const onChangeHandler = useCallback(
+    (key, currentValue) => {
+      if (!isSmallerScreen) {
+        const currentPosition = document.querySelector('body')?.scrollTop || 0
+        const destinatedPosition = anchor.current ? anchor.current.offsetTop + 1 : 0
+
+        if (currentPosition > destinatedPosition) {
+          document.querySelector('body')?.scrollTo({ top: destinatedPosition, behavior: 'smooth' })
+        }
+      }
+      trackingEvents.discover.selectedFilter(kind, key, currentValue.label, userContext)
+      setIsLoading(true)
+      setSettings({
+        ...settings,
+        [key]: currentValue.value,
+      })
+    },
+    [settings],
+  )
+
   useEffect(() => {
     if (response) setIsLoading(false)
   }, [response])
 
   return (
     <Box
+      ref={anchor}
       sx={{
         backgroundColor: 'neutral10',
         border: '1px solid',
@@ -37,19 +62,15 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
       }}
     >
       <DiscoverFilters
+        amountOfRows={response?.rows.length || 0}
         filters={filters}
-        onChange={(key, currentValue) => {
-          trackingEvents.discover.selectedFilter(kind, key, currentValue.label, userContext)
-          setIsLoading(true)
-          setSettings({
-            ...settings,
-            [key]: currentValue.value,
-          })
-        }}
+        isSmallerScreen={isSmallerScreen}
+        onChange={onChangeHandler}
       />
       <DiscoverData
         banner={banner}
         isLoading={isLoading}
+        isSmallerScreen={isSmallerScreen}
         kind={kind}
         response={response}
         userContext={userContext}

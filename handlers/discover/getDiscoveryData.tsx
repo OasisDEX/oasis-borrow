@@ -4,7 +4,7 @@ import { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
-const AMOUNT_OF_ROWS = 10
+const AMOUNT_OF_ROWS = 20
 
 const querySchema = z.object({
   asset: z.string().optional(),
