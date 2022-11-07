@@ -20,6 +20,7 @@ import { SidebarViewPositionAaveVault } from '../sidebars/SidebarViewPositionAav
 
 interface AaveManageViewPositionViewProps {
   address: string
+  proxyAddress?: string
 }
 
 function AavePositionContainer({
@@ -87,7 +88,7 @@ function AavePositionContainer({
   )
 }
 
-export function AavePositionView({ address }: AaveManageViewPositionViewProps) {
+export function AavePositionView({ address, proxyAddress }: AaveManageViewPositionViewProps) {
   const { connectedContext$ } = useAppContext()
   const { aaveProtocolData$, detectAaveStrategy$ } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
@@ -96,7 +97,7 @@ export function AavePositionView({ address }: AaveManageViewPositionViewProps) {
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveStrategy, aaveStrategyError] = useObservable(detectAaveStrategy$(address))
   const [aaveProtocolData, aaveProtocolDataError] = useObservable(
-    aaveProtocolData$('STETH', address),
+    aaveProtocolData$('STETH', proxyAddress ?? address),
   )
 
   return (

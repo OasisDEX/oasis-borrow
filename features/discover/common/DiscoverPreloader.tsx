@@ -15,7 +15,7 @@ export function DiscoverPreloader({ isContentLoaded }: { isContentLoaded: boolea
               my: 'auto',
             }
           : {
-              mb: ['24px', null, null, 4],
+              my: ['24px', null, null, 4],
             }),
       }}
       variant="extraLarge"

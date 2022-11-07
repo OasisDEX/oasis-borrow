@@ -28,12 +28,10 @@ export function DiscoverTable({
         position: 'relative',
         px: ['24px', null, null, 4],
         pb: 1,
-        borderTop: '1px solid',
-        borderTopColor: 'neutral20',
         '&::before': {
           content: '""',
           position: 'absolute',
-          top: '52px',
+          top: '51px',
           left: 0,
           right: 0,
           height: '1px',

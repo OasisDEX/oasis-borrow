@@ -6,7 +6,7 @@ import { CallDef } from '../callsHelpers'
 
 export interface AaveUserReserveDataParameters {
   token: string
-  proxyAddress: string
+  address: string
 }
 
 export interface AaveReserveDataParameters {
@@ -41,8 +41,8 @@ export const getAaveUserReserveData: CallDef<AaveUserReserveDataParameters, Aave
   call: (args, { contract, aaveProtocolDataProvider }) => {
     return contract<AaveProtocolDataProvider>(aaveProtocolDataProvider).methods.getUserReserveData
   },
-  prepareArgs: ({ token, proxyAddress }, context) => {
-    return [context.tokens[token].address, proxyAddress]
+  prepareArgs: ({ token, address }, context) => {
+    return [context.tokens[token].address, address]
   },
   postprocess: (result, args) => {
     return {

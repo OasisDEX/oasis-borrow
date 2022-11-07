@@ -39,11 +39,7 @@ export function getOpenAavePositionStateMachineServices(
   }: {
     token: string
   }) => Observable<AaveReserveConfigurationData>,
-  aaveUserConfiguration$: ({
-    proxyAddress,
-  }: {
-    proxyAddress: string
-  }) => Observable<AaveConfigurationData>,
+  aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
 ): OpenAaveStateMachineServices {
   return {
@@ -84,7 +80,7 @@ export function getOpenAavePositionStateMachineServices(
     },
     getHasOtherAssets: ({ proxyAddress }) => {
       return combineLatest(
-        aaveUserConfiguration$({ proxyAddress: proxyAddress! }),
+        aaveUserConfiguration$({ address: proxyAddress! }),
         aaveReservesList$(),
       ).pipe(
         map(([aaveUserConfiguration, aaveReservesList]) => {
