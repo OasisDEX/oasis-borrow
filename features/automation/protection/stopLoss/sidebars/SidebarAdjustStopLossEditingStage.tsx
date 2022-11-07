@@ -55,15 +55,13 @@ export function SetDownsideProtectionInformation({
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: {
-        debt,
-        token,
-        lockedCollateral,
-        liquidationRatio,
-        liquidationPenalty,
-        liquidationPrice,
-      },
+    positionData: {
+      debt,
+      liquidationPenalty,
+      liquidationPrice,
+      liquidationRatio,
+      lockedCollateral,
+      token,
     },
   } = useAutomationContext()
 
@@ -158,10 +156,8 @@ export function SidebarAdjustStopLossEditingStage({
   const { uiChanges } = useAppContext()
   const {
     stopLossTriggerData,
-    commonData: {
-      positionInfo: { id, ilk, token, debt, liquidationRatio, collateralizationRatio, debtFloor },
-      environmentInfo: { ethMarketPrice },
-    },
+    environmentData: { ethMarketPrice },
+    positionData: { id, ilk, token, debt, liquidationRatio, collateralizationRatio, debtFloor },
   } = useAutomationContext()
 
   useDebouncedCallback(

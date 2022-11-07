@@ -19,9 +19,7 @@ export function SidebarAutoTakeProfitRemovalEditingStage({
 }: SidebarAutoTakeProfitRemovalEditingStageProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: { debtFloor, token },
-    },
+    positionData: { debtFloor, token },
   } = useAutomationContext()
 
   return (
@@ -39,9 +37,7 @@ export function SidebarAutoTakeProfitRemovalEditingStage({
 function AutoTakeProfitInfoSectionControl() {
   const {
     autoTakeProfitTriggerData,
-    commonData: {
-      positionInfo: { token, debt, collateralizationRatio },
-    },
+    positionData: { token, debt, collateralizationRatio },
   } = useAutomationContext()
 
   return (

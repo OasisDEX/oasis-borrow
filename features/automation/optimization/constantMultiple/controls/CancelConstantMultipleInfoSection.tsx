@@ -9,9 +9,7 @@ export function CancelConstantMultipleInfoSection() {
   const { t } = useTranslation()
   const {
     constantMultipleTriggerData,
-    commonData: {
-      positionInfo: { collateralizationRatio, debt, liquidationPrice },
-    },
+    positionData: { collateralizationRatio, debt, liquidationPrice },
   } = useAutomationContext()
 
   return (

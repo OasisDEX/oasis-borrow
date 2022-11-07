@@ -17,9 +17,7 @@ export function AutoBuyDetailsControl() {
   const {
     constantMultipleTriggerData,
     autoBuyTriggerData,
-    commonData: {
-      positionInfo: { ilk, id, token, debt, lockedCollateral },
-    },
+    positionData: { ilk, id, token, debt, lockedCollateral },
   } = useAutomationContext()
 
   const {

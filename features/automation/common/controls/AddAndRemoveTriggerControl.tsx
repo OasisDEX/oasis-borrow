@@ -59,10 +59,8 @@ export function AddAndRemoveTriggerControl({
 }: AddAndRemoveTriggerControlProps) {
   const { uiChanges } = useAppContext()
   const {
-    commonData: {
-      positionInfo: { id, ilk, owner, collateralizationRatio },
-      environmentInfo: { ethMarketPrice },
-    },
+    environmentData: { ethMarketPrice },
+    positionData: { id, ilk, owner, collateralizationRatio },
   } = useAutomationContext()
 
   const { removeTxData, textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({

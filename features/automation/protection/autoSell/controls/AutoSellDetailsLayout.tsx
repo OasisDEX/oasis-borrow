@@ -45,9 +45,7 @@ export function AutoSellDetailsLayout({
   const {
     autoSellTriggerData,
     constantMultipleTriggerData: { isTriggerEnabled },
-    commonData: {
-      positionInfo: { id, ilk, token },
-    },
+    positionData: { id, ilk, token },
   } = useAutomationContext()
 
   const isConstantMultipleEnabled = isTriggerEnabled

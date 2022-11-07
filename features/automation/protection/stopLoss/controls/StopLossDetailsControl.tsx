@@ -28,18 +28,16 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
   const { t } = useTranslation()
   const {
     stopLossTriggerData,
-    commonData: {
-      positionInfo: {
-        id,
-        ilk,
-        debt,
-        token,
-        lockedCollateral,
-        collateralizationRatio,
-        liquidationRatio,
-        liquidationPenalty,
-        collateralizationRatioAtNextPrice,
-      },
+    positionData: {
+      collateralizationRatio,
+      collateralizationRatioAtNextPrice,
+      debt,
+      id,
+      ilk,
+      liquidationPenalty,
+      liquidationRatio,
+      lockedCollateral,
+      token,
     },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()

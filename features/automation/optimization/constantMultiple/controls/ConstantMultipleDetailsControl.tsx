@@ -31,10 +31,8 @@ export function ConstantMultipleDetailsControl({
 
   const {
     constantMultipleTriggerData,
-    commonData: {
-      positionInfo: { ilk, id, token, debt, lockedCollateral },
-      environmentInfo: { tokenMarketPrice },
-    },
+    environmentData: { tokenMarketPrice },
+    positionData: { ilk, id, token, debt, lockedCollateral },
   } = useAutomationContext()
 
   const {

@@ -16,9 +16,7 @@ interface AutoSellInfoSectionControlProps {
 function AutoSellInfoSectionControl({ autoSellState }: AutoSellInfoSectionControlProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: { debt, collateralizationRatio, liquidationPrice },
-    },
+    positionData: { debt, collateralizationRatio, liquidationPrice },
   } = useAutomationContext()
 
   return (
@@ -47,9 +45,7 @@ export function SidebarAutoSellCancelEditingStage({
 }: SidebarAutoSellCancelEditingStageProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: { debtFloor, token },
-    },
+    positionData: { debtFloor, token },
   } = useAutomationContext()
 
   return (

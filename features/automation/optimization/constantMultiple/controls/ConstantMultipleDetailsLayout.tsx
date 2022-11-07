@@ -64,9 +64,7 @@ export function ConstantMultipleDetailsLayout({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    commonData: {
-      positionInfo: { vaultType },
-    },
+    positionData: { vaultType },
   } = useAutomationContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isMultiplyVault = vaultType === VaultType.Multiply

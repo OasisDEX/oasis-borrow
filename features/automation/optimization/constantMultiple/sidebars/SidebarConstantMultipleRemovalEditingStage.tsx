@@ -19,9 +19,7 @@ export function SidebarConstantMultipleRemovalEditingStage({
 }: SidebarConstantMultipleRemovalEditingStageProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: { debtFloor, token },
-    },
+    positionData: { debtFloor, token },
   } = useAutomationContext()
 
   return (

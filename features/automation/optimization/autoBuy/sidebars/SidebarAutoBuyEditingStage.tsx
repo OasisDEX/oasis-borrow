@@ -61,9 +61,7 @@ export function SidebarAutoBuyEditingStage({
   const {
     autoBuyTriggerData,
     stopLossTriggerData,
-    commonData: {
-      positionInfo: { id, ilk, token, debt, debtFloor, lockedCollateral, collateralizationRatio },
-    },
+    positionData: { id, ilk, token, debt, debtFloor, lockedCollateral, collateralizationRatio },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
@@ -339,9 +337,7 @@ function AutoBuyInfoSectionControl({
   collateralDelta,
 }: AutoBuyInfoSectionControlProps) {
   const {
-    commonData: {
-      positionInfo: { debt, lockedCollateral, token },
-    },
+    positionData: { debt, lockedCollateral, token },
   } = useAutomationContext()
 
   const deviationPercent = autoBuyState.deviation.div(100)

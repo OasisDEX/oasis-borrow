@@ -85,12 +85,10 @@ export function SidebarConstantMultipleEditingStage({
   const [, setHash] = useHash()
   const {
     autoBuyTriggerData,
+    autoSellTriggerData,
     constantMultipleTriggerData,
     stopLossTriggerData,
-    autoSellTriggerData,
-    commonData: {
-      positionInfo: { ilk, id, collateralizationRatio, debt, debtFloor, token },
-    },
+    positionData: { ilk, id, collateralizationRatio, debt, debtFloor, token },
   } = useAutomationContext()
 
   automationMultipleRangeSliderAnalytics({

@@ -21,9 +21,7 @@ export function SidebarAutoBuyRemovalEditingStage({
   autoBuyState,
 }: SidebarAutoBuyRemovalEditingStageProps) {
   const {
-    commonData: {
-      positionInfo: { debtFloor, token },
-    },
+    positionData: { debtFloor, token },
   } = useAutomationContext()
 
   return (
@@ -45,9 +43,7 @@ interface AutoBuyInfoSectionControlProps {
 function AutoBuyInfoSectionControl({ autoBuyState }: AutoBuyInfoSectionControlProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: { collateralizationRatio, liquidationPrice, debt },
-    },
+    positionData: { collateralizationRatio, liquidationPrice, debt },
   } = useAutomationContext()
 
   return (
