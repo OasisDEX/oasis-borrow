@@ -1,5 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { getAddress } from 'ethers/lib/utils'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { AavePositionView } from 'features/aave/view/containers/AavePositionView'
 import { earnContext, EarnContextProvider } from 'features/earn/EarnContextProvider'
@@ -21,12 +22,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      address: ctx.query.address || null,
+      account: ctx.query.address || null,
     },
   }
 }
 
-function Position({ address }: { address: string }) {
+function Position({ account }: { account: string }) {
+  const address = account ? getAddress(account) : ''
   const { web3Context$, connectedContext$, proxyAddress$ } = useAppContext()
   const [web3Context, web3ContextError] = useObservable(web3Context$)
   const [connectedContext, connectedContextError] = useObservable(connectedContext$)
