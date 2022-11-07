@@ -10,6 +10,11 @@ export enum DiscoverApiErrors {
   NO_ENTRIES = 2,
 }
 
+export enum FeatureTogglesApiErrors {
+  UNKNOWN_ERROR = 1,
+  NO_ENTRIES = 2,
+}
+
 export enum DiscoverTableVaultActivity {
   WITHDRAWN = 1,
   INCREASED_RISK = 2,
