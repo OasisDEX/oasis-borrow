@@ -224,16 +224,20 @@ export function SidebarConstantMultipleEditingStage({
         }}
         isResetAction={constantMultipleState.isResetAction}
       />
-      <VaultWarnings
-        warningMessages={extractConstantMultipleSliderWarnings(warnings)}
-        ilkData={{ debtFloor }}
-      />
-      <VaultErrors
-        errorMessages={errors.filter(
-          (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
-        )}
-        ilkData={{ debtFloor, token }}
-      />
+      {isEditing && (
+        <>
+          <VaultWarnings
+            warningMessages={extractConstantMultipleSliderWarnings(warnings)}
+            ilkData={{ debtFloor }}
+          />
+          <VaultErrors
+            errorMessages={errors.filter(
+              (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
+            )}
+            ilkData={{ debtFloor, token }}
+          />
+        </>
+      )}
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
         amount={constantMultipleState?.maxBuyPrice}
@@ -266,14 +270,21 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={constantMultipleState?.buyWithThreshold}
       />
-      <VaultErrors
-        errorMessages={extractConstantMultipleMaxBuyErrors(errors)}
-        ilkData={{ debtFloor, token }}
-      />
-      <VaultWarnings
-        warningMessages={warnings.filter((item) => item === 'settingAutoBuyTriggerWithNoThreshold')}
-        ilkData={{ debtFloor }}
-      />
+      {isEditing && (
+        <>
+          <VaultErrors
+            errorMessages={extractConstantMultipleMaxBuyErrors(errors)}
+            ilkData={{ debtFloor, token }}
+          />
+          <VaultWarnings
+            warningMessages={warnings.filter(
+              (item) => item === 'settingAutoBuyTriggerWithNoThreshold',
+            )}
+            ilkData={{ debtFloor }}
+          />
+        </>
+      )}
+
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
         amount={constantMultipleState?.minSellPrice}
@@ -306,20 +317,24 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
-      <VaultErrors
-        errorMessages={extractConstantMultipleMinSellErrors(errors)}
-        ilkData={{ debtFloor, token }}
-      />
-      <VaultWarnings
-        warningMessages={extractConstantMultipleCommonWarnings(warnings)}
-        ilkData={{ debtFloor }}
-        isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
-        isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
-      />
-      <VaultErrors
-        errorMessages={extractConstantMultipleCommonErrors(errors)}
-        ilkData={{ debtFloor, token }}
-      />
+      {isEditing && (
+        <>
+          <VaultErrors
+            errorMessages={extractConstantMultipleMinSellErrors(errors)}
+            ilkData={{ debtFloor, token }}
+          />
+          <VaultWarnings
+            warningMessages={extractConstantMultipleCommonWarnings(warnings)}
+            ilkData={{ debtFloor }}
+            isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
+            isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
+          />
+          <VaultErrors
+            errorMessages={extractConstantMultipleCommonErrors(errors)}
+            ilkData={{ debtFloor, token }}
+          />
+        </>
+      )}
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
