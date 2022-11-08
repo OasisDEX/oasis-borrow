@@ -14,9 +14,7 @@ export function AutoSellDetailsControl() {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const {
     autoSellTriggerData,
-    commonData: {
-      positionInfo: { debt, lockedCollateral },
-    },
+    positionData: { debt, lockedCollateral },
   } = useAutomationContext()
 
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)

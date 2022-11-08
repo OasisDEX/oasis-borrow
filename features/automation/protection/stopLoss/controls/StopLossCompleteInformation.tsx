@@ -26,9 +26,7 @@ export function StopLossCompleteInformation({
 }: StopLossCompleteInformationProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: { token, debt, lockedCollateral, liquidationPrice, liquidationRatio },
-    },
+    positionData: { token, debt, lockedCollateral, liquidationPrice, liquidationRatio },
   } = useAutomationContext()
 
   const dynamicStopLossPrice = liquidationPrice

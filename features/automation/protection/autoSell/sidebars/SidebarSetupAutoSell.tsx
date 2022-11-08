@@ -68,20 +68,18 @@ export function SidebarSetupAutoSell({
   const gasEstimation = useGasEstimationContext()
 
   const {
-    stopLossTriggerData,
     autoBuyTriggerData,
-    constantMultipleTriggerData,
     autoSellTriggerData,
-    commonData: {
-      positionInfo: {
-        debt,
-        collateralizationRatioAtNextPrice,
-        token,
-        debtFloor,
-        liquidationRatio,
-        vaultType,
-      },
-      environmentInfo: { ethBalance, ethMarketPrice, etherscanUrl },
+    constantMultipleTriggerData,
+    stopLossTriggerData,
+    environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
+    positionData: {
+      collateralizationRatioAtNextPrice,
+      debt,
+      debtFloor,
+      liquidationRatio,
+      token,
+      vaultType,
     },
   } = useAutomationContext()
 

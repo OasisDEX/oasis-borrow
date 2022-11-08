@@ -77,10 +77,8 @@ export function SidebarSetupAutoTakeProfit({
     autoBuyTriggerData,
     autoTakeProfitTriggerData,
     constantMultipleTriggerData,
-    commonData: {
-      positionInfo: { debt, debtOffset, token, vaultType, lockedCollateral },
-      environmentInfo: { ethMarketPrice, etherscanUrl, nextCollateralPrice, ethBalance },
-    },
+    environmentData: { ethMarketPrice, etherscanUrl, nextCollateralPrice, ethBalance },
+    positionData: { debt, debtOffset, token, vaultType, lockedCollateral },
   } = useAutomationContext()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })

@@ -66,9 +66,7 @@ export function SidebarCancelStopLossEditingStage({
 }: SidebarCancelStopLossEditingStageProps) {
   const { t } = useTranslation()
   const {
-    commonData: {
-      positionInfo: { token, debtFloor, liquidationPrice },
-    },
+    positionData: { token, debtFloor, liquidationPrice },
   } = useAutomationContext()
   return (
     <Grid>

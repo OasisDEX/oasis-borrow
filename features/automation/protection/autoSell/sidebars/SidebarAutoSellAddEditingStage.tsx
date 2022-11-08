@@ -51,9 +51,7 @@ function AutoSellInfoSectionControl({
   executionPrice,
 }: AutoSellInfoSectionControlProps) {
   const {
-    commonData: {
-      positionInfo: { debt, lockedCollateral, token },
-    },
+    positionData: { debt, lockedCollateral, token },
   } = useAutomationContext()
   const deviationPercent = autoSellState.deviation.div(100)
 
@@ -109,11 +107,9 @@ export function SidebarAutoSellAddEditingStage({
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const {
-    stopLossTriggerData,
     autoSellTriggerData,
-    commonData: {
-      positionInfo: { id, ilk, debt, debtFloor, lockedCollateral, collateralizationRatio, token },
-    },
+    stopLossTriggerData,
+    positionData: { id, ilk, debt, debtFloor, lockedCollateral, collateralizationRatio, token },
   } = useAutomationContext()
   const { t } = useTranslation()
   const [, setHash] = useHash()

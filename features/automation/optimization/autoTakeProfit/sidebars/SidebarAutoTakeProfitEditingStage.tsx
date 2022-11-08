@@ -52,9 +52,7 @@ export function SidebarAutoTakeProfitEditingStage({
 
   const {
     autoTakeProfitTriggerData,
-    commonData: {
-      positionInfo: { ilk, id, collateralizationRatio, debt, debtFloor, token },
-    },
+    positionData: { ilk, id, collateralizationRatio, debt, debtFloor, token },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -148,10 +146,8 @@ function AutoTakeProfitInfoSectionControl({
   triggerColRatio,
 }: AutoTakeProfitInfoSectionControlProps) {
   const {
-    commonData: {
-      positionInfo: { debt, debtOffset, token, lockedCollateral },
-      environmentInfo: { ethMarketPrice },
-    },
+    environmentData: { ethMarketPrice },
+    positionData: { debt, debtOffset, token, lockedCollateral },
   } = useAutomationContext()
 
   const {

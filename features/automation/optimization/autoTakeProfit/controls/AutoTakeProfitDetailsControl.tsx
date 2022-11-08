@@ -17,10 +17,8 @@ export function AutoTakeProfitDetailsControl() {
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
   const {
     autoTakeProfitTriggerData,
-    commonData: {
-      positionInfo: { id, ilk, debt, debtOffset, collateralizationRatio, lockedCollateral, token },
-      environmentInfo: { ethMarketPrice },
-    },
+    environmentData: { ethMarketPrice },
+    positionData: { id, ilk, debt, debtOffset, collateralizationRatio, lockedCollateral, token },
   } = useAutomationContext()
 
   const { isTriggerEnabled, executionPrice } = autoTakeProfitTriggerData

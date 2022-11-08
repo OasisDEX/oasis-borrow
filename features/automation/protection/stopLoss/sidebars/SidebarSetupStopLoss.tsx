@@ -83,14 +83,12 @@ export function SidebarSetupStopLoss({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    stopLossTriggerData,
-    autoSellTriggerData,
     autoBuyTriggerData,
+    autoSellTriggerData,
     constantMultipleTriggerData,
-    commonData: {
-      positionInfo: { debt, token, liquidationRatio, collateralizationRatioAtNextPrice, vaultType },
-      environmentInfo: { nextCollateralPrice, ethBalance, ethMarketPrice, etherscanUrl },
-    },
+    stopLossTriggerData,
+    environmentData: { nextCollateralPrice, ethBalance, ethMarketPrice, etherscanUrl },
+    positionData: { debt, token, liquidationRatio, collateralizationRatioAtNextPrice, vaultType },
   } = useAutomationContext()
 
   const gasEstimationContext = useGasEstimationContext()

@@ -73,14 +73,12 @@ export function SidebarSetupConstantMultiple({
   const gasEstimation = useGasEstimationContext()
   const {
     autoBuyTriggerData,
-    constantMultipleTriggerData,
-    autoTakeProfitTriggerData,
-    stopLossTriggerData,
     autoSellTriggerData,
-    commonData: {
-      positionInfo: { debt, debtFloor, collateralizationRatioAtNextPrice, token, vaultType },
-      environmentInfo: { ethBalance, ethMarketPrice, etherscanUrl },
-    },
+    autoTakeProfitTriggerData,
+    constantMultipleTriggerData,
+    stopLossTriggerData,
+    environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
+    positionData: { debt, debtFloor, collateralizationRatioAtNextPrice, token, vaultType },
   } = useAutomationContext()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
