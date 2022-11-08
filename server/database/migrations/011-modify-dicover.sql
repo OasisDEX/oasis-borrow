@@ -1,7 +1,5 @@
-ALTER TABLE "collateral_type"
-    ADD "token" TEXT;
-
 ALTER TABLE "discover"
+    ADD "token" TEXT,
     ADD "vault_type" TEXT;
 
 DROP VIEW "high_risk";
@@ -27,6 +25,7 @@ SELECT
     "protocol_id",
     "position_id",
     "collateral_type",
+    "token",
     "vault_collateral" * "current_price" AS "collateral_value",
     "vault_collateral" * "current_price" / "vault_debt" - "liquidation_ratio" AS "liquidation_proximity",
     "liquidation_ratio" * "vault_debt" / "vault_collateral" AS "liquidation_price",
@@ -42,6 +41,7 @@ SELECT
     "protocol_id",
     "position_id",
     "collateral_type",
+    "token",
     "vault_collateral" * "current_price" AS "collateral_value",
     "vault_debt",
     "vault_collateral" * "current_price" / "vault_debt" AS "coll_ratio",
@@ -55,6 +55,7 @@ SELECT
     "protocol_id",
     "position_id",
     "collateral_type",
+    "token",
     "vault_collateral" * "current_price" AS "collateral_value",
     "vault_collateral" * "current_price" / ("vault_collateral" * ("current_price") - "vault_debt") AS "vault_multiple",
     "pnl_1d",
@@ -73,6 +74,7 @@ SELECT
     "protocol_id",
     "position_id",
     "collateral_type",
+    "token",
     "vault_collateral" * ("current_price") AS "collateral_value",
     "vault_collateral" * ("current_price") - "vault_debt" AS "net_value",
     "vault_debt" * "liquidation_penalty" AS "liquidation_value",
