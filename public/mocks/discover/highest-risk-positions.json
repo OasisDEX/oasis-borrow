@@ -55,12 +55,25 @@
       "nextOsmPrice": 1326.9,
       "maxLiquidationAmount": 9568049.66,
       "status": {
-        "kind": 5,
+        "kind": 3,
         "additionalData": {
-          "closedDaysAgo": 5
+          "tillLiquidation": 21.37
         }
       },
       "cdpId": 24985
+    },
+    {
+      "asset": "MANA",
+      "liquidationPrice": 0.6112,
+      "nextOsmPrice": 0.6416,
+      "maxLiquidationAmount": 12039.08,
+      "status": {
+        "kind": 3,
+        "additionalData": {
+          "tillLiquidation": 48.19
+        }
+      },
+      "cdpId": 54122
     }
   ]
 }

@@ -1,4 +1,9 @@
-import { DiscoverTableVaultActivity, DiscoverTableVaultStatus } from 'features/discover/types'
+import {
+  DiscoverTableActivityRowData,
+  DiscoverTableStatusRowData,
+  DiscoverTableVaultActivity,
+  DiscoverTableVaultStatus,
+} from 'features/discover/types'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { SxStyleProp, Text } from 'theme-ui'
@@ -21,10 +26,22 @@ const activityColors: { [key in DiscoverTableVaultActivity]: SxStyleProp } = {
 }
 const statusColors: { [key in DiscoverTableVaultStatus]: SxStyleProp } = {
   [DiscoverTableVaultStatus.LIQUIDATED]: pillColors.critical,
-  [DiscoverTableVaultStatus.BEING_LIQUIDATED]: pillColors.warning,
+  [DiscoverTableVaultStatus.BEING_LIQUIDATED]: pillColors.critical,
   [DiscoverTableVaultStatus.TILL_LIQUIDATION]: pillColors.success,
   [DiscoverTableVaultStatus.TO_STOP_LOSS]: pillColors.interactive,
-  [DiscoverTableVaultStatus.CLOSED_LONG_TIME_AGO]: pillColors.faded,
+}
+
+function getStatusPillStyle(status: DiscoverTableStatusRowData): SxStyleProp {
+  if (
+    status.kind === DiscoverTableVaultStatus.TILL_LIQUIDATION &&
+    status.additionalData?.tillLiquidation
+  ) {
+    return status.additionalData.tillLiquidation <= 10
+      ? pillColors.critical
+      : status.additionalData.tillLiquidation <= 25
+      ? pillColors.warning
+      : pillColors.success
+  } else return statusColors[status.kind]
 }
 
 export function DiscoverTableDataCellPill({
@@ -32,8 +49,8 @@ export function DiscoverTableDataCellPill({
   status,
   children,
 }: {
-  activity?: DiscoverTableVaultActivity
-  status?: DiscoverTableVaultStatus
+  activity?: DiscoverTableActivityRowData
+  status?: DiscoverTableStatusRowData
 } & WithChildren) {
   return (
     <Text
@@ -44,8 +61,8 @@ export function DiscoverTableDataCellPill({
         fontWeight: 'semiBold',
         borderRadius: 'large',
         whiteSpace: 'pre',
-        ...(activity && { ...activityColors[activity] }),
-        ...(status && { ...statusColors[status] }),
+        ...(activity && { ...activityColors[activity.kind] }),
+        ...(status && { ...getStatusPillStyle(status) }),
       }}
     >
       {children}
