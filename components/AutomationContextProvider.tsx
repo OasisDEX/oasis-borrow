@@ -4,6 +4,8 @@ import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
+import { getAutomationEnvironment } from 'features/automation/common/context/getAutomationEnvironment'
+import { getAutomationPositionData } from 'features/automation/common/context/getAutomationPositionData'
 import {
   AutoBSTriggerData,
   defaultAutoBSData,
@@ -30,10 +32,11 @@ import {
 import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { getVaultProtocol, VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
-interface AutomationEnvironmentData {
+export interface AutomationEnvironmentData {
   canInteract: boolean
   ethBalance: BigNumber
   etherscanUrl: string
@@ -42,7 +45,7 @@ interface AutomationEnvironmentData {
   tokenMarketPrice: BigNumber
 }
 
-interface AutomationPositionData {
+export interface AutomationPositionData {
   collateralizationRatio: BigNumber
   collateralizationRatioAtNextPrice: BigNumber
   debt: BigNumber
@@ -68,6 +71,7 @@ interface AutomationContext {
   stopLossTriggerData: StopLossTriggerData
   environmentData: AutomationEnvironmentData
   positionData: AutomationPositionData
+  vaultProtocol: VaultProtocol
 }
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
@@ -107,24 +111,11 @@ export function AutomationContextProvider({
   context,
   ethAndTokenPricesData,
 }: PropsWithChildren<AutomationContextProviderProps>) {
-  const {
-    balanceInfo: { ethBalance },
-    vault: {
-      id,
-      token,
-      ilk,
-      debt,
-      debtOffset,
-      owner,
-      controller,
-      lockedCollateral,
-      collateralizationRatio,
-      collateralizationRatioAtNextPrice,
-      liquidationPrice,
-    },
-    priceInfo: { nextCollateralPrice },
-    ilkData: { liquidationRatio, debtFloor, liquidationPenalty },
-  } = generalManageVault.state
+  const vaultProtocol = getVaultProtocol()
+  const { controller, ethBalance, nextCollateralPrice, token } = getAutomationEnvironment({
+    generalManageVault,
+    vaultProtocol,
+  })
 
   if (!isAppContextAvailable()) {
     return null
@@ -141,85 +132,54 @@ export function AutomationContextProvider({
     }),
     [
       context.status,
-      controller,
+      generalManageVault,
       ethAndTokenPricesData['ETH'].toString(),
       ethAndTokenPricesData[token].toString(),
-      ethBalance.toString(),
-      nextCollateralPrice.toString(),
     ],
   )
   const positionData = useMemo(
-    () => ({
-      collateralizationRatio,
-      collateralizationRatioAtNextPrice,
-      debt,
-      debtFloor,
-      debtOffset,
-      id,
-      ilk,
-      liquidationPenalty,
-      liquidationPrice,
-      liquidationRatio,
-      lockedCollateral,
-      owner,
-      token,
-      vaultType: generalManageVault.type,
-    }),
-    [
-      collateralizationRatio.toString(),
-      collateralizationRatioAtNextPrice.toString(),
-      debt.toString(),
-      debtFloor.toString(),
-      debtOffset.toString(),
-      generalManageVault.type,
-      id.toString(),
-      ilk,
-      liquidationPenalty.toString(),
-      liquidationPrice.toString(),
-      liquidationRatio.toString(),
-      lockedCollateral.toString(),
-      owner,
-      token,
-    ],
+    () => getAutomationPositionData({ generalManageVault, vaultProtocol }),
+    [generalManageVault, vaultProtocol],
   )
 
   const [autoContext, setAutoContext] = useState<AutomationContext>({
     ...automationContextInitialState,
     environmentData,
     positionData,
+    vaultProtocol,
   })
 
   const { automationTriggersData$ } = useAppContext()
-  const autoTriggersData$ = automationTriggersData$(id)
+  const autoTriggersData$ = automationTriggersData$(positionData.id)
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   useStopLossStateInitializator({
-    liquidationRatio,
-    collateralizationRatio,
+    liquidationRatio: positionData.liquidationRatio,
+    collateralizationRatio: positionData.collateralizationRatio,
     stopLossTriggerData: autoContext.stopLossTriggerData,
   })
 
   useAutoBSstateInitialization({
     autoTriggersData: autoContext.autoSellTriggerData,
     stopLossTriggerData: autoContext.stopLossTriggerData,
-    collateralizationRatio,
+    collateralizationRatio: positionData.collateralizationRatio,
     type: TriggerType.BasicSell,
   })
 
   useAutoBSstateInitialization({
     autoTriggersData: autoContext.autoBuyTriggerData,
     stopLossTriggerData: autoContext.stopLossTriggerData,
-    collateralizationRatio,
+    collateralizationRatio: positionData.collateralizationRatio,
     type: TriggerType.BasicBuy,
   })
 
   useConstantMultipleStateInitialization({
-    ilk,
-    debt,
-    debtFloor,
-    liquidationRatio,
-    collateralizationRatio,
-    lockedCollateral,
+    ilk: positionData.ilk,
+    debt: positionData.debt,
+    debtFloor: positionData.debtFloor,
+    liquidationRatio: positionData.liquidationRatio,
+    collateralizationRatio: positionData.collateralizationRatio,
+    lockedCollateral: positionData.lockedCollateral,
     stopLossTriggerData: autoContext.stopLossTriggerData,
     autoSellTriggerData: autoContext.autoSellTriggerData,
     autoBuyTriggerData: autoContext.autoBuyTriggerData,
@@ -227,9 +187,9 @@ export function AutomationContextProvider({
   })
 
   useAutoTakeProfitStateInitializator({
-    debt,
-    lockedCollateral,
-    collateralizationRatio,
+    debt: positionData.debt,
+    lockedCollateral: positionData.lockedCollateral,
+    collateralizationRatio: positionData.collateralizationRatio,
     autoTakeProfitTriggerData: autoContext.autoTakeProfitTriggerData,
   })
 
@@ -250,6 +210,7 @@ export function AutomationContextProvider({
         automationTriggersData,
         environmentData,
         positionData,
+        vaultProtocol,
       })
     }
   }, [automationTriggersData, environmentData, positionData])
