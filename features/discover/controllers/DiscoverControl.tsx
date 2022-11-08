@@ -62,7 +62,7 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
       }}
     >
       <DiscoverFilters
-        amountOfRows={response?.rows.length || 0}
+        amountOfRows={response?.rows?.length || 0}
         filters={filters}
         isSmallerScreen={isSmallerScreen}
         onChange={onChangeHandler}

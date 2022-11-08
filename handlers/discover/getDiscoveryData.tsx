@@ -1,5 +1,9 @@
 import { DiscoverApiErrors, DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
-import { getAssetFilter, getGenericRangeFilter, getTimeSignature } from 'handlers/discover/helpers'
+import {
+  getGenericArrayFilter,
+  getGenericRangeFilter,
+  getTimeSignature,
+} from 'handlers/discover/helpers'
 import { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -25,7 +29,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.highestRiskPositions.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                collateral_type: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
             })
@@ -46,7 +50,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.highestMultiplyPnl.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                collateral_type: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
                 vault_multiple: getGenericRangeFilter(multiple),
               },
@@ -70,7 +74,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.mostYieldEarned.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                collateral_type: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
               orderBy: { [timeSignature]: 'desc' },
@@ -91,7 +95,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.largestDebt.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                collateral_type: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
             })
