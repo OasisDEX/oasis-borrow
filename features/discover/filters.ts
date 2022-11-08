@@ -14,7 +14,7 @@ export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem
   stetheth: { value: 'STETHETH', label: 'STETH/ETH', icon: getToken('ETH').iconCircle },
   uni: { value: 'UNI_LP', label: 'UNI LP', icon: getToken('UNI').iconCircle },
   // TODO: update with dedicated icon when it's decided what to display here
-  univ3daiusdc: { value: 'UNIV3DAIUSDC', label: 'UNIV3DAI/USDC', icon: getToken('UNIV2DAIUSDC').iconCircle },
+  univ3daiusdc: { value: 'UNIV3DAIUSDC', label: 'UNIV3DAI/USDC', icon: getToken('ETH').iconCircle },
   wbtc: { value: 'WBTC', label: 'WBTC', icon: getToken('WBTC').iconCircle },
   yfi: { value: 'YFI', label: 'YFI', icon: getToken('YFI').iconCircle },
 }

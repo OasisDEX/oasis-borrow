@@ -1,7 +1,7 @@
 {
   "rows": [
     {
-      "asset": "UNIV3DAIUSDC",
+      "asset": "GUNIV3DAIUSDC1",
       "netValue": 8743546.39,
       "earningsToDate": 13244.9,
       "30DayAvgApy": 1.2,
@@ -14,7 +14,7 @@
       "cdpId": 18604
     },
     {
-      "asset": "UNIV3DAIUSDC",
+      "asset": "GUNIV3DAIUSDC1",
       "netValue": 6874653.31,
       "earningsToDate": 7456.03,
       "30DayAvgApy": 4.23,
@@ -27,7 +27,7 @@
       "cdpId": 17503
     },
     {
-      "asset": "UNIV3DAIUSDC",
+      "asset": "GUNIV3DAIUSDC1",
       "netValue": 23056.95,
       "earningsToDate": 4353.48,
       "30DayAvgApy": 1.89,
@@ -40,7 +40,7 @@
       "cdpId": 6843
     },
     {
-      "asset": "UNIV3DAIUSDC",
+      "asset": "GUNIV3DAIUSDC1",
       "netValue": 3246829.95,
       "earningsToDate": 14657.9,
       "30DayAvgApy": 0.94,
