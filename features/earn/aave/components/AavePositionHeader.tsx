@@ -10,9 +10,9 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
 import { useAaveContext } from '../../../aave/AaveContextProvider'
+import { AaveStEthYieldsResponse } from '../../../aave/common'
 import { AavePositionHeaderPropsBase } from '../../../aave/common/StrategyConfigTypes'
 import { aaveStETHMinimumRiskRatio } from '../../../aave/constants'
-import { AaveStEthYieldsResponse } from '../../../aave/open/services'
 
 export function AavePositionHeader({
   maxRisk,

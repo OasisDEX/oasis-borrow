@@ -1,4 +1,3 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import moment from 'moment/moment'
 
@@ -33,7 +32,6 @@ export function calculateSimulation({
   fees?: BigNumber
   amount: BigNumber
   token: string
-  riskRatio: IRiskRatio
   yields: AaveStEthYieldsResponse
 }): CalculateSimulationResult {
   const earningsPerDay =

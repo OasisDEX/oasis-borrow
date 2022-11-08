@@ -84,7 +84,6 @@ export function getOneInchCall(swapAddress: string, debug?: true) {
       amount.toString() === '1' ? [] : protocols,
     )
 
-    console.log('1inch')
     if (debug) {
       console.log('1inch')
       console.log('fromTokenAmount', response.fromTokenAmount.toString())
