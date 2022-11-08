@@ -132,6 +132,7 @@ export function SidebarSetupConstantMultiple({
     stage,
     feature,
     isAwaitingConfirmation,
+    isRemoveForm
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
@@ -245,7 +246,7 @@ export function SidebarSetupConstantMultiple({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: false,
+        disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
           if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
@@ -254,6 +255,14 @@ export function SidebarSetupConstantMultiple({
               isAwaitingConfirmation: true,
             })
           } else {
+
+            if(isAwaitingConfirmation && ['txSuccess', 'txFailure'].includes(stage)) {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
+
             txHandler()
           }
         },

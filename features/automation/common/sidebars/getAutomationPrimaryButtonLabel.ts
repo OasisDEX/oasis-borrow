@@ -66,7 +66,6 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationF
     case 'addSl':
     case 'editSl':
     case 'cancelSl':
-      return 'back-to-vault-overview'
     case 'addAutoSell':
     case 'cancelAutoSell':
     case 'addAutoBuy':
@@ -92,8 +91,8 @@ function generateAutomationPrimaryButtonLabelTtext({
   isAwaitingConfirmation,
 }: AutomationSidebarCopiesParams) {
   const { t } = useTranslation()
-  console.log(isAwaitingConfirmation)
-  if (isAwaitingConfirmation) return t('protection.confirm')
+
+  if (isAwaitingConfirmation && stage !== 'txSuccess') return t('protection.confirm')
 
   switch (stage) {
     case 'editing':

@@ -317,6 +317,12 @@ export function SidebarSetupStopLoss({
               isAwaitingConfirmation: true,
             })
           } else {
+            if(isAwaitingConfirmation) {
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
             txHandler({
               callOnSuccess: () => {
                 uiChanges.publish(TAB_CHANGE_SUBJECT, {

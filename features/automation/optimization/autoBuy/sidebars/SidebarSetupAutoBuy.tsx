@@ -121,6 +121,7 @@ export function SidebarSetupAutoBuy({
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
   })
+
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
     stage,
@@ -193,7 +194,7 @@ export function SidebarSetupAutoBuy({
                   stopLossTriggerData={stopLossTriggerData}
                 />
               )}
-              {isAwaitingConfirmation && (
+              {isAwaitingConfirmation && !isRemoveForm && (
                 <SidebarAwaitingConfirmation
                   feature="Auto-Buy"
                   children={
@@ -239,6 +240,12 @@ export function SidebarSetupAutoBuy({
               isAwaitingConfirmation: true,
             })
           } else {
+            if(isAwaitingConfirmation) {
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
             txHandler()
           }
         },
