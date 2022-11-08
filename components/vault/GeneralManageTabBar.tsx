@@ -104,10 +104,6 @@ export function GeneralManageTabBar({
                   )
                 },
               },
-            ]
-          : []),
-        ...(showAutomationTabs
-          ? [
               {
                 label: t('system.optimization'),
                 value: VaultViewMode.Optimization,
