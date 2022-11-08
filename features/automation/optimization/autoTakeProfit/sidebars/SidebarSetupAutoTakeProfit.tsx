@@ -126,7 +126,7 @@ export function SidebarSetupAutoTakeProfit({
     stage,
     feature,
     isAwaitingConfirmation,
-    isRemoveForm
+    isRemoveForm,
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
@@ -308,8 +308,7 @@ export function SidebarSetupAutoTakeProfit({
               isAwaitingConfirmation: true,
             })
           } else {
-
-            if(isAwaitingConfirmation && ['txSuccess', 'txFailure'].includes(stage)) {
+            if (isAwaitingConfirmation && ['txSuccess', 'txFailure'].includes(stage)) {
               uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
                 type: 'is-awaiting-confirmation',
                 isAwaitingConfirmation: false,

@@ -127,7 +127,7 @@ export function SidebarSetupAutoBuy({
     stage,
     feature,
     isAwaitingConfirmation,
-    isRemoveForm
+    isRemoveForm,
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
@@ -240,7 +240,7 @@ export function SidebarSetupAutoBuy({
               isAwaitingConfirmation: true,
             })
           } else {
-            if(isAwaitingConfirmation) {
+            if (isAwaitingConfirmation) {
               uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
                 type: 'is-awaiting-confirmation',
                 isAwaitingConfirmation: false,

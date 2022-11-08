@@ -126,7 +126,7 @@ export function SidebarSetupAutoSell({
     stage,
     feature,
     isAwaitingConfirmation,
-    isRemoveForm
+    isRemoveForm,
   })
   const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({

@@ -122,7 +122,7 @@ export function getAutomationPrimaryButtonLabel({
   flow,
   feature,
   isAwaitingConfirmation,
-  isRemoveForm
+  isRemoveForm,
 }: AutomationSidebarCopiesParams) {
   return `${generateAutomationPrimaryButtonLabelTtext({
     stage,

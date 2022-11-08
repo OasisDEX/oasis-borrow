@@ -142,7 +142,7 @@ export function SidebarSetupStopLoss({
     stage,
     feature,
     isAwaitingConfirmation,
-    isRemoveForm
+    isRemoveForm,
   })
   const textButtonLabel = getAutomationTextButtonLabel({
     isAddForm,
@@ -159,10 +159,10 @@ export function SidebarSetupStopLoss({
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
     : constantMultipleTriggerData.isTriggerEnabled
-      ? constantMultipleTriggerData.sellExecutionCollRatio
+    ? constantMultipleTriggerData.sellExecutionCollRatio
         .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
         .div(100)
-      : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+    : vault.collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
   const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
   const liqRatio = ilkData.liquidationRatio
 
@@ -317,7 +317,7 @@ export function SidebarSetupStopLoss({
               isAwaitingConfirmation: true,
             })
           } else {
-            if(isAwaitingConfirmation) {
+            if (isAwaitingConfirmation) {
               uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
                 type: 'is-awaiting-confirmation',
                 isAwaitingConfirmation: false,
