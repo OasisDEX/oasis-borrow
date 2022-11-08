@@ -74,6 +74,19 @@
         }
       },
       "cdpId": 54122
+    },
+    {
+      "asset": "CURVE_LP",
+      "liquidationPrice": 0.92,
+      "nextOsmPrice": 1.03,
+      "maxLiquidationAmount": 3495.64,
+      "status": {
+        "kind": 3,
+        "additionalData": {
+          "tillLiquidation": 52.63
+        }
+      },
+      "cdpId": 3198
     }
   ]
 }
