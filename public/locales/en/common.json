@@ -1255,7 +1255,7 @@
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
-    "set-downside-protection-desc": "Set the Collateralisation Ratio trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
+    "set-downside-protection-desc": "Set the {{ratioLabel}} trigger at the point which you want your {{positionLabel}} to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
     "cancel-downside-protection-desc": "To cancel the Stop-Loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting Stop-Loss Protection",

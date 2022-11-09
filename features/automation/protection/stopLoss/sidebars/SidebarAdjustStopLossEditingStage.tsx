@@ -24,6 +24,7 @@ import {
   DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
+import { automationMetadata } from 'features/automation/metadata/automationMetadata'
 import { getStartingSlRatio } from 'features/automation/protection/stopLoss/helpers'
 import {
   STOP_LOSS_FORM_CHANGE,
@@ -158,7 +159,10 @@ export function SidebarAdjustStopLossEditingStage({
     stopLossTriggerData,
     environmentData: { ethMarketPrice },
     positionData: { id, ilk, token, debt, liquidationRatio, collateralizationRatio, debtFloor },
+    vaultProtocol,
   } = useAutomationContext()
+
+  const { positionLabel, ratioLabel } = automationMetadata.stopLoss[vaultProtocol]
 
   useDebouncedCallback(
     (value) =>
@@ -206,10 +210,11 @@ export function SidebarAdjustStopLossEditingStage({
         <Grid>
           <PickCloseState {...closePickerConfig} />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('protection.set-downside-protection-desc')}{' '}
+            {t('protection.set-downside-protection-desc', { positionLabel, ratioLabel })}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-              {t('here')}.
+              {t('here')}
             </AppLink>
+            .
           </Text>
           <SliderValuePicker {...sliderConfig} />
         </Grid>
