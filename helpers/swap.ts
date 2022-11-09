@@ -80,10 +80,9 @@ export function getOneInchCall(swapAddress: string, debug?: true) {
       amount.toString(),
       swapAddress,
       slippage.times('100').toString(), // 1inch expects slippage in percentage format
-      amount.toString() === '1' ? [] : protocols,
+      protocols,
     )
 
-    console.log('1inch')
     if (debug) {
       console.log('1inch')
       console.log('fromTokenAmount', response.fromTokenAmount.toString())
