@@ -11,6 +11,6 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
 
   return !response ? res.status(500).json({
     error: { code: FeatureTogglesApiErrors.NO_ENTRIES, reason: 'feature_toggles/no-data-found' },
-  }) : res.status(200).json({ response })
+  }) : res.status(200).json({ ...response })
 
 }

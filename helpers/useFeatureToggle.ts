@@ -1,3 +1,4 @@
+import { feature_flags } from '@prisma/client'
 import axios from 'axios'
 import { mapValues } from 'lodash'
 export const FT_LOCAL_STORAGE_KEY = 'features'
@@ -47,13 +48,56 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: false,
   ShowAaveStETHETHProductCard: true,
-  // your feature here....
+  // your feature here, don't forget to add it to the databse(feature_flags table)....
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
   localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(data))
 }
 
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toLowerCase() + string.slice(1);
+}
+
+function mapFeatureToggles(dbFeatureToggles: feature_flags, localFeatureToggles: Record<Feature, boolean>) {
+  const mappedFeatureFlags = {} as any;
+
+  for (const key of Object.keys(localFeatureToggles)) {
+    const featureToggleKey = capitalizeFirstLetter(key) as keyof feature_flags
+    if (featureToggleKey in dbFeatureToggles) { mappedFeatureFlags[key] = dbFeatureToggles[featureToggleKey] }
+  }
+
+  return mappedFeatureFlags
+}
+
+function setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled: Array<Feature> = []) {
+  const featuresToLoadInLocalStorage = mapValues(configuredFeatures, () => false)
+
+  // Gather features enabled in unit tests.
+  const featuresEnabledForUnitTesting = testFeaturesFlaggedEnabled.reduce(
+    (acc, feature) => ({
+      ...acc,
+      [feature]: true,
+    }),
+    {},
+  )
+
+  const featuresSourcedFromCode = {
+    ...featuresToLoadInLocalStorage,
+    ...featuresEnabledForUnitTesting,
+  }
+
+  const featureFlagsInLocalStorage = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
+  if (!featureFlagsInLocalStorage) {
+    localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(featuresSourcedFromCode))
+  } else {
+    const userSelectedFeatures: ConfiguredFeatures = JSON.parse(
+      featureFlagsInLocalStorage,
+    ) as ConfiguredFeatures
+    const merged = { ...featuresSourcedFromCode, ...userSelectedFeatures }
+    localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
+  }
+}
 // Features in code are added to localstorage on app start, where they do not exist.
 // They are also disabled in local storage, even if they are enabled in the code.
 // Because a feature is enabled if it's enabled either in code or local storage, the
@@ -61,44 +105,27 @@ export function configureLocalStorageForTests(data: { [feature in Feature]?: boo
 
 export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = []) {
   // update local toggles
-  if (typeof localStorage !== 'undefined') {
-    axios.get('/api/features').then(res => {
-      // set feature toggles
-      if (process.env.NODE_ENV === 'production') {
-        // set features using database
+  axios.get('/api/features').then(res => {
+    if (localStorage !== undefined) {
+      // Store values in localstorage becasue if there is a lost connection, features will be able to read from there.
+      if (process.env.NODE_ENV === 'production' && res.data) {
+        // use DB in production only as a fallback
+        const featureToggles = res.data as feature_flags
+        const toggles = mapFeatureToggles(featureToggles, configuredFeatures);
+        if (toggles) localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(toggles))
+
 
       } else {
-        // Use this for dev experience, allows us to toggle features much quicker using chrome extension
+        // Use this for dev experience, allows us to toggle features much quicker using chrome extension. Also, if the request fails, localstorage provides a fallback.
         // No-yet-loaded features are always set to false in local storage even if true in code.
-        const featuresToLoadInLocalStorage = mapValues(configuredFeatures, () => false)
-
-        // Gather features enabled in unit tests.
-        const featuresEnabledForUnitTesting = testFeaturesFlaggedEnabled.reduce(
-          (acc, feature) => ({
-            ...acc,
-            [feature]: true,
-          }),
-          {},
-        )
-
-        const featuresSourcedFromCode = {
-          ...featuresToLoadInLocalStorage,
-          ...featuresEnabledForUnitTesting,
-        }
-
-        const featureFlagsInLocalStorage = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
-        if (!featureFlagsInLocalStorage) {
-          localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(featuresSourcedFromCode))
-        } else {
-          const userSelectedFeatures: ConfiguredFeatures = JSON.parse(
-            featureFlagsInLocalStorage,
-          ) as ConfiguredFeatures
-          const merged = { ...featuresSourcedFromCode, ...userSelectedFeatures }
-          localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(merged))
-        }
+        setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
       }
+    }
+  })
+    .catch(() => {
+      setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
     })
-  }
+
 }
 
 export function useFeatureToggle(feature: Feature): boolean {
