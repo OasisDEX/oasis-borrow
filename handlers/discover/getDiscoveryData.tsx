@@ -59,7 +59,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
               orderBy: { [timeSignature]: 'desc' },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             collateralValue: item.collateral_value.toNumber(),
             currentMultiple: item.vault_multiple.toNumber(),
             pnl: item[timeSignature].toNumber(),
@@ -82,7 +82,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
               orderBy: { [timeSignature]: 'desc' },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             netValue: item.net_value.toNumber(),
             earningsToDate: item[timeSignature].toNumber(),
             '30DayAvgApy': item.yield_30d.toNumber(),
@@ -102,7 +102,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
               },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             collateralValue: item.collateral_value.toNumber(),
             vaultDebt: item.vault_debt.toNumber(),
             colRatio: {
