@@ -44,7 +44,7 @@ function AavePositionContainer({
   return (
     <Container variant="vaultPageContainer">
       <PositionOwnershipBanner account={address} connectedWalletAddress={connectedWalletAddress} />
-      <Header strategyName={strategyConfig.name} noDetails />
+      <Header strategyName={strategyConfig.name} />
       <TabBar
         variant="underline"
         sections={[

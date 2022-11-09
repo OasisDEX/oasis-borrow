@@ -1,7 +1,7 @@
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
 
 import {
-  AavePositionHeader,
+  AavePositionHeaderNoDetails,
   AavePositionHeaderWithDetails,
 } from '../earn/aave/components/AavePositionHeader'
 import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
@@ -19,8 +19,8 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     name: 'stETHeth',
     viewComponents: {
       headerOpen: AavePositionHeaderWithDetails,
-      headerManage: AavePositionHeader,
-      headerView: AavePositionHeader,
+      headerManage: AavePositionHeaderNoDetails,
+      headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,

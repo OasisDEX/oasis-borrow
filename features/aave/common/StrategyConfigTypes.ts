@@ -26,7 +26,6 @@ export type AavePositionHeaderPropsBase = {
   maxRisk?: IRiskRatio
   aaveTVL?: PreparedAaveTotalValueLocked
   strategyName: string
-  noDetails?: boolean
 }
 
 export type ManageSectionComponentProps = {

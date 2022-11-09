@@ -14,25 +14,15 @@ import { AaveStEthYieldsResponse } from '../../../aave/common'
 import { AavePositionHeaderPropsBase } from '../../../aave/common/StrategyConfigTypes'
 import { aaveStETHMinimumRiskRatio } from '../../../aave/constants'
 
-export function AavePositionHeader({
-  maxRisk,
-  strategyName,
-  aaveTVL,
-  noDetails = false,
-}: AavePositionHeaderPropsBase) {
-  const { t } = useTranslation()
-  const tokenPairList = {
-    stETHeth: {
-      name: t('open-earn.aave.product-header.token-pair-list.aave-steth-eth'),
-      tokenList: ['AAVE', 'STETH', 'ETH'],
-    },
-  } as Record<string, { name: string; tokenList: string[] }>
+const tokenPairList = {
+  stETHeth: {
+    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
+    tokenList: ['AAVE', 'STETH', 'ETH'],
+  },
+} as Record<string, { translationKey: string; tokenList: string[] }>
 
-  const tokenData = tokenPairList[strategyName]
-  if (noDetails && (!maxRisk || !aaveTVL)) {
-    // this should never change during runtime
-    return <VaultHeadline header={tokenData.name} token={tokenData.tokenList} details={[]} />
-  }
+function AavePositionHeader({ maxRisk, strategyName, aaveTVL }: AavePositionHeaderPropsBase) {
+  const { t } = useTranslation()
 
   const [minYields, setMinYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
   const [maxYields, setMaxYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
@@ -110,7 +100,7 @@ export function AavePositionHeader({
 
   return (
     <VaultHeadline
-      header={tokenPairList[strategyName].name}
+      header={t(tokenPairList[strategyName].translationKey)}
       token={tokenPairList[strategyName].tokenList}
       details={headlineDetails}
       loading={!aaveTVL?.totalValueLocked}
@@ -135,5 +125,13 @@ export function AavePositionHeaderWithDetails({ strategyName }: { strategyName: 
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>
+  )
+}
+
+export function AavePositionHeaderNoDetails({ strategyName }: AavePositionHeaderPropsBase) {
+  const { t } = useTranslation()
+  const tokenData = tokenPairList[strategyName]
+  return (
+    <VaultHeadline header={t(tokenData.translationKey)} token={tokenData.tokenList} details={[]} />
   )
 }

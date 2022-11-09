@@ -45,7 +45,7 @@ function AaveManageContainer({
     <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
       <Container variant="vaultPageContainer">
         <AavePositionNotice />
-        <Header strategyName={strategyConfig.name} noDetails />
+        <Header strategyName={strategyConfig.name} />
         <TabBar
           variant="underline"
           sections={[
