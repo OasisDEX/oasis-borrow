@@ -1,8 +1,4 @@
-import {
-  DiscoverApiErrors,
-  DiscoverPages,
-  DiscoverTableRowData,
-} from 'features/discover/types'
+import { DiscoverApiErrors, DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import {
   getGenericArrayFilter,
   getGenericRangeFilter,

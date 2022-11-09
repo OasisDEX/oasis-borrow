@@ -3,7 +3,7 @@ import { DiscoverFiltersListItem } from 'features/discover/meta'
 
 export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem } = {
   // TODO: update with nicer cuvre icon when available
-  curve: { value: 'CURVE_LP', label: 'CURVE', icon: getToken('CRVV1ETHSTETH').iconCircle },
+  curve: { value: 'CURVE_LP', label: 'CURVE LP', icon: 'curve_full_circle_color' },
   eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
   gusd: { value: 'GUSD', label: 'GUSD', icon: getToken('GUSD').iconCircle },
   link: { value: 'LINK', label: 'LINK', icon: getToken('LINK').iconCircle },
