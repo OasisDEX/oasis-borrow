@@ -188,7 +188,7 @@
         "3": "Decreased risk {{timeAgo}}",
         "4": "Closed {{timeAgo}}",
         "5": "Opened {{timeAgo}}",
-        "6": "Deposided {{timeAgo}}"
+        "6": "Deposited {{timeAgo}}"
       },
       "banner": {
         "highest-risk-positions": {
