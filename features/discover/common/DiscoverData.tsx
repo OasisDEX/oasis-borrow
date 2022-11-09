@@ -7,29 +7,27 @@ import { DiscoverTable } from 'features/discover/common/DiscoverTable'
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import React from 'react'
-import { theme } from 'theme'
 import { Box } from 'theme-ui'
-import { useMediaQuery } from 'usehooks-ts'
 
 interface DiscoverDataProps {
   banner?: DiscoverBanner
-  response?: DiscoverDataResponse
   isLoading: boolean
+  isSmallerScreen: boolean
   kind: DiscoverPages
+  response?: DiscoverDataResponse
   userContext: MixpanelUserContext
 }
 
 export function DiscoverData({
   banner,
   isLoading,
+  isSmallerScreen,
   kind,
   response,
   userContext,
 }: DiscoverDataProps) {
-  const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
-
   return (
-    <Box sx={{ position: 'relative', borderTop: '1px solid', borderTopColor: 'neutral20' }}>
+    <Box sx={{ position: 'relative' }}>
       {response?.rows ? (
         <>
           {isLoading && <DiscoverPreloader isContentLoaded={true} />}
