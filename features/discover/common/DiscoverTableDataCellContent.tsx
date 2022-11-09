@@ -45,7 +45,7 @@ export function DiscoverTableDataCellContent({
       )
     case 'status':
       return (
-        <DiscoverTableDataCellPill status={row.status?.kind}>
+        <DiscoverTableDataCellPill status={row.status}>
           {t(`discover.table.status.${row.status?.kind}`, {
             ...parsePillAdditionalData(i18n.language, row.status),
           })}
@@ -53,7 +53,7 @@ export function DiscoverTableDataCellContent({
       )
     case 'activity':
       return (
-        <DiscoverTableDataCellPill activity={row.activity?.kind}>
+        <DiscoverTableDataCellPill activity={row.activity}>
           {t(`discover.table.activity.${row.activity?.kind}`, {
             ...parsePillAdditionalData(i18n.language, row.activity),
           })}
