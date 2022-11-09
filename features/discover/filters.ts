@@ -2,7 +2,6 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { DiscoverFiltersListItem } from 'features/discover/meta'
 
 export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem } = {
-  all: { value: 'all', label: 'All assets' },
   // TODO: update with nicer cuvre icon when available
   curve: { value: 'CURVE_LP', label: 'CURVE LP', icon: 'curve_full_circle_color' },
   eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
@@ -40,3 +39,9 @@ export const discoverTimeFilter: DiscoverFiltersListItem[] = [
   { value: '30d', label: '30 days' },
   { value: '1y', label: '1 year' },
 ]
+
+export function getAssetOptions(options: DiscoverFiltersListItem[]): DiscoverFiltersListItem[] {
+  const all = { value: options.map((item) => item.value).join(','), label: 'All assets' }
+
+  return [all, ...options]
+}
