@@ -71,6 +71,19 @@ export function getTokenMetaData(
   }
 }
 
+export const defaultExchangeProtocols = [
+  'UNISWAP_V3',
+  'PMM4',
+  'UNISWAP_V2',
+  'SUSHI',
+  'CURVE',
+  'PSM',
+  'WSTETH',
+  'BALANCER',
+  'ST_ETH',
+  'WETH',
+]
+
 export function getQuote$(
   dai: TokenMetadata,
   collateral: TokenMetadata,
@@ -97,7 +110,7 @@ export function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
-    protocols: protocols || 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM,WSTETH',
+    protocols: protocols || defaultExchangeProtocols.join(','),
   })
 
   const responseBase = {
