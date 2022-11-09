@@ -27,7 +27,7 @@ function OpenVault({ strategy: _strategy }: { strategy: string }) {
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView config={strategies['aave-multiply-steth-usdc']} />
+          <AaveOpenView config={strategies['aave-multiply']} />
 
           <Survey for="earn" />
         </WithTermsOfService>

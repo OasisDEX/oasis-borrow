@@ -11,8 +11,10 @@ import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMul
 import { AaveMultiplySimulate } from '../multiply/aave/components/AaveMultiplySimulate'
 import { StrategyConfig } from './common/StrategyConfigTypes'
 
-export const strategies: Record<string, StrategyConfig> = {
-  'aave-earn-steth-eth': {
+type StrategyConfigName = 'aave-earn' | 'aave-multiply'
+
+export const strategies: Record<StrategyConfigName, StrategyConfig> = {
+  'aave-earn': {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
     viewComponents: {
@@ -28,7 +30,7 @@ export const strategies: Record<string, StrategyConfig> = {
       debt: 'ETH',
     },
   },
-  'aave-multiply-steth-usdc': {
+  'aave-multiply': {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
     viewComponents: {
@@ -40,4 +42,4 @@ export const strategies: Record<string, StrategyConfig> = {
       vaultDetailsView: AaveMultiplyManageComponent,
     },
   },
-}
+} as const
