@@ -234,7 +234,7 @@ export function SidebarSetupAutoBuy({
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (!isAwaitingConfirmation && stage !== 'txSuccess') {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
             uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,
