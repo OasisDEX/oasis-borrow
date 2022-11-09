@@ -56,15 +56,20 @@ export function configureLocalStorageForTests(data: { [feature in Feature]?: boo
 }
 
 function capitalizeFirstLetter(string: string) {
-  return string.charAt(0).toLowerCase() + string.slice(1);
+  return `${string.charAt(0).toLowerCase()}${string.slice(1)}`
 }
 
-function mapFeatureToggles(dbFeatureToggles: feature_flags, localFeatureToggles: Record<Feature, boolean>) {
-  const mappedFeatureFlags = {} as any;
+function mapFeatureToggles(
+  dbFeatureToggles: feature_flags,
+  localFeatureToggles: Record<Feature, boolean>,
+) {
+  const mappedFeatureFlags = {} as any
 
   for (const key of Object.keys(localFeatureToggles)) {
     const featureToggleKey = capitalizeFirstLetter(key) as keyof feature_flags
-    if (featureToggleKey in dbFeatureToggles) { mappedFeatureFlags[key] = dbFeatureToggles[featureToggleKey] }
+    if (featureToggleKey in dbFeatureToggles) {
+      mappedFeatureFlags[key] = dbFeatureToggles[featureToggleKey]
+    }
   }
 
   return mappedFeatureFlags
@@ -104,28 +109,27 @@ function setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled: Array<Feature> 
 // feature ends up enabled.
 
 export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = []) {
-  // update local toggles
-  axios.get('/api/features').then(res => {
-    if (localStorage !== undefined) {
-      // Store values in localstorage becasue if there is a lost connection, features will be able to read from there.
-      if (process.env.NODE_ENV === 'production' && res.data) {
-        // use DB in production only as a fallback
-        const featureToggles = res.data as feature_flags
-        const toggles = mapFeatureToggles(featureToggles, configuredFeatures);
-        if (toggles) localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(toggles))
-
-
-      } else {
-        // Use this for dev experience, allows us to toggle features much quicker using chrome extension. Also, if the request fails, localstorage provides a fallback.
-        // No-yet-loaded features are always set to false in local storage even if true in code.
-        setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
+  // fetch toggles from the database
+  axios
+    .get('/api/features')
+    .then((res) => {
+      if (localStorage !== undefined) {
+        // Store values in localstorage becasue if there is a lost connection, features will be able to read from there.
+        if (process.env.NODE_ENV === 'production' && res.data) {
+          // use DB in production only as a fallback
+          const featureToggles = res.data as feature_flags
+          const toggles = mapFeatureToggles(featureToggles, configuredFeatures)
+          if (toggles) localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(toggles))
+        } else {
+          // Use this for dev experience, allows us to toggle features much quicker using chrome extension. Also, if the request fails, localstorage provides a fallback.
+          // No-yet-loaded features are always set to false in local storage even if true in code.
+          setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
+        }
       }
-    }
-  })
+    })
     .catch(() => {
       setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
     })
-
 }
 
 export function useFeatureToggle(feature: Feature): boolean {
