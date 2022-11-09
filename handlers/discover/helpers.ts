@@ -1,6 +1,4 @@
 import { HighestMultiplyPnl, MostYieldEarned, Prisma } from '@prisma/client'
-import { discoverFiltersAssetItems } from 'features/discover/filters'
-import { values } from 'lodash'
 
 type OmitNonDecimal<T> = { [K in keyof T]: T[K] extends Prisma.Decimal ? K : never }[keyof T]
 type DiscoverLite = OmitNonDecimal<HighestMultiplyPnl | MostYieldEarned>
@@ -18,14 +16,10 @@ export function getGenericRangeFilter(filter?: string): Prisma.StringFilter {
   } else return { gte: '0' }
 }
 
-export function getAssetFilter(asset?: string): Prisma.StringFilter {
-  return !asset || asset === 'all'
-    ? {
-        in: values(discoverFiltersAssetItems)
-          .map((item) => item.value)
-          .filter((item) => item !== 'all'),
-      }
-    : { equals: asset }
+export function getGenericArrayFilter(filter?: string): Prisma.StringFilter {
+  return {
+    in: filter?.split(','),
+  }
 }
 
 export function getTimeSignature(prefix: string, time?: string): DiscoverLite {

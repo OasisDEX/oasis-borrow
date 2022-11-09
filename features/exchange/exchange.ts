@@ -89,16 +89,26 @@ export function getQuote$(
   ).toFixed(0)
 
   //TODO: set proper precision depending on token
-  const searchParams = new URLSearchParams({
-    fromTokenAddress,
-    toTokenAddress,
-    amount: _1inchAmount,
-    fromAddress: account,
-    slippage: slippage.times(100).toString(),
-    disableEstimate: 'true',
-    allowPartialFill: 'false',
-    protocols: protocols || 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
-  })
+  const searchParams = protocols
+    ? new URLSearchParams({
+        fromTokenAddress,
+        toTokenAddress,
+        amount: _1inchAmount,
+        fromAddress: account,
+        slippage: slippage.times(100).toString(),
+        disableEstimate: 'true',
+        allowPartialFill: 'false',
+        protocols: protocols,
+      })
+    : new URLSearchParams({
+        fromTokenAddress,
+        toTokenAddress,
+        amount: _1inchAmount,
+        fromAddress: account,
+        slippage: slippage.times(100).toString(),
+        disableEstimate: 'true',
+        allowPartialFill: 'false',
+      })
 
   const responseBase = {
     status: 'SUCCESS',
