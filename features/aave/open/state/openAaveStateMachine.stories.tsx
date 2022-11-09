@@ -29,7 +29,6 @@ import {
   TransactionStateMachine,
 } from '../../../stateMachines/transaction'
 import { contextToTransactionParameters } from '../services'
-import { aaveStEthSimulateStateMachine } from './aaveStEthSimulateStateMachine'
 import { createOpenAaveStateMachine, OpenAaveEvent } from './openAaveStateMachine'
 import { createParametersStateMachine, ParametersStateMachine } from './parametersStateMachine'
 
@@ -97,18 +96,6 @@ const transactionMachine = createTransactionStateMachine(callOperationExecutor).
   },
 })
 
-const simulationMachine = aaveStEthSimulateStateMachine.withConfig({
-  actions: {},
-  services: {
-    getYields: async () => {
-      return {} as any
-    },
-    calculate: async () => {
-      return {} as any
-    },
-  },
-})
-
 const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
   actions: {
     spawnPricesObservable: assign(() => {
@@ -117,9 +104,6 @@ const openAaveStateMachine = createOpenAaveStateMachine.withConfig({
     spawnUserSettingsObservable: assign(() => {
       return {}
     }),
-    spawnSimulationMachine: assign((_) => ({
-      refSimulationMachine: spawn(simulationMachine, { name: 'simulationMachine' }),
-    })),
     spawnParametersMachine: assign((_) => ({
       refParametersStateMachine: spawn(
         parametersMachine.withConfig({

@@ -1,21 +1,28 @@
-import { useActor, useSelector } from '@xstate/react'
+import { IStrategy } from '@oasisdex/oasis-actions'
+import { useSelector } from '@xstate/react'
+import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box } from 'theme-ui'
-import { ActorRefFrom } from 'xstate'
 
+import { useAppContext } from '../../../../components/AppContextProvider'
 import { Banner, bannerGradientPresets } from '../../../../components/Banner'
 import { DetailsSection } from '../../../../components/DetailsSection'
 import { DetailsSectionContentTable } from '../../../../components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from '../../../../components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from '../../../../components/vault/detailsSection/ContentFooterItemsEarnSimulate'
+import { HasGasEstimation } from '../../../../helpers/form'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { useHash } from '../../../../helpers/useHash'
 import { zero } from '../../../../helpers/zero'
+import { aaveStETHDefaultRiskRatio } from '../../../aave/constants'
 import { AaveSimulateTitle } from '../../../aave/open/components/AaveSimulateTitle'
 import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
-import { Simulation } from '../../../aave/open/services'
-import { AaveStEthSimulateStateMachine } from '../../../aave/open/state'
+import {
+  calculateSimulation,
+  CalculateSimulationResult,
+  Simulation,
+} from '../../../aave/open/services'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
@@ -25,12 +32,39 @@ function mapSimulation(simulation?: Simulation): string[] {
   ]
 }
 
-function SimulationSection({ actor }: { actor: ActorRefFrom<AaveStEthSimulateStateMachine> }) {
-  const [state] = useActor(actor)
+function SimulationSection({
+  strategy,
+  token,
+  userInputAmount,
+  gasPrice,
+}: {
+  strategy?: IStrategy
+  token: string
+  userInputAmount?: BigNumber
+  gasPrice?: HasGasEstimation
+}) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
+  const { aaveSthEthYieldsQuery } = useAppContext()
+  const [simulation, setSimulation] = useState<CalculateSimulationResult>()
+  const amount = userInputAmount || new BigNumber(100)
 
-  const { simulation, amount, token } = state.context
+  const sourceTokenFee = strategy?.simulation.swap.sourceTokenFee || zero
+  const targetTokenFee = strategy?.simulation.swap.targetTokenFee || zero
+  const gasFee = gasPrice?.gasEstimationEth || zero
+  const fees = sourceTokenFee.plus(targetTokenFee).plus(gasFee)
+  const riskRatio = strategy?.simulation.position.riskRatio || aaveStETHDefaultRiskRatio
+
+  useEffect(() => {
+    aaveSthEthYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
+      .then((yields) => {
+        const simulation = calculateSimulation({ amount, yields, token, fees })
+        setSimulation(simulation)
+      })
+      .catch((e) => {
+        console.error('unable to get yields', e)
+      })
+  }, [amount.toString(), fees.toString(), riskRatio.multiple.toString()])
 
   return (
     <>
@@ -56,7 +90,7 @@ function SimulationSection({ actor }: { actor: ActorRefFrom<AaveStEthSimulateSta
         footer={
           <DetailsSectionFooterItemWrapper>
             <ContentFooterItemsEarnSimulate
-              token={token || 'ETH'}
+              token={token}
               breakeven={simulation?.breakEven || zero}
               entryFees={simulation?.entryFees || zero}
               apy={simulation?.apy || zero}
@@ -86,9 +120,14 @@ function SimulationSection({ actor }: { actor: ActorRefFrom<AaveStEthSimulateSta
 
 export function SimulateSectionComponent() {
   const { stateMachine } = useOpenAaveStateMachineContext()
-  const simulationMachine = useSelector(stateMachine, (state) => {
-    return state.context.refSimulationMachine
+  const simulationSectionProps = useSelector(stateMachine, (state) => {
+    return {
+      strategy: state.context.transactionParameters,
+      token: state.context.token,
+      userInputAmount: state.context.userInput.amount,
+      gasPrice: state.context.estimatedGasPrice,
+    }
   })
 
-  return simulationMachine ? <SimulationSection actor={simulationMachine} /> : <></>
+  return <SimulationSection {...simulationSectionProps} />
 }

@@ -13,17 +13,12 @@ import { ProxyStateMachine } from '../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
 import { aaveStETHDefaultRiskRatio } from '../../constants'
-import {
-  AaveStEthSimulateStateMachine,
-  AaveStEthSimulateStateMachineEvents,
-} from './aaveStEthSimulateStateMachine'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
 export interface OpenAaveContext extends BaseAaveContext {
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
-  refSimulationMachine?: ActorRefFrom<AaveStEthSimulateStateMachine>
 
   auxiliaryAmount?: BigNumber
   strategyName?: string
@@ -91,12 +86,7 @@ export const createOpenAaveStateMachine = createMachine(
         id: 'getProxyAddress',
       },
     ],
-    entry: [
-      'spawnParametersMachine',
-      'spawnSimulationMachine',
-      'spawnPricesObservable',
-      'spawnUserSettingsObservable',
-    ],
+    entry: ['spawnParametersMachine', 'spawnPricesObservable', 'spawnUserSettingsObservable'],
     states: {
       editing: {
         entry: ['resetCurrentStep'],
@@ -106,9 +96,7 @@ export const createOpenAaveStateMachine = createMachine(
               'setAmount',
               'calculateAuxiliaryAmount',
               'debounceSendingToParametersMachine',
-              'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
-              'sendUpdateToSimulationMachine',
               'setIsLoadingTrue',
             ],
           },
@@ -117,11 +105,7 @@ export const createOpenAaveStateMachine = createMachine(
             { cond: 'enoughBalance', target: 'settingMultiple', actions: 'incrementCurrentStep' },
           ],
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: [
-              'setIsLoadingFalse',
-              'assignTransactionParameters',
-              'sendFeesToSimulationMachine',
-            ],
+            actions: ['setIsLoadingFalse', 'assignTransactionParameters'],
           },
         },
       },
@@ -156,9 +140,7 @@ export const createOpenAaveStateMachine = createMachine(
             actions: [
               'setRiskRatio',
               'debounceSendingToParametersMachine',
-              'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
-              'sendUpdateToSimulationMachine',
               'setIsLoadingTrue',
             ],
           },
@@ -166,18 +148,12 @@ export const createOpenAaveStateMachine = createMachine(
             actions: [
               'resetRiskRatio',
               'debounceSendingToParametersMachine',
-              'debounceSendingToSimulationMachine',
               'sendUpdateToParametersMachine',
-              'sendUpdateToSimulationMachine',
               'setIsLoadingTrue',
             ],
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: [
-              'assignTransactionParameters',
-              'sendFeesToSimulationMachine',
-              'setIsLoadingFalse',
-            ],
+            actions: ['assignTransactionParameters', 'setIsLoadingFalse'],
           },
           NEXT_STEP: {
             target: 'reviewing',
@@ -203,7 +179,7 @@ export const createOpenAaveStateMachine = createMachine(
             actions: 'decrementCurrentStep',
           },
           TRANSACTION_PARAMETERS_RECEIVED: {
-            actions: ['assignTransactionParameters', 'sendFeesToSimulationMachine'],
+            actions: ['assignTransactionParameters'],
           },
         },
       },
@@ -344,37 +320,8 @@ export const createOpenAaveStateMachine = createMachine(
       updateMetaInfo: assign((context, event) => ({
         hasOtherAssetsThanETH_STETH: event.hasOtherAssetsThanETH_STETH,
       })),
-      sendFeesToSimulationMachine: send(
-        (_, event): AaveStEthSimulateStateMachineEvents => {
-          const sourceTokenFee = event.parameters.simulation.swap.sourceTokenFee || zero
-          const targetTokenFee = event.parameters.simulation.swap.targetTokenFee || zero
 
-          const gasFee = event.estimatedGasPrice?.gasEstimationEth || zero
-
-          return {
-            type: 'FEE_CHANGED',
-            fee: sourceTokenFee.plus(targetTokenFee).plus(gasFee),
-          }
-        },
-        { to: (context) => context.refSimulationMachine! },
-      ),
-      sendUpdateToSimulationMachine: send(
-        (context): AaveStEthSimulateStateMachineEvents => {
-          return {
-            type: 'USER_PARAMETERS_CHANGED',
-            amount: context.userInput.amount || zero,
-            riskRatio: context.userInput.riskRatio || aaveStETHDefaultRiskRatio,
-            token: context.token,
-          }
-        },
-        {
-          to: (context) => context.refSimulationMachine!,
-          delay: (context) => context.inputDelay,
-          id: 'update-simulate-machine',
-        },
-      ),
       debounceSendingToParametersMachine: cancel('update-parameters-machine'),
-      debounceSendingToSimulationMachine: cancel('update-simulate-machine'),
       eventConfirmDeposit: ({ userInput }) => {
         userInput.amount && trackingEvents.earn.stETHOpenPositionConfirmDeposit(userInput.amount)
       },

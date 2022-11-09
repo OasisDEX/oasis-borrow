@@ -144,24 +144,33 @@ export async function getAaveStEthYield(
   riskRatio: IRiskRatio,
   fields: FilterYieldFieldsType[],
 ): Promise<AaveStEthYieldsResponse> {
+  const currentDateGuarded = currentDate.clone()
   const reserveAddress = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
   const getClient = await client.pipe(first()).toPromise()
   const response = await getClient.request(aaveStEthYield, {
     reserveAddress,
     multiply: riskRatio.multiple.toString(),
-    currentDate: currentDate.utc().format(yieldsDateFormat),
-    currentDateOffset: currentDate.utc().subtract(1, 'days').format(yieldsDateFormat),
-    date7daysAgo: currentDate.utc().clone().subtract(7, 'days').format(yieldsDateFormat),
-    date7daysAgoOffset: currentDate
+    currentDate: currentDateGuarded.utc().clone().format(yieldsDateFormat),
+    currentDateOffset: currentDateGuarded
+      .utc()
+      .clone()
+      .subtract(1, 'days')
+      .format(yieldsDateFormat),
+    date7daysAgo: currentDateGuarded.utc().clone().subtract(7, 'days').format(yieldsDateFormat),
+    date7daysAgoOffset: currentDateGuarded
       .utc()
       .clone()
       .subtract(1, 'days')
       .subtract(7, 'days')
       .format(yieldsDateFormat),
-    date30daysAgo: currentDate.utc().clone().subtract(30, 'days').format(yieldsDateFormat),
-    date90daysAgo: currentDate.utc().clone().subtract(90, 'days').format(yieldsDateFormat),
-    date90daysAgoOffset: currentDate.utc().clone().subtract(90, 'days').format(yieldsDateFormat),
-    date1yearAgo: currentDate.utc().clone().subtract(1, 'year').format(yieldsDateFormat),
+    date30daysAgo: currentDateGuarded.utc().clone().subtract(30, 'days').format(yieldsDateFormat),
+    date90daysAgo: currentDateGuarded.utc().clone().subtract(90, 'days').format(yieldsDateFormat),
+    date90daysAgoOffset: currentDateGuarded
+      .utc()
+      .clone()
+      .subtract(90, 'days')
+      .format(yieldsDateFormat),
+    date1yearAgo: currentDateGuarded.utc().clone().subtract(1, 'year').format(yieldsDateFormat),
     include7Days: fields.length ? fields.includes('7Days') : true,
     include7DaysOffset: fields.length ? fields.includes('7DaysOffset') : true,
     include30Days: fields.length ? fields.includes('30Days') : true,

@@ -19,6 +19,7 @@ import {
 } from '../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
+import { StrategyConfig } from './common/StrategyConfigTypes'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
 import {
   getClosePositionParametersStateMachine$,
@@ -32,9 +33,9 @@ import {
   getOpenAavePositionStateMachineServices,
   getOpenAaveTransactionMachine,
   getParametersStateMachine$,
-  getSthEthSimulationMachine,
 } from './open/services'
 import { getOpenAaveStateMachine$ } from './open/services'
+import { strategies } from './strategyConfig'
 
 export function setupAaveContext({
   userSettings$,
@@ -141,14 +142,11 @@ export function setupAaveContext({
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
 
-  const simulationMachine = getSthEthSimulationMachine(aaveSthEthYieldsQuery, aaveReserveStEthData$)
-
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
     parametersStateMachine$,
     proxyStateMachine$,
     transactionMachine,
-    simulationMachine,
     userSettings$,
     tokenPriceUSD$,
   )
@@ -174,11 +172,18 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
+  function detectAaveStrategy$(_address: string): Observable<StrategyConfig> {
+    // TODO: properly detect fom chain or georgi method
+    return of(strategies['aave-earn'])
+  }
+
   return {
     aaveStateMachine$,
     aaveManageStateMachine$,
     aaveTotalValueLocked$,
     aaveReserveStEthData$,
+    detectAaveStrategy$,
+    aaveSthEthYieldsQuery,
     aaveProtocolData$,
   }
 }
