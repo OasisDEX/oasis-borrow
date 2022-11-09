@@ -27,6 +27,7 @@ SELECT
     "collateral_type",
     "token",
     "vault_collateral" * "current_price" AS "collateral_value",
+    "vault_collateral" * "current_price" / "vault_debt" AS "collateral_ratio",
     "vault_collateral" * "current_price" / "vault_debt" - "liquidation_ratio" AS "liquidation_proximity",
     "liquidation_ratio" * "vault_debt" / "vault_collateral" AS "liquidation_price",
     "next_price",
