@@ -88,7 +88,7 @@ export const defaultExchangeProtocols = [
   'BALANCER_V2_WRAPPER',
   'ST_ETH',
   'WETH',
-  'ROCKET_POOL'
+  'ROCKET_POOL',
 ]
 
 export function getQuote$(
