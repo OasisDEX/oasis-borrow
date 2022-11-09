@@ -14,7 +14,6 @@ import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { ProxyView } from '../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
 import { StrategyConfig } from '../../common/StrategyConfigType'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useAaveRedirect } from '../../helpers/useAaveRedirect'
@@ -180,7 +179,7 @@ export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
   const [connectedContext] = useObservable(connectedContext$)
   const { t } = useTranslation()
   const { hasOtherAssetsThanETH_STETH } = state.context
-
+  const AdjustRiskView = config.viewComponents.adjustRiskView
   switch (true) {
     case state.matches('editing'):
       return <OpenAaveEditingStateView state={state} send={send} />
@@ -204,7 +203,6 @@ export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
             action: () => send('BACK_TO_EDITING'),
           }}
           viewLocked={hasOtherAssetsThanETH_STETH}
-          config={config}
         />
       )
     case state.matches('reviewing'):

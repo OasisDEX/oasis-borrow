@@ -6,11 +6,11 @@ import { ViewPositionSectionComponent } from 'features/earn/aave/components/View
 import { AaveMultiplyHeader } from 'features/multiply/aave/components/AaveMultiplyHeader'
 import { AaveMultiplyManageComponent } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { AaveMultiplySimulate } from 'features/multiply/aave/components/AaveMultiplySimulate'
-import React from 'react'
 import { Observable, of } from 'rxjs'
 
-import { formatBigNumber, formatPercent } from '../../helpers/formatters/format'
-import { richFormattedBoundary } from './common/components/SidebarAdjustRiskView'
+import { adjustRiskSliderConfig as earnAdjustRiskSliderConfig } from '../earn/aave/riskSliderConfig'
+import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
+import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { StrategyConfig } from './common/StrategyConfigType'
 import { ManageSectionComponent } from './manage/components'
 import { SimulateSectionComponent } from './open/components'
@@ -31,18 +31,7 @@ export const strategyConfig: Record<string, StrategyConfig> = {
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
-      adjustRiskViewConfig: {
-        liquidationPriceFormatter: (qty) => {
-          return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
-        },
-        rightBoundary: {
-          valueExtractor: (data) => data?.oracleAssetPrice,
-          formatter: (qty) => {
-            return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
-          },
-          translationKey: 'open-earn.aave.vault-form.configure-multiple.current-price',
-        },
-      },
+      adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
     },
     tokens: {
       collateral: 'STETH',
@@ -59,18 +48,7 @@ export const strategyConfig: Record<string, StrategyConfig> = {
       simulateSection: AaveMultiplySimulate,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
-      adjustRiskViewConfig: {
-        liquidationPriceFormatter: (qty) => {
-          return <>${formatBigNumber(qty, 2)}</>
-        },
-        rightBoundary: {
-          valueExtractor: (data) => data?.ltv,
-          formatter: (qty) => {
-            return <>{formatPercent(qty.times(100), { precision: 1 })}</>
-          },
-          translationKey: 'vault-changes.loan-to-value',
-        },
-      },
+      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
     },
     tokens: {
       collateral: 'STETH',

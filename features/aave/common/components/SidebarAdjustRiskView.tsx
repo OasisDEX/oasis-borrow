@@ -14,17 +14,15 @@ import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
 import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
-import { StrategyConfig } from '../StrategyConfigType'
 import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 'RESET_RISK_RATIO' }
 
-type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
+export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
   textButton: SidebarSectionFooterButtonSettings
   resetRiskValue: IRiskRatio
   viewLocked?: boolean // locks whole view + displays warning
-  config: StrategyConfig
 }
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
@@ -38,171 +36,199 @@ export function richFormattedBoundary({ value, unit }: { value: string; unit: st
   )
 }
 
-export function AdjustRiskView({
-  state,
-  send,
-  primaryButton,
-  textButton,
-  viewLocked = false,
-  config,
-}: AdjustRiskViewProps) {
-  const { t } = useTranslation()
+export type TokenDisplay = JSX.Element
 
-  const onChainPosition = state.context.protocolData?.position
-  const simulation = state.context.transactionParameters?.simulation
-  const targetPosition = simulation?.position
+type BoundaryConfig = {
+  translationKey: string
+  valueExtractor: ({
+    oracleAssetPrice,
+    ltv,
+  }: {
+    oracleAssetPrice: BigNumber
+    ltv: BigNumber
+  }) => BigNumber
+  formatter: (qty: BigNumber) => TokenDisplay
+}
 
-  const maxRisk = targetPosition
-    ? targetPosition?.category.maxLoanToValue
-    : onChainPosition?.category.maxLoanToValue
+export type AdjustRiskViewConfig = {
+  liquidationPriceFormatter: (qty: BigNumber) => TokenDisplay
+  rightBoundaryConfig: BoundaryConfig
+}
 
-  const minRisk =
-    (simulation?.minConfigurableRiskRatio &&
-      BigNumber.max(
-        simulation?.minConfigurableRiskRatio.loanToValue,
-        aaveStETHMinimumRiskRatio.loanToValue,
-      )) ||
-    aaveStETHMinimumRiskRatio.loanToValue
+export function adjustRiskView(config: AdjustRiskViewConfig) {
+  return function AdjustRiskView({
+    state,
+    send,
+    primaryButton,
+    textButton,
+    viewLocked = false,
+  }: AdjustRiskViewProps) {
+    const { t } = useTranslation()
 
-  const liquidationPrice =
-    targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero
+    const onChainPosition = state.context.protocolData?.position
+    const simulation = state.context.transactionParameters?.simulation
+    const targetPosition = simulation?.position
 
-  const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
+    const maxRisk = targetPosition
+      ? targetPosition?.category.maxLoanToValue
+      : onChainPosition?.category.maxLoanToValue
 
-  enum RiskLevel {
-    OK = 'OK',
-    AT_RISK = 'AT_RISK',
-  }
+    const minRisk =
+      (simulation?.minConfigurableRiskRatio &&
+        BigNumber.max(
+          simulation?.minConfigurableRiskRatio.loanToValue,
+          aaveStETHMinimumRiskRatio.loanToValue,
+        )) ||
+      aaveStETHMinimumRiskRatio.loanToValue
 
-  const healthFactor = targetPosition ? targetPosition?.healthFactor : onChainPosition?.healthFactor
+    const liquidationPrice =
+      targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero
 
-  const warningHealthFactor = new BigNumber('1.25')
+    const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
-  const riskTrafficLight = healthFactor?.gt(warningHealthFactor) ? RiskLevel.OK : RiskLevel.AT_RISK
+    enum RiskLevel {
+      OK = 'OK',
+      AT_RISK = 'AT_RISK',
+    }
 
-  const collateralToken = state.context.strategyInfo?.collateralToken
+    const healthFactor = targetPosition
+      ? targetPosition?.healthFactor
+      : onChainPosition?.healthFactor
 
-  const debtToken = state.context.token
+    const warningHealthFactor = new BigNumber('1.25')
 
-  const priceMovementUntilLiquidation = one.minus(one.div(healthFactor || zero)).times(100)
+    const riskTrafficLight = healthFactor?.gt(warningHealthFactor)
+      ? RiskLevel.OK
+      : RiskLevel.AT_RISK
 
-  const priceMovementWarningThreshold = new BigNumber(20)
+    const collateralToken = state.context.strategyInfo?.collateralToken
 
-  const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
+    const debtToken = state.context.token
 
-  const liquidationPenalty = formatPercent(
-    (state.context.strategyInfo?.liquidationBonus || zero).times(100),
-    {
-      precision: 2,
-    },
-  )
+    const priceMovementUntilLiquidation = one.minus(one.div(healthFactor || zero)).times(100)
 
-  const sliderValue =
-    state.context.userInput.riskRatio?.loanToValue ||
-    onChainPosition?.riskRatio.loanToValue ||
-    aaveStETHDefaultRiskRatio.loanToValue
+    const priceMovementWarningThreshold = new BigNumber(20)
 
-  const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
-    content: (
-      <Grid gap={3}>
-        <SliderValuePicker
-          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
-          leftBoundry={liquidationPrice}
-          leftBoundryFormatter={(value) => {
-            if (state.context.loading) {
-              return '...'
-            } else {
-              return config.viewComponents.adjustRiskViewConfig.liquidationPriceFormatter(value)
+    const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
+
+    const liquidationPenalty = formatPercent(
+      (state.context.strategyInfo?.liquidationBonus || zero).times(100),
+      {
+        precision: 2,
+      },
+    )
+
+    const sliderValue =
+      state.context.userInput.riskRatio?.loanToValue ||
+      onChainPosition?.riskRatio.loanToValue ||
+      aaveStETHDefaultRiskRatio.loanToValue
+
+    const sidebarSectionProps: SidebarSectionProps = {
+      title: t('open-earn.aave.vault-form.title'),
+      content: (
+        <Grid gap={3}>
+          <SliderValuePicker
+            leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
+            leftBoundry={liquidationPrice}
+            leftBoundryFormatter={(value) => {
+              if (state.context.loading) {
+                return '...'
+              } else {
+                return config.liquidationPriceFormatter(value)
+              }
+            }}
+            rightBoundry={config.rightBoundaryConfig.valueExtractor({
+              oracleAssetPrice,
+              ltv: sliderValue,
+            })}
+            rightBoundryFormatter={(value) => {
+              return config.rightBoundaryConfig.formatter(value)
+            }}
+            rightLabel={t(config.rightBoundaryConfig.translationKey)}
+            onChange={(ltv) => {
+              send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
+            }}
+            leftBoundryStyling={{
+              color: riskTrafficLight !== RiskLevel.OK ? 'warning100' : 'neutral100',
+            }}
+            minBoundry={minRisk}
+            maxBoundry={maxRisk || zero}
+            lastValue={sliderValue}
+            disabled={viewLocked}
+            step={0.01}
+            sliderPercentageFill={
+              maxRisk
+                ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
+                : new BigNumber(0)
             }
-          }}
-          rightBoundry={config.viewComponents.adjustRiskViewConfig.rightBoundary.valueExtractor({
-            oracleAssetPrice,
-            ltv: sliderValue,
-          })}
-          rightBoundryFormatter={(value) => {
-            return config.viewComponents.adjustRiskViewConfig.rightBoundary.formatter(value)
-          }}
-          rightLabel={t(config.viewComponents.adjustRiskViewConfig.rightBoundary.translationKey)}
-          onChange={(ltv) => {
-            send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
-          }}
-          leftBoundryStyling={{
-            color: riskTrafficLight !== RiskLevel.OK ? 'warning100' : 'neutral100',
-          }}
-          minBoundry={minRisk}
-          maxBoundry={maxRisk || zero}
-          lastValue={sliderValue}
-          disabled={viewLocked}
-          step={0.01}
-          sliderPercentageFill={
-            maxRisk
-              ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
-              : new BigNumber(0)
-          }
-        />
-        <Flex
-          sx={{
-            variant: 'text.paragraph4',
-            justifyContent: 'space-between',
-            color: 'neutral80',
-          }}
-        >
-          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
-          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
-        </Flex>
-        {collateralToken && debtToken && (
-          <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
-            <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
-              {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
-                collateralToken,
-                debtToken,
-              })}
-            </WithArrow>
-          </Link>
-        )}
-        {viewLocked ? (
-          <MessageCard
-            messages={[t('manage-earn-vault.has-asset-already')]}
-            type="error"
-            withBullet={false}
           />
-        ) : (
-          state.context.transactionParameters && (
+          <Flex
+            sx={{
+              variant: 'text.paragraph4',
+              justifyContent: 'space-between',
+              color: 'neutral80',
+            }}
+          >
+            <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
+            <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
+          </Flex>
+          {collateralToken && debtToken && (
+            <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
+              <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
+                {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
+                  collateralToken,
+                  debtToken,
+                })}
+              </WithArrow>
+            </Link>
+          )}
+          {viewLocked ? (
             <MessageCard
-              messages={[
-                isWarning
-                  ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
-                      collateralToken,
-                      priceMovement: formatPercent(priceMovementUntilLiquidation, { precision: 2 }),
-                      debtToken,
-                      liquidationPenalty,
-                    })
-                  : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
-                      collateralToken,
-                      priceMovement: formatPercent(priceMovementUntilLiquidation, { precision: 2 }),
-                      debtToken,
-                      liquidationPenalty,
-                    }),
-              ]}
+              messages={[t('manage-earn-vault.has-asset-already')]}
+              type="error"
               withBullet={false}
-              type={isWarning ? 'warning' : 'ok'}
             />
-          )
-        )}
-        <StrategyInformationContainer state={state} />
+          ) : (
+            state.context.transactionParameters && (
+              <MessageCard
+                messages={[
+                  isWarning
+                    ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                        collateralToken,
+                        priceMovement: formatPercent(priceMovementUntilLiquidation, {
+                          precision: 2,
+                        }),
+                        debtToken,
+                        liquidationPenalty,
+                      })
+                    : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                        collateralToken,
+                        priceMovement: formatPercent(priceMovementUntilLiquidation, {
+                          precision: 2,
+                        }),
+                        debtToken,
+                        liquidationPenalty,
+                      }),
+                ]}
+                withBullet={false}
+                type={isWarning ? 'warning' : 'ok'}
+              />
+            )
+          )}
+          <StrategyInformationContainer state={state} />
 
-        <SidebarResetButton
-          clear={() => {
-            send({ type: 'RESET_RISK_RATIO' })
-          }}
-          disabled={viewLocked}
-        />
-      </Grid>
-    ),
-    primaryButton: { ...primaryButton, disabled: viewLocked || primaryButton.disabled },
-    textButton, // this is going back button, no need to block it
+          <SidebarResetButton
+            clear={() => {
+              send({ type: 'RESET_RISK_RATIO' })
+            }}
+            disabled={viewLocked}
+          />
+        </Grid>
+      ),
+      primaryButton: { ...primaryButton, disabled: viewLocked || primaryButton.disabled },
+      textButton, // this is going back button, no need to block it
+    }
+
+    return <SidebarSection {...sidebarSectionProps} />
   }
-
-  return <SidebarSection {...sidebarSectionProps} />
 }
