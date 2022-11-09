@@ -7,7 +7,7 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
     return <>${formatBigNumber(qty, 2)}</>
   },
-  rightBoundaryConfig: {
+  rightBoundary: {
     valueExtractor: (data) => data?.ltv,
     formatter: (qty) => {
       return <>{formatPercent(qty.times(100), { precision: 1 })}</>

@@ -52,10 +52,14 @@ type BoundaryConfig = {
 
 export type AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty: BigNumber) => TokenDisplay
-  rightBoundaryConfig: BoundaryConfig
+  rightBoundary: BoundaryConfig
+  link?: {
+    url: string
+    textTranslationKey: string
+  }
 }
 
-export function adjustRiskView(config: AdjustRiskViewConfig) {
+export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   return function AdjustRiskView({
     state,
     send,
@@ -134,17 +138,17 @@ export function adjustRiskView(config: AdjustRiskViewConfig) {
               if (state.context.loading) {
                 return '...'
               } else {
-                return config.liquidationPriceFormatter(value)
+                return viewConfig.liquidationPriceFormatter(value)
               }
             }}
-            rightBoundry={config.rightBoundaryConfig.valueExtractor({
+            rightBoundry={viewConfig.rightBoundary.valueExtractor({
               oracleAssetPrice,
               ltv: sliderValue,
             })}
             rightBoundryFormatter={(value) => {
-              return config.rightBoundaryConfig.formatter(value)
+              return viewConfig.rightBoundary.formatter(value)
             }}
-            rightLabel={t(config.rightBoundaryConfig.translationKey)}
+            rightLabel={t(viewConfig.rightBoundary.translationKey)}
             onChange={(ltv) => {
               send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
             }}
@@ -172,10 +176,10 @@ export function adjustRiskView(config: AdjustRiskViewConfig) {
             <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
             <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
           </Flex>
-          {collateralToken && debtToken && (
-            <Link target="_blank" href="https://dune.com/dataalways/stETH-De-Peg">
+          {collateralToken && debtToken && viewConfig.link && (
+            <Link target="_blank" href={viewConfig.link.url}>
               <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
-                {t('open-earn.aave.vault-form.configure-multiple.historical-ratio', {
+                {t(viewConfig.link.textTranslationKey, {
                   collateralToken,
                   debtToken,
                 })}
