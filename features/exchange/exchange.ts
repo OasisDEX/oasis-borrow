@@ -71,6 +71,26 @@ export function getTokenMetaData(
   }
 }
 
+export const defaultExchangeProtocols = [
+  'UNISWAP_V3',
+  'PMM1',
+  'PMM2',
+  'PMM3',
+  'PMM4',
+  'UNISWAP_V2',
+  'SUSHI',
+  'CURVE',
+  'CURVE_V2',
+  'PSM',
+  'WSTETH',
+  'BALANCER',
+  'BALANCER_V2',
+  'BALANCER_V2_WRAPPER',
+  'ST_ETH',
+  'WETH',
+  'ROCKET_POOL',
+]
+
 export function getQuote$(
   dai: TokenMetadata,
   collateral: TokenMetadata,
@@ -89,26 +109,16 @@ export function getQuote$(
   ).toFixed(0)
 
   //TODO: set proper precision depending on token
-  const searchParams = protocols
-    ? new URLSearchParams({
-        fromTokenAddress,
-        toTokenAddress,
-        amount: _1inchAmount,
-        fromAddress: account,
-        slippage: slippage.times(100).toString(),
-        disableEstimate: 'true',
-        allowPartialFill: 'false',
-        protocols: protocols,
-      })
-    : new URLSearchParams({
-        fromTokenAddress,
-        toTokenAddress,
-        amount: _1inchAmount,
-        fromAddress: account,
-        slippage: slippage.times(100).toString(),
-        disableEstimate: 'true',
-        allowPartialFill: 'false',
-      })
+  const searchParams = new URLSearchParams({
+    fromTokenAddress,
+    toTokenAddress,
+    amount: _1inchAmount,
+    fromAddress: account,
+    slippage: slippage.times(100).toString(),
+    disableEstimate: 'true',
+    allowPartialFill: 'false',
+    protocols: protocols || defaultExchangeProtocols.join(','),
+  })
 
   const responseBase = {
     status: 'SUCCESS',
