@@ -24,7 +24,8 @@ import {
   DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
 } from 'features/automation/common/consts'
-import { automationMetadata } from 'features/automation/metadata/automationMetadata'
+import { AutomationFeatures } from 'features/automation/common/types'
+import { getAutomationMetadata } from 'features/automation/metadata/automationMetadata'
 import { getStartingSlRatio } from 'features/automation/protection/stopLoss/helpers'
 import {
   STOP_LOSS_FORM_CHANGE,
@@ -162,7 +163,10 @@ export function SidebarAdjustStopLossEditingStage({
     vaultProtocol,
   } = useAutomationContext()
 
-  const { positionLabel, ratioLabel } = automationMetadata.stopLoss[vaultProtocol]
+  const { positionLabel, ratioLabel } = getAutomationMetadata<AutomationFeatures.STOP_LOSS>(
+    AutomationFeatures.STOP_LOSS,
+    vaultProtocol,
+  )
 
   useDebouncedCallback(
     (value) =>
