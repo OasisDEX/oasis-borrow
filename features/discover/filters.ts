@@ -4,7 +4,7 @@ import { DiscoverFiltersListItem } from 'features/discover/meta'
 export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem } = {
   crvv1ethsteth: {
     value: 'CRVV1ETHSTETH',
-    label: 'CRVV1ETHSTETH',
+    label: 'CURVE LP',
     icon: 'curve_full_circle_color',
   },
   eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
