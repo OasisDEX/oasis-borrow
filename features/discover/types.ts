@@ -48,6 +48,7 @@ export type DiscoverTableStatusRowData = {
   additionalData?: {
     timestamp?: number
     tillLiquidation?: number
+    stopLossLevel?: number
     toStopLoss?: number
   }
 }

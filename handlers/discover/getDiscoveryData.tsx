@@ -1,7 +1,12 @@
-import { DiscoverApiErrors, DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
+import {
+  DiscoverApiErrors,
+  DiscoverPages,
+  DiscoverTableRowData,
+} from 'features/discover/types'
 import {
   getGenericArrayFilter,
   getGenericRangeFilter,
+  getStatus,
   getTimeSignature,
 } from 'handlers/discover/helpers'
 import { NextApiRequest } from 'next'
@@ -29,16 +34,17 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.highestRiskPositions.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getGenericArrayFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
+              orderBy: { liquidation_proximity: 'asc' },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             liquidationPrice: item.liquidation_price.toNumber(),
             nextOsmPrice: item.next_price.toNumber(),
             maxLiquidationAmount: item.liquidation_value.toNumber(),
-            status: item.status as DiscoverTableRowData['status'],
+            status: getStatus(item) as DiscoverTableRowData['status'],
             cdpId: item.position_id,
           })),
         }
@@ -50,7 +56,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.highestMultiplyPnl.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getGenericArrayFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
                 vault_multiple: getGenericRangeFilter(multiple),
               },
@@ -74,7 +80,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.mostYieldEarned.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getGenericArrayFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
               orderBy: { [timeSignature]: 'desc' },
@@ -95,7 +101,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.largestDebt.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getGenericArrayFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
             })
