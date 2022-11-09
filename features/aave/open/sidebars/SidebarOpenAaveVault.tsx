@@ -15,6 +15,7 @@ import { OpenVaultAnimation } from '../../../../theme/animations'
 import { ProxyView } from '../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
+import { StrategyConfig } from '../../common/StrategyConfigType'
 import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useAaveRedirect } from '../../helpers/useAaveRedirect'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
@@ -172,7 +173,7 @@ function OpenAaveSuccessStateView({ state, redirectAddress }: OpenAaveStateProps
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarOpenAaveVault() {
+export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
   const { connectedContext$ } = useAppContext()
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
@@ -203,6 +204,7 @@ export function SidebarOpenAaveVault() {
             action: () => send('BACK_TO_EDITING'),
           }}
           viewLocked={hasOtherAssetsThanETH_STETH}
+          config={config}
         />
       )
     case state.matches('reviewing'):

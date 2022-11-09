@@ -10,10 +10,11 @@ import { MessageCard } from '../../../../components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from '../../../../components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
-import { formatBigNumber, formatPercent } from '../../../../helpers/formatters/format'
+import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
 import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
+import { StrategyConfig } from '../StrategyConfigType'
 import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 'RESET_RISK_RATIO' }
@@ -23,6 +24,18 @@ type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   textButton: SidebarSectionFooterButtonSettings
   resetRiskValue: IRiskRatio
   viewLocked?: boolean // locks whole view + displays warning
+  config: StrategyConfig
+}
+
+export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
+  return (
+    <>
+      {value}{' '}
+      <Text as="span" variant="paragraph4" color="neutral80">
+        {unit}
+      </Text>
+    </>
+  )
 }
 
 export function AdjustRiskView({
@@ -31,6 +44,7 @@ export function AdjustRiskView({
   primaryButton,
   textButton,
   viewLocked = false,
+  config,
 }: AdjustRiskViewProps) {
   const { t } = useTranslation()
 
@@ -88,35 +102,28 @@ export function AdjustRiskView({
     onChainPosition?.riskRatio.loanToValue ||
     aaveStETHDefaultRiskRatio.loanToValue
 
-  const tokensRatioText = (
-    <Text as="span" variant="paragraph4" color="neutral80">
-      {collateralToken}/{debtToken}
-    </Text>
-  )
-
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <SliderValuePicker
+          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
           leftBoundry={liquidationPrice}
           leftBoundryFormatter={(value) => {
             if (state.context.loading) {
               return '...'
             } else {
-              return (
-                <>
-                  {formatBigNumber(value, 2)} {tokensRatioText}
-                </>
-              )
+              return config.viewComponents.adjustRiskViewConfig.liquidationPriceFormatter(value)
             }
           }}
-          rightBoundry={oracleAssetPrice}
-          rightBoundryFormatter={(value) => (
-            <>
-              {formatBigNumber(value, 2)} {tokensRatioText}
-            </>
-          )}
+          rightBoundry={config.viewComponents.adjustRiskViewConfig.rightBoundary.valueExtractor({
+            oracleAssetPrice,
+            ltv: sliderValue,
+          })}
+          rightBoundryFormatter={(value) => {
+            return config.viewComponents.adjustRiskViewConfig.rightBoundary.formatter(value)
+          }}
+          rightLabel={t(config.viewComponents.adjustRiskViewConfig.rightBoundary.translationKey)}
           onChange={(ltv) => {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
           }}
@@ -133,8 +140,6 @@ export function AdjustRiskView({
               ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
               : new BigNumber(0)
           }
-          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
-          rightLabel={t('open-earn.aave.vault-form.configure-multiple.current-price')}
         />
         <Flex
           sx={{

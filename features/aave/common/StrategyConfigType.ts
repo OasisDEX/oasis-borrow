@@ -1,7 +1,10 @@
+import BigNumber from 'bignumber.js'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 
 import { AavePositionHeaderPropsBase } from '../../earn/aave/components/AavePositionHeader'
 import { ManageSectionComponentProps } from '../manage/components'
+
+export type TokenDisplay = JSX.Element
 
 export interface StrategyConfig {
   name: string
@@ -13,6 +16,20 @@ export interface StrategyConfig {
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
+    adjustRiskViewConfig: {
+      liquidationPriceFormatter: (qty: BigNumber) => TokenDisplay
+      rightBoundary: {
+        translationKey: string
+        valueExtractor: ({
+          oracleAssetPrice,
+          ltv,
+        }: {
+          oracleAssetPrice: BigNumber
+          ltv: BigNumber
+        }) => BigNumber
+        formatter: (qty: BigNumber) => TokenDisplay
+      }
+    }
   }
   tokens?: {
     collateral: string

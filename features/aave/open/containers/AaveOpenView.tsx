@@ -39,7 +39,7 @@ function AaveOpenContainer({
                   <Box>
                     <SimulateSection />
                   </Box>
-                  <Box>{<SidebarOpenAaveVault />}</Box>
+                  <Box>{<SidebarOpenAaveVault config={config} />}</Box>
                 </Grid>
               ),
             },
