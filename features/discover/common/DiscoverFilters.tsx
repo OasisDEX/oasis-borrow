@@ -33,7 +33,7 @@ export function DiscoverFilters({
       <Grid
         gap="12px"
         sx={{
-          gridTemplateColumns: ['100%', 'repeat(2, 1fr)', null, 'repeat(4, 230px)'],
+          gridTemplateColumns: ['100%', 'repeat(2, 1fr)', null, 'repeat(4, 234px)'],
         }}
       >
         {Object.keys(filters).map((key) => (
