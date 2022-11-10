@@ -84,6 +84,8 @@ export function SidebarSetupAutoTakeProfit({
     positionData: { debt, debtOffset, token, vaultType, lockedCollateral },
   } = useAutomationContext()
 
+  const { isAwaitingConfirmation } = autoTakeProfitState
+
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
     flow,
@@ -236,13 +238,7 @@ export function SidebarSetupAutoTakeProfit({
                   }
                   children={
                     <AutoTakeProfitInfoSectionControl
-                      debt={vault.debt}
-                      debtOffset={vault.debtOffset}
-                      ethMarketPrice={ethMarketPrice}
-                      lockedCollateral={vault.lockedCollateral}
                       toCollateral={autoTakeProfitState.toCollateral}
-                      token={vault.token}
-                      tokenMarketPrice={tokenMarketPrice}
                       triggerColPrice={autoTakeProfitState.executionPrice}
                       triggerColRatio={autoTakeProfitState.executionCollRatio}
                     />

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -88,6 +88,8 @@ export function SidebarSetupConstantMultiple({
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { debt, debtFloor, collateralizationRatioAtNextPrice, token, vaultType },
   } = useAutomationContext()
+
+  const { isAwaitingConfirmation } = constantMultipleState
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -181,7 +183,7 @@ export function SidebarSetupConstantMultiple({
                   feature={'Constant-Multiple'}
                   children={
                     <ConstantMultipleInfoSectionControl
-                      token={vault.token}
+                      token={token}
                       nextBuyPrice={nextBuyPrice}
                       nextSellPrice={nextSellPrice}
                       collateralToBePurchased={collateralToBePurchased}

@@ -26,7 +26,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-
 import { AutoTakeProfitInfoSectionControl } from '../controls/AutoTakeProfitInfoSectionControl'
 
 interface SidebarAutoTakeProfitEditingStageProps {

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -89,6 +89,8 @@ export function SidebarSetupAutoSell({
       vaultType,
     },
   } = useAutomationContext()
+
+  const { isAwaitingConfirmation } = autoSellState
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -184,7 +186,6 @@ export function SidebarSetupAutoSell({
                   children={
                     <AutoSellInfoSectionControl
                       autoSellState={autoSellState}
-                      vault={vault}
                       debtDelta={debtDelta}
                       collateralDelta={collateralDelta}
                       executionPrice={executionPrice}

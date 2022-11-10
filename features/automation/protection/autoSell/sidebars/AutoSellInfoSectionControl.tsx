@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'blockchain/vaults'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { one } from 'helpers/zero'
 import React from 'react'
@@ -7,7 +7,6 @@ import React from 'react'
 import { AddAutoSellInfoSection } from '../controls/AddAutoSellInfoSection'
 
 interface AutoSellInfoSectionControlProps {
-  vault: Vault
   autoSellState: AutoBSFormChange
   debtDelta: BigNumber
   collateralDelta: BigNumber
@@ -16,15 +15,17 @@ interface AutoSellInfoSectionControlProps {
 }
 
 export function AutoSellInfoSectionControl({
-  vault,
   autoSellState,
   debtDelta,
   collateralDelta,
   executionPrice,
   maxGasFee,
 }: AutoSellInfoSectionControlProps) {
-  const deviationPercent = autoSellState.deviation.div(100)
+  const {
+    positionData: { token, debt, lockedCollateral },
+  } = useAutomationContext()
 
+  const deviationPercent = autoSellState.deviation.div(100)
   const targetRatioWithDeviationFloor = one
     .minus(deviationPercent)
     .times(autoSellState.targetCollRatio)
@@ -39,15 +40,15 @@ export function AutoSellInfoSectionControl({
       execCollRatio={autoSellState.execCollRatio}
       nextSellPrice={executionPrice}
       collateralAfterNextSell={{
-        value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
+        value: lockedCollateral,
+        secondaryValue: lockedCollateral.plus(collateralDelta),
       }}
       outstandingDebtAfterSell={{
-        value: vault.debt,
-        secondaryValue: vault.debt.plus(debtDelta),
+        value: debt,
+        secondaryValue: debt.plus(debtDelta),
       }}
       ethToBeSoldAtNextSell={collateralDelta.abs()}
-      token={vault.token}
+      token={token}
       targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
       targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
       maxGasFee={maxGasFee}

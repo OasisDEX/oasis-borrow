@@ -126,7 +126,6 @@ export function AutoBuyFormControl({
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
           executionPrice={executionPrice}
-          isAwaitingConfirmation={autoBuyState.isAwaitingConfirmation}
         />
       )}
     </AddAndRemoveTriggerControl>

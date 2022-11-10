@@ -94,6 +94,7 @@ export function SidebarSetupStopLoss({
     environmentData: { nextCollateralPrice, ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { debt, token, liquidationRatio, collateralizationRatioAtNextPrice, vaultType },
   } = useAutomationContext()
+  const { isAwaitingConfirmation, stopLossLevel } = stopLossState
 
   const gasEstimationContext = useGasEstimationContext()
   const [, setHash] = useHash()
@@ -143,12 +144,12 @@ export function SidebarSetupStopLoss({
   const liqRatio = liquidationRatio
 
   const sliderPercentageFill = getSliderPercentageFill({
-    value: stopLossState.stopLossLevel,
+    value: stopLossLevel,
     min: liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100),
     max: max.times(100),
   })
 
-  const afterNewLiquidationPrice = stopLossState.stopLossLevel
+  const afterNewLiquidationPrice = stopLossLevel
     .dividedBy(100)
     .multipliedBy(nextCollateralPrice)
     .dividedBy(collateralizationRatioAtNextPrice)
@@ -158,9 +159,9 @@ export function SidebarSetupStopLoss({
     sliderPercentageFill,
     leftLabel: t('slider.set-stoploss.left-label'),
     rightLabel: t('slider.set-stoploss.right-label'),
-    leftBoundry: stopLossState.stopLossLevel,
+    leftBoundry: stopLossLevel,
     rightBoundry: afterNewLiquidationPrice,
-    lastValue: stopLossState.stopLossLevel,
+    lastValue: stopLossLevel,
     maxBoundry,
     minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
     onChange: (slCollRatio) => {
@@ -181,7 +182,7 @@ export function SidebarSetupStopLoss({
   const errors = errorsStopLossValidation({
     txError: stopLossState.txDetails?.txError,
     debt,
-    stopLossLevel: stopLossState.stopLossLevel,
+    stopLossLevel,
     autoBuyTriggerData,
   })
   const warnings = warningsStopLossValidation({
@@ -190,7 +191,7 @@ export function SidebarSetupStopLoss({
     ethBalance,
     ethPrice: ethMarketPrice,
     sliderMax: sliderConfig.maxBoundry,
-    triggerRatio: stopLossState.stopLossLevel,
+    triggerRatio: stopLossLevel,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
   })
@@ -226,9 +227,7 @@ export function SidebarSetupStopLoss({
                       feature="Stop-Loss"
                       children={
                         <SetDownsideProtectionInformation
-                          vault={vault}
-                          ilkData={ilkData}
-                          afterStopLossRatio={stopLossState.stopLossLevel}
+                          afterStopLossRatio={stopLossLevel}
                           executionPrice={executionPrice}
                           ethPrice={ethMarketPrice}
                           isCollateralActive={closePickerConfig.isCollateralActive}
@@ -261,7 +260,7 @@ export function SidebarSetupStopLoss({
                   isRemoveForm={isRemoveForm}
                   customContent={
                     <StopLossCompleteInformation
-                      afterStopLossRatio={stopLossState.stopLossLevel}
+                      afterStopLossRatio={stopLossLevel}
                       executionPrice={executionPrice}
                       isCollateralActive={stopLossState.collateralActive}
                       txCost={stopLossState.txDetails?.txCost!}

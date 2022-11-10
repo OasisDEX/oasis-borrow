@@ -187,14 +187,14 @@ export function SidebarAutoBuyEditingStage({
           {autoBuyState.maxBuyOrMinSellPrice !== undefined
             ? t('auto-buy.set-trigger-description', {
                 targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-                token: vault.token,
+                token,
                 execCollRatio: autoBuyState.execCollRatio,
                 executionPrice: executionPrice.toFixed(2),
                 minBuyPrice: autoBuyState.maxBuyOrMinSellPrice,
               })
             : t('auto-buy.set-trigger-description-no-threshold', {
                 targetCollRatio: autoBuyState.targetCollRatio.toNumber(),
-                token: vault.token,
+                token,
                 execCollRatio: autoBuyState.execCollRatio,
                 executionPrice: executionPrice.toFixed(2),
               })}{' '}

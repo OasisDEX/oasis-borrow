@@ -123,7 +123,6 @@ export function AutoSellFormControl({
           isAutoSellActive={isAutoSellActive}
           isDisabled={isDisabled}
           isEditing={isEditing}
-          isAwaitingConfirmation={autoSellState.isAwaitingConfirmation}
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
           stage={stage}

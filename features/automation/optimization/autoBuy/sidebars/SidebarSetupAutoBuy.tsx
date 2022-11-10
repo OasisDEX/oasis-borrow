@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -80,6 +80,8 @@ export function SidebarSetupAutoBuy({
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { collateralizationRatioAtNextPrice, token, liquidationRatio, vaultType },
   } = useAutomationContext()
+
+  const { isAwaitingConfirmation } = autoBuyState
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -173,7 +175,6 @@ export function SidebarSetupAutoBuy({
                     <AutoBuyInfoSectionControl
                       executionPrice={executionPrice}
                       autoBuyState={autoBuyState}
-                      vault={vault}
                       debtDelta={debtDelta}
                       collateralDelta={collateralDelta}
                     />
