@@ -24,6 +24,7 @@ export type Feature =
   | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
   | 'ShowAaveStETHETHProductCard'
+  | 'FollowVaults'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -46,6 +47,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: false,
   ShowAaveStETHETHProductCard: true,
+  FollowVaults: false,
   // your feature here....
 }
 
