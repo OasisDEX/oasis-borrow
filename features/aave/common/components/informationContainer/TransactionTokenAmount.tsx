@@ -8,7 +8,6 @@ import { amountFromWei } from '../../../../../blockchain/utils'
 import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
 import { AppSpinner } from '../../../../../helpers/AppSpinner'
 import { formatAmount, formatFiatBalance } from '../../../../../helpers/formatters/format'
-import { zero } from '../../../../../helpers/zero'
 
 interface BuyingTokenAmountProps {
   transactionParameters: IStrategy
@@ -25,7 +24,7 @@ export function TransactionTokenAmount({
   const balance = transactionParameters.simulation.swap.toTokenAmount
   const amount = amountFromWei(balance, collateralToken)
 
-  const isBuying = transactionParameters.simulation.swap.sourceTokenFee.gt(zero)
+  const isBuying = transactionParameters.simulation.swap.targetToken.symbol === collateralToken
   const labelKey = isBuying ? 'vault-changes.buying-token' : 'vault-changes.selling-token'
 
   const price = collateralPrice?.times(amount)
