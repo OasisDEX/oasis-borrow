@@ -1,6 +1,4 @@
 export * from './calculateSimulation'
 export * from './getParametersStateMachineServices'
 export * from './getOpenAaveStateMachine'
-export * from './getSthEthSimulationMachine'
 export * from '../../common/services/getTransactionMachine'
-export * from './stEthYield'

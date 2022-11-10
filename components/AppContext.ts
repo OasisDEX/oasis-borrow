@@ -115,8 +115,8 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { getAaveStEthYield } from 'features/aave/common'
 import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
-import { getAaveStEthYield } from 'features/aave/open/services'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'

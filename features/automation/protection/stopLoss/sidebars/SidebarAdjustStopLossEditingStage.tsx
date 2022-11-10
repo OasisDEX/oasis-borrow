@@ -219,6 +219,7 @@ export function SidebarAdjustStopLossEditingStage({
           description={t('protection.closed-vault-existing-sl-description')}
         />
       )}
+
       {isEditing && (
         <>
           {!isOpenFlow && (

@@ -1,6 +1,5 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { strategyConfig } from 'features/aave/featureConfig'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -10,6 +9,7 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
+import { strategies } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -27,7 +27,7 @@ function OpenVault({ strategy: _strategy }: { strategy: string }) {
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView config={strategyConfig['aave-earn']} />
+          <AaveOpenView config={strategies['aave-earn']} />
 
           <Survey for="earn" />
         </WithTermsOfService>

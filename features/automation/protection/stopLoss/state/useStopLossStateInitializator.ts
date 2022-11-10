@@ -52,6 +52,10 @@ export function useStopLossStateInitializator({
       type: 'current-form',
       currentForm: 'add',
     })
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      type: 'is-awaiting-confirmation',
+      isAwaitingConfirmation: false,
+    })
   }, [collateralizationRatio.toNumber()])
 
   return isStopLossEnabled

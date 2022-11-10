@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -9,10 +10,14 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarConstantMultipleEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleEditingStage'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/constantMultiple/sidebars/SidebarConstantMultipleRemovalEditingStage'
-import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
+import {
+  CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleFormChange,
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import {
   errorsConstantMultipleValidation,
   warningsConstantMultipleValidation,
@@ -24,6 +29,8 @@ import {
 } from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
+
+import { ConstantMultipleInfoSectionControl } from './ConstantMultipleInfoSectionControl'
 
 interface SidebarSetupConstantMultipleProps {
   collateralToBePurchased: BigNumber
@@ -71,6 +78,7 @@ export function SidebarSetupConstantMultiple({
   debtDeltaAfterSell,
 }: SidebarSetupConstantMultipleProps) {
   const gasEstimation = useGasEstimationContext()
+  const { uiChanges } = useAppContext()
   const {
     autoBuyTriggerData,
     autoSellTriggerData,
@@ -100,8 +108,10 @@ export function SidebarSetupConstantMultiple({
     flow,
     stage,
     feature,
+    isAwaitingConfirmation,
+    isRemoveForm,
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: constantMultipleState.txDetails?.txHash,
@@ -150,7 +160,7 @@ export function SidebarSetupConstantMultiple({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarConstantMultipleEditingStage
                   isEditing={isEditing}
                   errors={errors}
@@ -165,6 +175,26 @@ export function SidebarSetupConstantMultiple({
                   estimatedSellFee={estimatedSellFee}
                 />
               )}
+
+              {isAwaitingConfirmation && (
+                <SidebarAwaitingConfirmation
+                  feature={'Constant-Multiple'}
+                  children={
+                    <ConstantMultipleInfoSectionControl
+                      token={vault.token}
+                      nextBuyPrice={nextBuyPrice}
+                      nextSellPrice={nextSellPrice}
+                      collateralToBePurchased={collateralToBePurchased}
+                      collateralToBeSold={collateralToBeSold}
+                      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+                      estimatedBuyFee={estimatedBuyFee}
+                      estimatedSellFee={estimatedSellFee}
+                      constantMultipleState={constantMultipleState}
+                    />
+                  }
+                />
+              )}
+
               {isRemoveForm && (
                 <SidebarConstantMultipleRemovalEditingStage
                   errors={cancelConstantMultipleErrors}
@@ -187,14 +217,39 @@ export function SidebarSetupConstantMultiple({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
+            uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            if (isAwaitingConfirmation && ['txSuccess', 'txFailure'].includes(stage)) {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
+
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
           textButton: {
             label: textButtonLabel,
-            hidden: isFirstSetup,
-            action: () => textButtonHandler(),
+            hidden: isFirstSetup && !isAwaitingConfirmation,
+            action: () => {
+              if (isAwaitingConfirmation) {
+                uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                  type: 'is-awaiting-confirmation',
+                  isAwaitingConfirmation: false,
+                })
+              } else {
+                textButtonHandler()
+              }
+            },
           },
         }),
       status: sidebarStatus,

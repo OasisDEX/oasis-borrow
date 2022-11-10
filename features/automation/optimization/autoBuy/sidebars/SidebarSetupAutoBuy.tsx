@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -9,7 +10,11 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
+import {
+  AUTO_BUY_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { getAutoBuyMinMaxValues } from 'features/automation/optimization/autoBuy/helpers'
 import { SidebarAutoBuyEditingStage } from 'features/automation/optimization/autoBuy/sidebars/SidebarAutoBuyEditingStage'
@@ -25,6 +30,8 @@ import {
 } from 'helpers/messageMappers'
 import React from 'react'
 import { Grid } from 'theme-ui'
+
+import { AutoBuyInfoSectionControl } from './AutoBuyInfoSectionControl'
 
 interface SidebarSetupAutoBuyProps {
   autoBuyState: AutoBSFormChange
@@ -63,6 +70,7 @@ export function SidebarSetupAutoBuy({
   isAutoBuyActive,
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
+  const { uiChanges } = useAppContext()
   const {
     autoBuyTriggerData,
     autoSellTriggerData,
@@ -88,8 +96,15 @@ export function SidebarSetupAutoBuy({
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
   })
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
+    isAwaitingConfirmation,
+    isRemoveForm,
+  })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoBuyState.txDetails?.txHash,
@@ -106,7 +121,7 @@ export function SidebarSetupAutoBuy({
 
   const warnings = warningsAutoBuyValidation({
     gasEstimationUsd: gasEstimation?.usdValue,
-    ethBalance: ethBalance,
+    ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: autoBuyState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
@@ -139,7 +154,7 @@ export function SidebarSetupAutoBuy({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoBuyEditingStage
                   autoBuyState={autoBuyState}
                   isEditing={isEditing}
@@ -149,6 +164,20 @@ export function SidebarSetupAutoBuy({
                   collateralDelta={collateralDelta}
                   sliderMin={min}
                   sliderMax={max}
+                />
+              )}
+              {isAwaitingConfirmation && !isRemoveForm && (
+                <SidebarAwaitingConfirmation
+                  feature="Auto-Buy"
+                  children={
+                    <AutoBuyInfoSectionControl
+                      executionPrice={executionPrice}
+                      autoBuyState={autoBuyState}
+                      vault={vault}
+                      debtDelta={debtDelta}
+                      collateralDelta={collateralDelta}
+                    />
+                  }
                 />
               )}
               {isRemoveForm && (
@@ -174,13 +203,37 @@ export function SidebarSetupAutoBuy({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
+            uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: textButtonLabel,
-          hidden: isFirstSetup,
-          action: () => textButtonHandler(),
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(AUTO_BUY_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

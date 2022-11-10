@@ -3,6 +3,7 @@ import {
   AutomationSidebarCopiesParams,
   SidebarAutomationFlow,
 } from 'features/automation/common/types'
+import { calculateStepNumber } from 'features/automation/protection/stopLoss/helpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
@@ -65,7 +66,6 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationF
     case 'addSl':
     case 'editSl':
     case 'cancelSl':
-      return 'back-to-vault-overview'
     case 'addAutoSell':
     case 'cancelAutoSell':
     case 'addAutoBuy':
@@ -84,12 +84,15 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarAutomationF
   }
 }
 
-export function getAutomationPrimaryButtonLabel({
+function generateAutomationPrimaryButtonLabelTtext({
   stage,
   flow,
   feature,
+  isAwaitingConfirmation,
 }: AutomationSidebarCopiesParams) {
   const { t } = useTranslation()
+
+  if (isAwaitingConfirmation && stage !== 'txSuccess') return t('protection.confirm')
 
   switch (stage) {
     case 'editing':
@@ -110,6 +113,21 @@ export function getAutomationPrimaryButtonLabel({
 
       return t(txSuccessKey)
     default:
-      throw new UnreachableCaseError(stage)
+      throw new UnreachableCaseError(stage as never)
   }
+}
+
+export function getAutomationPrimaryButtonLabel({
+  stage,
+  flow,
+  feature,
+  isAwaitingConfirmation,
+  isRemoveForm,
+}: AutomationSidebarCopiesParams) {
+  return `${generateAutomationPrimaryButtonLabelTtext({
+    stage,
+    flow,
+    feature,
+    isAwaitingConfirmation,
+  })} ${isRemoveForm ? '' : calculateStepNumber(isAwaitingConfirmation || false, stage)}`
 }

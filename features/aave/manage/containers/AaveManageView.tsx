@@ -1,7 +1,6 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { TabBar } from 'components/TabBar'
-import { getAaveStrategy$ } from 'features/aave/featureConfig'
 import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
@@ -14,7 +13,7 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { StrategyConfig } from '../../common/StrategyConfigType'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
@@ -46,7 +45,7 @@ function AaveManageContainer({
     <ManageAaveStateMachineContextProvider machine={manageAaveStateMachine}>
       <Container variant="vaultPageContainer">
         <AavePositionNotice />
-        <Header strategyName={strategyConfig.name} noDetails />
+        <Header strategyName={strategyConfig.name} />
         <TabBar
           variant="underline"
           sections={[
@@ -100,14 +99,14 @@ function AavePositionNotice() {
 }
 
 export function AaveManagePositionView({ address }: AaveManageViewPositionViewProps) {
-  const { aaveManageStateMachine$ } = useAaveContext()
+  const { aaveManageStateMachine$, detectAaveStrategy$ } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
   const [stateMachine, stateMachineError] = useObservable(
     aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'stETHeth' }),
   ) // TODO: should be created with strategy and address. Then should be more generic.
   const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
-  const [aaveStrategy, aaveStrategyError] = useObservable(getAaveStrategy$(address))
+  const [aaveStrategy, aaveStrategyError] = useObservable(detectAaveStrategy$(address))
   return (
     <WithErrorHandler error={[stateMachineError, aaveReserveStateError, aaveStrategyError]}>
       <WithLoadingIndicator

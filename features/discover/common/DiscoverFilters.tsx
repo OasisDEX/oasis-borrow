@@ -4,21 +4,21 @@ import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export function DiscoverFilters({
-  amountOfRows,
   filters,
   isSmallerScreen,
+  isSticky,
   onChange,
 }: {
-  amountOfRows: number
   filters: DiscoverFiltersList
   isSmallerScreen: boolean
+  isSticky: boolean
   onChange: (key: string, currentValue: DiscoverFiltersListItem) => void
 }) {
   return (
     <Box
       sx={{
         ...(!isSmallerScreen && {
-          position: amountOfRows > 2 ? 'sticky' : 'relative',
+          position: isSticky ? 'sticky' : 'relative',
           top: 0,
         }),
         p: ['24px', null, null, 4],
@@ -33,7 +33,7 @@ export function DiscoverFilters({
       <Grid
         gap="12px"
         sx={{
-          gridTemplateColumns: ['100%', 'repeat(2, 1fr)', null, 'repeat(4, 230px)'],
+          gridTemplateColumns: ['100%', 'repeat(2, 1fr)', null, 'repeat(4, 234px)'],
         }}
       >
         {Object.keys(filters).map((key) => (

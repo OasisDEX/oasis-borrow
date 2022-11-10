@@ -12,6 +12,7 @@ import { Box } from 'theme-ui'
 interface DiscoverDataProps {
   banner?: DiscoverBanner
   isLoading: boolean
+  isSticky: boolean
   isSmallerScreen: boolean
   kind: DiscoverPages
   response?: DiscoverDataResponse
@@ -21,6 +22,7 @@ interface DiscoverDataProps {
 export function DiscoverData({
   banner,
   isLoading,
+  isSticky,
   isSmallerScreen,
   kind,
   response,
@@ -43,6 +45,7 @@ export function DiscoverData({
             <DiscoverTable
               banner={banner}
               isLoading={isLoading}
+              isSticky={isSticky}
               kind={kind}
               rows={response.rows}
               userContext={userContext}

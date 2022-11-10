@@ -33,6 +33,8 @@ export function StopLossFormControl({
     positionData: { id, ilk, debt, token, lockedCollateral, liquidationRatio, owner },
   } = useAutomationContext()
 
+  const isAwaitingConfirmation = stopLossState.isAwaitingConfirmation
+
   const feature = AutomationFeatures.STOP_LOSS
   const {
     isAddForm,
@@ -109,6 +111,7 @@ export function StopLossFormControl({
           isAddForm={isAddForm}
           isDisabled={isDisabled}
           isEditing={isEditing}
+          isAwaitingConfirmation={isAwaitingConfirmation}
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
           isStopLossActive={isStopLossActive}
