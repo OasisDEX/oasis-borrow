@@ -37,14 +37,14 @@ export function getAaveProtocolData$(
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
-  token: string,
+  collateralToken: string,
   address: string,
 ): Observable<AaveProtocolData> {
   return combineLatest(
-    aaveUserReserveData$({ token, address }),
+    aaveUserReserveData$({ token: collateralToken, address }),
     aaveUserAccountData$({ address }),
-    aaveOracleAssetPriceData$({ token }),
-    aaveReserveConfigurationData$({ token }),
+    aaveOracleAssetPriceData$({ token: collateralToken }),
+    aaveReserveConfigurationData$({ token: collateralToken }),
     aaveUserConfiguration$({ address }),
     aaveReservesList$(),
   ).pipe(
@@ -59,7 +59,10 @@ export function getAaveProtocolData$(
       ]) => {
         const pos = new Position(
           { amount: new BigNumber(accountData.totalDebtETH.toString()) },
-          { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
+          {
+            amount: new BigNumber(reserveData.currentATokenBalance.toString()),
+            denomination: collateralToken,
+          },
           oraclePrice,
           {
             dustLimit: new BigNumber(0),
