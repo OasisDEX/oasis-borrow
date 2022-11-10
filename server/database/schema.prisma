@@ -186,15 +186,16 @@ model MostYieldEarned {
 }
 
 model LargestDebt {
-    protocol_id      String
-    position_id      String
-    collateral_type  String
-    token            String
-    collateral_value Decimal
-    vault_debt       Decimal
-    coll_ratio       Decimal
-    last_action      Json
-    type             VaultType?
+    protocol_id           String
+    position_id           String
+    collateral_type       String
+    token                 String
+    collateral_value      Decimal
+    liquidation_proximity Decimal
+    vault_debt            Decimal
+    coll_ratio            Decimal
+    last_action           Json
+    type                  VaultType?
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("largest_debt")

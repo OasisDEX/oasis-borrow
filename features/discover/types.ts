@@ -52,6 +52,12 @@ export type DiscoverTableStatusRowData = {
   }
 }
 
+export type DiscoverTableStatusRowDataApi = DiscoverTableStatusRowData & {
+  additionalData?: {
+    stopLossLevel?: number
+  }
+}
+
 export type DiscoverTableRowData = {
   [key: string]: string | number
 } & {
