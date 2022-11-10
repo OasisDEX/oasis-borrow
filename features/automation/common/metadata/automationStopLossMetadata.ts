@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { AutomationCommonMetadata } from 'features/automation/common/metadata/automationMetadata'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationCommonMetadata } from 'features/automation/metadata/automationMetadata'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { zero } from 'helpers/zero'

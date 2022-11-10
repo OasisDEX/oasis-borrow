@@ -2,11 +2,11 @@ import {
   AutomationEnvironmentData,
   AutomationPositionData,
 } from 'components/AutomationContextProvider'
-import { AutomationFeatures } from 'features/automation/common/types'
 import {
   automationStopLossMakerMetadata,
   AutomationStopLossMetadata,
-} from 'features/automation/metadata/automationStopLossMetadata'
+} from 'features/automation/common/metadata/automationStopLossMetadata'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
