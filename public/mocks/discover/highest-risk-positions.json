@@ -76,7 +76,7 @@
       "cdpId": 54122
     },
     {
-      "asset": "CURVE_LP",
+      "asset": "CRVV1ETHSTETH",
       "liquidationPrice": 0.92,
       "nextOsmPrice": 1.03,
       "maxLiquidationAmount": 3495.64,
