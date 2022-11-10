@@ -1,5 +1,15 @@
-import { HighestMultiplyPnl, HighestRiskPositions, MostYieldEarned, Prisma } from '@prisma/client'
-import { DiscoverTableRowData, DiscoverTableVaultStatus } from 'features/discover/types'
+import {
+  HighestMultiplyPnl,
+  HighestRiskPositions,
+  LargestDebt,
+  MostYieldEarned,
+  Prisma,
+} from '@prisma/client'
+import {
+  DiscoverTableColRatioRowData,
+  DiscoverTableStatusRowDataApi,
+  DiscoverTableVaultStatus,
+} from 'features/discover/types'
 
 type OmitNonDecimal<T> = { [K in keyof T]: T[K] extends Prisma.Decimal ? K : never }[keyof T]
 type DiscoverLite = OmitNonDecimal<HighestMultiplyPnl | MostYieldEarned>
@@ -28,8 +38,16 @@ export function getTimeSignature(prefix: string, time?: string): DiscoverLite {
   else return `${prefix}_all` as DiscoverLite
 }
 
+export function getColRatio(item: LargestDebt): DiscoverTableColRatioRowData {
+  return {
+    level: item.coll_ratio.toNumber(),
+    isAtRiskDanger: item.liquidation_proximity.lte(10),
+    isAtRiskWarning: item.liquidation_proximity.lte(25) && item.liquidation_proximity.gt(10),
+  }
+}
+
 export function getStatus(item: HighestRiskPositions) {
-  const status = item.status as DiscoverTableRowData['status']
+  const status = item.status as DiscoverTableStatusRowDataApi
   if (!status) {
     return
   }
@@ -45,13 +63,15 @@ export function getStatus(item: HighestRiskPositions) {
         },
       }
     case DiscoverTableVaultStatus.LIQUIDATED:
-    case DiscoverTableVaultStatus.BEING_LIQUIDATED:
       return {
         ...status,
         additionalData: {
           timestamp: status.additionalData!.timestamp! * 1000,
-          tillLiquidation: item.liquidation_proximity.mul(100).floor(),
         },
+      }
+    case DiscoverTableVaultStatus.BEING_LIQUIDATED:
+      return {
+        ...status,
       }
     default:
       return {

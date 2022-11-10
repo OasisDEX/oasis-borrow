@@ -1,5 +1,6 @@
 import { DiscoverApiErrors, DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import {
+  getColRatio,
   getGenericArrayFilter,
   getGenericRangeFilter,
   getStatus,
@@ -105,12 +106,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             asset: item.token,
             collateralValue: item.collateral_value.toNumber(),
             vaultDebt: item.vault_debt.toNumber(),
-            colRatio: {
-              level: item.coll_ratio.toNumber(),
-              // TODO: isAtRisk needs to be calculated on view level, but not enough data is available right now
-              isAtRiskDanger: false,
-              isAtRiskWarning: false,
-            },
+            colRatio: getColRatio(item),
             activity: item.last_action as DiscoverTableRowData['activity'],
             cdpId: item.position_id,
           })),
