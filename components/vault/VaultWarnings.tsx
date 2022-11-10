@@ -1,4 +1,4 @@
-import { IlkData } from 'blockchain/ilks'
+import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -21,7 +21,7 @@ const AutoTakeProfitKBLink = (
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]
-  ilkData: IlkData
+  ilkData: { debtFloor: BigNumber }
   isAutoSellEnabled?: boolean
   isAutoBuyEnabled?: boolean
 }

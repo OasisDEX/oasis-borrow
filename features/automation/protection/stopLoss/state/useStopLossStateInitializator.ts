@@ -1,6 +1,4 @@
-import { IlkData } from 'blockchain/ilks'
-import { InstiVault } from 'blockchain/instiVault'
-import { Vault } from 'blockchain/vaults'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import {
   DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
@@ -12,17 +10,20 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
-export function useStopLossStateInitializator(
-  ilkData: IlkData,
-  vault: Vault | InstiVault,
-  stopLossTriggerData: StopLossTriggerData,
-) {
+export function useStopLossStateInitializator({
+  liquidationRatio,
+  collateralizationRatio,
+  stopLossTriggerData,
+}: {
+  liquidationRatio: BigNumber
+  collateralizationRatio: BigNumber
+  stopLossTriggerData: StopLossTriggerData
+}) {
   const { uiChanges } = useAppContext()
   const { stopLossLevel, isStopLossEnabled, isToCollateral, triggerId } = stopLossTriggerData
-  const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
-  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-  const selectedStopLossCollRatioIfTriggerDoesntExist = vault.collateralizationRatio.isZero()
+  const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  const selectedStopLossCollRatioIfTriggerDoesntExist = collateralizationRatio.isZero()
     ? zero
     : sliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
   const initialSelectedSlRatio = getStartingSlRatio({
@@ -40,7 +41,7 @@ export function useStopLossStateInitializator(
       type: 'stop-loss-level',
       stopLossLevel: initialSelectedSlRatio,
     })
-  }, [triggerId.toNumber(), collateralizationRatio])
+  }, [triggerId.toNumber(), collateralizationRatio.toNumber()])
 
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
@@ -55,7 +56,7 @@ export function useStopLossStateInitializator(
       type: 'is-awaiting-confirmation',
       isAwaitingConfirmation: false,
     })
-  }, [collateralizationRatio])
+  }, [collateralizationRatio.toNumber()])
 
   return isStopLossEnabled
 }

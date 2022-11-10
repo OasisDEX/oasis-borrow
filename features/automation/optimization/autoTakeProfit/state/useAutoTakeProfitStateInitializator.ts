@@ -1,6 +1,5 @@
-import { InstiVault } from 'blockchain/instiVault'
+import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { useEffect } from 'react'
@@ -9,33 +8,35 @@ import { AUTO_TAKE_PROFIT_FORM_CHANGE } from './autoTakeProfitFormChange'
 
 const INITIAL_SELECTED_PRICE_MULTIPLIER = 1.2
 
-export function useAutoTakeProfitStateInitializator(
-  vault: Vault | InstiVault,
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData,
-) {
+export function useAutoTakeProfitStateInitializator({
+  debt,
+  lockedCollateral,
+  collateralizationRatio,
+  autoTakeProfitTriggerData,
+}: {
+  debt: BigNumber
+  lockedCollateral: BigNumber
+  collateralizationRatio: BigNumber
+  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+}) {
   const { uiChanges } = useAppContext()
   const { executionPrice, isToCollateral, isTriggerEnabled, triggerId } = autoTakeProfitTriggerData
-  const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const initialSelectedPrice = isTriggerEnabled
     ? executionPrice
     : collateralPriceAtRatio({
-        colRatio: vault.collateralizationRatio.times(INITIAL_SELECTED_PRICE_MULTIPLIER),
-        collateral: vault.lockedCollateral,
-        vaultDebt: vault.debt,
+        colRatio: collateralizationRatio.times(INITIAL_SELECTED_PRICE_MULTIPLIER),
+        collateral: lockedCollateral,
+        vaultDebt: debt,
       })
 
   const initialSelectedColRatio = ratioAtCollateralPrice({
-    lockedCollateral: vault.lockedCollateral,
+    lockedCollateral: lockedCollateral,
     collateralPriceUSD: initialSelectedPrice,
-    vaultDebt: vault.debt,
+    vaultDebt: debt,
   })
 
   useEffect(() => {
-    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
-      type: 'trigger-id',
-      triggerId,
-    })
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'is-awaiting-confirmation',
       isAwaitingConfirmation: false,
@@ -50,6 +51,9 @@ export function useAutoTakeProfitStateInitializator(
       type: 'close-type',
       toCollateral: isToCollateral,
     })
+  }, [triggerId.toNumber(), collateralizationRatio.toNumber()])
+
+  useEffect(() => {
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'current-form',
       currentForm: 'add',
@@ -58,7 +62,7 @@ export function useAutoTakeProfitStateInitializator(
       type: 'tx-details',
       txDetails: {},
     })
-  }, [triggerId.toNumber(), collateralizationRatio])
+  }, [collateralizationRatio.toNumber()])
 
   return isTriggerEnabled
 }

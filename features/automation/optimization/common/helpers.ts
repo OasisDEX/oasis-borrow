@@ -1,6 +1,5 @@
 import { AutomationOptimizationFeatures } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-// import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getActiveOptimizationFeature({
   currentOptimizationFeature,
@@ -31,6 +30,7 @@ export function getActiveOptimizationFeature({
       isAutoTakeProfitActive:
         (isAutoTakeProfitOn &&
           !isConstantMultipleOn &&
+          !isAutoBuyOn &&
           currentOptimizationFeature !== AutomationFeatures.AUTO_BUY &&
           currentOptimizationFeature !== AutomationFeatures.CONSTANT_MULTIPLE) ||
         currentOptimizationFeature === AutomationFeatures.AUTO_TAKE_PROFIT,

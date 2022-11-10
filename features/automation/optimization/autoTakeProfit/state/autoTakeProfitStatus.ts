@@ -6,7 +6,6 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
@@ -29,6 +28,9 @@ import {
 } from './autoTakeProfitFormChange'
 
 interface GetAutoTakeProfitStatusParams {
+  id: BigNumber
+  token: string
+  ilk: string
   autoTakeProfitState: AutoTakeProfitFormChange
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   isOwner: boolean
@@ -36,7 +38,6 @@ interface GetAutoTakeProfitStatusParams {
   isRemoveForm: boolean
   stage: SidebarAutomationStages
   tokenMarketPrice: BigNumber
-  vault: Vault
 }
 
 interface AutoTakeProfitStatus {
@@ -53,6 +54,9 @@ const MAX_MULTIPLIER_WITH_ATH = 2
 const MAX_MULTIPLIER_WITH_PRICE = 10
 
 export function getAutoTakeProfitStatus({
+  id,
+  token,
+  ilk,
   autoTakeProfitState,
   autoTakeProfitTriggerData,
   isOwner,
@@ -60,7 +64,6 @@ export function getAutoTakeProfitStatus({
   isRemoveForm,
   stage,
   tokenMarketPrice,
-  vault,
 }: GetAutoTakeProfitStatusParams): AutoTakeProfitStatus {
   const { uiChanges } = useAppContext()
 
@@ -92,17 +95,17 @@ export function getAutoTakeProfitStatus({
         Pages.TakeProfit,
         CommonAnalyticsSections.Form,
         {
-          vaultId: vault.id.toString(),
-          ilk: vault.ilk,
+          vaultId: id.toString(),
+          ilk: ilk,
           closeTo: optionName as CloseVaultTo,
         },
       )
     },
     isCollateralActive: autoTakeProfitState.toCollateral,
-    collateralTokenSymbol: vault.token,
-    collateralTokenIconCircle: getToken(vault.token).iconCircle,
+    collateralTokenSymbol: token,
+    collateralTokenIconCircle: getToken(token).iconCircle,
   }
-  const tokenAth = createTokenAth(vault.token)
+  const tokenAth = createTokenAth(token)
   const min = tokenMarketPrice.times(MIN_MULTIPLIER)
   const max = tokenAth
     ? tokenAth.times(MAX_MULTIPLIER_WITH_ATH)

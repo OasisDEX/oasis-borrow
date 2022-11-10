@@ -8,7 +8,6 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
 import { UIChanges } from 'components/AppContext'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -288,13 +287,17 @@ const analyticsPageMap = {
 export function automationMultipleRangeSliderAnalytics({
   leftValue,
   rightValue,
-  vault,
+  vaultId,
+  collateralizationRatio,
+  ilk,
   type,
   targetMultiple,
 }: {
   leftValue: BigNumber
   rightValue: BigNumber
-  vault: Vault
+  vaultId: BigNumber
+  collateralizationRatio: BigNumber
+  ilk: string
   type:
     | AutomationFeatures.AUTO_SELL
     | AutomationFeatures.AUTO_BUY
@@ -302,9 +305,9 @@ export function automationMultipleRangeSliderAnalytics({
   targetMultiple?: BigNumber
 }) {
   const analyticsAdditionalParams = {
-    vaultId: vault.id.toString(),
-    ilk: vault.ilk,
-    collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+    vaultId: vaultId.toString(),
+    ilk: ilk,
+    collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
     ...(targetMultiple && { targetMultiple: targetMultiple.toString() }),
   }
 
@@ -362,18 +365,22 @@ export function automationInputsAnalytics({
   withMinSellPriceThreshold,
   withMaxBuyPriceThreshold,
   maxBuyPrice,
-  vault,
   type,
+  vaultId,
+  ilk,
+  collateralizationRatio,
 }: {
   minSellPrice?: BigNumber
   withMinSellPriceThreshold?: boolean
   maxBuyPrice?: BigNumber
   withMaxBuyPriceThreshold?: boolean
-  vault: Vault
   type:
     | AutomationFeatures.AUTO_SELL
     | AutomationFeatures.AUTO_BUY
     | AutomationFeatures.CONSTANT_MULTIPLE
+  vaultId: BigNumber
+  collateralizationRatio: BigNumber
+  ilk: string
 }) {
   const shouldTrackMinSellInput =
     type === AutomationFeatures.CONSTANT_MULTIPLE || type === AutomationFeatures.AUTO_SELL
@@ -381,9 +388,9 @@ export function automationInputsAnalytics({
     type === AutomationFeatures.CONSTANT_MULTIPLE || type === AutomationFeatures.AUTO_BUY
 
   const analyticsAdditionalParams = {
-    vaultId: vault.id.toString(),
-    ilk: vault.ilk,
-    collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+    vaultId: vaultId.toString(),
+    ilk: ilk,
+    collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
   }
 
   const resolvedMinSellPrice = resolveMinSellPriceAnalytics({

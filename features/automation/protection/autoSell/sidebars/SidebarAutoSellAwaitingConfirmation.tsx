@@ -37,7 +37,6 @@ export function SidebarAutoSellAwaitingConfirmation({
       </Text>
       <AutoSellInfoSectionControl
         autoSellState={autoSellState}
-        vault={vault}
         debtDelta={debtDelta}
         collateralDelta={collateralDelta}
         executionPrice={executionPrice}

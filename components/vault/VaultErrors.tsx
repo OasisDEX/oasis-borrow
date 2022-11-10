@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
@@ -18,7 +17,7 @@ const KbLink = (
 interface VaultErrorsProps {
   errorMessages: VaultErrorMessage[]
   maxGenerateAmount?: BigNumber
-  ilkData: IlkData
+  ilkData: { debtFloor: BigNumber; token: string }
   maxWithdrawAmount?: BigNumber
   autoType?: 'Auto-Buy' | 'Auto-Sell'
 }

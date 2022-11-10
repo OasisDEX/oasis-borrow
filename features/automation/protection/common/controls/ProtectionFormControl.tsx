@@ -1,7 +1,3 @@
-import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
@@ -14,38 +10,17 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
 interface ProtectionFormControlProps {
-  ilkData: IlkData
-  priceInfo: PriceInfo
-  vault: Vault
-  vaultType: VaultType
-  balanceInfo: BalanceInfo
   txHelpers?: TxHelpers
-  context: Context
-  ethMarketPrice: BigNumber
 }
 
-export function ProtectionFormControl({
-  ilkData,
-  priceInfo,
-  vault,
-  balanceInfo,
-  context,
-  txHelpers,
-  ethMarketPrice,
-  vaultType,
-}: ProtectionFormControlProps) {
+export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps) {
   const {
     stopLossTriggerData,
     autoSellTriggerData,
-    autoBuyTriggerData,
-    constantMultipleTriggerData,
     automationTriggersData,
   } = useAutomationContext()
 
@@ -79,35 +54,14 @@ export function ProtectionFormControl({
   return (
     <>
       <StopLossFormControl
-        ilkData={ilkData}
-        stopLossTriggerData={stopLossTriggerData}
-        autoSellTriggerData={autoSellTriggerData}
-        autoBuyTriggerData={autoBuyTriggerData}
-        constantMultipleTriggerData={constantMultipleTriggerData}
-        priceInfo={priceInfo}
-        vault={vault}
-        balanceInfo={balanceInfo}
         isStopLossActive={isStopLossActive}
-        context={context}
         txHelpers={txHelpers}
-        ethMarketPrice={ethMarketPrice}
         shouldRemoveAllowance={shouldRemoveAllowance}
-        vaultType={vaultType}
       />
       <AutoSellFormControl
-        vault={vault}
-        ilkData={ilkData}
-        balanceInfo={balanceInfo}
-        autoSellTriggerData={autoSellTriggerData}
-        autoBuyTriggerData={autoBuyTriggerData}
-        stopLossTriggerData={stopLossTriggerData}
-        constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoSellActive={isAutoSellActive}
-        context={context}
         txHelpers={txHelpers}
-        ethMarketPrice={ethMarketPrice}
         shouldRemoveAllowance={shouldRemoveAllowance}
-        vaultType={vaultType}
       />
     </>
   )

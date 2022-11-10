@@ -6,7 +6,6 @@ import {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getTriggersByType } from 'features/automation/common/helpers'
 import { zero } from 'helpers/zero'
@@ -65,7 +64,8 @@ export function extractStopLossData(data: TriggersData): StopLossTriggerData {
 }
 
 export function prepareStopLossTriggerData(
-  vaultData: Vault,
+  id: BigNumber,
+  owner: string,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
 ): AutomationBaseTriggerData {
@@ -74,24 +74,31 @@ export function prepareStopLossTriggerData(
     : TriggerType.StopLossToDai
 
   return {
-    cdpId: vaultData.id,
+    cdpId: id,
     triggerType,
-    proxyAddress: vaultData.owner,
+    proxyAddress: owner,
     triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
-      vaultData.id.toString(),
+      id.toString(),
       triggerType.toString(),
       stopLossLevel.toString(),
     ]),
   }
 }
 
-export function prepareAddStopLossTriggerData(
-  vaultData: Vault,
-  isCloseToCollateral: boolean,
-  stopLossLevel: BigNumber,
-  replacedTriggerId: number,
-): AutomationBotAddTriggerData {
-  const baseTriggerData = prepareStopLossTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
+export function prepareAddStopLossTriggerData({
+  id,
+  owner,
+  isCloseToCollateral,
+  stopLossLevel,
+  replacedTriggerId,
+}: {
+  id: BigNumber
+  owner: string
+  isCloseToCollateral: boolean
+  stopLossLevel: BigNumber
+  replacedTriggerId: number
+}): AutomationBotAddTriggerData {
+  const baseTriggerData = prepareStopLossTriggerData(id, owner, isCloseToCollateral, stopLossLevel)
 
   return {
     ...baseTriggerData,

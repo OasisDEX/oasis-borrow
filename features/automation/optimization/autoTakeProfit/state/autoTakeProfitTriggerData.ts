@@ -5,7 +5,6 @@ import {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Vault } from 'blockchain/vaults'
 import { Result } from 'ethers/lib/utils'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getTriggersByType } from 'features/automation/common/helpers'
@@ -46,27 +45,29 @@ export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTri
   return defaultAutoTakeProfitData
 }
 
-function prepareAutoTakeProfitTriggerData({
+export function prepareAutoTakeProfitTriggerData({
+  id,
+  owner,
   executionPrice,
   isCloseToCollateral,
   maxBaseFeeInGwei,
-  vaultData,
 }: {
+  id: BigNumber
+  owner: string
   executionPrice: BigNumber
   isCloseToCollateral: boolean
   maxBaseFeeInGwei: BigNumber
-  vaultData: Vault
 }): AutomationBaseTriggerData {
   const triggerType = isCloseToCollateral
     ? TriggerType.AutoTakeProfitToCollateral
     : TriggerType.AutoTakeProfitToDai
 
   return {
-    cdpId: vaultData.id,
+    cdpId: id,
     triggerType,
-    proxyAddress: vaultData.owner,
+    proxyAddress: owner,
     triggerData: encodeTriggerDataByType(CommandContractType.AutoTakeProfitCommand, [
-      vaultData.id.toString(),
+      id.toString(),
       triggerType.toString(),
       executionPrice
         .decimalPlaces(0, BigNumber.ROUND_DOWN)
@@ -77,15 +78,24 @@ function prepareAutoTakeProfitTriggerData({
   }
 }
 
-export function prepareAddAutoTakeProfitTriggerData(
-  vaultData: Vault,
-  executionPrice: BigNumber,
-  maxBaseFeeInGwei: BigNumber,
-  isCloseToCollateral: boolean,
-  replacedTriggerId: number,
-): AutomationBotAddTriggerData {
+export function prepareAddAutoTakeProfitTriggerData({
+  id,
+  owner,
+  executionPrice,
+  maxBaseFeeInGwei,
+  isCloseToCollateral,
+  replacedTriggerId,
+}: {
+  id: BigNumber
+  owner: string
+  executionPrice: BigNumber
+  maxBaseFeeInGwei: BigNumber
+  isCloseToCollateral: boolean
+  replacedTriggerId: number
+}): AutomationBotAddTriggerData {
   const baseTriggerData = prepareAutoTakeProfitTriggerData({
-    vaultData,
+    id,
+    owner,
     executionPrice,
     maxBaseFeeInGwei,
     isCloseToCollateral,

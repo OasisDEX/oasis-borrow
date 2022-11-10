@@ -1,7 +1,6 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { getAutoBSVaultChange } from 'features/automation/common/helpers'
 import { SidebarAutomationStages } from 'features/automation/common/types'
@@ -26,7 +25,9 @@ interface GetConstantMultipleStatusParams {
   isProgressStage: boolean
   isRemoveForm: boolean
   stage: SidebarAutomationStages
-  vault: Vault
+  lockedCollateral: BigNumber
+  debt: BigNumber
+  collateralizationRatio: BigNumber
 }
 
 interface ConstantMultipleStatus {
@@ -55,7 +56,9 @@ export function getConstantMultipleStatus({
   isProgressStage,
   isRemoveForm,
   stage,
-  vault,
+  debt,
+  lockedCollateral,
+  collateralizationRatio,
 }: GetConstantMultipleStatusParams): ConstantMultipleStatus {
   const { gasPrice$ } = useAppContext()
   const [gasPrice] = useObservable(gasPrice$)
@@ -75,18 +78,18 @@ export function getConstantMultipleStatus({
   })
   const nextBuyPrice = collateralPriceAtRatio({
     colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
   const nextSellPrice = collateralPriceAtRatio({
     colRatio: constantMultipleState.sellExecutionCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
   const sellPriceAtCurrentCollRatio = collateralPriceAtRatio({
-    colRatio: vault.collateralizationRatio,
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    colRatio: collateralizationRatio,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
 
   const {
@@ -97,8 +100,8 @@ export function getConstantMultipleStatus({
     execCollRatio: constantMultipleState.buyExecutionCollRatio,
     deviation: constantMultipleState.deviation,
     executionPrice: nextBuyPrice,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
+    lockedCollateral,
+    debt,
   })
   const {
     collateralDelta: collateralToBeSold,
@@ -108,16 +111,16 @@ export function getConstantMultipleStatus({
     execCollRatio: constantMultipleState.sellExecutionCollRatio,
     deviation: constantMultipleState.deviation,
     executionPrice: nextSellPrice,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
+    lockedCollateral,
+    debt,
   })
   const { debtDelta: debtDeltaWhenSellAtCurrentCollRatio } = getAutoBSVaultChange({
     targetCollRatio: constantMultipleState.targetCollRatio,
-    execCollRatio: vault.collateralizationRatio.times(100),
+    execCollRatio: collateralizationRatio.times(100),
     deviation: constantMultipleState.deviation,
     executionPrice: sellPriceAtCurrentCollRatio,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
+    lockedCollateral,
+    debt,
   })
   const adjustMultiplyGasEstimation = new BigNumber(1100000) // average based on historical data from blockchain
   const estimatedGasCostOnTrigger = gasPrice

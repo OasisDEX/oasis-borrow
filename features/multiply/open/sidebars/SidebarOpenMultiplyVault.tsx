@@ -1,4 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { AutomationContextProvider } from 'components/AutomationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
@@ -65,7 +66,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
 
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
-  const stopLossData = getDataForStopLoss(props, 'multiply')
+  const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'multiply')
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -73,7 +74,11 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenMultiplyVaultEditingState {...props} />}
-        {isStopLossEditingStage && <SidebarAdjustStopLossEditingStage {...stopLossData} />}
+        {isStopLossEditingStage && (
+          <AutomationContextProvider {...automationContextProps}>
+            <SidebarAdjustStopLossEditingStage {...stopLossSidebarProps} />{' '}
+          </AutomationContextProvider>
+        )}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenMultiplyVaultOpenStage {...props} />}

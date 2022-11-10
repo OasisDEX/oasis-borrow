@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
@@ -17,7 +15,6 @@ import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { getAutoBuyMinMaxValues } from 'features/automation/optimization/autoBuy/helpers'
 import { SidebarAutoBuyEditingStage } from 'features/automation/optimization/autoBuy/sidebars/SidebarAutoBuyEditingStage'
@@ -26,11 +23,6 @@ import {
   errorsAutoBuyValidation,
   warningsAutoBuyValidation,
 } from 'features/automation/optimization/autoBuy/validators'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
   extractCancelAutomationErrors,
@@ -42,18 +34,6 @@ import { Grid } from 'theme-ui'
 import { AutoBuyInfoSectionControl } from './AutoBuyInfoSectionControl'
 
 interface SidebarSetupAutoBuyProps {
-  vault: Vault
-  vaultType: VaultType
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  autoSellTriggerData: AutoBSTriggerData
-  autoBuyTriggerData: AutoBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  isAutoBuyOn: boolean
-  context: Context
-  ethMarketPrice: BigNumber
   autoBuyState: AutoBSFormChange
   txHandler: () => void
   textButtonHandler: () => void
@@ -68,23 +48,10 @@ interface SidebarSetupAutoBuyProps {
   executionPrice: BigNumber
   isAutoBuyActive: boolean
   feature: AutomationFeatures
-  isAwaitingConfirmation: boolean
 }
 
 export function SidebarSetupAutoBuy({
-  vault,
-  vaultType,
-  ilkData,
-  balanceInfo,
-  context,
-  ethMarketPrice,
   feature,
-
-  autoSellTriggerData,
-  autoBuyTriggerData,
-  stopLossTriggerData,
-  constantMultipleTriggerData,
-  autoTakeProfitTriggerData,
 
   autoBuyState,
   txHandler,
@@ -96,7 +63,6 @@ export function SidebarSetupAutoBuy({
   isEditing,
   isDisabled,
   isFirstSetup,
-  isAwaitingConfirmation,
 
   debtDelta,
   collateralDelta,
@@ -105,6 +71,17 @@ export function SidebarSetupAutoBuy({
 }: SidebarSetupAutoBuyProps) {
   const gasEstimation = useGasEstimationContext()
   const { uiChanges } = useAppContext()
+  const {
+    autoBuyTriggerData,
+    autoSellTriggerData,
+    autoTakeProfitTriggerData,
+    constantMultipleTriggerData,
+    stopLossTriggerData,
+    environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
+    positionData: { collateralizationRatioAtNextPrice, token, liquidationRatio, vaultType },
+  } = useAutomationContext()
+
+  const { isAwaitingConfirmation } = autoBuyState
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -134,20 +111,19 @@ export function SidebarSetupAutoBuy({
     stage,
     txHash: autoBuyState.txDetails?.txHash,
     flow,
-    etherscan: context.etherscan.url,
+    etherscan: etherscanUrl,
     feature,
   })
 
   const { min, max } = getAutoBuyMinMaxValues({
     autoSellTriggerData,
     stopLossTriggerData,
-    ilkData,
+    liquidationRatio,
   })
 
   const warnings = warningsAutoBuyValidation({
-    vault,
     gasEstimationUsd: gasEstimation?.usdValue,
-    ethBalance: balanceInfo.ethBalance,
+    ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: autoBuyState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
@@ -158,6 +134,8 @@ export function SidebarSetupAutoBuy({
     withThreshold: autoBuyState.withThreshold,
     executionPrice,
     autoTakeProfitExecutionPrice: autoTakeProfitTriggerData.executionPrice,
+    token,
+    collateralizationRatioAtNextPrice,
   })
   const errors = errorsAutoBuyValidation({
     autoBuyState,
@@ -180,18 +158,14 @@ export function SidebarSetupAutoBuy({
             <>
               {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoBuyEditingStage
-                  vault={vault}
-                  ilkData={ilkData}
                   autoBuyState={autoBuyState}
                   isEditing={isEditing}
-                  autoBuyTriggerData={autoBuyTriggerData}
                   errors={errors}
                   warnings={warnings}
                   debtDelta={debtDelta}
                   collateralDelta={collateralDelta}
                   sliderMin={min}
                   sliderMax={max}
-                  stopLossTriggerData={stopLossTriggerData}
                 />
               )}
               {isAwaitingConfirmation && !isRemoveForm && (
@@ -201,7 +175,6 @@ export function SidebarSetupAutoBuy({
                     <AutoBuyInfoSectionControl
                       executionPrice={executionPrice}
                       autoBuyState={autoBuyState}
-                      vault={vault}
                       debtDelta={debtDelta}
                       collateralDelta={collateralDelta}
                     />
@@ -210,8 +183,6 @@ export function SidebarSetupAutoBuy({
               )}
               {isRemoveForm && (
                 <SidebarAutoBuyRemovalEditingStage
-                  vault={vault}
-                  ilkData={ilkData}
                   errors={cancelAutoBuyErrors}
                   warnings={cancelAutoBuyWarnings}
                   autoBuyState={autoBuyState}

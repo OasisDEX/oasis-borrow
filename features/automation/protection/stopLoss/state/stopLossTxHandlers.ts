@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import {
   STOP_LOSS_FORM_CHANGE,
@@ -14,8 +14,9 @@ import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
 interface GetStopLossTxHandlersParams {
+  id: BigNumber
+  owner: string
   stopLossTriggerData: StopLossTriggerData
-  vault: Vault
   stopLossState: StopLossFormChange
   isAddForm: boolean
 }
@@ -27,7 +28,8 @@ interface StopLossTxHandlers {
 }
 
 export function getStopLossTxHandlers({
-  vault,
+  id,
+  owner,
   stopLossState,
   stopLossTriggerData,
   isAddForm,
@@ -36,12 +38,13 @@ export function getStopLossTxHandlers({
 
   const addTxData = useMemo(
     () =>
-      prepareAddStopLossTriggerData(
-        vault,
-        stopLossState.collateralActive,
-        stopLossState.stopLossLevel,
-        stopLossTriggerData.triggerId.toNumber(),
-      ),
+      prepareAddStopLossTriggerData({
+        id,
+        owner,
+        isCloseToCollateral: stopLossState.collateralActive,
+        stopLossLevel: stopLossState.stopLossLevel,
+        replacedTriggerId: stopLossTriggerData.triggerId.toNumber(),
+      }),
     [
       stopLossState.collateralActive,
       stopLossState.stopLossLevel,

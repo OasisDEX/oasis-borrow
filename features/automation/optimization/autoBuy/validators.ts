@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'blockchain/vaults'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -10,7 +9,6 @@ import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { zero } from 'helpers/zero'
 
 export function warningsAutoBuyValidation({
-  vault,
   gasEstimationUsd,
   ethBalance,
   ethPrice,
@@ -22,8 +20,9 @@ export function warningsAutoBuyValidation({
   withThreshold,
   executionPrice,
   autoTakeProfitExecutionPrice,
+  token,
+  collateralizationRatioAtNextPrice,
 }: {
-  vault: Vault
   ethBalance: BigNumber
   ethPrice: BigNumber
   sliderMin: BigNumber
@@ -36,9 +35,11 @@ export function warningsAutoBuyValidation({
   withThreshold: boolean
   executionPrice: BigNumber
   autoTakeProfitExecutionPrice: BigNumber
+  token: string
+  collateralizationRatioAtNextPrice: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token: vault.token,
+    token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
@@ -54,7 +55,7 @@ export function warningsAutoBuyValidation({
 
   const autoBuyTriggeredImmediately = autoBuyState.execCollRatio
     .div(100)
-    .lte(vault.collateralizationRatioAtNextPrice)
+    .lte(collateralizationRatioAtNextPrice)
 
   const autoBuyTriggerGreaterThanAutoTakeProfit =
     isAutoTakeProfitEnabled && executionPrice.gt(autoTakeProfitExecutionPrice)

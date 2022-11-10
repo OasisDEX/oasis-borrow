@@ -1,5 +1,4 @@
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { CancelAutoBSInfoSection } from 'features/automation/common/sidebars/CancelAutoBSInfoSection'
@@ -11,17 +10,20 @@ import React from 'react'
 import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
-  vault: Vault
   autoSellState: AutoBSFormChange
 }
 
-function AutoSellInfoSectionControl({ vault, autoSellState }: AutoSellInfoSectionControlProps) {
+function AutoSellInfoSectionControl({ autoSellState }: AutoSellInfoSectionControlProps) {
   const { t } = useTranslation()
+  const {
+    positionData: { debt, collateralizationRatio, liquidationPrice },
+  } = useAutomationContext()
+
   return (
     <CancelAutoBSInfoSection
-      collateralizationRatio={vault.collateralizationRatio}
-      liquidationPrice={vault.liquidationPrice}
-      debt={vault.debt}
+      collateralizationRatio={collateralizationRatio}
+      liquidationPrice={liquidationPrice}
+      debt={debt}
       title={t('auto-sell.cancel-summary-title')}
       targetLabel={t('auto-sell.target-col-ratio-each-sell')}
       triggerLabel={t('auto-sell.trigger-col-ratio-to-perfrom-sell')}
@@ -31,30 +33,29 @@ function AutoSellInfoSectionControl({ vault, autoSellState }: AutoSellInfoSectio
 }
 
 interface SidebarAutoSellCancelEditingStageProps {
-  vault: Vault
-  ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   autoSellState: AutoBSFormChange
 }
 
 export function SidebarAutoSellCancelEditingStage({
-  vault,
-  ilkData,
   errors,
   warnings,
   autoSellState,
 }: SidebarAutoSellCancelEditingStageProps) {
   const { t } = useTranslation()
+  const {
+    positionData: { debtFloor, token },
+  } = useAutomationContext()
 
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('auto-sell.cancel-summary-description')}
       </Text>
-      <VaultErrors errorMessages={errors} ilkData={ilkData} />
-      <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-      <AutoSellInfoSectionControl vault={vault} autoSellState={autoSellState} />
+      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+      <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
+      <AutoSellInfoSectionControl autoSellState={autoSellState} />
     </>
   )
 }

@@ -4,7 +4,6 @@ import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
-import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -66,12 +65,13 @@ export function addStopLossTrigger<C extends AddStopLossChange>(
   const { id, stopLossCloseType, stopLossLevel, proxyAddress } = state
   sendWithGasEstimation(
     addAutomationBotTrigger,
-    prepareAddStopLossTriggerData(
-      { id, owner: proxyAddress } as Vault,
-      stopLossCloseType === 'collateral',
+    prepareAddStopLossTriggerData({
+      id: id!,
+      owner: proxyAddress!,
+      isCloseToCollateral: stopLossCloseType === 'collateral',
+      replacedTriggerId: 0,
       stopLossLevel,
-      0,
-    ),
+    }),
   )
     .pipe(
       transactionToX<AddStopLossChange, AutomationBotAddTriggerData>(

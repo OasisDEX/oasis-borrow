@@ -1,6 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -11,7 +9,6 @@ import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { zero } from 'helpers/zero'
 
 export function warningsAutoSellValidation({
-  vault,
   gasEstimationUsd,
   ethBalance,
   ethPrice,
@@ -23,9 +20,14 @@ export function warningsAutoSellValidation({
   autoSellState,
   debtDeltaAtCurrentCollRatio,
   debtFloor,
+  debt,
+  collateralizationRatioAtNextPrice,
+  token,
 }: {
-  vault: Vault
+  token: string
   ethBalance: BigNumber
+  debt: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
   ethPrice: BigNumber
   sliderMin: BigNumber
   sliderMax: BigNumber
@@ -38,7 +40,7 @@ export function warningsAutoSellValidation({
   debtFloor: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token: vault.token,
+    token: token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
@@ -52,8 +54,8 @@ export function warningsAutoSellValidation({
     isAutoBuyEnabled && autoSellState.targetCollRatio.isEqualTo(sliderMax)
 
   const autoSellTriggeredImmediately =
-    autoSellState.execCollRatio.div(100).gte(vault.collateralizationRatioAtNextPrice) &&
-    !debtFloor.gt(vault.debt.plus(debtDeltaAtCurrentCollRatio))
+    autoSellState.execCollRatio.div(100).gte(collateralizationRatioAtNextPrice) &&
+    !debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio))
 
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
@@ -65,8 +67,8 @@ export function warningsAutoSellValidation({
 }
 
 export function errorsAutoSellValidation({
-  vault,
-  ilkData,
+  debt,
+  debtFloor,
   debtDelta,
   executionPrice,
   debtDeltaAtCurrentCollRatio,
@@ -75,8 +77,8 @@ export function errorsAutoSellValidation({
   autoBuyTriggerData,
   constantMultipleTriggerData,
 }: {
-  vault: Vault
-  ilkData: IlkData
+  debtFloor: BigNumber
+  debt: BigNumber
   debtDelta: BigNumber
   executionPrice: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
@@ -97,8 +99,7 @@ export function errorsAutoSellValidation({
   })
   const targetCollRatioExceededDustLimitCollRatio =
     !targetCollRatio.isZero() &&
-    (ilkData.debtFloor.gt(vault.debt.plus(debtDelta)) ||
-      ilkData.debtFloor.gt(vault.debt.plus(debtDeltaAtCurrentCollRatio)))
+    (debtFloor.gt(debt.plus(debtDelta)) || debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio)))
 
   const minimumSellPriceNotProvided =
     !isRemoveForm && withThreshold && (!maxBuyOrMinSellPrice || maxBuyOrMinSellPrice.isZero())
