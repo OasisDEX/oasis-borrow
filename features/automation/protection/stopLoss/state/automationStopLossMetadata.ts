@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { AutomationCommonMetadata } from 'features/automation/common/metadata/automationMetadata'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import {
+  AutomationCommonMetadata,
+  defaultMetadata,
+} from 'features/automation/common/state/automationMetadata'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { zero } from 'helpers/zero'
@@ -16,21 +19,13 @@ export interface AutomationStopLossMetadata extends AutomationCommonMetadata<Sto
   ) => BigNumber
 }
 
-export const automationStopLossDefaultMetadata: AutomationStopLossMetadata = {
-  debtToken: '',
-  positionLabel: '',
-  ratioLabel: '',
-  validation: {
-    creationErrors: [],
-    creationWarnings: [],
-    cancelErrors: [],
-    cancelWarnings: [],
-  },
+export const defaultStopLossMetadata: AutomationStopLossMetadata = {
+  ...defaultMetadata,
   getMinSliderBoundry: () => zero,
   getMaxSliderBoundry: () => zero,
 }
 
-export const automationStopLossMakerMetadata: AutomationStopLossMetadata = {
+export const stopLossMakerMetadata: AutomationStopLossMetadata = {
   debtToken: 'DAI',
   positionLabel: 'Vault',
   ratioLabel: 'Collateral ratio',

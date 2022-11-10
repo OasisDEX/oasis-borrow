@@ -11,7 +11,17 @@ import {
   defaultAutoBSData,
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
+import { getAutomationMetadata } from 'features/automation/common/state/automationMetadata'
 import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
+import { AutomationFeatures } from 'features/automation/common/types'
+import {
+  AutomationAutoBuyMetadata,
+  defaultAutoBuyMetadata,
+} from 'features/automation/optimization/autoBuy/state/automationAutoBuyMetadata'
+import {
+  AutomationAutoTakeProfitMetadata,
+  defaultAutoTakeProfitMetadata,
+} from 'features/automation/optimization/autoTakeProfit/state/automationAutoTakeProfitMetadata'
 import {
   AutoTakeProfitTriggerData,
   defaultAutoTakeProfitData,
@@ -19,11 +29,23 @@ import {
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { useAutoTakeProfitStateInitializator } from 'features/automation/optimization/autoTakeProfit/state/useAutoTakeProfitStateInitializator'
 import {
+  AutomationConstantMultipleMetadata,
+  defaultConstantMultipleMetadata,
+} from 'features/automation/optimization/constantMultiple/state/automationConstantMultipleMetadata'
+import {
   ConstantMultipleTriggerData,
   defaultConstantMultipleData,
   extractConstantMultipleData,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { useConstantMultipleStateInitialization } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
+import {
+  AutomationAutoSellMetadata,
+  defaultAutoSellMetadata,
+} from 'features/automation/protection/autoSell/state/automationAutoSellMetadata'
+import {
+  AutomationStopLossMetadata,
+  defaultStopLossMetadata,
+} from 'features/automation/protection/stopLoss/state/automationStopLossMetadata'
 import {
   defaultStopLossData,
   extractStopLossData,
@@ -63,12 +85,27 @@ export interface AutomationPositionData {
 }
 
 interface AutomationContext {
-  autoBuyTriggerData: AutoBSTriggerData
   automationTriggersData: TriggersData
-  autoSellTriggerData: AutoBSTriggerData
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  stopLossTriggerData: StopLossTriggerData
+  autoBuy: {
+    autoBuyTriggerData: AutoBSTriggerData
+    autoBuyMetadata: AutomationAutoBuyMetadata
+  }
+  autoSell: {
+    autoSellTriggerData: AutoBSTriggerData
+    autoSellMetadata: AutomationAutoSellMetadata
+  }
+  autoTakeProfit: {
+    autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+    autoTakeProfitMetadata: AutomationAutoTakeProfitMetadata
+  }
+  constantMultiple: {
+    constantMultipleTriggerData: ConstantMultipleTriggerData
+    constantMultipleMetadata: AutomationConstantMultipleMetadata
+  }
+  stopLoss: {
+    stopLossTriggerData: StopLossTriggerData
+    stopLossMetadata: AutomationStopLossMetadata
+  }
   environmentData: AutomationEnvironmentData
   positionData: AutomationPositionData
   vaultProtocol: VaultProtocol
@@ -91,12 +128,27 @@ export function useAutomationContext(): AutomationContext {
 */
 
 const automationContextInitialState = {
-  autoBuyTriggerData: defaultAutoBSData,
-  autoSellTriggerData: defaultAutoBSData,
-  stopLossTriggerData: defaultStopLossData,
-  constantMultipleTriggerData: defaultConstantMultipleData,
-  autoTakeProfitTriggerData: defaultAutoTakeProfitData,
   automationTriggersData: { isAutomationEnabled: false, triggers: [] },
+  autoBuy: {
+    autoBuyTriggerData: defaultAutoBSData,
+    autoBuyMetadata: defaultAutoBuyMetadata,
+  },
+  autoSell: {
+    autoSellTriggerData: defaultAutoBSData,
+    autoSellMetadata: defaultAutoSellMetadata,
+  },
+  autoTakeProfit: {
+    autoTakeProfitTriggerData: defaultAutoTakeProfitData,
+    autoTakeProfitMetadata: defaultAutoTakeProfitMetadata,
+  },
+  constantMultiple: {
+    constantMultipleTriggerData: defaultConstantMultipleData,
+    constantMultipleMetadata: defaultConstantMultipleMetadata,
+  },
+  stopLoss: {
+    stopLossTriggerData: defaultStopLossData,
+    stopLossMetadata: defaultStopLossMetadata,
+  },
 }
 
 export interface AutomationContextProviderProps {
@@ -142,7 +194,7 @@ export function AutomationContextProvider({
     [generalManageVault, vaultProtocol],
   )
 
-  const [autoContext, setAutoContext] = useState<AutomationContext>({
+  const [automationState, setAutomationState] = useState<AutomationContext>({
     ...automationContextInitialState,
     environmentData,
     positionData,
@@ -156,19 +208,19 @@ export function AutomationContextProvider({
   useStopLossStateInitializator({
     liquidationRatio: positionData.liquidationRatio,
     collateralizationRatio: positionData.collateralizationRatio,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
+    stopLossTriggerData: automationState.stopLoss.stopLossTriggerData,
   })
 
   useAutoBSstateInitialization({
-    autoTriggersData: autoContext.autoSellTriggerData,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
+    autoTriggersData: automationState.autoSell.autoSellTriggerData,
+    stopLossTriggerData: automationState.stopLoss.stopLossTriggerData,
     collateralizationRatio: positionData.collateralizationRatio,
     type: TriggerType.BasicSell,
   })
 
   useAutoBSstateInitialization({
-    autoTriggersData: autoContext.autoBuyTriggerData,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
+    autoTriggersData: automationState.autoBuy.autoBuyTriggerData,
+    stopLossTriggerData: automationState.stopLoss.stopLossTriggerData,
     collateralizationRatio: positionData.collateralizationRatio,
     type: TriggerType.BasicBuy,
   })
@@ -180,40 +232,70 @@ export function AutomationContextProvider({
     liquidationRatio: positionData.liquidationRatio,
     collateralizationRatio: positionData.collateralizationRatio,
     lockedCollateral: positionData.lockedCollateral,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
-    autoSellTriggerData: autoContext.autoSellTriggerData,
-    autoBuyTriggerData: autoContext.autoBuyTriggerData,
-    constantMultipleTriggerData: autoContext.constantMultipleTriggerData,
+    stopLossTriggerData: automationState.stopLoss.stopLossTriggerData,
+    autoSellTriggerData: automationState.autoSell.autoSellTriggerData,
+    autoBuyTriggerData: automationState.autoBuy.autoBuyTriggerData,
+    constantMultipleTriggerData: automationState.constantMultiple.constantMultipleTriggerData,
   })
 
   useAutoTakeProfitStateInitializator({
     debt: positionData.debt,
     lockedCollateral: positionData.lockedCollateral,
     collateralizationRatio: positionData.collateralizationRatio,
-    autoTakeProfitTriggerData: autoContext.autoTakeProfitTriggerData,
+    autoTakeProfitTriggerData: automationState.autoTakeProfit.autoTakeProfitTriggerData,
   })
 
   useEffect(() => {
     if (automationTriggersData) {
-      setAutoContext({
-        autoBuyTriggerData: extractAutoBSData({
-          triggersData: automationTriggersData,
-          triggerType: TriggerType.BasicBuy,
-        }),
-        autoSellTriggerData: extractAutoBSData({
-          triggersData: automationTriggersData,
-          triggerType: TriggerType.BasicSell,
-        }),
-        stopLossTriggerData: extractStopLossData(automationTriggersData),
-        constantMultipleTriggerData: extractConstantMultipleData(automationTriggersData),
-        autoTakeProfitTriggerData: extractAutoTakeProfitData(automationTriggersData),
+      setAutomationState({
+        autoBuy: {
+          autoBuyTriggerData: extractAutoBSData({
+            triggersData: automationTriggersData,
+            triggerType: TriggerType.BasicBuy,
+          }),
+          autoBuyMetadata: getAutomationMetadata<AutomationFeatures.AUTO_BUY>(
+            AutomationFeatures.AUTO_BUY,
+            vaultProtocol,
+          ),
+        },
+        autoSell: {
+          autoSellTriggerData: extractAutoBSData({
+            triggersData: automationTriggersData,
+            triggerType: TriggerType.BasicSell,
+          }),
+          autoSellMetadata: getAutomationMetadata<AutomationFeatures.AUTO_SELL>(
+            AutomationFeatures.AUTO_SELL,
+            vaultProtocol,
+          ),
+        },
+        autoTakeProfit: {
+          autoTakeProfitTriggerData: extractAutoTakeProfitData(automationTriggersData),
+          autoTakeProfitMetadata: getAutomationMetadata<AutomationFeatures.AUTO_TAKE_PROFIT>(
+            AutomationFeatures.AUTO_TAKE_PROFIT,
+            vaultProtocol,
+          ),
+        },
+        constantMultiple: {
+          constantMultipleTriggerData: extractConstantMultipleData(automationTriggersData),
+          constantMultipleMetadata: getAutomationMetadata<AutomationFeatures.CONSTANT_MULTIPLE>(
+            AutomationFeatures.CONSTANT_MULTIPLE,
+            vaultProtocol,
+          ),
+        },
+        stopLoss: {
+          stopLossTriggerData: extractStopLossData(automationTriggersData),
+          stopLossMetadata: getAutomationMetadata<AutomationFeatures.STOP_LOSS>(
+            AutomationFeatures.STOP_LOSS,
+            vaultProtocol,
+          ),
+        },
         automationTriggersData,
         environmentData,
         positionData,
         vaultProtocol,
       })
     }
-  }, [automationTriggersData, environmentData, positionData])
+  }, [automationTriggersData, environmentData, positionData, vaultProtocol])
 
-  return <automationContext.Provider value={autoContext}>{children}</automationContext.Provider>
+  return <automationContext.Provider value={automationState}>{children}</automationContext.Provider>
 }
