@@ -167,6 +167,7 @@ export function AutoBuyFormControl({
           vault={vault}
           vaultType={vaultType}
           executionPrice={executionPrice}
+          isAwaitingConfirmation={autoBuyState.isAwaitingConfirmation}
         />
       )}
     </AddAndRemoveTriggerControl>

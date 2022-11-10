@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -12,7 +13,11 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
+import {
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
@@ -34,6 +39,8 @@ import {
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
+
 interface SidebarSetupAutoSellProps {
   vault: Vault
   vaultType: VaultType
@@ -54,6 +61,7 @@ interface SidebarSetupAutoSellProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
+  isAwaitingConfirmation: boolean
   isFirstSetup: boolean
   debtDelta: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
@@ -92,8 +100,11 @@ export function SidebarSetupAutoSell({
   debtDeltaAtCurrentCollRatio,
   collateralDelta,
   executionPrice,
+  isAwaitingConfirmation,
 }: SidebarSetupAutoSellProps) {
   const gasEstimation = useGasEstimationContext()
+
+  const { uiChanges } = useAppContext()
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -110,8 +121,14 @@ export function SidebarSetupAutoSell({
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     vaultType,
   })
-  const primaryButtonLabel = getAutomationPrimaryButtonLabel({ flow, stage, feature })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const primaryButtonLabel = getAutomationPrimaryButtonLabel({
+    flow,
+    stage,
+    feature,
+    isAwaitingConfirmation,
+    isRemoveForm,
+  })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoSellState.txDetails?.txHash,
@@ -163,7 +180,7 @@ export function SidebarSetupAutoSell({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoSellAddEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -177,6 +194,21 @@ export function SidebarSetupAutoSell({
                   sliderMin={min}
                   sliderMax={max}
                   stopLossTriggerData={stopLossTriggerData}
+                />
+              )}
+              {isAwaitingConfirmation && (
+                <SidebarAwaitingConfirmation
+                  feature="Auto-Sell"
+                  children={
+                    <AutoSellInfoSectionControl
+                      autoSellState={autoSellState}
+                      vault={vault}
+                      debtDelta={debtDelta}
+                      collateralDelta={collateralDelta}
+                      executionPrice={executionPrice}
+                      maxGasFee={autoSellState.maxBaseFeeInGwei.toNumber()}
+                    />
+                  }
                 />
               )}
               {isRemoveForm && (
@@ -204,13 +236,35 @@ export function SidebarSetupAutoSell({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
+            uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            txHandler()
+            uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: false,
+            })
+          }
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: textButtonLabel,
-          hidden: isFirstSetup,
-          action: () => textButtonHandler(),
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(AUTO_SELL_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

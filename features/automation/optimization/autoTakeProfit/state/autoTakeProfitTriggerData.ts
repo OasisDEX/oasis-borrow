@@ -32,7 +32,6 @@ export const defaultAutoTakeProfitData: AutoTakeProfitTriggerData = {
 }
 
 export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTriggerData {
-  console.log(data)
   if (data.triggers && data.triggers.length > 0) {
     const autoTakeProfitTriggersData = getTriggersByType(data.triggers, [
       TriggerType.AutoTakeProfitToCollateral,
@@ -47,7 +46,7 @@ export function extractAutoTakeProfitData(data: TriggersData): AutoTakeProfitTri
   return defaultAutoTakeProfitData
 }
 
-export function prepareAutoTakeProfitTriggerData({
+function prepareAutoTakeProfitTriggerData({
   executionPrice,
   isCloseToCollateral,
   maxBaseFeeInGwei,

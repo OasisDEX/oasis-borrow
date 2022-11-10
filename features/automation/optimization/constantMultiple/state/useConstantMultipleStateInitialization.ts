@@ -83,6 +83,10 @@ export function useConstantMultipleStateInitialization(
       isResetAction: false,
     })
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'is-awaiting-confirmation',
+      isAwaitingConfirmation: false,
+    })
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'reset',
       resetData: prepareConstantMultipleResetData({
         defaultMultiplier,

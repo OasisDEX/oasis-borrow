@@ -19,12 +19,16 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
-import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import {
+  SetDownsideProtectionInformation,
+  SidebarAdjustStopLossEditingStage,
+} from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import {
@@ -71,6 +75,7 @@ interface SidebarSetupStopLossProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
+  isAwaitingConfirmation: boolean
   isFirstSetup: boolean
   closePickerConfig: PickCloseStateProps
   executionPrice: BigNumber
@@ -102,6 +107,7 @@ export function SidebarSetupStopLoss({
   isEditing,
   isDisabled,
   isFirstSetup,
+  isAwaitingConfirmation,
 
   isStopLossActive,
 
@@ -135,8 +141,13 @@ export function SidebarSetupStopLoss({
     flow,
     stage,
     feature,
+    isAwaitingConfirmation,
+    isRemoveForm,
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const textButtonLabel = getAutomationTextButtonLabel({
+    isAddForm,
+    isAwaitingConfirmation,
+  })
   const sidebarStatus = getAutomationStatusTitle({
     flow,
     txHash: stopLossState.txDetails?.txHash,
@@ -220,21 +231,40 @@ export function SidebarSetupStopLoss({
             <>
               {(stage === 'stopLossEditing' || stage === 'txFailure') && (
                 <>
-                  {isAddForm && (
-                    <SidebarAdjustStopLossEditingStage
-                      vault={vault}
-                      ilkData={ilkData}
-                      ethMarketPrice={ethMarketPrice}
-                      executionPrice={executionPrice}
-                      errors={errors}
-                      warnings={warnings}
-                      stopLossTriggerData={stopLossTriggerData}
-                      stopLossState={stopLossState}
-                      isEditing={isEditing}
-                      closePickerConfig={closePickerConfig}
-                      sliderConfig={sliderConfig}
+                  {isAddForm &&
+                    !isAwaitingConfirmation &&
+                    ['stopLossEditing', 'txFailure'].includes(stage) && (
+                      <SidebarAdjustStopLossEditingStage
+                        vault={vault}
+                        ilkData={ilkData}
+                        ethMarketPrice={ethMarketPrice}
+                        executionPrice={executionPrice}
+                        errors={errors}
+                        warnings={warnings}
+                        stopLossTriggerData={stopLossTriggerData}
+                        stopLossState={stopLossState}
+                        isEditing={isEditing}
+                        closePickerConfig={closePickerConfig}
+                        sliderConfig={sliderConfig}
+                      />
+                    )}
+
+                  {isAwaitingConfirmation && ['stopLossEditing', 'txFailure'].includes(stage) && (
+                    <SidebarAwaitingConfirmation
+                      feature="Stop-Loss"
+                      children={
+                        <SetDownsideProtectionInformation
+                          vault={vault}
+                          ilkData={ilkData}
+                          afterStopLossRatio={stopLossState.stopLossLevel}
+                          executionPrice={executionPrice}
+                          ethPrice={ethMarketPrice}
+                          isCollateralActive={closePickerConfig.isCollateralActive}
+                        />
+                      }
                     />
                   )}
+
                   {isRemoveForm && (
                     <SidebarCancelStopLossEditingStage
                       vault={vault}
@@ -280,22 +310,45 @@ export function SidebarSetupStopLoss({
         label: primaryButtonLabel,
         disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
-        action: () =>
-          txHandler({
-            callOnSuccess: () => {
-              uiChanges.publish(TAB_CHANGE_SUBJECT, {
-                type: 'change-tab',
-                currentMode: VaultViewMode.Overview,
+        action: () => {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
+            uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
               })
-              setHash(VaultViewMode.Overview)
-            },
-          }),
+            }
+            txHandler({
+              callOnSuccess: () => {
+                uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                  type: 'change-tab',
+                  currentMode: VaultViewMode.Overview,
+                })
+                setHash(VaultViewMode.Overview)
+              },
+            })
+          }
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: textButtonLabel,
-          hidden: isFirstSetup,
-          action: () => textButtonHandler(),
+          hidden: isFirstSetup && !isAwaitingConfirmation,
+          action: () => {
+            if (isAwaitingConfirmation) {
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            } else {
+              textButtonHandler()
+            }
+          },
         },
       }),
       status: sidebarStatus,

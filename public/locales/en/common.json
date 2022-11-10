@@ -1252,6 +1252,7 @@
   "protection": {
     "stop-loss": "Stop-Loss",
     "stop-loss-protection": "Stop-Loss Protection",
+    "confirmation-text": "Confirm your Stop-Loss setup.",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
@@ -1318,6 +1319,8 @@
     "no-threshold": "No threshold set",
     "set-no-threshold": "Set No Threshold",
     "set-threshold": "Set Threshold",
+    "edit-order": "Edit Order",
+    "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
     "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab",
@@ -1591,6 +1594,7 @@
   "auto-sell": {
     "sell-title": "Basic Auto-Sell Summary",
     "cancel-summary-title": "Cancel Auto-Sell order summary",
+    "confirmation": "Confirm your auto-sell setup.",
     "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
@@ -1644,6 +1648,7 @@
   "auto-buy": {
     "title": "Auto-Buy",
     "cancel-summary-title": "Cancel Auto-Buy order summary",
+    "confirmation-text": "Confirm your Auto-Buy setup.",
     "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Recurring buy order up to {{amount}}/{{token}}",
     "continual-buy-no-threshold": "Recurring buy order with no max",
@@ -1748,7 +1753,9 @@
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
     "trigger-executed": "Your {{feature}} was triggered",
-    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger"
+    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger",
+    "confirmation-text": "Confirm your {{feature}} setup",
+    "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",

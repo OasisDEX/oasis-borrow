@@ -16,6 +16,7 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
@@ -40,7 +41,9 @@ import {
 } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
+
+import { AutoTakeProfitInfoSectionControl } from '../controls/AutoTakeProfitInfoSectionControl'
 
 interface SidebarSetupAutoTakeProfitProps {
   autoBuyTriggerData: AutoBSTriggerData
@@ -68,6 +71,7 @@ interface SidebarSetupAutoTakeProfitProps {
   vault: Vault
   ethBalance: BigNumber
   vaultType: VaultType
+  isAwaitingConfirmation: boolean
 }
 
 export function SidebarSetupAutoTakeProfit({
@@ -96,6 +100,7 @@ export function SidebarSetupAutoTakeProfit({
   vault,
   ethBalance,
   vaultType,
+  isAwaitingConfirmation,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
@@ -120,8 +125,10 @@ export function SidebarSetupAutoTakeProfit({
     flow,
     stage,
     feature,
+    isAwaitingConfirmation,
+    isRemoveForm,
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoTakeProfitState.txDetails?.txHash,
@@ -229,7 +236,7 @@ export function SidebarSetupAutoTakeProfit({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoTakeProfitEditingStage
                   autoTakeProfitState={autoTakeProfitState}
                   autoTakeProfitTriggerData={autoTakeProfitTriggerData}
@@ -242,6 +249,31 @@ export function SidebarSetupAutoTakeProfit({
                   ilkData={ilkData}
                   errors={errors}
                   warnings={warnings}
+                />
+              )}
+              {isAwaitingConfirmation && (
+                <SidebarAwaitingConfirmation
+                  feature={
+                    <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+                      {t('automation.auto-take-profit-confirmation-text', {
+                        price: ethMarketPrice.toString(),
+                        profit: estimatedProfitOnClose.toFixed(2).toString(),
+                      })}
+                    </Text>
+                  }
+                  children={
+                    <AutoTakeProfitInfoSectionControl
+                      debt={vault.debt}
+                      debtOffset={vault.debtOffset}
+                      ethMarketPrice={ethMarketPrice}
+                      lockedCollateral={vault.lockedCollateral}
+                      toCollateral={autoTakeProfitState.toCollateral}
+                      token={vault.token}
+                      tokenMarketPrice={tokenMarketPrice}
+                      triggerColPrice={autoTakeProfitState.executionPrice}
+                      triggerColRatio={autoTakeProfitState.executionCollRatio}
+                    />
+                  }
                 />
               )}
               {isRemoveForm && (
@@ -269,14 +301,39 @@ export function SidebarSetupAutoTakeProfit({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
+            uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            if (isAwaitingConfirmation && ['txSuccess', 'txFailure'].includes(stage)) {
+              uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
+
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
           textButton: {
             label: textButtonLabel,
-            hidden: isFirstSetup,
-            action: () => textButtonHandler(),
+            hidden: isFirstSetup && !isAwaitingConfirmation,
+            action: () => {
+              if (isAwaitingConfirmation) {
+                uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                  type: 'is-awaiting-confirmation',
+                  isAwaitingConfirmation: false,
+                })
+              } else {
+                textButtonHandler()
+              }
+            },
           },
         }),
       status: sidebarStatus,

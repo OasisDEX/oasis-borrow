@@ -45,11 +45,14 @@ export type SidebarAutomationStages =
   | 'txInProgress'
   | 'editing'
   | 'stopLossEditing'
+  | 'isConfirming'
 
 export interface AutomationSidebarCopiesParams {
   stage: SidebarAutomationStages
   flow: SidebarAutomationFlow
   feature: AutomationFeatures
+  isAwaitingConfirmation?: boolean
+  isRemoveForm?: boolean
 }
 
 export interface AutomationSidebarStatusParams {

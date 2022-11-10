@@ -71,3 +71,9 @@ export function checkIfIsDisabledStopLoss({
     stage !== 'txSuccess'
   )
 }
+
+export function calculateStepNumber(isConfirmation: boolean, stage: SidebarAutomationStages) {
+  if (isConfirmation && stage !== 'txSuccess') return '(2/3)'
+  if (stage === 'txInProgress' || stage === 'txSuccess') return '(3/3)'
+  return '(1/3)'
+}
