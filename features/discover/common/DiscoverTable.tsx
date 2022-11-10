@@ -12,12 +12,14 @@ import { Box } from 'theme-ui'
 export function DiscoverTable({
   banner,
   isLoading,
+  isSticky,
   kind,
   rows,
   userContext,
 }: {
   banner?: DiscoverBanner
   isLoading: boolean
+  isSticky: boolean
   kind: DiscoverPages
   rows: DiscoverTableRowData[]
   userContext: MixpanelUserContext
@@ -43,7 +45,7 @@ export function DiscoverTable({
         <Box
           as="thead"
           sx={{
-            ...(rows.length > 2 && {
+            ...(isSticky && {
               position: 'sticky',
               zIndex: 1,
               top: '120px',
