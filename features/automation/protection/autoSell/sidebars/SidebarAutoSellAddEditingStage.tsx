@@ -27,7 +27,6 @@ import {
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { AddAutoSellInfoSection } from 'features/automation/protection/autoSell/controls/AddAutoSellInfoSection'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -35,56 +34,11 @@ import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
-import { one } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
 
-interface AutoSellInfoSectionControlProps {
-  vault: Vault
-  autoSellState: AutoBSFormChange
-  debtDelta: BigNumber
-  collateralDelta: BigNumber
-  executionPrice: BigNumber
-}
-
-function AutoSellInfoSectionControl({
-  vault,
-  autoSellState,
-  debtDelta,
-  collateralDelta,
-  executionPrice,
-}: AutoSellInfoSectionControlProps) {
-  const deviationPercent = autoSellState.deviation.div(100)
-
-  const targetRatioWithDeviationFloor = one
-    .minus(deviationPercent)
-    .times(autoSellState.targetCollRatio)
-  const targetRatioWithDeviationCeiling = one
-    .plus(deviationPercent)
-    .times(autoSellState.targetCollRatio)
-
-  return (
-    <AddAutoSellInfoSection
-      targetCollRatio={autoSellState.targetCollRatio}
-      multipleAfterSell={one.div(autoSellState.targetCollRatio.div(100).minus(one)).plus(one)}
-      execCollRatio={autoSellState.execCollRatio}
-      nextSellPrice={executionPrice}
-      collateralAfterNextSell={{
-        value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
-      }}
-      outstandingDebtAfterSell={{
-        value: vault.debt,
-        secondaryValue: vault.debt.plus(debtDelta),
-      }}
-      ethToBeSoldAtNextSell={collateralDelta.abs()}
-      token={vault.token}
-      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
-      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
-    />
-  )
-}
+import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
 interface SidebarAutoSellAddEditingStageProps {
   vault: Vault
@@ -374,6 +328,7 @@ export function SidebarAutoSellAddEditingStage({
             debtDelta={debtDelta}
             collateralDelta={collateralDelta}
             executionPrice={executionPrice}
+            maxGasFee={autoSellState.maxBaseFeeInGwei.toNumber()}
           />
         </>
       )}

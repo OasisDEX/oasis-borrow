@@ -91,6 +91,11 @@ export function useAutoBSstateInitialization(
       type: 'is-editing',
       isEditing: false,
     })
+
+    uiChanges.publish(publishKey, {
+      type: 'is-awaiting-confirmation',
+      isAwaitingConfirmation: false,
+    })
   }, [
     triggerId.toNumber(),
     collateralizationRatio.toNumber(),

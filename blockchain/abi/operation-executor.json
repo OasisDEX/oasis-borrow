@@ -61,7 +61,7 @@
         "type": "tuple[]"
       }
     ],
-    "name": "aggregate",
+    "name": "callbackAggregate",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -115,7 +115,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "fee",
         "type": "uint256"
       },
       {

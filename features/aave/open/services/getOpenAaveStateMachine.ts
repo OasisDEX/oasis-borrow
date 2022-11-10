@@ -21,7 +21,6 @@ import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import {
-  AaveStEthSimulateStateMachine,
   createOpenAaveStateMachine,
   OpenAaveContext,
   OpenAaveEvent,
@@ -114,13 +113,12 @@ export function getOpenAaveStateMachine$(
   parametersMachine$: Observable<ParametersStateMachine>,
   proxyMachine$: Observable<ProxyStateMachine>,
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
-  simulationMachine$: Observable<AaveStEthSimulateStateMachine>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
 ) {
   const pricesFeed$ = getPricesFeed$(prices$)
-  return combineLatest(parametersMachine$, proxyMachine$, simulationMachine$, userSettings$).pipe(
-    map(([parametersMachine, proxyMachine, simulationMachine, userSettings]) => {
+  return combineLatest(parametersMachine$, proxyMachine$, userSettings$).pipe(
+    map(([parametersMachine, proxyMachine, userSettings]) => {
       return createOpenAaveStateMachine
         .withConfig({
           services: {
@@ -200,11 +198,6 @@ export function getOpenAaveStateMachine$(
                   name: 'transactionMachine',
                 },
               ),
-            })),
-            spawnSimulationMachine: assign((_) => ({
-              refSimulationMachine: spawn(simulationMachine, {
-                name: 'simulationMachine',
-              }),
             })),
           },
         })

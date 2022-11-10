@@ -17,10 +17,7 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import {
-  ACCEPTABLE_FEE_DIFF,
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
-} from 'features/automation/common/consts'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import {
   automationInputsAnalytics,
   automationMultipleRangeSliderAnalytics,
@@ -31,7 +28,6 @@ import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPr
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { AddConstantMultipleInfoSection } from 'features/automation/optimization/constantMultiple/controls/AddConstantMultipleInfoSection'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -54,10 +50,11 @@ import {
 } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
-import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
+
+import { ConstantMultipleInfoSectionControl } from './ConstantMultipleInfoSectionControl'
 
 interface SidebaConstantMultiplerEditingStageProps {
   vault: Vault
@@ -410,60 +407,5 @@ export function SidebarConstantMultipleEditingStage({
         />
       )}
     </Text>
-  )
-}
-
-interface ConstantMultipleInfoSectionControlProps {
-  token: string
-  nextBuyPrice: BigNumber
-  nextSellPrice: BigNumber
-  collateralToBePurchased: BigNumber
-  collateralToBeSold: BigNumber
-  estimatedGasCostOnTrigger?: BigNumber
-  estimatedBuyFee: BigNumber
-  estimatedSellFee: BigNumber
-  constantMultipleState: ConstantMultipleFormChange
-}
-
-function ConstantMultipleInfoSectionControl({
-  token,
-  nextBuyPrice,
-  nextSellPrice,
-  collateralToBePurchased,
-  collateralToBeSold,
-  estimatedGasCostOnTrigger,
-  estimatedBuyFee,
-  estimatedSellFee,
-  constantMultipleState,
-}: ConstantMultipleInfoSectionControlProps) {
-  const feeDiff = estimatedBuyFee.minus(estimatedSellFee).abs()
-  const estimatedOasisFee = feeDiff.gt(ACCEPTABLE_FEE_DIFF)
-    ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))
-    : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
-
-  return (
-    <AddConstantMultipleInfoSection
-      token={token}
-      targetColRatio={constantMultipleState.targetCollRatio}
-      multiplier={constantMultipleState.multiplier}
-      buyExecutionCollRatio={constantMultipleState.buyExecutionCollRatio}
-      nextBuyPrice={nextBuyPrice}
-      collateralToBePurchased={collateralToBePurchased}
-      maxPriceToBuy={
-        constantMultipleState.buyWithThreshold
-          ? constantMultipleState.maxBuyPrice || zero
-          : undefined
-      }
-      sellExecutionCollRatio={constantMultipleState.sellExecutionCollRatio}
-      nextSellPrice={nextSellPrice}
-      collateralToBeSold={collateralToBeSold}
-      minPriceToSell={
-        constantMultipleState.sellWithThreshold
-          ? constantMultipleState.minSellPrice || zero
-          : undefined
-      }
-      estimatedOasisFee={estimatedOasisFee}
-      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
-    />
   )
 }

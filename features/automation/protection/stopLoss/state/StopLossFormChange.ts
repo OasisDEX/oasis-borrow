@@ -13,6 +13,7 @@ export type StopLossFormChangeAction =
   | { type: 'stop-loss-level'; stopLossLevel: BigNumber }
   | { type: 'close-type'; toCollateral: boolean }
   | { type: 'current-form'; currentForm: AutomationFormType }
+  | { type: 'is-awaiting-confirmation'; isAwaitingConfirmation: boolean }
   | { type: 'reset'; resetData: StopLossResetData }
   | {
       type: 'tx-details'
@@ -35,6 +36,8 @@ export function formChangeReducer(
       return { ...state, collateralActive: action.toCollateral }
     case 'current-form':
       return { ...state, currentForm: action.currentForm }
+    case 'is-awaiting-confirmation':
+      return { ...state, isAwaitingConfirmation: action.isAwaitingConfirmation }
     case 'reset':
       return { ...state, ...action.resetData }
     case 'tx-details':
@@ -48,6 +51,7 @@ export interface StopLossFormChange {
   stopLossLevel: BigNumber
   collateralActive: boolean
   currentForm: AutomationFormType
+  isAwaitingConfirmation: boolean
   resetData: StopLossResetData
   txDetails?: {
     txStatus?: TxStatus

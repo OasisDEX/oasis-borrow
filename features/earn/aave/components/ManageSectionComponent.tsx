@@ -1,6 +1,6 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import React from 'react'

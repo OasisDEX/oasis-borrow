@@ -15,8 +15,6 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
-import { AddAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/AddAutoTakeProfitInfoSection'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
@@ -32,6 +30,9 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
+
+import { AutoTakeProfitInfoSectionControl } from '../controls/AutoTakeProfitInfoSectionControl'
+
 interface SidebarAutoTakeProfitEditingStageProps {
   autoTakeProfitState: AutoTakeProfitFormChange
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
@@ -101,17 +102,20 @@ export function SidebarAutoTakeProfitEditingStage({
 
   return (
     <>
-      <PickCloseState {...closePickerConfig} />
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('auto-take-profit.set-trigger-description', {
-          token: vault.token,
-          executionPrice: autoTakeProfitState.executionPrice.decimalPlaces(2),
-        })}
-        <AppLink href="https://kb.oasis.app/help/take-profit" sx={{ fontSize: 2 }}>
-          {t('here')}.
-        </AppLink>
-      </Text>
-      <SliderValuePicker {...sliderConfig} />
+      <>
+        <PickCloseState {...closePickerConfig} />
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+          {t('auto-take-profit.set-trigger-description', {
+            token: vault.token,
+            executionPrice: autoTakeProfitState.executionPrice.decimalPlaces(2),
+          })}
+          <AppLink href="https://kb.oasis.app/help/take-profit" sx={{ fontSize: 2 }}>
+            {t('here')}.
+          </AppLink>
+        </Text>
+        <SliderValuePicker {...sliderConfig} />
+      </>
+
       {isEditing && (
         <>
           <VaultErrors errorMessages={errors} ilkData={ilkData} />
@@ -131,6 +135,7 @@ export function SidebarAutoTakeProfitEditingStage({
               })
             }}
           />
+
           <AutoTakeProfitInfoSectionControl
             debt={vault.debt}
             debtOffset={vault.debtOffset}
@@ -145,54 +150,5 @@ export function SidebarAutoTakeProfitEditingStage({
         </>
       )}
     </>
-  )
-}
-
-interface AutoTakeProfitInfoSectionControlProps {
-  debt: BigNumber
-  debtOffset: BigNumber
-  ethMarketPrice: BigNumber
-  lockedCollateral: BigNumber
-  toCollateral: boolean
-  token: string
-  tokenMarketPrice: BigNumber
-  triggerColPrice: BigNumber
-  triggerColRatio: BigNumber
-}
-
-function AutoTakeProfitInfoSectionControl({
-  debt,
-  debtOffset,
-  ethMarketPrice,
-  lockedCollateral,
-  toCollateral,
-  token,
-  triggerColPrice,
-  triggerColRatio,
-}: AutoTakeProfitInfoSectionControlProps) {
-  const {
-    estimatedGasFeeOnTrigger,
-    estimatedOasisFeeOnTrigger,
-    totalTriggerCost,
-  } = getOnCloseEstimations({
-    colMarketPrice: triggerColPrice,
-    colOraclePrice: triggerColPrice,
-    debt: debt,
-    debtOffset: debtOffset,
-    ethMarketPrice,
-    lockedCollateral: lockedCollateral,
-    toCollateral: toCollateral,
-  })
-
-  return (
-    <AddAutoTakeProfitInfoSection
-      debtRepaid={debt}
-      estimatedOasisFeeOnTrigger={estimatedOasisFeeOnTrigger}
-      estimatedGasFeeOnTrigger={estimatedGasFeeOnTrigger}
-      token={token}
-      totalTriggerCost={totalTriggerCost}
-      triggerColPrice={triggerColPrice}
-      triggerColRatio={triggerColRatio}
-    />
   )
 }

@@ -1,7 +1,9 @@
+import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 
-import { AavePositionHeaderPropsBase } from '../../earn/aave/components/AavePositionHeader'
-import { ManageSectionComponentProps } from '../manage/components'
+import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
+import { PreparedAaveTotalValueLocked } from '../helpers/aavePrepareAaveTotalValueLocked'
+import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
 export interface StrategyConfig {
@@ -9,8 +11,8 @@ export interface StrategyConfig {
   urlSlug: string
   viewComponents: {
     headerOpen: AaveHeader
-    headerView: AaveHeader
     headerManage: AaveHeader
+    headerView: AaveHeader
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
@@ -20,6 +22,17 @@ export interface StrategyConfig {
     collateral: string
     debt: string
   }
+}
+
+export type AavePositionHeaderPropsBase = {
+  maxRisk?: IRiskRatio
+  aaveTVL?: PreparedAaveTotalValueLocked
+  strategyName: string
+}
+
+export type ManageSectionComponentProps = {
+  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveDataETH: PreparedAaveReserveData
 }
 
 type AaveHeader = (props: AavePositionHeaderPropsBase) => JSX.Element

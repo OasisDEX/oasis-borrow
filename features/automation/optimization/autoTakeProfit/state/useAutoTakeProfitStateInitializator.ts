@@ -37,6 +37,10 @@ export function useAutoTakeProfitStateInitializator(
       triggerId,
     })
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+      type: 'is-awaiting-confirmation',
+      isAwaitingConfirmation: false,
+    })
+    uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
       type: 'form-defaults',
       executionPrice: initialSelectedPrice,
       executionCollRatio: initialSelectedColRatio,

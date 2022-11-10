@@ -9,7 +9,7 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { StrategyConfig } from '../../common/StrategyConfigType'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from '../state'
 import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
