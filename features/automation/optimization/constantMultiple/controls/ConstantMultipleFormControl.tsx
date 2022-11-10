@@ -104,7 +104,7 @@ export function ConstantMultipleFormControl({
       shouldRemoveAllowance={shouldRemoveAllowance}
       stage={stage}
       textButtonHandlerExtension={textButtonHandlerExtension}
-      triggersId={constantMultipleTriggerData.triggersId.map((id) => id.toNumber())}
+      triggersId={constantMultipleTriggerData.triggersId.map((triggerId) => triggerId.toNumber())}
       txHelpers={txHelpers}
       analytics={{
         id: {

@@ -29,11 +29,11 @@ export function ContextLayerControl({
         value={[ethAndTokenPricesData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([ethAndTokenPricesData]) => (
+        {([ethAndTokenPrices]) => (
           <AutomationContextProvider
             generalManageVault={generalManageVault}
             context={context}
-            ethAndTokenPricesData={ethAndTokenPricesData}
+            ethAndTokenPricesData={ethAndTokenPrices}
           >
             {children}
           </AutomationContextProvider>

@@ -15,25 +15,25 @@ interface GeneralManageControlProps {
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const { generalManageVault$, context$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
-  const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
-  const [contextValue, contextError] = useObservable(context$)
+  const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [contextData, contextError] = useObservable(context$)
 
   useEffect(() => {
     return () => {
-      generalManageVault?.state.clear()
+      generalManageVaultData?.state.clear()
     }
   }, [])
 
-  const vaultHistoryCheck = generalManageVault?.state.vaultHistory.length || undefined
+  const vaultHistoryCheck = generalManageVaultData?.state.vaultHistory.length || undefined
 
   return (
     <WithErrorHandler error={[generalManageVaultError, contextError]}>
       <WithLoadingIndicator
-        value={[generalManageVault, contextValue, vaultHistoryCheck]}
+        value={[generalManageVaultData, contextData, vaultHistoryCheck]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, contextValue]) => (
-          <ContextLayerControl generalManageVault={generalManageVault} context={contextValue}>
+        {([generalManageVault, context]) => (
+          <ContextLayerControl generalManageVault={generalManageVault} context={context}>
             <GeneralManageLayout generalManageVault={generalManageVault} />
           </ContextLayerControl>
         )}

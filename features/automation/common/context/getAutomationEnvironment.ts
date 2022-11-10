@@ -4,7 +4,7 @@ import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-interface getAutomationEnvironmentParams {
+interface GetAutomationEnvironmentParams {
   generalManageVault: GeneralManageVaultState
   vaultProtocol: VaultProtocol
 }
@@ -19,7 +19,7 @@ interface AutomationEnvironment {
 export function getAutomationEnvironment({
   generalManageVault,
   vaultProtocol,
-}: getAutomationEnvironmentParams): AutomationEnvironment {
+}: GetAutomationEnvironmentParams): AutomationEnvironment {
   switch (vaultProtocol) {
     case VaultProtocol.Maker:
       const {

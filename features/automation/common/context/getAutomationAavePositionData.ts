@@ -2,13 +2,13 @@ import { AutomationPositionData } from 'components/AutomationContextProvider'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { zero } from 'helpers/zero'
 
-interface getAutomationAavePositionDataParams {
+interface GetAutomationAavePositionDataParams {
   generalManageVault: GeneralManageVaultState
 }
 
 export function getAutomationAavePositionData({
   generalManageVault,
-}: getAutomationAavePositionDataParams): AutomationPositionData {
+}: GetAutomationAavePositionDataParams): AutomationPositionData {
   //TODO: fill with actual AAVE data
   return {
     collateralizationRatio: zero,

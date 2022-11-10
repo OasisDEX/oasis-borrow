@@ -1,13 +1,13 @@
 import { AutomationPositionData } from 'components/AutomationContextProvider'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 
-interface getAutomationMakerPositionDataParams {
+interface GetAutomationMakerPositionDataParams {
   generalManageVault: GeneralManageVaultState
 }
 
 export function getAutomationMakerPositionData({
   generalManageVault,
-}: getAutomationMakerPositionDataParams): AutomationPositionData {
+}: GetAutomationMakerPositionDataParams): AutomationPositionData {
   const {
     vault: {
       collateralizationRatio,
