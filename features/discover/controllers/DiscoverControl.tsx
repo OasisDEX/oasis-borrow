@@ -26,6 +26,7 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const response = getDiscoverData(endpoint, settings)
+  const isSticky = (response && response?.rows?.length > 2) || false
 
   const onChangeHandler = useCallback(
     (key, currentValue) => {
@@ -62,14 +63,15 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
       }}
     >
       <DiscoverFilters
-        amountOfRows={response?.rows?.length || 0}
         filters={filters}
         isSmallerScreen={isSmallerScreen}
+        isSticky={isSticky}
         onChange={onChangeHandler}
       />
       <DiscoverData
         banner={banner}
         isLoading={isLoading}
+        isSticky={isSticky}
         isSmallerScreen={isSmallerScreen}
         kind={kind}
         response={response}
