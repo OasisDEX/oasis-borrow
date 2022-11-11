@@ -39,9 +39,9 @@ export interface ManageAaveContext extends BaseAaveContext {
 
   balanceAfterClose?: BigNumber
   operationType?: OperationType
+  protocolData?: AaveProtocolData
 }
 
-// TODO: move this into base context file
 export interface AaveProtocolData {
   positionData: AaveUserReserveData
   accountData: AaveUserAccountData

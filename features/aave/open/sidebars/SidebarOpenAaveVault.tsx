@@ -189,7 +189,6 @@ export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
         <AdjustRiskView
           state={state}
           send={send}
-          resetRiskValue={config.riskRatios.minimum}
           primaryButton={{
             steps: [2, state.context.totalSteps!],
             isLoading: state.context.loading,

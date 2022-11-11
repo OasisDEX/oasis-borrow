@@ -224,9 +224,7 @@ export function SidebarManageAaveVault({ config }: { config: StrategyConfig }) {
       return (
         <AdjustRiskView
           state={state}
-          resetRiskValue={
-            state.context.protocolData?.position.riskRatio || config.riskRatios.minimum
-          }
+          onChainPosition={state.context.protocolData?.position}
           send={send}
           primaryButton={{
             isLoading: state.context.loading,

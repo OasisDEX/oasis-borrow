@@ -1,4 +1,4 @@
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { WithArrow } from 'components/WithArrow'
 import { useTranslation } from 'next-i18next'
@@ -20,8 +20,8 @@ type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
   textButton: SidebarSectionFooterButtonSettings
-  resetRiskValue: IRiskRatio
   viewLocked?: boolean // locks whole view + displays warning
+  onChainPosition?: IPosition
 }
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
@@ -69,10 +69,10 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     primaryButton,
     textButton,
     viewLocked = false,
+    onChainPosition,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
-    const onChainPosition = state.context.protocolData?.position
     const simulation = state.context.transactionParameters?.simulation
     const targetPosition = simulation?.position
 
