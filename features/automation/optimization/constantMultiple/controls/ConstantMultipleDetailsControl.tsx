@@ -1,6 +1,5 @@
-import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { ConstantMultipleDetailsLayout } from 'features/automation/optimization/constantMultiple/controls/ConstantMultipleDetailsLayout'
 import { checkIfIsEditingConstantMultiple } from 'features/automation/optimization/constantMultiple/helpers'
@@ -8,8 +7,6 @@ import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import {
   calculatePNLFromAddConstantMultipleEvent,
@@ -20,19 +17,11 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 interface ConstantMultipleDetailsControlProps {
-  vault: Vault
-  vaultType: VaultType
   vaultHistory: VaultHistoryEvent[]
-  tokenMarketPrice: BigNumber
-  constantMultipleTriggerData: ConstantMultipleTriggerData
 }
 
 export function ConstantMultipleDetailsControl({
-  vault,
-  vaultType,
   vaultHistory,
-  tokenMarketPrice,
-  constantMultipleTriggerData,
 }: ConstantMultipleDetailsControlProps) {
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
@@ -40,14 +29,19 @@ export function ConstantMultipleDetailsControl({
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
 
-  const { debt, lockedCollateral, token } = vault
+  const {
+    constantMultipleTriggerData,
+    environmentData: { tokenMarketPrice },
+    positionData: { ilk, id, token, debt, lockedCollateral },
+  } = useAutomationContext()
+
   const {
     isTriggerEnabled,
     targetCollRatio,
     buyExecutionCollRatio,
     sellExecutionCollRatio,
   } = constantMultipleTriggerData
-  const isDebtZero = vault.debt.isZero()
+  const isDebtZero = debt.isZero()
 
   const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
   const isEditing = checkIfIsEditingConstantMultiple({
@@ -86,9 +80,8 @@ export function ConstantMultipleDetailsControl({
 
   return (
     <ConstantMultipleDetailsLayout
-      vaultId={vault.id}
-      ilk={vault.ilk}
-      vaultType={vaultType}
+      vaultId={id}
+      ilk={ilk}
       token={token}
       isTriggerEnabled={isTriggerEnabled}
       {...constantMultipleDetailsLayoutOptionalParams}

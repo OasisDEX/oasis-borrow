@@ -1,10 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { AutomationEventIds, Pages } from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { resolveMinSellPriceAnalytics } from 'features/automation/common/helpers'
 import {
@@ -12,67 +9,45 @@ import {
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
 import { getAutoBSStatus } from 'features/automation/common/state/autoBSStatus'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { getAutoBSTxHandlers } from 'features/automation/common/state/autoBSTxHandlers'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { SidebarSetupAutoSell } from 'features/automation/protection/autoSell/sidebars/SidebarSetupAutoSell'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 interface AutoSellFormControlProps {
-  autoBuyTriggerData: AutoBSTriggerData
-  autoSellTriggerData: AutoBSTriggerData
-  balanceInfo: BalanceInfo
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  context: Context
-  ethMarketPrice: BigNumber
-  ilkData: IlkData
   isAutoSellActive: boolean
   shouldRemoveAllowance: boolean
-  stopLossTriggerData: StopLossTriggerData
   txHelpers?: TxHelpers
-  vault: Vault
-  vaultType: VaultType
 }
 
 export function AutoSellFormControl({
-  autoBuyTriggerData,
-  autoSellTriggerData,
-  balanceInfo,
-  constantMultipleTriggerData,
-  context,
-  ethMarketPrice,
-  ilkData,
   isAutoSellActive,
   shouldRemoveAllowance,
-  stopLossTriggerData,
   txHelpers,
-  vault,
-  vaultType,
 }: AutoSellFormControlProps) {
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
+
+  const {
+    autoSellTriggerData,
+    environmentData: { canInteract },
+    positionData: { id, debt, lockedCollateral, collateralizationRatio, owner },
+  } = useAutomationContext()
 
   const feature = AutomationFeatures.AUTO_SELL
   const publishType = AUTO_SELL_FORM_CHANGE
   const {
     isAddForm,
     isFirstSetup,
-    isOwner,
     isProgressStage,
     isRemoveForm,
     stage,
   } = getAutomationFeatureStatus({
-    context,
     currentForm: autoSellState.currentForm,
     feature,
     triggersId: [autoSellTriggerData.triggerId],
     txStatus: autoSellState.txDetails?.txStatus,
-    vaultController: vault.controller,
   })
   const {
     collateralDelta,
@@ -86,25 +61,28 @@ export function AutoSellFormControl({
     autoBSState: autoSellState,
     autoBSTriggerData: autoSellTriggerData,
     isAddForm,
-    isOwner,
+    isOwner: canInteract,
     isProgressStage,
     isRemoveForm,
     publishType,
     stage,
-    vault,
+    debt,
+    lockedCollateral,
+    collateralizationRatio,
   })
   const { addTxData, textButtonHandlerExtension } = getAutoBSTxHandlers({
+    id,
+    owner,
+    collateralizationRatio,
     autoBSState: autoSellState,
     isAddForm,
     publishType,
     triggerType: TriggerType.BasicSell,
-    vault,
   })
 
   return (
     <AddAndRemoveTriggerControl
       addTxData={addTxData}
-      ethMarketPrice={ethMarketPrice}
       isActiveFlag={isAutoSellActive}
       isAddForm={isAddForm}
       isEditing={isEditing}
@@ -116,7 +94,6 @@ export function AutoSellFormControl({
       textButtonHandlerExtension={textButtonHandlerExtension}
       triggersId={[autoSellTriggerData.triggerId.toNumber()]}
       txHelpers={txHelpers}
-      vault={vault}
       analytics={{
         id: {
           add: AutomationEventIds.AddAutoSell,
@@ -137,31 +114,20 @@ export function AutoSellFormControl({
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoSell
-          autoBuyTriggerData={autoBuyTriggerData}
           autoSellState={autoSellState}
-          autoSellTriggerData={autoSellTriggerData}
-          balanceInfo={balanceInfo}
           collateralDelta={collateralDelta}
-          constantMultipleTriggerData={constantMultipleTriggerData}
-          context={context}
           debtDelta={debtDelta}
           debtDeltaAtCurrentCollRatio={debtDeltaAtCurrentCollRatio}
-          ethMarketPrice={ethMarketPrice}
           feature={feature}
-          ilkData={ilkData}
           isAddForm={isAddForm}
           isAutoSellActive={isAutoSellActive}
           isDisabled={isDisabled}
           isEditing={isEditing}
-          isAwaitingConfirmation={autoSellState.isAwaitingConfirmation}
           isFirstSetup={isFirstSetup}
           isRemoveForm={isRemoveForm}
           stage={stage}
-          stopLossTriggerData={stopLossTriggerData}
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
-          vault={vault}
-          vaultType={vaultType}
           executionPrice={executionPrice}
         />
       )}

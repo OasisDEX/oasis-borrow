@@ -1,25 +1,16 @@
-import BigNumber from 'bignumber.js'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface CancelConstantMultipleInfoSectionProps {
-  collateralizationRatio: BigNumber
-  debt: BigNumber
-  liquidationPrice: BigNumber
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-}
-
-export function CancelConstantMultipleInfoSection({
-  collateralizationRatio,
-  constantMultipleTriggerData,
-  debt,
-  liquidationPrice,
-}: CancelConstantMultipleInfoSectionProps) {
+export function CancelConstantMultipleInfoSection() {
   const { t } = useTranslation()
+  const {
+    constantMultipleTriggerData,
+    positionData: { collateralizationRatio, debt, liquidationPrice },
+  } = useAutomationContext()
 
   return (
     <InfoSection

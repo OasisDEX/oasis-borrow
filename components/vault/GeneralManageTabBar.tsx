@@ -5,11 +5,11 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/generalManageVault/TabChange'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -32,18 +32,14 @@ interface GeneralManageTabBarProps {
   generalManageVault: GeneralManageVaultState
   positionInfo?: JSX.Element
   showAutomationTabs: boolean
-  protectionEnabled: boolean
-  optimizationEnabled: boolean
 }
 
 export function GeneralManageTabBar({
   generalManageVault,
   positionInfo,
   showAutomationTabs,
-  protectionEnabled,
-  optimizationEnabled,
 }: GeneralManageTabBarProps): JSX.Element {
-  const { ilkData, vault, balanceInfo, vaultHistory } = generalManageVault.state
+  const { vault, vaultHistory } = generalManageVault.state
   const [hash] = useHash()
   const initialMode = Object.values<string>(VaultViewMode).includes(hash)
     ? (hash as VaultViewMode)
@@ -51,7 +47,21 @@ export function GeneralManageTabBar({
   const [mode, setMode] = useState<VaultViewMode>(initialMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-  const autoBSEnabled = useFeatureToggle('BasicBS')
+
+  const {
+    stopLossTriggerData,
+    autoSellTriggerData,
+    autoBuyTriggerData,
+    constantMultipleTriggerData,
+    autoTakeProfitTriggerData,
+  } = useAutomationContext()
+
+  const protectionEnabled =
+    stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled
+  const optimizationEnabled =
+    autoBuyTriggerData.isTriggerEnabled ||
+    constantMultipleTriggerData.isTriggerEnabled ||
+    autoTakeProfitTriggerData.isTriggerEnabled
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -84,14 +94,7 @@ export function GeneralManageTabBar({
                 label: t('system.protection'),
                 value: 'protection',
                 tag: { include: true, active: protectionEnabled },
-                content: (
-                  <ProtectionControl
-                    vault={vault}
-                    ilkData={ilkData}
-                    balanceInfo={balanceInfo}
-                    vaultType={generalManageVault.type}
-                  />
-                ),
+                content: <ProtectionControl />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
                     AutomationEventIds.SelectProtection,
@@ -101,23 +104,11 @@ export function GeneralManageTabBar({
                   )
                 },
               },
-            ]
-          : []),
-        ...(autoBSEnabled && showAutomationTabs
-          ? [
               {
                 label: t('system.optimization'),
                 value: VaultViewMode.Optimization,
                 tag: { include: true, active: optimizationEnabled },
-                content: (
-                  <OptimizationControl
-                    vault={vault}
-                    vaultType={generalManageVault.type}
-                    ilkData={ilkData}
-                    balanceInfo={balanceInfo}
-                    vaultHistory={vaultHistory}
-                  />
-                ),
+                content: <OptimizationControl vaultHistory={vaultHistory} />,
                 callback: () => {
                   trackingEvents.automation.buttonClick(
                     AutomationEventIds.SelectOptimization,

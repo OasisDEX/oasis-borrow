@@ -1,34 +1,26 @@
-import BigNumber from 'bignumber.js'
 import { ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import { checkIfIsEditingAutoTakeProfit } from 'features/automation/optimization/autoTakeProfit/helpers'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 import { AutoTakeProfitDetailsLayout } from './AutoTakeProfitDetailsLayout'
 
-interface AutoTakeProfitDetailsControlProps {
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  ethMarketPrice: BigNumber
-  vault: Vault
-}
-
-export function AutoTakeProfitDetailsControl({
-  autoTakeProfitTriggerData,
-  ethMarketPrice,
-  vault,
-}: AutoTakeProfitDetailsControlProps) {
+export function AutoTakeProfitDetailsControl() {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
+  const {
+    autoTakeProfitTriggerData,
+    environmentData: { ethMarketPrice },
+    positionData: { id, ilk, debt, debtOffset, collateralizationRatio, lockedCollateral, token },
+  } = useAutomationContext()
 
-  const { debt, debtOffset, lockedCollateral } = vault
   const { isTriggerEnabled, executionPrice } = autoTakeProfitTriggerData
   const isDebtZero = debt.isZero()
 
@@ -61,17 +53,17 @@ export function AutoTakeProfitDetailsControl({
       afterTriggerColPrice: autoTakeProfitState.executionPrice,
       afterTriggerColRatio: autoTakeProfitState.executionCollRatio,
     }),
-    currentColRatio: vault.collateralizationRatio.times(100),
+    currentColRatio: collateralizationRatio.times(100),
   }
 
   if (readOnlyAutoTakeProfitEnabled || isDebtZero) return null
 
   return (
     <AutoTakeProfitDetailsLayout
-      ilk={vault.ilk}
-      vaultId={vault.id}
+      ilk={ilk}
+      vaultId={id}
       isTriggerEnabled={isTriggerEnabled}
-      token={vault.token}
+      token={token}
       {...autoTakeProfitDetailsLayoutOptionalParams}
     />
   )

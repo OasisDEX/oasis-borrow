@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'blockchain/vaults'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
@@ -7,7 +6,6 @@ import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { zero } from 'helpers/zero'
 
 export function warningsConstantMultipleValidation({
-  vault,
   gasEstimationUsd,
   ethBalance,
   ethPrice,
@@ -21,9 +19,13 @@ export function warningsConstantMultipleValidation({
   debtDeltaWhenSellAtCurrentCollRatio,
   autoTakeProfitExecutionPrice,
   constantMultipleBuyExecutionPrice,
+  debt,
+  token,
+  collateralizationRatioAtNextPrice,
 }: {
-  vault: Vault
+  token: string
   ethBalance: BigNumber
+  debt: BigNumber
   debtFloor: BigNumber
   ethPrice: BigNumber
   sliderMin: BigNumber
@@ -36,6 +38,7 @@ export function warningsConstantMultipleValidation({
   constantMultipleState: ConstantMultipleFormChange
   autoTakeProfitExecutionPrice: BigNumber
   constantMultipleBuyExecutionPrice: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
 }) {
   const {
     sellExecutionCollRatio,
@@ -45,7 +48,7 @@ export function warningsConstantMultipleValidation({
   } = constantMultipleState
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token: vault.token,
+    token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
@@ -57,12 +60,12 @@ export function warningsConstantMultipleValidation({
   const addingConstantMultipleWhenAutoSellOrBuyEnabled = isAutoBuyEnabled || isAutoSellEnabled
 
   const constantMultipleAutoSellTriggeredImmediately =
-    sellExecutionCollRatio.div(100).gte(vault.collateralizationRatioAtNextPrice) &&
-    !debtFloor.gt(vault.debt.plus(debtDeltaWhenSellAtCurrentCollRatio))
+    sellExecutionCollRatio.div(100).gte(collateralizationRatioAtNextPrice) &&
+    !debtFloor.gt(debt.plus(debtDeltaWhenSellAtCurrentCollRatio))
 
   const constantMultipleAutoBuyTriggeredImmediately = buyExecutionCollRatio
     .div(100)
-    .lte(vault.collateralizationRatioAtNextPrice)
+    .lte(collateralizationRatioAtNextPrice)
 
   const noMinSellPriceWhenStopLossEnabled = !sellWithThreshold && isStopLossEnabled
 

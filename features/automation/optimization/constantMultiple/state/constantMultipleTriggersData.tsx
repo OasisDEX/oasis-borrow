@@ -10,10 +10,11 @@ import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/au
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 
 export function prepareAddConstantMultipleTriggerData({
+  id,
+  owner,
   triggersId,
   autoBuyTriggerId,
   autoSellTriggerId,
-  vaultData,
   maxBuyPrice,
   minSellPrice,
   buyExecutionCollRatio,
@@ -23,10 +24,11 @@ export function prepareAddConstantMultipleTriggerData({
   deviation,
   maxBaseFeeInGwei,
 }: {
+  id: BigNumber
+  owner: string
   triggersId: BigNumber[]
   autoBuyTriggerId: BigNumber
   autoSellTriggerId: BigNumber
-  vaultData: Vault
   maxBuyPrice: BigNumber
   minSellPrice: BigNumber
   buyExecutionCollRatio: BigNumber
@@ -39,7 +41,8 @@ export function prepareAddConstantMultipleTriggerData({
   const buyTriggerId = triggersId[0].isZero() ? autoBuyTriggerId : triggersId[0]
   const sellTriggerId = triggersId[1].isZero() ? autoSellTriggerId : triggersId[1]
   const buyTriggerData = prepareAddAutoBSTriggerData({
-    vaultData,
+    id,
+    owner,
     triggerType: TriggerType.BasicBuy,
     execCollRatio: buyExecutionCollRatio,
     targetCollRatio,
@@ -50,7 +53,8 @@ export function prepareAddConstantMultipleTriggerData({
     maxBaseFeeInGwei,
   })
   const sellTriggerData = prepareAddAutoBSTriggerData({
-    vaultData,
+    id,
+    owner,
     triggerType: TriggerType.BasicSell,
     execCollRatio: sellExecutionCollRatio,
     targetCollRatio,
@@ -65,7 +69,7 @@ export function prepareAddConstantMultipleTriggerData({
     groupTypeId: CONSTANT_MULTIPLE_GROUP_TYPE,
     replacedTriggerIds: [buyTriggerId, sellTriggerId],
     triggersData: [buyTriggerData.triggerData, sellTriggerData.triggerData],
-    proxyAddress: vaultData.owner,
+    proxyAddress: owner,
     kind: TxMetaKind.addTriggerGroup,
   }
 }

@@ -1,12 +1,11 @@
-import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import {
   AutomationBotAddAggregatorTriggerData,
   removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
-import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AutoBSTriggerResetData } from 'features/automation/common/state/autoBSFormChange'
 import {
   AutomationTxHandlerAnalytics,
@@ -24,7 +23,6 @@ export interface AddAndRemoveTxHandler {
 
 interface AddAndRemoveTriggerControlProps {
   addTxData: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
-  ethMarketPrice: BigNumber
   isActiveFlag: boolean
   isAddForm: boolean
   isEditing: boolean
@@ -40,14 +38,12 @@ interface AddAndRemoveTriggerControlProps {
     txHandler: (options?: AddAndRemoveTxHandler) => void,
     textButtonHandler: () => void,
   ) => ReactElement
-  vault: Vault
   analytics: AutomationTxHandlerAnalytics
 }
 
 export function AddAndRemoveTriggerControl({
   addTxData,
   children,
-  ethMarketPrice,
   isActiveFlag,
   isAddForm,
   isEditing,
@@ -59,17 +55,20 @@ export function AddAndRemoveTriggerControl({
   textButtonHandlerExtension,
   triggersId,
   txHelpers,
-  vault,
   analytics,
 }: AddAndRemoveTriggerControlProps) {
   const { uiChanges } = useAppContext()
+  const {
+    environmentData: { ethMarketPrice },
+    positionData: { id, ilk, owner, collateralizationRatio },
+  } = useAutomationContext()
 
   const { removeTxData, textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({
     addTxData,
     ethMarketPrice,
     isAddForm,
     isRemoveForm,
-    proxyAddress: vault.owner,
+    proxyAddress: owner,
     publishType,
     resetData,
     shouldRemoveAllowance,
@@ -77,9 +76,9 @@ export function AddAndRemoveTriggerControl({
     textButtonHandlerExtension,
     triggersId,
     txHelpers,
-    vaultId: vault.id,
-    ilk: vault.ilk,
-    collateralizationRatio: vault.collateralizationRatio,
+    vaultId: id,
+    ilk,
+    collateralizationRatio,
     analytics,
   })
 

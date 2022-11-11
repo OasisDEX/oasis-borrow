@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
   DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
@@ -20,11 +19,11 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 export function getConstantMutliplyMinMaxValues({
-  ilkData,
+  liquidationRatio,
   autoBuyTriggerData,
   stopLossTriggerData,
 }: {
-  ilkData: IlkData
+  liquidationRatio: BigNumber
   autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
 }) {
@@ -32,7 +31,7 @@ export function getConstantMutliplyMinMaxValues({
     min: getAutoSellMinMaxValues({
       autoBuyTriggerData,
       stopLossTriggerData,
-      ilkData,
+      liquidationRatio,
     }).min,
     max: DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
   }

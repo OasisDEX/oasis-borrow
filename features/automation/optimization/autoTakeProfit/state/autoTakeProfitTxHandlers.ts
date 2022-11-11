@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { maxUint32 } from 'features/automation/common/consts'
 import {
@@ -15,10 +15,11 @@ import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
 interface GetAutoTakeProfitTxHandlersParams {
+  id: BigNumber
+  owner: string
   autoTakeProfitState: AutoTakeProfitFormChange
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   isAddForm: boolean
-  vault: Vault
 }
 
 interface AutoTakeProfitTxHandlers {
@@ -28,7 +29,8 @@ interface AutoTakeProfitTxHandlers {
 }
 
 export function getAutoTakeProfitTxHandlers({
-  vault,
+  id,
+  owner,
   autoTakeProfitTriggerData,
   isAddForm,
   autoTakeProfitState,
@@ -37,17 +39,17 @@ export function getAutoTakeProfitTxHandlers({
 
   const addTxData = useMemo(
     () =>
-      prepareAddAutoTakeProfitTriggerData(
-        vault,
-        autoTakeProfitState.executionPrice,
-        maxUint32,
-        autoTakeProfitState.toCollateral,
-        autoTakeProfitState.triggerId.toNumber(),
-      ),
+      prepareAddAutoTakeProfitTriggerData({
+        id,
+        owner,
+        executionPrice: autoTakeProfitState.executionPrice,
+        maxBaseFeeInGwei: maxUint32,
+        isCloseToCollateral: autoTakeProfitState.toCollateral,
+        replacedTriggerId: autoTakeProfitTriggerData.triggerId.toNumber(),
+      }),
     [
       autoTakeProfitState.toCollateral,
-      autoTakeProfitState.executionCollRatio,
-      autoTakeProfitState.executionPrice,
+      autoTakeProfitState.executionPrice.toNumber(),
       autoTakeProfitTriggerData.triggerId.toNumber(),
     ],
   )

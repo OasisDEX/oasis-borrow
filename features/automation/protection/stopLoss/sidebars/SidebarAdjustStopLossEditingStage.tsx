@@ -6,9 +6,8 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { GasEstimation } from 'components/GasEstimation'
@@ -30,7 +29,6 @@ import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
@@ -41,8 +39,6 @@ import React from 'react'
 import { Flex, Grid, Text } from 'theme-ui'
 
 interface SetDownsideProtectionInformationProps {
-  vault: Vault
-  ilkData: IlkData
   afterStopLossRatio: BigNumber
   executionPrice: BigNumber
   ethPrice: BigNumber
@@ -51,8 +47,6 @@ interface SetDownsideProtectionInformationProps {
 }
 
 export function SetDownsideProtectionInformation({
-  vault: { lockedCollateral, debt, liquidationPrice, token },
-  ilkData,
   afterStopLossRatio,
   executionPrice,
   ethPrice,
@@ -60,9 +54,19 @@ export function SetDownsideProtectionInformation({
   isOpenFlow,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
+  const {
+    positionData: {
+      debt,
+      liquidationPenalty,
+      liquidationPrice,
+      liquidationRatio,
+      lockedCollateral,
+      token,
+    },
+  } = useAutomationContext()
 
   const afterDynamicStopLossPrice = liquidationPrice
-    .div(ilkData.liquidationRatio)
+    .div(liquidationRatio)
     .times(afterStopLossRatio.div(100))
 
   const afterMaxToken = lockedCollateral
@@ -72,7 +76,7 @@ export function SetDownsideProtectionInformation({
 
   const ethDuringLiquidation = lockedCollateral
     .times(liquidationPrice)
-    .minus(debt.multipliedBy(one.plus(ilkData.liquidationPenalty)))
+    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
     .div(liquidationPrice)
 
   const savingCompareToLiquidation = afterMaxToken.minus(ethDuringLiquidation)
@@ -128,13 +132,9 @@ export function SetDownsideProtectionInformation({
 }
 
 export interface SidebarAdjustStopLossEditingStageProps {
-  vault: Vault
-  ilkData: IlkData
-  ethMarketPrice: BigNumber
   executionPrice: BigNumber
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  stopLossTriggerData: StopLossTriggerData
   stopLossState: StopLossFormChange
   isEditing: boolean
   closePickerConfig: PickCloseStateProps
@@ -144,38 +144,39 @@ export interface SidebarAdjustStopLossEditingStageProps {
 
 export function SidebarAdjustStopLossEditingStage({
   closePickerConfig,
-  ethMarketPrice,
-  ilkData,
   isEditing,
   sliderConfig,
-  vault,
   errors,
   warnings,
-  stopLossTriggerData,
   stopLossState,
   executionPrice,
   isOpenFlow,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const {
+    stopLossTriggerData,
+    environmentData: { ethMarketPrice },
+    positionData: { id, ilk, token, debt, liquidationRatio, collateralizationRatio, debtFloor },
+  } = useAutomationContext()
 
   useDebouncedCallback(
     (value) =>
       trackingEvents.automation.inputChange(
         AutomationEventIds.MoveSlider,
-        vault.id ? Pages.StopLoss : Pages.OpenVault,
+        id ? Pages.StopLoss : Pages.OpenVault,
         CommonAnalyticsSections.Form,
         {
-          vaultId: vault.id ? vault.id.toString() : 'n/a',
-          ilk: vault.ilk,
-          collateralRatio: vault.collateralizationRatio.times(100).decimalPlaces(2).toString(),
+          vaultId: id ? id.toString() : 'n/a',
+          ilk: ilk,
+          collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },
       ),
     stopLossState.stopLossLevel.decimalPlaces(2).toString(),
   )
 
-  const isVaultEmpty = vault.debt.isZero()
+  const isVaultEmpty = debt.isZero()
 
   if (isVaultEmpty && !stopLossTriggerData.isStopLossEnabled) {
     return (
@@ -186,7 +187,7 @@ export function SidebarAdjustStopLossEditingStage({
     )
   }
 
-  const sliderMin = ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
   const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
     DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   )
@@ -201,7 +202,7 @@ export function SidebarAdjustStopLossEditingStage({
 
   return (
     <>
-      {!vault.debt.isZero() ? (
+      {!debt.isZero() ? (
         <Grid>
           <PickCloseState {...closePickerConfig} />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -238,13 +239,11 @@ export function SidebarAdjustStopLossEditingStage({
           <Grid>
             {!stopLossState.stopLossLevel.isZero() && (
               <>
-                <VaultErrors errorMessages={errors} ilkData={ilkData} />
-                <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+                <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+                <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
               </>
             )}
             <SetDownsideProtectionInformation
-              vault={vault}
-              ilkData={ilkData}
               afterStopLossRatio={stopLossState.stopLossLevel}
               executionPrice={executionPrice}
               ethPrice={ethMarketPrice}

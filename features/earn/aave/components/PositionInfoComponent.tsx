@@ -52,11 +52,11 @@ export const PositionInfoComponent = ({
 
   // Net value (= in ETH terms is:Calculated the same as for other earn positions,
   // but then in eth terms: stETH collateral times the stETH/ETH price, minus the ETH debt.)
-  // accountData has them iin ETH so the conversion isn't needed
+  // accountData has them in ETH so the conversion isn't needed
   const netValue = accountData
     ? accountData.totalCollateralETH.minus(accountData.totalDebtETH)
     : zero
-  const totalCollateralInStEth = oraclePrice.times(accountData.totalCollateralETH)
+  const totalCollateralInStEth = accountData.totalCollateralETH.div(oraclePrice)
 
   const belowCurrentRatio = position
     ? oraclePrice.minus(position.liquidationPrice).times(100)

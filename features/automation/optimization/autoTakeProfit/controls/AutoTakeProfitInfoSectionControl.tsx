@@ -1,31 +1,26 @@
 import BigNumber from 'bignumber.js'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { getOnCloseEstimations } from 'features/automation/common/estimations/onCloseEstimations'
 import React from 'react'
 
 import { AddAutoTakeProfitInfoSection } from './AddAutoTakeProfitInfoSection'
 
 interface AutoTakeProfitInfoSectionControlProps {
-  debt: BigNumber
-  debtOffset: BigNumber
-  ethMarketPrice: BigNumber
-  lockedCollateral: BigNumber
   toCollateral: boolean
-  token: string
-  tokenMarketPrice: BigNumber
   triggerColPrice: BigNumber
   triggerColRatio: BigNumber
 }
 
 export function AutoTakeProfitInfoSectionControl({
-  debt,
-  debtOffset,
-  ethMarketPrice,
-  lockedCollateral,
   toCollateral,
-  token,
   triggerColPrice,
   triggerColRatio,
 }: AutoTakeProfitInfoSectionControlProps) {
+  const {
+    positionData: { token, debt, lockedCollateral, debtOffset },
+    environmentData: { ethMarketPrice },
+  } = useAutomationContext()
+
   const {
     estimatedGasFeeOnTrigger,
     estimatedOasisFeeOnTrigger,

@@ -1,5 +1,6 @@
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { AutomationContextProvider } from 'components/AutomationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
@@ -67,7 +68,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
-  const stopLossData = getDataForStopLoss(props, 'borrow')
+  const { stopLossSidebarProps, automationContextProps } = getDataForStopLoss(props, 'borrow')
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -75,7 +76,11 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
-        {isStopLossEditingStage && <SidebarAdjustStopLossEditingStage {...stopLossData} />}
+        {isStopLossEditingStage && (
+          <AutomationContextProvider {...automationContextProps}>
+            <SidebarAdjustStopLossEditingStage {...stopLossSidebarProps} />{' '}
+          </AutomationContextProvider>
+        )}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}

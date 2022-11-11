@@ -1,6 +1,4 @@
-import { IlkData } from 'blockchain/ilks'
-import { InstiVault } from 'blockchain/instiVault'
-import { Vault } from 'blockchain/vaults'
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
@@ -24,36 +22,49 @@ export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
 
 export const DEFAULT_TARGET_OFFSET = 10
 
-export function useConstantMultipleStateInitialization(
-  ilkData: IlkData,
-  vault: Vault | InstiVault,
-  constantMultipleTriggerData: ConstantMultipleTriggerData,
-  autoBuyTriggerData: AutoBSTriggerData,
-  autoSellTriggerData: AutoBSTriggerData,
-  stopLossTriggerData: StopLossTriggerData,
-) {
+export function useConstantMultipleStateInitialization({
+  debt,
+  ilk,
+  debtFloor,
+  liquidationRatio,
+  lockedCollateral,
+  collateralizationRatio,
+  constantMultipleTriggerData,
+  autoSellTriggerData,
+  stopLossTriggerData,
+  autoBuyTriggerData,
+}: {
+  ilk: string
+  collateralizationRatio: BigNumber
+  liquidationRatio: BigNumber
+  lockedCollateral: BigNumber
+  debtFloor: BigNumber
+  debt: BigNumber
+  constantMultipleTriggerData: ConstantMultipleTriggerData
+  autoBuyTriggerData: AutoBSTriggerData
+  autoSellTriggerData: AutoBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
+}) {
   const { uiChanges } = useAppContext()
-
-  const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const { min, max } = getConstantMutliplyMinMaxValues({
     autoBuyTriggerData,
     stopLossTriggerData,
-    ilkData,
+    liquidationRatio,
   })
 
   const multipliers = getConstantMultipleMultipliers({
-    ilk: ilkData.ilk,
+    ilk,
     minColRatio: min,
     maxColRatio: max,
   })
 
   const eligibleMultipliers = getEligibleMultipliers({
     multipliers,
-    collateralizationRatio: vault.collateralizationRatio,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
-    debtFloor: ilkData.debtFloor,
+    collateralizationRatio: collateralizationRatio,
+    lockedCollateral: lockedCollateral,
+    debt: debt,
+    debtFloor: debtFloor,
     deviation: constantMultipleTriggerData.deviation,
     minTargetRatio: min,
     maxTargetRatio: max,
@@ -107,7 +118,7 @@ export function useConstantMultipleStateInitialization(
       currentForm: 'add',
     })
   }, [
-    collateralizationRatio,
+    collateralizationRatio.toNumber(),
     stopLossTriggerData.triggerId.toNumber(),
     autoBuyTriggerData.triggerId.toNumber(),
     autoSellTriggerData.triggerId.toNumber(),

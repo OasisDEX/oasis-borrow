@@ -1,7 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
@@ -14,8 +13,6 @@ import { Flex } from 'theme-ui'
 interface StopLossCompleteInformationProps {
   executionPrice: BigNumber
   afterStopLossRatio: BigNumber
-  vault: Vault
-  ilkData: IlkData
   isCollateralActive: boolean
   txState?: TxStatus
   txCost: BigNumber
@@ -23,25 +20,26 @@ interface StopLossCompleteInformationProps {
 
 export function StopLossCompleteInformation({
   afterStopLossRatio,
-  vault,
-  ilkData,
   isCollateralActive,
   txCost,
   executionPrice,
 }: StopLossCompleteInformationProps) {
   const { t } = useTranslation()
+  const {
+    positionData: { token, debt, lockedCollateral, liquidationPrice, liquidationRatio },
+  } = useAutomationContext()
 
-  const dynamicStopLossPrice = vault.liquidationPrice
-    .div(ilkData.liquidationRatio)
+  const dynamicStopLossPrice = liquidationPrice
+    .div(liquidationRatio)
     .times(afterStopLossRatio.div(100))
 
-  const maxToken = vault.lockedCollateral
+  const maxToken = lockedCollateral
     .times(dynamicStopLossPrice)
-    .minus(vault.debt)
+    .minus(debt)
     .div(dynamicStopLossPrice)
 
   const maxTokenOrDai = isCollateralActive
-    ? `${formatAmount(maxToken, vault.token)} ${vault.token}`
+    ? `${formatAmount(maxToken, token)} ${token}`
     : `${formatAmount(maxToken.multipliedBy(executionPrice), 'USD')} DAI`
 
   return (
@@ -63,7 +61,7 @@ export function StopLossCompleteInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-on-stop-loss-trigger', {
-          token: isCollateralActive ? vault.token : 'DAI',
+          token: isCollateralActive ? token : 'DAI',
         })}`}
         value={<Flex>{maxTokenOrDai}</Flex>}
       />

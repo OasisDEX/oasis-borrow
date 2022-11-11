@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { AutomationContextProvider } from 'components/AutomationContextProvider'
+import { ContextLayerControl } from 'components/vault/ContextLayerControl'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -13,28 +13,29 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$ } = useAppContext()
+  const { generalManageVault$, context$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
-  const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [contextData, contextError] = useObservable(context$)
 
   useEffect(() => {
     return () => {
-      generalManageVault?.state.clear()
+      generalManageVaultData?.state.clear()
     }
   }, [])
 
-  const vaultHistoryCheck = generalManageVault?.state.vaultHistory.length || undefined
+  const vaultHistoryCheck = generalManageVaultData?.state.vaultHistory.length || undefined
 
   return (
-    <WithErrorHandler error={[generalManageVaultError]}>
+    <WithErrorHandler error={[generalManageVaultError, contextError]}>
       <WithLoadingIndicator
-        value={[generalManageVault, vaultHistoryCheck]}
+        value={[generalManageVaultData, contextData, vaultHistoryCheck]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault]) => (
-          <AutomationContextProvider id={id}>
+        {([generalManageVault, context]) => (
+          <ContextLayerControl generalManageVault={generalManageVault} context={context}>
             <GeneralManageLayout generalManageVault={generalManageVault} />
-          </AutomationContextProvider>
+          </ContextLayerControl>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>

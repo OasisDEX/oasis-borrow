@@ -6,16 +6,13 @@ type ConfiguredFeatures = Record<Feature, boolean>
 export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
-  | 'Automation'
   | 'StopLossRead'
   | 'StopLossWrite'
   | 'StopLossOpenFlow'
-  | 'BasicBS'
   | 'BatchCache'
   | 'ReadOnlyBasicBS'
   | 'Notifications'
   | 'Referrals'
-  | 'ConstantMultiple'
   | 'ConstantMultipleReadOnly'
   | 'DisableSidebarScroll'
   | 'ProxyCreationDisabled'
@@ -29,16 +26,13 @@ export type Feature =
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
-  Automation: true,
   StopLossRead: true,
   StopLossWrite: true,
   BatchCache: false,
   StopLossOpenFlow: false,
-  BasicBS: true,
   ReadOnlyBasicBS: false,
   Notifications: true,
   Referrals: true,
-  ConstantMultiple: true,
   ConstantMultipleReadOnly: false,
   DisableSidebarScroll: false,
   ProxyCreationDisabled: false,

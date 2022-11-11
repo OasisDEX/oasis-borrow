@@ -4,9 +4,8 @@ import {
   Pages,
   trackingEvents,
 } from 'analytics/analytics'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
@@ -17,26 +16,30 @@ import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface StopLossDetailsControlProps {
-  ilkData: IlkData
-  stopLossTriggerData: StopLossTriggerData
-  vault: Vault
   isStopLossActive: boolean
 }
 
-export function StopLossDetailsControl({
-  ilkData,
-  stopLossTriggerData,
-  vault,
-  isStopLossActive,
-}: StopLossDetailsControlProps) {
+export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsControlProps) {
   const { t } = useTranslation()
-
+  const {
+    stopLossTriggerData,
+    positionData: {
+      collateralizationRatio,
+      collateralizationRatioAtNextPrice,
+      debt,
+      id,
+      ilk,
+      liquidationPenalty,
+      liquidationRatio,
+      lockedCollateral,
+      token,
+    },
+  } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
@@ -46,13 +49,13 @@ export function StopLossDetailsControl({
         <StopLossDetailsLayout
           slRatio={stopLossTriggerData.stopLossLevel}
           afterSlRatio={stopLossState.stopLossLevel.dividedBy(100)}
-          vaultDebt={vault.debt}
+          vaultDebt={debt}
           isStopLossEnabled={stopLossTriggerData.isStopLossEnabled}
-          lockedCollateral={vault.lockedCollateral}
-          token={vault.token}
-          liquidationRatio={ilkData.liquidationRatio}
-          liquidationPenalty={ilkData.liquidationPenalty}
-          collateralizationRatioAtNextPrice={vault.collateralizationRatioAtNextPrice}
+          lockedCollateral={lockedCollateral}
+          token={token}
+          liquidationRatio={liquidationRatio}
+          liquidationPenalty={liquidationPenalty}
+          collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
           isCollateralActive={!!stopLossState?.collateralActive}
           isEditing={checkIfIsEditingStopLoss({
             isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
@@ -62,14 +65,14 @@ export function StopLossDetailsControl({
             isToCollateral: stopLossTriggerData.isToCollateral,
             isRemoveForm: stopLossState.currentForm === 'remove',
           })}
-          collateralizationRatio={vault.collateralizationRatio}
+          collateralizationRatio={collateralizationRatio}
         />
       ) : (
         <Banner
           title={t('vault-banners.setup-stop-loss.header')}
           description={
             <>
-              {t('vault-banners.setup-stop-loss.content', { token: vault.token })}{' '}
+              {t('vault-banners.setup-stop-loss.content', { token: token })}{' '}
               <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
                 {t('here')}.
               </AppLink>
@@ -90,7 +93,7 @@ export function StopLossDetailsControl({
                 AutomationEventIds.SelectStopLoss,
                 Pages.ProtectionTab,
                 CommonAnalyticsSections.Banner,
-                { vaultId: vault.id.toString(), ilk: vault.ilk },
+                { vaultId: id.toString(), ilk: ilk },
               )
             },
             text: t('vault-banners.setup-stop-loss.button'),

@@ -1,21 +1,29 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AppLink } from 'components/Links'
+import {
+  AUTO_BUY_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
+import {
+  AUTO_TAKE_PROFIT_FORM_CHANGE,
+  AutoTakeProfitFormChange,
+} from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { OptimizationDetailsControl } from 'features/automation/optimization/common/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/common/controls/OptimizationFormControl'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import {
+  CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleFormChange,
+} from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Container } from 'theme-ui'
 
 import { DefaultVaultLayout } from './DefaultVaultLayout'
@@ -105,104 +113,68 @@ function getZeroDebtOptimizationBannerProps({
 }
 
 interface OptimizationControlProps {
-  vault: Vault
-  vaultType: VaultType
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
   vaultHistory: VaultHistoryEvent[]
 }
 
-export function OptimizationControl({
-  vault,
-  vaultType,
-  ilkData,
-  balanceInfo,
-  vaultHistory,
-}: OptimizationControlProps) {
-  const { context$, txHelpers$, tokenPriceUSD$, priceInfo$ } = useAppContext()
-  const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
-  const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
-  const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
-  const [contextData, contextError] = useObservable(context$)
-  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
-  const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
+export function OptimizationControl({ vaultHistory }: OptimizationControlProps) {
+  const {
+    autoBuyTriggerData,
+    autoTakeProfitTriggerData,
+    constantMultipleTriggerData,
+    positionData: { debt },
+  } = useAutomationContext()
+  const { txHelpers$ } = useAppContext()
+  const [txHelpersData] = useObservable(txHelpers$)
+  const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
+  const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
+  const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
+    CONSTANT_MULTIPLE_FORM_CHANGE,
+  )
+
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
-  const {
-    autoBuyTriggerData,
-    constantMultipleTriggerData,
-    autoTakeProfitTriggerData,
-  } = useAutomationContext()
 
   const vaultHasActiveAutoBuyTrigger = autoBuyTriggerData.isTriggerEnabled
   const vaultHasActiveConstantMultipleTrigger = constantMultipleTriggerData.isTriggerEnabled
   const vaultHasActiveAutoTakeProfitTrigger = autoTakeProfitTriggerData.isTriggerEnabled
 
-  if (
-    (!vaultHasActiveAutoBuyTrigger &&
-      !vaultHasActiveConstantMultipleTrigger &&
-      !vaultHasActiveAutoTakeProfitTrigger &&
-      vault.debt.isZero()) ||
-    (!vaultHasActiveAutoBuyTrigger &&
-      !vaultHasActiveConstantMultipleTrigger &&
-      !vaultHasActiveAutoTakeProfitTrigger &&
-      readOnlyAutoBSEnabled &&
-      constantMultipleReadOnlyEnabled &&
-      readOnlyAutoTakeProfitEnabled)
-  ) {
-    return (
-      <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-        <ZeroDebtOptimizationBanner
-          {...getZeroDebtOptimizationBannerProps({
-            readOnlyAutoBSEnabled,
-            isVaultDebtZero: vault.debt.isZero(),
-            vaultHasNoActiveBuyTrigger: !vaultHasActiveAutoBuyTrigger,
-            constantMultipleReadOnlyEnabled,
-            readOnlyAutoTakeProfitEnabled,
-            vaultHasNoActiveConstantMultipleTriggers: !vaultHasActiveConstantMultipleTrigger,
-            vaultHasNoActiveAutoTakeProfitTrigger: !vaultHasActiveAutoTakeProfitTrigger,
-          })}
-        />
-      </Container>
-    )
-  }
-
   return (
-    <WithErrorHandler
-      error={[ethAndTokenPricesError, contextError, txHelpersError, priceInfoError]}
+    <WithLoadingIndicator
+      value={[autoBuyState, autoTakeProfitState, constantMultipleState]}
+      customLoader={<VaultContainerSpinner />}
     >
-      <WithLoadingIndicator
-        value={[contextData, ethAndTokenPricesData, priceInfoData]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([context, ethAndTokenPrices, priceInfo]) => (
+      {() =>
+        (!vaultHasActiveAutoBuyTrigger &&
+          !vaultHasActiveConstantMultipleTrigger &&
+          !vaultHasActiveAutoTakeProfitTrigger &&
+          debt.isZero()) ||
+        (!vaultHasActiveAutoBuyTrigger &&
+          !vaultHasActiveConstantMultipleTrigger &&
+          !vaultHasActiveAutoTakeProfitTrigger &&
+          readOnlyAutoBSEnabled &&
+          constantMultipleReadOnlyEnabled &&
+          readOnlyAutoTakeProfitEnabled) ? (
+          <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+            <ZeroDebtOptimizationBanner
+              {...getZeroDebtOptimizationBannerProps({
+                readOnlyAutoBSEnabled,
+                isVaultDebtZero: debt.isZero(),
+                vaultHasNoActiveBuyTrigger: !vaultHasActiveAutoBuyTrigger,
+                constantMultipleReadOnlyEnabled,
+                readOnlyAutoTakeProfitEnabled,
+                vaultHasNoActiveConstantMultipleTriggers: !vaultHasActiveConstantMultipleTrigger,
+                vaultHasNoActiveAutoTakeProfitTrigger: !vaultHasActiveAutoTakeProfitTrigger,
+              })}
+            />
+          </Container>
+        ) : (
           <DefaultVaultLayout
-            detailsViewControl={
-              <OptimizationDetailsControl
-                vault={vault}
-                vaultType={vaultType}
-                vaultHistory={vaultHistory}
-                ethMarketPrice={ethAndTokenPrices['ETH']}
-                tokenMarketPrice={ethAndTokenPrices[vault.token]}
-              />
-            }
-            editForm={
-              <OptimizationFormControl
-                vault={vault}
-                vaultType={vaultType}
-                ilkData={ilkData}
-                txHelpers={txHelpersData}
-                context={context}
-                balanceInfo={balanceInfo}
-                ethMarketPrice={ethAndTokenPrices['ETH']}
-                tokenMarketPrice={ethAndTokenPrices[vault.token]}
-                priceInfo={priceInfo}
-              />
-            }
+            detailsViewControl={<OptimizationDetailsControl vaultHistory={vaultHistory} />}
+            editForm={<OptimizationFormControl txHelpers={txHelpersData} />}
           />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+        )
+      }
+    </WithLoadingIndicator>
   )
 }

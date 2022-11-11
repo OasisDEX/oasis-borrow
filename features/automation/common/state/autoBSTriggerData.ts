@@ -6,7 +6,6 @@ import {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Vault } from 'blockchain/vaults'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   DEFAULT_DEVIATION,
@@ -102,7 +101,8 @@ export function extractAutoBSData({
 }
 
 export function prepareAutoBSTriggerData({
-  vaultData,
+  id,
+  owner,
   triggerType,
   execCollRatio,
   targetCollRatio,
@@ -111,7 +111,8 @@ export function prepareAutoBSTriggerData({
   deviation,
   maxBaseFeeInGwei,
 }: {
-  vaultData: Vault
+  id: BigNumber
+  owner: string
   triggerType: AutoBSTriggerTypes
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
@@ -121,7 +122,7 @@ export function prepareAutoBSTriggerData({
   maxBaseFeeInGwei: BigNumber
 }): AutomationBaseTriggerData {
   const data = [
-    vaultData.id.toString(),
+    id.toString(),
     triggerType.toString(),
     execCollRatio.times(100).toString(),
     targetCollRatio.times(100).toString(),
@@ -139,15 +140,16 @@ export function prepareAutoBSTriggerData({
   }
 
   return {
-    cdpId: vaultData.id,
+    cdpId: id,
     triggerType,
-    proxyAddress: vaultData.owner,
+    proxyAddress: owner,
     triggerData: encodeTriggerDataByType(commands[triggerType], data),
   }
 }
 
 export function prepareAddAutoBSTriggerData({
-  vaultData,
+  id,
+  owner,
   triggerType,
   execCollRatio,
   targetCollRatio,
@@ -157,7 +159,8 @@ export function prepareAddAutoBSTriggerData({
   replacedTriggerId,
   maxBaseFeeInGwei,
 }: {
-  vaultData: Vault
+  id: BigNumber
+  owner: string
   triggerType: AutoBSTriggerTypes
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
@@ -168,7 +171,8 @@ export function prepareAddAutoBSTriggerData({
   maxBaseFeeInGwei: BigNumber
 }): AutomationBotAddTriggerData {
   const baseTriggerData = prepareAutoBSTriggerData({
-    vaultData,
+    id,
+    owner,
     triggerType,
     execCollRatio,
     targetCollRatio,

@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AddAndRemoveTxHandler } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
@@ -18,9 +16,7 @@ import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/autoSell/sidebars/SidebarAutoSellAddEditingStage'
@@ -28,9 +24,6 @@ import {
   errorsAutoSellValidation,
   warningsAutoSellValidation,
 } from 'features/automation/protection/autoSell/validators'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { BalanceInfo } from 'features/shared/balanceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import {
   extractCancelAutomationErrors,
@@ -42,17 +35,7 @@ import { Grid } from 'theme-ui'
 import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
 interface SidebarSetupAutoSellProps {
-  vault: Vault
-  vaultType: VaultType
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  autoSellTriggerData: AutoBSTriggerData
-  autoBuyTriggerData: AutoBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoSellActive: boolean
-  context: Context
-  ethMarketPrice: BigNumber
   autoSellState: AutoBSFormChange
   txHandler: (options?: AddAndRemoveTxHandler) => void
   textButtonHandler: () => void
@@ -61,7 +44,6 @@ interface SidebarSetupAutoSellProps {
   isRemoveForm: boolean
   isEditing: boolean
   isDisabled: boolean
-  isAwaitingConfirmation: boolean
   isFirstSetup: boolean
   debtDelta: BigNumber
   debtDeltaAtCurrentCollRatio: BigNumber
@@ -71,18 +53,7 @@ interface SidebarSetupAutoSellProps {
 }
 
 export function SidebarSetupAutoSell({
-  vault,
-  vaultType,
-  ilkData,
-  balanceInfo,
-  context,
-  ethMarketPrice,
   feature,
-
-  autoSellTriggerData,
-  autoBuyTriggerData,
-  stopLossTriggerData,
-  constantMultipleTriggerData,
 
   isAutoSellActive,
   autoSellState,
@@ -100,11 +71,26 @@ export function SidebarSetupAutoSell({
   debtDeltaAtCurrentCollRatio,
   collateralDelta,
   executionPrice,
-  isAwaitingConfirmation,
 }: SidebarSetupAutoSellProps) {
   const gasEstimation = useGasEstimationContext()
-
   const { uiChanges } = useAppContext()
+  const {
+    autoBuyTriggerData,
+    autoSellTriggerData,
+    constantMultipleTriggerData,
+    stopLossTriggerData,
+    environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
+    positionData: {
+      collateralizationRatioAtNextPrice,
+      debt,
+      debtFloor,
+      liquidationRatio,
+      token,
+      vaultType,
+    },
+  } = useAutomationContext()
+
+  const { isAwaitingConfirmation } = autoSellState
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -133,20 +119,22 @@ export function SidebarSetupAutoSell({
     stage,
     txHash: autoSellState.txDetails?.txHash,
     flow,
-    etherscan: context.etherscan.url,
+    etherscan: etherscanUrl,
     feature,
   })
 
   const { min, max } = getAutoSellMinMaxValues({
     autoBuyTriggerData,
     stopLossTriggerData,
-    ilkData,
+    liquidationRatio,
   })
 
   const warnings = warningsAutoSellValidation({
-    vault,
+    debt,
+    collateralizationRatioAtNextPrice,
+    token,
     gasEstimationUsd: gasEstimation?.usdValue,
-    ethBalance: balanceInfo.ethBalance,
+    ethBalance: ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: autoSellState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
@@ -155,11 +143,11 @@ export function SidebarSetupAutoSell({
     sliderMin: min,
     sliderMax: max,
     debtDeltaAtCurrentCollRatio,
-    debtFloor: ilkData.debtFloor,
+    debtFloor,
   })
   const errors = errorsAutoSellValidation({
-    ilkData,
-    vault,
+    debt,
+    debtFloor,
     debtDelta,
     executionPrice,
     debtDeltaAtCurrentCollRatio,
@@ -182,18 +170,14 @@ export function SidebarSetupAutoSell({
             <>
               {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoSellAddEditingStage
-                  vault={vault}
-                  ilkData={ilkData}
                   isEditing={isEditing}
                   autoSellState={autoSellState}
-                  autoSellTriggerData={autoSellTriggerData}
                   errors={errors}
                   warnings={warnings}
                   debtDelta={debtDelta}
                   collateralDelta={collateralDelta}
                   sliderMin={min}
                   sliderMax={max}
-                  stopLossTriggerData={stopLossTriggerData}
                 />
               )}
               {isAwaitingConfirmation && (
@@ -202,7 +186,6 @@ export function SidebarSetupAutoSell({
                   children={
                     <AutoSellInfoSectionControl
                       autoSellState={autoSellState}
-                      vault={vault}
                       debtDelta={debtDelta}
                       collateralDelta={collateralDelta}
                       executionPrice={executionPrice}
@@ -213,8 +196,6 @@ export function SidebarSetupAutoSell({
               )}
               {isRemoveForm && (
                 <SidebarAutoSellCancelEditingStage
-                  vault={vault}
-                  ilkData={ilkData}
                   errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
                   autoSellState={autoSellState}
