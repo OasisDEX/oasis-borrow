@@ -41,6 +41,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   operationType?: OperationType
 }
 
+// TODO: move this into base context file
 export interface AaveProtocolData {
   positionData: AaveUserReserveData
   accountData: AaveUserAccountData

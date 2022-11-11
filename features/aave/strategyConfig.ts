@@ -2,7 +2,7 @@ import { ViewPositionSectionComponent } from 'features/earn/aave/components/View
 
 import {
   AavePositionHeaderNoDetails,
-  AavePositionHeaderWithDetails,
+  headerWithDetails,
 } from '../earn/aave/components/AavePositionHeader'
 import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
 import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectionComponent'
@@ -21,7 +21,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
     viewComponents: {
-      headerOpen: AavePositionHeaderWithDetails,
+      headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
       headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
@@ -33,6 +33,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       collateral: 'STETH',
       debt: 'ETH',
     },
+    riskRatios: earnAdjustRiskSliderConfig.riskRatios,
   },
   'aave-multiply': {
     name: 'stETHusdc',
@@ -50,5 +51,8 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       collateral: 'STETH',
       debt: 'USDC',
     },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
   },
 } as const
+
+export const aaveStrategiesList = Object.values(strategies).map((s) => s.name)

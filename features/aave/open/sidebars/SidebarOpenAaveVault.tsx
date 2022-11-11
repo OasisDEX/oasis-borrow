@@ -15,7 +15,6 @@ import { OpenVaultAnimation } from '../../../../theme/animations'
 import { ProxyView } from '../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
-import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useAaveRedirect } from '../../helpers/useAaveRedirect'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state'
@@ -190,7 +189,7 @@ export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
         <AdjustRiskView
           state={state}
           send={send}
-          resetRiskValue={aaveStETHMinimumRiskRatio}
+          resetRiskValue={config.riskRatios.minimum}
           primaryButton={{
             steps: [2, state.context.totalSteps!],
             isLoading: state.context.loading,

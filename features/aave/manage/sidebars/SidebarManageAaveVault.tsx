@@ -13,7 +13,6 @@ import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
-import { aaveStETHMinimumRiskRatio } from '../../constants'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachineState, OperationType } from '../state'
 
@@ -226,7 +225,7 @@ export function SidebarManageAaveVault({ config }: { config: StrategyConfig }) {
         <AdjustRiskView
           state={state}
           resetRiskValue={
-            state.context.protocolData?.position.riskRatio || aaveStETHMinimumRiskRatio
+            state.context.protocolData?.position.riskRatio || config.riskRatios.minimum
           }
           send={send}
           primaryButton={{

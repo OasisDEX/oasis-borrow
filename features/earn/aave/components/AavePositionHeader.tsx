@@ -1,4 +1,4 @@
-import { RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
@@ -11,8 +11,8 @@ import React, { useEffect, useState } from 'react'
 
 import { useAaveContext } from '../../../aave/AaveContextProvider'
 import { AaveStEthYieldsResponse } from '../../../aave/common'
-import { AavePositionHeaderPropsBase } from '../../../aave/common/StrategyConfigTypes'
-import { aaveStETHMinimumRiskRatio } from '../../../aave/constants'
+import { AaveHeaderProps } from '../../../aave/common/StrategyConfigTypes'
+import { PreparedAaveTotalValueLocked } from '../../../aave/helpers/aavePrepareAaveTotalValueLocked'
 
 const tokenPairList = {
   stETHeth: {
@@ -21,7 +21,17 @@ const tokenPairList = {
   },
 } as Record<string, { translationKey: string; tokenList: string[] }>
 
-function AavePositionHeader({ maxRisk, strategyName, aaveTVL }: AavePositionHeaderPropsBase) {
+function AavePositionHeader({
+  maxRisk,
+  strategyName,
+  aaveTVL,
+  minimumRiskRatio,
+}: {
+  maxRisk?: IRiskRatio
+  strategyName: string
+  aaveTVL?: PreparedAaveTotalValueLocked
+  minimumRiskRatio: IRiskRatio
+}) {
   const { t } = useTranslation()
 
   const [minYields, setMinYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
@@ -31,14 +41,14 @@ function AavePositionHeader({ maxRisk, strategyName, aaveTVL }: AavePositionHead
 
   useEffect(() => {
     async function fetchYields() {
-      return await aaveSthEthYieldsQuery(aaveStETHMinimumRiskRatio, ['7Days'])
+      return await aaveSthEthYieldsQuery(minimumRiskRatio, ['7Days'])
     }
     void fetchYields().then(setMinYields)
   }, [])
 
   useEffect(() => {
     async function fetchYields() {
-      return await aaveSthEthYieldsQuery(maxRisk || aaveStETHMinimumRiskRatio, [
+      return await aaveSthEthYieldsQuery(maxRisk || minimumRiskRatio, [
         '7Days',
         '7DaysOffset',
         '90Days',
@@ -108,27 +118,33 @@ function AavePositionHeader({ maxRisk, strategyName, aaveTVL }: AavePositionHead
   )
 }
 
-export function AavePositionHeaderWithDetails({ strategyName }: { strategyName: string }) {
-  const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
-  const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
-  const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(aaveReserveStEthData$)
+export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
+  return function AavePositionHeaderWithDetails({ strategyName }: { strategyName: string }) {
+    const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
+    const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
+    const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(aaveReserveStEthData$)
 
-  return (
-    <WithErrorHandler error={[tvlStateError, aaveReserveConfigDataError]}>
-      <WithLoadingIndicator value={[tvlState, aaveReserveConfigData]} customLoader={<AppSpinner />}>
-        {([_tvlState, _aaveReserveConfigData]) => (
-          <AavePositionHeader
-            maxRisk={new RiskRatio(_aaveReserveConfigData.ltv, RiskRatio.TYPE.LTV)}
-            strategyName={strategyName}
-            aaveTVL={_tvlState}
-          />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
-  )
+    return (
+      <WithErrorHandler error={[tvlStateError, aaveReserveConfigDataError]}>
+        <WithLoadingIndicator
+          value={[tvlState, aaveReserveConfigData]}
+          customLoader={<AppSpinner />}
+        >
+          {([_tvlState, _aaveReserveConfigData]) => (
+            <AavePositionHeader
+              maxRisk={new RiskRatio(_aaveReserveConfigData.ltv, RiskRatio.TYPE.LTV)}
+              strategyName={strategyName}
+              aaveTVL={_tvlState}
+              minimumRiskRatio={minimumRiskRatio}
+            />
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    )
+  }
 }
 
-export function AavePositionHeaderNoDetails({ strategyName }: AavePositionHeaderPropsBase) {
+export function AavePositionHeaderNoDetails({ strategyName }: AaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyName]
   return (

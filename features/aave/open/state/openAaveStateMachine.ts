@@ -12,7 +12,7 @@ import { zero } from '../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
-import { aaveStETHDefaultRiskRatio } from '../../constants'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
 export interface OpenAaveContext extends BaseAaveContext {
@@ -23,6 +23,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   auxiliaryAmount?: BigNumber
   strategyName?: string
   hasOtherAssetsThanETH_STETH?: boolean
+  strategyConfig: StrategyConfig
 }
 
 export type OpenAaveMachineEvents =
@@ -246,7 +247,7 @@ export const createOpenAaveStateMachine = createMachine(
           return {
             type: 'VARIABLES_RECEIVED',
             amount: context.userInput?.amount!,
-            riskRatio: context.userInput.riskRatio || aaveStETHDefaultRiskRatio,
+            riskRatio: context.userInput.riskRatio || context.strategyConfig.riskRatios.default,
             token: context.token,
             proxyAddress: context.proxyAddress,
           }
@@ -274,7 +275,7 @@ export const createOpenAaveStateMachine = createMachine(
         return {
           userInput: {
             ...context.userInput,
-            riskRatio: aaveStETHDefaultRiskRatio,
+            riskRatio: context.strategyConfig.riskRatios.default,
           },
         }
       }),

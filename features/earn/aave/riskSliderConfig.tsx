@@ -1,3 +1,6 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
+
 import { formatBigNumber } from '../../../helpers/formatters/format'
 import {
   AdjustRiskViewConfig,
@@ -19,4 +22,11 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
     url: 'https://dune.com/dataalways/stETH-De-Peg',
     textTranslationKey: 'open-earn.aave.vault-form.configure-multiple.historical-ratio',
   },
+  riskRatios: {
+    minimum: new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE),
+    default: new RiskRatio(new BigNumber(2.01), RiskRatio.TYPE.MULITPLE),
+  },
 }
+
+console.log(`min riskratio ${adjustRiskSliderConfig.riskRatios.minimum.loanToValue}`)
+console.log(`default riskratio ${adjustRiskSliderConfig.riskRatios.default.loanToValue}`)

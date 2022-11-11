@@ -1,3 +1,5 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
 import React from 'react'
 
 import { formatBigNumber, formatPercent } from '../../../helpers/formatters/format'
@@ -13,5 +15,9 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
       return <>{formatPercent(qty.times(100), { precision: 1 })}</>
     },
     translationKey: 'vault-changes.loan-to-value',
+  },
+  riskRatios: {
+    minimum: new RiskRatio(new BigNumber(5), RiskRatio.TYPE.COL_RATIO),
+    default: new RiskRatio(new BigNumber(5), RiskRatio.TYPE.COL_RATIO),
   },
 }

@@ -57,6 +57,11 @@ export function getAaveProtocolData$(
         aaveUserConfiguration,
         aaveReservesList,
       ]) => {
+        // debugger
+        console.log(`accountData.totalDebtETH.toString() ${accountData.totalDebtETH.toString()}`)
+        console.log(
+          `reserveData.currentATokenBalance.toString() ${reserveData.currentATokenBalance.toString()}`,
+        )
         const pos = new Position(
           { amount: new BigNumber(accountData.totalDebtETH.toString()) },
           { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },

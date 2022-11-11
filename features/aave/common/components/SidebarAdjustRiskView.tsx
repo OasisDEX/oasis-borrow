@@ -12,7 +12,6 @@ import { SidebarSectionFooterButtonSettings } from '../../../../components/sideb
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
-import { aaveStETHDefaultRiskRatio, aaveStETHMinimumRiskRatio } from '../../constants'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
@@ -57,6 +56,10 @@ export type AdjustRiskViewConfig = {
     url: string
     textTranslationKey: string
   }
+  riskRatios: {
+    minimum: IRiskRatio
+    default: IRiskRatio
+  }
 }
 
 export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
@@ -81,9 +84,9 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       (simulation?.minConfigurableRiskRatio &&
         BigNumber.max(
           simulation?.minConfigurableRiskRatio.loanToValue,
-          aaveStETHMinimumRiskRatio.loanToValue,
+          viewConfig.riskRatios.minimum.loanToValue,
         )) ||
-      aaveStETHMinimumRiskRatio.loanToValue
+      viewConfig.riskRatios.minimum.loanToValue
 
     const liquidationPrice =
       targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero
@@ -125,8 +128,16 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     const sliderValue =
       state.context.userInput.riskRatio?.loanToValue ||
       onChainPosition?.riskRatio.loanToValue ||
-      aaveStETHDefaultRiskRatio.loanToValue
-
+      viewConfig.riskRatios.default.loanToValue
+    console.log('------------------------------')
+    console.log(
+      `state.context.userInput.riskRatio?.loanToValue ${state.context.userInput.riskRatio?.loanToValue}`,
+    )
+    console.log(`onChainPosition?.riskRatio.loanToValue ${onChainPosition?.riskRatio.loanToValue}`)
+    console.log(
+      `viewConfig.riskRatios.default.loanToValue ${viewConfig.riskRatios.default.loanToValue}`,
+    )
+    console.log(`sliderValue ${sliderValue}`)
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('open-earn.aave.vault-form.title'),
       content: (

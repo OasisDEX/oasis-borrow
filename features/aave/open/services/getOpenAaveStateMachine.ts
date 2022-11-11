@@ -18,6 +18,7 @@ import { ProxyContext, ProxyStateMachine } from '../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import {
@@ -115,7 +116,9 @@ export function getOpenAaveStateMachine$(
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
+  strategyConfig: StrategyConfig,
 ) {
+  console.log('get opeb aave state machine')
   const pricesFeed$ = getPricesFeed$(prices$)
   return combineLatest(parametersMachine$, proxyMachine$, userSettings$).pipe(
     map(([parametersMachine, proxyMachine, userSettings]) => {
@@ -213,6 +216,7 @@ export function getOpenAaveStateMachine$(
           strategyName: 'stETHeth',
           userInput: {},
           loading: false,
+          strategyConfig,
         })
     }),
   )
