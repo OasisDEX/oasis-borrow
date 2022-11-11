@@ -183,14 +183,19 @@ export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
     case state.matches('editing'):
       return <OpenAaveEditingStateView state={state} send={send} />
     case state.matches('proxyCreating'):
-      return <ProxyView proxyMachine={state.context.refProxyMachine!} />
+      return (
+        <ProxyView
+          proxyMachine={state.context.refProxyMachine!}
+          steps={[state.context.currentStep, state.context.totalSteps]}
+        />
+      )
     case state.matches('settingMultiple'):
       return (
         <AdjustRiskView
           state={state}
           send={send}
           primaryButton={{
-            steps: [2, state.context.totalSteps!],
+            steps: [state.context.currentStep, state.context.totalSteps],
             isLoading: state.context.loading,
             disabled: !state.can('NEXT_STEP'),
             label: t('open-earn.aave.vault-form.open-btn'),

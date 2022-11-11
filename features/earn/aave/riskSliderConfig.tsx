@@ -27,6 +27,3 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
     default: new RiskRatio(new BigNumber(2.01), RiskRatio.TYPE.MULITPLE),
   },
 }
-
-console.log(`min riskratio ${adjustRiskSliderConfig.riskRatios.minimum.loanToValue}`)
-console.log(`default riskratio ${adjustRiskSliderConfig.riskRatios.default.loanToValue}`)

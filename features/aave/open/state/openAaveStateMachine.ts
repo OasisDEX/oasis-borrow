@@ -15,6 +15,9 @@ import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/Base
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
 
+const STEPS_WITHOUT_PROXY_CREATION = 3
+export const STEPS_WITH_PROXY_CREATION = 5
+
 export interface OpenAaveContext extends BaseAaveContext {
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
@@ -24,6 +27,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   strategyName?: string
   hasOtherAssetsThanETH_STETH?: boolean
   strategyConfig: StrategyConfig
+  preexistingProxy: boolean
 }
 
 export type OpenAaveMachineEvents =
@@ -222,7 +226,11 @@ export const createOpenAaveStateMachine = createMachine(
         actions: ['setTokenBalanceFromEvent'],
       },
       PROXY_ADDRESS_RECEIVED: {
-        actions: ['setReceivedProxyAddress', 'decreaseTotalSteps', 'sendUpdateToParametersMachine'],
+        actions: [
+          'assignProxyAddress',
+          'adjustStepsForPreexistingProxy',
+          'sendUpdateToParametersMachine',
+        ],
       },
     },
   },
@@ -238,9 +246,6 @@ export const createOpenAaveStateMachine = createMachine(
       setTokenBalanceFromEvent: assign((context, event) => ({
         tokenBalance: event.balance,
         tokenPrice: event.tokenPrice,
-      })),
-      setReceivedProxyAddress: assign((context, event) => ({
-        proxyAddress: event.proxyAddress,
       })),
       sendUpdateToParametersMachine: send(
         (context): ParametersStateMachineEvents => {
@@ -279,9 +284,10 @@ export const createOpenAaveStateMachine = createMachine(
           },
         }
       }),
-      decreaseTotalSteps: assign((context) => {
+      adjustStepsForPreexistingProxy: assign((_) => {
         return {
-          totalSteps: context.totalSteps - 1,
+          totalSteps: STEPS_WITHOUT_PROXY_CREATION,
+          preexistingProxy: true,
         }
       }),
       setAmount: assign((context, event) => {
@@ -300,9 +306,19 @@ export const createOpenAaveStateMachine = createMachine(
       assignProxyAddress: assign((_, event) => ({
         proxyAddress: event.proxyAddress,
       })),
-      resetCurrentStep: assign((_) => ({
-        currentStep: 1,
-      })),
+      resetCurrentStep: assign((context) => {
+        let firstStep: number
+        if (context.preexistingProxy) {
+          firstStep = 1
+        } else if (context.proxyAddress) {
+          firstStep = 3
+        } else {
+          firstStep = 1
+        }
+        return {
+          currentStep: firstStep,
+        }
+      }),
       incrementCurrentStep: assign((context) => ({
         currentStep: context.currentStep + 1,
       })),

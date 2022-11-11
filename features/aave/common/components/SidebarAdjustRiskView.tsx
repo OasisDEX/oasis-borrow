@@ -129,15 +129,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       state.context.userInput.riskRatio?.loanToValue ||
       onChainPosition?.riskRatio.loanToValue ||
       viewConfig.riskRatios.default.loanToValue
-    console.log('------------------------------')
-    console.log(
-      `state.context.userInput.riskRatio?.loanToValue ${state.context.userInput.riskRatio?.loanToValue}`,
-    )
-    console.log(`onChainPosition?.riskRatio.loanToValue ${onChainPosition?.riskRatio.loanToValue}`)
-    console.log(
-      `viewConfig.riskRatios.default.loanToValue ${viewConfig.riskRatios.default.loanToValue}`,
-    )
-    console.log(`sliderValue ${sliderValue}`)
+
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('open-earn.aave.vault-form.title'),
       content: (
