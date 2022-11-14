@@ -56,6 +56,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
                 token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
                 vault_multiple: getGenericRangeFilter(multiple),
+                type: 'multiply',
               },
               orderBy: { [timeSignature]: 'desc' },
             })

@@ -41,8 +41,9 @@ export function getTimeSignature(prefix: string, time?: string): DiscoverLite {
 export function getColRatio(item: LargestDebt): DiscoverTableColRatioRowData {
   return {
     level: item.coll_ratio.times(100).toNumber(),
-    isAtRiskDanger: item.liquidation_proximity.lte(10),
-    isAtRiskWarning: item.liquidation_proximity.lte(25) && item.liquidation_proximity.gt(10),
+    isAtRiskDanger: item.liquidation_proximity.times(100).lte(10),
+    isAtRiskWarning:
+      item.liquidation_proximity.times(100).lte(25) && item.liquidation_proximity.times(100).gt(10),
   }
 }
 
@@ -77,7 +78,7 @@ export function getStatus(item: HighestRiskPositions) {
       return {
         ...status,
         additionalData: {
-          tillLiquidation: item.liquidation_proximity.mul(100).floor(),
+          tillLiquidation: item.liquidation_proximity.mul(10000).floor().div(100),
         },
       }
   }
