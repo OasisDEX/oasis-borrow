@@ -67,7 +67,7 @@ export function DiscoverTableDataCellContent({
             trackingEvents.discover.viewPosition(kind, row?.cdpId)
           }}
         >
-          <Button variant="tertiary">{t('discover.table.view-position')}a</Button>
+          <Button variant="tertiary">{t('discover.table.view-position')}</Button>
         </a>
       )
     case 'collateralValue':
