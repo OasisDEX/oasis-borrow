@@ -71,18 +71,6 @@ export function getAutomationMetadata<T extends AutomationFeatures>(
   else throw new UnreachableCaseError(`${feature} in ${protocol}`)
 }
 
-export const defaultMetadata = {
-  debtToken: '',
-  positionLabel: '',
-  ratioLabel: '',
-  validation: {
-    creationErrors: [],
-    creationWarnings: [],
-    cancelErrors: [],
-    cancelWarnings: [],
-  },
-}
-
 export const automationMetadata: AutomationMetadata = {
   [AutomationFeatures.AUTO_BUY]: {
     [VaultProtocol.Maker]: autoBuyMakerMetadata,

@@ -1,7 +1,5 @@
-import {
-  AutomationCommonMetadata,
-  defaultMetadata,
-} from 'features/automation/common/state/automationMetadata'
+import { defaultMetadata } from 'features/automation/common/state/automationDefaultMetadata'
+import { AutomationCommonMetadata } from 'features/automation/common/state/automationMetadata'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 
 export interface AutomationConstantMultipleMetadata
