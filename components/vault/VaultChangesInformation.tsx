@@ -4,6 +4,7 @@ import { GasEstimationContext } from 'components/GasEstimationContextProvider'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useMemo } from 'react'
@@ -18,7 +19,6 @@ export function VaultChangesInformationItem({
   tooltip?: ReactNode
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
-  const isTouchDevice = window && 'ontouchstart' in window
 
   const handleMouseEnter = useMemo(
     () => (!isTouchDevice ? () => setTooltipOpen(true) : undefined),
