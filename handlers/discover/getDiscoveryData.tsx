@@ -87,7 +87,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             asset: item.token,
             netValue: item.net_value.toNumber(),
             earningsToDate: item[timeSignature].toNumber(),
-            '30DayAvgApy': item.yield_30d.toNumber(),
+            '30DayAvgApy': item.yield_30d.times(100).toNumber(),
             activity: item.last_action as DiscoverTableRowData['activity'],
             cdpId: item.position_id,
           })),
