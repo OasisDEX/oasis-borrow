@@ -2000,8 +2000,9 @@
         "header": "Independently audited",
         "description": "Our stringent security procedures didn’t occur by luck. It came about with a rigorous process of both internal and external audits.",
         "link-multiply": "Multiply Audit Report",
-        "link-multiply-fmm": "Multiply FMM extension audit report",
-        "link-automation": "Automation Audit Report"
+        "link-multiply-fmm": "Multiply FMM extension Audit Report",
+        "link-automation": "Automation Audit Report",
+        "link-modular-proxy-actions": "Modular Proxy Actions Audit Report"
       },
       "bug": {
         "header": "Bug bounty",
