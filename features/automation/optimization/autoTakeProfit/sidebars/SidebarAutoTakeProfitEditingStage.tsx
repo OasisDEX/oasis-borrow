@@ -50,7 +50,7 @@ export function SidebarAutoTakeProfitEditingStage({
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
 
   const {
-    autoTakeProfitTriggerData,
+    autoTakeProfit: { autoTakeProfitTriggerData },
     positionData: { ilk, id, collateralizationRatio, debt, debtFloor, token },
   } = useAutomationContext()
 

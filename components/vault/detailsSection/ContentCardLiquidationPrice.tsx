@@ -115,7 +115,9 @@ export function ContentCardLiquidationPrice({
   }
 
   if (stopLossReadEnabled && vaultId) {
-    const { stopLossTriggerData } = useAutomationContext()
+    const {
+      stopLoss: { stopLossTriggerData },
+    } = useAutomationContext()
 
     contentCardModalSettings.isStopLossEnabled = stopLossTriggerData.isStopLossEnabled
   }

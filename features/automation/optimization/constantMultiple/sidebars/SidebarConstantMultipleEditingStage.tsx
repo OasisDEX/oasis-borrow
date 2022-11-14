@@ -81,10 +81,10 @@ export function SidebarConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
   const {
-    autoBuyTriggerData,
-    autoSellTriggerData,
-    constantMultipleTriggerData,
-    stopLossTriggerData,
+    autoBuy: { autoBuyTriggerData },
+    autoSell: { autoSellTriggerData },
+    constantMultiple: { constantMultipleTriggerData },
+    stopLoss: { stopLossTriggerData },
     positionData: { ilk, id, collateralizationRatio, debt, debtFloor, token },
   } = useAutomationContext()
 

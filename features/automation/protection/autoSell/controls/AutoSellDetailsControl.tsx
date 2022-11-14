@@ -13,7 +13,7 @@ import React from 'react'
 export function AutoSellDetailsControl() {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const {
-    autoSellTriggerData,
+    autoSell: { autoSellTriggerData },
     positionData: { debt, lockedCollateral },
   } = useAutomationContext()
 

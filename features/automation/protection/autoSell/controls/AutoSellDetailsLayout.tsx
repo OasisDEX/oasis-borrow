@@ -43,12 +43,10 @@ export function AutoSellDetailsLayout({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    autoSellTriggerData,
-    constantMultipleTriggerData: { isTriggerEnabled },
+    autoSell: { autoSellTriggerData },
+    constantMultiple: { constantMultipleTriggerData },
     positionData: { id, ilk, token },
   } = useAutomationContext()
-
-  const isConstantMultipleEnabled = isTriggerEnabled
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoSellOn = autoSellTriggerData.isTriggerEnabled
@@ -89,7 +87,7 @@ export function AutoSellDetailsLayout({
                 {t('here')}.
               </AppLink>
             </>,
-            ...(isConstantMultipleEnabled
+            ...(constantMultipleTriggerData.isTriggerEnabled
               ? [
                   <Text as="span" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
                     {t('auto-sell.banner.cm-warning')}
@@ -116,7 +114,7 @@ export function AutoSellDetailsLayout({
               )
             },
             text: t('auto-sell.banner.button'),
-            disabled: isConstantMultipleEnabled,
+            disabled: constantMultipleTriggerData.isTriggerEnabled,
           }}
         />
       )}

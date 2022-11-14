@@ -8,7 +8,7 @@ import React from 'react'
 export function CancelConstantMultipleInfoSection() {
   const { t } = useTranslation()
   const {
-    constantMultipleTriggerData,
+    constantMultiple: { constantMultipleTriggerData },
     positionData: { collateralizationRatio, debt, liquidationPrice },
   } = useAutomationContext()
 

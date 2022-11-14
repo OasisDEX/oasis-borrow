@@ -10,7 +10,10 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 export function ProtectionDetailsControl() {
-  const { stopLossTriggerData, autoSellTriggerData } = useAutomationContext()
+  const {
+    stopLoss: { stopLossTriggerData },
+    autoSell: { autoSellTriggerData },
+  } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 

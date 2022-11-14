@@ -77,9 +77,9 @@ export function SidebarSetupAutoTakeProfit({
   const { t } = useTranslation()
 
   const {
-    autoBuyTriggerData,
-    autoTakeProfitTriggerData,
-    constantMultipleTriggerData,
+    autoBuy: { autoBuyTriggerData },
+    autoTakeProfit: { autoTakeProfitTriggerData },
+    constantMultiple: { constantMultipleTriggerData },
     environmentData: { ethMarketPrice, etherscanUrl, nextCollateralPrice, ethBalance },
     positionData: { debt, debtOffset, token, vaultType, lockedCollateral },
   } = useAutomationContext()

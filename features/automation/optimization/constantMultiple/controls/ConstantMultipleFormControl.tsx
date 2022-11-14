@@ -35,9 +35,9 @@ export function ConstantMultipleFormControl({
   )
 
   const {
-    autoBuyTriggerData,
-    autoSellTriggerData,
-    constantMultipleTriggerData,
+    autoBuy: { autoBuyTriggerData },
+    autoSell: { autoSellTriggerData },
+    constantMultiple: { constantMultipleTriggerData },
     environmentData: { canInteract, ethMarketPrice },
     positionData: { id, owner, debt, collateralizationRatio, lockedCollateral },
   } = useAutomationContext()

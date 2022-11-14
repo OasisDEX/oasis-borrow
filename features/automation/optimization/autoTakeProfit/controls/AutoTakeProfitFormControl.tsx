@@ -28,7 +28,7 @@ export function AutoTakeProfitFormControl({
 }: AutoTakeProfitFormControlProps) {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
   const {
-    autoTakeProfitTriggerData,
+    autoTakeProfit: { autoTakeProfitTriggerData },
     environmentData: { canInteract, tokenMarketPrice },
     positionData: { ilk, id, token, owner },
   } = useAutomationContext()

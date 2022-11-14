@@ -103,8 +103,8 @@ function getZeroDebtProtectionBannerProps({
 export function ProtectionControl() {
   const { txHelpers$ } = useAppContext()
   const {
-    autoSellTriggerData,
-    stopLossTriggerData,
+    autoSell: { autoSellTriggerData },
+    stopLoss: { stopLossTriggerData },
     positionData: { debt, debtFloor },
   } = useAutomationContext()
   const [txHelpersData] = useObservable(txHelpers$)

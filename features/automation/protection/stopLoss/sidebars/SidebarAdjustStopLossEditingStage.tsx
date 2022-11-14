@@ -155,7 +155,7 @@ export function SidebarAdjustStopLossEditingStage({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    stopLossTriggerData,
+    stopLoss: { stopLossTriggerData },
     environmentData: { ethMarketPrice },
     positionData: { id, ilk, token, debt, liquidationRatio, collateralizationRatio, debtFloor },
   } = useAutomationContext()

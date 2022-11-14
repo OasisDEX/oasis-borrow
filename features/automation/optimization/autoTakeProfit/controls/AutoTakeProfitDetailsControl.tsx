@@ -16,7 +16,7 @@ export function AutoTakeProfitDetailsControl() {
   const [autoTakeProfitState] = useUIChanges<AutoTakeProfitFormChange>(AUTO_TAKE_PROFIT_FORM_CHANGE)
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
   const {
-    autoTakeProfitTriggerData,
+    autoTakeProfit: { autoTakeProfitTriggerData },
     environmentData: { ethMarketPrice },
     positionData: { id, ilk, debt, debtOffset, collateralizationRatio, lockedCollateral, token },
   } = useAutomationContext()

@@ -60,8 +60,8 @@ export function SidebarAutoBuyEditingStage({
   sliderMax,
 }: SidebarAutoBuyEditingStageProps) {
   const {
-    autoBuyTriggerData,
-    stopLossTriggerData,
+    autoBuy: { autoBuyTriggerData },
+    stopLoss: { stopLossTriggerData },
     positionData: { id, ilk, token, debt, debtFloor, lockedCollateral, collateralizationRatio },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()

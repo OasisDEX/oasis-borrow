@@ -24,7 +24,9 @@ export function StopLossBannerControl({
   onClick,
 }: StopLossBannerControlProps & AfterPillProps) {
   const { uiChanges } = useAppContext()
-  const { stopLossTriggerData } = useAutomationContext()
+  const {
+    stopLoss: { stopLossTriggerData },
+  } = useAutomationContext()
 
   if (stopLossTriggerData.isStopLossEnabled) {
     const dynamicStopPrice = liquidationPrice

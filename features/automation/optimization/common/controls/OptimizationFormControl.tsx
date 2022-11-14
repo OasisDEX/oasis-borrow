@@ -20,10 +20,10 @@ interface OptimizationFormControlProps {
 
 export function OptimizationFormControl({ txHelpers }: OptimizationFormControlProps) {
   const {
-    autoBuyTriggerData,
     automationTriggersData,
-    constantMultipleTriggerData,
-    autoTakeProfitTriggerData,
+    autoBuy: { autoBuyTriggerData },
+    autoTakeProfit: { autoTakeProfitTriggerData },
+    constantMultiple: { constantMultipleTriggerData },
   } = useAutomationContext()
 
   const { uiChanges } = useAppContext()

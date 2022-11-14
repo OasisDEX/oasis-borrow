@@ -27,7 +27,7 @@ interface StopLossDetailsControlProps {
 export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsControlProps) {
   const { t } = useTranslation()
   const {
-    stopLossTriggerData,
+    stopLoss: { stopLossTriggerData },
     positionData: {
       collateralizationRatio,
       collateralizationRatioAtNextPrice,

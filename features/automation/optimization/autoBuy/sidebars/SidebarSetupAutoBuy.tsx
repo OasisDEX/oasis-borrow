@@ -72,11 +72,11 @@ export function SidebarSetupAutoBuy({
   const gasEstimation = useGasEstimationContext()
   const { uiChanges } = useAppContext()
   const {
-    autoBuyTriggerData,
-    autoSellTriggerData,
-    autoTakeProfitTriggerData,
-    constantMultipleTriggerData,
-    stopLossTriggerData,
+    autoBuy: { autoBuyTriggerData },
+    autoSell: { autoSellTriggerData },
+    autoTakeProfit: { autoTakeProfitTriggerData },
+    constantMultiple: { constantMultipleTriggerData },
+    stopLoss: { stopLossTriggerData },
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { collateralizationRatioAtNextPrice, token, liquidationRatio, vaultType },
   } = useAutomationContext()

@@ -15,8 +15,8 @@ export function AutoBuyDetailsControl() {
 
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const {
-    constantMultipleTriggerData,
-    autoBuyTriggerData,
+    autoBuy: { autoBuyTriggerData },
+    constantMultiple: { constantMultipleTriggerData },
     positionData: { ilk, id, token, debt, lockedCollateral },
   } = useAutomationContext()
 
