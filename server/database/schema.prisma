@@ -28,12 +28,14 @@ model TosApproval {
 }
 
 model Vault {
-    vault_id      Int       @unique
+    vault_id      Int                    @unique
     type          VaultType
     owner_address String
     chain_id      Int?
+    users         UsersWhoFollowVaults[]
 
     @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
+    @@unique([vault_id, type])
     @@map("vault")
 }
 
@@ -45,13 +47,14 @@ enum VaultType {
 }
 
 model User {
-    address                    String        @unique
-    timestamp                  DateTime      @default(now())
+    address                    String                 @unique
+    timestamp                  DateTime               @default(now())
     user_that_referred_address String?
-    user_that_referred         User?         @relation("UserToUser", fields: [user_that_referred_address], references: [address])
-    referred_users             User[]        @relation("UserToUser")
+    user_that_referred         User?                  @relation("UserToUser", fields: [user_that_referred_address], references: [address])
+    referred_users             User[]                 @relation("UserToUser")
     weekly_claims              WeeklyClaim[]
     accepted                   Boolean
+    vaults                     UsersWhoFollowVaults[]
 
     @@map("user")
 }
@@ -199,4 +202,14 @@ model LargestDebt {
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("largest_debt")
+}
+
+model UsersWhoFollowVaults {
+    user         User      @relation(fields: [user_address], references: [address])
+    user_address String // relation scalar field (used in the `@relation` attribute above)
+    vault        Vault     @relation(fields: [vault_id, vault_type], references: [vault_id, type])
+    vault_id     Int // relation scalar field (used in the `@relation` attribute above)
+    vault_type   VaultType // relation scalar field (used in the `@relation` attribute above)
+
+    @@id([user_address, vault_id, vault_type])
 }
