@@ -4,8 +4,8 @@ import { Box, Text } from 'theme-ui'
 export interface HeadlineDetailsProp {
   label: string
   value: string | number
-  sub?: string
-  subColor?: string
+  sub?: string | string[]
+  subColor?: string | string[]
 }
 
 export function VaultHeadlineDetails({ label, value, sub, subColor }: HeadlineDetailsProp) {
@@ -43,11 +43,22 @@ export function VaultHeadlineDetails({ label, value, sub, subColor }: HeadlineDe
       <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold', color: 'primary100' }}>
         {value}
       </Text>
-      {sub && subColor && (
+      {typeof sub === 'string' && subColor && (
         <Text as="span" sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold', color: subColor }}>
           {sub}
         </Text>
       )}
+      {Array.isArray(sub) &&
+        Array.isArray(subColor) &&
+        sub.map((arrSub, arrSubIndex) => (
+          <Text
+            key={arrSub}
+            as="span"
+            sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold', color: subColor[arrSubIndex] }}
+          >
+            {arrSub}
+          </Text>
+        ))}
     </Box>
   )
 }
