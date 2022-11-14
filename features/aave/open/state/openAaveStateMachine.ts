@@ -12,8 +12,11 @@ import { zero } from '../../../../helpers/zero'
 import { ProxyStateMachine } from '../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
-import { aaveStETHDefaultRiskRatio } from '../../constants'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { ParametersStateMachine, ParametersStateMachineEvents } from './parametersStateMachine'
+
+const STEPS_WITHOUT_PROXY_CREATION = 3
+export const STEPS_WITH_PROXY_CREATION = 5
 
 export interface OpenAaveContext extends BaseAaveContext {
   refParametersStateMachine?: ActorRefFrom<ParametersStateMachine>
@@ -23,6 +26,8 @@ export interface OpenAaveContext extends BaseAaveContext {
   auxiliaryAmount?: BigNumber
   strategyName?: string
   hasOtherAssetsThanETH_STETH?: boolean
+  strategyConfig: StrategyConfig
+  preexistingProxy: boolean
 }
 
 export type OpenAaveMachineEvents =
@@ -221,7 +226,11 @@ export const createOpenAaveStateMachine = createMachine(
         actions: ['setTokenBalanceFromEvent'],
       },
       PROXY_ADDRESS_RECEIVED: {
-        actions: ['setReceivedProxyAddress', 'decreaseTotalSteps', 'sendUpdateToParametersMachine'],
+        actions: [
+          'assignProxyAddress',
+          'adjustStepsForPreexistingProxy',
+          'sendUpdateToParametersMachine',
+        ],
       },
     },
   },
@@ -238,15 +247,12 @@ export const createOpenAaveStateMachine = createMachine(
         tokenBalance: event.balance,
         tokenPrice: event.tokenPrice,
       })),
-      setReceivedProxyAddress: assign((context, event) => ({
-        proxyAddress: event.proxyAddress,
-      })),
       sendUpdateToParametersMachine: send(
         (context): ParametersStateMachineEvents => {
           return {
             type: 'VARIABLES_RECEIVED',
             amount: context.userInput?.amount!,
-            riskRatio: context.userInput.riskRatio || aaveStETHDefaultRiskRatio,
+            riskRatio: context.userInput.riskRatio || context.strategyConfig.riskRatios.default,
             token: context.token,
             proxyAddress: context.proxyAddress,
           }
@@ -274,13 +280,14 @@ export const createOpenAaveStateMachine = createMachine(
         return {
           userInput: {
             ...context.userInput,
-            riskRatio: aaveStETHDefaultRiskRatio,
+            riskRatio: context.strategyConfig.riskRatios.default,
           },
         }
       }),
-      decreaseTotalSteps: assign((context) => {
+      adjustStepsForPreexistingProxy: assign((_) => {
         return {
-          totalSteps: context.totalSteps - 1,
+          totalSteps: STEPS_WITHOUT_PROXY_CREATION,
+          preexistingProxy: true,
         }
       }),
       setAmount: assign((context, event) => {
@@ -299,9 +306,19 @@ export const createOpenAaveStateMachine = createMachine(
       assignProxyAddress: assign((_, event) => ({
         proxyAddress: event.proxyAddress,
       })),
-      resetCurrentStep: assign((_) => ({
-        currentStep: 1,
-      })),
+      resetCurrentStep: assign((context) => {
+        let firstStep: number
+        if (context.preexistingProxy) {
+          firstStep = 1
+        } else if (context.proxyAddress) {
+          firstStep = 3
+        } else {
+          firstStep = 1
+        }
+        return {
+          currentStep: firstStep,
+        }
+      }),
       incrementCurrentStep: assign((context) => ({
         currentStep: context.currentStep + 1,
       })),

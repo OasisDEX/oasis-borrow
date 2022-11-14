@@ -2,13 +2,16 @@ import { ViewPositionSectionComponent } from 'features/earn/aave/components/View
 
 import {
   AavePositionHeaderNoDetails,
-  AavePositionHeaderWithDetails,
+  headerWithDetails,
 } from '../earn/aave/components/AavePositionHeader'
 import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
 import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectionComponent'
+import { adjustRiskSliderConfig as earnAdjustRiskSliderConfig } from '../earn/aave/riskSliderConfig'
 import { AaveMultiplyHeader } from '../multiply/aave/components/AaveMultiplyHeader'
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { AaveMultiplySimulate } from '../multiply/aave/components/AaveMultiplySimulate'
+import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
+import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { StrategyConfig } from './common/StrategyConfigTypes'
 
 type StrategyConfigName = 'aave-earn' | 'aave-multiply'
@@ -18,17 +21,19 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
     viewComponents: {
-      headerOpen: AavePositionHeaderWithDetails,
+      headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
       headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
+      adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
     },
     tokens: {
       collateral: 'STETH',
       debt: 'ETH',
     },
+    riskRatios: earnAdjustRiskSliderConfig.riskRatios,
   },
   'aave-multiply': {
     name: 'stETHusdc',
@@ -40,6 +45,14 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       simulateSection: AaveMultiplySimulate,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
+      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
     },
+    tokens: {
+      collateral: 'STETH',
+      debt: 'USDC',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
   },
 } as const
+
+export const aaveStrategiesList = Object.values(strategies).map((s) => s.name)

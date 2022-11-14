@@ -18,14 +18,16 @@ import { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from './state'
 
 interface ProxyViewProps {
   proxyMachine: ActorRefFrom<ProxyStateMachine>
+  steps: [number, number]
 }
 
 interface ProxyViewStateProps {
   state: ProxyStateMachineState
   send: Sender<ProxyEvent>
+  steps: [number, number]
 }
 
-function ProxyInfoStateView({ state, send }: ProxyViewStateProps) {
+function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
   const { t } = useTranslation()
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
@@ -66,6 +68,7 @@ function ProxyInfoStateView({ state, send }: ProxyViewStateProps) {
       </Grid>
     ),
     primaryButton: {
+      steps: steps,
       isLoading: false,
       disabled: isProxyCreationDisabled,
       label: state.matches('proxyFailure') ? t('retry-create-proxy') : t('create-proxy-btn'),
@@ -76,7 +79,7 @@ function ProxyInfoStateView({ state, send }: ProxyViewStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ProxyRunningView() {
+function ProxyRunningView(props: { steps: [number, number] }) {
   const { t } = useTranslation()
   const sidebarSectionProps: SidebarSectionProps = {
     title: 'Create proxy',
@@ -104,6 +107,7 @@ function ProxyRunningView() {
       </Grid>
     ),
     primaryButton: {
+      steps: props.steps,
       isLoading: true,
       disabled: true,
       label: t('creating-proxy'),
@@ -111,7 +115,7 @@ function ProxyRunningView() {
   }
   return <SidebarSection {...sidebarSectionProps} />
 }
-export function ProxyView({ proxyMachine }: ProxyViewProps) {
+export function ProxyView({ proxyMachine, steps }: ProxyViewProps) {
   const [state, send] = useActor(proxyMachine)
 
   switch (true) {
@@ -119,9 +123,9 @@ export function ProxyView({ proxyMachine }: ProxyViewProps) {
     case state.matches('proxyWaitingForConfirmation'):
     case state.matches('proxyWaitingForApproval'):
     case state.matches('proxyFailure'):
-      return <ProxyInfoStateView state={state} send={send} />
+      return <ProxyInfoStateView state={state} send={send} steps={steps} />
     case state.matches('proxyInProgress'):
-      return <ProxyRunningView />
+      return <ProxyRunningView steps={steps} />
     default:
       return <></>
   }

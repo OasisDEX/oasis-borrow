@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { aaveStrategiesList } from 'features/aave/constants'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -15,6 +14,7 @@ import {
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
+import { aaveStrategiesList } from '../features/aave/strategyConfig'
 import { zero } from './zero'
 
 export interface ProductCardData {

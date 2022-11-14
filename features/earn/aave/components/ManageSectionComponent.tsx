@@ -12,7 +12,7 @@ import { PositionInfoComponent } from './PositionInfoComponent'
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
-  strategyConfig?: StrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 export function ManageSectionComponent({
@@ -43,7 +43,7 @@ export function ManageSectionComponent({
       aaveReserveDataETH={aaveReserveDataETH}
       accountData={accountData}
       apy={simulations?.apy}
-      tokens={strategyConfig?.tokens}
+      tokens={strategyConfig.tokens}
       oraclePrice={oraclePrice}
       position={position}
     />

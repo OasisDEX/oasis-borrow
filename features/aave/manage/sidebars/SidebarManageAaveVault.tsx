@@ -12,8 +12,7 @@ import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
-import { aaveStETHMinimumRiskRatio } from '../../constants'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachineState, OperationType } from '../state'
 
@@ -214,19 +213,18 @@ function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarManageAaveVault() {
+export function SidebarManageAaveVault({ config }: { config: StrategyConfig }) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
   const { t } = useTranslation()
+  const AdjustRiskView = config.viewComponents.adjustRiskView
 
   switch (true) {
     case state.matches('editing'):
       return (
         <AdjustRiskView
           state={state}
-          resetRiskValue={
-            state.context.protocolData?.position.riskRatio || aaveStETHMinimumRiskRatio
-          }
+          onChainPosition={state.context.protocolData?.position}
           send={send}
           primaryButton={{
             isLoading: state.context.loading,

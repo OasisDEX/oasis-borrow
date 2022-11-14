@@ -142,13 +142,15 @@ export function setupAaveContext({
 
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
 
-  const aaveStateMachine$ = getOpenAaveStateMachine$(
-    openAaveStateMachineServices,
-    parametersStateMachine$,
-    proxyStateMachine$,
-    transactionMachine,
-    userSettings$,
-    tokenPriceUSD$,
+  const aaveStateMachine$ = memoize(
+    curry(getOpenAaveStateMachine$)(
+      openAaveStateMachineServices,
+      parametersStateMachine$,
+      proxyStateMachine$,
+      transactionMachine,
+      userSettings$,
+      tokenPriceUSD$,
+    ),
   )
 
   const aaveManageStateMachine$ = memoize(

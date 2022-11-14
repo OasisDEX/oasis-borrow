@@ -3,7 +3,6 @@ import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { WithArrow } from 'components/WithArrow'
 import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { aaveStETHMinimumRiskRatio } from 'features/aave/constants'
 import { AaveProtocolData } from 'features/aave/manage/state'
 import { formatBigNumber } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -16,7 +15,7 @@ export function SidebarViewPositionAaveVault({
   strategyConfig,
 }: {
   aaveProtocolData: AaveProtocolData
-  strategyConfig?: StrategyConfig
+  strategyConfig: StrategyConfig
 }) {
   const { t } = useTranslation()
   enum RiskLevel {
@@ -34,7 +33,7 @@ export function SidebarViewPositionAaveVault({
 
   const tokensRatioText = (
     <Text as="span" variant="paragraph4" color="neutral80">
-      {strategyConfig!.tokens!.collateral}/{strategyConfig!.tokens!.debt}
+      {strategyConfig.tokens.collateral}/{strategyConfig.tokens.debt}
     </Text>
   )
 
@@ -46,9 +45,9 @@ export function SidebarViewPositionAaveVault({
           sliderPercentageFill={
             maxRisk
               ? sliderValue
-                  .minus(aaveStETHMinimumRiskRatio.loanToValue)
+                  .minus(strategyConfig.riskRatios.minimum.loanToValue)
                   .times(100)
-                  .dividedBy(maxRisk.minus(aaveStETHMinimumRiskRatio.loanToValue))
+                  .dividedBy(maxRisk.minus(strategyConfig.riskRatios.minimum.loanToValue))
               : new BigNumber(0)
           }
           leftBoundry={liquidationPrice}
@@ -67,7 +66,7 @@ export function SidebarViewPositionAaveVault({
             </>
           )}
           onChange={() => {}}
-          minBoundry={aaveStETHMinimumRiskRatio.loanToValue}
+          minBoundry={strategyConfig.riskRatios.minimum.loanToValue}
           maxBoundry={maxRisk || zero}
           lastValue={sliderValue}
           disabled={true}

@@ -39,7 +39,7 @@ function AaveOpenContainer({
                   <Box>
                     <SimulateSection />
                   </Box>
-                  <Box>{<SidebarOpenAaveVault />}</Box>
+                  <Box>{<SidebarOpenAaveVault config={config} />}</Box>
                 </Grid>
               ),
             },
@@ -63,7 +63,7 @@ function AaveOpenContainer({
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function AaveOpenView({ config }: { config: StrategyConfig }) {
   const { aaveStateMachine$ } = useAaveContext()
-  const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
+  const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$(config))
 
   return (
     <WithErrorHandler error={[stateMachineError]}>

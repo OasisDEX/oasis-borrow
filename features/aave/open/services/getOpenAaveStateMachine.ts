@@ -4,7 +4,7 @@ import { AaveConfigurationData } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
-import { map } from 'rxjs/operators'
+import { filter, first, map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
 import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
@@ -18,6 +18,7 @@ import { ProxyContext, ProxyStateMachine } from '../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import {
@@ -26,6 +27,7 @@ import {
   OpenAaveEvent,
   OpenAaveStateMachineServices,
   ParametersStateMachine,
+  STEPS_WITH_PROXY_CREATION,
 } from '../state'
 
 export function getOpenAavePositionStateMachineServices(
@@ -55,6 +57,10 @@ export function getOpenAavePositionStateMachineServices(
     },
     getProxyAddress: () => {
       return proxyAddress$.pipe(
+        first(), // don't override current step when creating proxy in flow
+        filter((proxyAddress: string | undefined) => {
+          return !!proxyAddress
+        }),
         map((address) => ({
           type: 'PROXY_ADDRESS_RECEIVED',
           proxyAddress: address,
@@ -115,6 +121,7 @@ export function getOpenAaveStateMachine$(
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
+  strategyConfig: StrategyConfig,
 ) {
   const pricesFeed$ = getPricesFeed$(prices$)
   return combineLatest(parametersMachine$, proxyMachine$, userSettings$).pipe(
@@ -207,12 +214,14 @@ export function getOpenAaveStateMachine$(
           slippage: userSettings.slippage,
           currentPosition: EMPTY_POSITION,
           currentStep: 1,
-          totalSteps: 4,
+          totalSteps: STEPS_WITH_PROXY_CREATION,
+          preexistingProxy: false,
           token: 'ETH',
           inputDelay: 1000,
           strategyName: 'stETHeth',
           userInput: {},
           loading: false,
+          strategyConfig,
         })
     }),
   )

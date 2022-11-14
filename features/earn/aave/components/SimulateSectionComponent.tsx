@@ -1,4 +1,4 @@
-import { IStrategy } from '@oasisdex/oasis-actions'
+import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -15,7 +15,6 @@ import { HasGasEstimation } from '../../../../helpers/form'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { useHash } from '../../../../helpers/useHash'
 import { zero } from '../../../../helpers/zero'
-import { aaveStETHDefaultRiskRatio } from '../../../aave/constants'
 import { AaveSimulateTitle } from '../../../aave/open/components/AaveSimulateTitle'
 import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
 import {
@@ -37,11 +36,13 @@ function SimulationSection({
   token,
   userInputAmount,
   gasPrice,
+  minRiskRatio,
 }: {
   strategy?: IStrategy
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
+  minRiskRatio: IRiskRatio
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
@@ -53,7 +54,7 @@ function SimulationSection({
   const targetTokenFee = strategy?.simulation.swap.targetTokenFee || zero
   const gasFee = gasPrice?.gasEstimationEth || zero
   const fees = sourceTokenFee.plus(targetTokenFee).plus(gasFee)
-  const riskRatio = strategy?.simulation.position.riskRatio || aaveStETHDefaultRiskRatio
+  const riskRatio = strategy?.simulation.position.riskRatio || minRiskRatio
 
   useEffect(() => {
     aaveSthEthYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
@@ -126,6 +127,7 @@ export function SimulateSectionComponent() {
       token: state.context.token,
       userInputAmount: state.context.userInput.amount,
       gasPrice: state.context.estimatedGasPrice,
+      minRiskRatio: state.context.strategyConfig.riskRatios.minimum,
     }
   })
 

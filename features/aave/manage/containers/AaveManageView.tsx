@@ -61,7 +61,7 @@ function AaveManageContainer({
                       strategyConfig={strategyConfig}
                     />
                   </Box>
-                  <Box>{<SidebarManageAaveVault />}</Box>
+                  <Box>{<SidebarManageAaveVault config={strategyConfig} />}</Box>
                 </Grid>
               ),
             },
