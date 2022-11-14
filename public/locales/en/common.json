@@ -475,6 +475,7 @@
     "action": "Manage Vault",
     "current-price": "Current {{token}} Price",
     "next-price": "Next {{token}} Price",
+    "next-price-any-time": "< 2 minutes",
     "card": {
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
       "collateralization-ratio-header2": "Current Collateralization ratio:",
@@ -944,8 +945,6 @@
     "header": "{{ilk}} Vault {{id}}",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
-    "next-price-any-time": "Next price in <2 minutes",
-    "next-price_plural": "Next price in {{count}} minutes",
     "open-vault": "Open {{ilk}} Vault",
     "vault-details": "Vault Details",
     "token-uds-price": "{{token}}/USD price"
