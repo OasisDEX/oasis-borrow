@@ -42,7 +42,8 @@ export function getColRatio(item: LargestDebt): DiscoverTableColRatioRowData {
   return {
     level: item.coll_ratio.times(100).toNumber(),
     isAtRiskDanger: item.liquidation_proximity.times(100).lte(10),
-    isAtRiskWarning: item.liquidation_proximity.times(100).lte(25) && item.liquidation_proximity.times(100).gt(10),
+    isAtRiskWarning:
+      item.liquidation_proximity.times(100).lte(25) && item.liquidation_proximity.times(100).gt(10),
   }
 }
 
