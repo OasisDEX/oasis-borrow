@@ -152,8 +152,8 @@
       "largest-debt": "Largest Debt"
     },
     "api-error": {
-      "1": "Unknown error occurred, please try again later.",
-      "2": "There are no entries available for selected filters."
+      "1": "There are no positions at this moment. Please try again later.",
+      "2": "There are no positions available for selected filters."
     },
     "table": {
       "no-entries": "There are no entries available for selected filters.",

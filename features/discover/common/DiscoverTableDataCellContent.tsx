@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { AppLink } from 'components/Links'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
@@ -61,14 +60,15 @@ export function DiscoverTableDataCellContent({
       )
     case 'cdpId':
       return (
-        <AppLink
+        <a
           href={`/${row?.cdpId}`}
+          target="_blank"
           onClick={() => {
             trackingEvents.discover.viewPosition(kind, row?.cdpId)
           }}
         >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
-        </AppLink>
+        </a>
       )
     case 'collateralValue':
     case 'liquidationPrice':
