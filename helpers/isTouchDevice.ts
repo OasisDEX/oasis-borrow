@@ -1,1 +1,1 @@
-export const isTouchDevice = window && 'ontouchstart' in window
+export const isTouchDevice = typeof window !== 'undefined' && 'ontouchstart' in window
