@@ -17,7 +17,7 @@ export function DefaultVaultHeadline({
   header: VaultHeadlineProps['header']
   token: VaultHeadlineProps['token']
   priceInfo: PriceInfo
-  colRatio: string
+  colRatio?: string
 }) {
   const { t } = useTranslation()
   const {
@@ -39,31 +39,31 @@ export function DefaultVaultHeadline({
     ? dateNextCollateralPrice < moreMinutes(3)
     : false
 
-  return (
-    <VaultHeadline
-      header={header}
-      token={token}
-      details={[
-        {
-          label: t('manage-vault.current-price', { token }),
-          value: `$${currentPrice}`,
-        },
-        {
-          label: t('manage-vault.next-price', { token }),
-          value: `$${nextPrice}`,
-          sub: [
-            isNextPriceLessThanTwoMinutes
-              ? t('manage-vault.next-price-any-time')
-              : nextCollateralPriceTimeInMinutes,
-            priceChange,
-          ],
-          subColor: ['neutral80', priceChangeColor],
-        },
-        {
-          label: t('system.collateral-ratio'),
-          value: `${colRatio}%`,
-        },
-      ]}
-    />
-  )
+  const detailsList: VaultHeadlineProps['details'] = [
+    {
+      label: t('manage-vault.current-price'),
+      labelTooltip: t('manage-vault.current-price-tooltip', { token }),
+      value: `$${currentPrice}`,
+    },
+    {
+      label: t('manage-vault.next-price'),
+      labelTooltip: t('manage-vault.next-price-tooltip', { token }),
+      value: `$${nextPrice}`,
+      sub: [
+        isNextPriceLessThanTwoMinutes
+          ? t('manage-vault.next-price-any-time')
+          : nextCollateralPriceTimeInMinutes,
+        priceChange,
+      ],
+      subColor: ['neutral80', priceChangeColor],
+    },
+  ]
+  if (colRatio) {
+    detailsList.push({
+      label: t('system.collateral-ratio'),
+      value: `${colRatio}%`,
+    })
+  }
+
+  return <VaultHeadline header={header} token={token} details={detailsList} />
 }
