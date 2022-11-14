@@ -101,6 +101,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
                 token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
+              orderBy: { vault_debt: 'desc' },
             })
           ).map((item) => ({
             asset: item.token,
