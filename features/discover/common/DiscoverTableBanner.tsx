@@ -1,5 +1,4 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
-import { AppLink } from 'components/Links'
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import { useTranslation } from 'next-i18next'
@@ -36,14 +35,15 @@ export function DiscoverTableBanner({
         </Text>
       </Box>
       <Box sx={{ flexShrink: 0, width: ['100%', null, 'auto'] }}>
-        <AppLink
+        <a
           href={link}
+          target="_blank"
           onClick={() => {
             trackingEvents.discover.clickedTableBanner(kind, link, userContext)
           }}
         >
           <Button variant="action">{t(`discover.table.banner.${kind}.cta`)}</Button>
-        </AppLink>
+        </a>
       </Box>
     </Flex>
   )

@@ -4,6 +4,7 @@ import {
   DiscoverTableRowData,
 } from 'features/discover/types'
 import { useObservable } from 'helpers/observableHook'
+import getConfig from 'next/config'
 import { stringify } from 'querystring'
 import { of } from 'ramda'
 import { useMemo } from 'react'
@@ -21,8 +22,12 @@ export interface DiscoverDataResponse {
 }
 
 function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverDataResponse> {
+  const url = getConfig()?.isProduction
+    ? `${endpoint}?${query}`
+    : `/api/proxy?url=https://staging.oasis.app${endpoint}?${query}`
+
   return ajax({
-    url: `${endpoint}?${query}`,
+    url,
     method: 'GET',
   }).pipe(
     map(({ response }) => response),

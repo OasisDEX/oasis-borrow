@@ -162,7 +162,7 @@
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
         "activity": "Activity",
-        "asset": "Asset",
+        "asset": "Vault",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
         "collateral-value": "Collateral value",
@@ -179,7 +179,7 @@
       "status": {
         "1": "Liquidated {{timeAgo}}",
         "2": "Being liquidated",
-        "3": "{{tillLiquidation}}% till liquidation",
+        "3": "{{tillLiquidation}}% until liquidation",
         "4": "{{toStopLoss}}% to Stop-loss"
       },
       "activity": {
@@ -192,8 +192,8 @@
       },
       "banner": {
         "highest-risk-positions": {
-          "title": "Mutiply your crypto assets with Stop-Loss Vault Protection",
-          "description": "All Multiply Vaults on Oasis.app allow you to protect yourself from liquidation with automated Stop-Loss Protection.",
+          "title": "Protect your Multiply vault using Stop-Loss",
+          "description": "All Multiply Vaults on Oasis.app allow you to protect your position from liquidation using automated Stop-Loss Protection.",
           "cta": "Get started with Multiply"
         },
         "highest-multiply-pnl": {
@@ -203,11 +203,11 @@
         },
         "most-yield-earned": {
           "title": "Put your crypto to work today and start earning a yield",
-          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "description": "Oasis Earn offers a set of curated sustainable yield products allowing you to take advantage of the best strategies that Defi has to offer.",
           "cta": "Get started with Earn"
         },
         "largest-debt": {
-          "title": "Borrow against your crypto today.",
+          "title": "Borrow against your crypto today",
           "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
           "cta": "Get started with Borrow"
         }
