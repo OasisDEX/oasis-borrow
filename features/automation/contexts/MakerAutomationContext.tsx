@@ -33,7 +33,7 @@ export function MakerAutomationContext({
     <AutomationContextInput
       positionData={positionData}
       commonData={commonData}
-      protocol={VaultProtocol.Aave}
+      protocol={VaultProtocol.Maker}
     >
       {children}
     </AutomationContextInput>
