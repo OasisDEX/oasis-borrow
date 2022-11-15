@@ -9,6 +9,7 @@ import {
 } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 
@@ -16,6 +17,7 @@ interface GetAutoFeaturesSidebarDropdownProps {
   type: AutomationTypes
   forcePanel: AutomationProtectionFeatures | AutomationOptimizationFeatures
   vaultType: VaultType
+  protocol: VaultProtocol
   disabled?: boolean
   isStopLossEnabled?: boolean
   isAutoSellEnabled?: boolean
@@ -69,6 +71,7 @@ export function getAutoFeaturesSidebarDropdown({
   isAutoConstantMultipleEnabled,
   isAutoTakeProfitEnabled,
   vaultType,
+  protocol,
 }: GetAutoFeaturesSidebarDropdownProps): SidebarSectionHeaderDropdown | undefined {
   const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
 
@@ -105,7 +108,12 @@ export function getAutoFeaturesSidebarDropdown({
 
   const items = [
     ...(type === 'Protection'
-      ? [stopLossDropdownItem, ...(!isAutoConstantMultipleEnabled ? [autoSellDropdownItem] : [])]
+      ? [
+          stopLossDropdownItem,
+          ...(!isAutoConstantMultipleEnabled && protocol === VaultProtocol.Maker
+            ? [autoSellDropdownItem]
+            : []),
+        ]
       : []),
     ...(type === 'Optimization'
       ? [

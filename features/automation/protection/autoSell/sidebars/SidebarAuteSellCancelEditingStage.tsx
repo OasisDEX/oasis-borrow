@@ -16,12 +16,12 @@ interface AutoSellInfoSectionControlProps {
 function AutoSellInfoSectionControl({ autoSellState }: AutoSellInfoSectionControlProps) {
   const { t } = useTranslation()
   const {
-    positionData: { debt, collateralizationRatio, liquidationPrice },
+    positionData: { debt, positionRatio, liquidationPrice },
   } = useAutomationContext()
 
   return (
     <CancelAutoBSInfoSection
-      collateralizationRatio={collateralizationRatio}
+      positionRatio={positionRatio}
       liquidationPrice={liquidationPrice}
       debt={debt}
       title={t('auto-sell.cancel-summary-title')}

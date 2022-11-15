@@ -14,7 +14,7 @@ interface ContentCardStopLossCollateralRatioProps {
   isStopLossEnabled: boolean
   isEditing: boolean
   slRatio: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   afterSlRatio: BigNumber
 }
 
@@ -45,7 +45,7 @@ export function ContentCardStopLossCollateralRatio({
   isEditing,
   slRatio,
   afterSlRatio,
-  collateralizationRatio,
+  positionRatio,
 }: ContentCardStopLossCollateralRatioProps) {
   const { t } = useTranslation()
 
@@ -53,7 +53,7 @@ export function ContentCardStopLossCollateralRatio({
     slRatio: formatPercent(slRatio.times(100), {
       precision: 2,
     }),
-    belowCurrentCollRatio: formatPercent(collateralizationRatio.minus(slRatio).times(100), {
+    belowCurrentCollRatio: formatPercent(positionRatio.minus(slRatio).times(100), {
       precision: 2,
     }),
     afterSlRatio: formatPercent(afterSlRatio.times(100), {

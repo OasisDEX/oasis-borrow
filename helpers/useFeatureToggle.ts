@@ -22,6 +22,7 @@ export type Feature =
   | 'DiscoverOasis'
   | 'ShowAaveStETHETHProductCard'
   | 'FollowVaults'
+  | 'AaveProtection'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -42,6 +43,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   DiscoverOasis: false,
   ShowAaveStETHETHProductCard: true,
   FollowVaults: false,
+  AaveProtection: false,
   // your feature here....
 }
 

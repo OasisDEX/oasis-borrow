@@ -86,7 +86,8 @@ export function SidebarSetupConstantMultiple({
     constantMultipleTriggerData,
     stopLossTriggerData,
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
-    positionData: { debt, debtFloor, collateralizationRatioAtNextPrice, token, vaultType },
+    positionData: { debt, debtFloor, nextPositionRatio, token, vaultType },
+    protocol,
   } = useAutomationContext()
 
   const { isAwaitingConfirmation } = constantMultipleState
@@ -105,6 +106,7 @@ export function SidebarSetupConstantMultiple({
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
+    protocol,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -148,7 +150,7 @@ export function SidebarSetupConstantMultiple({
     autoTakeProfitExecutionPrice: autoTakeProfitTriggerData.executionPrice,
     debt,
     token,
-    collateralizationRatioAtNextPrice,
+    nextPositionRatio,
   })
   const cancelConstantMultipleErrors = extractCancelAutomationErrors(errors)
   const cancelConstantMultipleWarnings = extractCancelAutomationWarnings(warnings)

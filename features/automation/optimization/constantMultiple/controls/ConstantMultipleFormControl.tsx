@@ -39,7 +39,7 @@ export function ConstantMultipleFormControl({
     autoSellTriggerData,
     constantMultipleTriggerData,
     environmentData: { canInteract, ethMarketPrice },
-    positionData: { id, owner, debt, collateralizationRatio, lockedCollateral },
+    positionData: { id, owner, debt, positionRatio, lockedCollateral },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.CONSTANT_MULTIPLE
@@ -78,7 +78,7 @@ export function ConstantMultipleFormControl({
     isRemoveForm,
     stage,
     debt,
-    collateralizationRatio,
+    positionRatio,
     lockedCollateral,
   })
   const { addTxData, textButtonHandlerExtension } = getConstantMultipleTxHandlers({
@@ -89,7 +89,7 @@ export function ConstantMultipleFormControl({
     isAddForm,
     id,
     owner,
-    collateralizationRatio,
+    positionRatio,
   })
 
   return (

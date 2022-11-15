@@ -21,7 +21,7 @@ export function warningsConstantMultipleValidation({
   constantMultipleBuyExecutionPrice,
   debt,
   token,
-  collateralizationRatioAtNextPrice,
+  nextPositionRatio,
 }: {
   token: string
   ethBalance: BigNumber
@@ -38,7 +38,7 @@ export function warningsConstantMultipleValidation({
   constantMultipleState: ConstantMultipleFormChange
   autoTakeProfitExecutionPrice: BigNumber
   constantMultipleBuyExecutionPrice: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
+  nextPositionRatio: BigNumber
 }) {
   const {
     sellExecutionCollRatio,
@@ -60,12 +60,12 @@ export function warningsConstantMultipleValidation({
   const addingConstantMultipleWhenAutoSellOrBuyEnabled = isAutoBuyEnabled || isAutoSellEnabled
 
   const constantMultipleAutoSellTriggeredImmediately =
-    sellExecutionCollRatio.div(100).gte(collateralizationRatioAtNextPrice) &&
+    sellExecutionCollRatio.div(100).gte(nextPositionRatio) &&
     !debtFloor.gt(debt.plus(debtDeltaWhenSellAtCurrentCollRatio))
 
   const constantMultipleAutoBuyTriggeredImmediately = buyExecutionCollRatio
     .div(100)
-    .lte(collateralizationRatioAtNextPrice)
+    .lte(nextPositionRatio)
 
   const noMinSellPriceWhenStopLossEnabled = !sellWithThreshold && isStopLossEnabled
 

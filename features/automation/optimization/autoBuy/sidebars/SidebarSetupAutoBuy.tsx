@@ -78,7 +78,8 @@ export function SidebarSetupAutoBuy({
     constantMultipleTriggerData,
     stopLossTriggerData,
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
-    positionData: { collateralizationRatioAtNextPrice, token, liquidationRatio, vaultType },
+    positionData: { nextPositionRatio, token, liquidationRatio, vaultType },
+    protocol,
   } = useAutomationContext()
 
   const { isAwaitingConfirmation } = autoBuyState
@@ -97,6 +98,7 @@ export function SidebarSetupAutoBuy({
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
+    protocol,
   })
 
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
@@ -135,7 +137,7 @@ export function SidebarSetupAutoBuy({
     executionPrice,
     autoTakeProfitExecutionPrice: autoTakeProfitTriggerData.executionPrice,
     token,
-    collateralizationRatioAtNextPrice,
+    nextPositionRatio,
   })
   const errors = errorsAutoBuyValidation({
     autoBuyState,

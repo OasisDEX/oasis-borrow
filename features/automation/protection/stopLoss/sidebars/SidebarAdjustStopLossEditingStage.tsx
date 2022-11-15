@@ -23,7 +23,9 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
   DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { getStartingSlRatio } from 'features/automation/protection/stopLoss/helpers'
 import {
   STOP_LOSS_FORM_CHANGE,
@@ -157,7 +159,7 @@ export function SidebarAdjustStopLossEditingStage({
   const {
     stopLossTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, token, debt, liquidationRatio, collateralizationRatio, debtFloor },
+    positionData: { id, ilk, token, debt, liquidationRatio, positionRatio, debtFloor },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -169,7 +171,7 @@ export function SidebarAdjustStopLossEditingStage({
         {
           vaultId: id ? id.toString() : 'n/a',
           ilk: ilk,
-          collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
+          collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },
       ),
@@ -177,12 +179,22 @@ export function SidebarAdjustStopLossEditingStage({
   )
 
   const isVaultEmpty = debt.isZero()
+  const feature = t(sidebarAutomationFeatureCopyMap[AutomationFeatures.STOP_LOSS])
 
-  if (isVaultEmpty && !stopLossTriggerData.isStopLossEnabled) {
+  if (isVaultEmpty && stopLossTriggerData.isStopLossEnabled) {
     return (
       <SidebarFormInfo
-        title={t('protection.closed-vault-not-existing-trigger-header')}
-        description={t('protection.closed-vault-not-existing-trigger-description')}
+        title={t('automation.closed-vault-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-existing-trigger-description', { feature })}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
       />
     )
   }

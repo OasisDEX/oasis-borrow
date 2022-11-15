@@ -13,7 +13,7 @@ interface GetAutoBSTxHandlersParams {
   isAddForm: boolean
   publishType: AutomationBSPublishType
   triggerType: AutoBSTriggerTypes
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   id: BigNumber
   owner: string
 }
@@ -29,7 +29,7 @@ export function getAutoBSTxHandlers({
   isAddForm,
   publishType,
   triggerType,
-  collateralizationRatio,
+  positionRatio,
   id,
   owner,
 }: GetAutoBSTxHandlersParams): AutoBSTxHandlers {
@@ -57,7 +57,7 @@ export function getAutoBSTxHandlers({
       autoBSState.maxBuyOrMinSellPrice?.toNumber(),
       autoBSState.triggerId.toNumber(),
       autoBSState.maxBaseFeeInGwei.toNumber(),
-      collateralizationRatio.toNumber(),
+      positionRatio.toNumber(),
     ],
   )
 

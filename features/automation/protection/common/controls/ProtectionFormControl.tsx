@@ -10,6 +10,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
@@ -22,6 +23,7 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
     stopLossTriggerData,
     autoSellTriggerData,
     automationTriggersData,
+    protocol,
   } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -51,18 +53,31 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
     }
   }, [autoSellTriggerData.isTriggerEnabled, stopLossTriggerData.isStopLossEnabled])
 
-  return (
-    <>
-      <StopLossFormControl
-        isStopLossActive={isStopLossActive}
-        txHelpers={txHelpers}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-      />
-      <AutoSellFormControl
-        isAutoSellActive={isAutoSellActive}
-        txHelpers={txHelpers}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-      />
-    </>
-  )
+  switch (protocol) {
+    case VaultProtocol.Maker:
+      return (
+        <>
+          <StopLossFormControl
+            isStopLossActive={isStopLossActive}
+            txHelpers={txHelpers}
+            shouldRemoveAllowance={shouldRemoveAllowance}
+          />
+          <AutoSellFormControl
+            isAutoSellActive={isAutoSellActive}
+            txHelpers={txHelpers}
+            shouldRemoveAllowance={shouldRemoveAllowance}
+          />
+        </>
+      )
+    case VaultProtocol.Aave:
+      return (
+        <StopLossFormControl
+          isStopLossActive={isStopLossActive}
+          txHelpers={txHelpers}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+        />
+      )
+    default:
+      return null
+  }
 }

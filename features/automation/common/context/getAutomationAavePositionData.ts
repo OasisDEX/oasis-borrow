@@ -26,8 +26,8 @@ export function getAutomationAavePositionData({
   const ilkOrToken = strategyConfig.tokens?.collateral!
 
   return {
-    collateralizationRatio: one.div(ltv.div(10000)),
-    collateralizationRatioAtNextPrice: one.div(ltv.div(10000)),
+    positionRatio: one.div(ltv.div(10000)),
+    nextPositionRatio: one.div(ltv.div(10000)),
     debt: totalDebtETH,
     debtFloor: position.category.dustLimit,
     debtOffset: zero,

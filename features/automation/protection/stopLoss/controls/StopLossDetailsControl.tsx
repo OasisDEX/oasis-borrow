@@ -29,8 +29,8 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
   const {
     stopLossTriggerData,
     positionData: {
-      collateralizationRatio,
-      collateralizationRatioAtNextPrice,
+      positionRatio,
+      nextPositionRatio,
       debt,
       id,
       ilk,
@@ -55,7 +55,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
           token={token}
           liquidationRatio={liquidationRatio}
           liquidationPenalty={liquidationPenalty}
-          collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+          nextPositionRatio={nextPositionRatio}
           isCollateralActive={!!stopLossState?.collateralActive}
           isEditing={checkIfIsEditingStopLoss({
             isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
@@ -65,7 +65,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
             isToCollateral: stopLossTriggerData.isToCollateral,
             isRemoveForm: stopLossState.currentForm === 'remove',
           })}
-          collateralizationRatio={collateralizationRatio}
+          positionRatio={positionRatio}
         />
       ) : (
         <Banner

@@ -157,9 +157,9 @@ export function ManageVaultDetails(
               changeVariant={changeVariant}
             />
             <ContentCardCollateralizationRatio
-              collateralizationRatio={collateralizationRatio}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-              afterCollateralizationRatio={afterCollateralizationRatio}
+              positionRatio={collateralizationRatio}
+              nextPositionRatio={collateralizationRatioAtNextPrice}
+              afterPositionRatio={afterCollateralizationRatio}
               changeVariant={changeVariant}
             />
             <ContentCardCollateralLocked

@@ -13,6 +13,8 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
+import { AutomationFeatures } from 'features/automation/common/types'
 import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
@@ -51,7 +53,7 @@ export function SidebarAutoTakeProfitEditingStage({
 
   const {
     autoTakeProfitTriggerData,
-    positionData: { ilk, id, collateralizationRatio, debt, debtFloor, token },
+    positionData: { ilk, id, positionRatio, debt, debtFloor, token },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -63,7 +65,7 @@ export function SidebarAutoTakeProfitEditingStage({
         {
           vaultId: id.toString(),
           ilk: ilk,
-          collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
+          collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
         },
       ),
@@ -81,11 +83,22 @@ export function SidebarAutoTakeProfitEditingStage({
     )
   }
 
+  const feature = t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_TAKE_PROFIT])
+
   if (isVaultEmpty && autoTakeProfitTriggerData.isTriggerEnabled) {
     return (
       <SidebarFormInfo
-        title={t('auto-take-profit.closed-vault-existing-trigger-header')}
-        description={t('auto-take-profit.closed-vault-existing-trigger-description')}
+        title={t('automation.closed-vault-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-existing-trigger-description', { feature })}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
       />
     )
   }
