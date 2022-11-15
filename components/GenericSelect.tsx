@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
 import { keyBy } from 'lodash'
@@ -54,7 +55,7 @@ export function GenericSelect({
   placeholder,
   wrapperSx,
 }: GenericSelectProps) {
-  const isMobile = useOnMobile() && window && 'ontouchstart' in window
+  const isMobile = useOnMobile() && isTouchDevice
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const [value, setValue] = useState<GenericSelectOption | undefined>(defaultValue)
