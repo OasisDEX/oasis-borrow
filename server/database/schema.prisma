@@ -15,23 +15,26 @@ model migrations {
 }
 
 model TosApproval {
-    id          Int      @id @default(autoincrement())
+    id          Int                       @id @default(autoincrement())
     address     String
     signature   String
     message     String
     chain_id    Int
     doc_version String
     sign_date   DateTime
+    vaults      users_who_follow_vaults[]
 
     @@unique([address, doc_version], name: "tos_approval_unique_signature")
+    @@unique([address, chain_id], name: "tos_approval_unique_addres_per_chain")
     @@map("tos_approval")
 }
 
 model Vault {
-    vault_id      Int       @unique
+    vault_id      Int                       @unique
     type          VaultType
     owner_address String
     chain_id      Int?
+    users         users_who_follow_vaults[]
 
     @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
     @@map("vault")
@@ -199,4 +202,14 @@ model LargestDebt {
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("largest_debt")
+}
+
+model users_who_follow_vaults {
+    user           TosApproval @relation(fields: [user_address, vault_chain_id], references: [address, chain_id])
+    user_address   String // relation scalar field (used in the `@relation` attribute above)
+    vault          Vault       @relation(fields: [vault_id, vault_chain_id], references: [vault_id, chain_id])
+    vault_id       Int // relation scalar field (used in the `@relation` attribute above)
+    vault_chain_id Int
+
+    @@id([user_address, vault_id, vault_chain_id])
 }
