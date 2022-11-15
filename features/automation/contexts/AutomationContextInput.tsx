@@ -49,7 +49,7 @@ export function AutomationContextInput({
           <AutomationContextProvider
             context={context}
             ethAndTokenPricesData={ethAndTokenPrices}
-            balanceInfo={balanceInfo}
+            ethBalance={balanceInfo.ethBalance}
             positionData={positionData}
             commonData={commonData}
             protocol={protocol}

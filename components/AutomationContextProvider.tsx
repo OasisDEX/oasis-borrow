@@ -29,7 +29,6 @@ import {
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
@@ -44,9 +43,9 @@ export interface AutomationEnvironmentData {
 }
 
 export interface AutomationCommonData {
-  controller?: string
   nextCollateralPrice: BigNumber
   token: string
+  controller?: string
 }
 
 export interface AutomationPositionData {
@@ -104,7 +103,7 @@ const automationContextInitialState = {
 }
 
 export interface AutomationContextProviderProps {
-  balanceInfo: BalanceInfo
+  ethBalance: BigNumber
   context: Context
   ethAndTokenPricesData: Tickers
   positionData: AutomationPositionData
@@ -114,7 +113,7 @@ export interface AutomationContextProviderProps {
 
 export function AutomationContextProvider({
   children,
-  balanceInfo,
+  ethBalance,
   context,
   ethAndTokenPricesData,
   protocol,
@@ -130,7 +129,7 @@ export function AutomationContextProvider({
   const environmentData = useMemo(
     () => ({
       canInteract: context.status === 'connected' && context.account === controller,
-      ethBalance: balanceInfo.ethBalance,
+      ethBalance,
       etherscanUrl: context.etherscan.url,
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
@@ -140,7 +139,7 @@ export function AutomationContextProvider({
       context.status,
       ethAndTokenPricesData['ETH'].toString(),
       ethAndTokenPricesData[token].toString(),
-      balanceInfo.ethBalance.toString(),
+      ethBalance.toString(),
       controller,
     ],
   )

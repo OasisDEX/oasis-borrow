@@ -173,7 +173,7 @@ export function getDataForStopLoss(
   }
 
   const automationContextProps = {
-    balanceInfo: { ethBalance } as BalanceInfo,
+    ethBalance,
     context: { status: 'connected', account: '0x0', etherscan: { url: '' } } as Context,
     ethAndTokenPricesData: { ETH: currentEthPrice, [token]: currentCollateralPrice } as Tickers,
     positionData: {
