@@ -1,4 +1,5 @@
 import { GenericSelect } from 'components/GenericSelect'
+import { DiscoverMultiselect } from 'features/discover/common/DiscoverMultiselect'
 import { DiscoverFiltersList, DiscoverFiltersListItem } from 'features/discover/meta'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
@@ -37,14 +38,17 @@ export function DiscoverFilters({
         }}
       >
         {Object.keys(filters).map((key) => (
-          <GenericSelect
-            key={key}
-            options={filters[key]}
-            defaultValue={filters[key][0]}
-            onChange={(currentValue) => {
-              onChange(key, currentValue)
-            }}
-          />
+          <>
+            <DiscoverMultiselect options={filters[key]} />
+            <GenericSelect
+              key={key}
+              options={filters[key]}
+              defaultValue={filters[key][0]}
+              onChange={(currentValue) => {
+                onChange(key, currentValue)
+              }}
+            />
+          </>
         ))}
       </Grid>
     </Box>
