@@ -25,6 +25,7 @@ export interface StrategyConfig {
     minimum: IRiskRatio
     default: IRiskRatio
   }
+  enabled: boolean
 }
 
 export type AaveHeaderProps = {
