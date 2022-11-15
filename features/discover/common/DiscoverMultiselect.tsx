@@ -3,12 +3,17 @@ import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { GenericSelectOption } from 'components/GenericSelect'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Text } from 'theme-ui'
 
 export function DiscoverMultiselect({ options }: { options: GenericSelectOption[] }) {
+  const [values, setValues] = useState<string[]>([])
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const ref = useOutsideElementClickHandler(() => setIsOpen(false))
+
+  useEffect(() => {
+    console.log(values)
+  }, [values])
 
   return (
     <Box sx={{ position: 'relative', zIndex: 2 }} ref={ref}>
@@ -18,7 +23,8 @@ export function DiscoverMultiselect({ options }: { options: GenericSelectOption[
           display: 'flex',
           alignItems: 'center',
           height: '56px',
-          p: '0 42px 0 16px',
+          pr: '42px',
+          pl: 3,
           border: '1px solid',
           borderColor: isOpen ? 'primary100' : 'secondary100',
           borderRadius: 'medium',
@@ -82,7 +88,14 @@ export function DiscoverMultiselect({ options }: { options: GenericSelectOption[
         }}
       >
         {options.map((option) => (
-          <DiscoverMultiselectItem key={option.value} {...option} />
+          <DiscoverMultiselectItem
+            key={option.value}
+            {...option}
+            onClick={(value, label) => {
+              if (values.includes(value)) setValues(values.filter((item) => item !== value))
+              else setValues([...values, value])
+            }}
+          />
         ))}
       </Box>
     </Box>
@@ -92,24 +105,34 @@ export function DiscoverMultiselect({ options }: { options: GenericSelectOption[
 export function DiscoverMultiselectItem({
   icon,
   label,
-  isSelected,
-}: { isSelected?: boolean } & GenericSelectOption) {
+  onClick,
+  value,
+}: { onClick: (value: string, label: string) => void } & GenericSelectOption) {
   return (
     <Box
       as="li"
       sx={{
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        p: '12px 16px',
+        py: '12px',
+        pr: 3,
+        pl: '48px',
         fontSize: 3,
-        backgroundColor: isSelected ? 'neutral30' : 'transparent',
         transition: 'background-color 200ms',
         cursor: 'pointer',
         '&:hover': {
           backgroundColor: 'neutral30',
         },
       }}
+      onClick={() => onClick(value, label)}
     >
+      <Icon
+        size={14}
+        sx={{ position: 'absolute', top: 0, bottom: 0, left: '20px', margin: 'auto' }}
+        name="tick"
+        color="neutral80"
+      />
       {icon && <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={icon} />}
       {label}
     </Box>
