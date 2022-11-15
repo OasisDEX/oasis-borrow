@@ -4,8 +4,6 @@ import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { getAutomationEnvironment } from 'features/automation/common/context/getAutomationEnvironment'
-import { getAutomationPositionData } from 'features/automation/common/context/getAutomationPositionData'
 import {
   AutoBSTriggerData,
   defaultAutoBSData,
@@ -30,9 +28,9 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useStopLossStateInitializator } from 'features/automation/protection/stopLoss/state/useStopLossStateInitializator'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { getVaultProtocol, VaultProtocol } from 'helpers/getVaultProtocol'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
@@ -43,6 +41,12 @@ export interface AutomationEnvironmentData {
   ethMarketPrice: BigNumber
   nextCollateralPrice: BigNumber
   tokenMarketPrice: BigNumber
+}
+
+export interface AutomationCommonData {
+  controller?: string
+  nextCollateralPrice: BigNumber
+  token: string
 }
 
 export interface AutomationPositionData {
@@ -62,7 +66,7 @@ export interface AutomationPositionData {
   vaultType: VaultType
 }
 
-interface AutomationContext {
+export interface AutomationContext {
   autoBuyTriggerData: AutoBSTriggerData
   automationTriggersData: TriggersData
   autoSellTriggerData: AutoBSTriggerData
@@ -71,7 +75,7 @@ interface AutomationContext {
   stopLossTriggerData: StopLossTriggerData
   environmentData: AutomationEnvironmentData
   positionData: AutomationPositionData
-  vaultProtocol: VaultProtocol
+  protocol: VaultProtocol
 }
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
@@ -100,22 +104,24 @@ const automationContextInitialState = {
 }
 
 export interface AutomationContextProviderProps {
-  generalManageVault: GeneralManageVaultState
+  balanceInfo: BalanceInfo
   context: Context
   ethAndTokenPricesData: Tickers
+  positionData: AutomationPositionData
+  commonData: AutomationCommonData
+  protocol: VaultProtocol
 }
 
 export function AutomationContextProvider({
   children,
-  generalManageVault,
+  balanceInfo,
   context,
   ethAndTokenPricesData,
+  protocol,
+  positionData,
+  commonData,
 }: PropsWithChildren<AutomationContextProviderProps>) {
-  const vaultProtocol = getVaultProtocol()
-  const { controller, ethBalance, nextCollateralPrice, token } = getAutomationEnvironment({
-    generalManageVault,
-    vaultProtocol,
-  })
+  const { controller, nextCollateralPrice, token } = commonData
 
   if (!isAppContextAvailable()) {
     return null
@@ -124,7 +130,7 @@ export function AutomationContextProvider({
   const environmentData = useMemo(
     () => ({
       canInteract: context.status === 'connected' && context.account === controller,
-      ethBalance,
+      ethBalance: balanceInfo.ethBalance,
       etherscanUrl: context.etherscan.url,
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
@@ -132,22 +138,21 @@ export function AutomationContextProvider({
     }),
     [
       context.status,
-      generalManageVault,
       ethAndTokenPricesData['ETH'].toString(),
       ethAndTokenPricesData[token].toString(),
+      balanceInfo.ethBalance.toString(),
+      controller,
     ],
   )
-  const positionData = useMemo(
-    () => getAutomationPositionData({ generalManageVault, vaultProtocol }),
-    [generalManageVault, vaultProtocol],
-  )
 
-  const [autoContext, setAutoContext] = useState<AutomationContext>({
+  const initialAutoContext = {
     ...automationContextInitialState,
     environmentData,
     positionData,
-    vaultProtocol,
-  })
+    protocol,
+  }
+
+  const [autoContext, setAutoContext] = useState<AutomationContext>(initialAutoContext)
 
   const { automationTriggersData$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(positionData.id)
@@ -195,7 +200,8 @@ export function AutomationContextProvider({
 
   useEffect(() => {
     if (automationTriggersData) {
-      setAutoContext({
+      setAutoContext((prev) => ({
+        ...prev,
         autoBuyTriggerData: extractAutoBSData({
           triggersData: automationTriggersData,
           triggerType: TriggerType.BasicBuy,
@@ -208,12 +214,14 @@ export function AutomationContextProvider({
         constantMultipleTriggerData: extractConstantMultipleData(automationTriggersData),
         autoTakeProfitTriggerData: extractAutoTakeProfitData(automationTriggersData),
         automationTriggersData,
-        environmentData,
-        positionData,
-        vaultProtocol,
-      })
+        protocol,
+      }))
     }
-  }, [automationTriggersData, environmentData, positionData])
+  }, [automationTriggersData])
+
+  useEffect(() => {
+    setAutoContext((prev) => ({ ...prev, environmentData, positionData }))
+  }, [environmentData, positionData])
 
   return <automationContext.Provider value={autoContext}>{children}</automationContext.Provider>
 }
