@@ -15,15 +15,17 @@ model migrations {
 }
 
 model TosApproval {
-    id          Int      @id @default(autoincrement())
+    id          Int                       @id @default(autoincrement())
     address     String
     signature   String
     message     String
     chain_id    Int
     doc_version String
     sign_date   DateTime
+    vaults      users_who_follow_vaults[]
 
     @@unique([address, doc_version], name: "tos_approval_unique_signature")
+    @@unique([address, chain_id], name: "tos_approval_unique_addres_per_chain")
     @@map("tos_approval")
 }
 
@@ -46,14 +48,13 @@ enum VaultType {
 }
 
 model User {
-    address                    String                    @unique
-    timestamp                  DateTime                  @default(now())
+    address                    String        @unique
+    timestamp                  DateTime      @default(now())
     user_that_referred_address String?
-    user_that_referred         User?                     @relation("UserToUser", fields: [user_that_referred_address], references: [address])
-    referred_users             User[]                    @relation("UserToUser")
+    user_that_referred         User?         @relation("UserToUser", fields: [user_that_referred_address], references: [address])
+    referred_users             User[]        @relation("UserToUser")
     weekly_claims              WeeklyClaim[]
     accepted                   Boolean
-    vaults                     users_who_follow_vaults[]
 
     @@map("user")
 }
@@ -204,9 +205,9 @@ model LargestDebt {
 }
 
 model users_who_follow_vaults {
-    user           User   @relation(fields: [user_address], references: [address])
+    user           TosApproval @relation(fields: [user_address, vault_chain_id], references: [address, chain_id])
     user_address   String // relation scalar field (used in the `@relation` attribute above)
-    vault          Vault  @relation(fields: [vault_id, vault_chain_id], references: [vault_id, chain_id])
+    vault          Vault       @relation(fields: [vault_id, vault_chain_id], references: [vault_id, chain_id])
     vault_id       Int // relation scalar field (used in the `@relation` attribute above)
     vault_chain_id Int
 
