@@ -4,6 +4,7 @@ import {
   DiscoverTableRowData,
 } from 'features/discover/types'
 import { useObservable } from 'helpers/observableHook'
+import getConfig from 'next/config'
 import { stringify } from 'querystring'
 import { of } from 'ramda'
 import { useMemo } from 'react'
@@ -21,8 +22,13 @@ export interface DiscoverDataResponse {
 }
 
 function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverDataResponse> {
+  const isProduction = getConfig()?.isProduction
+  const discoverProxyUrl = getConfig()?.publicRuntimeConfig?.discoverProxyUrl
+
+  const url = `${!isProduction && discoverProxyUrl ? discoverProxyUrl : ''}${endpoint}?${query}`
+
   return ajax({
-    url: `${endpoint}?${query}`,
+    url,
     method: 'GET',
   }).pipe(
     map(({ response }) => response),
