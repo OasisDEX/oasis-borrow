@@ -917,7 +917,9 @@
       }
     },
     "remove-trigger": "Remove trigger",
-    "add-trigger": "Add trigger"
+    "add-trigger": "Add trigger",
+    "loan-to-value": "Loan to Value",
+    "position-debt": "Position Debt"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
