@@ -22,9 +22,10 @@ export interface DiscoverDataResponse {
 }
 
 function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverDataResponse> {
-  const url = getConfig()?.isProduction
-    ? `${endpoint}?${query}`
-    : `/api/proxy?url=https://staging.oasis.app${endpoint}?${query}`
+  const isProduction = getConfig()?.isProduction
+  const discoverProxyUrl = getConfig()?.publicRuntimeConfig?.discoverProxyUrl
+
+  const url = `${!isProduction && discoverProxyUrl ? discoverProxyUrl : ''}${endpoint}?${query}`
 
   return ajax({
     url,
