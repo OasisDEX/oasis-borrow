@@ -60,7 +60,10 @@ export function getStatus(item: HighestRiskPositions) {
           toStopLoss: item.collateral_ratio
             .mul(100)
             .minus(new Prisma.Decimal(status.additionalData!.stopLossLevel!))
-            .floor(),
+            .mul(100)
+            .div(item.collateral_ratio)
+            .floor()
+            .div(100),
         },
       }
     case DiscoverTableVaultStatus.LIQUIDATED:
