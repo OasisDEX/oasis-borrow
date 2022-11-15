@@ -1,29 +1,44 @@
+import BigNumber from 'bignumber.js'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
-import { zero } from 'helpers/zero'
+import { AaveManageVaultState } from 'features/automation/contexts/AaveAutomationContext'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { one, zero } from 'helpers/zero'
 
 interface GetAutomationAavePositionDataParams {
-  generalManageVault: GeneralManageVaultState
+  aaveManageVault: AaveManageVaultState
+  vaultType?: VaultType
 }
 
 export function getAutomationAavePositionData({
-  generalManageVault,
+  aaveManageVault,
+  vaultType = VaultType.Borrow,
 }: GetAutomationAavePositionDataParams): AutomationPositionData {
-  //TODO: fill with actual AAVE data
+  const {
+    address,
+    aaveProtocolData: {
+      accountData: { ltv, totalDebtETH, currentLiquidationThreshold, totalCollateralETH },
+      position,
+    },
+    aaveReserveState: { liquidationBonus },
+    strategyConfig,
+  } = aaveManageVault
+
+  const ilkOrToken = strategyConfig.tokens?.collateral!
+
   return {
-    collateralizationRatio: zero,
-    collateralizationRatioAtNextPrice: zero,
-    debt: zero,
-    debtFloor: zero,
+    collateralizationRatio: one.div(ltv.div(10000)),
+    collateralizationRatioAtNextPrice: one.div(ltv.div(10000)),
+    debt: totalDebtETH,
+    debtFloor: position.category.dustLimit,
     debtOffset: zero,
-    id: zero,
-    ilk: '',
-    liquidationPenalty: zero,
-    liquidationPrice: zero,
-    liquidationRatio: zero,
-    lockedCollateral: zero,
-    owner: '',
-    token: '',
-    vaultType: generalManageVault.type,
+    id: new BigNumber(parseInt(address, 16)),
+    ilk: ilkOrToken,
+    liquidationPenalty: liquidationBonus.div(10000),
+    liquidationPrice: position.liquidationPrice,
+    liquidationRatio: currentLiquidationThreshold.div(10000),
+    lockedCollateral: totalCollateralETH,
+    owner: address,
+    token: ilkOrToken,
+    vaultType,
   }
 }

@@ -10,6 +10,7 @@ import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { getToken } from 'blockchain/tokensMetadata'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
+import { AutomationPositionData } from 'components/AutomationContextProvider'
 import {
   closeVaultOptions,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
@@ -19,10 +20,10 @@ import { getSliderPercentageFill } from 'features/automation/protection/stopLoss
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
@@ -172,29 +173,31 @@ export function getDataForStopLoss(
   }
 
   const automationContextProps = {
-    generalManageVault: {
-      state: {
-        balanceInfo: { ethBalance },
-        vault: {
-          id: zero,
-          token,
-          ilk,
-          debt,
-          debtOffset: zero,
-          owner: proxyAddress,
-          controller: '0x0',
-          lockedCollateral,
-          collateralizationRatio: afterCollateralizationRatio,
-          collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
-          liquidationPrice: afterLiquidationPrice,
-        },
-        priceInfo: { nextCollateralPrice },
-        ilkData: { liquidationRatio, debtFloor, liquidationPenalty },
-      },
-      type: feature,
-    } as GeneralManageVaultState,
+    ethBalance,
     context: { status: 'connected', account: '0x0', etherscan: { url: '' } } as Context,
     ethAndTokenPricesData: { ETH: currentEthPrice, [token]: currentCollateralPrice } as Tickers,
+    positionData: {
+      collateralizationRatio: afterCollateralizationRatio,
+      collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
+      debt,
+      debtFloor,
+      debtOffset: zero,
+      id: zero,
+      ilk,
+      liquidationPenalty,
+      liquidationPrice: afterLiquidationPrice,
+      liquidationRatio,
+      lockedCollateral,
+      owner: proxyAddress,
+      token,
+      vaultType: feature,
+    } as AutomationPositionData,
+    commonData: {
+      controller: '0x0',
+      nextCollateralPrice,
+      token,
+    },
+    protocol: VaultProtocol.Maker,
   }
 
   return { stopLossSidebarProps, automationContextProps }

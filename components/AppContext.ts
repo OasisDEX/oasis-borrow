@@ -1183,6 +1183,7 @@ export function setupAppContext() {
     aaveAvailableLiquidityETH$,
     aaveUserAccountData$,
     hasActiveAavePosition$,
+    balanceInfo$,
   }
 }
 
