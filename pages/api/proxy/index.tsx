@@ -8,9 +8,7 @@ const handler: NextApiHandler = async (req, res) => {
         const response = await fetch(req.url.replace('/api/proxy?url=', ''))
 
         return res.status(response.status).json(await response.json())
-      } else {
-        return res.status(500).end()
-      }
+      } else return res.status(500).end()
     default:
       return res.status(405).end()
   }
