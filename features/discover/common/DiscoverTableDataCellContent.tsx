@@ -75,7 +75,7 @@ export function DiscoverTableDataCellContent({
     case 'maxLiquidationAmount':
     case 'nextOsmPrice':
     case 'pnl':
-      return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
+      return <>{formatPercent(new BigNumber(row[label]))}</>
     case 'earningsToDate':
     case 'netValue':
     case 'vaultDebt':
