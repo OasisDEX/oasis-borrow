@@ -111,7 +111,7 @@ export function createOpenAaveStateMachine(
                 },
                 ERROR_GETTING_STRATEGY: {
                   target: 'idle',
-                }
+                },
               },
             },
           },
@@ -281,9 +281,10 @@ export function createOpenAaveStateMachine(
           }
         }),
         setTotalSteps: assign((_, event) => ({
-          totalSteps: event.connectedProxyAddress === undefined
-            ? STEPS_WITH_PROXY_CREATION
-            : STEPS_WITHOUT_PROXY_CREATION
+          totalSteps:
+            event.connectedProxyAddress === undefined
+              ? STEPS_WITH_PROXY_CREATION
+              : STEPS_WITHOUT_PROXY_CREATION,
         })),
         setAmount: assign((context, event) => {
           return {

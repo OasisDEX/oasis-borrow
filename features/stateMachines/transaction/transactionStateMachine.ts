@@ -112,7 +112,10 @@ export function createTransactionStateMachine<T extends TxMeta>(
           }
         }),
         sendSuccess: sendParent('TRANSACTION_COMPLETED'),
-        sendFailure: sendParent((context) => ({ type: 'TRANSACTION_FAILED', error: context.txError })),
+        sendFailure: sendParent((context) => ({
+          type: 'TRANSACTION_FAILED',
+          error: context.txError,
+        })),
       },
     },
   )

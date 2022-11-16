@@ -2,7 +2,7 @@ import { IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
-import {  distinctUntilChanged, map } from 'rxjs/operators'
+import { distinctUntilChanged, map } from 'rxjs/operators'
 import { actions, createMachine, sendParent } from 'xstate'
 
 import { callOperationExecutor } from '../../../blockchain/calls/operationExecutor'
@@ -85,7 +85,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             onError: {
               actions: ['sendError'],
               target: 'idle',
-            }
+            },
           },
         },
         estimating: {
@@ -93,8 +93,8 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             src: 'estimateGas',
             id: 'gas-estimation',
             onError: {
-              actions: ['setErrorGasPrice', 'sendGasEstimation']
-            }
+              actions: ['setErrorGasPrice', 'sendGasEstimation'],
+            },
           },
           initial: 'gas',
           states: {

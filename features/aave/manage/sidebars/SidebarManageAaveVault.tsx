@@ -91,36 +91,40 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-  function GetReviewingSidebarProps({ state, send }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
-    const { t } = useTranslation()
-    const { operationName } = state.context
+function GetReviewingSidebarProps({
+  state,
+  send,
+}: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
+  const { t } = useTranslation()
+  const { operationName } = state.context
 
-    if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
-      return {
-        title: t('manage-earn.aave.vault-form.close-title'),
-        content: (<Grid gap={3}>
+  if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
+    return {
+      title: t('manage-earn.aave.vault-form.close-title'),
+      content: (
+        <Grid gap={3}>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('manage-earn.aave.vault-form.close-description')}
           </Text>
           <EthBalanceAfterClose state={state} send={send} />
           <StrategyInformationContainer state={state} />
-        </Grid>)
-      }
+        </Grid>
+      ),
     }
-      else {
-        return {
-          title: t('manage-earn.aave.vault-form.adjust-title'),
-          content: (
-            <Grid gap={3}>
-              <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-                {t('manage-earn.aave.vault-form.adjust-description')}
-              </Text>
-              <StrategyInformationContainer state={state} />
-            </Grid>
-          ),
-        }
-      }
+  } else {
+    return {
+      title: t('manage-earn.aave.vault-form.adjust-title'),
+      content: (
+        <Grid gap={3}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+            {t('manage-earn.aave.vault-form.adjust-description')}
+          </Text>
+          <StrategyInformationContainer state={state} />
+        </Grid>
+      ),
+    }
   }
+}
 
 function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
