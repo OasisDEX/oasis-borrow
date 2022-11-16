@@ -68,7 +68,7 @@ function mapFeatureToggles(
   for (const key of Object.keys(localFeatureToggles)) {
     const featureToggleKey = normalizeFirstLetter(key) as keyof FeatureFlag
     const dbToggle = dbFeatureToggles.find(t => t.feature === featureToggleKey)
-    
+
     if (dbToggle) {
       mappedFeatureFlags[key] = dbToggle.enabled
     }
@@ -115,19 +115,17 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
   axios
     .get('/api/features')
     .then((res) => {
-      if (localStorage !== undefined) {
-        // Store values in localstorage becasue if there is a lost connection, features will be able to read from there.
-        if (res.data && process.env.NODE_ENV === 'production') {
-          // use DB in production only as a fallback
-          const featureToggles = res.data as FeatureFlag[]
-          const toggles = mapFeatureToggles(featureToggles, configuredFeatures)
+      // Store values in localstorage becasue if there is a lost connection, features will be able to read from there.
+      if (res.data && process.env.NODE_ENV === 'production') {
+        // use DB in production only as a fallback
+        const featureToggles = res.data as FeatureFlag[]
+        const toggles = mapFeatureToggles(featureToggles, configuredFeatures)
 
-          if (toggles) localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(toggles))
-        } else {
-          // Use this for dev experience, allows us to toggle features much quicker using chrome extension. Also, if the request fails, localstorage provides a fallback.
-          // No-yet-loaded features are always set to false in local storage even if true in code.
-          setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
-        }
+        if (toggles) localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(toggles))
+      } else {
+        // Use this for dev experience, allows us to toggle features much quicker using chrome extension. Also, if the request fails, localstorage provides a fallback.
+        // No-yet-loaded features are always set to false in local storage even if true in code.
+        setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
       }
     })
     .catch(() => {
