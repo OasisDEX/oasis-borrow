@@ -1,7 +1,10 @@
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
-import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import {
+  getAvailableAutomation,
+  getShouldRemoveAllowance,
+} from 'features/automation/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -24,6 +27,7 @@ export function OptimizationFormControl({ txHelpers }: OptimizationFormControlPr
     automationTriggersData,
     constantMultipleTriggerData,
     autoTakeProfitTriggerData,
+    protocol,
   } = useAutomationContext()
 
   const { uiChanges } = useAppContext()
@@ -69,23 +73,35 @@ export function OptimizationFormControl({ txHelpers }: OptimizationFormControlPr
     autoBuyTriggerData.isTriggerEnabled,
   ])
 
+  const {
+    isAutoBuyAvailable,
+    isConstantMultipleAvailable,
+    isTakeProfitAvailable,
+  } = getAvailableAutomation(protocol)
+
   return (
     <>
-      <AutoBuyFormControl
-        isAutoBuyActive={isAutoBuyActive}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-        txHelpers={txHelpers}
-      />
-      <ConstantMultipleFormControl
-        isConstantMultipleActive={isConstantMultipleActive}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-        txHelpers={txHelpers}
-      />
-      <AutoTakeProfitFormControl
-        isAutoTakeProfitActive={isAutoTakeProfitActive}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-        txHelpers={txHelpers}
-      />
+      {isAutoBuyAvailable && (
+        <AutoBuyFormControl
+          isAutoBuyActive={isAutoBuyActive}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+          txHelpers={txHelpers}
+        />
+      )}
+      {isConstantMultipleAvailable && (
+        <ConstantMultipleFormControl
+          isConstantMultipleActive={isConstantMultipleActive}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+          txHelpers={txHelpers}
+        />
+      )}
+      {isTakeProfitAvailable && (
+        <AutoTakeProfitFormControl
+          isAutoTakeProfitActive={isAutoTakeProfitActive}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+          txHelpers={txHelpers}
+        />
+      )}
     </>
   )
 }

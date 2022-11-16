@@ -50,8 +50,8 @@ export interface AutomationCommonData {
 }
 
 export interface AutomationPositionData {
-  collateralizationRatio: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
+  positionRatio: BigNumber
+  nextPositionRatio: BigNumber
   debt: BigNumber
   debtFloor: BigNumber
   debtOffset: BigNumber
@@ -163,21 +163,21 @@ export function AutomationContextProvider({
 
   useStopLossStateInitializator({
     liquidationRatio: positionData.liquidationRatio,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     stopLossTriggerData: autoContext.stopLossTriggerData,
   })
 
   useAutoBSstateInitialization({
     autoTriggersData: autoContext.autoSellTriggerData,
     stopLossTriggerData: autoContext.stopLossTriggerData,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     type: TriggerType.BasicSell,
   })
 
   useAutoBSstateInitialization({
     autoTriggersData: autoContext.autoBuyTriggerData,
     stopLossTriggerData: autoContext.stopLossTriggerData,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     type: TriggerType.BasicBuy,
   })
 
@@ -186,7 +186,7 @@ export function AutomationContextProvider({
     debt: positionData.debt,
     debtFloor: positionData.debtFloor,
     liquidationRatio: positionData.liquidationRatio,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     lockedCollateral: positionData.lockedCollateral,
     stopLossTriggerData: autoContext.stopLossTriggerData,
     autoSellTriggerData: autoContext.autoSellTriggerData,
@@ -197,7 +197,7 @@ export function AutomationContextProvider({
   useAutoTakeProfitStateInitializator({
     debt: positionData.debt,
     lockedCollateral: positionData.lockedCollateral,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     autoTakeProfitTriggerData: autoContext.autoTakeProfitTriggerData,
   })
 

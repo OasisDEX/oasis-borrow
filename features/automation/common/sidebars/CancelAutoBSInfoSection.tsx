@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface CancelAutoBSInfoSectionProps {
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   liquidationPrice: BigNumber
   debt: BigNumber
   title: string
@@ -18,7 +18,7 @@ interface CancelAutoBSInfoSectionProps {
 }
 
 export function CancelAutoBSInfoSection({
-  collateralizationRatio,
+  positionRatio,
   liquidationPrice,
   debt,
   title,
@@ -31,7 +31,7 @@ export function CancelAutoBSInfoSection({
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
 
   const liquidationPriceFormatted = formatAmount(liquidationPrice, 'USD')
-  const collateralizationRatioFormatted = formatPercent(collateralizationRatio.times(100), {
+  const positionRatioFormatted = formatPercent(positionRatio.times(100), {
     precision: 2,
   })
   const execCollRatioFormatted = formatPercent(autoBSState.execCollRatio, { precision: 2 })
@@ -57,7 +57,7 @@ export function CancelAutoBSInfoSection({
           : [
               {
                 label: t('system.collateral-ratio'),
-                value: collateralizationRatioFormatted,
+                value: positionRatioFormatted,
               },
               {
                 label: t('system.liquidation-price'),

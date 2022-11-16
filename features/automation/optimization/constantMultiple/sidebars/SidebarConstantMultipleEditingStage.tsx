@@ -16,7 +16,10 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
+import {
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  sidebarAutomationFeatureCopyMap,
+} from 'features/automation/common/consts'
 import {
   automationInputsAnalytics,
   automationMultipleRangeSliderAnalytics,
@@ -85,7 +88,7 @@ export function SidebarConstantMultipleEditingStage({
     autoSellTriggerData,
     constantMultipleTriggerData,
     stopLossTriggerData,
-    positionData: { ilk, id, collateralizationRatio, debt, debtFloor, token },
+    positionData: { ilk, id, positionRatio, debt, debtFloor, token },
   } = useAutomationContext()
 
   automationMultipleRangeSliderAnalytics({
@@ -97,7 +100,7 @@ export function SidebarConstantMultipleEditingStage({
     ).decimalPlaces(2),
     ilk,
     vaultId: id,
-    collateralizationRatio,
+    positionRatio,
   })
 
   automationInputsAnalytics({
@@ -108,7 +111,7 @@ export function SidebarConstantMultipleEditingStage({
     type: AutomationFeatures.CONSTANT_MULTIPLE,
     ilk,
     vaultId: id,
-    collateralizationRatio,
+    positionRatio,
   })
 
   const isVaultEmpty = debt.isZero()
@@ -123,11 +126,22 @@ export function SidebarConstantMultipleEditingStage({
     )
   }
 
+  const feature = t(sidebarAutomationFeatureCopyMap[AutomationFeatures.CONSTANT_MULTIPLE])
+
   if (isVaultEmpty && constantMultipleTriggerData.isTriggerEnabled) {
     return (
       <SidebarFormInfo
-        title={t('constant-multiple.closed-vault-existing-trigger-header')}
-        description={t('constant-multiple.closed-vault-existing-trigger-description')}
+        title={t('automation.closed-vault-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-existing-trigger-description', { feature })}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
       />
     )
   }

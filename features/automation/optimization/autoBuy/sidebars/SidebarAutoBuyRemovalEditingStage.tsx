@@ -43,12 +43,12 @@ interface AutoBuyInfoSectionControlProps {
 function AutoBuyInfoSectionControl({ autoBuyState }: AutoBuyInfoSectionControlProps) {
   const { t } = useTranslation()
   const {
-    positionData: { collateralizationRatio, liquidationPrice, debt },
+    positionData: { positionRatio, liquidationPrice, debt },
   } = useAutomationContext()
 
   return (
     <CancelAutoBSInfoSection
-      collateralizationRatio={collateralizationRatio}
+      positionRatio={positionRatio}
       liquidationPrice={liquidationPrice}
       title={t('auto-buy.cancel-summary-title')}
       targetLabel={t('auto-buy.target-col-ratio-each-buy')}

@@ -54,8 +54,8 @@ export function OpenVaultDetails(props: OpenVaultState) {
               changeVariant={changeVariant}
             />
             <ContentCardCollateralizationRatio
-              collateralizationRatio={collateralizationRatio}
-              afterCollateralizationRatio={afterCollateralizationRatio}
+              positionRatio={collateralizationRatio}
+              afterPositionRatio={afterCollateralizationRatio}
               changeVariant={changeVariant}
             />
             <ContentCardCollateralLocked

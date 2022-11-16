@@ -1327,8 +1327,6 @@
     "edit-order": "Edit Order",
     "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
-    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab",
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
   },
   "newsletter": {
@@ -1631,10 +1629,6 @@
     "set-min-sell-price": "Set Min Sell Price",
     "set-trigger-description": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a min sell price of ${{minSellPrice}}/{{token}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min sell price. Learn More ",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Sell is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Sell here or deposit into your vault in overview tab",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Auto-Sell",
-    "closed-vault-not-existing-trigger-description": "To enable Auto-Sell you need to generate Dai in overview tab",
     "adding-new-triggers-disabled": "Creation of the new Auto-Sell trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Sell triggers",
     "add-content": "Your vault is currently being updated to add your Auto-Sell. Auto-Sell will not be active until this completes.",
@@ -1682,8 +1676,6 @@
     "target-ratio-with-deviation": "Target ratio with deviation",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
     "col-to-be-purchased": "{{token}} to be purchased at next buy",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Buy is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Buy here or deposit into your vault in overview tab",
     "adding-new-triggers-disabled": "Creation of the new Auto-Buy trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Buy triggers",
     "add-content": "Your vault is currently being updated to add your Auto-Buy. Auto-Buy will not be active until this completes.",
@@ -1737,10 +1729,8 @@
     "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction.",
     "adding-new-triggers-disabled": "Creation of the new Take Profit trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Take Profit is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Take Profit here or deposit into your vault in overview tab"
+    "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
   },
-
   "automation": {
     "setup": "{{feature}} Setup",
     "trigger-added": "{{feature}} Enabled",
@@ -1760,7 +1750,10 @@
     "trigger-executed": "Your {{feature}} was triggered",
     "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger",
     "confirmation-text": "Confirm your {{feature}} setup",
-    "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
+    "closed-vault-existing-trigger-header": "Your vault is closed but {{feature}} is still active",
+    "closed-vault-existing-trigger-description": "You can cancel your existing {{feature}} here or deposit into your vault in overview tab",
+    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up {{feature}}",
+    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab"
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1812,9 +1805,7 @@
     "adding-new-triggers-disabled": "Creation of the new Constant Multiple trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Constant Multiple triggers",
     "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple.",
-    "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple.",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Constant Multiple is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Constant Multiple here or deposit into your vault in overview tab"
+    "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
     "banner": "Earn on ETH with our new stETH product. Check it out today",

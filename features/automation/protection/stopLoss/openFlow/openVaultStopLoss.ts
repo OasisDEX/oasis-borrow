@@ -177,8 +177,8 @@ export function getDataForStopLoss(
     context: { status: 'connected', account: '0x0', etherscan: { url: '' } } as Context,
     ethAndTokenPricesData: { ETH: currentEthPrice, [token]: currentCollateralPrice } as Tickers,
     positionData: {
-      collateralizationRatio: afterCollateralizationRatio,
-      collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
+      positionRatio: afterCollateralizationRatio,
+      nextPositionRatio: afterCollateralizationRatioAtNextPrice,
       debt,
       debtFloor,
       debtOffset: zero,

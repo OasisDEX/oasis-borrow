@@ -1,6 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationFeatures, AutomationKinds } from 'features/automation/common/types'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { FixedSizeArray } from 'helpers/types'
 import { one } from 'helpers/zero'
 
@@ -59,4 +60,15 @@ export const autoKindToCopyMap = {
 export enum CloseVaultToEnum {
   DAI = 'dai',
   COLLATERAL = 'collateral',
+}
+
+export const protocolAutomations = {
+  [VaultProtocol.Maker]: [
+    AutomationFeatures.STOP_LOSS,
+    AutomationFeatures.AUTO_SELL,
+    AutomationFeatures.AUTO_BUY,
+    AutomationFeatures.CONSTANT_MULTIPLE,
+    AutomationFeatures.AUTO_TAKE_PROFIT,
+  ],
+  [VaultProtocol.Aave]: [AutomationFeatures.STOP_LOSS],
 }

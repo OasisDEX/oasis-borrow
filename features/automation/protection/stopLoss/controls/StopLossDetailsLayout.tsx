@@ -19,8 +19,8 @@ export interface StopLossDetailsLayoutProps {
   afterSlRatio: BigNumber
   isCollateralActive: boolean
   isEditing: boolean
-  collateralizationRatioAtNextPrice: BigNumber
-  collateralizationRatio: BigNumber
+  nextPositionRatio: BigNumber
+  positionRatio: BigNumber
 }
 
 export function StopLossDetailsLayout({
@@ -34,8 +34,8 @@ export function StopLossDetailsLayout({
   afterSlRatio,
   isCollateralActive,
   isEditing,
-  collateralizationRatioAtNextPrice,
-  collateralizationRatio,
+  nextPositionRatio,
+  positionRatio,
 }: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
 
@@ -52,12 +52,12 @@ export function StopLossDetailsLayout({
               isStopLossEnabled={isStopLossEnabled}
               isEditing={isEditing}
               slRatio={slRatio}
-              collateralizationRatio={collateralizationRatio}
+              positionRatio={positionRatio}
               afterSlRatio={afterSlRatio}
             />
             <ContentCardCollateralizationRatio
-              collateralizationRatio={collateralizationRatio}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+              positionRatio={positionRatio}
+              nextPositionRatio={nextPositionRatio}
             />
             <ContentCardDynamicStopPrice
               isStopLossEnabled={isStopLossEnabled}

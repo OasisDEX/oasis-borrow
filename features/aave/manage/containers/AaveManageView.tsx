@@ -2,6 +2,7 @@ import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { useAppContext } from 'components/AppContextProvider'
 import { TabBar } from 'components/TabBar'
+import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
 import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
@@ -10,6 +11,7 @@ import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
@@ -44,6 +46,7 @@ function AaveManageContainer({
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const aaveProtection = useFeatureToggle('AaveProtection')
 
   if (!state.context.protocolData) {
     return null
@@ -90,6 +93,16 @@ function AaveManageContainer({
                 </Card>
               ),
             },
+            ...(aaveProtection
+              ? [
+                  {
+                    label: t('system.protection'),
+                    value: 'protection',
+                    tag: { include: true, active: false },
+                    content: <ProtectionControl />,
+                  },
+                ]
+              : []),
           ]}
         />
         <Survey for="earn" />

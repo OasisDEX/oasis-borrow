@@ -21,7 +21,7 @@ export function warningsAutoBuyValidation({
   executionPrice,
   autoTakeProfitExecutionPrice,
   token,
-  collateralizationRatioAtNextPrice,
+  nextPositionRatio,
 }: {
   ethBalance: BigNumber
   ethPrice: BigNumber
@@ -36,7 +36,7 @@ export function warningsAutoBuyValidation({
   executionPrice: BigNumber
   autoTakeProfitExecutionPrice: BigNumber
   token: string
-  collateralizationRatioAtNextPrice: BigNumber
+  nextPositionRatio: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -53,9 +53,7 @@ export function warningsAutoBuyValidation({
 
   const settingAutoBuyTriggerWithNoThreshold = !withThreshold
 
-  const autoBuyTriggeredImmediately = autoBuyState.execCollRatio
-    .div(100)
-    .lte(collateralizationRatioAtNextPrice)
+  const autoBuyTriggeredImmediately = autoBuyState.execCollRatio.div(100).lte(nextPositionRatio)
 
   const autoBuyTriggerGreaterThanAutoTakeProfit =
     isAutoTakeProfitEnabled && executionPrice.gt(autoTakeProfitExecutionPrice)

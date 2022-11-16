@@ -11,7 +11,11 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { maxUint256, MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
+import {
+  maxUint256,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  sidebarAutomationFeatureCopyMap,
+} from 'features/automation/common/consts'
 import {
   adjustDefaultValuesIfOutsideSlider,
   automationInputsAnalytics,
@@ -62,7 +66,7 @@ export function SidebarAutoBuyEditingStage({
   const {
     autoBuyTriggerData,
     stopLossTriggerData,
-    positionData: { id, ilk, token, debt, debtFloor, lockedCollateral, collateralizationRatio },
+    positionData: { id, ilk, token, debt, debtFloor, lockedCollateral, positionRatio },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
@@ -85,7 +89,7 @@ export function SidebarAutoBuyEditingStage({
       uiChanges,
       publishType: AUTO_BUY_FORM_CHANGE,
     })
-  }, [collateralizationRatio.toNumber()])
+  }, [positionRatio.toNumber()])
 
   automationMultipleRangeSliderAnalytics({
     leftValue: autoBuyState.targetCollRatio,
@@ -93,7 +97,7 @@ export function SidebarAutoBuyEditingStage({
     type: AutomationFeatures.AUTO_BUY,
     ilk,
     vaultId: id,
-    collateralizationRatio,
+    positionRatio,
   })
 
   automationInputsAnalytics({
@@ -102,10 +106,10 @@ export function SidebarAutoBuyEditingStage({
     type: AutomationFeatures.AUTO_BUY,
     vaultId: id,
     ilk,
-    collateralizationRatio,
+    positionRatio,
   })
 
-  const isCurrentCollRatioHigherThanSliderMax = collateralizationRatio.times(100).gt(sliderMax)
+  const isCurrentCollRatioHigherThanSliderMax = positionRatio.times(100).gt(sliderMax)
 
   if (
     isStopLossEnabled &&
@@ -171,11 +175,22 @@ export function SidebarAutoBuyEditingStage({
     )
   }
 
+  const feature = t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_BUY])
+
   if (isVaultEmpty && autoBuyTriggerData.isTriggerEnabled) {
     return (
       <SidebarFormInfo
-        title={t('auto-buy.closed-vault-existing-trigger-header')}
-        description={t('auto-buy.closed-vault-existing-trigger-description')}
+        title={t('automation.closed-vault-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-existing-trigger-description', { feature })}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
       />
     )
   }
@@ -308,7 +323,7 @@ export function SidebarAutoBuyEditingStage({
                 type: 'reset',
                 resetData: prepareAutoBSResetData(
                   autoBuyTriggerData,
-                  collateralizationRatio,
+                  positionRatio,
                   AUTO_BUY_FORM_CHANGE,
                 ),
               })

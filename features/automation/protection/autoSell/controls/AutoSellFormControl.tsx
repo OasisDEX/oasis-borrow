@@ -32,7 +32,7 @@ export function AutoSellFormControl({
   const {
     autoSellTriggerData,
     environmentData: { canInteract },
-    positionData: { id, debt, lockedCollateral, collateralizationRatio, owner },
+    positionData: { id, debt, lockedCollateral, positionRatio, owner },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.AUTO_SELL
@@ -68,12 +68,12 @@ export function AutoSellFormControl({
     stage,
     debt,
     lockedCollateral,
-    collateralizationRatio,
+    positionRatio,
   })
   const { addTxData, textButtonHandlerExtension } = getAutoBSTxHandlers({
     id,
     owner,
-    collateralizationRatio,
+    positionRatio,
     autoBSState: autoSellState,
     isAddForm,
     publishType,

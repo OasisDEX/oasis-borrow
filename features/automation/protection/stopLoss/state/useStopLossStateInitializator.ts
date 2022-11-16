@@ -12,18 +12,18 @@ import { useEffect } from 'react'
 
 export function useStopLossStateInitializator({
   liquidationRatio,
-  collateralizationRatio,
+  positionRatio,
   stopLossTriggerData,
 }: {
   liquidationRatio: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   stopLossTriggerData: StopLossTriggerData
 }) {
   const { uiChanges } = useAppContext()
   const { stopLossLevel, isStopLossEnabled, isToCollateral, triggerId } = stopLossTriggerData
 
   const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-  const selectedStopLossCollRatioIfTriggerDoesntExist = collateralizationRatio.isZero()
+  const selectedStopLossCollRatioIfTriggerDoesntExist = positionRatio.isZero()
     ? zero
     : sliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
   const initialSelectedSlRatio = getStartingSlRatio({
@@ -41,7 +41,7 @@ export function useStopLossStateInitializator({
       type: 'stop-loss-level',
       stopLossLevel: initialSelectedSlRatio,
     })
-  }, [triggerId.toNumber(), collateralizationRatio.toNumber()])
+  }, [triggerId.toNumber(), positionRatio.toNumber()])
 
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
@@ -56,7 +56,7 @@ export function useStopLossStateInitializator({
       type: 'is-awaiting-confirmation',
       isAwaitingConfirmation: false,
     })
-  }, [collateralizationRatio.toNumber()])
+  }, [positionRatio.toNumber()])
 
   return isStopLossEnabled
 }

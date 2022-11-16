@@ -15,6 +15,7 @@ export function SidebarFormInfo({ title, description }: SidebarFormInfoProps) {
         sx={{
           fontSize: 3,
           fontWeight: 600,
+          lineHeight: '22px',
         }}
       >
         {title}

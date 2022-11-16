@@ -27,7 +27,7 @@ interface GetConstantMultipleStatusParams {
   stage: SidebarAutomationStages
   lockedCollateral: BigNumber
   debt: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
 }
 
 interface ConstantMultipleStatus {
@@ -58,7 +58,7 @@ export function getConstantMultipleStatus({
   stage,
   debt,
   lockedCollateral,
-  collateralizationRatio,
+  positionRatio,
 }: GetConstantMultipleStatusParams): ConstantMultipleStatus {
   const { gasPrice$ } = useAppContext()
   const [gasPrice] = useObservable(gasPrice$)
@@ -87,7 +87,7 @@ export function getConstantMultipleStatus({
     vaultDebt: debt,
   })
   const sellPriceAtCurrentCollRatio = collateralPriceAtRatio({
-    colRatio: collateralizationRatio,
+    colRatio: positionRatio,
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
@@ -116,7 +116,7 @@ export function getConstantMultipleStatus({
   })
   const { debtDelta: debtDeltaWhenSellAtCurrentCollRatio } = getAutoBSVaultChange({
     targetCollRatio: constantMultipleState.targetCollRatio,
-    execCollRatio: collateralizationRatio.times(100),
+    execCollRatio: positionRatio.times(100),
     deviation: constantMultipleState.deviation,
     executionPrice: sellPriceAtCurrentCollRatio,
     lockedCollateral,
