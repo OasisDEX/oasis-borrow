@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 
 export async function getFeatureToggles() {
-  return await prisma.feature_flags.findFirst()
+  return await prisma.featureFlag.findMany()
 }
 
 export async function get(req: NextApiRequest, res: NextApiResponse) {
@@ -16,5 +16,5 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
           reason: 'feature_toggles/no-data-found',
         },
       })
-    : res.status(200).json({ ...response })
+    : res.status(200).json(response)
 }

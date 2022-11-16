@@ -1,4 +1,4 @@
-import { feature_flags } from '@prisma/client'
+import { FeatureFlag } from '@prisma/client'
 import axios from 'axios'
 import { mapValues } from 'lodash'
 export const FT_LOCAL_STORAGE_KEY = 'features'
@@ -55,20 +55,22 @@ export function configureLocalStorageForTests(data: { [feature in Feature]?: boo
   localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(data))
 }
 
-function capitalizeFirstLetter(string: string) {
+function normalizeFirstLetter(string: string) {
   return `${string.charAt(0).toLowerCase()}${string.slice(1)}`
 }
 
 function mapFeatureToggles(
-  dbFeatureToggles: feature_flags,
+  dbFeatureToggles: FeatureFlag[],
   localFeatureToggles: Record<Feature, boolean>,
 ) {
   const mappedFeatureFlags = {} as any
 
   for (const key of Object.keys(localFeatureToggles)) {
-    const featureToggleKey = capitalizeFirstLetter(key) as keyof feature_flags
-    if (featureToggleKey in dbFeatureToggles) {
-      mappedFeatureFlags[key] = dbFeatureToggles[featureToggleKey]
+    const featureToggleKey = normalizeFirstLetter(key) as keyof FeatureFlag
+    const dbToggle = dbFeatureToggles.find(t => t.feature === featureToggleKey)
+    
+    if (dbToggle) {
+      mappedFeatureFlags[key] = dbToggle.enabled
     }
   }
 
@@ -115,10 +117,11 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
     .then((res) => {
       if (localStorage !== undefined) {
         // Store values in localstorage becasue if there is a lost connection, features will be able to read from there.
-        if (process.env.NODE_ENV === 'production' && res.data) {
+        if (res.data) {
           // use DB in production only as a fallback
-          const featureToggles = res.data as feature_flags
+          const featureToggles = res.data as FeatureFlag[]
           const toggles = mapFeatureToggles(featureToggles, configuredFeatures)
+
           if (toggles) localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(toggles))
         } else {
           // Use this for dev experience, allows us to toggle features much quicker using chrome extension. Also, if the request fails, localstorage provides a fallback.
@@ -127,7 +130,8 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
         }
       }
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err)
       setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
     })
 }

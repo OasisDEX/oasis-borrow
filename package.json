@@ -27,6 +27,7 @@
     "test:e2e": "mocha --config ./server-test-e2e/.mocharc.js",
     "hardhat:node": "hardhat node",
     "hardhat:setup": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -ra dotenv-flow/config ./scripts/hardhat_setup.ts",
+    "feature-flags-setup": "ts-node --project ./tsconfig.dev.json ./scripts/feature_flags_setup.ts",
     "typechain:generate": "yarn typechain:generate:web3 && yarn typechain:generate:ethers",
     "typechain:generate:web3": "typechain --target=web3-v1 'blockchain/abi/*.json'",
     "typechain:generate:ethers": "typechain --target=ethers-v5 'blockchain/abi/*.json'",
