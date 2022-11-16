@@ -31,6 +31,7 @@ import { useStopLossStateInitializator } from 'features/automation/protection/st
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
 export interface AutomationEnvironmentData {
@@ -126,6 +127,9 @@ export function AutomationContextProvider({
     return null
   }
 
+  // TODO we need to think how to separate context initialization for ilks eligible for auto and not eligible
+  const tokenPriceResolved = ethAndTokenPricesData[token] || zero
+
   const environmentData = useMemo(
     () => ({
       canInteract: context.status === 'connected' && context.account === controller,
@@ -133,12 +137,12 @@ export function AutomationContextProvider({
       etherscanUrl: context.etherscan.url,
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
-      tokenMarketPrice: ethAndTokenPricesData[token],
+      tokenMarketPrice: tokenPriceResolved,
     }),
     [
       context.status,
       ethAndTokenPricesData['ETH'].toString(),
-      ethAndTokenPricesData[token].toString(),
+      tokenPriceResolved.toString(),
       ethBalance.toString(),
       controller,
     ],
