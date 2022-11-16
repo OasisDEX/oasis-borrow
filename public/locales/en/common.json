@@ -143,7 +143,7 @@
   "disconnect-wallet": "Disconnect Wallet",
   "discover": {
     "heading": "Discover Oasis.app",
-    "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
+    "intro": "Discover and find the most interesting Vaults on Oasis.app in real-time.",
     "intro-link": "Learn more about Discover",
     "navigation": {
       "highest-risk-positions": "Highest-Risk Positions",
@@ -208,7 +208,7 @@
         },
         "largest-debt": {
           "title": "Borrow against your crypto today",
-          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "description": "Borrow against your favorite crypto assets. Gain extra liquidity with flexible repayment schedules and no fees.",
           "cta": "Get started with Borrow"
         }
       }
