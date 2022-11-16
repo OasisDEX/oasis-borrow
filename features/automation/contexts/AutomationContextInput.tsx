@@ -33,6 +33,7 @@ export function AutomationContextInput({
     resolvedAccount,
   ])
   const [balanceInfoData, balanceInfoError] = useObservable(_balanceInfo)
+
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', positionData.token]), [
     positionData.token,
   ])
