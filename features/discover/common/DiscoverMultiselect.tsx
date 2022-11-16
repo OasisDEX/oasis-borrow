@@ -49,7 +49,7 @@ export function DiscoverMultiselect({
   }
 
   return (
-    <Box sx={{ position: 'relative', zIndex: 2 }} ref={ref}>
+    <Box sx={{ position: 'relative', userSelect: 'none' }} ref={ref}>
       <Box
         sx={{
           position: 'relative',
@@ -64,7 +64,6 @@ export function DiscoverMultiselect({
           backgroundColor: 'neutral10',
           cursor: 'pointer',
           transition: 'border-color 200ms',
-          zIndex: 2,
           '&:hover': {
             borderColor: isOpen ? 'primary100' : 'neutral70',
           },
@@ -118,17 +117,21 @@ export function DiscoverMultiselect({
           pointerEvents: isOpen ? 'auto' : 'none',
           transition: 'opacity 200ms, transform 200ms',
           overflowY: 'auto',
-          zIndex: 3,
+          zIndex: 1,
         }}
       >
+        <DiscoverMultiselectItem
+          isDisabled={values.length === 0}
+          label={t('clear-selection')}
+          onClick={() => setValues([])}
+          value=""
+        />
         {options.map((option) => (
           <DiscoverMultiselectItem
-            key={option.value}
             isSelected={values.includes(option.value)}
+            key={option.value}
+            onClick={(value) => setValues(toggleArrayItem<string>(values, value))}
             {...option}
-            onClick={(value) => {
-              setValues(toggleArrayItem<string>(values, value))
-            }}
           />
         ))}
       </Box>
@@ -138,13 +141,15 @@ export function DiscoverMultiselect({
 
 export function DiscoverMultiselectItem({
   icon,
-  isSelected,
+  isDisabled = false,
+  isSelected = false,
   label,
   onClick,
   value,
 }: {
-  isSelected: boolean
-  onClick: (value: string, label: string) => void
+  isDisabled?: boolean
+  isSelected?: boolean
+  onClick: (value: string) => void
 } & GenericSelectOption) {
   return (
     <Box
@@ -157,13 +162,16 @@ export function DiscoverMultiselectItem({
         pr: 3,
         pl: '48px',
         fontSize: 3,
-        transition: 'background-color 200ms',
-        cursor: 'pointer',
+        color: isDisabled ? 'neutral80' : 'primary100',
+        transition: 'color 200ms, background-color 200ms',
+        cursor: isDisabled ? 'default' : 'pointer',
         '&:hover': {
-          backgroundColor: 'neutral30',
+          backgroundColor: isDisabled ? 'transparent' : 'neutral30',
         },
       }}
-      onClick={() => onClick(value, label)}
+      onClick={() => {
+        if (!isDisabled) onClick(value)
+      }}
     >
       <Icon
         size={14}
@@ -180,7 +188,16 @@ export function DiscoverMultiselectItem({
         color="neutral80"
       />
       {icon && <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={icon} />}
-      {label}
+      <Text
+        as="span"
+        sx={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {label}
+      </Text>
     </Box>
   )
 }

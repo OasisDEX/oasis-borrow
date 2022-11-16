@@ -62,6 +62,7 @@
     "write-us": "Send us your CV to "
   },
   "change-your-vault": "Change your vault",
+  "clear-selection": "Clear selection",
   "close": "Close",
   "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
