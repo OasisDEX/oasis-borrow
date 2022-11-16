@@ -4,6 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import {
+  getAaveReserveConfigurationData,
   getAaveReserveData,
   getAaveUserReserveData,
 } from 'blockchain/calls/aave/aaveProtocolDataProvider'
@@ -273,12 +274,20 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import { getAaveUserAccountData } from '../blockchain/calls/aave/aaveLendingPool'
-import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
+import {
+  getAaveReservesList,
+  getAaveUserAccountData,
+  getAaveUserConfiguration,
+} from '../blockchain/calls/aave/aaveLendingPool'
+import {
+  getAaveAssetsPrices,
+  getAaveOracleAssetPriceData,
+} from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
 import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
+
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -392,6 +401,7 @@ function createUIChangesSubject(): UIChanges {
     subjectName: string
     payload: SupportedUIChangeType
   }
+
   const commonSubject = new Subject<PublisherRecord>()
 
   function subscribe<T extends SupportedUIChangeType>(subjectName: string): Observable<T> {
@@ -535,6 +545,7 @@ export function setupAppContext() {
   )
 
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
+
   function addGasEstimation$<S extends HasGasEstimation>(
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
@@ -817,6 +828,15 @@ export function setupAppContext() {
 
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
   const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
+  const aaveOracleAssetPriceData$ = observe(onEveryBlock$, context$, getAaveOracleAssetPriceData)
+  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
+  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
+  const aaveReserveConfigurationData$ = observe(
+    onEveryBlock$,
+    context$,
+    getAaveReserveConfigurationData,
+    ({ token }) => token,
+  )
 
   const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
 
@@ -1179,6 +1199,10 @@ export function setupAppContext() {
     userReferral$,
     checkReferralLocal$,
     aaveUserReserveData$,
+    aaveOracleAssetPriceData$,
+    aaveReservesList$,
+    aaveReserveConfigurationData$,
+    aaveUserConfiguration$,
     aaveSthEthYieldsQuery,
     aaveAvailableLiquidityETH$,
     aaveUserAccountData$,

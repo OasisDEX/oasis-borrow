@@ -4,19 +4,9 @@ import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine } from 'features/proxyNew/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, shareReplay, switchMap } from 'rxjs/operators'
 
-import {
-  getAaveReservesList,
-  getAaveUserAccountData,
-  getAaveUserConfiguration,
-} from '../../blockchain/calls/aave/aaveLendingPool'
-import { getAaveOracleAssetPriceData } from '../../blockchain/calls/aave/aavePriceOracle'
-import {
-  getAaveReserveConfigurationData,
-  getAaveUserReserveData,
-} from '../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
 import {
@@ -48,10 +38,15 @@ export function setupAaveContext({
   accountBalances$,
   onEveryBlock$,
   context$,
+  aaveOracleAssetPriceData$,
+  aaveReserveConfigurationData$,
+  aaveUserReserveData$,
+  aaveUserAccountData$,
+  aaveUserConfiguration$,
+  aaveReservesList$,
   aaveSthEthYieldsQuery,
   tokenPriceUSD$,
 }: AppContext) {
-  const once$ = of(undefined).pipe(shareReplay(1))
   const contextForAddress$ = connectedContext$.pipe(
     distinctUntilKeyChanged('account'),
     shareReplay(1),
@@ -65,21 +60,6 @@ export function setupAaveContext({
   const tokenBalances$: Observable<TokenBalances> = contextForAddress$.pipe(
     switchMap(({ account }) => accountBalances$(account)),
   )
-
-  const aaveReserveConfigurationData$ = observe(
-    once$,
-    context$,
-    getAaveReserveConfigurationData,
-    ({ token }) => token,
-  )
-
-  const aaveUserReserveData$ = observe(once$, context$, getAaveUserReserveData)
-
-  const aaveOracleAssetPriceData$ = observe(once$, context$, getAaveOracleAssetPriceData)
-
-  const aaveUserAccountData$ = observe(once$, context$, getAaveUserAccountData)
-  const aaveUserConfiguration$ = observe(once$, context$, getAaveUserConfiguration)
-  const aaveReservesList$ = observe(once$, context$, getAaveReservesList)
 
   const strategyInfo$ = memoize(
     curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
