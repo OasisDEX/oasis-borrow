@@ -13,6 +13,7 @@ import { TriggerRecord, TriggersData } from 'features/automation/api/automationT
 import {
   DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
   maxUint256,
+  protocolAutomations,
 } from 'features/automation/common/consts'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -28,6 +29,7 @@ import {
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
@@ -456,4 +458,18 @@ export function openVaultWithStopLossAnalytics({
       collateralRatio: afterCollateralizationRatio.times(100).decimalPlaces(2).toString(),
     },
   )
+}
+
+export function getAvailableAutomation(protocol: VaultProtocol) {
+  return {
+    isStopLossAvailable: protocolAutomations[protocol].includes(AutomationFeatures.STOP_LOSS),
+    isAutoSellAvailable: protocolAutomations[protocol].includes(AutomationFeatures.AUTO_SELL),
+    isAutoBuyAvailable: protocolAutomations[protocol].includes(AutomationFeatures.AUTO_BUY),
+    isConstantMultipleAvailable: protocolAutomations[protocol].includes(
+      AutomationFeatures.CONSTANT_MULTIPLE,
+    ),
+    isTakeProfitAvailable: protocolAutomations[protocol].includes(
+      AutomationFeatures.AUTO_TAKE_PROFIT,
+    ),
+  }
 }

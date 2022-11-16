@@ -1,7 +1,10 @@
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
-import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import {
+  getAvailableAutomation,
+  getShouldRemoveAllowance,
+} from 'features/automation/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -10,7 +13,6 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoSellFormControl } from 'features/automation/protection/autoSell/controls/AutoSellFormControl'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { StopLossFormControl } from 'features/automation/protection/stopLoss/controls/StopLossFormControl'
-import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect } from 'react'
 
@@ -53,31 +55,24 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
     }
   }, [autoSellTriggerData.isTriggerEnabled, stopLossTriggerData.isStopLossEnabled])
 
-  switch (protocol) {
-    case VaultProtocol.Maker:
-      return (
-        <>
-          <StopLossFormControl
-            isStopLossActive={isStopLossActive}
-            txHelpers={txHelpers}
-            shouldRemoveAllowance={shouldRemoveAllowance}
-          />
-          <AutoSellFormControl
-            isAutoSellActive={isAutoSellActive}
-            txHelpers={txHelpers}
-            shouldRemoveAllowance={shouldRemoveAllowance}
-          />
-        </>
-      )
-    case VaultProtocol.Aave:
-      return (
+  const { isStopLossAvailable, isAutoSellAvailable } = getAvailableAutomation(protocol)
+
+  return (
+    <>
+      {isStopLossAvailable && (
         <StopLossFormControl
           isStopLossActive={isStopLossActive}
           txHelpers={txHelpers}
           shouldRemoveAllowance={shouldRemoveAllowance}
         />
-      )
-    default:
-      return null
-  }
+      )}
+      {isAutoSellAvailable && (
+        <AutoSellFormControl
+          isAutoSellActive={isAutoSellActive}
+          txHelpers={txHelpers}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+        />
+      )}
+    </>
+  )
 }

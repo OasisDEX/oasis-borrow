@@ -1,6 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { SidebarSectionHeaderSelectItem } from 'components/sidebar/SidebarSectionHeaderSelect'
+import { getAvailableAutomation } from 'features/automation/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationOptimizationFeatures,
@@ -106,20 +107,28 @@ export function getAutoFeaturesSidebarDropdown({
     isFeatureEnabled: isAutoTakeProfitEnabled,
   })
 
+  const {
+    isStopLossAvailable,
+    isAutoSellAvailable,
+    isAutoBuyAvailable,
+    isConstantMultipleAvailable,
+    isTakeProfitAvailable,
+  } = getAvailableAutomation(protocol)
+
   const items = [
     ...(type === 'Protection'
       ? [
-          stopLossDropdownItem,
-          ...(!isAutoConstantMultipleEnabled && protocol === VaultProtocol.Maker
-            ? [autoSellDropdownItem]
-            : []),
+          ...(isStopLossAvailable ? [stopLossDropdownItem] : []),
+          ...(!isAutoConstantMultipleEnabled && isAutoSellAvailable ? [autoSellDropdownItem] : []),
         ]
       : []),
     ...(type === 'Optimization'
       ? [
-          ...(!isAutoConstantMultipleEnabled ? [basicBuyDropdownItem] : []),
-          ...(vaultType === VaultType.Multiply ? [constantMultipleDropdownItem] : []),
-          ...(autoTakeProfitEnabled ? [autoTakeProfitDropdownItem] : []),
+          ...(!isAutoConstantMultipleEnabled && isAutoBuyAvailable ? [basicBuyDropdownItem] : []),
+          ...(vaultType === VaultType.Multiply && isConstantMultipleAvailable
+            ? [constantMultipleDropdownItem]
+            : []),
+          ...(autoTakeProfitEnabled && isTakeProfitAvailable ? [autoTakeProfitDropdownItem] : []),
         ]
       : []),
   ]
