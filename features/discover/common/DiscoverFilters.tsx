@@ -1,7 +1,7 @@
 import { GenericSelect } from 'components/GenericSelect'
 import { DiscoverMultiselect } from 'features/discover/common/DiscoverMultiselect'
 import { DiscoverFiltersList } from 'features/discover/meta'
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 export function DiscoverFilters({
@@ -38,10 +38,9 @@ export function DiscoverFilters({
         }}
       >
         {Object.keys(filters).map((key) => (
-          <>
+          <Fragment key={key}>
             {filters[key].multi ? (
               <DiscoverMultiselect
-                key={key}
                 {...filters[key]}
                 onChange={(value) => {
                   onChange(key, value)
@@ -49,7 +48,6 @@ export function DiscoverFilters({
               />
             ) : (
               <GenericSelect
-                key={key}
                 options={filters[key].options}
                 defaultValue={filters[key].options[0]}
                 onChange={(currentValue) => {
@@ -57,7 +55,7 @@ export function DiscoverFilters({
                 }}
               />
             )}
-          </>
+          </Fragment>
         ))}
       </Grid>
     </Box>

@@ -28,9 +28,8 @@ export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOpti
 
 export const discoverSizeFilter: DiscoverFiltersListItem = {
   label: 'Sizes',
-  multi: false,
+  multi: true,
   options: [
-    { value: '', label: 'All sizes' },
     { value: '<100000', label: 'Under $100,000' },
     { value: '100000-250000', label: '$100,000 - $250,000' },
     { value: '250000-500000', label: '$250,000 - $500,000' },
@@ -41,9 +40,8 @@ export const discoverSizeFilter: DiscoverFiltersListItem = {
 
 export const discoverMultipleFilter: DiscoverFiltersListItem = {
   label: 'Multiples',
-  multi: false,
+  multi: true,
   options: [
-    { value: '', label: 'All multiples' },
     { value: '1-2', label: 'Multiple: 1-2x' },
     { value: '2-3', label: 'Multiple: 2-3x' },
     { value: '>3', label: 'Multiple: over 3x' },

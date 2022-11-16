@@ -40,7 +40,7 @@ export function DiscoverMultiselect({
             {selected.icon && (
               <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={selected.icon} />
             )}
-            {selected.value}
+            {selected.label}
           </>
         )
       default:
@@ -123,7 +123,10 @@ export function DiscoverMultiselect({
         <DiscoverMultiselectItem
           isDisabled={values.length === 0}
           label={t('clear-selection')}
-          onClick={() => setValues([])}
+          onClick={() => {
+            setValues([])
+            setIsOpen(false)
+          }}
           value=""
         />
         {options.map((option) => (
