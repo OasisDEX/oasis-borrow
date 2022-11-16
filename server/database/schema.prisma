@@ -189,26 +189,10 @@ model LargestDebt {
   @@map("largest_debt")
 }
 
-model feature_flags {
-  id                          Int     @id @default(autoincrement())
-  autoTakeProfit              Boolean
-  testFeature                 Boolean
-  anotherTestFeature          Boolean
-  automation                  Boolean
-  stopLossRead                Boolean
-  stopLossWrite               Boolean
-  batchCache                  Boolean
-  stopLossOpenFlow            Boolean
-  basicBS                     Boolean
-  readOnlyBasicBS             Boolean
-  notifications               Boolean
-  referrals                   Boolean
-  constantMultiple            Boolean
-  constantMultipleReadOnly    Boolean
-  disableSidebarScroll        Boolean
-  proxyCreationDisabled       Boolean
-  updatedPnL                  Boolean
-  readOnlyAutoTakeProfit      Boolean
-  discoverOasis               Boolean
-  showAaveStETHETHProductCard Boolean
+model FeatureFlag {
+  id      Int     @id @default(autoincrement())
+  feature String
+  enabled Boolean
+
+  @@map("feature_flag")
 }
