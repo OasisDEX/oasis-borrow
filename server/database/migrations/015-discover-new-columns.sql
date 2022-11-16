@@ -38,6 +38,12 @@ SELECT
     "pnl_365d",
     "pnl_all",
     "pnl_ytd",
+    "net_profit_all",
+    "net_profit_1d",
+    "net_profit_7d",
+    "net_profit_30d",
+    "net_profit_365d",
+    "net_profit_ytd",
     "last_action",
     "type"
 FROM

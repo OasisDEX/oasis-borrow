@@ -166,6 +166,12 @@ model HighestMultiplyPnl {
     pnl_30d          Decimal
     pnl_365d         Decimal
     pnl_ytd          Decimal
+    net_profit_all   Decimal
+    net_profit_1d    Decimal
+    net_profit_7d    Decimal
+    net_profit_30d   Decimal
+    net_profit_365d  Decimal
+    net_profit_ytd   Decimal
     last_action      Json
     type             VaultType?
 
