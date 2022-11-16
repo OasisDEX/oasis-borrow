@@ -89,6 +89,7 @@ export const supportedBorrowIlks = [
   'UNIV2DAIUSDC-A',
   'CRVV1ETHSTETH-A',
   'WSTETH-B',
+  'RETH-A',
 ]
 
 export const supportedMultiplyIlks = [
@@ -105,6 +106,7 @@ export const supportedMultiplyIlks = [
   'MANA-A',
   'MATIC-A',
   'WSTETH-B',
+  'RETH-A',
 ]
 
 export const supportedEarnIlks = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
@@ -123,7 +125,7 @@ const genericFilters = {
     name: 'ETH',
     icon: 'eth_circle',
     urlFragment: 'eth',
-    tokens: ['ETH', 'WETH', 'wstETH', 'stETH'],
+    tokens: ['ETH', 'WETH', 'wstETH', 'stETH', 'RETH'],
   },
   btc: { name: 'BTC', icon: 'btc_circle', urlFragment: 'btc', tokens: ['WBTC', 'renBTC'] },
   unilp: {
@@ -144,6 +146,7 @@ const ilkToEntryTokenMap = {
   'ETH-A': 'ETH',
   'ETH-B': 'ETH',
   'ETH-C': 'ETH',
+  'RETH-A': 'RETH',
   'WSTETH-A': 'WSTETH',
   'WBTC-A': 'WBTC',
   'WBTC-B': 'WBTC',
@@ -212,7 +215,7 @@ export const productCardsConfig: {
     featuredIlkCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-B'],
     inactiveIlks: [],
     ordering: {
-      ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
+      ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B', 'WSTETH-B', 'RETH-A'],
       BTC: ['WBTC-C', 'RENBTC-A', 'WBTC-A', 'WBTC-B'],
     },
     tags: {
@@ -236,7 +239,7 @@ export const productCardsConfig: {
     featuredIlkCards: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
     inactiveIlks: [],
     ordering: {
-      ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
+      ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C', 'WSTETH-B', 'RETH-A'],
       BTC: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
     },
     tags: {
@@ -275,6 +278,7 @@ export const productCardsConfig: {
     'ETH-C': 'lowest-stabilityFee-and-cheapest',
     'WSTETH-A': 'staking-rewards',
     'WSTETH-B': 'lowest-annual-fee-cheapest-vault',
+    'RETH-A': 'borrow-and-multiply',
     'WBTC-A': 'medium-exposure-medium-cost',
     'WBTC-B': 'biggest-multiply',
     'WBTC-C': 'lowest-stabilityFee-and-cheapest',
@@ -394,6 +398,11 @@ export const productCardsConfig: {
     stETHeth: {
       link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
       name: 'AAVE stETH / ETH',
+    },
+    'RETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      name: 'Maker (RETH-A)',
     },
   },
 }
