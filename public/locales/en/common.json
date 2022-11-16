@@ -37,6 +37,7 @@
   "after": "After",
   "after-closing": "{{token}} after closing",
   "after-next": "After + Next",
+  "all": "All",
   "all-assets": "All Assets",
   "amount": "Amount",
   "approve-allowance": "Approve Allowance",
@@ -61,6 +62,7 @@
     "write-us": "Send us your CV to "
   },
   "change-your-vault": "Change your vault",
+  "clear-selection": "Clear selection",
   "close": "Close",
   "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
@@ -1237,6 +1239,7 @@
     "next-update": "Next Update",
     "oracle-type": "Oracle Type"
   },
+  "selected": "Selected",
   "select-vault-type": {
     "header": "What do you want to do with your {{token}}?",
     "multiply": {

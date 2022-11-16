@@ -1,7 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { DiscoverFiltersListItem } from 'features/discover/meta'
+import { DiscoverFiltersListItem, DiscoverFiltersListOptions } from 'features/discover/meta'
 
-export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem } = {
+export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOptions } = {
   crvv1ethsteth: {
     value: 'CRVV1ETHSTETH',
     label: 'CURVE LP',
@@ -26,32 +26,46 @@ export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListItem
   yfi: { value: 'YFI', label: 'YFI', icon: getToken('YFI').iconCircle },
 }
 
-export const discoverSizeFilter: DiscoverFiltersListItem[] = [
-  { value: '', label: 'All sizes' },
-  { value: '<100000', label: 'Under $100,000' },
-  { value: '100000-250000', label: '$100,000 - $250,000' },
-  { value: '250000-500000', label: '$250,000 - $500,000' },
-  { value: '500000-1000000', label: '$500,000 - $1,000,000' },
-  { value: '>1000000', label: 'Over $1,000,000' },
-]
+export const discoverSizeFilter: DiscoverFiltersListItem = {
+  label: 'Sizes',
+  multi: false,
+  options: [
+    { value: '', label: 'All sizes' },
+    { value: '<100000', label: 'Under $100,000' },
+    { value: '100000-250000', label: '$100,000 - $250,000' },
+    { value: '250000-500000', label: '$250,000 - $500,000' },
+    { value: '500000-1000000', label: '$500,000 - $1,000,000' },
+    { value: '>1000000', label: 'Over $1,000,000' },
+  ],
+}
 
-export const discoverMultipleFilter: DiscoverFiltersListItem[] = [
-  { value: '', label: 'All multiples' },
-  { value: '1-2', label: 'Multiple: 1-2x' },
-  { value: '2-3', label: 'Multiple: 2-3x' },
-  { value: '>3', label: 'Multiple: over 3x' },
-]
+export const discoverMultipleFilter: DiscoverFiltersListItem = {
+  label: 'Multiples',
+  multi: false,
+  options: [
+    { value: '', label: 'All multiples' },
+    { value: '1-2', label: 'Multiple: 1-2x' },
+    { value: '2-3', label: 'Multiple: 2-3x' },
+    { value: '>3', label: 'Multiple: over 3x' },
+  ],
+}
 
-export const discoverTimeFilter: DiscoverFiltersListItem[] = [
-  { value: 'all', label: 'All time' },
-  { value: '1d', label: '1 day' },
-  { value: '7d', label: '7 days' },
-  { value: '30d', label: '30 days' },
-  { value: '1y', label: '1 year' },
-]
+export const discoverTimeFilter: DiscoverFiltersListItem = {
+  label: 'Time',
+  multi: false,
+  options: [
+    { value: 'all', label: 'All time' },
+    { value: '1d', label: '1 day' },
+    { value: '7d', label: '7 days' },
+    { value: '30d', label: '30 days' },
+    { value: '1y', label: '1 year' },
+  ],
+}
 
-export function getAssetOptions(options: DiscoverFiltersListItem[]): DiscoverFiltersListItem[] {
-  const all = { value: options.map((item) => item.value).join(','), label: 'All assets' }
-
-  return [all, ...options]
+export function getAssetOptions(options: DiscoverFiltersListOptions[]): DiscoverFiltersListItem {
+  return {
+    label: 'Assets',
+    multi: true,
+    options,
+  }
 }
