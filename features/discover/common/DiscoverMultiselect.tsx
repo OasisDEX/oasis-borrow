@@ -184,7 +184,6 @@ export function DiscoverMultiselectItem({
           left: '20px',
           opacity: isSelected ? 1 : 0,
           transition: 'opacity 150ms',
-          fontWeight: 'bold'
         }}
         name="tick"
         color="neutral80"
