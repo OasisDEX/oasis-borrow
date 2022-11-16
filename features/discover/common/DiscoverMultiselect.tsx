@@ -1,19 +1,52 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { GenericSelectOption } from 'components/GenericSelect'
+import { DiscoverFiltersListItem } from 'features/discover/meta'
+import { toggleArrayItem } from 'helpers/toggleArrayItem'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode, useEffect, useRef, useState } from 'react'
 import { Box, Text } from 'theme-ui'
 
-export function DiscoverMultiselect({ options }: { options: GenericSelectOption[] }) {
+export function DiscoverMultiselect({
+  label,
+  onChange,
+  options,
+}: {
+  onChange: (value: string) => void
+} & DiscoverFiltersListItem) {
+  const { t } = useTranslation()
+
+  const didMountRef = useRef(false)
   const [values, setValues] = useState<string[]>([])
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const ref = useOutsideElementClickHandler(() => setIsOpen(false))
 
   useEffect(() => {
-    console.log(values)
+    if (didMountRef.current)
+      onChange((values.length ? values : options.map((item) => item.value)).join(','))
+    else didMountRef.current = true
   }, [values])
+
+  function getSelectLabel(): ReactNode {
+    switch (values.length) {
+      case 0:
+        return `${t('all')} ${label.toLowerCase()}`
+      case 1:
+        const selected = options.filter((item) => item.value === values[0])[0]
+        return (
+          <>
+            {selected.icon && (
+              <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={selected.icon} />
+            )}
+            {selected.value}
+          </>
+        )
+      default:
+        return `${t('selected')} ${label.toLowerCase()}: ${values.length}`
+    }
+  }
 
   return (
     <Box sx={{ position: 'relative', zIndex: 2 }} ref={ref}>
@@ -41,7 +74,8 @@ export function DiscoverMultiselect({ options }: { options: GenericSelectOption[
         <Text
           as="span"
           sx={{
-            display: 'block',
+            display: 'flex',
+            alignItems: 'center',
             fontSize: 2,
             fontWeight: 'semiBold',
             whiteSpace: 'nowrap',
@@ -49,7 +83,7 @@ export function DiscoverMultiselect({ options }: { options: GenericSelectOption[
             textOverflow: 'ellipsis',
           }}
         >
-          AAVE, ETH, LINK, MATIC, MATIC, WBTC
+          {getSelectLabel()}
           <ExpandableArrow
             size={12}
             direction={isOpen ? 'up' : 'down'}
@@ -90,10 +124,10 @@ export function DiscoverMultiselect({ options }: { options: GenericSelectOption[
         {options.map((option) => (
           <DiscoverMultiselectItem
             key={option.value}
+            isSelected={values.includes(option.value)}
             {...option}
-            onClick={(value, label) => {
-              if (values.includes(value)) setValues(values.filter((item) => item !== value))
-              else setValues([...values, value])
+            onClick={(value) => {
+              setValues(toggleArrayItem<string>(values, value))
             }}
           />
         ))}
@@ -104,10 +138,14 @@ export function DiscoverMultiselect({ options }: { options: GenericSelectOption[
 
 export function DiscoverMultiselectItem({
   icon,
+  isSelected,
   label,
   onClick,
   value,
-}: { onClick: (value: string, label: string) => void } & GenericSelectOption) {
+}: {
+  isSelected: boolean
+  onClick: (value: string, label: string) => void
+} & GenericSelectOption) {
   return (
     <Box
       as="li"
@@ -129,7 +167,15 @@ export function DiscoverMultiselectItem({
     >
       <Icon
         size={14}
-        sx={{ position: 'absolute', top: 0, bottom: 0, left: '20px', margin: 'auto' }}
+        sx={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: '20px',
+          margin: 'auto',
+          opacity: isSelected ? 1 : 0,
+          transition: 'opacity 150ms',
+        }}
         name="tick"
         color="neutral80"
       />

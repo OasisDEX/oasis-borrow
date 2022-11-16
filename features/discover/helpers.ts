@@ -33,7 +33,7 @@ export function getDefaultSettingsState({
   kind: DiscoverPages
 }) {
   return {
-    ...Object.keys(filters).reduce((o, key) => ({ ...o, [key]: filters[key][0].value }), {}),
+    ...Object.keys(filters).reduce((o, key) => ({ ...o, [key]: filters[key].options[0].value }), {}),
     table: kind,
   }
 }

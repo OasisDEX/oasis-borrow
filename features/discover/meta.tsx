@@ -8,13 +8,18 @@ import {
 import { discoverBannerIcons, discoverNavigationIconContent } from 'features/discover/icons'
 import { DiscoverPages } from 'features/discover/types'
 
-export interface DiscoverFiltersListItem {
+export interface DiscoverFiltersListOptions {
   label: string
   value: string
   icon?: string
 }
+export interface DiscoverFiltersListItem {
+  label: string
+  multi: boolean
+  options: DiscoverFiltersListOptions[]
+}
 export interface DiscoverFiltersList {
-  [key: string]: DiscoverFiltersListItem[]
+  [key: string]: DiscoverFiltersListItem
 }
 export interface DiscoverBanner {
   icon: JSX.Element
