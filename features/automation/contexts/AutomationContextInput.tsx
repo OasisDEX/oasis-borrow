@@ -33,11 +33,12 @@ export function AutomationContextInput({
     resolvedAccount,
   ])
   const [balanceInfoData, balanceInfoError] = useObservable(_balanceInfo)
-
+  console.log('position', positionData)
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', positionData.token]), [
     positionData.token,
   ])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
+  console.log('ethAndTokenPricesData', ethAndTokenPricesData)
 
   return (
     <WithErrorHandler error={[ethAndTokenPricesError, balanceInfoError, contextError]}>

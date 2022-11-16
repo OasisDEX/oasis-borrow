@@ -31,6 +31,7 @@ import { useStopLossStateInitializator } from 'features/automation/protection/st
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
 export interface AutomationEnvironmentData {
@@ -126,6 +127,10 @@ export function AutomationContextProvider({
     return null
   }
 
+  // TODO maybe we should check vault type or ilk on the general mange vault level and decide whether
+  // we want to attach automation context or not
+  const tokenPriceResolved = ethAndTokenPricesData[token] || zero
+
   const environmentData = useMemo(
     () => ({
       canInteract: context.status === 'connected' && context.account === controller,
@@ -133,12 +138,12 @@ export function AutomationContextProvider({
       etherscanUrl: context.etherscan.url,
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
-      tokenMarketPrice: ethAndTokenPricesData[token],
+      tokenMarketPrice: tokenPriceResolved,
     }),
     [
       context.status,
       ethAndTokenPricesData['ETH'].toString(),
-      ethAndTokenPricesData[token].toString(),
+      tokenPriceResolved.toString(),
       ethBalance.toString(),
       controller,
     ],
