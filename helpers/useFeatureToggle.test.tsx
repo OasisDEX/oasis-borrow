@@ -9,26 +9,6 @@ import {
 
 describe('useFeatureEnabled', () => {
   describe('loading feature toggles', () => {
-    it('creates the features and sets to disabled in local storage on first load', () => {
-      expect(localStorage.getItem(FT_LOCAL_STORAGE_KEY)).to.be.null
-      loadFeatureToggles()
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
-        TestFeature: false,
-      })
-    })
-
-    it('creates a new feature on load when there are existing features', () => {
-      configureLocalStorageForTests({
-        TestFeature: false,
-      })
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).not.to.contain({
-        AnotherTestFeature: true,
-      })
-      loadFeatureToggles(['AnotherTestFeature'])
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
-        AnotherTestFeature: true,
-      })
-    })
 
     it('does not overwrite existing enabled feature toggles on load', () => {
       configureLocalStorageForTests({
@@ -54,14 +34,6 @@ describe('useFeatureEnabled', () => {
       expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
         TestFeature: false,
       })
-    })
-
-    it('sets new enabled features as disabled in local storage, but the feature is enabled', () => {
-      loadFeatureToggles()
-      expect(JSON.parse(localStorage.getItem(FT_LOCAL_STORAGE_KEY) as string)).to.contain({
-        AnotherTestFeature: false,
-      })
-      expect(useFeatureToggle('AnotherTestFeature')).to.be.true
     })
   })
 
