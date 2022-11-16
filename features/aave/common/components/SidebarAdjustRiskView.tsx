@@ -20,7 +20,8 @@ type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
   textButton: SidebarSectionFooterButtonSettings
-  viewLocked?: boolean // locks whole view + displays warning
+  viewLocked?: boolean // locks whole view
+  showWarring?: boolean // displays warning
   onChainPosition?: IPosition
 }
 
@@ -70,6 +71,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     primaryButton,
     textButton,
     viewLocked = false,
+    showWarring = false,
     onChainPosition,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
@@ -190,7 +192,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               </WithArrow>
             </Link>
           )}
-          {viewLocked ? (
+          {showWarring ? (
             <MessageCard
               messages={[t('manage-earn-vault.has-asset-already')]}
               type="error"

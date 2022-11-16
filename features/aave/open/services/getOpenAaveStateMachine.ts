@@ -53,19 +53,22 @@ export function getOpenAavePositionStateMachineServices(
           tokenBalance: balance,
           tokenPrice: price,
         })),
+        distinctUntilChanged(isEqual),
       )
     },
     connectedProxyAddress$: () => {
       return connectedProxy$.pipe(
-        distinctUntilChanged<string>(isEqual),
         map((address) => ({
           type: 'CONNECTED_PROXY_ADDRESS_RECEIVED',
           connectedProxyAddress: address,
         })),
+        distinctUntilChanged(isEqual),
       )
     },
-    getHasOpenedPosition$: ({ connectedProxyAddress }) => {
-      return aaveUserAccountData$({ address: connectedProxyAddress }).pipe(
+    getHasOpenedPosition$: () => {
+      return connectedProxy$.pipe(
+        filter((address) => address !== undefined),
+        switchMap((address) => aaveUserAccountData$({ address: address! })),
         map((accountData) => ({
           type: 'UPDATE_META_INFO',
           hasOpenedPosition: accountData.totalCollateralETH.gt(MINIMAL_COLLATERAL),
@@ -74,8 +77,8 @@ export function getOpenAavePositionStateMachineServices(
     },
     userSettings$: (_) => {
       return userSettings$.pipe(
-        distinctUntilChanged(isEqual),
         map((settings) => ({ type: 'USER_SETTINGS_CHANGED', userSettings: settings })),
+        distinctUntilChanged(isEqual),
       )
     },
     prices$: (context) => {
@@ -97,6 +100,7 @@ export function getOpenAavePositionStateMachineServices(
           type: 'UPDATE_PROTOCOL_DATA',
           protocolData: aaveProtocolData,
         })),
+        distinctUntilChanged(isEqual),
       )
     },
   }
@@ -104,14 +108,14 @@ export function getOpenAavePositionStateMachineServices(
 
 export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
-  parametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
+  transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
   proxyMachine: ProxyStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
 ) {
   return createOpenAaveStateMachine(
-    parametersMachine,
+    transactionParametersMachine,
     proxyMachine,
     transactionStateMachine,
   ).withConfig({

@@ -197,7 +197,7 @@ export function createManageAaveStateMachine(
               entry: ['killTransactionMachine'],
               on: {
                 RETRY: {
-                  target: 'editing',
+                  target: 'txInProgress',
                 },
               },
             },

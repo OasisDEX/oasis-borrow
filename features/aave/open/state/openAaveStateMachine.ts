@@ -21,6 +21,7 @@ import {
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 export const STEPS_WITH_PROXY_CREATION = 5
+export const STEPS_WITHOUT_PROXY_CREATION = 3
 
 export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
@@ -108,6 +109,9 @@ export function createOpenAaveStateMachine(
                   target: 'idle',
                   actions: ['updateContext'],
                 },
+                ERROR_GETTING_STRATEGY: {
+                  target: 'idle',
+                }
               },
             },
           },
@@ -131,7 +135,7 @@ export function createOpenAaveStateMachine(
                 NEXT_STEP: [
                   {
                     target: 'proxyCreating',
-                    cond: 'emptyProxyAddress',
+                    cond: 'hasProxy',
                     actions: 'incrementCurrentStep',
                   },
                   {
@@ -202,7 +206,7 @@ export function createOpenAaveStateMachine(
               entry: ['killTransactionMachine'],
               on: {
                 RETRY: {
-                  target: 'reviewing',
+                  target: 'txInProgress',
                 },
                 BACK_TO_EDITING: {
                   target: 'editing',
@@ -227,7 +231,7 @@ export function createOpenAaveStateMachine(
           actions: 'updateContext',
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'decreaseTotalSteps'],
+          actions: ['updateContext', 'setTotalSteps'],
         },
         WEB3_CONTEXT_CHANGED: {
           actions: 'updateContext',
@@ -248,7 +252,7 @@ export function createOpenAaveStateMachine(
     },
     {
       guards: {
-        emptyProxyAddress: ({ connectedProxyAddress }) => !allDefined(connectedProxyAddress),
+        hasProxy: ({ connectedProxyAddress }) => !allDefined(connectedProxyAddress),
         validTransactionParameters: ({
           userInput,
           connectedProxyAddress,
@@ -276,11 +280,11 @@ export function createOpenAaveStateMachine(
             },
           }
         }),
-        decreaseTotalSteps: assign((context) => {
-          return {
-            totalSteps: context.totalSteps - 1,
-          }
-        }),
+        setTotalSteps: assign((_, event) => ({
+          totalSteps: event.connectedProxyAddress === undefined
+            ? STEPS_WITH_PROXY_CREATION
+            : STEPS_WITHOUT_PROXY_CREATION
+        })),
         setAmount: assign((context, event) => {
           return {
             userInput: {

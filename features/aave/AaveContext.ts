@@ -17,7 +17,6 @@ import {
   getAaveReserveConfigurationData,
   getAaveUserReserveData,
 } from '../../blockchain/calls/aave/aaveProtocolDataProvider'
-import { OperationExecutorTxMeta } from '../../blockchain/calls/operationExecutor'
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
 import {
@@ -135,10 +134,7 @@ export function setupAaveContext({
     aaveProtocolData$,
   )
 
-  const transactionMachine = memoize(
-    curry(getOpenAaveTransactionMachine)(txHelpers$, contextForAddress$),
-    (transactionParameters: OperationExecutorTxMeta) => JSON.stringify(transactionParameters),
-  )
+  const transactionMachine = curry(getOpenAaveTransactionMachine)(txHelpers$, contextForAddress$)
 
   const aaveStateMachine = getOpenAaveStateMachine(
     openAaveStateMachineServices,

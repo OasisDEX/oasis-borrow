@@ -17,7 +17,7 @@ export interface AaveUserAccountData {
 }
 
 export interface AaveUserAccountDataParameters {
-  address: string | undefined
+  address: string
 }
 
 export type AaveUserConfigurationsParameters = {

@@ -39,6 +39,7 @@ export function createTransactionStateMachine<T extends TxMeta>(
     {
       id: 'transaction',
       predictableActionArguments: true,
+      preserveActionOrder: true,
       tsTypes: {} as import('./transactionStateMachine.typegen').Typegen0,
       context: {
         transactionDef,
@@ -70,7 +71,7 @@ export function createTransactionStateMachine<T extends TxMeta>(
             },
             FAILURE: {
               target: 'failure',
-              actions: ['assignTxError'],
+              actions: ['assignTxError', 'sendFailure'],
             },
             CONFIRMED: {
               // Maybe here we want to notify the parent of its success
@@ -110,9 +111,8 @@ export function createTransactionStateMachine<T extends TxMeta>(
             txError: event.data,
           }
         }),
-        sendSuccess: (_) => sendParent('TRANSACTION_COMPLETED'),
-        sendFailure: (context) =>
-          sendParent({ type: 'TRANSACTION_FAILED', error: context.txError }),
+        sendSuccess: sendParent('TRANSACTION_COMPLETED'),
+        sendFailure: sendParent((context) => ({ type: 'TRANSACTION_FAILED', error: context.txError })),
       },
     },
   )

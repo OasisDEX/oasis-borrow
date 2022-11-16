@@ -213,6 +213,7 @@ export function SidebarOpenAaveVault() {
             action: () => send('BACK_TO_EDITING'),
           }}
           viewLocked={hasOpenedPosition}
+          showWarring={hasOpenedPosition}
         />
       )
     case state.matches('frontend.reviewing'):

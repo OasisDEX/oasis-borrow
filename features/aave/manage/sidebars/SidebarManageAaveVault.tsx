@@ -91,48 +91,42 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveReviewingClosingStateView({ state, send }: ManageAaveStateProps) {
-  const { t } = useTranslation()
+  function GetReviewingSidebarProps({ state, send }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
+    const { t } = useTranslation()
+    const { operationName } = state.context
 
-  const sidebarSectionProps: SidebarSectionProps = {
-    title: t('manage-earn.aave.vault-form.close-title'),
-    content: (
-      <Grid gap={3}>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('manage-earn.aave.vault-form.close-description')}
-        </Text>
-        <EthBalanceAfterClose state={state} send={send} />
-        <StrategyInformationContainer state={state} />
-      </Grid>
-    ),
-    primaryButton: {
-      isLoading: false,
-      disabled: !state.can('START_TRANSACTION') || isLocked(state),
-      label: t('manage-earn.aave.vault-form.confirm-btn'),
-      action: () => send('START_TRANSACTION'),
-    },
-    textButton: {
-      label: t('manage-earn.aave.vault-form.back-to-editing'),
-      action: () => send('BACK_TO_EDITING'),
-    },
+    if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
+      return {
+        title: t('manage-earn.aave.vault-form.close-title'),
+        content: (<Grid gap={3}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+            {t('manage-earn.aave.vault-form.close-description')}
+          </Text>
+          <EthBalanceAfterClose state={state} send={send} />
+          <StrategyInformationContainer state={state} />
+        </Grid>)
+      }
+    }
+      else {
+        return {
+          title: t('manage-earn.aave.vault-form.adjust-title'),
+          content: (
+            <Grid gap={3}>
+              <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+                {t('manage-earn.aave.vault-form.adjust-description')}
+              </Text>
+              <StrategyInformationContainer state={state} />
+            </Grid>
+          ),
+        }
+      }
   }
 
-  return <SidebarSection {...sidebarSectionProps} />
-}
-
-function ManageAaveReviewingAdjustingStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('manage-earn.aave.vault-form.adjust-title'),
-    content: (
-      <Grid gap={3}>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('manage-earn.aave.vault-form.adjust-description')}
-        </Text>
-        <StrategyInformationContainer state={state} />
-      </Grid>
-    ),
+    ...GetReviewingSidebarProps({ state, send }),
     primaryButton: {
       isLoading: false,
       disabled: !state.can('START_TRANSACTION') || isLocked(state),
@@ -152,16 +146,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('manage-earn.aave.vault-form.close-title'),
-    content: (
-      <Grid gap={3}>
-        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-          {t('manage-earn.aave.vault-form.close-description')}
-        </Text>
-        <EthBalanceAfterClose state={state} send={send} />
-        <StrategyInformationContainer state={state} />
-      </Grid>
-    ),
+    ...GetReviewingSidebarProps({ state, send }),
     primaryButton: {
       isLoading: false,
       disabled: false,
@@ -260,9 +245,9 @@ export function SidebarManageAaveVault() {
         />
       )
     case state.matches('frontend.reviewingAdjusting'):
-      return <ManageAaveReviewingAdjustingStateView state={state} send={send} />
+      return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('frontend.reviewingClosing'):
-      return <ManageAaveReviewingClosingStateView state={state} send={send} />
+      return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('frontend.txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('frontend.txFailure'):

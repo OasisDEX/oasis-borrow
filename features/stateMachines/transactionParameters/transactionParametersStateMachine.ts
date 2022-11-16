@@ -2,7 +2,7 @@ import { IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
-import { distinctUntilChanged, map } from 'rxjs/operators'
+import {  distinctUntilChanged, map } from 'rxjs/operators'
 import { actions, createMachine, sendParent } from 'xstate'
 
 import { callOperationExecutor } from '../../../blockchain/calls/operationExecutor'
@@ -28,7 +28,8 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; strategy: IStrategy; operationName: string }
+  | { type: 'STRATEGY_RECEIVED'; strategy?: IStrategy; operationName: string }
+  | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
 
@@ -81,12 +82,19 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
                 actions: ['serviceUpdateContext', 'sendStrategy', 'sendGasEstimation'],
               },
             ],
+            onError: {
+              actions: ['sendError'],
+              target: 'idle',
+            }
           },
         },
         estimating: {
           invoke: {
             src: 'estimateGas',
             id: 'gas-estimation',
+            onError: {
+              actions: ['setErrorGasPrice', 'sendGasEstimation']
+            }
           },
           initial: 'gas',
           states: {
@@ -140,6 +148,10 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             },
           }),
         ),
+        sendError: sendParent('ERROR_GETTING_STRATEGY'),
+        setErrorGasPrice: assign((_) => ({
+          estimatedGasPrice: { gasEstimationStatus: GasEstimationStatus.error },
+        })),
       },
       services: {
         getParameters: (context) => libraryCall(context.parameters!),
