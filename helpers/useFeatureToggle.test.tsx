@@ -9,7 +9,6 @@ import {
 
 describe('useFeatureEnabled', () => {
   describe('loading feature toggles', () => {
-
     it('does not overwrite existing enabled feature toggles on load', () => {
       configureLocalStorageForTests({
         TestFeature: true,

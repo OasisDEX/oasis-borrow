@@ -1,4 +1,4 @@
-import { prisma } from '../server/prisma';
+import { prisma } from '../server/prisma'
 
 // TODD: Will need to get a list of all the feature flags that are currently set
 const initialFeatureToggles = {
@@ -21,30 +21,29 @@ const initialFeatureToggles = {
   updatedPnL: false,
   readOnlyAutoTakeProfit: false,
   discoverOasis: false,
-  showAaveStETHETHProductCard: false
+  showAaveStETHETHProductCard: false,
 }
 
 async function main() {
-
-  let featuresToCreate = []
+  const featuresToCreate = []
 
   for (const [key, value] of Object.entries(initialFeatureToggles)) {
     const feature = await prisma.featureFlag.findFirst({
       where: {
-        feature: key
-      }
+        feature: key,
+      },
     })
 
-    if(!feature) {
+    if (!feature) {
       featuresToCreate.push({
         feature: key,
-        enabled: value
+        enabled: value,
       })
     }
   }
 
   await prisma.featureFlag.createMany({
-    data: featuresToCreate
+    data: featuresToCreate,
   })
 }
 

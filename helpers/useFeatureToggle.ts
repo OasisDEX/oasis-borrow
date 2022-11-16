@@ -64,7 +64,7 @@ function mapFeatureToggles(
 
   for (const key of Object.keys(localFeatureToggles)) {
     const featureToggleKey = normalizeFirstLetter(key) as keyof FeatureFlag
-    const dbToggle = dbFeatureToggles.find(t => t.feature === featureToggleKey)
+    const dbToggle = dbFeatureToggles.find((t) => t.feature === featureToggleKey)
 
     if (dbToggle) {
       mappedFeatureFlags[key] = dbToggle.enabled
