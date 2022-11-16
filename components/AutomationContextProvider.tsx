@@ -127,8 +127,7 @@ export function AutomationContextProvider({
     return null
   }
 
-  // TODO maybe we should check vault type or ilk on the general mange vault level and decide whether
-  // we want to attach automation context or not
+  // TODO we need to think how to separate context initialization for ilks eligible for auto and not eligible
   const tokenPriceResolved = ethAndTokenPricesData[token] || zero
 
   const environmentData = useMemo(
