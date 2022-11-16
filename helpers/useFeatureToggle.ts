@@ -117,7 +117,7 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
     .then((res) => {
       if (localStorage !== undefined) {
         // Store values in localstorage becasue if there is a lost connection, features will be able to read from there.
-        if (res.data) {
+        if (res.data && process.env.NODE_ENV === 'production') {
           // use DB in production only as a fallback
           const featureToggles = res.data as FeatureFlag[]
           const toggles = mapFeatureToggles(featureToggles, configuredFeatures)
@@ -130,8 +130,7 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = 
         }
       }
     })
-    .catch((err) => {
-      console.log(err)
+    .catch(() => {
       setLocalStorageFeatureFlags(testFeaturesFlaggedEnabled)
     })
 }
