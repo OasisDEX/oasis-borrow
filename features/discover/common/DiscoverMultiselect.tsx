@@ -180,27 +180,17 @@ export function DiscoverMultiselectItem({
         size={14}
         sx={{
           position: 'absolute',
-          top: 0,
-          bottom: 0,
+          top: '17px',
           left: '20px',
-          margin: 'auto',
           opacity: isSelected ? 1 : 0,
           transition: 'opacity 150ms',
+          fontWeight: 'bold'
         }}
         name="tick"
         color="neutral80"
       />
       {icon && <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={icon} />}
-      <Text
-        as="span"
-        sx={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {label}
-      </Text>
+      {label}
     </Box>
   )
 }
