@@ -43,6 +43,10 @@ function SecurityPage() {
             'https://chainsecurity.com/security-audit/oasis-automation-consultancy-smart-contracts/',
           label: t('security.category.audit.link-automation'),
         },
+        {
+          url: 'https://chainsecurity.com/security-audit/oasis-app-modular-proxy-actions/',
+          label: t('security.category.audit.link-modular-proxy-actions'),
+        },
       ],
     },
     {

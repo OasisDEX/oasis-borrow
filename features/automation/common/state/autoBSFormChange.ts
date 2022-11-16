@@ -21,6 +21,7 @@ export type AutomationChangeAction =
   | { type: 'current-form'; currentForm: AutomationFormType }
   | { type: 'reset'; resetData: AutoBSTriggerResetData }
   | { type: 'is-editing'; isEditing: boolean }
+  | { type: 'is-awaiting-confirmation'; isAwaitingConfirmation: boolean }
   | {
       type: 'tx-details'
       txDetails: {
@@ -70,6 +71,8 @@ export function autoBSFormChangeReducer(
       return { ...state, txDetails: action.txDetails }
     case 'is-editing':
       return { ...state, isEditing: action.isEditing }
+    case 'is-awaiting-confirmation':
+      return { ...state, isAwaitingConfirmation: action.isAwaitingConfirmation }
     case 'reset':
       return { ...state, ...action.resetData }
     case 'form-defaults':
@@ -104,4 +107,5 @@ export type AutoBSFormChange = AutomationFormChange & {
   maxBuyOrMinSellPrice?: BigNumber
   withThreshold: boolean
   execCollRatio: BigNumber
+  isAwaitingConfirmation: boolean
 }

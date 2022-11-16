@@ -29,7 +29,6 @@ export enum DiscoverTableVaultStatus {
   BEING_LIQUIDATED = 2,
   TILL_LIQUIDATION = 3,
   TO_STOP_LOSS = 4,
-  CLOSED_LONG_TIME_AGO = 5,
 }
 
 export interface DiscoverFiltersSettings {
@@ -55,6 +54,12 @@ export type DiscoverTableStatusRowData = {
     timestamp?: number
     tillLiquidation?: number
     toStopLoss?: number
+  }
+}
+
+export type DiscoverTableStatusRowDataApi = DiscoverTableStatusRowData & {
+  additionalData?: {
+    stopLossLevel?: number
   }
 }
 

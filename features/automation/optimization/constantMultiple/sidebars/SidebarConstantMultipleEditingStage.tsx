@@ -5,10 +5,9 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
@@ -17,10 +16,7 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import {
-  ACCEPTABLE_FEE_DIFF,
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
-} from 'features/automation/common/consts'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
 import {
   automationInputsAnalytics,
   automationMultipleRangeSliderAnalytics,
@@ -28,19 +24,13 @@ import {
   calculateMultipleFromTargetCollRatio,
 } from 'features/automation/common/helpers'
 import { MaxGasPriceSection } from 'features/automation/common/sidebars/MaxGasPriceSection'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { AddConstantMultipleInfoSection } from 'features/automation/optimization/constantMultiple/controls/AddConstantMultipleInfoSection'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import {
-  ConstantMultipleTriggerData,
-  prepareConstantMultipleResetData,
-} from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { prepareConstantMultipleResetData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
@@ -54,23 +44,17 @@ import {
 } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
-import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
+import { ConstantMultipleInfoSectionControl } from './ConstantMultipleInfoSectionControl'
+
 interface SidebaConstantMultiplerEditingStageProps {
-  vault: Vault
-  ilkData: IlkData
   isEditing: boolean
-  autoBuyTriggerData: AutoBSTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  token: string
   constantMultipleState: ConstantMultipleFormChange
-  autoSellTriggerData: AutoBSTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  stopLossTriggerData: StopLossTriggerData
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -81,17 +65,10 @@ interface SidebaConstantMultiplerEditingStageProps {
 }
 
 export function SidebarConstantMultipleEditingStage({
-  vault,
-  ilkData,
   isEditing,
-  autoBuyTriggerData,
   errors,
   warnings,
-  token,
   constantMultipleState,
-  autoSellTriggerData,
-  constantMultipleTriggerData,
-  stopLossTriggerData,
   nextBuyPrice,
   nextSellPrice,
   collateralToBePurchased,
@@ -103,15 +80,24 @@ export function SidebarConstantMultipleEditingStage({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
+  const {
+    autoBuyTriggerData,
+    autoSellTriggerData,
+    constantMultipleTriggerData,
+    stopLossTriggerData,
+    positionData: { ilk, id, collateralizationRatio, debt, debtFloor, token },
+  } = useAutomationContext()
 
   automationMultipleRangeSliderAnalytics({
     leftValue: constantMultipleState.sellExecutionCollRatio,
     rightValue: constantMultipleState.buyExecutionCollRatio,
-    vault,
     type: AutomationFeatures.CONSTANT_MULTIPLE,
     targetMultiple: calculateMultipleFromTargetCollRatio(
       constantMultipleState.targetCollRatio,
     ).decimalPlaces(2),
+    ilk,
+    vaultId: id,
+    collateralizationRatio,
   })
 
   automationInputsAnalytics({
@@ -119,11 +105,13 @@ export function SidebarConstantMultipleEditingStage({
     withMinSellPriceThreshold: constantMultipleState.sellWithThreshold,
     maxBuyPrice: constantMultipleState.maxBuyPrice,
     withMaxBuyPriceThreshold: constantMultipleState.buyWithThreshold,
-    vault,
     type: AutomationFeatures.CONSTANT_MULTIPLE,
+    ilk,
+    vaultId: id,
+    collateralizationRatio,
   })
 
-  const isVaultEmpty = vault.debt.isZero()
+  const isVaultEmpty = debt.isZero()
   const constantMultipleReadOnlyEnabled = useFeatureToggle('ConstantMultipleReadOnly')
 
   if (constantMultipleReadOnlyEnabled && !isVaultEmpty) {
@@ -186,8 +174,8 @@ export function SidebarConstantMultipleEditingStage({
                 Pages.ConstantMultiple,
                 CommonAnalyticsSections.Form,
                 {
-                  vaultId: vault.id.toString(),
-                  ilk: vault.ilk,
+                  vaultId: id.toString(),
+                  ilk: ilk,
                   targetMultiple: multiplier.toString(),
                 },
               )
@@ -231,16 +219,20 @@ export function SidebarConstantMultipleEditingStage({
         }}
         isResetAction={constantMultipleState.isResetAction}
       />
-      <VaultWarnings
-        warningMessages={extractConstantMultipleSliderWarnings(warnings)}
-        ilkData={ilkData}
-      />
-      <VaultErrors
-        errorMessages={errors.filter(
-          (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
-        )}
-        ilkData={ilkData}
-      />
+      {isEditing && (
+        <>
+          <VaultWarnings
+            warningMessages={extractConstantMultipleSliderWarnings(warnings)}
+            ilkData={{ debtFloor }}
+          />
+          <VaultErrors
+            errorMessages={errors.filter(
+              (item) => item === 'targetCollRatioExceededDustLimitCollRatio',
+            )}
+            ilkData={{ debtFloor, token }}
+          />
+        </>
+      )}
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
         amount={constantMultipleState?.maxBuyPrice}
@@ -273,11 +265,21 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={constantMultipleState?.buyWithThreshold}
       />
-      <VaultErrors errorMessages={extractConstantMultipleMaxBuyErrors(errors)} ilkData={ilkData} />
-      <VaultWarnings
-        warningMessages={warnings.filter((item) => item === 'settingAutoBuyTriggerWithNoThreshold')}
-        ilkData={ilkData}
-      />
+      {isEditing && (
+        <>
+          <VaultErrors
+            errorMessages={extractConstantMultipleMaxBuyErrors(errors)}
+            ilkData={{ debtFloor, token }}
+          />
+          <VaultWarnings
+            warningMessages={warnings.filter(
+              (item) => item === 'settingAutoBuyTriggerWithNoThreshold',
+            )}
+            ilkData={{ debtFloor }}
+          />
+        </>
+      )}
+
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
         amount={constantMultipleState?.minSellPrice}
@@ -310,14 +312,24 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
-      <VaultErrors errorMessages={extractConstantMultipleMinSellErrors(errors)} ilkData={ilkData} />
-      <VaultWarnings
-        warningMessages={extractConstantMultipleCommonWarnings(warnings)}
-        ilkData={ilkData}
-        isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
-        isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
-      />
-      <VaultErrors errorMessages={extractConstantMultipleCommonErrors(errors)} ilkData={ilkData} />
+      {isEditing && (
+        <>
+          <VaultErrors
+            errorMessages={extractConstantMultipleMinSellErrors(errors)}
+            ilkData={{ debtFloor, token }}
+          />
+          <VaultWarnings
+            warningMessages={extractConstantMultipleCommonWarnings(warnings)}
+            ilkData={{ debtFloor }}
+            isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
+            isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
+          />
+          <VaultErrors
+            errorMessages={extractConstantMultipleCommonErrors(errors)}
+            ilkData={{ debtFloor, token }}
+          />
+        </>
+      )}
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
@@ -332,7 +344,7 @@ export function SidebarConstantMultipleEditingStage({
         value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
         analytics={{
           page: Pages.ConstantMultiple,
-          additionalParams: { vaultId: vault.id.toString(), ilk: vault.ilk },
+          additionalParams: { vaultId: id.toString(), ilk: ilk },
         }}
       />
       {isEditing && (
@@ -410,60 +422,5 @@ export function SidebarConstantMultipleEditingStage({
         />
       )}
     </Text>
-  )
-}
-
-interface ConstantMultipleInfoSectionControlProps {
-  token: string
-  nextBuyPrice: BigNumber
-  nextSellPrice: BigNumber
-  collateralToBePurchased: BigNumber
-  collateralToBeSold: BigNumber
-  estimatedGasCostOnTrigger?: BigNumber
-  estimatedBuyFee: BigNumber
-  estimatedSellFee: BigNumber
-  constantMultipleState: ConstantMultipleFormChange
-}
-
-function ConstantMultipleInfoSectionControl({
-  token,
-  nextBuyPrice,
-  nextSellPrice,
-  collateralToBePurchased,
-  collateralToBeSold,
-  estimatedGasCostOnTrigger,
-  estimatedBuyFee,
-  estimatedSellFee,
-  constantMultipleState,
-}: ConstantMultipleInfoSectionControlProps) {
-  const feeDiff = estimatedBuyFee.minus(estimatedSellFee).abs()
-  const estimatedOasisFee = feeDiff.gt(ACCEPTABLE_FEE_DIFF)
-    ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))
-    : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
-
-  return (
-    <AddConstantMultipleInfoSection
-      token={token}
-      targetColRatio={constantMultipleState.targetCollRatio}
-      multiplier={constantMultipleState.multiplier}
-      buyExecutionCollRatio={constantMultipleState.buyExecutionCollRatio}
-      nextBuyPrice={nextBuyPrice}
-      collateralToBePurchased={collateralToBePurchased}
-      maxPriceToBuy={
-        constantMultipleState.buyWithThreshold
-          ? constantMultipleState.maxBuyPrice || zero
-          : undefined
-      }
-      sellExecutionCollRatio={constantMultipleState.sellExecutionCollRatio}
-      nextSellPrice={nextSellPrice}
-      collateralToBeSold={collateralToBeSold}
-      minPriceToSell={
-        constantMultipleState.sellWithThreshold
-          ? constantMultipleState.minSellPrice || zero
-          : undefined
-      }
-      estimatedOasisFee={estimatedOasisFee}
-      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
-    />
   )
 }

@@ -1,3 +1,4 @@
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { Card, Flex, SxStyleProp } from 'theme-ui'
 
@@ -48,7 +49,6 @@ export function StatefulTooltip({
   containerSx,
   children,
 }: StatefulTooltipProps) {
-  const isTouchDevice = window && 'ontouchstart' in window
   const { tooltipOpen, setTooltipOpen } = useTooltip()
 
   const handleMouseEnter = useMemo(

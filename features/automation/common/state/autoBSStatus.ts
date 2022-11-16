@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import {
   checkIfIsDisabledAutoBS,
   checkIfIsEditingAutoBS,
@@ -20,7 +19,9 @@ interface GetAutoBSStatusParams {
   isAddForm: boolean
   publishType: AutomationBSPublishType
   stage: SidebarAutomationStages
-  vault: Vault
+  lockedCollateral: BigNumber
+  debt: BigNumber
+  collateralizationRatio: BigNumber
 }
 
 interface AutoBSStatus {
@@ -43,7 +44,9 @@ export function getAutoBSStatus({
   isRemoveForm,
   publishType,
   stage,
-  vault,
+  debt,
+  lockedCollateral,
+  collateralizationRatio,
 }: GetAutoBSStatusParams): AutoBSStatus {
   const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData,
@@ -60,35 +63,31 @@ export function getAutoBSStatus({
   })
   const executionPrice = collateralPriceAtRatio({
     colRatio: autoBSState.execCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
   const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
-    colRatio: vault.collateralizationRatio,
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    colRatio: collateralizationRatio,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
   const { debtDelta, collateralDelta } = getAutoBSVaultChange({
     targetCollRatio: autoBSState.targetCollRatio,
     execCollRatio: autoBSState.execCollRatio,
     deviation: autoBSState.deviation,
     executionPrice,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
+    lockedCollateral: lockedCollateral,
+    debt: debt,
   })
   const { debtDelta: debtDeltaAtCurrentCollRatio } = getAutoBSVaultChange({
     targetCollRatio: autoBSState.targetCollRatio,
-    execCollRatio: vault.collateralizationRatio.times(100),
+    execCollRatio: collateralizationRatio.times(100),
     deviation: autoBSState.deviation,
     executionPrice: executionPriceAtCurrentCollRatio,
-    lockedCollateral: vault.lockedCollateral,
-    debt: vault.debt,
+    lockedCollateral: lockedCollateral,
+    debt: debt,
   })
-  const resetData = prepareAutoBSResetData(
-    autoBSTriggerData,
-    vault.collateralizationRatio,
-    publishType,
-  )
+  const resetData = prepareAutoBSResetData(autoBSTriggerData, collateralizationRatio, publishType)
 
   return {
     collateralDelta,

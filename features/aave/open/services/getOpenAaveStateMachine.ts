@@ -4,7 +4,7 @@ import { AaveConfigurationData } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
-import { map } from 'rxjs/operators'
+import { filter, first, map } from 'rxjs/operators'
 import { assign, sendParent, spawn } from 'xstate'
 
 import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
@@ -18,15 +18,16 @@ import { ProxyContext, ProxyStateMachine } from '../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import {
-  AaveStEthSimulateStateMachine,
   createOpenAaveStateMachine,
   OpenAaveContext,
   OpenAaveEvent,
   OpenAaveStateMachineServices,
   ParametersStateMachine,
+  STEPS_WITH_PROXY_CREATION,
 } from '../state'
 
 export function getOpenAavePositionStateMachineServices(
@@ -40,11 +41,7 @@ export function getOpenAavePositionStateMachineServices(
   }: {
     token: string
   }) => Observable<AaveReserveConfigurationData>,
-  aaveUserConfiguration$: ({
-    proxyAddress,
-  }: {
-    proxyAddress: string
-  }) => Observable<AaveConfigurationData>,
+  aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
 ): OpenAaveStateMachineServices {
   return {
@@ -60,6 +57,10 @@ export function getOpenAavePositionStateMachineServices(
     },
     getProxyAddress: () => {
       return proxyAddress$.pipe(
+        first(), // don't override current step when creating proxy in flow
+        filter((proxyAddress: string | undefined) => {
+          return !!proxyAddress
+        }),
         map((address) => ({
           type: 'PROXY_ADDRESS_RECEIVED',
           proxyAddress: address,
@@ -85,7 +86,7 @@ export function getOpenAavePositionStateMachineServices(
     },
     getHasOtherAssets: ({ proxyAddress }) => {
       return combineLatest(
-        aaveUserConfiguration$({ proxyAddress: proxyAddress! }),
+        aaveUserConfiguration$({ address: proxyAddress! }),
         aaveReservesList$(),
       ).pipe(
         map(([aaveUserConfiguration, aaveReservesList]) => {
@@ -118,13 +119,13 @@ export function getOpenAaveStateMachine$(
   parametersMachine$: Observable<ParametersStateMachine>,
   proxyMachine$: Observable<ProxyStateMachine>,
   transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
-  simulationMachine$: Observable<AaveStEthSimulateStateMachine>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
+  strategyConfig: StrategyConfig,
 ) {
   const pricesFeed$ = getPricesFeed$(prices$)
-  return combineLatest(parametersMachine$, proxyMachine$, simulationMachine$, userSettings$).pipe(
-    map(([parametersMachine, proxyMachine, simulationMachine, userSettings]) => {
+  return combineLatest(parametersMachine$, proxyMachine$, userSettings$).pipe(
+    map(([parametersMachine, proxyMachine, userSettings]) => {
       return createOpenAaveStateMachine
         .withConfig({
           services: {
@@ -205,11 +206,6 @@ export function getOpenAaveStateMachine$(
                 },
               ),
             })),
-            spawnSimulationMachine: assign((_) => ({
-              refSimulationMachine: spawn(simulationMachine, {
-                name: 'simulationMachine',
-              }),
-            })),
           },
         })
         .withContext({
@@ -218,12 +214,14 @@ export function getOpenAaveStateMachine$(
           slippage: userSettings.slippage,
           currentPosition: EMPTY_POSITION,
           currentStep: 1,
-          totalSteps: 4,
+          totalSteps: STEPS_WITH_PROXY_CREATION,
+          preexistingProxy: false,
           token: 'ETH',
           inputDelay: 1000,
           strategyName: 'stETHeth',
           userInput: {},
           loading: false,
+          strategyConfig,
         })
     }),
   )

@@ -1,9 +1,8 @@
 import { Pages } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
@@ -24,107 +23,56 @@ import {
   AUTO_SELL_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/automationFeatureChange'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { AddAutoSellInfoSection } from 'features/automation/protection/autoSell/controls/AddAutoSellInfoSection'
-import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
-import { one } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Text } from 'theme-ui'
 
-interface AutoSellInfoSectionControlProps {
-  vault: Vault
-  autoSellState: AutoBSFormChange
-  debtDelta: BigNumber
-  collateralDelta: BigNumber
-  executionPrice: BigNumber
-}
-
-function AutoSellInfoSectionControl({
-  vault,
-  autoSellState,
-  debtDelta,
-  collateralDelta,
-  executionPrice,
-}: AutoSellInfoSectionControlProps) {
-  const deviationPercent = autoSellState.deviation.div(100)
-
-  const targetRatioWithDeviationFloor = one
-    .minus(deviationPercent)
-    .times(autoSellState.targetCollRatio)
-  const targetRatioWithDeviationCeiling = one
-    .plus(deviationPercent)
-    .times(autoSellState.targetCollRatio)
-
-  return (
-    <AddAutoSellInfoSection
-      targetCollRatio={autoSellState.targetCollRatio}
-      multipleAfterSell={one.div(autoSellState.targetCollRatio.div(100).minus(one)).plus(one)}
-      execCollRatio={autoSellState.execCollRatio}
-      nextSellPrice={executionPrice}
-      collateralAfterNextSell={{
-        value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
-      }}
-      outstandingDebtAfterSell={{
-        value: vault.debt,
-        secondaryValue: vault.debt.plus(debtDelta),
-      }}
-      ethToBeSoldAtNextSell={collateralDelta.abs()}
-      token={vault.token}
-      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
-      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
-    />
-  )
-}
+import { AutoSellInfoSectionControl } from './AutoSellInfoSectionControl'
 
 interface SidebarAutoSellAddEditingStageProps {
-  vault: Vault
-  ilkData: IlkData
   isEditing: boolean
   autoSellState: AutoBSFormChange
-  autoSellTriggerData: AutoBSTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   debtDelta: BigNumber
   collateralDelta: BigNumber
   sliderMin: BigNumber
   sliderMax: BigNumber
-  stopLossTriggerData: StopLossTriggerData
 }
 
 export function SidebarAutoSellAddEditingStage({
-  vault,
-  ilkData,
   isEditing,
   autoSellState,
-  autoSellTriggerData,
   errors,
   warnings,
   debtDelta,
   collateralDelta,
   sliderMin,
   sliderMax,
-  stopLossTriggerData,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
+  const {
+    autoSellTriggerData,
+    stopLossTriggerData,
+    positionData: { id, ilk, debt, debtFloor, lockedCollateral, collateralizationRatio, token },
+  } = useAutomationContext()
   const { t } = useTranslation()
   const [, setHash] = useHash()
   const executionPrice = collateralPriceAtRatio({
     colRatio: autoSellState.execCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
-  const isVaultEmpty = vault.debt.isZero()
+  const isVaultEmpty = debt.isZero()
 
   const { isStopLossEnabled, stopLossLevel } = stopLossTriggerData
 
@@ -136,25 +84,27 @@ export function SidebarAutoSellAddEditingStage({
       uiChanges,
       publishType: AUTO_SELL_FORM_CHANGE,
     })
-  }, [vault.collateralizationRatio.toNumber()])
+  }, [collateralizationRatio.toNumber()])
 
   automationMultipleRangeSliderAnalytics({
     leftValue: autoSellState.execCollRatio,
     rightValue: autoSellState.targetCollRatio,
-    vault,
+    vaultId: id,
+    collateralizationRatio,
+    ilk,
     type: AutomationFeatures.AUTO_SELL,
   })
 
   automationInputsAnalytics({
     minSellPrice: autoSellState.maxBuyOrMinSellPrice,
     withMinSellPriceThreshold: autoSellState.withThreshold,
-    vault,
+    vaultId: id,
+    collateralizationRatio,
+    ilk,
     type: AutomationFeatures.AUTO_SELL,
   })
 
-  const isCurrentCollRatioHigherThanSliderMax = vault.collateralizationRatio
-    .times(100)
-    .gt(sliderMax)
+  const isCurrentCollRatioHigherThanSliderMax = collateralizationRatio.times(100).gt(sliderMax)
 
   if (
     isStopLossEnabled &&
@@ -244,14 +194,14 @@ export function SidebarAutoSellAddEditingStage({
         {autoSellState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-sell.set-trigger-description', {
               targetCollRatio: autoSellState.targetCollRatio.toNumber(),
-              token: vault.token,
+              token,
               execCollRatio: autoSellState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
               minSellPrice: autoSellState.maxBuyOrMinSellPrice,
             })
           : t('auto-sell.set-trigger-description-no-threshold', {
               targetCollRatio: autoSellState.targetCollRatio.toNumber(),
-              token: vault.token,
+              token,
               execCollRatio: autoSellState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
             })}{' '}
@@ -333,8 +283,8 @@ export function SidebarAutoSellAddEditingStage({
       />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Sell" />
-          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+          <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} autoType="Auto-Sell" />
+          <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
         </>
       )}
       <MaxGasPriceSection
@@ -351,7 +301,7 @@ export function SidebarAutoSellAddEditingStage({
         value={autoSellState.maxBaseFeeInGwei.toNumber()}
         analytics={{
           page: Pages.AutoSell,
-          additionalParams: { vaultId: vault.id.toString(), ilk: vault.ilk },
+          additionalParams: { vaultId: id.toString(), ilk },
         }}
       />
       {isEditing && (
@@ -362,7 +312,7 @@ export function SidebarAutoSellAddEditingStage({
                 type: 'reset',
                 resetData: prepareAutoBSResetData(
                   autoSellTriggerData,
-                  vault.collateralizationRatio,
+                  collateralizationRatio,
                   AUTO_SELL_FORM_CHANGE,
                 ),
               })
@@ -370,10 +320,10 @@ export function SidebarAutoSellAddEditingStage({
           />
           <AutoSellInfoSectionControl
             autoSellState={autoSellState}
-            vault={vault}
             debtDelta={debtDelta}
             collateralDelta={collateralDelta}
             executionPrice={executionPrice}
+            maxGasFee={autoSellState.maxBaseFeeInGwei.toNumber()}
           />
         </>
       )}

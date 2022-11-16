@@ -1,4 +1,4 @@
-import { IlkData } from 'blockchain/ilks'
+import BigNumber from 'bignumber.js'
 import {
   DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
@@ -7,11 +7,11 @@ import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTrigge
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
 export function getAutoBuyMinMaxValues({
-  ilkData,
+  liquidationRatio,
   autoSellTriggerData,
   stopLossTriggerData,
 }: {
-  ilkData: IlkData
+  liquidationRatio: BigNumber
   autoSellTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
 }) {
@@ -37,7 +37,7 @@ export function getAutoBuyMinMaxValues({
   }
 
   return {
-    min: ilkData.liquidationRatio.times(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+    min: liquidationRatio.times(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
     max: DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
   }
 }

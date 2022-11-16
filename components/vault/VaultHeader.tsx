@@ -3,6 +3,7 @@ import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { isTouchDevice } from 'helpers/isTouchDevice'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { SxStyleProp } from 'theme-ui'
@@ -23,7 +24,6 @@ export function VaultIlkDetailsItem({
   }
 }) {
   const { tooltipOpen, setTooltipOpen } = useTooltip()
-  const isTouchDevice = window && 'ontouchstart' in window
 
   return (
     <Flex

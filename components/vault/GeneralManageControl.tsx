@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { AutomationContextProvider } from 'components/AutomationContextProvider'
+import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -15,26 +15,26 @@ interface GeneralManageControlProps {
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const { generalManageVault$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
-  const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
 
   useEffect(() => {
     return () => {
-      generalManageVault?.state.clear()
+      generalManageVaultData?.state.clear()
     }
   }, [])
 
-  const vaultHistoryCheck = generalManageVault?.state.vaultHistory.length || undefined
+  const vaultHistoryCheck = generalManageVaultData?.state.vaultHistory.length || undefined
 
   return (
     <WithErrorHandler error={[generalManageVaultError]}>
       <WithLoadingIndicator
-        value={[generalManageVault, vaultHistoryCheck]}
+        value={[generalManageVaultData, vaultHistoryCheck]}
         customLoader={<VaultContainerSpinner />}
       >
         {([generalManageVault]) => (
-          <AutomationContextProvider id={id}>
+          <MakerAutomationContext generalManageVault={generalManageVault}>
             <GeneralManageLayout generalManageVault={generalManageVault} />
-          </AutomationContextProvider>
+          </MakerAutomationContext>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>

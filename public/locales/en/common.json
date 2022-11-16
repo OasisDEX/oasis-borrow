@@ -37,6 +37,7 @@
   "after": "After",
   "after-closing": "{{token}} after closing",
   "after-next": "After + Next",
+  "all": "All",
   "all-assets": "All Assets",
   "amount": "Amount",
   "approve-allowance": "Approve Allowance",
@@ -61,6 +62,7 @@
     "write-us": "Send us your CV to "
   },
   "change-your-vault": "Change your vault",
+  "clear-selection": "Clear selection",
   "close": "Close",
   "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
@@ -143,7 +145,7 @@
   "disconnect-wallet": "Disconnect Wallet",
   "discover": {
     "heading": "Discover Oasis.app",
-    "intro": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites.",
+    "intro": "Discover and find the most interesting Vaults on Oasis.app in real-time.",
     "intro-link": "Learn more about Discover",
     "navigation": {
       "highest-risk-positions": "Highest-Risk Positions",
@@ -152,8 +154,8 @@
       "largest-debt": "Largest Debt"
     },
     "api-error": {
-      "1": "Unknown error occurred, please try again later.",
-      "2": "There are no entries available for selected filters."
+      "1": "There are no positions at this moment. Please try again later.",
+      "2": "There are no positions available for selected filters."
     },
     "table": {
       "no-entries": "There are no entries available for selected filters.",
@@ -162,7 +164,7 @@
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
         "activity": "Activity",
-        "asset": "Asset",
+        "asset": "Vault",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
         "collateral-value": "Collateral value",
@@ -179,9 +181,8 @@
       "status": {
         "1": "Liquidated {{timeAgo}}",
         "2": "Being liquidated",
-        "3": "{{tillLiquidation}}% till liquidation",
-        "4": "{{toStopLoss}}% to Stop-loss",
-        "5": "Closed {{closedDaysAgo}} days ago"
+        "3": "{{tillLiquidation}}% until liquidation",
+        "4": "{{toStopLoss}}% to Stop-loss"
       },
       "activity": {
         "1": "Withdrawn {{timeAgo}}",
@@ -189,12 +190,12 @@
         "3": "Decreased risk {{timeAgo}}",
         "4": "Closed {{timeAgo}}",
         "5": "Opened {{timeAgo}}",
-        "6": "Deposided {{timeAgo}}"
+        "6": "Deposited {{timeAgo}}"
       },
       "banner": {
         "highest-risk-positions": {
-          "title": "Mutiply your crypto assets with Stop-Loss Vault Protection",
-          "description": "All Multiply Vaults on Oasis.app allow you to protect yourself from liquidation with automated Stop-Loss Protection.",
+          "title": "Protect your Multiply vault using Stop-Loss",
+          "description": "All Multiply Vaults on Oasis.app allow you to protect your position from liquidation using automated Stop-Loss Protection.",
           "cta": "Get started with Multiply"
         },
         "highest-multiply-pnl": {
@@ -204,12 +205,12 @@
         },
         "most-yield-earned": {
           "title": "Put your crypto to work today and start earning a yield",
-          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "description": "Oasis Earn offers a set of curated sustainable yield products allowing you to take advantage of the best strategies that Defi has to offer.",
           "cta": "Get started with Earn"
         },
         "largest-debt": {
-          "title": "Borrow against your crypto today.",
-          "description": "Multiply on Oasis.app allows you to set your level of exposure and enable automated actions to buy and sell within pre-set bounds.",
+          "title": "Borrow against your crypto today",
+          "description": "Borrow against your favorite crypto assets. Gain extra liquidity with flexible repayment schedules and no fees.",
           "cta": "Get started with Borrow"
         }
       }
@@ -474,8 +475,11 @@
     "stability-fee": "Stability Fee",
     "title": "Manage Vault",
     "action": "Manage Vault",
-    "current-price": "Current {{token}} Price",
-    "next-price": "Next {{token}} Price",
+    "current-price": "Current Price",
+    "next-price": "Next Price",
+    "current-price-tooltip": "Current {{token}} Price",
+    "next-price-tooltip": "Next {{token}} Price",
+    "next-price-any-time": "< 2 minutes",
     "card": {
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
       "collateralization-ratio-header2": "Current Collateralization ratio:",
@@ -945,8 +949,6 @@
     "header": "{{ilk}} Vault {{id}}",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
-    "next-price-any-time": "Next price in <2 minutes",
-    "next-price_plural": "Next price in {{count}} minutes",
     "open-vault": "Open {{ilk}} Vault",
     "vault-details": "Vault Details",
     "token-uds-price": "{{token}}/USD price"
@@ -1048,7 +1050,8 @@
     "third-party-fees": "3rd party protocol fees",
     "oasis-fee": "Oasis fee",
     "ltv": "LTV",
-    "outstanding-debt": "Outstanding debt"
+    "outstanding-debt": "Outstanding debt",
+    "loan-to-value": "Loan to Value"
   },
   "vault-actions": {
     "deposit": "Deposit",
@@ -1236,6 +1239,7 @@
     "next-update": "Next Update",
     "oracle-type": "Oracle Type"
   },
+  "selected": "Selected",
   "select-vault-type": {
     "header": "What do you want to do with your {{token}}?",
     "multiply": {
@@ -1253,6 +1257,7 @@
   "protection": {
     "stop-loss": "Stop-Loss",
     "stop-loss-protection": "Stop-Loss Protection",
+    "confirmation-text": "Confirm your Stop-Loss setup.",
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
@@ -1319,6 +1324,8 @@
     "no-threshold": "No threshold set",
     "set-no-threshold": "Set No Threshold",
     "set-threshold": "Set Threshold",
+    "edit-order": "Edit Order",
+    "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
     "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab",
@@ -1592,6 +1599,7 @@
   "auto-sell": {
     "sell-title": "Basic Auto-Sell Summary",
     "cancel-summary-title": "Cancel Auto-Sell order summary",
+    "confirmation": "Confirm your auto-sell setup.",
     "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
@@ -1645,6 +1653,7 @@
   "auto-buy": {
     "title": "Auto-Buy",
     "cancel-summary-title": "Cancel Auto-Buy order summary",
+    "confirmation-text": "Confirm your Auto-Buy setup.",
     "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Recurring buy order up to {{amount}}/{{token}}",
     "continual-buy-no-threshold": "Recurring buy order with no max",
@@ -1749,7 +1758,9 @@
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
     "trigger-executed": "Your {{feature}} was triggered",
-    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger"
+    "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger",
+    "confirmation-text": "Confirm your {{feature}} setup",
+    "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1935,7 +1946,8 @@
         "back-to-editing": "Back to editing",
         "configure-multiple": {
           "title": "Set your risk level",
-          "liquidation-price": "{{collateralToken}}/{{debtToken}} Liquidation Price",
+          "liquidation-price": "Liquidation Price",
+          "current-price": "Current Price",
           "historical-ratio": "{{collateralToken}} / {{debtToken}} Historical Ratio",
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
@@ -1993,8 +2005,9 @@
         "header": "Independently audited",
         "description": "Our stringent security procedures didn’t occur by luck. It came about with a rigorous process of both internal and external audits.",
         "link-multiply": "Multiply Audit Report",
-        "link-multiply-fmm": "Multiply FMM extension audit report",
-        "link-automation": "Automation Audit Report"
+        "link-multiply-fmm": "Multiply FMM extension Audit Report",
+        "link-automation": "Automation Audit Report",
+        "link-modular-proxy-actions": "Modular Proxy Actions Audit Report"
       },
       "bug": {
         "header": "Bug bounty",

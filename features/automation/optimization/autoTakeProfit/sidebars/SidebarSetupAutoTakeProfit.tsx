@@ -1,9 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
 import { collateralPriceAtRatio, ratioAtCollateralPrice } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
@@ -16,7 +14,7 @@ import { getAutomationPrimaryButtonLabel } from 'features/automation/common/side
 import { getAutomationStatusTitle } from 'features/automation/common/sidebars/getAutomationStatusTitle'
 import { getAutomationTextButtonLabel } from 'features/automation/common/sidebars/getAutomationTextButtonLabel'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import { SidebarAutoTakeProfitEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitEditingStage'
 import { SidebarAutoTakeProfitRemovalEditingStage } from 'features/automation/optimization/autoTakeProfit/sidebars/SidebarAutoTakeProfitRemovalEditingStage'
@@ -24,14 +22,11 @@ import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
 } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import {
   errorsAutoTakeProfitValidation,
   warningsAutoTakeProfitValidation,
 } from 'features/automation/optimization/autoTakeProfit/validators'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
-import { VaultType } from 'features/generalManageVault/vaultType'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { formatAmount } from 'helpers/formatters/format'
 import {
@@ -40,18 +35,14 @@ import {
 } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
+
+import { AutoTakeProfitInfoSectionControl } from '../controls/AutoTakeProfitInfoSectionControl'
 
 interface SidebarSetupAutoTakeProfitProps {
-  autoBuyTriggerData: AutoBSTriggerData
   autoTakeProfitState: AutoTakeProfitFormChange
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   closePickerConfig: PickCloseStateProps
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  context: Context
-  ethMarketPrice: BigNumber
   feature: AutomationFeatures
-  ilkData: IlkData
   isAddForm: boolean
   isAutoTakeProfitActive: boolean
   isDisabled: boolean
@@ -62,24 +53,13 @@ interface SidebarSetupAutoTakeProfitProps {
   min: BigNumber
   stage: SidebarAutomationStages
   textButtonHandler: () => void
-  tokenMarketPrice: BigNumber
-  nextCollateralPrice: BigNumber
   txHandler: () => void
-  vault: Vault
-  ethBalance: BigNumber
-  vaultType: VaultType
 }
 
 export function SidebarSetupAutoTakeProfit({
-  autoBuyTriggerData,
   autoTakeProfitState,
-  autoTakeProfitTriggerData,
   closePickerConfig,
-  constantMultipleTriggerData,
-  context,
-  ethMarketPrice,
   feature,
-  ilkData,
   isAddForm,
   isAutoTakeProfitActive,
   isDisabled,
@@ -90,16 +70,21 @@ export function SidebarSetupAutoTakeProfit({
   min,
   stage,
   textButtonHandler,
-  tokenMarketPrice,
-  nextCollateralPrice,
   txHandler,
-  vault,
-  ethBalance,
-  vaultType,
 }: SidebarSetupAutoTakeProfitProps) {
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
   const { t } = useTranslation()
+
+  const {
+    autoBuyTriggerData,
+    autoTakeProfitTriggerData,
+    constantMultipleTriggerData,
+    environmentData: { ethMarketPrice, etherscanUrl, nextCollateralPrice, ethBalance },
+    positionData: { debt, debtOffset, token, vaultType, lockedCollateral },
+  } = useAutomationContext()
+
+  const { isAwaitingConfirmation } = autoTakeProfitState
 
   const flow = getAutomationFormFlow({ isFirstSetup, isRemoveForm, feature })
   const sidebarTitle = getAutomationFormTitle({
@@ -120,32 +105,34 @@ export function SidebarSetupAutoTakeProfit({
     flow,
     stage,
     feature,
+    isAwaitingConfirmation,
+    isRemoveForm,
   })
-  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm })
+  const textButtonLabel = getAutomationTextButtonLabel({ isAddForm, isAwaitingConfirmation })
   const sidebarStatus = getAutomationStatusTitle({
     stage,
     txHash: autoTakeProfitState.txDetails?.txHash,
     flow,
-    etherscan: context.etherscan.url,
+    etherscan: etherscanUrl,
     feature,
   })
 
   const { estimatedProfitOnClose } = getOnCloseEstimations({
     colMarketPrice: autoTakeProfitState.executionPrice,
     colOraclePrice: autoTakeProfitState.executionPrice,
-    debt: vault.debt,
-    debtOffset: vault.debtOffset,
+    debt: debt,
+    debtOffset: debtOffset,
     ethMarketPrice,
-    lockedCollateral: vault.lockedCollateral,
+    lockedCollateral,
     toCollateral: autoTakeProfitState.toCollateral,
   })
 
-  const closeToToken = autoTakeProfitState.toCollateral ? vault.token : 'DAI'
+  const closeToToken = autoTakeProfitState.toCollateral ? token : 'DAI'
 
   const autoTakeSliderBasicConfig = {
     disabled: false,
     leftBoundryFormatter: (x: BigNumber) =>
-      x.isZero() ? '-' : `$${formatAmount(x, 'USD')} ${vault.token}`,
+      x.isZero() ? '-' : `$${formatAmount(x, 'USD')} ${token}`,
     rightBoundryFormatter: (x: BigNumber) =>
       x.isZero() ? '-' : `${formatAmount(estimatedProfitOnClose, closeToToken)} ${closeToToken}`,
     step: 1,
@@ -156,13 +143,13 @@ export function SidebarSetupAutoTakeProfit({
     max,
   })
   const targetColRatio = ratioAtCollateralPrice({
-    lockedCollateral: vault.lockedCollateral,
+    lockedCollateral,
     collateralPriceUSD: autoTakeProfitState.executionPrice,
-    vaultDebt: vault.debt,
+    vaultDebt: debt,
   })
 
   const warnings = warningsAutoTakeProfitValidation({
-    token: vault.token,
+    token,
     ethPrice: ethMarketPrice,
     ethBalance,
     gasEstimationUsd: gasEstimation?.usdValue,
@@ -171,13 +158,13 @@ export function SidebarSetupAutoTakeProfit({
     executionPrice: autoTakeProfitState.executionPrice,
     autoBuyTriggerPrice: collateralPriceAtRatio({
       colRatio: autoBuyTriggerData.execCollRatio.div(100),
-      collateral: vault.lockedCollateral,
-      vaultDebt: vault.debt,
+      collateral: lockedCollateral,
+      vaultDebt: debt,
     }),
     constantMultipleBuyTriggerPrice: collateralPriceAtRatio({
       colRatio: constantMultipleTriggerData.buyExecutionCollRatio.div(100),
-      collateral: vault.lockedCollateral,
-      vaultDebt: vault.debt,
+      collateral: lockedCollateral,
+      vaultDebt: debt,
     }),
   })
 
@@ -195,7 +182,7 @@ export function SidebarSetupAutoTakeProfit({
   const sliderConfig: SliderValuePickerProps = {
     ...autoTakeSliderBasicConfig,
     sliderPercentageFill,
-    leftLabel: t('slider.set-auto-take-profit.left-label', { token: vault.token }),
+    leftLabel: t('slider.set-auto-take-profit.left-label', { token }),
     rightLabel: t('slider.set-auto-take-profit.right-label', { token: closeToToken }),
     leftBoundry: autoTakeProfitState.executionPrice,
     rightBoundry: estimatedProfitOnClose,
@@ -229,27 +216,38 @@ export function SidebarSetupAutoTakeProfit({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && !isAwaitingConfirmation && (
                 <SidebarAutoTakeProfitEditingStage
                   autoTakeProfitState={autoTakeProfitState}
-                  autoTakeProfitTriggerData={autoTakeProfitTriggerData}
                   closePickerConfig={closePickerConfig}
-                  ethMarketPrice={ethMarketPrice}
                   isEditing={isEditing}
                   sliderConfig={sliderConfig}
-                  tokenMarketPrice={tokenMarketPrice}
-                  vault={vault}
-                  ilkData={ilkData}
                   errors={errors}
                   warnings={warnings}
                 />
               )}
+              {isAwaitingConfirmation && (
+                <SidebarAwaitingConfirmation
+                  feature={
+                    <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+                      {t('automation.auto-take-profit-confirmation-text', {
+                        price: ethMarketPrice.toString(),
+                        profit: estimatedProfitOnClose.toFixed(2).toString(),
+                      })}
+                    </Text>
+                  }
+                  children={
+                    <AutoTakeProfitInfoSectionControl
+                      toCollateral={autoTakeProfitState.toCollateral}
+                      triggerColPrice={autoTakeProfitState.executionPrice}
+                      triggerColRatio={autoTakeProfitState.executionCollRatio}
+                    />
+                  }
+                />
+              )}
               {isRemoveForm && (
                 <SidebarAutoTakeProfitRemovalEditingStage
-                  autoTakeProfitTriggerData={autoTakeProfitTriggerData}
                   errors={cancelAutoTakeProfitErrors}
-                  ilkData={ilkData}
-                  vault={vault}
                   warnings={cancelAutoTakeProfitWarnings}
                 />
               )}
@@ -269,14 +267,39 @@ export function SidebarSetupAutoTakeProfit({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
+            uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+              type: 'is-awaiting-confirmation',
+              isAwaitingConfirmation: true,
+            })
+          } else {
+            if (isAwaitingConfirmation && ['txSuccess', 'txFailure'].includes(stage)) {
+              uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                type: 'is-awaiting-confirmation',
+                isAwaitingConfirmation: false,
+              })
+            }
+
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' &&
         stage !== 'txSuccess' && {
           textButton: {
             label: textButtonLabel,
-            hidden: isFirstSetup,
-            action: () => textButtonHandler(),
+            hidden: isFirstSetup && !isAwaitingConfirmation,
+            action: () => {
+              if (isAwaitingConfirmation) {
+                uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
+                  type: 'is-awaiting-confirmation',
+                  isAwaitingConfirmation: false,
+                })
+              } else {
+                textButtonHandler()
+              }
+            },
           },
         }),
       status: sidebarStatus,

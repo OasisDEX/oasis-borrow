@@ -6,13 +6,13 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
 import { ContentCardTargetColRatioAfterSell } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterSell'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -24,34 +24,31 @@ import React from 'react'
 import { Text } from 'theme-ui'
 
 interface AutoSellDetailsLayoutProps {
-  ilk: string
-  vaultId: BigNumber
-  token: string
-  autoSellTriggerData: AutoBSTriggerData
   triggerColRatio?: BigNumber
   nextSellPrice?: BigNumber
   targetColRatio?: BigNumber
   threshold?: BigNumber
   afterTriggerColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
-  isconstantMultipleEnabled: boolean
 }
 
 export function AutoSellDetailsLayout({
-  ilk,
-  vaultId,
-  token,
   triggerColRatio,
   nextSellPrice,
   targetColRatio,
   threshold,
-  autoSellTriggerData,
   afterTriggerColRatio,
   afterTargetColRatio,
-  isconstantMultipleEnabled,
 }: AutoSellDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const {
+    autoSellTriggerData,
+    constantMultipleTriggerData: { isTriggerEnabled },
+    positionData: { id, ilk, token },
+  } = useAutomationContext()
+
+  const isConstantMultipleEnabled = isTriggerEnabled
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoSellOn = autoSellTriggerData.isTriggerEnabled
@@ -92,7 +89,7 @@ export function AutoSellDetailsLayout({
                 {t('here')}.
               </AppLink>
             </>,
-            ...(isconstantMultipleEnabled
+            ...(isConstantMultipleEnabled
               ? [
                   <Text as="span" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
                     {t('auto-sell.banner.cm-warning')}
@@ -115,11 +112,11 @@ export function AutoSellDetailsLayout({
                 AutomationEventIds.SelectAutoSell,
                 Pages.ProtectionTab,
                 CommonAnalyticsSections.Banner,
-                { vaultId: vaultId.toString(), ilk },
+                { vaultId: id.toString(), ilk },
               )
             },
             text: t('auto-sell.banner.button'),
-            disabled: isconstantMultipleEnabled,
+            disabled: isConstantMultipleEnabled,
           }}
         />
       )}

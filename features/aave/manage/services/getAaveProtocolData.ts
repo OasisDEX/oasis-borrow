@@ -19,9 +19,9 @@ import { AaveProtocolData } from '../state'
 export type AaveOracleAssetPriceDataType = ({ token }: { token: string }) => Observable<BigNumber>
 
 export type AaveUserConfigurationType = ({
-  proxyAddress,
+  address,
 }: {
-  proxyAddress: string
+  address: string
 }) => Observable<AaveConfigurationData>
 
 export type AaveReserveConfigurationDataType = ({
@@ -37,15 +37,15 @@ export function getAaveProtocolData$(
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
-  token: string,
-  proxyAddress: string,
+  collateralToken: string,
+  address: string,
 ): Observable<AaveProtocolData> {
   return combineLatest(
-    aaveUserReserveData$({ token, proxyAddress }),
-    aaveUserAccountData$({ proxyAddress }),
-    aaveOracleAssetPriceData$({ token }),
-    aaveReserveConfigurationData$({ token }),
-    aaveUserConfiguration$({ proxyAddress }),
+    aaveUserReserveData$({ token: collateralToken, address }),
+    aaveUserAccountData$({ address }),
+    aaveOracleAssetPriceData$({ token: collateralToken }),
+    aaveReserveConfigurationData$({ token: collateralToken }),
+    aaveUserConfiguration$({ address }),
     aaveReservesList$(),
   ).pipe(
     map(
@@ -59,7 +59,10 @@ export function getAaveProtocolData$(
       ]) => {
         const pos = new Position(
           { amount: new BigNumber(accountData.totalDebtETH.toString()) },
-          { amount: new BigNumber(reserveData.currentATokenBalance.toString()) },
+          {
+            amount: new BigNumber(reserveData.currentATokenBalance.toString()),
+            denomination: collateralToken,
+          },
           oraclePrice,
           {
             dustLimit: new BigNumber(0),

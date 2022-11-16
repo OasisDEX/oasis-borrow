@@ -6,6 +6,7 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -29,7 +30,6 @@ export interface ConstantMultipleDetailsLayoutProps {
   ilk: string
   vaultId: BigNumber
   token: string
-  vaultType: VaultType
   isTriggerEnabled: boolean
   targetMultiple?: BigNumber
   targetColRatio?: BigNumber
@@ -48,7 +48,6 @@ export function ConstantMultipleDetailsLayout({
   ilk,
   vaultId,
   token,
-  vaultType,
   isTriggerEnabled,
   targetMultiple,
   targetColRatio,
@@ -64,7 +63,9 @@ export function ConstantMultipleDetailsLayout({
 }: ConstantMultipleDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
-
+  const {
+    positionData: { vaultType },
+  } = useAutomationContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isMultiplyVault = vaultType === VaultType.Multiply
 

@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
   DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
@@ -12,6 +11,7 @@ import {
   resolveMaxBuyOrMinSellPrice,
 } from 'features/automation/common/helpers'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { SidebarAutomationStages } from 'features/automation/common/types'
 import { ConstantMultipleFormChange } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import { getAutoSellMinMaxValues } from 'features/automation/protection/autoSell/helpers'
@@ -19,11 +19,11 @@ import { StopLossTriggerData } from 'features/automation/protection/stopLoss/sta
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 
 export function getConstantMutliplyMinMaxValues({
-  ilkData,
+  liquidationRatio,
   autoBuyTriggerData,
   stopLossTriggerData,
 }: {
-  ilkData: IlkData
+  liquidationRatio: BigNumber
   autoBuyTriggerData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
 }) {
@@ -31,7 +31,7 @@ export function getConstantMutliplyMinMaxValues({
     min: getAutoSellMinMaxValues({
       autoBuyTriggerData,
       stopLossTriggerData,
-      ilkData,
+      liquidationRatio,
     }).min,
     max: DEFAULT_AUTO_BS_MAX_SLIDER_VALUE,
   }
@@ -156,7 +156,7 @@ export function checkIfIsDisabledConstantMultiple({
   isEditing: boolean
   isAddForm: boolean
   state: ConstantMultipleFormChange
-  stage: SidebarVaultStages
+  stage: SidebarVaultStages | SidebarAutomationStages
 }) {
   return (
     (isProgressStage ||

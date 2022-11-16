@@ -1,18 +1,22 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import {
+  AUTO_SELL_FORM_CHANGE,
+  AutoBSFormChange,
+} from 'features/automation/common/state/autoBSFormChange'
 import { ProtectionDetailsControl } from 'features/automation/protection/common/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/common/controls/ProtectionFormControl'
-import { VaultType } from 'features/generalManageVault/vaultType'
+import {
+  STOP_LOSS_FORM_CHANGE,
+  StopLossFormChange,
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
-import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Container } from 'theme-ui'
 
 import { useAppContext } from '../AppContextProvider'
@@ -57,13 +61,6 @@ function ZeroDebtProtectionBanner({
   )
 }
 
-interface ProtectionControlProps {
-  vault: Vault
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  vaultType: VaultType
-}
-
 function getZeroDebtProtectionBannerProps({
   stopLossWriteEnabled,
   isVaultDebtZero,
@@ -103,69 +100,54 @@ function getZeroDebtProtectionBannerProps({
   }
 }
 
-export function ProtectionControl({
-  vault,
-  ilkData,
-  balanceInfo,
-  vaultType,
-}: ProtectionControlProps) {
-  const { priceInfo$, context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
-  const { stopLossTriggerData, autoSellTriggerData } = useAutomationContext()
+export function ProtectionControl() {
+  const { txHelpers$ } = useAppContext()
+  const {
+    autoSellTriggerData,
+    stopLossTriggerData,
+    positionData: { debt, debtFloor },
+  } = useAutomationContext()
+  const [txHelpersData] = useObservable(txHelpers$)
+  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+  const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
-  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
-  const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
-  const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
-  const [contextData, contextError] = useObservable(context$)
-  const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
-  const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
-  const dustLimit = ilkData.debtFloor
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const vaultHasActiveTrigger =
     stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled
 
-  return vaultHasActiveTrigger ||
-    (!vault.debt.isZero() &&
-      vault.debt.gt(dustLimit) &&
-      (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
-    <WithErrorHandler
-      error={[priceInfoError, txHelpersError, contextError, ethAndTokenPricesError]}
+  return (
+    <WithLoadingIndicator
+      value={[stopLossState, autoSellState]}
+      customLoader={<VaultContainerSpinner />}
     >
-      <WithLoadingIndicator
-        value={[priceInfoData, contextData, ethAndTokenPricesData]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([priceInfo, context, ethAndTokenPrices]) => {
-          return (
-            <DefaultVaultLayout
-              detailsViewControl={<ProtectionDetailsControl vault={vault} ilkData={ilkData} />}
-              editForm={
-                <ProtectionFormControl
-                  ilkData={ilkData}
-                  priceInfo={priceInfo}
-                  vault={vault}
-                  balanceInfo={balanceInfo}
-                  txHelpers={txHelpersData}
-                  context={context}
-                  ethMarketPrice={ethAndTokenPrices['ETH']}
-                  vaultType={vaultType}
-                />
-              }
+      {() =>
+        vaultHasActiveTrigger ||
+        (!debt.isZero() &&
+          debt.gt(debtFloor) &&
+          (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
+          <DefaultVaultLayout
+            detailsViewControl={<ProtectionDetailsControl />}
+            editForm={<ProtectionFormControl txHelpers={txHelpersData} />}
+          />
+        ) : (
+          <Container
+            variant="vaultPageContainer"
+            sx={{
+              zIndex: 0,
+            }}
+          >
+            <ZeroDebtProtectionBanner
+              {...getZeroDebtProtectionBannerProps({
+                stopLossWriteEnabled,
+                isVaultDebtZero: debt.isZero(),
+                isVaultDebtBelowDustLumit: debt.lte(debtFloor),
+                vaultHasNoProtection: !vaultHasActiveTrigger,
+              })}
             />
-          )
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
-  ) : (
-    <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-      <ZeroDebtProtectionBanner
-        {...getZeroDebtProtectionBannerProps({
-          stopLossWriteEnabled,
-          isVaultDebtZero: vault.debt.isZero(),
-          isVaultDebtBelowDustLumit: vault.debt <= dustLimit,
-          vaultHasNoProtection: !vaultHasActiveTrigger,
-        })}
-      />
-    </Container>
+          </Container>
+        )
+      }
+    </WithLoadingIndicator>
   )
 }

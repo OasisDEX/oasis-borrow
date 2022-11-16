@@ -124,7 +124,9 @@ export function getManageAavePositionStateMachineServices$(
           return proxyAddress$.pipe(
             filter((proxyAddress) => proxyAddress !== undefined),
             switchMap((proxyAddress) => aaveProtocolData$(context.collateralToken, proxyAddress!)),
-            map((data) => ({ type: 'AAVE_POSITION_DATA_RECEIVED', data })),
+            map((data) => {
+              return { type: 'AAVE_POSITION_DATA_RECEIVED', data }
+            }),
           )
         },
       }

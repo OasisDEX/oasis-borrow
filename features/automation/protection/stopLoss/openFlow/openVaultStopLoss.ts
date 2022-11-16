@@ -6,9 +6,11 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
+import { Tickers } from 'blockchain/prices'
 import { getToken } from 'blockchain/tokensMetadata'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
+import { AutomationPositionData } from 'components/AutomationContextProvider'
 import {
   closeVaultOptions,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
@@ -18,10 +20,10 @@ import { getSliderPercentageFill } from 'features/automation/protection/stopLoss
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
@@ -69,6 +71,7 @@ export function getDataForStopLoss(
     setStopLossCloseType: (type: CloseVaultTo) => void
     setStopLossLevel: (level: BigNumber) => void
     stopLossCloseType: CloseVaultTo
+    proxyAddress?: string
     stopLossLevel: BigNumber
     totalExposure?: BigNumber
     depositAmount?: BigNumber
@@ -81,21 +84,22 @@ export function getDataForStopLoss(
 
   const {
     token,
-    priceInfo: { currentEthPrice, nextCollateralPrice },
+    priceInfo: { nextCollateralPrice, currentEthPrice, currentCollateralPrice },
     ilkData,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     afterLiquidationPrice,
     totalExposure,
     depositAmount,
-    ilkData: { ilk },
-
+    ilkData: { ilk, liquidationPenalty, liquidationRatio, debtFloor },
+    balanceInfo: { ethBalance },
     setStopLossCloseType,
     setStopLossLevel,
     stopLossCloseType,
     stopLossLevel,
     afterOutstandingDebt,
     generateAmount,
+    proxyAddress,
   } = props
 
   const debt = feature === 'multiply' ? afterOutstandingDebt : generateAmount
@@ -119,21 +123,10 @@ export function getDataForStopLoss(
     vaultDebt: debt || zero,
   })
 
-  const sidebarProps: SidebarAdjustStopLossEditingStageProps = {
-    vault: {
-      collateralizationRatio: afterCollateralizationRatio,
-      liquidationPrice: afterLiquidationPrice,
-      lockedCollateral,
-      debt,
-      token,
-      ilk,
-    } as Vault,
-    ilkData,
-    ethMarketPrice: currentEthPrice,
+  const stopLossSidebarProps: SidebarAdjustStopLossEditingStageProps = {
     executionPrice,
     errors: [],
     warnings: [],
-    stopLossTriggerData: defaultStopLossData,
     stopLossState: {
       stopLossLevel,
       collateralActive: stopLossCloseType === 'collateral',
@@ -179,7 +172,35 @@ export function getDataForStopLoss(
     isOpenFlow: true,
   }
 
-  return sidebarProps
+  const automationContextProps = {
+    ethBalance,
+    context: { status: 'connected', account: '0x0', etherscan: { url: '' } } as Context,
+    ethAndTokenPricesData: { ETH: currentEthPrice, [token]: currentCollateralPrice } as Tickers,
+    positionData: {
+      collateralizationRatio: afterCollateralizationRatio,
+      collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
+      debt,
+      debtFloor,
+      debtOffset: zero,
+      id: zero,
+      ilk,
+      liquidationPenalty,
+      liquidationPrice: afterLiquidationPrice,
+      liquidationRatio,
+      lockedCollateral,
+      owner: proxyAddress,
+      token,
+      vaultType: feature,
+    } as AutomationPositionData,
+    commonData: {
+      controller: '0x0',
+      nextCollateralPrice,
+      token,
+    },
+    protocol: VaultProtocol.Maker,
+  }
+
+  return { stopLossSidebarProps, automationContextProps }
 }
 
 export type StopLossOpenFlowStages =

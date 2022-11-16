@@ -14,8 +14,7 @@ import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { ProxyView } from '../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { AdjustRiskView } from '../../common/components/SidebarAdjustRiskView'
-import { aaveStETHMinimumRiskRatio } from '../../constants'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { useAaveRedirect } from '../../helpers/useAaveRedirect'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state'
@@ -172,27 +171,31 @@ function OpenAaveSuccessStateView({ state, redirectAddress }: OpenAaveStateProps
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarOpenAaveVault() {
+export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
   const { connectedContext$ } = useAppContext()
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
   const [connectedContext] = useObservable(connectedContext$)
   const { t } = useTranslation()
   const { hasOtherAssetsThanETH_STETH } = state.context
-
+  const AdjustRiskView = config.viewComponents.adjustRiskView
   switch (true) {
     case state.matches('editing'):
       return <OpenAaveEditingStateView state={state} send={send} />
     case state.matches('proxyCreating'):
-      return <ProxyView proxyMachine={state.context.refProxyMachine!} />
+      return (
+        <ProxyView
+          proxyMachine={state.context.refProxyMachine!}
+          steps={[state.context.currentStep, state.context.totalSteps]}
+        />
+      )
     case state.matches('settingMultiple'):
       return (
         <AdjustRiskView
           state={state}
           send={send}
-          resetRiskValue={aaveStETHMinimumRiskRatio}
           primaryButton={{
-            steps: [2, state.context.totalSteps!],
+            steps: [state.context.currentStep, state.context.totalSteps],
             isLoading: state.context.loading,
             disabled: !state.can('NEXT_STEP'),
             label: t('open-earn.aave.vault-form.open-btn'),

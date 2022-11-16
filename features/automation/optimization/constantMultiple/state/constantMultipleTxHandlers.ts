@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
 import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import { maxUint256 } from 'blockchain/calls/erc20'
-import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
@@ -19,7 +19,9 @@ interface GetConstantMultipleTxHandlersParams {
   constantMultipleState: ConstantMultipleFormChange
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAddForm: boolean
-  vault: Vault
+  collateralizationRatio: BigNumber
+  id: BigNumber
+  owner: string
 }
 
 interface ConstantMultipleTxHandlers {
@@ -34,17 +36,20 @@ export function getConstantMultipleTxHandlers({
   constantMultipleState,
   constantMultipleTriggerData,
   isAddForm,
-  vault,
+  collateralizationRatio,
+  id,
+  owner,
 }: GetConstantMultipleTxHandlersParams): ConstantMultipleTxHandlers {
   const { uiChanges } = useAppContext()
 
   const addTxData = useMemo(
     () =>
       prepareAddConstantMultipleTriggerData({
+        id,
+        owner,
         triggersId: constantMultipleTriggerData.triggersId,
         autoBuyTriggerId: autoBuyTriggerData.triggerId,
         autoSellTriggerId: autoSellTriggerData.triggerId,
-        vaultData: vault,
         maxBuyPrice: constantMultipleState.buyWithThreshold
           ? constantMultipleState.maxBuyPrice || maxUint256
           : maxUint256,
@@ -60,7 +65,7 @@ export function getConstantMultipleTxHandlers({
       }),
     [
       constantMultipleTriggerData.triggersId,
-      vault.collateralizationRatio.toNumber(),
+      collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),
       constantMultipleState.buyExecutionCollRatio?.toNumber(),

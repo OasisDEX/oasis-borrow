@@ -115,8 +115,8 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { getAaveStEthYield } from 'features/aave/common'
 import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
-import { getAaveStEthYield } from 'features/aave/open/services'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
@@ -373,6 +373,7 @@ export type UIChanges = {
   >(
     subject: string,
     reducer: (prev: T, event: K) => T,
+    initialState?: T,
   ) => void
 }
 
@@ -424,8 +425,11 @@ function createUIChangesSubject(): UIChanges {
   function configureSubject<
     T extends SupportedUIChangeType,
     K extends LegalUiChanges[keyof LegalUiChanges]
-  >(subject: string, reducer: (prev: T, event: K) => T): void {
+  >(subject: string, reducer: (prev: T, event: K) => T, initialState?: T): void {
     reducers[subject] = reducer
+    if (initialState) {
+      latest[subject] = initialState
+    }
   }
 
   return {
@@ -1179,6 +1183,7 @@ export function setupAppContext() {
     aaveAvailableLiquidityETH$,
     aaveUserAccountData$,
     hasActiveAavePosition$,
+    balanceInfo$,
   }
 }
 

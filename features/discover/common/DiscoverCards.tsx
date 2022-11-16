@@ -24,6 +24,8 @@ export function DiscoverCards({
   rows: DiscoverTableRowData[]
   userContext: MixpanelUserContext
 }) {
+  const rowsForBanner = Math.min(rows.length - 1, 9)
+
   return (
     <Box
       sx={{
@@ -50,7 +52,7 @@ export function DiscoverCards({
         {rows.map((row, i) => (
           <Fragment key={getRowKey(i, row)}>
             <DiscoverCard kind={kind} row={row} />
-            {banner && i === Math.floor((rows.length - 1) / 2) && (
+            {banner && i === Math.floor(rowsForBanner / 2) && (
               <Box as="li">
                 <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
               </Box>

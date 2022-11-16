@@ -8,16 +8,13 @@ type ConfiguredFeatures = Record<Feature, boolean>
 export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
-  | 'Automation'
   | 'StopLossRead'
   | 'StopLossWrite'
   | 'StopLossOpenFlow'
-  | 'BasicBS'
   | 'BatchCache'
   | 'ReadOnlyBasicBS'
   | 'Notifications'
   | 'Referrals'
-  | 'ConstantMultiple'
   | 'ConstantMultipleReadOnly'
   | 'DisableSidebarScroll'
   | 'ProxyCreationDisabled'
@@ -26,20 +23,18 @@ export type Feature =
   | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
   | 'ShowAaveStETHETHProductCard'
+  | 'FollowVaults'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
-  Automation: true,
   StopLossRead: true,
   StopLossWrite: true,
   BatchCache: false,
   StopLossOpenFlow: false,
-  BasicBS: true,
   ReadOnlyBasicBS: false,
   Notifications: true,
   Referrals: true,
-  ConstantMultiple: true,
   ConstantMultipleReadOnly: false,
   DisableSidebarScroll: false,
   ProxyCreationDisabled: false,
@@ -48,7 +43,9 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: false,
   ShowAaveStETHETHProductCard: true,
+  FollowVaults: false,
   // your feature here, don't forget to add it to the databse(feature_flags table)....
+  // your feature here....
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

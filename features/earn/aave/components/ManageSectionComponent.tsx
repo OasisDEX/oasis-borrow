@@ -1,6 +1,6 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { StrategyConfig } from 'features/aave/common/StrategyConfigType'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import React from 'react'
@@ -12,7 +12,7 @@ import { PositionInfoComponent } from './PositionInfoComponent'
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
-  strategyConfig?: StrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 export function ManageSectionComponent({
@@ -43,7 +43,7 @@ export function ManageSectionComponent({
       aaveReserveDataETH={aaveReserveDataETH}
       accountData={accountData}
       apy={simulations?.apy}
-      tokens={strategyConfig?.tokens}
+      tokens={strategyConfig.tokens}
       oraclePrice={oraclePrice}
       position={position}
     />

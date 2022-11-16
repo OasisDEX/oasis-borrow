@@ -1,30 +1,24 @@
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
-import { Vault } from 'blockchain/vaults'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { checkIfIsEditingAutoBS } from 'features/automation/common/helpers'
 import {
   AUTO_BUY_FORM_CHANGE,
   AutoBSFormChange,
 } from 'features/automation/common/state/autoBSFormChange'
-import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutoBuyDetailsLayout } from 'features/automation/optimization/autoBuy/controls/AutoBuyDetailsLayout'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
-interface AutoBuyDetailsControlProps {
-  vault: Vault
-  autoBuyTriggerData: AutoBSTriggerData
-  isconstantMultipleEnabled: boolean
-}
-
-export function AutoBuyDetailsControl({
-  vault,
-  autoBuyTriggerData,
-  isconstantMultipleEnabled,
-}: AutoBuyDetailsControlProps) {
+export function AutoBuyDetailsControl() {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
 
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
+  const {
+    constantMultipleTriggerData,
+    autoBuyTriggerData,
+    positionData: { ilk, id, token, debt, lockedCollateral },
+  } = useAutomationContext()
 
   const {
     execCollRatio,
@@ -32,12 +26,12 @@ export function AutoBuyDetailsControl({
     maxBuyOrMinSellPrice,
     isTriggerEnabled,
   } = autoBuyTriggerData
-  const isDebtZero = vault.debt.isZero()
+  const isDebtZero = debt.isZero()
 
   const executionPrice = collateralPriceAtRatio({
     colRatio: autoBuyTriggerData.execCollRatio.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
+    collateral: lockedCollateral,
+    vaultDebt: debt,
   })
   const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData: autoBuyTriggerData,
@@ -62,11 +56,11 @@ export function AutoBuyDetailsControl({
 
   return (
     <AutoBuyDetailsLayout
-      ilk={vault.ilk}
-      vaultId={vault.id}
-      token={vault.token}
+      ilk={ilk}
+      vaultId={id}
+      token={token}
       autoBuyTriggerData={autoBuyTriggerData}
-      isconstantMultipleEnabled={isconstantMultipleEnabled}
+      isconstantMultipleEnabled={constantMultipleTriggerData.isTriggerEnabled}
       {...autoBuyDetailsLayoutOptionalParams}
     />
   )

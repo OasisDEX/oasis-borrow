@@ -39,6 +39,7 @@ export interface ManageAaveContext extends BaseAaveContext {
 
   balanceAfterClose?: BigNumber
   operationType?: OperationType
+  protocolData?: AaveProtocolData
 }
 
 export interface AaveProtocolData {

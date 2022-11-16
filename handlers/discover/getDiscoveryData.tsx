@@ -1,10 +1,16 @@
 import { DiscoverApiErrors, DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
-import { getAssetFilter, getGenericRangeFilter, getTimeSignature } from 'handlers/discover/helpers'
+import {
+  getColRatio,
+  getGenericArrayFilter,
+  getGenericRangeFilter,
+  getStatus,
+  getTimeSignature,
+} from 'handlers/discover/helpers'
 import { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
-const AMOUNT_OF_ROWS = 10
+const AMOUNT_OF_ROWS = 20
 
 const querySchema = z.object({
   asset: z.string().optional(),
@@ -25,16 +31,17 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.highestRiskPositions.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
+              orderBy: { liquidation_proximity: 'asc' },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             liquidationPrice: item.liquidation_price.toNumber(),
             nextOsmPrice: item.next_price.toNumber(),
             maxLiquidationAmount: item.liquidation_value.toNumber(),
-            status: item.status as DiscoverTableRowData['status'],
+            status: getStatus(item) as DiscoverTableRowData['status'],
             cdpId: item.position_id,
           })),
         }
@@ -46,14 +53,15 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.highestMultiplyPnl.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
                 vault_multiple: getGenericRangeFilter(multiple),
+                type: 'multiply',
               },
               orderBy: { [timeSignature]: 'desc' },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             collateralValue: item.collateral_value.toNumber(),
             currentMultiple: item.vault_multiple.toNumber(),
             pnl: item[timeSignature].toNumber(),
@@ -70,16 +78,16 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.mostYieldEarned.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
               orderBy: { [timeSignature]: 'desc' },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             netValue: item.net_value.toNumber(),
             earningsToDate: item[timeSignature].toNumber(),
-            '30DayAvgApy': item.yield_30d.toNumber(),
+            '30DayAvgApy': item.yield_30d.times(100).toNumber(),
             activity: item.last_action as DiscoverTableRowData['activity'],
             cdpId: item.position_id,
           })),
@@ -91,20 +99,16 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             await prisma.largestDebt.findMany({
               take: AMOUNT_OF_ROWS,
               where: {
-                collateral_type: getAssetFilter(asset),
+                token: getGenericArrayFilter(asset),
                 collateral_value: getGenericRangeFilter(size),
               },
+              orderBy: { vault_debt: 'desc' },
             })
           ).map((item) => ({
-            asset: item.collateral_type,
+            asset: item.token,
             collateralValue: item.collateral_value.toNumber(),
             vaultDebt: item.vault_debt.toNumber(),
-            colRatio: {
-              level: item.coll_ratio.toNumber(),
-              // TODO: isAtRisk needs to be calculated on view level, but not enough data is available right now
-              isAtRiskDanger: false,
-              isAtRiskWarning: false,
-            },
+            colRatio: getColRatio(item),
             activity: item.last_action as DiscoverTableRowData['activity'],
             cdpId: item.position_id,
           })),

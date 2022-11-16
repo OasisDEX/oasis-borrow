@@ -9,7 +9,7 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { useObservable } from '../../../../helpers/observableHook'
 import { useAaveContext } from '../../AaveContextProvider'
-import { StrategyConfig } from '../../common/StrategyConfigType'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from '../state'
 import { OpenAaveStateMachineContextProvider } from './AaveOpenStateMachineContext'
@@ -39,7 +39,7 @@ function AaveOpenContainer({
                   <Box>
                     <SimulateSection />
                   </Box>
-                  <Box>{<SidebarOpenAaveVault />}</Box>
+                  <Box>{<SidebarOpenAaveVault config={config} />}</Box>
                 </Grid>
               ),
             },
@@ -63,7 +63,7 @@ function AaveOpenContainer({
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function AaveOpenView({ config }: { config: StrategyConfig }) {
   const { aaveStateMachine$ } = useAaveContext()
-  const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
+  const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$(config))
 
   return (
     <WithErrorHandler error={[stateMachineError]}>

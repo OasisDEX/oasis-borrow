@@ -1,4 +1,4 @@
-import { useActor, useSelector } from '@xstate/react'
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
@@ -7,55 +7,68 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { ActorRefFrom } from 'xstate'
+import React, { useEffect, useState } from 'react'
 
 import { useAaveContext } from '../../../aave/AaveContextProvider'
+import { AaveStEthYieldsResponse } from '../../../aave/common'
+import { AaveHeaderProps } from '../../../aave/common/StrategyConfigTypes'
 import { PreparedAaveTotalValueLocked } from '../../../aave/helpers/aavePrepareAaveTotalValueLocked'
-import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
-import { AaveStEthSimulateStateMachine } from '../../../aave/open/state'
 
-export type AavePositionHeaderPropsBase = {
-  simulationActor?: ActorRefFrom<AaveStEthSimulateStateMachine>
-  aaveTVL?: PreparedAaveTotalValueLocked
-  strategyName: string
-  noDetails?: boolean
-}
+const tokenPairList = {
+  stETHeth: {
+    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
+    tokenList: ['AAVE', 'STETH', 'ETH'],
+  },
+} as Record<string, { translationKey: string; tokenList: string[] }>
 
-export function AavePositionHeader({
-  simulationActor,
+function AavePositionHeader({
+  maxRisk,
   strategyName,
   aaveTVL,
-  noDetails = false,
-}: AavePositionHeaderPropsBase) {
+  minimumRiskRatio,
+}: {
+  maxRisk?: IRiskRatio
+  strategyName: string
+  aaveTVL?: PreparedAaveTotalValueLocked
+  minimumRiskRatio: IRiskRatio
+}) {
   const { t } = useTranslation()
-  const tokenPairList = {
-    stETHeth: {
-      name: t('open-earn.aave.product-header.token-pair-list.aave-steth-eth'),
-      tokenList: ['AAVE', 'STETH', 'ETH'],
-    },
-  } as Record<string, { name: string; tokenList: string[] }>
 
-  const tokenData = tokenPairList[strategyName]
-  if (noDetails && (!simulationActor || !aaveTVL)) {
-    // this should never change during runtime
-    return <VaultHeadline header={tokenData.name} token={tokenData.tokenList} details={[]} />
-  }
+  const [minYields, setMinYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
+  const [maxYields, setMaxYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
 
-  const [simulationState] = useActor(simulationActor!)
-  const { context: simulationContext } = simulationState
+  const { aaveSthEthYieldsQuery } = useAaveContext()
+
+  useEffect(() => {
+    async function fetchYields() {
+      return await aaveSthEthYieldsQuery(minimumRiskRatio, ['7Days'])
+    }
+    void fetchYields().then(setMinYields)
+  }, [])
+
+  useEffect(() => {
+    async function fetchYields() {
+      return await aaveSthEthYieldsQuery(maxRisk || minimumRiskRatio, [
+        '7Days',
+        '7DaysOffset',
+        '90Days',
+        '90DaysOffset',
+      ])
+    }
+    void fetchYields().then(setMaxYields)
+  }, [maxRisk?.toString()])
 
   const headlineDetails = []
-  if (simulationContext.baseYieldsMin && simulationContext.yieldsMax) {
+  if (minYields && maxYields) {
     const formatYield = (yieldVal: BigNumber) =>
       formatPercent(yieldVal, {
         precision: 2,
       })
-    const yield7DaysMin = simulationContext.baseYieldsMin.annualisedYield7days!
-    const yield7DaysMax = simulationContext.yieldsMax.annualisedYield7days!
+    const yield7DaysMin = minYields.annualisedYield7days!
+    const yield7DaysMax = maxYields.annualisedYield7days!
 
-    const yield7DaysDiff = simulationContext.yieldsMax.annualisedYield7days!.minus(
-      simulationContext.yieldsMax.annualisedYield7daysOffset!,
+    const yield7DaysDiff = maxYields.annualisedYield7days!.minus(
+      maxYields.annualisedYield7daysOffset!,
     )
 
     headlineDetails.push({
@@ -70,13 +83,13 @@ export function AavePositionHeader({
       }),
     })
   }
-  if (simulationContext.yieldsMax?.annualisedYield90days) {
-    const yield90DaysDiff = simulationContext.yieldsMax.annualisedYield90daysOffset!.minus(
-      simulationContext.yieldsMax.annualisedYield90days,
+  if (maxYields?.annualisedYield90days) {
+    const yield90DaysDiff = maxYields.annualisedYield90daysOffset!.minus(
+      maxYields.annualisedYield90days,
     )
     headlineDetails.push({
       label: t('open-earn.aave.product-header.90-day-avg-yield'),
-      value: formatPercent(simulationContext.yieldsMax.annualisedYield90days, {
+      value: formatPercent(maxYields.annualisedYield90days, {
         precision: 2,
       }),
       sub: formatPercent(yield90DaysDiff, {
@@ -97,7 +110,7 @@ export function AavePositionHeader({
 
   return (
     <VaultHeadline
-      header={tokenPairList[strategyName].name}
+      header={t(tokenPairList[strategyName].translationKey)}
       token={tokenPairList[strategyName].tokenList}
       details={headlineDetails}
       loading={!aaveTVL?.totalValueLocked}
@@ -105,26 +118,36 @@ export function AavePositionHeader({
   )
 }
 
-export function AavePositionHeaderWithDetails({ strategyName }: { strategyName: string }) {
-  const { stateMachine: openAaveStateMachine } = useOpenAaveStateMachineContext()
-  const simulationMachine = useSelector(openAaveStateMachine, (state) => {
-    return state.context.refSimulationMachine
-  })
+export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
+  return function AavePositionHeaderWithDetails({ strategyName }: { strategyName: string }) {
+    const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
+    const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
+    const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(aaveReserveStEthData$)
 
-  const { aaveTotalValueLocked$ } = useAaveContext()
-  const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
+    return (
+      <WithErrorHandler error={[tvlStateError, aaveReserveConfigDataError]}>
+        <WithLoadingIndicator
+          value={[tvlState, aaveReserveConfigData]}
+          customLoader={<AppSpinner />}
+        >
+          {([_tvlState, _aaveReserveConfigData]) => (
+            <AavePositionHeader
+              maxRisk={new RiskRatio(_aaveReserveConfigData.ltv, RiskRatio.TYPE.LTV)}
+              strategyName={strategyName}
+              aaveTVL={_tvlState}
+              minimumRiskRatio={minimumRiskRatio}
+            />
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    )
+  }
+}
 
+export function AavePositionHeaderNoDetails({ strategyName }: AaveHeaderProps) {
+  const { t } = useTranslation()
+  const tokenData = tokenPairList[strategyName]
   return (
-    <WithErrorHandler error={[tvlStateError]}>
-      <WithLoadingIndicator value={[tvlState, simulationMachine]} customLoader={<AppSpinner />}>
-        {([_tvlState, _simulationMachine]) => (
-          <AavePositionHeader
-            strategyName={strategyName}
-            simulationActor={_simulationMachine}
-            aaveTVL={_tvlState}
-          />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <VaultHeadline header={t(tokenData.translationKey)} token={tokenData.tokenList} details={[]} />
   )
 }

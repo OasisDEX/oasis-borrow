@@ -15,7 +15,7 @@ export function hasAavePosition$(
 ): Observable<boolean> {
   return getProxyAddress$(address).pipe(
     filter((proxyAddress) => proxyAddress !== undefined),
-    switchMap((proxyAddress) => getAaveUserAccountData$({ proxyAddress: proxyAddress! })),
+    switchMap((proxyAddress) => getAaveUserAccountData$({ address: proxyAddress! })),
     map((accountData) => {
       // cheap hack to determine if the user has the relevant aave position here
       // todo: check collateral/debt for current address against strategy token config to determine if this account already has a position here

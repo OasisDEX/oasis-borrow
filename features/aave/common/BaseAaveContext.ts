@@ -4,7 +4,6 @@ import { ActorRef, EventObject, Sender } from 'xstate'
 
 import { HasGasEstimation } from '../../../helpers/form'
 import { UserSettingsState } from '../../userSettings/userSettings'
-import { AaveProtocolData } from '../manage/state'
 
 type UserInput = {
   riskRatio?: IRiskRatio
@@ -39,7 +38,6 @@ export interface BaseAaveContext {
   strategyInfo?: IStrategyInfo
   resetRiskRatio?: IRiskRatio
   userInput: UserInput
-  protocolData?: AaveProtocolData
   collateralToken: string
   collateralPrice?: BigNumber
   slippage: BigNumber

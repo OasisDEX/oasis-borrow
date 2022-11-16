@@ -13,6 +13,7 @@ export function DiscoverError({ error }: { error?: DiscoverDataResponseError }) 
       sx={{
         px: ['24px', null, null, 4],
         py: 4,
+        color: 'neutral80',
       }}
     >
       {t(`discover.api-error.${error?.code}`)}
