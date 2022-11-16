@@ -22,7 +22,17 @@ const querySchema = z.object({
 
 export async function getDiscoveryData(query: NextApiRequest['query']) {
   const { table, asset, size, multiple, time } = querySchema.parse(query)
-
+  const timeSignature = getTimeSignature('pnl', time)
+  console.log(
+    await prisma.mostYieldEarned.findMany({
+      take: AMOUNT_OF_ROWS,
+      where: {
+        token: getGenericArrayFilter(asset),
+        collateral_value: getGenericRangeFilter(size),
+      },
+      orderBy: { [timeSignature]: 'desc' },
+    }),
+  )
   try {
     switch (table) {
       case DiscoverPages.HIGHEST_RISK_POSITIONS:
