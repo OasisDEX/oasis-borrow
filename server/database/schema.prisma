@@ -110,17 +110,23 @@ model Discover {
     vault_normalized_debt Decimal?
     vault_collateral      Decimal
 
-    yield_30d   Decimal
-    status      Json
-    last_action Json
-    pnl_all     Decimal
-    pnl_1d      Decimal
-    pnl_7d      Decimal
-    pnl_30d     Decimal
-    pnl_365d    Decimal
-    pnl_ytd     Decimal
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime
+    yield_30d       Decimal
+    status          Json
+    last_action     Json
+    pnl_all         Decimal
+    pnl_1d          Decimal
+    pnl_7d          Decimal
+    pnl_30d         Decimal
+    pnl_365d        Decimal
+    pnl_ytd         Decimal
+    net_profit_all  Decimal
+    net_profit_1d   Decimal
+    net_profit_7d   Decimal
+    net_profit_30d  Decimal
+    net_profit_365d Decimal
+    net_profit_ytd  Decimal
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime
 
     @@unique([protocol_id, position_id])
     @@map("discover")
@@ -157,6 +163,12 @@ model HighestMultiplyPnl {
     pnl_30d          Decimal
     pnl_365d         Decimal
     pnl_ytd          Decimal
+    net_profit_all   Decimal
+    net_profit_1d    Decimal
+    net_profit_7d    Decimal
+    net_profit_30d   Decimal
+    net_profit_365d  Decimal
+    net_profit_ytd   Decimal
     last_action      Json
     type             VaultType?
 

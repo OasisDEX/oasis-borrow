@@ -67,7 +67,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
             asset: item.token,
             collateralValue: item.collateral_value.toNumber(),
             currentMultiple: item.vault_multiple.toNumber(),
-            pnl: item[timeSignature].toNumber(),
+            pnl: item[timeSignature].times(100).toNumber(),
             activity: item.last_action as DiscoverTableRowData['activity'],
             cdpId: item.position_id,
           })),

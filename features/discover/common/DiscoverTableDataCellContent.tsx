@@ -74,16 +74,16 @@ export function DiscoverTableDataCellContent({
     case 'liquidationPrice':
     case 'maxLiquidationAmount':
     case 'nextOsmPrice':
-    case 'pnl':
       return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
+    case 'pnl':
+    case '30DayAvgApy':
+      return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     case 'earningsToDate':
     case 'netValue':
     case 'vaultDebt':
       return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
     case 'currentMultiple':
       return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
-    case '30DayAvgApy':
-      return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     case 'colRatio':
       return (
         <>
