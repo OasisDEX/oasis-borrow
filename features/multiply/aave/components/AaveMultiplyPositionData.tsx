@@ -10,7 +10,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -47,15 +47,20 @@ export function AaveMultiplyPositionData({
               liquidationPrice.isNaN() ? zero : liquidationPrice.times(oraclePrice),
               'USD',
             )}`}
+            footnote={`${t('manage-earn-vault.below-current-price', {
+              percentage: formatDecimalAsPercent(one.minus(liquidationPrice)),
+            })}`}
           />
           <DetailsSectionContentCard
             title={t('system.loan-to-value')}
             value={formatDecimalAsPercent(riskRatio.loanToValue)}
+            footnote={`${t('manage-earn-vault.liquidation-threshold', {
+              percentage: formatDecimalAsPercent(category.liquidationThreshold),
+            })}`}
           />
           <DetailsSectionContentCard
-            title={t('system.buying-power')}
-            value={`$${formatAmount(buyingPower, 'USD')}`}
-            unit="USDC"
+            title={t('system.net-borrow-cost')}
+            value={formatDecimalAsPercent(new BigNumber(0))}
           />
           <DetailsSectionContentCard
             title={t('system.net-value')}
@@ -75,9 +80,11 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionFooterItem
             title={t('system.multiple')}
-            value={`${riskRatio.multiple.toFormat(1, BigNumber.ROUND_DOWN)}x ${t(
-              'system.multiple',
-            ).toLocaleLowerCase()}`}
+            value={`${riskRatio.multiple.toFormat(1, BigNumber.ROUND_DOWN)}x`}
+          />
+          <DetailsSectionFooterItem
+            title={t('system.buying-power')}
+            value={`${formatAmount(buyingPower, 'USD')} USDC`}
           />
         </DetailsSectionFooterItemWrapper>
       }
