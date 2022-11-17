@@ -2302,7 +2302,7 @@ const userWalletIcons = {
     ),
     viewBox: '0 0 14 12',
   },
-  checkmark: {
+  single_tick: {
     path: (
       <path
         d="M1.1543 5.76922L3.46199 8.07691L8.8466 1.92307"

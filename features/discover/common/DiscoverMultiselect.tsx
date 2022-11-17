@@ -207,7 +207,7 @@ export function DiscoverMultiselectItem({
               opacity: isSelected ? 1 : 0,
               transition: 'opacity 100ms',
             }}
-            name="checkmark"
+            name="single_tick"
             color="success100"
           />
         </Box>
