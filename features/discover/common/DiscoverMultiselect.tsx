@@ -195,7 +195,6 @@ export function DiscoverMultiselectItem({
           }}
         >
           <Icon
-            fill="none"
             size={10}
             sx={{
               position: 'absolute',

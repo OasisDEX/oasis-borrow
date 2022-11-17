@@ -2302,18 +2302,6 @@ const userWalletIcons = {
     ),
     viewBox: '0 0 14 12',
   },
-  checkmark: {
-    path: (
-      <path
-        d="M1.1543 5.76922L3.46199 8.07691L8.8466 1.92307"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
-    viewBox: '0 0 10 10',
-  },
   circle_exchange: {
     path: (
       <>
