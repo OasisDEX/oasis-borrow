@@ -195,7 +195,6 @@ export function DiscoverMultiselectItem({
           }}
         >
           <Icon
-            fill="none"
             size={10}
             sx={{
               position: 'absolute',
@@ -207,7 +206,7 @@ export function DiscoverMultiselectItem({
               opacity: isSelected ? 1 : 0,
               transition: 'opacity 100ms',
             }}
-            name="single_tick"
+            name="checkmark"
             color="success100"
           />
         </Box>
