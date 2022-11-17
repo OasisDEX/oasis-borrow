@@ -15,7 +15,7 @@ model migrations {
 }
 
 model TosApproval {
-    id          Int                       @id @default(autoincrement())
+    id          Int      @id @default(autoincrement())
     address     String
     signature   String
     message     String
@@ -30,7 +30,7 @@ model TosApproval {
 }
 
 model Vault {
-    vault_id      Int                       @unique
+    vault_id      Int       @unique
     type          VaultType
     owner_address String
     chain_id      Int?
