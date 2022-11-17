@@ -40,7 +40,7 @@ export function DiscoverMultiselect({
             {selected.icon && (
               <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={selected.icon} />
             )}
-            {selected.value}
+            {selected.label}
           </>
         )
       default:
@@ -123,7 +123,10 @@ export function DiscoverMultiselect({
         <DiscoverMultiselectItem
           isDisabled={values.length === 0}
           label={t('clear-selection')}
-          onClick={() => setValues([])}
+          onClick={() => {
+            setValues([])
+            setIsOpen(false)
+          }}
           value=""
         />
         {options.map((option) => (
@@ -177,10 +180,8 @@ export function DiscoverMultiselectItem({
         size={14}
         sx={{
           position: 'absolute',
-          top: 0,
-          bottom: 0,
+          top: '17px',
           left: '20px',
-          margin: 'auto',
           opacity: isSelected ? 1 : 0,
           transition: 'opacity 150ms',
         }}
@@ -188,16 +189,7 @@ export function DiscoverMultiselectItem({
         color="neutral80"
       />
       {icon && <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={icon} />}
-      <Text
-        as="span"
-        sx={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {label}
-      </Text>
+      {label}
     </Box>
   )
 }

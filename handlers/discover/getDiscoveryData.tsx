@@ -5,6 +5,7 @@ import {
   getGenericRangeFilter,
   getStatus,
   getTimeSignature,
+  wrapFilterCombination,
 } from 'handlers/discover/helpers'
 import { NextApiRequest } from 'next'
 import { prisma } from 'server/prisma'
@@ -32,7 +33,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
               take: AMOUNT_OF_ROWS,
               where: {
                 token: getGenericArrayFilter(asset),
-                collateral_value: getGenericRangeFilter(size),
+                OR: [...wrapFilterCombination('collateral_value', getGenericRangeFilter, size)],
               },
               orderBy: { liquidation_proximity: 'asc' },
             })
@@ -54,8 +55,10 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
               take: AMOUNT_OF_ROWS,
               where: {
                 token: getGenericArrayFilter(asset),
-                collateral_value: getGenericRangeFilter(size),
-                vault_multiple: getGenericRangeFilter(multiple),
+                OR: [
+                  ...wrapFilterCombination('collateral_value', getGenericRangeFilter, size),
+                  ...wrapFilterCombination('vault_multiple', getGenericRangeFilter, multiple),
+                ],
                 type: 'multiply',
               },
               orderBy: { [timeSignature]: 'desc' },
@@ -79,7 +82,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
               take: AMOUNT_OF_ROWS,
               where: {
                 token: getGenericArrayFilter(asset),
-                collateral_value: getGenericRangeFilter(size),
+                OR: [...wrapFilterCombination('collateral_value', getGenericRangeFilter, size)],
               },
               orderBy: { [timeSignature]: 'desc' },
             })
@@ -100,7 +103,7 @@ export async function getDiscoveryData(query: NextApiRequest['query']) {
               take: AMOUNT_OF_ROWS,
               where: {
                 token: getGenericArrayFilter(asset),
-                collateral_value: getGenericRangeFilter(size),
+                OR: [...wrapFilterCombination('collateral_value', getGenericRangeFilter, size)],
               },
               orderBy: { vault_debt: 'desc' },
             })
