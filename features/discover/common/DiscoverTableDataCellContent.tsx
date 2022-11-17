@@ -76,6 +76,7 @@ export function DiscoverTableDataCellContent({
     case 'nextOsmPrice':
       return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
     case 'pnl':
+    case '30DayAvgApy':
       return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     case 'earningsToDate':
     case 'netValue':
@@ -83,8 +84,6 @@ export function DiscoverTableDataCellContent({
       return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
     case 'currentMultiple':
       return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
-    case '30DayAvgApy':
-      return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     case 'colRatio':
       return (
         <>
