@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs'
-import { escalate } from 'xstate/lib/actions'
 
 import {
   callOperationExecutor,
@@ -15,15 +14,12 @@ import {
 export function getOpenAaveTransactionMachine(
   txHelpers$: Observable<TxHelpers>,
   context$: Observable<ContextConnected>,
+  transactionParameters: OperationExecutorTxMeta,
 ) {
   const service = startTransactionService<OperationExecutorTxMeta>(txHelpers$, context$)
-  return createTransactionStateMachine(callOperationExecutor).withConfig({
+  return createTransactionStateMachine(callOperationExecutor, transactionParameters).withConfig({
     services: {
       startTransaction: service,
-    },
-    actions: {
-      notifyParent: () => {},
-      raiseError: escalate((context) => ({ data: context.txError })),
     },
   })
 }

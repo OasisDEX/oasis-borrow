@@ -1,41 +1,32 @@
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
-import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
+import { getGasEstimation$, getOpenProxyStateMachine } from 'features/proxyNew/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, shareReplay, switchMap } from 'rxjs/operators'
 
-import {
-  getAaveReservesList,
-  getAaveUserAccountData,
-  getAaveUserConfiguration,
-} from '../../blockchain/calls/aave/aaveLendingPool'
-import { getAaveOracleAssetPriceData } from '../../blockchain/calls/aave/aavePriceOracle'
-import {
-  getAaveReserveConfigurationData,
-  getAaveUserReserveData,
-} from '../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
-import { StrategyConfig } from './common/StrategyConfigTypes'
+import {
+  getAdjustAaveParametersMachine,
+  getCloseAaveParametersMachine,
+  getOpenAaveParametersMachine,
+} from './common/services/getParametersMachines'
+import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
+import { getStrategyConfig$ } from './helpers/getStrategyConfig'
 import {
-  getClosePositionParametersStateMachine$,
-  getClosePositionParametersStateMachineServices$,
-  getManageAavePositionStateMachineServices$,
-  getManageAaveStateMachine$,
+  getAaveProtocolData$,
+  getManageAavePositionStateMachineServices,
+  getManageAaveStateMachine,
 } from './manage/services'
-import { getAaveProtocolData$ } from './manage/services/getAaveProtocolData'
 import {
-  getOpenAaveParametersStateMachineServices$,
   getOpenAavePositionStateMachineServices,
+  getOpenAaveStateMachine,
   getOpenAaveTransactionMachine,
-  getParametersStateMachine$,
 } from './open/services'
-import { getOpenAaveStateMachine$ } from './open/services'
-import { strategies } from './strategyConfig'
 
 export function setupAaveContext({
   userSettings$,
@@ -47,11 +38,19 @@ export function setupAaveContext({
   accountBalances$,
   onEveryBlock$,
   context$,
+  aaveOracleAssetPriceData$,
+  aaveReserveConfigurationData$,
+  aaveUserReserveData$,
+  aaveUserAccountData$,
+  aaveUserConfiguration$,
+  aaveReservesList$,
   aaveSthEthYieldsQuery,
   tokenPriceUSD$,
 }: AppContext) {
-  const once$ = of(undefined).pipe(shareReplay(1))
-  const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
+  const contextForAddress$ = connectedContext$.pipe(
+    distinctUntilKeyChanged('account'),
+    shareReplay(1),
+  )
 
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
@@ -62,41 +61,15 @@ export function setupAaveContext({
     switchMap(({ account }) => accountBalances$(account)),
   )
 
-  const aaveReserveConfigurationData$ = observe(
-    once$,
-    context$,
-    getAaveReserveConfigurationData,
-    ({ token }) => token,
+  const strategyInfo$ = memoize(
+    curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
   )
 
-  const aaveUserReserveData$ = observe(once$, context$, getAaveUserReserveData)
+  const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$)
+  const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
+  const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
 
-  const aaveOracleAssetPriceData$ = observe(once$, context$, getAaveOracleAssetPriceData)
-
-  const aaveUserAccountData$ = observe(once$, context$, getAaveUserAccountData)
-  const aaveUserConfiguration$ = observe(once$, context$, getAaveUserConfiguration)
-  const aaveReservesList$ = observe(once$, context$, getAaveReservesList)
-
-  const parametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
-    contextForAddress$,
-    txHelpers$,
-    gasEstimation$,
-    userSettings$,
-  )
-
-  const parametersStateMachine$ = getParametersStateMachine$(parametersStateMachineServices$)
-
-  const closePositionParametersStateMachineServices$ = getClosePositionParametersStateMachineServices$(
-    contextForAddress$,
-    txHelpers$,
-    gasEstimation$,
-    userSettings$,
-  )
-  const closePositionParametersStateMachine$ = getClosePositionParametersStateMachine$(
-    closePositionParametersStateMachineServices$,
-  )
-
-  const proxyStateMachine$ = getOpenProxyStateMachine$(
+  const proxyStateMachine = getOpenProxyStateMachine(
     contextForAddress$,
     txHelpers$,
     proxyForAccount$,
@@ -104,17 +77,6 @@ export function setupAaveContext({
   )
 
   const aaveReserveStEthData$ = aaveReserveConfigurationData$({ token: 'STETH' })
-
-  const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
-    contextForAddress$,
-    txHelpers$,
-    tokenBalances$,
-    proxyForAccount$,
-    aaveOracleAssetPriceData$,
-    aaveReserveConfigurationData$,
-    aaveUserConfiguration$,
-    aaveReservesList$,
-  )
 
   const aaveProtocolData$ = memoize(
     curry(getAaveProtocolData$)(
@@ -125,43 +87,47 @@ export function setupAaveContext({
       aaveReservesList$,
       aaveReserveConfigurationData$,
     ),
-    (token, proxyAddress) => `${token}-${proxyAddress}`,
+    (collateralToken, address) => `${collateralToken}-${address}`,
   )
 
-  const manageAaveStateMachineServices$ = getManageAavePositionStateMachineServices$(
-    contextForAddress$,
+  const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
+    connectedContext$,
     txHelpers$,
-    gasEstimation$,
-    userSettings$,
     tokenBalances$,
     proxyForAccount$,
-    aaveOracleAssetPriceData$,
-    aaveReserveConfigurationData$,
+    aaveUserAccountData$,
+    userSettings$,
+    tokenPriceUSD$,
+    strategyInfo$,
     aaveProtocolData$,
   )
 
-  const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
-
-  const aaveStateMachine$ = memoize(
-    curry(getOpenAaveStateMachine$)(
-      openAaveStateMachineServices,
-      parametersStateMachine$,
-      proxyStateMachine$,
-      transactionMachine,
-      userSettings$,
-      tokenPriceUSD$,
-    ),
+  const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
+    context$,
+    txHelpers$,
+    tokenBalances$,
+    proxyForAccount$,
+    proxyAddress$,
+    userSettings$,
+    tokenPriceUSD$,
+    strategyInfo$,
+    aaveProtocolData$,
   )
 
-  const aaveManageStateMachine$ = memoize(
-    curry(getManageAaveStateMachine$)(
-      manageAaveStateMachineServices$,
-      closePositionParametersStateMachine$,
-      transactionMachine,
-      userSettings$,
-      tokenPriceUSD$,
-    ),
-    ({ token, address, strategy }) => `${address}-${token}-${strategy}`,
+  const transactionMachine = curry(getOpenAaveTransactionMachine)(txHelpers$, contextForAddress$)
+
+  const aaveStateMachine = getOpenAaveStateMachine(
+    openAaveStateMachineServices,
+    openAaveParameters,
+    proxyStateMachine,
+    transactionMachine,
+  )
+
+  const aaveManageStateMachine = getManageAaveStateMachine(
+    manageAaveStateMachineServices,
+    closeAaveParameters,
+    adjustAaveParameters,
+    transactionMachine,
   )
 
   const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
@@ -174,19 +140,18 @@ export function setupAaveContext({
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  function detectAaveStrategy$(_address: string): Observable<StrategyConfig> {
-    // TODO: properly detect fom chain or georgi method
-    return of(strategies['aave-earn'])
-  }
+  const strategyConfig$ = memoize(
+    curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
+  )
 
   return {
-    aaveStateMachine$,
-    aaveManageStateMachine$,
+    aaveStateMachine,
+    aaveManageStateMachine,
     aaveTotalValueLocked$,
     aaveReserveStEthData$,
-    detectAaveStrategy$,
     aaveSthEthYieldsQuery,
     aaveProtocolData$,
+    strategyConfig$,
   }
 }
 

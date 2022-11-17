@@ -123,7 +123,7 @@ export function SimulateSectionComponent() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const simulationSectionProps = useSelector(stateMachine, (state) => {
     return {
-      strategy: state.context.transactionParameters,
+      strategy: state.context.strategy,
       token: state.context.token,
       userInputAmount: state.context.userInput.amount,
       gasPrice: state.context.estimatedGasPrice,

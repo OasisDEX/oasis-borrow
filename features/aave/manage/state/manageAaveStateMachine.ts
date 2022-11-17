@@ -1,307 +1,259 @@
-import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
-import BigNumber from 'bignumber.js'
-import { ActorRefFrom, assign, createMachine, send, StateFrom } from 'xstate'
-import { cancel } from 'xstate/lib/actions'
+import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
+import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import {
-  AaveConfigurationData,
-  AaveUserAccountData,
-} from '../../../../blockchain/calls/aave/aaveLendingPool'
-import { AaveUserReserveData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { amountFromWei } from '../../../../blockchain/utils'
 import { allDefined } from '../../../../helpers/allDefined'
-import { HasGasEstimation } from '../../../../helpers/form'
 import { zero } from '../../../../helpers/zero'
+import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import {
-  TransactionStateMachine,
-  TransactionStateMachineEvents,
-} from '../../../stateMachines/transaction'
-import { BaseAaveContext, BaseAaveEvent, IStrategyInfo } from '../../common/BaseAaveContext'
+  TransactionParametersStateMachine,
+  TransactionParametersStateMachineEvent,
+} from '../../../stateMachines/transactionParameters'
 import {
-  ClosePositionParametersStateMachine,
-  ClosePositionParametersStateMachineEvents,
-} from './closePositionParametersStateMachine'
+  BaseAaveContext,
+  BaseAaveEvent,
+  contextToTransactionParameters,
+} from '../../common/BaseAaveContext'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
 
-export enum OperationType {
-  CLOSE_POSITION,
-  ADJUST_POSITION,
-}
+type ActorFromTransactionParametersStateMachine =
+  | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
+  | ActorRefFrom<TransactionParametersStateMachine<AdjustAaveParameters>>
 
 export interface ManageAaveContext extends BaseAaveContext {
-  strategy: string // TODO: Consider changing name to reserve token
+  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
+  refParametersMachine?: ActorFromTransactionParametersStateMachine
+  strategyConfig: StrategyConfig
   address: string
-
-  refClosePositionParametersStateMachine?: ActorRefFrom<ClosePositionParametersStateMachine>
-  refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
-
-  balanceAfterClose?: BigNumber
-  operationType?: OperationType
-  protocolData?: AaveProtocolData
-}
-
-export interface AaveProtocolData {
-  positionData: AaveUserReserveData
-  accountData: AaveUserAccountData
-  oraclePrice: BigNumber
-  position: IPosition
-  aaveUserConfiguration: AaveConfigurationData
-  aaveReservesList: AaveConfigurationData
+  proxyAddress?: string
 }
 
 export type ManageAaveEvent =
-  | { readonly type: 'POSITION_CLOSED' }
-  | { type: 'SET_BALANCE'; balance: BigNumber; tokenPrice: BigNumber }
   | { type: 'ADJUST_POSITION' }
+  | { type: 'CLOSE_POSITION' }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
-  | { type: 'CLOSE_POSITION' }
   | { type: 'START_TRANSACTION' }
-  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | {
-      type: 'CLOSING_PARAMETERS_RECEIVED'
-      parameters: IStrategy
-      estimatedGasPrice: HasGasEstimation
-    }
-  | {
-      type: 'UPDATE_STRATEGY_INFO'
-      strategyInfo: IStrategyInfo
-    }
-  | { type: 'GO_TO_EDITING' }
-  | { type: 'REPORT_NEW_RISK_RATIO' }
-  | {
-      type: 'PARAMETERS_RECEIVED'
-      adjustParams: IStrategy | undefined
-      estimatedGasPrice: HasGasEstimation | undefined
-    }
-  | { type: 'AAVE_POSITION_DATA_RECEIVED'; data: AaveProtocolData }
+  | { type: 'POSITION_PROXY_ADDRESS_RECEIVED'; proxyAddress: string }
+  | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
   | BaseAaveEvent
 
-export const createManageAaveStateMachine =
+export function createManageAaveStateMachine(
+  closeParametersStateMachine: TransactionParametersStateMachine<CloseAaveParameters>,
+  adjustParametersStateMachine: TransactionParametersStateMachine<AdjustAaveParameters>,
+  transactionStateMachine: (
+    transactionParameters: OperationExecutorTxMeta,
+  ) => TransactionStateMachine<OperationExecutorTxMeta>,
+) {
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
-  createMachine(
+  return createMachine(
     {
       tsTypes: {} as import('./manageAaveStateMachine.typegen').Typegen0,
       schema: {
         context: {} as ManageAaveContext,
         events: {} as ManageAaveEvent,
-        services: {} as {
-          getParameters: {
-            data: {
-              adjustParams: IStrategy | undefined
-              estimatedGasPrice: HasGasEstimation | undefined
-            }
-          }
-          getProxyAddress: {
-            data: string
-          }
-        },
       },
       preserveActionOrder: true,
       predictableActionArguments: true,
-      id: 'manageAave',
-      initial: 'gettingPositionData',
+      invoke: [
+        {
+          src: 'getBalance',
+          id: 'getBalance',
+        },
+        {
+          src: 'connectedProxyAddress$',
+          id: 'connectedProxyAddress$',
+        },
+        {
+          src: 'positionProxyAddress$',
+          id: 'positionProxyAddress$',
+        },
+        {
+          src: 'context$',
+          id: 'context$',
+        },
+        {
+          src: 'prices$',
+          id: 'prices$',
+        },
+        {
+          src: 'userSettings$',
+          id: 'userSettings$',
+        },
+        {
+          src: 'strategyInfo$',
+          id: 'strategyInfo$',
+        },
+        {
+          src: 'currentPosition$',
+          id: 'currentPosition$',
+        },
+        {
+          src: 'protocolData$',
+          id: 'protocolData$',
+        },
+      ],
+      id: 'manageAaveStateMachine',
+      type: 'parallel',
       states: {
-        gettingPositionData: {
-          initial: 'gettingProxyAddress',
+        background: {
+          initial: 'idle',
           states: {
-            gettingProxyAddress: {
-              invoke: {
-                src: 'getProxyAddress',
-                id: 'getProxyAddress',
-                onDone: [
-                  {
-                    actions: ['assignProxyAddress'],
-                    target: '#manageAave.editing',
-                  },
-                ],
+            idle: {},
+            debouncing: {
+              after: {
+                500: 'loading',
+              },
+            },
+            loading: {
+              entry: ['requestParameters'],
+              on: {
+                STRATEGY_RECEIVED: {
+                  target: 'idle',
+                  actions: ['updateContext'],
+                },
               },
             },
           },
-        },
-        editing: {
-          entry: [
-            'clearTransactionParameters',
-            'setLoadingTrue',
-            'spawnPricesObservable',
-            'spawnUserSettingsObservable',
-          ],
-          invoke: [
-            {
-              src: 'getBalance',
-              id: 'getBalance',
-            },
-            {
-              src: 'getStrategyInfo',
-              id: 'getStrategyInfo',
-            },
-            {
-              src: 'getParameters',
-              id: 'getParameters',
-              onDone: {
-                actions: ['assignTransactionParameters', 'setLoadingFalse'],
-              },
-            },
-          ],
           on: {
-            PARAMETERS_RECEIVED: {
-              actions: ['assignTransactionParameters', 'setLoadingFalse', 'setAdjustOperationType'],
-            },
-            UPDATE_STRATEGY_INFO: {
-              actions: ['updateStrategyInfo'],
-            },
-            SET_BALANCE: {
-              actions: ['setTokenBalanceFromEvent', 'updateBalanceAfterClose'],
-            },
             CLOSE_POSITION: {
-              target: 'reviewingClosing',
-            },
-            SET_RISK_RATIO: {
-              actions: [
-                'userInputRiskRatio',
-                'cancelDebouncedGoToEditing',
-                'debounceGoToEditing',
-                'cancelRiskRatioEvent',
-                'debouncedRiskRatioEvent',
-              ],
-            },
-            RESET_RISK_RATIO: {
-              actions: ['clearTransactionParameters', 'clearRiskRatio', 'setLoadingFalse'],
-              target: 'editing',
-            },
-            GO_TO_EDITING: {
-              target: 'editing',
-            },
-            REPORT_NEW_RISK_RATIO: {
-              cond: 'newRiskInputted',
-              actions: ['riskRatioEvent'],
+              target: '.loading',
             },
             ADJUST_POSITION: {
-              cond: 'validTransactionParameters',
-              target: 'reviewingAdjusting',
+              target: '.loading',
             },
           },
         },
-        reviewingAdjusting: {
-          onEntry: ['riskRatioConfirmEvent'],
-          invoke: {
-            src: 'getParameters',
-            id: 'getParameters',
-          },
-          on: {
-            BACK_TO_EDITING: {
-              target: 'editing',
+        frontend: {
+          initial: 'editing',
+          states: {
+            editing: {
+              entry: ['spawnAdjustParametersMachine'],
+              on: {
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+                SET_RISK_RATIO: {
+                  cond: 'canChangePosition',
+                  target: '#manageAaveStateMachine.background.debouncing',
+                  actions: ['userInputRiskRatio', 'riskRatioEvent'],
+                },
+                RESET_RISK_RATIO: {
+                  cond: 'canChangePosition',
+                  target: '#manageAaveStateMachine.background.debouncing',
+                  actions: 'resetRiskRatio',
+                },
+                ADJUST_POSITION: {
+                  cond: 'validTransactionParameters',
+                  target: 'reviewingAdjusting',
+                },
+              },
             },
-            START_TRANSACTION: {
-              cond: 'validTransactionParameters',
-              target: 'txInProgress',
-              actions: ['riskRatioConfirmTransactionEvent'],
+            reviewingAdjusting: {
+              onEntry: ['riskRatioConfirmEvent'],
+              on: {
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                START_TRANSACTION: {
+                  cond: 'validTransactionParameters',
+                  target: 'txInProgress',
+                  actions: ['riskRatioConfirmTransactionEvent'],
+                },
+              },
             },
-          },
-        },
-        txInProgress: {
-          entry: ['spawnTransactionMachine', 'startTransaction'],
-          on: {
-            POSITION_CLOSED: {
-              target: 'txSuccess',
-              actions: ['closePositionTransactionEvent'],
+            reviewingClosing: {
+              entry: ['closePositionEvent'],
+              on: {
+                START_TRANSACTION: {
+                  cond: 'validTransactionParameters',
+                  target: 'txInProgress',
+                  actions: ['closePositionTransactionEvent'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+              },
             },
-            TRANSACTION_FAILED: {
-              target: 'txFailure',
-              actions: ['assignError'],
+            txInProgress: {
+              entry: ['spawnTransactionMachine'],
+              on: {
+                TRANSACTION_COMPLETED: {
+                  target: 'txSuccess',
+                },
+                TRANSACTION_FAILED: {
+                  target: 'txFailure',
+                  actions: ['updateContext'],
+                },
+              },
             },
-          },
-        },
-        txFailure: {
-          on: {
-            RETRY: {
-              target: 'editing',
+            txFailure: {
+              entry: ['killTransactionMachine'],
+              on: {
+                RETRY: {
+                  target: 'txInProgress',
+                },
+              },
             },
-          },
-        },
-        txSuccess: {
-          type: 'final',
-        },
-        reviewingClosing: {
-          entry: [
-            'spawnClosePositionParametersMachine',
-            'sendVariablesToClosePositionParametersMachine',
-            'closePositionEvent',
-          ],
-          on: {
-            CLOSING_PARAMETERS_RECEIVED: {
-              actions: [
-                'assignClosingTransactionParameters',
-                'updateBalanceAfterClose',
-                'setClosingOperationType',
-              ],
-            },
-            START_TRANSACTION: {
-              cond: 'validTransactionParameters',
-              target: 'txInProgress',
-            },
-            BACK_TO_EDITING: {
-              target: 'editing',
+            txSuccess: {
+              entry: ['killTransactionMachine'],
+              type: 'final',
             },
           },
         },
       },
       on: {
         PRICES_RECEIVED: {
-          actions: ['setPricesFromEvent'],
+          actions: 'updateContext',
         },
         USER_SETTINGS_CHANGED: {
-          actions: ['setUserSettingsFromEvent'],
+          actions: 'updateContext',
         },
-        AAVE_POSITION_DATA_RECEIVED: {
-          actions: ['assignProtocolData'],
+        SET_BALANCE: {
+          actions: 'updateContext',
+        },
+        CONNECTED_PROXY_ADDRESS_RECEIVED: {
+          actions: 'updateContext',
+        },
+        WEB3_CONTEXT_CHANGED: {
+          actions: 'updateContext',
+        },
+        GAS_PRICE_ESTIMATION_RECEIVED: {
+          actions: 'updateContext',
+        },
+        UPDATE_STRATEGY_INFO: {
+          actions: 'updateContext',
+        },
+        CURRENT_POSITION_CHANGED: {
+          actions: ['updateContext'],
+        },
+        POSITION_PROXY_ADDRESS_RECEIVED: {
+          actions: 'updateContext',
+        },
+        UPDATE_PROTOCOL_DATA: {
+          actions: ['updateContext'],
         },
       },
-      invoke: [
-        {
-          src: 'aaveProtocolDataObservable',
-          id: 'aaveProtocolDataObservable',
-        },
-      ],
     },
     {
       guards: {
-        validTransactionParameters: ({ proxyAddress, transactionParameters }) => {
-          return allDefined(proxyAddress, transactionParameters)
+        validTransactionParameters: ({ connectedProxyAddress, strategy }) => {
+          return allDefined(connectedProxyAddress, strategy)
         },
-        newRiskInputted: (state) => {
+        canChangePosition: ({ proxyAddress, connectedProxyAddress, currentPosition }) => {
           return (
-            allDefined(state.userInput.riskRatio, state.protocolData) &&
-            !state.userInput.riskRatio!.loanToValue.eq(
-              state.protocolData!.position.riskRatio.loanToValue,
-            )
+            allDefined(proxyAddress, connectedProxyAddress, currentPosition) &&
+            proxyAddress === connectedProxyAddress
           )
         },
       },
       actions: {
-        setLoadingTrue: assign((_) => ({ loading: true })),
-        setLoadingFalse: assign((_) => ({ loading: false })),
-        cancelDebouncedGoToEditing: cancel('debounced-filter'),
-        debounceGoToEditing: send('GO_TO_EDITING', { delay: 1000, id: 'debounced-filter' }),
-        cancelRiskRatioEvent: cancel('new-risk-ratio'),
-        debouncedRiskRatioEvent: send('REPORT_NEW_RISK_RATIO', {
-          delay: 1000,
-          id: 'new-risk-ratio',
-        }),
-        setTokenBalanceFromEvent: assign((context, event) => ({
-          tokenBalance: event.balance,
-          tokenPrice: event.tokenPrice,
-        })),
-        updateBalanceAfterClose: assign((context) => ({
-          balanceAfterClose: context.tokenBalance?.plus(
-            amountFromWei(
-              context.transactionParameters?.simulation.swap.minToTokenAmount ?? zero,
-              'ETH',
-            ),
-          ),
-        })),
         userInputRiskRatio: assign((context, event) => {
           return {
             userInput: {
@@ -310,11 +262,11 @@ export const createManageAaveStateMachine =
             },
           }
         }),
-        clearRiskRatio: assign((context) => {
+        resetRiskRatio: assign((context) => {
           return {
             userInput: {
               ...context.userInput,
-              riskRatio: undefined,
+              riskRatio: context.currentPosition?.riskRatio,
             },
           }
         }),
@@ -331,81 +283,64 @@ export const createManageAaveStateMachine =
         },
         closePositionEvent: trackingEvents.earn.stETHClosePositionConfirm,
         closePositionTransactionEvent: trackingEvents.earn.stETHClosePositionConfirmTransaction,
-        assignProxyAddress: assign((context, event) => ({
-          proxyAddress: event.data,
-        })),
-        assignProtocolData: assign((context, event) => {
-          return {
-            protocolData: event.data,
-            currentPosition: event.data.position,
-          }
-        }),
-        assignTransactionParameters: assign((context, event) => {
-          if (event.type === 'PARAMETERS_RECEIVED') {
-            return {
-              transactionParameters: event.adjustParams,
-              estimatedGasPrice: event.estimatedGasPrice,
-            }
-          } else {
-            // ¯\_(ツ)_/¯
-            return {
-              transactionParameters: event.data?.adjustParams,
-              estimatedGasPrice: event.data?.estimatedGasPrice,
-            }
-          }
-        }),
-        clearTransactionParameters: assign((_) => ({
-          transactionParameters: undefined,
-          estimatedGasPrice: undefined,
-        })),
-        assignClosingTransactionParameters: assign((context, event) => ({
-          transactionParameters: event.parameters,
-          estimatedGasPrice: event.estimatedGasPrice,
-        })),
-        updateStrategyInfo: assign((context, event) => ({
-          strategyInfo: event.strategyInfo,
-        })),
-        sendVariablesToClosePositionParametersMachine: send(
-          (context): ClosePositionParametersStateMachineEvents => ({
+        requestParameters: send(
+          (
+            context,
+          ): TransactionParametersStateMachineEvent<
+            AdjustAaveParameters | CloseAaveParameters
+          > => ({
             type: 'VARIABLES_RECEIVED',
-            proxyAddress: context.proxyAddress!,
-            token: context.token,
-            valueLocked: context.protocolData!.positionData!.currentATokenBalance!,
+            parameters: {
+              amount: context.userInput.amount || zero,
+              riskRatio: context.userInput.riskRatio || context.currentPosition!.riskRatio,
+              proxyAddress: context.connectedProxyAddress!,
+              token: context.token,
+              context: context.web3Context!,
+              slippage: context.userSettings!.slippage,
+              currentPosition: context.currentPosition!,
+            },
           }),
-          { to: (context) => context.refClosePositionParametersStateMachine! },
+          { to: (context) => context.refParametersMachine! },
         ),
-        startTransaction: send(
-          (_): TransactionStateMachineEvents<OperationExecutorTxMeta> => ({
-            type: 'START',
-          }),
-          { to: (context) => context.refTransactionStateMachine! },
-        ),
-        setPricesFromEvent: assign((context, event) => ({
-          collateralPrice: event.collateralPrice,
+        spawnTransactionMachine: assign((context) => ({
+          refTransactionMachine: spawn(
+            transactionStateMachine(contextToTransactionParameters(context)),
+            'transactionMachine',
+          ),
         })),
-        setUserSettingsFromEvent: assign((context, event) => ({
-          slippage: event.userSettings.slippage,
+        killTransactionMachine: pure((context) => {
+          if (context.refTransactionMachine && context.refTransactionMachine.stop) {
+            context.refTransactionMachine.stop()
+          }
+          return undefined
+        }),
+        spawnAdjustParametersMachine: assign((_) => ({
+          refParametersMachine: spawn(adjustParametersStateMachine, 'transactionParameters'),
         })),
-        setClosingOperationType: assign((_) => ({
-          operationType: OperationType.CLOSE_POSITION,
+        spawnCloseParametersMachine: assign((_) => ({
+          refParametersMachine: spawn(closeParametersStateMachine, 'transactionParameters'),
         })),
-        setAdjustOperationType: assign((_) => ({
-          operationType: OperationType.ADJUST_POSITION,
-        })),
-        assignError: assign((_, event) => ({
-          error: event.error,
+        killCurrentParametersMachine: pure((context) => {
+          if (context.refParametersMachine && context.refParametersMachine.stop) {
+            context.refParametersMachine.stop()
+          }
+          return undefined
+        }),
+        updateContext: assign((_, event) => ({
+          ...event,
         })),
       },
     },
   )
+}
 
 class ManageAaveStateMachineTypes {
   needsConfiguration() {
-    return createManageAaveStateMachine
+    return createManageAaveStateMachine({} as any, {} as any, {} as any)
   }
   withConfig() {
     // @ts-ignore
-    return createManageAaveStateMachine.withConfig({})
+    return createManageAaveStateMachine({} as any, {} as any, {} as any).withConfig({})
   }
 }
 

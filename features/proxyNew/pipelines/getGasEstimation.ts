@@ -1,6 +1,6 @@
 import { amountFromWei } from '@oasisdex/utils'
 import { combineLatest, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { map, startWith } from 'rxjs/operators'
 
 import { GasPriceParams, Tickers } from '../../../blockchain/prices'
 import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
@@ -23,6 +23,9 @@ export function getGasEstimation$(
         gasEstimationDai,
         gasEstimationEth: gasCost,
       }
+    }),
+    startWith({
+      gasEstimationStatus: GasEstimationStatus.calculating,
     }),
   )
 }

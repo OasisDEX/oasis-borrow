@@ -20,7 +20,8 @@ type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
   textButton: SidebarSectionFooterButtonSettings
-  viewLocked?: boolean // locks whole view + displays warning
+  viewLocked?: boolean // locks whole view
+  showWarring?: boolean // displays warning
   onChainPosition?: IPosition
 }
 
@@ -66,14 +67,16 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   return function AdjustRiskView({
     state,
     send,
+    isLoading,
     primaryButton,
     textButton,
     viewLocked = false,
+    showWarring = false,
     onChainPosition,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
-    const simulation = state.context.transactionParameters?.simulation
+    const simulation = state.context.strategy?.simulation
     const targetPosition = simulation?.position
 
     const maxRisk = targetPosition
@@ -138,7 +141,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
             leftBoundry={liquidationPrice}
             leftBoundryFormatter={(value) => {
-              if (state.context.loading) {
+              if (isLoading()) {
                 return '...'
               } else {
                 return viewConfig.liquidationPriceFormatter(value)
@@ -189,14 +192,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               </WithArrow>
             </Link>
           )}
-          {viewLocked ? (
+          {showWarring ? (
             <MessageCard
               messages={[t('manage-earn-vault.has-asset-already')]}
               type="error"
               withBullet={false}
             />
           ) : (
-            state.context.transactionParameters && (
+            state.context.strategy && (
               <MessageCard
                 messages={[
                   isWarning

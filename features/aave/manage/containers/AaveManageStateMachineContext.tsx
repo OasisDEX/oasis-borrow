@@ -2,10 +2,30 @@ import { useInterpret } from '@xstate/react'
 import { env } from 'process'
 import React from 'react'
 
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { ManageAaveStateMachine } from '../state'
 
-function setupManageAaveStateContext({ machine }: { machine: ManageAaveStateMachine }) {
-  const stateMachine = useInterpret(machine, { devTools: env.NODE_ENV !== 'production' }).start()
+function setupManageAaveStateContext({
+  machine,
+  strategy,
+  address,
+}: {
+  machine: ManageAaveStateMachine
+  strategy: StrategyConfig
+  address: string
+}) {
+  const stateMachine = useInterpret(
+    machine.withContext({
+      token: strategy.tokens.debt,
+      collateralToken: strategy.tokens.collateral,
+      currentStep: 1,
+      totalSteps: 3,
+      strategyConfig: strategy,
+      userInput: {},
+      address,
+    }),
+    { devTools: env.NODE_ENV !== 'production' },
+  ).start()
   return {
     stateMachine,
   }
@@ -27,8 +47,14 @@ export function useManageAaveStateMachineContext(): ManageAaveStateMachineContex
 export function ManageAaveStateMachineContextProvider({
   children,
   machine,
-}: React.PropsWithChildren<{ machine: ManageAaveStateMachine }>) {
-  const context = setupManageAaveStateContext({ machine })
+  strategy,
+  address,
+}: React.PropsWithChildren<{
+  machine: ManageAaveStateMachine
+  strategy: StrategyConfig
+  address: string
+}>) {
+  const context = setupManageAaveStateContext({ machine, strategy, address })
   return (
     <manageAaveStateContext.Provider value={context}>{children}</manageAaveStateContext.Provider>
   )
