@@ -78,7 +78,13 @@ async function checkIfRisky(address: string) {
       console.log('TRM_LOG logging failed', ex)
     }
 
-    return !!trmData.addressRiskIndicators.length
+    if (!trmData.addressRiskIndicators.length) {
+      return false
+    }
+
+    return trmData.addressRiskIndicators
+      .map((indicator) => Number(indicator.totalVolumeUsd) > 0)
+      .includes(true)
   } catch (ex) {
     console.log(`TRM_LOG ${address} check failed`)
     throw ex
