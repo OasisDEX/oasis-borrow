@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -14,12 +14,10 @@ export interface ContentCardDynamicStopPriceModalProps {
 interface ContentCardDynamicStopPriceProps {
   isStopLossEnabled: boolean
   isEditing: boolean
-  slRatio: BigNumber
+  stopLossLevel: BigNumber
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
-  afterSlRatio: BigNumber
-  lockedCollateral: BigNumber
-  debt: BigNumber
+  afterStopLossLevel: BigNumber
 }
 
 export function ContentCardDynamicStopPriceModal({
@@ -49,32 +47,33 @@ export function ContentCardDynamicStopPriceModal({
 export function ContentCardDynamicStopPrice({
   isStopLossEnabled,
   isEditing,
-  slRatio,
+  stopLossLevel,
   liquidationPrice,
   liquidationRatio,
-  afterSlRatio,
-  lockedCollateral,
-  debt,
+  afterStopLossLevel,
 }: ContentCardDynamicStopPriceProps) {
   const { t } = useTranslation()
 
-  const dynamicStopPrice = collateralPriceAtRatio({
-    colRatio: slRatio,
-    collateral: lockedCollateral,
-    vaultDebt: debt,
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel,
+  })
+
+  const afterDynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel: afterStopLossLevel,
   })
 
   const formatted = {
-    dynamicStopPrice: `$${formatAmount(dynamicStopPrice, 'USD')}`,
-    aboveLiquidationPrice: formatAmount(dynamicStopPrice.minus(liquidationPrice), 'USD'),
-    afterDynamicStopPrice: `$${formatAmount(
-      liquidationPrice.div(liquidationRatio).times(afterSlRatio),
-      'USD',
-    )}`,
+    dynamicStopPrice: `$${formatAmount(dynamicStopLossPrice, 'USD')}`,
+    aboveLiquidationPrice: formatAmount(dynamicStopLossPrice.minus(liquidationPrice), 'USD'),
+    afterDynamicStopPrice: `$${formatAmount(afterDynamicStopLossPrice, 'USD')}`,
   }
 
   const contentCardModalSettings: ContentCardDynamicStopPriceModalProps = {
-    dynamicStopPrice,
+    dynamicStopPrice: dynamicStopLossPrice,
     dynamicStopPriceFormatted: formatted.dynamicStopPrice,
   }
 

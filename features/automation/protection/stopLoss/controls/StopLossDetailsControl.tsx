@@ -27,7 +27,7 @@ interface StopLossDetailsControlProps {
 export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsControlProps) {
   const { t } = useTranslation()
   const {
-    stopLossTriggerData,
+    stopLossTriggerData: { isStopLossEnabled, stopLossLevel, isToCollateral },
     positionData: {
       positionRatio,
       nextPositionRatio,
@@ -36,33 +36,42 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       ilk,
       liquidationPenalty,
       liquidationRatio,
+      liquidationPrice,
       lockedCollateral,
       token,
+    },
+    metadata: {
+      stopLoss: { getMaxToken, collateralDuringLiquidation, triggerMaxToken },
     },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+  const afterMaxToken = getMaxToken({ state: stopLossState })
 
   return (
     <>
       {isStopLossActive ? (
         <StopLossDetailsLayout
-          slRatio={stopLossTriggerData.stopLossLevel}
-          afterSlRatio={stopLossState.stopLossLevel.dividedBy(100)}
-          vaultDebt={debt}
-          isStopLossEnabled={stopLossTriggerData.isStopLossEnabled}
-          lockedCollateral={lockedCollateral}
           token={token}
+          stopLossLevel={stopLossLevel}
+          afterStopLossLevel={stopLossState.stopLossLevel.dividedBy(100)}
+          debt={debt}
+          isStopLossEnabled={isStopLossEnabled}
           liquidationRatio={liquidationRatio}
+          liquidationPrice={liquidationPrice}
           liquidationPenalty={liquidationPenalty}
+          lockedCollateral={lockedCollateral}
           nextPositionRatio={nextPositionRatio}
+          collateralDuringLiquidation={collateralDuringLiquidation}
+          triggerMaxToken={triggerMaxToken}
+          afterMaxToken={afterMaxToken}
           isCollateralActive={!!stopLossState?.collateralActive}
           isEditing={checkIfIsEditingStopLoss({
-            isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+            isStopLossEnabled: isStopLossEnabled,
             selectedSLValue: stopLossState.stopLossLevel,
-            stopLossLevel: stopLossTriggerData.stopLossLevel,
+            stopLossLevel,
             collateralActive: stopLossState.collateralActive,
-            isToCollateral: stopLossTriggerData.isToCollateral,
+            isToCollateral,
             isRemoveForm: stopLossState.currentForm === 'remove',
           })}
           positionRatio={positionRatio}

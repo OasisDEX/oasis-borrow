@@ -7,6 +7,8 @@ import {
 } from 'features/automation/common/consts'
 import { GetStopLossMetadata } from 'features/automation/metadata/types'
 import {
+  getCollateralDuringLiquidation,
+  getMaxToken,
   getSliderPercentageFill,
   getStartingSlRatio,
 } from 'features/automation/protection/stopLoss/helpers'
@@ -18,6 +20,7 @@ import {
   errorsStopLossValidation,
   warningsStopLossValidation,
 } from 'features/automation/protection/stopLoss/validators'
+import { formatPercent } from 'helpers/formatters/format'
 
 // eslint-disable-next-line func-style
 export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
@@ -25,7 +28,14 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     autoSellTriggerData,
     stopLossTriggerData,
     constantMultipleTriggerData,
-    positionData: { nextPositionRatio, liquidationRatio, lockedCollateral, debt },
+    positionData: {
+      nextPositionRatio,
+      liquidationRatio,
+      liquidationPrice,
+      liquidationPenalty,
+      lockedCollateral,
+      debt,
+    },
   } = context
 
   const max = autoSellTriggerData.isTriggerEnabled
@@ -54,6 +64,13 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     collateralActive: stopLossTriggerData.isToCollateral,
     txDetails: {},
   }
+
+  const collateralDuringLiquidation = getCollateralDuringLiquidation({
+    lockedCollateral,
+    debt,
+    liquidationPrice,
+    liquidationPenalty,
+  })
 
   return {
     getWarnings: ({
@@ -97,10 +114,28 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         .dividedBy(100)
         .multipliedBy(context.environmentData.nextCollateralPrice)
         .dividedBy(nextPositionRatio),
+    getMaxToken: ({ state }: { state: StopLossFormChange }) =>
+      getMaxToken({
+        stopLossLevel: state.stopLossLevel,
+        lockedCollateral,
+        liquidationRatio,
+        liquidationPrice,
+        debt,
+      }),
+    triggerMaxToken: getMaxToken({
+      stopLossLevel: stopLossTriggerData.stopLossLevel,
+      lockedCollateral,
+      liquidationRatio,
+      liquidationPrice,
+      debt,
+    }),
+    collateralDuringLiquidation,
     sliderMax,
     sliderMin,
     resetData,
-    sliderLeftLabel: 'slider.set-stoploss.left-label',
-    sliderRightLabel: 'slider.set-stoploss.right-label',
+    sliderLeftLabel: 'system.collateral-ratio',
+    withPickCloseTo: true,
+    leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
+    sliderStep: 1,
   }
 }

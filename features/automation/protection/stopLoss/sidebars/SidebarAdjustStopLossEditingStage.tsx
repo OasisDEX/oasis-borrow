@@ -26,7 +26,6 @@ import {
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
@@ -35,14 +34,13 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Text } from 'theme-ui'
 
 interface SetDownsideProtectionInformationProps {
-  afterStopLossRatio: BigNumber
   executionPrice: BigNumber
   ethPrice: BigNumber
   isCollateralActive: boolean
@@ -50,7 +48,6 @@ interface SetDownsideProtectionInformationProps {
 }
 
 export function SetDownsideProtectionInformation({
-  afterStopLossRatio,
   executionPrice,
   ethPrice,
   isCollateralActive,
@@ -58,31 +55,16 @@ export function SetDownsideProtectionInformation({
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: {
-      debt,
-      liquidationPenalty,
-      liquidationPrice,
-      liquidationRatio,
-      lockedCollateral,
-      token,
+    positionData: { token },
+    metadata: {
+      stopLoss: { getMaxToken, collateralDuringLiquidation },
     },
   } = useAutomationContext()
+  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const afterDynamicStopLossPrice = liquidationPrice
-    .div(liquidationRatio)
-    .times(afterStopLossRatio.div(100))
+  const afterMaxToken = getMaxToken({ state: stopLossState })
 
-  const afterMaxToken = lockedCollateral
-    .times(afterDynamicStopLossPrice)
-    .minus(debt)
-    .div(afterDynamicStopLossPrice)
-
-  const ethDuringLiquidation = lockedCollateral
-    .times(liquidationPrice)
-    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
-    .div(liquidationPrice)
-
-  const savingCompareToLiquidation = afterMaxToken.minus(ethDuringLiquidation)
+  const savingCompareToLiquidation = afterMaxToken.minus(collateralDuringLiquidation)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(afterMaxToken, token)} ${token}`
@@ -165,9 +147,11 @@ export function SidebarAdjustStopLossEditingStage({
         sliderMax,
         resetData,
         sliderLeftLabel,
-        sliderRightLabel,
+        withPickCloseTo,
         sliderChangeCallback,
         closeToChangeCallback,
+        leftBoundaryFormatter,
+        sliderStep,
       },
     },
   } = useAutomationContext()
@@ -216,28 +200,30 @@ export function SidebarAdjustStopLossEditingStage({
     <>
       {!debt.isZero() ? (
         <Grid>
-          <PickCloseState
-            isCollateralActive={stopLossState.collateralActive}
-            collateralTokenSymbol={token}
-            collateralTokenIconCircle={getToken(token).iconCircle}
-            onclickHandler={(optionName: string) => {
-              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-                type: 'close-type',
-                toCollateral: optionName === closeVaultOptions[0],
-              })
-              trackingEvents.automation.buttonClick(
-                AutomationEventIds.CloseToX,
-                Pages.StopLoss,
-                CommonAnalyticsSections.Form,
-                {
-                  vaultId: id.toString(),
-                  ilk: ilk,
-                  closeTo: optionName as CloseVaultTo,
-                },
-              )
-              closeToChangeCallback && closeToChangeCallback(optionName)
-            }}
-          />
+          {withPickCloseTo && (
+            <PickCloseState
+              isCollateralActive={stopLossState.collateralActive}
+              collateralTokenSymbol={token}
+              collateralTokenIconCircle={getToken(token).iconCircle}
+              onclickHandler={(optionName: string) => {
+                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                  type: 'close-type',
+                  toCollateral: optionName === closeVaultOptions[0],
+                })
+                trackingEvents.automation.buttonClick(
+                  AutomationEventIds.CloseToX,
+                  Pages.StopLoss,
+                  CommonAnalyticsSections.Form,
+                  {
+                    vaultId: id.toString(),
+                    ilk: ilk,
+                    closeTo: optionName as CloseVaultTo,
+                  },
+                )
+                closeToChangeCallback && closeToChangeCallback(optionName)
+              }}
+            />
+          )}
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('protection.set-downside-protection-desc')}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
@@ -245,7 +231,12 @@ export function SidebarAdjustStopLossEditingStage({
             </AppLink>
           </Text>
           <SliderValuePicker
-            {...stopLossSliderBasicConfig}
+            disabled={false}
+            step={sliderStep}
+            leftBoundryFormatter={leftBoundaryFormatter}
+            rightBoundryFormatter={(x: BigNumber) =>
+              x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')
+            }
             sliderPercentageFill={sliderPercentageFill}
             lastValue={stopLossState.stopLossLevel}
             maxBoundry={sliderMax}
@@ -267,8 +258,8 @@ export function SidebarAdjustStopLossEditingStage({
 
               sliderChangeCallback && sliderChangeCallback(slCollRatio)
             }}
-            leftLabel={t(sliderLeftLabel)}
-            rightLabel={t(sliderRightLabel)}
+            leftLabel={t('protection.slider-left-label', { value: t(sliderLeftLabel) })}
+            rightLabel={t('slider.set-stoploss.right-label')}
           />
         </Grid>
       ) : (
@@ -298,7 +289,6 @@ export function SidebarAdjustStopLossEditingStage({
               </>
             )}
             <SetDownsideProtectionInformation
-              afterStopLossRatio={stopLossState.stopLossLevel}
               executionPrice={executionPrice}
               ethPrice={ethMarketPrice}
               isCollateralActive={stopLossState.collateralActive}

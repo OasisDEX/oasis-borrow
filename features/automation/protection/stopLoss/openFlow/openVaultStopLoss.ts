@@ -9,7 +9,11 @@ import {
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
 import { GetStopLossMetadata } from 'features/automation/metadata/types'
-import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
+import {
+  getCollateralDuringLiquidation,
+  getMaxToken,
+  getSliderPercentageFill,
+} from 'features/automation/protection/stopLoss/helpers'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import {
   StopLossFormChange,
@@ -20,6 +24,7 @@ import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { formatPercent } from 'helpers/formatters/format'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 
@@ -140,6 +145,24 @@ export function getDataForStopLoss(
     isOpenFlow: true,
   }
 
+  const maxToken = getMaxToken({
+    stopLossLevel: stopLossLevel,
+    lockedCollateral: lockedCollateral || zero,
+    liquidationRatio,
+    liquidationPrice: afterLiquidationPrice,
+    debt: debt || zero,
+  })
+
+  const collateralDuringLiquidation =
+    !lockedCollateral || !debt
+      ? zero
+      : getCollateralDuringLiquidation({
+          lockedCollateral,
+          debt,
+          liquidationPrice: afterLiquidationPrice,
+          liquidationPenalty,
+        })
+
   // eslint-disable-next-line func-style
   const stopLossMetadata: GetStopLossMetadata = (_) => {
     return {
@@ -149,11 +172,16 @@ export function getDataForStopLoss(
       getExecutionPrice: (_: { state: StopLossFormChange }) => executionPrice,
       getSliderPercentageFill: (_: { state: StopLossFormChange }) => sliderPercentageFill,
       getRightBoundary: (_: { state: StopLossFormChange }) => afterNewLiquidationPrice,
+      getMaxToken: (_: { state: StopLossFormChange }) => maxToken,
       sliderMax,
       sliderMin,
       resetData: {} as StopLossResetData,
-      sliderLeftLabel: 'slider.set-stoploss.left-label',
-      sliderRightLabel: 'slider.set-stoploss.right-label',
+      sliderLeftLabel: 'system.collateral-ratio',
+      withPickCloseTo: true,
+      triggerMaxToken: zero,
+      collateralDuringLiquidation,
+      leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
+      sliderStep: 1,
       sliderChangeCallback: (value: BigNumber) => setStopLossLevel(value),
       closeToChangeCallback: (optionName: string) =>
         setStopLossCloseType(optionName as CloseVaultTo),

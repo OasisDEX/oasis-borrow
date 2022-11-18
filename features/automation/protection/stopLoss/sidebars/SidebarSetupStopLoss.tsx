@@ -79,8 +79,7 @@ export function SidebarSetupStopLoss({
       stopLoss: { getWarnings, getErrors, getExecutionPrice },
     },
   } = useAutomationContext()
-
-  const { isAwaitingConfirmation, stopLossLevel } = stopLossState
+  const { isAwaitingConfirmation } = stopLossState
 
   const gasEstimationContext = useGasEstimationContext()
   const [, setHash] = useHash()
@@ -158,7 +157,6 @@ export function SidebarSetupStopLoss({
                       feature="Stop-Loss"
                       children={
                         <SetDownsideProtectionInformation
-                          afterStopLossRatio={stopLossLevel}
                           executionPrice={executionPrice}
                           ethPrice={ethMarketPrice}
                           isCollateralActive={stopLossState.collateralActive}
@@ -191,7 +189,6 @@ export function SidebarSetupStopLoss({
                   isRemoveForm={isRemoveForm}
                   customContent={
                     <StopLossCompleteInformation
-                      afterStopLossRatio={stopLossLevel}
                       executionPrice={executionPrice}
                       isCollateralActive={stopLossState.collateralActive}
                       txCost={stopLossState.txDetails?.txCost!}

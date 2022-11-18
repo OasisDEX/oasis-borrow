@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { SidebarAutomationStages } from 'features/automation/common/types'
+import { one, zero } from 'helpers/zero'
 
 export function checkIfIsEditingStopLoss({
   isStopLossEnabled,
@@ -76,4 +77,59 @@ export function calculateStepNumber(isConfirmation: boolean, stage: SidebarAutom
   if (isConfirmation && stage !== 'txSuccess') return '(2/3)'
   if (stage === 'txInProgress' || stage === 'txSuccess') return '(3/3)'
   return '(1/3)'
+}
+
+export function getDynamicStopLossPrice({
+  liquidationPrice,
+  liquidationRatio,
+  stopLossLevel,
+}: {
+  liquidationPrice: BigNumber
+  liquidationRatio: BigNumber
+  stopLossLevel: BigNumber
+}) {
+  return stopLossLevel.isZero()
+    ? zero
+    : liquidationPrice.div(liquidationRatio).times(stopLossLevel.div(100))
+}
+
+export function getMaxToken({
+  liquidationPrice,
+  liquidationRatio,
+  stopLossLevel,
+  lockedCollateral,
+  debt,
+}: {
+  liquidationPrice: BigNumber
+  liquidationRatio: BigNumber
+  stopLossLevel: BigNumber
+  lockedCollateral: BigNumber
+  debt: BigNumber
+}) {
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel,
+  })
+
+  return dynamicStopLossPrice.isZero()
+    ? zero
+    : lockedCollateral.times(dynamicStopLossPrice).minus(debt).div(dynamicStopLossPrice)
+}
+
+export function getCollateralDuringLiquidation({
+  lockedCollateral,
+  debt,
+  liquidationPrice,
+  liquidationPenalty,
+}: {
+  lockedCollateral: BigNumber
+  debt: BigNumber
+  liquidationPrice: BigNumber
+  liquidationPenalty: BigNumber
+}) {
+  return lockedCollateral
+    .times(liquidationPrice)
+    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
+    .div(liquidationPrice)
 }

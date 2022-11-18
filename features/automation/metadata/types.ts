@@ -20,11 +20,16 @@ export interface StopLossMetadata {
   getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
   getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
   getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
+  getMaxToken: ({ state }: { state: StopLossFormChange }) => BigNumber
   sliderMax: BigNumber
   sliderMin: BigNumber
+  collateralDuringLiquidation: BigNumber
+  triggerMaxToken: BigNumber
   resetData: StopLossResetData
   sliderLeftLabel: string
-  sliderRightLabel: string
+  withPickCloseTo: boolean
+  sliderStep: number
+  leftBoundaryFormatter: (value: BigNumber) => string
   sliderChangeCallback?: (value: BigNumber) => void
   closeToChangeCallback?: (value: string) => void
 }

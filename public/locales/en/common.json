@@ -1327,7 +1327,8 @@
     "edit-order": "Edit Order",
     "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
-    "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+    "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
+    "slider-left-label": "Stop-Loss {{value}}"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
