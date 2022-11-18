@@ -11,6 +11,7 @@ import {
 } from 'components/productCards/ProductCardsContainer'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
+import { FollowVault } from 'features/follow/common/FollowVault'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
@@ -500,6 +501,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
           }}
         />
       </AppLink>
+      <FollowVault />
     </Flex>
   )
 }
