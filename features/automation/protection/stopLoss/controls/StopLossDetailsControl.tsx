@@ -54,7 +54,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
         <StopLossDetailsLayout
           token={token}
           stopLossLevel={stopLossLevel}
-          afterStopLossLevel={stopLossState.stopLossLevel.dividedBy(100)}
+          afterStopLossLevel={stopLossState.stopLossLevel}
           debt={debt}
           isStopLossEnabled={isStopLossEnabled}
           liquidationRatio={liquidationRatio}

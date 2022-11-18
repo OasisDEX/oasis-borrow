@@ -162,9 +162,11 @@ export function AutomationContextProvider({
     protocol,
   }
 
+  const initMetadata = useMemo(() => initializeMetadata(metadata, initialAutoContext), [])
+
   const [autoContext, setAutoContext] = useState<AutomationContext>({
     ...initialAutoContext,
-    metadata: initializeMetadata(metadata, initialAutoContext),
+    metadata: initMetadata,
   })
 
   const { automationTriggersData$ } = useAppContext()
@@ -227,6 +229,8 @@ export function AutomationContextProvider({
         autoTakeProfitTriggerData: extractAutoTakeProfitData(automationTriggersData),
         automationTriggersData,
         protocol,
+        environmentData,
+        positionData,
       }
       setAutoContext((prev) => ({
         ...prev,
@@ -234,19 +238,7 @@ export function AutomationContextProvider({
         metadata: initializeMetadata(metadata, { ...prev, ...update }),
       }))
     }
-  }, [automationTriggersData])
-
-  useEffect(() => {
-    const update = {
-      environmentData,
-      positionData,
-    }
-    setAutoContext((prev) => ({
-      ...prev,
-      ...update,
-      metadata: initializeMetadata(metadata, { ...prev, ...update }),
-    }))
-  }, [environmentData, positionData])
+  }, [automationTriggersData, environmentData, positionData])
 
   return <automationContext.Provider value={autoContext}>{children}</automationContext.Provider>
 }

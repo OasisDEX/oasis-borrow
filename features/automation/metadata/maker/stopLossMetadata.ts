@@ -123,7 +123,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         debt,
       }),
     triggerMaxToken: getMaxToken({
-      stopLossLevel: stopLossTriggerData.stopLossLevel,
+      stopLossLevel: stopLossTriggerData.stopLossLevel.times(100),
       lockedCollateral,
       liquidationRatio,
       liquidationPrice,

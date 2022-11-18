@@ -57,7 +57,7 @@ export function ContentCardDynamicStopPrice({
   const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice,
     liquidationRatio,
-    stopLossLevel,
+    stopLossLevel: stopLossLevel.times(100),
   })
 
   const afterDynamicStopLossPrice = getDynamicStopLossPrice({
