@@ -90,4 +90,3 @@ SELECT
     "type"
 FROM
     "discover_with_coll_data";
-
