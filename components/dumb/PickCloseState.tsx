@@ -1,4 +1,3 @@
-import { FixedSizeArray } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -7,7 +6,6 @@ import { ActionPills } from '../ActionPills'
 export interface PickCloseStateProps {
   collateralTokenSymbol: string
   collateralTokenIconCircle: string
-  optionNames: FixedSizeArray<string, 2>
   onclickHandler: (optionName: string) => void
   isCollateralActive: boolean
 }

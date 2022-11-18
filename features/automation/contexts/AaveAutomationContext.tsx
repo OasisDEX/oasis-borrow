@@ -42,6 +42,8 @@ export function AaveAutomationContext({
       positionData={positionData}
       commonData={commonData}
       protocol={VaultProtocol.Aave}
+      // @ts-ignore
+      metadata={{}}
     >
       {children}
     </AutomationContextInput>

@@ -1,31 +1,32 @@
-import {
-  AutomationEventIds,
-  CommonAnalyticsSections,
-  Pages,
-  trackingEvents,
-} from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
-import { getToken } from 'blockchain/tokensMetadata'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
 import {
-  closeVaultOptions,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
+import {
+  GeTakeProfitMetadata,
+  GetAutoBSMetadata,
+  GetConstantMultipleMetadata,
+  GetStopLossMetadata,
+} from 'features/automation/metadata/types'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
-import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import {
+  StopLossFormChange,
+  StopLossResetData,
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
-import { useTranslation } from 'next-i18next'
 
 export type OpenVaultStopLossLevelChange = {
   kind: 'stopLossLevel'
@@ -80,8 +81,6 @@ export function getDataForStopLoss(
   },
   feature: 'borrow' | 'multiply',
 ) {
-  const { t } = useTranslation()
-
   const {
     token,
     priceInfo: { nextCollateralPrice, currentEthPrice, currentCollateralPrice },
@@ -104,13 +103,6 @@ export function getDataForStopLoss(
 
   const debt = feature === 'multiply' ? afterOutstandingDebt : generateAmount
   const lockedCollateral = feature === 'multiply' ? totalExposure : depositAmount
-  const tokenData = getToken(token)
-
-  const sliderPercentageFill = getSliderPercentageFill({
-    value: stopLossLevel,
-    min: ilkData.liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100),
-    max: afterCollateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100)).times(100),
-  })
 
   const afterNewLiquidationPrice = stopLossLevel
     .dividedBy(100)
@@ -123,6 +115,23 @@ export function getDataForStopLoss(
     vaultDebt: debt || zero,
   })
 
+  const sliderMax = new BigNumber(
+    afterCollateralizationRatioAtNextPrice
+      .minus(NEXT_COLL_RATIO_OFFSET.div(100))
+      .multipliedBy(100)
+      .toFixed(0, BigNumber.ROUND_DOWN),
+  )
+
+  const sliderMin = ilkData.liquidationRatio
+    .multipliedBy(100)
+    .plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
+
+  const sliderPercentageFill = getSliderPercentageFill({
+    value: stopLossLevel,
+    min: sliderMin,
+    max: sliderMax,
+  })
+
   const stopLossSidebarProps: SidebarAdjustStopLossEditingStageProps = {
     executionPrice,
     errors: [],
@@ -133,44 +142,36 @@ export function getDataForStopLoss(
       currentForm: 'add',
     } as StopLossFormChange,
     isEditing: true,
-    closePickerConfig: {
-      optionNames: closeVaultOptions,
-      onclickHandler: (optionName: string) => {
-        setStopLossCloseType(optionName as CloseVaultTo)
-        trackingEvents.automation.buttonClick(
-          AutomationEventIds.CloseToX,
-          Pages.OpenVault,
-          CommonAnalyticsSections.Form,
-          {
-            vaultId: 'n/a',
-            ilk,
-            closeTo: optionName as CloseVaultTo,
-          },
-        )
-      },
-      isCollateralActive: stopLossCloseType === 'collateral',
-      collateralTokenSymbol: token,
-      collateralTokenIconCircle: tokenData.iconCircle,
-    },
-    sliderConfig: {
-      ...stopLossSliderBasicConfig,
-      sliderPercentageFill,
-      leftLabel: t('slider.set-stoploss.left-label'),
-      rightLabel: t('slider.set-stoploss.right-label'),
-      leftBoundry: stopLossLevel,
-      rightBoundry: afterNewLiquidationPrice,
-      lastValue: stopLossLevel,
-      maxBoundry: new BigNumber(
-        afterCollateralizationRatioAtNextPrice
-          .minus(NEXT_COLL_RATIO_OFFSET.div(100))
-          .multipliedBy(100)
-          .toFixed(0, BigNumber.ROUND_DOWN),
-      ),
-      minBoundry: ilkData.liquidationRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-      onChange: (level) => setStopLossLevel(level),
-    },
     isOpenFlow: true,
   }
+
+  // eslint-disable-next-line func-style
+  const stopLossMetadata: GetStopLossMetadata = (_) => {
+    return {
+      getWarnings: (_: { state: StopLossFormChange; gasEstimationUsd?: BigNumber }) =>
+        [] as VaultWarningMessage[],
+      getErrors: (_: { state: StopLossFormChange }) => [] as VaultErrorMessage[],
+      getExecutionPrice: (_: { state: StopLossFormChange }) => executionPrice,
+      getSliderPercentageFill: (_: { state: StopLossFormChange }) => sliderPercentageFill,
+      getRightBoundary: (_: { state: StopLossFormChange }) => afterNewLiquidationPrice,
+      sliderMax,
+      sliderMin,
+      resetData: {} as StopLossResetData,
+      sliderLeftLabel: 'slider.set-stoploss.left-label',
+      sliderRightLabel: 'slider.set-stoploss.right-label',
+      sliderChangeCallback: (value: BigNumber) => setStopLossLevel(value),
+      closeToChangeCallback: (optionName: string) =>
+        setStopLossCloseType(optionName as CloseVaultTo),
+    }
+  }
+
+  // BELOW METHODS JUST FOR CONTEXT INITIALIZATION
+  // eslint-disable-next-line func-style
+  const autoBSMetadata: GetAutoBSMetadata = (_) => ({})
+  // eslint-disable-next-line func-style
+  const takeProfitMetadata: GeTakeProfitMetadata = (_) => ({})
+  // eslint-disable-next-line func-style
+  const constantMultipleMetadata: GetConstantMultipleMetadata = (_) => ({})
 
   const automationContextProps = {
     ethBalance,
@@ -198,6 +199,13 @@ export function getDataForStopLoss(
       token,
     },
     protocol: VaultProtocol.Maker,
+    metadata: {
+      stopLoss: stopLossMetadata,
+      autoSell: autoBSMetadata,
+      autoBuy: autoBSMetadata,
+      constantMultiple: constantMultipleMetadata,
+      takeProfit: takeProfitMetadata,
+    },
   }
 
   return { stopLossSidebarProps, automationContextProps }

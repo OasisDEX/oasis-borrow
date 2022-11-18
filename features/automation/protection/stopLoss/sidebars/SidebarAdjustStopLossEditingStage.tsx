@@ -6,10 +6,11 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
-import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
-import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { PickCloseState } from 'components/dumb/PickCloseState'
+import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { GasEstimation } from 'components/GasEstimation'
 import { AppLink } from 'components/Links'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
@@ -21,18 +22,18 @@ import {
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
-  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  closeVaultOptions,
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { getStartingSlRatio } from 'features/automation/protection/stopLoss/helpers'
+import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one } from 'helpers/zero'
@@ -139,15 +140,11 @@ export interface SidebarAdjustStopLossEditingStageProps {
   warnings: VaultWarningMessage[]
   stopLossState: StopLossFormChange
   isEditing: boolean
-  closePickerConfig: PickCloseStateProps
-  sliderConfig: SliderValuePickerProps
   isOpenFlow?: boolean
 }
 
 export function SidebarAdjustStopLossEditingStage({
-  closePickerConfig,
   isEditing,
-  sliderConfig,
   errors,
   warnings,
   stopLossState,
@@ -159,7 +156,20 @@ export function SidebarAdjustStopLossEditingStage({
   const {
     stopLossTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, token, debt, liquidationRatio, positionRatio, debtFloor },
+    positionData: { id, ilk, token, debt, positionRatio, debtFloor },
+    metadata: {
+      stopLoss: {
+        getSliderPercentageFill,
+        getRightBoundary,
+        sliderMin,
+        sliderMax,
+        resetData,
+        sliderLeftLabel,
+        sliderRightLabel,
+        sliderChangeCallback,
+        closeToChangeCallback,
+      },
+    },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -199,31 +209,67 @@ export function SidebarAdjustStopLossEditingStage({
     )
   }
 
-  const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-  const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
-    DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
-  )
-
-  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
-    stopLossLevel: stopLossTriggerData.stopLossLevel,
-    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
-    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
-  })
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+  const sliderPercentageFill = getSliderPercentageFill({ state: stopLossState })
+  const rightBoundry = getRightBoundary({ state: stopLossState })
 
   return (
     <>
       {!debt.isZero() ? (
         <Grid>
-          <PickCloseState {...closePickerConfig} />
+          <PickCloseState
+            isCollateralActive={stopLossState.collateralActive}
+            collateralTokenSymbol={token}
+            collateralTokenIconCircle={getToken(token).iconCircle}
+            onclickHandler={(optionName: string) => {
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'close-type',
+                toCollateral: optionName === closeVaultOptions[0],
+              })
+              trackingEvents.automation.buttonClick(
+                AutomationEventIds.CloseToX,
+                Pages.StopLoss,
+                CommonAnalyticsSections.Form,
+                {
+                  vaultId: id.toString(),
+                  ilk: ilk,
+                  closeTo: optionName as CloseVaultTo,
+                },
+              )
+              closeToChangeCallback && closeToChangeCallback(optionName)
+            }}
+          />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('protection.set-downside-protection-desc')}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
           </Text>
-          <SliderValuePicker {...sliderConfig} />
+          <SliderValuePicker
+            {...stopLossSliderBasicConfig}
+            sliderPercentageFill={sliderPercentageFill}
+            lastValue={stopLossState.stopLossLevel}
+            maxBoundry={sliderMax}
+            minBoundry={sliderMin}
+            rightBoundry={rightBoundry}
+            leftBoundry={stopLossState.stopLossLevel}
+            onChange={(slCollRatio) => {
+              if (stopLossState.collateralActive === undefined) {
+                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                  type: 'close-type',
+                  toCollateral: false,
+                })
+              }
+
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'stop-loss-level',
+                stopLossLevel: slCollRatio,
+              })
+
+              sliderChangeCallback && sliderChangeCallback(slCollRatio)
+            }}
+            leftLabel={t(sliderLeftLabel)}
+            rightLabel={t(sliderRightLabel)}
+          />
         </Grid>
       ) : (
         <SidebarFormInfo
@@ -238,12 +284,8 @@ export function SidebarAdjustStopLossEditingStage({
             <SidebarResetButton
               clear={() => {
                 uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-                  type: 'close-type',
-                  toCollateral: stopLossTriggerData.isToCollateral,
-                })
-                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-                  type: 'stop-loss-level',
-                  stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
+                  type: 'reset',
+                  resetData,
                 })
               }}
             />
@@ -259,7 +301,7 @@ export function SidebarAdjustStopLossEditingStage({
               afterStopLossRatio={stopLossState.stopLossLevel}
               executionPrice={executionPrice}
               ethPrice={ethMarketPrice}
-              isCollateralActive={closePickerConfig.isCollateralActive}
+              isCollateralActive={stopLossState.collateralActive}
               isOpenFlow={isOpenFlow}
             />
             <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>

@@ -10,6 +10,8 @@ import {
   extractAutoBSData,
 } from 'features/automation/common/state/autoBSTriggerData'
 import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
+import { initializeMetadata } from 'features/automation/metadata/helpers'
+import { AutomationDefinitionMetadata, StopLossMetadata } from 'features/automation/metadata/types'
 import {
   AutoTakeProfitTriggerData,
   defaultAutoTakeProfitData,
@@ -76,6 +78,9 @@ export interface AutomationContext {
   environmentData: AutomationEnvironmentData
   positionData: AutomationPositionData
   protocol: VaultProtocol
+  metadata: {
+    stopLoss: StopLossMetadata
+  }
 }
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
@@ -110,6 +115,7 @@ export interface AutomationContextProviderProps {
   positionData: AutomationPositionData
   commonData: AutomationCommonData
   protocol: VaultProtocol
+  metadata: AutomationDefinitionMetadata
 }
 
 export function AutomationContextProvider({
@@ -120,6 +126,7 @@ export function AutomationContextProvider({
   protocol,
   positionData,
   commonData,
+  metadata,
 }: PropsWithChildren<AutomationContextProviderProps>) {
   const { controller, nextCollateralPrice, token } = commonData
 
@@ -155,7 +162,10 @@ export function AutomationContextProvider({
     protocol,
   }
 
-  const [autoContext, setAutoContext] = useState<AutomationContext>(initialAutoContext)
+  const [autoContext, setAutoContext] = useState<AutomationContext>({
+    ...initialAutoContext,
+    metadata: initializeMetadata(metadata, initialAutoContext),
+  })
 
   const { automationTriggersData$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(positionData.id)
@@ -203,8 +213,7 @@ export function AutomationContextProvider({
 
   useEffect(() => {
     if (automationTriggersData) {
-      setAutoContext((prev) => ({
-        ...prev,
+      const update = {
         autoBuyTriggerData: extractAutoBSData({
           triggersData: automationTriggersData,
           triggerType: TriggerType.BasicBuy,
@@ -218,12 +227,25 @@ export function AutomationContextProvider({
         autoTakeProfitTriggerData: extractAutoTakeProfitData(automationTriggersData),
         automationTriggersData,
         protocol,
+      }
+      setAutoContext((prev) => ({
+        ...prev,
+        ...update,
+        metadata: initializeMetadata(metadata, { ...prev, ...update }),
       }))
     }
   }, [automationTriggersData])
 
   useEffect(() => {
-    setAutoContext((prev) => ({ ...prev, environmentData, positionData }))
+    const update = {
+      environmentData,
+      positionData,
+    }
+    setAutoContext((prev) => ({
+      ...prev,
+      ...update,
+      metadata: initializeMetadata(metadata, { ...prev, ...update }),
+    }))
   }, [environmentData, positionData])
 
   return <automationContext.Provider value={autoContext}>{children}</automationContext.Provider>
