@@ -10,19 +10,19 @@ import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardCollateralizationRatioModalProps {
-  collateralizationRatioFormatted: string
-  collateralizationRatioAtNextPriceFormated?: string
+  positionRatioFormatted: string
+  nextPositionRatioFormated?: string
 }
 interface ContentCardCollateralizationRatioProps {
-  collateralizationRatio: BigNumber
-  collateralizationRatioAtNextPrice?: BigNumber
-  afterCollateralizationRatio?: BigNumber
+  positionRatio: BigNumber
+  nextPositionRatio?: BigNumber
+  afterPositionRatio?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
 function ContentCardCollateralizationRatioModal({
-  collateralizationRatioFormatted,
-  collateralizationRatioAtNextPriceFormated,
+  positionRatioFormatted,
+  nextPositionRatioFormated,
 }: ContentCardCollateralizationRatioModalProps) {
   const { t } = useTranslation()
 
@@ -34,16 +34,16 @@ function ContentCardCollateralizationRatioModal({
       </Text>
       <Heading variant="header3">{t('manage-vault.card.collateralization-ratio-header2')}</Heading>
       <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
-        {collateralizationRatioFormatted}
+        {positionRatioFormatted}
       </Card>
       <Text variant="paragraph2">{t('manage-vault.card.collateralization-ratio-description')}</Text>
-      {collateralizationRatioAtNextPriceFormated && (
+      {nextPositionRatioFormated && (
         <>
           <Heading variant="header3" sx={{ mt: 2 }}>
             {t('manage-vault.card.collateralization-ratio-next-price')}
           </Heading>
           <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
-            {collateralizationRatioAtNextPriceFormated}
+            {nextPositionRatioFormated}
           </Card>
         </>
       )}
@@ -52,54 +52,53 @@ function ContentCardCollateralizationRatioModal({
 }
 
 export function ContentCardCollateralizationRatio({
-  collateralizationRatio,
-  collateralizationRatioAtNextPrice,
-  afterCollateralizationRatio,
+  positionRatio,
+  nextPositionRatio,
+  afterPositionRatio,
   changeVariant,
 }: ContentCardCollateralizationRatioProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    collateralizationRatio: formatPercent(collateralizationRatio.times(100), {
+    positionRatio: formatPercent(positionRatio.times(100), {
       precision: 2,
       roundMode: BigNumber.ROUND_DOWN,
     }),
-    collateralizationRatioAtNextPrice:
-      collateralizationRatioAtNextPrice &&
-      formatPercent(collateralizationRatioAtNextPrice.times(100), {
+    nextPositionRatio:
+      nextPositionRatio &&
+      formatPercent(nextPositionRatio.times(100), {
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
-    afterCollateralizationRatio:
-      afterCollateralizationRatio &&
-      formatPercent(afterCollateralizationRatio.times(100), {
+    afterPostionRatio:
+      afterPositionRatio &&
+      formatPercent(afterPositionRatio.times(100), {
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
   }
 
   const contentCardModalSettings: ContentCardCollateralizationRatioModalProps = {
-    collateralizationRatioFormatted: formatted.collateralizationRatio,
+    positionRatioFormatted: formatted.positionRatio,
   }
 
-  if (collateralizationRatioAtNextPrice)
-    contentCardModalSettings.collateralizationRatioAtNextPriceFormated =
-      formatted.collateralizationRatioAtNextPrice
+  if (nextPositionRatio)
+    contentCardModalSettings.nextPositionRatioFormated = formatted.nextPositionRatio
 
   const contentCardSettings: ContentCardProps = {
     title: t('system.collateralization-ratio'),
-    value: formatted.collateralizationRatio,
+    value: formatted.positionRatio,
     modal: <ContentCardCollateralizationRatioModal {...contentCardModalSettings} />,
   }
 
-  if (afterCollateralizationRatio && changeVariant)
+  if (afterPositionRatio && changeVariant)
     contentCardSettings.change = {
-      value: `${formatted.afterCollateralizationRatio} ${t('system.cards.common.after')}`,
+      value: `${formatted.afterPostionRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
-  if (collateralizationRatioAtNextPrice)
+  if (nextPositionRatio)
     contentCardSettings.footnote = t('system.cards.collateralization-ratio.footnote', {
-      amount: formatted.collateralizationRatioAtNextPrice,
+      amount: formatted.nextPositionRatio,
     })
 
   return <DetailsSectionContentCard {...contentCardSettings} />

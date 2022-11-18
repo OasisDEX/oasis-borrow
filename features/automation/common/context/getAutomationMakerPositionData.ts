@@ -25,8 +25,8 @@ export function getAutomationMakerPositionData({
   } = generalManageVault.state
 
   return {
-    collateralizationRatio,
-    collateralizationRatioAtNextPrice,
+    positionRatio: collateralizationRatio,
+    nextPositionRatio: collateralizationRatioAtNextPrice,
     debt,
     debtFloor,
     debtOffset,

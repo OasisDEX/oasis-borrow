@@ -31,6 +31,7 @@ import { useStopLossStateInitializator } from 'features/automation/protection/st
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
 export interface AutomationEnvironmentData {
@@ -49,8 +50,8 @@ export interface AutomationCommonData {
 }
 
 export interface AutomationPositionData {
-  collateralizationRatio: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
+  positionRatio: BigNumber
+  nextPositionRatio: BigNumber
   debt: BigNumber
   debtFloor: BigNumber
   debtOffset: BigNumber
@@ -126,6 +127,9 @@ export function AutomationContextProvider({
     return null
   }
 
+  // TODO we need to think how to separate context initialization for ilks eligible for auto and not eligible
+  const tokenPriceResolved = ethAndTokenPricesData[token] || zero
+
   const environmentData = useMemo(
     () => ({
       canInteract: context.status === 'connected' && context.account === controller,
@@ -133,12 +137,12 @@ export function AutomationContextProvider({
       etherscanUrl: context.etherscan.url,
       ethMarketPrice: ethAndTokenPricesData['ETH'],
       nextCollateralPrice,
-      tokenMarketPrice: ethAndTokenPricesData[token],
+      tokenMarketPrice: tokenPriceResolved,
     }),
     [
       context.status,
       ethAndTokenPricesData['ETH'].toString(),
-      ethAndTokenPricesData[token].toString(),
+      tokenPriceResolved.toString(),
       ethBalance.toString(),
       controller,
     ],
@@ -159,21 +163,21 @@ export function AutomationContextProvider({
 
   useStopLossStateInitializator({
     liquidationRatio: positionData.liquidationRatio,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     stopLossTriggerData: autoContext.stopLossTriggerData,
   })
 
   useAutoBSstateInitialization({
     autoTriggersData: autoContext.autoSellTriggerData,
     stopLossTriggerData: autoContext.stopLossTriggerData,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     type: TriggerType.BasicSell,
   })
 
   useAutoBSstateInitialization({
     autoTriggersData: autoContext.autoBuyTriggerData,
     stopLossTriggerData: autoContext.stopLossTriggerData,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     type: TriggerType.BasicBuy,
   })
 
@@ -182,7 +186,7 @@ export function AutomationContextProvider({
     debt: positionData.debt,
     debtFloor: positionData.debtFloor,
     liquidationRatio: positionData.liquidationRatio,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     lockedCollateral: positionData.lockedCollateral,
     stopLossTriggerData: autoContext.stopLossTriggerData,
     autoSellTriggerData: autoContext.autoSellTriggerData,
@@ -193,7 +197,7 @@ export function AutomationContextProvider({
   useAutoTakeProfitStateInitializator({
     debt: positionData.debt,
     lockedCollateral: positionData.lockedCollateral,
-    collateralizationRatio: positionData.collateralizationRatio,
+    positionRatio: positionData.positionRatio,
     autoTakeProfitTriggerData: autoContext.autoTakeProfitTriggerData,
   })
 

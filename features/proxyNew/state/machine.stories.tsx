@@ -18,7 +18,7 @@ const getProxyStateMachine = createProxyStateMachine(
   undefined as any,
   undefined as any,
   undefined as any,
-  10,
+  undefined as any,
 ).withConfig({
   services: {
     estimateGas: (() => {}) as any,

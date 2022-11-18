@@ -9,7 +9,7 @@ export function CancelConstantMultipleInfoSection() {
   const { t } = useTranslation()
   const {
     constantMultipleTriggerData,
-    positionData: { collateralizationRatio, debt, liquidationPrice },
+    positionData: { positionRatio, debt, liquidationPrice },
   } = useAutomationContext()
 
   return (
@@ -37,7 +37,7 @@ export function CancelConstantMultipleInfoSection() {
           : [
               {
                 label: t('system.collateral-ratio'),
-                value: formatPercent(collateralizationRatio.times(100), {
+                value: formatPercent(positionRatio.times(100), {
                   precision: 2,
                 }),
               },

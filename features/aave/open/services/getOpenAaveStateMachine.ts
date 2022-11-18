@@ -1,228 +1,126 @@
-import { OPERATION_NAMES } from '@oasisdex/oasis-actions'
-import { BigNumber } from 'bignumber.js'
-import { AaveConfigurationData } from 'blockchain/calls/aave/aaveLendingPool'
+import {
+  AaveUserAccountData,
+  AaveUserAccountDataParameters,
+  MINIMAL_COLLATERAL,
+} from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged } from 'rxjs/internal/operators'
-import { filter, first, map } from 'rxjs/operators'
-import { assign, sendParent, spawn } from 'xstate'
+import { Observable } from 'rxjs'
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
-import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
-import { ProxyContext, ProxyStateMachine } from '../../../proxyNew/state'
+import { ProxyStateMachine } from '../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
+import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../../userSettings/userSettings'
+import { IStrategyInfo } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
-import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
-import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
-import {
-  createOpenAaveStateMachine,
-  OpenAaveContext,
-  OpenAaveEvent,
-  OpenAaveStateMachineServices,
-  ParametersStateMachine,
-  STEPS_WITH_PROXY_CREATION,
-} from '../state'
+import { AaveProtocolData } from '../../manage/services'
+import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
+import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
 
 export function getOpenAavePositionStateMachineServices(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
-  proxyAddress$: Observable<string | undefined>,
-  aaveOracleAssetPriceData$: ({ token }: { token: string }) => Observable<BigNumber>,
-  aaveReserveConfigurationData$: ({
-    token,
-  }: {
-    token: string
-  }) => Observable<AaveReserveConfigurationData>,
-  aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
-  aaveReservesList$: () => Observable<AaveConfigurationData>,
+  connectedProxy$: Observable<string | undefined>,
+  aaveUserAccountData$: (
+    parameters: AaveUserAccountDataParameters,
+  ) => Observable<AaveUserAccountData>,
+  userSettings$: Observable<UserSettingsState>,
+  prices$: (tokens: string[]) => Observable<Tickers>,
+  strategyInfo$: (collateralToken: string) => Observable<IStrategyInfo>,
+  aaveProtocolData$: (collateralToken: string, address: string) => Observable<AaveProtocolData>,
 ): OpenAaveStateMachineServices {
+  const pricesFeed$ = getPricesFeed$(prices$)
   return {
+    context$: (_) => {
+      return context$.pipe(
+        map((context) => ({
+          type: 'WEB3_CONTEXT_CHANGED',
+          web3Context: context,
+        })),
+      )
+    },
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
         map((balances) => balances[context.token!]),
         map(({ balance, price }) => ({
           type: 'SET_BALANCE',
-          balance: balance,
+          tokenBalance: balance,
           tokenPrice: price,
         })),
+        distinctUntilChanged(isEqual),
       )
     },
-    getProxyAddress: () => {
-      return proxyAddress$.pipe(
-        first(), // don't override current step when creating proxy in flow
-        filter((proxyAddress: string | undefined) => {
-          return !!proxyAddress
-        }),
+    connectedProxyAddress$: () => {
+      return connectedProxy$.pipe(
         map((address) => ({
-          type: 'PROXY_ADDRESS_RECEIVED',
-          proxyAddress: address,
+          type: 'CONNECTED_PROXY_ADDRESS_RECEIVED',
+          connectedProxyAddress: address,
+        })),
+        distinctUntilChanged(isEqual),
+      )
+    },
+    getHasOpenedPosition$: () => {
+      return connectedProxy$.pipe(
+        filter((address) => address !== undefined),
+        switchMap((address) => aaveUserAccountData$({ address: address! })),
+        map((accountData) => ({
+          type: 'UPDATE_META_INFO',
+          hasOpenedPosition: accountData.totalCollateralETH.gt(MINIMAL_COLLATERAL),
         })),
       )
     },
-    getStrategyInfo: (context) => {
-      return combineLatest(
-        aaveOracleAssetPriceData$({ token: context.collateralToken }),
-        aaveReserveConfigurationData$({ token: context.collateralToken }),
-      ).pipe(
-        map(([oracleAssetPrice, reserveConfigurationData]) => {
-          return {
-            type: 'UPDATE_STRATEGY_INFO',
-            strategyInfo: {
-              oracleAssetPrice,
-              liquidationBonus: reserveConfigurationData.liquidationBonus,
-              collateralToken: context.collateralToken,
-            },
-          }
-        }),
+    userSettings$: (_) => {
+      return userSettings$.pipe(
+        map((settings) => ({ type: 'USER_SETTINGS_CHANGED', userSettings: settings })),
+        distinctUntilChanged(isEqual),
       )
     },
-    getHasOtherAssets: ({ proxyAddress }) => {
-      return combineLatest(
-        aaveUserConfiguration$({ address: proxyAddress! }),
-        aaveReservesList$(),
-      ).pipe(
-        map(([aaveUserConfiguration, aaveReservesList]) => {
-          return {
-            type: 'UPDATE_META_INFO',
-            hasOtherAssetsThanETH_STETH: hasOtherAssets(
-              createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList),
-              ['ETH', 'STETH'],
-            ),
-          }
-        }),
+    prices$: (context) => {
+      return pricesFeed$(context.collateralToken)
+    },
+    strategyInfo$: (context) => {
+      return strategyInfo$(context.collateralToken).pipe(
+        map((strategyInfo) => ({
+          type: 'UPDATE_STRATEGY_INFO',
+          strategyInfo,
+        })),
+      )
+    },
+    protocolData$: (context) => {
+      return connectedProxy$.pipe(
+        filter((address) => address !== undefined),
+        switchMap((proxyAddress) => aaveProtocolData$(context.collateralToken, proxyAddress!)),
+        map((aaveProtocolData) => ({
+          type: 'UPDATE_PROTOCOL_DATA',
+          protocolData: aaveProtocolData,
+        })),
+        distinctUntilChanged(isEqual),
       )
     },
   }
 }
 
-export function contextToTransactionParameters(context: OpenAaveContext): OperationExecutorTxMeta {
-  return {
-    kind: TxMetaKind.operationExecutor,
-    calls: context.transactionParameters!.calls as any,
-    operationName: OPERATION_NAMES.aave.OPEN_POSITION,
-    token: context.token,
-    proxyAddress: context.proxyAddress!,
-    amount: context.userInput.amount!,
-  }
-}
-
-export function getOpenAaveStateMachine$(
+export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
-  parametersMachine$: Observable<ParametersStateMachine>,
-  proxyMachine$: Observable<ProxyStateMachine>,
-  transactionStateMachine: TransactionStateMachine<OperationExecutorTxMeta>,
-  userSettings$: Observable<UserSettingsState>,
-  prices$: (tokens: string[]) => Observable<Tickers>,
-  strategyConfig: StrategyConfig,
+  transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
+  proxyMachine: ProxyStateMachine,
+  transactionStateMachine: (
+    transactionParameters: OperationExecutorTxMeta,
+  ) => TransactionStateMachine<OperationExecutorTxMeta>,
 ) {
-  const pricesFeed$ = getPricesFeed$(prices$)
-  return combineLatest(parametersMachine$, proxyMachine$, userSettings$).pipe(
-    map(([parametersMachine, proxyMachine, userSettings]) => {
-      return createOpenAaveStateMachine
-        .withConfig({
-          services: {
-            ...services,
-          },
-          actions: {
-            spawnPricesObservable: assign((context) => {
-              return {
-                refPriceObservable: spawn(pricesFeed$(context.collateralToken), 'pricesFeed'),
-              }
-            }),
-            spawnUserSettingsObservable: assign((_) => {
-              const settings$: Observable<OpenAaveEvent> = userSettings$.pipe(
-                distinctUntilChanged(isEqual),
-                map((settings) => ({ type: 'USER_SETTINGS_CHANGED', userSettings: settings })),
-              )
-              return {
-                refUserSettingsObservable: spawn(settings$, 'userSettings'),
-              }
-            }),
-            spawnParametersMachine: assign((_) => ({
-              refParametersStateMachine: spawn(
-                parametersMachine.withConfig({
-                  actions: {
-                    notifyParent: sendParent(
-                      (context): OpenAaveEvent => {
-                        return {
-                          type: 'TRANSACTION_PARAMETERS_RECEIVED',
-                          parameters: context.transactionParameters!,
-                          estimatedGasPrice: context.gasPriceEstimation!,
-                        }
-                      },
-                    ),
-                  },
-                }),
-                { name: 'parametersMachine' },
-              ),
-            })),
-            spawnProxyMachine: assign((_) => ({
-              refProxyMachine: spawn(
-                proxyMachine.withConfig({
-                  actions: {
-                    raiseSuccess: sendParent(
-                      (context: ProxyContext): OpenAaveEvent => ({
-                        type: 'PROXY_CREATED',
-                        proxyAddress: context.proxyAddress!,
-                      }),
-                    ),
-                  },
-                }),
-                { name: 'proxyMachine' },
-              ),
-            })),
-            spawnTransactionMachine: assign((context) => ({
-              refTransactionMachine: spawn(
-                transactionStateMachine
-                  .withConfig({
-                    actions: {
-                      notifyParent: sendParent(
-                        (_): OpenAaveEvent => ({
-                          type: 'POSITION_OPENED',
-                        }),
-                      ),
-                      raiseError: sendParent(
-                        (context): OpenAaveEvent => ({
-                          type: 'TRANSACTION_FAILED',
-                          error: context.txError,
-                        }),
-                      ),
-                    },
-                  })
-                  .withContext({
-                    ...transactionStateMachine.context,
-                    transactionParameters: contextToTransactionParameters(context),
-                  }),
-                {
-                  name: 'transactionMachine',
-                },
-              ),
-            })),
-          },
-        })
-        .withContext({
-          ...createOpenAaveStateMachine.context,
-          collateralToken: 'STETH',
-          slippage: userSettings.slippage,
-          currentPosition: EMPTY_POSITION,
-          currentStep: 1,
-          totalSteps: STEPS_WITH_PROXY_CREATION,
-          preexistingProxy: false,
-          token: 'ETH',
-          inputDelay: 1000,
-          strategyName: 'stETHeth',
-          userInput: {},
-          loading: false,
-          strategyConfig,
-        })
-    }),
-  )
+  return createOpenAaveStateMachine(
+    transactionParametersMachine,
+    proxyMachine,
+    transactionStateMachine,
+  ).withConfig({
+    services: {
+      ...services,
+    },
+  })
 }

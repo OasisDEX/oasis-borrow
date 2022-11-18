@@ -82,6 +82,7 @@ export function SidebarSetupAutoTakeProfit({
     constantMultipleTriggerData,
     environmentData: { ethMarketPrice, etherscanUrl, nextCollateralPrice, ethBalance },
     positionData: { debt, debtOffset, token, vaultType, lockedCollateral },
+    protocol,
   } = useAutomationContext()
 
   const { isAwaitingConfirmation } = autoTakeProfitState
@@ -100,6 +101,7 @@ export function SidebarSetupAutoTakeProfit({
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     isAutoTakeProfitEnabled: autoTakeProfitTriggerData.isTriggerEnabled,
     vaultType,
+    protocol,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -230,7 +232,7 @@ export function SidebarSetupAutoTakeProfit({
                 <SidebarAwaitingConfirmation
                   feature={
                     <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-                      {t('automation.auto-take-profit-confirmation-text', {
+                      {t('auto-take-profit.auto-take-profit-confirmation-text', {
                         price: ethMarketPrice.toString(),
                         profit: estimatedProfitOnClose.toFixed(2).toString(),
                       })}

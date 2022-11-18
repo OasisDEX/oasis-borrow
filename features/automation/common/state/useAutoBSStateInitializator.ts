@@ -18,9 +18,9 @@ export function useAutoBSstateInitialization({
   autoTriggersData,
   stopLossTriggerData,
   type,
-  collateralizationRatio,
+  positionRatio,
 }: {
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   autoTriggersData: AutoBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   type: TriggerType
@@ -44,7 +44,7 @@ export function useAutoBSstateInitialization({
   const sliderDefaults = prepareAutoBSSliderDefaults({
     execCollRatio,
     targetCollRatio,
-    collateralizationRatio,
+    positionRatio,
     publishKey,
   })
 
@@ -97,11 +97,7 @@ export function useAutoBSstateInitialization({
       type: 'is-awaiting-confirmation',
       isAwaitingConfirmation: false,
     })
-  }, [
-    triggerId.toNumber(),
-    collateralizationRatio.toNumber(),
-    stopLossTriggerData.triggerId.toNumber(),
-  ])
+  }, [triggerId.toNumber(), positionRatio.toNumber(), stopLossTriggerData.triggerId.toNumber()])
 
   useEffect(() => {
     uiChanges.publish(publishKey, {
@@ -112,7 +108,7 @@ export function useAutoBSstateInitialization({
       type: 'current-form',
       currentForm: 'add',
     })
-  }, [collateralizationRatio.toNumber()])
+  }, [positionRatio.toNumber()])
 
   return isTriggerEnabled
 }

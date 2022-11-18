@@ -53,7 +53,7 @@ interface GetAutomationFeatureTxHandlersParams {
   textButtonHandlerExtension?: () => void
   triggersId: number[]
   vaultId: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   ilk: string
   analytics: AutomationTxHandlerAnalytics
   txHelpers?: TxHelpers
@@ -80,7 +80,7 @@ export function getAutomationFeatureTxHandlers({
   txHelpers,
   vaultId,
   ilk,
-  collateralizationRatio,
+  positionRatio,
   analytics,
 }: GetAutomationFeatureTxHandlersParams): AutomationFeatureTxHandlers {
   const { uiChanges } = useAppContext()
@@ -89,10 +89,7 @@ export function getAutomationFeatureTxHandlers({
   const analyticsAdditionalParams = {
     vaultId: vaultId.toString(),
     ilk,
-    collateralRatio: collateralizationRatio
-      .times(100)
-      .decimalPlaces(2, BigNumber.ROUND_DOWN)
-      .toString(),
+    collateralRatio: positionRatio.times(100).decimalPlaces(2, BigNumber.ROUND_DOWN).toString(),
   }
 
   const removeTxData: AutomationBotRemoveTriggersData = useMemo(

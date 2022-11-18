@@ -1,9 +1,15 @@
 import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { ActorRef, EventObject, Sender } from 'xstate'
+import { EventObject, Sender } from 'xstate'
 
+import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
+import { TxMetaKind } from '../../../blockchain/calls/txMeta'
+import { Context } from '../../../blockchain/network'
 import { HasGasEstimation } from '../../../helpers/form'
+import { TransactionStateMachineResultEvents } from '../../stateMachines/transaction'
+import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../userSettings/userSettings'
+import { AaveProtocolData } from '../manage/services'
 
 type UserInput = {
   riskRatio?: IRiskRatio
@@ -19,32 +25,38 @@ export type IStrategyInfo = {
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
+  | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
-  | { type: 'TRANSACTION_FAILED'; error?: string | unknown }
+  | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
+  | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
+  | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
+  | TransactionParametersStateMachineResponseEvent
+  | TransactionStateMachineResultEvents
 
 export interface BaseAaveContext {
-  refPriceObservable?: ActorRef<BaseAaveEvent, BaseAaveEvent>
-  refUserSettingsObservable?: ActorRef<BaseAaveEvent, BaseAaveEvent>
+  userInput: UserInput
+  token: string
+  collateralToken: string
+  currentPosition?: IPosition
 
-  transactionParameters?: IStrategy
-  estimatedGasPrice?: HasGasEstimation
   currentStep: number
   totalSteps: number
+
+  strategy?: IStrategy
+  operationName?: string
+  estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
   tokenPrice?: BigNumber
-  inputDelay: number
-  token: string
-  proxyAddress?: string
-  strategyInfo?: IStrategyInfo
-  resetRiskRatio?: IRiskRatio
-  userInput: UserInput
-  collateralToken: string
   collateralPrice?: BigNumber
-  slippage: BigNumber
-  currentPosition: IPosition
-  loading: boolean
-
+  auxiliaryAmount?: BigNumber
+  connectedProxyAddress?: string
+  strategyInfo?: IStrategyInfo
+  web3Context?: Context
+  userSettings?: UserSettingsState
   error?: string | unknown
+  protocolData?: AaveProtocolData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
@@ -52,4 +64,16 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
     context: BaseAaveContext
   }
   send: Sender<AaveEvent>
+  isLoading: () => boolean
+}
+
+export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
+  return {
+    kind: TxMetaKind.operationExecutor,
+    calls: context.strategy!.calls as any,
+    operationName: context.operationName!,
+    token: context.token,
+    proxyAddress: context.connectedProxyAddress!,
+    amount: context.userInput.amount,
+  }
 }

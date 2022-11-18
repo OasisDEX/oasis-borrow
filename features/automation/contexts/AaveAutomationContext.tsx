@@ -1,11 +1,12 @@
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
-import { AaveProtocolData } from 'features/aave/manage/state'
 import { getAutomationAavePositionData } from 'features/automation/common/context/getAutomationAavePositionData'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import React, { PropsWithChildren, useMemo } from 'react'
+
+import { AaveProtocolData } from '../../aave/manage/services'
 
 export interface AaveManageVaultState {
   address: string

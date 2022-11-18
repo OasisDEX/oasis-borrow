@@ -31,7 +31,7 @@ export function AutoBuyFormControl({
   const {
     autoBuyTriggerData,
     environmentData: { canInteract },
-    positionData: { id, debt, lockedCollateral, collateralizationRatio, owner },
+    positionData: { id, debt, lockedCollateral, positionRatio, owner },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.AUTO_BUY
@@ -66,7 +66,7 @@ export function AutoBuyFormControl({
     stage,
     debt,
     lockedCollateral,
-    collateralizationRatio,
+    positionRatio,
   })
   const { addTxData, textButtonHandlerExtension } = getAutoBSTxHandlers({
     autoBSState: autoBuyState,
@@ -75,7 +75,7 @@ export function AutoBuyFormControl({
     triggerType: TriggerType.BasicBuy,
     id,
     owner,
-    collateralizationRatio,
+    positionRatio,
   })
 
   return (

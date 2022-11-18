@@ -1,25 +1,33 @@
 import { Observable } from 'rxjs'
 
+import { ContextConnected } from '../../../blockchain/network'
 import { TxHelpers } from '../../../components/AppContext'
 import { HasGasEstimation } from '../../../helpers/form'
 import { createProxyStateMachine } from './machine'
 
 export interface ProxyContext {
   readonly dependencies: {
-    readonly txHelper: TxHelpers
+    readonly txHelpers$: Observable<TxHelpers>
     readonly proxyAddress$: Observable<string | undefined>
     readonly getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>
-    readonly safeConfirmations: number
+    readonly context$: Observable<ContextConnected>
   }
 
-  gasData?: HasGasEstimation
+  contextConnected?: ContextConnected
+  txHelpers?: TxHelpers
+  gasData: HasGasEstimation
   txHash?: string
   txError?: string
   proxyConfirmations?: number
   proxyAddress?: string
 }
 
+export type ProxyResultEvent =
+  | { type: 'PROXY_CREATED'; connectedProxyAddress: string }
+  | { type: 'PROXY_FAILED' }
+
 export type ProxyEvent =
+  | ProxyResultEvent
   | {
       readonly type: 'START'
     }
@@ -49,6 +57,8 @@ export type ProxyEvent =
       readonly type: 'GAS_COST_ESTIMATION'
       readonly gasData: HasGasEstimation
     }
+  | { type: 'CONNECTED_CONTEXT_CHANGED'; contextConnected: ContextConnected }
+  | { type: 'TX_HELPERS_CHANGED'; txHelpers: TxHelpers }
 
 export type ProxyObservableService = (
   context: ProxyContext,
@@ -57,7 +67,3 @@ export type ProxyObservableService = (
 
 export type ProxyStateMachine = ReturnType<typeof createProxyStateMachine>
 export type ProxyStateMachineState = ProxyStateMachine['initialState']
-
-export interface ProxyCreatingResult {
-  proxyAddress: string
-}

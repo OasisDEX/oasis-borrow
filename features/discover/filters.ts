@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { DiscoverFiltersListItem, DiscoverFiltersListOptions } from 'features/discover/meta'
+import { DiscoverFilterType } from 'features/discover/types'
 
 export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOptions } = {
   crvv1ethsteth: {
@@ -28,9 +29,8 @@ export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOpti
 
 export const discoverSizeFilter: DiscoverFiltersListItem = {
   label: 'Sizes',
-  multi: false,
+  type: DiscoverFilterType.MULTI,
   options: [
-    { value: '', label: 'All sizes' },
     { value: '<100000', label: 'Under $100,000' },
     { value: '100000-250000', label: '$100,000 - $250,000' },
     { value: '250000-500000', label: '$250,000 - $500,000' },
@@ -41,9 +41,8 @@ export const discoverSizeFilter: DiscoverFiltersListItem = {
 
 export const discoverMultipleFilter: DiscoverFiltersListItem = {
   label: 'Multiples',
-  multi: false,
+  type: DiscoverFilterType.MULTI,
   options: [
-    { value: '', label: 'All multiples' },
     { value: '1-2', label: 'Multiple: 1-2x' },
     { value: '2-3', label: 'Multiple: 2-3x' },
     { value: '>3', label: 'Multiple: over 3x' },
@@ -52,7 +51,7 @@ export const discoverMultipleFilter: DiscoverFiltersListItem = {
 
 export const discoverTimeFilter: DiscoverFiltersListItem = {
   label: 'Time',
-  multi: false,
+  type: DiscoverFilterType.SINGLE,
   options: [
     { value: 'all', label: 'All time' },
     { value: '1d', label: '1 day' },
@@ -62,10 +61,13 @@ export const discoverTimeFilter: DiscoverFiltersListItem = {
   ],
 }
 
-export function getAssetOptions(options: DiscoverFiltersListOptions[]): DiscoverFiltersListItem {
+export function getAssetOptions(
+  options: DiscoverFiltersListOptions[],
+  type: DiscoverFilterType = DiscoverFilterType.MULTI,
+): DiscoverFiltersListItem {
   return {
     label: 'Assets',
-    multi: true,
+    type,
     options,
   }
 }

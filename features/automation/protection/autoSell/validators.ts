@@ -21,13 +21,13 @@ export function warningsAutoSellValidation({
   debtDeltaAtCurrentCollRatio,
   debtFloor,
   debt,
-  collateralizationRatioAtNextPrice,
+  nextPositionRatio,
   token,
 }: {
   token: string
   ethBalance: BigNumber
   debt: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
+  nextPositionRatio: BigNumber
   ethPrice: BigNumber
   sliderMin: BigNumber
   sliderMax: BigNumber
@@ -54,7 +54,7 @@ export function warningsAutoSellValidation({
     isAutoBuyEnabled && autoSellState.targetCollRatio.isEqualTo(sliderMax)
 
   const autoSellTriggeredImmediately =
-    autoSellState.execCollRatio.div(100).gte(collateralizationRatioAtNextPrice) &&
+    autoSellState.execCollRatio.div(100).gte(nextPositionRatio) &&
     !debtFloor.gt(debt.plus(debtDeltaAtCurrentCollRatio))
 
   return warningMessagesHandler({

@@ -92,7 +92,8 @@ export function SidebarSetupStopLoss({
     constantMultipleTriggerData,
     stopLossTriggerData,
     environmentData: { nextCollateralPrice, ethBalance, ethMarketPrice, etherscanUrl },
-    positionData: { debt, token, liquidationRatio, collateralizationRatioAtNextPrice, vaultType },
+    positionData: { debt, token, liquidationRatio, nextPositionRatio, vaultType },
+    protocol,
   } = useAutomationContext()
   const { isAwaitingConfirmation, stopLossLevel } = stopLossState
 
@@ -113,6 +114,7 @@ export function SidebarSetupStopLoss({
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     vaultType,
+    protocol,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -139,7 +141,7 @@ export function SidebarSetupStopLoss({
     ? constantMultipleTriggerData.sellExecutionCollRatio
         .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
         .div(100)
-    : collateralizationRatioAtNextPrice.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+    : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
   const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
   const liqRatio = liquidationRatio
 
@@ -152,7 +154,7 @@ export function SidebarSetupStopLoss({
   const afterNewLiquidationPrice = stopLossLevel
     .dividedBy(100)
     .multipliedBy(nextCollateralPrice)
-    .dividedBy(collateralizationRatioAtNextPrice)
+    .dividedBy(nextPositionRatio)
 
   const sliderConfig: SliderValuePickerProps = {
     ...stopLossSliderBasicConfig,

@@ -18,7 +18,7 @@ export function AutoTakeProfitDetailsControl() {
   const {
     autoTakeProfitTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, debt, debtOffset, collateralizationRatio, lockedCollateral, token },
+    positionData: { id, ilk, debt, debtOffset, positionRatio, lockedCollateral, token },
   } = useAutomationContext()
 
   const { isTriggerEnabled, executionPrice } = autoTakeProfitTriggerData
@@ -53,7 +53,7 @@ export function AutoTakeProfitDetailsControl() {
       afterTriggerColPrice: autoTakeProfitState.executionPrice,
       afterTriggerColRatio: autoTakeProfitState.executionCollRatio,
     }),
-    currentColRatio: collateralizationRatio.times(100),
+    currentColRatio: positionRatio.times(100),
   }
 
   if (readOnlyAutoTakeProfitEnabled || isDebtZero) return null

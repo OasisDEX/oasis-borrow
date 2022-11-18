@@ -40,7 +40,7 @@ export function DiscoverMultiselect({
             {selected.icon && (
               <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={selected.icon} />
             )}
-            {selected.value}
+            {selected.label}
           </>
         )
       default:
@@ -121,9 +121,13 @@ export function DiscoverMultiselect({
         }}
       >
         <DiscoverMultiselectItem
+          hasCheckbox={false}
           isDisabled={values.length === 0}
           label={t('clear-selection')}
-          onClick={() => setValues([])}
+          onClick={() => {
+            setValues([])
+            setIsOpen(false)
+          }}
           value=""
         />
         {options.map((option) => (
@@ -140,6 +144,7 @@ export function DiscoverMultiselect({
 }
 
 export function DiscoverMultiselectItem({
+  hasCheckbox = true,
   icon,
   isDisabled = false,
   isSelected = false,
@@ -147,6 +152,7 @@ export function DiscoverMultiselectItem({
   onClick,
   value,
 }: {
+  hasCheckbox?: boolean
   isDisabled?: boolean
   isSelected?: boolean
   onClick: (value: string) => void
@@ -160,7 +166,7 @@ export function DiscoverMultiselectItem({
         alignItems: 'center',
         py: '12px',
         pr: 3,
-        pl: '48px',
+        pl: hasCheckbox ? '48px' : '16px',
         fontSize: 3,
         color: isDisabled ? 'neutral80' : 'primary100',
         transition: 'color 200ms, background-color 200ms',
@@ -173,31 +179,40 @@ export function DiscoverMultiselectItem({
         if (!isDisabled) onClick(value)
       }}
     >
-      <Icon
-        size={14}
-        sx={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: '20px',
-          margin: 'auto',
-          opacity: isSelected ? 1 : 0,
-          transition: 'opacity 150ms',
-        }}
-        name="tick"
-        color="neutral80"
-      />
-      {icon && <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={icon} />}
-      <Text
-        as="span"
-        sx={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {label}
-      </Text>
+      {hasCheckbox && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '14px',
+            left: '16px',
+            width: '20px',
+            height: '20px',
+            backgroundColor: isSelected ? 'success10' : 'neutral10',
+            border: '1px solid',
+            borderColor: isSelected ? 'success100' : 'neutral60',
+            borderRadius: 'small',
+            transition: 'background-color 100ms, border-color 100ms',
+          }}
+        >
+          <Icon
+            size={10}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              margin: 'auto',
+              opacity: isSelected ? 1 : 0,
+              transition: 'opacity 100ms',
+            }}
+            name="checkmark"
+            color="success100"
+          />
+        </Box>
+      )}
+      {icon && <Icon size={32} sx={{ flexShrink: 0, my: '-4px', mr: '12px' }} name={icon} />}
+      {label}
     </Box>
   )
 }

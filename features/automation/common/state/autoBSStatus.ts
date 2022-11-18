@@ -21,7 +21,7 @@ interface GetAutoBSStatusParams {
   stage: SidebarAutomationStages
   lockedCollateral: BigNumber
   debt: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
 }
 
 interface AutoBSStatus {
@@ -46,7 +46,7 @@ export function getAutoBSStatus({
   stage,
   debt,
   lockedCollateral,
-  collateralizationRatio,
+  positionRatio,
 }: GetAutoBSStatusParams): AutoBSStatus {
   const isEditing = checkIfIsEditingAutoBS({
     autoBSTriggerData,
@@ -67,7 +67,7 @@ export function getAutoBSStatus({
     vaultDebt: debt,
   })
   const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
-    colRatio: collateralizationRatio,
+    colRatio: positionRatio,
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
@@ -81,13 +81,13 @@ export function getAutoBSStatus({
   })
   const { debtDelta: debtDeltaAtCurrentCollRatio } = getAutoBSVaultChange({
     targetCollRatio: autoBSState.targetCollRatio,
-    execCollRatio: collateralizationRatio.times(100),
+    execCollRatio: positionRatio.times(100),
     deviation: autoBSState.deviation,
     executionPrice: executionPriceAtCurrentCollRatio,
     lockedCollateral: lockedCollateral,
     debt: debt,
   })
-  const resetData = prepareAutoBSResetData(autoBSTriggerData, collateralizationRatio, publishType)
+  const resetData = prepareAutoBSResetData(autoBSTriggerData, positionRatio, publishType)
 
   return {
     collateralDelta,

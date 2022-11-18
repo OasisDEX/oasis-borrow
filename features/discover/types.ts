@@ -31,6 +31,12 @@ export enum DiscoverTableVaultStatus {
   TO_STOP_LOSS = 4,
 }
 
+export enum DiscoverFilterType {
+  SINGLE,
+  MULTI,
+  HIDDEN,
+}
+
 export interface DiscoverFiltersSettings {
   [key: string]: string
 }
