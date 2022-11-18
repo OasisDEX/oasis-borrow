@@ -8,12 +8,7 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import {
-  GeTakeProfitMetadata,
-  GetAutoBSMetadata,
-  GetConstantMultipleMetadata,
-  GetStopLossMetadata,
-} from 'features/automation/metadata/types'
+import { GetStopLossMetadata } from 'features/automation/metadata/types'
 import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import {
@@ -165,14 +160,6 @@ export function getDataForStopLoss(
     }
   }
 
-  // BELOW METHODS JUST FOR CONTEXT INITIALIZATION
-  // eslint-disable-next-line func-style
-  const autoBSMetadata: GetAutoBSMetadata = (_) => ({})
-  // eslint-disable-next-line func-style
-  const takeProfitMetadata: GeTakeProfitMetadata = (_) => ({})
-  // eslint-disable-next-line func-style
-  const constantMultipleMetadata: GetConstantMultipleMetadata = (_) => ({})
-
   const automationContextProps = {
     ethBalance,
     context: { status: 'connected', account: '0x0', etherscan: { url: '' } } as Context,
@@ -201,10 +188,6 @@ export function getDataForStopLoss(
     protocol: VaultProtocol.Maker,
     metadata: {
       stopLoss: stopLossMetadata,
-      autoSell: autoBSMetadata,
-      autoBuy: autoBSMetadata,
-      constantMultiple: constantMultipleMetadata,
-      takeProfit: takeProfitMetadata,
     },
   }
 
