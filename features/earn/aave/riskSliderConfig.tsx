@@ -14,7 +14,7 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
   rightBoundary: {
     valueExtractor: (data) => data?.oracleAssetPrice,
     formatter: (qty) => {
-      return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
+      return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'STETH/ETH' })
     },
     translationKey: 'open-earn.aave.vault-form.configure-multiple.current-price',
   },
