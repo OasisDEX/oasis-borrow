@@ -11,7 +11,7 @@ import { TransactionParametersStateMachineResponseEvent } from '../../stateMachi
 import { UserSettingsState } from '../../userSettings/userSettings'
 import { AaveProtocolData } from '../manage/services'
 
-type UserInput = {
+export type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
 }

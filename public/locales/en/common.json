@@ -878,7 +878,7 @@
     "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
-    "pnl-usd": "PnL: ${{value}}",
+    "pnl-value": "PnL: {{value}}",
     "actions": {
       "common": {
         "close-vault": "Close vault",

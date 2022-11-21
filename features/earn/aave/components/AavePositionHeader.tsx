@@ -120,9 +120,11 @@ function AavePositionHeader({
 
 export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   return function AavePositionHeaderWithDetails({ strategyName }: { strategyName: string }) {
-    const { aaveTotalValueLocked$, aaveReserveStEthData$ } = useAaveContext()
+    const { aaveTotalValueLocked$, aaveReserveConfigurationStEthData$ } = useAaveContext()
     const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
-    const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(aaveReserveStEthData$)
+    const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(
+      aaveReserveConfigurationStEthData$,
+    )
 
     return (
       <WithErrorHandler error={[tvlStateError, aaveReserveConfigDataError]}>

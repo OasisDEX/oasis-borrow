@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition, Position } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import {
@@ -9,15 +9,21 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
+import { UserInput } from 'features/aave/common/BaseAaveContext'
+import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
+import { NaNIsZero } from 'helpers/nanIsZero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
-  newPosition?: IPosition
-  collateralPrice: BigNumber
+  userInput?: UserInput
+  collateralTokenPrice: BigNumber
+  debtTokenPrice: BigNumber
+  collateralTokenReserveData: PreparedAaveReserveData
+  debtTokenReserveData: PreparedAaveReserveData
 }
 
 const getLTVRatioColor = (ratio: BigNumber) => {
@@ -30,39 +36,54 @@ const getLTVRatioColor = (ratio: BigNumber) => {
   return ratio.isLessThanOrEqualTo(warning) ? 'warning10' : 'success10'
 }
 
-const NaNIsZero = (number: BigNumber) => (number.isNaN() ? zero : number)
-
 export function AaveMultiplyPositionData({
   currentPosition,
-  newPosition,
-  collateralPrice,
+  userInput,
+  collateralTokenPrice,
+  debtTokenPrice,
+  collateralTokenReserveData,
+  debtTokenReserveData,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
+  console.log('userInput', userInput)
+
+  const newPosition =
+    userInput?.amount &&
+    userInput.riskRatio &&
+    new Position(
+      currentPosition.debt,
+      { amount: userInput.amount, denomination: currentPosition.collateral.denomination },
+      collateralTokenPrice,
+      {
+        ...currentPosition.category,
+        maxLoanToValue: userInput.riskRatio.loanToValue,
+      },
+    )
 
   const { collateral, debt, category, riskRatio } = currentPosition
 
   // collateral * usdprice * maxLTV - debt * usdprice
   const buyingPower = collateral.amount
-    .times(collateralPrice)
+    .times(collateralTokenPrice)
     .times(category.maxLoanToValue)
-    .minus(debt.amount.times(collateralPrice))
+    .minus(debt.amount.times(debtTokenPrice))
 
   const newBuyingPower =
     newPosition &&
     newPosition.collateral.amount
-      .times(collateralPrice)
+      .times(collateralTokenPrice)
       .times(newPosition.category.maxLoanToValue)
-      .minus(newPosition.debt.amount.times(collateralPrice))
+      .minus(newPosition.debt.amount.times(collateralTokenPrice))
 
   // (collateral_amount * collateral_token_oracle_price - debt_token_amount * debt_token_oracle_price) / USDC_oracle_price
   const netValue = collateral.amount
-    .times(collateralPrice)
-    .minus(debt.amount.times(collateralPrice))
+    .times(collateralTokenPrice)
+    .minus(debt.amount.times(debtTokenPrice))
   const newNetValue =
     newPosition &&
     newPosition.collateral.amount
-      .times(collateralPrice)
-      .minus(newPosition.debt.amount.times(collateralPrice))
+      .times(collateralTokenPrice)
+      .minus(newPosition.debt.amount.times(debtTokenPrice))
 
   // collateral * multiple
   const totalExposure = collateral.amount.times(riskRatio.multiple)
@@ -73,14 +94,22 @@ export function AaveMultiplyPositionData({
   const newLiquidationPrice =
     newPosition?.liquidationPrice && NaNIsZero(newPosition.liquidationPrice)
 
-  const liquidationPriceUSD = liquidationPrice.times(collateralPrice)
-  const newLiquidationPriceUSD = newLiquidationPrice && newLiquidationPrice.times(collateralPrice)
+  const liquidationPriceUSD = liquidationPrice.times(debtTokenPrice)
+  const newLiquidationPriceUSD = newLiquidationPrice && newLiquidationPrice.times(debtTokenPrice)
 
-  const positionDebt = debt.amount.times(collateralPrice)
-  const newPositionDebt = newPosition && newPosition.debt.amount.times(collateralPrice)
+  const positionDebt = debt.amount.times(debtTokenPrice)
+  const newPositionDebt = newPosition && newPosition.debt.amount.times(debtTokenPrice)
 
   const multiple = riskRatio.multiple
-  const newMultiple = newPosition && newPosition.riskRatio.multiple
+  const newMultiple = userInput?.riskRatio && userInput.riskRatio.multiple
+
+  // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
+  const netBorrowCost = debtTokenReserveData.variableBorrowRate
+    .times(debt.amount)
+    .times(debtTokenPrice)
+    .minus(
+      collateralTokenReserveData.liquidityRate.times(collateral.amount).times(collateralTokenPrice),
+    )
 
   return (
     <DetailsSection
@@ -124,7 +153,7 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}
-            value={formatDecimalAsPercent(new BigNumber(0))}
+            value={formatDecimalAsPercent(netBorrowCost)}
             change={
               newNetValue && {
                 variant: 'positive',
@@ -134,10 +163,10 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionContentCard
             title={t('system.net-value')}
-            value={formatAmount(netValue, 'USD')}
-            footnote={`${t('system.pnl-usd', {
+            value={`${formatAmount(netValue, 'USD')} USDC`}
+            footnote={`${t('system.pnl-value', {
               value: formatAmount(collateral.amount.minus(debt.amount), 'USD'),
-            })}`}
+            })} USDC`}
             change={
               newNetValue && {
                 variant: newNetValue.gt(netValue) ? 'positive' : 'negative',

@@ -1,6 +1,8 @@
 import { useActor } from '@xstate/react'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 import { AaveMultiplyPositionData } from './AaveMultiplyPositionData'
@@ -8,17 +10,38 @@ import { AaveMultiplyPositionData } from './AaveMultiplyPositionData'
 export function AaveMultiplyManageComponent() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const { aaveReserveData } = useAaveContext()
+  const [aaveUSDCReserveData] = useObservable(aaveReserveData['USDC'])
+  const [aaveSTETHReserveData] = useObservable(aaveReserveData['STETH'])
 
   return (
     <WithLoadingIndicator
-      value={[state.context.currentPosition, state.context.collateralPrice]}
+      value={[
+        state.context.currentPosition,
+        state.context.userInput,
+        state.context.collateralPrice,
+        state.context.tokenPrice,
+        aaveUSDCReserveData,
+        aaveSTETHReserveData,
+      ]}
       customLoader={<AppSpinner />}
     >
-      {([currentPosition, collateralPrice]) => {
+      {([
+        currentPosition,
+        userInput,
+        collateralTokenPrice,
+        debtTokenPrice,
+        USDCReserveData,
+        STETHReserveData,
+      ]) => {
         return (
           <AaveMultiplyPositionData
             currentPosition={currentPosition}
-            collateralPrice={collateralPrice}
+            userInput={userInput}
+            collateralTokenPrice={collateralTokenPrice}
+            collateralTokenReserveData={STETHReserveData}
+            debtTokenPrice={debtTokenPrice}
+            debtTokenReserveData={USDCReserveData}
           />
         )
       }}
