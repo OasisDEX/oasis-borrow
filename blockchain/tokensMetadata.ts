@@ -744,7 +744,7 @@ const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
     'UNI-A',
     'LINK-A',
     'MANA-A',
-    'RETH-A',
+    // 'RETH-A',
   ],
   goerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C', 'RETH-A'],
 }
