@@ -8,17 +8,21 @@ import {
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 
-export interface AutomationValidationMethodStateParams {
+export type AutomationValidationMethodStateParams<T> = {
   [key: string]: unknown
-}
-export interface AutomationValidationMethodParams {
+} & T
+export interface AutomationValidationMethodParams<T> {
   context: ContextWithoutMetadata
-  state?: AutomationValidationMethodStateParams
+  state: AutomationValidationMethodStateParams<T>
 }
-export type AutomationValidationMethod = (params: AutomationValidationMethodParams) => boolean
+export type AutomationValidationMethod = (params: AutomationValidationMethodParams<any>) => boolean
 export type AutomationValidationSet = [
   AutomationValidationMethod,
-  AutomationValidationMethodStateParams?,
+  AutomationValidationMethodStateParams<{}>?,
+]
+export type AutomationValidationSetWithGeneric<T> = [
+  AutomationValidationMethod,
+  AutomationValidationMethodStateParams<T>,
 ]
 
 export interface StopLossMetadata {
@@ -49,6 +53,7 @@ export interface StopLossMetadata {
   validation: {
     add: {
       getErrorValidations: ({ state }: { state: StopLossFormChange }) => AutomationValidationSet[]
+      // getErrorValidations: ({ state }: { state: StopLossFormChange }) => AutomationValidationSet[]
     }
   }
 }
@@ -61,9 +66,7 @@ export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
 
 export type GetStopLossMetadata = (context: ContextWithoutMetadata) => StopLossMetadata
 
-export type GetTakeProfitMetadata = (
-  context: ContextWithoutMetadata,
-) => TakeProfitMetadata
+export type GetTakeProfitMetadata = (context: ContextWithoutMetadata) => TakeProfitMetadata
 
 export type GetAutoBSMetadata = (context: ContextWithoutMetadata) => AutoBSMetadata
 export type GetAutoSellOrBuyMetadata = (

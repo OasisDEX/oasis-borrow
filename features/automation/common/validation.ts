@@ -1,12 +1,22 @@
 /* eslint-disable func-style */
 
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/common/consts'
 import {
   AutomationValidationMethod,
   AutomationValidationMethodParams,
   AutomationValidationSet,
+  AutomationValidationSetWithGeneric,
   ContextWithoutMetadata,
 } from 'features/automation/metadata/types'
+import { ethFundsForTxValidator } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
+
+export function getAutomationValidationStateSet<T extends AutomationValidationMethod>([
+  fn,
+  state,
+]: AutomationValidationSetWithGeneric<Parameters<T>[0]['state']>): AutomationValidationSet {
+  return [fn, state]
+}
 
 export function triggerAutomationValidations({
   context,
@@ -18,25 +28,16 @@ export function triggerAutomationValidations({
   return validators.filter(([fn, state]) => fn({ context, state })).map(([fn]) => fn.name)
 }
 
-export const randomValidatorThatAlwaysReturnsTrueAndUsesContext: AutomationValidationMethod = ({
-  context,
+export function hasInsufficientEthFundsForTx({
+  state: { txError },
+}: AutomationValidationMethodParams<{ txError?: TxError }>): boolean {
+  return ethFundsForTxValidator({ txError })
+}
+
+export const hasMoreDebtThanMaxForStopLoss: AutomationValidationMethod = ({
+  context: {
+    positionData: { debt },
+  },
 }) => {
-  console.log('randomValidatorThatAlwaysReturnsTrueAndUsesContext')
-  console.log(context)
-
-  return true
-}
-
-export function randomValidatorThatAlwaysReturnsTrueAndUsesState({
-  state,
-}: AutomationValidationMethodParams | { state: { txError?: TxError } }): boolean {
-  console.log('randomValidatorThatAlwaysReturnsTrueAndUsesState')
-  console.log(state)
-  console.log(state?.txError)
-
-  return true
-}
-
-export const randomValidatorThatAlwaysReturnsTrue: AutomationValidationMethod = () => {
-  return true
+  return debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 }

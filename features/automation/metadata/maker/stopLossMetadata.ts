@@ -6,9 +6,9 @@ import {
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
 import {
-  randomValidatorThatAlwaysReturnsTrue,
-  randomValidatorThatAlwaysReturnsTrueAndUsesContext,
-  randomValidatorThatAlwaysReturnsTrueAndUsesState,
+  getAutomationValidationStateSet,
+  hasInsufficientEthFundsForTx,
+  hasMoreDebtThanMaxForStopLoss,
 } from 'features/automation/common/validation'
 import { GetStopLossMetadata } from 'features/automation/metadata/types'
 import {
@@ -146,9 +146,11 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     validation: {
       add: {
         getErrorValidations: ({ state: { txDetails } }: { state: StopLossFormChange }) => [
-          [randomValidatorThatAlwaysReturnsTrue],
-          [randomValidatorThatAlwaysReturnsTrueAndUsesContext],
-          [randomValidatorThatAlwaysReturnsTrueAndUsesState, { txError: txDetails?.txError }],
+          getAutomationValidationStateSet<typeof hasInsufficientEthFundsForTx>([
+            hasInsufficientEthFundsForTx,
+            { txError: txDetails?.txError },
+          ]),
+          [hasMoreDebtThanMaxForStopLoss],
         ],
       },
     },
