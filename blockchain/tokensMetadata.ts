@@ -670,6 +670,23 @@ export const tokens = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.gif'),
     tags: [],
   },
+  {
+    symbol: 'RETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'Rocket Pool ETH',
+    icon: 'reth_circle_color',
+    iconCircle: 'reth_circle_color',
+    iconColor: 'reth_circle_color',
+    color: '#FFEAEA',
+    coinGeckoId: 'rocket-pool-eth',
+    background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.gif'),
+    rootToken: 'ETH',
+    tags: [],
+  },
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
@@ -727,8 +744,9 @@ const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
     'UNI-A',
     'LINK-A',
     'MANA-A',
+    'RETH-A',
   ],
-  goerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C'],
+  goerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C', 'RETH-A'],
 }
 
 export function isSupportedAutomationIlk(network: string, ilk: string) {
