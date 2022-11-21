@@ -91,6 +91,7 @@ export function StopLossDetailsLayout({
                 liquidationPrice={liquidationPrice}
                 liquidationRatio={liquidationRatio}
                 afterStopLossLevel={afterStopLossLevel}
+                ratioParam={ratioParam}
               />
             )}
             {cardsSet.includes(StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER) && (
