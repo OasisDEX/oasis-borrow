@@ -4,6 +4,7 @@ import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { useAppContext } from '../../../../../components/AppContextProvider'
 import {
   formatGasEstimationETH,
   getEstimatedGasFeeTextOld,
@@ -11,7 +12,6 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
-import { useAppContext } from '../../../../../components/AppContextProvider'
 import { useObservable } from '../../../../../helpers/observableHook'
 
 interface FeesInformationProps {

@@ -3,13 +3,12 @@ import { Flex } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { amountFromWei } from '../../../../../blockchain/utils'
+import { useAppContext } from '../../../../../components/AppContextProvider'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
-import { useAppContext } from '../../../../../components/AppContextProvider'
 import { useObservable } from '../../../../../helpers/observableHook'
 
 interface OutstandingDebtInformationProps {

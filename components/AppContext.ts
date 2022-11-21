@@ -275,23 +275,19 @@ import {
 } from 'rxjs/operators'
 
 import {
+  createAaveOracleAssetPriceData$,
+  createConvertToAaveOracleAssetPrice$,
+} from '../blockchain/aave/oracleAssetPriceData'
+import {
   getAaveReservesList,
   getAaveUserAccountData,
   getAaveUserConfiguration,
 } from '../blockchain/calls/aave/aaveLendingPool'
-import {
-  getAaveAssetsPrices,
-  getAaveOracleAssetPriceData,
-} from '../blockchain/calls/aave/aavePriceOracle'
+import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
 import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
-import { one } from '../helpers/zero'
-import {
-  createAaveOracleAssetPriceData$,
-  createConvertToAaveOracleAssetPrice$,
-} from '../blockchain/aave/oracleAssetPriceData'
 
 export type TxData =
   | OpenData
@@ -847,7 +843,7 @@ export function setupAppContext() {
   )
   const convertToAaveOracleAssetPrice$ = memoize(
     curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
-    ({ token, amount }) => token + amount.toString(),
+    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
   )
   const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
 
