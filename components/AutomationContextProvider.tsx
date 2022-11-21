@@ -174,9 +174,9 @@ export function AutomationContextProvider({
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   useStopLossStateInitializator({
-    liquidationRatio: positionData.liquidationRatio,
     positionRatio: positionData.positionRatio,
     stopLossTriggerData: autoContext.stopLossTriggerData,
+    metadata: autoContext.metadata.stopLoss,
   })
 
   useAutoBSstateInitialization({

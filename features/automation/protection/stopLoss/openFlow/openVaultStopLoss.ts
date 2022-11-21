@@ -185,6 +185,7 @@ export function getDataForStopLoss(
       sliderChangeCallback: (value: BigNumber) => setStopLossLevel(value),
       closeToChangeCallback: (optionName: string) =>
         setStopLossCloseType(optionName as CloseVaultTo),
+      initialSlRatioWhenTriggerDoesntExist: zero,
     }
   }
 

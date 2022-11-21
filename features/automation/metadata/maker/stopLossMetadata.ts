@@ -49,12 +49,12 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
 
   const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100)
   const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
-    DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
+    new BigNumber(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100),
   )
   const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
     stopLossLevel: stopLossTriggerData.stopLossLevel,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
-    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
+    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist.div(100),
   })
     .times(100)
     .decimalPlaces(0, BigNumber.ROUND_DOWN)
@@ -137,5 +137,6 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     withPickCloseTo: true,
     leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     sliderStep: 1,
+    initialSlRatioWhenTriggerDoesntExist,
   }
 }

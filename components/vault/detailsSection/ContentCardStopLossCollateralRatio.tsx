@@ -56,7 +56,7 @@ export function ContentCardStopLossCollateralRatio({
     belowCurrentCollRatio: formatPercent(positionRatio.minus(stopLossLevel).times(100), {
       precision: 2,
     }),
-    afterStopLossLevel: formatPercent(afterStopLossLevel.times(100), {
+    afterStopLossLevel: formatPercent(afterStopLossLevel, {
       precision: 2,
     }),
   }

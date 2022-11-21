@@ -32,6 +32,7 @@ export interface StopLossMetadata {
   leftBoundaryFormatter: (value: BigNumber) => string
   sliderChangeCallback?: (value: BigNumber) => void
   closeToChangeCallback?: (value: string) => void
+  initialSlRatioWhenTriggerDoesntExist: BigNumber
 }
 
 export interface AutoBSMetadata {}
