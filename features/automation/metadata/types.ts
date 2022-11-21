@@ -18,7 +18,6 @@ export enum StopLossDetailCards {
 
 export interface StopLossDetailsConfig {
   stopLossLevelCard?: {
-    levelKey: string
     modalDescription: string
     belowCurrentPositionRatio: string
   }
@@ -47,7 +46,7 @@ export interface StopLossMetadata {
   collateralDuringLiquidation: BigNumber
   triggerMaxToken: BigNumber
   resetData: StopLossResetData
-  sliderLeftLabel: string
+  ratioParam: string
   sliderStep: number
   leftBoundaryFormatter: (value: BigNumber) => string
   sliderChangeCallback?: (value: BigNumber) => void

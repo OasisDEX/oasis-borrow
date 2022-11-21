@@ -143,7 +143,6 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     sliderMax,
     sliderMin,
     resetData,
-    sliderLeftLabel: 'system.collateral-ratio',
     leftBoundaryFormatter,
     sliderStep: 1,
     initialSlRatioWhenTriggerDoesntExist,
@@ -157,11 +156,11 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
       cardsConfig: {
         // most likely it won't be needed when we switch to LTV in maker
         stopLossLevelCard: {
-          levelKey: 'system.collateral-ratio',
           modalDescription: 'manage-multiply-vault.card.stop-loss-coll-ratio-desc',
           belowCurrentPositionRatio,
         },
       },
     },
+    ratioParam: 'system.collateral-ratio',
   }
 }

@@ -146,7 +146,7 @@ export function SidebarAdjustStopLossEditingStage({
         sliderMin,
         sliderMax,
         resetData,
-        sliderLeftLabel,
+        ratioParam,
         fixedCloseToToken,
         sliderChangeCallback,
         closeToChangeCallback,
@@ -200,7 +200,7 @@ export function SidebarAdjustStopLossEditingStage({
     <>
       {!debt.isZero() ? (
         <Grid>
-          {fixedCloseToToken && (
+          {!fixedCloseToToken && (
             <PickCloseState
               isCollateralActive={stopLossState.collateralActive}
               collateralTokenSymbol={token}
@@ -225,7 +225,7 @@ export function SidebarAdjustStopLossEditingStage({
             />
           )}
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('protection.set-downside-protection-desc')}{' '}
+            {t('protection.set-downside-protection-desc', { ratioParam: t(ratioParam) })}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
@@ -258,7 +258,7 @@ export function SidebarAdjustStopLossEditingStage({
 
               sliderChangeCallback && sliderChangeCallback(slCollRatio)
             }}
-            leftLabel={t('protection.stop-loss-something', { value: t(sliderLeftLabel) })}
+            leftLabel={t('protection.stop-loss-something', { value: t(ratioParam) })}
             rightLabel={t('slider.set-stoploss.right-label')}
           />
         </Grid>

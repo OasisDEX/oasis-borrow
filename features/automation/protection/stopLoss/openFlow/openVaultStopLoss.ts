@@ -176,7 +176,7 @@ export function getDataForStopLoss(
       sliderMax,
       sliderMin,
       resetData: {} as StopLossResetData,
-      sliderLeftLabel: 'system.collateral-ratio',
+      ratioParam: 'system.collateral-ratio',
       triggerMaxToken: zero,
       collateralDuringLiquidation,
       leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
