@@ -288,6 +288,10 @@ import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aa
 import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
 import { one } from '../helpers/zero'
+import {
+  createAaveOracleAssetPriceData$,
+  createConvertToAaveOracleAssetPrice$,
+} from '../blockchain/aave/oracleAssetPriceData'
 
 export type TxData =
   | OpenData
@@ -829,18 +833,6 @@ export function setupAppContext() {
 
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
   const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
-  const aaveOracleAssetPriceData$ = (args: { token: string }) => {
-    if (args.token === 'ETH') {
-      return of(one).pipe(shareReplay(1))
-    } else {
-      return observe(
-        onEveryBlock$,
-        context$,
-        getAaveOracleAssetPriceData,
-        ({ token }) => token,
-      )(args)
-    }
-  }
 
   const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
   const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
@@ -850,14 +842,14 @@ export function setupAppContext() {
     getAaveReserveConfigurationData,
     ({ token }) => token,
   )
-
-  const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
-  const convertToAaveOracleAssetPrice$ = memoize(
-    (token: string, amount: BigNumber) => {
-      return aaveOracleAssetPriceData$({ token }).pipe(map((price) => amount.times(price)))
-    },
-    (token, amount) => token + amount.toString(),
+  const aaveOracleAssetPriceData$ = memoize(
+    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
   )
+  const convertToAaveOracleAssetPrice$ = memoize(
+    curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
+    ({ token, amount }) => token + amount.toString(),
+  )
+  const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)

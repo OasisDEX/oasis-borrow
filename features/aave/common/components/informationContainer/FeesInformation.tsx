@@ -33,7 +33,9 @@ export function FeesInformation({
 
   const { convertToAaveOracleAssetPrice$ } = useAppContext()
 
-  const [currentDebtInDebtToken] = useObservable(convertToAaveOracleAssetPrice$(token, swapFee))
+  const [currentDebtInDebtToken] = useObservable(
+    convertToAaveOracleAssetPrice$({ token, amount: swapFee }),
+  )
 
   return (
     <>

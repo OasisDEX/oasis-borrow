@@ -28,14 +28,14 @@ export function OutstandingDebtInformation({
   const { convertToAaveOracleAssetPrice$ } = useAppContext()
 
   const [currentDebtInDebtToken] = useObservable(
-    convertToAaveOracleAssetPrice$(debtToken, currentPosition.debt.amount),
+    convertToAaveOracleAssetPrice$({ token: debtToken, amount: currentPosition.debt.amount }),
   )
 
   const [afterDebtInDebtToken] = useObservable(
-    convertToAaveOracleAssetPrice$(
-      debtToken,
-      transactionParameters.simulation.position.debt.amount,
-    ),
+    convertToAaveOracleAssetPrice$({
+      token: debtToken,
+      amount: transactionParameters.simulation.position.debt.amount,
+    }),
   )
 
   return (
