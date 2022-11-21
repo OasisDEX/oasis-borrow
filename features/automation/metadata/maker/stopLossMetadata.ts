@@ -5,7 +5,7 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { GetStopLossMetadata } from 'features/automation/metadata/types'
+import { GetStopLossMetadata, StopLossDetailCards } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getMaxToken,
@@ -29,6 +29,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     stopLossTriggerData,
     constantMultipleTriggerData,
     positionData: {
+      positionRatio,
       nextPositionRatio,
       liquidationRatio,
       liquidationPrice,
@@ -71,6 +72,15 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     liquidationPrice,
     liquidationPenalty,
   })
+
+  function leftBoundaryFormatter(x: BigNumber) {
+    return x.isZero() ? '-' : formatPercent(x)
+  }
+
+  const belowCurrentPositionRatio = formatPercent(
+    positionRatio.minus(stopLossTriggerData.stopLossLevel).times(100),
+    { precision: 2 },
+  )
 
   return {
     getWarnings: ({
@@ -134,9 +144,24 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     sliderMin,
     resetData,
     sliderLeftLabel: 'system.collateral-ratio',
-    withPickCloseTo: true,
-    leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
+    leftBoundaryFormatter,
     sliderStep: 1,
     initialSlRatioWhenTriggerDoesntExist,
+    detailCards: {
+      cardsSet: [
+        StopLossDetailCards.STOP_LOSS_LEVEL,
+        StopLossDetailCards.COLLATERIZATION_RATIO,
+        StopLossDetailCards.DYNAMIC_STOP_PRICE,
+        StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER,
+      ],
+      cardsConfig: {
+        // most likely it won't be needed when we switch to LTV in maker
+        stopLossLevelCard: {
+          levelKey: 'system.collateral-ratio',
+          modalDescription: 'manage-multiply-vault.card.stop-loss-coll-ratio-desc',
+          belowCurrentPositionRatio,
+        },
+      },
+    },
   }
 }

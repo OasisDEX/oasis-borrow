@@ -147,7 +147,7 @@ export function SidebarAdjustStopLossEditingStage({
         sliderMax,
         resetData,
         sliderLeftLabel,
-        withPickCloseTo,
+        fixedCloseToToken,
         sliderChangeCallback,
         closeToChangeCallback,
         leftBoundaryFormatter,
@@ -200,7 +200,7 @@ export function SidebarAdjustStopLossEditingStage({
     <>
       {!debt.isZero() ? (
         <Grid>
-          {withPickCloseTo && (
+          {fixedCloseToToken && (
             <PickCloseState
               isCollateralActive={stopLossState.collateralActive}
               collateralTokenSymbol={token}
@@ -258,7 +258,7 @@ export function SidebarAdjustStopLossEditingStage({
 
               sliderChangeCallback && sliderChangeCallback(slCollRatio)
             }}
-            leftLabel={t('protection.slider-left-label', { value: t(sliderLeftLabel) })}
+            leftLabel={t('protection.stop-loss-something', { value: t(sliderLeftLabel) })}
             rightLabel={t('slider.set-stoploss.right-label')}
           />
         </Grid>

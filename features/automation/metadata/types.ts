@@ -8,6 +8,27 @@ import {
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 
+export enum StopLossDetailCards {
+  STOP_LOSS_LEVEL = 'STOP_LOSS_LEVEL',
+  COLLATERIZATION_RATIO = 'COLLATERIZATION_RATIO',
+  DYNAMIC_STOP_PRICE = 'DYNAMIC_STOP_PRICE',
+  ESTIMATED_TOKEN_ON_TRIGGER = 'ESTIMATED_TOKEN_ON_TRIGGER',
+  LOAN_TO_VALUE = 'LOAN_TO_VALUE',
+}
+
+export interface StopLossDetailsConfig {
+  stopLossLevelCard?: {
+    levelKey: string
+    modalDescription: string
+    belowCurrentPositionRatio: string
+  }
+}
+
+export interface StopLossMetadataDetailCards {
+  cardsSet: StopLossDetailCards[]
+  cardsConfig?: StopLossDetailsConfig
+}
+
 export interface StopLossMetadata {
   getWarnings: ({
     state,
@@ -27,12 +48,13 @@ export interface StopLossMetadata {
   triggerMaxToken: BigNumber
   resetData: StopLossResetData
   sliderLeftLabel: string
-  withPickCloseTo: boolean
   sliderStep: number
   leftBoundaryFormatter: (value: BigNumber) => string
   sliderChangeCallback?: (value: BigNumber) => void
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
+  fixedCloseToToken?: string
+  detailCards?: StopLossMetadataDetailCards
 }
 
 export interface AutoBSMetadata {}

@@ -910,7 +910,7 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} below Current Collateral Ratio"
+        "footnote": "{{amount}} below {{value}}"
       },
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"
@@ -1328,7 +1328,8 @@
     "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
-    "slider-left-label": "Stop-Loss {{value}}"
+    "stop-loss-something": "Stop-Loss {{value}}",
+    "current-stop-loss-something": "The current Stop-Loss {{value}} is:"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

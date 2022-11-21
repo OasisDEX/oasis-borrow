@@ -41,7 +41,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       token,
     },
     metadata: {
-      stopLoss: { getMaxToken, collateralDuringLiquidation, triggerMaxToken },
+      stopLoss: { getMaxToken, collateralDuringLiquidation, triggerMaxToken, detailCards },
     },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
@@ -75,6 +75,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
             isRemoveForm: stopLossState.currentForm === 'remove',
           })}
           positionRatio={positionRatio}
+          detailCards={detailCards}
         />
       ) : (
         <Banner
