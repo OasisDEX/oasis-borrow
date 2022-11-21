@@ -42,7 +42,7 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultNoticesView id={vault.id} />
-      <Box sx={{ zIndex: 0, mt: 4 }}>{headlineElement}</Box>
+      <Box sx={{ zIndex: 2, mt: 4 }}>{headlineElement}</Box>
       <GeneralManageTabBar
         positionInfo={positionInfo}
         generalManageVault={generalManageVault}

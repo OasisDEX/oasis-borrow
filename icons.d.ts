@@ -6,6 +6,7 @@ declare module '@makerdao/dai-ui-icons' {
     name: string
     width?: string | number
     height?: string | number
+    fill?: string
     onClick?(): void
   }>
 
@@ -20,6 +21,7 @@ declare module '@makerdao/dai-ui-icons-branding' {
     name: string
     width?: string | number
     height?: string | number
+    fill?: string
     onClick?(): void
   }>
 
