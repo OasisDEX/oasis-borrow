@@ -14,9 +14,12 @@ export function AaveMultiplyManageComponent() {
       value={[state.context.currentPosition, state.context.collateralPrice]}
       customLoader={<AppSpinner />}
     >
-      {([currentPosition, oraclePrice]) => {
+      {([currentPosition, collateralPrice]) => {
         return (
-          <AaveMultiplyPositionData currentPosition={currentPosition} oraclePrice={oraclePrice} />
+          <AaveMultiplyPositionData
+            currentPosition={currentPosition}
+            collateralPrice={collateralPrice}
+          />
         )
       }}
     </WithLoadingIndicator>
