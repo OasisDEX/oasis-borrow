@@ -48,6 +48,7 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
         {...state.context}
         transactionParameters={strategy}
         currentPosition={currentPosition}
+        debtToken={state.context.token}
       />
       <LtvInformation
         {...state.context}
