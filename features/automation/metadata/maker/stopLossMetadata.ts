@@ -5,6 +5,11 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
+import {
+  randomValidatorThatAlwaysReturnsTrue,
+  randomValidatorThatAlwaysReturnsTrueAndUsesContext,
+  randomValidatorThatAlwaysReturnsTrueAndUsesState,
+} from 'features/automation/common/validation'
 import { GetStopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
@@ -138,5 +143,14 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     sliderStep: 1,
     initialSlRatioWhenTriggerDoesntExist,
+    validation: {
+      add: {
+        getErrorValidations: ({ state: { txDetails } }: { state: StopLossFormChange }) => [
+          [randomValidatorThatAlwaysReturnsTrue],
+          [randomValidatorThatAlwaysReturnsTrueAndUsesContext],
+          [randomValidatorThatAlwaysReturnsTrueAndUsesState, { txError: txDetails?.txError }],
+        ],
+      },
+    },
   }
 }

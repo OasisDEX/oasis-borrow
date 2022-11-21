@@ -12,6 +12,7 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
+import { triggerAutomationValidations } from 'features/automation/common/validation'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import {
   SetDownsideProtectionInformation,
@@ -76,7 +77,14 @@ export function SidebarSetupStopLoss({
     positionData: { vaultType },
     protocol,
     metadata: {
-      stopLoss: { getWarnings, getErrors, getExecutionPrice },
+      stopLoss: {
+        getWarnings,
+        getErrors,
+        getExecutionPrice,
+        validation: {
+          add: { getErrorValidations },
+        },
+      },
     },
   } = useAutomationContext()
   const { isAwaitingConfirmation } = stopLossState
@@ -124,6 +132,13 @@ export function SidebarSetupStopLoss({
     state: stopLossState,
     gasEstimationUsd: gasEstimationContext?.usdValue,
   })
+
+  const e = triggerAutomationValidations({
+    context: useAutomationContext(),
+    validators: getErrorValidations({ state: stopLossState }),
+  })
+
+  console.log(e)
 
   const cancelStopLossWarnings = extractCancelAutomationWarnings(warnings)
   const cancelStopLossErrors = extractCancelAutomationErrors(errors)

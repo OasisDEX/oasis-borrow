@@ -8,6 +8,19 @@ import {
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 
+export interface AutomationValidationMethodStateParams {
+  [key: string]: unknown
+}
+export interface AutomationValidationMethodParams {
+  context: ContextWithoutMetadata
+  state?: AutomationValidationMethodStateParams
+}
+export type AutomationValidationMethod = (params: AutomationValidationMethodParams) => boolean
+export type AutomationValidationSet = [
+  AutomationValidationMethod,
+  AutomationValidationMethodStateParams?,
+]
+
 export interface StopLossMetadata {
   getWarnings: ({
     state,
@@ -33,25 +46,32 @@ export interface StopLossMetadata {
   sliderChangeCallback?: (value: BigNumber) => void
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
+  validation: {
+    add: {
+      getErrorValidations: ({ state }: { state: StopLossFormChange }) => AutomationValidationSet[]
+    }
+  }
 }
 
 export interface AutoBSMetadata {}
 export interface TakeProfitMetadata {}
 export interface ConstantMultipleMetadata {}
 
-export type GetStopLossMetadata = (context: Omit<AutomationContext, 'metadata'>) => StopLossMetadata
+export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
 
-export type GeTakeProfitMetadata = (
-  context: Omit<AutomationContext, 'metadata'>,
+export type GetStopLossMetadata = (context: ContextWithoutMetadata) => StopLossMetadata
+
+export type GetTakeProfitMetadata = (
+  context: ContextWithoutMetadata,
 ) => TakeProfitMetadata
 
-export type GetAutoBSMetadata = (context: Omit<AutomationContext, 'metadata'>) => AutoBSMetadata
+export type GetAutoBSMetadata = (context: ContextWithoutMetadata) => AutoBSMetadata
 export type GetAutoSellOrBuyMetadata = (
   type: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY,
 ) => GetAutoBSMetadata
 
 export type GetConstantMultipleMetadata = (
-  context: Omit<AutomationContext, 'metadata'>,
+  context: ContextWithoutMetadata,
 ) => ConstantMultipleMetadata
 
 export interface AutomationDefinitionMetadata {
@@ -59,7 +79,7 @@ export interface AutomationDefinitionMetadata {
   autoSell?: GetAutoBSMetadata
   autoBuy?: GetAutoBSMetadata
   constantMultiple?: GetConstantMultipleMetadata
-  takeProfit?: GeTakeProfitMetadata
+  takeProfit?: GetTakeProfitMetadata
 }
 
 export interface AutomationMetadata {
@@ -67,5 +87,5 @@ export interface AutomationMetadata {
   autoSell: GetAutoBSMetadata
   autoBuy: GetAutoBSMetadata
   constantMultiple: GetConstantMultipleMetadata
-  takeProfit: GeTakeProfitMetadata
+  takeProfit: GetTakeProfitMetadata
 }
