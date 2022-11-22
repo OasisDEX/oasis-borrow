@@ -25,7 +25,6 @@ import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { warningsStopLossValidation } from 'features/automation/protection/stopLoss/validators'
 import { formatPercent } from 'helpers/formatters/format'
 
 // eslint-disable-next-line func-style
@@ -79,23 +78,6 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
   })
 
   return {
-    getWarnings: ({
-      state: { stopLossLevel },
-      gasEstimationUsd,
-    }: {
-      state: StopLossFormChange
-      gasEstimationUsd?: BigNumber
-    }) =>
-      warningsStopLossValidation({
-        token: context.positionData.token,
-        ethBalance: context.environmentData.ethBalance,
-        ethPrice: context.environmentData.ethMarketPrice,
-        triggerRatio: stopLossLevel,
-        isAutoSellEnabled: context.autoSellTriggerData.isTriggerEnabled,
-        isConstantMultipleEnabled: context.constantMultipleTriggerData.isTriggerEnabled,
-        gasEstimationUsd,
-        sliderMax,
-      }),
     getExecutionPrice: ({ state }: { state: StopLossFormChange }) =>
       collateralPriceAtRatio({
         colRatio: state.stopLossLevel.div(100),
@@ -138,7 +120,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     sliderStep: 1,
     initialSlRatioWhenTriggerDoesntExist,
     validation: {
-      getAddErrorsValidations: ({ state: { stopLossLevel, txDetails } }) => [
+      getAddErrors: ({ state: { stopLossLevel, txDetails } }) => [
         getAutomationValidationStateSet<typeof hasInsufficientEthFundsForTx>([
           hasInsufficientEthFundsForTx,
           { txError: txDetails?.txError },
@@ -149,7 +131,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
           { stopLossLevel },
         ]),
       ],
-      getAddWarningsValidations: ({ gasEstimationUsd, state: { stopLossLevel } }) => [
+      getAddWarnings: ({ gasEstimationUsd, state: { stopLossLevel } }) => [
         getAutomationValidationStateSet<typeof hasPotentialInsufficientEthFundsForTx>([
           hasPotentialInsufficientEthFundsForTx,
           { gasEstimationUsd },
@@ -162,6 +144,8 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
           [isStopLossTriggerCloseToConstantMultipleSellTrigger, { sliderMax, stopLossLevel }],
         ),
       ],
+      cancelErrors: ['hasInsufficientEthFundsForTx'],
+      cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
     },
   }
 }

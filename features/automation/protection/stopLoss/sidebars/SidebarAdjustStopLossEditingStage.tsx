@@ -19,7 +19,6 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
   closeVaultOptions,
   sidebarAutomationFeatureCopyMap,
@@ -30,7 +29,6 @@ import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -118,7 +116,7 @@ export function SetDownsideProtectionInformation({
 export interface SidebarAdjustStopLossEditingStageProps {
   executionPrice: BigNumber
   errors: string[]
-  warnings: VaultWarningMessage[]
+  warnings: string[]
   stopLossState: StopLossFormChange
   isEditing: boolean
   isOpenFlow?: boolean
@@ -137,7 +135,7 @@ export function SidebarAdjustStopLossEditingStage({
   const {
     stopLossTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, token, debt, positionRatio, debtFloor },
+    positionData: { id, ilk, token, debt, positionRatio },
     metadata: {
       stopLoss: {
         getSliderPercentageFill,
@@ -284,7 +282,7 @@ export function SidebarAdjustStopLossEditingStage({
             {!stopLossState.stopLossLevel.isZero() && (
               <>
                 <AutomationValidationMessages messages={errors} type="error" />
-                <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
+                <AutomationValidationMessages messages={warnings} type="warning" />
               </>
             )}
             <SetDownsideProtectionInformation

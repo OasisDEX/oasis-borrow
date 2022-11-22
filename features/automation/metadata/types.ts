@@ -5,7 +5,6 @@ import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 
 export type AutomationValidationMethodStateParams<T = {}> = T
 export type AutomationValidationMethodStateReturn = boolean | undefined
@@ -26,13 +25,6 @@ export type AutomationValidationSetWithGeneric<T> = [
 ]
 
 export interface StopLossMetadata {
-  getWarnings: ({
-    state,
-    gasEstimationUsd,
-  }: {
-    state: StopLossFormChange
-    gasEstimationUsd?: BigNumber
-  }) => VaultWarningMessage[]
   getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
   getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
   getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
@@ -50,14 +42,16 @@ export interface StopLossMetadata {
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   validation: {
-    getAddErrorsValidations: (props: {
+    getAddErrors: (props: {
       gasEstimationUsd?: BigNumber
       state: StopLossFormChange
     }) => AutomationValidationSet[]
-    getAddWarningsValidations: (props: {
+    getAddWarnings: (props: {
       gasEstimationUsd?: BigNumber
       state: StopLossFormChange
     }) => AutomationValidationSet[]
+    cancelErrors: string[]
+    cancelWarnings: string[]
   }
 }
 

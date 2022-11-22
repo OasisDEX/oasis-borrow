@@ -25,3 +25,13 @@ export function triggerAutomationValidations({
     .filter(([fn, state]) => fn({ context, state: state || {} }))
     .map(([fn]) => fn.name)
 }
+
+export function filterAutomationValidations({
+  messages,
+  toFilter,
+}: {
+  messages: string[]
+  toFilter: string[]
+}) {
+  return messages.filter((message) => toFilter.includes(message))
+}

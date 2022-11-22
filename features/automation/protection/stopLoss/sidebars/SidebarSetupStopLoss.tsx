@@ -12,7 +12,10 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
-import { triggerAutomationValidations } from 'features/automation/common/validation/validation'
+import {
+  filterAutomationValidations,
+  triggerAutomationValidations,
+} from 'features/automation/common/validation/validation'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import {
   SetDownsideProtectionInformation,
@@ -25,7 +28,6 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { extractCancelAutomationWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
@@ -76,9 +78,8 @@ export function SidebarSetupStopLoss({
     protocol,
     metadata: {
       stopLoss: {
-        getWarnings,
         getExecutionPrice,
-        validation: { getAddErrorsValidations, getAddWarningsValidations },
+        validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
       },
     },
   } = automationContext
@@ -122,26 +123,19 @@ export function SidebarSetupStopLoss({
     feature,
   })
 
-  const warnings = getWarnings({
-    state: stopLossState,
-    gasEstimationUsd: gasEstimationContext?.usdValue,
-  })
-
   const errors = triggerAutomationValidations({
     context: automationContext,
-    validators: getAddErrorsValidations({ state: stopLossState }),
+    validators: getAddErrors({ state: stopLossState }),
   })
-  const w = triggerAutomationValidations({
+  const warnings = triggerAutomationValidations({
     context: automationContext,
-    validators: getAddWarningsValidations({
+    validators: getAddWarnings({
       state: stopLossState,
       gasEstimationUsd: gasEstimationContext?.usdValue,
     }),
   })
-
-  const cancelStopLossWarnings = extractCancelAutomationWarnings(warnings)
-  const cancelStopLossErrors = ['test']
-  // const cancelStopLossErrors = extractCancelAutomationErrors(errors)
+  const onCancelErrors = filterAutomationValidations({ messages: errors, toFilter: cancelErrors })
+  const onCancelWarnings = filterAutomationValidations({ messages: errors, toFilter: cancelWarnings })
 
   const executionPrice = getExecutionPrice({ state: stopLossState })
 
@@ -181,8 +175,8 @@ export function SidebarSetupStopLoss({
                   )}
                   {isRemoveForm && (
                     <SidebarCancelStopLossEditingStage
-                      errors={cancelStopLossErrors}
-                      warnings={cancelStopLossWarnings}
+                      errors={onCancelErrors}
+                      warnings={onCancelWarnings}
                       stopLossLevel={stopLossTriggerData.stopLossLevel}
                     />
                   )}
