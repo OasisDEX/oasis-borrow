@@ -81,6 +81,8 @@
   "connect-with": "{{ connectionKind }}",
   "connect-install-metamask": "Install Metamask",
   "connected-with": "Connected with {{ connectionKind }}",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {

@@ -11,7 +11,7 @@ import {
 } from 'components/productCards/ProductCardsContainer'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
-import { FollowVault } from 'features/follow/common/FollowVault'
+import { FollowButton, FollowButtonState } from 'features/follow/common/FollowButton'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
@@ -456,6 +456,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
+  let followState = 'follow'
 
   return (
     <Flex
@@ -501,7 +502,20 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
           }}
         />
       </AppLink>
-      <FollowVault />
+
+      <FollowButton
+        isProcessing={false}
+        state={followState as FollowButtonState}
+        followAction={() => {
+          console.log(followState)
+          // TODO: ŁW this doesn't change the rendered component state need to use ui changes
+          followState = 'unfollow'
+        }}
+        unfollowAction={() => {
+          console.log(followState)
+          followState = 'follow'
+        }}
+      />
     </Flex>
   )
 }
