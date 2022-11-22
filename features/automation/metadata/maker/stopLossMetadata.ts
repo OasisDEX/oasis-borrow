@@ -9,6 +9,9 @@ import { getAutomationValidationStateSet } from 'features/automation/common/vali
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
+  hasPotentialInsufficientEthFundsForTx,
+  isStopLossTriggerCloseToAutoSellTrigger,
+  isStopLossTriggerCloseToConstantMultipleSellTrigger,
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
 import { GetStopLossMetadata } from 'features/automation/metadata/types'
@@ -22,9 +25,7 @@ import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import {
-  warningsStopLossValidation,
-} from 'features/automation/protection/stopLoss/validators'
+import { warningsStopLossValidation } from 'features/automation/protection/stopLoss/validators'
 import { formatPercent } from 'helpers/formatters/format'
 
 // eslint-disable-next-line func-style
@@ -137,11 +138,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     sliderStep: 1,
     initialSlRatioWhenTriggerDoesntExist,
     validation: {
-      getAddErrorValidations: ({
-        state: { stopLossLevel, txDetails },
-      }: {
-        state: StopLossFormChange
-      }) => [
+      getAddErrorsValidations: ({ state: { stopLossLevel, txDetails } }) => [
         getAutomationValidationStateSet<typeof hasInsufficientEthFundsForTx>([
           hasInsufficientEthFundsForTx,
           { txError: txDetails?.txError },
@@ -151,6 +148,19 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
           isStopLossTriggerHigherThanAutoBuyTarget,
           { stopLossLevel },
         ]),
+      ],
+      getAddWarningsValidations: ({ gasEstimationUsd, state: { stopLossLevel } }) => [
+        getAutomationValidationStateSet<typeof hasPotentialInsufficientEthFundsForTx>([
+          hasPotentialInsufficientEthFundsForTx,
+          { gasEstimationUsd },
+        ]),
+        getAutomationValidationStateSet<typeof isStopLossTriggerCloseToAutoSellTrigger>([
+          isStopLossTriggerCloseToAutoSellTrigger,
+          { sliderMax, stopLossLevel },
+        ]),
+        getAutomationValidationStateSet<typeof isStopLossTriggerCloseToConstantMultipleSellTrigger>(
+          [isStopLossTriggerCloseToConstantMultipleSellTrigger, { sliderMax, stopLossLevel }],
+        ),
       ],
     },
   }

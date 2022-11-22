@@ -8,11 +8,14 @@ import {
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 
 export type AutomationValidationMethodStateParams<T = {}> = T
+export type AutomationValidationMethodStateReturn = boolean | undefined
 export interface AutomationValidationMethodParams<T = {}> {
   context: ContextWithoutMetadata
   state: AutomationValidationMethodStateParams<T>
 }
-export type AutomationValidationMethod = (params: AutomationValidationMethodParams) => boolean
+export type AutomationValidationMethod = (
+  params: AutomationValidationMethodParams,
+) => AutomationValidationMethodStateReturn
 export type AutomationValidationSet = [
   AutomationValidationMethod,
   AutomationValidationMethodStateParams?,
@@ -47,7 +50,14 @@ export interface StopLossMetadata {
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   validation: {
-    getAddErrorValidations: ({ state }: { state: StopLossFormChange }) => AutomationValidationSet[]
+    getAddErrorsValidations: (props: {
+      gasEstimationUsd?: BigNumber
+      state: StopLossFormChange
+    }) => AutomationValidationSet[]
+    getAddWarningsValidations: (props: {
+      gasEstimationUsd?: BigNumber
+      state: StopLossFormChange
+    }) => AutomationValidationSet[]
   }
 }
 

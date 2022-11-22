@@ -66,6 +66,7 @@ export function SidebarSetupStopLoss({
 
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const automationContext = useAutomationContext()
   const {
     autoSellTriggerData,
     constantMultipleTriggerData,
@@ -77,10 +78,10 @@ export function SidebarSetupStopLoss({
       stopLoss: {
         getWarnings,
         getExecutionPrice,
-        validation: { getAddErrorValidations },
+        validation: { getAddErrorsValidations, getAddWarningsValidations },
       },
     },
-  } = useAutomationContext()
+  } = automationContext
   const { isAwaitingConfirmation } = stopLossState
 
   const gasEstimationContext = useGasEstimationContext()
@@ -127,8 +128,15 @@ export function SidebarSetupStopLoss({
   })
 
   const errors = triggerAutomationValidations({
-    context: useAutomationContext(),
-    validators: getAddErrorValidations({ state: stopLossState }),
+    context: automationContext,
+    validators: getAddErrorsValidations({ state: stopLossState }),
+  })
+  const w = triggerAutomationValidations({
+    context: automationContext,
+    validators: getAddWarningsValidations({
+      state: stopLossState,
+      gasEstimationUsd: gasEstimationContext?.usdValue,
+    }),
   })
 
   const cancelStopLossWarnings = extractCancelAutomationWarnings(warnings)
