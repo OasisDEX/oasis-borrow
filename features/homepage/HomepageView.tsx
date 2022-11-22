@@ -456,7 +456,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
-  let followState = 'unfollow'
+  let followState = 'follow'
 
   return (
     <Flex
@@ -504,7 +504,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       </AppLink>
 
       <FollowButton
-        isProcessing={false}
+        isProcessing={true}
         state={followState as FollowButtonState}
         followAction={() => {
           console.log(followState)
