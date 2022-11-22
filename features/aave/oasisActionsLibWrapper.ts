@@ -132,11 +132,11 @@ export async function getAdjustAaveParameters({
     },
   )
 
-  const operationName = riskRatio.loanToValue.gt(currentPosition.riskRatio.loanToValue)
-    ? OPERATION_NAMES.aave.DECREASE_POSITION
-    : OPERATION_NAMES.aave.INCREASE_POSITION
+  // const operationName = riskRatio.loanToValue.gt(currentPosition.riskRatio.loanToValue)
+  //   ? OPERATION_NAMES.common.CUSTOM_OPERATION
+  //   : OPERATION_NAMES.common.CUSTOM_OPERATION
 
-  return { strategy, operationName }
+  return { strategy, operationName: OPERATION_NAMES.common.CUSTOM_OPERATION }
 }
 
 export async function getCloseAaveParameters({

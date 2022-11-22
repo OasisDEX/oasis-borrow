@@ -24,6 +24,26 @@ export type AutomationValidationSetWithGeneric<T> = [
   AutomationValidationMethodStateParams<T>,
 ]
 
+export enum StopLossDetailCards {
+  STOP_LOSS_LEVEL = 'STOP_LOSS_LEVEL',
+  COLLATERIZATION_RATIO = 'COLLATERIZATION_RATIO',
+  DYNAMIC_STOP_PRICE = 'DYNAMIC_STOP_PRICE',
+  ESTIMATED_TOKEN_ON_TRIGGER = 'ESTIMATED_TOKEN_ON_TRIGGER',
+  LOAN_TO_VALUE = 'LOAN_TO_VALUE',
+}
+
+export interface StopLossDetailsConfig {
+  stopLossLevelCard?: {
+    modalDescription: string
+    belowCurrentPositionRatio: string
+  }
+}
+
+export interface StopLossMetadataDetailCards {
+  cardsSet: StopLossDetailCards[]
+  cardsConfig?: StopLossDetailsConfig
+}
+
 export interface StopLossMetadata {
   getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
   getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
@@ -34,13 +54,14 @@ export interface StopLossMetadata {
   collateralDuringLiquidation: BigNumber
   triggerMaxToken: BigNumber
   resetData: StopLossResetData
-  sliderLeftLabel: string
-  withPickCloseTo: boolean
+  ratioParam: string
   sliderStep: number
   leftBoundaryFormatter: (value: BigNumber) => string
   sliderChangeCallback?: (value: BigNumber) => void
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
+  fixedCloseToToken?: string
+  detailCards?: StopLossMetadataDetailCards
   validation: {
     getAddErrors: (props: {
       gasEstimationUsd?: BigNumber

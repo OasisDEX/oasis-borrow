@@ -9,6 +9,7 @@ import { Card, Grid, Heading, Text } from 'theme-ui'
 export interface ContentCardDynamicStopPriceModalProps {
   dynamicStopPrice: BigNumber
   dynamicStopPriceFormatted: string
+  ratioParam: string
 }
 
 interface ContentCardDynamicStopPriceProps {
@@ -18,11 +19,13 @@ interface ContentCardDynamicStopPriceProps {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
   afterStopLossLevel: BigNumber
+  ratioParam: string
 }
 
 export function ContentCardDynamicStopPriceModal({
   dynamicStopPrice,
   dynamicStopPriceFormatted,
+  ratioParam,
 }: ContentCardDynamicStopPriceModalProps) {
   const { t } = useTranslation()
 
@@ -30,7 +33,9 @@ export function ContentCardDynamicStopPriceModal({
     <Grid gap={2}>
       <Heading variant="header3">{t('manage-multiply-vault.card.dynamic-stop-loss-price')}</Heading>
       <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
-        {t('manage-multiply-vault.card.dynamic-stop-loss-price-desc')}
+        {t('manage-multiply-vault.card.dynamic-stop-loss-price-desc', {
+          ratioParam: t(ratioParam),
+        })}
       </Text>
       <Text as="p" variant="header4" sx={{ mt: 3, fontWeight: 'semiBold' }}>
         {t('manage-multiply-vault.card.current-dynamic-stop-loss-price')}
@@ -51,6 +56,7 @@ export function ContentCardDynamicStopPrice({
   liquidationPrice,
   liquidationRatio,
   afterStopLossLevel,
+  ratioParam,
 }: ContentCardDynamicStopPriceProps) {
   const { t } = useTranslation()
 
@@ -75,6 +81,7 @@ export function ContentCardDynamicStopPrice({
   const contentCardModalSettings: ContentCardDynamicStopPriceModalProps = {
     dynamicStopPrice: dynamicStopLossPrice,
     dynamicStopPriceFormatted: formatted.dynamicStopPrice,
+    ratioParam,
   }
 
   const contentCardSettings: ContentCardProps = {

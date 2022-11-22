@@ -910,7 +910,7 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} below Current Collateral Ratio"
+        "footnote": "{{amount}} below {{value}}"
       },
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"
@@ -1261,7 +1261,7 @@
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
-    "set-downside-protection-desc": "Set the Collateralisation Ratio trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
+    "set-downside-protection-desc": "Set the {{ratioParam}} trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
     "cancel-downside-protection-desc": "To cancel the Stop-Loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting Stop-Loss Protection",
@@ -1328,7 +1328,8 @@
     "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
-    "slider-left-label": "Stop-Loss {{value}}"
+    "stop-loss-something": "Stop-Loss {{value}}",
+    "current-stop-loss-something": "The current Stop-Loss {{value}} is:"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1429,7 +1430,8 @@
     "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% tier",
     "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
     "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
-    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
+    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP",
+    "RETH-A": "Rocket Pool ETH"
   },
   "product-page": {
     "multiply": {

@@ -14,7 +14,7 @@ import {
   isStopLossTriggerCloseToConstantMultipleSellTrigger,
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
-import { GetStopLossMetadata } from 'features/automation/metadata/types'
+import { GetStopLossMetadata, StopLossDetailCards } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getMaxToken,
@@ -34,6 +34,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     stopLossTriggerData,
     constantMultipleTriggerData,
     positionData: {
+      positionRatio,
       nextPositionRatio,
       liquidationRatio,
       liquidationPrice,
@@ -77,6 +78,15 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     liquidationPenalty,
   })
 
+  function leftBoundaryFormatter(x: BigNumber) {
+    return x.isZero() ? '-' : formatPercent(x)
+  }
+
+  const belowCurrentPositionRatio = formatPercent(
+    positionRatio.minus(stopLossTriggerData.stopLossLevel).times(100),
+    { precision: 2 },
+  )
+
   return {
     getExecutionPrice: ({ state }: { state: StopLossFormChange }) =>
       collateralPriceAtRatio({
@@ -114,9 +124,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     sliderMax,
     sliderMin,
     resetData,
-    sliderLeftLabel: 'system.collateral-ratio',
-    withPickCloseTo: true,
-    leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
+    leftBoundaryFormatter,
     sliderStep: 1,
     initialSlRatioWhenTriggerDoesntExist,
     validation: {
@@ -147,5 +155,21 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
     },
+    detailCards: {
+      cardsSet: [
+        StopLossDetailCards.STOP_LOSS_LEVEL,
+        StopLossDetailCards.COLLATERIZATION_RATIO,
+        StopLossDetailCards.DYNAMIC_STOP_PRICE,
+        StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER,
+      ],
+      cardsConfig: {
+        // most likely it won't be needed when we switch to LTV in maker
+        stopLossLevelCard: {
+          modalDescription: 'manage-multiply-vault.card.stop-loss-coll-ratio-desc',
+          belowCurrentPositionRatio,
+        },
+      },
+    },
+    ratioParam: 'system.collateral-ratio',
   }
 }
