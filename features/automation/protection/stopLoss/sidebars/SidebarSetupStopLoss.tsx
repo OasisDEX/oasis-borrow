@@ -135,7 +135,10 @@ export function SidebarSetupStopLoss({
     }),
   })
   const onCancelErrors = filterAutomationValidations({ messages: errors, toFilter: cancelErrors })
-  const onCancelWarnings = filterAutomationValidations({ messages: errors, toFilter: cancelWarnings })
+  const onCancelWarnings = filterAutomationValidations({
+    messages: errors,
+    toFilter: cancelWarnings,
+  })
 
   const executionPrice = getExecutionPrice({ state: stopLossState })
 
