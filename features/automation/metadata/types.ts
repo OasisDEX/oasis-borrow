@@ -5,20 +5,17 @@ import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 
-export type AutomationValidationMethodStateParams<T> = {
-  [key: string]: unknown
-} & T
-export interface AutomationValidationMethodParams<T> {
+export type AutomationValidationMethodStateParams<T = {}> = T
+export interface AutomationValidationMethodParams<T = {}> {
   context: ContextWithoutMetadata
   state: AutomationValidationMethodStateParams<T>
 }
-export type AutomationValidationMethod = (params: AutomationValidationMethodParams<any>) => boolean
+export type AutomationValidationMethod = (params: AutomationValidationMethodParams) => boolean
 export type AutomationValidationSet = [
   AutomationValidationMethod,
-  AutomationValidationMethodStateParams<{}>?,
+  AutomationValidationMethodStateParams?,
 ]
 export type AutomationValidationSetWithGeneric<T> = [
   AutomationValidationMethod,
@@ -33,7 +30,6 @@ export interface StopLossMetadata {
     state: StopLossFormChange
     gasEstimationUsd?: BigNumber
   }) => VaultWarningMessage[]
-  getErrors: ({ state }: { state: StopLossFormChange }) => VaultErrorMessage[]
   getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
   getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
   getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
@@ -51,10 +47,7 @@ export interface StopLossMetadata {
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   validation: {
-    add: {
-      getErrorValidations: ({ state }: { state: StopLossFormChange }) => AutomationValidationSet[]
-      // getErrorValidations: ({ state }: { state: StopLossFormChange }) => AutomationValidationSet[]
-    }
+    getAddErrorValidations: ({ state }: { state: StopLossFormChange }) => AutomationValidationSet[]
   }
 }
 

@@ -5,11 +5,12 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
+import { getAutomationValidationStateSet } from 'features/automation/common/validation/validation'
 import {
-  getAutomationValidationStateSet,
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
-} from 'features/automation/common/validation'
+  isStopLossTriggerHigherThanAutoBuyTarget,
+} from 'features/automation/common/validation/validators'
 import { GetStopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
@@ -22,7 +23,6 @@ import {
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import {
-  errorsStopLossValidation,
   warningsStopLossValidation,
 } from 'features/automation/protection/stopLoss/validators'
 import { formatPercent } from 'helpers/formatters/format'
@@ -95,13 +95,6 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         gasEstimationUsd,
         sliderMax,
       }),
-    getErrors: ({ state: { txDetails, stopLossLevel } }: { state: StopLossFormChange }) =>
-      errorsStopLossValidation({
-        txError: txDetails?.txError,
-        debt: context.positionData.debt,
-        stopLossLevel,
-        autoBuyTriggerData: context.autoBuyTriggerData,
-      }),
     getExecutionPrice: ({ state }: { state: StopLossFormChange }) =>
       collateralPriceAtRatio({
         colRatio: state.stopLossLevel.div(100),
@@ -144,15 +137,21 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     sliderStep: 1,
     initialSlRatioWhenTriggerDoesntExist,
     validation: {
-      add: {
-        getErrorValidations: ({ state: { txDetails } }: { state: StopLossFormChange }) => [
-          getAutomationValidationStateSet<typeof hasInsufficientEthFundsForTx>([
-            hasInsufficientEthFundsForTx,
-            { txError: txDetails?.txError },
-          ]),
-          [hasMoreDebtThanMaxForStopLoss],
-        ],
-      },
+      getAddErrorValidations: ({
+        state: { stopLossLevel, txDetails },
+      }: {
+        state: StopLossFormChange
+      }) => [
+        getAutomationValidationStateSet<typeof hasInsufficientEthFundsForTx>([
+          hasInsufficientEthFundsForTx,
+          { txError: txDetails?.txError },
+        ]),
+        [hasMoreDebtThanMaxForStopLoss],
+        getAutomationValidationStateSet<typeof isStopLossTriggerHigherThanAutoBuyTarget>([
+          isStopLossTriggerHigherThanAutoBuyTarget,
+          { stopLossLevel },
+        ]),
+      ],
     },
   }
 }

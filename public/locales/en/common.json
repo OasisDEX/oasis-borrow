@@ -1754,7 +1754,12 @@
     "closed-vault-existing-trigger-header": "Your vault is closed but {{feature}} is still active",
     "closed-vault-existing-trigger-description": "You can cancel your existing {{feature}} here or deposit into your vault in overview tab",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up {{feature}}",
-    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab"
+    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab",
+    "validation": {
+      "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
+      "has-more-debt-than-max-for-stop-loss": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20M DAI",
+      "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
+    }
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",

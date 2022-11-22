@@ -19,18 +19,17 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
   closeVaultOptions,
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
+import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { AutomationFeatures } from 'features/automation/common/types'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
@@ -118,7 +117,7 @@ export function SetDownsideProtectionInformation({
 
 export interface SidebarAdjustStopLossEditingStageProps {
   executionPrice: BigNumber
-  errors: VaultErrorMessage[]
+  errors: string[]
   warnings: VaultWarningMessage[]
   stopLossState: StopLossFormChange
   isEditing: boolean
@@ -284,7 +283,7 @@ export function SidebarAdjustStopLossEditingStage({
           <Grid>
             {!stopLossState.stopLossLevel.isZero() && (
               <>
-                <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+                <AutomationValidationMessages messages={errors} type="error" />
                 <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
               </>
             )}

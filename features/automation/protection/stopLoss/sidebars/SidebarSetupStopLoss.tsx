@@ -12,7 +12,7 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
-import { triggerAutomationValidations } from 'features/automation/common/validation'
+import { triggerAutomationValidations } from 'features/automation/common/validation/validation'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import {
   SetDownsideProtectionInformation,
@@ -25,10 +25,7 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import {
-  extractCancelAutomationErrors,
-  extractCancelAutomationWarnings,
-} from 'helpers/messageMappers'
+import { extractCancelAutomationWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
@@ -79,11 +76,8 @@ export function SidebarSetupStopLoss({
     metadata: {
       stopLoss: {
         getWarnings,
-        getErrors,
         getExecutionPrice,
-        validation: {
-          add: { getErrorValidations },
-        },
+        validation: { getAddErrorValidations },
       },
     },
   } = useAutomationContext()
@@ -127,21 +121,19 @@ export function SidebarSetupStopLoss({
     feature,
   })
 
-  const errors = getErrors({ state: stopLossState })
   const warnings = getWarnings({
     state: stopLossState,
     gasEstimationUsd: gasEstimationContext?.usdValue,
   })
 
-  const e = triggerAutomationValidations({
+  const errors = triggerAutomationValidations({
     context: useAutomationContext(),
-    validators: getErrorValidations({ state: stopLossState }),
+    validators: getAddErrorValidations({ state: stopLossState }),
   })
 
-  console.log(e)
-
   const cancelStopLossWarnings = extractCancelAutomationWarnings(warnings)
-  const cancelStopLossErrors = extractCancelAutomationErrors(errors)
+  const cancelStopLossErrors = ['test']
+  // const cancelStopLossErrors = extractCancelAutomationErrors(errors)
 
   const executionPrice = getExecutionPrice({ state: stopLossState })
 

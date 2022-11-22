@@ -7,9 +7,8 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -54,7 +53,7 @@ export function CancelDownsideProtectionInformation({
 }
 
 interface SidebarCancelStopLossEditingStageProps {
-  errors: VaultErrorMessage[]
+  errors: string[]
   warnings: VaultWarningMessage[]
   stopLossLevel: BigNumber
 }
@@ -66,14 +65,14 @@ export function SidebarCancelStopLossEditingStage({
 }: SidebarCancelStopLossEditingStageProps) {
   const { t } = useTranslation()
   const {
-    positionData: { token, debtFloor, liquidationPrice },
+    positionData: { debtFloor, liquidationPrice },
   } = useAutomationContext()
   return (
     <Grid>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.cancel-downside-protection-desc')}
       </Text>
-      <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
+      <AutomationValidationMessages messages={errors} type="error" />
       <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
       <CancelDownsideProtectionInformation
         liquidationPrice={liquidationPrice}
