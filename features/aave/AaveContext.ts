@@ -77,8 +77,6 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
-  const aaveReserveConfigurationStEthData$ = aaveReserveConfigurationData$({ token: 'STETH' })
-
   const aaveProtocolData$ = memoize(
     curry(getAaveProtocolData$)(
       aaveUserReserveData$,
@@ -156,7 +154,9 @@ export function setupAaveContext({
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,
-    aaveReserveConfigurationStEthData$,
+    aaveReserveConfiguration: {
+      STETH: aaveReserveConfigurationData$({ token: 'STETH' }),
+    },
     aaveReserveData: {
       USDC: aavePreparedReserveDataUSDC$,
       STETH: aavePreparedReserveDataSTETH$,

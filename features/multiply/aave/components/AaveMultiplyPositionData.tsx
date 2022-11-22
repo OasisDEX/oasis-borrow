@@ -47,15 +47,11 @@ export function AaveMultiplyPositionData({
 
   const newPosition =
     userInput?.amount &&
-    userInput.riskRatio &&
     new Position(
       currentPosition.debt,
       { amount: userInput.amount, denomination: currentPosition.collateral.denomination },
       collateralTokenPrice,
-      {
-        ...currentPosition.category,
-        maxLoanToValue: userInput.riskRatio.loanToValue,
-      },
+      currentPosition.category,
     )
 
   const { collateral, debt, category, riskRatio } = currentPosition
@@ -150,12 +146,12 @@ export function AaveMultiplyPositionData({
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}
             value={formatDecimalAsPercent(netBorrowCost)}
-            change={
-              newNetValue && {
-                variant: 'positive',
-                value: '????',
-              }
-            }
+            // change={
+            //   newNetValue && {
+            //     variant: 'positive',
+            //     value: '????',
+            //   }
+            // }
           />
           <DetailsSectionContentCard
             title={t('system.net-value')}
