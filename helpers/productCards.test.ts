@@ -95,6 +95,14 @@ const wstethB = mockIlkData({
   ilkDebtAvailable: new BigNumber('100'),
 })()
 
+const rethA = mockIlkData({
+  token: 'RETH',
+  ilk: 'RETH-B',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.7'),
+  ilkDebtAvailable: new BigNumber('100'),
+})()
+
 const guni = mockIlkData({
   token: 'GUNIV3DAIUSDC2',
   ilk: 'GUNIV3DAIUSDC2-A',
@@ -131,6 +139,7 @@ const mockIlkDataMapping: Record<Ilk, IlkData> = {
   'LINK-A': linkA,
   'WSTETH-A': wstethA,
   'WSTETH-B': wstethB,
+  'RETH-A': rethA,
   'GUNIV3DAIUSDC2-A': guni,
   'CRVV1ETHSTETH-A': crv,
 }
