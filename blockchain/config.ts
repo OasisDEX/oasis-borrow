@@ -323,6 +323,11 @@ const kovan: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x',
   ),
+  chainlinkUsdcUsdPriceOracle: contractDesc(
+    chainlinkUSDCUSDPriceOracle,
+    // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
+    '0x',
+  ),
   aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
   operationExecutor: contractDesc(
     operationExecutor,
