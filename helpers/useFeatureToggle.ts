@@ -19,7 +19,6 @@ export type Feature =
   | 'AutoTakeProfit'
   | 'UpdatedPnL'
   | 'ReadOnlyAutoTakeProfit'
-  | 'DiscoverOasis'
   | 'ShowAaveStETHETHProductCard'
   | 'FollowVaults'
   | 'AaveProtection'
@@ -40,7 +39,6 @@ const configuredFeatures: Record<Feature, boolean> = {
   AutoTakeProfit: true,
   UpdatedPnL: false,
   ReadOnlyAutoTakeProfit: false,
-  DiscoverOasis: true,
   ShowAaveStETHETHProductCard: true,
   FollowVaults: false,
   AaveProtection: false,
