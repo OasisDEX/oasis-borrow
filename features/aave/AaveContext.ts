@@ -1,5 +1,6 @@
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { getChainlinkUSDCUSDPrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine } from 'features/proxyNew/pipelines'
 import { memoize } from 'lodash'
@@ -37,6 +38,7 @@ export function setupAaveContext({
   daiEthTokenPrice$,
   accountBalances$,
   onEveryBlock$,
+  once$,
   context$,
   aaveOracleAssetPriceData$,
   aaveReserveConfigurationData$,
@@ -132,17 +134,20 @@ export function setupAaveContext({
 
   const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
+  const aaveSTETHUSDCPrices$ = getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] })
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'STETH' }),
     getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    aaveSTETHUSDCPrices$, //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
   )
+
+  const getChainlinkUSDCUSDPrice$ = observe(once$, context$, getChainlinkUSDCUSDPrice)
 
   return {
     aaveStateMachine,
@@ -152,6 +157,8 @@ export function setupAaveContext({
     aaveSthEthYieldsQuery,
     aaveProtocolData$,
     strategyConfig$,
+    aaveSTETHUSDCPrices$,
+    getChainlinkUSDCUSDPrice$,
   }
 }
 
