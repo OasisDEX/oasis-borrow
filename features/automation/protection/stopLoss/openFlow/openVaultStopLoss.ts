@@ -181,8 +181,8 @@ export function getDataForStopLoss(
         setStopLossCloseType(optionName as CloseVaultTo),
       initialSlRatioWhenTriggerDoesntExist: zero,
       validation: {
-        getAddErrors: () => [],
-        getAddWarnings: () => [],
+        getAddErrors: () => ({}),
+        getAddWarnings: () => ({}),
         cancelErrors: [],
         cancelWarnings: [],
       },
