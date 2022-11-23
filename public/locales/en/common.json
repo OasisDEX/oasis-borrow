@@ -83,6 +83,7 @@
   "connected-with": "Connected with {{ connectionKind }}",
   "follow": "Follow",
   "unfollow": "Unfollow",
+  "loading": "Loading",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {

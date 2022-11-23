@@ -13,6 +13,7 @@ export function FollowButton(props: FollowButtonProps) {
   const { t } = useTranslation()
 
   return (
+    // consider loading label for processing
     <Button variant="menuButton" disabled={props.isProcessing} onClick={props.buttonClickHandler}>
       <Flex sx={{ justifyContent: 'space-between', gap: '8px', alignItems: 'center' }}>
         {props.isProcessing ? (
@@ -20,7 +21,7 @@ export function FollowButton(props: FollowButtonProps) {
         ) : (
           <Icon name={props.isFollowing ? 'star_empty' : 'star'} size="15px" />
         )}
-        {props.isFollowing ? t('follow') : t('unfollow')}
+        {props.isProcessing ? t('loading') : props.isFollowing ? t('follow') : t('unfollow')} 
       </Flex>
     </Button>
   )
