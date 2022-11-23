@@ -1,4 +1,4 @@
-import { IPosition, Position } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import {
@@ -9,7 +9,6 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
-import { UserInput } from 'features/aave/common/BaseAaveContext'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
@@ -18,7 +17,7 @@ import React from 'react'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
-  userInput?: UserInput
+  nextPosition?: IPosition
   collateralTokenPrice: BigNumber
   debtTokenPrice: BigNumber
   collateralTokenReserveData: PreparedAaveReserveData
@@ -37,22 +36,13 @@ const getLTVRatioColor = (ratio: BigNumber) => {
 
 export function AaveMultiplyPositionData({
   currentPosition,
-  userInput,
+  nextPosition,
   collateralTokenPrice,
   debtTokenPrice,
   collateralTokenReserveData,
   debtTokenReserveData,
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
-
-  const newPosition =
-    userInput?.amount &&
-    new Position(
-      currentPosition.debt,
-      { amount: userInput.amount, denomination: currentPosition.collateral.denomination },
-      collateralTokenPrice,
-      currentPosition.category,
-    )
 
   const { collateral, debt, category, riskRatio } = currentPosition
 
@@ -63,35 +53,35 @@ export function AaveMultiplyPositionData({
     .minus(debt.amount.times(debtTokenPrice))
 
   const newBuyingPower =
-    newPosition &&
-    newPosition.collateral.amount
+    nextPosition &&
+    nextPosition.collateral.amount
       .times(collateralTokenPrice)
-      .times(newPosition.category.maxLoanToValue)
-      .minus(newPosition.debt.amount.times(collateralTokenPrice))
+      .times(nextPosition.category.maxLoanToValue)
+      .minus(nextPosition.debt.amount.times(collateralTokenPrice))
 
   // (collateral_amount * collateral_token_oracle_price - debt_token_amount * debt_token_oracle_price) / USDC_oracle_price
   const netValue = collateral.amount
     .times(collateralTokenPrice)
     .minus(debt.amount.times(debtTokenPrice))
   const newNetValue =
-    newPosition &&
-    newPosition.collateral.amount
+    nextPosition &&
+    nextPosition.collateral.amount
       .times(collateralTokenPrice)
-      .minus(newPosition.debt.amount.times(debtTokenPrice))
+      .minus(nextPosition.debt.amount.times(debtTokenPrice))
 
   // collateral * multiple
   const totalExposure = collateral.amount
-  const newTotalExposure = newPosition && newPosition.collateral.amount
+  const newTotalExposure = nextPosition && nextPosition.collateral.amount
 
   const liquidationPrice = NaNIsZero(currentPosition.liquidationPrice)
   const newLiquidationPrice =
-    newPosition?.liquidationPrice && NaNIsZero(newPosition.liquidationPrice)
+    nextPosition?.liquidationPrice && NaNIsZero(nextPosition.liquidationPrice)
 
   const positionDebt = debt.amount
-  const newPositionDebt = newPosition && newPosition.debt.amount
+  const nextPositionDebt = nextPosition && nextPosition.debt.amount
 
   const multiple = riskRatio.multiple
-  const newMultiple = userInput?.riskRatio && userInput.riskRatio.multiple
+  const newMultiple = nextPosition && nextPosition.riskRatio.multiple
 
   // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
   const netBorrowCost = debtTokenReserveData.variableBorrowRate
@@ -128,15 +118,15 @@ export function AaveMultiplyPositionData({
               percentage: formatDecimalAsPercent(category.liquidationThreshold),
             })}`}
             customBackground={
-              !newPosition?.riskRatio
+              !nextPosition?.riskRatio
                 ? getLTVRatioColor(
                     category.liquidationThreshold.minus(riskRatio.loanToValue).times(100),
                   )
                 : 'transparent'
             }
             change={
-              newPosition?.riskRatio && {
-                variant: newPosition.riskRatio.loanToValue.gt(riskRatio.loanToValue)
+              nextPosition?.riskRatio && {
+                variant: nextPosition.riskRatio.loanToValue.gt(riskRatio.loanToValue)
                   ? 'positive'
                   : 'negative',
                 value: `${formatDecimalAsPercent(category.liquidationThreshold)} ${t('after')}`,
@@ -175,9 +165,9 @@ export function AaveMultiplyPositionData({
             title={t('system.position-debt')}
             value={`${formatAmount(positionDebt, 'USD')} USDC`}
             change={
-              newPositionDebt && {
-                variant: newPositionDebt.gt(positionDebt) ? 'positive' : 'negative',
-                value: `${formatAmount(newPositionDebt, 'USD')} USDC ${t('after')}`,
+              nextPositionDebt && {
+                variant: nextPositionDebt.gt(positionDebt) ? 'positive' : 'negative',
+                value: `${formatAmount(nextPositionDebt, 'USD')} USDC ${t('after')}`,
               }
             }
           />

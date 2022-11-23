@@ -18,7 +18,6 @@ export function AaveMultiplySimulate() {
     <WithLoadingIndicator
       value={[
         state.context.currentPosition,
-        state.context.userInput,
         state.context.collateralPrice,
         state.context.tokenPrice,
         aaveUSDCReserveData,
@@ -28,7 +27,6 @@ export function AaveMultiplySimulate() {
     >
       {([
         currentPosition,
-        userInput,
         collateralTokenPrice,
         debtTokenPrice,
         USDCReserveData,
@@ -37,7 +35,7 @@ export function AaveMultiplySimulate() {
         return (
           <AaveMultiplyPositionData
             currentPosition={currentPosition}
-            userInput={userInput}
+            nextPosition={state.context.strategy?.simulation.position}
             collateralTokenPrice={collateralTokenPrice}
             collateralTokenReserveData={STETHReserveData}
             debtTokenPrice={debtTokenPrice}
