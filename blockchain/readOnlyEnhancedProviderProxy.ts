@@ -1,7 +1,5 @@
 import { JsonRpcProvider, Provider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-protocol'
-import { providers } from 'ethers'
-import { skipCache } from 'helpers/api/skipCache'
 import { providers as ethersProviders } from 'ethers'
 import { providers as multicallProvider } from '@0xsequence/multicall'
 import _ from 'lodash'
@@ -13,8 +11,6 @@ function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers
   return new Number(chainId).valueOf()
 }
-
-const READ_ONLY_RPC_CALLS = ['eth_call', 'eth_getTransactionReceipt', 'eth_getTransactionByHash']
 
 function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any> {
   const getReadOnlyProviderAsync = (() => {
@@ -34,11 +30,11 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
     let provider: JsonRpcProvider | undefined = undefined
     return async function (
       chainIdPromise: Promise<number | string>,
-      web3Provider: providers.ExternalProvider,
+      web3Provider: ethersProviders.ExternalProvider,
     ) {
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
-        provider = new providers.Web3Provider(web3Provider, chainId)
+        provider = new ethersProviders.Web3Provider(web3Provider, chainId)
       }
       return provider
     }
@@ -56,7 +52,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
           if(payload.method === 'eth_call') {
             try {
-              const result = await readOnlyProvider.call(payload.params[0]);
+              const result = await readOnlyProvider!.call(payload.params[0]);
               callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
             } catch (err) {
               callback(err as any)
@@ -64,7 +60,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           }else
           if (payload.method === 'eth_getTransactionByHash') {
             try {
-              const result = await readOnlyProvider.getTransaction(payload.params[0]);
+              const result = await readOnlyProvider!.getTransaction(payload.params[0]);
               callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
             } catch (err) {
               callback(err as any)
@@ -72,7 +68,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           }else
             if(payload.method === 'eth_getTransactionReceipt') {
               try {
-                const result = await readOnlyProvider.getTransactionReceipt(payload.params[0]);
+                const result = await readOnlyProvider!.getTransactionReceipt(payload.params[0]);
                 callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
               } catch (err) {
                 callback(err as any)
@@ -95,10 +91,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
-          const provider = _.includes(READ_ONLY_RPC_CALLS, payload.method)
-            ? readOnlyProvider
-            : rpcProvider
-
+          
           // Gnosis Safe web3-react provider doesn't implement eth_gasPrice call
           if (payload.method === 'eth_gasPrice') {
             try {

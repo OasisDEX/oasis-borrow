@@ -108,6 +108,34 @@
     ethers "~4.0.4"
     lodash "^4.17.11"
 
+"@0xsequence/abi@^0.43.3":
+  version "0.43.3"
+  resolved "https://registry.yarnpkg.com/@0xsequence/abi/-/abi-0.43.3.tgz#905612776e51c13db257fe5a34df97f04bc64e45"
+  integrity sha512-24lrg0hUhVCmuLKEyWF6VaHXw6y6BxnkHPjs9RZzEwU/9Sz2tQXZQJavReA/BWQDnX3FQAtJtXv0exhbMuwedw==
+
+"@0xsequence/multicall@^0.43.3":
+  version "0.43.3"
+  resolved "https://registry.yarnpkg.com/@0xsequence/multicall/-/multicall-0.43.3.tgz#c7bd1fa67e67d22e253ab498e6e279cd53d2dcc2"
+  integrity sha512-Qqmxu6+0boF3psQpQ3MDKY1Pd991rUSTUjg/TM0ZMGX7ZjENkW0vvmGeJP1DzHO7iO0jVP0O1WY34w7b0iwf9w==
+  dependencies:
+    "@0xsequence/abi" "^0.43.3"
+    "@0xsequence/network" "^0.43.3"
+    "@0xsequence/utils" "^0.43.3"
+
+"@0xsequence/network@^0.43.3":
+  version "0.43.3"
+  resolved "https://registry.yarnpkg.com/@0xsequence/network/-/network-0.43.3.tgz#21d9d397453c8dd29bac362722040fbade966c12"
+  integrity sha512-Q3Zl4QK87MwnhVWbwHv4j0BnJcrVVXJI29RYYMZOR7aLedo6u3SEbGLVxG9g0i1/vsHpy/uBW1vxnWCVWbSEuA==
+  dependencies:
+    "@0xsequence/utils" "^0.43.3"
+
+"@0xsequence/utils@^0.43.3":
+  version "0.43.3"
+  resolved "https://registry.yarnpkg.com/@0xsequence/utils/-/utils-0.43.3.tgz#bcc972ef10109b479a4a854cd011200d5e5bcd07"
+  integrity sha512-Cw7a8+6Z9JgnlMjLz+lPVKuCyT5AUa2HPWiVKouowXxZ9gq8BGArvO1H6WPjD/v5ulKIJNkKre8m7SUDVyXkzw==
+  dependencies:
+    js-base64 "^3.7.2"
+
 "@ampproject/remapping@^2.1.0":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.1.2.tgz#4edca94973ded9630d20101cd8559cedb8d8bd34"
@@ -18675,6 +18703,11 @@ jpeg-js@0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.4.2.tgz#8b345b1ae4abde64c2da2fe67ea216a114ac279d"
   integrity sha512-+az2gi/hvex7eLTMTlbRLOhH6P6WFdk2ITI8HJsaH2VqYO0I594zXSYEP+tf4FW+8Cy68ScDXoAsQdyQanv3sw==
+
+js-base64@^3.7.2:
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.3.tgz#2e784bb0851636bf1e99ef12e4f3a8a8c9b7639f"
+  integrity sha512-PAr6Xg2jvd7MCR6Ld9Jg3BmTcjYsHEBx1VlwEwULb/qowPf5VD9kEMagj23Gm7JRnSvE/Da/57nChZjnvL8v6A==
 
 js-sha256@0.9.0:
   version "0.9.0"
