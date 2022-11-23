@@ -7,9 +7,9 @@ export function FollowButtonControl() {
 
   useEffect(() => {
     setTimeout(() => {
-        setIsFollowing(true)
-        setProcessing(false)
-    },5000)
+      setIsFollowing(true)
+      setProcessing(false)
+    }, 5000)
     setProcessing(isProcessing)
   }, [])
   function buttonClickHandler() {
