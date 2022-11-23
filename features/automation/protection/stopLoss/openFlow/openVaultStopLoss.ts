@@ -19,8 +19,6 @@ import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -166,9 +164,6 @@ export function getDataForStopLoss(
   // eslint-disable-next-line func-style
   const stopLossMetadata: GetStopLossMetadata = (_) => {
     return {
-      getWarnings: (_: { state: StopLossFormChange; gasEstimationUsd?: BigNumber }) =>
-        [] as VaultWarningMessage[],
-      getErrors: (_: { state: StopLossFormChange }) => [] as VaultErrorMessage[],
       getExecutionPrice: (_: { state: StopLossFormChange }) => executionPrice,
       getSliderPercentageFill: (_: { state: StopLossFormChange }) => sliderPercentageFill,
       getRightBoundary: (_: { state: StopLossFormChange }) => afterNewLiquidationPrice,
@@ -185,6 +180,12 @@ export function getDataForStopLoss(
       closeToChangeCallback: (optionName: string) =>
         setStopLossCloseType(optionName as CloseVaultTo),
       initialSlRatioWhenTriggerDoesntExist: zero,
+      validation: {
+        getAddErrors: () => [],
+        getAddWarnings: () => [],
+        cancelErrors: [],
+        cancelWarnings: [],
+      },
     }
   }
 

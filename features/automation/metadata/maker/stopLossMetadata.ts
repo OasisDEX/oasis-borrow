@@ -126,6 +126,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     resetData,
     leftBoundaryFormatter,
     sliderStep: 1,
+    ratioParam: 'system.collateral-ratio',
     initialSlRatioWhenTriggerDoesntExist,
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => [
@@ -170,6 +171,5 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         },
       },
     },
-    ratioParam: 'system.collateral-ratio',
   }
 }

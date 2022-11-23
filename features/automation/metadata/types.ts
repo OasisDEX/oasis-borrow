@@ -61,7 +61,6 @@ export interface StopLossMetadata {
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   fixedCloseToToken?: string
-  detailCards?: StopLossMetadataDetailCards
   validation: {
     getAddErrors: (props: {
       gasEstimationUsd?: BigNumber
@@ -74,6 +73,7 @@ export interface StopLossMetadata {
     cancelErrors: string[]
     cancelWarnings: string[]
   }
+  detailCards?: StopLossMetadataDetailCards
 }
 
 export interface AutoBSMetadata {}
