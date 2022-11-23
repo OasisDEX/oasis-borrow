@@ -1,29 +1,13 @@
-/* eslint-disable func-style */
+import { AutomationMetadataValidationResult } from 'features/automation/metadata/types'
 
-import {
-  AutomationValidationMethod,
-  AutomationValidationSet,
-  AutomationValidationSetWithGeneric,
-  ContextWithoutMetadata,
-} from 'features/automation/metadata/types'
-
-export function getAutomationValidationStateSet<T extends AutomationValidationMethod>([
-  fn,
-  state,
-]: AutomationValidationSetWithGeneric<Parameters<T>[0]['state']>): AutomationValidationSet {
-  return [fn, state]
-}
-
-export function triggerAutomationValidations({
-  context,
-  validators,
+export function extractAutomationValidations({
+  validations,
 }: {
-  context: ContextWithoutMetadata
-  validators: AutomationValidationSet[]
+  validations: AutomationMetadataValidationResult
 }) {
-  return validators
-    .filter(([fn, state]) => fn({ context, state: state || {} }))
-    .map(([fn]) => fn.name)
+  return Object.entries(validations)
+    .filter(([, value]) => value)
+    .map(([value]) => value)
 }
 
 export function filterAutomationValidations({

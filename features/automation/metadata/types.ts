@@ -6,23 +6,24 @@ import {
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
-export type AutomationValidationMethodStateParams<T = {}> = T
-export type AutomationValidationMethodStateReturn = boolean | undefined
-export interface AutomationValidationMethodParams<T = {}> {
+export type AutomationValidationMethodParams<T = {}> = {
   context: ContextWithoutMetadata
-  state: AutomationValidationMethodStateParams<T>
-}
+} & T
+export type AutomationValidationMethodStateResult = boolean | undefined
 export type AutomationValidationMethod = (
   params: AutomationValidationMethodParams,
-) => AutomationValidationMethodStateReturn
-export type AutomationValidationSet = [
-  AutomationValidationMethod,
-  AutomationValidationMethodStateParams?,
-]
-export type AutomationValidationSetWithGeneric<T> = [
-  AutomationValidationMethod,
-  AutomationValidationMethodStateParams<T>,
-]
+) => AutomationValidationMethodStateResult
+
+export interface AutomationMetadataValidationParams<T> {
+  gasEstimationUsd?: BigNumber
+  state: T
+}
+export interface AutomationMetadataValidationResult {
+  [key: string]: boolean | undefined
+}
+export type AutomationMetadataValidationMethod<T> = (
+  params: AutomationMetadataValidationParams<T>,
+) => AutomationMetadataValidationResult
 
 export enum StopLossDetailCards {
   STOP_LOSS_LEVEL = 'STOP_LOSS_LEVEL',
@@ -62,14 +63,8 @@ export interface StopLossMetadata {
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   fixedCloseToToken?: string
   validation: {
-    getAddErrors: (props: {
-      gasEstimationUsd?: BigNumber
-      state: StopLossFormChange
-    }) => AutomationValidationSet[]
-    getAddWarnings: (props: {
-      gasEstimationUsd?: BigNumber
-      state: StopLossFormChange
-    }) => AutomationValidationSet[]
+    getAddErrors: AutomationMetadataValidationMethod<StopLossFormChange>
+    getAddWarnings: AutomationMetadataValidationMethod<StopLossFormChange>
     cancelErrors: string[]
     cancelWarnings: string[]
   }

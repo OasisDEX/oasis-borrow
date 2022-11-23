@@ -5,7 +5,6 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { getAutomationValidationStateSet } from 'features/automation/common/validation/validation'
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
@@ -129,30 +128,35 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     ratioParam: 'system.collateral-ratio',
     initialSlRatioWhenTriggerDoesntExist,
     validation: {
-      getAddErrors: ({ state: { stopLossLevel, txDetails } }) => [
-        getAutomationValidationStateSet<typeof hasInsufficientEthFundsForTx>([
-          hasInsufficientEthFundsForTx,
-          { txError: txDetails?.txError },
-        ]),
-        [hasMoreDebtThanMaxForStopLoss],
-        getAutomationValidationStateSet<typeof isStopLossTriggerHigherThanAutoBuyTarget>([
-          isStopLossTriggerHigherThanAutoBuyTarget,
-          { stopLossLevel },
-        ]),
-      ],
-      getAddWarnings: ({ gasEstimationUsd, state: { stopLossLevel } }) => [
-        getAutomationValidationStateSet<typeof hasPotentialInsufficientEthFundsForTx>([
-          hasPotentialInsufficientEthFundsForTx,
-          { gasEstimationUsd },
-        ]),
-        getAutomationValidationStateSet<typeof isStopLossTriggerCloseToAutoSellTrigger>([
-          isStopLossTriggerCloseToAutoSellTrigger,
-          { sliderMax, stopLossLevel },
-        ]),
-        getAutomationValidationStateSet<typeof isStopLossTriggerCloseToConstantMultipleSellTrigger>(
-          [isStopLossTriggerCloseToConstantMultipleSellTrigger, { sliderMax, stopLossLevel }],
+      getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({
+        hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
+          context,
+          txError: txDetails?.txError,
+        }),
+        hasMoreDebtThanMaxForStopLoss: hasMoreDebtThanMaxForStopLoss({ context }),
+        isStopLossTriggerHigherThanAutoBuyTarget: isStopLossTriggerHigherThanAutoBuyTarget({
+          context,
+          stopLossLevel,
+        }),
+      }),
+      getAddWarnings: ({ gasEstimationUsd, state: { stopLossLevel } }) => ({
+        hasPotentialInsufficientEthFundsForTx: hasPotentialInsufficientEthFundsForTx({
+          context,
+          gasEstimationUsd,
+        }),
+        isStopLossTriggerCloseToAutoSellTrigger: isStopLossTriggerCloseToAutoSellTrigger({
+          context,
+          sliderMax,
+          stopLossLevel,
+        }),
+        isStopLossTriggerCloseToConstantMultipleSellTrigger: isStopLossTriggerCloseToConstantMultipleSellTrigger(
+          {
+            context,
+            sliderMax,
+            stopLossLevel,
+          },
         ),
-      ],
+      }),
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
     },

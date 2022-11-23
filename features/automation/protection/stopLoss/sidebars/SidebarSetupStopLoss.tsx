@@ -13,8 +13,8 @@ import { SidebarAutomationFeatureCreationStage } from 'features/automation/commo
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
 import {
+  extractAutomationValidations,
   filterAutomationValidations,
-  triggerAutomationValidations,
 } from 'features/automation/common/validation/validation'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import {
@@ -123,13 +123,11 @@ export function SidebarSetupStopLoss({
     feature,
   })
 
-  const errors = triggerAutomationValidations({
-    context: automationContext,
-    validators: getAddErrors({ state: stopLossState }),
+  const errors = extractAutomationValidations({
+    validations: getAddErrors({ state: stopLossState }),
   })
-  const warnings = triggerAutomationValidations({
-    context: automationContext,
-    validators: getAddWarnings({
+  const warnings = extractAutomationValidations({
+    validations: getAddWarnings({
       state: stopLossState,
       gasEstimationUsd: gasEstimationContext?.usdValue,
     }),

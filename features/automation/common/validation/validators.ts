@@ -7,7 +7,7 @@ import {
 } from 'features/automation/common/consts'
 import {
   AutomationValidationMethodParams,
-  AutomationValidationMethodStateReturn,
+  AutomationValidationMethodStateResult,
 } from 'features/automation/metadata/types'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
@@ -15,8 +15,8 @@ import { TxError } from 'helpers/types'
 // TODO: after redoing all automation validations, this file should be split into: common, protection, optimization and then for each feature
 
 export function hasInsufficientEthFundsForTx({
-  state: { txError },
-}: AutomationValidationMethodParams<{ txError?: TxError }>): AutomationValidationMethodStateReturn {
+  txError,
+}: AutomationValidationMethodParams<{ txError?: TxError }>): AutomationValidationMethodStateResult {
   return ethFundsForTxValidator({ txError })
 }
 
@@ -24,16 +24,16 @@ export function hasMoreDebtThanMaxForStopLoss({
   context: {
     positionData: { debt },
   },
-}: AutomationValidationMethodParams): AutomationValidationMethodStateReturn {
+}: AutomationValidationMethodParams): AutomationValidationMethodStateResult {
   return debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 }
 
 export function isStopLossTriggerHigherThanAutoBuyTarget({
-  state: { stopLossLevel },
   context: { autoBuyTriggerData },
+  stopLossLevel,
 }: AutomationValidationMethodParams<{
   stopLossLevel?: BigNumber
-}>): AutomationValidationMethodStateReturn {
+}>): AutomationValidationMethodStateResult {
   return stopLossLevel && autoBuyTriggerData?.isTriggerEnabled
     ? stopLossLevel.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).gt(autoBuyTriggerData.targetCollRatio)
     : false
@@ -44,10 +44,10 @@ export function hasPotentialInsufficientEthFundsForTx({
     environmentData: { ethBalance, ethMarketPrice },
     positionData: { token },
   },
-  state: { gasEstimationUsd },
+  gasEstimationUsd,
 }: AutomationValidationMethodParams<{
   gasEstimationUsd?: BigNumber
-}>): AutomationValidationMethodStateReturn {
+}>): AutomationValidationMethodStateResult {
   return notEnoughETHtoPayForTx({
     token,
     gasEstimationUsd,
@@ -58,21 +58,23 @@ export function hasPotentialInsufficientEthFundsForTx({
 
 export function isStopLossTriggerCloseToAutoSellTrigger({
   context: { autoSellTriggerData },
-  state: { sliderMax, stopLossLevel },
+  sliderMax,
+  stopLossLevel,
 }: AutomationValidationMethodParams<{
   sliderMax?: BigNumber
   stopLossLevel?: BigNumber
-}>): AutomationValidationMethodStateReturn {
+}>): AutomationValidationMethodStateResult {
   return autoSellTriggerData.isTriggerEnabled && sliderMax && stopLossLevel?.isEqualTo(sliderMax)
 }
 
 export function isStopLossTriggerCloseToConstantMultipleSellTrigger({
   context: { constantMultipleTriggerData },
-  state: { sliderMax, stopLossLevel },
+  sliderMax,
+  stopLossLevel,
 }: AutomationValidationMethodParams<{
   sliderMax?: BigNumber
   stopLossLevel?: BigNumber
-}>): AutomationValidationMethodStateReturn {
+}>): AutomationValidationMethodStateResult {
   return (
     constantMultipleTriggerData.isTriggerEnabled && sliderMax && stopLossLevel?.isEqualTo(sliderMax)
   )
