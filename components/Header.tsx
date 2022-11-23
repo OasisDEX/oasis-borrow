@@ -686,30 +686,6 @@ function HeaderDropdown({
   )
 }
 
-function AssetsDropdown() {
-  const { t } = useTranslation()
-  return (
-    <HeaderDropdown title={t('nav.assets')}>
-      <Grid
-        columns="minmax(50px, auto) minmax(50px, auto)"
-        sx={{ columnGap: '48px', rowGap: '24px' }}
-      >
-        {LANDING_PILLS.map((asset) => (
-          <AppLink
-            href={asset.link}
-            key={asset.label}
-            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular', fontSize: 3 }}
-            variant="links.nav"
-          >
-            <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
-            <Text>{asset.label}</Text>
-          </AppLink>
-        ))}
-      </Grid>
-    </HeaderDropdown>
-  )
-}
-
 function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -932,9 +908,7 @@ function MainNavigation() {
   const { i18n, t } = useTranslation()
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
-  const { pathname } = useRouter()
 
-  const discoverOasisEnabled = useFeatureToggle('DiscoverOasis')
   const userContext = getMixpanelUserContext(i18n.language, context)
 
   return (
@@ -946,66 +920,36 @@ function MainNavigation() {
       }}
     >
       <Logo />
-      {!discoverOasisEnabled ? (
-        <Flex sx={{ ml: 5, zIndex: 1 }}>
-          <AppLink
-            variant="links.navHeader"
-            href={LINKS.multiply}
-            sx={{
-              mr: 4,
-              color: navLinkColor(pathname.includes(LINKS.multiply)),
-            }}
-          >
-            {t('nav.multiply')}
-          </AppLink>
-          <AppLink
-            variant="links.navHeader"
-            href={LINKS.borrow}
-            sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.borrow)) }}
-          >
-            {t('nav.borrow')}
-          </AppLink>
-          <AppLink
-            variant="links.navHeader"
-            href={LINKS.earn}
-            sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
-          >
-            {t('nav.earn')}
-          </AppLink>
-          <AssetsDropdown />
-        </Flex>
-      ) : (
-        <Grid
-          as="ul"
-          sx={{
-            gridAutoFlow: 'column',
-            columnGap: ['24px', '24px', '24px', '48px'],
-            mx: ['24px', '24px', '24px', '48px'],
-            p: 0,
-            listStyle: 'none',
-          }}
-        >
-          <HeaderLink label={t('nav.products')}>
-            <HeaderList
-              links={[
-                { label: t('nav.multiply'), link: LINKS.multiply },
-                { label: t('nav.borrow'), link: LINKS.borrow },
-                { label: t('nav.earn'), link: LINKS.earn },
-              ]}
-            />
-          </HeaderLink>
-          <HeaderLink label={t('nav.assets')}>
-            <HeaderList links={LANDING_PILLS} columns={2} />
-          </HeaderLink>
-          <HeaderLink
-            label={t('nav.discover')}
-            link={LINKS.discover}
-            onClick={() => {
-              trackingEvents.discover.selectedInNavigation(userContext)
-            }}
+      <Grid
+        as="ul"
+        sx={{
+          gridAutoFlow: 'column',
+          columnGap: ['24px', '24px', '24px', '48px'],
+          mx: ['24px', '24px', '24px', '48px'],
+          p: 0,
+          listStyle: 'none',
+        }}
+      >
+        <HeaderLink label={t('nav.products')}>
+          <HeaderList
+            links={[
+              { label: t('nav.multiply'), link: LINKS.multiply },
+              { label: t('nav.borrow'), link: LINKS.borrow },
+              { label: t('nav.earn'), link: LINKS.earn },
+            ]}
           />
-        </Grid>
-      )}
+        </HeaderLink>
+        <HeaderLink label={t('nav.assets')}>
+          <HeaderList links={LANDING_PILLS} columns={2} />
+        </HeaderLink>
+        <HeaderLink
+          label={t('nav.discover')}
+          link={LINKS.discover}
+          onClick={() => {
+            trackingEvents.discover.selectedInNavigation(userContext)
+          }}
+        />
+      </Grid>
     </Flex>
   )
 }
