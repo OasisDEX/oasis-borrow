@@ -8,8 +8,6 @@ import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
 import { networksById } from './config'
-import { JsonRpcBatchProvider } from './jsonRpcBatchProvider'
-import { JsonRpcCachedProvider } from './jsonRpcCachedProvider'
 
 function fixChainId(chainId: string | number) {
   // eslint-disable-next-line no-new-wrappers
