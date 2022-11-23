@@ -13,10 +13,7 @@ export function FollowButtonControl() {
     setProcessing(isProcessing)
   }, [])
   function buttonClickHandler() {
-    console.log('test')
-    console.log('isProcessing', isProcessing)
     if (!isProcessing) {
-      console.log('isProcessing', isProcessing)
       setProcessing(true)
     }
   }
