@@ -10,9 +10,6 @@ export type AutomationValidationMethodParams<T = {}> = {
   context: ContextWithoutMetadata
 } & T
 export type AutomationValidationMethodStateResult = boolean | undefined
-export type AutomationValidationMethod = (
-  params: AutomationValidationMethodParams,
-) => AutomationValidationMethodStateResult
 
 export interface AutomationMetadataValidationParams<T> {
   gasEstimationUsd?: BigNumber
