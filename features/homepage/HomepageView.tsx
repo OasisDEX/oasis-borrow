@@ -12,6 +12,7 @@ import {
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { FollowButton, FollowButtonState } from 'features/follow/common/FollowButton'
+import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
@@ -456,22 +457,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
-  // TODO remove after testing component
-  let followState = 'follow'
-  const [isProcessing, setProcessing] = useState(false)
 
-  useEffect(() => {
-    setProcessing(isProcessing)
-  }, [])
-  function buttonClickHandler() {
-    console.log('test')
-    console.log('isProcessing', isProcessing)
-    if (!isProcessing) {
-    console.log('isProcessing', isProcessing)
-      setProcessing(true)
-      followState='unfollow'
-    }
-  }
   return (
     <Flex
       sx={{
@@ -517,11 +503,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         />
       </AppLink>
 
-      <FollowButton
-        isProcessing={false}
-        state={followState as FollowButtonState}
-        buttonClickHandler={buttonClickHandler}
-      />
+     <FollowButtonControl/>
     </Flex>
   )
 }
