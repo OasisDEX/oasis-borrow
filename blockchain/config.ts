@@ -60,6 +60,7 @@ const mainnetCacheUrl =
   process.env.MAINNET_CACHE_URL ||
   getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
   'https://oazo-bcache.new.oasis.app/api/v1'
+const mainnetRpc = `${process.env.ORIGIN ||  window.location.origin}/api/rpc?network=mainnet`
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
@@ -134,7 +135,7 @@ const protoMain = {
   id: '1',
   name: 'main',
   label: 'Mainnet',
-  infuraUrl: `https://mainnet.infura.io/v3/${infuraProjectId}`,
+  infuraUrl: mainnetRpc,
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
   openVaultSafeConfirmations: 6,
