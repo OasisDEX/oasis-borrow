@@ -231,7 +231,6 @@ const protoMain = {
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
-  chainlinkUsdcUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
 }
 
 export type NetworkConfig = typeof protoMain
@@ -425,11 +424,15 @@ const goerli: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     goerliAddresses.AAVE_PRICE_ORACLE,
   ),
+  chainlinkUsdcUsdPriceOracle: contractDesc(
+    chainlinkUSDCUSDPriceOracle,
+    // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
+    goerliAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
+  ),
   aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
-  chainlinkUsdcUsdPriceFeedAddress: goerliAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
 }
 
 const hardhat: NetworkConfig = {

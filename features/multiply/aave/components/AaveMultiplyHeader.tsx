@@ -5,7 +5,6 @@ import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -21,10 +20,7 @@ export function AaveMultiplyHeader({ strategyConfig }: { strategyConfig: Strateg
     detailsList.push(
       {
         label: 'Current stETH Price',
-        value: `$${formatAmount(
-          one.div(USDCPrice).times(chainlinkUSDCUSDPrice).times(STETHPrice),
-          'USD',
-        )}`,
+        value: `$${formatAmount(STETHPrice.div(USDCPrice).times(chainlinkUSDCUSDPrice), 'USD')}`,
       },
       {
         label: 'Current USDC Price',
