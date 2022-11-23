@@ -7,58 +7,44 @@ export type FollowButtonState = 'follow' | 'unfollow'
 
 interface FollowButtonProps {
   isProcessing: boolean
+  // isRetry: boolean
   state: FollowButtonState
-  followAction: (state: FollowButtonState) => void
-  unfollowAction: (state: FollowButtonState) => void
+  buttonClickHandler: () => void
 }
 
-export function FollowButton({
-  isProcessing,
-  state,
-  followAction,
-  unfollowAction,
-}: FollowButtonProps) {
+export function FollowButton(props: FollowButtonProps) {
   const { t } = useTranslation()
+
   return (
     <Box>
-      {isProcessing ? (
-        <AppSpinner         sx={{
-          position: 'relative',
-          left: '14px',
-          top: '25px',
-          width: '14px',
-          height: '14px',
-          transition: '0.2s',
-        }}/>
+      {props.isProcessing ? (
+        <AppSpinner
+          sx={{
+            position: 'relative',
+            left: '14px',
+            top: '25px',
+            width: '14px',
+            height: '14px',
+            transition: '0.2s',
+          }}
+        />
       ) : (
-      <Icon
-        name={state === 'follow' ? "star_empty" : "star"}
-        size="15px"
-        sx={{
-          position: 'relative',
-          left: '28px',
-          top: '1px',
-          width: '14px',
-          height: '14px',
-          transition: '0.2s',
-          color: '#878BFC',
-        }}
-      />
+        <Icon
+          name={props.state === 'follow' ? 'star_empty' : 'star'}
+          size="15px"
+          sx={{
+            position: 'relative',
+            left: '28px',
+            top: '1px',
+            width: '14px',
+            height: '14px',
+            transition: '0.2s',
+            color: '#878BFC',
+          }}
+        />
       )}
-      <Button
-        variant="menuButton"
-        disabled={isProcessing}
-        onClick={
-          state === 'follow'
-            ? () => {
-                followAction(state)
-              }
-            : () => {
-                unfollowAction(state)
-              }
-        }
-      >
-        {state === 'follow' ? t('follow') : t('unfollow')}
+      <Button variant="menuButton" disabled={props.isProcessing} onClick={props.buttonClickHandler}>
+        {props.state === 'follow' ? t('follow') : t('unfollow')}
       </Button>
     </Box>
   )

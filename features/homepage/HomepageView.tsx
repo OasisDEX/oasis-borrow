@@ -456,8 +456,22 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
+  // TODO remove after testing component
   let followState = 'follow'
+  const [isProcessing, setProcessing] = useState(false)
 
+  useEffect(() => {
+    setProcessing(isProcessing)
+  }, [])
+  function buttonClickHandler() {
+    console.log('test')
+    console.log('isProcessing', isProcessing)
+    if (!isProcessing) {
+    console.log('isProcessing', isProcessing)
+      setProcessing(true)
+      followState='unfollow'
+    }
+  }
   return (
     <Flex
       sx={{
@@ -504,17 +518,9 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       </AppLink>
 
       <FollowButton
-        isProcessing={true}
+        isProcessing={false}
         state={followState as FollowButtonState}
-        followAction={() => {
-          console.log(followState)
-          // TODO: ŁW this doesn't change the rendered component state need to use ui changes
-          followState = 'unfollow'
-        }}
-        unfollowAction={() => {
-          console.log(followState)
-          followState = 'follow'
-        }}
+        buttonClickHandler={buttonClickHandler}
       />
     </Flex>
   )
