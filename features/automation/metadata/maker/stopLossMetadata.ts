@@ -5,6 +5,14 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
+import {
+  hasInsufficientEthFundsForTx,
+  hasMoreDebtThanMaxForStopLoss,
+  hasPotentialInsufficientEthFundsForTx,
+  isStopLossTriggerCloseToAutoSellTrigger,
+  isStopLossTriggerCloseToConstantMultipleSellTrigger,
+  isStopLossTriggerHigherThanAutoBuyTarget,
+} from 'features/automation/common/validation/validators'
 import { GetStopLossMetadata, StopLossDetailCards } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
@@ -16,10 +24,6 @@ import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import {
-  errorsStopLossValidation,
-  warningsStopLossValidation,
-} from 'features/automation/protection/stopLoss/validators'
 import { formatPercent } from 'helpers/formatters/format'
 
 // eslint-disable-next-line func-style
@@ -83,30 +87,6 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
   )
 
   return {
-    getWarnings: ({
-      state: { stopLossLevel },
-      gasEstimationUsd,
-    }: {
-      state: StopLossFormChange
-      gasEstimationUsd?: BigNumber
-    }) =>
-      warningsStopLossValidation({
-        token: context.positionData.token,
-        ethBalance: context.environmentData.ethBalance,
-        ethPrice: context.environmentData.ethMarketPrice,
-        triggerRatio: stopLossLevel,
-        isAutoSellEnabled: context.autoSellTriggerData.isTriggerEnabled,
-        isConstantMultipleEnabled: context.constantMultipleTriggerData.isTriggerEnabled,
-        gasEstimationUsd,
-        sliderMax,
-      }),
-    getErrors: ({ state: { txDetails, stopLossLevel } }: { state: StopLossFormChange }) =>
-      errorsStopLossValidation({
-        txError: txDetails?.txError,
-        debt: context.positionData.debt,
-        stopLossLevel,
-        autoBuyTriggerData: context.autoBuyTriggerData,
-      }),
     getExecutionPrice: ({ state }: { state: StopLossFormChange }) =>
       collateralPriceAtRatio({
         colRatio: state.stopLossLevel.div(100),
@@ -145,7 +125,41 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     resetData,
     leftBoundaryFormatter,
     sliderStep: 1,
+    ratioParam: 'system.collateral-ratio',
     initialSlRatioWhenTriggerDoesntExist,
+    validation: {
+      getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({
+        hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
+          context,
+          txError: txDetails?.txError,
+        }),
+        hasMoreDebtThanMaxForStopLoss: hasMoreDebtThanMaxForStopLoss({ context }),
+        isStopLossTriggerHigherThanAutoBuyTarget: isStopLossTriggerHigherThanAutoBuyTarget({
+          context,
+          stopLossLevel,
+        }),
+      }),
+      getAddWarnings: ({ gasEstimationUsd, state: { stopLossLevel } }) => ({
+        hasPotentialInsufficientEthFundsForTx: hasPotentialInsufficientEthFundsForTx({
+          context,
+          gasEstimationUsd,
+        }),
+        isStopLossTriggerCloseToAutoSellTrigger: isStopLossTriggerCloseToAutoSellTrigger({
+          context,
+          sliderMax,
+          stopLossLevel,
+        }),
+        isStopLossTriggerCloseToConstantMultipleSellTrigger: isStopLossTriggerCloseToConstantMultipleSellTrigger(
+          {
+            context,
+            sliderMax,
+            stopLossLevel,
+          },
+        ),
+      }),
+      cancelErrors: ['hasInsufficientEthFundsForTx'],
+      cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
+    },
     detailCards: {
       cardsSet: [
         StopLossDetailCards.STOP_LOSS_LEVEL,
@@ -161,6 +175,5 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         },
       },
     },
-    ratioParam: 'system.collateral-ratio',
   }
 }

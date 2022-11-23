@@ -5,8 +5,22 @@ import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+
+export type AutomationValidationMethodParams<T = {}> = {
+  context: ContextWithoutMetadata
+} & T
+export type AutomationValidationMethodStateResult = boolean | undefined
+
+export interface AutomationMetadataValidationParams<T> {
+  gasEstimationUsd?: BigNumber
+  state: T
+}
+export interface AutomationMetadataValidationResult {
+  [key: string]: boolean | undefined
+}
+export type AutomationMetadataValidationMethod<T> = (
+  params: AutomationMetadataValidationParams<T>,
+) => AutomationMetadataValidationResult
 
 export enum StopLossDetailCards {
   STOP_LOSS_LEVEL = 'STOP_LOSS_LEVEL',
@@ -29,14 +43,6 @@ export interface StopLossMetadataDetailCards {
 }
 
 export interface StopLossMetadata {
-  getWarnings: ({
-    state,
-    gasEstimationUsd,
-  }: {
-    state: StopLossFormChange
-    gasEstimationUsd?: BigNumber
-  }) => VaultWarningMessage[]
-  getErrors: ({ state }: { state: StopLossFormChange }) => VaultErrorMessage[]
   getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
   getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
   getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
@@ -53,6 +59,12 @@ export interface StopLossMetadata {
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   fixedCloseToToken?: string
+  validation: {
+    getAddErrors: AutomationMetadataValidationMethod<StopLossFormChange>
+    getAddWarnings: AutomationMetadataValidationMethod<StopLossFormChange>
+    cancelErrors: string[]
+    cancelWarnings: string[]
+  }
   detailCards?: StopLossMetadataDetailCards
 }
 
@@ -60,19 +72,19 @@ export interface AutoBSMetadata {}
 export interface TakeProfitMetadata {}
 export interface ConstantMultipleMetadata {}
 
-export type GetStopLossMetadata = (context: Omit<AutomationContext, 'metadata'>) => StopLossMetadata
+export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
 
-export type GeTakeProfitMetadata = (
-  context: Omit<AutomationContext, 'metadata'>,
-) => TakeProfitMetadata
+export type GetStopLossMetadata = (context: ContextWithoutMetadata) => StopLossMetadata
 
-export type GetAutoBSMetadata = (context: Omit<AutomationContext, 'metadata'>) => AutoBSMetadata
+export type GetTakeProfitMetadata = (context: ContextWithoutMetadata) => TakeProfitMetadata
+
+export type GetAutoBSMetadata = (context: ContextWithoutMetadata) => AutoBSMetadata
 export type GetAutoSellOrBuyMetadata = (
   type: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY,
 ) => GetAutoBSMetadata
 
 export type GetConstantMultipleMetadata = (
-  context: Omit<AutomationContext, 'metadata'>,
+  context: ContextWithoutMetadata,
 ) => ConstantMultipleMetadata
 
 export interface AutomationDefinitionMetadata {
@@ -80,7 +92,7 @@ export interface AutomationDefinitionMetadata {
   autoSell?: GetAutoBSMetadata
   autoBuy?: GetAutoBSMetadata
   constantMultiple?: GetConstantMultipleMetadata
-  takeProfit?: GeTakeProfitMetadata
+  takeProfit?: GetTakeProfitMetadata
 }
 
 export interface AutomationMetadata {
@@ -88,5 +100,5 @@ export interface AutomationMetadata {
   autoSell: GetAutoBSMetadata
   autoBuy: GetAutoBSMetadata
   constantMultiple: GetConstantMultipleMetadata
-  takeProfit: GeTakeProfitMetadata
+  takeProfit: GetTakeProfitMetadata
 }

@@ -12,6 +12,10 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
+import {
+  extractAutomationValidations,
+  filterAutomationValidations,
+} from 'features/automation/common/validation/validation'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
 import {
   SetDownsideProtectionInformation,
@@ -24,10 +28,6 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import {
-  extractCancelAutomationErrors,
-  extractCancelAutomationWarnings,
-} from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
@@ -68,6 +68,7 @@ export function SidebarSetupStopLoss({
 
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const automationContext = useAutomationContext()
   const {
     autoSellTriggerData,
     constantMultipleTriggerData,
@@ -76,9 +77,12 @@ export function SidebarSetupStopLoss({
     positionData: { vaultType },
     protocol,
     metadata: {
-      stopLoss: { getWarnings, getErrors, getExecutionPrice },
+      stopLoss: {
+        getExecutionPrice,
+        validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
+      },
     },
-  } = useAutomationContext()
+  } = automationContext
   const { isAwaitingConfirmation } = stopLossState
 
   const gasEstimationContext = useGasEstimationContext()
@@ -119,14 +123,20 @@ export function SidebarSetupStopLoss({
     feature,
   })
 
-  const errors = getErrors({ state: stopLossState })
-  const warnings = getWarnings({
-    state: stopLossState,
-    gasEstimationUsd: gasEstimationContext?.usdValue,
+  const errors = extractAutomationValidations({
+    validations: getAddErrors({ state: stopLossState }),
   })
-
-  const cancelStopLossWarnings = extractCancelAutomationWarnings(warnings)
-  const cancelStopLossErrors = extractCancelAutomationErrors(errors)
+  const warnings = extractAutomationValidations({
+    validations: getAddWarnings({
+      state: stopLossState,
+      gasEstimationUsd: gasEstimationContext?.usdValue,
+    }),
+  })
+  const onCancelErrors = filterAutomationValidations({ messages: errors, toFilter: cancelErrors })
+  const onCancelWarnings = filterAutomationValidations({
+    messages: errors,
+    toFilter: cancelWarnings,
+  })
 
   const executionPrice = getExecutionPrice({ state: stopLossState })
 
@@ -166,8 +176,8 @@ export function SidebarSetupStopLoss({
                   )}
                   {isRemoveForm && (
                     <SidebarCancelStopLossEditingStage
-                      errors={cancelStopLossErrors}
-                      warnings={cancelStopLossWarnings}
+                      errors={onCancelErrors}
+                      warnings={onCancelWarnings}
                       stopLossLevel={stopLossTriggerData.stopLossLevel}
                     />
                   )}

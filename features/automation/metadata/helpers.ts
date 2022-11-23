@@ -1,7 +1,7 @@
-import { AutomationContext } from 'components/AutomationContextProvider'
 import {
   AutomationDefinitionMetadata,
   AutomationMetadata,
+  ContextWithoutMetadata,
 } from 'features/automation/metadata/types'
 
 const defaultMetadata = {
@@ -14,7 +14,7 @@ const defaultMetadata = {
 
 export function initializeMetadata(
   metadata: AutomationDefinitionMetadata,
-  automationContext: Omit<AutomationContext, 'metadata'>,
+  automationContext: ContextWithoutMetadata,
 ) {
   const { stopLoss, autoSell, autoBuy, constantMultiple, takeProfit } = metadata
 
