@@ -35,10 +35,11 @@ export type AaveHeaderProps = {
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
+  isManage?: boolean
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
-type SimulateSection = () => JSX.Element
+type SimulateSection = ({ isManage }: { isManage?: boolean }) => JSX.Element
 type VaultDetails = (
   props: ManageSectionComponentProps & ViewPositionSectionComponentProps,
 ) => JSX.Element

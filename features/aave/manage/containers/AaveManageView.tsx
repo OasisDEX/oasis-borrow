@@ -101,6 +101,7 @@ function AaveManageContainer({
                       aaveReserveState={aaveReserveState}
                       aaveReserveDataETH={aaveReserveDataETH}
                       strategyConfig={strategyConfig}
+                      isManage={true}
                     />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>

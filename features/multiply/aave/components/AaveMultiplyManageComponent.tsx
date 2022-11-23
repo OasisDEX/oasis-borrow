@@ -1,14 +1,17 @@
 import { useActor } from '@xstate/react'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 import { AaveMultiplyPositionData } from './AaveMultiplyPositionData'
 
-export function AaveMultiplyManageComponent() {
-  const { stateMachine } = useManageAaveStateMachineContext()
+export function AaveMultiplyManageComponent({ isManage = false }: { isManage?: boolean }) {
+  const { stateMachine } = isManage
+    ? useManageAaveStateMachineContext()
+    : useOpenAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const { aaveReserveData } = useAaveContext()
   const [aaveUSDCReserveData] = useObservable(aaveReserveData['USDC'])
@@ -18,7 +21,6 @@ export function AaveMultiplyManageComponent() {
     <WithLoadingIndicator
       value={[
         state.context.currentPosition,
-        state.context.userInput,
         state.context.collateralPrice,
         state.context.tokenPrice,
         aaveUSDCReserveData,
@@ -28,7 +30,6 @@ export function AaveMultiplyManageComponent() {
     >
       {([
         currentPosition,
-        userInput,
         collateralTokenPrice,
         debtTokenPrice,
         USDCReserveData,
@@ -37,7 +38,6 @@ export function AaveMultiplyManageComponent() {
         return (
           <AaveMultiplyPositionData
             currentPosition={currentPosition}
-            userInput={userInput}
             collateralTokenPrice={collateralTokenPrice}
             collateralTokenReserveData={STETHReserveData}
             debtTokenPrice={debtTokenPrice}
