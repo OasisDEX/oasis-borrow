@@ -96,6 +96,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         // eslint-disable-next-line func-style
         const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload) => {
           console.log("request not implemented:"+payload.method);
+          //TODO: possibly also requires ifs for eth_call, eth_getTransactionByHash, eth_getTransactionReceipt
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
           
           // Gnosis Safe web3-react provider doesn't implement eth_gasPrice call
