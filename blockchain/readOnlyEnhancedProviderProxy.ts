@@ -1,7 +1,9 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcProvider, Provider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-protocol'
 import { providers } from 'ethers'
 import { skipCache } from 'helpers/api/skipCache'
+import { providers as ethersProviders } from 'ethers'
+import { providers as multicallProvider } from '@0xsequence/multicall'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
@@ -18,14 +20,13 @@ const READ_ONLY_RPC_CALLS = ['eth_call', 'eth_getTransactionReceipt', 'eth_getTr
 
 function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any> {
   const getReadOnlyProviderAsync = (() => {
-    let provider: JsonRpcProvider | undefined = undefined
+    let provider: Provider | undefined = undefined
     return async function (chainIdPromise: Promise<number | string>) {
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
-
-        provider = skipCache(chainId.toString())
-          ? new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
-          : new JsonRpcCachedProvider(networksById[chainId].infuraUrl, chainId)
+        const ethersProvider = new ethersProviders.JsonRpcProvider(networksById[chainId].infuraUrl, chainId);
+        const multicall =  new multicallProvider.MulticallProvider(ethersProvider);
+        provider = multicall;
       }
       return provider
     }
@@ -55,15 +56,40 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         ) => {
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
-          const provider = _.includes(READ_ONLY_RPC_CALLS, payload.method)
-            ? readOnlyProvider
-            : rpcProvider
-          try {
-            const result = await provider.send(payload.method, payload.params)
-            callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
-          } catch (err) {
-            callback(err as any)
-          }
+          if(payload.method === 'eth_call') {
+            try {
+              const result = await readOnlyProvider.call(payload.params[0]);
+              callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+            } catch (err) {
+              callback(err as any)
+            }
+          }else
+          if (payload.method === 'eth_getTransactionByHash') {
+            try {
+              const result = await readOnlyProvider.getTransaction(payload.params[0]);
+              callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+            } catch (err) {
+              callback(err as any)
+            }
+          }else
+            if(payload.method === 'eth_getTransactionReceipt') {
+              try {
+                const result = await readOnlyProvider.getTransactionReceipt(payload.params[0]);
+                callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+              } catch (err) {
+                callback(err as any)
+              }
+            }
+            else{
+              try {
+                const result = await rpcProvider.send(payload.method, payload.params)
+                callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+              } catch (err) {
+                callback(err as any)
+              }
+            }
+          
+         
         }
         return sendAsyncMaybeReadOnly
       } else if (name === 'request') {
@@ -78,7 +104,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           // Gnosis Safe web3-react provider doesn't implement eth_gasPrice call
           if (payload.method === 'eth_gasPrice') {
             try {
-              const result = await provider.send(payload.method, payload.params)
+              const result = await rpcProvider.send(payload.method, payload.params)
               return result
             } catch (err) {
               console.log(err)
@@ -86,7 +112,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
             }
           }
 
-          const result = await provider.send(payload.method, payload.params)
+          const result = await rpcProvider.send(payload.method, payload.params)
           return result
         }
         return requestMaybeReadOnly
