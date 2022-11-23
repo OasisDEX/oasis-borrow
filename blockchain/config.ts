@@ -118,6 +118,9 @@ export const ilksNotSupportedOnGoerli = [
   ...cropJoinIlks,
 ] as const
 
+const SERVICE_REGISTRY = '0xB9d9e972100a1dD01cd441774b45b5821e136043'
+const OPERATION_EXECUTOR = '0x2538a10b7fFb1B78c890c870FC152b10be121f04'
+
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
@@ -168,7 +171,7 @@ const protoMain = {
     automationBotAggregator,
     '0x5f1d184204775fBB351C4b2C61a2fD4aAbd3fB76',
   ),
-  serviceRegistry: '0x9b4Ae7b164d195df9C4Da5d08Be88b2848b2EaDA',
+  serviceRegistry: SERVICE_REGISTRY,
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
@@ -222,7 +225,7 @@ const protoMain = {
     mainnetAddresses.AAVE_PRICE_ORACLE,
   ),
   aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
-  operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
+  operationExecutor: contractDesc(operationExecutor, OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
 }

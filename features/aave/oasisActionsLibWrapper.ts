@@ -1,7 +1,7 @@
 import {
   IPosition,
   IRiskRatio,
-  IStrategy,
+  IPositionTransition,
   OPERATION_NAMES,
   Position,
   strategies,
@@ -9,10 +9,11 @@ import {
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
-import { Context } from '../../blockchain/network'
+import { Context, ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { Swap } from '../../types/web3-v1-contracts/aave-lending-pool'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -20,6 +21,8 @@ function getAddressesFromContext(context: Context) {
     ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     WETH: context.tokens['WETH'].address,
     stETH: context.tokens['STETH'].address,
+    USDC: context.tokens['USDC'].address,
+    wBTC: context.tokens['WBTC'].address,
     chainlinkEthUsdPriceFeed: context.chainlinkEthUsdPriceFeedAddress,
     aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
     aavePriceOracle: context.aavePriceOracle.address,
@@ -57,8 +60,30 @@ export interface AdjustAaveParameters {
 }
 
 export interface OasisActionResult {
-  strategy: IStrategy
+  strategy: IPositionTransition
   operationName: string
+}
+
+type AAVETokens = 'ETH' | 'WETH' | 'STETH' | 'WBTC' | 'USDC'
+
+function checkContext(context: Context, msg: string): asserts context is ContextConnected {
+  if ((context as ContextConnected).account === undefined) {
+    console.error('Context is not connected', context)
+    throw new Error(`Could not build chain mutation params.  Context is not connected - ${msg}`)
+  }
+}
+
+type Swap2 = {
+  fromTokenAmount: BigNumber
+  minToTokenAmount: BigNumber
+  tokenFee: BigNumber
+  collectFeeFrom: 'sourceToken' | 'targetToken'
+  sourceToken: { symbol: string; precision: number }
+  targetToken: { symbol: string; precision: number }
+}
+
+export function getFee(swap: Swap2): BigNumber {
+  return swap.tokenFee.div(new BigNumber(10).pow(swap[swap.collectFeeFrom].precision))
 }
 
 export async function getOpenAaveParameters({
@@ -69,25 +94,58 @@ export async function getOpenAaveParameters({
   slippage,
   proxyAddress,
 }: OpenAaveParameters): Promise<OasisActionResult> {
-  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+  try {
+    checkContext(context, 'open position')
 
-  const strategy = await strategies.aave.openStEth(
-    {
-      depositAmount: amountToWei(amount, token),
-      slippage: slippage,
+    const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+
+    const collateralToken = {
+      symbol: 'STETH' as AAVETokens,
+      precision: 18,
+    }
+
+    const debtToken = {
+      symbol: token as AAVETokens,
+      precision: 18,
+    }
+
+    const currentPosition = await strategies.aave.view(
+      {
+        proxy: proxyAddress,
+        collateralToken,
+        debtToken,
+      },
+      { addresses: getAddressesFromContext(context), provider: provider },
+    )
+
+    const stratArgs = {
+      slippage,
       multiple: riskRatio.multiple,
-    },
-    {
-      addresses: getAddressesFromContext(context),
-      provider: provider,
-      dsProxy: proxyAddress,
-      getSwapData: getOneInchCall(context.swapAddress),
-    },
-  )
+      debtToken,
+      collateralToken,
+      depositedByUser: {
+        debtInWei: amountToWei(amount, token),
+      },
+    }
 
-  return {
-    strategy,
-    operationName: OPERATION_NAMES.aave.OPEN_POSITION,
+    const stratDeps = {
+      addresses: getAddressesFromContext(context),
+      currentPosition,
+      provider: provider,
+      getSwapData: getOneInchCall(context.swapAddress),
+      proxy: proxyAddress,
+      user: context.account,
+    }
+
+    const strategy = await strategies.aave.open(stratArgs, stratDeps)
+
+    return {
+      strategy,
+      operationName: OPERATION_NAMES.aave.OPEN_POSITION,
+    }
+  } catch (e) {
+    console.error(e)
+    throw e
   }
 }
 
@@ -100,37 +158,69 @@ export async function getAdjustAaveParameters({
   riskRatio,
   currentPosition,
 }: AdjustAaveParameters): Promise<OasisActionResult> {
+  checkContext(context, 'adjust position')
+
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const transformedPosition = {
-    debt: {
-      amount: amountToWei(currentPosition.debt.amount, currentPosition.debt.denomination || token),
-      denomination: currentPosition.debt.denomination || token,
-    },
-    collateral: {
-      amount: amountToWei(
-        currentPosition.collateral.amount,
-        currentPosition.debt.denomination || token,
-      ),
-      denomination: currentPosition.debt.denomination || token,
-    },
-    category: currentPosition.category,
+  const collateralToken = {
+    symbol: 'STETH' as AAVETokens,
+    precision: 18,
   }
 
-  const strategy = await strategies.aave.adjustStEth(
+  const debtToken = {
+    symbol: token as AAVETokens,
+    precision: 18,
+  }
+
+  // const transformedPosition = {
+  //   debt: {
+  //     amount: amountToWei(currentPosition.debt.amount, currentPosition.debt.denomination || token),
+  //     denomination: currentPosition.debt.denomination || token,
+  //   },
+  //   collateral: {
+  //     amount: amountToWei(
+  //       currentPosition.collateral.amount,
+  //       currentPosition.debt.denomination || token,
+  //     ),
+  //     denomination: currentPosition.debt.denomination || token,
+  //   },
+  //   category: currentPosition.category,
+  // }
+
+  const strategy = await strategies.aave.adjust(
     {
-      depositAmount: amountToWei(amount, token),
-      slippage: slippage,
+      slippage,
       multiple: riskRatio.multiple,
+      debtToken,
+      collateralToken,
+      depositedByUser: {
+        debtInWei: amountToWei(amount, token),
+      },
     },
     {
       addresses: getAddressesFromContext(context),
+      currentPosition,
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
-      dsProxy: proxyAddress,
-      position: transformedPosition,
+      proxy: proxyAddress,
+      user: context.account,
     },
   )
+
+  // const strategy = await strategies.aave.adjustStEth(
+  //   {
+  //     depositAmount: amountToWei(amount, token),
+  //     slippage: slippage,
+  //     multiple: riskRatio.multiple,
+  //   },
+  //   {
+  //     addresses: getAddressesFromContext(context),
+  //     provider: provider,
+  //     getSwapData: getOneInchCall(context.swapAddress),
+  //     dsProxy: proxyAddress,
+  //     position: transformedPosition,
+  //   },
+  // )
 
   // const operationName = riskRatio.loanToValue.gt(currentPosition.riskRatio.loanToValue)
   //   ? OPERATION_NAMES.common.CUSTOM_OPERATION
@@ -145,24 +235,53 @@ export async function getCloseAaveParameters({
   slippage,
   currentPosition,
 }: CloseAaveParameters): Promise<OasisActionResult> {
+  checkContext(context, 'adjust position')
+
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const strategy = await strategies.aave.closeStEth(
+  const collateralToken = {
+    symbol: 'STETH' as AAVETokens,
+    precision: 18,
+  }
+
+  const debtToken = {
+    symbol: 'ETH' as AAVETokens,
+    precision: 18,
+  }
+
+  const strategy = await strategies.aave.close(
     {
-      stEthAmountLockedInAave: amountToWei(
-        currentPosition.collateral.amount,
-        currentPosition.collateral.denomination || 'STETH',
-      ),
-      slippage: slippage,
+      slippage,
+      debtToken,
+      collateralToken,
+      collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount,
     },
     {
       addresses: getAddressesFromContext(context),
+      currentPosition,
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
-      dsProxy: proxyAddress,
-      position: currentPosition,
+      proxy: proxyAddress,
+      user: context.account,
     },
   )
+
+  // const strategy = await strategies.aave.closeStEth(
+  //   {
+  //     stEthAmountLockedInAave: amountToWei(
+  //       currentPosition.collateral.amount,
+  //       currentPosition.collateral.denomination || 'STETH',
+  //     ),
+  //     slippage: slippage,
+  //   },
+  //   {
+  //     addresses: getAddressesFromContext(context),
+  //     provider: provider,
+  //     getSwapData: getOneInchCall(context.swapAddress),
+  //     dsProxy: proxyAddress,
+  //     position: currentPosition,
+  //   },
+  // )
   return { strategy, operationName: OPERATION_NAMES.aave.CLOSE_POSITION }
 }
 

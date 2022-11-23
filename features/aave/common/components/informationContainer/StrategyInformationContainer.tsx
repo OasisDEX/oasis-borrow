@@ -1,4 +1,4 @@
-import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -22,7 +22,7 @@ type OpenAaveInformationContainerProps = {
       collateralPrice?: BigNumber
       tokenPrice?: BigNumber
       estimatedGasPrice?: HasGasEstimation
-      strategy?: IStrategy
+      strategy?: IPositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
     }

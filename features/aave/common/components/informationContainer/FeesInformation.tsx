@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IStrategy } from '@oasisdex/oasis-actions'
+import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -11,9 +11,10 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
+import { getFee } from '../../../oasisActionsLibWrapper'
 
 interface FeesInformationProps {
-  transactionParameters: IStrategy
+  transactionParameters: IPositionTransition
   token: string
   estimatedGasPrice?: HasGasEstimation
 }
@@ -25,9 +26,8 @@ export function FeesInformation({
 }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
-  const fee = transactionParameters.simulation.swap.targetTokenFee.plus(
-    transactionParameters.simulation.swap.sourceTokenFee,
-  )
+  // const fee = transactionParameters.simulation.swap.tokenFee
+  const fee = getFee(transactionParameters.simulation.swap)
   return (
     <>
       <VaultChangesInformationItem

@@ -1,4 +1,4 @@
-import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -11,7 +11,7 @@ import {
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 
 interface OutstandingDebtInformationProps {
-  transactionParameters: IStrategy
+  transactionParameters: IPositionTransition
   currentPosition: IPosition
 }
 
@@ -21,15 +21,15 @@ export function OutstandingDebtInformation({
 }: OutstandingDebtInformationProps) {
   const { t } = useTranslation()
 
-  const { amount, denomination = 'ETH' } = transactionParameters.simulation.position.debt
+  const { amount, symbol } = transactionParameters.simulation.position.debt
   return (
     <VaultChangesInformationItem
       label={t('vault-changes.outstanding-debt')}
       value={
         <Flex>
-          {formatCryptoBalance(currentPosition.debt.amount)} {denomination}
+          {formatCryptoBalance(currentPosition.debt.amount)} {symbol}
           <VaultChangesInformationArrow />
-          {formatCryptoBalance(amountFromWei(amount, denomination))} {denomination}
+          {formatCryptoBalance(amountFromWei(amount, symbol))} {symbol}
         </Flex>
       }
     />

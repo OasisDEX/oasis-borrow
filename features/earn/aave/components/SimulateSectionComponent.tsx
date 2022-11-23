@@ -1,4 +1,4 @@
-import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { IRiskRatio, IPositionTransition } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -38,7 +38,7 @@ function SimulationSection({
   gasPrice,
   minRiskRatio,
 }: {
-  strategy?: IStrategy
+  strategy?: IPositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
@@ -50,10 +50,9 @@ function SimulationSection({
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = userInputAmount || new BigNumber(100)
 
-  const sourceTokenFee = strategy?.simulation.swap.sourceTokenFee || zero
-  const targetTokenFee = strategy?.simulation.swap.targetTokenFee || zero
+  const tokenFee = strategy?.simulation.swap.tokenFee || zero
   const gasFee = gasPrice?.gasEstimationEth || zero
-  const fees = sourceTokenFee.plus(targetTokenFee).plus(gasFee)
+  const fees = tokenFee.plus(gasFee)
   const riskRatio = strategy?.simulation.position.riskRatio || minRiskRatio
 
   useEffect(() => {

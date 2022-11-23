@@ -1,4 +1,4 @@
-import { IStrategy } from '@oasisdex/oasis-actions'
+import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +14,7 @@ interface PriceImpactProps {
   collateralToken: string
   collateralPrice?: BigNumber
   tokenPrice?: BigNumber
-  transactionParameters: IStrategy
+  transactionParameters: IPositionTransition
 }
 
 export function PriceImpact({
