@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators'
 
 export type PreparedAaveReserveData = {
   variableBorrowRate: BigNumber
+  liquidityRate: BigNumber
 }
 
 export function aavePrepareReserveData() {
@@ -14,8 +15,9 @@ export function aavePrepareReserveData() {
   ): Observable<PreparedAaveReserveData> =>
     combineLatest(aaveReserveData$).pipe(
       map(([reserveData]: [AaveReserveDataReply]) => ({
-        // right now I just need this one
-        variableBorrowRate: amountFromRay(new BigNumber(reserveData.variableBorrowRate)), //the current variable borrow rate. Expressed in ray
+        // the current variable borrow rate. Expressed in ray
+        variableBorrowRate: amountFromRay(new BigNumber(reserveData.variableBorrowRate)),
+        liquidityRate: amountFromRay(new BigNumber(reserveData.liquidityRate)), // the current variable borrow rate. Expressed in ray
       })),
     )
 }
