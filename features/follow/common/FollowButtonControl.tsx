@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 export function FollowButtonControl() {
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
+  //   TODO ŁW - Error handling when working with real api
 
   useEffect(() => {
     setTimeout(() => {
