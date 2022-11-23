@@ -13,7 +13,6 @@ import { Context, ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
-import { Swap } from '../../types/web3-v1-contracts/aave-lending-pool'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -59,12 +58,13 @@ export interface AdjustAaveParameters {
   amount: BigNumber
 }
 
+// todo: remove this
 export interface OasisActionResult {
   strategy: IPositionTransition
   operationName: string
 }
 
-type AAVETokens = 'ETH' | 'WETH' | 'STETH' | 'WBTC' | 'USDC'
+type AAVETokens = 'ETH' | 'WETH' | 'STETH' | 'WBTC' | 'USDC' // todo: export from oasis-actions
 
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
   if ((context as ContextConnected).account === undefined) {
@@ -73,6 +73,7 @@ function checkContext(context: Context, msg: string): asserts context is Context
   }
 }
 
+// todo: export from oasis-actions
 type Swap2 = {
   fromTokenAmount: BigNumber
   minToTokenAmount: BigNumber
@@ -141,7 +142,7 @@ export async function getOpenAaveParameters({
 
     return {
       strategy,
-      operationName: OPERATION_NAMES.aave.OPEN_POSITION,
+      operationName: strategy.transaction.operationName,
     }
   } catch (e) {
     console.error(e)
@@ -226,7 +227,7 @@ export async function getAdjustAaveParameters({
   //   ? OPERATION_NAMES.common.CUSTOM_OPERATION
   //   : OPERATION_NAMES.common.CUSTOM_OPERATION
 
-  return { strategy, operationName: OPERATION_NAMES.common.CUSTOM_OPERATION }
+  return { strategy, operationName: strategy.transaction.operationName }
 }
 
 export async function getCloseAaveParameters({
@@ -282,7 +283,7 @@ export async function getCloseAaveParameters({
   //     position: currentPosition,
   //   },
   // )
-  return { strategy, operationName: OPERATION_NAMES.aave.CLOSE_POSITION }
+  return { strategy, operationName: strategy.transaction.operationName }
 }
 
 export const EMPTY_POSITION = new Position({ amount: zero }, { amount: zero }, zero, {
