@@ -51,8 +51,10 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
           if(payload.method === 'eth_call') {
+            console.log("new eth_call");
             try {
               const result = await readOnlyProvider!.call(payload.params[0]);
+              console.log("eth_call executed");
               callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
             } catch (err) {
               callback(err as any)
@@ -60,7 +62,9 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           }else
           if (payload.method === 'eth_getTransactionByHash') {
             try {
+              console.log("new eth_getTransactionByHash");
               const result = await readOnlyProvider!.getTransaction(payload.params[0]);
+              console.log("eth_getTransactionByHash executed");
               callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
             } catch (err) {
               callback(err as any)
@@ -68,7 +72,9 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           }else
             if(payload.method === 'eth_getTransactionReceipt') {
               try {
+                console.log("new eth_getTransactionReceipt");
                 const result = await readOnlyProvider!.getTransactionReceipt(payload.params[0]);
+                console.log("eth_getTransactionReceipt executed");
                 callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
               } catch (err) {
                 callback(err as any)
@@ -89,7 +95,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
       } else if (name === 'request') {
         // eslint-disable-next-line func-style
         const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload) => {
-          const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
+          console.log("request not implemented:"+payload.method);
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
           
           // Gnosis Safe web3-react provider doesn't implement eth_gasPrice call
