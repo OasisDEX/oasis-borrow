@@ -6,7 +6,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
@@ -59,7 +58,7 @@ export function SetDownsideProtectionInformation({
   } = useAutomationContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const afterMaxToken = getMaxToken({ state: stopLossState })
+  const afterMaxToken = getMaxToken(stopLossState)
 
   const savingCompareToLiquidation = afterMaxToken.minus(collateralDuringLiquidation)
 
@@ -145,8 +144,8 @@ export function SidebarAdjustStopLossEditingStage({
         resetData,
         ratioParam,
         fixedCloseToToken,
-        sliderChangeCallback,
-        closeToChangeCallback,
+        onSliderChange,
+        onCloseToChange,
         sliderStep,
         sliderDirection,
       },
@@ -190,8 +189,8 @@ export function SidebarAdjustStopLossEditingStage({
     )
   }
 
-  const sliderPercentageFill = getSliderPercentageFill({ state: stopLossState })
-  const rightBoundry = getRightBoundary({ state: stopLossState })
+  const sliderPercentageFill = getSliderPercentageFill(stopLossState)
+  const rightBoundry = getRightBoundary(stopLossState)
 
   return (
     <>
@@ -199,10 +198,9 @@ export function SidebarAdjustStopLossEditingStage({
         <Grid>
           {!fixedCloseToToken && (
             <PickCloseState
-              isCollateralActive={stopLossState.collateralActive}
               collateralTokenSymbol={token}
-              collateralTokenIconCircle={getToken(token).iconCircle}
-              onclickHandler={(optionName: string) => {
+              isCollateralActive={stopLossState.collateralActive}
+              onClickHandler={(optionName: string) => {
                 uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
                   type: 'close-type',
                   toCollateral: optionName === closeVaultOptions[0],
@@ -217,7 +215,7 @@ export function SidebarAdjustStopLossEditingStage({
                     closeTo: optionName as CloseVaultTo,
                   },
                 )
-                closeToChangeCallback && closeToChangeCallback(optionName)
+                onCloseToChange && onCloseToChange(optionName)
               }}
             />
           )}
@@ -253,7 +251,7 @@ export function SidebarAdjustStopLossEditingStage({
                 stopLossLevel: slCollRatio,
               })
 
-              sliderChangeCallback && sliderChangeCallback(slCollRatio)
+              onSliderChange && onSliderChange(slCollRatio)
             }}
             leftLabel={t('protection.stop-loss-something', { value: t(ratioParam) })}
             rightLabel={t('slider.set-stoploss.right-label')}

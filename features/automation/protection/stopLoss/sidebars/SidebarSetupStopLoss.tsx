@@ -138,7 +138,7 @@ export function SidebarSetupStopLoss({
     toFilter: cancelWarnings,
   })
 
-  const executionPrice = getExecutionPrice({ state: stopLossState })
+  const executionPrice = getExecutionPrice(stopLossState)
 
   if (isStopLossActive) {
     const sidebarSectionProps: SidebarSectionProps = {

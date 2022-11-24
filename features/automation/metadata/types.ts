@@ -10,6 +10,8 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
+type AutomationStateValueMethod<T, V = BigNumber> = (state: T) => V
+
 export type AutomationValidationMethodParams<T = {}> = {
   context: ContextWithoutMetadata
 } & T
@@ -47,29 +49,29 @@ export interface StopLossMetadataDetailCards {
 }
 
 export interface StopLossMetadata {
-  getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getMaxToken: ({ state }: { state: StopLossFormChange }) => BigNumber
+  collateralDuringLiquidation: BigNumber
+  detailCards?: StopLossMetadataDetailCards
+  fixedCloseToToken?: string
+  getExecutionPrice: AutomationStateValueMethod<StopLossFormChange>
+  getMaxToken: AutomationStateValueMethod<StopLossFormChange>
+  getRightBoundary: AutomationStateValueMethod<StopLossFormChange>
+  getSliderPercentageFill: AutomationStateValueMethod<StopLossFormChange>
+  initialSlRatioWhenTriggerDoesntExist: BigNumber
+  onCloseToChange?: (value: string) => void
+  onSliderChange?: (value: BigNumber) => void
+  ratioParam: string
+  resetData: StopLossResetData
+  sliderDirection?: 'ltr' | 'rtl'
   sliderMax: BigNumber
   sliderMin: BigNumber
-  collateralDuringLiquidation: BigNumber
-  triggerMaxToken: BigNumber
-  resetData: StopLossResetData
-  ratioParam: string
   sliderStep: number
-  sliderChangeCallback?: (value: BigNumber) => void
-  closeToChangeCallback?: (value: string) => void
-  initialSlRatioWhenTriggerDoesntExist: BigNumber
-  fixedCloseToToken?: string
+  triggerMaxToken: BigNumber
   validation: {
     getAddErrors: AutomationMetadataValidationMethod<StopLossFormChange>
     getAddWarnings: AutomationMetadataValidationMethod<StopLossFormChange>
     cancelErrors: string[]
     cancelWarnings: string[]
   }
-  detailCards?: StopLossMetadataDetailCards
-  sliderDirection?: 'ltr' | 'rtl'
 }
 
 export interface AutoBSMetadata {}

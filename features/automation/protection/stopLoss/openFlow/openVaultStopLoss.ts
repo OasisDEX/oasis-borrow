@@ -22,7 +22,6 @@ import {
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { formatPercent } from 'helpers/formatters/format'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 
@@ -102,6 +101,26 @@ export function getDataForStopLoss(
   const debt = feature === 'multiply' ? afterOutstandingDebt : generateAmount
   const lockedCollateral = feature === 'multiply' ? totalExposure : depositAmount
 
+  const collateralDuringLiquidation =
+    !lockedCollateral || !debt
+      ? zero
+      : getCollateralDuringLiquidation({
+          lockedCollateral,
+          debt,
+          liquidationPrice: afterLiquidationPrice,
+          liquidationPenalty,
+        })
+
+  const sliderMin = ilkData.liquidationRatio
+    .multipliedBy(100)
+    .plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
+  const sliderMax = new BigNumber(
+    afterCollateralizationRatioAtNextPrice
+      .minus(NEXT_COLL_RATIO_OFFSET.div(100))
+      .multipliedBy(100)
+      .toFixed(0, BigNumber.ROUND_DOWN),
+  )
+
   const afterNewLiquidationPrice = stopLossLevel
     .dividedBy(100)
     .multipliedBy(nextCollateralPrice)
@@ -112,17 +131,6 @@ export function getDataForStopLoss(
     collateral: lockedCollateral || zero,
     vaultDebt: debt || zero,
   })
-
-  const sliderMax = new BigNumber(
-    afterCollateralizationRatioAtNextPrice
-      .minus(NEXT_COLL_RATIO_OFFSET.div(100))
-      .multipliedBy(100)
-      .toFixed(0, BigNumber.ROUND_DOWN),
-  )
-
-  const sliderMin = ilkData.liquidationRatio
-    .multipliedBy(100)
-    .plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
 
   const sliderPercentageFill = getSliderPercentageFill({
     value: stopLossLevel,
@@ -151,35 +159,23 @@ export function getDataForStopLoss(
     debt: debt || zero,
   })
 
-  const collateralDuringLiquidation =
-    !lockedCollateral || !debt
-      ? zero
-      : getCollateralDuringLiquidation({
-          lockedCollateral,
-          debt,
-          liquidationPrice: afterLiquidationPrice,
-          liquidationPenalty,
-        })
-
   // eslint-disable-next-line func-style
   const stopLossMetadata: GetStopLossMetadata = (_) => {
     return {
-      getExecutionPrice: (_: { state: StopLossFormChange }) => executionPrice,
-      getSliderPercentageFill: (_: { state: StopLossFormChange }) => sliderPercentageFill,
-      getRightBoundary: (_: { state: StopLossFormChange }) => afterNewLiquidationPrice,
-      getMaxToken: (_: { state: StopLossFormChange }) => maxToken,
+      collateralDuringLiquidation,
+      getExecutionPrice: () => executionPrice,
+      getMaxToken: () => maxToken,
+      getRightBoundary: () => afterNewLiquidationPrice,
+      getSliderPercentageFill: () => sliderPercentageFill,
+      initialSlRatioWhenTriggerDoesntExist: zero,
+      onCloseToChange: (optionName: string) => setStopLossCloseType(optionName as CloseVaultTo),
+      onSliderChange: (value: BigNumber) => setStopLossLevel(value),
+      ratioParam: 'system.collateral-ratio',
+      resetData: {} as StopLossResetData,
       sliderMax,
       sliderMin,
-      resetData: {} as StopLossResetData,
-      ratioParam: 'system.collateral-ratio',
-      triggerMaxToken: zero,
-      collateralDuringLiquidation,
-      leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
       sliderStep: 1,
-      sliderChangeCallback: (value: BigNumber) => setStopLossLevel(value),
-      closeToChangeCallback: (optionName: string) =>
-        setStopLossCloseType(optionName as CloseVaultTo),
-      initialSlRatioWhenTriggerDoesntExist: zero,
+      triggerMaxToken: zero,
       validation: {
         getAddErrors: () => ({}),
         getAddWarnings: () => ({}),
