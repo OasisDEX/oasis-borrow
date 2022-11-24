@@ -1,5 +1,6 @@
 import { getMultiplyParams } from '@oasisdex/multiply'
 import { BigNumber } from 'bignumber.js'
+import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
 import { calculatePriceImpact } from 'features/shared/priceImpact'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
@@ -130,6 +131,7 @@ export function applyOpenMultiplyVaultCalculations(
     swap,
     slippage,
     requiredCollRatio,
+    stopLossLevel,
   } = state
 
   const marketPrice =
@@ -306,6 +308,10 @@ export function applyOpenMultiplyVaultCalculations(
     maxGenerateAmountNextPrice,
   )
 
+  const resolvedStopLossLevel = stopLossLevel.isZero()
+    ? openFlowInitialStopLossLevel({ liquidationRatio })
+    : stopLossLevel
+
   return {
     ...state,
     maxDepositAmount,
@@ -345,5 +351,6 @@ export function applyOpenMultiplyVaultCalculations(
     // afterFreeCollateral,
     borrowedDaiAmount,
     oneInchAmount,
+    stopLossLevel: resolvedStopLossLevel,
   }
 }

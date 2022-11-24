@@ -22,8 +22,10 @@ model TosApproval {
     chain_id    Int
     doc_version String
     sign_date   DateTime
+    vaults      users_who_follow_vaults[]
 
     @@unique([address, doc_version], name: "tos_approval_unique_signature")
+    @@unique([address, chain_id, doc_version])
     @@map("tos_approval")
 }
 
@@ -32,6 +34,7 @@ model Vault {
     type          VaultType
     owner_address String
     chain_id      Int?
+    users         users_who_follow_vaults[]
 
     @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
     @@map("vault")
@@ -110,17 +113,23 @@ model Discover {
     vault_normalized_debt Decimal?
     vault_collateral      Decimal
 
-    yield_30d   Decimal
-    status      Json
-    last_action Json
-    pnl_all     Decimal
-    pnl_1d      Decimal
-    pnl_7d      Decimal
-    pnl_30d     Decimal
-    pnl_365d    Decimal
-    pnl_ytd     Decimal
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime
+    yield_30d       Decimal
+    status          Json
+    last_action     Json
+    pnl_all         Decimal
+    pnl_1d          Decimal
+    pnl_7d          Decimal
+    pnl_30d         Decimal
+    pnl_365d        Decimal
+    pnl_ytd         Decimal
+    net_profit_all  Decimal
+    net_profit_1d   Decimal
+    net_profit_7d   Decimal
+    net_profit_30d  Decimal
+    net_profit_365d Decimal
+    net_profit_ytd  Decimal
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime
 
     @@unique([protocol_id, position_id])
     @@map("discover")
@@ -157,6 +166,12 @@ model HighestMultiplyPnl {
     pnl_30d          Decimal
     pnl_365d         Decimal
     pnl_ytd          Decimal
+    net_profit_all   Decimal
+    net_profit_1d    Decimal
+    net_profit_7d    Decimal
+    net_profit_30d   Decimal
+    net_profit_365d  Decimal
+    net_profit_ytd   Decimal
     last_action      Json
     type             VaultType?
 
@@ -199,4 +214,15 @@ model LargestDebt {
 
     @@unique([protocol_id, position_id], name: "protocol_id_position_id")
     @@map("largest_debt")
+}
+
+model users_who_follow_vaults {
+    user            TosApproval @relation(fields: [user_address, vault_chain_id, tos_doc_version], references: [address, chain_id, doc_version])
+    user_address    String // relation scalar field (used in the `@relation` attribute above)
+    vault           Vault       @relation(fields: [vault_id, vault_chain_id], references: [vault_id, chain_id])
+    vault_id        Int // relation scalar field (used in the `@relation` attribute above)
+    tos_doc_version String
+    vault_chain_id  Int
+
+    @@id([user_address, vault_id, vault_chain_id])
 }

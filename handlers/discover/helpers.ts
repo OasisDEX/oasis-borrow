@@ -16,6 +16,14 @@ type DiscoverLite = OmitNonDecimal<HighestMultiplyPnl | MostYieldEarned>
 
 const ELIGIBLE_TIME_SIGNATURES = ['1d', '7d', '30d', '365d']
 
+export function wrapFilterCombination(
+  field: string,
+  fn: (filter?: string) => Prisma.StringFilter,
+  filter?: string,
+): { [k: string]: Prisma.StringFilter }[] {
+  return filter ? filter.split(',').map((item) => ({ [field]: fn(item) })) : []
+}
+
 export function getGenericRangeFilter(filter?: string): Prisma.StringFilter {
   const split = filter?.split('-')
 

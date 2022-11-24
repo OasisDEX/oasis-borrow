@@ -1,6 +1,7 @@
 import { Pages } from 'analytics/analytics'
 import { DiscoverFiltersList } from 'features/discover/meta'
 import {
+  DiscoverFilterType,
   DiscoverPages,
   DiscoverTableActivityRowData,
   DiscoverTableRowData,
@@ -36,9 +37,10 @@ export function getDefaultSettingsState({
     ...Object.keys(filters).reduce(
       (o, key) => ({
         ...o,
-        [key]: filters[key].multi
-          ? filters[key].options.map((item) => item.value).join(',')
-          : filters[key].options[0].value,
+        [key]:
+          filters[key].type === DiscoverFilterType.SINGLE
+            ? filters[key].options[0].value
+            : filters[key].options.map((item) => item.value).join(','),
       }),
       {},
     ),

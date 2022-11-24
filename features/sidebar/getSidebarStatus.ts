@@ -97,6 +97,7 @@ export function getSidebarStatus({
           text: t(txInProgressKey, {
             openVaultConfirmations: openVaultConfirmations || 0,
             safeConfirmations: openVaultSafeConfirmations,
+            token,
           }),
           type: 'progress',
           ...txData,

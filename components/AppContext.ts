@@ -1208,6 +1208,7 @@ export function setupAppContext() {
     aaveUserAccountData$,
     hasActiveAavePosition$,
     balanceInfo$,
+    once$,
   }
 }
 
