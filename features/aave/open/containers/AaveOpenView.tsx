@@ -41,7 +41,7 @@ function AaveOpenContainer({
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine} config={config}>
       <Container variant="vaultPageContainer">
         <AavePositionNotice />
-        <Header strategyName={config.name} />
+        <Header strategyConfig={config} />
         <TabBar
           variant="underline"
           sections={[

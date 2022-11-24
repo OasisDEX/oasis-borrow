@@ -10,6 +10,7 @@ import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.jso
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
+import * as chainlinkUSDCUSDPriceOracle from './abi/chainlink-price-oracle.json'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
@@ -221,6 +222,13 @@ const protoMain = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     mainnetAddresses.AAVE_PRICE_ORACLE,
   ),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(
+      chainlinkUSDCUSDPriceOracle,
+      // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
+      mainnetAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
+    ),
+  },
   aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
@@ -317,6 +325,9 @@ const kovan: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x',
   ),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(chainlinkUSDCUSDPriceOracle, '0x'),
+  },
   aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
   operationExecutor: contractDesc(
     operationExecutor,
@@ -418,6 +429,13 @@ const goerli: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     goerliAddresses.AAVE_PRICE_ORACLE,
   ),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(
+      chainlinkUSDCUSDPriceOracle,
+      // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
+      goerliAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
+    ),
+  },
   aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
