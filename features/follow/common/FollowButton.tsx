@@ -25,11 +25,13 @@ export function FollowButton(props: FollowButtonProps) {
           border: '1px solid #25273D',
           color: '#25273D',
           background: 'white',
-          '.star': { color: '#878BFC' },
+          '.star': { color: '#878BFC', fill: '#878BFC' },
+          '.star_empty': { color: '#EAEAEA', fill: 'white', stroke: '#25273D' },
         },
         color: '#626472',
         boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.2)',
-        '.star': { color: '#575CFE' },
+        '.star': { color: '#575CFE', fill:'#575CFE' },
+        '.star_empty': { fill: 'white', stroke: '#EAEAEA' },
       }}
     >
       <Flex sx={{ justifyContent: 'space-between', gap: '8px', alignItems: 'center' }}>
@@ -37,7 +39,7 @@ export function FollowButton(props: FollowButtonProps) {
           <Spinner size="10px" />
         ) : (
           <Box className={props.isFollowing ? 'star_empty' : 'star'}>
-            <Icon name={props.isFollowing ? 'star_empty' : 'star'} size="15px" />
+            <Icon name="star" size="15px" />
           </Box>
         )}
         {props.isProcessing ? t('loading') : props.isFollowing ? t('follow') : t('unfollow')}

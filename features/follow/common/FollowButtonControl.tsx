@@ -2,13 +2,13 @@ import { FollowButton } from 'features/follow/common/FollowButton'
 import { useEffect, useState } from 'react'
 
 export function FollowButtonControl() {
-  const [isFollowing, setIsFollowing] = useState(false)
+  const [isFollowing, setIsFollowing] = useState(true)
   const [isProcessing, setProcessing] = useState(true)
   //   TODO ŁW - Error handling when working with real api
 
   useEffect(() => {
     setTimeout(() => {
-      setIsFollowing(true)
+      setIsFollowing(false)
       setProcessing(false)
     }, 1000)
     setProcessing(isProcessing)
