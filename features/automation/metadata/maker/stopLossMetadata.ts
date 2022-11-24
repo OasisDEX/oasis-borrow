@@ -48,6 +48,19 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
   })
 
   const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100)
+  const sliderMax = new BigNumber(
+    (autoSellTriggerData.isTriggerEnabled
+      ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
+      : constantMultipleTriggerData.isTriggerEnabled
+      ? constantMultipleTriggerData.sellExecutionCollRatio
+          .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
+          .div(100)
+      : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
+    )
+      .multipliedBy(100)
+      .toFixed(0, BigNumber.ROUND_DOWN),
+  )
+
   const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
     stopLossLevel,
     isStopLossEnabled,
@@ -58,23 +71,18 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
     .times(100)
     .decimalPlaces(0, BigNumber.ROUND_DOWN)
 
-  const max = autoSellTriggerData.isTriggerEnabled
-    ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
-    : constantMultipleTriggerData.isTriggerEnabled
-    ? constantMultipleTriggerData.sellExecutionCollRatio
-        .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
-        .div(100)
-    : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
-  const sliderMax = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
-
   const resetData: StopLossResetData = {
     stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
     collateralActive: isToCollateral,
     txDetails: {},
   }
 
-  const belowCurrentPositionRatio = formatPercent(positionRatio.minus(stopLossLevel).times(100), {
-    precision: 2,
+  const triggerMaxToken = getMaxToken({
+    stopLossLevel: stopLossLevel.times(100),
+    lockedCollateral,
+    liquidationRatio,
+    liquidationPrice,
+    debt,
   })
 
   return {
@@ -90,7 +98,9 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         // most likely it won't be needed when we switch to LTV in maker
         stopLossLevelCard: {
           modalDescription: 'manage-multiply-vault.card.stop-loss-coll-ratio-desc',
-          belowCurrentPositionRatio,
+          belowCurrentPositionRatio: formatPercent(positionRatio.minus(stopLossLevel).times(100), {
+            precision: 2,
+          }),
         },
       },
     },
@@ -121,18 +131,12 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
       }),
     initialSlRatioWhenTriggerDoesntExist,
     leftBoundaryFormatter: (value) => (value.isZero() ? '-' : formatPercent(value)),
-    triggerMaxToken: getMaxToken({
-      stopLossLevel: stopLossLevel.times(100),
-      lockedCollateral,
-      liquidationRatio,
-      liquidationPrice,
-      debt,
-    }),
+    ratioParam: 'system.collateral-ratio',
+    resetData,
     sliderMax,
     sliderMin,
-    resetData,
     sliderStep: 1,
-    ratioParam: 'system.collateral-ratio',
+    triggerMaxToken,
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({
         hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
