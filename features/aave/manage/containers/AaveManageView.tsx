@@ -87,7 +87,7 @@ function AaveManageContainer({
     >
       <Container variant="vaultPageContainer">
         <PositionOwnership />
-        <Header strategyName={strategyConfig.name} />
+        <Header strategyConfig={strategyConfig} />
         <TabBar
           variant="underline"
           sections={[

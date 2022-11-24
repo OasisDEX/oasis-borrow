@@ -28,10 +28,14 @@ const getLTVRatioColor = (ratio: BigNumber) => {
   const critical = new BigNumber(5)
   const warning = new BigNumber(20)
 
-  if (ratio.isLessThanOrEqualTo(critical)) {
-    return 'critical10'
+  switch (true) {
+    case ratio.isLessThanOrEqualTo(critical):
+      return 'critical10'
+    case ratio.isLessThanOrEqualTo(warning):
+      return 'warning10'
+    default:
+      return 'success10'
   }
-  return ratio.isLessThanOrEqualTo(warning) ? 'warning10' : 'success10'
 }
 
 export function AaveMultiplyPositionData({
@@ -136,20 +140,10 @@ export function AaveMultiplyPositionData({
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}
             value={formatDecimalAsPercent(netBorrowCost)}
-            // change={
-            //   newNetValue && {
-            //     variant: 'positive',
-            //     value: '????',
-            //   }
-            // }
           />
           <DetailsSectionContentCard
             title={t('system.net-value')}
             value={`${formatAmount(netValue, 'USD')} USDC`}
-            // PnL is dependant on the graph work from Damian - can be kept out of scope for now (and be hidden from UI)
-            // footnote={`${t('system.pnl-value', {
-            //   value: formatAmount(collateral.amount.minus(debt.amount), 'USD'),
-            // })} USDC`}
             change={
               newNetValue && {
                 variant: newNetValue.gt(netValue) ? 'positive' : 'negative',

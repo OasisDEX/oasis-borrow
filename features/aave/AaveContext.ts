@@ -149,6 +149,7 @@ export function setupAaveContext({
 
   const aavePreparedReserveDataUSDC$ = curry(aavePrepareReserveData())(USDCReserveData$)
   const aavePreparedReserveDataSTETH$ = curry(aavePrepareReserveData())(STETHReserveData$)
+  const aavePreparedReserveDataETH$ = curry(aavePrepareReserveData())(ETHReserveData$)
 
   return {
     aaveStateMachine,
@@ -160,6 +161,7 @@ export function setupAaveContext({
     aaveReserveData: {
       USDC: aavePreparedReserveDataUSDC$,
       STETH: aavePreparedReserveDataSTETH$,
+      ETH: aavePreparedReserveDataETH$,
     },
     aaveSthEthYieldsQuery,
     aaveProtocolData$,
