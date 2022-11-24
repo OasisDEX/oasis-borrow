@@ -70,7 +70,6 @@ export function checkIfIsDisabledStopLoss({
   maxDebtForSettingStopLoss: boolean
   stage: SidebarAutomationStages
 }) {
-  console.log('stage', stage)
   return (
     (isProgressStage || !isOwner || !isEditing || (isAddForm && maxDebtForSettingStopLoss)) &&
     stage !== 'txSuccess'
