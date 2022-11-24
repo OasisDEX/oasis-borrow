@@ -44,9 +44,15 @@ export const defaultStopLossData = {
   isStopLossEnabled: false,
   stopLossLevel: zero,
   triggerId: zero,
+  isToCollateral: false,
 } as StopLossTriggerData
 
-export function extractStopLossData(data: TriggersData): StopLossTriggerData {
+export function extractStopLossData(
+  data: TriggersData,
+  overwriteDefault?: StopLossTriggerData,
+): StopLossTriggerData {
+  const defaultState = overwriteDefault || defaultStopLossData
+
   if (data.triggers && data.triggers.length > 0) {
     const stopLossTriggersData = getTriggersByType(data.triggers, [
       TriggerType.StopLossToCollateral,
@@ -57,10 +63,10 @@ export function extractStopLossData(data: TriggersData): StopLossTriggerData {
       return pickTriggerWithHighestStopLossLevel(stopLossTriggersData)
     }
 
-    return defaultStopLossData
+    return defaultState
   }
 
-  return defaultStopLossData
+  return defaultState
 }
 
 export function prepareStopLossTriggerData(

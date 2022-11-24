@@ -35,7 +35,7 @@ export function StopLossFormControl({
     environmentData: { canInteract },
     positionData: { id, debt, owner },
     metadata: {
-      stopLoss: { resetData },
+      stopLoss: { resetData, initialSlRatioWhenTriggerDoesntExist },
     },
   } = useAutomationContext()
 
@@ -60,6 +60,7 @@ export function StopLossFormControl({
     collateralActive: stopLossState.collateralActive,
     isToCollateral: stopLossTriggerData.isToCollateral,
     isRemoveForm,
+    initialSlRatioWhenTriggerDoesntExist,
   })
 
   const isDisabled = checkIfIsDisabledStopLoss({

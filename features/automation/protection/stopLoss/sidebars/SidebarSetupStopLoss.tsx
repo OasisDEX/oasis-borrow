@@ -212,7 +212,7 @@ export function SidebarSetupStopLoss({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: isDisabled || (!!errors.length && stage !== 'txSuccess'),
         isLoading: stage === 'txInProgress',
         action: () => {
           if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
