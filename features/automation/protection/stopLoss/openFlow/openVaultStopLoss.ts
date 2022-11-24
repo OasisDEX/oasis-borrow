@@ -22,7 +22,6 @@ import {
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { formatPercent } from 'helpers/formatters/format'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 
@@ -169,7 +168,6 @@ export function getDataForStopLoss(
       getRightBoundary: () => afterNewLiquidationPrice,
       getSliderPercentageFill: () => sliderPercentageFill,
       initialSlRatioWhenTriggerDoesntExist: zero,
-      leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
       onCloseToChange: (optionName: string) => setStopLossCloseType(optionName as CloseVaultTo),
       onSliderChange: (value: BigNumber) => setStopLossLevel(value),
       ratioParam: 'system.collateral-ratio',

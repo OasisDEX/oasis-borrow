@@ -57,11 +57,11 @@ export interface StopLossMetadata {
   getRightBoundary: AutomationStateValueMethod<StopLossFormChange>
   getSliderPercentageFill: AutomationStateValueMethod<StopLossFormChange>
   initialSlRatioWhenTriggerDoesntExist: BigNumber
-  leftBoundaryFormatter: (value: BigNumber) => string
   onCloseToChange?: (value: string) => void
   onSliderChange?: (value: BigNumber) => void
   ratioParam: string
   resetData: StopLossResetData
+  sliderDirection?: 'ltr' | 'rtl'
   sliderMax: BigNumber
   sliderMin: BigNumber
   sliderStep: number
@@ -72,7 +72,6 @@ export interface StopLossMetadata {
     cancelErrors: string[]
     cancelWarnings: string[]
   }
-  sliderDirection?: 'ltr' | 'rtl'
 }
 
 export interface AutoBSMetadata {}

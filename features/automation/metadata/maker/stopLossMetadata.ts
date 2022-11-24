@@ -112,7 +112,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
       }),
     getMaxToken: ({ stopLossLevel }) =>
       getMaxToken({
-        stopLossLevel: stopLossLevel,
+        stopLossLevel,
         lockedCollateral,
         liquidationRatio,
         liquidationPrice,
@@ -130,7 +130,6 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         max: sliderMax,
       }),
     initialSlRatioWhenTriggerDoesntExist,
-    leftBoundaryFormatter: (value) => (value.isZero() ? '-' : formatPercent(value)),
     ratioParam: 'system.collateral-ratio',
     resetData,
     sliderMax,
