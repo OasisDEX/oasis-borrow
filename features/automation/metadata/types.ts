@@ -6,6 +6,8 @@ import {
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
+type AutomationStateValueMethod<T, V = BigNumber> = (state: T) => V
+
 export type AutomationValidationMethodParams<T = {}> = {
   context: ContextWithoutMetadata
 } & T
@@ -46,10 +48,10 @@ export interface StopLossMetadata {
   collateralDuringLiquidation: BigNumber
   detailCards?: StopLossMetadataDetailCards
   fixedCloseToToken?: string
-  getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getMaxToken: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
+  getExecutionPrice: AutomationStateValueMethod<StopLossFormChange>
+  getMaxToken: AutomationStateValueMethod<StopLossFormChange>
+  getRightBoundary: AutomationStateValueMethod<StopLossFormChange>
+  getSliderPercentageFill: AutomationStateValueMethod<StopLossFormChange>
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   leftBoundaryFormatter: (value: BigNumber) => string
   onCloseToChange?: (value: string) => void
