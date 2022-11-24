@@ -9,7 +9,13 @@ import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function AaveMultiplyHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
+function AaveMultiplyHeader({
+  strategyConfig,
+  headerLabelString,
+}: {
+  strategyConfig: StrategyConfig
+  headerLabelString: string
+}) {
   const { t } = useTranslation()
   const { getAaveAssetsPrices$, chainlinkUSDCUSDOraclePrice$ } = useAaveContext()
   const [positionTokenPrices, positionTokenPricesError] = useObservable(
@@ -43,11 +49,26 @@ export function AaveMultiplyHeader({ strategyConfig }: { strategyConfig: Strateg
   return (
     <WithErrorHandler error={[positionTokenPricesError, chainlinkUSDCUSDPriceError]}>
       <VaultHeadline
-        header={t('vault.header-aave-open', { ...strategyConfig.tokens })}
+        header={t(headerLabelString, { ...strategyConfig.tokens })}
         token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
         loading={!positionTokenPrices}
         details={detailsList}
       />
     </WithErrorHandler>
+  )
+}
+
+export function AaveMultiplyOpenHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
+  return (
+    <AaveMultiplyHeader
+      strategyConfig={strategyConfig}
+      headerLabelString={'vault.header-aave-open'}
+    />
+  )
+}
+
+export function AaveMultiplyManageHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
+  return (
+    <AaveMultiplyHeader strategyConfig={strategyConfig} headerLabelString={'header-aave-view'} />
   )
 }

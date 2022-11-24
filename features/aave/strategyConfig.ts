@@ -7,7 +7,10 @@ import {
 import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
 import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectionComponent'
 import { adjustRiskSliderConfig as earnAdjustRiskSliderConfig } from '../earn/aave/riskSliderConfig'
-import { AaveMultiplyHeader } from '../multiply/aave/components/AaveMultiplyHeader'
+import {
+  AaveMultiplyManageHeader,
+  AaveMultiplyOpenHeader,
+} from '../multiply/aave/components/AaveMultiplyHeader'
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
@@ -39,9 +42,9 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
     viewComponents: {
-      headerOpen: AaveMultiplyHeader,
-      headerManage: AaveMultiplyHeader,
-      headerView: AaveMultiplyHeader,
+      headerOpen: AaveMultiplyOpenHeader,
+      headerManage: AaveMultiplyManageHeader,
+      headerView: AaveMultiplyManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
