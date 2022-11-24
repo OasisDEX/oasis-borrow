@@ -57,7 +57,11 @@ export function FollowButton(props: FollowButtonProps) {
     >
       <Box sx={{ position: 'absolute', top: '2px', left: '13px', margin: 'auto' }}>
         {props.isProcessing ? (
-          <Spinner size={15} sx={{ position: 'relative', top: '1px', left: '-3px' }} />
+          <Spinner
+            size={15}
+            color="#878BFC"
+            sx={{ position: 'relative', top: '1px', left: '-3px' }}
+          />
         ) : (
           <Box className={props.isFollowing ? 'star_empty' : 'star'}>
             <Icon name="star" size={12} />
