@@ -94,10 +94,12 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
         return sendAsyncMaybeReadOnly
       } else if (name === 'request') {
         // eslint-disable-next-line func-style
-        const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload) => {
+        const requestMaybeReadOnly = async (payload: JSONRPCRequestPayload,
+          callback: (error: Error | null, result?: JsonRpcResponse) => void) => {
           console.log("request not implemented:"+payload.method);
           //TODO: possibly also requires ifs for eth_call, eth_getTransactionByHash, eth_getTransactionReceipt
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
+          const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           
           // Gnosis Safe web3-react provider doesn't implement eth_gasPrice call
           if (payload.method === 'eth_gasPrice') {
@@ -109,9 +111,44 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
               return 0
             }
           }
-
-          const result = await rpcProvider.send(payload.method, payload.params)
-          return result
+          if(payload.method === 'eth_call') {
+            console.log("new eth_call");
+            try {
+              const result = await readOnlyProvider!.call(payload.params[0]);
+              console.log("eth_call executed");
+              callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+            } catch (err) {
+              callback(err as any)
+            }
+          }else
+          if (payload.method === 'eth_getTransactionByHash') {
+            try {
+              console.log("new eth_getTransactionByHash");
+              const result = await readOnlyProvider!.getTransaction(payload.params[0]);
+              console.log("eth_getTransactionByHash executed");
+              callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+            } catch (err) {
+              callback(err as any)
+            }
+          }else
+            if(payload.method === 'eth_getTransactionReceipt') {
+              try {
+                console.log("new eth_getTransactionReceipt");
+                const result = await readOnlyProvider!.getTransactionReceipt(payload.params[0]);
+                console.log("eth_getTransactionReceipt executed");
+                callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+              } catch (err) {
+                callback(err as any)
+              }
+            }
+            else{
+              try {
+                const result = await rpcProvider.send(payload.method, payload.params)
+                callback(null, { jsonrpc: payload.jsonrpc, id: payload.id, result })
+              } catch (err) {
+                callback(err as any)
+              }
+            }
         }
         return requestMaybeReadOnly
       } else {
