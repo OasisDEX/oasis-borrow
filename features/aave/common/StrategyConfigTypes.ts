@@ -1,9 +1,13 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
+import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
+
+type CollateralTokenTypeList = 'STETH'
+type DebtTokenTypeList = 'USDC' | 'ETH'
 
 export interface StrategyConfig {
   name: string
@@ -18,8 +22,8 @@ export interface StrategyConfig {
     adjustRiskView: AdjustRiskView
   }
   tokens: {
-    collateral: string
-    debt: string
+    collateral: CollateralTokenTypeList
+    debt: DebtTokenTypeList
   }
   riskRatios: {
     minimum: IRiskRatio
@@ -38,8 +42,10 @@ export type ManageSectionComponentProps = {
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
-type SimulateSection = () => JSX.Element
+type SimulateSection = (props: AaveMultiplyManageComponentProps) => JSX.Element
 type VaultDetails = (
-  props: ManageSectionComponentProps & ViewPositionSectionComponentProps,
+  props: ManageSectionComponentProps &
+    ViewPositionSectionComponentProps &
+    AaveMultiplyManageComponentProps,
 ) => JSX.Element
 type AdjustRiskView = (props: AdjustRiskViewProps) => JSX.Element

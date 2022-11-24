@@ -65,7 +65,7 @@ export function getAaveProtocolData$(
         aaveReservesList,
       ]) => {
         const pos = new Position(
-          { amount: new BigNumber(accountData.totalDebtETH.toString()) },
+          { amount: new BigNumber(accountData.totalDebtETH.toString()), denomination: 'ETH' },
           {
             amount: new BigNumber(reserveData.currentATokenBalance.toString()),
             denomination: collateralToken,

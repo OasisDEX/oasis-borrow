@@ -105,6 +105,10 @@ function AaveManageContainer({
                       aaveReserveState={aaveReserveState}
                       aaveReserveDataETH={aaveReserveDataETH}
                       strategyConfig={strategyConfig}
+                      currentPosition={state.context.currentPosition}
+                      collateralPrice={state.context.collateralPrice}
+                      tokenPrice={state.context.tokenPrice}
+                      nextPosition={state.context.strategy?.simulation.position}
                     />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>

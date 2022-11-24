@@ -613,6 +613,8 @@
     "liquidation-price-ratio": "Liquidation price ratio",
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
+    "below-current-price": "{{percentage}} below current price",
+    "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "has-asset-already": "There is an active AAVE position open in this address. Therefore, you cannot open a stETH earn position. Close your AAVE position first to continue.",
     "net-value-modal": "Net Value",
     "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH."
@@ -878,6 +880,7 @@
     "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
+    "pnl-value": "PnL: {{value}}",
     "actions": {
       "common": {
         "close-vault": "Close vault",
@@ -920,6 +923,9 @@
     },
     "remove-trigger": "Remove trigger",
     "add-trigger": "Add trigger",
+    "loan-to-value": "Loan to Value",
+    "net-borrow-cost": "Net Borrow Cost",
+    "position-debt": "Position Debt",
     "current-token-price": "Current {{token}} Price",
     "next-token-price": "Next {{token}} Price"
   },

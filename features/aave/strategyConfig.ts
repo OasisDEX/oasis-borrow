@@ -9,7 +9,6 @@ import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectio
 import { adjustRiskSliderConfig as earnAdjustRiskSliderConfig } from '../earn/aave/riskSliderConfig'
 import { AaveMultiplyHeader } from '../multiply/aave/components/AaveMultiplyHeader'
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
-import { AaveMultiplySimulate } from '../multiply/aave/components/AaveMultiplySimulate'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { StrategyConfig } from './common/StrategyConfigTypes'
@@ -43,7 +42,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       headerOpen: AaveMultiplyHeader,
       headerManage: AaveMultiplyHeader,
       headerView: AaveMultiplyHeader,
-      simulateSection: AaveMultiplySimulate,
+      simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
