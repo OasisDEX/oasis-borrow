@@ -11,7 +11,6 @@ import {
 } from 'components/productCards/ProductCardsContainer'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
-import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
@@ -501,7 +500,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
           }}
         />
       </AppLink>
-      <FollowButtonControl/>
     </Flex>
   )
 }

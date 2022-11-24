@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import { Box, Button, Flex, Spinner } from 'theme-ui'
 
 interface FollowButtonProps {
@@ -11,6 +12,15 @@ interface FollowButtonProps {
 
 export function FollowButton(props: FollowButtonProps) {
   const { t } = useTranslation()
+  const [isHovering, setIsHovering] = useState(false)
+
+  const handleMouseOver = () => {
+    setIsHovering(true)
+  }
+
+  const handleMouseOut = () => {
+    setIsHovering(false)
+  }
 
   return (
     <Button
@@ -30,9 +40,11 @@ export function FollowButton(props: FollowButtonProps) {
         },
         color: '#626472',
         boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.2)',
-        '.star': { color: '#575CFE', fill:'#575CFE' },
+        '.star': { color: '#575CFE', fill: '#575CFE' },
         '.star_empty': { fill: 'white', stroke: '#EAEAEA' },
       }}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
     >
       <Flex sx={{ justifyContent: 'space-between', gap: '8px', alignItems: 'center' }}>
         {props.isProcessing ? (
@@ -42,7 +54,14 @@ export function FollowButton(props: FollowButtonProps) {
             <Icon name="star" size="15px" />
           </Box>
         )}
-        {props.isProcessing ? t('loading') : props.isFollowing ? t('follow') : t('unfollow')}
+
+        {props.isProcessing
+          ? t('loading')
+          : props.isFollowing
+          ? t('follow')
+          : isHovering
+          ? t('unfollow')
+          : t('following')}
       </Flex>
     </Button>
   )
