@@ -27,16 +27,16 @@ export function useStopLossStateInitialization({
       type: 'stop-loss-level',
       stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
     })
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: 'add',
+    })
   }, [triggerId.toNumber(), positionRatio.toNumber()])
 
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'tx-details',
       txDetails: {},
-    })
-    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-      type: 'current-form',
-      currentForm: 'add',
     })
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'is-awaiting-confirmation',
