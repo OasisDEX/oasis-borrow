@@ -55,9 +55,9 @@ export interface StopLossMetadata {
   initialSlRatioWhenTriggerDoesntExist: BigNumber
   leftBoundaryFormatter: (value: BigNumber) => string
   onCloseToChange?: (value: string) => void
+  onSliderChange?: (value: BigNumber) => void
   ratioParam: string
   resetData: StopLossResetData
-  sliderChangeCallback?: (value: BigNumber) => void
   sliderMax: BigNumber
   sliderMin: BigNumber
   sliderStep: number

@@ -52,7 +52,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
-  const afterMaxToken = getMaxToken({ state: stopLossState })
+  const afterMaxToken = getMaxToken(stopLossState)
 
   return (
     <>

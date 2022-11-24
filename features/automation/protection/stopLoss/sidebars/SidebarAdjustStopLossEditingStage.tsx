@@ -58,7 +58,7 @@ export function SetDownsideProtectionInformation({
   } = useAutomationContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const afterMaxToken = getMaxToken({ state: stopLossState })
+  const afterMaxToken = getMaxToken(stopLossState)
 
   const savingCompareToLiquidation = afterMaxToken.minus(collateralDuringLiquidation)
 
@@ -144,7 +144,7 @@ export function SidebarAdjustStopLossEditingStage({
         resetData,
         ratioParam,
         fixedCloseToToken,
-        sliderChangeCallback,
+        onSliderChange,
         onCloseToChange,
         leftBoundaryFormatter,
         sliderStep,
@@ -189,8 +189,8 @@ export function SidebarAdjustStopLossEditingStage({
     )
   }
 
-  const sliderPercentageFill = getSliderPercentageFill({ state: stopLossState })
-  const rightBoundry = getRightBoundary({ state: stopLossState })
+  const sliderPercentageFill = getSliderPercentageFill(stopLossState)
+  const rightBoundry = getRightBoundary(stopLossState)
 
   return (
     <>
@@ -251,7 +251,7 @@ export function SidebarAdjustStopLossEditingStage({
                 stopLossLevel: slCollRatio,
               })
 
-              sliderChangeCallback && sliderChangeCallback(slCollRatio)
+              onSliderChange && onSliderChange(slCollRatio)
             }}
             leftLabel={t('protection.stop-loss-something', { value: t(ratioParam) })}
             rightLabel={t('slider.set-stoploss.right-label')}

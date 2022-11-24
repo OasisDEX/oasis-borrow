@@ -43,7 +43,7 @@ export function StopLossCompleteInformation({
     stopLossLevel: stopLossState.stopLossLevel,
   })
 
-  const maxToken = getMaxToken({ state: stopLossState })
+  const maxToken = getMaxToken(stopLossState)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(maxToken, token)} ${token}`
