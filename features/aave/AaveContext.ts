@@ -148,7 +148,6 @@ export function setupAaveContext({
     curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
   )
 
-
   const aavePreparedReserveDataUSDC$ = curry(aavePrepareReserveData())(USDCReserveData$)
   const aavePreparedReserveDataSTETH$ = curry(aavePrepareReserveData())(STETHReserveData$)
   const aavePreparedReserveDataETH$ = curry(aavePrepareReserveData())(ETHReserveData$)
