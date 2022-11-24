@@ -1,5 +1,6 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
+import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
@@ -38,12 +39,13 @@ export type AaveHeaderProps = {
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
-  isManage?: boolean
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
-type SimulateSection = ({ isManage }: { isManage?: boolean }) => JSX.Element
+type SimulateSection = (props: AaveMultiplyManageComponentProps) => JSX.Element
 type VaultDetails = (
-  props: ManageSectionComponentProps & ViewPositionSectionComponentProps,
+  props: ManageSectionComponentProps &
+    ViewPositionSectionComponentProps &
+    AaveMultiplyManageComponentProps,
 ) => JSX.Element
 type AdjustRiskView = (props: AdjustRiskViewProps) => JSX.Element

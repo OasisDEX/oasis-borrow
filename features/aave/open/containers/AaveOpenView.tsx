@@ -27,6 +27,22 @@ function AavePositionNotice() {
   return null
 }
 
+function SimulateSectionComponent({ config }: { config: StrategyConfig }) {
+  const SimulateSection = config.viewComponents.simulateSection
+  const { stateMachine } = useOpenAaveStateMachineContext()
+  const [state] = useActor(stateMachine)
+
+  return (
+    <SimulateSection
+      strategyConfig={config}
+      currentPosition={state.context.currentPosition}
+      collateralPrice={state.context.collateralPrice}
+      tokenPrice={state.context.tokenPrice}
+      nextPosition={state.context.strategy?.simulation.position}
+    />
+  )
+}
+
 function AaveOpenContainer({
   aaveStateMachine,
   config,
@@ -36,7 +52,6 @@ function AaveOpenContainer({
 }) {
   const { t } = useTranslation()
   const Header = config.viewComponents.headerOpen
-  const SimulateSection = config.viewComponents.simulateSection
   return (
     <OpenAaveStateMachineContextProvider machine={aaveStateMachine} config={config}>
       <Container variant="vaultPageContainer">
@@ -51,7 +66,7 @@ function AaveOpenContainer({
               content: (
                 <Grid variant="vaultContainer">
                   <Box>
-                    <SimulateSection />
+                    <SimulateSectionComponent config={config} />
                   </Box>
                   <Box>{<SidebarOpenAaveVault />}</Box>
                 </Grid>
