@@ -1,11 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
+import React from 'react'
 import { Box, Button, Spinner } from 'theme-ui'
 
 interface FollowButtonProps {
   isProcessing: boolean
-  // isRetry: boolean
   isFollowing: boolean
   buttonClickHandler: () => void
 }

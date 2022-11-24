@@ -1,5 +1,5 @@
 import { FollowButton } from 'features/follow/common/FollowButton'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export function FollowButtonControl() {
   const [isFollowing, setIsFollowing] = useState(true)
