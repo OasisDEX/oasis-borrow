@@ -3,6 +3,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -11,11 +12,14 @@ import React from 'react'
 export function AaveMultiplyHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
   const { t } = useTranslation()
   const { aaveSTETHUSDCPrices$, getChainlinkUSDCUSDPrice$ } = useAaveContext()
-  const [aaveSTETHUSDCPrices] = useObservable(aaveSTETHUSDCPrices$)
-  const [chainlinkUSDCUSDPrice] = useObservable(getChainlinkUSDCUSDPrice$())
+  const [aaveSTETHUSDCPrices, aaveSTETHUSDCPricesError] = useObservable(aaveSTETHUSDCPrices$)
+  const [chainlinkUSDCUSDPrice, chainlinkUSDCUSDPriceError] = useObservable(
+    getChainlinkUSDCUSDPrice$(),
+  )
+
   const detailsList: HeadlineDetailsProp[] = []
   if (aaveSTETHUSDCPrices && chainlinkUSDCUSDPrice) {
-    const [USDCPrice, STETHPrice] = aaveSTETHUSDCPrices as BigNumber[]
+    const [USDCPrice, STETHPrice] = aaveSTETHUSDCPrices
 
     detailsList.push(
       {
@@ -30,11 +34,13 @@ export function AaveMultiplyHeader({ strategyConfig }: { strategyConfig: Strateg
   }
 
   return (
-    <VaultHeadline
-      header={t('vault.header-aave-open', { ...strategyConfig.tokens })}
-      token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
-      loading={!aaveSTETHUSDCPrices}
-      details={detailsList}
-    />
+    <WithErrorHandler error={[aaveSTETHUSDCPricesError, chainlinkUSDCUSDPriceError]}>
+      <VaultHeadline
+        header={t('vault.header-aave-open', { ...strategyConfig.tokens })}
+        token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
+        loading={!aaveSTETHUSDCPrices}
+        details={detailsList}
+      />
+    </WithErrorHandler>
   )
 }

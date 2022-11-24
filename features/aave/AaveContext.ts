@@ -38,7 +38,6 @@ export function setupAaveContext({
   daiEthTokenPrice$,
   accountBalances$,
   onEveryBlock$,
-  once$,
   context$,
   aaveOracleAssetPriceData$,
   aaveReserveConfigurationData$,
@@ -147,7 +146,7 @@ export function setupAaveContext({
     curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
   )
 
-  const getChainlinkUSDCUSDPrice$ = observe(once$, context$, getChainlinkUSDCUSDPrice)
+  const getChainlinkUSDCUSDPrice$ = observe(onEveryBlock$, context$, getChainlinkUSDCUSDPrice)
 
   return {
     aaveStateMachine,
