@@ -9,7 +9,9 @@ const USD_CHAINLINK_PRECISION = 8
 
 console.log('networksByName', networksByName)
 
-export function getChainlinkOraclePrice(contractName: keyof NetworkConfig['chainlinkPriceOracle']) {
+export function getChainlinkOraclePrice(
+  contractName: keyof NetworkConfig['chainlinkPriceOracle'],
+): CallDef<void, BigNumber> {
   if (!contractName || !networksByName['main']['chainlinkPriceOracle'][contractName]) {
     throw new Error(`ChainlinkPriceOracle ${contractName} not found`)
   }
@@ -20,5 +22,5 @@ export function getChainlinkOraclePrice(contractName: keyof NetworkConfig['chain
     postprocess: (answer) => {
       return amountFromWei(answer, USD_CHAINLINK_PRECISION)
     },
-  } as CallDef<void, BigNumber>
+  }
 }
