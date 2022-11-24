@@ -8,6 +8,8 @@ export function recursiveLog(thing: any, name: string, depth: number = 0) {
     Object.keys(thing).forEach((key) => {
       recursiveLog(thing[key], key, depth + 1)
     })
+  } else if (typeof thing === 'function') {
+    log('(function)', name, depth)
   } else {
     log(thing, name, depth)
   }

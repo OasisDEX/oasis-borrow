@@ -13,6 +13,7 @@ import { Context } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { recursiveLog } from '../../helpers/recursiveLog'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -71,24 +72,36 @@ export async function getOpenAaveParameters({
 }: OpenAaveParameters): Promise<OasisActionResult> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const strategy = await strategies.aave.openStEth(
-    {
-      depositAmount: amountToWei(amount, token),
-      slippage: slippage,
-      multiple: riskRatio.multiple,
-    },
-    {
-      addresses: getAddressesFromContext(context),
-      provider: provider,
-      dsProxy: proxyAddress,
-      getSwapData: getOneInchCall(context.swapAddress),
-    },
-  )
+  const stratArgs = {
+    depositAmount: amountToWei(amount, token),
+    slippage: slippage,
+    multiple: riskRatio.multiple,
+  }
+  const stratDeps = {
+    addresses: getAddressesFromContext(context),
+    provider: provider,
+    dsProxy: proxyAddress,
+    getSwapData: getOneInchCall(context.swapAddress),
+  }
+  recursiveLog(stratArgs, 'getOpenAaveParametersLibArgsParam')
+  recursiveLog(stratDeps, 'getOpenAaveParametersLibDepsParam')
+  if (window) {
+    // @ts-ignore
+    window.getOpenAaveParametersLibArgs = { stratArgs, stratDeps }
+  }
 
-  return {
+  const strategy = await strategies.aave.openStEth(stratArgs, stratDeps)
+
+  const ret = {
     strategy,
     operationName: OPERATION_NAMES.aave.OPEN_POSITION,
   }
+  if (window) {
+    // @ts-ignore
+    window.getOpenAaveParametersLibReturn = ret
+  }
+  recursiveLog(ret, 'getOpenAaveParametersLibReturn')
+  return ret
 }
 
 export async function getAdjustAaveParameters({

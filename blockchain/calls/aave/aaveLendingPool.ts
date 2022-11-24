@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { AaveLendingPool } from '../../../types/web3-v1-contracts/aave-lending-pool'
 import { amountFromWei } from '../../utils'
 import { CallDef } from '../callsHelpers'
+import { recursiveLog } from '../../../helpers/recursiveLog'
 
 export const MINIMAL_COLLATERAL = new BigNumber(0.00001)
 
@@ -31,8 +32,8 @@ export const getAaveUserAccountData: CallDef<AaveUserAccountDataParameters, Aave
   prepareArgs: ({ address }) => {
     return [address]
   },
-  postprocess: (result) => {
-    return {
+  postprocess: (result, { address }) => {
+    const ret = {
       totalCollateralETH: amountFromWei(new BigNumber(result.totalCollateralETH.toString()), 'ETH'),
       totalDebtETH: amountFromWei(new BigNumber(result.totalDebtETH.toString()), 'ETH'),
       availableBorrowsETH: amountFromWei(
@@ -43,6 +44,13 @@ export const getAaveUserAccountData: CallDef<AaveUserAccountDataParameters, Aave
       ltv: new BigNumber(result.ltv.toString()),
       healthFactor: new BigNumber(result.healthFactor.toString()),
     }
+    if (window) {
+      // @ts-ignore
+      window.getAaveUserAccountDataReturn = ret
+    }
+    console.log(`getAaveUserAccountData address arg: ${address}`)
+    recursiveLog(ret, 'getAaveUserAccountDataReturn')
+    return ret
   },
 }
 
