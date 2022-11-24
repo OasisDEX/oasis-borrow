@@ -39,13 +39,15 @@ export function createAaveUserConfiguration(
   )
 }
 
-export function hasOtherAssets(
+export function hasAssets(
   userAssetList: AaveUserConfigurationResult[],
-  assetsToCheck: AaveUserConfigurationResult['assetName'][],
+  collateralToken: AaveUserConfigurationResult['assetName'],
+  debtToken: AaveUserConfigurationResult['assetName'],
 ) {
-  return Array.isArray(userAssetList) && Array.isArray(assetsToCheck)
-    ? userAssetList
-        .filter((asset) => asset.borrowed || asset.collateral)
-        .filter((asset) => !assetsToCheck.includes(asset.assetName)).length > 0
-    : false
+  return (
+    userAssetList.filter(({ collateral, assetName }) => collateral && assetName === collateralToken)
+      .length > 0 &&
+    userAssetList.filter(({ borrowed, assetName }) => borrowed && assetName === debtToken).length >
+      0
+  )
 }

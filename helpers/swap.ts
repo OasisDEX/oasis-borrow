@@ -74,6 +74,7 @@ export function getOneInchCall(swapAddress: string, debug?: true) {
     slippage: BigNumber,
     protocols: string[] = defaultExchangeProtocols,
   ) => {
+    console.log(`getOneInchCall: ${from} -> ${to} ${amount.toString()}`)
     const response = await swapOneInchTokens(
       from,
       to,

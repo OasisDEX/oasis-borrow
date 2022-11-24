@@ -4,7 +4,7 @@ import { map, switchMap } from 'rxjs/operators'
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
 import { StrategyConfig } from '../common/StrategyConfigTypes'
 import { strategies } from '../strategyConfig'
-import { createAaveUserConfiguration, hasOtherAssets } from './aaveUserConfiguration'
+import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
 
 export function getStrategyConfig$(
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -14,6 +14,8 @@ export function getStrategyConfig$(
 ): Observable<StrategyConfig> {
   return proxyAddress$(address).pipe(
     switchMap((proxyAddress) => {
+      console.log('getStrategyConfig$ proxyAddress', proxyAddress)
+      console.log('getStrategyConfig$ address', address)
       return combineLatest(
         aaveUserConfiguration$({ address: proxyAddress || address }),
         aaveReservesList$(),
@@ -23,10 +25,16 @@ export function getStrategyConfig$(
       return createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)
     }),
     map((aaveUserConfiguration) => {
-      if (hasOtherAssets(aaveUserConfiguration, ['ETH', 'STETH'])) {
+      if (hasAssets(aaveUserConfiguration, 'STETH', 'ETH')) {
+        return strategies['aave-earn']
+      } else if (hasAssets(aaveUserConfiguration, 'STETH', 'USDC')) {
         return strategies['aave-multiply']
       } else {
-        return strategies['aave-earn']
+        throw new Error(
+          `could not resolve strategy for address ${address}. aaveUserConfiguration ${JSON.stringify(
+            aaveUserConfiguration,
+          )}`,
+        )
       }
     }),
   )

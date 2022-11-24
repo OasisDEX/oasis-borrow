@@ -44,9 +44,11 @@ export function getAaveProtocolData$(
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
+  tempPositionFromLib$: Observable<IPosition>,
   collateralToken: string,
   address: string,
 ): Observable<AaveProtocolData> {
+  console.log(`getAaveProtocolData$ address ${address}`)
   return combineLatest(
     aaveUserReserveData$({ token: collateralToken, address }),
     aaveUserAccountData$({ address }),
@@ -54,6 +56,7 @@ export function getAaveProtocolData$(
     aaveReserveConfigurationData$({ token: collateralToken }),
     aaveUserConfiguration$({ address }),
     aaveReservesList$(),
+    tempPositionFromLib$,
   ).pipe(
     map(
       ([
@@ -63,26 +66,28 @@ export function getAaveProtocolData$(
         reserveConfigurationData,
         aaveUserConfiguration,
         aaveReservesList,
+        tempPositionFromLib,
       ]) => {
-        const pos = new Position(
-          { amount: new BigNumber(accountData.totalDebtETH.toString()) },
-          {
-            amount: new BigNumber(reserveData.currentATokenBalance.toString()),
-            denomination: collateralToken,
-          },
-          oraclePrice,
-          {
-            dustLimit: new BigNumber(0),
-            maxLoanToValue: reserveConfigurationData.ltv,
-            liquidationThreshold: reserveConfigurationData.liquidationThreshold,
-          },
-        )
+        // const pos = new Position(
+        //   { amount: new BigNumber(accountData.totalDebtETH.toString()) },
+        //   {
+        //     amount: new BigNumber(reserveData.currentATokenBalance.toString()),
+        //     denomination: collateralToken,
+        //   },
+        //   oraclePrice,
+        //   {
+        //     dustLimit: new BigNumber(0),
+        //     maxLoanToValue: reserveConfigurationData.ltv,
+        //     liquidationThreshold: reserveConfigurationData.liquidationThreshold,
+        //   },
+        // )
 
         return {
           positionData: reserveData,
           accountData: accountData,
           oraclePrice: oraclePrice,
-          position: pos,
+          position: tempPositionFromLib,
+          // position: '',
           aaveUserConfiguration,
           aaveReservesList,
         }

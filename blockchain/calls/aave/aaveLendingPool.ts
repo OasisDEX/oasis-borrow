@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { AaveLendingPool } from '../../../types/web3-v1-contracts/aave-lending-pool'
 import { amountFromWei } from '../../utils'
 import { CallDef } from '../callsHelpers'
+import { recursiveLog } from '../../../helpers/recursiveLog'
 
 export const MINIMAL_COLLATERAL = new BigNumber(0.00001)
 

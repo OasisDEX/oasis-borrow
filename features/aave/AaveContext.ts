@@ -4,8 +4,8 @@ import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine } from 'features/proxyNew/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-import { distinctUntilKeyChanged, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, from, Observable } from 'rxjs'
+import { distinctUntilKeyChanged, filter, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
@@ -27,6 +27,7 @@ import {
   getOpenAaveStateMachine,
   getOpenAaveTransactionMachine,
 } from './open/services'
+import { getOnChainPosition } from './oasisActionsLibWrapper'
 
 export function setupAaveContext({
   userSettings$,
@@ -78,6 +79,16 @@ export function setupAaveContext({
 
   const aaveReserveStEthData$ = aaveReserveConfigurationData$({ token: 'STETH' })
 
+  const tempPositionFromLib$ = combineLatest(context$, proxyForAccount$).pipe(
+    filter(([context, proxyAddress]) => !!context && !!proxyAddress),
+    switchMap(([context, proxyAddress]) => {
+      // @ts-ignore
+      const pa: string = proxyAddress
+      return from(getOnChainPosition({ context, proxyAddress: pa }))
+    }),
+    shareReplay(1),
+  )
+
   const aaveProtocolData$ = memoize(
     curry(getAaveProtocolData$)(
       aaveUserReserveData$,
@@ -86,6 +97,7 @@ export function setupAaveContext({
       aaveUserConfiguration$,
       aaveReservesList$,
       aaveReserveConfigurationData$,
+      tempPositionFromLib$,
     ),
     (collateralToken, address) => `${collateralToken}-${address}`,
   )

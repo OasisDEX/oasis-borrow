@@ -13,6 +13,7 @@ import { Context, ContextConnected } from '../../blockchain/network'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { recursiveLog } from '../../helpers/recursiveLog'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -36,6 +37,13 @@ export interface OpenAaveParameters {
   token: string
   riskRatio: IRiskRatio
   slippage: BigNumber
+  proxyAddress: string
+}
+
+export interface GetOnChainPositionParams {
+  context: Context
+  collateralToken?: string
+  debtToken?: string
   proxyAddress: string
 }
 
@@ -118,14 +126,14 @@ export async function getOpenAaveParameters({
       },
       { addresses: getAddressesFromContext(context), provider: provider },
     )
-
+    const debtInWei = amountToWei(amount, token)
     const stratArgs = {
       slippage,
       multiple: riskRatio.multiple,
       debtToken,
       collateralToken,
       depositedByUser: {
-        debtInWei: amountToWei(amount, token),
+        debtInWei: debtInWei,
       },
     }
 
@@ -150,6 +158,35 @@ export async function getOpenAaveParameters({
   }
 }
 
+export async function getOnChainPosition({
+  context,
+  proxyAddress,
+}: GetOnChainPositionParams): Promise<IPosition> {
+  console.log(`proxyAddress getOnChainPosition: ${proxyAddress}`)
+  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+
+  const collateralToken = {
+    symbol: 'STETH' as AAVETokens,
+    precision: 18,
+  }
+
+  const debtToken = {
+    symbol: 'ETH' as AAVETokens,
+    precision: 18,
+  }
+
+  const position = await strategies.aave.view(
+    {
+      proxy: proxyAddress,
+      collateralToken,
+      debtToken: debtToken,
+    },
+    { addresses: getAddressesFromContext(context), provider },
+  )
+
+  return position
+}
+
 export async function getAdjustAaveParameters({
   context,
   proxyAddress,
@@ -159,75 +196,79 @@ export async function getAdjustAaveParameters({
   riskRatio,
   currentPosition,
 }: AdjustAaveParameters): Promise<OasisActionResult> {
-  checkContext(context, 'adjust position')
+  try {
+    checkContext(context, 'adjust position')
 
-  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+    const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const collateralToken = {
-    symbol: 'STETH' as AAVETokens,
-    precision: 18,
-  }
+    const collateralToken = {
+      symbol: 'STETH' as AAVETokens,
+      precision: 18,
+    }
 
-  const debtToken = {
-    symbol: token as AAVETokens,
-    precision: 18,
-  }
+    const debtToken = {
+      symbol: token as AAVETokens,
+      precision: 18,
+    }
 
-  // const transformedPosition = {
-  //   debt: {
-  //     amount: amountToWei(currentPosition.debt.amount, currentPosition.debt.denomination || token),
-  //     denomination: currentPosition.debt.denomination || token,
-  //   },
-  //   collateral: {
-  //     amount: amountToWei(
-  //       currentPosition.collateral.amount,
-  //       currentPosition.debt.denomination || token,
-  //     ),
-  //     denomination: currentPosition.debt.denomination || token,
-  //   },
-  //   category: currentPosition.category,
-  // }
+    // const transformedPosition = {
+    //   debt: {
+    //     amount: amountToWei(currentPosition.debt.amount, currentPosition.debt.denomination || token),
+    //     denomination: currentPosition.debt.denomination || token,
+    //   },
+    //   collateral: {
+    //     amount: amountToWei(
+    //       currentPosition.collateral.amount,
+    //       currentPosition.debt.denomination || token,
+    //     ),
+    //     denomination: currentPosition.debt.denomination || token,
+    //   },
+    //   category: currentPosition.category,
+    // }
 
-  const strategy = await strategies.aave.adjust(
-    {
+    const stratArgs = {
       slippage,
       multiple: riskRatio.multiple,
       debtToken,
       collateralToken,
-      depositedByUser: {
-        debtInWei: amountToWei(amount, token),
-      },
-    },
-    {
+    }
+
+    const stratDeps = {
       addresses: getAddressesFromContext(context),
       currentPosition,
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
       proxy: proxyAddress,
       user: context.account,
-    },
-  )
+    }
+    recursiveLog(stratArgs, 'stratArgs')
+    recursiveLog(stratDeps, 'stratDeps')
+    const strategy = await strategies.aave.adjust(stratArgs, stratDeps)
 
-  // const strategy = await strategies.aave.adjustStEth(
-  //   {
-  //     depositAmount: amountToWei(amount, token),
-  //     slippage: slippage,
-  //     multiple: riskRatio.multiple,
-  //   },
-  //   {
-  //     addresses: getAddressesFromContext(context),
-  //     provider: provider,
-  //     getSwapData: getOneInchCall(context.swapAddress),
-  //     dsProxy: proxyAddress,
-  //     position: transformedPosition,
-  //   },
-  // )
+    // const strategy = await strategies.aave.adjustStEth(
+    //   {
+    //     depositAmount: amountToWei(amount, token),
+    //     slippage: slippage,
+    //     multiple: riskRatio.multiple,
+    //   },
+    //   {
+    //     addresses: getAddressesFromContext(context),
+    //     provider: provider,
+    //     getSwapData: getOneInchCall(context.swapAddress),
+    //     dsProxy: proxyAddress,
+    //     position: transformedPosition,
+    //   },
+    // )
 
-  // const operationName = riskRatio.loanToValue.gt(currentPosition.riskRatio.loanToValue)
-  //   ? OPERATION_NAMES.common.CUSTOM_OPERATION
-  //   : OPERATION_NAMES.common.CUSTOM_OPERATION
+    // const operationName = riskRatio.loanToValue.gt(currentPosition.riskRatio.loanToValue)
+    //   ? OPERATION_NAMES.common.CUSTOM_OPERATION
+    //   : OPERATION_NAMES.common.CUSTOM_OPERATION
 
-  return { strategy, operationName: strategy.transaction.operationName }
+    return { strategy, operationName: strategy.transaction.operationName }
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
 }
 
 export async function getCloseAaveParameters({
