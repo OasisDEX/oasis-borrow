@@ -500,7 +500,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
           }}
         />
       </AppLink>
-      {/* <FollowButtonControl/> */}
     </Flex>
   )
 }

@@ -10,7 +10,7 @@ export function FollowButtonControl() {
     setTimeout(() => {
       setIsFollowing(true)
       setProcessing(false)
-    }, 5000)
+    }, 1000)
     setProcessing(isProcessing)
   }, [])
   function buttonClickHandler() {
