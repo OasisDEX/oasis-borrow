@@ -94,7 +94,7 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
             })
           },
         )
-      }, 10)
+      }, 200)
     }
 
     return promise

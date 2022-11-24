@@ -3,18 +3,7 @@ import axios from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-const RPC = `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-
 function getRpcNode(network: string) {
-  switch (network) {
-    case 'mainnet':
-      return `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
-    default:
-      throw new Error('unsupported network')
-  }
-}
-
-function getMultiCallAddress(network: string) {
   switch (network) {
     case 'mainnet':
       return `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
@@ -44,16 +33,13 @@ const abi = [{
   type: "function"
 }]
 
-let savedCalls = 0
-let callsDid = 0
-
 async function makeCall(network: string, calls: any[]) {
   const response = await axios.post(getRpcNode(network), calls)
-  callsDid += 1
   return response.data
 }
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse
+
   if (process.env.ENABLE_MULTICALL && Array.isArray(req.body) && req.body.every(call => call.method === 'eth_call')) {
     const rpcNode = getRpcNode(req.query.network.toString())
     const provider = new ethers.providers.JsonRpcProvider(rpcNode)
@@ -66,7 +52,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     const multicallTx = await multicall.populateTransaction.aggregate(calls)
     try {
       const multicallResponse = await provider.call(multicallTx)
-      callsDid += 1
+
       const [, data] = multicall.interface.decodeFunctionResult(
         "aggregate((address,bytes)[])",
         multicallResponse
@@ -78,7 +64,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         result: data[index]
       }))
 
-      savedCalls += req.body.length
     } catch {
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     }
@@ -86,7 +71,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
 
-  console.log(`Total calls did: ${callsDid}, batched calls: ${savedCalls}`)
   return res.status(200).send(finalResponse)
 }
 
