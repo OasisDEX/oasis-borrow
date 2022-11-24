@@ -39,6 +39,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       liquidationPrice,
       lockedCollateral,
       token,
+      debtToken,
     },
     metadata: {
       stopLoss: {
@@ -47,6 +48,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
         triggerMaxToken,
         detailCards,
         ratioParam,
+        initialSlRatioWhenTriggerDoesntExist,
       },
     },
   } = useAutomationContext()
@@ -59,6 +61,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       {isStopLossActive ? (
         <StopLossDetailsLayout
           token={token}
+          debtToken={debtToken}
           stopLossLevel={stopLossLevel}
           afterStopLossLevel={stopLossState.stopLossLevel}
           debt={debt}
@@ -79,6 +82,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
             collateralActive: stopLossState.collateralActive,
             isToCollateral,
             isRemoveForm: stopLossState.currentForm === 'remove',
+            initialSlRatioWhenTriggerDoesntExist,
           })}
           positionRatio={positionRatio}
           ratioParam={ratioParam}

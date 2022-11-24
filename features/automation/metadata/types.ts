@@ -1,10 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { AutomationContext } from 'components/AutomationContextProvider'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import {
   StopLossFormChange,
   StopLossResetData,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
 export type AutomationValidationMethodParams<T = {}> = {
   context: ContextWithoutMetadata
@@ -54,7 +58,6 @@ export interface StopLossMetadata {
   resetData: StopLossResetData
   ratioParam: string
   sliderStep: number
-  leftBoundaryFormatter: (value: BigNumber) => string
   sliderChangeCallback?: (value: BigNumber) => void
   closeToChangeCallback?: (value: string) => void
   initialSlRatioWhenTriggerDoesntExist: BigNumber
@@ -66,6 +69,7 @@ export interface StopLossMetadata {
     cancelWarnings: string[]
   }
   detailCards?: StopLossMetadataDetailCards
+  sliderDirection?: 'ltr' | 'rtl'
 }
 
 export interface AutoBSMetadata {}
@@ -101,4 +105,12 @@ export interface AutomationMetadata {
   autoBuy: GetAutoBSMetadata
   constantMultiple: GetConstantMultipleMetadata
   takeProfit: GetTakeProfitMetadata
+}
+
+export interface OverwriteTriggersDefaults {
+  stopLossTriggerData?: StopLossTriggerData
+  autoBSTriggerData?: AutoBSTriggerData
+  autoSellTriggerData?: AutoBSTriggerData
+  constantMultipleTriggerData?: ConstantMultipleTriggerData
+  autoTakeProfitTriggerData?: AutoTakeProfitTriggerData
 }

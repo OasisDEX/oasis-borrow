@@ -5,7 +5,7 @@ import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/s
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useEffect } from 'react'
 
-export function useStopLossStateInitializator({
+export function useStopLossStateInitialization({
   positionRatio,
   stopLossTriggerData,
   metadata,
@@ -27,16 +27,16 @@ export function useStopLossStateInitializator({
       type: 'stop-loss-level',
       stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
     })
+    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: 'add',
+    })
   }, [triggerId.toNumber(), positionRatio.toNumber()])
 
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'tx-details',
       txDetails: {},
-    })
-    uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-      type: 'current-form',
-      currentForm: 'add',
     })
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
       type: 'is-awaiting-confirmation',
