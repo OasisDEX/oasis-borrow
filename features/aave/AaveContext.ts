@@ -133,13 +133,12 @@ export function setupAaveContext({
 
   const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
-  const aaveSTETHUSDCPrices$ = getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] })
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'STETH' }),
     getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
-    aaveSTETHUSDCPrices$, //this needs to be fixed in OasisDEX/transactions -> CallDef
+    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
   const strategyConfig$ = memoize(
@@ -160,7 +159,6 @@ export function setupAaveContext({
     aaveSthEthYieldsQuery,
     aaveProtocolData$,
     strategyConfig$,
-    aaveSTETHUSDCPrices$,
     getAaveAssetsPrices$,
     chainlinkUSDCUSDOraclePrice$,
   }
