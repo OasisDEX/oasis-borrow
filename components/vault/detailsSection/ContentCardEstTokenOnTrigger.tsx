@@ -16,6 +16,7 @@ interface ContentCardEstTokenOnTriggerProps {
   isStopLossEnabled: boolean
   isEditing: boolean
   token: string
+  debtToken: string
   stopLossLevel: BigNumber
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
@@ -52,6 +53,7 @@ export function ContentCardEstTokenOnTrigger({
   isStopLossEnabled,
   isEditing,
   token,
+  debtToken,
   stopLossLevel,
   liquidationPrice,
   liquidationPenalty,
@@ -76,21 +78,24 @@ export function ContentCardEstTokenOnTrigger({
   })
 
   const savingCompareToLiquidation = triggerMaxToken.minus(collateralDuringLiquidation)
-  const symbol = isCollateralActive ? token : 'DAI'
+  const symbol = isCollateralActive ? token : debtToken
 
-  const formatTokenOrDai = (val: BigNumber, stopPrice: BigNumber): string => {
+  const formatTokenOrDebtToken = (val: BigNumber, stopPrice: BigNumber): string => {
     return isCollateralActive
       ? `${formatAmount(val, token)} ${token}`
-      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')} DAI`
+      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')} ${debtToken}`
   }
 
   const formatted = {
     title: t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', {
       token: symbol,
     }),
-    maxTokenOrDai: formatTokenOrDai(triggerMaxToken, dynamicStopLossPrice),
-    savingTokenOrDai: formatTokenOrDai(savingCompareToLiquidation, dynamicStopLossPrice),
-    afterMaxTokenOrDai: formatTokenOrDai(afterMaxToken, afterDynamicStopLossPrice),
+    maxTokenOrDebtToken: formatTokenOrDebtToken(triggerMaxToken, dynamicStopLossPrice),
+    savingTokenOrDebtToken: formatTokenOrDebtToken(
+      savingCompareToLiquidation,
+      dynamicStopLossPrice,
+    ),
+    afterMaxTokenOrDebtToken: formatTokenOrDebtToken(afterMaxToken, afterDynamicStopLossPrice),
     liquidationPenalty: formatPercent(liquidationPenalty.multipliedBy(100), {
       precision: 2,
     }),
@@ -107,14 +112,14 @@ export function ContentCardEstTokenOnTrigger({
   }
 
   if (isStopLossEnabled && !triggerMaxToken.isZero())
-    contentCardSettings.value = formatted.maxTokenOrDai
+    contentCardSettings.value = formatted.maxTokenOrDebtToken
   if (!afterStopLossLevel.isZero() && !triggerMaxToken.isZero())
-    contentCardSettings.footnote = `${formatted.savingTokenOrDai} ${t(
+    contentCardSettings.footnote = `${formatted.savingTokenOrDebtToken} ${t(
       'manage-multiply-vault.card.saving-comp-to-liquidation',
     )}`
   if (isEditing)
     contentCardSettings.change = {
-      value: `${t('manage-multiply-vault.card.up-to')} ${formatted.afterMaxTokenOrDai} ${t(
+      value: `${t('manage-multiply-vault.card.up-to')} ${formatted.afterMaxTokenOrDebtToken} ${t(
         'system.cards.common.after',
       )}`,
       variant: 'positive',

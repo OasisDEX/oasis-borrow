@@ -30,7 +30,7 @@ import {
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
+import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useTranslation } from 'next-i18next'
@@ -147,8 +147,8 @@ export function SidebarAdjustStopLossEditingStage({
         fixedCloseToToken,
         sliderChangeCallback,
         closeToChangeCallback,
-        leftBoundaryFormatter,
         sliderStep,
+        sliderDirection,
       },
     },
   } = useAutomationContext()
@@ -230,7 +230,7 @@ export function SidebarAdjustStopLossEditingStage({
           <SliderValuePicker
             disabled={false}
             step={sliderStep}
-            leftBoundryFormatter={leftBoundaryFormatter}
+            leftBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))}
             rightBoundryFormatter={(x: BigNumber) =>
               x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')
             }
@@ -257,6 +257,7 @@ export function SidebarAdjustStopLossEditingStage({
             }}
             leftLabel={t('protection.stop-loss-something', { value: t(ratioParam) })}
             rightLabel={t('slider.set-stoploss.right-label')}
+            direction={sliderDirection}
           />
         </Grid>
       ) : (

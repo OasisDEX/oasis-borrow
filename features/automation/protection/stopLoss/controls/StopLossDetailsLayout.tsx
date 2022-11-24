@@ -19,6 +19,7 @@ export interface StopLossDetailsLayoutProps {
   isStopLossEnabled: boolean
   lockedCollateral: BigNumber
   token: string
+  debtToken: string
   liquidationRatio: BigNumber
   liquidationPrice: BigNumber
   liquidationPenalty: BigNumber
@@ -38,6 +39,7 @@ export function StopLossDetailsLayout({
   debt,
   isStopLossEnabled,
   token,
+  debtToken,
   liquidationRatio,
   liquidationPrice,
   liquidationPenalty,
@@ -83,6 +85,13 @@ export function StopLossDetailsLayout({
                 nextPositionRatio={nextPositionRatio}
               />
             )}
+            {cardsSet.includes(StopLossDetailCards.LOAN_TO_VALUE) && (
+              // TODO replace with LTV Card
+              <ContentCardCollateralizationRatio
+                positionRatio={positionRatio}
+                nextPositionRatio={nextPositionRatio}
+              />
+            )}
             {cardsSet.includes(StopLossDetailCards.DYNAMIC_STOP_PRICE) && (
               <ContentCardDynamicStopPrice
                 isStopLossEnabled={isStopLossEnabled}
@@ -100,6 +109,7 @@ export function StopLossDetailsLayout({
                 isStopLossEnabled={isStopLossEnabled}
                 isEditing={isEditing}
                 token={token}
+                debtToken={debtToken}
                 stopLossLevel={stopLossLevel}
                 liquidationPrice={liquidationPrice}
                 liquidationRatio={liquidationRatio}

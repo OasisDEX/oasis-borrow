@@ -4,7 +4,10 @@ import {
   AutomationContextProvider,
   AutomationPositionData,
 } from 'components/AutomationContextProvider'
-import { AutomationDefinitionMetadata } from 'features/automation/metadata/types'
+import {
+  AutomationDefinitionMetadata,
+  OverwriteTriggersDefaults,
+} from 'features/automation/metadata/types'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
@@ -16,6 +19,7 @@ interface GeneralManageControlProps {
   commonData: AutomationCommonData
   protocol: VaultProtocol
   metadata: AutomationDefinitionMetadata
+  overwriteTriggersDefaults?: OverwriteTriggersDefaults
 }
 
 export function AutomationContextInput({
@@ -24,6 +28,7 @@ export function AutomationContextInput({
   commonData,
   protocol,
   metadata,
+  overwriteTriggersDefaults,
 }: PropsWithChildren<GeneralManageControlProps>) {
   const { tokenPriceUSD$, balanceInfo$, context$ } = useAppContext()
   const [contextData, contextError] = useObservable(context$)
@@ -57,6 +62,7 @@ export function AutomationContextInput({
             commonData={commonData}
             protocol={protocol}
             metadata={metadata}
+            overwriteTriggersDefaults={overwriteTriggersDefaults}
           >
             {children}
           </AutomationContextProvider>

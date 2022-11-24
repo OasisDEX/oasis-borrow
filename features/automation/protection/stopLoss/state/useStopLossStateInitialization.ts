@@ -5,7 +5,7 @@ import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/s
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { useEffect } from 'react'
 
-export function useStopLossStateInitializator({
+export function useStopLossStateInitialization({
   positionRatio,
   stopLossTriggerData,
   metadata,

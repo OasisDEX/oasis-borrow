@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
 import { AaveManageVaultState } from 'features/automation/contexts/AaveAutomationContext'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 
 interface GetAutomationAavePositionDataParams {
   aaveManageVault: AaveManageVaultState
@@ -15,30 +15,41 @@ export function getAutomationAavePositionData({
 }: GetAutomationAavePositionDataParams): AutomationPositionData {
   const {
     address,
-    aaveProtocolData: {
-      accountData: { ltv, totalDebtETH, currentLiquidationThreshold, totalCollateralETH },
-      position,
-    },
     aaveReserveState: { liquidationBonus },
     strategyConfig,
+    context: { tokenPrice, token, collateralToken, protocolData },
   } = aaveManageVault
-
   const ilkOrToken = strategyConfig.tokens?.collateral!
 
+  const {
+    position: {
+      riskRatio: { loanToValue },
+      category: { maxLoanToValue, dustLimit },
+      debt,
+      collateral,
+    },
+  } = protocolData!
+
+  // it is dummy calculation for now, most likely incorrect
+  // will be provided by earn team
+  const liquidationPrice =
+    tokenPrice?.times(debt.amount).div(collateral.amount.times(loanToValue)) || zero
+
   return {
-    positionRatio: one.div(ltv.div(10000)),
-    nextPositionRatio: one.div(ltv.div(10000)),
-    debt: totalDebtETH,
-    debtFloor: position.category.dustLimit,
+    positionRatio: loanToValue.decimalPlaces(4),
+    nextPositionRatio: loanToValue.decimalPlaces(4),
+    debt: debt.amount,
+    debtFloor: dustLimit,
     debtOffset: zero,
     id: new BigNumber(parseInt(address, 16)),
     ilk: ilkOrToken,
     liquidationPenalty: liquidationBonus.div(10000),
-    liquidationPrice: position.liquidationPrice,
-    liquidationRatio: currentLiquidationThreshold.div(10000),
-    lockedCollateral: totalCollateralETH,
+    liquidationPrice,
+    liquidationRatio: maxLoanToValue,
+    lockedCollateral: collateral.amount,
     owner: address,
-    token: ilkOrToken,
+    token: collateralToken,
+    debtToken: token,
     vaultType,
   }
 }

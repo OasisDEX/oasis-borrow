@@ -6,6 +6,7 @@ export function checkIfIsEditingStopLoss({
   isStopLossEnabled,
   selectedSLValue,
   stopLossLevel,
+  initialSlRatioWhenTriggerDoesntExist,
   isRemoveForm,
   collateralActive,
   isToCollateral,
@@ -13,6 +14,7 @@ export function checkIfIsEditingStopLoss({
   isStopLossEnabled: boolean
   selectedSLValue: BigNumber
   stopLossLevel: BigNumber
+  initialSlRatioWhenTriggerDoesntExist: BigNumber
   isRemoveForm: boolean
   collateralActive?: boolean
   isToCollateral?: boolean
@@ -23,6 +25,7 @@ export function checkIfIsEditingStopLoss({
 
   return (
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
+    !initialSlRatioWhenTriggerDoesntExist.eq(selectedSLValue) ||
     collateralActive !== isToCollateral ||
     isRemoveForm
   )
@@ -67,6 +70,7 @@ export function checkIfIsDisabledStopLoss({
   maxDebtForSettingStopLoss: boolean
   stage: SidebarAutomationStages
 }) {
+  console.log('stage', stage)
   return (
     (isProgressStage || !isOwner || !isEditing || (isAddForm && maxDebtForSettingStopLoss)) &&
     stage !== 'txSuccess'
