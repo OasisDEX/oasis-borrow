@@ -48,6 +48,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           payload: JSONRPCRequestPayload,
           callback: (error: Error | null, result?: JsonRpcResponse) => void,
         ) => {
+          console.log("sendAsyncMaybeReadOnly", payload.method)
           const readOnlyProvider = await getReadOnlyProviderAsync(chainIdPromise)
           const rpcProvider = await getRPCProviderAsync(chainIdPromise, target)
           if(payload.method === 'eth_call') {
@@ -123,5 +124,6 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
 }
 
 export function readOnlyEnhanceProvider(provider: any, chainIdPromise: Promise<number | string>) {
+  console.log("readOnlyEnhanceProvider")
   return new Proxy(provider, getHandler(chainIdPromise))
 }
