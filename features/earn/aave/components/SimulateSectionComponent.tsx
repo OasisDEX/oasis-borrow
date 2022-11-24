@@ -22,6 +22,7 @@ import {
   CalculateSimulationResult,
   Simulation,
 } from '../../../aave/open/services'
+import { getFee } from '../../../aave/oasisActionsLibWrapper'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]
@@ -50,9 +51,9 @@ function SimulationSection({
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = userInputAmount || new BigNumber(100)
 
-  const tokenFee = strategy?.simulation.swap.tokenFee || zero
+  const swapFee = (strategy?.simulation.swap && getFee(strategy?.simulation.swap)) || zero
   const gasFee = gasPrice?.gasEstimationEth || zero
-  const fees = tokenFee.plus(gasFee)
+  const fees = swapFee.plus(gasFee)
   const riskRatio = strategy?.simulation.position.riskRatio || minRiskRatio
 
   useEffect(() => {
