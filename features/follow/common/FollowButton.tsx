@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { Box, Button, Flex, Spinner } from 'theme-ui'
+import { Box, Button, Spinner } from 'theme-ui'
 
 interface FollowButtonProps {
   isProcessing: boolean
@@ -24,45 +24,54 @@ export function FollowButton(props: FollowButtonProps) {
 
   return (
     <Button
-      variant="menuButton"
       disabled={props.isProcessing}
       onClick={props.buttonClickHandler}
       sx={{
-        padding: '4px, 12px, 4px, 12px',
-        border: '1px solid #EAEAEA',
-        borderRadius: '16px',
+        position: 'relative',
+        p: '0 12px 0 30px',
+        border: '1px solid',
+        borderColor: 'neutral20',
+        borderRadius: 'large',
+        backgroundColor: 'neutral10',
         '&:hover': {
-          border: '1px solid #25273D',
-          color: '#25273D',
-          background: 'white',
+          backgroundColor: 'neutral10',
+          borderColor: 'primary100',
+          color: 'primary60',
           '.star': { color: '#878BFC', fill: '#878BFC' },
           '.star_empty': { color: '#EAEAEA', fill: 'white', stroke: '#25273D' },
         },
-        color: '#626472',
-        boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.2)',
+        '&:disabled': {
+          backgroundColor: 'neutral10',
+          color: 'primary60',
+        },
+        fontSize: 1,
+        lineHeight: '26px',
+        color: 'primary100',
+        boxShadow: 'surface',
+        transition: 'border-color 200ms, background-color 200ms, color 200ms',
         '.star': { color: '#575CFE', fill: '#575CFE' },
         '.star_empty': { fill: 'white', stroke: '#EAEAEA' },
       }}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
     >
-      <Flex sx={{ justifyContent: 'space-between', gap: '8px', alignItems: 'center' }}>
+      <Box sx={{ position: 'absolute', top: '2px', left: '13px', margin: 'auto' }}>
         {props.isProcessing ? (
-          <Spinner size="10px" />
+          <Spinner size={15} sx={{ position: 'relative', top: '1px', left: '-3px' }} />
         ) : (
           <Box className={props.isFollowing ? 'star_empty' : 'star'}>
-            <Icon name="star" size="15px" />
+            <Icon name="star" size={12} />
           </Box>
         )}
+      </Box>
 
-        {props.isProcessing
-          ? t('loading')
-          : props.isFollowing
-          ? t('follow')
-          : isHovering
-          ? t('unfollow')
-          : t('following')}
-      </Flex>
+      {props.isProcessing
+        ? t('loading')
+        : props.isFollowing
+        ? t('follow')
+        : isHovering
+        ? t('unfollow')
+        : t('following')}
     </Button>
   )
 }
