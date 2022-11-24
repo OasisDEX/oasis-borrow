@@ -7,8 +7,6 @@ import { CallDef } from '../callsHelpers'
 
 const USD_CHAINLINK_PRECISION = 8
 
-console.log('networksByName', networksByName)
-
 export function getChainlinkOraclePrice(
   contractName: keyof NetworkConfig['chainlinkPriceOracle'],
 ): CallDef<void, BigNumber> {
