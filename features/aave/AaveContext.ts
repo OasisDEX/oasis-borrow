@@ -144,7 +144,9 @@ export function setupAaveContext({
   )
 
   const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices, (args) =>
+    args.tokens.join(''),
+  )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'STETH' }),
@@ -161,6 +163,7 @@ export function setupAaveContext({
     onEveryBlock$,
     context$,
     getChainlinkOraclePrice('USDCUSD'),
+    () => 'true',
   )
 
   return {
