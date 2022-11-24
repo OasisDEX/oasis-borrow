@@ -83,7 +83,7 @@ export function AddAndRemoveTriggerControl({
   })
 
   useEffect(() => {
-    if (isActiveFlag && isEditing) {
+    if (isActiveFlag && isEditing && stage !== 'txSuccess' && stage !== 'txInProgress') {
       if (isAddForm) {
         uiChanges.publish(TX_DATA_CHANGE, {
           type: 'add-trigger',

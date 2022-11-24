@@ -7,78 +7,88 @@ import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardStopLossCollateralRatioModalProps {
   isStopLossEnabled: boolean
-  slRatioFormatted: string
+  stopLossLevelFormatted: string
+  ratioParam: string
+  modalDescription: string
 }
 
 interface ContentCardStopLossCollateralRatioProps {
   isStopLossEnabled: boolean
   isEditing: boolean
-  slRatio: BigNumber
-  positionRatio: BigNumber
-  afterSlRatio: BigNumber
+  stopLossLevel: BigNumber
+  afterStopLossLevel: BigNumber
+  ratioParam: string
+  modalDescription: string
+  belowCurrentPositionRatio: string
 }
 
 function ContentCardStopLossCollateralRatioModal({
   isStopLossEnabled,
-  slRatioFormatted,
+  stopLossLevelFormatted,
+  ratioParam,
+  modalDescription,
 }: ContentCardStopLossCollateralRatioModalProps) {
   const { t } = useTranslation()
 
   return (
     <Grid gap={2}>
-      <Heading variant="header3">{t('manage-multiply-vault.card.stop-loss-coll-ratio')}</Heading>
+      <Heading variant="header3">
+        {t('protection.stop-loss-something', { value: t(ratioParam) })}
+      </Heading>
       <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
-        {t('manage-multiply-vault.card.stop-loss-coll-ratio-desc')}
+        {t(modalDescription)}
       </Text>
       <Text as="p" variant="header4" sx={{ mt: 3, fontWeight: 'semiBold' }}>
-        {t('manage-multiply-vault.card.current-stop-loss-coll-ratio')}
+        {t('protection.current-stop-loss-something', { value: t(ratioParam) })}
       </Text>
-      <Card as="p" variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
-        <Heading variant="header3">{isStopLossEnabled ? slRatioFormatted : '-'}</Heading>
+      <Card as="div" variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
+        <Heading variant="header3">{isStopLossEnabled ? stopLossLevelFormatted : '-'}</Heading>
       </Card>
     </Grid>
   )
 }
 
-export function ContentCardStopLossCollateralRatio({
+export function ContentCardStopLossLevel({
   isStopLossEnabled,
   isEditing,
-  slRatio,
-  afterSlRatio,
-  positionRatio,
+  stopLossLevel,
+  afterStopLossLevel,
+  ratioParam,
+  modalDescription,
+  belowCurrentPositionRatio,
 }: ContentCardStopLossCollateralRatioProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    slRatio: formatPercent(slRatio.times(100), {
+    stopLossLevel: formatPercent(stopLossLevel.times(100), {
       precision: 2,
     }),
-    belowCurrentCollRatio: formatPercent(positionRatio.minus(slRatio).times(100), {
-      precision: 2,
-    }),
-    afterSlRatio: formatPercent(afterSlRatio.times(100), {
+    afterStopLossLevel: formatPercent(afterStopLossLevel, {
       precision: 2,
     }),
   }
 
   const contentCardModalSettings: ContentCardStopLossCollateralRatioModalProps = {
     isStopLossEnabled: isStopLossEnabled,
-    slRatioFormatted: formatted.slRatio,
+    stopLossLevelFormatted: formatted.stopLossLevel,
+    ratioParam,
+    modalDescription,
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('manage-multiply-vault.card.stop-loss-coll-ratio'),
+    title: t('protection.stop-loss-something', { value: t(ratioParam) }),
     footnote: t('system.cards.stop-loss-collateral-ratio.footnote', {
-      amount: formatted.belowCurrentCollRatio,
+      amount: belowCurrentPositionRatio,
+      value: t(ratioParam),
     }),
     modal: <ContentCardStopLossCollateralRatioModal {...contentCardModalSettings} />,
   }
 
-  if (isStopLossEnabled) contentCardSettings.value = formatted.slRatio
+  if (isStopLossEnabled) contentCardSettings.value = formatted.stopLossLevel
 
   if (isEditing)
     contentCardSettings.change = {
-      value: `${formatted.afterSlRatio} ${t('system.cards.common.after')}`,
+      value: `${formatted.afterStopLossLevel} ${t('system.cards.common.after')}`,
       variant: 'positive',
     }
 

@@ -2,6 +2,7 @@ import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
+import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
 import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
@@ -75,14 +76,17 @@ function AaveManageContainer({
     return null
   }
 
+  const { collateralToken, token } = state.context
+  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, token)
+
   return (
     <AaveAutomationContext
       aaveManageVault={{
         address,
         aaveReserveState,
         aaveReserveDataETH,
-        aaveProtocolData: state.context.protocolData,
         strategyConfig,
+        context: state.context,
       }}
     >
       <Container variant="vaultPageContainer">
@@ -116,7 +120,7 @@ function AaveManageContainer({
                 </Card>
               ),
             },
-            ...(aaveProtection
+            ...(aaveProtection && showAutomationTabs
               ? [
                   {
                     label: t('system.protection'),

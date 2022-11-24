@@ -8,8 +8,8 @@ import {
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
-import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
-import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { PickCloseState } from 'components/dumb/PickCloseState'
+import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { GasEstimation } from 'components/GasEstimation'
 import { AppLink } from 'components/Links'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
@@ -18,30 +18,25 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
-  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  closeVaultOptions,
   sidebarAutomationFeatureCopyMap,
 } from 'features/automation/common/consts'
+import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { AutomationFeatures } from 'features/automation/common/types'
-import { getStartingSlRatio } from 'features/automation/protection/stopLoss/helpers'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
-import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Text } from 'theme-ui'
 
 interface SetDownsideProtectionInformationProps {
-  afterStopLossRatio: BigNumber
   executionPrice: BigNumber
   ethPrice: BigNumber
   isCollateralActive: boolean
@@ -49,7 +44,6 @@ interface SetDownsideProtectionInformationProps {
 }
 
 export function SetDownsideProtectionInformation({
-  afterStopLossRatio,
   executionPrice,
   ethPrice,
   isCollateralActive,
@@ -57,31 +51,16 @@ export function SetDownsideProtectionInformation({
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: {
-      debt,
-      liquidationPenalty,
-      liquidationPrice,
-      liquidationRatio,
-      lockedCollateral,
-      token,
+    positionData: { token },
+    metadata: {
+      stopLoss: { getMaxToken, collateralDuringLiquidation },
     },
   } = useAutomationContext()
+  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const afterDynamicStopLossPrice = liquidationPrice
-    .div(liquidationRatio)
-    .times(afterStopLossRatio.div(100))
+  const afterMaxToken = getMaxToken(stopLossState)
 
-  const afterMaxToken = lockedCollateral
-    .times(afterDynamicStopLossPrice)
-    .minus(debt)
-    .div(afterDynamicStopLossPrice)
-
-  const ethDuringLiquidation = lockedCollateral
-    .times(liquidationPrice)
-    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
-    .div(liquidationPrice)
-
-  const savingCompareToLiquidation = afterMaxToken.minus(ethDuringLiquidation)
+  const savingCompareToLiquidation = afterMaxToken.minus(collateralDuringLiquidation)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(afterMaxToken, token)} ${token}`
@@ -135,19 +114,15 @@ export function SetDownsideProtectionInformation({
 
 export interface SidebarAdjustStopLossEditingStageProps {
   executionPrice: BigNumber
-  errors: VaultErrorMessage[]
-  warnings: VaultWarningMessage[]
+  errors: string[]
+  warnings: string[]
   stopLossState: StopLossFormChange
   isEditing: boolean
-  closePickerConfig: PickCloseStateProps
-  sliderConfig: SliderValuePickerProps
   isOpenFlow?: boolean
 }
 
 export function SidebarAdjustStopLossEditingStage({
-  closePickerConfig,
   isEditing,
-  sliderConfig,
   errors,
   warnings,
   stopLossState,
@@ -159,7 +134,22 @@ export function SidebarAdjustStopLossEditingStage({
   const {
     stopLossTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, token, debt, liquidationRatio, positionRatio, debtFloor },
+    positionData: { id, ilk, token, debt, positionRatio },
+    metadata: {
+      stopLoss: {
+        getSliderPercentageFill,
+        getRightBoundary,
+        sliderMin,
+        sliderMax,
+        resetData,
+        ratioParam,
+        fixedCloseToToken,
+        onSliderChange,
+        onCloseToChange,
+        sliderStep,
+        sliderDirection,
+      },
+    },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -199,31 +189,74 @@ export function SidebarAdjustStopLossEditingStage({
     )
   }
 
-  const sliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
-  const selectedStopLossCollRatioIfTriggerDoesntExist = sliderMin.plus(
-    DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
-  )
-
-  const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
-    stopLossLevel: stopLossTriggerData.stopLossLevel,
-    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
-    initialStopLossSelected: selectedStopLossCollRatioIfTriggerDoesntExist,
-  })
-    .times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+  const sliderPercentageFill = getSliderPercentageFill(stopLossState)
+  const rightBoundry = getRightBoundary(stopLossState)
 
   return (
     <>
       {!debt.isZero() ? (
         <Grid>
-          <PickCloseState {...closePickerConfig} />
+          {!fixedCloseToToken && (
+            <PickCloseState
+              collateralTokenSymbol={token}
+              isCollateralActive={stopLossState.collateralActive}
+              onClickHandler={(optionName: string) => {
+                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                  type: 'close-type',
+                  toCollateral: optionName === closeVaultOptions[0],
+                })
+                trackingEvents.automation.buttonClick(
+                  AutomationEventIds.CloseToX,
+                  Pages.StopLoss,
+                  CommonAnalyticsSections.Form,
+                  {
+                    vaultId: id.toString(),
+                    ilk: ilk,
+                    closeTo: optionName as CloseVaultTo,
+                  },
+                )
+                onCloseToChange && onCloseToChange(optionName)
+              }}
+            />
+          )}
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('protection.set-downside-protection-desc')}{' '}
+            {t('protection.set-downside-protection-desc', { ratioParam: t(ratioParam) })}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
           </Text>
-          <SliderValuePicker {...sliderConfig} />
+          <SliderValuePicker
+            disabled={false}
+            step={sliderStep}
+            leftBoundryFormatter={(x: BigNumber) => (x.isZero() ? '-' : formatPercent(x))}
+            rightBoundryFormatter={(x: BigNumber) =>
+              x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')
+            }
+            sliderPercentageFill={sliderPercentageFill}
+            lastValue={stopLossState.stopLossLevel}
+            maxBoundry={sliderMax}
+            minBoundry={sliderMin}
+            rightBoundry={rightBoundry}
+            leftBoundry={stopLossState.stopLossLevel}
+            onChange={(slCollRatio) => {
+              if (stopLossState.collateralActive === undefined) {
+                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                  type: 'close-type',
+                  toCollateral: false,
+                })
+              }
+
+              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                type: 'stop-loss-level',
+                stopLossLevel: slCollRatio,
+              })
+
+              onSliderChange && onSliderChange(slCollRatio)
+            }}
+            leftLabel={t('protection.stop-loss-something', { value: t(ratioParam) })}
+            rightLabel={t('slider.set-stoploss.right-label')}
+            direction={sliderDirection}
+          />
         </Grid>
       ) : (
         <SidebarFormInfo
@@ -238,12 +271,8 @@ export function SidebarAdjustStopLossEditingStage({
             <SidebarResetButton
               clear={() => {
                 uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-                  type: 'close-type',
-                  toCollateral: stopLossTriggerData.isToCollateral,
-                })
-                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-                  type: 'stop-loss-level',
-                  stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
+                  type: 'reset',
+                  resetData,
                 })
               }}
             />
@@ -251,15 +280,14 @@ export function SidebarAdjustStopLossEditingStage({
           <Grid>
             {!stopLossState.stopLossLevel.isZero() && (
               <>
-                <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
-                <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
+                <AutomationValidationMessages messages={errors} type="error" />
+                <AutomationValidationMessages messages={warnings} type="warning" />
               </>
             )}
             <SetDownsideProtectionInformation
-              afterStopLossRatio={stopLossState.stopLossLevel}
               executionPrice={executionPrice}
               ethPrice={ethMarketPrice}
-              isCollateralActive={closePickerConfig.isCollateralActive}
+              isCollateralActive={stopLossState.collateralActive}
               isOpenFlow={isOpenFlow}
             />
             <Text as="p" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>

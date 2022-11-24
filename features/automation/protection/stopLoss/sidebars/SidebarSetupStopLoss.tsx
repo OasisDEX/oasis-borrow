@@ -1,15 +1,8 @@
-import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
-import { PickCloseStateProps } from 'components/dumb/PickCloseState'
-import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import {
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
-  NEXT_COLL_RATIO_OFFSET,
-} from 'features/automation/common/consts'
 import { getAutoFeaturesSidebarDropdown } from 'features/automation/common/sidebars/getAutoFeaturesSidebarDropdown'
 import { getAutomationFormFlow } from 'features/automation/common/sidebars/getAutomationFormFlow'
 import { getAutomationFormTitle } from 'features/automation/common/sidebars/getAutomationFormTitle'
@@ -19,28 +12,22 @@ import { getAutomationTextButtonLabel } from 'features/automation/common/sidebar
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/common/sidebars/SidebarAutomationFeatureCreationStage'
 import { SidebarAwaitingConfirmation } from 'features/automation/common/sidebars/SidebarAwaitingConfirmation'
 import { AutomationFeatures, SidebarAutomationStages } from 'features/automation/common/types'
+import {
+  extractAutomationValidations,
+  filterAutomationValidations,
+} from 'features/automation/common/validation/validation'
 import { StopLossCompleteInformation } from 'features/automation/protection/stopLoss/controls/StopLossCompleteInformation'
-import { getSliderPercentageFill } from 'features/automation/protection/stopLoss/helpers'
 import {
   SetDownsideProtectionInformation,
   SidebarAdjustStopLossEditingStage,
 } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
-import { stopLossSliderBasicConfig } from 'features/automation/protection/stopLoss/sliderConfig'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import {
-  errorsStopLossValidation,
-  warningsStopLossValidation,
-} from 'features/automation/protection/stopLoss/validators'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import {
-  extractCancelAutomationErrors,
-  extractCancelAutomationWarnings,
-} from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
@@ -59,12 +46,9 @@ interface SidebarSetupStopLossProps {
   isEditing: boolean
   isDisabled: boolean
   isFirstSetup: boolean
-  closePickerConfig: PickCloseStateProps
-  executionPrice: BigNumber
 }
 
 export function SidebarSetupStopLoss({
-  executionPrice,
   feature,
 
   stopLossState,
@@ -79,23 +63,27 @@ export function SidebarSetupStopLoss({
   isFirstSetup,
 
   isStopLossActive,
-
-  closePickerConfig,
 }: SidebarSetupStopLossProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const automationContext = useAutomationContext()
   const {
-    autoBuyTriggerData,
     autoSellTriggerData,
     constantMultipleTriggerData,
     stopLossTriggerData,
-    environmentData: { nextCollateralPrice, ethBalance, ethMarketPrice, etherscanUrl },
-    positionData: { debt, token, liquidationRatio, nextPositionRatio, vaultType },
+    environmentData: { ethMarketPrice, etherscanUrl },
+    positionData: { vaultType },
     protocol,
-  } = useAutomationContext()
-  const { isAwaitingConfirmation, stopLossLevel } = stopLossState
+    metadata: {
+      stopLoss: {
+        getExecutionPrice,
+        validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
+      },
+    },
+  } = automationContext
+  const { isAwaitingConfirmation } = stopLossState
 
   const gasEstimationContext = useGasEstimationContext()
   const [, setHash] = useHash()
@@ -135,70 +123,22 @@ export function SidebarSetupStopLoss({
     feature,
   })
 
-  const max = autoSellTriggerData.isTriggerEnabled
-    ? autoSellTriggerData.execCollRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET).div(100)
-    : constantMultipleTriggerData.isTriggerEnabled
-    ? constantMultipleTriggerData.sellExecutionCollRatio
-        .minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET)
-        .div(100)
-    : nextPositionRatio.minus(NEXT_COLL_RATIO_OFFSET.div(100))
-  const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
-  const liqRatio = liquidationRatio
-
-  const sliderPercentageFill = getSliderPercentageFill({
-    value: stopLossLevel,
-    min: liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100)).times(100),
-    max: max.times(100),
+  const errors = extractAutomationValidations({
+    validations: getAddErrors({ state: stopLossState }),
+  })
+  const warnings = extractAutomationValidations({
+    validations: getAddWarnings({
+      state: stopLossState,
+      gasEstimationUsd: gasEstimationContext?.usdValue,
+    }),
+  })
+  const onCancelErrors = filterAutomationValidations({ messages: errors, toFilter: cancelErrors })
+  const onCancelWarnings = filterAutomationValidations({
+    messages: errors,
+    toFilter: cancelWarnings,
   })
 
-  const afterNewLiquidationPrice = stopLossLevel
-    .dividedBy(100)
-    .multipliedBy(nextCollateralPrice)
-    .dividedBy(nextPositionRatio)
-
-  const sliderConfig: SliderValuePickerProps = {
-    ...stopLossSliderBasicConfig,
-    sliderPercentageFill,
-    leftLabel: t('slider.set-stoploss.left-label'),
-    rightLabel: t('slider.set-stoploss.right-label'),
-    leftBoundry: stopLossLevel,
-    rightBoundry: afterNewLiquidationPrice,
-    lastValue: stopLossLevel,
-    maxBoundry,
-    minBoundry: liqRatio.multipliedBy(100).plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
-    onChange: (slCollRatio) => {
-      if (stopLossState.collateralActive === undefined) {
-        uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-          type: 'close-type',
-          toCollateral: false,
-        })
-      }
-
-      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-        type: 'stop-loss-level',
-        stopLossLevel: slCollRatio,
-      })
-    },
-  }
-
-  const errors = errorsStopLossValidation({
-    txError: stopLossState.txDetails?.txError,
-    debt,
-    stopLossLevel,
-    autoBuyTriggerData,
-  })
-  const warnings = warningsStopLossValidation({
-    token,
-    gasEstimationUsd: gasEstimationContext?.usdValue,
-    ethBalance,
-    ethPrice: ethMarketPrice,
-    sliderMax: sliderConfig.maxBoundry,
-    triggerRatio: stopLossLevel,
-    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
-    isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
-  })
-  const cancelStopLossWarnings = extractCancelAutomationWarnings(warnings)
-  const cancelStopLossErrors = extractCancelAutomationErrors(errors)
+  const executionPrice = getExecutionPrice(stopLossState)
 
   if (isStopLossActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -219,8 +159,6 @@ export function SidebarSetupStopLoss({
                         warnings={warnings}
                         stopLossState={stopLossState}
                         isEditing={isEditing}
-                        closePickerConfig={closePickerConfig}
-                        sliderConfig={sliderConfig}
                       />
                     )}
 
@@ -229,18 +167,17 @@ export function SidebarSetupStopLoss({
                       feature="Stop-Loss"
                       children={
                         <SetDownsideProtectionInformation
-                          afterStopLossRatio={stopLossLevel}
                           executionPrice={executionPrice}
                           ethPrice={ethMarketPrice}
-                          isCollateralActive={closePickerConfig.isCollateralActive}
+                          isCollateralActive={stopLossState.collateralActive}
                         />
                       }
                     />
                   )}
                   {isRemoveForm && (
                     <SidebarCancelStopLossEditingStage
-                      errors={cancelStopLossErrors}
-                      warnings={cancelStopLossWarnings}
+                      errors={onCancelErrors}
+                      warnings={onCancelWarnings}
                       stopLossLevel={stopLossTriggerData.stopLossLevel}
                     />
                   )}
@@ -262,7 +199,6 @@ export function SidebarSetupStopLoss({
                   isRemoveForm={isRemoveForm}
                   customContent={
                     <StopLossCompleteInformation
-                      afterStopLossRatio={stopLossLevel}
                       executionPrice={executionPrice}
                       isCollateralActive={stopLossState.collateralActive}
                       txCost={stopLossState.txDetails?.txCost!}
@@ -276,7 +212,7 @@ export function SidebarSetupStopLoss({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: isDisabled || (!!errors.length && stage !== 'txSuccess'),
         isLoading: stage === 'txInProgress',
         action: () => {
           if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {

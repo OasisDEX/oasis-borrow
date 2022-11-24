@@ -4,83 +4,122 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
-import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
+import { ContentCardStopLossLevel } from 'components/vault/detailsSection/ContentCardStopLossLevel'
+import {
+  StopLossDetailCards,
+  StopLossMetadataDetailCards,
+} from 'features/automation/metadata/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export interface StopLossDetailsLayoutProps {
-  slRatio: BigNumber
-  vaultDebt: BigNumber
+  stopLossLevel: BigNumber
+  afterStopLossLevel: BigNumber
+  debt: BigNumber
   isStopLossEnabled: boolean
   lockedCollateral: BigNumber
   token: string
+  debtToken: string
   liquidationRatio: BigNumber
+  liquidationPrice: BigNumber
   liquidationPenalty: BigNumber
-  afterSlRatio: BigNumber
   isCollateralActive: boolean
   isEditing: boolean
   nextPositionRatio: BigNumber
   positionRatio: BigNumber
+  collateralDuringLiquidation: BigNumber
+  triggerMaxToken: BigNumber
+  afterMaxToken: BigNumber
+  ratioParam: string
+  detailCards?: StopLossMetadataDetailCards
 }
 
 export function StopLossDetailsLayout({
-  slRatio,
-  vaultDebt,
+  stopLossLevel,
+  debt,
   isStopLossEnabled,
-  lockedCollateral,
   token,
+  debtToken,
   liquidationRatio,
+  liquidationPrice,
   liquidationPenalty,
-  afterSlRatio,
+  afterStopLossLevel,
   isCollateralActive,
   isEditing,
   nextPositionRatio,
   positionRatio,
+  afterMaxToken,
+  collateralDuringLiquidation,
+  triggerMaxToken,
+  ratioParam,
+  detailCards,
 }: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
 
-  const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
+  if (!(debt.isZero() && isStopLossEnabled) && detailCards) {
+    const { cardsSet, cardsConfig } = detailCards
 
-  if (!(vaultDebt.isZero() && isStopLossEnabled)) {
     return (
       <DetailsSection
         title={t('system.stop-loss')}
         badge={isStopLossEnabled}
         content={
           <DetailsSectionContentCardWrapper>
-            <ContentCardStopLossCollateralRatio
-              isStopLossEnabled={isStopLossEnabled}
-              isEditing={isEditing}
-              slRatio={slRatio}
-              positionRatio={positionRatio}
-              afterSlRatio={afterSlRatio}
-            />
-            <ContentCardCollateralizationRatio
-              positionRatio={positionRatio}
-              nextPositionRatio={nextPositionRatio}
-            />
-            <ContentCardDynamicStopPrice
-              isStopLossEnabled={isStopLossEnabled}
-              isEditing={isEditing}
-              slRatio={slRatio}
-              liquidationPrice={liquidationPrice}
-              liquidationRatio={liquidationRatio}
-              afterSlRatio={afterSlRatio}
-              lockedCollateral={lockedCollateral}
-              debt={vaultDebt}
-            />
-            <ContentCardEstTokenOnTrigger
-              isCollateralActive={isCollateralActive}
-              isStopLossEnabled={isStopLossEnabled}
-              isEditing={isEditing}
-              token={token}
-              slRatio={slRatio}
-              liquidationPrice={liquidationPrice}
-              lockedCollateral={lockedCollateral}
-              debt={vaultDebt}
-              liquidationPenalty={liquidationPenalty}
-              afterSlRatio={afterSlRatio}
-            />
+            {cardsConfig?.stopLossLevelCard &&
+              cardsSet.includes(StopLossDetailCards.STOP_LOSS_LEVEL) && (
+                <ContentCardStopLossLevel
+                  isStopLossEnabled={isStopLossEnabled}
+                  isEditing={isEditing}
+                  stopLossLevel={stopLossLevel}
+                  afterStopLossLevel={afterStopLossLevel}
+                  ratioParam={ratioParam}
+                  modalDescription={cardsConfig?.stopLossLevelCard.modalDescription}
+                  belowCurrentPositionRatio={
+                    cardsConfig?.stopLossLevelCard.belowCurrentPositionRatio
+                  }
+                />
+              )}
+            {cardsSet.includes(StopLossDetailCards.COLLATERIZATION_RATIO) && (
+              <ContentCardCollateralizationRatio
+                positionRatio={positionRatio}
+                nextPositionRatio={nextPositionRatio}
+              />
+            )}
+            {cardsSet.includes(StopLossDetailCards.LOAN_TO_VALUE) && (
+              // TODO replace with LTV Card
+              <ContentCardCollateralizationRatio
+                positionRatio={positionRatio}
+                nextPositionRatio={nextPositionRatio}
+              />
+            )}
+            {cardsSet.includes(StopLossDetailCards.DYNAMIC_STOP_PRICE) && (
+              <ContentCardDynamicStopPrice
+                isStopLossEnabled={isStopLossEnabled}
+                isEditing={isEditing}
+                stopLossLevel={stopLossLevel}
+                liquidationPrice={liquidationPrice}
+                liquidationRatio={liquidationRatio}
+                afterStopLossLevel={afterStopLossLevel}
+                ratioParam={ratioParam}
+              />
+            )}
+            {cardsSet.includes(StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER) && (
+              <ContentCardEstTokenOnTrigger
+                isCollateralActive={isCollateralActive}
+                isStopLossEnabled={isStopLossEnabled}
+                isEditing={isEditing}
+                token={token}
+                debtToken={debtToken}
+                stopLossLevel={stopLossLevel}
+                liquidationPrice={liquidationPrice}
+                liquidationRatio={liquidationRatio}
+                liquidationPenalty={liquidationPenalty}
+                afterStopLossLevel={afterStopLossLevel}
+                afterMaxToken={afterMaxToken}
+                triggerMaxToken={triggerMaxToken}
+                collateralDuringLiquidation={collateralDuringLiquidation}
+              />
+            )}
           </DetailsSectionContentCardWrapper>
         }
       />
