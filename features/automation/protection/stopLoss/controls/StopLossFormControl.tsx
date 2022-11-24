@@ -5,12 +5,15 @@ import { CloseVaultToEnum, MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/autom
 import { AddAndRemoveTriggerControl } from 'features/automation/common/controls/AddAndRemoveTriggerControl'
 import { getAutomationFeatureStatus } from 'features/automation/common/state/automationFeatureStatus'
 import { AutomationFeatures } from 'features/automation/common/types'
+import {
+  checkIfIsDisabledStopLoss,
+  checkIfIsEditingStopLoss,
+} from 'features/automation/protection/stopLoss/helpers'
 import { SidebarSetupStopLoss } from 'features/automation/protection/stopLoss/sidebars/SidebarSetupStopLoss'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { getStopLossStatus } from 'features/automation/protection/stopLoss/state/stopLossStatus'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
@@ -30,7 +33,10 @@ export function StopLossFormControl({
   const {
     stopLossTriggerData,
     environmentData: { canInteract },
-    positionData: { id, ilk, debt, token, lockedCollateral, liquidationRatio, owner },
+    positionData: { id, debt, owner },
+    metadata: {
+      stopLoss: { resetData, initialSlRatioWhenTriggerDoesntExist },
+    },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.STOP_LOSS
@@ -46,24 +52,26 @@ export function StopLossFormControl({
     triggersId: [stopLossTriggerData.triggerId],
     txStatus: stopLossState.txDetails?.txStatus,
   })
-  const { closePickerConfig, executionPrice, isDisabled, isEditing, resetData } = getStopLossStatus(
-    {
-      isAddForm,
-      isOwner: canInteract,
-      isProgressStage,
-      isRemoveForm,
-      maxDebtForSettingStopLoss: debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS),
-      stage,
-      stopLossState,
-      stopLossTriggerData,
-      ilk,
-      token,
-      debt,
-      lockedCollateral,
-      liquidationRatio,
-      id,
-    },
-  )
+
+  const isEditing = checkIfIsEditingStopLoss({
+    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    selectedSLValue: stopLossState.stopLossLevel,
+    stopLossLevel: stopLossTriggerData.stopLossLevel,
+    collateralActive: stopLossState.collateralActive,
+    isToCollateral: stopLossTriggerData.isToCollateral,
+    isRemoveForm,
+    initialSlRatioWhenTriggerDoesntExist,
+  })
+
+  const isDisabled = checkIfIsDisabledStopLoss({
+    isAddForm,
+    isEditing,
+    isOwner: canInteract,
+    isProgressStage,
+    maxDebtForSettingStopLoss: debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS), // TODO const per protocol
+    stage,
+  })
+
   const { addTxData, textButtonHandlerExtension } = getStopLossTxHandlers({
     id,
     owner,
@@ -103,8 +111,6 @@ export function StopLossFormControl({
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupStopLoss
-          closePickerConfig={closePickerConfig}
-          executionPrice={executionPrice}
           feature={feature}
           isAddForm={isAddForm}
           isDisabled={isDisabled}

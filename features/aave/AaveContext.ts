@@ -1,5 +1,6 @@
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine } from 'features/proxyNew/pipelines'
 import { memoize } from 'lodash'
@@ -156,6 +157,12 @@ export function setupAaveContext({
     curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
   )
 
+  const chainlinkUSDCUSDOraclePrice$ = observe(
+    onEveryBlock$,
+    context$,
+    getChainlinkOraclePrice('USDCUSD'),
+  )
+
   return {
     aaveStateMachine,
     aaveManageStateMachine,
@@ -164,6 +171,8 @@ export function setupAaveContext({
     aaveSthEthYieldsQuery,
     aaveProtocolData$,
     strategyConfig$,
+    getAaveAssetsPrices$,
+    chainlinkUSDCUSDOraclePrice$,
   }
 }
 

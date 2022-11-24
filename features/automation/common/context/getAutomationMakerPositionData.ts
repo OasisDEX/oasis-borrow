@@ -38,6 +38,7 @@ export function getAutomationMakerPositionData({
     lockedCollateral,
     owner,
     token,
+    debtToken: 'DAI',
     vaultType: generalManageVault.type,
   }
 }

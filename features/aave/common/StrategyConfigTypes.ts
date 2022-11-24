@@ -29,7 +29,7 @@ export interface StrategyConfig {
 }
 
 export type AaveHeaderProps = {
-  strategyName: string
+  strategyConfig: StrategyConfig
 }
 
 export type ManageSectionComponentProps = {

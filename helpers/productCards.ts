@@ -224,6 +224,7 @@ export const productCardsConfig: {
       'WSTETH-A': 'staking-rewards',
       'WSTETH-B': 'staking-rewards',
       'CRVV1ETHSTETH-A': 'staking-rewards',
+      'RETH-A': 'staking-rewards',
     },
   },
   multiply: {
@@ -246,6 +247,7 @@ export const productCardsConfig: {
       'WBTC-B': 'max-exposure',
       'ETH-B': 'max-exposure',
       'WSTETH-A': 'staking-rewards',
+      'RETH-A': 'staking-rewards',
     },
   },
   earn: {

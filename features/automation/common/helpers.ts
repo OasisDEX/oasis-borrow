@@ -11,8 +11,11 @@ import { NetworkIds } from 'blockchain/network'
 import { UIChanges } from 'components/AppContext'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
+  aaveTokenPairsAllowedAutomation,
   DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   maxUint256,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   protocolAutomations,
 } from 'features/automation/common/consts'
 import {
@@ -472,4 +475,19 @@ export function getAvailableAutomation(protocol: VaultProtocol) {
       AutomationFeatures.AUTO_TAKE_PROFIT,
     ),
   }
+}
+
+export function openFlowInitialStopLossLevel({
+  liquidationRatio,
+}: {
+  liquidationRatio: BigNumber
+}) {
+  const stopLossSliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  return stopLossSliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100)
+}
+
+export function isSupportedAutomationTokenPair(token: string, debtToken: string) {
+  const joined = [token, debtToken].sort().join('-')
+
+  return aaveTokenPairsAllowedAutomation.flatMap((pair) => pair.sort().join('-')).includes(joined)
 }
