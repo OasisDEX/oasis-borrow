@@ -177,7 +177,7 @@ export function getDataForStopLoss(
       leftBoundaryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
       sliderStep: 1,
       sliderChangeCallback: (value: BigNumber) => setStopLossLevel(value),
-      closeToChangeCallback: (optionName: string) =>
+      onCloseToChange: (optionName: string) =>
         setStopLossCloseType(optionName as CloseVaultTo),
       initialSlRatioWhenTriggerDoesntExist: zero,
       validation: {

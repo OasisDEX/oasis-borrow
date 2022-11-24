@@ -6,7 +6,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
@@ -146,7 +145,7 @@ export function SidebarAdjustStopLossEditingStage({
         ratioParam,
         fixedCloseToToken,
         sliderChangeCallback,
-        closeToChangeCallback,
+        onCloseToChange,
         leftBoundaryFormatter,
         sliderStep,
       },
@@ -199,10 +198,9 @@ export function SidebarAdjustStopLossEditingStage({
         <Grid>
           {!fixedCloseToToken && (
             <PickCloseState
-              isCollateralActive={stopLossState.collateralActive}
               collateralTokenSymbol={token}
-              collateralTokenIconCircle={getToken(token).iconCircle}
-              onclickHandler={(optionName: string) => {
+              isCollateralActive={stopLossState.collateralActive}
+              onClickHandler={(optionName: string) => {
                 uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
                   type: 'close-type',
                   toCollateral: optionName === closeVaultOptions[0],
@@ -217,7 +215,7 @@ export function SidebarAdjustStopLossEditingStage({
                     closeTo: optionName as CloseVaultTo,
                   },
                 )
-                closeToChangeCallback && closeToChangeCallback(optionName)
+                onCloseToChange && onCloseToChange(optionName)
               }}
             />
           )}

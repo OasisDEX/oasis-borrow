@@ -43,29 +43,29 @@ export interface StopLossMetadataDetailCards {
 }
 
 export interface StopLossMetadata {
+  collateralDuringLiquidation: BigNumber
+  detailCards?: StopLossMetadataDetailCards
+  fixedCloseToToken?: string
   getExecutionPrice: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
-  getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
   getMaxToken: ({ state }: { state: StopLossFormChange }) => BigNumber
+  getRightBoundary: ({ state }: { state: StopLossFormChange }) => BigNumber
+  getSliderPercentageFill: ({ state }: { state: StopLossFormChange }) => BigNumber
+  initialSlRatioWhenTriggerDoesntExist: BigNumber
+  leftBoundaryFormatter: (value: BigNumber) => string
+  onCloseToChange?: (value: string) => void
+  ratioParam: string
+  resetData: StopLossResetData
+  sliderChangeCallback?: (value: BigNumber) => void
   sliderMax: BigNumber
   sliderMin: BigNumber
-  collateralDuringLiquidation: BigNumber
-  triggerMaxToken: BigNumber
-  resetData: StopLossResetData
-  ratioParam: string
   sliderStep: number
-  leftBoundaryFormatter: (value: BigNumber) => string
-  sliderChangeCallback?: (value: BigNumber) => void
-  closeToChangeCallback?: (value: string) => void
-  initialSlRatioWhenTriggerDoesntExist: BigNumber
-  fixedCloseToToken?: string
+  triggerMaxToken: BigNumber
   validation: {
     getAddErrors: AutomationMetadataValidationMethod<StopLossFormChange>
     getAddWarnings: AutomationMetadataValidationMethod<StopLossFormChange>
     cancelErrors: string[]
     cancelWarnings: string[]
   }
-  detailCards?: StopLossMetadataDetailCards
 }
 
 export interface AutoBSMetadata {}
