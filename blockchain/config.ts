@@ -222,11 +222,13 @@ const protoMain = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     mainnetAddresses.AAVE_PRICE_ORACLE,
   ),
-  chainlinkUsdcUsdPriceOracle: contractDesc(
-    chainlinkUSDCUSDPriceOracle,
-    // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
-    mainnetAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
-  ),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(
+      chainlinkUSDCUSDPriceOracle,
+      // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
+      mainnetAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
+    ),
+  },
   aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
@@ -323,11 +325,9 @@ const kovan: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x',
   ),
-  chainlinkUsdcUsdPriceOracle: contractDesc(
-    chainlinkUSDCUSDPriceOracle,
-    // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
-    '0x',
-  ),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(chainlinkUSDCUSDPriceOracle, '0x'),
+  },
   aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
   operationExecutor: contractDesc(
     operationExecutor,
@@ -429,11 +429,13 @@ const goerli: NetworkConfig = {
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     goerliAddresses.AAVE_PRICE_ORACLE,
   ),
-  chainlinkUsdcUsdPriceOracle: contractDesc(
-    chainlinkUSDCUSDPriceOracle,
-    // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
-    goerliAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
-  ),
+  chainlinkPriceOracle: {
+    USDCUSD: contractDesc(
+      chainlinkUSDCUSDPriceOracle,
+      // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
+      goerliAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
+    ),
+  },
   aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,

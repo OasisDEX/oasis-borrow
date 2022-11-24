@@ -11,34 +11,41 @@ import React from 'react'
 
 export function AaveMultiplyHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
   const { t } = useTranslation()
-  const { aaveSTETHUSDCPrices$, getChainlinkUSDCUSDPrice$ } = useAaveContext()
-  const [aaveSTETHUSDCPrices, aaveSTETHUSDCPricesError] = useObservable(aaveSTETHUSDCPrices$)
+  const { getAaveAssetsPrices$, chainlinkUSDCUSDOraclePrice$ } = useAaveContext()
+  const [positionTokenPrices, positionTokenPricesError] = useObservable(
+    getAaveAssetsPrices$({
+      tokens: [strategyConfig.tokens.debt, strategyConfig.tokens.collateral],
+    }),
+  )
   const [chainlinkUSDCUSDPrice, chainlinkUSDCUSDPriceError] = useObservable(
-    getChainlinkUSDCUSDPrice$(),
+    chainlinkUSDCUSDOraclePrice$(),
   )
 
   const detailsList: HeadlineDetailsProp[] = []
-  if (aaveSTETHUSDCPrices && chainlinkUSDCUSDPrice) {
-    const [USDCPrice, STETHPrice] = aaveSTETHUSDCPrices
+  if (positionTokenPrices && chainlinkUSDCUSDPrice) {
+    const [debtTokenPrice, collateralTokenPrice] = positionTokenPrices
 
     detailsList.push(
       {
-        label: 'Current stETH Price',
-        value: `$${formatAmount(STETHPrice.div(USDCPrice).times(chainlinkUSDCUSDPrice), 'USD')}`,
+        label: t('system.current-token-price', { token: strategyConfig.tokens.collateral }),
+        value: `$${formatAmount(
+          collateralTokenPrice.div(debtTokenPrice).times(chainlinkUSDCUSDPrice),
+          'USD',
+        )}`,
       },
       {
-        label: 'Current USDC Price',
+        label: t('system.current-token-price', { token: strategyConfig.tokens.debt }),
         value: `$${formatAmount(new BigNumber(chainlinkUSDCUSDPrice), 'USDC')}`,
       },
     )
   }
 
   return (
-    <WithErrorHandler error={[aaveSTETHUSDCPricesError, chainlinkUSDCUSDPriceError]}>
+    <WithErrorHandler error={[positionTokenPricesError, chainlinkUSDCUSDPriceError]}>
       <VaultHeadline
         header={t('vault.header-aave-open', { ...strategyConfig.tokens })}
         token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
-        loading={!aaveSTETHUSDCPrices}
+        loading={!positionTokenPrices}
         details={detailsList}
       />
     </WithErrorHandler>

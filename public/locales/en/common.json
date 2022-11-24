@@ -477,8 +477,6 @@
     "action": "Manage Vault",
     "current-price": "Current Price",
     "next-price": "Next Price",
-    "current-price-tooltip": "Current {{token}} Price",
-    "next-price-tooltip": "Next {{token}} Price",
     "next-price-any-time": "< 2 minutes",
     "card": {
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
@@ -917,7 +915,9 @@
       }
     },
     "remove-trigger": "Remove trigger",
-    "add-trigger": "Add trigger"
+    "add-trigger": "Add trigger",
+    "current-token-price": "Current {{token}} Price",
+    "next-token-price": "Next {{token}} Price"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
