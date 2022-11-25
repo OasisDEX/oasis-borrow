@@ -51,7 +51,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
   if (
-    process.env.ENABLE_MULTICALL &&
     Array.isArray(req.body) &&
     req.body.every((call) => call.method === 'eth_call')
   ) {
