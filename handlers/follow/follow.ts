@@ -8,5 +8,6 @@ export async function selectVaultsFollowedByAddress(
     where: { user_address: address },
   })
 
+  console.log('results', results)
   return results
 }

@@ -4,12 +4,12 @@ import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
 const paramsSchema = z.object({
-  address: z.string(),
-  vaultId: z.number(),
-  chainId: z.number(),
+  address: z.string()
 })
 
 export async function get(req: NextApiRequest, res: NextApiResponse) {
+    console.log('paramsSchema.parse(req.query)')
+    console.log(paramsSchema.parse(req.query))
   const { address } = paramsSchema.parse(req.query)
   const followedVaults = await selectVaultsFollowedByAddress(prisma, {
     address,
