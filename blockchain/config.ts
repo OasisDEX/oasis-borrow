@@ -61,8 +61,20 @@ const mainnetCacheUrl =
   process.env.MAINNET_CACHE_URL ||
   getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
   'https://oazo-bcache.new.oasis.app/api/v1'
-const mainnetRpc = `${process.env.APP_FULL_DOMAIN || window.location.origin}/api/rpc?network=mainnet`
-const goerliRpc = `${process.env.APP_FULL_DOMAIN || window.location.origin}/api/rpc?network=goerli`
+
+function getRpc(network: string): string {
+  if (process.env.APP_FULL_DOMAIN) {
+    return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}`
+  }
+  try {
+    return `${window?.location.origin}/api/rpc?network=${network}`
+  } catch {
+    return `https://${network}.infura.io/v3/${infuraProjectId}`
+  }
+}
+
+const mainnetRpc = getRpc("mainnet")
+const goerliRpc = getRpc("goerli")
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
