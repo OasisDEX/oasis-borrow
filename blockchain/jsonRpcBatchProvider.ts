@@ -15,10 +15,6 @@ type PendingBatch = Array<{
 export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
   _pendingBatchAggregator: NodeJS.Timer | null = null
   _pendingBatch: PendingBatch | null = null
-  constructor(url?: ConnectionInfo | string, network?: Networkish) {
-    super(url, network)
-    console.log('provider', uniqueId().toString())
-  }
   send(method: string, params: Array<any>): Promise<any> {
     const request = {
       method: method,
