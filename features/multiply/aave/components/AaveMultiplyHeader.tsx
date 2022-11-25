@@ -69,6 +69,9 @@ export function AaveMultiplyOpenHeader({ strategyConfig }: { strategyConfig: Str
 
 export function AaveMultiplyManageHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
   return (
-    <AaveMultiplyHeader strategyConfig={strategyConfig} headerLabelString={'header-aave-view'} />
+    <AaveMultiplyHeader
+      strategyConfig={strategyConfig}
+      headerLabelString={'vault.header-aave-view'}
+    />
   )
 }
