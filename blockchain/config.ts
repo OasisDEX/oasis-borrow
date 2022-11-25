@@ -61,7 +61,7 @@ const mainnetCacheUrl =
   process.env.MAINNET_CACHE_URL ||
   getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
   'https://oazo-bcache.new.oasis.app/api/v1'
-const mainnetRpc = `${process.env.ORIGIN ||  window.location.origin}/api/rpc?network=mainnet`
+const mainnetRpc = `${process.env.ORIGIN || window.location.origin}/api/rpc?network=mainnet`
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 

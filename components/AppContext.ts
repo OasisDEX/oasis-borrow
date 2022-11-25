@@ -622,7 +622,13 @@ export function setupAppContext() {
   )
 
   const oraclePriceDataLean$ = memoize(
-    curry(createOraclePriceData$)(chainContext$, pipPeekLean$, pipPeepLean$, pipZzzLean$, pipHopLean$),
+    curry(createOraclePriceData$)(
+      chainContext$,
+      pipPeekLean$,
+      pipPeepLean$,
+      pipZzzLean$,
+      pipHopLean$,
+    ),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
