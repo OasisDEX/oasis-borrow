@@ -61,8 +61,8 @@ const mainnetCacheUrl =
   process.env.MAINNET_CACHE_URL ||
   getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
   'https://oazo-bcache.new.oasis.app/api/v1'
-const mainnetRpc = `${process.env.ORIGIN || window.location.origin}/api/rpc?network=mainnet`
-const goerliRpc = `${process.env.ORIGIN || window.location.origin}/api/rpc?network=goerli`
+const mainnetRpc = `${process.env.APP_FULL_DOMAIN || window.location.origin}/api/rpc?network=mainnet`
+const goerliRpc = `${process.env.APP_FULL_DOMAIN || window.location.origin}/api/rpc?network=goerli`
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
