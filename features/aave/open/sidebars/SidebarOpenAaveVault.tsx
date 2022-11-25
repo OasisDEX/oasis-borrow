@@ -1,24 +1,26 @@
 import { useActor } from '@xstate/react'
-import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
 
+import { ContextConnected } from '../../../../blockchain/network'
 import { MessageCard } from '../../../../components/MessageCard'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { ProxyView } from '../../../proxyNew'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { useAaveRedirect } from '../../helpers/useAaveRedirect'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
+
+function isLoading(state: OpenAaveStateMachineState) {
+  return state.matches('background.loading')
+}
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
@@ -28,6 +30,7 @@ interface OpenAaveStateProps {
   readonly state: OpenAaveStateMachineState
   readonly send: Sender<OpenAaveEvent>
   redirectAddress?: string
+  isLoading: () => boolean
 }
 
 function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
@@ -52,7 +55,7 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
+function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -64,7 +67,7 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
-      isLoading: false,
+      isLoading: isLoading(),
       disabled: !state.can('NEXT_STEP'),
       label: t('open-earn.aave.vault-form.confirm-btn'),
       action: () => send('NEXT_STEP'),
@@ -111,11 +114,11 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
   )
 }
 
-function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
+function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
   useAaveRedirect() // redirects to active position if user has one
 
-  const hasProxy = state.context.proxyAddress !== undefined
+  const hasProxy = state.context.connectedProxyAddress !== undefined
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 
   const amountTooHigh =
@@ -137,7 +140,7 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
-      isLoading: state.context.loading,
+      isLoading: isLoading(),
       disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
       label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
       action: () => send('NEXT_STEP'),
@@ -171,32 +174,36 @@ function OpenAaveSuccessStateView({ state, redirectAddress }: OpenAaveStateProps
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
-  const { connectedContext$ } = useAppContext()
+export function SidebarOpenAaveVault() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
-  const [connectedContext] = useObservable(connectedContext$)
   const { t } = useTranslation()
-  const { hasOtherAssetsThanETH_STETH } = state.context
-  const AdjustRiskView = config.viewComponents.adjustRiskView
+  const { hasOpenedPosition } = state.context
+
+  function loading(): boolean {
+    return isLoading(state)
+  }
+
+  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
   switch (true) {
-    case state.matches('editing'):
-      return <OpenAaveEditingStateView state={state} send={send} />
-    case state.matches('proxyCreating'):
+    case state.matches('frontend.editing'):
+      return <OpenAaveEditingStateView state={state} send={send} isLoading={loading} />
+    case state.matches('frontend.proxyCreating'):
       return (
         <ProxyView
           proxyMachine={state.context.refProxyMachine!}
           steps={[state.context.currentStep, state.context.totalSteps]}
         />
       )
-    case state.matches('settingMultiple'):
+    case state.matches('frontend.settingMultiple'):
       return (
         <AdjustRiskView
           state={state}
           send={send}
+          isLoading={loading}
           primaryButton={{
             steps: [state.context.currentStep, state.context.totalSteps],
-            isLoading: state.context.loading,
+            isLoading: isLoading(state),
             disabled: !state.can('NEXT_STEP'),
             label: t('open-earn.aave.vault-form.open-btn'),
             action: () => send('NEXT_STEP'),
@@ -205,25 +212,29 @@ export function SidebarOpenAaveVault({ config }: { config: StrategyConfig }) {
             label: t('open-earn.aave.vault-form.back-to-editing'),
             action: () => send('BACK_TO_EDITING'),
           }}
-          viewLocked={hasOtherAssetsThanETH_STETH}
+          viewLocked={hasOpenedPosition}
+          showWarring={hasOpenedPosition}
         />
       )
-    case state.matches('reviewing'):
-      return <OpenAaveReviewingStateView state={state} send={send} />
-    case state.matches('txInProgress'):
-      return <OpenAaveTransactionInProgressStateView state={state} send={send} />
-    case state.matches('txFailure'):
-      return <OpenAaveFailureStateView state={state} send={send} />
-    case state.matches('txSuccess'):
+    case state.matches('frontend.reviewing'):
+      return <OpenAaveReviewingStateView state={state} send={send} isLoading={loading} />
+    case state.matches('frontend.txInProgress'):
+      return (
+        <OpenAaveTransactionInProgressStateView state={state} send={send} isLoading={loading} />
+      )
+    case state.matches('frontend.txFailure'):
+      return <OpenAaveFailureStateView state={state} send={send} isLoading={loading} />
+    case state.matches('frontend.txSuccess'):
       return (
         <OpenAaveSuccessStateView
           state={state}
           send={send}
-          redirectAddress={connectedContext?.account}
+          redirectAddress={(state.context.web3Context as ContextConnected)?.account}
+          isLoading={loading}
         />
       )
     default: {
-      return <></>
+      return <>{JSON.stringify(state.value)}</>
     }
   }
 }

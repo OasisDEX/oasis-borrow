@@ -37,12 +37,12 @@ export function SidebarAutoTakeProfitRemovalEditingStage({
 function AutoTakeProfitInfoSectionControl() {
   const {
     autoTakeProfitTriggerData,
-    positionData: { token, debt, collateralizationRatio },
+    positionData: { token, debt, positionRatio },
   } = useAutomationContext()
 
   return (
     <CancelAutoTakeProfitInfoSection
-      collateralizationRatio={collateralizationRatio.times(100)}
+      positionRatio={positionRatio.times(100)}
       token={token}
       debt={debt}
       triggerColPrice={autoTakeProfitTriggerData.executionPrice}

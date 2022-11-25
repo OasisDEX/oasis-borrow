@@ -1,23 +1,24 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { useAppContext } from 'components/AppContextProvider'
 import { TabBar } from 'components/TabBar'
+import { ProtectionControl } from 'components/vault/ProtectionControl'
+import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
 import { AaveFaq } from 'features/content/faqs/aave'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
-import { AavePositionAlreadyOpenedNotice } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
 
+import { PositionOwnershipBanner } from '../../../notices/VaultsNoticesView'
 import { useAaveContext } from '../../AaveContextProvider'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
-import { createAaveUserConfiguration, hasOtherAssets } from '../../helpers/aaveUserConfiguration'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import {
   ManageAaveStateMachineContextProvider,
@@ -26,6 +27,31 @@ import {
 
 interface AaveManageViewPositionViewProps {
   address: string
+  strategyConfig: StrategyConfig
+}
+
+function PositionOwnership() {
+  const { stateMachine } = useManageAaveStateMachineContext()
+  const [state] = useActor(stateMachine)
+
+  const connectedAddress =
+    state.context.web3Context?.status === 'connected'
+      ? state.context.web3Context.account
+      : undefined
+
+  if (
+    state.context.connectedProxyAddress !== undefined &&
+    state.context.proxyAddress !== undefined &&
+    state.context.connectedProxyAddress === state.context.proxyAddress
+  ) {
+    return null
+  }
+  return (
+    <PositionOwnershipBanner
+      account={state.context.address}
+      connectedWalletAddress={connectedAddress}
+    />
+  )
 }
 
 function AaveManageContainer({
@@ -44,10 +70,14 @@ function AaveManageContainer({
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const aaveProtection = useFeatureToggle('AaveProtection')
 
   if (!state.context.protocolData) {
     return null
   }
+
+  const { collateralToken, token } = state.context
+  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, token)
 
   return (
     <AaveAutomationContext
@@ -55,13 +85,13 @@ function AaveManageContainer({
         address,
         aaveReserveState,
         aaveReserveDataETH,
-        aaveProtocolData: state.context.protocolData,
         strategyConfig,
+        context: state.context,
       }}
     >
       <Container variant="vaultPageContainer">
-        <AavePositionNotice />
-        <Header strategyName={strategyConfig.name} />
+        <PositionOwnership />
+        <Header strategyConfig={strategyConfig} />
         <TabBar
           variant="underline"
           sections={[
@@ -75,9 +105,13 @@ function AaveManageContainer({
                       aaveReserveState={aaveReserveState}
                       aaveReserveDataETH={aaveReserveDataETH}
                       strategyConfig={strategyConfig}
+                      currentPosition={state.context.currentPosition}
+                      collateralPrice={state.context.collateralPrice}
+                      tokenPrice={state.context.tokenPrice}
+                      nextPosition={state.context.strategy?.simulation.position}
                     />
                   </Box>
-                  <Box>{<SidebarManageAaveVault config={strategyConfig} />}</Box>
+                  <Box>{<SidebarManageAaveVault />}</Box>
                 </Grid>
               ),
             },
@@ -90,6 +124,16 @@ function AaveManageContainer({
                 </Card>
               ),
             },
+            ...(aaveProtection && showAutomationTabs
+              ? [
+                  {
+                    label: t('system.protection'),
+                    value: 'protection',
+                    tag: { include: true, active: false },
+                    content: <ProtectionControl />,
+                  },
+                ]
+              : []),
           ]}
         />
         <Survey for="earn" />
@@ -98,54 +142,37 @@ function AaveManageContainer({
   )
 }
 
-function AavePositionNotice() {
-  const { stateMachine } = useManageAaveStateMachineContext()
-  const [state] = useActor(stateMachine)
-  const { context } = state
-  const { aaveUserConfiguration, aaveReservesList } = context.protocolData || {}
-  const hasOtherAssetsThanETH_STETH = hasOtherAssets(
-    createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList),
-    ['ETH', 'STETH'],
-  )
-
-  if (hasOtherAssetsThanETH_STETH) {
-    return <AavePositionAlreadyOpenedNotice />
-  }
-  return null
-}
-
-export function AaveManagePositionView({ address }: AaveManageViewPositionViewProps) {
-  const { aaveManageStateMachine$, detectAaveStrategy$ } = useAaveContext()
-  const { connectedContext$ } = useAppContext()
-  const [context, contextError] = useObservable(connectedContext$)
+export function AaveManagePositionView({
+  address,
+  strategyConfig,
+}: AaveManageViewPositionViewProps) {
+  const { aaveManageStateMachine } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
-  const [stateMachine, stateMachineError] = useObservable(
-    aaveManageStateMachine$({ token: 'ETH', address: address, strategy: 'stETHeth' }),
-  ) // TODO: should be created with strategy and address. Then should be more generic.
   const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
-  const [aaveStrategy, aaveStrategyError] = useObservable(detectAaveStrategy$(address))
   return (
-    <WithErrorHandler
-      error={[stateMachineError, aaveReserveStateError, aaveStrategyError, contextError]}
+    <ManageAaveStateMachineContextProvider
+      machine={aaveManageStateMachine}
+      address={address}
+      strategy={strategyConfig}
     >
-      <WithLoadingIndicator
-        value={[stateMachine, aaveReserveState, aaveReserveDataETH, aaveStrategy, context]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([_stateMachine, _aaveReserveState, _aaveReserveDataETH, _aaveStrategy, _context]) => {
-          return (
-            <ManageAaveStateMachineContextProvider machine={_stateMachine}>
+      <WithErrorHandler error={[aaveReserveStateError]}>
+        <WithLoadingIndicator
+          value={[aaveReserveState, aaveReserveDataETH]}
+          customLoader={<VaultContainerSpinner />}
+        >
+          {([_aaveReserveState, _aaveReserveDataETH]) => {
+            return (
               <AaveManageContainer
-                strategyConfig={_aaveStrategy}
+                strategyConfig={strategyConfig}
                 aaveReserveState={_aaveReserveState}
                 aaveReserveDataETH={_aaveReserveDataETH}
-                address={_context.account}
+                address={address}
               />
-            </ManageAaveStateMachineContextProvider>
-          )
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+            )
+          }}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    </ManageAaveStateMachineContextProvider>
   )
 }

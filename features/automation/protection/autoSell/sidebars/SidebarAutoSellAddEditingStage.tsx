@@ -11,7 +11,10 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/common/consts'
+import {
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  sidebarAutomationFeatureCopyMap,
+} from 'features/automation/common/consts'
 import {
   adjustDefaultValuesIfOutsideSlider,
   automationInputsAnalytics,
@@ -62,7 +65,7 @@ export function SidebarAutoSellAddEditingStage({
   const {
     autoSellTriggerData,
     stopLossTriggerData,
-    positionData: { id, ilk, debt, debtFloor, lockedCollateral, collateralizationRatio, token },
+    positionData: { id, ilk, debt, debtFloor, lockedCollateral, positionRatio, token },
   } = useAutomationContext()
   const { t } = useTranslation()
   const [, setHash] = useHash()
@@ -84,13 +87,13 @@ export function SidebarAutoSellAddEditingStage({
       uiChanges,
       publishType: AUTO_SELL_FORM_CHANGE,
     })
-  }, [collateralizationRatio.toNumber()])
+  }, [positionRatio.toNumber()])
 
   automationMultipleRangeSliderAnalytics({
     leftValue: autoSellState.execCollRatio,
     rightValue: autoSellState.targetCollRatio,
     vaultId: id,
-    collateralizationRatio,
+    positionRatio,
     ilk,
     type: AutomationFeatures.AUTO_SELL,
   })
@@ -99,12 +102,12 @@ export function SidebarAutoSellAddEditingStage({
     minSellPrice: autoSellState.maxBuyOrMinSellPrice,
     withMinSellPriceThreshold: autoSellState.withThreshold,
     vaultId: id,
-    collateralizationRatio,
+    positionRatio,
     ilk,
     type: AutomationFeatures.AUTO_SELL,
   })
 
-  const isCurrentCollRatioHigherThanSliderMax = collateralizationRatio.times(100).gt(sliderMax)
+  const isCurrentCollRatioHigherThanSliderMax = positionRatio.times(100).gt(sliderMax)
 
   if (
     isStopLossEnabled &&
@@ -170,11 +173,13 @@ export function SidebarAutoSellAddEditingStage({
     )
   }
 
+  const feature = t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_SELL])
+
   if (isVaultEmpty && autoSellTriggerData.isTriggerEnabled) {
     return (
       <SidebarFormInfo
-        title={t('auto-sell.closed-vault-existing-trigger-header')}
-        description={t('auto-sell.closed-vault-existing-trigger-description')}
+        title={t('automation.closed-vault-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-existing-trigger-description', { feature })}
       />
     )
   }
@@ -182,8 +187,8 @@ export function SidebarAutoSellAddEditingStage({
   if (isVaultEmpty) {
     return (
       <SidebarFormInfo
-        title={t('auto-sell.closed-vault-not-existing-trigger-header')}
-        description={t('auto-sell.closed-vault-not-existing-trigger-description')}
+        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
+        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
       />
     )
   }
@@ -312,7 +317,7 @@ export function SidebarAutoSellAddEditingStage({
                 type: 'reset',
                 resetData: prepareAutoBSResetData(
                   autoSellTriggerData,
-                  collateralizationRatio,
+                  positionRatio,
                   AUTO_SELL_FORM_CHANGE,
                 ),
               })

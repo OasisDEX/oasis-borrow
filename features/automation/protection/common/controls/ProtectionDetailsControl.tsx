@@ -1,4 +1,5 @@
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import { getAvailableAutomation } from 'features/automation/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -10,7 +11,7 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 export function ProtectionDetailsControl() {
-  const { stopLossTriggerData, autoSellTriggerData } = useAutomationContext()
+  const { stopLossTriggerData, autoSellTriggerData, protocol } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
@@ -21,10 +22,12 @@ export function ProtectionDetailsControl() {
     section: 'details',
   })
 
+  const { isStopLossAvailable, isAutoSellAvailable } = getAvailableAutomation(protocol)
+
   return (
     <>
-      <StopLossDetailsControl isStopLossActive={isStopLossActive} />
-      <AutoSellDetailsControl />
+      {isStopLossAvailable && <StopLossDetailsControl isStopLossActive={isStopLossActive} />}
+      {isAutoSellAvailable && <AutoSellDetailsControl />}
     </>
   )
 }

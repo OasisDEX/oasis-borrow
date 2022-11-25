@@ -60,7 +60,7 @@ export function AddAndRemoveTriggerControl({
   const { uiChanges } = useAppContext()
   const {
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, owner, collateralizationRatio },
+    positionData: { id, ilk, owner, positionRatio },
   } = useAutomationContext()
 
   const { removeTxData, textButtonHandler, txHandler } = getAutomationFeatureTxHandlers({
@@ -78,12 +78,12 @@ export function AddAndRemoveTriggerControl({
     txHelpers,
     vaultId: id,
     ilk,
-    collateralizationRatio,
+    positionRatio,
     analytics,
   })
 
   useEffect(() => {
-    if (isActiveFlag && isEditing) {
+    if (isActiveFlag && isEditing && stage !== 'txSuccess' && stage !== 'txInProgress') {
       if (isAddForm) {
         uiChanges.publish(TX_DATA_CHANGE, {
           type: 'add-trigger',

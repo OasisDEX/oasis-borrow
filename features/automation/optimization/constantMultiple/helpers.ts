@@ -64,7 +64,7 @@ export function checkIfIsEditingConstantMultiple({
 
 export function getEligibleMultipliers({
   multipliers,
-  collateralizationRatio,
+  positionRatio,
   lockedCollateral,
   debt,
   debtFloor,
@@ -73,7 +73,7 @@ export function getEligibleMultipliers({
   maxTargetRatio,
 }: {
   multipliers: number[]
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   lockedCollateral: BigNumber
   debt: BigNumber
   debtFloor: BigNumber
@@ -121,14 +121,14 @@ export function getEligibleMultipliers({
       const deduplicatedVerifiedSellExtremes = [...new Set(verifiedSellExtremes)]
 
       const executionPriceAtCurrentCollRatio = collateralPriceAtRatio({
-        colRatio: collateralizationRatio,
+        colRatio: positionRatio,
         collateral: lockedCollateral,
         vaultDebt: debt,
       })
 
       const { debtDelta: debtDeltaAtCurrentCollRatio } = getAutoBSVaultChange({
         targetCollRatio,
-        execCollRatio: collateralizationRatio.times(100),
+        execCollRatio: positionRatio.times(100),
         deviation,
         executionPrice: executionPriceAtCurrentCollRatio,
         lockedCollateral,

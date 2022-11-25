@@ -37,6 +37,7 @@
   "after": "After",
   "after-closing": "{{token}} after closing",
   "after-next": "After + Next",
+  "all": "All",
   "all-assets": "All Assets",
   "amount": "Amount",
   "approve-allowance": "Approve Allowance",
@@ -61,6 +62,7 @@
     "write-us": "Send us your CV to "
   },
   "change-your-vault": "Change your vault",
+  "clear-selection": "Clear selection",
   "close": "Close",
   "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
@@ -79,6 +81,10 @@
   "connect-with": "{{ connectionKind }}",
   "connect-install-metamask": "Install Metamask",
   "connected-with": "Connected with {{ connectionKind }}",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "loading": "Loading",
+  "following": "Following",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -475,8 +481,6 @@
     "action": "Manage Vault",
     "current-price": "Current Price",
     "next-price": "Next Price",
-    "current-price-tooltip": "Current {{token}} Price",
-    "next-price-tooltip": "Next {{token}} Price",
     "next-price-any-time": "< 2 minutes",
     "card": {
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
@@ -609,6 +613,8 @@
     "liquidation-price-ratio": "Liquidation price ratio",
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
+    "below-current-price": "{{percentage}} below current price",
+    "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "has-asset-already": "There is an active AAVE position open in this address. Therefore, you cannot open a stETH earn position. Close your AAVE position first to continue.",
     "net-value-modal": "Net Value",
     "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH."
@@ -874,6 +880,7 @@
     "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
+    "pnl-value": "PnL: {{value}}",
     "actions": {
       "common": {
         "close-vault": "Close vault",
@@ -908,14 +915,19 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} below Current Collateral Ratio"
+        "footnote": "{{amount}} below {{value}}"
       },
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"
       }
     },
     "remove-trigger": "Remove trigger",
-    "add-trigger": "Add trigger"
+    "add-trigger": "Add trigger",
+    "loan-to-value": "Loan to Value",
+    "net-borrow-cost": "Net Borrow Cost",
+    "position-debt": "Position Debt",
+    "current-token-price": "Current {{token}} Price",
+    "next-token-price": "Next {{token}} Price"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -945,6 +957,9 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
+    "header-aave-open": "Open {{collateral}}/{{debt}} AAVE position",
+    "header-aave-view": "Aave {{collateral}}/{{debt}}",
+    "header-aave-view-id": "Aave {{collateral}}/{{debt}} Vault {{vaultId}}",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
     "open-vault": "Open {{ilk}} Vault",
@@ -1237,6 +1252,7 @@
     "next-update": "Next Update",
     "oracle-type": "Oracle Type"
   },
+  "selected": "Selected",
   "select-vault-type": {
     "header": "What do you want to do with your {{token}}?",
     "multiply": {
@@ -1258,7 +1274,7 @@
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
-    "set-downside-protection-desc": "Set the Collateralisation Ratio trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
+    "set-downside-protection-desc": "Set the {{ratioParam}} trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
     "cancel-downside-protection-desc": "To cancel the Stop-Loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting Stop-Loss Protection",
@@ -1324,9 +1340,9 @@
     "edit-order": "Edit Order",
     "confirm": "Confirm",
     "unable-to-access-protection": "Unable to access Protection",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
-    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab",
-    "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+    "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
+    "stop-loss-something": "Stop-Loss {{value}}",
+    "current-stop-loss-something": "The current Stop-Loss {{value}} is:"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1427,7 +1443,8 @@
     "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% tier",
     "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
     "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
-    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
+    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP",
+    "RETH-A": "Rocket Pool ETH"
   },
   "product-page": {
     "multiply": {
@@ -1628,10 +1645,6 @@
     "set-min-sell-price": "Set Min Sell Price",
     "set-trigger-description": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a min sell price of ${{minSellPrice}}/{{token}}. Learn More ",
     "set-trigger-description-no-threshold": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min sell price. Learn More ",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Sell is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Sell here or deposit into your vault in overview tab",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Auto-Sell",
-    "closed-vault-not-existing-trigger-description": "To enable Auto-Sell you need to generate Dai in overview tab",
     "adding-new-triggers-disabled": "Creation of the new Auto-Sell trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Sell triggers",
     "add-content": "Your vault is currently being updated to add your Auto-Sell. Auto-Sell will not be active until this completes.",
@@ -1679,8 +1692,6 @@
     "target-ratio-with-deviation": "Target ratio with deviation",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
     "col-to-be-purchased": "{{token}} to be purchased at next buy",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Buy is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Buy here or deposit into your vault in overview tab",
     "adding-new-triggers-disabled": "Creation of the new Auto-Buy trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Buy triggers",
     "add-content": "Your vault is currently being updated to add your Auto-Buy. Auto-Buy will not be active until this completes.",
@@ -1734,10 +1745,8 @@
     "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction.",
     "adding-new-triggers-disabled": "Creation of the new Take Profit trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Take Profit is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Take Profit here or deposit into your vault in overview tab"
+    "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
   },
-
   "automation": {
     "setup": "{{feature}} Setup",
     "trigger-added": "{{feature}} Enabled",
@@ -1757,7 +1766,18 @@
     "trigger-executed": "Your {{feature}} was triggered",
     "estimated-col-ratio-at-trigger": "Estimated Coll. Ratio at Trigger",
     "confirmation-text": "Confirm your {{feature}} setup",
-    "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
+    "closed-vault-existing-trigger-header": "Your vault is closed but {{feature}} is still active",
+    "closed-vault-existing-trigger-description": "You can cancel your existing {{feature}} here or deposit into your vault in overview tab",
+    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up {{feature}}",
+    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab",
+    "validation": {
+      "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
+      "has-more-debt-than-max-for-stop-loss": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20M DAI",
+      "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
+      "is-stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first.",
+      "is-stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
+      "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
+    }
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1809,9 +1829,7 @@
     "adding-new-triggers-disabled": "Creation of the new Constant Multiple trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Constant Multiple triggers",
     "sl-too-high": "Constant Multiple is not available as your existing Stop-Loss Protection trigger is too high. Please <0>adjust your Stop-Loss Trigger</0> below {{maxStopLoss}}% before using Constant Multiple.",
-    "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple.",
-    "closed-vault-existing-trigger-header": "Your vault is closed but Constant Multiple is still active",
-    "closed-vault-existing-trigger-description": "You can cancel your existing Constant Multiple here or deposit into your vault in overview tab"
+    "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
     "banner": "Earn on ETH with our new stETH product. Check it out today",

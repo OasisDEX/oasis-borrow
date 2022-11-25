@@ -25,8 +25,8 @@ export function getAutomationMakerPositionData({
   } = generalManageVault.state
 
   return {
-    collateralizationRatio,
-    collateralizationRatioAtNextPrice,
+    positionRatio: collateralizationRatio,
+    nextPositionRatio: collateralizationRatioAtNextPrice,
     debt,
     debtFloor,
     debtOffset,
@@ -38,6 +38,7 @@ export function getAutomationMakerPositionData({
     lockedCollateral,
     owner,
     token,
+    debtToken: 'DAI',
     vaultType: generalManageVault.type,
   }
 }

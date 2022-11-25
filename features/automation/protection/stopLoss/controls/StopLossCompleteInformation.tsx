@@ -5,38 +5,45 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
+import {
+  STOP_LOSS_FORM_CHANGE,
+  StopLossFormChange,
+} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex } from 'theme-ui'
 
 interface StopLossCompleteInformationProps {
   executionPrice: BigNumber
-  afterStopLossRatio: BigNumber
   isCollateralActive: boolean
   txState?: TxStatus
   txCost: BigNumber
 }
 
 export function StopLossCompleteInformation({
-  afterStopLossRatio,
   isCollateralActive,
   txCost,
   executionPrice,
 }: StopLossCompleteInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: { token, debt, lockedCollateral, liquidationPrice, liquidationRatio },
+    positionData: { token, liquidationPrice, liquidationRatio },
+    metadata: {
+      stopLoss: { getMaxToken },
+    },
   } = useAutomationContext()
+  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const dynamicStopLossPrice = liquidationPrice
-    .div(liquidationRatio)
-    .times(afterStopLossRatio.div(100))
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel: stopLossState.stopLossLevel,
+  })
 
-  const maxToken = lockedCollateral
-    .times(dynamicStopLossPrice)
-    .minus(debt)
-    .div(dynamicStopLossPrice)
+  const maxToken = getMaxToken(stopLossState)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(maxToken, token)} ${token}`
@@ -48,7 +55,7 @@ export function StopLossCompleteInformation({
         label={`${t('protection.stop-loss-coll-ratio')}`}
         value={
           <Flex>
-            {formatPercent(afterStopLossRatio, {
+            {formatPercent(stopLossState.stopLossLevel, {
               precision: 2,
               roundMode: BigNumber.ROUND_DOWN,
             })}

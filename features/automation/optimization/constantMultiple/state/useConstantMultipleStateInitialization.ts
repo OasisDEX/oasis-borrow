@@ -28,14 +28,14 @@ export function useConstantMultipleStateInitialization({
   debtFloor,
   liquidationRatio,
   lockedCollateral,
-  collateralizationRatio,
+  positionRatio,
   constantMultipleTriggerData,
   autoSellTriggerData,
   stopLossTriggerData,
   autoBuyTriggerData,
 }: {
   ilk: string
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   liquidationRatio: BigNumber
   lockedCollateral: BigNumber
   debtFloor: BigNumber
@@ -61,7 +61,7 @@ export function useConstantMultipleStateInitialization({
 
   const eligibleMultipliers = getEligibleMultipliers({
     multipliers,
-    collateralizationRatio: collateralizationRatio,
+    positionRatio,
     lockedCollateral: lockedCollateral,
     debt: debt,
     debtFloor: debtFloor,
@@ -118,7 +118,7 @@ export function useConstantMultipleStateInitialization({
       currentForm: 'add',
     })
   }, [
-    collateralizationRatio.toNumber(),
+    positionRatio.toNumber(),
     stopLossTriggerData.triggerId.toNumber(),
     autoBuyTriggerData.triggerId.toNumber(),
     autoSellTriggerData.triggerId.toNumber(),

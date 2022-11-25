@@ -11,12 +11,12 @@ const INITIAL_SELECTED_PRICE_MULTIPLIER = 1.2
 export function useAutoTakeProfitStateInitializator({
   debt,
   lockedCollateral,
-  collateralizationRatio,
+  positionRatio,
   autoTakeProfitTriggerData,
 }: {
   debt: BigNumber
   lockedCollateral: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
 }) {
   const { uiChanges } = useAppContext()
@@ -25,7 +25,7 @@ export function useAutoTakeProfitStateInitializator({
   const initialSelectedPrice = isTriggerEnabled
     ? executionPrice
     : collateralPriceAtRatio({
-        colRatio: collateralizationRatio.times(INITIAL_SELECTED_PRICE_MULTIPLIER),
+        colRatio: positionRatio.times(INITIAL_SELECTED_PRICE_MULTIPLIER),
         collateral: lockedCollateral,
         vaultDebt: debt,
       })
@@ -51,7 +51,7 @@ export function useAutoTakeProfitStateInitializator({
       type: 'close-type',
       toCollateral: isToCollateral,
     })
-  }, [triggerId.toNumber(), collateralizationRatio.toNumber()])
+  }, [triggerId.toNumber(), positionRatio.toNumber()])
 
   useEffect(() => {
     uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
@@ -62,7 +62,7 @@ export function useAutoTakeProfitStateInitializator({
       type: 'tx-details',
       txDetails: {},
     })
-  }, [collateralizationRatio.toNumber()])
+  }, [positionRatio.toNumber()])
 
   return isTriggerEnabled
 }

@@ -11,8 +11,12 @@ import { NetworkIds } from 'blockchain/network'
 import { UIChanges } from 'components/AppContext'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
+  aaveTokenPairsAllowedAutomation,
   DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET,
+  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   maxUint256,
+  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
+  protocolAutomations,
 } from 'features/automation/common/consts'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -28,6 +32,7 @@ import {
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
@@ -75,32 +80,32 @@ export function resolveWithThreshold({
 export function prepareAutoBSSliderDefaults({
   execCollRatio,
   targetCollRatio,
-  collateralizationRatio,
+  positionRatio,
   publishKey,
 }: {
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   publishKey: 'AUTO_SELL_FORM_CHANGE' | 'AUTO_BUY_FORM_CHANGE'
 }) {
-  const defaultTargetCollRatio = new BigNumber(collateralizationRatio)
+  const defaultTargetCollRatio = new BigNumber(positionRatio)
 
   const defaultTriggerForSell = new BigNumber(
-    collateralizationRatio.minus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
+    positionRatio.minus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
   )
   const defaultTriggerForBuy = new BigNumber(
-    collateralizationRatio.plus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
+    positionRatio.plus(DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET),
   )
 
   return {
     execCollRatio:
-      execCollRatio.isZero() && collateralizationRatio.gt(zero)
+      execCollRatio.isZero() && positionRatio.gt(zero)
         ? publishKey === 'AUTO_SELL_FORM_CHANGE'
           ? defaultTriggerForSell.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
           : defaultTriggerForBuy.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
         : execCollRatio,
     targetCollRatio:
-      targetCollRatio.isZero() && collateralizationRatio.gt(zero)
+      targetCollRatio.isZero() && positionRatio.gt(zero)
         ? defaultTargetCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN)
         : targetCollRatio,
   }
@@ -108,13 +113,13 @@ export function prepareAutoBSSliderDefaults({
 
 export function prepareAutoBSResetData(
   autoBSTriggersData: AutoBSTriggerData,
-  collateralizationRatio: BigNumber,
+  positionRatio: BigNumber,
   publishKey: 'AUTO_SELL_FORM_CHANGE' | 'AUTO_BUY_FORM_CHANGE',
 ) {
   const defaultSliderValues = prepareAutoBSSliderDefaults({
     execCollRatio: autoBSTriggersData.execCollRatio,
     targetCollRatio: autoBSTriggersData.targetCollRatio,
-    collateralizationRatio,
+    positionRatio,
     publishKey,
   })
   return {
@@ -288,7 +293,7 @@ export function automationMultipleRangeSliderAnalytics({
   leftValue,
   rightValue,
   vaultId,
-  collateralizationRatio,
+  positionRatio,
   ilk,
   type,
   targetMultiple,
@@ -296,7 +301,7 @@ export function automationMultipleRangeSliderAnalytics({
   leftValue: BigNumber
   rightValue: BigNumber
   vaultId: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   ilk: string
   type:
     | AutomationFeatures.AUTO_SELL
@@ -307,7 +312,7 @@ export function automationMultipleRangeSliderAnalytics({
   const analyticsAdditionalParams = {
     vaultId: vaultId.toString(),
     ilk: ilk,
-    collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
+    collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
     ...(targetMultiple && { targetMultiple: targetMultiple.toString() }),
   }
 
@@ -368,7 +373,7 @@ export function automationInputsAnalytics({
   type,
   vaultId,
   ilk,
-  collateralizationRatio,
+  positionRatio,
 }: {
   minSellPrice?: BigNumber
   withMinSellPriceThreshold?: boolean
@@ -379,7 +384,7 @@ export function automationInputsAnalytics({
     | AutomationFeatures.AUTO_BUY
     | AutomationFeatures.CONSTANT_MULTIPLE
   vaultId: BigNumber
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   ilk: string
 }) {
   const shouldTrackMinSellInput =
@@ -390,7 +395,7 @@ export function automationInputsAnalytics({
   const analyticsAdditionalParams = {
     vaultId: vaultId.toString(),
     ilk: ilk,
-    collateralRatio: collateralizationRatio.times(100).decimalPlaces(2).toString(),
+    collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
   }
 
   const resolvedMinSellPrice = resolveMinSellPriceAnalytics({
@@ -456,4 +461,33 @@ export function openVaultWithStopLossAnalytics({
       collateralRatio: afterCollateralizationRatio.times(100).decimalPlaces(2).toString(),
     },
   )
+}
+
+export function getAvailableAutomation(protocol: VaultProtocol) {
+  return {
+    isStopLossAvailable: protocolAutomations[protocol].includes(AutomationFeatures.STOP_LOSS),
+    isAutoSellAvailable: protocolAutomations[protocol].includes(AutomationFeatures.AUTO_SELL),
+    isAutoBuyAvailable: protocolAutomations[protocol].includes(AutomationFeatures.AUTO_BUY),
+    isConstantMultipleAvailable: protocolAutomations[protocol].includes(
+      AutomationFeatures.CONSTANT_MULTIPLE,
+    ),
+    isTakeProfitAvailable: protocolAutomations[protocol].includes(
+      AutomationFeatures.AUTO_TAKE_PROFIT,
+    ),
+  }
+}
+
+export function openFlowInitialStopLossLevel({
+  liquidationRatio,
+}: {
+  liquidationRatio: BigNumber
+}) {
+  const stopLossSliderMin = liquidationRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100))
+  return stopLossSliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100)
+}
+
+export function isSupportedAutomationTokenPair(token: string, debtToken: string) {
+  const joined = [token, debtToken].sort().join('-')
+
+  return aaveTokenPairsAllowedAutomation.flatMap((pair) => pair.sort().join('-')).includes(joined)
 }

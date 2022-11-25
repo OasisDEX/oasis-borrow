@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
@@ -17,12 +16,15 @@ interface ContentCardEstTokenOnTriggerProps {
   isStopLossEnabled: boolean
   isEditing: boolean
   token: string
-  slRatio: BigNumber
+  debtToken: string
+  stopLossLevel: BigNumber
   liquidationPrice: BigNumber
-  lockedCollateral: BigNumber
-  debt: BigNumber
+  liquidationRatio: BigNumber
   liquidationPenalty: BigNumber
-  afterSlRatio: BigNumber
+  afterStopLossLevel: BigNumber
+  triggerMaxToken: BigNumber
+  collateralDuringLiquidation: BigNumber
+  afterMaxToken: BigNumber
 }
 
 function ContentCardEstTokenOnTriggerModal({
@@ -51,52 +53,49 @@ export function ContentCardEstTokenOnTrigger({
   isStopLossEnabled,
   isEditing,
   token,
-  slRatio,
+  debtToken,
+  stopLossLevel,
   liquidationPrice,
-  lockedCollateral,
-  debt,
   liquidationPenalty,
-  afterSlRatio,
+  liquidationRatio,
+  afterStopLossLevel,
+  triggerMaxToken,
+  afterMaxToken,
+  collateralDuringLiquidation,
 }: ContentCardEstTokenOnTriggerProps) {
   const { t } = useTranslation()
 
-  const dynamicStopPrice = collateralPriceAtRatio({
-    colRatio: slRatio,
-    collateral: lockedCollateral,
-    vaultDebt: debt,
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel: stopLossLevel.times(100),
   })
-  const afterDynamicStopPrice = collateralPriceAtRatio({
-    colRatio: afterSlRatio,
-    collateral: lockedCollateral,
-    vaultDebt: debt,
+
+  const afterDynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel: afterStopLossLevel,
   })
-  const maxToken = !dynamicStopPrice.isZero()
-    ? lockedCollateral.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
-    : zero
-  const ethDuringLiquidation = lockedCollateral
-    .times(liquidationPrice)
-    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
-    .div(liquidationPrice)
-  const afterMaxToken = afterDynamicStopPrice.isZero()
-    ? zero
-    : lockedCollateral.times(afterDynamicStopPrice).minus(debt).div(afterDynamicStopPrice)
 
-  const savingCompareToLiquidation = maxToken.minus(ethDuringLiquidation)
-  const symbol = isCollateralActive ? token : 'DAI'
+  const savingCompareToLiquidation = triggerMaxToken.minus(collateralDuringLiquidation)
+  const symbol = isCollateralActive ? token : debtToken
 
-  const formatTokenOrDai = (val: BigNumber, stopPrice: BigNumber): string => {
+  const formatTokenOrDebtToken = (val: BigNumber, stopPrice: BigNumber): string => {
     return isCollateralActive
       ? `${formatAmount(val, token)} ${token}`
-      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')} DAI`
+      : `${formatAmount(val.multipliedBy(stopPrice), 'USD')} ${debtToken}`
   }
 
   const formatted = {
     title: t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', {
       token: symbol,
     }),
-    maxTokenOrDai: formatTokenOrDai(maxToken, dynamicStopPrice),
-    savingTokenOrDai: formatTokenOrDai(savingCompareToLiquidation, dynamicStopPrice),
-    afterMaxTokenOrDai: formatTokenOrDai(afterMaxToken, afterDynamicStopPrice),
+    maxTokenOrDebtToken: formatTokenOrDebtToken(triggerMaxToken, dynamicStopLossPrice),
+    savingTokenOrDebtToken: formatTokenOrDebtToken(
+      savingCompareToLiquidation,
+      dynamicStopLossPrice,
+    ),
+    afterMaxTokenOrDebtToken: formatTokenOrDebtToken(afterMaxToken, afterDynamicStopLossPrice),
     liquidationPenalty: formatPercent(liquidationPenalty.multipliedBy(100), {
       precision: 2,
     }),
@@ -112,14 +111,15 @@ export function ContentCardEstTokenOnTrigger({
     modal: <ContentCardEstTokenOnTriggerModal {...contentCardModalSettings} />,
   }
 
-  if (isStopLossEnabled && !maxToken.isZero()) contentCardSettings.value = formatted.maxTokenOrDai
-  if (!slRatio.isZero() && !maxToken.isZero())
-    contentCardSettings.footnote = `${formatted.savingTokenOrDai} ${t(
+  if (isStopLossEnabled && !triggerMaxToken.isZero())
+    contentCardSettings.value = formatted.maxTokenOrDebtToken
+  if (!afterStopLossLevel.isZero() && !triggerMaxToken.isZero())
+    contentCardSettings.footnote = `${formatted.savingTokenOrDebtToken} ${t(
       'manage-multiply-vault.card.saving-comp-to-liquidation',
     )}`
   if (isEditing)
     contentCardSettings.change = {
-      value: `${t('manage-multiply-vault.card.up-to')} ${formatted.afterMaxTokenOrDai} ${t(
+      value: `${t('manage-multiply-vault.card.up-to')} ${formatted.afterMaxTokenOrDebtToken} ${t(
         'system.cards.common.after',
       )}`,
       variant: 'positive',

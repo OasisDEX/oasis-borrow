@@ -7,14 +7,14 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface CancelAutoTakeProfitInfoSectionProps {
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   token: string
   triggerColPrice: BigNumber
   debt: BigNumber
 }
 
 export function CancelAutoTakeProfitInfoSection({
-  collateralizationRatio,
+  positionRatio,
   token,
   triggerColPrice,
   debt,
@@ -44,7 +44,7 @@ export function CancelAutoTakeProfitInfoSection({
               },
               {
                 label: t('system.collateral-ratio'),
-                value: formatPercent(collateralizationRatio, {
+                value: formatPercent(positionRatio, {
                   precision: 2,
                   roundMode: BigNumber.ROUND_DOWN,
                 }),

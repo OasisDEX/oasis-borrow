@@ -80,14 +80,8 @@ export function SidebarSetupAutoSell({
     constantMultipleTriggerData,
     stopLossTriggerData,
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
-    positionData: {
-      collateralizationRatioAtNextPrice,
-      debt,
-      debtFloor,
-      liquidationRatio,
-      token,
-      vaultType,
-    },
+    positionData: { nextPositionRatio, debt, debtFloor, liquidationRatio, token, vaultType },
+    protocol,
   } = useAutomationContext()
 
   const { isAwaitingConfirmation } = autoSellState
@@ -106,6 +100,7 @@ export function SidebarSetupAutoSell({
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     isAutoConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     vaultType,
+    protocol,
   })
   const primaryButtonLabel = getAutomationPrimaryButtonLabel({
     flow,
@@ -131,7 +126,7 @@ export function SidebarSetupAutoSell({
 
   const warnings = warningsAutoSellValidation({
     debt,
-    collateralizationRatioAtNextPrice,
+    nextPositionRatio,
     token,
     gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: ethBalance,

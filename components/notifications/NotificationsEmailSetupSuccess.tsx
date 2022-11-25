@@ -25,7 +25,7 @@ export function NotificationsSetupSuccess() {
           alignItems: 'center',
         }}
       >
-        <Icon name="tick_green" />
+        <Icon name="tick" color="success100" />
       </Flex>
       <Text
         sx={{

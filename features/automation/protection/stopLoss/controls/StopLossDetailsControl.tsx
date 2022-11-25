@@ -27,45 +27,66 @@ interface StopLossDetailsControlProps {
 export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsControlProps) {
   const { t } = useTranslation()
   const {
-    stopLossTriggerData,
+    stopLossTriggerData: { isStopLossEnabled, stopLossLevel, isToCollateral },
     positionData: {
-      collateralizationRatio,
-      collateralizationRatioAtNextPrice,
+      positionRatio,
+      nextPositionRatio,
       debt,
       id,
       ilk,
       liquidationPenalty,
       liquidationRatio,
+      liquidationPrice,
       lockedCollateral,
       token,
+      debtToken,
+    },
+    metadata: {
+      stopLoss: {
+        getMaxToken,
+        collateralDuringLiquidation,
+        triggerMaxToken,
+        detailCards,
+        ratioParam,
+        initialSlRatioWhenTriggerDoesntExist,
+      },
     },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+  const afterMaxToken = getMaxToken(stopLossState)
 
   return (
     <>
       {isStopLossActive ? (
         <StopLossDetailsLayout
-          slRatio={stopLossTriggerData.stopLossLevel}
-          afterSlRatio={stopLossState.stopLossLevel.dividedBy(100)}
-          vaultDebt={debt}
-          isStopLossEnabled={stopLossTriggerData.isStopLossEnabled}
-          lockedCollateral={lockedCollateral}
           token={token}
+          debtToken={debtToken}
+          stopLossLevel={stopLossLevel}
+          afterStopLossLevel={stopLossState.stopLossLevel}
+          debt={debt}
+          isStopLossEnabled={isStopLossEnabled}
           liquidationRatio={liquidationRatio}
+          liquidationPrice={liquidationPrice}
           liquidationPenalty={liquidationPenalty}
-          collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+          lockedCollateral={lockedCollateral}
+          nextPositionRatio={nextPositionRatio}
+          collateralDuringLiquidation={collateralDuringLiquidation}
+          triggerMaxToken={triggerMaxToken}
+          afterMaxToken={afterMaxToken}
           isCollateralActive={!!stopLossState?.collateralActive}
           isEditing={checkIfIsEditingStopLoss({
-            isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+            isStopLossEnabled: isStopLossEnabled,
             selectedSLValue: stopLossState.stopLossLevel,
-            stopLossLevel: stopLossTriggerData.stopLossLevel,
+            stopLossLevel,
             collateralActive: stopLossState.collateralActive,
-            isToCollateral: stopLossTriggerData.isToCollateral,
+            isToCollateral,
             isRemoveForm: stopLossState.currentForm === 'remove',
+            initialSlRatioWhenTriggerDoesntExist,
           })}
-          collateralizationRatio={collateralizationRatio}
+          positionRatio={positionRatio}
+          ratioParam={ratioParam}
+          detailCards={detailCards}
         />
       ) : (
         <Banner

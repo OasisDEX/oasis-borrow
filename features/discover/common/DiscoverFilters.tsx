@@ -1,5 +1,7 @@
 import { GenericSelect } from 'components/GenericSelect'
+import { DiscoverMultiselect } from 'features/discover/common/DiscoverMultiselect'
 import { DiscoverFiltersList, DiscoverFiltersListItem } from 'features/discover/meta'
+import { DiscoverFilterType } from 'features/discover/types'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
@@ -12,7 +14,7 @@ export function DiscoverFilters({
   filters: DiscoverFiltersList
   isSmallerScreen: boolean
   isSticky: boolean
-  onChange: (key: string, currentValue: DiscoverFiltersListItem) => void
+  onChange: (key: string, currentValue: string) => void
 }) {
   return (
     <Box
@@ -33,20 +35,47 @@ export function DiscoverFilters({
       <Grid
         gap="12px"
         sx={{
-          gridTemplateColumns: ['100%', 'repeat(2, 1fr)', null, 'repeat(4, 234px)'],
+          gridTemplateColumns: ['100%', 'repeat(2, 1fr)', null, 'repeat(4, 1fr)'],
         }}
       >
         {Object.keys(filters).map((key) => (
-          <GenericSelect
-            key={key}
-            options={filters[key]}
-            defaultValue={filters[key][0]}
-            onChange={(currentValue) => {
-              onChange(key, currentValue)
-            }}
-          />
+          <DiscoverFilter filter={key} item={filters[key]} key={key} onChange={onChange} />
         ))}
       </Grid>
     </Box>
   )
+}
+
+export function DiscoverFilter({
+  filter,
+  item,
+  onChange,
+}: {
+  filter: string
+  item: DiscoverFiltersListItem
+  onChange: (key: string, currentValue: string) => void
+}) {
+  switch (item.type) {
+    case DiscoverFilterType.SINGLE:
+      return (
+        <GenericSelect
+          options={item.options}
+          defaultValue={item.options[0]}
+          onChange={(currentValue) => {
+            onChange(filter, currentValue.value)
+          }}
+        />
+      )
+    case DiscoverFilterType.MULTI:
+      return (
+        <DiscoverMultiselect
+          {...item}
+          onChange={(value) => {
+            onChange(filter, value)
+          }}
+        />
+      )
+    default:
+      return null
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "5.4.0",
+  "version": "5.7.0",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=16.x"
@@ -150,7 +150,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "whatwg-fetch": "2.0.3",
-    "xstate": "^4.33.4",
+    "xstate": "^4.33.6",
     "zod": "^1.5.0"
   },
   "resolutions": {
@@ -208,7 +208,7 @@
     "@types/uuid": "^7.0.3",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
-    "@xstate/cli": "^0.3.2",
+    "@xstate/cli": "^0.3.3",
     "@xstate/inspect": "^0.7.0",
     "@xstate/test": "^0.5.1",
     "autoprefixer": "7.1.6",
@@ -253,6 +253,7 @@
     "sinon-chai": "^3.5.0",
     "storybook-xstate-addon": "^2.3.1",
     "stream-browserify": "^3.0.0",
+    "ts-mockito": "^2.6.1",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "^4.4.3"

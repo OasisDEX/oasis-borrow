@@ -38,11 +38,11 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
           document.querySelector('body')?.scrollTo({ top: destinatedPosition, behavior: 'smooth' })
         }
       }
-      trackingEvents.discover.selectedFilter(kind, key, currentValue.label, userContext)
+      trackingEvents.discover.selectedFilter(kind, key, currentValue, userContext)
       setIsLoading(true)
       setSettings({
         ...settings,
-        [key]: currentValue.value,
+        [key]: currentValue,
       })
     },
     [settings],

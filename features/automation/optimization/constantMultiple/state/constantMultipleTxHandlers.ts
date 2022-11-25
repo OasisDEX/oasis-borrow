@@ -19,7 +19,7 @@ interface GetConstantMultipleTxHandlersParams {
   constantMultipleState: ConstantMultipleFormChange
   constantMultipleTriggerData: ConstantMultipleTriggerData
   isAddForm: boolean
-  collateralizationRatio: BigNumber
+  positionRatio: BigNumber
   id: BigNumber
   owner: string
 }
@@ -36,7 +36,7 @@ export function getConstantMultipleTxHandlers({
   constantMultipleState,
   constantMultipleTriggerData,
   isAddForm,
-  collateralizationRatio,
+  positionRatio,
   id,
   owner,
 }: GetConstantMultipleTxHandlersParams): ConstantMultipleTxHandlers {
@@ -65,7 +65,7 @@ export function getConstantMultipleTxHandlers({
       }),
     [
       constantMultipleTriggerData.triggersId,
-      collateralizationRatio.toNumber(),
+      positionRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),
       constantMultipleState.buyExecutionCollRatio?.toNumber(),

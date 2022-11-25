@@ -6,15 +6,20 @@ import {
   getAssetOptions,
 } from 'features/discover/filters'
 import { discoverBannerIcons, discoverNavigationIconContent } from 'features/discover/icons'
-import { DiscoverPages } from 'features/discover/types'
+import { DiscoverFilterType, DiscoverPages } from 'features/discover/types'
 
-export interface DiscoverFiltersListItem {
+export interface DiscoverFiltersListOptions {
   label: string
   value: string
   icon?: string
 }
+export interface DiscoverFiltersListItem {
+  label: string
+  type: DiscoverFilterType
+  options: DiscoverFiltersListOptions[]
+}
 export interface DiscoverFiltersList {
-  [key: string]: DiscoverFiltersListItem[]
+  [key: string]: DiscoverFiltersListItem
 }
 export interface DiscoverBanner {
   icon: JSX.Element
@@ -83,10 +88,10 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
     iconColor: '#00E2BA',
     iconContent: discoverNavigationIconContent[DiscoverPages.MOST_YIELD_EARNED],
     filters: {
-      asset: getAssetOptions([
-        discoverFiltersAssetItems.guniv3daiusdc1,
-        discoverFiltersAssetItems.guniv3daiusdc2,
-      ]),
+      asset: getAssetOptions(
+        [discoverFiltersAssetItems.guniv3daiusdc1, discoverFiltersAssetItems.guniv3daiusdc2],
+        DiscoverFilterType.HIDDEN,
+      ),
       size: discoverSizeFilter,
       time: discoverTimeFilter,
     },

@@ -1,19 +1,24 @@
 /* eslint-disable func-style */
 import { TxStatus } from '@oasisdex/transactions'
+import { isEqual } from 'lodash'
 import { of } from 'rxjs'
-import { filter, first, map, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { createDsProxy, CreateDsProxyData } from '../../../blockchain/calls/proxy'
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
+import { ContextConnected } from '../../../blockchain/network'
+import { TxHelpers } from '../../../components/AppContext'
 import { transactionToX } from '../../../helpers/form'
 import { ProxyContext, ProxyEvent, ProxyObservableService } from './types'
 
-const createProxy: ProxyObservableService = ({ dependencies }: ProxyContext, _: ProxyEvent) => {
-  const {
-    proxyAddress$,
-    safeConfirmations,
-    txHelper: { sendWithGasEstimation },
-  } = dependencies
+const createProxy: ProxyObservableService = (
+  { dependencies, contextConnected, txHelpers }: ProxyContext,
+  _: ProxyEvent,
+) => {
+  const { proxyAddress$ } = dependencies
+
+  const safeConfirmations = contextConnected!.safeConfirmations
+  const sendWithGasEstimation = txHelpers!.sendWithGasEstimation
 
   return sendWithGasEstimation(createDsProxy, {
     kind: TxMetaKind.createDsProxy,
@@ -48,15 +53,40 @@ const createProxy: ProxyObservableService = ({ dependencies }: ProxyContext, _: 
   )
 }
 
-const estimateGas: ProxyObservableService = ({ dependencies }: ProxyContext, _: ProxyEvent) => {
-  return dependencies.txHelper.estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy }).pipe(
+const estimateGas: ProxyObservableService = (
+  { dependencies, txHelpers }: ProxyContext,
+  _: ProxyEvent,
+) => {
+  return txHelpers!.estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy }).pipe(
+    distinctUntilChanged<number>(isEqual),
     switchMap((gasData) => dependencies.getGasEstimation$(gasData)),
-    first(),
     map((gas) => ({ type: 'GAS_COST_ESTIMATION', gasData: gas })),
+  )
+}
+
+const context$: ProxyObservableService = ({ dependencies }: ProxyContext, _: ProxyEvent) => {
+  return dependencies.context$.pipe(
+    distinctUntilChanged<ContextConnected>(isEqual),
+    map((context) => ({
+      type: 'CONNECTED_CONTEXT_CHANGED',
+      contextConnected: context,
+    })),
+  )
+}
+
+const txHelpers$: ProxyObservableService = ({ dependencies }: ProxyContext, _: ProxyEvent) => {
+  return dependencies.txHelpers$.pipe(
+    distinctUntilChanged<TxHelpers>(),
+    map((txHelpers) => ({
+      type: 'TX_HELPERS_CHANGED',
+      txHelpers,
+    })),
   )
 }
 
 export const services = {
   createProxy,
   estimateGas,
+  context$,
+  txHelpers$,
 }

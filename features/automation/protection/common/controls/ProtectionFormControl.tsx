@@ -1,7 +1,10 @@
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
-import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import {
+  getAvailableAutomation,
+  getShouldRemoveAllowance,
+} from 'features/automation/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -22,6 +25,7 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
     stopLossTriggerData,
     autoSellTriggerData,
     automationTriggersData,
+    protocol,
   } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -51,18 +55,24 @@ export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps)
     }
   }, [autoSellTriggerData.isTriggerEnabled, stopLossTriggerData.isStopLossEnabled])
 
+  const { isStopLossAvailable, isAutoSellAvailable } = getAvailableAutomation(protocol)
+
   return (
     <>
-      <StopLossFormControl
-        isStopLossActive={isStopLossActive}
-        txHelpers={txHelpers}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-      />
-      <AutoSellFormControl
-        isAutoSellActive={isAutoSellActive}
-        txHelpers={txHelpers}
-        shouldRemoveAllowance={shouldRemoveAllowance}
-      />
+      {isStopLossAvailable && (
+        <StopLossFormControl
+          isStopLossActive={isStopLossActive}
+          txHelpers={txHelpers}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+        />
+      )}
+      {isAutoSellAvailable && (
+        <AutoSellFormControl
+          isAutoSellActive={isAutoSellActive}
+          txHelpers={txHelpers}
+          shouldRemoveAllowance={shouldRemoveAllowance}
+        />
+      )}
     </>
   )
 }
