@@ -164,7 +164,8 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               kind: TxMetaKind.operationExecutor,
               calls: strategy!.transaction.calls as any,
               operationName: strategy!.transaction.operationName,
-              token: parameters!.token,
+              // @ts-ignore
+              token: parameters!.token || parameters!.debtToken,
               amount: parameters!.amount,
               proxyAddress: parameters!.proxyAddress,
             })

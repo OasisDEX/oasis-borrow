@@ -15,14 +15,14 @@ import { getFee } from '../../../oasisActionsLibWrapper'
 
 interface FeesInformationProps {
   transactionParameters: IPositionTransition
-  token: string
+  tokens: { deposit: string }
   estimatedGasPrice?: HasGasEstimation
 }
 
 export function FeesInformation({
   estimatedGasPrice,
   transactionParameters,
-  token,
+  tokens,
 }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
@@ -37,7 +37,7 @@ export function FeesInformation({
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {`${formatAmount(fee, token)} ${token} +`}
+            {`${formatAmount(fee, tokens.deposit)} ${tokens.deposit} +`}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -54,7 +54,7 @@ export function FeesInformation({
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={`${formatAmount(fee, token)} ${token}`}
+            value={`${formatAmount(fee, tokens.deposit)} ${tokens.deposit}`}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}

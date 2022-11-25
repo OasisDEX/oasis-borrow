@@ -10,16 +10,17 @@ import { one } from '../../../../../helpers/zero'
 import { calculatePriceImpact } from '../../../../shared/priceImpact'
 
 interface PriceImpactProps {
-  token: string
-  collateralToken: string
+  tokens: {
+    collateral: string
+    debt: string
+  }
   collateralPrice?: BigNumber
   tokenPrice?: BigNumber
   transactionParameters: IPositionTransition
 }
 
 export function PriceImpact({
-  token,
-  collateralToken,
+  tokens,
   transactionParameters,
   tokenPrice,
   collateralPrice,
@@ -35,7 +36,7 @@ export function PriceImpact({
 
   return (
     <VaultChangesInformationItem
-      label={t('vault-changes.price-impact', { token: `${collateralToken}/${token}` })}
+      label={t('vault-changes.price-impact', { token: `${tokens.collateral}/${tokens.debt}` })}
       value={
         <Text>
           {formatCryptoBalance(marketPrice)}{' '}

@@ -17,8 +17,11 @@ import { TransactionTokenAmount } from './TransactionTokenAmount'
 type OpenAaveInformationContainerProps = {
   state: {
     context: {
-      collateralToken: string
-      token: string
+      tokens: {
+        debt: string
+        collateral: string
+        deposit: string
+      }
       collateralPrice?: BigNumber
       tokenPrice?: BigNumber
       estimatedGasPrice?: HasGasEstimation

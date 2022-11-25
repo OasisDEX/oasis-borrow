@@ -48,10 +48,14 @@ function getAmountGetFromPositionAfterClose(
 
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
+  const displayToken = state.context.strategy?.simulation.swap.targetToken || {
+    symbol: 'ETH',
+    precision: 18,
+  }
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountGetFromPositionAfterClose(state.context.strategy, state.context.currentPosition),
-      state.context.token,
+      displayToken.symbol,
     ),
   )
 
@@ -61,7 +65,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
         {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
       <Text variant="boldParagraph3">
-        {balance} {state.context.token}
+        {balance} {displayToken.symbol}
       </Text>
     </Flex>
   )

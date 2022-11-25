@@ -34,7 +34,7 @@ export function AaveAutomationContext({
     () => ({
       controller: aaveManageVault.address,
       nextCollateralPrice: aaveManageVault.context.collateralPrice || zero,
-      token: aaveManageVault.context.collateralToken,
+      token: aaveManageVault.context.tokens.collateral,
     }),
     [aaveManageVault],
   )

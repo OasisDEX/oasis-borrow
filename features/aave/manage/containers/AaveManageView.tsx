@@ -76,8 +76,10 @@ function AaveManageContainer({
     return null
   }
 
-  const { collateralToken, token } = state.context
-  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, token)
+  const {
+    tokens: { collateral: collateralToken, debt: debtToken },
+  } = state.context
+  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
 
   return (
     <AaveAutomationContext

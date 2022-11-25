@@ -11,23 +11,23 @@ import { formatAmount, formatFiatBalance } from '../../../../../helpers/formatte
 
 interface BuyingTokenAmountProps {
   transactionParameters: IPositionTransition
-  collateralToken: string
+  tokens: { collateral: string }
   collateralPrice?: BigNumber
 }
 
 export function TransactionTokenAmount({
   transactionParameters,
-  collateralToken,
+  tokens,
   collateralPrice,
 }: BuyingTokenAmountProps) {
   const { t } = useTranslation()
   const isBuyingCollateral =
-    transactionParameters.simulation.swap.targetToken.symbol === collateralToken
+    transactionParameters.simulation.swap.targetToken.symbol === tokens.collateral
 
   const collateralMovement = isBuyingCollateral
     ? transactionParameters.simulation.swap.toTokenAmount
     : transactionParameters.simulation.swap.fromTokenAmount
-  const amount = amountFromWei(collateralMovement, collateralToken)
+  const amount = amountFromWei(collateralMovement, tokens.collateral)
 
   const labelKey = isBuyingCollateral ? 'vault-changes.buying-token' : 'vault-changes.selling-token'
 
@@ -35,11 +35,11 @@ export function TransactionTokenAmount({
 
   return (
     <VaultChangesInformationItem
-      label={t(labelKey, { token: collateralToken })}
+      label={t(labelKey, { token: tokens.collateral })}
       value={
         <Flex>
           <Text>
-            {formatAmount(amount, collateralToken)} {collateralToken}
+            {formatAmount(amount, tokens.collateral)} {tokens.collateral}
             {` `}
             <Text as="span" sx={{ color: 'neutral80' }}>
               {price ? `$${formatFiatBalance(price)}` : <AppSpinner />}

@@ -5,7 +5,7 @@ const reserveNamesDictionary = Object.fromEntries(
   Object.entries(mainnet).map((mainnetEntry) => mainnetEntry.reverse()),
 )
 
-type AaveUserConfigurationResult = {
+export type AaveUserConfigurationResult = {
   collateral: boolean
   borrowed: boolean
   asset: string
@@ -15,12 +15,21 @@ type AaveUserConfigurationResult = {
 export function createAaveUserConfiguration(
   aaveUserConfiguration?: string[],
   aaveReserveList?: string[],
+  tokensDictionary: any = reserveNamesDictionary,
 ): AaveUserConfigurationResult[] {
-  // https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getuserconfiguration
+  // merges getreserveslist and getuserconfiguration
   if (!aaveUserConfiguration?.length || !aaveReserveList?.length) return []
 
+  // https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getuserconfiguration
+  let binaryString = String(new BigNumber(aaveUserConfiguration[0]).toString(2))
+
+  // aave does not pad this binary string
+  while (binaryString.length < aaveReserveList.length * 2) {
+    binaryString = '0' + binaryString
+  }
+
   return (
-    String(new BigNumber(aaveUserConfiguration[0]).toString(2))
+    binaryString
       .match(/.{1,2}/g)
       ?.reverse() // reverse, cause we need to start from the end
       .map(
@@ -28,11 +37,11 @@ export function createAaveUserConfiguration(
           [collateral, borrowed],
           reserveIndex, // collateral, borrowed are string '0' or '1'
         ) =>
-          reserveNamesDictionary[aaveReserveList[reserveIndex]] && {
+          tokensDictionary[aaveReserveList[reserveIndex]] && {
             collateral: !!Number(collateral),
             borrowed: !!Number(borrowed),
             asset: aaveReserveList[reserveIndex],
-            assetName: reserveNamesDictionary[aaveReserveList[reserveIndex]],
+            assetName: tokensDictionary[aaveReserveList[reserveIndex]],
           },
       )
       .filter(Boolean) || []

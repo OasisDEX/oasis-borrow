@@ -16,8 +16,7 @@ function setupManageAaveStateContext({
 }) {
   const stateMachine = useInterpret(
     machine.withContext({
-      token: strategy.tokens.debt,
-      collateralToken: strategy.tokens.collateral,
+      tokens: strategy.tokens,
       currentStep: 1,
       totalSteps: 3,
       strategyConfig: strategy,

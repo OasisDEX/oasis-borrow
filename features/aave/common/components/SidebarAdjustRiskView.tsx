@@ -113,7 +113,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
 
     const collateralToken = state.context.strategyInfo?.collateralToken
 
-    const debtToken = state.context.token
+    const debtToken = state.context.tokens.debt
 
     const priceMovementUntilLiquidation = one.minus(one.div(healthFactor || zero)).times(100)
 

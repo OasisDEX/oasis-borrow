@@ -37,8 +37,11 @@ export type BaseAaveEvent =
 
 export interface BaseAaveContext {
   userInput: UserInput
-  token: string
-  collateralToken: string
+  tokens: {
+    collateral: string
+    debt: string
+    deposit: string
+  }
   currentPosition?: IPosition
 
   currentStep: number
@@ -72,7 +75,7 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
     kind: TxMetaKind.operationExecutor,
     calls: context.strategy!.transaction.calls as any,
     operationName: context.operationName!,
-    token: context.token,
+    token: context.tokens.deposit,
     proxyAddress: context.connectedProxyAddress!,
     amount: context.userInput.amount,
   }

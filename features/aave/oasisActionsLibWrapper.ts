@@ -37,6 +37,7 @@ export interface OpenAaveParameters {
   amount: BigNumber
   collateralToken: string
   debtToken: string
+  depositToken: string
   riskRatio: IRiskRatio
   slippage: BigNumber
   proxyAddress: string
@@ -101,11 +102,14 @@ export async function getOpenAaveParameters({
   amount,
   collateralToken,
   debtToken,
+  depositToken,
   riskRatio,
   slippage,
   proxyAddress,
 }: OpenAaveParameters): Promise<OasisActionResult> {
   try {
+    console.log(`collateralToken ${collateralToken}`)
+    console.log(`debtToken ${debtToken}`)
     checkContext(context, 'open position')
 
     const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
@@ -117,7 +121,7 @@ export async function getOpenAaveParameters({
 
     const _debtToken = {
       symbol: debtToken as AAVETokens,
-      precision: getToken(collateralToken).precision,
+      precision: getToken(debtToken).precision,
     }
 
     const currentPosition = await strategies.aave.view(
@@ -128,15 +132,27 @@ export async function getOpenAaveParameters({
       },
       { addresses: getAddressesFromContext(context), provider: provider },
     )
-    const debtInWei = amountToWei(amount, debtToken)
+
+    let depositedByUser: { collateralInWei?: BigNumber; debtInWei?: BigNumber }
+
+    if (depositToken === debtToken) {
+      depositedByUser = {
+        debtInWei: amountToWei(amount, debtToken),
+      }
+    } else if (depositToken === collateralToken) {
+      depositedByUser = {
+        collateralInWei: amountToWei(amount, collateralToken),
+      }
+    } else {
+      throw new Error('Deposit token is not collateral or debt token')
+    }
+
     const stratArgs = {
       slippage,
       multiple: riskRatio.multiple,
       debtToken: _debtToken,
       collateralToken: _collateralToken,
-      depositedByUser: {
-        debtInWei: debtInWei,
-      },
+      depositedByUser,
     }
 
     const stratDeps = {
@@ -148,8 +164,11 @@ export async function getOpenAaveParameters({
       user: context.account,
     }
 
-    const strategy = await strategies.aave.open(stratArgs, stratDeps)
+    recursiveLog(stratArgs, 'stratArgs')
+    recursiveLog(stratDeps, 'stratDeps')
 
+    const strategy = await strategies.aave.open(stratArgs, stratDeps)
+    // recursiveLog(strategy, 'strategy return')
     return {
       strategy,
       operationName: strategy.transaction.operationName,

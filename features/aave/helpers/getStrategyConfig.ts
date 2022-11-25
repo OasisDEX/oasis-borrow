@@ -5,6 +5,7 @@ import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendin
 import { StrategyConfig } from '../common/StrategyConfigTypes'
 import { strategies } from '../strategyConfig'
 import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
+import { recursiveLog } from '../../../helpers/recursiveLog'
 
 export function getStrategyConfig$(
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -22,6 +23,8 @@ export function getStrategyConfig$(
       )
     }),
     map(([aaveUserConfiguration, aaveReservesList]) => {
+      recursiveLog(aaveUserConfiguration, 'aaveUserConfiguration')
+      recursiveLog(aaveReservesList, 'aaveReservesList')
       return createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)
     }),
     map((aaveUserConfiguration) => {
