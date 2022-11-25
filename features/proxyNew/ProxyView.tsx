@@ -117,7 +117,7 @@ function ProxyRunningView(props: { steps: [number, number] }) {
 }
 export function ProxyView({ proxyMachine, steps }: ProxyViewProps) {
   const [state, send] = useActor(proxyMachine)
-
+  console.log('state', state)
   switch (true) {
     case state.matches('proxyIdle'):
     case state.matches('proxyWaitingForConfirmation'):
