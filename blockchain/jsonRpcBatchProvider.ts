@@ -1,9 +1,6 @@
 import { deepCopy } from '@ethersproject/properties'
-import { Networkish } from '@ethersproject/providers'
 import { fetchJson } from '@ethersproject/web'
 import { providers } from 'ethers'
-import { ConnectionInfo } from 'ethers/lib/utils'
-import { uniqueId } from 'lodash'
 
 // Experimental
 type PendingBatch = Array<{
