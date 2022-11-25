@@ -104,6 +104,7 @@ export async function getOpenAaveParameters({
   slippage,
   proxyAddress,
 }: OpenAaveParameters): Promise<OasisActionResult> {
+  const debtToken = token
   try {
     checkContext(context, 'open position')
 
@@ -115,7 +116,7 @@ export async function getOpenAaveParameters({
     }
 
     const _debtToken = {
-      symbol: token as AAVETokens,
+      symbol: debtToken as AAVETokens,
       precision: 18,
     }
 
