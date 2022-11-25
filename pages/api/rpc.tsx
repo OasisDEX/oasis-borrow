@@ -41,6 +41,12 @@ async function makeCall(network: string, calls: any[]) {
   const response = await axios.post(getRpcNode(network), calls)
   return response.data
 }
+
+interface CallWithHash {
+  hash: string
+  call: any
+}
+
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
@@ -64,24 +70,25 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     if (calls.length === 0) {
       return
     }
-    const hashedCalls = calls.map((call) =>
-      ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${call[0]}${call[1]}`)),
+
+    const callsWithHash: CallWithHash[] = calls.map((call) => {
+      return {
+        call,
+        hash: ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${call[0]}${call[1]}`)),
+      }
+    })
+
+    const dedupedCalls = callsWithHash.filter(
+      (call, index) => callsWithHash.map((call) => call.hash).indexOf(call.hash) === index,
     )
 
-    const dedupedCalls = calls.filter(
-      (call, index) =>
-        hashedCalls.indexOf(
-          ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${call[0]}${call[1]}`)),
-        ) === index,
+    mappedCalls = callsWithHash.map((item) =>
+      dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
 
-    mappedCalls = hashedCalls.map((item) =>
-      dedupedCalls
-        .map((call) => ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`${call[0]}${call[1]}`)))
-        .indexOf(item),
+    const multicallTx = await multicall.populateTransaction.aggregate(
+      dedupedCalls.map((call) => call.call),
     )
-
-    const multicallTx = await multicall.populateTransaction.aggregate(dedupedCalls)
     try {
       const multicallResponse = await provider.call(multicallTx)
 
@@ -95,12 +102,12 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         jsonrpc: entry.jsonrpc,
         result: data[index],
       }))
+      finalResponse = mappedCalls!.map((call) => (call = finalResponse[call]))
     } catch {
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     }
   } else {
     finalResponse = await makeCall(req.query.network.toString(), req.body)
-    finalResponse = mappedCalls!.map((call) => (call = finalResponse[call]))
   }
 
   return res.status(200).send(finalResponse)
