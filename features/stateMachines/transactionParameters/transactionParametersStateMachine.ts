@@ -13,8 +13,8 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 const { assign } = actions
 
 export interface BaseTransactionParameters {
-  token: string
-  amount: BigNumber
+  token?: string
+  amount?: BigNumber
   proxyAddress: string
 }
 
