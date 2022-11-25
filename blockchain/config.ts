@@ -62,6 +62,20 @@ const mainnetCacheUrl =
   getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
   'https://oazo-bcache.new.oasis.app/api/v1'
 
+function getRpc(network: string): string {
+  if (process.env.APP_FULL_DOMAIN) {
+    return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}`
+  }
+  try {
+    return `${window?.location.origin}/api/rpc?network=${network}`
+  } catch {
+    return `https://${network}.infura.io/v3/${infuraProjectId}`
+  }
+}
+
+const mainnetRpc = getRpc('mainnet')
+const goerliRpc = getRpc('goerli')
+
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
 export const cropJoinIlks = ['CRVV1ETHSTETH-A']
@@ -136,7 +150,7 @@ const protoMain = {
   id: '1',
   name: 'main',
   label: 'Mainnet',
-  infuraUrl: `https://mainnet.infura.io/v3/${infuraProjectId}`,
+  infuraUrl: mainnetRpc,
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
   openVaultSafeConfirmations: 6,
@@ -341,7 +355,7 @@ const goerli: NetworkConfig = {
   id: '5',
   name: 'goerli',
   label: 'goerli',
-  infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
+  infuraUrl: goerliRpc,
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
