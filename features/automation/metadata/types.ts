@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AutomationContext } from 'components/AutomationContextProvider'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import {
@@ -10,7 +9,12 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
+export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
+
+export type GetAutomationMetadata<T> = (context: ContextWithoutMetadata) => T
+
 type AutomationStateValueMethod<T, V = BigNumber> = (state: T) => V
+type AutomationCallbackMethod<T> = (params: T) => void
 
 export type AutomationValidationMethodParams<T = {}> = {
   context: ContextWithoutMetadata
@@ -48,10 +52,13 @@ export interface StopLossMetadataDetailCards {
   cardsConfig?: StopLossDetailsConfig
 }
 
+export interface AutoBSMetadata {}
+export interface AutoTakeProfitMetadata {}
+export interface ConstantMultipleMetadata {}
 export interface StopLossMetadata {
   callbacks: {
-    onCloseToChange?: (value: string) => void
-    onSliderChange?: (value: BigNumber) => void
+    onCloseToChange?: AutomationCallbackMethod<{ optionName: string }>
+    onSliderChange?: AutomationCallbackMethod<{ value: BigNumber }>
   }
   detailCards?: StopLossMetadataDetailCards
   methods: {
@@ -84,40 +91,15 @@ export interface StopLossMetadata {
   }
 }
 
-export interface AutoBSMetadata {}
-export interface TakeProfitMetadata {}
-export interface ConstantMultipleMetadata {}
-
-export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
-
-export type GetStopLossMetadata = (context: ContextWithoutMetadata) => StopLossMetadata
-
-export type GetTakeProfitMetadata = (context: ContextWithoutMetadata) => TakeProfitMetadata
-
-export type GetAutoBSMetadata = (context: ContextWithoutMetadata) => AutoBSMetadata
-export type GetAutoSellOrBuyMetadata = (
-  type: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY,
-) => GetAutoBSMetadata
-
-export type GetConstantMultipleMetadata = (
-  context: ContextWithoutMetadata,
-) => ConstantMultipleMetadata
-
-export interface AutomationDefinitionMetadata {
-  stopLoss?: GetStopLossMetadata
-  autoSell?: GetAutoBSMetadata
-  autoBuy?: GetAutoBSMetadata
-  constantMultiple?: GetConstantMultipleMetadata
-  takeProfit?: GetTakeProfitMetadata
-}
-
 export interface AutomationMetadata {
-  stopLoss: GetStopLossMetadata
-  autoSell: GetAutoBSMetadata
-  autoBuy: GetAutoBSMetadata
-  constantMultiple: GetConstantMultipleMetadata
-  takeProfit: GetTakeProfitMetadata
+  autoBuy: GetAutomationMetadata<AutoBSMetadata>
+  autoSell: GetAutomationMetadata<AutoBSMetadata>
+  autoTakeProfit: GetAutomationMetadata<AutoTakeProfitMetadata>
+  constantMultiple: GetAutomationMetadata<ConstantMultipleMetadata>
+  stopLoss: GetAutomationMetadata<StopLossMetadata>
 }
+
+export type AutomationDefinitionMetadata = Partial<AutomationMetadata>
 
 export interface OverwriteTriggersDefaults {
   stopLossTriggerData?: StopLossTriggerData
