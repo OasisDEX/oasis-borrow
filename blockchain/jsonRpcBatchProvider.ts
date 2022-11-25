@@ -63,7 +63,6 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
           request: deepCopy(request),
           provider: this,
         })
-        console.log('aggregator', batch ? batch.length : 0)
         return fetchJson(this.connection, JSON.stringify(request)).then(
           (result) => {
             this.emit('debug', {
