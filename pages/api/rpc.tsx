@@ -50,10 +50,7 @@ interface CallWithHash {
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
-  if (
-    Array.isArray(req.body) &&
-    req.body.every((call) => call.method === 'eth_call')
-  ) {
+  if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const rpcNode = getRpcNode(req.query.network.toString())
     const provider = new ethers.providers.JsonRpcProvider(rpcNode)
     const multicall = new ethers.Contract(

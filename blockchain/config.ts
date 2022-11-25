@@ -73,8 +73,8 @@ function getRpc(network: string): string {
   }
 }
 
-const mainnetRpc = getRpc("mainnet")
-const goerliRpc = getRpc("goerli")
+const mainnetRpc = getRpc('mainnet')
+const goerliRpc = getRpc('goerli')
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
