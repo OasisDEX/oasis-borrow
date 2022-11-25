@@ -131,7 +131,9 @@ export function setupAaveContext({
   )
 
   const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices)
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices, (args) =>
+    args.tokens.join(''),
+  )
 
   const STETHReserveData$ = getAaveReserveData$({ token: 'STETH' })
   const ETHReserveData$ = getAaveReserveData$({ token: 'ETH' })
