@@ -1,6 +1,9 @@
 import { deepCopy } from '@ethersproject/properties'
+import { Networkish } from '@ethersproject/providers'
 import { fetchJson } from '@ethersproject/web'
 import { providers } from 'ethers'
+import { ConnectionInfo } from 'ethers/lib/utils'
+import { uniqueId } from 'lodash'
 
 // Experimental
 type PendingBatch = Array<{
@@ -12,7 +15,10 @@ type PendingBatch = Array<{
 export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
   _pendingBatchAggregator: NodeJS.Timer | null = null
   _pendingBatch: PendingBatch | null = null
-
+  constructor(url?: ConnectionInfo | string, network?: Networkish) {
+    super(url, network)
+    console.log('provider', uniqueId().toString())
+  }
   send(method: string, params: Array<any>): Promise<any> {
     const request = {
       method: method,
@@ -57,7 +63,7 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
           request: deepCopy(request),
           provider: this,
         })
-
+        console.log('aggregator', batch ? batch.length : 0)
         return fetchJson(this.connection, JSON.stringify(request)).then(
           (result) => {
             this.emit('debug', {
