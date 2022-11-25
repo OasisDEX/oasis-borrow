@@ -501,7 +501,6 @@ export function setupAppContext() {
   combineLatest(account$, connectedContext$)
     .pipe(
       mergeMap(([account, network]) => {
-        console.log('account network', network.name, account?.toLowerCase())
         return of({
           networkName: network.name,
           connectionKind: network.connectionKind,

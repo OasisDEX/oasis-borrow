@@ -7,6 +7,8 @@ function getRpcNode(network: string) {
   switch (network) {
     case 'mainnet':
       return `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    case 'goerli':
+      return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     default:
       throw new Error('unsupported network')
   }

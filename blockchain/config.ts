@@ -62,6 +62,7 @@ const mainnetCacheUrl =
   getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
   'https://oazo-bcache.new.oasis.app/api/v1'
 const mainnetRpc = `${process.env.ORIGIN || window.location.origin}/api/rpc?network=mainnet`
+const goerliRpc = `${process.env.ORIGIN || window.location.origin}/api/rpc?network=goerli`
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
@@ -342,7 +343,7 @@ const goerli: NetworkConfig = {
   id: '5',
   name: 'goerli',
   label: 'goerli',
-  infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
+  infuraUrl: goerliRpc,
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
   openVaultSafeConfirmations: 6,
