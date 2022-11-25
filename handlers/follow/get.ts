@@ -14,6 +14,7 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
   const followedVaults = await selectVaultsFollowedByAddress(prisma, {
     address,
   })
+  console.log('followedVaults', followedVaults)
 
   if (followedVaults === undefined) {
     return res.status(404).send('Not Found')
