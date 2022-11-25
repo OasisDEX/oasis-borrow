@@ -1,16 +1,16 @@
 import {
+  AutoBSMetadata,
   AutomationDefinitionMetadata,
-  AutomationMetadata,
+  AutoTakeProfitMetadata,
+  ConstantMultipleMetadata,
   ContextWithoutMetadata,
+  GetAutomationMetadata,
+  StopLossMetadata,
 } from 'features/automation/metadata/types'
 
-const defaultMetadata = {
-  autoBuy: (_) => ({}),
-  autoSell: (_) => ({}),
-  autoTakeProfit: (_) => ({}),
-  constantMultiple: (_) => ({}),
-  stopLoss: (_) => ({}),
-} as AutomationMetadata
+function getDefaultMetadataWithDefault<T>(featureFn?: GetAutomationMetadata<T>) {
+  return featureFn || (((() => ({})) as unknown) as GetAutomationMetadata<T>)
+}
 
 export function initializeMetadata({
   automationContext,
@@ -21,17 +21,15 @@ export function initializeMetadata({
 }) {
   const { autoTakeProfit, autoBuy, autoSell, constantMultiple, stopLoss } = metadata
 
-  const autoBuyMethod = autoBuy || defaultMetadata.autoBuy
-  const autoSellMethod = autoSell || defaultMetadata.autoSell
-  const autoTakeProfitMethod = autoTakeProfit || defaultMetadata.autoTakeProfit
-  const constantMultipleMethod = constantMultiple || defaultMetadata.constantMultiple
-  const stopLossMethod = stopLoss || defaultMetadata.stopLoss
-
   return {
-    autoBuy: autoBuyMethod(automationContext),
-    autoSell: autoSellMethod(automationContext),
-    autoTakeProfit: autoTakeProfitMethod(automationContext),
-    constantMultiple: constantMultipleMethod(automationContext),
-    stopLoss: stopLossMethod(automationContext),
+    autoBuy: getDefaultMetadataWithDefault<AutoBSMetadata>(autoBuy)(automationContext),
+    autoSell: getDefaultMetadataWithDefault<AutoBSMetadata>(autoSell)(automationContext),
+    autoTakeProfit: getDefaultMetadataWithDefault<AutoTakeProfitMetadata>(autoTakeProfit)(
+      automationContext,
+    ),
+    constantMultiple: getDefaultMetadataWithDefault<ConstantMultipleMetadata>(constantMultiple)(
+      automationContext,
+    ),
+    stopLoss: getDefaultMetadataWithDefault<StopLossMetadata>(stopLoss)(automationContext),
   }
 }

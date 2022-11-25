@@ -1,4 +1,4 @@
-import { GetAutoSellOrBuyMetadata } from 'features/automation/metadata/types'
+import { AutoBSMetadata, GetAutomationMetadata } from 'features/automation/metadata/types'
 
 // eslint-disable-next-line func-style
-export const makerAutoBSMetadata: GetAutoSellOrBuyMetadata = (_) => (_) => ({})
+export const makerAutoBSMetadata: GetAutomationMetadata<AutoBSMetadata> = () => ({})

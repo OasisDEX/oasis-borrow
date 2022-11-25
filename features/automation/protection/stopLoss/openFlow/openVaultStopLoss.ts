@@ -187,7 +187,6 @@ export function getDataForStopLoss(
       values: {
         collateralDuringLiquidation,
         initialSlRatioWhenTriggerDoesntExist: zero,
-
         resetData: {} as StopLossResetData,
         sliderMax,
         sliderMin,

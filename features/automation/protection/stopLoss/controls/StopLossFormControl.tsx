@@ -35,7 +35,9 @@ export function StopLossFormControl({
     environmentData: { canInteract },
     positionData: { id, debt, owner },
     metadata: {
-      stopLoss: { resetData, initialSlRatioWhenTriggerDoesntExist },
+      stopLoss: {
+        values: { initialSlRatioWhenTriggerDoesntExist, resetData },
+      },
     },
   } = useAutomationContext()
 
