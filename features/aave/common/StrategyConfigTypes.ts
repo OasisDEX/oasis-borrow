@@ -20,6 +20,7 @@ export interface StrategyConfig {
   tokens: {
     collateral: string
     debt: string
+    deposit: string
   }
   riskRatios: {
     minimum: IRiskRatio

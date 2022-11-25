@@ -14,6 +14,7 @@ import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
 import { recursiveLog } from '../../helpers/recursiveLog'
+import { getToken } from '../../blockchain/tokensMetadata'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -108,12 +109,12 @@ export async function getOpenAaveParameters({
 
     const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-    const collateralToken = {
+    const _collateralToken = {
       symbol: 'STETH' as AAVETokens,
       precision: 18,
     }
 
-    const debtToken = {
+    const _debtToken = {
       symbol: token as AAVETokens,
       precision: 18,
     }
@@ -121,8 +122,8 @@ export async function getOpenAaveParameters({
     const currentPosition = await strategies.aave.view(
       {
         proxy: proxyAddress,
-        collateralToken,
-        debtToken,
+        collateralToken: _collateralToken,
+        debtToken: _debtToken,
       },
       { addresses: getAddressesFromContext(context), provider: provider },
     )
@@ -130,8 +131,8 @@ export async function getOpenAaveParameters({
     const stratArgs = {
       slippage,
       multiple: riskRatio.multiple,
-      debtToken,
-      collateralToken,
+      debtToken: _debtToken,
+      collateralToken: _collateralToken,
       depositedByUser: {
         debtInWei: debtInWei,
       },
