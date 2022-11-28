@@ -7,7 +7,9 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -68,7 +70,9 @@ export function SidebarCancelStopLossEditingStage({
   return (
     <Grid>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('protection.cancel-downside-protection-desc')}
+        {t('automation.cancel-summary-description', {
+          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.STOP_LOSS]),
+        })}
       </Text>
       <AutomationValidationMessages messages={errors} type="error" />
       <AutomationValidationMessages messages={warnings} type="warning" />

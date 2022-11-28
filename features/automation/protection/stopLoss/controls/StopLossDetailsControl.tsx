@@ -43,12 +43,14 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
     },
     metadata: {
       stopLoss: {
-        getMaxToken,
-        collateralDuringLiquidation,
-        triggerMaxToken,
         detailCards,
-        ratioParam,
-        initialSlRatioWhenTriggerDoesntExist,
+        methods: { getMaxToken },
+        translations: { ratioParam },
+        values: {
+          collateralDuringLiquidation,
+          initialSlRatioWhenTriggerDoesntExist,
+          triggerMaxToken,
+        },
       },
     },
   } = useAutomationContext()

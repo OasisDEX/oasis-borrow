@@ -13,7 +13,11 @@ import {
   isStopLossTriggerCloseToConstantMultipleSellTrigger,
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
-import { GetStopLossMetadata, StopLossDetailCards } from 'features/automation/metadata/types'
+import {
+  GetAutomationMetadata,
+  StopLossDetailCards,
+  StopLossMetadata,
+} from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getMaxToken,
@@ -24,7 +28,7 @@ import { StopLossResetData } from 'features/automation/protection/stopLoss/state
 import { formatPercent } from 'helpers/formatters/format'
 
 // eslint-disable-next-line func-style
-export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
+export const makerStopLossMetaData: GetAutomationMetadata<StopLossMetadata> = (context) => {
   const {
     autoSellTriggerData,
     stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel },
@@ -86,7 +90,7 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
   })
 
   return {
-    collateralDuringLiquidation,
+    callbacks: {},
     detailCards: {
       cardsSet: [
         StopLossDetailCards.STOP_LOSS_LEVEL,
@@ -104,38 +108,39 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
         },
       },
     },
-    getExecutionPrice: ({ stopLossLevel }) =>
-      collateralPriceAtRatio({
-        colRatio: stopLossLevel.div(100),
-        collateral: lockedCollateral,
-        vaultDebt: debt,
-      }),
-    getMaxToken: ({ stopLossLevel }) =>
-      getMaxToken({
-        stopLossLevel,
-        lockedCollateral,
-        liquidationRatio,
-        liquidationPrice,
-        debt,
-      }),
-    getRightBoundary: ({ stopLossLevel }) =>
-      stopLossLevel
-        .dividedBy(100)
-        .multipliedBy(context.environmentData.nextCollateralPrice)
-        .dividedBy(nextPositionRatio),
-    getSliderPercentageFill: ({ stopLossLevel }) =>
-      getSliderPercentageFill({
-        value: stopLossLevel,
-        min: sliderMin,
-        max: sliderMax,
-      }),
-    initialSlRatioWhenTriggerDoesntExist,
-    ratioParam: 'system.collateral-ratio',
-    resetData,
-    sliderMax,
-    sliderMin,
-    sliderStep: 1,
-    triggerMaxToken,
+    methods: {
+      getExecutionPrice: ({ stopLossLevel }) =>
+        collateralPriceAtRatio({
+          colRatio: stopLossLevel.div(100),
+          collateral: lockedCollateral,
+          vaultDebt: debt,
+        }),
+      getMaxToken: ({ stopLossLevel }) =>
+        getMaxToken({
+          stopLossLevel,
+          lockedCollateral,
+          liquidationRatio,
+          liquidationPrice,
+          debt,
+        }),
+      getRightBoundary: ({ stopLossLevel }) =>
+        stopLossLevel
+          .dividedBy(100)
+          .multipliedBy(context.environmentData.nextCollateralPrice)
+          .dividedBy(nextPositionRatio),
+      getSliderPercentageFill: ({ stopLossLevel }) =>
+        getSliderPercentageFill({
+          value: stopLossLevel,
+          min: sliderMin,
+          max: sliderMax,
+        }),
+    },
+    settings: {
+      sliderStep: 1,
+    },
+    translations: {
+      ratioParam: 'system.collateral-ratio',
+    },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({
         hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
@@ -168,6 +173,14 @@ export const makerStopLossMetaData: GetStopLossMetadata = (context) => {
       }),
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
+    },
+    values: {
+      collateralDuringLiquidation,
+      initialSlRatioWhenTriggerDoesntExist,
+      resetData,
+      sliderMax,
+      sliderMin,
+      triggerMaxToken,
     },
   }
 }

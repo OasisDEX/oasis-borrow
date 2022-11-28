@@ -49,26 +49,26 @@ export interface AutomationEnvironmentData {
 }
 
 export interface AutomationCommonData {
+  controller?: string
   nextCollateralPrice: BigNumber
   token: string
-  controller?: string
 }
 
 export interface AutomationPositionData {
-  positionRatio: BigNumber
-  nextPositionRatio: BigNumber
   debt: BigNumber
   debtFloor: BigNumber
   debtOffset: BigNumber
+  debtToken: string
   id: BigNumber
   ilk: string
   liquidationPenalty: BigNumber
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
   lockedCollateral: BigNumber
+  nextPositionRatio: BigNumber
   owner: string
+  positionRatio: BigNumber
   token: string
-  debtToken: string
   vaultType: VaultType
 }
 
@@ -78,10 +78,10 @@ export interface AutomationContext {
   autoSellTriggerData: AutoBSTriggerData
   autoTakeProfitTriggerData: AutoTakeProfitTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
-  stopLossTriggerData: StopLossTriggerData
   environmentData: AutomationEnvironmentData
   positionData: AutomationPositionData
   protocol: VaultProtocol
+  stopLossTriggerData: StopLossTriggerData
   metadata: {
     stopLoss: StopLossMetadata
   }
@@ -106,12 +106,12 @@ export function useAutomationContext(): AutomationContext {
 const defaultAutomationTriggersData: TriggersData = { isAutomationEnabled: false, triggers: [] }
 
 const automationContextInitialState = {
+  automationTriggersData: defaultAutomationTriggersData,
   autoBuyTriggerData: defaultAutoBSData,
   autoSellTriggerData: defaultAutoBSData,
-  stopLossTriggerData: defaultStopLossData,
-  constantMultipleTriggerData: defaultConstantMultipleData,
   autoTakeProfitTriggerData: defaultAutoTakeProfitData,
-  automationTriggersData: defaultAutomationTriggersData,
+  constantMultipleTriggerData: defaultConstantMultipleData,
+  stopLossTriggerData: defaultStopLossData,
 }
 
 export interface AutomationContextProviderProps {
@@ -171,7 +171,10 @@ export function AutomationContextProvider({
     protocol,
   }
 
-  const initMetadata = useMemo(() => initializeMetadata(metadata, initialAutoContext), [])
+  const initMetadata = useMemo(
+    () => initializeMetadata({ automationContext: initialAutoContext, metadata }),
+    [],
+  )
 
   const [autoContext, setAutoContext] = useState<AutomationContext>({
     ...initialAutoContext,
@@ -247,7 +250,7 @@ export function AutomationContextProvider({
     setAutoContext((prev) => ({
       ...prev,
       ...update,
-      metadata: initializeMetadata(metadata, { ...prev, ...update }),
+      metadata: initializeMetadata({ automationContext: { ...prev, ...update }, metadata }),
     }))
   }, [automationTriggersData, environmentData, positionData])
 

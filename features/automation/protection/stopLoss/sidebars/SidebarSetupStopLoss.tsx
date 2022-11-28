@@ -78,7 +78,7 @@ export function SidebarSetupStopLoss({
     protocol,
     metadata: {
       stopLoss: {
-        getExecutionPrice,
+        methods: { getExecutionPrice },
         validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
       },
     },

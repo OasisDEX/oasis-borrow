@@ -8,7 +8,7 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { GetStopLossMetadata } from 'features/automation/metadata/types'
+import { GetAutomationMetadata, StopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getMaxToken,
@@ -160,27 +160,37 @@ export function getDataForStopLoss(
   })
 
   // eslint-disable-next-line func-style
-  const stopLossMetadata: GetStopLossMetadata = (_) => {
+  const stopLossMetadata: GetAutomationMetadata<StopLossMetadata> = (_) => {
     return {
-      collateralDuringLiquidation,
-      getExecutionPrice: () => executionPrice,
-      getMaxToken: () => maxToken,
-      getRightBoundary: () => afterNewLiquidationPrice,
-      getSliderPercentageFill: () => sliderPercentageFill,
-      initialSlRatioWhenTriggerDoesntExist: zero,
-      onCloseToChange: (optionName: string) => setStopLossCloseType(optionName as CloseVaultTo),
-      onSliderChange: (value: BigNumber) => setStopLossLevel(value),
-      ratioParam: 'system.collateral-ratio',
-      resetData: {} as StopLossResetData,
-      sliderMax,
-      sliderMin,
-      sliderStep: 1,
-      triggerMaxToken: zero,
+      callbacks: {
+        onCloseToChange: ({ optionName }) => setStopLossCloseType(optionName as CloseVaultTo),
+        onSliderChange: ({ value }) => setStopLossLevel(value),
+      },
+      methods: {
+        getExecutionPrice: () => executionPrice,
+        getMaxToken: () => maxToken,
+        getRightBoundary: () => afterNewLiquidationPrice,
+        getSliderPercentageFill: () => sliderPercentageFill,
+      },
+      settings: {
+        sliderStep: 1,
+      },
+      translations: {
+        ratioParam: 'system.collateral-ratio',
+      },
       validation: {
         getAddErrors: () => ({}),
         getAddWarnings: () => ({}),
         cancelErrors: [],
         cancelWarnings: [],
+      },
+      values: {
+        collateralDuringLiquidation,
+        initialSlRatioWhenTriggerDoesntExist: zero,
+        resetData: {} as StopLossResetData,
+        sliderMax,
+        sliderMin,
+        triggerMaxToken: zero,
       },
     }
   }
