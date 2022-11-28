@@ -217,7 +217,9 @@ export function SidebarAdjustStopLossEditingStage({
             />
           )}
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('protection.set-downside-protection-desc', { ratioParam: t(ratioParamTranslationKey) })}{' '}
+            {t('protection.set-downside-protection-desc', {
+              ratioParam: t(ratioParamTranslationKey),
+            })}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
