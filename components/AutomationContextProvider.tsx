@@ -240,23 +240,25 @@ export function AutomationContextProvider({
       automationTriggersData || automationTriggersDataInitialState
     const update = {
       automationTriggersData: resolvedAutomationTriggersData,
-      autoBuyTriggerData: extractAutoBSData({
-        triggersData: resolvedAutomationTriggersData,
-        triggerType: TriggerType.BasicBuy,
-      }),
-      autoSellTriggerData: extractAutoBSData({
-        triggersData: resolvedAutomationTriggersData,
-        triggerType: TriggerType.BasicSell,
-      }),
-      autoTakeProfitTriggerData: extractAutoTakeProfitData(resolvedAutomationTriggersData),
-      constantMultipleTriggerData: extractConstantMultipleData(resolvedAutomationTriggersData),
-      stopLossTriggerData: extractStopLossData(
-        resolvedAutomationTriggersData,
-        overwriteTriggersDefaults?.stopLossTriggerData,
-      ),
-      protocol,
       environmentData,
       positionData,
+      protocol,
+      triggerData: {
+        autoBuyTriggerData: extractAutoBSData({
+          triggersData: resolvedAutomationTriggersData,
+          triggerType: TriggerType.BasicBuy,
+        }),
+        autoSellTriggerData: extractAutoBSData({
+          triggersData: resolvedAutomationTriggersData,
+          triggerType: TriggerType.BasicSell,
+        }),
+        autoTakeProfitTriggerData: extractAutoTakeProfitData(resolvedAutomationTriggersData),
+        constantMultipleTriggerData: extractConstantMultipleData(resolvedAutomationTriggersData),
+        stopLossTriggerData: extractStopLossData(
+          resolvedAutomationTriggersData,
+          overwriteTriggersDefaults?.stopLossTriggerData,
+        ),
+      },
     }
     setAutoContext((prev) => ({
       ...prev,
