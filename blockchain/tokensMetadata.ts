@@ -32,6 +32,11 @@ export interface TokenConfig {
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 
+export enum ProtocolLongNames {
+  maker = 'Maker',
+  aave = 'Aave V2',
+}
+
 export const tokens: TokenConfig[] = [
   {
     symbol: 'USDP',
