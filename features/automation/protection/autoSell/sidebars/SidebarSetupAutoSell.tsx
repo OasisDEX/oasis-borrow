@@ -193,7 +193,6 @@ export function SidebarSetupAutoSell({
                 <SidebarAutoSellCancelEditingStage
                   errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
-                  autoSellState={autoSellState}
                 />
               )}
             </>

@@ -1,6 +1,8 @@
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { CancelAutoTakeProfitInfoSection } from 'features/automation/optimization/autoTakeProfit/controls/CancelAutoTakeProfitInfoSection'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -25,7 +27,9 @@ export function SidebarAutoTakeProfitRemovalEditingStage({
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('auto-take-profit.cancel-instructions')}
+        {t('automation.cancel-summary-description', {
+          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_TAKE_PROFIT]),
+        })}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
       <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
