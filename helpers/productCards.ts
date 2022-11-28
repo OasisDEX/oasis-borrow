@@ -69,7 +69,7 @@ export type ProductLandingPagesFilter = {
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
 export type Ilk = typeof supportedIlks[number]
-export type AaveStrategy = typeof aaveStrategiesList[number]
+export type AaveStrategy = ReturnType<typeof aaveStrategiesList>[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',

@@ -37,6 +37,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       deposit: 'ETH',
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
+    product: 'earn',
     enabled: true,
   },
   'aave-multiply': {
@@ -57,10 +58,14 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       deposit: 'ETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    product: 'multiply',
     enabled: false,
   },
 } as const
 
-export const aaveStrategiesList = Object.values(strategies)
-  .filter(({ enabled }) => enabled)
-  .map((s) => s.name)
+export function aaveStrategiesList(filterProduct: StrategyConfig['product']) {
+  return Object.values(strategies)
+    .filter(({ enabled }) => enabled)
+    .filter(({ product }) => (filterProduct ? product === filterProduct : true))
+    .map((s) => s.name)
+}

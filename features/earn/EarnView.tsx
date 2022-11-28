@@ -26,7 +26,7 @@ export function EarnView() {
     productCardsData$(supportedEarnIlks),
   )
 
-  const aaveStrategiesTokens = getTokens(aaveStrategiesList)
+  const aaveStrategiesTokens = getTokens(aaveStrategiesList('earn'))
   return (
     <Grid
       sx={{

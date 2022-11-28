@@ -27,6 +27,7 @@ export interface StrategyConfig {
     minimum: IRiskRatio
     default: IRiskRatio
   }
+  product: 'multiply' | 'earn'
   enabled: boolean
 }
 
