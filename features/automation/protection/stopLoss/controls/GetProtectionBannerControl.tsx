@@ -29,7 +29,9 @@ export function GetProtectionBannerControl({
 }: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const setHash = useHash()[1]
-  const { stopLossTriggerData } = useAutomationContext()
+  const {
+    triggerData: { stopLossTriggerData },
+  } = useAutomationContext()
 
   const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
 

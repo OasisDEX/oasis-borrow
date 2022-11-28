@@ -29,9 +29,9 @@ export function AutoBuyFormControl({
 }: AutoBuyFormControlProps) {
   const [autoBuyState] = useUIChanges<AutoBSFormChange>(AUTO_BUY_FORM_CHANGE)
   const {
-    autoBuyTriggerData,
     environmentData: { canInteract },
     positionData: { id, debt, lockedCollateral, positionRatio, owner },
+    triggerData: { autoBuyTriggerData },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.AUTO_BUY

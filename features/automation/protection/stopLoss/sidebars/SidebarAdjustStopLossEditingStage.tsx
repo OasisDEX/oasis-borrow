@@ -135,9 +135,7 @@ export function SidebarAdjustStopLossEditingStage({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    stopLossTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, token, debt, positionRatio },
     metadata: {
       stopLoss: {
         callbacks: { onSliderChange, onCloseToChange },
@@ -147,6 +145,8 @@ export function SidebarAdjustStopLossEditingStage({
         values: { sliderMin, sliderMax, resetData },
       },
     },
+    positionData: { id, ilk, token, debt, positionRatio },
+    triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
   useDebouncedCallback(

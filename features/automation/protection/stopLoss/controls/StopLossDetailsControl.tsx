@@ -27,7 +27,18 @@ interface StopLossDetailsControlProps {
 export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsControlProps) {
   const { t } = useTranslation()
   const {
-    stopLossTriggerData: { isStopLossEnabled, stopLossLevel, isToCollateral },
+    metadata: {
+      stopLoss: {
+        detailCards,
+        methods: { getMaxToken },
+        translations: { ratioParam },
+        values: {
+          collateralDuringLiquidation,
+          initialSlRatioWhenTriggerDoesntExist,
+          triggerMaxToken,
+        },
+      },
+    },
     positionData: {
       positionRatio,
       nextPositionRatio,
@@ -41,17 +52,8 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       token,
       debtToken,
     },
-    metadata: {
-      stopLoss: {
-        detailCards,
-        methods: { getMaxToken },
-        translations: { ratioParam },
-        values: {
-          collateralDuringLiquidation,
-          initialSlRatioWhenTriggerDoesntExist,
-          triggerMaxToken,
-        },
-      },
+    triggerData: {
+      stopLossTriggerData: { isStopLossEnabled, stopLossLevel, isToCollateral },
     },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()

@@ -40,8 +40,8 @@ export function SidebarAutoTakeProfitRemovalEditingStage({
 
 function AutoTakeProfitInfoSectionControl() {
   const {
-    autoTakeProfitTriggerData,
     positionData: { token, debt, positionRatio },
+    triggerData: { autoTakeProfitTriggerData },
   } = useAutomationContext()
 
   return (

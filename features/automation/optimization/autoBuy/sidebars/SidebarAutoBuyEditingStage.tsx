@@ -64,9 +64,8 @@ export function SidebarAutoBuyEditingStage({
   sliderMax,
 }: SidebarAutoBuyEditingStageProps) {
   const {
-    autoBuyTriggerData,
-    stopLossTriggerData,
     positionData: { id, ilk, token, debt, debtFloor, lockedCollateral, positionRatio },
+    triggerData: { autoBuyTriggerData, stopLossTriggerData },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()

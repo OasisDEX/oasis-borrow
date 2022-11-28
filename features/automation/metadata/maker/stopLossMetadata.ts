@@ -30,9 +30,11 @@ import { formatPercent } from 'helpers/formatters/format'
 
 export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
-    autoSellTriggerData,
-    stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel },
-    constantMultipleTriggerData,
+    triggerData: {
+      autoSellTriggerData,
+      stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel },
+      constantMultipleTriggerData,
+    },
     positionData: {
       positionRatio,
       nextPositionRatio,

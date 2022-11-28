@@ -28,7 +28,9 @@ import { one } from 'helpers/zero'
 // eslint-disable-next-line func-style
 export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
-    stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
+    triggerData: {
+      stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
+    },
     positionData: {
       token,
       positionRatio,
