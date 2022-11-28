@@ -141,7 +141,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
       sliderStep: 1,
     },
     translations: {
-      ratioParam: 'system.collateral-ratio',
+      ratioParamTranslationKey: 'system.collateral-ratio',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({

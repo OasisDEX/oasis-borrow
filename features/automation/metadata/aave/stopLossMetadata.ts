@@ -135,7 +135,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       sliderStep: 1,
     },
     translations: {
-      ratioParam: 'vault-changes.loan-to-value',
+      ratioParamTranslationKey: 'vault-changes.loan-to-value',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({

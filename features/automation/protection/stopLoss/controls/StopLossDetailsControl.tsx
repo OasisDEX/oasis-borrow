@@ -31,7 +31,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       stopLossMetadata: {
         detailCards,
         methods: { getMaxToken },
-        translations: { ratioParam },
+        translations: { ratioParamTranslationKey },
         values: {
           collateralDuringLiquidation,
           initialSlRatioWhenTriggerDoesntExist,
@@ -89,7 +89,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
             initialSlRatioWhenTriggerDoesntExist,
           })}
           positionRatio={positionRatio}
-          ratioParam={ratioParam}
+          ratioParamTranslationKey={ratioParamTranslationKey}
           detailCards={detailCards}
         />
       ) : (

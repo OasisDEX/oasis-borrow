@@ -58,7 +58,7 @@ type AutomationCommonMetadata<T> = {
     sliderStep: number
   }
   translations: {
-    ratioParam: string
+    ratioParamTranslationKey: string
   }
   validation: {
     getAddErrors: AutomationMetadataValidationMethod<T>

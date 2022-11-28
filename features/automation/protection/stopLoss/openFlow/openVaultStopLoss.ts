@@ -176,7 +176,7 @@ export function getDataForStopLoss(
         sliderStep: 1,
       },
       translations: {
-        ratioParam: 'system.collateral-ratio',
+        ratioParamTranslationKey: 'system.collateral-ratio',
       },
       validation: {
         getAddErrors: () => ({}),
