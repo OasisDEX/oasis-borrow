@@ -42,12 +42,12 @@ export function DefaultVaultHeadline({
   const detailsList: VaultHeadlineProps['details'] = [
     {
       label: t('manage-vault.current-price'),
-      labelTooltip: t('manage-vault.current-price-tooltip', { token }),
+      labelTooltip: t('system.current-token-price', { token }),
       value: `$${currentPrice}`,
     },
     {
       label: t('manage-vault.next-price'),
-      labelTooltip: t('manage-vault.next-price-tooltip', { token }),
+      labelTooltip: t('system.next-token-price', { token }),
       value: `$${nextPrice}`,
       sub: [
         isNextPriceLessThanTwoMinutes

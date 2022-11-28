@@ -11,10 +11,7 @@ import { ContextConnected } from 'blockchain/network'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { setAllowance } from 'features/allowance/setAllowance'
-import {
-  DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
-  MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
-} from 'features/automation/common/consts'
+import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
 import {
   applyOpenVaultStopLoss,
   OpenVaultStopLossChanges,
@@ -128,6 +125,7 @@ export interface MutableOpenVaultState {
   allowanceAmount?: BigNumber
   stopLossSkipped: boolean
   stopLossLevel: BigNumber
+  visitedStopLossStep: boolean
   id?: BigNumber
 }
 
@@ -180,6 +178,7 @@ export interface OpenVaultStopLossSetup {
   setStopLossLevel: (level: BigNumber) => void
   stopLossCloseType: CloseVaultTo
   stopLossLevel: BigNumber
+  visitedStopLossStep: boolean
 }
 
 export type OpenVaultState = MutableOpenVaultState &
@@ -319,6 +318,7 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   generateAmount: undefined,
   stopLossSkipped: false,
   stopLossLevel: zero,
+  visitedStopLossStep: false,
 }
 
 export function createOpenVault$(
@@ -383,12 +383,9 @@ export function createOpenVault$(
                       : false
 
                     const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
-                    const stopLossSliderMin = ilkData.liquidationRatio.plus(
-                      MIX_MAX_COL_RATIO_TRIGGER_OFFSET.div(100),
-                    )
-                    const initialStopLossSelected = stopLossSliderMin
-                      .plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE)
-                      .times(100)
+                    const initialStopLossSelected = openFlowInitialStopLossLevel({
+                      liquidationRatio: ilkData.liquidationRatio,
+                    })
 
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
@@ -401,6 +398,7 @@ export function createOpenVault$(
                         change({ kind: 'stopLossLevel', level }),
                       stopLossCloseType: 'dai',
                       stopLossLevel: initialStopLossSelected,
+                      visitedStopLossStep: false,
                       priceInfo,
                       balanceInfo,
                       ilkData,

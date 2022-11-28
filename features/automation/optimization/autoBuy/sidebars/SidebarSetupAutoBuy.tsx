@@ -187,7 +187,6 @@ export function SidebarSetupAutoBuy({
                 <SidebarAutoBuyRemovalEditingStage
                   errors={cancelAutoBuyErrors}
                   warnings={cancelAutoBuyWarnings}
-                  autoBuyState={autoBuyState}
                 />
               )}
             </>

@@ -79,6 +79,7 @@ export function createApplyOpenVaultTransition<
       if (canProgress) {
         return {
           ...state,
+          visitedStopLossStep: true,
           stage,
         }
       }
@@ -90,6 +91,7 @@ export function createApplyOpenVaultTransition<
       return {
         ...state,
         stopLossSkipped: true,
+        visitedStopLossStep: true,
         stage,
       }
     }
@@ -98,6 +100,7 @@ export function createApplyOpenVaultTransition<
       return {
         ...state,
         stopLossSkipped: false,
+        visitedStopLossStep: false,
         withProxyStep: !!state.proxySuccess,
         withAllowanceStep: false,
         stopLossLevel: zero,

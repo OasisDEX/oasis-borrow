@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { openFlowInitialStopLossLevel } from 'features/automation/common/helpers'
 import { zero } from 'helpers/zero'
 
 import { OpenVaultState } from './openVault'
@@ -41,6 +42,7 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     balanceInfo: { collateralBalance },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
     ilkData: { ilkDebtAvailable, liquidationRatio },
+    stopLossLevel,
   } = state
 
   const depositAmountUSDAtNextPrice = depositAmount
@@ -98,6 +100,10 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     ? collateralBalance.minus(depositAmount)
     : collateralBalance
 
+  const resolvedStopLossLevel = stopLossLevel.isZero()
+    ? openFlowInitialStopLossLevel({ liquidationRatio })
+    : stopLossLevel
+
   return {
     ...state,
     maxDepositAmount,
@@ -112,5 +118,6 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
     afterLiquidationPrice,
     afterFreeCollateral,
     afterCollateralBalance,
+    stopLossLevel: resolvedStopLossLevel,
   }
 }

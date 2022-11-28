@@ -5,7 +5,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { closeVaultOptions } from 'features/automation/common/consts'
@@ -79,8 +78,9 @@ export function getAutoTakeProfitStatus({
     stage,
   })
   const closePickerConfig = {
-    optionNames: closeVaultOptions,
-    onclickHandler: (optionName: string) => {
+    collateralTokenSymbol: token,
+    isCollateralActive: autoTakeProfitState.toCollateral,
+    onClickHandler: (optionName: string) => {
       uiChanges.publish(AUTO_TAKE_PROFIT_FORM_CHANGE, {
         type: 'close-type',
         toCollateral: optionName === closeVaultOptions[0],
@@ -101,9 +101,6 @@ export function getAutoTakeProfitStatus({
         },
       )
     },
-    isCollateralActive: autoTakeProfitState.toCollateral,
-    collateralTokenSymbol: token,
-    collateralTokenIconCircle: getToken(token).iconCircle,
   }
   const tokenAth = createTokenAth(token)
   const min = tokenMarketPrice.times(MIN_MULTIPLIER)

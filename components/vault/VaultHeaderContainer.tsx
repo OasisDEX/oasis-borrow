@@ -16,7 +16,7 @@ export function VaultHeaderContainer({
   priceInfo: PriceInfo
 }) {
   return (
-    <Grid mt={4}>
+    <Grid mt={4} sx={{ zIndex: 2 }}>
       <DefaultVaultHeadline header={header} token={[token]} priceInfo={priceInfo} />
       <Box
         sx={{

@@ -7,7 +7,7 @@ export interface AaveAssetsPricesParameters {
   tokens: string[]
 }
 
-export const getAaveAssetsPrices: CallDef<AaveAssetsPricesParameters, (string | BigNumber)[]> = {
+export const getAaveAssetsPrices: CallDef<AaveAssetsPricesParameters, BigNumber[]> = {
   call: (_, { contract, aavePriceOracle }) =>
     contract<AavePriceOracle>(aavePriceOracle).methods.getAssetsPrices,
   prepareArgs: ({ tokens }, context) => [tokens.map((token) => context.tokens[token].address)],

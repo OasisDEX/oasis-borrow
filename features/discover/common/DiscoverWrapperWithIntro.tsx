@@ -16,7 +16,7 @@ export function DiscoverWrapperWithIntro({ children }: WithChildren) {
         </Heading>
         <Text variant="paragraph1" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
           {t('discover.intro')}{' '}
-          <AppLink href="https://kb.oasis.app/">
+          <AppLink href="https://kb.oasis.app/help/learn-more-about-discover">
             <WithArrow
               sx={{
                 display: 'inline-block',

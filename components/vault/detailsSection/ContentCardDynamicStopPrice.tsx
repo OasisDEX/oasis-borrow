@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -9,22 +9,23 @@ import { Card, Grid, Heading, Text } from 'theme-ui'
 export interface ContentCardDynamicStopPriceModalProps {
   dynamicStopPrice: BigNumber
   dynamicStopPriceFormatted: string
+  ratioParam: string
 }
 
 interface ContentCardDynamicStopPriceProps {
   isStopLossEnabled: boolean
   isEditing: boolean
-  slRatio: BigNumber
+  stopLossLevel: BigNumber
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
-  afterSlRatio: BigNumber
-  lockedCollateral: BigNumber
-  debt: BigNumber
+  afterStopLossLevel: BigNumber
+  ratioParam: string
 }
 
 export function ContentCardDynamicStopPriceModal({
   dynamicStopPrice,
   dynamicStopPriceFormatted,
+  ratioParam,
 }: ContentCardDynamicStopPriceModalProps) {
   const { t } = useTranslation()
 
@@ -32,7 +33,9 @@ export function ContentCardDynamicStopPriceModal({
     <Grid gap={2}>
       <Heading variant="header3">{t('manage-multiply-vault.card.dynamic-stop-loss-price')}</Heading>
       <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
-        {t('manage-multiply-vault.card.dynamic-stop-loss-price-desc')}
+        {t('manage-multiply-vault.card.dynamic-stop-loss-price-desc', {
+          ratioParam: t(ratioParam),
+        })}
       </Text>
       <Text as="p" variant="header4" sx={{ mt: 3, fontWeight: 'semiBold' }}>
         {t('manage-multiply-vault.card.current-dynamic-stop-loss-price')}
@@ -49,33 +52,36 @@ export function ContentCardDynamicStopPriceModal({
 export function ContentCardDynamicStopPrice({
   isStopLossEnabled,
   isEditing,
-  slRatio,
+  stopLossLevel,
   liquidationPrice,
   liquidationRatio,
-  afterSlRatio,
-  lockedCollateral,
-  debt,
+  afterStopLossLevel,
+  ratioParam,
 }: ContentCardDynamicStopPriceProps) {
   const { t } = useTranslation()
 
-  const dynamicStopPrice = collateralPriceAtRatio({
-    colRatio: slRatio,
-    collateral: lockedCollateral,
-    vaultDebt: debt,
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel: stopLossLevel.times(100),
+  })
+
+  const afterDynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel: afterStopLossLevel,
   })
 
   const formatted = {
-    dynamicStopPrice: `$${formatAmount(dynamicStopPrice, 'USD')}`,
-    aboveLiquidationPrice: formatAmount(dynamicStopPrice.minus(liquidationPrice), 'USD'),
-    afterDynamicStopPrice: `$${formatAmount(
-      liquidationPrice.div(liquidationRatio).times(afterSlRatio),
-      'USD',
-    )}`,
+    dynamicStopPrice: `$${formatAmount(dynamicStopLossPrice, 'USD')}`,
+    aboveLiquidationPrice: formatAmount(dynamicStopLossPrice.minus(liquidationPrice), 'USD'),
+    afterDynamicStopPrice: `$${formatAmount(afterDynamicStopLossPrice, 'USD')}`,
   }
 
   const contentCardModalSettings: ContentCardDynamicStopPriceModalProps = {
-    dynamicStopPrice,
+    dynamicStopPrice: dynamicStopLossPrice,
     dynamicStopPriceFormatted: formatted.dynamicStopPrice,
+    ratioParam,
   }
 
   const contentCardSettings: ContentCardProps = {
