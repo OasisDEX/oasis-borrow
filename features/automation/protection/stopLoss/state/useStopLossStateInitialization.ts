@@ -16,7 +16,9 @@ export function useStopLossStateInitialization({
 }) {
   const { uiChanges } = useAppContext()
   const { isStopLossEnabled, isToCollateral, triggerId } = stopLossTriggerData
-  const { initialSlRatioWhenTriggerDoesntExist } = metadata
+  const {
+    values: { initialSlRatioWhenTriggerDoesntExist },
+  } = metadata
 
   useEffect(() => {
     uiChanges.publish(STOP_LOSS_FORM_CHANGE, {

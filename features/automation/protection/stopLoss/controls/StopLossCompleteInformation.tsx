@@ -32,7 +32,9 @@ export function StopLossCompleteInformation({
   const {
     positionData: { token, liquidationPrice, liquidationRatio },
     metadata: {
-      stopLoss: { getMaxToken },
+      stopLoss: {
+        methods: { getMaxToken },
+      },
     },
   } = useAutomationContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)

@@ -9,7 +9,11 @@ import {
   isStopLossTriggerCloseToConstantMultipleSellTrigger,
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
-import { GetStopLossMetadata, StopLossDetailCards } from 'features/automation/metadata/types'
+import {
+  GetAutomationMetadata,
+  StopLossDetailCards,
+  StopLossMetadata,
+} from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getDynamicStopLossPrice,
@@ -22,7 +26,7 @@ import { formatPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
 // eslint-disable-next-line func-style
-export const aaveStopLossMetaData: GetStopLossMetadata = (context) => {
+export const aaveStopLossMetaData: GetAutomationMetadata<StopLossMetadata> = (context) => {
   const {
     stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
     positionData: {
@@ -76,7 +80,7 @@ export const aaveStopLossMetaData: GetStopLossMetadata = (context) => {
 
   // TODO calculation methods in general to be updated when correct manage aave multiply state will be available
   return {
-    collateralDuringLiquidation,
+    callbacks: {},
     detailCards: {
       cardsSet: [
         StopLossDetailCards.STOP_LOSS_LEVEL,
@@ -95,41 +99,42 @@ export const aaveStopLossMetaData: GetStopLossMetadata = (context) => {
         },
       },
     },
-    getExecutionPrice: ({ stopLossLevel }) =>
-      collateralPriceAtRatio({
-        colRatio: stopLossLevel.div(100),
-        collateral: lockedCollateral,
-        vaultDebt: debt,
-      }),
-    getMaxToken: ({ stopLossLevel }) =>
-      getMaxToken({
-        stopLossLevel,
-        lockedCollateral,
-        liquidationRatio,
-        liquidationPrice,
-        debt,
-      }),
-    getSliderPercentageFill: ({ stopLossLevel }) =>
-      getSliderPercentageFill({
-        value: stopLossLevel,
-        max: sliderMin,
-        min: sliderMax,
-      }),
-    getRightBoundary: ({ stopLossLevel }) =>
-      getDynamicStopLossPrice({
-        liquidationPrice,
-        liquidationRatio,
-        stopLossLevel,
-      }),
-    fixedCloseToToken: token,
-    initialSlRatioWhenTriggerDoesntExist,
-    ratioParam: 'vault-changes.loan-to-value',
-    resetData,
-    sliderDirection: 'rtl',
-    sliderMax,
-    sliderMin,
-    sliderStep: 1,
-    triggerMaxToken,
+    methods: {
+      getExecutionPrice: ({ stopLossLevel }) =>
+        collateralPriceAtRatio({
+          colRatio: stopLossLevel.div(100),
+          collateral: lockedCollateral,
+          vaultDebt: debt,
+        }),
+      getMaxToken: ({ stopLossLevel }) =>
+        getMaxToken({
+          stopLossLevel,
+          lockedCollateral,
+          liquidationRatio,
+          liquidationPrice,
+          debt,
+        }),
+      getSliderPercentageFill: ({ stopLossLevel }) =>
+        getSliderPercentageFill({
+          value: stopLossLevel,
+          max: sliderMin,
+          min: sliderMax,
+        }),
+      getRightBoundary: ({ stopLossLevel }) =>
+        getDynamicStopLossPrice({
+          liquidationPrice,
+          liquidationRatio,
+          stopLossLevel,
+        }),
+    },
+    settings: {
+      fixedCloseToToken: token,
+      sliderDirection: 'rtl',
+      sliderStep: 1,
+    },
+    translations: {
+      ratioParam: 'vault-changes.loan-to-value',
+    },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({
         hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
@@ -162,6 +167,14 @@ export const aaveStopLossMetaData: GetStopLossMetadata = (context) => {
       }),
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
+    },
+    values: {
+      collateralDuringLiquidation,
+      initialSlRatioWhenTriggerDoesntExist,
+      resetData,
+      sliderMax,
+      sliderMin,
+      triggerMaxToken,
     },
   }
 }
