@@ -10,7 +10,7 @@ import {
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
 import {
-  GetAutomationMetadata,
+  ContextWithoutMetadata,
   StopLossDetailCards,
   StopLossMetadata,
 } from 'features/automation/metadata/types'
@@ -26,7 +26,7 @@ import { formatPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
 // eslint-disable-next-line func-style
-export const aaveStopLossMetaData: GetAutomationMetadata<StopLossMetadata> = (context) => {
+export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
     stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
     positionData: {

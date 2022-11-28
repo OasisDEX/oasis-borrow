@@ -8,7 +8,7 @@ import {
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
-import { GetAutomationMetadata, StopLossMetadata } from 'features/automation/metadata/types'
+import { StopLossMetadata } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
   getMaxToken,
@@ -160,7 +160,7 @@ export function getDataForStopLoss(
   })
 
   // eslint-disable-next-line func-style
-  const stopLossMetadata: GetAutomationMetadata<StopLossMetadata> = (_) => {
+  function getOpenVaultStopLossMetadata(): StopLossMetadata {
     return {
       callbacks: {
         onCloseToChange: ({ optionName }) => setStopLossCloseType(optionName as CloseVaultTo),
@@ -222,7 +222,7 @@ export function getDataForStopLoss(
     },
     protocol: VaultProtocol.Maker,
     metadata: {
-      stopLoss: stopLossMetadata,
+      stopLoss: getOpenVaultStopLossMetadata,
     },
   }
 

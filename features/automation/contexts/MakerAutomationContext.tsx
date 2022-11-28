@@ -1,6 +1,6 @@
 import { getAutomationMakerPositionData } from 'features/automation/common/context/getAutomationMakerPositionData'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
-import { makerStopLossMetaData } from 'features/automation/metadata/maker/stopLossMetadata'
+import { getMakerStopLossMetadata } from 'features/automation/metadata/maker/stopLossMetadata'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import React, { PropsWithChildren, useMemo } from 'react'
@@ -36,7 +36,7 @@ export function MakerAutomationContext({
       commonData={commonData}
       protocol={VaultProtocol.Maker}
       metadata={{
-        stopLoss: makerStopLossMetaData,
+        stopLoss: getMakerStopLossMetadata,
       }}
     >
       {children}
