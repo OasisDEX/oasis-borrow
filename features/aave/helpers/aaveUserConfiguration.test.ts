@@ -89,7 +89,7 @@ describe('AaveUserConfiguration', () => {
     }
 
     const results = createAaveUserConfiguration([userConfig], reservesList, dictionary)
-    // console.log(results)
+
     assert('0x reserve that is used as collateral', 'A', true, false, results)
     assert('0x reserve that is used as collateral and debt', 'B', true, true, results)
     assert('0x reserve that is used as debt only', 'C', false, true, results)

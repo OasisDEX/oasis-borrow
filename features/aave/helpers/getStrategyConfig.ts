@@ -30,7 +30,7 @@ export function getStrategyConfig$(
     map((aaveUserConfiguration) => {
       if (hasAssets(aaveUserConfiguration, 'STETH', 'ETH')) {
         return strategies['aave-earn']
-      } else if (hasAssets(aaveUserConfiguration, 'STETH', 'USDC')) {
+      } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
         return strategies['aave-multiply']
       } else {
         throw new Error(
