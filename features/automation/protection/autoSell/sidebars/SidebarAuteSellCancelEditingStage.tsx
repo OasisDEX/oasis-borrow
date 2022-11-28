@@ -1,22 +1,20 @@
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { CancelAutoBSInfoSection } from 'features/automation/common/sidebars/CancelAutoBSInfoSection'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-interface AutoSellInfoSectionControlProps {
-  autoSellState: AutoBSFormChange
-}
-
-function AutoSellInfoSectionControl({ autoSellState }: AutoSellInfoSectionControlProps) {
+function AutoSellInfoSectionControl() {
   const { t } = useTranslation()
   const {
     positionData: { debt, positionRatio, liquidationPrice },
+    autoSellTriggerData,
   } = useAutomationContext()
 
   return (
@@ -27,7 +25,7 @@ function AutoSellInfoSectionControl({ autoSellState }: AutoSellInfoSectionContro
       title={t('auto-sell.cancel-summary-title')}
       targetLabel={t('auto-sell.target-col-ratio-each-sell')}
       triggerLabel={t('auto-sell.trigger-col-ratio-to-perfrom-sell')}
-      autoBSState={autoSellState}
+      autoBSTriggerData={autoSellTriggerData}
     />
   )
 }
@@ -35,13 +33,11 @@ function AutoSellInfoSectionControl({ autoSellState }: AutoSellInfoSectionContro
 interface SidebarAutoSellCancelEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  autoSellState: AutoBSFormChange
 }
 
 export function SidebarAutoSellCancelEditingStage({
   errors,
   warnings,
-  autoSellState,
 }: SidebarAutoSellCancelEditingStageProps) {
   const { t } = useTranslation()
   const {
@@ -51,11 +47,13 @@ export function SidebarAutoSellCancelEditingStage({
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('auto-sell.cancel-summary-description')}
+        {t('automation.cancel-summary-description', {
+          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_SELL]),
+        })}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
       <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
-      <AutoSellInfoSectionControl autoSellState={autoSellState} />
+      <AutoSellInfoSectionControl />
     </>
   )
 }

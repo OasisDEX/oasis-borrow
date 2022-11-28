@@ -1,6 +1,8 @@
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { CancelConstantMultipleInfoSection } from 'features/automation/optimization/constantMultiple/controls/CancelConstantMultipleInfoSection'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
@@ -25,7 +27,9 @@ export function SidebarConstantMultipleRemovalEditingStage({
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        {t('constant-multiple.cancel-instructions')}
+        {t('automation.cancel-summary-description', {
+          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.CONSTANT_MULTIPLE]),
+        })}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
       <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />

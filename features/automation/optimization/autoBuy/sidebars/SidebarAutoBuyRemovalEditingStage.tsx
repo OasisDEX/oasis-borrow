@@ -1,8 +1,9 @@
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { sidebarAutomationFeatureCopyMap } from 'features/automation/common/consts'
 import { CancelAutoBSInfoSection } from 'features/automation/common/sidebars/CancelAutoBSInfoSection'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutomationFeatures } from 'features/automation/common/types'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
@@ -12,38 +13,36 @@ import { Text } from 'theme-ui'
 interface SidebarAutoBuyRemovalEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  autoBuyState: AutoBSFormChange
 }
 
 export function SidebarAutoBuyRemovalEditingStage({
   errors,
   warnings,
-  autoBuyState,
 }: SidebarAutoBuyRemovalEditingStageProps) {
   const {
     positionData: { debtFloor, token },
   } = useAutomationContext()
+  const { t } = useTranslation()
 
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        To cancel the Auto-Buy you’ll need to click the button below and confirm the transaction.
+        {t('automation.cancel-summary-description', {
+          feature: t(sidebarAutomationFeatureCopyMap[AutomationFeatures.AUTO_BUY]),
+        })}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={{ debtFloor, token }} />
       <VaultWarnings warningMessages={warnings} ilkData={{ debtFloor }} />
-      <AutoBuyInfoSectionControl autoBuyState={autoBuyState} />
+      <AutoBuyInfoSectionControl />
     </>
   )
 }
 
-interface AutoBuyInfoSectionControlProps {
-  autoBuyState: AutoBSFormChange
-}
-
-function AutoBuyInfoSectionControl({ autoBuyState }: AutoBuyInfoSectionControlProps) {
+function AutoBuyInfoSectionControl() {
   const { t } = useTranslation()
   const {
     positionData: { positionRatio, liquidationPrice, debt },
+    autoBuyTriggerData,
   } = useAutomationContext()
 
   return (
@@ -53,7 +52,7 @@ function AutoBuyInfoSectionControl({ autoBuyState }: AutoBuyInfoSectionControlPr
       title={t('auto-buy.cancel-summary-title')}
       targetLabel={t('auto-buy.target-col-ratio-each-buy')}
       triggerLabel={t('auto-buy.trigger-col-ratio-to-perform-buy')}
-      autoBSState={autoBuyState}
+      autoBSTriggerData={autoBuyTriggerData}
       debt={debt}
     />
   )
