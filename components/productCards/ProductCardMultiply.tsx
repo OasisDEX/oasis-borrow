@@ -105,6 +105,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       inactive={productCardsConfig.multiply.inactiveIlks.includes(cardData.ilk)}
       isFull={cardData.isFull}
       floatingLabelText={tagKey ? t(`product-card.tags.${tagKey}`, { token: cardData.token }) : ''}
+      protocol={cardData.protocol}
     />
   )
 }

@@ -1,7 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
+import { capitalize } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
@@ -78,8 +80,8 @@ interface ProductCardBannerProps {
 }
 
 // changed "ilk" to "strategyName" cause not everything is an ilk
-export function ProductCardProtocolLink({ ilk: strategyName }: Partial<ProductCardData>) {
-  const { link, name } = productCardsConfig.descriptionLinks[strategyName!] ?? {
+export function ProductCardProtocolLink({ ilk: strategyName, protocol }: Partial<ProductCardData>) {
+  const { link } = productCardsConfig.descriptionLinks[strategyName!] ?? {
     link: `https://makerburn.com/#/collateral/${strategyName}`,
     ilk: strategyName,
   }
@@ -87,7 +89,7 @@ export function ProductCardProtocolLink({ ilk: strategyName }: Partial<ProductCa
     <Box sx={{ paddingRight: '10px' }}>
       <AppLink href={link}>
         <WithArrow variant="styles.a" gap="1">
-          {name}
+          {capitalize(protocol)}
         </WithArrow>
       </AppLink>
     </Box>
@@ -204,6 +206,7 @@ export interface ProductCardProps {
   floatingLabelText?: string
   inactive?: boolean
   labels?: { title: string; value: ReactNode }[]
+  protocol?: TokenMetadataType['protocol']
 }
 
 export function ProductCard({
@@ -218,6 +221,7 @@ export function ProductCard({
   floatingLabelText,
   inactive,
   labels,
+  protocol,
 }: ProductCardProps) {
   const [hover, setHover] = useState(false)
   const [clicked, setClicked] = useState(false)
@@ -228,6 +232,8 @@ export function ProductCard({
   const handleMouseLeave = useCallback(() => setHover(false), [])
 
   const handleClick = useCallback(() => setClicked(true), [])
+
+  const buttonLabel = `${button.text} ${protocol ? `(${capitalize(protocol)})` : ''}`
 
   return (
     <Box
@@ -315,7 +321,7 @@ export function ProductCard({
                   },
                 }}
               >
-                {isFull ? t('full') : !clicked ? button.text : ''}
+                {isFull ? t('full') : !clicked ? buttonLabel : ''}
                 {clicked && (
                   <Spinner
                     variant="styles.spinner.medium"

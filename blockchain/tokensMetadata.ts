@@ -4,30 +4,35 @@ import type { ElementOf } from 'ts-essentials'
 
 export interface TokenConfig {
   symbol: string
+  rootToken?: string
   precision: number
   digits: number
-  maxSell: string
+  maxSell?: string
   name: string
   icon: string
   iconCircle: string
   iconColor: string
-  coinpaprikaTicker: string
+  coinpaprikaTicker?: string
+  coinpaprikaFallbackTicker?: string
   tags: CoinTag[]
   color: string
   bannerIcon: string
-  bannerGif?: string
+  bannerGif: string
   token0?: string
   token1?: string
   coinbaseTicker?: string
+  coinGeckoTicker?: string
   coinGeckoId?: string
-  background?: string
+  background: string
   digitsInstant?: number
+  safeCollRatio?: number
+  protocol: 'maker' | 'aave'
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 
-export const tokens = [
+export const tokens: TokenConfig[] = [
   {
     symbol: 'USDP',
     precision: 18,
@@ -42,6 +47,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'STETH',
@@ -57,6 +63,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'MKR',
@@ -73,6 +80,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'WETH',
@@ -89,6 +97,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'ETH',
@@ -107,6 +116,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'BAT',
@@ -121,6 +131,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'WBTC',
@@ -141,6 +152,7 @@ export const tokens = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/wbtc.gif'),
     tags: [],
     rootToken: 'BTC',
+    protocol: 'maker',
   },
   {
     symbol: 'RENBTC',
@@ -161,6 +173,7 @@ export const tokens = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/renBTC.gif'),
     tags: [],
     rootToken: 'BTC',
+    protocol: 'maker',
   },
   {
     symbol: 'TUSD',
@@ -175,6 +188,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
+    protocol: 'maker',
   },
   {
     symbol: 'KNC',
@@ -189,6 +203,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'MANA',
@@ -205,6 +220,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/mana.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/mana.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'PAXUSD',
@@ -219,6 +235,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
+    protocol: 'maker',
   },
   {
     symbol: 'USDT',
@@ -233,6 +250,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
+    protocol: 'maker',
   },
   {
     symbol: 'COMP',
@@ -247,6 +265,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'LRC',
@@ -261,6 +280,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'LINK',
@@ -277,6 +297,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/link.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/link.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'GUSD',
@@ -293,6 +314,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/gusd.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/gusd.gif'),
     tags: ['stablecoin'],
+    protocol: 'maker',
   },
   {
     symbol: 'ZRX',
@@ -307,6 +329,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'USDC',
@@ -324,6 +347,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/usdc.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/usdc.gif'),
     tags: ['stablecoin'],
+    protocol: 'maker',
   },
   {
     symbol: 'BAL',
@@ -339,6 +363,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'YFI',
@@ -356,6 +381,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/yfi.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/yfi.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'UNI',
@@ -372,6 +398,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'AAVE',
@@ -387,6 +414,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
     bannerGif: '',
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2USDCETH',
@@ -402,6 +430,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.gif'),
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2DAIUSDC',
@@ -417,6 +446,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.gif'),
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2WBTCETH',
@@ -432,6 +462,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_eth.gif'),
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2DAIETH',
@@ -447,6 +478,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.gif'),
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2ETHUSDT',
@@ -462,6 +494,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2UNIETH',
@@ -477,6 +510,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.gif'),
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2LINKETH',
@@ -492,6 +526,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2WBTCDAI',
@@ -507,6 +542,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.gif'),
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2AAVEETH',
@@ -522,6 +558,7 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'UNIV2DAIUSDT',
@@ -537,13 +574,14 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'GUNIV3DAIUSDC1',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
-    name: 'GUNIV3 DAI/USDC 0.05%',
+    name: 'GUNIV3 DAI / USDC 0.05%',
     icon: 'guniv3_dai_usdc1_circles_color',
     iconCircle: 'guniv3_dai_usdc1_circles_color',
     iconColor: 'guniv3_dai_usdc1_circles_color',
@@ -554,13 +592,14 @@ export const tokens = [
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
+    protocol: 'maker',
   },
   {
     symbol: 'GUNIV3DAIUSDC2',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
-    name: 'GUNIV3 DAI/USDC 0.01%',
+    name: 'GUNIV3 DAI / USDC 0.01%',
     icon: 'guniv3_dai_usdc1_circles_color',
     iconCircle: 'guniv3_dai_usdc1_circles_color',
     iconColor: 'guniv3_dai_usdc1_circles_color',
@@ -571,6 +610,7 @@ export const tokens = [
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
+    protocol: 'maker',
   },
   {
     symbol: 'MATIC',
@@ -588,6 +628,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/matic.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/matic.gif'),
     tags: [],
+    protocol: 'maker',
   },
   {
     symbol: 'WSTETH',
@@ -606,6 +647,7 @@ export const tokens = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/wstETH.gif'),
     tags: [],
     rootToken: 'ETH',
+    protocol: 'maker',
   },
   {
     symbol: 'DAI',
@@ -623,13 +665,14 @@ export const tokens = [
     background: '',
     bannerGif: '',
     tags: ['stablecoin'],
+    protocol: 'maker',
   },
   {
     symbol: 'CRVV1ETHSTETH',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
-    name: 'stETH/ETH CRV',
+    name: 'stETH / ETH CRV',
     icon: 'curve_circle_color',
     iconCircle: 'curve_circle_color',
     iconColor: 'curve_circle_color',
@@ -638,13 +681,14 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.gif'),
     tags: ['lp-token'],
+    protocol: 'maker',
   },
   {
     symbol: 'stETHeth',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
-    name: 'stETH/ETH',
+    name: 'stETH / ETH',
     icon: 'aave_steth_eth',
     iconCircle: 'aave_steth_eth',
     iconColor: 'aave_steth_eth',
@@ -653,6 +697,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.gif'),
     tags: [],
+    protocol: 'aave',
   },
   {
     symbol: 'stETHusdc',
@@ -660,7 +705,7 @@ export const tokens = [
     precision: 18,
     digits: 5,
     digitsInstant: 2,
-    name: 'stETH/USDC',
+    name: 'stETH / USDC',
     icon: 'aave_steth_usdc',
     iconCircle: 'aave_steth_usdc',
     iconColor: 'aave_steth_usdc',
@@ -669,6 +714,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.gif'),
     tags: [],
+    protocol: 'aave',
   },
   {
     symbol: 'RETH',
@@ -686,6 +732,7 @@ export const tokens = [
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.gif'),
     rootToken: 'ETH',
     tags: [],
+    protocol: 'maker',
   },
 ]
 

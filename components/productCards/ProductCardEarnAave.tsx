@@ -4,6 +4,7 @@ import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -65,6 +66,10 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
             }}
             labels={[
               {
+                title: t('system.max-multiple'),
+                value: displayMultiple(_maximumMultiple.multiple),
+              },
+              {
                 title: '7 day net APY',
                 value: simulationYields?.yields?.annualisedYield7days ? (
                   // this takes a while, so we show a spinner until it's ready
@@ -101,6 +106,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               text: t('nav.earn'),
             }}
             background={cardData.background}
+            protocol={cardData.protocol}
             isFull={false}
           />
         )}
