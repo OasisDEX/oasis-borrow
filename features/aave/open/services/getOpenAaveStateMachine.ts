@@ -33,7 +33,11 @@ export function getOpenAavePositionStateMachineServices(
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (collateralToken: string) => Observable<IStrategyInfo>,
-  aaveProtocolData$: (collateralToken: string, address: string) => Observable<AaveProtocolData>,
+  aaveProtocolData$: (
+    collateralToken: string,
+    debtToken: string,
+    address: string,
+  ) => Observable<AaveProtocolData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -95,7 +99,9 @@ export function getOpenAavePositionStateMachineServices(
     protocolData$: (context) => {
       return connectedProxy$.pipe(
         filter((address) => address !== undefined),
-        switchMap((proxyAddress) => aaveProtocolData$(context.tokens.collateral, proxyAddress!)),
+        switchMap((proxyAddress) =>
+          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+        ),
         map((aaveProtocolData) => ({
           type: 'UPDATE_PROTOCOL_DATA',
           protocolData: aaveProtocolData,

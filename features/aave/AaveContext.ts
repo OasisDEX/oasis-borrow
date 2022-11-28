@@ -79,16 +79,17 @@ export function setupAaveContext({
   )
 
   const aaveReserveStEthData$ = aaveReserveConfigurationData$({ token: 'STETH' })
-
-  const tempPositionFromLib$ = combineLatest(context$, proxyForAccount$).pipe(
-    filter(([context, proxyAddress]) => !!context && !!proxyAddress),
-    switchMap(([context, proxyAddress]) => {
-      // @ts-ignore
-      const pa: string = proxyAddress
-      return from(getOnChainPosition({ context, proxyAddress: pa }))
-    }),
-    shareReplay(1),
-  )
+  const tempPositionFromLib$ = (collateralToken: string, debtToken: string, address: string) => {
+    return combineLatest(context$, proxyForAccount$).pipe(
+      filter(([context, proxyAddress]) => !!context && !!proxyAddress),
+      switchMap(([context, proxyAddress]) => {
+        // @ts-ignore
+        const pa: string = proxyAddress
+        return from(getOnChainPosition({ context, proxyAddress: pa, collateralToken, debtToken }))
+      }),
+      shareReplay(1),
+    )
+  }
 
   const aaveProtocolData$ = memoize(
     curry(getAaveProtocolData$)(

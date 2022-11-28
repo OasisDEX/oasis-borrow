@@ -44,11 +44,15 @@ export function getAaveProtocolData$(
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
-  tempPositionFromLib$: Observable<IPosition>,
+  tempPositionFromLib$: (
+    collateralToken: string,
+    debtToken: string,
+    address: string,
+  ) => Observable<IPosition>,
   collateralToken: string,
+  debtToken: string,
   address: string,
 ): Observable<AaveProtocolData> {
-  console.log(`getAaveProtocolData$ address ${address}`)
   return combineLatest(
     aaveUserReserveData$({ token: collateralToken, address }),
     aaveUserAccountData$({ address }),
@@ -56,7 +60,7 @@ export function getAaveProtocolData$(
     aaveReserveConfigurationData$({ token: collateralToken }),
     aaveUserConfiguration$({ address }),
     aaveReservesList$(),
-    tempPositionFromLib$,
+    tempPositionFromLib$(collateralToken, debtToken, address),
   ).pipe(
     map(
       ([

@@ -45,8 +45,8 @@ export interface OpenAaveParameters {
 
 export interface GetOnChainPositionParams {
   context: Context
-  collateralToken?: string
-  debtToken?: string
+  collateralToken: string
+  debtToken: string
   proxyAddress: string
 }
 
@@ -108,8 +108,6 @@ export async function getOpenAaveParameters({
   proxyAddress,
 }: OpenAaveParameters): Promise<OasisActionResult> {
   try {
-    console.log(`collateralToken ${collateralToken}`)
-    console.log(`debtToken ${debtToken}`)
     checkContext(context, 'open position')
 
     const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
@@ -182,24 +180,26 @@ export async function getOpenAaveParameters({
 export async function getOnChainPosition({
   context,
   proxyAddress,
+  collateralToken,
+  debtToken,
 }: GetOnChainPositionParams): Promise<IPosition> {
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
-  const collateralToken = {
-    symbol: 'STETH' as AAVETokens,
-    precision: 18,
+  const _collateralToken = {
+    symbol: collateralToken as AAVETokens,
+    precision: getToken(collateralToken).precision,
   }
 
-  const debtToken = {
-    symbol: 'ETH' as AAVETokens,
-    precision: 18,
+  const _debtToken = {
+    symbol: debtToken as AAVETokens,
+    precision: getToken(debtToken).precision,
   }
 
   const position = await strategies.aave.view(
     {
       proxy: proxyAddress,
-      collateralToken,
-      debtToken: debtToken,
+      collateralToken: _collateralToken,
+      debtToken: _debtToken,
     },
     { addresses: getAddressesFromContext(context), provider },
   )

@@ -15,16 +15,12 @@ export function getStrategyConfig$(
 ): Observable<StrategyConfig> {
   return proxyAddress$(address).pipe(
     switchMap((proxyAddress) => {
-      console.log('getStrategyConfig$ proxyAddress', proxyAddress)
-      console.log('getStrategyConfig$ address', address)
       return combineLatest(
         aaveUserConfiguration$({ address: proxyAddress || address }),
         aaveReservesList$(),
       )
     }),
     map(([aaveUserConfiguration, aaveReservesList]) => {
-      recursiveLog(aaveUserConfiguration, 'aaveUserConfiguration')
-      recursiveLog(aaveReservesList, 'aaveReservesList')
       return createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)
     }),
     map((aaveUserConfiguration) => {
