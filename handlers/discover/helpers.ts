@@ -57,10 +57,14 @@ export function getColRatio(item: LargestDebt): DiscoverTableColRatioRowData {
 
 export function getStatus(item: HighestRiskPositions) {
   const status = item.status as DiscoverTableStatusRowDataApi
+
   if (!status) {
     return
   }
   switch (status.kind) {
+    case DiscoverTableVaultStatus.LIQUIDATED:
+    case DiscoverTableVaultStatus.BEING_LIQUIDATED:
+      return status
     case DiscoverTableVaultStatus.TO_STOP_LOSS:
       return {
         ...status,
@@ -73,17 +77,6 @@ export function getStatus(item: HighestRiskPositions) {
             .floor()
             .div(100),
         },
-      }
-    case DiscoverTableVaultStatus.LIQUIDATED:
-      return {
-        ...status,
-        additionalData: {
-          timestamp: status.additionalData!.timestamp! * 1000,
-        },
-      }
-    case DiscoverTableVaultStatus.BEING_LIQUIDATED:
-      return {
-        ...status,
       }
     default:
       return {
