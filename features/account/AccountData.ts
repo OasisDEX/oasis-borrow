@@ -35,6 +35,6 @@ export function createAccountData(
         })),
       ),
     ),
-    shareReplay(1)
+    shareReplay(1),
   )
 }
