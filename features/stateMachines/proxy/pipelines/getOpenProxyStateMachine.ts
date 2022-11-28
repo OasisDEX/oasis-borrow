@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs'
 
-import { ContextConnected } from '../../../blockchain/network'
-import { TxHelpers } from '../../../components/AppContext'
-import { HasGasEstimation } from '../../../helpers/form'
+import { ContextConnected } from '../../../../blockchain/network'
+import { TxHelpers } from '../../../../components/AppContext'
+import { HasGasEstimation } from '../../../../helpers/form'
 import { createProxyStateMachine, ProxyStateMachine } from '../state'
 
 export function getOpenProxyStateMachine(

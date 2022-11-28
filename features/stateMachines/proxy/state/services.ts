@@ -4,11 +4,11 @@ import { isEqual } from 'lodash'
 import { of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
-import { createDsProxy, CreateDsProxyData } from '../../../blockchain/calls/proxy'
-import { TxMetaKind } from '../../../blockchain/calls/txMeta'
-import { ContextConnected } from '../../../blockchain/network'
-import { TxHelpers } from '../../../components/AppContext'
-import { transactionToX } from '../../../helpers/form'
+import { createDsProxy, CreateDsProxyData } from '../../../../blockchain/calls/proxy'
+import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
+import { ContextConnected } from '../../../../blockchain/network'
+import { TxHelpers } from '../../../../components/AppContext'
+import { transactionToX } from '../../../../helpers/form'
 import { ProxyContext, ProxyEvent, ProxyObservableService } from './types'
 
 const createProxy: ProxyObservableService = (

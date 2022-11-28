@@ -3,7 +3,7 @@ import { useMachine } from '@xstate/react'
 import React from 'react'
 import { Box, Button, Grid } from 'theme-ui'
 
-import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { createProxyStateMachine } from './machine'
 import { ProxyEvent } from './types'
 

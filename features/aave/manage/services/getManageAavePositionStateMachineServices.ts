@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -26,6 +27,7 @@ export function getManageAavePositionStateMachineServices(
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
+  tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -104,6 +106,17 @@ export function getManageAavePositionStateMachineServices(
           type: 'UPDATE_PROTOCOL_DATA',
           protocolData: aaveProtocolData,
         })),
+      )
+    },
+    allowance$: (context) => {
+      return connectedProxyAddress$.pipe(
+        filter((address) => address !== undefined),
+        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+        map((allowance) => ({
+          type: 'UPDATE_ALLOWANCE',
+          tokenAllowance: allowance,
+        })),
+        distinctUntilChanged(isEqual),
       )
     },
   }
