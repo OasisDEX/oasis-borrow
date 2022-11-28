@@ -33,7 +33,7 @@ export function StopLossFormControl({
   const {
     environmentData: { canInteract },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         values: { initialSlRatioWhenTriggerDoesntExist, resetData },
       },
     },

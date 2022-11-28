@@ -79,11 +79,11 @@ export interface AutomationContext {
   automationTriggersData: TriggersData
   environmentData: AutomationEnvironmentData
   metadata: {
-    autoBuy: AutoBSMetadata
-    autoSell: AutoBSMetadata
-    autoTakeProfit: AutoTakeProfitMetadata
-    constantMultiple: ConstantMultipleMetadata
-    stopLoss: StopLossMetadata
+    autoBuyMetadata: AutoBSMetadata
+    autoSellMetadata: AutoBSMetadata
+    autoTakeProfitMetadata: AutoTakeProfitMetadata
+    constantMultipleMetadata: ConstantMultipleMetadata
+    stopLossMetadata: StopLossMetadata
   }
   positionData: AutomationPositionData
   protocol: VaultProtocol
@@ -197,7 +197,7 @@ export function AutomationContextProvider({
 
   useStopLossStateInitialization({
     stopLossTriggerData: autoContext.triggerData.stopLossTriggerData,
-    metadata: autoContext.metadata.stopLoss,
+    metadata: autoContext.metadata.stopLossMetadata,
     positionRatio: positionData.positionRatio,
   })
 

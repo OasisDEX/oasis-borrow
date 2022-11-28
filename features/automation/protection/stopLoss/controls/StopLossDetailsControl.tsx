@@ -28,7 +28,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
   const { t } = useTranslation()
   const {
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         detailCards,
         methods: { getMaxToken },
         translations: { ratioParam },

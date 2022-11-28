@@ -72,7 +72,7 @@ export function SidebarSetupStopLoss({
   const {
     environmentData: { ethMarketPrice, etherscanUrl },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         methods: { getExecutionPrice },
         validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
       },

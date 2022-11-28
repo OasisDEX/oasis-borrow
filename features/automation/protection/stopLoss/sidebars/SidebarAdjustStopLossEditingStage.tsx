@@ -53,7 +53,7 @@ export function SetDownsideProtectionInformation({
   const {
     positionData: { token },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         methods: { getMaxToken },
         values: { collateralDuringLiquidation },
       },
@@ -137,7 +137,7 @@ export function SidebarAdjustStopLossEditingStage({
   const {
     environmentData: { ethMarketPrice },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         callbacks: { onSliderChange, onCloseToChange },
         methods: { getSliderPercentageFill, getRightBoundary },
         settings: { fixedCloseToToken, sliderStep, sliderDirection },
