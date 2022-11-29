@@ -159,7 +159,6 @@ export function getDataForStopLoss(
     debt: debt || zero,
   })
 
-  // eslint-disable-next-line func-style
   function getOpenVaultStopLossMetadata(): StopLossMetadata {
     return {
       callbacks: {
