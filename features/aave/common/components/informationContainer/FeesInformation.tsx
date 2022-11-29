@@ -1,10 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IStrategy } from '@oasisdex/oasis-actions'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useAppContext } from '../../../../../components/AppContextProvider'
 import {
   formatGasEstimationETH,
   getEstimatedGasFeeTextOld,
@@ -12,30 +11,20 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
-import { useObservable } from '../../../../../helpers/observableHook'
 
 interface FeesInformationProps {
-  transactionParameters: IStrategy
-  token: string
+  debtToken: string
+  feeInDebtToken: BigNumber
   estimatedGasPrice?: HasGasEstimation
 }
 
 export function FeesInformation({
   estimatedGasPrice,
-  transactionParameters,
-  token,
+  debtToken,
+  feeInDebtToken,
 }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
-  const swapFee = transactionParameters.simulation.swap.targetTokenFee.plus(
-    transactionParameters.simulation.swap.sourceTokenFee,
-  )
-
-  const { convertToAaveOracleAssetPrice$ } = useAppContext()
-
-  const [currentDebtInDebtToken] = useObservable(
-    convertToAaveOracleAssetPrice$({ token, amount: swapFee }),
-  )
 
   return (
     <>
@@ -46,7 +35,7 @@ export function FeesInformation({
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {`${currentDebtInDebtToken && formatAmount(currentDebtInDebtToken, token)} ${token} +`}
+            {`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken} +`}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -63,9 +52,7 @@ export function FeesInformation({
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={`${
-              currentDebtInDebtToken && formatAmount(currentDebtInDebtToken, token)
-            } ${token}`}
+            value={`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken}`}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}

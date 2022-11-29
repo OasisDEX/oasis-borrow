@@ -842,7 +842,6 @@ export function setupAppContext() {
 
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
   const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
-
   const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
   const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
   const aaveReserveConfigurationData$ = observe(
