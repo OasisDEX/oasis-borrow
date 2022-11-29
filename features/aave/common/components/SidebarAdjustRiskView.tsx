@@ -14,7 +14,7 @@ import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
-import { amountFromWei } from '@oasisdex/utils'
+import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 
 type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 'RESET_RISK_RATIO' }
 
@@ -62,15 +62,6 @@ export type AdjustRiskViewConfig = {
     minimum: IRiskRatio
     default: IRiskRatio
   }
-}
-
-function getLiquidationPriceAccountingForPrecision(position: IPosition): BigNumber {
-  return amountFromWei(position.debt.amount, position.debt.precision).div(
-    amountFromWei(position.collateral.amount, position.collateral.precision).times(
-      position.category.liquidationThreshold,
-    ),
-  )
-  // return amountFromWei(position.debt.amount, position.debt.precision).div(
 }
 
 export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
