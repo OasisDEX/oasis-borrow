@@ -15,7 +15,8 @@ import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
-import { zero } from '../../../../helpers/zero'
+import { one, zero } from '../../../../helpers/zero'
+import { amountFromWei } from '@oasisdex/utils'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
@@ -90,15 +91,15 @@ export function AaveMultiplyPositionData({
   const multiple = riskRatio.multiple
   const newMultiple = nextPosition && nextPosition.riskRatio.multiple
 
-  // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
+  // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
   const netBorrowCost = debtTokenReserveData.variableBorrowRate
-    .times(debt.amount)
+    .times(amountFromWei(debt.amount, debt.precision))
     .times(debtTokenPrice)
     .minus(
-      collateralTokenReserveData.liquidityRate.times(collateral.amount).times(collateralTokenPrice),
+      collateralTokenReserveData.liquidityRate
+        .times(amountFromWei(collateral.amount, collateral.precision))
+        .times(collateralTokenPrice),
     )
-
-  console.log(`debtTokenPrice ${debtTokenPrice.toString()}`)
 
   return (
     <DetailsSection
