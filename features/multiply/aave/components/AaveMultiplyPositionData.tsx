@@ -16,7 +16,7 @@ import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import {  zero } from '../../../../helpers/zero'
+import { zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 
 type AaveMultiplyPositionDataProps = {

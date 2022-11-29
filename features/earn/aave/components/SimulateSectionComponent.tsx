@@ -1,4 +1,4 @@
-import { IPositionTransition,IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'

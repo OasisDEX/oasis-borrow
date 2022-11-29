@@ -1,4 +1,4 @@
-import { IPosition, IPositionTransition,IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { EventObject, Sender } from 'xstate'
 
