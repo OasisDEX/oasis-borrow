@@ -10,7 +10,7 @@ import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
 import { ProductCardEarnMaker } from './ProductCardEarnMaker'
-import { ProductCardMultiply } from './ProductCardMultiply'
+import { ProductCardMultiplyMaker } from './ProductCardMultiplyMaker'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
 type StrategyTypes = {
@@ -66,7 +66,7 @@ export function BorrowProductCardsContainer(props: ProductSpecificContainerProps
 }
 
 export function MultiplyProductCardsContainer(props: ProductSpecificContainerProps) {
-  return <ProductCardsContainer renderProductCard={ProductCardMultiply} {...props} />
+  return <ProductCardsContainer renderProductCard={ProductCardMultiplyMaker} {...props} />
 }
 
 export function EarnProductCardsContainer(props: ProductSpecificContainerProps) {

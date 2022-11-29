@@ -40,7 +40,7 @@ function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
   }
 }
 
-export function ProductCardMultiply(props: { cardData: ProductCardData }) {
+export function ProductCardMultiplyMaker(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 

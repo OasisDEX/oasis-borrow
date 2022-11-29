@@ -1,8 +1,10 @@
+import { getTokens } from 'blockchain/tokensMetadata'
+import { aaveStrategiesList } from 'features/aave/strategyConfig'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { ProductCardMultiply } from '../../components/productCards/ProductCardMultiply'
+import { ProductCardMultiplyMaker } from '../../components/productCards/ProductCardMultiplyMaker'
 import { ProductCardsFilter } from '../../components/productCards/ProductCardsFilter'
 import { ProductHeader } from '../../components/ProductHeader'
 import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
@@ -10,6 +12,7 @@ import { multiplyPageCardsData, productCardsConfig } from '../../helpers/product
 export function MultiplyView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
+  const aaveMultiplyStrategies = getTokens(aaveStrategiesList('multiply'))
 
   return (
     <Grid
@@ -31,8 +34,9 @@ export function MultiplyView() {
       <ProductCardsFilter
         filters={productCardsConfig.multiply.cardsFilters}
         selectedFilter={tab}
-        productCardComponent={ProductCardMultiply}
+        makerProductCardComponent={ProductCardMultiplyMaker}
         filterCardsFunction={multiplyPageCardsData}
+        otherStrategies={aaveMultiplyStrategies}
       />
     </Grid>
   )

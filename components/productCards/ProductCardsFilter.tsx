@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { TokenConfig } from 'blockchain/tokensMetadata'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
@@ -19,9 +20,10 @@ import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
 interface ProductCardFilterProps {
   filters: Array<ProductLandingPagesFilter>
-  productCardComponent: (props: { cardData: ProductCardData }) => JSX.Element
+  makerProductCardComponent: (props: { cardData: ProductCardData }) => JSX.Element
   selectedFilter?: string
   filterCardsFunction: FilterCardsFunction
+  otherStrategies?: TokenConfig[]
 }
 
 type FilterCardsFunction = ({
@@ -34,10 +36,13 @@ type FilterCardsFunction = ({
 
 export function ProductCardsFilter({
   filters,
-  productCardComponent,
+  makerProductCardComponent,
   selectedFilter,
   filterCardsFunction,
+  otherStrategies,
 }: ProductCardFilterProps) {
+  console.log('otherStrategies', otherStrategies)
+
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
@@ -50,7 +55,7 @@ export function ProductCardsFilter({
     productCardsData$(productsToDisplay.map(({ ilk }) => ilk)),
   )
   const [hover, setHover] = useState('')
-  const ProductCardComponent = productCardComponent
+  const ProductCardComponent = makerProductCardComponent
   function handleTabClick(token: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(token)
   }

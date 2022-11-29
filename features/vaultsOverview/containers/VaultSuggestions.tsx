@@ -12,7 +12,7 @@ import { Box, Flex, Heading, Text } from 'theme-ui'
 import { AppLink } from '../../../components/Links'
 import { ProductCardBorrow } from '../../../components/productCards/ProductCardBorrow'
 import { ProductCardEarnMaker } from '../../../components/productCards/ProductCardEarnMaker'
-import { ProductCardMultiply } from '../../../components/productCards/ProductCardMultiply'
+import { ProductCardMultiplyMaker } from '../../../components/productCards/ProductCardMultiplyMaker'
 import { ProductCardsWrapper } from '../../../components/productCards/ProductCardsWrapper'
 import { formatAddress } from '../../../helpers/formatters/format'
 import {
@@ -94,7 +94,7 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
             content: (
               <TabContent
                 type="multiply"
-                renderProductCard={ProductCardMultiply}
+                renderProductCard={ProductCardMultiplyMaker}
                 productCardsData={productCardsData}
               />
             ),

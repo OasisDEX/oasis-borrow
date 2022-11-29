@@ -26,7 +26,7 @@ export function EarnView() {
     productCardsData$(supportedEarnIlks),
   )
 
-  const aaveStrategiesTokens = getTokens(aaveStrategiesList('earn'))
+  const aaveEarnStrategies = getTokens(aaveStrategiesList('earn'))
   return (
     <Grid
       sx={{
@@ -53,7 +53,7 @@ export function EarnView() {
               ))}
               {showAaveStETHETHProductCard &&
               _productCardsIlksData.length && // just to show them simultanously
-                aaveStrategiesTokens.map((cardData) => (
+                aaveEarnStrategies.map((cardData) => (
                   <ProductCardEarnAave
                     key={`ProductCardEarnAave_${cardData.symbol}`}
                     cardData={cardData}

@@ -59,9 +59,9 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     product: 'multiply',
-    enabled: false,
+    enabled: true,
   },
-} as const
+}
 
 export function aaveStrategiesList(filterProduct: StrategyConfig['product']) {
   return Object.values(strategies)
