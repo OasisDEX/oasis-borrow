@@ -43,7 +43,6 @@ export function getAaveProtocolData$(
   aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
-  aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
   tempPositionFromLib$: (
     collateralToken: string,
     debtToken: string,
@@ -57,7 +56,6 @@ export function getAaveProtocolData$(
     aaveUserReserveData$({ token: collateralToken, address }),
     aaveUserAccountData$({ address }),
     aaveOracleAssetPriceData$({ token: collateralToken }),
-    aaveReserveConfigurationData$({ token: collateralToken }),
     aaveUserConfiguration$({ address }),
     aaveReservesList$(),
     tempPositionFromLib$(collateralToken, debtToken, address),
@@ -67,31 +65,15 @@ export function getAaveProtocolData$(
         reserveData,
         accountData,
         oraclePrice,
-        reserveConfigurationData,
         aaveUserConfiguration,
         aaveReservesList,
         tempPositionFromLib,
       ]) => {
-        // const pos = new Position(
-        //   { amount: new BigNumber(accountData.totalDebtETH.toString()) },
-        //   {
-        //     amount: new BigNumber(reserveData.currentATokenBalance.toString()),
-        //     denomination: collateralToken,
-        //   },
-        //   oraclePrice,
-        //   {
-        //     dustLimit: new BigNumber(0),
-        //     maxLoanToValue: reserveConfigurationData.ltv,
-        //     liquidationThreshold: reserveConfigurationData.liquidationThreshold,
-        //   },
-        // )
-
         return {
           positionData: reserveData,
           accountData: accountData,
           oraclePrice: oraclePrice,
           position: tempPositionFromLib,
-          // position: '',
           aaveUserConfiguration,
           aaveReservesList,
         }

@@ -205,7 +205,6 @@ export async function getAdjustAaveParameters({
   context,
   proxyAddress,
   slippage,
-  amount,
   riskRatio,
   currentPosition,
 }: AdjustAaveParameters): Promise<OasisActionResult> {

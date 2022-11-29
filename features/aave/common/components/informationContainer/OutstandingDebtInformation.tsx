@@ -1,4 +1,3 @@
-import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -11,16 +10,12 @@ import {
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 
 interface OutstandingDebtInformationProps {
-  transactionParameters: IPositionTransition
   currentDebtInDebtToken: BigNumber
   afterDebtInDebtToken: BigNumber
-  currentPosition: IPosition
   debtToken: string
 }
 
 export function OutstandingDebtInformation({
-  transactionParameters,
-  currentPosition,
   debtToken,
   currentDebtInDebtToken,
   afterDebtInDebtToken,

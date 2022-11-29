@@ -158,7 +158,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
           const call = await libraryCall(context.parameters!)
           return call
         },
-        estimateGas: ({ txHelper, operationName, parameters, strategy }) => {
+        estimateGas: ({ txHelper, parameters, strategy }) => {
           return txHelper!
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,

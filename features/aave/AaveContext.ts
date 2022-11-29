@@ -79,14 +79,12 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
-  const aaveReserveStEthData$ = aaveReserveConfigurationData$({ token: 'STETH' })
-  const tempPositionFromLib$ = (collateralToken: string, debtToken: string, address: string) => {
+  function tempPositionFromLib$(collateralToken: string, debtToken: string) {
     return combineLatest(context$, proxyForAccount$).pipe(
       filter(([context, proxyAddress]) => !!context && !!proxyAddress),
       switchMap(([context, proxyAddress]) => {
-        // @ts-ignore
-        const pa: string = proxyAddress
-        return from(getOnChainPosition({ context, proxyAddress: pa, collateralToken, debtToken }))
+        proxyAddress = proxyAddress!
+        return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
       }),
       shareReplay(1),
     )
@@ -99,7 +97,6 @@ export function setupAaveContext({
       aaveOracleAssetPriceData$,
       aaveUserConfiguration$,
       aaveReservesList$,
-      aaveReserveConfigurationData$,
       tempPositionFromLib$,
     ),
     (collateralToken, address) => `${collateralToken}-${address}`,
