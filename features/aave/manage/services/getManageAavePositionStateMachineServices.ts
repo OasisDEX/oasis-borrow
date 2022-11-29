@@ -39,7 +39,7 @@ export function getManageAavePositionStateMachineServices(
     },
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
-        map((balances) => balances[context.tokens.collateral]),
+        map((balances) => balances[context.tokens.deposit]),
         map(({ balance, price }) => ({
           type: 'SET_BALANCE',
           tokenBalance: balance,

@@ -17,7 +17,7 @@ export function createAavePrepareReserveData$(
   token: string,
 ): Observable<PreparedAaveReserveData> {
   return aaveReserveData$({ token }).pipe(
-    map(([reserveData]: [AaveReserveDataReply]) => ({
+    map((reserveData: AaveReserveDataReply) => ({
       // TODO: if/when all things below are required from observe(aaveReserveData$), we can get rid of this file
       variableBorrowRate: amountFromRay(new BigNumber(reserveData.variableBorrowRate)),
       liquidityRate: amountFromRay(new BigNumber(reserveData.liquidityRate)), // the current variable borrow rate. Expressed in ray

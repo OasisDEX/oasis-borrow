@@ -150,7 +150,7 @@ export function AaveManagePositionView({
 }: AaveManageViewPositionViewProps) {
   const { aaveManageStateMachine } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
-  const [aaveReserveDataETH] = useObservable(
+  const [aaveReserveDataETH, aaveReserveDataETHError] = useObservable(
     aavePreparedReserveDataETH$(strategyConfig.tokens.collateral),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
@@ -160,7 +160,7 @@ export function AaveManagePositionView({
       address={address}
       strategy={strategyConfig}
     >
-      <WithErrorHandler error={[aaveReserveStateError]}>
+      <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataETHError]}>
         <WithLoadingIndicator
           value={[aaveReserveState, aaveReserveDataETH]}
           customLoader={<VaultContainerSpinner />}
