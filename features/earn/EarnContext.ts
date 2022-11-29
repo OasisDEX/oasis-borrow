@@ -21,14 +21,12 @@ export function setupEarnContext({ context$, aaveAvailableLiquidityETH$ }: AppCo
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
 
   const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
-  const aavePreparedReserveDataETH$ = memoize(
-    curry(createAavePrepareReserveData$)(getAaveReserveData$),
-  )
+  const aaveReserveData$ = memoize(curry(createAavePrepareReserveData$)(getAaveReserveData$))
 
   return {
     aaveSTETHReserveConfigurationData,
     aaveAvailableLiquidityETH$,
-    aavePreparedReserveDataETH$,
+    aaveReserveData$,
   }
 }
 

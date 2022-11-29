@@ -88,11 +88,8 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
         <WithLoadingIndicator value={[currentDebtInDebtToken, afterDebtInDebtToken]}>
           {([currentDebtInDebtToken, afterDebtInDebtToken]) => (
             <OutstandingDebtInformation
-              {...state.context}
               currentDebtInDebtToken={currentDebtInDebtToken}
               afterDebtInDebtToken={afterDebtInDebtToken}
-              transactionParameters={strategy}
-              currentPosition={currentPosition}
               debtToken={state.context.tokens.debt}
             />
           )}
