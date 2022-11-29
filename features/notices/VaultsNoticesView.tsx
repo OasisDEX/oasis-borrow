@@ -7,7 +7,11 @@ import { Notice } from 'components/Notice'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
-import { formatAddress, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+} from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -495,9 +499,9 @@ function AavePositionAboveMaxLtvNotice({
   const { t } = useTranslation()
   const header = t('vault-notices.above-max-ltv.header')
   const subheader = t('vault-notices.above-max-ltv.subheader', {
-    loanToValue: formatPercent(loanToValue.times(100), { precision: 2 }),
-    maxLoanToValue: formatPercent(maxLoanToValue.times(100), { precision: 2 }),
-    liquidationThreshold: formatPercent(liquidationThreshold.times(100), { precision: 2 }),
+    loanToValue: formatDecimalAsPercent(loanToValue),
+    maxLoanToValue: formatDecimalAsPercent(maxLoanToValue),
+    liquidationThreshold: formatDecimalAsPercent(liquidationThreshold),
   })
 
   return (
