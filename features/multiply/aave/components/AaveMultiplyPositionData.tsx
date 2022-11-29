@@ -166,7 +166,7 @@ export function AaveMultiplyPositionData({
             }
           />
           <DetailsSectionFooterItem
-            title={t('system.total-exposure', { token: collateral.denomination })}
+            title={t('system.total-exposure', { token: collateral.symbol })}
             value={`${formatAmount(totalExposure, 'ETH')} ETH`}
             change={
               newTotalExposure && {

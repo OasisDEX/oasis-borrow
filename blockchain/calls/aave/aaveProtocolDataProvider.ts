@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 
 import { AaveProtocolDataProvider } from '../../../types/web3-v1-contracts/aave-protocol-data-provider'
-import { amountFromWei } from '../../utils'
+import { amountFromRay, amountFromWei } from '../../utils'
 import { CallDef } from '../callsHelpers'
 
 export interface AaveUserReserveDataParameters {

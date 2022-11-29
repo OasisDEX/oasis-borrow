@@ -17,7 +17,7 @@ import {
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
-import { aavePrepareReserveData } from './helpers/aavePrepareReserveData'
+import { createAavePrepareReserveData$ } from './helpers/aavePrepareReserveData'
 import { getStrategyConfig$ } from './helpers/getStrategyConfig'
 import {
   getAaveProtocolData$,
@@ -145,18 +145,26 @@ export function setupAaveContext({
     transactionMachine,
   )
 
-  const getAaveReserveData$ = observe(onEveryBlock$, context$, getAaveReserveData)
+  const getAaveReserveData$ = observe(
+    onEveryBlock$,
+    context$,
+    getAaveReserveData,
+    (args) => args.token,
+  )
+
+  const wrappedGetAaveReserveData$ = memoize(
+    curry(createAavePrepareReserveData$)(
+      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
+    ),
+  )
+
   const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices, (args) =>
     args.tokens.join(''),
   )
 
-  const STETHReserveData$ = getAaveReserveData$({ token: 'STETH' })
-  const ETHReserveData$ = getAaveReserveData$({ token: 'ETH' })
-  const USDCReserveData$ = getAaveReserveData$({ token: 'USDC' })
-
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
-    STETHReserveData$,
-    ETHReserveData$,
+    getAaveReserveData$({ token: 'STETH' }),
+    getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
@@ -164,10 +172,6 @@ export function setupAaveContext({
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
   )
-
-  const aavePreparedReserveDataUSDC$ = curry(aavePrepareReserveData())(USDCReserveData$)
-  const aavePreparedReserveDataSTETH$ = curry(aavePrepareReserveData())(STETHReserveData$)
-  const aavePreparedReserveDataETH$ = curry(aavePrepareReserveData())(ETHReserveData$)
 
   const chainlinkUSDCUSDOraclePrice$ = observe(
     onEveryBlock$,
@@ -180,14 +184,8 @@ export function setupAaveContext({
     aaveStateMachine,
     aaveManageStateMachine,
     aaveTotalValueLocked$,
-    aaveReserveConfiguration: {
-      STETH: aaveReserveConfigurationData$({ token: 'STETH' }),
-    },
-    aaveReserveData: {
-      USDC: aavePreparedReserveDataUSDC$,
-      STETH: aavePreparedReserveDataSTETH$,
-      ETH: aavePreparedReserveDataETH$,
-    },
+    aaveReserveConfigurationData$,
+    wrappedGetAaveReserveData$,
     aaveSthEthYieldsQuery,
     aaveProtocolData$,
     strategyConfig$,

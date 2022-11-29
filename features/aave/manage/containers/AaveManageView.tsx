@@ -150,7 +150,9 @@ export function AaveManagePositionView({
 }: AaveManageViewPositionViewProps) {
   const { aaveManageStateMachine } = useAaveContext()
   const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
-  const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
+  const [aaveReserveDataETH] = useObservable(
+    aavePreparedReserveDataETH$(strategyConfig.tokens.collateral),
+  )
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   return (
     <ManageAaveStateMachineContextProvider

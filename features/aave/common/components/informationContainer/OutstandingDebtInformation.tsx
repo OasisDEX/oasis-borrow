@@ -1,4 +1,4 @@
-import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -10,9 +10,12 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { useObservable } from '../../../../../helpers/observableHook'
+import BigNumber from 'bignumber.js'
 
 interface OutstandingDebtInformationProps {
-  transactionParameters: IStrategy
+  transactionParameters: IPositionTransition
+  currentDebtInDebtToken: BigNumber
+  afterDebtInDebtToken: BigNumber
   currentPosition: IPosition
   debtToken: string
 }
@@ -21,21 +24,10 @@ export function OutstandingDebtInformation({
   transactionParameters,
   currentPosition,
   debtToken,
+  currentDebtInDebtToken,
+  afterDebtInDebtToken,
 }: OutstandingDebtInformationProps) {
   const { t } = useTranslation()
-
-  const { convertToAaveOracleAssetPrice$ } = useAppContext()
-
-  const [currentDebtInDebtToken] = useObservable(
-    convertToAaveOracleAssetPrice$({ token: debtToken, amount: currentPosition.debt.amount }),
-  )
-
-  const [afterDebtInDebtToken] = useObservable(
-    convertToAaveOracleAssetPrice$({
-      token: debtToken,
-      amount: transactionParameters.simulation.position.debt.amount,
-    }),
-  )
 
   return (
     <VaultChangesInformationItem

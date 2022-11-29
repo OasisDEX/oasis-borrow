@@ -18,6 +18,8 @@ import { OutstandingDebtInformation } from './OutstandingDebtInformation'
 import { PriceImpact } from './PriceImpact'
 import { SlippageInformation } from './SlippageInformation'
 import { TransactionTokenAmount } from './TransactionTokenAmount'
+import { amountFromWei } from '@oasisdex/utils'
+import { getToken } from '../../../../../blockchain/tokensMetadata'
 
 type OpenAaveInformationContainerProps = {
   state: {
@@ -40,14 +42,36 @@ type OpenAaveInformationContainerProps = {
 export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { strategy, currentPosition, token } = state.context
-  const sourceTokenFee = strategy?.simulation?.swap?.sourceTokenFee || zero
-  const targetTokenFee = strategy?.simulation?.swap?.targetTokenFee || zero
-  const swapFee = sourceTokenFee.plus(targetTokenFee)
+  const { strategy, currentPosition, tokens } = state.context
+  const debtToken = tokens.debt
+  const swapFee = strategy?.simulation?.swap?.tokenFee || zero
   const { convertToAaveOracleAssetPrice$ } = useAppContext()
 
   const [feeInDebtToken, feeInDebtTokenError] = useObservable(
-    convertToAaveOracleAssetPrice$({ token, amount: swapFee }),
+    convertToAaveOracleAssetPrice$({
+      token: debtToken,
+      amount: amountFromWei(swapFee, getToken(debtToken).precision),
+    }),
+  )
+
+  const [currentDebtInDebtToken, currentDebtInDebtTokenError] = useObservable(
+    convertToAaveOracleAssetPrice$({
+      token: debtToken,
+      amount: amountFromWei(
+        currentPosition?.debt.amount || zero,
+        getToken(currentPosition?.debt.symbol || 'ETH').precision,
+      ),
+    }),
+  )
+
+  const [afterDebtInDebtToken, afterDebtInDebtTokenError] = useObservable(
+    convertToAaveOracleAssetPrice$({
+      token: debtToken,
+      amount: amountFromWei(
+        strategy?.simulation.position.debt.amount || zero,
+        getToken(strategy?.simulation.position.debt.symbol || 'ETH').precision,
+      ),
+    }),
   )
 
   return strategy && currentPosition ? (
@@ -60,12 +84,20 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
         transactionParameters={strategy}
         currentPosition={currentPosition}
       />
-      <OutstandingDebtInformation
-        {...state.context}
-        transactionParameters={strategy}
-        currentPosition={currentPosition}
-        debtToken={state.context.token}
-      />
+      <WithErrorHandler error={[currentDebtInDebtTokenError, afterDebtInDebtTokenError]}>
+        <WithLoadingIndicator value={[currentDebtInDebtToken, afterDebtInDebtToken]}>
+          {([currentDebtInDebtToken, afterDebtInDebtToken]) => (
+            <OutstandingDebtInformation
+              {...state.context}
+              currentDebtInDebtToken={currentDebtInDebtToken}
+              afterDebtInDebtToken={afterDebtInDebtToken}
+              transactionParameters={strategy}
+              currentPosition={currentPosition}
+              debtToken={state.context.tokens.debt}
+            />
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
       <LtvInformation
         {...state.context}
         transactionParameters={strategy}
@@ -76,7 +108,7 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
           {(feeInDebtToken) => {
             return (
               <FeesInformation
-                debtToken={token}
+                debtToken={debtToken}
                 feeInDebtToken={feeInDebtToken}
                 estimatedGasPrice={state.context.estimatedGasPrice}
               />
