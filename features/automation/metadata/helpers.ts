@@ -22,14 +22,14 @@ export function initializeMetadata({
   const { autoTakeProfit, autoBuy, autoSell, constantMultiple, stopLoss } = metadata
 
   return {
-    autoBuy: getDefaultMetadataWithDefault<AutoBSMetadata>(autoBuy)(automationContext),
-    autoSell: getDefaultMetadataWithDefault<AutoBSMetadata>(autoSell)(automationContext),
-    autoTakeProfit: getDefaultMetadataWithDefault<AutoTakeProfitMetadata>(autoTakeProfit)(
+    autoBuyMetadata: getDefaultMetadataWithDefault<AutoBSMetadata>(autoBuy)(automationContext),
+    autoSellMetadata: getDefaultMetadataWithDefault<AutoBSMetadata>(autoSell)(automationContext),
+    autoTakeProfitMetadata: getDefaultMetadataWithDefault<AutoTakeProfitMetadata>(autoTakeProfit)(
       automationContext,
     ),
-    constantMultiple: getDefaultMetadataWithDefault<ConstantMultipleMetadata>(constantMultiple)(
-      automationContext,
-    ),
-    stopLoss: getDefaultMetadataWithDefault<StopLossMetadata>(stopLoss)(automationContext),
+    constantMultipleMetadata: getDefaultMetadataWithDefault<ConstantMultipleMetadata>(
+      constantMultiple,
+    )(automationContext),
+    stopLossMetadata: getDefaultMetadataWithDefault<StopLossMetadata>(stopLoss)(automationContext),
   }
 }

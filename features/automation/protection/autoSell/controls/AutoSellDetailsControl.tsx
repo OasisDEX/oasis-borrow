@@ -13,8 +13,8 @@ import React from 'react'
 export function AutoSellDetailsControl() {
   const readOnlyAutoBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const {
-    autoSellTriggerData,
     positionData: { debt, lockedCollateral },
+    triggerData: { autoSellTriggerData },
   } = useAutomationContext()
 
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)

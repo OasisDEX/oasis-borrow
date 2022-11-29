@@ -14,7 +14,7 @@ function AutoSellInfoSectionControl() {
   const { t } = useTranslation()
   const {
     positionData: { debt, positionRatio, liquidationPrice },
-    autoSellTriggerData,
+    triggerData: { autoSellTriggerData },
   } = useAutomationContext()
 
   return (

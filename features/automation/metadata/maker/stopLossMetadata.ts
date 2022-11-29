@@ -1,3 +1,4 @@
+/* eslint-disable func-style */
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
@@ -14,7 +15,7 @@ import {
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
 import {
-  GetAutomationMetadata,
+  ContextWithoutMetadata,
   StopLossDetailCards,
   StopLossMetadata,
 } from 'features/automation/metadata/types'
@@ -27,12 +28,13 @@ import {
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { formatPercent } from 'helpers/formatters/format'
 
-// eslint-disable-next-line func-style
-export const makerStopLossMetaData: GetAutomationMetadata<StopLossMetadata> = (context) => {
+export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
-    autoSellTriggerData,
-    stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel },
-    constantMultipleTriggerData,
+    triggerData: {
+      autoSellTriggerData,
+      stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel },
+      constantMultipleTriggerData,
+    },
     positionData: {
       positionRatio,
       nextPositionRatio,
@@ -139,7 +141,7 @@ export const makerStopLossMetaData: GetAutomationMetadata<StopLossMetadata> = (c
       sliderStep: 1,
     },
     translations: {
-      ratioParam: 'system.collateral-ratio',
+      ratioParamTranslationKey: 'system.collateral-ratio',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({

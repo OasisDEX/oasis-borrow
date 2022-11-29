@@ -53,7 +53,7 @@ export function SetDownsideProtectionInformation({
   const {
     positionData: { token },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         methods: { getMaxToken },
         values: { collateralDuringLiquidation },
       },
@@ -135,18 +135,18 @@ export function SidebarAdjustStopLossEditingStage({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    stopLossTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, token, debt, positionRatio },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         callbacks: { onSliderChange, onCloseToChange },
         methods: { getSliderPercentageFill, getRightBoundary },
         settings: { fixedCloseToToken, sliderStep, sliderDirection },
-        translations: { ratioParam },
+        translations: { ratioParamTranslationKey },
         values: { sliderMin, sliderMax, resetData },
       },
     },
+    positionData: { id, ilk, token, debt, positionRatio },
+    triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -217,7 +217,9 @@ export function SidebarAdjustStopLossEditingStage({
             />
           )}
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('protection.set-downside-protection-desc', { ratioParam: t(ratioParam) })}{' '}
+            {t('protection.set-downside-protection-desc', {
+              ratioParam: t(ratioParamTranslationKey),
+            })}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
@@ -250,7 +252,7 @@ export function SidebarAdjustStopLossEditingStage({
 
               onSliderChange && onSliderChange({ value: slCollRatio })
             }}
-            leftLabel={t('protection.stop-loss-something', { value: t(ratioParam) })}
+            leftLabel={t('protection.stop-loss-something', { value: t(ratioParamTranslationKey) })}
             rightLabel={t('slider.set-stoploss.right-label')}
             direction={sliderDirection}
           />

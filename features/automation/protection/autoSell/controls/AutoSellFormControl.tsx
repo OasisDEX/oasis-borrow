@@ -30,9 +30,9 @@ export function AutoSellFormControl({
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
 
   const {
-    autoSellTriggerData,
     environmentData: { canInteract },
     positionData: { id, debt, lockedCollateral, positionRatio, owner },
+    triggerData: { autoSellTriggerData },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.AUTO_SELL

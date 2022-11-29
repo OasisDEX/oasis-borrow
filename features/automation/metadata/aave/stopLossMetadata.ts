@@ -10,7 +10,7 @@ import {
   isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
 import {
-  GetAutomationMetadata,
+  ContextWithoutMetadata,
   StopLossDetailCards,
   StopLossMetadata,
 } from 'features/automation/metadata/types'
@@ -25,10 +25,11 @@ import { StopLossResetData } from 'features/automation/protection/stopLoss/state
 import { formatPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 
-// eslint-disable-next-line func-style
-export const aaveStopLossMetaData: GetAutomationMetadata<StopLossMetadata> = (context) => {
+export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
-    stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
+    triggerData: {
+      stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
+    },
     positionData: {
       token,
       positionRatio,
@@ -133,7 +134,7 @@ export const aaveStopLossMetaData: GetAutomationMetadata<StopLossMetadata> = (co
       sliderStep: 1,
     },
     translations: {
-      ratioParam: 'vault-changes.loan-to-value',
+      ratioParamTranslationKey: 'vault-changes.loan-to-value',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({

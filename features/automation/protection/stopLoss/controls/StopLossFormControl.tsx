@@ -31,14 +31,14 @@ export function StopLossFormControl({
 }: StopLossFormControlProps) {
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const {
-    stopLossTriggerData,
     environmentData: { canInteract },
-    positionData: { id, debt, owner },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         values: { initialSlRatioWhenTriggerDoesntExist, resetData },
       },
     },
+    positionData: { id, debt, owner },
+    triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.STOP_LOSS

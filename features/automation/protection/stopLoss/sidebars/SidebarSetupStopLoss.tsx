@@ -70,18 +70,16 @@ export function SidebarSetupStopLoss({
   const { uiChanges } = useAppContext()
   const automationContext = useAutomationContext()
   const {
-    autoSellTriggerData,
-    constantMultipleTriggerData,
-    stopLossTriggerData,
     environmentData: { ethMarketPrice, etherscanUrl },
-    positionData: { vaultType },
-    protocol,
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         methods: { getExecutionPrice },
         validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
       },
     },
+    positionData: { vaultType },
+    protocol,
+    triggerData: { autoSellTriggerData, constantMultipleTriggerData, stopLossTriggerData },
   } = automationContext
   const { isAwaitingConfirmation } = stopLossState
 

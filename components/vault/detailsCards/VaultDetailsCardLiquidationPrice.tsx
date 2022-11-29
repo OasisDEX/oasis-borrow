@@ -99,7 +99,9 @@ export function VaultDetailsCardLiquidationPrice({
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
-  const { stopLossTriggerData } = useAutomationContext()
+  const {
+    triggerData: { stopLossTriggerData },
+  } = useAutomationContext()
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const cardDetailsData = {

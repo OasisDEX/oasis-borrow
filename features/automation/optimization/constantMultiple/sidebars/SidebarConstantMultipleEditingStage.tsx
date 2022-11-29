@@ -84,11 +84,13 @@ export function SidebarConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const [, setHash] = useHash()
   const {
-    autoBuyTriggerData,
-    autoSellTriggerData,
-    constantMultipleTriggerData,
-    stopLossTriggerData,
     positionData: { ilk, id, positionRatio, debt, debtFloor, token },
+    triggerData: {
+      autoBuyTriggerData,
+      autoSellTriggerData,
+      constantMultipleTriggerData,
+      stopLossTriggerData,
+    },
   } = useAutomationContext()
 
   automationMultipleRangeSliderAnalytics({

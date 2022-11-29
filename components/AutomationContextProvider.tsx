@@ -12,7 +12,10 @@ import {
 import { useAutoBSstateInitialization } from 'features/automation/common/state/useAutoBSStateInitializator'
 import { initializeMetadata } from 'features/automation/metadata/helpers'
 import {
+  AutoBSMetadata,
   AutomationDefinitionMetadata,
+  AutoTakeProfitMetadata,
+  ConstantMultipleMetadata,
   OverwriteTriggersDefaults,
   StopLossMetadata,
 } from 'features/automation/metadata/types'
@@ -73,18 +76,44 @@ export interface AutomationPositionData {
 }
 
 export interface AutomationContext {
-  autoBuyTriggerData: AutoBSTriggerData
   automationTriggersData: TriggersData
-  autoSellTriggerData: AutoBSTriggerData
-  autoTakeProfitTriggerData: AutoTakeProfitTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
   environmentData: AutomationEnvironmentData
+  metadata: {
+    autoBuyMetadata: AutoBSMetadata
+    autoSellMetadata: AutoBSMetadata
+    autoTakeProfitMetadata: AutoTakeProfitMetadata
+    constantMultipleMetadata: ConstantMultipleMetadata
+    stopLossMetadata: StopLossMetadata
+  }
   positionData: AutomationPositionData
   protocol: VaultProtocol
-  stopLossTriggerData: StopLossTriggerData
-  metadata: {
-    stopLoss: StopLossMetadata
+  triggerData: {
+    autoBuyTriggerData: AutoBSTriggerData
+    autoSellTriggerData: AutoBSTriggerData
+    autoTakeProfitTriggerData: AutoTakeProfitTriggerData
+    constantMultipleTriggerData: ConstantMultipleTriggerData
+    stopLossTriggerData: StopLossTriggerData
   }
+}
+
+export interface AutomationContextProviderProps {
+  ethBalance: BigNumber
+  context: Context
+  ethAndTokenPricesData: Tickers
+  positionData: AutomationPositionData
+  commonData: AutomationCommonData
+  protocol: VaultProtocol
+  metadata: AutomationDefinitionMetadata
+  overwriteTriggersDefaults?: OverwriteTriggersDefaults
+}
+
+const automationTriggersDataInitialState = { isAutomationEnabled: false, triggers: [] }
+const automationContextInitialState = {
+  autoBuyTriggerData: defaultAutoBSData,
+  autoSellTriggerData: defaultAutoBSData,
+  autoTakeProfitTriggerData: defaultAutoTakeProfitData,
+  constantMultipleTriggerData: defaultConstantMultipleData,
+  stopLossTriggerData: defaultStopLossData,
 }
 
 export const automationContext = React.createContext<AutomationContext | undefined>(undefined)
@@ -102,28 +131,6 @@ export function useAutomationContext(): AutomationContext {
 /*
   This component is providing computed data from cache about active automation triggers on the vault
 */
-
-const defaultAutomationTriggersData: TriggersData = { isAutomationEnabled: false, triggers: [] }
-
-const automationContextInitialState = {
-  automationTriggersData: defaultAutomationTriggersData,
-  autoBuyTriggerData: defaultAutoBSData,
-  autoSellTriggerData: defaultAutoBSData,
-  autoTakeProfitTriggerData: defaultAutoTakeProfitData,
-  constantMultipleTriggerData: defaultConstantMultipleData,
-  stopLossTriggerData: defaultStopLossData,
-}
-
-export interface AutomationContextProviderProps {
-  ethBalance: BigNumber
-  context: Context
-  ethAndTokenPricesData: Tickers
-  positionData: AutomationPositionData
-  commonData: AutomationCommonData
-  protocol: VaultProtocol
-  metadata: AutomationDefinitionMetadata
-  overwriteTriggersDefaults?: OverwriteTriggersDefaults
-}
 
 export function AutomationContextProvider({
   children,
@@ -164,21 +171,24 @@ export function AutomationContextProvider({
   )
 
   const initialAutoContext = {
-    ...automationContextInitialState,
-    ...overwriteTriggersDefaults,
+    automationTriggersData: automationTriggersDataInitialState,
     environmentData,
     positionData,
     protocol,
+    triggerData: {
+      ...automationContextInitialState,
+      ...overwriteTriggersDefaults,
+    },
   }
 
-  const initMetadata = useMemo(
+  const initializedMetadata = useMemo(
     () => initializeMetadata({ automationContext: initialAutoContext, metadata }),
     [],
   )
 
   const [autoContext, setAutoContext] = useState<AutomationContext>({
     ...initialAutoContext,
-    metadata: initMetadata,
+    metadata: initializedMetadata,
   })
 
   const { automationTriggersData$ } = useAppContext()
@@ -186,66 +196,69 @@ export function AutomationContextProvider({
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   useStopLossStateInitialization({
+    stopLossTriggerData: autoContext.triggerData.stopLossTriggerData,
+    metadata: autoContext.metadata.stopLossMetadata,
     positionRatio: positionData.positionRatio,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
-    metadata: autoContext.metadata.stopLoss,
   })
 
   useAutoBSstateInitialization({
-    autoTriggersData: autoContext.autoSellTriggerData,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
+    autoTriggersData: autoContext.triggerData.autoSellTriggerData,
+    stopLossTriggerData: autoContext.triggerData.stopLossTriggerData,
     positionRatio: positionData.positionRatio,
     type: TriggerType.BasicSell,
   })
 
   useAutoBSstateInitialization({
-    autoTriggersData: autoContext.autoBuyTriggerData,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
+    autoTriggersData: autoContext.triggerData.autoBuyTriggerData,
+    stopLossTriggerData: autoContext.triggerData.stopLossTriggerData,
     positionRatio: positionData.positionRatio,
     type: TriggerType.BasicBuy,
   })
 
   useConstantMultipleStateInitialization({
-    ilk: positionData.ilk,
+    autoBuyTriggerData: autoContext.triggerData.autoBuyTriggerData,
+    autoSellTriggerData: autoContext.triggerData.autoSellTriggerData,
+    constantMultipleTriggerData: autoContext.triggerData.constantMultipleTriggerData,
+    stopLossTriggerData: autoContext.triggerData.stopLossTriggerData,
     debt: positionData.debt,
     debtFloor: positionData.debtFloor,
+    ilk: positionData.ilk,
     liquidationRatio: positionData.liquidationRatio,
-    positionRatio: positionData.positionRatio,
     lockedCollateral: positionData.lockedCollateral,
-    stopLossTriggerData: autoContext.stopLossTriggerData,
-    autoSellTriggerData: autoContext.autoSellTriggerData,
-    autoBuyTriggerData: autoContext.autoBuyTriggerData,
-    constantMultipleTriggerData: autoContext.constantMultipleTriggerData,
+    positionRatio: positionData.positionRatio,
   })
 
   useAutoTakeProfitStateInitializator({
+    autoTakeProfitTriggerData: autoContext.triggerData.autoTakeProfitTriggerData,
     debt: positionData.debt,
     lockedCollateral: positionData.lockedCollateral,
     positionRatio: positionData.positionRatio,
-    autoTakeProfitTriggerData: autoContext.autoTakeProfitTriggerData,
   })
 
   useEffect(() => {
-    const resolvedAutomationTriggersData = automationTriggersData || defaultAutomationTriggersData
+    const resolvedAutomationTriggersData =
+      automationTriggersData || automationTriggersDataInitialState
     const update = {
-      autoBuyTriggerData: extractAutoBSData({
-        triggersData: resolvedAutomationTriggersData,
-        triggerType: TriggerType.BasicBuy,
-      }),
-      autoSellTriggerData: extractAutoBSData({
-        triggersData: resolvedAutomationTriggersData,
-        triggerType: TriggerType.BasicSell,
-      }),
-      stopLossTriggerData: extractStopLossData(
-        resolvedAutomationTriggersData,
-        overwriteTriggersDefaults?.stopLossTriggerData,
-      ),
-      constantMultipleTriggerData: extractConstantMultipleData(resolvedAutomationTriggersData),
-      autoTakeProfitTriggerData: extractAutoTakeProfitData(resolvedAutomationTriggersData),
       automationTriggersData: resolvedAutomationTriggersData,
-      protocol,
       environmentData,
       positionData,
+      protocol,
+      triggerData: {
+        autoBuyTriggerData: extractAutoBSData({
+          triggersData: resolvedAutomationTriggersData,
+          triggerType: TriggerType.BasicBuy,
+        }),
+        autoSellTriggerData: extractAutoBSData({
+          triggersData: resolvedAutomationTriggersData,
+          triggerType: TriggerType.BasicSell,
+        }),
+        autoTakeProfitTriggerData: extractAutoTakeProfitData(resolvedAutomationTriggersData),
+        constantMultipleTriggerData: extractConstantMultipleData(resolvedAutomationTriggersData),
+        stopLossTriggerData: extractStopLossData(
+          resolvedAutomationTriggersData,
+          overwriteTriggersDefaults?.stopLossTriggerData,
+        ),
+      },
     }
     setAutoContext((prev) => ({
       ...prev,

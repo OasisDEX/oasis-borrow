@@ -52,10 +52,31 @@ export interface StopLossMetadataDetailCards {
   cardsConfig?: StopLossDetailsConfig
 }
 
+type AutomationCommonMetadata<T> = {
+  settings: {
+    sliderDirection?: 'ltr' | 'rtl'
+    sliderStep: number
+  }
+  translations: {
+    ratioParamTranslationKey: string
+  }
+  validation: {
+    getAddErrors: AutomationMetadataValidationMethod<T>
+    getAddWarnings: AutomationMetadataValidationMethod<T>
+    cancelErrors: string[]
+    cancelWarnings: string[]
+  }
+  values: {
+    sliderMax: BigNumber
+    sliderMin: BigNumber
+  }
+}
+
+// TODO: add AutomationCommonMetadata types to all metadata features during their implementation
 export interface AutoBSMetadata {}
 export interface AutoTakeProfitMetadata {}
 export interface ConstantMultipleMetadata {}
-export interface StopLossMetadata {
+export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
   callbacks: {
     onCloseToChange?: AutomationCallbackMethod<{ optionName: string }>
     onSliderChange?: AutomationCallbackMethod<{ value: BigNumber }>
@@ -69,24 +90,11 @@ export interface StopLossMetadata {
   }
   settings: {
     fixedCloseToToken?: string
-    sliderDirection?: 'ltr' | 'rtl'
-    sliderStep: number
-  }
-  translations: {
-    ratioParam: string
-  }
-  validation: {
-    getAddErrors: AutomationMetadataValidationMethod<StopLossFormChange>
-    getAddWarnings: AutomationMetadataValidationMethod<StopLossFormChange>
-    cancelErrors: string[]
-    cancelWarnings: string[]
   }
   values: {
     collateralDuringLiquidation: BigNumber
     initialSlRatioWhenTriggerDoesntExist: BigNumber
     resetData: StopLossResetData
-    sliderMax: BigNumber
-    sliderMin: BigNumber
     triggerMaxToken: BigNumber
   }
 }

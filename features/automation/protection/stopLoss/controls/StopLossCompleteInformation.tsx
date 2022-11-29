@@ -32,7 +32,7 @@ export function StopLossCompleteInformation({
   const {
     positionData: { token, liquidationPrice, liquidationRatio },
     metadata: {
-      stopLoss: {
+      stopLossMetadata: {
         methods: { getMaxToken },
       },
     },

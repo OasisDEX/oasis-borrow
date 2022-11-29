@@ -42,7 +42,7 @@ function AutoBuyInfoSectionControl() {
   const { t } = useTranslation()
   const {
     positionData: { positionRatio, liquidationPrice, debt },
-    autoBuyTriggerData,
+    triggerData: { autoBuyTriggerData },
   } = useAutomationContext()
 
   return (

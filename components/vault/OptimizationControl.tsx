@@ -118,10 +118,8 @@ interface OptimizationControlProps {
 
 export function OptimizationControl({ vaultHistory }: OptimizationControlProps) {
   const {
-    autoBuyTriggerData,
-    autoTakeProfitTriggerData,
-    constantMultipleTriggerData,
     positionData: { debt },
+    triggerData: { autoBuyTriggerData, autoTakeProfitTriggerData, constantMultipleTriggerData },
   } = useAutomationContext()
   const { txHelpers$ } = useAppContext()
   const [txHelpersData] = useObservable(txHelpers$)
