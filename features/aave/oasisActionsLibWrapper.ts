@@ -162,11 +162,8 @@ export async function getOpenAaveParameters({
       user: context.account,
     }
 
-    recursiveLog(stratArgs, 'stratArgs')
-    recursiveLog(stratDeps, 'stratDeps')
-
     const strategy = await strategies.aave.open(stratArgs, stratDeps)
-    // recursiveLog(strategy, 'strategy return')
+
     return {
       strategy,
       operationName: strategy.transaction.operationName,
@@ -275,22 +272,23 @@ export async function getCloseAaveParameters({
     precision: currentPosition.debt.precision,
   }
 
-  const strategy = await strategies.aave.close(
-    {
-      slippage,
-      debtToken,
-      collateralToken,
-      collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount,
-    },
-    {
-      addresses: getAddressesFromContext(context),
-      currentPosition,
-      provider: provider,
-      getSwapData: getOneInchCall(context.swapAddress),
-      proxy: proxyAddress,
-      user: context.account,
-    },
-  )
+  const stratArgs = {
+    slippage,
+    debtToken,
+    collateralToken,
+    collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount,
+  }
+
+  const stratDeps = {
+    addresses: getAddressesFromContext(context),
+    currentPosition,
+    provider: provider,
+    getSwapData: getOneInchCall(context.swapAddress),
+    proxy: proxyAddress,
+    user: context.account,
+  }
+
+  const strategy = await strategies.aave.close(stratArgs, stratDeps)
 
   return { strategy, operationName: strategy.transaction.operationName }
 }
