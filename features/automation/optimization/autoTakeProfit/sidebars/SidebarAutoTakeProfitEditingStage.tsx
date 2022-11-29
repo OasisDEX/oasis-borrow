@@ -52,8 +52,8 @@ export function SidebarAutoTakeProfitEditingStage({
   const readOnlyAutoTakeProfitEnabled = useFeatureToggle('ReadOnlyAutoTakeProfit')
 
   const {
-    autoTakeProfitTriggerData,
     positionData: { ilk, id, positionRatio, debt, debtFloor, token },
+    triggerData: { autoTakeProfitTriggerData },
   } = useAutomationContext()
 
   useDebouncedCallback(

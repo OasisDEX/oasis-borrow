@@ -8,7 +8,7 @@ import { Card, Grid, Heading, Text } from 'theme-ui'
 interface ContentCardStopLossCollateralRatioModalProps {
   isStopLossEnabled: boolean
   stopLossLevelFormatted: string
-  ratioParam: string
+  ratioParamTranslationKey: string
   modalDescription: string
 }
 
@@ -17,7 +17,7 @@ interface ContentCardStopLossCollateralRatioProps {
   isEditing: boolean
   stopLossLevel: BigNumber
   afterStopLossLevel: BigNumber
-  ratioParam: string
+  ratioParamTranslationKey: string
   modalDescription: string
   belowCurrentPositionRatio: string
 }
@@ -25,7 +25,7 @@ interface ContentCardStopLossCollateralRatioProps {
 function ContentCardStopLossCollateralRatioModal({
   isStopLossEnabled,
   stopLossLevelFormatted,
-  ratioParam,
+  ratioParamTranslationKey,
   modalDescription,
 }: ContentCardStopLossCollateralRatioModalProps) {
   const { t } = useTranslation()
@@ -33,13 +33,13 @@ function ContentCardStopLossCollateralRatioModal({
   return (
     <Grid gap={2}>
       <Heading variant="header3">
-        {t('protection.stop-loss-something', { value: t(ratioParam) })}
+        {t('protection.stop-loss-something', { value: t(ratioParamTranslationKey) })}
       </Heading>
       <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
         {t(modalDescription)}
       </Text>
       <Text as="p" variant="header4" sx={{ mt: 3, fontWeight: 'semiBold' }}>
-        {t('protection.current-stop-loss-something', { value: t(ratioParam) })}
+        {t('protection.current-stop-loss-something', { value: t(ratioParamTranslationKey) })}
       </Text>
       <Card as="div" variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
         <Heading variant="header3">{isStopLossEnabled ? stopLossLevelFormatted : '-'}</Heading>
@@ -53,7 +53,7 @@ export function ContentCardStopLossLevel({
   isEditing,
   stopLossLevel,
   afterStopLossLevel,
-  ratioParam,
+  ratioParamTranslationKey,
   modalDescription,
   belowCurrentPositionRatio,
 }: ContentCardStopLossCollateralRatioProps) {
@@ -71,15 +71,15 @@ export function ContentCardStopLossLevel({
   const contentCardModalSettings: ContentCardStopLossCollateralRatioModalProps = {
     isStopLossEnabled: isStopLossEnabled,
     stopLossLevelFormatted: formatted.stopLossLevel,
-    ratioParam,
+    ratioParamTranslationKey,
     modalDescription,
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('protection.stop-loss-something', { value: t(ratioParam) }),
+    title: t('protection.stop-loss-something', { value: t(ratioParamTranslationKey) }),
     footnote: t('system.cards.stop-loss-collateral-ratio.footnote', {
       amount: belowCurrentPositionRatio,
-      value: t(ratioParam),
+      value: t(ratioParamTranslationKey),
     }),
     modal: <ContentCardStopLossCollateralRatioModal {...contentCardModalSettings} />,
   }

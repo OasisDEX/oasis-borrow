@@ -18,7 +18,6 @@ export function getChainlinkOraclePrice(
       contract<ChainlinkPriceOracle>(chainlinkPriceOracle[contractName]).methods.latestAnswer,
     prepareArgs: () => [],
     postprocess: (answer) => {
-      // answer is not really a bignumber here
       return amountFromWei(new BigNumber(answer), USD_CHAINLINK_PRECISION)
     },
   }

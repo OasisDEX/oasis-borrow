@@ -22,10 +22,9 @@ interface ProtectionFormControlProps {
 
 export function ProtectionFormControl({ txHelpers }: ProtectionFormControlProps) {
   const {
-    stopLossTriggerData,
-    autoSellTriggerData,
     automationTriggersData,
     protocol,
+    triggerData: { autoSellTriggerData, stopLossTriggerData },
   } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)

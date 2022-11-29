@@ -63,9 +63,8 @@ export function SidebarAutoSellAddEditingStage({
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const {
-    autoSellTriggerData,
-    stopLossTriggerData,
     positionData: { id, ilk, debt, debtFloor, lockedCollateral, positionRatio, token },
+    triggerData: { autoSellTriggerData, stopLossTriggerData },
   } = useAutomationContext()
   const { t } = useTranslation()
   const [, setHash] = useHash()

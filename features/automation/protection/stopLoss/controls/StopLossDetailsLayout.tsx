@@ -30,7 +30,7 @@ export interface StopLossDetailsLayoutProps {
   collateralDuringLiquidation: BigNumber
   triggerMaxToken: BigNumber
   afterMaxToken: BigNumber
-  ratioParam: string
+  ratioParamTranslationKey: string
   detailCards?: StopLossMetadataDetailCards
 }
 
@@ -51,7 +51,7 @@ export function StopLossDetailsLayout({
   afterMaxToken,
   collateralDuringLiquidation,
   triggerMaxToken,
-  ratioParam,
+  ratioParamTranslationKey,
   detailCards,
 }: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
@@ -72,7 +72,7 @@ export function StopLossDetailsLayout({
                   isEditing={isEditing}
                   stopLossLevel={stopLossLevel}
                   afterStopLossLevel={afterStopLossLevel}
-                  ratioParam={ratioParam}
+                  ratioParamTranslationKey={ratioParamTranslationKey}
                   modalDescription={cardsConfig?.stopLossLevelCard.modalDescription}
                   belowCurrentPositionRatio={
                     cardsConfig?.stopLossLevelCard.belowCurrentPositionRatio
@@ -100,7 +100,7 @@ export function StopLossDetailsLayout({
                 liquidationPrice={liquidationPrice}
                 liquidationRatio={liquidationRatio}
                 afterStopLossLevel={afterStopLossLevel}
-                ratioParam={ratioParam}
+                ratioParamTranslationKey={ratioParamTranslationKey}
               />
             )}
             {cardsSet.includes(StopLossDetailCards.ESTIMATED_TOKEN_ON_TRIGGER) && (

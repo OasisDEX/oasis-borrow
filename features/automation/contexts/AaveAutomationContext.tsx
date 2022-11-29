@@ -4,7 +4,7 @@ import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserv
 import { ManageAaveContext } from 'features/aave/manage/state'
 import { getAutomationAavePositionData } from 'features/automation/common/context/getAutomationAavePositionData'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
-import { aaveStopLossMetaData } from 'features/automation/metadata/aave/stopLossMetadata'
+import { getAaveStopLossMetadata } from 'features/automation/metadata/aave/stopLossMetadata'
 import { defaultStopLossData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
@@ -50,7 +50,7 @@ export function AaveAutomationContext({
       commonData={commonData}
       protocol={VaultProtocol.Aave}
       metadata={{
-        stopLoss: aaveStopLossMetaData,
+        stopLoss: getAaveStopLossMetadata,
       }}
       overwriteTriggersDefaults={{
         stopLossTriggerData: defaultStopLossTriggerData,

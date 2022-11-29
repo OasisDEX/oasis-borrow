@@ -275,14 +275,15 @@ import {
 } from 'rxjs/operators'
 
 import {
+  createAaveOracleAssetPriceData$,
+  createConvertToAaveOracleAssetPrice$,
+} from '../blockchain/aave/oracleAssetPriceData'
+import {
   getAaveReservesList,
   getAaveUserAccountData,
   getAaveUserConfiguration,
 } from '../blockchain/calls/aave/aaveLendingPool'
-import {
-  getAaveAssetsPrices,
-  getAaveOracleAssetPriceData,
-} from '../blockchain/calls/aave/aavePriceOracle'
+import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
 import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
@@ -489,6 +490,13 @@ export function setupAppContext() {
 
   const context$ = createContext$(web3ContextConnected$)
 
+  const chainContext$ = context$.pipe(
+    distinctUntilChanged(
+      (previousContext, newContext) => previousContext.chainId === newContext.chainId,
+    ),
+    shareReplay(1),
+  )
+
   const connectedContext$ = createContextConnected$(context$)
 
   combineLatest(account$, connectedContext$)
@@ -560,19 +568,19 @@ export function setupAppContext() {
   const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
-  const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
-  const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
-  const cdpRegistryCdps$ = observe(onEveryBlock$, context$, cdpRegistryCdps)
-  const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
-  const vatIlksLean$ = observe(once$, context$, vatIlk)
-  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
-  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
-  const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
-  const spotIlksLean$ = observe(once$, context$, spotIlk)
-  const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
-  const jugIlksLean$ = observe(once$, context$, jugIlk)
-  const dogIlks$ = observe(onEveryBlock$, context$, dogIlk)
-  const dogIlksLean$ = observe(once$, context$, dogIlk)
+  const cdpManagerOwner$ = observe(onEveryBlock$, chainContext$, cdpManagerOwner, bigNumberTostring)
+  const cdpRegistryOwns$ = observe(onEveryBlock$, chainContext$, cdpRegistryOwns)
+  const cdpRegistryCdps$ = observe(onEveryBlock$, chainContext$, cdpRegistryCdps)
+  const vatIlks$ = observe(onEveryBlock$, chainContext$, vatIlk)
+  const vatIlksLean$ = observe(once$, chainContext$, vatIlk)
+  const vatUrns$ = observe(onEveryBlock$, chainContext$, vatUrns, ilkUrnAddressToString)
+  const vatGem$ = observe(onEveryBlock$, chainContext$, vatGem, ilkUrnAddressToString)
+  const spotIlks$ = observe(onEveryBlock$, chainContext$, spotIlk)
+  const spotIlksLean$ = observe(once$, chainContext$, spotIlk)
+  const jugIlks$ = observe(onEveryBlock$, chainContext$, jugIlk)
+  const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
+  const dogIlks$ = observe(onEveryBlock$, chainContext$, dogIlk)
+  const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
@@ -587,8 +595,8 @@ export function setupAppContext() {
   const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
-  const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
-  const pipZzzLean$ = observe(once$, context$, pipZzz)
+  const pipZzz$ = observe(onEveryBlock$, chainContext$, pipZzz)
+  const pipZzzLean$ = observe(once$, chainContext$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipHopLean$ = observe(once$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
@@ -607,14 +615,20 @@ export function setupAppContext() {
   }
 
   const oraclePriceData$ = memoize(
-    curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    curry(createOraclePriceData$)(chainContext$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
   )
 
   const oraclePriceDataLean$ = memoize(
-    curry(createOraclePriceData$)(context$, pipPeekLean$, pipPeepLean$, pipZzzLean$, pipHopLean$),
+    curry(createOraclePriceData$)(
+      chainContext$,
+      pipPeekLean$,
+      pipPeepLean$,
+      pipZzzLean$,
+      pipHopLean$,
+    ),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
@@ -624,26 +638,26 @@ export function setupAppContext() {
   const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
 
   const balance$ = memoize(
-    curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
+    curry(createBalance$)(onEveryBlock$, chainContext$, tokenBalance$),
     (token, address) => `${token}_${address}`,
   )
 
   const balanceLean$ = memoize(
-    curry(createBalance$)(once$, context$, tokenBalanceLean$),
+    curry(createBalance$)(once$, chainContext$, tokenBalanceLean$),
     (token, address) => `${token}_${address}`,
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
-  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
-  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
-  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
-  const tokenName$ = observe(onEveryBlock$, context$, tokenName)
+  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
+  const tokenDecimals$ = observe(onEveryBlock$, chainContext$, tokenDecimals)
+  const tokenSymbol$ = observe(onEveryBlock$, chainContext$, tokenSymbol)
+  const tokenName$ = observe(onEveryBlock$, chainContext$, tokenName)
 
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
-  const ilkToToken$ = memoize(curry(createIlkToToken$)(context$))
+  const ilkToToken$ = memoize(curry(createIlkToToken$)(chainContext$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
@@ -656,7 +670,7 @@ export function setupAppContext() {
   const charterCdps$ = memoize(
     curry(createGetRegistryCdps$)(
       onEveryBlock$,
-      context$,
+      chainContext$,
       cdpRegistryCdps$,
       proxyAddress$,
       charterIlks,
@@ -665,7 +679,7 @@ export function setupAppContext() {
   const cropJoinCdps$ = memoize(
     curry(createGetRegistryCdps$)(
       onEveryBlock$,
-      context$,
+      chainContext$,
       cdpRegistryCdps$,
       proxyAddress$,
       cropJoinIlks,
@@ -725,7 +739,7 @@ export function setupAppContext() {
         ilkData$,
         oraclePriceData$,
         ilkToToken$,
-        context$,
+        chainContext$,
         id,
       ),
     bigNumberTostring,
@@ -744,19 +758,19 @@ export function setupAppContext() {
     ),
   )
 
-  const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(chainContext$, onEveryBlock$, vault$))
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(
-    curry(createVaults$)(onEveryBlock$, vault$, context$, [
+    curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [
       charterCdps$,
       cropJoinCdps$,
       standardCdps$,
     ]),
   )
 
-  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
+  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(chainContext$)
 
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
@@ -828,7 +842,6 @@ export function setupAppContext() {
 
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
   const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
-  const aaveOracleAssetPriceData$ = observe(onEveryBlock$, context$, getAaveOracleAssetPriceData)
   const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
   const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
   const aaveReserveConfigurationData$ = observe(
@@ -837,7 +850,13 @@ export function setupAppContext() {
     getAaveReserveConfigurationData,
     ({ token }) => token,
   )
-
+  const aaveOracleAssetPriceData$ = memoize(
+    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
+  )
+  const convertToAaveOracleAssetPrice$ = memoize(
+    curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
+    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
+  )
   const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
@@ -1025,11 +1044,11 @@ export function setupAppContext() {
   )
 
   const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, vault$),
   )
 
   const vaultsHistoryAndValue$ = memoize(
-    curry(vaultsWithHistory$)(context$, vaultWithValue$, 1000 * 60),
+    curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, 1000 * 60),
   )
 
   const positionsList$ = memoize(
@@ -1088,14 +1107,14 @@ export function setupAppContext() {
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
 
   const makerOracleTokenPrices$ = memoize(
-    curry(createMakerOracleTokenPrices$)(context$),
+    curry(createMakerOracleTokenPrices$)(chainContext$),
     (token: string, timestamp: moment.Moment) => {
       return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
     },
   )
 
   const makerOracleTokenPricesForDates$ = memoize(
-    curry(createMakerOracleTokenPricesForDates$)(context$),
+    curry(createMakerOracleTokenPricesForDates$)(chainContext$),
     (token: string, timestamps: moment.Moment[]) => {
       return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
     },
@@ -1208,6 +1227,7 @@ export function setupAppContext() {
     aaveUserAccountData$,
     hasActiveAavePosition$,
     balanceInfo$,
+    convertToAaveOracleAssetPrice$,
     once$,
   }
 }

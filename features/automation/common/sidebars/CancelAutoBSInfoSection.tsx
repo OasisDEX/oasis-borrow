@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -14,7 +14,7 @@ interface CancelAutoBSInfoSectionProps {
   title: string
   targetLabel: string
   triggerLabel: string
-  autoBSState: AutoBSFormChange
+  autoBSTriggerData: AutoBSTriggerData
 }
 
 export function CancelAutoBSInfoSection({
@@ -24,7 +24,7 @@ export function CancelAutoBSInfoSection({
   title,
   targetLabel,
   triggerLabel,
-  autoBSState,
+  autoBSTriggerData,
 }: CancelAutoBSInfoSectionProps) {
   const { t } = useTranslation()
   const isDebtZero = debt.isZero()
@@ -34,8 +34,10 @@ export function CancelAutoBSInfoSection({
   const positionRatioFormatted = formatPercent(positionRatio.times(100), {
     precision: 2,
   })
-  const execCollRatioFormatted = formatPercent(autoBSState.execCollRatio, { precision: 2 })
-  const targetCollRatioFormatted = formatPercent(autoBSState.targetCollRatio, { precision: 2 })
+  const execCollRatioFormatted = formatPercent(autoBSTriggerData.execCollRatio, { precision: 2 })
+  const targetCollRatioFormatted = formatPercent(autoBSTriggerData.targetCollRatio, {
+    precision: 2,
+  })
 
   return (
     <InfoSection
