@@ -17,6 +17,7 @@ import {
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
+import { prepareAaveAvailableLiquidityInUSD$ } from './helpers/aavePrepareAvailableLiquidity'
 import { createAavePrepareReserveData$ } from './helpers/aavePrepareReserveData'
 import { getStrategyConfig$ } from './helpers/getStrategyConfig'
 import {
@@ -177,6 +178,12 @@ export function setupAaveContext({
     () => 'true',
   )
 
+  const aaveAvailableLiquiditySTETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
+    getAaveReserveData$({ token: 'STETH' }),
+    // @ts-expect-error
+    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  )
+
   return {
     aaveStateMachine,
     aaveManageStateMachine,
@@ -188,6 +195,7 @@ export function setupAaveContext({
     strategyConfig$,
     getAaveAssetsPrices$,
     chainlinkUSDCUSDOraclePrice$,
+    aaveAvailableLiquiditySTETH$,
   }
 }
 

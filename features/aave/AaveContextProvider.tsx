@@ -6,7 +6,7 @@ import { AaveContext, setupAaveContext } from './AaveContext'
 
 export const aaveContext = React.createContext<AaveContext | undefined>(undefined)
 
-export function isAppContextAvailable(): boolean {
+export function isAaveContextAvailable(): boolean {
   return !!useContext(aaveContext)
 }
 

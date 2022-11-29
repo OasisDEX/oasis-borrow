@@ -49,15 +49,11 @@ export function EarnView() {
           {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
               {_productCardsIlksData.map((cardData) => (
-                <ProductCardEarnMaker cardData={cardData} key={cardData.ilk} />
+                <ProductCardEarnMaker key={cardData.ilk} cardData={cardData} />
               ))}
               {showAaveStETHETHProductCard &&
-              _productCardsIlksData.length && // just to show them simultanously
                 aaveEarnStrategies.map((cardData) => (
-                  <ProductCardEarnAave
-                    key={`ProductCardEarnAave_${cardData.symbol}`}
-                    cardData={cardData}
-                  />
+                  <ProductCardEarnAave key={cardData.symbol} cardData={cardData} />
                 ))}
             </ProductCardsWrapper>
           )}

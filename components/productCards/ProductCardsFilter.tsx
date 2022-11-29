@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TokenConfig } from 'blockchain/tokensMetadata'
+import { AaveContextProvider, isAaveContextAvailable } from 'features/aave/AaveContextProvider'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
@@ -15,6 +16,7 @@ import {
   ProductLandingPagesFiltersKeys,
 } from '../../helpers/productCards'
 import { useAppContext } from '../AppContextProvider'
+import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardsSelect } from './ProductCardsSelect'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
@@ -23,7 +25,7 @@ interface ProductCardFilterProps {
   makerProductCardComponent: (props: { cardData: ProductCardData }) => JSX.Element
   selectedFilter?: string
   filterCardsFunction: FilterCardsFunction
-  otherStrategies?: TokenConfig[]
+  otherStrategies: TokenConfig[]
 }
 
 type FilterCardsFunction = ({
@@ -36,13 +38,11 @@ type FilterCardsFunction = ({
 
 export function ProductCardsFilter({
   filters,
-  makerProductCardComponent,
+  makerProductCardComponent: ProductCardMakerComponent,
   selectedFilter,
   filterCardsFunction,
   otherStrategies,
 }: ProductCardFilterProps) {
-  console.log('otherStrategies', otherStrategies)
-
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
@@ -55,11 +55,9 @@ export function ProductCardsFilter({
     productCardsData$(productsToDisplay.map(({ ilk }) => ilk)),
   )
   const [hover, setHover] = useState('')
-  const ProductCardComponent = makerProductCardComponent
   function handleTabClick(token: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(token)
   }
-
   function handleSelectChange(filter: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(filter)
   }
@@ -113,17 +111,27 @@ export function ProductCardsFilter({
           currentFilter={currentFilter}
         />
       </Flex>
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
-          {([productCardsData]) => (
-            <ProductCardsWrapper>
-              {productCardsData.map((cardData) => (
-                <ProductCardComponent cardData={cardData} key={cardData.ilk} />
-              ))}
-            </ProductCardsWrapper>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <AaveContextProvider>
+        <WithErrorHandler error={[productCardsDataError]}>
+          <WithLoadingIndicator
+            value={[productCardsData, isAaveContextAvailable()]}
+            customLoader={<ProductCardsLoader />}
+          >
+            {([_productCardsData]) => (
+              <ProductCardsWrapper>
+                {otherStrategies
+                  .filter(({ protocol }) => protocol === 'aave')
+                  .map((cardData) => (
+                    <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData} />
+                  ))}
+                {_productCardsData.map((cardData) => (
+                  <ProductCardMakerComponent key={cardData.ilk} cardData={cardData} />
+                ))}
+              </ProductCardsWrapper>
+            )}
+          </WithLoadingIndicator>
+        </WithErrorHandler>
+      </AaveContextProvider>
     </>
   )
 }

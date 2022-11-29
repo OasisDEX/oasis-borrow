@@ -63,9 +63,13 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
   },
 }
 
-export function aaveStrategiesList(filterProduct: StrategyConfig['product']) {
+export function aaveStrategiesList(filterProduct?: StrategyConfig['product']) {
   return Object.values(strategies)
     .filter(({ enabled }) => enabled)
     .filter(({ product }) => (filterProduct ? product === filterProduct : true))
     .map((s) => s.name)
+}
+
+export function getAaveStrategy(strategyName: StrategyConfig['name']) {
+  return Object.values(strategies).filter(({ name }) => strategyName === name)
 }

@@ -19,7 +19,7 @@ type ProductCardEarnAaveProps = {
   cardData: TokenMetadataType
 }
 
-const aaveCalcValueBasis = {
+const aaveEarnCalcValueBasis = {
   amount: new BigNumber(100),
   token: 'ETH',
 }
@@ -37,7 +37,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
     aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
   const simulationYields = useSimulationYields({
-    amount: aaveCalcValueBasis.amount,
+    amount: aaveEarnCalcValueBasis.amount,
     riskRatio: maximumMultiple,
     fields: ['7Days', '90Days'],
   })
@@ -56,11 +56,11 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
             description={t(`product-card.aave.${cardData.symbol}.description`)}
             banner={{
               title: t('product-card-banner.with', {
-                value: aaveCalcValueBasis.amount.toString(),
-                token: aaveCalcValueBasis.token,
+                value: aaveEarnCalcValueBasis.amount.toString(),
+                token: aaveEarnCalcValueBasis.token,
               }),
               description: t(`product-card-banner.aave.${cardData.symbol}`, {
-                value: _maximumMultiple.multiple.times(aaveCalcValueBasis.amount).toFormat(0),
+                value: _maximumMultiple.multiple.times(aaveEarnCalcValueBasis.amount).toFormat(0),
                 token: cardData.symbol,
               }),
             }}

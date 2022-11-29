@@ -715,7 +715,7 @@ export const tokens: TokenConfig[] = [
     iconCircle: 'aave_steth_usdc',
     iconColor: 'aave_steth_usdc',
     color: '#E2F7F9',
-    background: 'linear-gradient(160.47deg, #E2F7F9 0.35%, #D3F3F5 99.18%), #000000',
+    background: 'linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%), #000000',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/steth-eth.gif'),
     tags: [],

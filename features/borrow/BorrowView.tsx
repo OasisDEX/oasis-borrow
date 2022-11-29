@@ -33,6 +33,7 @@ export function BorrowView() {
         selectedFilter={tab}
         makerProductCardComponent={ProductCardBorrow}
         filterCardsFunction={borrowPageCardsData}
+        otherStrategies={[]}
       />
     </Grid>
   )

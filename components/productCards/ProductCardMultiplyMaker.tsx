@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { displayMultiple } from 'helpers/display-multiple'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -82,7 +83,11 @@ export function ProductCardMultiplyMaker(props: { cardData: ProductCardData }) {
       labels={[
         {
           title: t('system.max-multiple'),
-          value: `${maxMultiple.toFixed(2, 1)}x`,
+          value: displayMultiple(maxMultiple),
+        },
+        {
+          title: t('system.position'),
+          value: `${cardData.ilk} / DAI`, // it's always {ilk} / DAI for maker
         },
         {
           title: t('system.liquidity-available'),

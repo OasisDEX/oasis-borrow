@@ -1229,6 +1229,8 @@ export function setupAppContext() {
     aaveUserConfiguration$,
     aaveSthEthYieldsQuery,
     aaveAvailableLiquidityETH$,
+    getAaveAssetsPrices$,
+    getAaveReserveData$,
     aaveUserAccountData$,
     hasActiveAavePosition$,
     balanceInfo$,
