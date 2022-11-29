@@ -8,6 +8,7 @@ import { VaultChangesInformationItem } from '../../../../../components/vault/Vau
 import { formatCryptoBalance, formatPercent } from '../../../../../helpers/formatters/format'
 import { one } from '../../../../../helpers/zero'
 import { calculatePriceImpact } from '../../../../shared/priceImpact'
+import { amountFromWei } from '@oasisdex/utils'
 
 interface PriceImpactProps {
   tokens: {
@@ -27,8 +28,15 @@ export function PriceImpact({
 }: PriceImpactProps) {
   const { t } = useTranslation()
 
-  const { toTokenAmount, fromTokenAmount } = transactionParameters.simulation.swap
-  const collateralTokenToTokenPrice = toTokenAmount.div(fromTokenAmount)
+  const {
+    toTokenAmount,
+    targetToken,
+    fromTokenAmount,
+    sourceToken,
+  } = transactionParameters.simulation.swap
+  const collateralTokenToTokenPrice = amountFromWei(toTokenAmount, targetToken.precision).div(
+    amountFromWei(fromTokenAmount, sourceToken.precision),
+  )
 
   const marketPrice = collateralPrice?.div(tokenPrice || one) || one
 

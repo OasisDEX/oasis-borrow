@@ -109,7 +109,6 @@ export async function getOpenAaveParameters({
 }: OpenAaveParameters): Promise<OasisActionResult> {
   try {
     checkContext(context, 'open position')
-
     const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
     const _collateralToken = {
@@ -166,7 +165,7 @@ export async function getOpenAaveParameters({
 
     return {
       strategy,
-      operationName: strategy.transaction.operationName,
+      operationName: 'CustomOperation',
     }
   } catch (e) {
     console.error(e)
@@ -290,7 +289,7 @@ export async function getCloseAaveParameters({
 
   const strategy = await strategies.aave.close(stratArgs, stratDeps)
 
-  return { strategy, operationName: strategy.transaction.operationName }
+  return { strategy, operationName: 'CustomOperation' }
 }
 
 export const EMPTY_POSITION = new Position({ amount: zero }, { amount: zero }, zero, {
