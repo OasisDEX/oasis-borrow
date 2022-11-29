@@ -22,7 +22,7 @@ export const getAaveOracleAssetPriceData: CallDef<{ token: string }, BigNumber> 
   prepareArgs: ({ token }, context) => {
     return [context.tokens[token].address]
   },
-  postprocess: (result, { token }) => {
-    return amountFromWei(new BigNumber(result), token)
+  postprocess: (result) => {
+    return amountFromWei(new BigNumber(result), 'ETH') // aave price oracle always price in eth wei units
   },
 }

@@ -275,14 +275,15 @@ import {
 } from 'rxjs/operators'
 
 import {
+  createAaveOracleAssetPriceData$,
+  createConvertToAaveOracleAssetPrice$,
+} from '../blockchain/aave/oracleAssetPriceData'
+import {
   getAaveReservesList,
   getAaveUserAccountData,
   getAaveUserConfiguration,
 } from '../blockchain/calls/aave/aaveLendingPool'
-import {
-  getAaveAssetsPrices,
-  getAaveOracleAssetPriceData,
-} from '../blockchain/calls/aave/aavePriceOracle'
+import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
 import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
 import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
@@ -841,7 +842,6 @@ export function setupAppContext() {
 
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
   const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
-  const aaveOracleAssetPriceData$ = observe(onEveryBlock$, context$, getAaveOracleAssetPriceData)
   const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
   const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
   const aaveReserveConfigurationData$ = observe(
@@ -850,7 +850,13 @@ export function setupAppContext() {
     getAaveReserveConfigurationData,
     ({ token }) => token,
   )
-
+  const aaveOracleAssetPriceData$ = memoize(
+    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
+  )
+  const convertToAaveOracleAssetPrice$ = memoize(
+    curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
+    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
+  )
   const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
@@ -1221,6 +1227,7 @@ export function setupAppContext() {
     aaveUserAccountData$,
     hasActiveAavePosition$,
     balanceInfo$,
+    convertToAaveOracleAssetPrice$,
     once$,
   }
 }

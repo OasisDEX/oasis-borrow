@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IStrategy } from '@oasisdex/oasis-actions'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -13,21 +13,19 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
 
 interface FeesInformationProps {
-  transactionParameters: IStrategy
-  token: string
+  debtToken: string
+  feeInDebtToken: BigNumber
   estimatedGasPrice?: HasGasEstimation
 }
 
 export function FeesInformation({
   estimatedGasPrice,
-  transactionParameters,
-  token,
+  debtToken,
+  feeInDebtToken,
 }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
-  const fee = transactionParameters.simulation.swap.targetTokenFee.plus(
-    transactionParameters.simulation.swap.sourceTokenFee,
-  )
+
   return (
     <>
       <VaultChangesInformationItem
@@ -37,7 +35,7 @@ export function FeesInformation({
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {`${formatAmount(fee, token)} ${token} +`}
+            {`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken} +`}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -54,7 +52,7 @@ export function FeesInformation({
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={`${formatAmount(fee, token)} ${token}`}
+            value={`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken}`}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}
