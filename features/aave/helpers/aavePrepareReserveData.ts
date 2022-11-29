@@ -4,7 +4,7 @@ import {
   AaveReserveDataReply,
 } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { amountFromRay } from 'blockchain/utils'
-import { combineLatest, Observable } from 'rxjs'
+import {  Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export type PreparedAaveReserveData = {

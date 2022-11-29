@@ -1,4 +1,5 @@
 import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { amountFromWei } from '@oasisdex/utils'
 import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -8,7 +9,6 @@ import { VaultChangesInformationItem } from '../../../../../components/vault/Vau
 import { formatCryptoBalance, formatPercent } from '../../../../../helpers/formatters/format'
 import { one } from '../../../../../helpers/zero'
 import { calculatePriceImpact } from '../../../../shared/priceImpact'
-import { amountFromWei } from '@oasisdex/utils'
 
 interface PriceImpactProps {
   tokens: {

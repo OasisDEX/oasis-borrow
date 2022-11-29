@@ -1,4 +1,5 @@
 import { IPosition } from '@oasisdex/oasis-actions'
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import {
@@ -14,9 +15,9 @@ import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import {  zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
-import { one, zero } from '../../../../helpers/zero'
-import { amountFromWei } from '@oasisdex/utils'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition

@@ -24,12 +24,12 @@ import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine,
 } from './manage/services'
+import { getOnChainPosition } from './oasisActionsLibWrapper'
 import {
   getOpenAavePositionStateMachineServices,
   getOpenAaveStateMachine,
   getOpenAaveTransactionMachine,
 } from './open/services'
-import { getOnChainPosition } from './oasisActionsLibWrapper'
 
 export function setupAaveContext({
   userSettings$,

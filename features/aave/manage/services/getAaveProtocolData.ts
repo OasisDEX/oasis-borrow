@@ -1,4 +1,4 @@
-import { IPosition, Position } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import {
   AaveConfigurationData,

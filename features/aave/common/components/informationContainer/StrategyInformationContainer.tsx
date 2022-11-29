@@ -1,8 +1,10 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { getToken } from '../../../../../blockchain/tokensMetadata'
 import { useAppContext } from '../../../../../components/AppContextProvider'
 import { VaultChangesInformationContainer } from '../../../../../components/vault/VaultChangesInformation'
 import { WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
@@ -18,8 +20,6 @@ import { OutstandingDebtInformation } from './OutstandingDebtInformation'
 import { PriceImpact } from './PriceImpact'
 import { SlippageInformation } from './SlippageInformation'
 import { TransactionTokenAmount } from './TransactionTokenAmount'
-import { amountFromWei } from '@oasisdex/utils'
-import { getToken } from '../../../../../blockchain/tokensMetadata'
 
 type OpenAaveInformationContainerProps = {
   state: {

@@ -12,9 +12,9 @@ import { SidebarSectionFooterButtonSettings } from '../../../../components/sideb
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
+import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
-import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 
 type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 'RESET_RISK_RATIO' }
 

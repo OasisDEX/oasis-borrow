@@ -1,4 +1,4 @@
-import { IRiskRatio, IPositionTransition } from '@oasisdex/oasis-actions'
+import { IPositionTransition,IRiskRatio } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -15,6 +15,7 @@ import { HasGasEstimation } from '../../../../helpers/form'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { useHash } from '../../../../helpers/useHash'
 import { zero } from '../../../../helpers/zero'
+import { getFee } from '../../../aave/oasisActionsLibWrapper'
 import { AaveSimulateTitle } from '../../../aave/open/components/AaveSimulateTitle'
 import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
 import {
@@ -22,7 +23,6 @@ import {
   CalculateSimulationResult,
   Simulation,
 } from '../../../aave/open/services'
-import { getFee } from '../../../aave/oasisActionsLibWrapper'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]

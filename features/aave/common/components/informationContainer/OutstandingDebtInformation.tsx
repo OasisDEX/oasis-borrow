@@ -1,16 +1,14 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useAppContext } from '../../../../../components/AppContextProvider'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
-import { useObservable } from '../../../../../helpers/observableHook'
-import BigNumber from 'bignumber.js'
 
 interface OutstandingDebtInformationProps {
   transactionParameters: IPositionTransition

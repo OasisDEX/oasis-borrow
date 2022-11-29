@@ -4,12 +4,12 @@ import {
 } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { observe } from 'blockchain/calls/observe'
 import { AppContext } from 'components/AppContext'
+import { memoize } from 'lodash'
+import { curry } from 'ramda'
 import { of } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 
 import { createAavePrepareReserveData$ } from '../aave/helpers/aavePrepareReserveData'
-import { curry } from 'ramda'
-import { memoize } from 'lodash'
 
 export function setupEarnContext({ context$, aaveAvailableLiquidityETH$ }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))

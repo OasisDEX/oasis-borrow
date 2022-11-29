@@ -1,8 +1,7 @@
 import {
   IPosition,
-  IRiskRatio,
   IPositionTransition,
-  OPERATION_NAMES,
+  IRiskRatio,
   Position,
   strategies,
 } from '@oasisdex/oasis-actions'
@@ -10,11 +9,10 @@ import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
 import { Context, ContextConnected } from '../../blockchain/network'
+import { getToken } from '../../blockchain/tokensMetadata'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
-import { recursiveLog } from '../../helpers/recursiveLog'
-import { getToken } from '../../blockchain/tokensMetadata'
 
 function getAddressesFromContext(context: Context) {
   return {
