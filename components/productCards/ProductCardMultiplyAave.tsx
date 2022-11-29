@@ -4,8 +4,9 @@ import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { getAaveStrategy } from 'features/aave/strategyConfig'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
-import { formatHugeNumbersToShortHuman } from 'helpers/formatters/format'
+import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -22,11 +23,11 @@ const aaveMultiplyCalcValueBasis = {
 
 export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAaveProps) {
   const { t } = useTranslation()
-  const { aaveAvailableLiquiditySTETH$ } = useAaveContext()
+  const { aaveAvailableLiquiditySTETH$, aaveReserveData } = useAaveContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
   const maxMultiple = strategy.riskRatios.default.multiple // TODO: get actual value from machine
   const [aaveAvailableLiquiditySTETH] = useObservable(aaveAvailableLiquiditySTETH$)
-  console.log('aaveAvailableLiquiditySTETH', aaveAvailableLiquiditySTETH)
+  const [aaveReserveDataCollateral] = useObservable(aaveReserveData[strategy.tokens.collateral])
 
   return (
     <ProductCard
@@ -63,7 +64,11 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
         },
         {
           title: t('system.variable-annual-fee'),
-          value: `stabilityFee`,
+          value: aaveReserveDataCollateral?.variableBorrowRate
+            ? formatPercent(aaveReserveDataCollateral.variableBorrowRate.times(100), {
+                precision: 2,
+              })
+            : zero.toString(),
         },
         {
           title: t('system.protocol'),
