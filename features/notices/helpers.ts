@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { Web3ContractEvent } from 'blockchain/aaveLiquidations'
 
 export function getLiquidatedHeaderNotice(isPositionController: boolean) {
   return isPositionController
@@ -12,14 +13,16 @@ export function getAaveNoticeBanner({
   liquidationThreshold,
   connectedProxyAddress,
   proxyAddress,
+  aaveLiquidations,
 }: {
   loanToValue: BigNumber
   maxLoanToValue: BigNumber
   liquidationThreshold: BigNumber
   connectedProxyAddress?: string
   proxyAddress?: string
+  aaveLiquidations?: Web3ContractEvent[]
 }) {
-  const isLiquidated = false as boolean // TODO to be implemented
+  const isLiquidated = !!aaveLiquidations?.length
   const isAboveMaxLtv = loanToValue.gt(maxLoanToValue) && loanToValue?.lt(liquidationThreshold)
   const isOwnership = !(
     connectedProxyAddress !== undefined &&

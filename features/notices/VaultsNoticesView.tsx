@@ -469,6 +469,7 @@ export function AavePositionAlreadyOpenedNotice() {
 
 function AaveLiquidatedNotice({ isPositionController }: { isPositionController: boolean }) {
   const { t } = useTranslation()
+
   const header = t(getLiquidatedHeaderNotice(isPositionController), { position: t('position') })
   const subheader = t('vault-notices.liquidated.aave.subheader1')
 
@@ -510,10 +511,13 @@ function AavePositionAboveMaxLtvNotice({
 }
 
 export function AavePositionNoticesView() {
+  const { aaveLiquidations$ } = useAppContext()
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
+  const preparedAaveLiquidations$ = aaveLiquidations$(state.context.proxyAddress || '')
+  const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
 
-  if (!state.context.protocolData) {
+  if (!state.context.protocolData || !state.context.proxyAddress) {
     return null
   }
 
@@ -541,6 +545,7 @@ export function AavePositionNoticesView() {
     liquidationThreshold,
     connectedProxyAddress,
     proxyAddress,
+    aaveLiquidations,
   })
 
   switch (banner) {

@@ -3,6 +3,7 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { getAavePositionLiquidation$ } from 'blockchain/aaveLiquidations'
 import {
   getAaveReserveConfigurationData,
   getAaveReserveData,
@@ -647,6 +648,10 @@ export function setupAppContext() {
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
+  const aaveLiquidations$ = memoize(
+    curry(getAavePositionLiquidation$)(context$),
+    (address) => address,
+  )
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
@@ -1222,6 +1227,7 @@ export function setupAppContext() {
     hasActiveAavePosition$,
     balanceInfo$,
     once$,
+    aaveLiquidations$,
   }
 }
 
