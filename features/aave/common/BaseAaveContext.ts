@@ -92,7 +92,7 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
 }
 
 export function isAllowanceNeeded(context: BaseAaveContext): boolean {
-  if (context.token === 'ETH') {
+  if (context.tokens.deposit === 'ETH') {
     return false
   }
 

@@ -416,7 +416,7 @@ export function createOpenAaveStateMachine(
         spawnAllowanceMachine: assign((context) => ({
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
-              token: context.token,
+              token: context.tokens.deposit,
               spender: context.connectedProxyAddress!,
               allowanceType: 'unlimited',
               minimumAmount: context.userInput.amount!,
