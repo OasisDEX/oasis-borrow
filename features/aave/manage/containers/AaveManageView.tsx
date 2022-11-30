@@ -15,7 +15,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
 
-import { PositionOwnershipBanner } from '../../../notices/VaultsNoticesView'
+import { AavePositionNoticesView } from '../../../notices/VaultsNoticesView'
 import { useAaveContext } from '../../AaveContextProvider'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
@@ -28,30 +28,6 @@ import {
 interface AaveManageViewPositionViewProps {
   address: string
   strategyConfig: StrategyConfig
-}
-
-function PositionOwnership() {
-  const { stateMachine } = useManageAaveStateMachineContext()
-  const [state] = useActor(stateMachine)
-
-  const connectedAddress =
-    state.context.web3Context?.status === 'connected'
-      ? state.context.web3Context.account
-      : undefined
-
-  if (
-    state.context.connectedProxyAddress !== undefined &&
-    state.context.proxyAddress !== undefined &&
-    state.context.connectedProxyAddress === state.context.proxyAddress
-  ) {
-    return null
-  }
-  return (
-    <PositionOwnershipBanner
-      account={state.context.address}
-      connectedWalletAddress={connectedAddress}
-    />
-  )
 }
 
 function AaveManageContainer({
@@ -90,7 +66,9 @@ function AaveManageContainer({
       }}
     >
       <Container variant="vaultPageContainer">
-        <PositionOwnership />
+        <Box mb={4}>
+          <AavePositionNoticesView />
+        </Box>
         <Header strategyConfig={strategyConfig} />
         <TabBar
           variant="underline"

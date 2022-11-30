@@ -52,6 +52,8 @@
   "adding-auto-buy": "Adding Auto-Buy trigger",
   "cancelling-auto-buy": "Removing Auto-Buy trigger",
   "buy": "Buy",
+  "maker-vault": "Maker Vault",
+  "position": "Position",
   "careers": {
     "heading": "Open Roles",
     "intro": "We believe in talent. Join us to build the next generation of DeFi.",
@@ -1130,12 +1132,21 @@
       "subheader3": "This Vault is now available for liquidation and can be liquidated at anytime."
     },
     "liquidated": {
-      "header1": "Your Maker Vault got liquidated",
-      "header2": "This Maker Vault got liquidated",
-      "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your Dai debt.",
-      "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
-      "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
-      "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+      "header1": "Your {{position}} got liquidated",
+      "header2": "This {{position}} got liquidated",
+      "maker": {
+        "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your Dai debt.",
+        "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
+        "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
+        "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+      },
+      "aave": {
+        "subheader1": "A liquidation has happened on this Position."
+      }
+    },
+    "above-max-ltv": {
+      "header": "This position is currently higher than the maximum loan to value and can only be reduced.",
+      "subheader": "The current loan to value of {{loanToValue}} is higher than the maximum loan to value of {{maxLoanToValue}} allowed by the protocol. Therefore this position can only be de-risked. If the loan to value of the position reaches {{liquidationThreshold}} the position will be available for liquidation."
     },
     "aave-multi-position": {
       "header": "This position is affected by other assets on AAVE",
