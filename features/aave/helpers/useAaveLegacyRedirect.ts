@@ -3,10 +3,10 @@ import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useObservable } from 'helpers/observableHook'
 import { useRedirect } from 'helpers/useRedirect'
 
-export function useAaveRedirect() {
-  const { hasActiveAavePosition$ } = useAppContext()
+export function useAaveLegacyRedirect() {
+  const { hasActiveDsProxyAavePosition$ } = useAppContext()
   const router = useRedirect()
-  const [aaveActivePosition = false] = useObservable(hasActiveAavePosition$)
+  const [aaveActivePosition = false] = useObservable(hasActiveDsProxyAavePosition$)
   if (aaveActivePosition) {
     void router.replace(`/aave/${aaveActivePosition}`, getCustomNetworkParameter())
   }
