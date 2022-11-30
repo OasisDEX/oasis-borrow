@@ -86,7 +86,7 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     prices$: (context) => {
-      return pricesFeed$(context.tokens.collateral)
+      return pricesFeed$(context.tokens.collateral, context.tokens.debt)
     },
     strategyInfo$: (context) => {
       return strategyInfo$(context.tokens.collateral).pipe(

@@ -15,12 +15,13 @@ export type AaveMultiplyManageComponentProps = {
   strategyConfig: StrategyConfig
   collateralPrice?: BigNumber
   tokenPrice?: BigNumber
+  debtPrice?: BigNumber
 }
 
 export function AaveMultiplyManageComponent({
   currentPosition,
   collateralPrice,
-  tokenPrice,
+  debtPrice, // debt token price
   strategyConfig,
   nextPosition,
 }: AaveMultiplyManageComponentProps) {
@@ -38,7 +39,7 @@ export function AaveMultiplyManageComponent({
         value={[
           currentPosition,
           collateralPrice,
-          tokenPrice,
+          debtPrice,
           debtTokenReserveData,
           collateralTokenReserveData,
         ]}

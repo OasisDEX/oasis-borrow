@@ -56,7 +56,7 @@ function AaveManageContainer({
     tokens: { collateral: collateralToken, debt: debtToken },
   } = state.context
   const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
-
+  console.log(`state.context.collateralPrice ${state.context.collateralPrice}`)
   return (
     <AaveAutomationContext
       aaveManageVault={{
@@ -88,6 +88,7 @@ function AaveManageContainer({
                       currentPosition={state.context.currentPosition}
                       collateralPrice={state.context.collateralPrice}
                       tokenPrice={state.context.tokenPrice}
+                      debtPrice={state.context.debtPrice}
                       nextPosition={state.context.strategy?.simulation.position}
                     />
                   </Box>

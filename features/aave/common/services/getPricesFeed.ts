@@ -9,16 +9,17 @@ import { BaseAaveEvent } from '../BaseAaveContext'
 
 export function getPricesFeed$(
   prices$: (tokens: string[]) => Observable<Tickers>,
-): (collateralToken: string) => Observable<BaseAaveEvent> {
-  return (collateralToken: string) => {
-    return prices$([collateralToken]).pipe(
+): (collateralToken: string, debtToken: string) => Observable<BaseAaveEvent> {
+  return (collateralToken: string, debtToken: string) => {
+    return prices$([collateralToken, debtToken]).pipe(
       map((tickers) => {
-        return tickers[collateralToken]
+        return { collateralPrice: tickers[collateralToken], debtPrice: tickers[debtToken] }
       }),
-      distinctUntilChanged<BigNumber>(isEqual),
-      map((ticker) => ({
+      distinctUntilChanged(isEqual),
+      map(({ collateralPrice, debtPrice }) => ({
         type: 'PRICES_RECEIVED',
-        collateralPrice: ticker,
+        collateralPrice: collateralPrice,
+        debtPrice: debtPrice,
       })),
     )
   }

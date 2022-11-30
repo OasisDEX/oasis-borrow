@@ -23,7 +23,7 @@ export type IStrategyInfo = {
 }
 
 export type BaseAaveEvent =
-  | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
+  | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
   | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
@@ -53,6 +53,7 @@ export interface BaseAaveContext {
   tokenBalance?: BigNumber
   tokenPrice?: BigNumber
   collateralPrice?: BigNumber
+  debtPrice?: BigNumber
   auxiliaryAmount?: BigNumber
   connectedProxyAddress?: string
   strategyInfo?: IStrategyInfo
