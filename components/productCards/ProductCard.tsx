@@ -92,7 +92,7 @@ export function ProductCardProtocolLink({
     <Box sx={{ paddingRight: '10px' }}>
       <AppLink href={link}>
         <WithArrow variant="styles.a" gap="1">
-          {capitalize(ProtocolLongNames[protocol])}
+          {ProtocolLongNames[protocol]}
         </WithArrow>
       </AppLink>
     </Box>
