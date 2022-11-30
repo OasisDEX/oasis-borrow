@@ -26,12 +26,12 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
+  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidity$ } = useEarnContext()
   const { hasActiveAavePosition$ } = useAppContext()
   const [aaveActivePosition] = useObservable(hasActiveAavePosition$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
-    aaveAvailableLiquidityETH$,
+    aaveAvailableLiquidity$({ token: 'ETH' }),
   )
   const maximumMultiple =
     aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)

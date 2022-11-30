@@ -118,6 +118,7 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { getAaveStEthYield } from 'features/aave/common'
+import { createAavePrepareReserveData$ } from 'features/aave/helpers/aavePrepareReserveData'
 import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
@@ -286,7 +287,7 @@ import {
 } from '../blockchain/calls/aave/aaveLendingPool'
 import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
 import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
-import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
+import { prepareAaveAvailableLiquidityInUSDC$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
 import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
 
@@ -867,8 +868,8 @@ export function setupAppContext() {
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
 
-  const aaveAvailableLiquidityETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
-    getAaveReserveData$({ token: 'ETH' }),
+  const aaveAvailableLiquidity$ = curry(prepareAaveAvailableLiquidityInUSDC$)(
+    getAaveReserveData$,
     // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
@@ -878,7 +879,7 @@ export function setupAppContext() {
   const aavePositions$ = memoize(
     curry(createAavePosition$)(
       aaveUserAccountData$,
-      aaveAvailableLiquidityETH$,
+      aaveAvailableLiquidity$({ token: 'ETH' }),
       ethPrice$,
       proxyAddress$,
     ),
@@ -1168,6 +1169,12 @@ export function setupAppContext() {
 
   const hasActiveAavePosition$ = hasActiveAavePosition(web3Context$, hasAave$)
 
+  const wrappedGetAaveReserveData$ = memoize(
+    curry(createAavePrepareReserveData$)(
+      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
+    ),
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1228,7 +1235,6 @@ export function setupAppContext() {
     aaveReserveConfigurationData$,
     aaveUserConfiguration$,
     aaveSthEthYieldsQuery,
-    aaveAvailableLiquidityETH$,
     getAaveAssetsPrices$,
     getAaveReserveData$,
     aaveUserAccountData$,
@@ -1237,6 +1243,8 @@ export function setupAppContext() {
     convertToAaveOracleAssetPrice$,
     once$,
     aaveLiquidations$,
+    wrappedGetAaveReserveData$,
+    aaveAvailableLiquidity$,
   }
 }
 

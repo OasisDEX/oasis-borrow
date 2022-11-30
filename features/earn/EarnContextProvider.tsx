@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { EarnContext, setupEarnContext } from './EarnContext'
 
 export const earnContext = React.createContext<EarnContext | undefined>(undefined)
+const { Provider } = earnContext
 
 export function isEarnContextAvailable(): boolean {
   return !!useContext(earnContext)
@@ -28,5 +29,5 @@ export function EarnContextProvider({ children }: WithChildren) {
     }
   }, [appContext])
 
-  return <earnContext.Provider value={context}>{children}</earnContext.Provider>
+  return <Provider value={context}>{children}</Provider>
 }

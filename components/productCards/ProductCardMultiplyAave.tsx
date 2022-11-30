@@ -1,7 +1,8 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { getAaveStrategy } from 'features/aave/strategyConfig'
+import { useMultiplyContext } from 'features/multiply/MultiplyContextProvider'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
@@ -23,11 +24,25 @@ const aaveMultiplyCalcValueBasis = {
 
 export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAaveProps) {
   const { t } = useTranslation()
-  const { aaveAvailableLiquiditySTETH$, aaveReserveData } = useAaveContext()
+  const {
+    aaveAvailableLiquidityInUSDC$,
+    wrappedGetAaveReserveData$,
+    aaveReserveConfigurationData$,
+  } = useMultiplyContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
-  const maxMultiple = strategy.riskRatios.default.multiple // TODO: get actual value from machine
-  const [aaveAvailableLiquiditySTETH] = useObservable(aaveAvailableLiquiditySTETH$)
-  const [aaveReserveDataCollateral] = useObservable(aaveReserveData[strategy.tokens.collateral])
+  const [aaveAvailableLiquidityInUSDC] = useObservable(
+    aaveAvailableLiquidityInUSDC$({ token: strategy.tokens.collateral }),
+  )
+  const [collateralReserveData] = useObservable(
+    wrappedGetAaveReserveData$(strategy.tokens.collateral),
+  )
+  const [collateralReserveConfigurationData] = useObservable(
+    aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
+  )
+
+  const maximumMultiple =
+    collateralReserveConfigurationData?.ltv &&
+    new RiskRatio(collateralReserveConfigurationData.ltv, RiskRatio.TYPE.LTV)
 
   return (
     <ProductCard
@@ -41,14 +56,14 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
           token: aaveMultiplyCalcValueBasis.token,
         }),
         description: t(`product-card-banner.aave.${cardData.symbol}`, {
-          value: maxMultiple.times(aaveMultiplyCalcValueBasis.amount).toFormat(0),
+          value: maximumMultiple?.multiple.times(aaveMultiplyCalcValueBasis.amount).toFormat(0),
           token: cardData.symbol,
         }),
       }}
       labels={[
         {
           title: t('system.max-multiple'),
-          value: displayMultiple(maxMultiple),
+          value: displayMultiple(maximumMultiple?.multiple),
         },
         {
           title: t('system.position'),
@@ -56,16 +71,16 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
         },
         {
           title: t('system.liquidity-available'),
-          value: aaveAvailableLiquiditySTETH ? (
-            formatHugeNumbersToShortHuman(aaveAvailableLiquiditySTETH)
+          value: aaveAvailableLiquidityInUSDC ? (
+            formatHugeNumbersToShortHuman(aaveAvailableLiquidityInUSDC)
           ) : (
             <AppSpinner />
           ),
         },
         {
           title: t('system.variable-annual-fee'),
-          value: aaveReserveDataCollateral?.variableBorrowRate
-            ? formatPercent(aaveReserveDataCollateral.variableBorrowRate.times(100), {
+          value: collateralReserveData?.variableBorrowRate
+            ? formatPercent(collateralReserveData.variableBorrowRate.times(100), {
                 precision: 2,
               })
             : zero.toString(),

@@ -11,7 +11,7 @@ import { shareReplay } from 'rxjs/operators'
 
 import { createAavePrepareReserveData$ } from '../aave/helpers/aavePrepareReserveData'
 
-export function setupEarnContext({ context$, aaveAvailableLiquidityETH$ }: AppContext) {
+export function setupEarnContext({ context$, aaveAvailableLiquidity$ }: AppContext) {
   const once$ = of(undefined).pipe(shareReplay(1))
 
   const aaveReserveConfigurationData$ = memoize(
@@ -25,7 +25,7 @@ export function setupEarnContext({ context$, aaveAvailableLiquidityETH$ }: AppCo
 
   return {
     aaveSTETHReserveConfigurationData,
-    aaveAvailableLiquidityETH$,
+    aaveAvailableLiquidity$,
     aaveReserveData$,
   }
 }
