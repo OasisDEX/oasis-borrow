@@ -7,6 +7,8 @@ import { Dictionary } from 'ts-essentials'
 import * as aaveLendingPool from './abi/aave-lending-pool.json'
 import * as aavePriceOracle from './abi/aave-price-oracle.json'
 import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
+import * as accountFactory from './abi/account-factory.json'
+import * as accountGuard from './abi/account-guard.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
@@ -247,6 +249,8 @@ const protoMain = {
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
+  accountFactory: contractDesc(accountFactory, mainnetAddresses.ACCOUNT_FACTORY),
+  accountGuard: contractDesc(accountGuard, mainnetAddresses.ACCOUNT_GUARD),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -349,6 +353,8 @@ const kovan: NetworkConfig = {
   ),
   swapAddress: main.swapAddress,
   chainlinkEthUsdPriceFeedAddress: '0x0',
+  accountFactory: contractDesc(accountFactory, '0x0'),
+  accountGuard: contractDesc(accountGuard, '0x0'),
 }
 
 const goerli: NetworkConfig = {
@@ -454,6 +460,8 @@ const goerli: NetworkConfig = {
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
+  accountFactory: contractDesc(accountFactory, goerliAddresses.ACCOUNT_FACTORY),
+  accountGuard: contractDesc(accountGuard, goerliAddresses.ACCOUNT_GUARD),
 }
 
 const hardhat: NetworkConfig = {
