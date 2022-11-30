@@ -7,6 +7,7 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { allDefined } from '../../../../helpers/allDefined'
 import { zero } from '../../../../helpers/zero'
+import { AllowanceStateMachine } from '../../../stateMachines/allowance'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import {
   TransactionParametersStateMachine,
@@ -16,6 +17,7 @@ import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
+  isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
@@ -45,6 +47,7 @@ export type ManageAaveEvent =
 export function createManageAaveStateMachine(
   closeParametersStateMachine: TransactionParametersStateMachine<CloseAaveParameters>,
   adjustParametersStateMachine: TransactionParametersStateMachine<AdjustAaveParameters>,
+  allowanceStateMachine: AllowanceStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
@@ -95,6 +98,10 @@ export function createManageAaveStateMachine(
         {
           src: 'protocolData$',
           id: 'protocolData$',
+        },
+        {
+          src: 'allowance$',
+          id: 'allowance$',
         },
       ],
       id: 'manageAaveStateMachine',
@@ -149,8 +156,23 @@ export function createManageAaveStateMachine(
                   target: '#manageAaveStateMachine.background.debouncing',
                   actions: 'resetRiskRatio',
                 },
-                ADJUST_POSITION: {
-                  cond: 'validTransactionParameters',
+                ADJUST_POSITION: [
+                  {
+                    cond: 'isAllowanceNeeded',
+                    target: 'allowanceSetting',
+                  },
+                  {
+                    cond: 'validTransactionParameters',
+                    target: 'reviewingAdjusting',
+                  },
+                ],
+              },
+            },
+            allowanceSetting: {
+              entry: ['spawnAllowanceMachine'],
+              exit: ['killAllowanceMachine'],
+              on: {
+                ALLOWANCE_SUCCESS: {
                   target: 'reviewingAdjusting',
                 },
               },
@@ -239,6 +261,9 @@ export function createManageAaveStateMachine(
         UPDATE_PROTOCOL_DATA: {
           actions: ['updateContext'],
         },
+        UPDATE_ALLOWANCE: {
+          actions: 'updateContext',
+        },
       },
     },
     {
@@ -252,6 +277,7 @@ export function createManageAaveStateMachine(
             proxyAddress === connectedProxyAddress
           )
         },
+        isAllowanceNeeded,
       },
       actions: {
         userInputRiskRatio: assign((context, event) => {
@@ -329,6 +355,23 @@ export function createManageAaveStateMachine(
         updateContext: assign((_, event) => ({
           ...event,
         })),
+        killAllowanceMachine: pure((context) => {
+          if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
+            context.refAllowanceStateMachine.stop()
+          }
+          return undefined
+        }),
+        spawnAllowanceMachine: assign((context) => ({
+          refAllowanceStateMachine: spawn(
+            allowanceStateMachine.withContext({
+              token: context.tokens.deposit,
+              spender: context.connectedProxyAddress!,
+              allowanceType: 'unlimited',
+              minimumAmount: context.userInput.amount!,
+            }),
+            'allowanceMachine',
+          ),
+        })),
       },
     },
   )
@@ -336,7 +379,7 @@ export function createManageAaveStateMachine(
 
 class ManageAaveStateMachineTypes {
   needsConfiguration() {
-    return createManageAaveStateMachine({} as any, {} as any, {} as any)
+    return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any)
   }
   withConfig() {
     // @ts-ignore

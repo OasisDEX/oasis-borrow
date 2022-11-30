@@ -1,8 +1,9 @@
+import BigNumber from 'bignumber.js'
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from 'blockchain/calls/observe'
-import { getGasEstimation$, getOpenProxyStateMachine } from 'features/proxyNew/pipelines'
+import { getGasEstimation$, getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, from, Observable } from 'rxjs'
@@ -10,6 +11,8 @@ import { distinctUntilKeyChanged, filter, shareReplay, switchMap } from 'rxjs/op
 
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
+import { getAllowanceStateMachine } from '../stateMachines/allowance'
+import { transactionContextService } from '../stateMachines/transaction'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -49,6 +52,7 @@ export function setupAaveContext({
   aaveReservesList$,
   aaveSthEthYieldsQuery,
   tokenPriceUSD$,
+  allowance$,
 }: AppContext) {
   const contextForAddress$ = connectedContext$.pipe(
     distinctUntilKeyChanged('account'),
@@ -58,6 +62,12 @@ export function setupAaveContext({
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
     switchMap(({ account }) => proxyAddress$(account)),
+  )
+
+  const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
+    (token: string, spender: string) =>
+      contextForAddress$.pipe(switchMap(({ account }) => allowance$(token, account, spender))),
+    (token, spender) => `${token}-${spender}`,
   )
 
   const tokenBalances$: Observable<TokenBalances> = contextForAddress$.pipe(
@@ -90,6 +100,20 @@ export function setupAaveContext({
     )
   }
 
+  const commonTransactionServices = transactionContextService(context$)
+
+  const allowanceStateMachine = getAllowanceStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
+  const operationExecutorTransactionMachine = curry(getOpenAaveTransactionMachine)(
+    txHelpers$,
+    contextForAddress$,
+    commonTransactionServices,
+  )
+
   const aaveProtocolData$ = memoize(
     curry(getAaveProtocolData$)(
       aaveUserReserveData$,
@@ -112,6 +136,7 @@ export function setupAaveContext({
     tokenPriceUSD$,
     strategyInfo$,
     aaveProtocolData$,
+    allowanceForAccount$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
@@ -124,22 +149,23 @@ export function setupAaveContext({
     tokenPriceUSD$,
     strategyInfo$,
     aaveProtocolData$,
+    allowanceForAccount$,
   )
-
-  const transactionMachine = curry(getOpenAaveTransactionMachine)(txHelpers$, contextForAddress$)
 
   const aaveStateMachine = getOpenAaveStateMachine(
     openAaveStateMachineServices,
     openAaveParameters,
     proxyStateMachine,
-    transactionMachine,
+    allowanceStateMachine,
+    operationExecutorTransactionMachine,
   )
 
   const aaveManageStateMachine = getManageAaveStateMachine(
     manageAaveStateMachineServices,
     closeAaveParameters,
     adjustAaveParameters,
-    transactionMachine,
+    allowanceStateMachine,
+    operationExecutorTransactionMachine,
   )
 
   const getAaveReserveData$ = observe(

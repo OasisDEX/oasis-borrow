@@ -11,7 +11,8 @@ import { MessageCard } from '../../../../components/MessageCard'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
-import { ProxyView } from '../../../proxyNew'
+import { AllowanceView } from '../../../stateMachines/allowance'
+import { ProxyView } from '../../../stateMachines/proxy'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { useAaveRedirect } from '../../helpers/useAaveRedirect'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
@@ -192,6 +193,13 @@ export function SidebarOpenAaveVault() {
       return (
         <ProxyView
           proxyMachine={state.context.refProxyMachine!}
+          steps={[state.context.currentStep, state.context.totalSteps]}
+        />
+      )
+    case state.matches('frontend.allowanceSetting'):
+      return (
+        <AllowanceView
+          allowanceMachine={state.context.refAllowanceStateMachine!}
           steps={[state.context.currentStep, state.context.totalSteps]}
         />
       )
