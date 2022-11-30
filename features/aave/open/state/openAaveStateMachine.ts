@@ -7,7 +7,8 @@ import { MachineOptionsFrom } from 'xstate/lib/types'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { allDefined } from '../../../../helpers/allDefined'
 import { zero } from '../../../../helpers/zero'
-import { ProxyResultEvent, ProxyStateMachine } from '../../../proxyNew/state'
+import { AllowanceStateMachine } from '../../../stateMachines/allowance'
+import { ProxyResultEvent, ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import {
   TransactionParametersStateMachine,
@@ -17,11 +18,16 @@ import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
+  isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
-export const STEPS_WITH_PROXY_CREATION = 5
-export const STEPS_WITHOUT_PROXY_CREATION = 3
+
+export const totalStepsMap = {
+  base: 3,
+  proxySteps: (needCreateProxy: boolean) => (needCreateProxy ? 2 : 0),
+  allowanceSteps: (needAllowance: boolean) => (needAllowance ? 1 : 0),
+}
 
 export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
@@ -44,6 +50,7 @@ export type OpenAaveEvent =
 export function createOpenAaveStateMachine(
   transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
   proxyMachine: ProxyStateMachine,
+  allowanceStateMachine: AllowanceStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
@@ -89,6 +96,10 @@ export function createOpenAaveStateMachine(
           src: 'protocolData$',
           id: 'protocolData$',
         },
+        {
+          src: 'allowance$',
+          id: 'allowance$',
+        },
       ],
       id: 'openAaveStateMachine',
       type: 'parallel',
@@ -126,7 +137,7 @@ export function createOpenAaveStateMachine(
           initial: 'editing',
           states: {
             editing: {
-              entry: 'resetCurrentStep',
+              entry: ['resetCurrentStep', 'setTotalSteps'],
               on: {
                 SET_AMOUNT: {
                   target: '#openAaveStateMachine.background.debouncing',
@@ -136,6 +147,11 @@ export function createOpenAaveStateMachine(
                   {
                     target: 'proxyCreating',
                     cond: 'hasProxy',
+                    actions: 'incrementCurrentStep',
+                  },
+                  {
+                    target: 'allowanceSetting',
+                    cond: 'isAllowanceNeeded',
                     actions: 'incrementCurrentStep',
                   },
                   {
@@ -153,6 +169,15 @@ export function createOpenAaveStateMachine(
                 PROXY_CREATED: {
                   target: 'editing',
                   actions: 'updateContext',
+                },
+              },
+            },
+            allowanceSetting: {
+              entry: ['spawnAllowanceMachine'],
+              exit: ['killAllowanceMachine'],
+              on: {
+                ALLOWANCE_SUCCESS: {
+                  target: 'editing',
                 },
               },
             },
@@ -248,6 +273,9 @@ export function createOpenAaveStateMachine(
         UPDATE_PROTOCOL_DATA: {
           actions: 'updateContext',
         },
+        UPDATE_ALLOWANCE: {
+          actions: 'updateContext',
+        },
       },
     },
     {
@@ -262,6 +290,7 @@ export function createOpenAaveStateMachine(
         canOpenPosition: ({ tokenBalance, userInput, connectedProxyAddress, hasOpenedPosition }) =>
           allDefined(tokenBalance, userInput.amount, connectedProxyAddress, !hasOpenedPosition) &&
           tokenBalance!.gt(userInput.amount!),
+        isAllowanceNeeded,
       },
       actions: {
         setRiskRatio: assign((context, event) => {
@@ -280,12 +309,18 @@ export function createOpenAaveStateMachine(
             },
           }
         }),
-        setTotalSteps: assign((_, event) => ({
-          totalSteps:
-            event.connectedProxyAddress === undefined
-              ? STEPS_WITH_PROXY_CREATION
-              : STEPS_WITHOUT_PROXY_CREATION,
-        })),
+        setTotalSteps: assign((context) => {
+          const allowance = isAllowanceNeeded(context)
+          const proxy = !allDefined(context.connectedProxyAddress)
+
+          const totalSteps =
+            totalStepsMap.base +
+            totalStepsMap.proxySteps(proxy) +
+            totalStepsMap.allowanceSteps(allowance)
+          return {
+            totalSteps: totalSteps,
+          }
+        }),
         setAmount: assign((context, event) => {
           return {
             userInput: {
@@ -372,6 +407,23 @@ export function createOpenAaveStateMachine(
           },
           { to: (context) => context.refParametersMachine! },
         ),
+        killAllowanceMachine: pure((context) => {
+          if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
+            context.refAllowanceStateMachine.stop()
+          }
+          return undefined
+        }),
+        spawnAllowanceMachine: assign((context) => ({
+          refAllowanceStateMachine: spawn(
+            allowanceStateMachine.withContext({
+              token: context.tokens.deposit,
+              spender: context.connectedProxyAddress!,
+              allowanceType: 'unlimited',
+              minimumAmount: context.userInput.amount!,
+            }),
+            'allowanceMachine',
+          ),
+        })),
       },
     },
   )
@@ -379,7 +431,7 @@ export function createOpenAaveStateMachine(
 
 class OpenAaveStateMachineTypes {
   needsConfiguration() {
-    return createOpenAaveStateMachine({} as any, {} as any, {} as any)
+    return createOpenAaveStateMachine({} as any, {} as any, {} as any, {} as any)
   }
 
   withConfig() {

@@ -8,12 +8,12 @@ import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
 import { ActorRefFrom, Sender } from 'xstate'
 
-import { SidebarSection, SidebarSectionProps } from '../../components/sidebar/SidebarSection'
+import { SidebarSection, SidebarSectionProps } from '../../../components/sidebar/SidebarSection'
 import {
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
-} from '../../components/vault/VaultChangesInformation'
+} from '../../../components/vault/VaultChangesInformation'
 import { ProxyEvent, ProxyStateMachine, ProxyStateMachineState } from './state'
 
 interface ProxyViewProps {
@@ -82,7 +82,7 @@ function ProxyInfoStateView({ state, send, steps }: ProxyViewStateProps) {
 function ProxyRunningView(props: { steps: [number, number] }) {
   const { t } = useTranslation()
   const sidebarSectionProps: SidebarSectionProps = {
-    title: 'Create proxy',
+    title: t('vault-form.header.proxy'),
     content: (
       <Grid gap={3}>
         <>

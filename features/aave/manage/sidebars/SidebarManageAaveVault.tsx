@@ -11,6 +11,7 @@ import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
+import { AllowanceView } from '../../../stateMachines/allowance'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
@@ -247,6 +248,13 @@ export function SidebarManageAaveVault() {
             },
           }}
           viewLocked={isLocked(state)}
+        />
+      )
+    case state.matches('frontend.allowanceSetting'):
+      return (
+        <AllowanceView
+          allowanceMachine={state.context.refAllowanceStateMachine!}
+          steps={[state.context.currentStep, state.context.totalSteps]}
         />
       )
     case state.matches('frontend.reviewingAdjusting'):
