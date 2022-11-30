@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ProtocolLongNames, TokenMetadataType } from 'blockchain/tokensMetadata'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
 import { capitalize } from 'lodash'
@@ -77,6 +78,7 @@ function InactiveCard() {
 interface ProductCardBannerProps {
   title: string
   description: string
+  isLoading?: boolean
 }
 
 // changed "ilk" to "strategyName" cause not everything is an ilk
@@ -99,7 +101,7 @@ export function ProductCardProtocolLink({
   )
 }
 
-function ProductCardBanner({ title, description }: ProductCardBannerProps) {
+function ProductCardBanner({ title, description, isLoading = false }: ProductCardBannerProps) {
   const dataContainer = useRef<HTMLDivElement>(null)
   const [contentHeight, setContentHeight] = useState(0)
   const size = useWindowSize()
@@ -132,14 +134,20 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           width: 'calc(100% - 32px)',
         }}
       >
-        <Flex sx={{ flexDirection: 'column', alignItems: 'center' }} ref={dataContainer}>
-          <Text sx={{ color: 'neutral80' }} variant="paragraph2">
-            {title}
-          </Text>
-          <Text variant="boldParagraph1" sx={{ textAlign: 'center' }}>
-            {description}
-          </Text>
-        </Flex>
+        {isLoading ? (
+          <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+            <AppSpinner />
+          </Flex>
+        ) : (
+          <Flex sx={{ flexDirection: 'column', alignItems: 'center' }} ref={dataContainer}>
+            <Text sx={{ color: 'neutral80' }} variant="paragraph2">
+              {title}
+            </Text>
+            <Text variant="boldParagraph1" sx={{ textAlign: 'center' }}>
+              {description}
+            </Text>
+          </Flex>
+        )}
       </Box>
     </Box>
   )
@@ -202,7 +210,7 @@ export interface ProductCardProps {
   tokenGif: string
   title: string
   description: string
-  banner: { title: string; description: string }
+  banner: ProductCardBannerProps
   button: { link: string; text: string }
   background: string
   isFull: boolean

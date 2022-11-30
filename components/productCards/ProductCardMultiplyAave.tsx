@@ -56,9 +56,12 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
           token: aaveMultiplyCalcValueBasis.token,
         }),
         description: t(`product-card-banner.aave.${cardData.symbol}`, {
-          value: maximumMultiple?.multiple.times(aaveMultiplyCalcValueBasis.amount).toFormat(0),
+          value: maximumMultiple
+            ? maximumMultiple.multiple.times(aaveMultiplyCalcValueBasis.amount).toFormat(0)
+            : zero.toString(),
           token: cardData.symbol,
         }),
+        isLoading: !maximumMultiple,
       }}
       labels={[
         {
@@ -79,11 +82,13 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
         },
         {
           title: t('system.variable-annual-fee'),
-          value: collateralReserveData?.variableBorrowRate
-            ? formatPercent(collateralReserveData.variableBorrowRate.times(100), {
-                precision: 2,
-              })
-            : zero.toString(),
+          value: collateralReserveData?.variableBorrowRate ? (
+            formatPercent(collateralReserveData.variableBorrowRate.times(100), {
+              precision: 2,
+            })
+          ) : (
+            <AppSpinner />
+          ),
         },
         {
           title: t('system.protocol'),
