@@ -1,10 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { Notice } from 'components/Notice'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { getAaveNoticeBanner, getLiquidatedHeaderNotice } from 'features/notices/helpers'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
-import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
+import {
+  formatAddress,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+} from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
@@ -13,8 +20,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
+import { useTheme } from 'theme/useThemeUI'
 
-import { useTheme } from '../../theme/useThemeUI'
 import { VaultNoticesState } from './vaultsNotices'
 
 type VaultNoticeProps = {
@@ -103,7 +110,7 @@ export function VaultLiquidatingNextPriceNotice({
               <Box sx={{ textAlign: 'center' }}>
                 <Heading
                   as="h3"
-                  sx={{ lineHeight: 'tight', fontWeight: 'semiBold', color: 'banner.warning' }}
+                  sx={{ lineHeight: 'tight', fontWeight: 'semiBold', color: 'warning100' }}
                 >
                   {'<2'}
                 </Heading>
@@ -127,7 +134,7 @@ export function VaultLiquidatingNextPriceNotice({
             : t('vault-notices.liquidating.subheader1')
         }
       `}
-      color="banner.warning"
+      color="warning100"
     />
   )
 }
@@ -159,12 +166,12 @@ export function VaultOwnershipBanner({
           </Text>
         )
       }
-      color="banner.muted"
+      color="primary100"
     />
   )
 }
 
-export function PositionOwnershipBanner({
+function PositionOwnershipBanner({
   account,
   connectedWalletAddress,
 }: {
@@ -192,7 +199,7 @@ export function PositionOwnershipBanner({
           </Text>
         )
       }
-      color="banner.muted"
+      color="primary100"
       mb={4}
     />
   )
@@ -223,8 +230,20 @@ export function VaultOverviewOwnershipNotice({
           </AppLink>
         </Text>
       }
-      color="banner.muted"
+      color="primary100"
     />
+  )
+}
+
+function DangerStatusFrame() {
+  return (
+    <StatusFrame
+      sx={{
+        borderColor: 'critical10',
+      }}
+    >
+      <Icon size="auto" height="24" width="6" name="exclamationMark" color="critical100" />
+    </StatusFrame>
   )
 }
 
@@ -251,20 +270,10 @@ export function VaultLiquidatingNotice({
 
   return (
     <VaultNotice
-      status={
-        <>
-          <StatusFrame
-            sx={{
-              borderColor: 'banner.dangerBorder',
-            }}
-          >
-            <Icon size="auto" height="24" width="6" name="exclamationMark" color="banner.danger" />
-          </StatusFrame>
-        </>
-      }
+      status={<DangerStatusFrame />}
       header={header}
       subheader={subheader}
-      color="banner.danger"
+      color="critical100"
     />
   )
 }
@@ -281,23 +290,24 @@ export function VaultLiquidatedNotice({
 >) {
   const { t } = useTranslation()
 
-  const header = isVaultController
-    ? t('vault-notices.liquidated.header1')
-    : t('vault-notices.liquidated.header2')
+  const header = t(getLiquidatedHeaderNotice(isVaultController), { position: t('maker-vault') })
 
   const fallbackSubheader = controller
-    ? `${t('vault-notices.liquidated.subheader3')} ${t('vault-notices.liquidated.subheader4', {
-        address: formatAddress(controller),
-      })}`
-    : t('vault-notices.liquidated.subheader3')
+    ? `${t('vault-notices.liquidated.maker.subheader3')} ${t(
+        'vault-notices.liquidated.maker.subheader4',
+        {
+          address: formatAddress(controller),
+        },
+      )}`
+    : t('vault-notices.liquidated.maker.subheader3')
 
   const subheader =
     unlockedCollateral.gt(zero) &&
     (isVaultController ? (
       <>
         <Text sx={{ mb: 3 }}>
-          {t('vault-notices.liquidated.subheader1')}{' '}
-          {t('vault-notices.liquidated.subheader2', {
+          {t('vault-notices.liquidated.maker.subheader1')}{' '}
+          {t('vault-notices.liquidated.maker.subheader2', {
             amount: formatCryptoBalance(unlockedCollateral),
             collateral: token.toUpperCase(),
           })}
@@ -310,20 +320,10 @@ export function VaultLiquidatedNotice({
 
   return (
     <VaultNotice
-      status={
-        <>
-          <StatusFrame
-            sx={{
-              borderColor: 'banner.dangerBorder',
-            }}
-          >
-            <Icon size="auto" height="24" width="6" name="exclamationMark" color="banner.danger" />
-          </StatusFrame>
-        </>
-      }
+      status={<DangerStatusFrame />}
       header={header}
       subheader={subheader}
-      color="banner.danger"
+      color="critical100"
     />
   )
 }
@@ -402,7 +402,7 @@ export function VaultNextPriceUpdateCounter({
           thresholdReachedLabel
         ) : (
           <Box sx={{ textAlign: 'center' }}>
-            <Heading as="h3" sx={{ lineHeight: '1.0', color: 'banner.warning' }}>
+            <Heading as="h3" sx={{ lineHeight: '1.0', color: 'warning100' }}>
               {remainingTime && Math.floor(remainingTime / 60)}
             </Heading>
             <Text sx={{ lineHeight: '1.0', fontSize: 1, color: 'neutral80Alt' }}>mins</Text>
@@ -464,9 +464,108 @@ export function AavePositionAlreadyOpenedNotice() {
       <VaultNotice
         header={t('vault-notices.aave-multi-position.header')}
         subheader={t('vault-notices.aave-multi-position.subheader') as string}
-        color="banner.warning"
+        color="warning100"
         withClose={false}
       />
     </Box>
   )
+}
+
+function AaveLiquidatedNotice({ isPositionController }: { isPositionController: boolean }) {
+  const { t } = useTranslation()
+
+  const header = t(getLiquidatedHeaderNotice(isPositionController), { position: t('position') })
+  const subheader = t('vault-notices.liquidated.aave.subheader1')
+
+  return (
+    <VaultNotice
+      status={<DangerStatusFrame />}
+      header={header}
+      subheader={subheader}
+      color="critical100"
+    />
+  )
+}
+
+function AavePositionAboveMaxLtvNotice({
+  loanToValue,
+  maxLoanToValue,
+  liquidationThreshold,
+}: {
+  loanToValue: BigNumber
+  maxLoanToValue: BigNumber
+  liquidationThreshold: BigNumber
+}) {
+  const { t } = useTranslation()
+  const header = t('vault-notices.above-max-ltv.header')
+  const subheader = t('vault-notices.above-max-ltv.subheader', {
+    loanToValue: formatDecimalAsPercent(loanToValue),
+    maxLoanToValue: formatDecimalAsPercent(maxLoanToValue),
+    liquidationThreshold: formatDecimalAsPercent(liquidationThreshold),
+  })
+
+  return (
+    <VaultNotice
+      status={<DangerStatusFrame />}
+      header={header}
+      subheader={subheader}
+      color="critical100"
+    />
+  )
+}
+
+export function AavePositionNoticesView() {
+  const { aaveLiquidations$ } = useAppContext()
+  const { stateMachine } = useManageAaveStateMachineContext()
+  const [state] = useActor(stateMachine)
+  const preparedAaveLiquidations$ = aaveLiquidations$(state.context.proxyAddress || '')
+  const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
+
+  if (!state.context.protocolData || !state.context.proxyAddress) {
+    return null
+  }
+
+  const {
+    context: {
+      address,
+      proxyAddress,
+      connectedProxyAddress,
+      web3Context,
+      protocolData: {
+        position: {
+          category: { maxLoanToValue, liquidationThreshold },
+          riskRatio: { loanToValue },
+        },
+      },
+    },
+  } = state
+
+  const connectedAddress = web3Context?.status === 'connected' ? web3Context.account : undefined
+  const isPositionController = address === connectedAddress
+
+  const banner = getAaveNoticeBanner({
+    loanToValue,
+    maxLoanToValue,
+    liquidationThreshold,
+    connectedProxyAddress,
+    proxyAddress,
+    aaveLiquidations,
+  })
+
+  switch (banner) {
+    case 'liquidated':
+      return <AaveLiquidatedNotice isPositionController={isPositionController} />
+    case 'aboveMaxLtv':
+      return (
+        <AavePositionAboveMaxLtvNotice
+          loanToValue={loanToValue}
+          maxLoanToValue={maxLoanToValue}
+          liquidationThreshold={liquidationThreshold}
+        />
+      )
+    case 'ownership':
+      return <PositionOwnershipBanner account={address} connectedWalletAddress={connectedAddress} />
+    default:
+      return null
+  }
 }
