@@ -12,12 +12,8 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { zero } from '../../../../helpers/zero'
-import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
@@ -42,14 +38,7 @@ const getLTVRatioColor = (ratio: BigNumber) => {
   }
 }
 
-function convertToStandardDebtAndCollateral(position: IPosition) {
-  return {
-    collateral: amountFromWei(position.collateral.amount, position.collateral.precision),
-    debt: amountFromWei(position.debt.amount, position.debt.precision),
-  }
-}
-
-function buildViewThings(
+function calcViewValuesForPosition(
   position: IPosition,
   collateralTokenPrice: BigNumber,
   debtTokenPrice: BigNumber,
@@ -101,7 +90,7 @@ export function AaveMultiplyPositionData({
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
 
-  const currentPositionThings = buildViewThings(
+  const currentPositionThings = calcViewValuesForPosition(
     currentPosition,
     collateralTokenPrice,
     debtTokenPrice,
@@ -111,7 +100,7 @@ export function AaveMultiplyPositionData({
 
   const nextPositionThings =
     nextPosition &&
-    buildViewThings(
+    calcViewValuesForPosition(
       nextPosition,
       collateralTokenPrice,
       debtTokenPrice,

@@ -1,4 +1,3 @@
-import { BigNumber } from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
