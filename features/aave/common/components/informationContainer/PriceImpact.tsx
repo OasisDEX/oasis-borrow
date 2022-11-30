@@ -1,4 +1,5 @@
-import { IStrategy } from '@oasisdex/oasis-actions'
+import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { amountFromWei } from '@oasisdex/utils'
 import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -10,24 +11,32 @@ import { one } from '../../../../../helpers/zero'
 import { calculatePriceImpact } from '../../../../shared/priceImpact'
 
 interface PriceImpactProps {
-  token: string
-  collateralToken: string
+  tokens: {
+    collateral: string
+    debt: string
+  }
   collateralPrice?: BigNumber
   tokenPrice?: BigNumber
-  transactionParameters: IStrategy
+  transactionParameters: IPositionTransition
 }
 
 export function PriceImpact({
-  token,
-  collateralToken,
+  tokens,
   transactionParameters,
   tokenPrice,
   collateralPrice,
 }: PriceImpactProps) {
   const { t } = useTranslation()
 
-  const { toTokenAmount, fromTokenAmount } = transactionParameters.simulation.swap
-  const collateralTokenToTokenPrice = toTokenAmount.div(fromTokenAmount)
+  const {
+    toTokenAmount,
+    targetToken,
+    fromTokenAmount,
+    sourceToken,
+  } = transactionParameters.simulation.swap
+  const collateralTokenToTokenPrice = amountFromWei(toTokenAmount, targetToken.precision).div(
+    amountFromWei(fromTokenAmount, sourceToken.precision),
+  )
 
   const marketPrice = collateralPrice?.div(tokenPrice || one) || one
 
@@ -35,7 +44,7 @@ export function PriceImpact({
 
   return (
     <VaultChangesInformationItem
-      label={t('vault-changes.price-impact', { token: `${collateralToken}/${token}` })}
+      label={t('vault-changes.price-impact', { token: `${tokens.collateral}/${tokens.debt}` })}
       value={
         <Text>
           {formatCryptoBalance(marketPrice)}{' '}

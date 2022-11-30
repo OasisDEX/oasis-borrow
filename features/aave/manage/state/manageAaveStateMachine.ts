@@ -294,7 +294,7 @@ export function createManageAaveStateMachine(
               amount: context.userInput.amount || zero,
               riskRatio: context.userInput.riskRatio || context.currentPosition!.riskRatio,
               proxyAddress: context.connectedProxyAddress!,
-              token: context.token,
+              // token: context.token, not sending token when adjusting
               context: context.web3Context!,
               slippage: context.userSettings!.slippage,
               currentPosition: context.currentPosition!,

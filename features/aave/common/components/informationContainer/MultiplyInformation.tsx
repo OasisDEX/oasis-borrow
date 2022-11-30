@@ -1,4 +1,4 @@
-import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -10,7 +10,7 @@ import {
 import { formatBigNumber } from '../../../../../helpers/formatters/format'
 
 interface MultiplyInformationProps {
-  transactionParameters: IStrategy
+  transactionParameters: IPositionTransition
   currentPosition: IPosition
 }
 

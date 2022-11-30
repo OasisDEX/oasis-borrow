@@ -1,4 +1,4 @@
-import { IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -33,28 +33,29 @@ function isLocked(state: ManageAaveStateMachineState) {
 }
 
 function getAmountGetFromPositionAfterClose(
-  strategy: IStrategy | undefined,
+  strategy: IPositionTransition | undefined,
   currentPosition: IPosition | undefined,
 ) {
   if (!strategy || !currentPosition) {
     return zero
   }
-  const currentDebt = amountToWei(
-    currentPosition.debt.amount,
-    currentPosition.debt.denomination || 'ETH',
-  )
+  const currentDebt = amountToWei(currentPosition.debt.amount, currentPosition.debt.symbol)
   const amountFromSwap = strategy.simulation.swap.toTokenAmount
-  const fee = strategy.simulation.swap.targetTokenFee
+  const fee = strategy.simulation.swap.tokenFee
 
   return amountFromSwap.minus(currentDebt).minus(fee)
 }
 
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
+  const displayToken = state.context.strategy?.simulation.swap.targetToken || {
+    symbol: 'ETH',
+    precision: 18,
+  }
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountGetFromPositionAfterClose(state.context.strategy, state.context.currentPosition),
-      state.context.token,
+      displayToken.symbol,
     ),
   )
 
@@ -64,7 +65,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
         {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
       <Text variant="boldParagraph3">
-        {balance} {state.context.token}
+        {balance} {displayToken.symbol}
       </Text>
     </Flex>
   )

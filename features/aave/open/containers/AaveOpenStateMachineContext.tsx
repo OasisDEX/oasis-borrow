@@ -16,8 +16,7 @@ function setupOpenAaveStateContext({
     machine.withContext({
       strategyConfig: config,
       userInput: {},
-      token: config.tokens.debt,
-      collateralToken: config.tokens.collateral,
+      tokens: config.tokens,
       currentStep: 1,
       totalSteps: 4,
       currentPosition: EMPTY_POSITION,

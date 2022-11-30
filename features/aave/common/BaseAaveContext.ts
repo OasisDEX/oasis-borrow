@@ -1,4 +1,4 @@
-import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { EventObject, Sender } from 'xstate'
 
@@ -37,14 +37,17 @@ export type BaseAaveEvent =
 
 export interface BaseAaveContext {
   userInput: UserInput
-  token: string
-  collateralToken: string
+  tokens: {
+    collateral: string
+    debt: string
+    deposit: string
+  }
   currentPosition?: IPosition
 
   currentStep: number
   totalSteps: number
 
-  strategy?: IStrategy
+  strategy?: IPositionTransition
   operationName?: string
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
@@ -70,9 +73,9 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.strategy!.calls as any,
+    calls: context.strategy!.transaction.calls as any,
     operationName: context.operationName!,
-    token: context.token,
+    token: context.tokens.deposit,
     proxyAddress: context.connectedProxyAddress!,
     amount: context.userInput.amount,
   }

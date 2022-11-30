@@ -32,7 +32,7 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
             send({ type: 'SET_AMOUNT', amount: amount })
           }
         })}
-        currencyCode={state.context.token!}
+        currencyCode={state.context.tokens.deposit}
         disabled={false}
       />
     </Grid>

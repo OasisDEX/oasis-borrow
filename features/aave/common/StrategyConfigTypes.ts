@@ -6,9 +6,6 @@ import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aav
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
-type CollateralTokenTypeList = 'STETH'
-type DebtTokenTypeList = 'USDC' | 'ETH'
-
 export interface StrategyConfig {
   name: string
   urlSlug: string
@@ -22,8 +19,9 @@ export interface StrategyConfig {
     adjustRiskView: AdjustRiskView
   }
   tokens: {
-    collateral: CollateralTokenTypeList
-    debt: DebtTokenTypeList
+    collateral: string
+    debt: string
+    deposit: string
   }
   riskRatios: {
     minimum: IRiskRatio

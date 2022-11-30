@@ -52,7 +52,7 @@
     "@oasisdex/automation": "1.2.5",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
-    "@oasisdex/oasis-actions": "0.0.4-alpha.21",
+    "@oasisdex/oasis-actions": "0.0.4-alpha.25",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",

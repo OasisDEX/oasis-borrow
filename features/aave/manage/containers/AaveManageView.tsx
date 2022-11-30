@@ -52,8 +52,10 @@ function AaveManageContainer({
     return null
   }
 
-  const { collateralToken, token } = state.context
-  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, token)
+  const {
+    tokens: { collateral: collateralToken, debt: debtToken },
+  } = state.context
+  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
 
   return (
     <AaveAutomationContext
@@ -125,8 +127,10 @@ export function AaveManagePositionView({
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
   const { aaveManageStateMachine } = useAaveContext()
-  const { aaveSTETHReserveConfigurationData, aavePreparedReserveDataETH$ } = useEarnContext()
-  const [aaveReserveDataETH] = useObservable(aavePreparedReserveDataETH$)
+  const { aaveSTETHReserveConfigurationData, aaveReserveData$ } = useEarnContext()
+  const [aaveReserveDataCollateral, aaveReserveDataCollateralError] = useObservable(
+    aaveReserveData$(strategyConfig.tokens.collateral),
+  )
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   return (
     <ManageAaveStateMachineContextProvider
@@ -134,17 +138,17 @@ export function AaveManagePositionView({
       address={address}
       strategy={strategyConfig}
     >
-      <WithErrorHandler error={[aaveReserveStateError]}>
+      <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataCollateralError]}>
         <WithLoadingIndicator
-          value={[aaveReserveState, aaveReserveDataETH]}
+          value={[aaveReserveState, aaveReserveDataCollateral]}
           customLoader={<VaultContainerSpinner />}
         >
-          {([_aaveReserveState, _aaveReserveDataETH]) => {
+          {([_aaveReserveState, _aaveReserveDataCollateral]) => {
             return (
               <AaveManageContainer
                 strategyConfig={strategyConfig}
                 aaveReserveState={_aaveReserveState}
-                aaveReserveDataETH={_aaveReserveDataETH}
+                aaveReserveDataETH={_aaveReserveDataCollateral}
                 address={address}
               />
             )

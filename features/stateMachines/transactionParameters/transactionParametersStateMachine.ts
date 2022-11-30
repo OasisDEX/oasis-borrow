@@ -1,4 +1,4 @@
-import { IStrategy } from '@oasisdex/oasis-actions'
+import { IPositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
@@ -13,14 +13,14 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 const { assign } = actions
 
 export interface BaseTransactionParameters {
-  token: string
-  amount: BigNumber
+  token?: string
+  amount?: BigNumber
   proxyAddress: string
 }
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: IStrategy
+  strategy?: IPositionTransition
   operationName?: string
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
@@ -28,7 +28,7 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; strategy?: IStrategy; operationName: string }
+  | { type: 'STRATEGY_RECEIVED'; strategy?: IPositionTransition; operationName: string }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -43,7 +43,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'GAS_ESTIMATION_CHANGED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = { strategy: IStrategy; operationName: string }
+export type LibraryCallReturn = { strategy: IPositionTransition; operationName: string }
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
@@ -154,14 +154,18 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         })),
       },
       services: {
-        getParameters: (context) => libraryCall(context.parameters!),
-        estimateGas: ({ txHelper, operationName, parameters, strategy }) => {
+        getParameters: async (context) => {
+          const call = await libraryCall(context.parameters!)
+          return call
+        },
+        estimateGas: ({ txHelper, parameters, strategy }) => {
           return txHelper!
             .estimateGas(callOperationExecutor, {
               kind: TxMetaKind.operationExecutor,
-              calls: strategy!.calls as any,
-              operationName: operationName!,
-              token: parameters!.token,
+              calls: strategy!.transaction.calls as any,
+              operationName: strategy!.transaction.operationName,
+              // @ts-ignore
+              token: parameters!.token || parameters!.debtToken,
               amount: parameters!.amount,
               proxyAddress: parameters!.proxyAddress,
             })

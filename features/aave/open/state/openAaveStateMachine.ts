@@ -355,17 +355,21 @@ export function createOpenAaveStateMachine(
           return undefined
         }),
         requestParameters: send(
-          (context): TransactionParametersStateMachineEvent<OpenAaveParameters> => ({
-            type: 'VARIABLES_RECEIVED',
-            parameters: {
-              amount: context.userInput.amount!,
-              riskRatio: context.userInput.riskRatio || context.strategyConfig.riskRatios.default,
-              proxyAddress: context.connectedProxyAddress!,
-              token: context.token,
-              context: context.web3Context!,
-              slippage: context.userSettings!.slippage,
-            },
-          }),
+          (context): TransactionParametersStateMachineEvent<OpenAaveParameters> => {
+            return {
+              type: 'VARIABLES_RECEIVED',
+              parameters: {
+                amount: context.userInput.amount!,
+                riskRatio: context.userInput.riskRatio || context.strategyConfig.riskRatios.default,
+                proxyAddress: context.connectedProxyAddress!,
+                collateralToken: context.strategyConfig.tokens.collateral,
+                debtToken: context.tokens.debt,
+                depositToken: context.tokens.deposit,
+                context: context.web3Context!,
+                slippage: context.userSettings!.slippage,
+              },
+            }
+          },
           { to: (context) => context.refParametersMachine! },
         ),
       },
