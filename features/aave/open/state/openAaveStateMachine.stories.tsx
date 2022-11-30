@@ -19,16 +19,18 @@ import {
 
 const stories = storiesOf('Xstate Machines/Open Aave State Machine', module)
 
+const emptyObject = {} as any
+
 const hasGasEstimation: HasGasEstimation = {
   gasEstimationStatus: GasEstimationStatus.calculated,
   gasEstimation: 10,
 }
 
 const openAaveStateMachine = createOpenAaveStateMachine(
-  {} as any,
-  {} as any,
-  {} as any,
-  {} as any,
+  emptyObject,
+  emptyObject,
+  emptyObject,
+  emptyObject,
 ).withConfig({
   services: {
     ...({} as OpenAaveStateMachineServices),

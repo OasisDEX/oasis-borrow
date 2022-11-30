@@ -7,6 +7,7 @@ import { Context } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
+import { allDefined } from '../../../../helpers/allDefined'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { IStrategyInfo } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
@@ -110,7 +111,7 @@ export function getManageAavePositionStateMachineServices(
     },
     allowance$: (context) => {
       return connectedProxyAddress$.pipe(
-        filter((address) => address !== undefined),
+        filter(allDefined),
         switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
