@@ -69,7 +69,7 @@ export function getUserDpmProxies$(
         ),
       )
 
-      const transferredUserProxies = userAssumedProxiesTransferredEvents
+      const proxiesNotOwnerAnymore = userAssumedProxiesTransferredEvents
         .flatMap((x) => x[x.length - 1])
         .filter((x) => x)
         .flatMap((event) => event)
@@ -78,7 +78,7 @@ export function getUserDpmProxies$(
         )
         .map((event) => event.returnValues.proxy)
 
-      return [...new Set(userAssumedProxies.filter((x) => !transferredUserProxies.includes(x)))]
+      return [...new Set(userAssumedProxies.filter((x) => !proxiesNotOwnerAnymore.includes(x)))]
     }),
   )
 }
