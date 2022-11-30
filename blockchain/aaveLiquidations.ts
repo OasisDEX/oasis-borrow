@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { AaveLendingPool } from 'types/ethers-contracts'
+import { AaveLendingPool } from 'types/web3-v1-contracts/aave-lending-pool'
 
 import { Context } from './network'
 
