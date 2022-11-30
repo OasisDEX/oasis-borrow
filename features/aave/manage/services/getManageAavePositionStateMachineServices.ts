@@ -43,6 +43,7 @@ export function getManageAavePositionStateMachineServices(
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
         map((balances) => balances[context.tokens.deposit]),
+        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
         map(({ balance, price }) => ({
           type: 'SET_BALANCE',
           tokenBalance: balance,
