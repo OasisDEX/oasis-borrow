@@ -59,8 +59,6 @@ export function getUserDpmProxies$(
         ...userProxyOwnershipTransferredEvents,
       ].map((event) => event.returnValues.proxy)
 
-      console.log('userAssumedProxies', userAssumedProxies)
-
       const userAssumedProxiesTransferredEvents = await Promise.all(
         userAssumedProxies.map((proxyAddress) =>
           accountGuardContract.getPastEvents('ProxyOwnershipTransferred', {
@@ -79,7 +77,7 @@ export function getUserDpmProxies$(
           (event) => event.returnValues.newOwner.toLowerCase() !== walletAddress.toLowerCase(),
         )
         .map((event) => event.returnValues.proxy)
-      console.log('transferredUserProxies', transferredUserProxies)
+
       return [...new Set(userAssumedProxies.filter((x) => !transferredUserProxies.includes(x)))]
     }),
   )
