@@ -161,6 +161,7 @@ export function getDataForStopLoss(
 
   function getOpenVaultStopLossMetadata(): StopLossMetadata {
     return {
+      automationVersion: 1,
       callbacks: {
         onCloseToChange: ({ optionName }) => setStopLossCloseType(optionName as CloseVaultTo),
         onSliderChange: ({ value }) => setStopLossLevel(value),

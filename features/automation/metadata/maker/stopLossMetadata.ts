@@ -92,6 +92,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
   })
 
   return {
+    automationVersion: 1,
     callbacks: {},
     detailCards: {
       cardsSet: [

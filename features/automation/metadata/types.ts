@@ -53,6 +53,7 @@ export interface StopLossMetadataDetailCards {
 }
 
 type AutomationCommonMetadata<T> = {
+  automationVersion: 1 | 2
   settings: {
     sliderDirection?: 'ltr' | 'rtl'
     sliderStep: number

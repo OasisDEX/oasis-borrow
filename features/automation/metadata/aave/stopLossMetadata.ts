@@ -81,6 +81,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
 
   // TODO calculation methods in general to be updated when correct manage aave multiply state will be available
   return {
+    automationVersion: 2,
     callbacks: {},
     detailCards: {
       cardsSet: [
