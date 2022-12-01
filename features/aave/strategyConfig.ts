@@ -28,6 +28,8 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
+      sidebarTitle: 'open-earn.aave.vault-form.title',
+      sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
     tokens: {
       collateral: 'STETH',
@@ -36,6 +38,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
     enabled: true,
+    type: 'earn',
   },
   {
     name: 'ethusdc',
@@ -48,6 +51,8 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
     },
     tokens: {
       collateral: 'ETH',
@@ -56,6 +61,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     enabled: false,
+    type: 'multiply',
   },
 ]
 

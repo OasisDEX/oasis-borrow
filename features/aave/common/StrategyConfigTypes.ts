@@ -17,6 +17,8 @@ export interface IStrategyConfig {
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
     adjustRiskView: AdjustRiskView
+    sidebarTitle: string
+    sidebarButton: string
   }
   tokens: {
     collateral: string
@@ -28,6 +30,7 @@ export interface IStrategyConfig {
     default: IRiskRatio
   }
   enabled: boolean
+  type: 'multiply' | 'earn'
 }
 
 export type AaveHeaderProps = {
