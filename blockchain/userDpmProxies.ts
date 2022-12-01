@@ -27,7 +27,7 @@ export function getUserDpmProxies$(
   const accountGuardGenesisBlock = accountGuardNetworkMap[chainId]
   const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
 
-  return combineLatest([context$, onEveryBlock$]).pipe(
+  return combineLatest(context$, onEveryBlock$).pipe(
     switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
       const accountGuardContract = contract<AccountGuard>(accountGuard)
