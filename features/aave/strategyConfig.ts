@@ -15,12 +15,10 @@ import {
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { StrategyConfig } from './common/StrategyConfigTypes'
+import { IStrategyConfig } from './common/StrategyConfigTypes'
 
-type StrategyConfigName = 'aave-earn' | 'aave-multiply'
-
-export const strategies: Record<StrategyConfigName, StrategyConfig> = {
-  'aave-earn': {
+export const strategies: Array<IStrategyConfig> = [
+  {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
     viewComponents: {
@@ -31,6 +29,8 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
+      sidebarTitle: 'open-earn.aave.vault-form.title',
+      sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
     tokens: {
       collateral: 'STETH',
@@ -38,10 +38,35 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       deposit: 'ETH',
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
-    product: 'earn',
+    type: 'earn',
     featureToggle: 'AaveEarnSTETHETH',
   },
-  'aave-multiply': {
+
+  {
+    name: 'ethusdc',
+    urlSlug: 'ethusdc',
+    viewComponents: {
+      headerOpen: AaveMultiplyOpenHeader,
+      headerManage: AaveMultiplyManageHeader,
+      headerView: AaveMultiplyManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'ETH',
+      debt: 'USDC',
+      deposit: 'ETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    featureToggle: 'AaveMultiplyETHUSDC',
+    type: 'multiply',
+  },
+
+  {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
     viewComponents: {
@@ -52,25 +77,75 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
     },
     tokens: {
-      collateral: 'ETH',
+      collateral: 'STETH',
       debt: 'USDC',
-      deposit: 'ETH',
+      deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    product: 'multiply',
     featureToggle: 'AaveMultiplySTETHUSDC',
+    type: 'multiply',
   },
-}
 
-export function aaveStrategiesList(filterProduct?: StrategyConfig['product']) {
+  {
+    name: 'wBTCusdc',
+    urlSlug: 'wBTCusdc',
+    viewComponents: {
+      headerOpen: AaveMultiplyOpenHeader,
+      headerManage: AaveMultiplyManageHeader,
+      headerView: AaveMultiplyManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WBTC',
+      debt: 'USDC',
+      deposit: 'WBTC',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    featureToggle: 'AaveMultiplyWBTCUSDC',
+    type: 'multiply',
+  },
+]
+
+export function aaveStrategiesList(filterProduct?: IStrategyConfig['type']): IStrategyConfig[] {
   return Object.values(strategies)
     .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
-    .filter(({ product }) => (filterProduct ? product === filterProduct : true))
-    .map((s) => s.name)
+    .filter(({ type }) => (filterProduct ? type === filterProduct : true))
 }
 
-export function getAaveStrategy(strategyName: StrategyConfig['name']) {
+export function getAaveStrategy(strategyName: IStrategyConfig['name']) {
   return Object.values(strategies).filter(({ name }) => strategyName === name)
 }
+
+export function loadStrategyFromSlug(slug: string): IStrategyConfig {
+  const strategy = strategies.find((s) => s.urlSlug === slug)
+  if (!strategy) {
+    throw new Error(`Strategy not found for slug: ${slug}`)
+  }
+  return strategy
+}
+
+export function loadStrategyFromTokens(
+  collateralToken: string,
+  debtToken: string,
+): IStrategyConfig {
+  const strategy = strategies.find(
+    (s) => s.tokens.collateral === collateralToken && s.tokens.debt === debtToken,
+  )
+  if (!strategy) {
+    throw new Error(`Strategy not found for ${collateralToken}/${debtToken}`)
+  }
+  return strategy
+}
+
+// export const aaveStrategiesList = Object.values(strategies)
+//   .filter(({ enabled }) => enabled)
+//   .map((s) => s.name)

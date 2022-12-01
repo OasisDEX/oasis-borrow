@@ -7,7 +7,7 @@ import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aav
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
-export interface StrategyConfig {
+export interface IStrategyConfig {
   name: string
   urlSlug: string
   viewComponents: {
@@ -18,6 +18,8 @@ export interface StrategyConfig {
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
     adjustRiskView: AdjustRiskView
+    sidebarTitle: string
+    sidebarButton: string
   }
   tokens: {
     collateral: string
@@ -28,12 +30,12 @@ export interface StrategyConfig {
     minimum: IRiskRatio
     default: IRiskRatio
   }
-  product: 'multiply' | 'earn'
+  type: 'multiply' | 'earn'
   featureToggle: Feature
 }
 
 export type AaveHeaderProps = {
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
 }
 
 export type ManageSectionComponentProps = {

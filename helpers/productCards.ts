@@ -15,6 +15,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
   TokenMetadataType,
 } from '../blockchain/tokensMetadata'
+import { IStrategyConfig } from '../features/aave/common/StrategyConfigTypes'
 import { aaveStrategiesList } from '../features/aave/strategyConfig'
 import { zero } from './zero'
 
@@ -196,7 +197,7 @@ export const productCardsConfig: {
   earn: ProductPageType
   landing: {
     featuredIlkCards: Record<ProductTypes, Array<Ilk>>
-    featuredAaveCards: Record<ProductTypes, Array<AaveStrategy>>
+    featuredAaveCards: Record<ProductTypes, Array<IStrategyConfig>>
   }
   descriptionCustomKeys: Record<Ilk, string>
   descriptionLinks: Record<Ilk, { link: string }>
