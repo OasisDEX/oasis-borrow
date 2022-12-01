@@ -40,6 +40,7 @@ export const strategies: Array<IStrategyConfig> = [
     enabled: true,
     type: 'earn',
   },
+
   {
     name: 'ethusdc',
     urlSlug: 'ethusdc',
@@ -58,6 +59,54 @@ export const strategies: Array<IStrategyConfig> = [
       collateral: 'ETH',
       debt: 'USDC',
       deposit: 'ETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    enabled: false,
+    type: 'multiply',
+  },
+
+  {
+    name: 'stETHusdc',
+    urlSlug: 'stETHusdc',
+    viewComponents: {
+      headerOpen: AaveMultiplyOpenHeader,
+      headerManage: AaveMultiplyManageHeader,
+      headerView: AaveMultiplyManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'STETH',
+      debt: 'USDC',
+      deposit: 'STETH',
+    },
+    riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+    enabled: false,
+    type: 'multiply',
+  },
+
+  {
+    name: 'wBTCusdc',
+    urlSlug: 'wBTCusdc',
+    viewComponents: {
+      headerOpen: AaveMultiplyOpenHeader,
+      headerManage: AaveMultiplyManageHeader,
+      headerView: AaveMultiplyManageHeader,
+      simulateSection: AaveMultiplyManageComponent,
+      vaultDetailsManage: AaveMultiplyManageComponent,
+      vaultDetailsView: AaveMultiplyManageComponent,
+      adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      sidebarTitle: 'open-multiply.sidebar.title',
+      sidebarButton: 'open-multiply.sidebar.open-btn',
+    },
+    tokens: {
+      collateral: 'WBTC',
+      debt: 'USDC',
+      deposit: 'WBTC',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     enabled: false,
