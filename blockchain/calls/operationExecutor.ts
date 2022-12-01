@@ -36,11 +36,10 @@ export const callOperationExecutor: TransactionDef<OperationExecutorTxMeta> = {
 }
 
 function getCallData(data: OperationExecutorTxMeta, context: ContextConnected) {
-  return (
-    context
-      .contract<OperationExecutor>(context.operationExecutor)
-      // .methods.executeOp(data.calls, data.operationName)
-      .methods.executeOp(data.calls, 'CustomOperation') // TODO: Remove hardcoded operation name and pull from transcaction data from lib response
-      .encodeABI()
-  )
+  console.log('operationname ', data.operationName)
+  console.log(`context.operationExecutor.address ${context.operationExecutor.address}`)
+  return context
+    .contract<OperationExecutor>(context.operationExecutor)
+    .methods.executeOp(data.calls, data.operationName)
+    .encodeABI()
 }

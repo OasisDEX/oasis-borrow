@@ -1,0 +1,158 @@
+ args: (stepping into obj key)
+recursiveLog.ts?3697:27   proxy: 0xEce0e0433C2a47632E39B77fE13149b2378F2BAb
+recursiveLog.ts?3697:27   collateralToken: (stepping into obj key)
+recursiveLog.ts?3697:27    symbol: STETH
+recursiveLog.ts?3697:27    precision: 18
+recursiveLog.ts?3697:27   debtToken: (stepping into obj key)
+recursiveLog.ts?3697:27    symbol: ETH
+recursiveLog.ts?3697:27    precision: 18
+recursiveLog.ts?3697:27  dependencies: (stepping into obj key)
+recursiveLog.ts?3697:27   addresses: (stepping into obj key)
+recursiveLog.ts?3697:27    DAI: 0x6B175474E89094C44Da98b954EedeAC495271d0F
+recursiveLog.ts?3697:27    ETH: 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
+recursiveLog.ts?3697:27    WETH: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+recursiveLog.ts?3697:27    stETH: 0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84
+recursiveLog.ts?3697:27    USDC: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+recursiveLog.ts?3697:27    wBTC: 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599
+recursiveLog.ts?3697:27    chainlinkEthUsdPriceFeed: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419
+recursiveLog.ts?3697:27    aaveProtocolDataProvider: 0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d
+recursiveLog.ts?3697:27    aavePriceOracle: 0xA50ba011c48153De246E5192C8f9258A2ba79Ca9
+recursiveLog.ts?3697:27    aaveLendingPool: 0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9
+recursiveLog.ts?3697:27    operationExecutor: 0x24432a08869578aAf4d1eadA12e1e78f171b1a2b
+recursiveLog.ts?3697:27   provider: (stepping into obj key)
+recursiveLog.ts?3697:27    _isProvider: true
+recursiveLog.ts?3697:27    _events: (stepping into obj key)
+recursiveLog.ts?3697:27    _emitted: (stepping into obj key)
+recursiveLog.ts?3697:27     block: -2
+recursiveLog.ts?3697:27    disableCcipRead: false
+recursiveLog.ts?3697:27    formatter: (stepping into obj key)
+recursiveLog.ts?3697:27     formats: (stepping into obj key)
+recursiveLog.ts?3697:27      transaction: (stepping into obj key)
+recursiveLog.ts?3697:27       hash: (function)
+recursiveLog.ts?3697:27       type: (function)
+recursiveLog.ts?3697:27       accessList: (function)
+recursiveLog.ts?3697:27       blockHash: (function)
+recursiveLog.ts?3697:27       blockNumber: (function)
+recursiveLog.ts?3697:27       transactionIndex: (function)
+recursiveLog.ts?3697:27       confirmations: (function)
+recursiveLog.ts?3697:27       from: (function)
+recursiveLog.ts?3697:27       gasPrice: (function)
+recursiveLog.ts?3697:27       maxPriorityFeePerGas: (function)
+recursiveLog.ts?3697:27       maxFeePerGas: (function)
+recursiveLog.ts?3697:27       gasLimit: (function)
+recursiveLog.ts?3697:27       to: (function)
+recursiveLog.ts?3697:27       value: (function)
+recursiveLog.ts?3697:27       nonce: (function)
+recursiveLog.ts?3697:27       data: (function)
+recursiveLog.ts?3697:27       r: (function)
+recursiveLog.ts?3697:27       s: (function)
+recursiveLog.ts?3697:27       v: (function)
+recursiveLog.ts?3697:27       creates: (function)
+recursiveLog.ts?3697:27       raw: (function)
+recursiveLog.ts?3697:27      transactionRequest: (stepping into obj key)
+recursiveLog.ts?3697:27       from: (function)
+recursiveLog.ts?3697:27       nonce: (function)
+recursiveLog.ts?3697:27       gasLimit: (function)
+recursiveLog.ts?3697:27       gasPrice: (function)
+recursiveLog.ts?3697:27       maxPriorityFeePerGas: (function)
+recursiveLog.ts?3697:27       maxFeePerGas: (function)
+recursiveLog.ts?3697:27       to: (function)
+recursiveLog.ts?3697:27       value: (function)
+recursiveLog.ts?3697:27       data: (function)
+recursiveLog.ts?3697:27       type: (function)
+recursiveLog.ts?3697:27       accessList: (function)
+recursiveLog.ts?3697:27      receiptLog: (stepping into obj key)
+recursiveLog.ts?3697:27       transactionIndex: (function)
+recursiveLog.ts?3697:27       blockNumber: (function)
+recursiveLog.ts?3697:27       transactionHash: (function)
+recursiveLog.ts?3697:27       address: (function)
+recursiveLog.ts?3697:27       topics: (function)
+recursiveLog.ts?3697:27       data: (function)
+recursiveLog.ts?3697:27       logIndex: (function)
+recursiveLog.ts?3697:27       blockHash: (function)
+recursiveLog.ts?3697:27      receipt: (stepping into obj key)
+recursiveLog.ts?3697:27       to: (function)
+recursiveLog.ts?3697:27       from: (function)
+recursiveLog.ts?3697:27       contractAddress: (function)
+recursiveLog.ts?3697:27       transactionIndex: (function)
+recursiveLog.ts?3697:27       root: (function)
+recursiveLog.ts?3697:27       gasUsed: (function)
+recursiveLog.ts?3697:27       logsBloom: (function)
+recursiveLog.ts?3697:27       blockHash: (function)
+recursiveLog.ts?3697:27       transactionHash: (function)
+recursiveLog.ts?3697:27       logs: (function)
+recursiveLog.ts?3697:27       blockNumber: (function)
+recursiveLog.ts?3697:27       confirmations: (function)
+recursiveLog.ts?3697:27       cumulativeGasUsed: (function)
+recursiveLog.ts?3697:27       effectiveGasPrice: (function)
+recursiveLog.ts?3697:27       status: (function)
+recursiveLog.ts?3697:27       type: (function)
+recursiveLog.ts?3697:27      block: (stepping into obj key)
+recursiveLog.ts?3697:27       hash: (function)
+recursiveLog.ts?3697:27       parentHash: (function)
+recursiveLog.ts?3697:27       number: (function)
+recursiveLog.ts?3697:27       timestamp: (function)
+recursiveLog.ts?3697:27       nonce: (function)
+recursiveLog.ts?3697:27       difficulty: (function)
+recursiveLog.ts?3697:27       gasLimit: (function)
+recursiveLog.ts?3697:27       gasUsed: (function)
+recursiveLog.ts?3697:27       miner: (function)
+recursiveLog.ts?3697:27       extraData: (function)
+recursiveLog.ts?3697:27       transactions: (function)
+recursiveLog.ts?3697:27       baseFeePerGas: (function)
+recursiveLog.ts?3697:27      blockWithTransactions: (stepping into obj key)
+recursiveLog.ts?3697:27       hash: (function)
+recursiveLog.ts?3697:27       parentHash: (function)
+recursiveLog.ts?3697:27       number: (function)
+recursiveLog.ts?3697:27       timestamp: (function)
+recursiveLog.ts?3697:27       nonce: (function)
+recursiveLog.ts?3697:27       difficulty: (function)
+recursiveLog.ts?3697:27       gasLimit: (function)
+recursiveLog.ts?3697:27       gasUsed: (function)
+recursiveLog.ts?3697:27       miner: (function)
+recursiveLog.ts?3697:27       extraData: (function)
+recursiveLog.ts?3697:27       transactions: (function)
+recursiveLog.ts?3697:27       baseFeePerGas: (function)
+recursiveLog.ts?3697:27      filter: (stepping into obj key)
+recursiveLog.ts?3697:27       fromBlock: (function)
+recursiveLog.ts?3697:27       toBlock: (function)
+recursiveLog.ts?3697:27       blockHash: (function)
+recursiveLog.ts?3697:27       address: (function)
+recursiveLog.ts?3697:27       topics: (function)
+recursiveLog.ts?3697:27      filterLog: (stepping into obj key)
+recursiveLog.ts?3697:27       blockNumber: (function)
+recursiveLog.ts?3697:27       blockHash: (function)
+recursiveLog.ts?3697:27       transactionIndex: (function)
+recursiveLog.ts?3697:27       removed: (function)
+recursiveLog.ts?3697:27       address: (function)
+recursiveLog.ts?3697:27       data: (function)
+recursiveLog.ts?3697:27       topics: (function)
+recursiveLog.ts?3697:27       transactionHash: (function)
+recursiveLog.ts?3697:27       logIndex: (function)
+recursiveLog.ts?3697:27    anyNetwork: false
+recursiveLog.ts?3697:27    _network: (stepping into obj key)
+recursiveLog.ts?3697:27     chainId: 2137
+recursiveLog.ts?3697:27     name: unknown
+recursiveLog.ts?3697:27    _maxInternalBlockNumber: -1024
+recursiveLog.ts?3697:27    _lastBlockNumber: -2
+recursiveLog.ts?3697:27    _maxFilterBlockRange: 10
+recursiveLog.ts?3697:27    _pollingInterval: 4000
+recursiveLog.ts?3697:27    _fastQueryDate: 0
+recursiveLog.ts?3697:27    connection: (stepping into obj key)
+recursiveLog.ts?3697:27     url: http://localhost:8545
+recursiveLog.ts?3697:27    _nextId: 42
+recursiveLog.ts?3697:27  position: (stepping into obj key)
+recursiveLog.ts?3697:27   _feeBase: 10000
+recursiveLog.ts?3697:27   debt: (stepping into obj key)
+recursiveLog.ts?3697:27    amount: 10816481072337268974
+recursiveLog.ts?3697:27    precision: 18
+recursiveLog.ts?3697:27    symbol: ETH
+recursiveLog.ts?3697:27   collateral: (stepping into obj key)
+recursiveLog.ts?3697:27    amount: 25894231042844047532
+recursiveLog.ts?3697:27    precision: 18
+recursiveLog.ts?3697:27    symbol: STETH
+recursiveLog.ts?3697:27   _oraclePriceForCollateralDebtExchangeRate: 0.98972762
+recursiveLog.ts?3697:27   category: (stepping into obj key)
+recursiveLog.ts?3697:27    dustLimit: 0
+recursiveLog.ts?3697:27    maxLoanToValue: 0.72
+recursiveLog.ts?3697:27    liquidationThreshold: 0.83

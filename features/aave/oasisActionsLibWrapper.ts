@@ -13,6 +13,7 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { recursiveLog } from '../../helpers/recursiveLog'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -159,11 +160,15 @@ export async function getOpenAaveParameters({
       user: context.account,
     }
 
+    recursiveLog(stratArgs, 'stratArgs')
+    recursiveLog(stratDeps, 'stratDeps')
+
     const strategy = await strategies.aave.open(stratArgs, stratDeps)
 
+    recursiveLog(strategy, 'strategy')
     return {
       strategy,
-      operationName: 'CustomOperation',
+      operationName: strategy.transaction.operationName,
     }
   } catch (e) {
     console.error(e)
@@ -189,14 +194,19 @@ export async function getOnChainPosition({
     precision: getToken(debtToken).precision,
   }
 
-  const position = await strategies.aave.view(
-    {
-      proxy: proxyAddress,
-      collateralToken: _collateralToken,
-      debtToken: _debtToken,
-    },
-    { addresses: getAddressesFromContext(context), provider },
-  )
+  const args = {
+    proxy: proxyAddress,
+    collateralToken: _collateralToken,
+    debtToken: _debtToken,
+  }
+  const dependencies = { addresses: getAddressesFromContext(context), provider }
+
+  recursiveLog(args, 'args')
+  recursiveLog(dependencies, 'dependencies')
+
+  const position = await strategies.aave.view(args, dependencies)
+
+  recursiveLog(position, 'position')
 
   return position
 }
@@ -239,8 +249,12 @@ export async function getAdjustAaveParameters({
       user: context.account,
     }
 
+    recursiveLog(stratArgs, 'stratArgs')
+    recursiveLog(stratDeps, 'stratDeps')
+
     const strategy = await strategies.aave.adjust(stratArgs, stratDeps)
 
+    recursiveLog(strategy, 'strategy')
     return { strategy, operationName: strategy.transaction.operationName }
   } catch (e) {
     console.error(e)
@@ -284,9 +298,13 @@ export async function getCloseAaveParameters({
     user: context.account,
   }
 
+  recursiveLog(stratArgs, 'stratArgs')
+  recursiveLog(stratDeps, 'stratDeps')
+
   const strategy = await strategies.aave.close(stratArgs, stratDeps)
 
-  return { strategy, operationName: 'CustomOperation' }
+  recursiveLog(strategy, 'strategy')
+  return { strategy, operationName: strategy.transaction.operationName }
 }
 
 export const EMPTY_POSITION = new Position({ amount: zero }, { amount: zero }, zero, {

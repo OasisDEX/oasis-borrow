@@ -246,7 +246,7 @@ const protoMain = {
     ),
   },
   aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
-  operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
+  operationExecutor: contractDesc(operationExecutor, '0x24432a08869578aAf4d1eadA12e1e78f171b1a2b'), // todo: fix this
   swapAddress: mainnetAddresses.SWAP,
   chainlinkEthUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
   accountFactory: contractDesc(accountFactory, mainnetAddresses.ACCOUNT_FACTORY),
