@@ -272,8 +272,8 @@ export const productCardsConfig: {
     },
     featuredAaveCards: {
       borrow: [],
-      multiply: [],
-      earn: ['stETHeth'],
+      multiply: aaveStrategiesList('multiply'),
+      earn: aaveStrategiesList('earn'),
     },
   },
   descriptionCustomKeys: {
