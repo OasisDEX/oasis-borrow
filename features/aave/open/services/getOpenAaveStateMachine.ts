@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import {
   AaveUserAccountData,
   AaveUserAccountDataParameters,
@@ -12,7 +13,9 @@ import { ContextConnected } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
-import { ProxyStateMachine } from '../../../proxyNew/state'
+import { allDefined } from '../../../../helpers/allDefined'
+import { AllowanceStateMachine } from '../../../stateMachines/allowance'
+import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../../userSettings/userSettings'
@@ -38,6 +41,7 @@ export function getOpenAavePositionStateMachineServices(
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
+  tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -52,6 +56,7 @@ export function getOpenAavePositionStateMachineServices(
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
         map((balances) => balances[context.tokens.deposit]),
+        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
         map(({ balance, price }) => ({
           type: 'SET_BALANCE',
           tokenBalance: balance,
@@ -109,6 +114,17 @@ export function getOpenAavePositionStateMachineServices(
         distinctUntilChanged(isEqual),
       )
     },
+    allowance$: (context) => {
+      return connectedProxy$.pipe(
+        filter(allDefined),
+        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+        map((allowance) => ({
+          type: 'UPDATE_ALLOWANCE',
+          tokenAllowance: allowance,
+        })),
+        distinctUntilChanged(isEqual),
+      )
+    },
   }
 }
 
@@ -116,6 +132,7 @@ export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
   transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
   proxyMachine: ProxyStateMachine,
+  allowanceMachine: AllowanceStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
@@ -123,6 +140,7 @@ export function getOpenAaveStateMachine(
   return createOpenAaveStateMachine(
     transactionParametersMachine,
     proxyMachine,
+    allowanceMachine,
     transactionStateMachine,
   ).withConfig({
     services: {

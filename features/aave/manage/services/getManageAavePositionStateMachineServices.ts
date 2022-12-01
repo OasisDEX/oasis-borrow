@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -6,6 +7,7 @@ import { Context } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
+import { allDefined } from '../../../../helpers/allDefined'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { IStrategyInfo } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
@@ -26,6 +28,7 @@ export function getManageAavePositionStateMachineServices(
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
+  tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -40,6 +43,7 @@ export function getManageAavePositionStateMachineServices(
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
         map((balances) => balances[context.tokens.deposit]),
+        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
         map(({ balance, price }) => ({
           type: 'SET_BALANCE',
           tokenBalance: balance,
@@ -104,6 +108,17 @@ export function getManageAavePositionStateMachineServices(
           type: 'UPDATE_PROTOCOL_DATA',
           protocolData: aaveProtocolData,
         })),
+      )
+    },
+    allowance$: (context) => {
+      return connectedProxyAddress$.pipe(
+        filter(allDefined),
+        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+        map((allowance) => ({
+          type: 'UPDATE_ALLOWANCE',
+          tokenAllowance: allowance,
+        })),
+        distinctUntilChanged(isEqual),
       )
     },
   }

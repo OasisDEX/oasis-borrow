@@ -1235,6 +1235,7 @@ export function setupAppContext() {
     convertToAaveOracleAssetPrice$,
     once$,
     aaveLiquidations$,
+    allowance$,
   }
 }
 
