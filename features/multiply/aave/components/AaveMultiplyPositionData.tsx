@@ -14,6 +14,7 @@ import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserv
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
 import { NaNIsZero } from '../../../../helpers/nanIsZero'
 
 type AaveMultiplyPositionDataProps = {

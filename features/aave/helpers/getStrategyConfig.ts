@@ -3,7 +3,7 @@ import { map, switchMap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
 import { IStrategyConfig } from '../common/StrategyConfigTypes'
-import { loadStrategyFromTokens, strategies } from '../strategyConfig'
+import { loadStrategyFromTokens } from '../strategyConfig'
 import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
 
 export function getStrategyConfig$(

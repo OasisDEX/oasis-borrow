@@ -9,7 +9,7 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { loadStrategyFromSlug, strategies } from '../../../../features/aave/strategyConfig'
+import { loadStrategyFromSlug } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const strategy = ctx.query.strategy as string
