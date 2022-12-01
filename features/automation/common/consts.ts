@@ -74,6 +74,7 @@ export const protocolAutomations = {
 }
 
 export const aaveTokenPairsAllowedAutomation = [
+  ['ETH', 'USDC'],
   ['STETH', 'USDC'],
-  ['STETH', 'ETH'],
-] // should be just ['ETH', 'USDC'] but no data source available for now
+  ['WBTC', 'USDC'],
+]
