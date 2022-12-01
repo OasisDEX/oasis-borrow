@@ -1,29 +1,39 @@
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import { combineLatest, Observable, of } from 'rxjs'
+import { distinctUntilChanged } from 'rxjs/internal/operators'
 import { first, switchMap } from 'rxjs/operators'
-import { assign, createMachine, sendParent } from 'xstate'
+import { map } from 'rxjs/operators'
+import { AnyEventObject, assign, createMachine, sendParent } from 'xstate'
 
 import { TransactionDef } from '../../../blockchain/calls/callsHelpers'
-import { ContextConnected } from '../../../blockchain/network'
+import { Context, ContextConnected } from '../../../blockchain/network'
 import { TxHelpers } from '../../../components/AppContext'
 import { transactionToX } from '../../../helpers/form'
 
-type TransactionStateMachineContext<T extends TxMeta> = {
-  readonly transactionDef: TransactionDef<T>
-
-  transactionParameters: T
-
+type BaseTransactionStateMachineContext = {
   txHash?: string
   txError?: string | unknown
   confirmations?: number
+  etherscanUrl?: string
 }
+
+type TransactionStateMachineContext<T extends TxMeta> = {
+  readonly transactionDef: TransactionDef<T>
+  transactionParameters: T
+} & BaseTransactionStateMachineContext
 
 export type TransactionStateMachineResultEvents =
   | { type: 'TRANSACTION_COMPLETED' }
   | { type: 'TRANSACTION_FAILED'; error: string | unknown }
 
+export type TransactionStateMachineCommonEvents = {
+  type: 'ETHERSCAN_URL_CHANGED'
+  etherscanUrl: string
+}
+
 export type TransactionStateMachineEvents<T extends TxMeta> =
   | TransactionStateMachineResultEvents
+  | TransactionStateMachineCommonEvents
   | { type: 'START' }
   | { type: 'PARAMETERS_CHANGED'; parameters: T }
   | { type: 'WAITING_FOR_APPROVAL' }
@@ -50,6 +60,12 @@ export function createTransactionStateMachine<T extends TxMeta>(
         context: {} as TransactionStateMachineContext<T>,
         events: {} as TransactionStateMachineEvents<T>,
       },
+      invoke: [
+        {
+          src: 'etherScanUrl$',
+          id: 'etherScanUrl$',
+        },
+      ],
       states: {
         inProgress: {
           invoke: {
@@ -88,6 +104,11 @@ export function createTransactionStateMachine<T extends TxMeta>(
           type: 'final',
         },
       },
+      on: {
+        ETHERSCAN_URL_CHANGED: {
+          actions: ['updateContext'],
+        },
+      },
     },
     {
       actions: {
@@ -115,6 +136,9 @@ export function createTransactionStateMachine<T extends TxMeta>(
         sendFailure: sendParent((context) => ({
           type: 'TRANSACTION_FAILED',
           error: context.txError,
+        })),
+        updateContext: assign((_, event) => ({
+          ...event,
         })),
       },
     },
@@ -168,6 +192,18 @@ export function startTransactionService<T extends TxMeta>(
   }
 }
 
+export function transactionContextService(
+  context$: Observable<Context>,
+): CommonTransactionServices {
+  return {
+    etherScanUrl$: (_) =>
+      context$.pipe(
+        map((c) => ({ type: 'ETHERSCAN_URL_CHANGED', etherscanUrl: c.etherscan.url })),
+        distinctUntilChanged((a, b) => a.etherscanUrl === b.etherscanUrl),
+      ),
+  }
+}
+
 class TransactionStateMachineTypes<T extends TxMeta> {
   needsConfiguration(transaction: TransactionDef<T>, transactionParameters: T) {
     return createTransactionStateMachine(transaction, transactionParameters)
@@ -178,9 +214,18 @@ class TransactionStateMachineTypes<T extends TxMeta> {
   }
 }
 
-export type TransactionStateMachineWithoutConfiguration<T extends TxMeta> = ReturnType<
-  TransactionStateMachineTypes<T>['needsConfiguration']
->
 export type TransactionStateMachine<T extends TxMeta> = ReturnType<
   TransactionStateMachineTypes<T>['withConfig']
+>
+
+type MissingTransactionServices = Exclude<
+  import('./transactionStateMachine.typegen').Typegen0['missingImplementations']['services'],
+  'startTransaction'
+>
+export type CommonTransactionServices = Record<
+  MissingTransactionServices,
+  (
+    context: BaseTransactionStateMachineContext,
+    event: AnyEventObject,
+  ) => Observable<TransactionStateMachineCommonEvents>
 >

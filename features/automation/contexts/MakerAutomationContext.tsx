@@ -5,14 +5,14 @@ import { GeneralManageVaultState } from 'features/generalManageVault/generalMana
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import React, { PropsWithChildren, useMemo } from 'react'
 
-interface AaveAutomationContextProps {
+interface MakerAutomationContextProps {
   generalManageVault: GeneralManageVaultState
 }
 
 export function MakerAutomationContext({
   children,
   generalManageVault,
-}: PropsWithChildren<AaveAutomationContextProps>) {
+}: PropsWithChildren<MakerAutomationContextProps>) {
   const positionData = useMemo(() => getAutomationMakerPositionData({ generalManageVault }), [
     generalManageVault,
   ])

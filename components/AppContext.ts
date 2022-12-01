@@ -1245,6 +1245,7 @@ export function setupAppContext() {
     aaveLiquidations$,
     wrappedGetAaveReserveData$,
     aaveAvailableLiquidity$,
+    allowance$,
   }
 }
 

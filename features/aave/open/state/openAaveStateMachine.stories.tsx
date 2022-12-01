@@ -7,7 +7,7 @@ import { ActorRefFrom } from 'xstate'
 
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
-import { ProxyEvent, ProxyStateMachine } from '../../../proxyNew/state'
+import { ProxyEvent, ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
@@ -19,18 +19,23 @@ import {
 
 const stories = storiesOf('Xstate Machines/Open Aave State Machine', module)
 
+const emptyObject = {} as any
+
 const hasGasEstimation: HasGasEstimation = {
   gasEstimationStatus: GasEstimationStatus.calculated,
   gasEstimation: 10,
 }
 
-const openAaveStateMachine = createOpenAaveStateMachine({} as any, {} as any, {} as any).withConfig(
-  {
-    services: {
-      ...({} as OpenAaveStateMachineServices),
-    },
+const openAaveStateMachine = createOpenAaveStateMachine(
+  emptyObject,
+  emptyObject,
+  emptyObject,
+  emptyObject,
+).withConfig({
+  services: {
+    ...({} as OpenAaveStateMachineServices),
   },
-)
+})
 
 const ParametersView = ({
   parametersMachine,
