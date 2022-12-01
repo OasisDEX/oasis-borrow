@@ -7,10 +7,14 @@ import { getAaveOracleAssetPriceData } from '../calls/aave/aavePriceOracle'
 import { observe } from '../calls/observe'
 import { Context } from '../network'
 
+export interface AaveOracleAssertPriceArgs {
+  token: string
+}
+
 export function createAaveOracleAssetPriceData$(
   refreshInterval$: Observable<any>,
   context$: Observable<Context>,
-  args: { token: string },
+  args: AaveOracleAssertPriceArgs,
 ) {
   if (args.token === 'ETH') {
     return of(one).pipe(shareReplay(1))

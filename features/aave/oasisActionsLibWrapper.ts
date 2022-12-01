@@ -22,7 +22,7 @@ function getAddressesFromContext(context: Context) {
     stETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
     wBTC: context.tokens['WBTC'].address,
-    chainlinkEthUsdPriceFeed: context.chainlinkEthUsdPriceFeedAddress,
+    chainlinkEthUsdPriceFeed: context.chainlinkPriceOracle['ETHUSD'].address,
     aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
     aavePriceOracle: context.aavePriceOracle.address,
     aaveLendingPool: context.aaveLendingPool.address,
@@ -189,7 +189,7 @@ export async function getOnChainPosition({
     precision: getToken(debtToken).precision,
   }
 
-  const position = await strategies.aave.view(
+  return await strategies.aave.view(
     {
       proxy: proxyAddress,
       collateralToken: _collateralToken,
@@ -197,8 +197,6 @@ export async function getOnChainPosition({
     },
     { addresses: getAddressesFromContext(context), provider },
   )
-
-  return position
 }
 
 export async function getAdjustAaveParameters({
