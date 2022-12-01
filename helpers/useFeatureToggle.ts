@@ -21,7 +21,7 @@ export type Feature =
   | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
   | 'AaveEarnSTETHETH'
-  | 'AaveEarnSTETHUSDC'
+  | 'AaveMultiplySTETHUSDC'
   | 'FollowVaults'
   | 'AaveProtection'
 
@@ -43,7 +43,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: true,
   AaveEarnSTETHETH: true,
-  AaveEarnSTETHUSDC: false,
+  AaveMultiplySTETHUSDC: false,
   FollowVaults: false,
   AaveProtection: false,
   // your feature here....

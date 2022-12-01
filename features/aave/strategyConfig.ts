@@ -60,7 +60,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     product: 'multiply',
-    featureToggle: 'AaveEarnSTETHUSDC',
+    featureToggle: 'AaveMultiplySTETHUSDC',
   },
 }
 
