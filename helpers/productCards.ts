@@ -582,6 +582,7 @@ export function createProductCardsWithBalance$(
                   bannerGif: tokenMeta.bannerGif,
                   background: tokenMeta.background,
                   name: tokenMeta.name,
+                  protocol: tokenMeta.protocol,
                   isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
                 })
               }),

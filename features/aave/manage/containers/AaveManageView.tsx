@@ -5,7 +5,6 @@ import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
 import { AaveFaq } from 'features/content/faqs/aave'
-import { useEarnContext } from 'features/earn/EarnContextProvider'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -126,10 +125,13 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const { aaveManageStateMachine } = useAaveContext()
-  const { aaveSTETHReserveConfigurationData, aaveReserveData$ } = useEarnContext()
+  const {
+    aaveSTETHReserveConfigurationData,
+    aaveManageStateMachine,
+    wrappedGetAaveReserveData$,
+  } = useAaveContext()
   const [aaveReserveDataCollateral, aaveReserveDataCollateralError] = useObservable(
-    aaveReserveData$(strategyConfig.tokens.collateral),
+    wrappedGetAaveReserveData$(strategyConfig.tokens.collateral),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   return (

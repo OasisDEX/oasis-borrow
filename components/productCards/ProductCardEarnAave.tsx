@@ -2,7 +2,7 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { useEarnContext } from 'features/earn/EarnContextProvider'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -26,12 +26,12 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidity$ } = useEarnContext()
+  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$ } = useAaveContext()
   const { hasActiveAavePosition$ } = useAppContext()
   const [aaveActivePosition] = useObservable(hasActiveAavePosition$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
-    aaveAvailableLiquidity$({ token: 'ETH' }),
+    aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )
   const maximumMultiple =
     aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)

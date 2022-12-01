@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TokenConfig } from 'blockchain/tokensMetadata'
-import { isAaveContextAvailable } from 'features/aave/AaveContextProvider'
-import { MultiplyContextProvider } from 'features/multiply/MultiplyContextProvider'
+import { AaveContextProvider, isAaveContextAvailable } from 'features/aave/AaveContextProvider'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
@@ -112,7 +111,7 @@ export function ProductCardsFilter({
           currentFilter={currentFilter}
         />
       </Flex>
-      <MultiplyContextProvider>
+      <AaveContextProvider>
         <WithErrorHandler error={[productCardsDataError]}>
           <WithLoadingIndicator
             value={[productCardsData, isAaveContextAvailable()]}
@@ -132,7 +131,7 @@ export function ProductCardsFilter({
             )}
           </WithLoadingIndicator>
         </WithErrorHandler>
-      </MultiplyContextProvider>
+      </AaveContextProvider>
     </>
   )
 }

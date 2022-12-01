@@ -1,8 +1,8 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { getAaveStrategy } from 'features/aave/strategyConfig'
-import { useMultiplyContext } from 'features/multiply/MultiplyContextProvider'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
@@ -28,7 +28,7 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
     aaveAvailableLiquidityInUSDC$,
     wrappedGetAaveReserveData$,
     aaveReserveConfigurationData$,
-  } = useMultiplyContext()
+  } = useAaveContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
   const [aaveAvailableLiquidityInUSDC] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: strategy.tokens.collateral }),
