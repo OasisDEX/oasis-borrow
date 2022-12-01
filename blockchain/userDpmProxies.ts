@@ -1,17 +1,24 @@
 import { getNetworkId } from '@oasisdex/web3-context'
 import { accountFactoryNetworkMap } from 'blockchain/dpm/accountFactory'
 import { accountGuardNetworkMap } from 'blockchain/dpm/accountGuard'
-import { Observable, of } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { AccountFactory } from 'types/web3-v1-contracts/account-factory'
 import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
 import { Context, NetworkIds } from './network'
 
+interface UserDpmProxy {
+  proxy: string
+  user: string
+  vaultId: number
+}
+
 export function getUserDpmProxies$(
   context$: Observable<Context>,
+  onEveryBlock$: Observable<number>,
   walletAddress: string,
-): Observable<string[]> {
+): Observable<UserDpmProxy[]> {
   if (!walletAddress) {
     return of([])
   }
@@ -20,8 +27,8 @@ export function getUserDpmProxies$(
   const accountGuardGenesisBlock = accountGuardNetworkMap[chainId]
   const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
 
-  return context$.pipe(
-    switchMap(async ({ accountFactory, accountGuard, contract }) => {
+  return combineLatest([context$, onEveryBlock$]).pipe(
+    switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
       const accountGuardContract = contract<AccountGuard>(accountGuard)
 
@@ -62,7 +69,25 @@ export function getUserDpmProxies$(
         )
         .map((event) => event.returnValues.proxy)
 
-      return [...new Set(userAssumedProxies.filter((x) => !proxiesNotOwnedAnymore.includes(x)))]
+      const userProxies = [
+        ...new Set(userAssumedProxies.filter((x) => !proxiesNotOwnedAnymore.includes(x))),
+      ]
+
+      const userProxiesData = await Promise.all(
+        userProxies.map((proxyAddress) =>
+          accountFactoryContract.getPastEvents('AccountCreated', {
+            filter: { proxy: proxyAddress },
+            fromBlock: accountFactoryGenesisBlock,
+            toBlock: 'latest',
+          }),
+        ),
+      )
+
+      return userProxiesData.flatMap((item) => ({
+        proxy: item[0].returnValues.proxy,
+        vaultId: item[0].returnValues.vaultId,
+        user: walletAddress,
+      }))
     }),
   )
 }
