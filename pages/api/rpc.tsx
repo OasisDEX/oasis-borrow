@@ -1,3 +1,4 @@
+import { fetchJson } from '@ethersproject/web'
 import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 import * as ethers from 'ethers'
@@ -54,7 +55,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     const rpcNode = getRpcNode(req.query.network.toString())
     const provider = new ethers.providers.JsonRpcProvider(rpcNode)
     const multicall = new ethers.Contract(
-      '0x5ba1e12693dc8f9c48aad8770482f4739beed696',
+      '0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441',
       abi,
       provider,
     )
@@ -86,11 +87,13 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.call),
     )
     try {
-      const multicallResponse = await provider.call(multicallTx)
-
+      const multicallResponse = await fetchJson(
+        provider.connection,
+        `{ "jsonrpc": "2.0","id": ${req.body[0].id},"method": "eth_call","params": [{"data":"${multicallTx.data}","to": "${multicall.address}"},"latest"]}`,
+      )
       const [, data] = multicall.interface.decodeFunctionResult(
         'aggregate((address,bytes)[])',
-        multicallResponse,
+        multicallResponse.result,
       )
 
       finalResponse = req.body.map((entry, index) => ({
