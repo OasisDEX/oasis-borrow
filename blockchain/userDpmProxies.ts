@@ -22,7 +22,7 @@ export function getUserDpmProxies$(
   if (!walletAddress) {
     return of([])
   }
-
+  console.log('dummy')
   const chainId = getNetworkId() as NetworkIds
   const accountGuardGenesisBlock = accountGuardNetworkMap[chainId]
   const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
