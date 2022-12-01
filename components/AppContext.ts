@@ -93,6 +93,7 @@ import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from 'blockchain/config'
+import { getDpmPositionId$ } from 'blockchain/dpmPositionId'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
@@ -660,6 +661,7 @@ export function setupAppContext() {
     curry(getUserDpmProxies$)(context$),
     (walletAddress) => walletAddress,
   )
+  const dpmPositionId$ = memoize(curry(getDpmPositionId$)(context$), (proxyAddress) => proxyAddress)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
@@ -1244,6 +1246,7 @@ export function setupAppContext() {
     aaveLiquidations$,
     allowance$,
     userDpmProxies$,
+    dpmPositionId$,
   }
 }
 

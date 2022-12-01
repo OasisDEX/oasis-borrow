@@ -1,28 +1,12 @@
 import { getNetworkId } from '@oasisdex/web3-context'
+import { accountFactoryNetworkMap } from 'blockchain/dpm/accountFactory'
+import { accountGuardNetworkMap } from 'blockchain/dpm/accountGuard'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { AccountFactory } from 'types/web3-v1-contracts/account-factory'
 import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
 import { Context, NetworkIds } from './network'
-
-const accountFactoryGenesisBlockGoerli = 8048105
-const accountFactoryGenesisBlockMainnet = 16047226
-
-const accountFactoryNetworkMap = {
-  [NetworkIds.MAINNET]: accountFactoryGenesisBlockMainnet,
-  [NetworkIds.HARDHAT]: accountFactoryGenesisBlockMainnet,
-  [NetworkIds.GOERLI]: accountFactoryGenesisBlockGoerli,
-}
-
-const accountGuardGenesisBlockGoerli = 8048103
-const accountGuardGenesisBlockMainnet = 16047224
-
-const accountGuardNetworkMap = {
-  [NetworkIds.MAINNET]: accountGuardGenesisBlockMainnet,
-  [NetworkIds.HARDHAT]: accountGuardGenesisBlockMainnet,
-  [NetworkIds.GOERLI]: accountGuardGenesisBlockGoerli,
-}
 
 export function getUserDpmProxies$(
   context$: Observable<Context>,
