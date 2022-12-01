@@ -11,7 +11,7 @@ import { Context, NetworkIds } from './network'
 interface UserDpmProxy {
   proxy: string
   user: string
-  vaultId: number
+  vaultId: string
 }
 
 export function getUserDpmProxies$(
