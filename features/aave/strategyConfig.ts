@@ -115,17 +115,15 @@ export const strategies: Array<IStrategyConfig> = [
   },
 ]
 
-export function aaveStrategiesList(filterProduct?: StrategyConfig['product']) {
+export function aaveStrategiesList(filterProduct?: IStrategyConfig['type']): IStrategyConfig[] {
   return Object.values(strategies)
     .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
-    .filter(({ product }) => (filterProduct ? product === filterProduct : true))
-    .map((s) => s.name)
+    .filter(({ type }) => (filterProduct ? type === filterProduct : true))
 }
 
-export function getAaveStrategy(strategyName: StrategyConfig['name']) {
+export function getAaveStrategy(strategyName: IStrategyConfig['name']) {
   return Object.values(strategies).filter(({ name }) => strategyName === name)
 }
-
 
 export function loadStrategyFromSlug(slug: string): IStrategyConfig {
   const strategy = strategies.find((s) => s.urlSlug === slug)
@@ -148,6 +146,6 @@ export function loadStrategyFromTokens(
   return strategy
 }
 
-export const aaveStrategiesList = Object.values(strategies)
-  .filter(({ enabled }) => enabled)
-  .map((s) => s.name)
+// export const aaveStrategiesList = Object.values(strategies)
+//   .filter(({ enabled }) => enabled)
+//   .map((s) => s.name)
