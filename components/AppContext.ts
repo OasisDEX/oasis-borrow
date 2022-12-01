@@ -3,11 +3,9 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import {
-  createAaveOracleAssetPriceData$,
-  createConvertToAaveOracleAssetPrice$,
-} from 'blockchain/aave/oracleAssetPriceData'
 import { getAavePositionLiquidation$ } from 'blockchain/aaveLiquidations'
+import { getAaveUserAccountData } from 'blockchain/calls/aave/aaveLendingPool'
+import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
@@ -119,6 +117,8 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
+import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
+import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
 import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
@@ -266,6 +266,7 @@ import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -1181,6 +1182,10 @@ export function setupAppContext() {
     once$,
     allowance$,
     userDpmProxies$,
+    hasActiveAavePosition$,
+    aaveLiquidations$,
+    aaveUserAccountData$,
+    aaveAvailableLiquidityInUSDC$,
   }
 }
 
