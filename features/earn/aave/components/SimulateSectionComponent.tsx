@@ -1,11 +1,11 @@
 import { IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box } from 'theme-ui'
 
-import { useAppContext } from '../../../../components/AppContextProvider'
 import { Banner, bannerGradientPresets } from '../../../../components/Banner'
 import { DetailsSection } from '../../../../components/DetailsSection'
 import { DetailsSectionContentTable } from '../../../../components/DetailsSectionContentTable'
@@ -47,7 +47,7 @@ function SimulationSection({
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
-  const { aaveSthEthYieldsQuery } = useAppContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext()
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = userInputAmount || new BigNumber(100)
 

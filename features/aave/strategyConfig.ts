@@ -1,4 +1,5 @@
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 
 import {
   AavePositionHeaderNoDetails,
@@ -37,7 +38,8 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       deposit: 'ETH',
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
-    enabled: true,
+    product: 'earn',
+    featureToggle: 'AaveEarnSTETHETH',
   },
   'aave-multiply': {
     name: 'stETHusdc',
@@ -57,10 +59,18 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       deposit: 'ETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    enabled: false,
+    product: 'multiply',
+    featureToggle: 'AaveMultiplySTETHUSDC',
   },
-} as const
+}
 
-export const aaveStrategiesList = Object.values(strategies)
-  .filter(({ enabled }) => enabled)
-  .map((s) => s.name)
+export function aaveStrategiesList(filterProduct?: StrategyConfig['product']) {
+  return Object.values(strategies)
+    .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
+    .filter(({ product }) => (filterProduct ? product === filterProduct : true))
+    .map((s) => s.name)
+}
+
+export function getAaveStrategy(strategyName: StrategyConfig['name']) {
+  return Object.values(strategies).filter(({ name }) => strategyName === name)
+}

@@ -1,6 +1,7 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
+import { Feature } from 'helpers/useFeatureToggle'
 
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
@@ -27,7 +28,8 @@ export interface StrategyConfig {
     minimum: IRiskRatio
     default: IRiskRatio
   }
-  enabled: boolean
+  product: 'multiply' | 'earn'
+  featureToggle: Feature
 }
 
 export type AaveHeaderProps = {

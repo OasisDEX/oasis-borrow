@@ -3,22 +3,10 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import {
-  createAaveOracleAssetPriceData$,
-  createConvertToAaveOracleAssetPrice$,
-} from 'blockchain/aave/oracleAssetPriceData'
 import { getAavePositionLiquidation$ } from 'blockchain/aaveLiquidations'
-import {
-  getAaveReservesList,
-  getAaveUserAccountData,
-  getAaveUserConfiguration,
-} from 'blockchain/calls/aave/aaveLendingPool'
+import { getAaveUserAccountData } from 'blockchain/calls/aave/aaveLendingPool'
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
-import {
-  getAaveReserveConfigurationData,
-  getAaveReserveData,
-  getAaveUserReserveData,
-} from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -129,8 +117,7 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
-import { getAaveStEthYield } from 'features/aave/common'
-import { prepareAaveAvailableLiquidityInUSD$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
+import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
 import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
 import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
 import { createAccountData } from 'features/account/AccountData'
@@ -260,7 +247,6 @@ import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positio
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
-import { GraphQLClient } from 'graphql-request'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
 import {
@@ -279,15 +265,7 @@ import {
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import {
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  switchMap,
-} from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
 
@@ -528,20 +506,6 @@ export function setupAppContext() {
     initializedAccount$,
     onEveryBlock$,
     connectedContext$,
-  )
-  // saved for later?
-  // const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
-  // const graphQLClient$ = contextForAddress$.pipe(
-  //   distinctUntilKeyChanged('cacheApi'),
-  //   map(({ cacheApi }) => new GraphQLClient(cacheApi)),
-  // )
-  const disconnectedGraphQLClient$ = context$.pipe(
-    distinctUntilKeyChanged('cacheApi'),
-    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
-  )
-  const aaveSthEthYieldsQuery = memoize(
-    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
-    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
@@ -852,40 +816,25 @@ export function setupAppContext() {
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
 
-  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
+  const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
+
   const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
-  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
-  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
-  const aaveReserveConfigurationData$ = observe(
-    onEveryBlock$,
-    context$,
-    getAaveReserveConfigurationData,
-    ({ token }) => token,
-  )
-  const aaveOracleAssetPriceData$ = memoize(
-    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
-  )
-  const convertToAaveOracleAssetPrice$ = memoize(
-    curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
-    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
-  )
+
   const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
 
-  const aaveAvailableLiquidityETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
-    getAaveReserveData$({ token: 'ETH' }),
+  const aaveAvailableLiquidityInUSDC$ = curry(prepareAaveAvailableLiquidityInUSDC$)(
+    getAaveReserveData$,
     // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
-  const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
-
   const aavePositions$ = memoize(
     curry(createAavePosition$)(
       aaveUserAccountData$,
-      aaveAvailableLiquidityETH$,
+      aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
       ethPrice$,
       proxyAddress$,
     ),
@@ -1229,21 +1178,14 @@ export function setupAppContext() {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
-    aaveUserReserveData$,
-    aaveOracleAssetPriceData$,
-    aaveReservesList$,
-    aaveReserveConfigurationData$,
-    aaveUserConfiguration$,
-    aaveSthEthYieldsQuery,
-    aaveAvailableLiquidityETH$,
-    aaveUserAccountData$,
-    hasActiveAavePosition$,
     balanceInfo$,
-    convertToAaveOracleAssetPrice$,
     once$,
-    aaveLiquidations$,
     allowance$,
     userDpmProxies$,
+    hasActiveAavePosition$,
+    aaveLiquidations$,
+    aaveUserAccountData$,
+    aaveAvailableLiquidityInUSDC$,
   }
 }
 

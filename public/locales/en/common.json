@@ -858,6 +858,7 @@
     "stability-fee": "Stability Fee",
     "liquidity-available": "Current Liquidity Available",
     "protocol": "Protocol",
+    "position": "Position",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
     "vault-id": "Vault ID",
@@ -1411,6 +1412,10 @@
       "stETHeth": {
         "title": "stETH/ETH AAVE",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on AAVE to get more exposure to stETH."
+      },
+      "stETHusdc": {
+        "title": "Highest stETH multiple option",
+        "description": "Maximise your stETH exposure with Aave and USDC."
       }
     },
     "tags": {
@@ -1430,7 +1435,8 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "stETHeth": "Get up to {{value}} ETH exposure to stETH"
+      "stETHeth": "Get up to {{value}} ETH exposure to stETH",
+      "stETHusdc": "Get up to {{value}} ETH exposure"
     }
   },
   "product-card-title": {

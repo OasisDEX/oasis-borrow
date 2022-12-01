@@ -248,7 +248,7 @@ export function HomepageView() {
                     <MultiplyProductCardsContainer
                       strategies={{
                         maker: productCardsConfig.landing.featuredIlkCards['multiply'],
-                        aave: [],
+                        aave: productCardsConfig.landing.featuredAaveCards['multiply'],
                       }}
                     />
                   }

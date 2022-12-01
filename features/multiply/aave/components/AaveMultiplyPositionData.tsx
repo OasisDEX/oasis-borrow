@@ -11,6 +11,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
@@ -189,7 +190,7 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionFooterItem
             title={t('system.multiple')}
-            value={`${multiple.toFormat(1, BigNumber.ROUND_DOWN)}x`}
+            value={displayMultiple(multiple)}
             change={
               newMultiple && {
                 variant: newMultiple.gt(multiple) ? 'positive' : 'negative',

@@ -24,7 +24,10 @@ export const Borrow = () => {
         { title: t('system.min-coll-ratio'), value: '50%' },
         { title: t('system.liquidity-available'), value: '40.5M' },
         { title: t('system.stability-fee'), value: '2.0%' },
-        { title: t('system.protocol'), value: <ProductCardProtocolLink ilk={'ETH-A'} /> },
+        {
+          title: t('system.protocol'),
+          value: <ProductCardProtocolLink ilk={'ETH-A'} protocol={'maker'} />,
+        },
       ]}
       background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
       button={{ link: '/vaults/open/ETH-A', text: t('nav.borrow') }}
@@ -53,7 +56,10 @@ export const Multiply = () => {
         { title: t('system.max-multiple'), value: '3x' },
         { title: t('system.liquidity-available'), value: '40.5M' },
         { title: t('system.stability-fee'), value: '2.0%' },
-        { title: t('system.protocol'), value: <ProductCardProtocolLink ilk={'ETH-A'} /> },
+        {
+          title: t('system.protocol'),
+          value: <ProductCardProtocolLink ilk={'ETH-A'} protocol={'maker'} />,
+        },
       ]}
       background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
       button={{ link: '/vaults/open-multiply/ETH-A', text: t('nav.multiply') }}
