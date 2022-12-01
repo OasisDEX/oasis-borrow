@@ -1,10 +1,19 @@
+import { getNetworkId } from '@oasisdex/web3-context'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { AaveLendingPool } from 'types/web3-v1-contracts/aave-lending-pool'
 
-import { Context } from './network'
+import { Context, NetworkIds } from './network'
 
-const aaveLendingPoolGenesisBlock = 11362579 // TODO probably we would like to set here a block number of our aave deployment
+// TODO probably we would like to set here a block numbers of our aave deployment
+const aaveLendingPoolGenesisBlockMainnet = 11362579
+const aaveLendingPoolGenesisBlockGoerli = 7480475
+
+const networkMap = {
+  [NetworkIds.MAINNET]: aaveLendingPoolGenesisBlockMainnet,
+  [NetworkIds.HARDHAT]: aaveLendingPoolGenesisBlockMainnet,
+  [NetworkIds.GOERLI]: aaveLendingPoolGenesisBlockGoerli,
+}
 
 export interface Web3ContractEvent {
   event: string
@@ -26,6 +35,10 @@ export function getAavePositionLiquidation$(
   if (!proxyAddress) {
     return of([])
   }
+
+  const chainId = getNetworkId() as NetworkIds
+  const genesisBlock = networkMap[chainId]
+
   return context$.pipe(
     switchMap(async ({ aaveLendingPool, contract }) => {
       const aaveLendingPoolContract = contract<AaveLendingPool>(aaveLendingPool)
@@ -33,12 +46,12 @@ export function getAavePositionLiquidation$(
       const contractCalls = Promise.all<Web3ContractEvent[], Web3ContractEvent[]>([
         aaveLendingPoolContract.getPastEvents('LiquidationCall', {
           filter: { user: proxyAddress },
-          fromBlock: aaveLendingPoolGenesisBlock,
+          fromBlock: genesisBlock,
           toBlock: 'latest',
         }),
         aaveLendingPoolContract.getPastEvents('Deposit', {
           filter: { onBehalfOf: proxyAddress },
-          fromBlock: aaveLendingPoolGenesisBlock,
+          fromBlock: genesisBlock,
           toBlock: 'latest',
         }),
       ])

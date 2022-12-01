@@ -3,7 +3,17 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import {
+  createAaveOracleAssetPriceData$,
+  createConvertToAaveOracleAssetPrice$,
+} from 'blockchain/aave/oracleAssetPriceData'
 import { getAavePositionLiquidation$ } from 'blockchain/aaveLiquidations'
+import {
+  getAaveReservesList,
+  getAaveUserAccountData,
+  getAaveUserConfiguration,
+} from 'blockchain/calls/aave/aaveLendingPool'
+import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import {
   getAaveReserveConfigurationData,
   getAaveReserveData,
@@ -53,6 +63,7 @@ import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { observe } from 'blockchain/calls/observe'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -109,6 +120,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
+import { getUserDpmProxies$ } from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
   createVault$,
@@ -118,6 +130,8 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { getAaveStEthYield } from 'features/aave/common'
+import { prepareAaveAvailableLiquidityInUSD$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
+import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
 import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
@@ -275,19 +289,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import {
-  createAaveOracleAssetPriceData$,
-  createConvertToAaveOracleAssetPrice$,
-} from '../blockchain/aave/oracleAssetPriceData'
-import {
-  getAaveReservesList,
-  getAaveUserAccountData,
-  getAaveUserConfiguration,
-} from '../blockchain/calls/aave/aaveLendingPool'
-import { getAaveAssetsPrices } from '../blockchain/calls/aave/aavePriceOracle'
-import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
-import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
-import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -649,9 +650,15 @@ export function setupAppContext() {
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
+
   const aaveLiquidations$ = memoize(
     curry(getAavePositionLiquidation$)(context$),
-    (address) => address,
+    (proxyAddress) => proxyAddress,
+  )
+
+  const userDpmProxies$ = memoize(
+    curry(getUserDpmProxies$)(context$, onEveryBlock$),
+    (walletAddress) => walletAddress,
   )
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
@@ -1236,6 +1243,7 @@ export function setupAppContext() {
     once$,
     aaveLiquidations$,
     allowance$,
+    userDpmProxies$,
   }
 }
 
