@@ -14,6 +14,7 @@ import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserv
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { NaNIsZero } from '../../../../helpers/nanIsZero'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
@@ -116,7 +117,7 @@ export function AaveMultiplyPositionData({
           <DetailsSectionContentCard
             title={t('system.liquidation-price')}
             // works as long as debt token is USDC
-            value={`${formatAmount(currentPositionThings.liquidationPrice, 'USD')} USDC`}
+            value={`${formatAmount(NaNIsZero(currentPositionThings.liquidationPrice), 'USD')} USDC`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.liquidationPrice.gte(
@@ -168,7 +169,7 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}
-            value={formatDecimalAsPercent(currentPositionThings.netBorrowCostPercentage)}
+            value={formatDecimalAsPercent(NaNIsZero(currentPositionThings.netBorrowCostPercentage))}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.netBorrowCostPercentage.lt(

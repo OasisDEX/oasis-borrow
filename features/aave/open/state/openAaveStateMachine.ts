@@ -18,7 +18,7 @@ import {
   BaseAaveEvent,
   contextToTransactionParameters,
 } from '../../common/BaseAaveContext'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { IStrategyConfig } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 export const STEPS_WITH_PROXY_CREATION = 5
 export const STEPS_WITHOUT_PROXY_CREATION = 3
@@ -29,7 +29,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
 
   hasOpenedPosition?: boolean
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
 }
 
 export type OpenAaveEvent =

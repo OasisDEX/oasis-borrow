@@ -14,12 +14,10 @@ import {
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { StrategyConfig } from './common/StrategyConfigTypes'
+import { IStrategyConfig } from './common/StrategyConfigTypes'
 
-type StrategyConfigName = 'aave-earn' | 'aave-multiply'
-
-export const strategies: Record<StrategyConfigName, StrategyConfig> = {
-  'aave-earn': {
+export const strategies: Array<IStrategyConfig> = [
+  {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
     viewComponents: {
@@ -39,9 +37,9 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
     enabled: true,
   },
-  'aave-multiply': {
-    name: 'stETHusdc',
-    urlSlug: 'stETHusdc',
+  {
+    name: 'ethusdc',
+    urlSlug: 'ethusdc',
     viewComponents: {
       headerOpen: AaveMultiplyOpenHeader,
       headerManage: AaveMultiplyManageHeader,
@@ -59,8 +57,27 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     enabled: false,
   },
-} as const
+]
 
-export const aaveStrategiesList = Object.values(strategies)
-  .filter(({ enabled }) => enabled)
-  .map((s) => s.name)
+export function loadStrategyFromSlug(slug: string): IStrategyConfig {
+  const strategy = strategies.find((s) => s.urlSlug === slug)
+  if (!strategy) {
+    throw new Error(`Strategy not found for slug: ${slug}`)
+  }
+  return strategy
+}
+
+export function loadStrategyFromTokens(
+  collateralToken: string,
+  debtToken: string,
+): IStrategyConfig {
+  const strategy = strategies.find(
+    (s) => s.tokens.collateral === collateralToken && s.tokens.debt === debtToken,
+  )
+  if (!strategy) {
+    throw new Error(`Strategy not found for ${collateralToken}/${debtToken}`)
+  }
+  return strategy
+}
+
+export const aaveStrategiesList = strategies.filter(({ enabled }) => enabled).map((s) => s.name)

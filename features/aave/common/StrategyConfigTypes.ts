@@ -6,7 +6,7 @@ import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aav
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
-export interface StrategyConfig {
+export interface IStrategyConfig {
   name: string
   urlSlug: string
   viewComponents: {
@@ -31,7 +31,7 @@ export interface StrategyConfig {
 }
 
 export type AaveHeaderProps = {
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
 }
 
 export type ManageSectionComponentProps = {
