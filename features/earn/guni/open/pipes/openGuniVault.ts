@@ -421,7 +421,7 @@ export function createOpenGuniVault$(
                             const oneInchAmount = amountWithFee.minus(contractFee)
 
                             return exchangeQuote$(
-                              tokenInfo.token1,
+                              tokenInfo.token1!,
                               state.slippage,
                               oneInchAmount,
                               'BUY_COLLATERAL',
@@ -529,7 +529,7 @@ export function createOpenGuniVault$(
                         allowanceTransitions(
                           txHelpers,
                           change,
-                          { tokenToAllow: tokenInfo.token0 },
+                          { tokenToAllow: tokenInfo.token0! },
                           state,
                         ),
                       // (state) => openGuniVaultTransitions,

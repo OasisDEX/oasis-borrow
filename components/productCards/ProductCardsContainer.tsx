@@ -1,5 +1,4 @@
 import { getTokens } from 'blockchain/tokensMetadata'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
 import { WithLoadingIndicator } from '../../helpers/AppSpinner'
@@ -10,7 +9,7 @@ import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
 import { ProductCardEarnMaker } from './ProductCardEarnMaker'
-import { ProductCardMultiply } from './ProductCardMultiply'
+import { ProductCardMultiplyMaker } from './ProductCardMultiplyMaker'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
 type StrategyTypes = {
@@ -25,7 +24,6 @@ type ProductCardsContainerProps = {
 }
 
 function ProductCardsContainer(props: ProductCardsContainerProps) {
-  const showAaveStETHETHProductCard = useFeatureToggle('ShowAaveStETHETHProductCard')
   const ProductCard = props.renderProductCard
 
   const { productCardsData$ } = useAppContext()
@@ -42,13 +40,12 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
             {_productCardsData.map((cardData) => (
               <ProductCard cardData={cardData} key={cardData.ilk} />
             ))}
-            {showAaveStETHETHProductCard &&
-              aaveStrategyCards.map((tokenData) => (
-                <ProductCardEarnAave
-                  cardData={tokenData}
-                  key={`ProductCardEarnAave_${tokenData.symbol}`}
-                />
-              ))}
+            {aaveStrategyCards.map((tokenData) => (
+              <ProductCardEarnAave
+                cardData={tokenData}
+                key={`ProductCardEarnAave_${tokenData.symbol}`}
+              />
+            ))}
           </ProductCardsWrapper>
         )}
       </WithLoadingIndicator>
@@ -66,7 +63,7 @@ export function BorrowProductCardsContainer(props: ProductSpecificContainerProps
 }
 
 export function MultiplyProductCardsContainer(props: ProductSpecificContainerProps) {
-  return <ProductCardsContainer renderProductCard={ProductCardMultiply} {...props} />
+  return <ProductCardsContainer renderProductCard={ProductCardMultiplyMaker} {...props} />
 }
 
 export function EarnProductCardsContainer(props: ProductSpecificContainerProps) {

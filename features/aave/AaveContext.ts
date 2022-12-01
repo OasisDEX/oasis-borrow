@@ -1,18 +1,33 @@
 import BigNumber from 'bignumber.js'
+import {
+  createAaveOracleAssetPriceData$,
+  createConvertToAaveOracleAssetPrice$,
+} from 'blockchain/aave/oracleAssetPriceData'
+import {
+  getAaveReservesList,
+  getAaveUserConfiguration,
+} from 'blockchain/calls/aave/aaveLendingPool'
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
-import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import {
+  getAaveReserveConfigurationData,
+  getAaveReserveData,
+  getAaveUserReserveData,
+} from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
+import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
+import moment from 'moment'
 import { curry } from 'ramda'
 import { combineLatest, from, Observable } from 'rxjs'
-import { distinctUntilKeyChanged, filter, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilKeyChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
 import { getAllowanceStateMachine } from '../stateMachines/allowance'
 import { transactionContextService } from '../stateMachines/transaction'
+import { getAaveStEthYield } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -44,25 +59,50 @@ export function setupAaveContext({
   accountBalances$,
   onEveryBlock$,
   context$,
-  aaveOracleAssetPriceData$,
-  aaveReserveConfigurationData$,
-  aaveUserReserveData$,
   aaveUserAccountData$,
-  aaveUserConfiguration$,
-  aaveReservesList$,
-  aaveSthEthYieldsQuery,
   tokenPriceUSD$,
   allowance$,
+  aaveAvailableLiquidityInUSDC$,
 }: AppContext) {
   const contextForAddress$ = connectedContext$.pipe(
     distinctUntilKeyChanged('account'),
     shareReplay(1),
+  )
+  const disconnectedGraphQLClient$ = context$.pipe(
+    distinctUntilKeyChanged('cacheApi'),
+    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
+  )
+  const aaveSthEthYieldsQuery = memoize(
+    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
+    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
+  )
+  const wrappedGetAaveReserveData$ = memoize(
+    curry(createAavePrepareReserveData$)(
+      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
+    ),
+  )
+  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
+  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
+  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
+  const aaveReserveConfigurationData$ = observe(
+    onEveryBlock$,
+    context$,
+    getAaveReserveConfigurationData,
+    ({ token }) => token,
+  )
+  const aaveOracleAssetPriceData$ = memoize(
+    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
+  )
+  const convertToAaveOracleAssetPrice$ = memoize(
+    curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
+    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
   )
 
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
     switchMap(({ account }) => proxyAddress$(account)),
   )
+  const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
 
   const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
     (token: string, spender: string) =>
@@ -175,12 +215,6 @@ export function setupAaveContext({
     (args) => args.token,
   )
 
-  const wrappedGetAaveReserveData$ = memoize(
-    curry(createAavePrepareReserveData$)(
-      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
-    ),
-  )
-
   const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices, (args) =>
     args.tokens.join(''),
   )
@@ -214,6 +248,11 @@ export function setupAaveContext({
     strategyConfig$,
     getAaveAssetsPrices$,
     chainlinkUSDCUSDOraclePrice$,
+    aaveSTETHReserveConfigurationData,
+    aaveAvailableLiquidityInUSDC$,
+    aaveOracleAssetPriceData$,
+    convertToAaveOracleAssetPrice$,
+    getAaveReserveData$,
   }
 }
 

@@ -1,7 +1,5 @@
-import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { getAddress } from 'ethers/lib/utils'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
-import { earnContext, EarnContextProvider } from 'features/earn/EarnContextProvider'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -50,15 +48,11 @@ function Position({ account }: { account: string }) {
 
   return (
     <AaveContextProvider>
-      <EarnContextProvider>
-        <DeferedContextProvider context={earnContext}>
-          <WithConnection>
-            <WithTermsOfService>
-              <WithStrategy address={address} />
-            </WithTermsOfService>
-          </WithConnection>
-        </DeferedContextProvider>
-      </EarnContextProvider>
+      <WithConnection>
+        <WithTermsOfService>
+          <WithStrategy address={address} />
+        </WithTermsOfService>
+      </WithConnection>
     </AaveContextProvider>
   )
 }

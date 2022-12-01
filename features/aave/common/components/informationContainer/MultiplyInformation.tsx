@@ -1,5 +1,6 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
+import { displayMultiple } from 'helpers/display-multiple'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -7,7 +8,6 @@ import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
-import { formatBigNumber } from '../../../../../helpers/formatters/format'
 
 interface MultiplyInformationProps {
   transactionParameters: IPositionTransition
@@ -24,9 +24,9 @@ export function MultiplyInformation({
       label={t('vault-changes.multiply')}
       value={
         <Flex>
-          {`${formatBigNumber(currentPosition.riskRatio.multiple, 2)}x`}
+          {displayMultiple(currentPosition.riskRatio.multiple)}
           <VaultChangesInformationArrow />
-          {`${formatBigNumber(transactionParameters.simulation.position.riskRatio.multiple, 2)}x`}
+          {displayMultiple(transactionParameters.simulation.position.riskRatio.multiple)}
         </Flex>
       }
     />

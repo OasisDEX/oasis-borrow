@@ -11,6 +11,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -226,7 +227,7 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionFooterItem
             title={t('system.multiple')}
-            value={`${currentPosition.riskRatio.multiple.toFormat(1, BigNumber.ROUND_DOWN)}x`}
+            value={displayMultiple(currentPosition.riskRatio.multiple)}
             change={
               nextPosition && {
                 variant: nextPosition.riskRatio.multiple.gt(currentPosition.riskRatio.multiple)

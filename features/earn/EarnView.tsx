@@ -1,6 +1,5 @@
 import { getTokens } from 'blockchain/tokensMetadata'
 import { ProductCardEarnAave } from 'components/productCards/ProductCardEarnAave'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -19,14 +18,13 @@ import { supportedEarnIlks } from '../../helpers/productCards'
 import { aaveStrategiesList } from '../aave/strategyConfig'
 
 export function EarnView() {
-  const showAaveStETHETHProductCard = useFeatureToggle('ShowAaveStETHETHProductCard')
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsIlksData, productCardsIlksDataError] = useObservable(
     productCardsData$(supportedEarnIlks),
   )
 
-  const aaveStrategiesTokens = getTokens(aaveStrategiesList)
+  const aaveEarnStrategies = getTokens(aaveStrategiesList('earn'))
   return (
     <Grid
       sx={{
@@ -49,16 +47,11 @@ export function EarnView() {
           {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
               {_productCardsIlksData.map((cardData) => (
-                <ProductCardEarnMaker cardData={cardData} key={cardData.ilk} />
+                <ProductCardEarnMaker key={cardData.ilk} cardData={cardData} />
               ))}
-              {showAaveStETHETHProductCard &&
-              _productCardsIlksData.length && // just to show them simultanously
-                aaveStrategiesTokens.map((cardData) => (
-                  <ProductCardEarnAave
-                    key={`ProductCardEarnAave_${cardData.symbol}`}
-                    cardData={cardData}
-                  />
-                ))}
+              {aaveEarnStrategies.map((cardData) => (
+                <ProductCardEarnAave key={cardData.symbol} cardData={cardData} />
+              ))}
             </ProductCardsWrapper>
           )}
         </WithLoadingIndicator>

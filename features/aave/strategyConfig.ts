@@ -1,4 +1,5 @@
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 
 import {
   AavePositionHeaderNoDetails,
@@ -37,8 +38,8 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
-    enabled: true,
     type: 'earn',
+    featureToggle: 'AaveEarnSTETHETH',
   },
 
   {
@@ -61,7 +62,7 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    enabled: false,
+    featureToggle: 'AaveMultiplyETHUSDC',
     type: 'multiply',
   },
 
@@ -85,7 +86,7 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    enabled: false,
+    featureToggle: 'AaveMultiplySTETHUSDC',
     type: 'multiply',
   },
 
@@ -109,10 +110,22 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'WBTC',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    enabled: false,
+    featureToggle: 'AaveMultiplyWBTCUSDC',
     type: 'multiply',
   },
 ]
+
+export function aaveStrategiesList(filterProduct?: StrategyConfig['product']) {
+  return Object.values(strategies)
+    .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
+    .filter(({ product }) => (filterProduct ? product === filterProduct : true))
+    .map((s) => s.name)
+}
+
+export function getAaveStrategy(strategyName: StrategyConfig['name']) {
+  return Object.values(strategies).filter(({ name }) => strategyName === name)
+}
+
 
 export function loadStrategyFromSlug(slug: string): IStrategyConfig {
   const strategy = strategies.find((s) => s.urlSlug === slug)
@@ -135,4 +148,6 @@ export function loadStrategyFromTokens(
   return strategy
 }
 
-export const aaveStrategiesList = strategies.filter(({ enabled }) => enabled).map((s) => s.name)
+export const aaveStrategiesList = Object.values(strategies)
+  .filter(({ enabled }) => enabled)
+  .map((s) => s.name)

@@ -13,6 +13,7 @@ import {
   getToken,
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
+  TokenMetadataType,
 } from '../blockchain/tokensMetadata'
 import { aaveStrategiesList } from '../features/aave/strategyConfig'
 import { zero } from './zero'
@@ -32,6 +33,7 @@ export interface ProductCardData {
   background: string
   name: string
   isFull: boolean
+  protocol: TokenMetadataType['protocol']
 }
 
 export type ProductLandingPagesFiltersKeys =
@@ -69,7 +71,7 @@ export type ProductLandingPagesFilter = {
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
 export type Ilk = typeof supportedIlks[number]
-export type AaveStrategy = typeof aaveStrategiesList[number]
+export type AaveStrategy = ReturnType<typeof aaveStrategiesList>[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -197,7 +199,7 @@ export const productCardsConfig: {
     featuredAaveCards: Record<ProductTypes, Array<AaveStrategy>>
   }
   descriptionCustomKeys: Record<Ilk, string>
-  descriptionLinks: Record<Ilk, { link: string; name: string }>
+  descriptionLinks: Record<Ilk, { link: string }>
 } = {
   borrow: {
     cardsFilters: [
@@ -270,8 +272,8 @@ export const productCardsConfig: {
     },
     featuredAaveCards: {
       borrow: [],
-      multiply: [],
-      earn: ['stETHeth'],
+      multiply: aaveStrategiesList('multiply'),
+      earn: aaveStrategiesList('earn'),
     },
   },
   descriptionCustomKeys: {
@@ -307,104 +309,86 @@ export const productCardsConfig: {
     'ETH-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
-      name: 'Maker (ETH-A)',
     },
     'ETH-B': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
-      name: 'Maker (ETH-B)',
     },
     'ETH-C': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
-      name: 'Maker (ETH-C)',
     },
     'WSTETH-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
-      name: 'Maker (WSTETH-A)',
     },
     'WSTETH-B': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
-      name: 'Maker (WSTETH-B)',
     },
     'WBTC-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
-      name: 'Maker (WBTC-A)',
     },
     'WBTC-B': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
-      name: 'Maker (WBTC-B)',
     },
     'WBTC-C': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
-      name: 'Maker (WBTC-C)',
     },
     'RENBTC-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
-      name: 'Maker (RENBTC-A)',
     },
     'LINK-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
-      name: 'Maker (LINK-A)',
     },
     'MANA-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
-      name: 'Maker (MANA-A)',
     },
     'MATIC-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
-      name: 'Maker (MATIC-A)',
     },
     'GUSD-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
-      name: 'Maker (GUSD-A)',
     },
     'YFI-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
-      name: 'Maker (YFI-A)',
     },
     'GUNIV3DAIUSDC1-A': {
       link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
-      name: 'Maker/Gelato/Uniswap',
     },
     'GUNIV3DAIUSDC2-A': {
       link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
-      name: 'Maker/Gelato/Uniswap',
     },
     'UNIV2USDCETH-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
-      name: 'Maker/Uniswap',
     },
     'UNIV2DAIUSDC-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
-      name: 'Maker/Uniswap',
     },
     'CRVV1ETHSTETH-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
-      name: 'Maker/Curve/Lido',
     },
     stETHeth: {
       link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
-      name: 'AAVE stETH / ETH',
+    },
+    stETHusdc: {
+      link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
     },
     'RETH-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
-      name: 'Maker (RETH-A)',
     },
   },
 }
@@ -598,6 +582,7 @@ export function createProductCardsWithBalance$(
                   bannerGif: tokenMeta.bannerGif,
                   background: tokenMeta.background,
                   name: tokenMeta.name,
+                  protocol: tokenMeta.protocol,
                   isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
                 })
               }),
@@ -660,6 +645,7 @@ export function createProductCardsData$(
           background: tokenMeta.background,
           name: tokenMeta.name,
           isFull: ilkData.ilkDebtAvailable.lt(ilkData.debtFloor),
+          protocol: tokenMeta.protocol,
         }
       })
     }),
