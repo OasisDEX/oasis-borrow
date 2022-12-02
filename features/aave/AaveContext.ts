@@ -48,6 +48,8 @@ import {
   getOpenAaveStateMachine,
   getOpenAaveTransactionMachine,
 } from './open/services'
+import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
+import { strategies } from './strategyConfig'
 
 export function setupAaveContext({
   userSettings$,
@@ -56,7 +58,7 @@ export function setupAaveContext({
   txHelpers$,
   gasPrice$,
   daiEthTokenPrice$,
-  accountBalances$,
+  balance$,
   onEveryBlock$,
   context$,
   aaveUserAccountData$,
@@ -64,6 +66,14 @@ export function setupAaveContext({
   allowance$,
   aaveAvailableLiquidityInUSDC$,
 }: AppContext) {
+  const chainlinkUSDCUSDOraclePrice$ = memoize(
+    observe(onEveryBlock$, context$, getChainlinkOraclePrice('USDCUSD'), () => 'true'),
+  )
+
+  const chainLinkETHUSDOraclePrice$ = memoize(
+    observe(onEveryBlock$, context$, getChainlinkOraclePrice('ETHUSD'), () => 'true'),
+  )
+
   const contextForAddress$ = connectedContext$.pipe(
     distinctUntilKeyChanged('account'),
     shareReplay(1),
@@ -110,8 +120,19 @@ export function setupAaveContext({
     (token, spender) => `${token}-${spender}`,
   )
 
+  const supportedTokens = Array.from(
+    new Set(Object.values(strategies).map((strategy) => strategy.tokens.deposit)),
+  )
+  const aaveSupportedTokenBalances$ = memoize(
+    curry(getAaveSupportedTokenBalances$)(
+      balance$,
+      aaveOracleAssetPriceData$,
+      chainLinkETHUSDOraclePrice$,
+      supportedTokens,
+    ),
+  )
   const tokenBalances$: Observable<TokenBalances> = contextForAddress$.pipe(
-    switchMap(({ account }) => accountBalances$(account)),
+    switchMap(({ account }) => aaveSupportedTokenBalances$(account)),
   )
 
   const strategyInfo$ = memoize(
@@ -230,13 +251,6 @@ export function setupAaveContext({
     curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
   )
 
-  const chainlinkUSDCUSDOraclePrice$ = observe(
-    onEveryBlock$,
-    context$,
-    getChainlinkOraclePrice('USDCUSD'),
-    () => 'true',
-  )
-
   return {
     aaveStateMachine,
     aaveManageStateMachine,
@@ -248,6 +262,7 @@ export function setupAaveContext({
     strategyConfig$,
     getAaveAssetsPrices$,
     chainlinkUSDCUSDOraclePrice$,
+    chainLinkETHUSDOraclePrice$,
     aaveSTETHReserveConfigurationData,
     aaveAvailableLiquidityInUSDC$,
     aaveOracleAssetPriceData$,

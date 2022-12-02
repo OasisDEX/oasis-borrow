@@ -405,8 +405,7 @@ function createUIChangesSubject(): UIChanges {
   }
 
   function lastPayload<T>(subject: string): T {
-    const val: T = latest[subject]
-    return val
+    return latest[subject]
   }
 
   function clear(subject: string): any {
@@ -1138,6 +1137,7 @@ export function setupAppContext() {
     vaults$,
     vault$,
     ilks$: ilksSupportedOnNetwork$,
+    balance$,
     accountBalances$,
     openVault$,
     manageVault$,
