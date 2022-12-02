@@ -17,7 +17,7 @@ function getRpcNode(network: string) {
 function getMulticall(network: string) {
   switch (network) {
     case 'mainnet':
-      return `0xeefba1e63905ef1d7acba5a8513c70307c1ce441`
+      return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case 'goerli':
       return `0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e`
     default:
