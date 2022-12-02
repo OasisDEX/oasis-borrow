@@ -19,7 +19,7 @@ import {
   contextToTransactionParameters,
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { IStrategyConfig } from '../../common/StrategyConfigTypes'
 import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
 
 type ActorFromTransactionParametersStateMachine =
@@ -29,7 +29,7 @@ type ActorFromTransactionParametersStateMachine =
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorFromTransactionParametersStateMachine
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
   address: string
   proxyAddress?: string
 }

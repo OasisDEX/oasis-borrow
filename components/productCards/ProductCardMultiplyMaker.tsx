@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { displayMultiple } from 'helpers/display-multiple'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -40,7 +41,7 @@ function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
   }
 }
 
-export function ProductCardMultiply(props: { cardData: ProductCardData }) {
+export function ProductCardMultiplyMaker(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
@@ -82,7 +83,11 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       labels={[
         {
           title: t('system.max-multiple'),
-          value: `${maxMultiple.toFixed(2, 1)}x`,
+          value: displayMultiple(maxMultiple),
+        },
+        {
+          title: t('system.position'),
+          value: `${cardData.ilk} / DAI`, // it's always {ilk} / DAI for maker
         },
         {
           title: t('system.liquidity-available'),
@@ -105,6 +110,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       inactive={productCardsConfig.multiply.inactiveIlks.includes(cardData.ilk)}
       isFull={cardData.isFull}
       floatingLabelText={tagKey ? t(`product-card.tags.${tagKey}`, { token: cardData.token }) : ''}
+      protocol={cardData.protocol}
     />
   )
 }

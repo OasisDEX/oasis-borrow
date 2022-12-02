@@ -1,11 +1,11 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { getToken } from '../../../../../blockchain/tokensMetadata'
-import { useAppContext } from '../../../../../components/AppContextProvider'
 import { VaultChangesInformationContainer } from '../../../../../components/vault/VaultChangesInformation'
 import { WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
@@ -45,7 +45,7 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
   const { strategy, currentPosition, tokens } = state.context
   const debtToken = tokens.debt
   const swapFee = strategy?.simulation?.swap?.tokenFee || zero
-  const { convertToAaveOracleAssetPrice$ } = useAppContext()
+  const { convertToAaveOracleAssetPrice$ } = useAaveContext()
 
   const [feeInDebtToken, feeInDebtTokenError] = useObservable(
     convertToAaveOracleAssetPrice$({

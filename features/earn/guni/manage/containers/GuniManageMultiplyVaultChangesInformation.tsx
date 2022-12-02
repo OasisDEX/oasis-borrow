@@ -8,6 +8,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { displayMultiple } from 'helpers/display-multiple'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -82,7 +83,7 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
           <Flex>
             {multiply?.toFixed(2)}x
             <VaultChangesInformationArrow />
-            {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
+            {isCloseAction ? 'n/a' : displayMultiple(afterMultiply)}
           </Flex>
         }
       />

@@ -7,10 +7,12 @@ import { Dictionary } from 'ts-essentials'
 import * as aaveLendingPool from './abi/aave-lending-pool.json'
 import * as aavePriceOracle from './abi/aave-price-oracle.json'
 import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
+import * as accountFactory from './abi/account-factory.json'
+import * as accountGuard from './abi/account-guard.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
-import * as chainlinkUSDCUSDPriceOracle from './abi/chainlink-price-oracle.json'
+import * as chainLinkPriceOracle from './abi/chainlink-price-oracle.json'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
@@ -238,15 +240,17 @@ const protoMain = {
   ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(
-      chainlinkUSDCUSDPriceOracle,
+      chainLinkPriceOracle,
       // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
       mainnetAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
     ),
+    ETHUSD: contractDesc(chainLinkPriceOracle, mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
   aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
-  chainlinkEthUsdPriceFeedAddress: mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
+  accountFactory: contractDesc(accountFactory, mainnetAddresses.ACCOUNT_FACTORY),
+  accountGuard: contractDesc(accountGuard, mainnetAddresses.ACCOUNT_GUARD),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -340,7 +344,8 @@ const kovan: NetworkConfig = {
     '0x',
   ),
   chainlinkPriceOracle: {
-    USDCUSD: contractDesc(chainlinkUSDCUSDPriceOracle, '0x'),
+    USDCUSD: contractDesc(chainLinkPriceOracle, '0x'),
+    ETHUSD: contractDesc(chainLinkPriceOracle, '0x'),
   },
   aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
   operationExecutor: contractDesc(
@@ -348,7 +353,8 @@ const kovan: NetworkConfig = {
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
   ),
   swapAddress: main.swapAddress,
-  chainlinkEthUsdPriceFeedAddress: '0x0',
+  accountFactory: contractDesc(accountFactory, '0x0'),
+  accountGuard: contractDesc(accountGuard, '0x0'),
 }
 
 const goerli: NetworkConfig = {
@@ -445,15 +451,17 @@ const goerli: NetworkConfig = {
   ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(
-      chainlinkUSDCUSDPriceOracle,
+      chainLinkPriceOracle,
       // address from here:https://docs.chain.link/data-feeds/price-feeds/addresses
       goerliAddresses.CHAINLINK_USDC_USD_PRICE_FEED,
     ),
+    ETHUSD: contractDesc(chainLinkPriceOracle, goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
   aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
-  chainlinkEthUsdPriceFeedAddress: goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED,
+  accountFactory: contractDesc(accountFactory, goerliAddresses.ACCOUNT_FACTORY),
+  accountGuard: contractDesc(accountGuard, goerliAddresses.ACCOUNT_GUARD),
 }
 
 const hardhat: NetworkConfig = {

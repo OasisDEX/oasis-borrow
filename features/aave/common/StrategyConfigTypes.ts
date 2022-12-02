@@ -1,12 +1,13 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
+import { Feature } from 'helpers/useFeatureToggle'
 
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
-export interface StrategyConfig {
+export interface IStrategyConfig {
   name: string
   urlSlug: string
   viewComponents: {
@@ -17,6 +18,8 @@ export interface StrategyConfig {
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
     adjustRiskView: AdjustRiskView
+    sidebarTitle: string
+    sidebarButton: string
   }
   tokens: {
     collateral: string
@@ -27,11 +30,12 @@ export interface StrategyConfig {
     minimum: IRiskRatio
     default: IRiskRatio
   }
-  enabled: boolean
+  type: 'multiply' | 'earn'
+  featureToggle: Feature
 }
 
 export type AaveHeaderProps = {
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
 }
 
 export type ManageSectionComponentProps = {

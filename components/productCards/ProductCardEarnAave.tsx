@@ -2,8 +2,9 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { useEarnContext } from 'features/earn/EarnContextProvider'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -18,25 +19,25 @@ type ProductCardEarnAaveProps = {
   cardData: TokenMetadataType
 }
 
-const aaveCalcValueBasis = {
+const aaveEarnCalcValueBasis = {
   amount: new BigNumber(100),
   token: 'ETH',
 }
 
 export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityETH$ } = useEarnContext()
+  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$ } = useAaveContext()
   const { hasActiveAavePosition$ } = useAppContext()
   const [aaveActivePosition] = useObservable(hasActiveAavePosition$)
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
-    aaveAvailableLiquidityETH$,
+    aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )
   const maximumMultiple =
     aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
   const simulationYields = useSimulationYields({
-    amount: aaveCalcValueBasis.amount,
+    amount: aaveEarnCalcValueBasis.amount,
     riskRatio: maximumMultiple,
     fields: ['7Days', '90Days'],
   })
@@ -55,15 +56,19 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
             description={t(`product-card.aave.${cardData.symbol}.description`)}
             banner={{
               title: t('product-card-banner.with', {
-                value: aaveCalcValueBasis.amount.toString(),
-                token: aaveCalcValueBasis.token,
+                value: aaveEarnCalcValueBasis.amount.toString(),
+                token: aaveEarnCalcValueBasis.token,
               }),
               description: t(`product-card-banner.aave.${cardData.symbol}`, {
-                value: _maximumMultiple.multiple.times(aaveCalcValueBasis.amount).toFormat(0),
+                value: _maximumMultiple.multiple.times(aaveEarnCalcValueBasis.amount).toFormat(0),
                 token: cardData.symbol,
               }),
             }}
             labels={[
+              {
+                title: t('system.max-multiple'),
+                value: displayMultiple(_maximumMultiple.multiple),
+              },
               {
                 title: '7 day net APY',
                 value: simulationYields?.yields?.annualisedYield7days ? (
@@ -91,7 +96,9 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               },
               {
                 title: t('system.protocol'),
-                value: <ProductCardProtocolLink ilk={cardData.symbol} />,
+                value: (
+                  <ProductCardProtocolLink ilk={cardData.symbol} protocol={cardData.protocol} />
+                ),
               },
             ]}
             button={{
@@ -101,6 +108,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               text: t('nav.earn'),
             }}
             background={cardData.background}
+            protocol={cardData.protocol}
             isFull={false}
           />
         )}
