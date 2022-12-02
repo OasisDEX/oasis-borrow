@@ -1,6 +1,5 @@
-import { fetchJson } from '@ethersproject/web'
 import { withSentry } from '@sentry/nextjs'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -10,6 +9,17 @@ function getRpcNode(network: string) {
       return `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
     case 'goerli':
       return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+    default:
+      throw new Error('unsupported network')
+  }
+}
+
+function getMulticall(network: string) {
+  switch (network) {
+    case 'mainnet':
+      return `0xeefba1e63905ef1d7acba5a8513c70307c1ce441`
+    case 'goerli':
+      return `0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e`
     default:
       throw new Error('unsupported network')
   }
@@ -52,13 +62,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
-    const rpcNode = getRpcNode(req.query.network.toString())
+    const network = req.query.network.toString()
+    const rpcNode = getRpcNode(network)
     const provider = new ethers.providers.JsonRpcProvider(rpcNode)
-    const multicall = new ethers.Contract(
-      '0xeefBa1e63905eF1D7ACbA5a8513c70307C1cE441',
-      abi,
-      provider,
-    )
+    const multicallAddress = getMulticall(network)
+    const multicall = new ethers.Contract(multicallAddress, abi, provider)
 
     const calls = req.body
       .map((rpcCall: any) => rpcCall.params)
@@ -87,15 +95,24 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.call),
     )
     try {
-      const multicallResponse = await fetchJson(
-        provider.connection,
-        `{ "jsonrpc": "2.0","id": ${req.body[0].id},"method": "eth_call","params": [{"data":"${multicallTx.data}","to": "${multicall.address}"},"latest"]}`,
+      const callBody = `{"jsonrpc":"2.0","id":${req.body[0].id},"method":"eth_call","params":[{"data":"${multicallTx.data}","to":"${multicall.address}"},"latest"]}`
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Connection: 'keep-alive',
+          'Content-Encoding': 'gzip, deflate, br',
+          'Content-Length': callBody.length.toString(),
+        },
+      }
+      const multicallResponse = await axios.post<string, AxiosResponse<{ result: string }>>(
+        provider.connection.url,
+        callBody,
+        config,
       )
       const [, data] = multicall.interface.decodeFunctionResult(
         'aggregate((address,bytes)[])',
-        multicallResponse.result,
+        multicallResponse.data.result,
       )
-
       finalResponse = req.body.map((entry, index) => ({
         id: entry.id,
         jsonrpc: entry.jsonrpc,
