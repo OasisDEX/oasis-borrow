@@ -13,10 +13,12 @@ import {
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { NaNIsZero } from '../../../../helpers/nanIsZero'
+import { zero } from '../../../../helpers/zero'
+import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
@@ -41,48 +43,6 @@ const getLTVRatioColor = (ratio: BigNumber) => {
   }
 }
 
-function calcViewValuesForPosition(
-  position: IPosition,
-  collateralTokenPrice: BigNumber,
-  debtTokenPrice: BigNumber,
-  collateralLiquidityRate: BigNumber,
-  debtVariableBorrowRate: BigNumber,
-) {
-  const collateral = amountFromWei(position.collateral.amount, position.collateral.precision)
-  const debt = amountFromWei(position.debt.amount, position.debt.precision)
-
-  // collateral * usdprice * maxLTV - debt * usdprice
-  const buyingPower = collateral
-    .times(collateralTokenPrice)
-    .times(position.category.maxLoanToValue)
-    .minus(debt.times(debtTokenPrice))
-
-  // (collateral_amount * collateral_token_oracle_price - debt_token_amount * debt_token_oracle_price) / USDC_oracle_price
-  const netValue = collateral.times(collateralTokenPrice).minus(debt.times(debtTokenPrice))
-
-  const totalExposure = collateral
-
-  const liquidationPrice = debt.div(collateral.times(position.category.liquidationThreshold))
-
-  const costOfBorrowingDebt = debtVariableBorrowRate.times(debt).times(debtTokenPrice)
-  const profitFromProvidingCollateral = collateralLiquidityRate
-    .times(collateral)
-    .times(collateralTokenPrice)
-  const netBorrowCostPercentage = costOfBorrowingDebt
-    .minus(profitFromProvidingCollateral)
-    .div(debt.times(debtTokenPrice))
-
-  return {
-    collateral,
-    debt,
-    buyingPower,
-    netValue,
-    totalExposure,
-    liquidationPrice,
-    netBorrowCostPercentage,
-  }
-}
-
 export function AaveMultiplyPositionData({
   currentPosition,
   nextPosition,
@@ -93,22 +53,54 @@ export function AaveMultiplyPositionData({
 }: AaveMultiplyPositionDataProps) {
   const { t } = useTranslation()
 
-  const currentPositionThings = calcViewValuesForPosition(
-    currentPosition,
-    collateralTokenPrice,
-    debtTokenPrice,
-    collateralTokenReserveData.liquidityRate,
-    debtTokenReserveData.variableBorrowRate,
-  )
+  const { collateral, debt, category, riskRatio } = currentPosition
 
-  const nextPositionThings =
+  // collateral * usdprice * maxLTV - debt * usdprice
+  const buyingPower = collateral.amount
+    .times(collateralTokenPrice)
+    .times(category.maxLoanToValue)
+    .minus(debt.amount.times(debtTokenPrice))
+
+  const newBuyingPower =
     nextPosition &&
-    calcViewValuesForPosition(
-      nextPosition,
-      collateralTokenPrice,
-      debtTokenPrice,
-      collateralTokenReserveData.liquidityRate,
-      debtTokenReserveData.variableBorrowRate,
+    nextPosition.collateral.amount
+      .times(collateralTokenPrice)
+      .times(nextPosition.category.maxLoanToValue)
+      .minus(nextPosition.debt.amount.times(collateralTokenPrice))
+
+  // (collateral_amount * collateral_token_oracle_price - debt_token_amount * debt_token_oracle_price) / USDC_oracle_price
+  const netValue = collateral.amount
+    .times(collateralTokenPrice)
+    .minus(debt.amount.times(debtTokenPrice))
+  const newNetValue =
+    nextPosition &&
+    nextPosition.collateral.amount
+      .times(collateralTokenPrice)
+      .minus(nextPosition.debt.amount.times(debtTokenPrice))
+
+  // collateral * multiple
+  const totalExposure = collateral.amount
+  const newTotalExposure = nextPosition && nextPosition.collateral.amount
+
+  const liquidationPrice = NaNIsZero(getLiquidationPriceAccountingForPrecision(currentPosition))
+  const newLiquidationPrice = nextPosition
+    ? getLiquidationPriceAccountingForPrecision(nextPosition)
+    : zero
+
+  const positionDebt = debt.amount
+  const nextPositionDebt = nextPosition && nextPosition.debt.amount
+
+  const multiple = riskRatio.multiple
+  const newMultiple = nextPosition && nextPosition.riskRatio.multiple
+
+  // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
+  const netBorrowCost = debtTokenReserveData.variableBorrowRate
+    .times(amountFromWei(debt.amount, debt.precision))
+    .times(debtTokenPrice)
+    .minus(
+      collateralTokenReserveData.liquidityRate
+        .times(amountFromWei(collateral.amount, collateral.precision))
+        .times(collateralTokenPrice),
     )
 
   return (
@@ -119,81 +111,56 @@ export function AaveMultiplyPositionData({
           <DetailsSectionContentCard
             title={t('system.liquidation-price')}
             // works as long as debt token is USDC
-            value={`${formatAmount(NaNIsZero(currentPositionThings.liquidationPrice), 'USD')} USDC`}
+            value={`${formatAmount(liquidationPrice, 'USD')} USDC`}
             change={
-              nextPositionThings && {
-                variant: nextPositionThings.liquidationPrice.gte(
-                  currentPositionThings.liquidationPrice,
-                )
-                  ? 'positive'
-                  : 'negative',
+              newLiquidationPrice && {
+                variant: newLiquidationPrice.gte(liquidationPrice) ? 'positive' : 'negative',
                 // works as long as debt token is USDC
-                value: `$${formatAmount(nextPositionThings.liquidationPrice, 'USD')} ${t('after')}`,
+                value: `$${formatAmount(newLiquidationPrice, 'USD')} ${t('after')}`,
               }
             }
             footnote={`${t('manage-earn-vault.below-current-price', {
               percentage: formatDecimalAsPercent(
                 // works as long as collateral is eth (debt token price is in eth from oracle)
-                currentPositionThings.liquidationPrice
-                  .minus(debtTokenPrice)
-                  .dividedBy(debtTokenPrice)
-                  .absoluteValue(),
+                liquidationPrice.minus(debtTokenPrice).dividedBy(debtTokenPrice).absoluteValue(),
               ),
             })}`}
           />
           <DetailsSectionContentCard
             title={t('system.loan-to-value')}
-            value={formatDecimalAsPercent(currentPosition.riskRatio.loanToValue)}
+            value={formatDecimalAsPercent(riskRatio.loanToValue)}
             change={
-              nextPosition && {
-                variant: nextPosition.riskRatio.loanToValue.lt(
-                  currentPosition.riskRatio.loanToValue,
-                )
-                  ? 'negative'
-                  : 'positive',
+              nextPosition?.riskRatio && {
+                variant: nextPosition.riskRatio.loanToValue.gt(riskRatio.loanToValue)
+                  ? 'positive'
+                  : 'negative',
                 value: `${formatDecimalAsPercent(nextPosition.riskRatio.loanToValue)} ${t(
                   'after',
                 )}`,
               }
             }
             footnote={`${t('manage-earn-vault.liquidation-threshold', {
-              percentage: formatDecimalAsPercent(currentPosition.category.liquidationThreshold),
+              percentage: formatDecimalAsPercent(category.liquidationThreshold),
             })}`}
             customBackground={
               !nextPosition?.riskRatio
                 ? getLTVRatioColor(
-                    currentPosition.category.liquidationThreshold
-                      .minus(currentPosition.riskRatio.loanToValue)
-                      .times(100),
+                    category.liquidationThreshold.minus(riskRatio.loanToValue).times(100),
                   )
                 : 'transparent'
             }
           />
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}
-            value={formatDecimalAsPercent(NaNIsZero(currentPositionThings.netBorrowCostPercentage))}
-            change={
-              nextPositionThings && {
-                variant: nextPositionThings.netBorrowCostPercentage.lt(
-                  currentPositionThings.netBorrowCostPercentage,
-                )
-                  ? 'positive'
-                  : 'negative',
-                value: `${formatDecimalAsPercent(nextPositionThings.netBorrowCostPercentage)} ${t(
-                  'after',
-                )}`,
-              }
-            }
+            value={formatDecimalAsPercent(netBorrowCost)}
           />
           <DetailsSectionContentCard
             title={t('system.net-value')}
-            value={`${formatAmount(currentPositionThings.netValue, 'USD')} USDC`}
+            value={`${formatAmount(netValue, 'USD')} USDC`}
             change={
-              nextPositionThings && {
-                variant: nextPositionThings.netValue.gt(currentPositionThings.netValue)
-                  ? 'positive'
-                  : 'negative',
-                value: `${formatAmount(nextPositionThings.netValue, 'USD')} ${t('after')}`,
+              newNetValue && {
+                variant: newNetValue.gt(netValue) ? 'positive' : 'negative',
+                value: `${formatAmount(newNetValue, 'USD')} ${t('after')}`,
               }
             }
           />
@@ -203,51 +170,41 @@ export function AaveMultiplyPositionData({
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
             title={t('system.position-debt')}
-            value={`${formatAmount(currentPositionThings.debt, 'USD')} USDC`}
+            value={`${formatAmount(positionDebt, 'USD')} USDC`}
             change={
-              nextPositionThings && {
-                variant: nextPositionThings.debt.gt(currentPositionThings.debt)
-                  ? 'positive'
-                  : 'negative',
-                value: `${formatAmount(nextPositionThings.debt, 'USD')} USDC ${t('after')}`,
+              nextPositionDebt && {
+                variant: nextPositionDebt.gt(positionDebt) ? 'positive' : 'negative',
+                value: `${formatAmount(nextPositionDebt, 'USD')} USDC ${t('after')}`,
               }
             }
           />
           <DetailsSectionFooterItem
-            title={t('system.total-exposure', { token: currentPosition.collateral.symbol })}
-            value={`${formatAmount(currentPositionThings.totalExposure, 'ETH')} ETH`}
+            title={t('system.total-exposure', { token: collateral.symbol })}
+            value={`${formatAmount(totalExposure, 'ETH')} ETH`}
             change={
-              nextPositionThings && {
-                variant: nextPositionThings.totalExposure.gt(currentPositionThings.totalExposure)
-                  ? 'positive'
-                  : 'negative',
-                value: `${formatAmount(nextPositionThings.totalExposure, 'ETH')} ETH ${t('after')}`,
+              newTotalExposure && {
+                variant: newTotalExposure.gt(totalExposure) ? 'positive' : 'negative',
+                value: `${formatAmount(newTotalExposure, 'ETH')} ETH ${t('after')}`,
               }
             }
           />
           <DetailsSectionFooterItem
             title={t('system.multiple')}
-            value={displayMultiple(currentPosition.riskRatio.multiple)}
+            value={displayMultiple(multiple)}
             change={
-              nextPosition && {
-                variant: nextPosition.riskRatio.multiple.gt(currentPosition.riskRatio.multiple)
-                  ? 'positive'
-                  : 'negative',
-                value: `${nextPosition.riskRatio.multiple.toFormat(1, BigNumber.ROUND_DOWN)}x ${t(
-                  'after',
-                )}`,
+              newMultiple && {
+                variant: newMultiple.gt(multiple) ? 'positive' : 'negative',
+                value: `${newMultiple.toFormat(1, BigNumber.ROUND_DOWN)}x ${t('after')}`,
               }
             }
           />
           <DetailsSectionFooterItem
             title={t('system.buying-power')}
-            value={`${formatAmount(currentPositionThings.buyingPower, 'USD')} USDC`}
+            value={`${formatAmount(buyingPower, 'USD')} USDC`}
             change={
-              nextPositionThings && {
-                variant: nextPositionThings.buyingPower.gt(currentPositionThings.buyingPower)
-                  ? 'positive'
-                  : 'negative',
-                value: `${formatAmount(nextPositionThings.buyingPower, 'USD')} USDC ${t('after')}`,
+              newBuyingPower && {
+                variant: newBuyingPower.gt(buyingPower) ? 'positive' : 'negative',
+                value: `${formatAmount(newBuyingPower, 'USD')} USDC ${t('after')}`,
               }
             }
           />

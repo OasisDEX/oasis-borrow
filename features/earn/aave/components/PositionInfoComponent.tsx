@@ -10,7 +10,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -33,7 +33,7 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 
 type PositionInfoComponentProps = {
   aaveReserveDataETH: PreparedAaveReserveData
-  tokens: IStrategyConfig['tokens']
+  tokens: StrategyConfig['tokens']
   oraclePrice: BigNumber
   accountData: AaveUserAccountData
   apy?: BigNumber

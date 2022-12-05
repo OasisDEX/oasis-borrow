@@ -2,7 +2,7 @@ import { useInterpret } from '@xstate/react'
 import { env } from 'process'
 import React from 'react'
 
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { ManageAaveStateMachine } from '../state'
 
 function setupManageAaveStateContext({
@@ -11,7 +11,7 @@ function setupManageAaveStateContext({
   address,
 }: {
   machine: ManageAaveStateMachine
-  strategy: IStrategyConfig
+  strategy: StrategyConfig
   address: string
 }) {
   const stateMachine = useInterpret(
@@ -50,7 +50,7 @@ export function ManageAaveStateMachineContextProvider({
   address,
 }: React.PropsWithChildren<{
   machine: ManageAaveStateMachine
-  strategy: IStrategyConfig
+  strategy: StrategyConfig
   address: string
 }>) {
   const context = setupManageAaveStateContext({ machine, strategy, address })

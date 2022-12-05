@@ -2,8 +2,8 @@ import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
-import { IStrategyConfig } from '../common/StrategyConfigTypes'
-import { loadStrategyFromTokens } from '../strategyConfig'
+import { StrategyConfig } from '../common/StrategyConfigTypes'
+import { strategies } from '../strategyConfig'
 import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
 
 export function getStrategyConfig$(
@@ -11,7 +11,7 @@ export function getStrategyConfig$(
   aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   address: string,
-): Observable<IStrategyConfig> {
+): Observable<StrategyConfig> {
   return proxyAddress$(address).pipe(
     switchMap((proxyAddress) => {
       return combineLatest(
@@ -24,9 +24,9 @@ export function getStrategyConfig$(
     }),
     map((aaveUserConfiguration) => {
       if (hasAssets(aaveUserConfiguration, 'STETH', 'ETH')) {
-        return loadStrategyFromTokens('STETH', 'ETH')
+        return strategies['aave-earn']
       } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
-        return loadStrategyFromTokens('ETH', 'USDC')
+        return strategies['aave-multiply']
       } else {
         throw new Error(
           `could not resolve strategy for address ${address}. aaveUserConfiguration ${JSON.stringify(

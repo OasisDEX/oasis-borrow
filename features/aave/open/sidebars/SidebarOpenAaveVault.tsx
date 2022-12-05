@@ -38,7 +38,7 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
@@ -60,7 +60,7 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <StrategyInformationContainer state={state} />
@@ -90,7 +90,7 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <StrategyInformationContainer state={state} />
@@ -126,7 +126,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    title: t('open-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
@@ -143,9 +143,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
       steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: isLoading(),
       disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
-      label: hasProxy
-        ? t(state.context.strategyConfig.viewComponents.sidebarButton)
-        : t('create-proxy-btn'),
+      label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
       action: () => send('NEXT_STEP'),
     },
   }
@@ -208,11 +206,6 @@ export function SidebarOpenAaveVault() {
     case state.matches('frontend.settingMultiple'):
       return (
         <AdjustRiskView
-          title={
-            state.context.strategyConfig.type === 'earn'
-              ? t('sidebar-titles.open-earn-position')
-              : t('sidebar-titles.open-multiply-position')
-          }
           state={state}
           send={send}
           isLoading={loading}
@@ -220,7 +213,7 @@ export function SidebarOpenAaveVault() {
             steps: [state.context.currentStep, state.context.totalSteps],
             isLoading: isLoading(state),
             disabled: !state.can('NEXT_STEP'),
-            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
+            label: t('open-earn.aave.vault-form.open-btn'),
             action: () => send('NEXT_STEP'),
           }}
           textButton={{
