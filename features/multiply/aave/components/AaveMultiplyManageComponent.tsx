@@ -1,7 +1,7 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -12,16 +12,15 @@ import { AaveMultiplyPositionData } from './AaveMultiplyPositionData'
 export type AaveMultiplyManageComponentProps = {
   currentPosition?: IPosition
   nextPosition?: IPosition
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
   collateralPrice?: BigNumber
   tokenPrice?: BigNumber
-  debtPrice?: BigNumber
 }
 
 export function AaveMultiplyManageComponent({
   currentPosition,
   collateralPrice,
-  debtPrice,
+  tokenPrice,
   strategyConfig,
   nextPosition,
 }: AaveMultiplyManageComponentProps) {
@@ -39,7 +38,7 @@ export function AaveMultiplyManageComponent({
         value={[
           currentPosition,
           collateralPrice,
-          debtPrice,
+          tokenPrice,
           debtTokenReserveData,
           collateralTokenReserveData,
         ]}

@@ -1,5 +1,5 @@
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { ManageAaveContext } from 'features/aave/manage/state'
 import { getAutomationAavePositionData } from 'features/automation/common/context/getAutomationAavePositionData'
@@ -14,7 +14,7 @@ export interface AaveManageVaultState {
   address: string
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataETH: PreparedAaveReserveData
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
   context: ManageAaveContext
 }
 
