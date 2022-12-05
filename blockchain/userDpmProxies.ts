@@ -8,7 +8,7 @@ import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
 import { Context, NetworkIds } from './network'
 
-interface UserDpmProxy {
+export interface UserDpmProxy {
   proxy: string
   user: string
   vaultId: string

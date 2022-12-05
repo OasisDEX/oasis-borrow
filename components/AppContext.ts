@@ -3,10 +3,18 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { createAaveOracleAssetPriceData$ } from 'blockchain/aave/oracleAssetPriceData'
 import { getAavePositionLiquidation$ } from 'blockchain/aaveLiquidations'
-import { getAaveUserAccountData } from 'blockchain/calls/aave/aaveLendingPool'
+import {
+  getAaveReservesList,
+  getAaveUserAccountData,
+  getAaveUserConfiguration,
+} from 'blockchain/calls/aave/aaveLendingPool'
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
-import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import {
+  getAaveReserveData,
+  getAaveUserReserveData,
+} from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -118,8 +126,12 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
+import { createAavePrepareReserveData$ } from 'features/aave/helpers/aavePrepareReserveData'
+import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
 import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
+import { getAaveProtocolData$ } from 'features/aave/manage/services'
+import { getOnChainPosition } from 'features/aave/oasisActionsLibWrapper'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
@@ -239,6 +251,7 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
+  createAaveDpmPosition$,
   createAavePosition$,
   createMakerPositions$,
   createPositions$,
@@ -264,8 +277,16 @@ import {
 } from 'helpers/productCards'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, from, Observable, of, Subject } from 'rxjs'
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
 
@@ -839,8 +860,69 @@ export function setupAppContext() {
     ),
   )
 
+  const contextForAddress$ = connectedContext$.pipe(
+    distinctUntilKeyChanged('account'),
+    shareReplay(1),
+  )
+
+  const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
+    switchMap(({ account }) => proxyAddress$(account)),
+  )
+
+  function tempPositionFromLib$(collateralToken: string, debtToken: string) {
+    return combineLatest(context$, proxyForAccount$).pipe(
+      filter(([context, proxyAddress]) => !!context && !!proxyAddress),
+      switchMap(([context, proxyAddress]) => {
+        proxyAddress = proxyAddress!
+        return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
+      }),
+      shareReplay(1),
+    )
+  }
+
+  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
+  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
+  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
+  const aaveOracleAssetPriceData$ = memoize(
+    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
+  )
+  const aaveProtocolData$ = memoize(
+    curry(getAaveProtocolData$)(
+      aaveUserReserveData$,
+      aaveUserAccountData$,
+      aaveOracleAssetPriceData$,
+      aaveUserConfiguration$,
+      aaveReservesList$,
+      tempPositionFromLib$,
+    ),
+    (collateralToken, address) => `${collateralToken}-${address}`,
+  )
+
+  const strategyConfig$ = memoize(
+    curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
+  )
+
+  const wrappedGetAaveReserveData$ = memoize(
+    curry(createAavePrepareReserveData$)(
+      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
+    ),
+  )
+
+  const aaveDpmPositions$ = memoize(
+    curry(createAaveDpmPosition$)(
+      userDpmProxies$,
+      aaveProtocolData$,
+      strategyConfig$,
+      getAaveAssetsPrices$,
+      wrappedGetAaveReserveData$,
+      context$,
+    ),
+  )
+
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
-  const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
+  const positions$ = memoize(
+    curry(createPositions$)(makerPositions$, aavePositions$, aaveDpmPositions$),
+  )
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -1015,7 +1097,9 @@ export function setupAppContext() {
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$, aavePositions$))
+  const vaultsOverview$ = memoize(
+    curry(createVaultsOverview$)(positionsList$, aavePositions$, aaveDpmPositions$),
+  )
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
@@ -1182,10 +1266,16 @@ export function setupAppContext() {
     once$,
     allowance$,
     userDpmProxies$,
+    aaveDpmPositions$,
     hasActiveAavePosition$,
     aaveLiquidations$,
     aaveUserAccountData$,
     aaveAvailableLiquidityInUSDC$,
+    aaveProtocolData$,
+    contextForAddress$,
+    proxyForAccount$,
+    strategyConfig$,
+    wrappedGetAaveReserveData$,
   }
 }
 
