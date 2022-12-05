@@ -1,5 +1,6 @@
 import {
   discoverFiltersAssetItems,
+  discoverMostYieldSizeFilter,
   discoverMultipleFilter,
   discoverSizeFilter,
   discoverTimeFilter,
@@ -92,7 +93,7 @@ export const discoverPagesMeta: DiscoverPageMeta[] = [
         [discoverFiltersAssetItems.guniv3daiusdc1, discoverFiltersAssetItems.guniv3daiusdc2],
         DiscoverFilterType.HIDDEN,
       ),
-      size: discoverSizeFilter,
+      size: discoverMostYieldSizeFilter,
       time: discoverTimeFilter,
     },
     banner: {

@@ -39,6 +39,15 @@ export const discoverSizeFilter: DiscoverFiltersListItem = {
   ],
 }
 
+export const discoverMostYieldSizeFilter: DiscoverFiltersListItem = {
+  label: 'Sizes',
+  type: DiscoverFilterType.MULTI,
+  options: [
+    { value: '500000-1000000', label: '$500,000 - $1,000,000' },
+    { value: '>1000000', label: 'Over $1,000,000' },
+  ],
+}
+
 export const discoverMultipleFilter: DiscoverFiltersListItem = {
   label: 'Multiples',
   type: DiscoverFilterType.MULTI,
