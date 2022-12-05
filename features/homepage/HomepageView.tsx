@@ -248,9 +248,7 @@ export function HomepageView() {
                     <MultiplyProductCardsContainer
                       strategies={{
                         maker: productCardsConfig.landing.featuredIlkCards['multiply'],
-                        aave: productCardsConfig.landing.featuredAaveCards['multiply'].map(
-                          ({ name }) => name,
-                        ),
+                        aave: productCardsConfig.landing.featuredAaveCards['multiply'],
                       }}
                     />
                   }
@@ -299,9 +297,7 @@ export function HomepageView() {
                     <EarnProductCardsContainer
                       strategies={{
                         maker: productCardsConfig.landing.featuredIlkCards['earn'],
-                        aave: productCardsConfig.landing.featuredAaveCards['earn'].map(
-                          ({ name }) => name,
-                        ),
+                        aave: productCardsConfig.landing.featuredAaveCards['earn'],
                       }}
                     />
                   }

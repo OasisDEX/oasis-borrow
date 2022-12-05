@@ -227,11 +227,6 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.editing'):
       return (
         <AdjustRiskView
-          title={
-            state.context.strategyConfig.type === 'earn'
-              ? t('sidebar-titles.manage-earn-position')
-              : t('sidebar-titles.manage-multiply-position')
-          }
           state={state}
           onChainPosition={state.context.protocolData?.position}
           isLoading={loading}
