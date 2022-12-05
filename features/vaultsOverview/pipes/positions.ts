@@ -96,7 +96,6 @@ export type AavePosition = Position & {
 
 export type AaveDpmPosition = Position & {
   netValue: BigNumber
-  liquidity: BigNumber
   liquidationPrice: BigNumber
   fundingCost: BigNumber
   lockedCollateral: BigNumber
