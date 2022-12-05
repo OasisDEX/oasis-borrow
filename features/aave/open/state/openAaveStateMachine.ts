@@ -402,6 +402,7 @@ export function createOpenAaveStateMachine(
                 depositToken: context.tokens.deposit,
                 context: context.web3Context!,
                 slippage: context.userSettings!.slippage,
+                token: context.tokens.deposit,
               },
             }
           },

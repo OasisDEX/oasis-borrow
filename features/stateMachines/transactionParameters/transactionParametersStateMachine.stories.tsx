@@ -1,4 +1,4 @@
-import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { IStrategy } from '@oasisdex/oasis-actions'
 import { storiesOf } from '@storybook/react'
 import { useMachine } from '@xstate/react'
 import React from 'react'
@@ -24,7 +24,7 @@ async function libraryCall(parameters: MockParameters): Promise<LibraryCallRetur
   }
 
   return {
-    strategy: mock<IPositionTransition>(),
+    strategy: mock<IStrategy>(),
     operationName: 'mockOperationName',
   }
 }

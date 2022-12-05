@@ -1,5 +1,4 @@
 import { IPosition } from '@oasisdex/oasis-actions'
-import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import {
@@ -17,6 +16,7 @@ import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { amountFromWei } from '../../../../blockchain/utils'
 import { zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 
@@ -95,11 +95,11 @@ export function AaveMultiplyPositionData({
 
   // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
   const netBorrowCost = debtTokenReserveData.variableBorrowRate
-    .times(amountFromWei(debt.amount, debt.precision))
+    .times(amountFromWei(debt.amount, debt.denomination || 'ETH'))
     .times(debtTokenPrice)
     .minus(
       collateralTokenReserveData.liquidityRate
-        .times(amountFromWei(collateral.amount, collateral.precision))
+        .times(amountFromWei(collateral.amount, collateral.denomination || 'ETH'))
         .times(collateralTokenPrice),
     )
 
@@ -179,7 +179,7 @@ export function AaveMultiplyPositionData({
             }
           />
           <DetailsSectionFooterItem
-            title={t('system.total-exposure', { token: collateral.symbol })}
+            title={t('system.total-exposure', { token: collateral.denomination || 'ETH' })}
             value={`${formatAmount(totalExposure, 'ETH')} ETH`}
             change={
               newTotalExposure && {
