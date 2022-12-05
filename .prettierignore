@@ -1,6 +1,7 @@
 node_modules
 .vscode
 package.json
+i18next.d.ts
 **/dist/**
 .next/
 types
