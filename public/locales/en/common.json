@@ -68,6 +68,7 @@
   "close": "Close",
   "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
+  "closing-to": "Closing to {{token}}",
   "close-vault": "Close Vault",
   "coming-soon": "Coming soon",
   "completed": "Completed",
@@ -1987,6 +1988,19 @@
       }
     }
   },
+  "open-multiply": {
+    "sidebar": {
+      "title": "Open Multiply position",
+      "open-btn": "Open Multiply position"
+    }
+  },
+  "sidebar-titles": {
+    "open-earn-position": "Open Earn position",
+    "manage-earn-position": "Manage Earn position",
+    "open-multiply-position": "Open Multiply position",
+    "manage-multiply-position": "Manage Multiply position"
+  },
+  "manage-position": "Manage position",
   "brand-assets": {
     "heading": "Brand Assets",
     "intro": "Find here the Oasis.app Logo and graphics.",

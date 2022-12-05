@@ -169,7 +169,7 @@ export function createManageAaveStateMachine(
                 },
                 CLOSE_TO_COLLATERAL: {
                   cond: 'canChangePosition',
-                  target: 'reviewingClosing',
+                  target: 'reviewingClosingToCollateral',
                   actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
                 },
                 SET_RISK_RATIO: {
@@ -217,6 +217,19 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
+              entry: ['closePositionEvent'],
+              on: {
+                START_TRANSACTION: {
+                  cond: 'validTransactionParameters',
+                  target: 'txInProgress',
+                  actions: ['closePositionTransactionEvent'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+              },
+            },
+            reviewingClosingToCollateral: {
               entry: ['closePositionEvent'],
               on: {
                 START_TRANSACTION: {

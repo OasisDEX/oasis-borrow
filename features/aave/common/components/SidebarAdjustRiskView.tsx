@@ -248,7 +248,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         disabled: false,
         items: [
           {
-            label: 'Close to collateral',
+            label: t('close-to', { token: state.context.tokens.collateral }),
             shortLabel: 'Manage',
             icon: getToken(state.context.tokens.collateral).iconCircle,
             panel: 'collateral',

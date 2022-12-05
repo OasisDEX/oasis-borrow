@@ -101,6 +101,7 @@ function GetReviewingSidebarProps({
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
   const { operationName } = state.context
+  const isCLosingToCollateral = state.matches('frontend.reviewingClosingToCollateral')
 
   if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
     return {
@@ -117,7 +118,9 @@ function GetReviewingSidebarProps({
     }
   } else {
     return {
-      title: t('manage-earn.aave.vault-form.adjust-title'),
+      title: isCLosingToCollateral
+        ? t('closing-to', { token: state.context.tokens.collateral })
+        : t('manage-earn.aave.vault-form.adjust-title'),
       content: (
         <Grid gap={3}>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -262,6 +265,8 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.reviewingAdjusting'):
       return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('frontend.reviewingClosing'):
+      return <ManageAaveReviewingStateView state={state} send={send} />
+    case state.matches('frontend.reviewingClosingToCollateral'):
       return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('frontend.txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
