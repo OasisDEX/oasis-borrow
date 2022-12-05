@@ -180,7 +180,6 @@ function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
       positionId: position.id.toString(),
       multiple: `${position.multiple.toFixed(2)}x`,
       netValue: `$${formatFiatBalance(position.netValue)}`,
-      liquidity: `${formatCryptoBalance(position.liquidity)} USDC`,
       liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
       fundingCost: formatPercent(position.fundingCost, {
         precision: 2,
