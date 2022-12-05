@@ -359,7 +359,7 @@ export type UIChanges = {
   clear: (sub: string) => void
   configureSubject: <
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(
     subject: string,
     reducer: (prev: T, event: K) => T,
@@ -414,7 +414,7 @@ function createUIChangesSubject(): UIChanges {
 
   function configureSubject<
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(subject: string, reducer: (prev: T, event: K) => T, initialState?: T): void {
     reducers[subject] = reducer
     if (initialState) {
@@ -824,10 +824,13 @@ export function setupAppContext() {
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
 
-  const aaveAvailableLiquidityInUSDC$ = curry(prepareAaveAvailableLiquidityInUSDC$)(
-    getAaveReserveData$,
-    // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  const aaveAvailableLiquidityInUSDC$ = memoize(
+    curry(prepareAaveAvailableLiquidityInUSDC$)(
+      getAaveReserveData$,
+      // @ts-expect-error
+      getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    ),
+    ({ token }) => token,
   )
 
   const aavePositions$ = memoize(
