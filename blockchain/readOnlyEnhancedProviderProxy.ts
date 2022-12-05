@@ -22,13 +22,19 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
     return async function (chainIdPromise: Promise<number | string>) {
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
+        console.log(chainId)
+        console.log(jsonRpcBatchProvider)
         if (jsonRpcBatchProvider === undefined) {
           jsonRpcBatchProvider = new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
+          console.log(jsonRpcBatchProvider)
           provider = skipCache(chainId.toString())
             ? jsonRpcBatchProvider
             : new JsonRpcCachedProvider(networksById[chainId].infuraUrl, chainId)
+        } else {
+          provider = jsonRpcBatchProvider
         }
       }
+      console.log(provider)
       return provider
     }
   })()
