@@ -52,6 +52,7 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
   | { type: 'CLOSE_POSITION' }
+  | { type: 'CLOSE_TO_COLLATERAL' }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'START_TRANSACTION' }
@@ -147,6 +148,9 @@ export function createManageAaveStateMachine(
             CLOSE_POSITION: {
               target: '.loading',
             },
+            CLOSE_TO_COLLATERAL: {
+              target: '.loading',
+            },
             ADJUST_POSITION: {
               target: '.loading',
             },
@@ -159,6 +163,11 @@ export function createManageAaveStateMachine(
               entry: ['spawnAdjustParametersMachine'],
               on: {
                 CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+                CLOSE_TO_COLLATERAL: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
                   actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],

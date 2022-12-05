@@ -1,5 +1,6 @@
 import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { WithArrow } from 'components/WithArrow'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -16,7 +17,9 @@ import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liqui
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
-type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 'RESET_RISK_RATIO' }
+type RaisedEvents =
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | { type: 'RESET_RISK_RATIO' | 'CLOSE_TO_COLLATERAL' }
 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
@@ -241,6 +244,20 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       ),
       primaryButton: { ...primaryButton, disabled: viewLocked || primaryButton.disabled },
       textButton, // this is going back button, no need to block it
+      dropdown: {
+        disabled: false,
+        items: [
+          {
+            label: 'Close to collateral',
+            shortLabel: 'Manage',
+            icon: getToken(state.context.tokens.collateral).iconCircle,
+            panel: 'collateral',
+            action: () => {
+              send({ type: 'CLOSE_TO_COLLATERAL' })
+            },
+          },
+        ],
+      },
     }
 
     return <SidebarSection {...sidebarSectionProps} />
