@@ -81,7 +81,6 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 }
 
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
-  console.log('contextToTransactionParameters', context)
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.strategy!.calls as any,
