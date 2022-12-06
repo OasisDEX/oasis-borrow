@@ -7,6 +7,7 @@ const threadId = Math.random()
 
 const counters = {
   clientId: '',
+  threadId: '',
   requests: 0,
   startTime: 0,
   logTime: 0,
@@ -78,6 +79,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let mappedCalls: any[] = []
   counters.initialTotalPayloadSize += JSON.stringify(req.body).length
   counters.startTime = counters.startTime || Date.now()
+  counters.threadId = threadId.toString()
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const network = req.query.network.toString()
     const clientId = req.query.clientId.toString()
@@ -167,7 +169,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   counters.logTime = Date.now()
   counters.requests += 1
-  console.log('RPC STATS', JSON.stringify(counters), threadId)
+  console.log(JSON.stringify(counters))
 
   return res.status(200).send(finalResponse)
 }
