@@ -6,6 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 const threadId = Math.random()
 
 const counters = {
+  clientId: '',
   startTime: 0,
   logTime: 0,
   initialTotalPayloadSize: 0,
@@ -78,6 +79,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   counters.startTime = counters.startTime || Date.now()
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const network = req.query.network.toString()
+    const clientId = req.query.clientId.toString()
+
     const rpcNode = getRpcNode(network)
     const provider = new ethers.providers.JsonRpcProvider(rpcNode)
     const multicallAddress = getMulticall(network)
@@ -92,6 +95,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     }
 
     counters.initialTotalCalls += calls.length
+    counters.clientId = clientId
 
     const callsWithHash: CallWithHash[] = calls.map((call) => {
       return {
