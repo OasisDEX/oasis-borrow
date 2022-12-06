@@ -1,8 +1,9 @@
 import { IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
+import { ActionPills } from 'components/ActionPills'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
@@ -100,14 +101,36 @@ function GetReviewingSidebarProps({
   send,
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
-  const { operationName } = state.context
-  const isCLosingToCollateral = state.matches('frontend.reviewingClosingToCollateral')
+  const { collateral, debt } = state.context.tokens
+  const [closeToToken, setCloseToToken] = useState(collateral)
 
-  if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
+  console.log('closeToToken', closeToToken)
+
+  if (state.matches('frontend.reviewingClosing')) {
     return {
-      title: t('manage-earn.aave.vault-form.close-title'),
+      title: t('manage-earn.aave.vault-form.close-to-title', { token: closeToToken }),
       content: (
         <Grid gap={3}>
+          {/* TODO: move to component or modify PickCloseState */}
+          <ActionPills
+            active={closeToToken}
+            items={[
+              {
+                id: collateral,
+                label: t('close-to', { token: collateral }),
+                action: () => {
+                  setCloseToToken(collateral)
+                },
+              },
+              {
+                id: debt,
+                label: t('close-to', { token: debt }),
+                action: () => {
+                  setCloseToToken(debt)
+                },
+              },
+            ]}
+          />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('manage-earn.aave.vault-form.close-description')}
           </Text>
@@ -116,20 +139,17 @@ function GetReviewingSidebarProps({
         </Grid>
       ),
     }
-  } else {
-    return {
-      title: isCLosingToCollateral
-        ? t('closing-to', { token: state.context.tokens.collateral })
-        : t('manage-earn.aave.vault-form.adjust-title'),
-      content: (
-        <Grid gap={3}>
-          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('manage-earn.aave.vault-form.adjust-description')}
-          </Text>
-          <StrategyInformationContainer state={state} />
-        </Grid>
-      ),
-    }
+  }
+  return {
+    title: t('manage-earn.aave.vault-form.adjust-title'),
+    content: (
+      <Grid gap={3}>
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+          {t('manage-earn.aave.vault-form.adjust-description')}
+        </Text>
+        <StrategyInformationContainer state={state} />
+      </Grid>
+    ),
   }
 }
 
@@ -265,8 +285,6 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.reviewingAdjusting'):
       return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('frontend.reviewingClosing'):
-      return <ManageAaveReviewingStateView state={state} send={send} />
-    case state.matches('frontend.reviewingClosingToCollateral'):
       return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('frontend.txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />

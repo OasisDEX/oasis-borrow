@@ -33,6 +33,7 @@
   "adding-auto-sell": "Adding Auto-Sell",
   "cancelling-auto-sell": "Cancelling Auto-Sell",
   "adjust-your-position": "Adjust your position",
+  "adjust": "Adjust",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
   "after-closing": "{{token}} after closing",
@@ -885,6 +886,9 @@
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "pnl-value": "PnL: {{value}}",
+    "manage-collateral": "Manage collateral ({{token}})",
+    "manage-debt": "Manage debt ({{token}})",
+    "close-position": "Close position",
     "actions": {
       "common": {
         "close-vault": "Close vault",
@@ -1942,6 +1946,7 @@
         "deposit": "Deposit ETH",
         "title": "Your Earn position",
         "close-title": "Close position to ETH",
+        "close-to-title": "Close position to {{token}}",
         "close": "Close vault",
         "confirm-btn": "Confirm",
         "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",

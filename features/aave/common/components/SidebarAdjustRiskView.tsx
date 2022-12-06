@@ -19,7 +19,7 @@ import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents =
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | { type: 'RESET_RISK_RATIO' | 'CLOSE_TO_COLLATERAL' }
+  | { type: 'RESET_RISK_RATIO' | 'CLOSE_POSITION' | 'BACK_TO_EDITING' }
 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
@@ -248,12 +248,44 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         disabled: false,
         items: [
           {
-            label: t('close-to', { token: state.context.tokens.collateral }),
-            shortLabel: 'Manage',
+            label: t('adjust'),
+            icon: 'circle_slider',
+            panel: 'adjust',
+            action: () => {
+              send('BACK_TO_EDITING')
+            },
+          },
+          {
+            label: t('system.manage-collateral', {
+              token: state.context.tokens.collateral,
+            }),
             icon: getToken(state.context.tokens.collateral).iconCircle,
             panel: 'collateral',
+            itemDisabled: true,
+            action: () => {},
+          },
+          {
+            label: t('system.manage-debt', {
+              token: state.context.tokens.debt,
+            }),
+            icon: getToken(state.context.tokens.debt).iconCircle,
+            panel: 'debt',
+            itemDisabled: true,
+            action: () => {},
+          },
+          {
+            label: t('system.actions.multiply.switch-to-borrow'),
+            icon: 'circle_exchange',
+            panel: 'switch',
+            itemDisabled: true,
+            action: () => {},
+          },
+          {
+            label: t('system.close-position'),
+            icon: 'circle_close',
+            panel: 'close',
             action: () => {
-              send({ type: 'CLOSE_TO_COLLATERAL' })
+              send('CLOSE_POSITION')
             },
           },
         ],

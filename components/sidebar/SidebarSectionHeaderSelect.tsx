@@ -11,6 +11,7 @@ export interface SidebarSectionHeaderSelectItem {
   iconShrink?: number
   panel?: string
   action?: () => void
+  itemDisabled?: boolean
 }
 interface SidebarSectionHeaderSelectProps {
   disabled?: boolean
@@ -117,6 +118,9 @@ export function SidebarSectionHeaderSelect({
             key={i}
             as="li"
             onClick={() => {
+              if (item.itemDisabled) {
+                return
+              }
               setIsExpanded(false)
               onSelect(item.panel!)
               if (!forcePanel) setActiveItem(items[i])
@@ -132,10 +136,11 @@ export function SidebarSectionHeaderSelect({
               backgroundColor: 'transparent',
               color: item === activeItem ? 'primary100' : 'neutral80',
               transition: 'background-color 150ms',
+              opacity: item.itemDisabled ? 0.5 : 1,
               '&:hover': {
                 backgroundColor: 'neutral20',
               },
-              cursor: 'pointer',
+              cursor: item.itemDisabled ? 'not-allowed' : 'pointer',
               whiteSpace: 'pre',
             }}
           >

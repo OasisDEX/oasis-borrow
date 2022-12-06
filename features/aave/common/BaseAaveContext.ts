@@ -33,6 +33,7 @@ export type BaseAaveEvent =
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
   | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
+  | { type: 'CLOSE_POSITION' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
   | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
   | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
