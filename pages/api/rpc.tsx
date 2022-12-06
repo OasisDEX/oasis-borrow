@@ -158,7 +158,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     if (Array.isArray(req.body)) {
       const callsCount = req.body.filter((call) => call.method === 'eth_call').length
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
-      console.log('RPC no batching, falling back to individual calls', callsCount, notCallsCount)
+      console.log('RPC no batching of Array, falling back to individual calls')
+      console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }) )
     } else {
       console.log('RPC no batching, falling back to individual calls')
     }
