@@ -22,6 +22,7 @@ import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSe
 import { AppLink } from 'components/Links'
 import { redirectState$ } from 'features/router/redirectState'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
@@ -367,11 +368,6 @@ export function getConnectionDetails(walletKind: WalletKind): ConnectionDetail {
 
 export function getWalletKind(connectionKind: ConnectionKind): WalletKind {
   return connectionKind === 'injected' ? getInjectedWalletKind() : connectionKind
-}
-
-function getCustomNetworkParameter() {
-  const customNetworkName = new URLSearchParams(window.location.search).get('network')
-  return customNetworkName ? { network: customNetworkName } : undefined
 }
 
 export function ConnectWallet() {
