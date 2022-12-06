@@ -3,8 +3,10 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 export function apply(fn: Function, handler: NextApiHandler) {
   return async function (req: NextApiRequest, res: NextApiResponse) {
     await runMiddleware(req, res, fn)
-    console.log('middleware applied', Math.random())
+    const r = Math.random();
+    console.log('middleware applied', r)
     await handler(req, res)
+    console.log('handler executed', r)
   }
 }
 
