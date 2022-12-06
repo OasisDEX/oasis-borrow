@@ -146,11 +146,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     }
   } else {
-    if (Array.isArray(req.body)){
-      const callsCount = req.body.filter((call) => call.method === 'eth_call').length;
-      const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length;
-      console.log('RPC no batching, falling back to individual calls',callsCount,notCallsCount)
-    }else{
+    if (Array.isArray(req.body)) {
+      const callsCount = req.body.filter((call) => call.method === 'eth_call').length
+      const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
+      console.log('RPC no batching, falling back to individual calls', callsCount, notCallsCount)
+    } else {
       console.log('RPC no batching, falling back to individual calls')
     }
     counters.bypassedCallsCount += req.body.length
