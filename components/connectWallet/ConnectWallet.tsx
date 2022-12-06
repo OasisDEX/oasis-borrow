@@ -383,11 +383,16 @@ export function ConnectWallet() {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
         const url = redirectState$.value
+        const customNetworkName = new URLSearchParams(window.location.search).get('network')
+        const customNetworkParameter = customNetworkName
+          ? { network: customNetworkName }
+          : undefined
+
         if (url !== undefined) {
-          replace(url)
+          replace(`${url}`, customNetworkParameter)
           redirectState$.next(undefined)
         } else {
-          replace(`/owner/${web3Context.account}`)
+          replace(`/owner/${web3Context.account}`, customNetworkParameter)
         }
       }
     })
