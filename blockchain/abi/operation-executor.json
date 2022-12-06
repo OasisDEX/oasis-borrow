@@ -14,7 +14,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "string",
         "name": "name",
         "type": "string"
@@ -30,6 +30,11 @@
             "internalType": "bytes",
             "name": "callData",
             "type": "bytes"
+          },
+          {
+            "internalType": "bool",
+            "name": "skipped",
+            "type": "bool"
           }
         ],
         "indexed": false,
@@ -54,6 +59,11 @@
             "internalType": "bytes",
             "name": "callData",
             "type": "bytes"
+          },
+          {
+            "internalType": "bool",
+            "name": "skipped",
+            "type": "bool"
           }
         ],
         "internalType": "struct Call[]",
@@ -79,6 +89,11 @@
             "internalType": "bytes",
             "name": "callData",
             "type": "bytes"
+          },
+          {
+            "internalType": "bool",
+            "name": "skipped",
+            "type": "bool"
           }
         ],
         "internalType": "struct Call[]",

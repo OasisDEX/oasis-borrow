@@ -13,6 +13,7 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { recursiveLog } from '../../helpers/recursiveLog'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -128,15 +129,22 @@ export async function getOpenAaveParameters({
       { addresses: getAddressesFromContext(context), provider: provider },
     )
 
-    let depositedByUser: { collateralInWei?: BigNumber; debtInWei?: BigNumber }
+    let depositedByUser: {
+      collateralToken?: { amountInBaseUnit: BigNumber }
+      debtToken?: { amountInBaseUnit: BigNumber }
+    }
 
     if (depositToken === debtToken) {
       depositedByUser = {
-        debtInWei: amountToWei(amount, debtToken),
+        debtToken: {
+          amountInBaseUnit: amountToWei(amount, debtToken),
+        },
       }
     } else if (depositToken === collateralToken) {
       depositedByUser = {
-        collateralInWei: amountToWei(amount, collateralToken),
+        collateralToken: {
+          amountInBaseUnit: amountToWei(amount, collateralToken),
+        },
       }
     } else {
       throw new Error('Deposit token is not collateral or debt token')
@@ -148,11 +156,15 @@ export async function getOpenAaveParameters({
       debtToken: _debtToken,
       collateralToken: _collateralToken,
       depositedByUser,
+      positionArgs: {
+        positionId: 123,
+        positionType: 'Earn' as const,
+        protocol: 'AAVE' as const,
+      },
     }
 
     const stratDeps = {
       addresses: getAddressesFromContext(context),
-      currentPosition,
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
       proxy: proxyAddress,
@@ -161,9 +173,11 @@ export async function getOpenAaveParameters({
 
     const strategy = await strategies.aave.open(stratArgs, stratDeps)
 
+    recursiveLog(strategy, 'strategy')
+
     return {
       strategy,
-      operationName: 'CustomOperation',
+      operationName: strategy.transaction.operationName,
     }
   } catch (e) {
     console.error(e)
