@@ -3,6 +3,8 @@ import axios, { AxiosResponse } from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
+const threadId = Math.random()
+
 const counters = {
   startTime: 0,
   logTime: 0,
@@ -10,6 +12,8 @@ const counters = {
   dedupedTotalPayloadSize: 0,
   initialTotalCalls: 0,
   dedupedTotalCalls: 0,
+  bypassedPayloadSize: 0,
+  bypassedCallsCount: 0,
 }
 
 function getRpcNode(network: string) {
@@ -71,7 +75,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
   counters.initialTotalPayloadSize += JSON.stringify(req.body).length
-  counters.startTime = counters.startTime ?? Date.now()
+  counters.startTime = counters.startTime || Date.now()
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const network = req.query.network.toString()
     const rpcNode = getRpcNode(network)
@@ -139,16 +143,25 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       }))
       finalResponse = mappedCalls!.map((call) => (call = finalResponse[call]))
     } catch {
+      counters.bypassedPayloadSize += JSON.stringify(req.body).length
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     }
   } else {
-    console.log('RPC no batching, falling back to individual calls')
+    if (Array.isArray(req.body)) {
+      const callsCount = req.body.filter((call) => call.method === 'eth_call').length
+      const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
+      console.log('RPC no batching, falling back to individual calls', callsCount, notCallsCount)
+    } else {
+      console.log('RPC no batching, falling back to individual calls')
+    }
+    counters.bypassedCallsCount += req.body.length
+    counters.bypassedPayloadSize += JSON.stringify(req.body).length
     finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
 
   counters.logTime = Date.now()
-  console.log('RPC STATS', JSON.stringify(counters))
+  console.log('RPC STATS', JSON.stringify(counters), threadId)
 
   return res.status(200).send(finalResponse)
 }
