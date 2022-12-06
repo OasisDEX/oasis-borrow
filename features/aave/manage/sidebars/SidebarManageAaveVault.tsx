@@ -1,4 +1,4 @@
-import { IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -6,7 +6,7 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { amountFromWei } from '../../../../blockchain/utils'
+import { amountFromWei, amountToWei } from '../../../../blockchain/utils'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
@@ -34,17 +34,15 @@ function isLocked(state: ManageAaveStateMachineState) {
 }
 
 function getAmountGetFromPositionAfterClose(
-  strategy: IStrategy | undefined,
+  strategy: IPositionTransition | undefined,
   currentPosition: IPosition | undefined,
 ) {
   if (!strategy || !currentPosition) {
     return zero
   }
-  const currentDebt = currentPosition.debt.amount
+  const currentDebt = amountToWei(currentPosition.debt.amount, currentPosition.debt.symbol)
   const amountFromSwap = strategy.simulation.swap.toTokenAmount
-  const fromTokenFee = strategy.simulation.swap?.sourceTokenFee || zero
-  const toTokenFee = strategy.simulation.swap?.targetTokenFee || zero
-  const fee = fromTokenFee.plus(toTokenFee)
+  const fee = strategy.simulation.swap.tokenFee
 
   return amountFromSwap.minus(currentDebt).minus(fee)
 }

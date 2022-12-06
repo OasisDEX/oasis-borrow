@@ -28,12 +28,11 @@ export function getStrategyConfig$(
       } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
         return strategies['aave-multiply']
       } else {
-        return strategies['aave-earn']
-        // throw new Error(
-        //   `could not resolve strategy for address ${address}. aaveUserConfiguration ${JSON.stringify(
-        //     aaveUserConfiguration,
-        //   )}`,
-        // )
+        throw new Error(
+          `could not resolve strategy for address ${address}. aaveUserConfiguration ${JSON.stringify(
+            aaveUserConfiguration,
+          )}`,
+        )
       }
     }),
   )
