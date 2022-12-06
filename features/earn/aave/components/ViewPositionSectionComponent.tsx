@@ -9,13 +9,13 @@ import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
+  aaveReserveDataDebtToken: PreparedAaveReserveData
   aaveProtocolData?: AaveProtocolData
   strategyConfig: StrategyConfig
 }
 
 export function ViewPositionSectionComponent({
-  aaveReserveDataETH,
+  aaveReserveDataDebtToken,
   aaveProtocolData,
   strategyConfig,
 }: ViewPositionSectionComponentProps) {
@@ -29,7 +29,7 @@ export function ViewPositionSectionComponent({
 
   return (
     <PositionInfoComponent
-      aaveReserveDataETH={aaveReserveDataETH}
+      aaveReserveDataDebtToken={aaveReserveDataDebtToken}
       accountData={accountData}
       apy={simulations?.apy}
       tokens={strategyConfig.tokens}
