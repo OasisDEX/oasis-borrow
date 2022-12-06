@@ -3,6 +3,13 @@ import axios, { AxiosResponse } from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
+let counters = {
+  initialTotalPayloadSize: 0,
+  dedupedTotalPayloadSize: 0,
+  initialTotalCalls: 0,
+  dedupedTotalCalls: 0,
+}
+
 function getRpcNode(network: string) {
   switch (network) {
     case 'mainnet':
@@ -61,6 +68,7 @@ interface CallWithHash {
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
+  counters.initialTotalPayloadSize += JSON.stringify(req.body).length;
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const network = req.query.network.toString()
     const rpcNode = getRpcNode(network)
@@ -76,6 +84,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       return
     }
 
+    counters.initialTotalCalls += calls.length;
+
     const callsWithHash: CallWithHash[] = calls.map((call) => {
       return {
         call,
@@ -87,6 +97,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       (call, index) => callsWithHash.map((call) => call.hash).indexOf(call.hash) === index,
     )
 
+
     mappedCalls = callsWithHash.map((item) =>
       dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
@@ -94,6 +105,9 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     const multicallTx = await multicall.populateTransaction.aggregate(
       dedupedCalls.map((call) => call.call),
     )
+
+    counters.dedupedTotalCalls += dedupedCalls.length;
+
     try {
       const callBody = `{"jsonrpc":"2.0","id":${req.body[0].id},"method":"eth_call","params":[{"data":"${multicallTx.data}","to":"${multicall.address}"},"latest"]}`
       const config = {
@@ -104,6 +118,9 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           'Content-Length': callBody.length.toString(),
         },
       }
+      
+      counters.dedupedTotalPayloadSize += callBody.length;
+
       const multicallResponse = await axios.post<string, AxiosResponse<{ result: string }>>(
         provider.connection.url,
         callBody,
@@ -125,6 +142,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   } else {
     finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
+
+  console.log("RPC STATS", JSON.stringify(counters));
 
   return res.status(200).send(finalResponse)
 }
