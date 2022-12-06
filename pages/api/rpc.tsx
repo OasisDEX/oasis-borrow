@@ -7,6 +7,7 @@ const threadId = Math.random()
 
 const counters = {
   clientId: '',
+  requests: 0,
   startTime: 0,
   logTime: 0,
   initialTotalPayloadSize: 0,
@@ -165,6 +166,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   }
 
   counters.logTime = Date.now()
+  counters.requests += 1
   console.log('RPC STATS', JSON.stringify(counters), threadId)
 
   return res.status(200).send(finalResponse)
