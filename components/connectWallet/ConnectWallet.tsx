@@ -369,6 +369,11 @@ export function getWalletKind(connectionKind: ConnectionKind): WalletKind {
   return connectionKind === 'injected' ? getInjectedWalletKind() : connectionKind
 }
 
+function getCustomNetworkParameter() {
+  const customNetworkName = new URLSearchParams(window.location.search).get('network')
+  return customNetworkName ? { network: customNetworkName } : undefined
+}
+
 export function ConnectWallet() {
   const { web3Context$, redirectState$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
@@ -383,16 +388,12 @@ export function ConnectWallet() {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
         const url = redirectState$.value
-        const customNetworkName = new URLSearchParams(window.location.search).get('network')
-        const customNetworkParameter = customNetworkName
-          ? { network: customNetworkName }
-          : undefined
 
         if (url !== undefined) {
-          replace(`${url}`, customNetworkParameter)
+          replace(`${url}`, getCustomNetworkParameter())
           redirectState$.next(undefined)
         } else {
-          replace(`/owner/${web3Context.account}`, customNetworkParameter)
+          replace(`/owner/${web3Context.account}`, getCustomNetworkParameter())
         }
       }
     })
@@ -618,7 +619,7 @@ export function WithConnection({ children }: WithChildren) {
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
       redirectState$.next(window.location.pathname)
-      replace(`/connect`)
+      replace(`/connect`, getCustomNetworkParameter())
     }
 
     if (web3Context && web3Context.status === 'connectedReadonly') {
@@ -640,17 +641,19 @@ export function WithWalletConnection({ children }: WithChildren) {
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
       redirectState$.next(window.location.pathname)
-      replace(`/connect`)
+      replace(`/connect`, getCustomNetworkParameter())
     }
 
     if (web3Context?.status === 'connectedReadonly') {
       redirectState$.next(window.location.pathname)
-      replace(`/connect`)
+      replace(`/connect`, getCustomNetworkParameter())
     }
 
     if (web3Context?.status === 'notConnected') {
       redirectState$.next(window.location.pathname)
-      autoConnect(web3Context$, getNetworkId(), () => replace(`/connect`))
+      autoConnect(web3Context$, getNetworkId(), () =>
+        replace(`/connect`, getCustomNetworkParameter()),
+      )
     }
   }, [web3Context?.status])
 
