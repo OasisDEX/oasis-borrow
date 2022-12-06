@@ -10,6 +10,7 @@ const counters = {
   dedupedTotalPayloadSize: 0,
   initialTotalCalls: 0,
   dedupedTotalCalls: 0,
+  bypassedPayloadSize: 0,
 }
 
 function getRpcNode(network: string) {
@@ -71,7 +72,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
   counters.initialTotalPayloadSize += JSON.stringify(req.body).length
-  counters.startTime = counters.startTime ?? Date.now()
+  counters.startTime = counters.startTime || Date.now()
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const network = req.query.network.toString()
     const rpcNode = getRpcNode(network)
@@ -139,10 +140,12 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       }))
       finalResponse = mappedCalls!.map((call) => (call = finalResponse[call]))
     } catch {
+      counters.bypassedPayloadSize += JSON.stringify(req.body).length
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     }
   } else {
+    counters.bypassedPayloadSize += JSON.stringify(req.body).length
     console.log('RPC no batching, falling back to individual calls')
     finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
