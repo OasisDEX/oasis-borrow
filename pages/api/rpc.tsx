@@ -3,7 +3,9 @@ import axios, { AxiosResponse } from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-let counters = {
+const counters = {
+  startTime: 0,
+  logTime: 0,
   initialTotalPayloadSize: 0,
   dedupedTotalPayloadSize: 0,
   initialTotalCalls: 0,
@@ -69,6 +71,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
   counters.initialTotalPayloadSize += JSON.stringify(req.body).length
+  counters.startTime = counters.startTime ?? Date.now()
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const network = req.query.network.toString()
     const rpcNode = getRpcNode(network)
@@ -136,12 +139,15 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       }))
       finalResponse = mappedCalls!.map((call) => (call = finalResponse[call]))
     } catch {
+      console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     }
   } else {
+    console.log('RPC no batching, falling back to individual calls')
     finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
 
+  counters.logTime = Date.now()
   console.log('RPC STATS', JSON.stringify(counters))
 
   return res.status(200).send(finalResponse)
