@@ -3,6 +3,8 @@ import axios, { AxiosResponse } from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
+const threadId = Math.random();
+
 const counters = {
   startTime: 0,
   logTime: 0,
@@ -159,7 +161,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   }
 
   counters.logTime = Date.now()
-  console.log('RPC STATS', JSON.stringify(counters))
+  console.log('RPC STATS', JSON.stringify(counters), threadId)
 
   return res.status(200).send(finalResponse)
 }
