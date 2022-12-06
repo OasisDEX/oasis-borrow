@@ -11,6 +11,7 @@ const counters = {
   initialTotalCalls: 0,
   dedupedTotalCalls: 0,
   bypassedPayloadSize: 0,
+  bypassedCallsCount: 0,
 }
 
 function getRpcNode(network: string) {
@@ -145,6 +146,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     }
   } else {
+    counters.bypassedCallsCount += req.body.length
     counters.bypassedPayloadSize += JSON.stringify(req.body).length
     console.log('RPC no batching, falling back to individual calls')
     finalResponse = await makeCall(req.query.network.toString(), req.body)
