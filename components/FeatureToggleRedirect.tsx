@@ -1,6 +1,6 @@
 import { Feature, useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRouter } from 'next/router'
-import { PropsWithChildren } from 'react'
+import React, { PropsWithChildren } from 'react'
 
 export type FeatureToggleRedirectProps = {
   feature: Feature
