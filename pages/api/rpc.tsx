@@ -162,7 +162,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     } else {
       console.log('RPC no batching, falling back to individual calls')
     }
-    counters.bypassedCallsCount += req.body.length
+    counters.bypassedCallsCount += 1;
     counters.bypassedPayloadSize += JSON.stringify(req.body).length
     finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
