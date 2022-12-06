@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-const threadId = Math.random();
+const threadId = Math.random()
 
 const counters = {
   startTime: 0,
