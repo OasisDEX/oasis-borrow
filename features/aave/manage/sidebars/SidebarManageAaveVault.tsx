@@ -1,8 +1,12 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
+import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { useTranslation } from 'next-i18next'
+import { curry } from 'ramda'
 import React, { useState } from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
@@ -34,6 +38,8 @@ function isLocked(state: ManageAaveStateMachineState) {
   )
 }
 
+type WithDropdownConfig<T> = T & { dropdownConfig?: SidebarSectionHeaderDropdown }
+
 function getAmountGetFromPositionAfterClose(
   strategy: IStrategy | undefined,
   currentPosition: IPosition | undefined,
@@ -50,7 +56,7 @@ function getAmountGetFromPositionAfterClose(
   return amountFromSwap.minus(currentDebt).minus(fee)
 }
 
-function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
+function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
   const displayToken = state.context.strategy?.simulation.swap.targetToken || {
     symbol: 'ETH',
@@ -65,9 +71,12 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
 
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
-      <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
-        {t('manage-earn.aave.vault-form.eth-after-closing')}
-      </Text>
+      <Flex>
+        <Icon name={getToken(token).iconCircle} size={22} sx={{ mr: 1 }} />
+        <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
+          {t('manage-earn.aave.vault-form.token-amount-after-closing', { token })}
+        </Text>
+      </Flex>
       <Text variant="boldParagraph3">
         {balance} {displayToken.symbol}
       </Text>
@@ -104,37 +113,23 @@ function GetReviewingSidebarProps({
   const { collateral, debt } = state.context.tokens
   const [closeToToken, setCloseToToken] = useState(collateral)
 
-  console.log('closeToToken', closeToToken)
-
   if (state.matches('frontend.reviewingClosing')) {
     return {
       title: t('manage-earn.aave.vault-form.close-to-title', { token: closeToToken }),
       content: (
         <Grid gap={3}>
-          {/* TODO: move to component or modify PickCloseState */}
           <ActionPills
             active={closeToToken}
-            items={[
-              {
-                id: collateral,
-                label: t('close-to', { token: collateral }),
-                action: () => {
-                  setCloseToToken(collateral)
-                },
-              },
-              {
-                id: debt,
-                label: t('close-to', { token: debt }),
-                action: () => {
-                  setCloseToToken(debt)
-                },
-              },
-            ]}
+            items={[collateral, debt].map((token) => ({
+              id: token,
+              label: t('close-to', { token }),
+              action: () => curry(setCloseToToken)(token),
+            }))}
           />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('manage-earn.aave.vault-form.close-description')}
           </Text>
-          <EthBalanceAfterClose state={state} send={send} />
+          <BalanceAfterClose state={state} send={send} token={closeToToken} />
           <StrategyInformationContainer state={state} />
         </Grid>
       ),
@@ -153,7 +148,11 @@ function GetReviewingSidebarProps({
   }
 }
 
-function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
+function ManageAaveReviewingStateView({
+  state,
+  send,
+  dropdownConfig,
+}: WithDropdownConfig<ManageAaveStateProps>) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -168,6 +167,7 @@ function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
       label: t('manage-earn.aave.vault-form.back-to-editing'),
       action: () => send('BACK_TO_EDITING'),
     },
+    dropdown: dropdownConfig,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
@@ -246,6 +246,33 @@ export function SidebarManageAaveVault() {
     return isLoading(state)
   }
 
+  const dropdownConfig: SidebarSectionHeaderDropdown = {
+    disabled: false,
+    forcePanel: (state.value as Record<string, string>).frontend,
+    items: [
+      {
+        label: t('adjust'),
+        icon: 'circle_slider',
+        panel: 'editing',
+        action: () => {
+          if (!state.matches('frontend.editing')) {
+            send('BACK_TO_EDITING')
+          }
+        },
+      },
+      {
+        label: t('system.close-position'),
+        icon: 'circle_close',
+        panel: 'reviewingClosing',
+        action: () => {
+          if (!state.matches('frontend.reviewingClosing')) {
+            send('CLOSE_POSITION')
+          }
+        },
+      },
+    ],
+  }
+
   const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
 
   switch (true) {
@@ -273,6 +300,7 @@ export function SidebarManageAaveVault() {
             },
           }}
           viewLocked={isLocked(state)}
+          dropdownConfig={dropdownConfig}
         />
       )
     case state.matches('frontend.allowanceSetting'):
@@ -283,9 +311,10 @@ export function SidebarManageAaveVault() {
         />
       )
     case state.matches('frontend.reviewingAdjusting'):
-      return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('frontend.reviewingClosing'):
-      return <ManageAaveReviewingStateView state={state} send={send} />
+      return (
+        <ManageAaveReviewingStateView state={state} send={send} dropdownConfig={dropdownConfig} />
+      )
     case state.matches('frontend.txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('frontend.txFailure'):

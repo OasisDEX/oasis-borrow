@@ -1,6 +1,6 @@
 import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
+import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { WithArrow } from 'components/WithArrow'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -27,6 +27,7 @@ export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   viewLocked?: boolean // locks whole view
   showWarring?: boolean // displays warning
   onChainPosition?: IPosition
+  dropdownConfig: SidebarSectionHeaderDropdown
 }
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
@@ -77,6 +78,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     viewLocked = false,
     showWarring = false,
     onChainPosition,
+    dropdownConfig,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
@@ -244,52 +246,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       ),
       primaryButton: { ...primaryButton, disabled: viewLocked || primaryButton.disabled },
       textButton, // this is going back button, no need to block it
-      dropdown: {
-        disabled: false,
-        items: [
-          {
-            label: t('adjust'),
-            icon: 'circle_slider',
-            panel: 'adjust',
-            action: () => {
-              send('BACK_TO_EDITING')
-            },
-          },
-          {
-            label: t('system.manage-collateral', {
-              token: state.context.tokens.collateral,
-            }),
-            icon: getToken(state.context.tokens.collateral).iconCircle,
-            panel: 'collateral',
-            itemDisabled: true,
-            action: () => {},
-          },
-          {
-            label: t('system.manage-debt', {
-              token: state.context.tokens.debt,
-            }),
-            icon: getToken(state.context.tokens.debt).iconCircle,
-            panel: 'debt',
-            itemDisabled: true,
-            action: () => {},
-          },
-          {
-            label: t('system.actions.multiply.switch-to-borrow'),
-            icon: 'circle_exchange',
-            panel: 'switch',
-            itemDisabled: true,
-            action: () => {},
-          },
-          {
-            label: t('system.close-position'),
-            icon: 'circle_close',
-            panel: 'close',
-            action: () => {
-              send('CLOSE_POSITION')
-            },
-          },
-        ],
-      },
+      dropdown: dropdownConfig,
     }
 
     return <SidebarSection {...sidebarSectionProps} />
