@@ -4,7 +4,7 @@ interface UpdateAnyAction<S> {
   type: 'update-any'
   state: Partial<S>
 }
-type StateReducerActions<R> = UpdateAnyAction<ExampleState> | R
+export type StateReducerActions<S, A> = UpdateAnyAction<S> | A
 
 interface StateReducerProps<S, R> {
   defaults: S
@@ -48,7 +48,10 @@ interface ExamapleActionRename {
   type: 'rename'
   renameTo: string
 }
-type ExampleAction = StateReducerActions<ExamapleActionIncrement | ExamapleActionRename>
+type ExampleAction = StateReducerActions<
+  ExampleState,
+  ExamapleActionIncrement | ExamapleActionRename
+>
 
 function exampleReducer(state: ExampleState, action: ExampleAction) {
   switch (action.type) {
