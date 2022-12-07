@@ -254,7 +254,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       const callsCount = req.body.filter((call) => call.method === 'eth_call').length
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
       finalResponse = await makeCall(req.query.network.toString(), req.body)
-      counters.initialTotalCalls += (callsCount + notCallsCount)
+      counters.initialTotalCalls += callsCount + notCallsCount
       if (debug) console.log('RPC no batching of Array, falling back to individual calls')
       console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
     } else {
@@ -271,7 +271,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           cache.lastRecordedBlockNumber = parseInt(result[0].result, 16)
           cache.cachedResponses = {}
           cache.locked = false
-          counters.initialTotalCalls++;
+          counters.initialTotalCalls++
           return res.status(200).send([
             {
               id: req.body.id,
