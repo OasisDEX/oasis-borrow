@@ -8,7 +8,6 @@ const threadId = Math.random()
 const debug = true
 
 type Counters = {
-  lastLog: number
   clientId: string
   threadId: string
   requests: number
@@ -26,7 +25,6 @@ type Counters = {
 }
 
 const counters: Counters = {
-  lastLog: 0,
   clientId: '',
   threadId: '',
   requests: 0,
@@ -251,9 +249,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       const callsCount = req.body.filter((call) => call.method === 'eth_call').length
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
       finalResponse = await makeCall(req.query.network.toString(), req.body)
+      counters.initialTotalCalls += (callsCount + notCallsCount)
       if (debug) console.log('RPC no batching of Array, falling back to individual calls')
       console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
     } else {
+      counters.initialTotalCalls += 1
       if (debug) console.log('RPC no batching, falling back to individual calls')
       if (isBlockNumberRequest(req.body)) {
         if (
@@ -266,6 +266,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           cache.lastRecordedBlockNumber = parseInt(result[0].result, 16)
           cache.cachedResponses = {}
           cache.locked = false
+          counters.initialTotalCalls
           return res.status(200).send([
             {
               id: req.body.id,
@@ -295,7 +296,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             ])
           } else {
             if (debug) console.log('Fetching contract code', req.body.params[0])
-            counters.requests += 1
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
             return res.status(200).send([
@@ -309,17 +309,15 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(req.body).length
-          counters.requests += 1
           finalResponse = await makeCall(req.query.network.toString(), req.body)
         }
       }
     }
   }
 
-  counters.logTime = Date.now()
-  if (counters.lastLog < Date.now() - 1000 * 60) {
+  if (counters.logTime < Date.now() - 1000 * 60) {
     //every minute
-    counters.lastLog = Date.now()
+    counters.logTime = Date.now()
     console.log(JSON.stringify(counters))
   }
 
