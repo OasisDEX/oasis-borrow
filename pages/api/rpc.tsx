@@ -296,6 +296,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           } else {
             if(debug)
               console.log('Fetching contract code', req.body.params[0])
+            counters.requests += 1
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
             return res.status(200).send([
@@ -309,6 +310,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(req.body).length
+          counters.requests += 1
           finalResponse = await makeCall(req.query.network.toString(), req.body)
         }
       }
