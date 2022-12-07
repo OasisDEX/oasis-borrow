@@ -1,31 +1,33 @@
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
-import React from 'react'
-import { Box, Text, ThemeProvider } from 'theme-ui'
+import { useExampleState } from 'helpers/useStateReducer'
+import React, { useEffect } from 'react'
+import { Box, Button } from 'theme-ui'
 
 function AjnaPage() {
+  const { state, dispatch, updateState } = useExampleState()
+
+  useEffect(() => {
+    console.log('state: ')
+    console.log(state)
+  }, [state])
+
   return (
     <WithFeatureToggleRedirect feature="Ajna">
       <Box sx={{ width: '100%' }}>
-        <Text sx={{ backgroundColor: 'interactive100' }}>
-          Text component with background set to interactive100
-        </Text>
-        <Text sx={{ backgroundColor: 'interactive50' }}>
-          Text component with background set to interactive50
-        </Text>
-        <ThemeProvider
-          theme={{
-            colors: {
-              interactive100: '#b5179e',
-            },
+        <Button
+          onClick={() => {
+            dispatch({ type: 'increment' })
           }}
         >
-          <Text sx={{ backgroundColor: 'interactive100' }}>
-            Text component with background set to interactive100, with overwriting ThemeProvider
-          </Text>
-          <Text sx={{ backgroundColor: 'interactive50' }}>
-            Text component with background set to interactive100, with overwriting ThemeProvider
-          </Text>
-        </ThemeProvider>
+          +1 in state
+        </Button>
+        <Button
+          onClick={() => {
+            updateState('foo', (Math.random() + 1).toString(36).substring(7))
+          }}
+        >
+          Update string to something random
+        </Button>
       </Box>
     </WithFeatureToggleRedirect>
   )
