@@ -258,7 +258,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       if(debug)
         console.log('RPC no batching, falling back to individual calls')
       if (isBlockNumberRequest(req.body)) {
-        if (Date.now() - cache.lastBlockNumberFetchTimestamp > blockRecheckDelay) {
+        if (Date.now() - cache.lastBlockNumberFetchTimestamp > blockRecheckDelay && cache.locked === false) {
           cache.locked = true
           await sleepUntill(() => cache.useCount === 0, 100)
           const result = await makeCall(req.query.network.toString(), [req.body])
