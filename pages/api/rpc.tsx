@@ -168,21 +168,22 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     )
 
     await sleepUntill(() => !cache.locked, 100)
-    cache.useCount++
-    const missingCalls = dedupedCalls.filter((x) => !cache.cachedResponses[x.hash])
-
-    const missingCallsIndexes = dedupedCalls
-      .map((call) => call.hash)
-      .map((x) => missingCalls.map((x) => x.hash).indexOf(x))
-
-    const multicallTx = await multicall.populateTransaction.aggregate(
-      missingCalls.map((call) => call.call),
-    )
-
-    counters.dedupedTotalCalls += dedupedCalls.length
-    counters.missingTotalCalls += missingCalls.length
 
     try {
+      cache.useCount++
+      const missingCalls = dedupedCalls.filter((x) => !cache.cachedResponses[x.hash])
+
+      const missingCallsIndexes = dedupedCalls
+        .map((call) => call.hash)
+        .map((x) => missingCalls.map((x) => x.hash).indexOf(x))
+
+      const multicallTx = await multicall.populateTransaction.aggregate(
+        missingCalls.map((call) => call.call),
+      )
+
+      counters.dedupedTotalCalls += dedupedCalls.length
+      counters.missingTotalCalls += missingCalls.length
+
       const callBody = `{"jsonrpc":"2.0","id":${req.body[0].id},"method":"eth_call","params":[{"data":"${multicallTx.data}","to":"${multicall.address}"},"latest"]}`
       const config = {
         headers: {
@@ -221,7 +222,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         }
       })
 
-      cache.useCount--
       finalResponse = req.body.map((entry, index) => ({
         id: entry.id,
         jsonrpc: entry.jsonrpc,
@@ -231,6 +231,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
+    } finally {
+      cache.useCount--
     }
   } else {
     if (Array.isArray(req.body)) {
@@ -299,10 +301,10 @@ async function sleepUntill(check: () => boolean, maxCount: number) {
       try {
         counters.sleepCount++
         const interval = setInterval(() => {
-          maxCount--; 
+          maxCount--
           if (maxCount === 0) {
             clearInterval(interval)
-            rej('Max count reached');
+            rej('Max count reached')
           }
           if (check()) {
             clearInterval(interval)
