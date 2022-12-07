@@ -335,6 +335,7 @@ async function sleepUntill(check: () => boolean, maxCount: number) {
     if (!check()) {
       try {
         counters.sleepCount++
+        console.log(JSON.stringify({ sleep: true, ...counters }))
         const interval = setInterval(() => {
           maxCount--
           if (maxCount === 0) {
