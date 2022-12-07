@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useAaveContext } from '../../../aave/AaveContextProvider'
 import { AaveStEthYieldsResponse } from '../../../aave/common'
-import { AaveHeaderProps, StrategyConfig } from '../../../aave/common/StrategyConfigTypes'
+import { AaveHeaderProps, IStrategyConfig } from '../../../aave/common/StrategyConfigTypes'
 import { PreparedAaveTotalValueLocked } from '../../../aave/helpers/aavePrepareAaveTotalValueLocked'
 
 const tokenPairList = {
@@ -122,7 +122,7 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   return function AavePositionHeaderWithDetails({
     strategyConfig,
   }: {
-    strategyConfig: StrategyConfig
+    strategyConfig: IStrategyConfig
   }) {
     const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext()
     const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
