@@ -1,5 +1,6 @@
+import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
 import { StrategyConfig } from '../common/StrategyConfigTypes'
@@ -36,5 +37,6 @@ export function getStrategyConfig$(
         // )
       }
     }),
+    distinctUntilChanged(isEqual),
   )
 }
