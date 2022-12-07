@@ -229,12 +229,21 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         jsonrpc: entry.jsonrpc,
         result: callsWithResponses[index],
       }))
-    } catch {
+      console.log('ALL OKKK K finally')
+    } catch (error) {
+      let message
+      if (error instanceof Error) message = error.message
+      else message = String(error)
+      // we'll proceed, but let's report it
+      console.log(message)
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
+      console.log('almost finally')
     } finally {
       cache.useCount--
+      console.log('finally')
+      console.log(finalResponse.length)
     }
   } else {
     if (Array.isArray(req.body)) {
@@ -267,14 +276,14 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       } else {
         if (isCodeRequest(req.body)) {
           if (cache.persistentCache[req.body.params[0]]) {
-            console.log("contract code from cache", req.body.params[0])
+            console.log('contract code from cache', req.body.params[0])
             return res.status(200).send({
               id: req.body.id,
               jsonrpc: req.body.jsonrpc,
               result: cache.persistentCache[req.body.params[0]],
             })
           } else {
-            console.log("Fetching contract code", req.body.params[0])
+            console.log('Fetching contract code', req.body.params[0])
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
             return res.status(200).send({
@@ -283,15 +292,16 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               result: result[0].result,
             })
           }
-        }else{
+        } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(req.body).length
+          console.log('dupa', req.body)
           finalResponse = await makeCall(req.query.network.toString(), [req.body])
         }
       }
     }
   }
-
+  console.log('kupa', finalResponse.length)
   counters.logTime = Date.now()
   console.log(JSON.stringify(counters))
 
