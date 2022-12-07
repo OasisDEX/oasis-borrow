@@ -31,21 +31,18 @@ function WithStrategy({ address }: { address: string }) {
   return (
     <WithErrorHandler error={[strategyConfigError]}>
       <WithLoadingIndicator value={[strategyConfig]} customLoader={<VaultContainerSpinner />}>
-        {([_strategyConfig]) => {
-          console.log('strategyConfig', _strategyConfig)
-          return (
-            <ManageAaveStateMachineContextProvider
-              machine={aaveManageStateMachine}
-              address={address}
-              strategy={_strategyConfig}
-            >
-              <Grid gap={0} sx={{ width: '100%' }}>
-                <BackgroundLight />
-                <AaveManagePositionView address={address} strategyConfig={_strategyConfig} />
-              </Grid>
-            </ManageAaveStateMachineContextProvider>
-          )
-        }}
+        {([_strategyConfig]) => (
+          <ManageAaveStateMachineContextProvider
+            machine={aaveManageStateMachine}
+            address={address}
+            strategy={_strategyConfig}
+          >
+            <Grid gap={0} sx={{ width: '100%' }}>
+              <BackgroundLight />
+              <AaveManagePositionView address={address} strategyConfig={_strategyConfig} />
+            </Grid>
+          </ManageAaveStateMachineContextProvider>
+        )}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
