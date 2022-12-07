@@ -8,6 +8,7 @@ const threadId = Math.random()
 const debug = true
 
 type Counters = {
+  lastLog: number
   clientId: string
   threadId: string
   requests: number
@@ -25,6 +26,7 @@ type Counters = {
 }
 
 const counters: Counters = {
+  lastLog: 0,
   clientId: '',
   threadId: '',
   requests: 0,
@@ -269,7 +271,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           cache.lastRecordedBlockNumber = parseInt(result[0].result, 16)
           cache.cachedResponses = {}
           cache.locked = false
-          counters.initialTotalCalls
+          counters.initialTotalCalls++;
           return res.status(200).send([
             {
               id: req.body.id,

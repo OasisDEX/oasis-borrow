@@ -50,15 +50,15 @@ export function getAaveProtocolData$(
   ) => Observable<IPosition>,
   collateralToken: string,
   debtToken: string,
-  address: string,
+  proxyAddress: string,
 ): Observable<AaveProtocolData> {
   return combineLatest(
-    aaveUserReserveData$({ token: collateralToken, address }),
-    aaveUserAccountData$({ address }),
+    aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
+    aaveUserAccountData$({ address: proxyAddress }),
     aaveOracleAssetPriceData$({ token: collateralToken }),
-    aaveUserConfiguration$({ address }),
+    aaveUserConfiguration$({ address: proxyAddress }),
     aaveReservesList$(),
-    tempPositionFromLib$(collateralToken, debtToken, address),
+    tempPositionFromLib$(collateralToken, debtToken, proxyAddress),
   ).pipe(
     map(
       ([

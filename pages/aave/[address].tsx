@@ -8,6 +8,7 @@ import { Grid } from 'theme-ui'
 import { WithConnection } from '../../components/connectWallet/ConnectWallet'
 import { AppLayout } from '../../components/Layouts'
 import { AaveContextProvider, useAaveContext } from '../../features/aave/AaveContextProvider'
+import { ManageAaveStateMachineContextProvider } from '../../features/aave/manage/containers/AaveManageStateMachineContext'
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
@@ -24,20 +25,24 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function WithStrategy({ address }: { address: string }) {
-  const { strategyConfig$ } = useAaveContext()
+  const { strategyConfig$, aaveManageStateMachine } = useAaveContext()
   const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(address))
 
   return (
     <WithErrorHandler error={[strategyConfigError]}>
       <WithLoadingIndicator value={[strategyConfig]} customLoader={<VaultContainerSpinner />}>
-        {([_strategyConfig]) => {
-          return (
+        {([_strategyConfig]) => (
+          <ManageAaveStateMachineContextProvider
+            machine={aaveManageStateMachine}
+            address={address}
+            strategy={_strategyConfig}
+          >
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
               <AaveManagePositionView address={address} strategyConfig={_strategyConfig} />
             </Grid>
-          )
-        }}
+          </ManageAaveStateMachineContextProvider>
+        )}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
