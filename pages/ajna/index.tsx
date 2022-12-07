@@ -1,33 +1,29 @@
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { useExampleState } from 'helpers/useStateReducer'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Box, Button } from 'theme-ui'
 
 function AjnaPage() {
-  const { state, dispatch, updateState } = useExampleState()
-
-  useEffect(() => {
-    console.log('state: ')
-    console.log(state)
-  }, [state])
+  const { exampleState, dispatchExampleState, updateExampleState } = useExampleState()
 
   return (
     <WithFeatureToggleRedirect feature="Ajna">
       <Box sx={{ width: '100%' }}>
         <Button
           onClick={() => {
-            dispatch({ type: 'increment' })
+            dispatchExampleState({ type: 'increment' })
           }}
         >
           +1 in state
         </Button>
         <Button
           onClick={() => {
-            updateState('foo', (Math.random() + 1).toString(36).substring(7))
+            updateExampleState('foo', (Math.random() + 1).toString(36).substring(7))
           }}
         >
           Update string to something random
         </Button>
+        <pre>{JSON.stringify(exampleState)}</pre>
       </Box>
     </WithFeatureToggleRedirect>
   )

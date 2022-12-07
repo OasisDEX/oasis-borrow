@@ -4,7 +4,9 @@ interface UpdateAnyAction<S> {
   type: 'update-any'
   state: Partial<S>
 }
-interface useStateReducerProps<S, R> {
+type StateReducerActions<R> = UpdateAnyAction<ExampleState> | R
+
+interface StateReducerProps<S, R> {
   defaults: S
   reducer: Reducer<S, R>
 }
@@ -12,8 +14,12 @@ interface useStateReducerProps<S, R> {
 export function useStateReducer<S, R>({
   defaults,
   reducer,
-}: useStateReducerProps<S, R | UpdateAnyAction<S>>) {
-  const [state, dispatch] = useReducer(reducer, defaults)
+}: StateReducerProps<S, R | UpdateAnyAction<S>>) {
+  function combinedReducer(state: S, action: R | UpdateAnyAction<S>) {
+    return 'type' in action && action.type === 'update-any'
+      ? { ...state, ...action.state }
+      : reducer(state, action)
+  }
 
   function updateState<K extends keyof S, V extends S[K]>(key: K, value: V) {
     dispatch({
@@ -25,16 +31,14 @@ export function useStateReducer<S, R>({
     })
   }
 
-  return {
-    dispatch,
-    state,
-    updateState,
-  }
+  const [state, dispatch] = useReducer(combinedReducer, defaults)
+
+  return { dispatch, state, updateState }
 }
 
 interface ExampleState {
+  bar: number
   foo: string
-  inc: number
 }
 
 interface ExamapleActionIncrement {
@@ -42,26 +46,32 @@ interface ExamapleActionIncrement {
 }
 interface ExamapleActionRename {
   type: 'rename'
-  foo: string
+  renameTo: string
 }
-type ExampleAction<S> = ExamapleActionIncrement | ExamapleActionRename | UpdateAnyAction<S>
+type ExampleAction = StateReducerActions<ExamapleActionIncrement | ExamapleActionRename>
 
-function reducer<S>(state: ExampleState, action: ExampleAction<S>) {
+function exampleReducer(state: ExampleState, action: ExampleAction) {
   switch (action.type) {
     case 'increment':
-      return { ...state, inc: state.inc + 1 }
+      return { ...state, bar: state.bar + 1 }
     case 'rename':
-      return { ...state, foo: action.foo }
-    case 'update-any':
-      return { ...state, ...action.state }
+      return { ...state, foo: action.renameTo }
     default:
       return state
   }
 }
 
+const exampleStateDefaults = { foo: 'test', bar: 0 }
+
 export function useExampleState() {
-  return useStateReducer<ExampleState, ExampleAction<ExampleState>>({
-    defaults: { foo: 'bar', inc: 10 },
-    reducer,
+  const { dispatch, state, updateState } = useStateReducer<ExampleState, ExampleAction>({
+    defaults: exampleStateDefaults,
+    reducer: exampleReducer,
   })
+
+  return {
+    dispatchExampleState: dispatch,
+    exampleState: state,
+    updateExampleState: updateState,
+  }
 }
