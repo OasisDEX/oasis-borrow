@@ -241,8 +241,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       console.log(errMsg)
 
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
-      if(debug)
-        console.log('RPC call failed, falling back to individual calls')
+      console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     } finally {
       cache.useCount--
