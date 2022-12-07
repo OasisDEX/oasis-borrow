@@ -298,7 +298,7 @@ export async function getCloseAaveParameters({
 
   const strategy = await strategies.aave.close(stratArgs, stratDeps)
 
-  return { strategy, operationName: 'CustomOperation' }
+  return { strategy, operationName: strategy.transaction.operationName }
 }
 
 export const EMPTY_POSITION = new Position({ amount: zero }, { amount: zero }, zero, {
