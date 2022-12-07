@@ -105,6 +105,7 @@ const abi = [
 ]
 
 async function makeCall(network: string, calls: any[]) {
+  counters.requests += 1
   const response = await axios.post(getRpcNode(network), calls)
   return response.data
 }
@@ -196,6 +197,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
       counters.dedupedTotalPayloadSize += callBody.length
 
+      counters.requests += 1
       const multicallResponse = await axios.post<string, AxiosResponse<{ result: string }>>(
         provider.connection.url,
         callBody,
@@ -246,14 +248,14 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         if (Date.now() - cache.lastBlockNumberFetchTimestamp > blockRecheckDelay) {
           cache.locked = true
           await sleepUntill(() => cache.useCount === 0, 100)
-          const result = await makeCall(req.query.network.toString(), req.body)
+          const result = await makeCall(req.query.network.toString(), [req.body])
           cache.lastRecordedBlockNumber = parseInt(result[0].result, 16)
           cache.cachedResponses = {}
           cache.locked = false
           return res.status(200).send({
             id: req.body.id,
             jsonrpc: req.body.jsonrpc,
-            result: await makeCall(req.query.network.toString(), req.body),
+            result: result[0].result,
           })
         } else {
           return res.status(200).send({
@@ -271,7 +273,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               result: cache.persistentCache[req.body.params[0]],
             })
           } else {
-            const result = await makeCall(req.query.network.toString(), req.body)
+            const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
             return res.status(200).send({
               id: req.body.id,
@@ -288,7 +290,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   }
 
   counters.logTime = Date.now()
-  counters.requests += 1
   console.log(JSON.stringify(counters))
 
   return res.status(200).send(finalResponse)
