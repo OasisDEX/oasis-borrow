@@ -992,7 +992,7 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
+  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceDataLean$)
 
   const productCardsData$ = memoize(
     curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkDataLean$, oraclePriceDataLean$),
