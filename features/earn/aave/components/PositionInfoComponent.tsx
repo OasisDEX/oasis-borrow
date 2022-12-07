@@ -32,7 +32,7 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 }
 
 type PositionInfoComponentProps = {
-  aaveReserveDataETH: PreparedAaveReserveData
+  aaveReserveDataDebtToken: PreparedAaveReserveData
   tokens: StrategyConfig['tokens']
   oraclePrice: BigNumber
   accountData: AaveUserAccountData
@@ -41,7 +41,7 @@ type PositionInfoComponentProps = {
 }
 
 export const PositionInfoComponent = ({
-  aaveReserveDataETH,
+  aaveReserveDataDebtToken,
   tokens,
   oraclePrice,
   accountData,
@@ -163,8 +163,10 @@ export const PositionInfoComponent = ({
           <DetailsSectionFooterItem
             title={t('system.variable-annual-fee')}
             value={
-              aaveReserveDataETH?.variableBorrowRate
-                ? formatPercent(aaveReserveDataETH.variableBorrowRate.times(100), { precision: 2 })
+              aaveReserveDataDebtToken?.variableBorrowRate
+                ? formatPercent(aaveReserveDataDebtToken.variableBorrowRate.times(100), {
+                    precision: 2,
+                  })
                 : zero.toString()
             }
           />
