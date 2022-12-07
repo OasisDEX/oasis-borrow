@@ -38,7 +38,7 @@ export type AaveHeaderProps = {
 
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
+  aaveReserveDataDebtToken: PreparedAaveReserveData
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element

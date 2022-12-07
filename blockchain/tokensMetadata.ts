@@ -765,7 +765,7 @@ export const tokens: TokenConfig[] = [
     iconCircle: 'reth_circle_color',
     iconColor: 'reth_circle_color',
     color: '#FFEAEA',
-    coinGeckoTicker: 'reth',
+    coinGeckoTicker: 'rocket-pool-eth',
     background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/reth-eth.gif'),
