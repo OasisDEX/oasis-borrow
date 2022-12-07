@@ -212,6 +212,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           if (missingCallsIndexes[mappedCalls[index]] === -1) {
             throw new Error('Missing call index not found') //This means that cache do not work properly
           }
+          cache.cachedResponses[x.hash] = data[missingCallsIndexes[mappedCalls[index]]]
           return {
             ...x,
             response: data[missingCallsIndexes[mappedCalls[index]]],
@@ -227,23 +228,19 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       finalResponse = req.body.map((entry, index) => ({
         id: entry.id,
         jsonrpc: entry.jsonrpc,
-        result: callsWithResponses[index],
+        result: callsWithResponses[index].response,
       }))
-      console.log('ALL OKKK K finally')
     } catch (error) {
-      let message
-      if (error instanceof Error) message = error.message
-      else message = String(error)
-      // we'll proceed, but let's report it
-      console.log(message)
+      let errMsg
+      if (error instanceof Error) errMsg = error.message
+      else errMsg = JSON.stringify(error)
+      console.log(errMsg)
+
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
-      console.log('almost finally')
     } finally {
       cache.useCount--
-      console.log('finally')
-      console.log(finalResponse.length)
     }
   } else {
     if (Array.isArray(req.body)) {
@@ -251,6 +248,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
       console.log('RPC no batching of Array, falling back to individual calls')
       console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
+      finalResponse = await makeCall(req.query.network.toString(), req.body)
     } else {
       console.log('RPC no batching, falling back to individual calls')
       if (isBlockNumberRequest(req.body)) {
@@ -261,11 +259,13 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           cache.lastRecordedBlockNumber = parseInt(result[0].result, 16)
           cache.cachedResponses = {}
           cache.locked = false
-          return res.status(200).send([{
-            id: req.body.id,
-            jsonrpc: req.body.jsonrpc,
-            result: result[0].result,
-          }])
+          return res.status(200).send([
+            {
+              id: req.body.id,
+              jsonrpc: req.body.jsonrpc,
+              result: result[0].result,
+            },
+          ])
         } else {
           return res.status(200).send({
             id: req.body.id,
@@ -276,32 +276,35 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       } else {
         if (isCodeRequest(req.body)) {
           if (cache.persistentCache[req.body.params[0]]) {
-            console.log('contract code from cache', req.body.params[0])
-            return res.status(200).send([{
-              id: req.body.id,
-              jsonrpc: req.body.jsonrpc,
-              result: cache.persistentCache[req.body.params[0]],
-            }])
+            console.log('Contract code from cache', req.body.params[0])
+            return res.status(200).send([
+              {
+                id: req.body.id,
+                jsonrpc: req.body.jsonrpc,
+                result: cache.persistentCache[req.body.params[0]],
+              },
+            ])
           } else {
             console.log('Fetching contract code', req.body.params[0])
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
-            return res.status(200).send([{
-              id: req.body.id,
-              jsonrpc: req.body.jsonrpc,
-              result: result[0].result,
-            }])
+            return res.status(200).send([
+              {
+                id: req.body.id,
+                jsonrpc: req.body.jsonrpc,
+                result: result[0].result,
+              },
+            ])
           }
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(req.body).length
-          console.log('dupa', req.body)
-          finalResponse = await makeCall(req.query.network.toString(), [req.body])
+          finalResponse = await makeCall(req.query.network.toString(), req.body)
         }
       }
     }
   }
-  console.log('kupa', finalResponse.length)
+
   counters.logTime = Date.now()
   console.log(JSON.stringify(counters))
 
@@ -318,7 +321,7 @@ async function sleepUntill(check: () => boolean, maxCount: number) {
           maxCount--
           if (maxCount === 0) {
             clearInterval(interval)
-            rej('Max count reached')
+            rej(new Error('Max count reached'))
           }
           if (check()) {
             clearInterval(interval)
