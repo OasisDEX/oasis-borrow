@@ -2,7 +2,6 @@ import { withSentry } from '@sentry/nextjs'
 import axios, { AxiosResponse } from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { CountdownCircleTimerProps } from 'react-countdown-circle-timer'
 
 const threadId = Math.random()
 
@@ -110,7 +109,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     }
 
     calls.map((call) =>
-      counters.targets[call[0] as keyof typeof counters.targets] === undefined
+      counters.targets[call[0]] === undefined
         ? (counters.targets[call[0]] = 1)
         : counters.targets[call[0]]++,
     )
