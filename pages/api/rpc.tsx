@@ -7,6 +7,8 @@ const threadId = Math.random()
 
 type Counters = {
   clientId: string
+  threadId: string
+  requests: number
   startTime: number
   logTime: number
   initialTotalPayloadSize: number
@@ -20,6 +22,8 @@ type Counters = {
 
 const counters: Counters = {
   clientId: '',
+  threadId: '',
+  requests: 0,
   startTime: 0,
   logTime: 0,
   initialTotalPayloadSize: 0,
@@ -91,6 +95,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let mappedCalls: any[] = []
   counters.initialTotalPayloadSize += JSON.stringify(req.body).length
   counters.startTime = counters.startTime || Date.now()
+  counters.threadId = threadId.toString()
   if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
     const network = req.query.network.toString()
     const clientId = req.query.clientId.toString()
@@ -175,17 +180,19 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     if (Array.isArray(req.body)) {
       const callsCount = req.body.filter((call) => call.method === 'eth_call').length
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
-      console.log('RPC no batching, falling back to individual calls', callsCount, notCallsCount)
+      console.log('RPC no batching of Array, falling back to individual calls')
+      console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
     } else {
       console.log('RPC no batching, falling back to individual calls')
     }
-    counters.bypassedCallsCount += req.body.length
+    counters.bypassedCallsCount += 1
     counters.bypassedPayloadSize += JSON.stringify(req.body).length
     finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
 
   counters.logTime = Date.now()
-  console.log('RPC STATS', JSON.stringify(counters), threadId)
+  counters.requests += 1
+  console.log(JSON.stringify(counters))
 
   return res.status(200).send(finalResponse)
 }
