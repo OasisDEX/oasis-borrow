@@ -5,7 +5,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 const threadId = Math.random()
 
+const debug = true;
+
 type Counters = {
+  lastLog: number
   clientId: string
   threadId: string
   requests: number
@@ -23,6 +26,7 @@ type Counters = {
 }
 
 const counters: Counters = {
+  lastLog: 0,
   clientId: '',
   threadId: '',
   requests: 0,
@@ -237,7 +241,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       console.log(errMsg)
 
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
-      console.log('RPC call failed, falling back to individual calls')
+      if(debug)
+        console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
     } finally {
       cache.useCount--
@@ -247,11 +252,12 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       const callsCount = req.body.filter((call) => call.method === 'eth_call').length
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
       finalResponse = await makeCall(req.query.network.toString(), req.body)
-      console.log('RPC no batching of Array, falling back to individual calls')
-      console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
-      finalResponse = await makeCall(req.query.network.toString(), req.body)
+      if(debug)
+        console.log('RPC no batching of Array, falling back to individual calls')
+        console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
     } else {
-      console.log('RPC no batching, falling back to individual calls')
+      if(debug)
+        console.log('RPC no batching, falling back to individual calls')
       if (isBlockNumberRequest(req.body)) {
         if (Date.now() - cache.lastBlockNumberFetchTimestamp > blockRecheckDelay) {
           cache.locked = true
@@ -279,7 +285,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       } else {
         if (isCodeRequest(req.body)) {
           if (cache.persistentCache[req.body.params[0]]) {
-            console.log('Contract code from cache', req.body.params[0])
+            if(debug)
+              console.log('Contract code from cache', req.body.params[0])
             return res.status(200).send([
               {
                 id: req.body.id,
@@ -288,7 +295,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               },
             ])
           } else {
-            console.log('Fetching contract code', req.body.params[0])
+            if(debug)
+              console.log('Fetching contract code', req.body.params[0])
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
             return res.status(200).send([
@@ -309,7 +317,10 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   }
 
   counters.logTime = Date.now()
-  console.log(JSON.stringify(counters))
+  if(counters.lastLog< Date.now()-1000*60){//every minute
+    counters.lastLog = Date.now()
+    console.log(JSON.stringify(counters))
+  }
 
   return res.status(200).send(finalResponse)
 }
