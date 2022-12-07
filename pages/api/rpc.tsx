@@ -54,7 +54,7 @@ type Cache = {
 
 const blockRecheckDelay = 3000
 
-const cache: {[key: string]: Cache} = {};
+const cache: { [key: string]: Cache } = {}
 
 function getRpcNode(network: string) {
   switch (network) {
@@ -148,7 +148,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     )
 
     counters.initialTotalCalls += calls.length
-    counters.clientIds[clientId] = (counters.clientIds[clientId] || 0)+1;
+    counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
 
     const callsWithHash: CallWithHash[] = calls.map((call) => {
       return {
@@ -166,14 +166,14 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     )
 
     await sleepUntill(() => !cache[network].locked, 100)
-    if(!cache[network]) {
+    if (!cache[network]) {
       cache[network] = {
-          lastBlockNumberFetchTimestamp: 0,
-          lastRecordedBlockNumber: 0,
-          cachedResponses: {},
-          persistentCache: {},
-          locked: false,
-          useCount: 0,
+        lastBlockNumberFetchTimestamp: 0,
+        lastRecordedBlockNumber: 0,
+        cachedResponses: {},
+        persistentCache: {},
+        locked: false,
+        useCount: 0,
       }
     }
 
@@ -327,7 +327,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     //every minute
     counters.logTime = Date.now()
     console.log(JSON.stringify(counters))
-    counters.clientIds = {};
+    counters.clientIds = {}
   }
 
   return res.status(200).send(finalResponse)
