@@ -1,6 +1,9 @@
+import '@rainbow-me/rainbowkit/styles.css'
+
 import { CacheProvider, Global } from '@emotion/core'
 // @ts-ignore
 import { MDXProvider } from '@mdx-js/react'
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
@@ -18,12 +21,16 @@ import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { appWithTranslation, i18n } from 'next-i18next'
 import { AppProps } from 'next/app'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { infuraProvider } from 'wagmi/providers/infura'
+import { publicProvider } from 'wagmi/providers/public'
 import Web3 from 'web3'
 
 import { adRollPixelScript } from '../analytics/adroll'
@@ -33,6 +40,32 @@ import { mixpanelInit } from '../analytics/mixpanel'
 import { loadFeatureToggles } from '../helpers/useFeatureToggle'
 import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
+
+const { chains, provider } = configureChains(
+  [
+    chain.mainnet,
+    {
+      id: 2137,
+      name: 'Hardhat',
+      network: 'hardhat',
+      rpcUrls: {
+        default: 'http://localhost:8545',
+      },
+    },
+  ],
+  [infuraProvider({ apiKey: getConfig()?.publicRuntimeConfig?.infuraProjectId }), publicProvider()],
+)
+
+const { connectors } = getDefaultWallets({
+  appName: 'Oasis.app × Rainbow Kit',
+  chains,
+})
+
+const wagmiClient = createClient({
+  autoConnect: false,
+  connectors,
+  provider,
+})
 
 if (process.env.NODE_ENV !== 'production') {
   if (typeof window !== 'undefined') {
@@ -175,24 +208,28 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
             <Web3ReactProvider {...{ getLibrary }}>
-              <AppContextProvider>
-                <ModalProvider>
-                  <HeadTags />
-                  {seoTags}
-                  <SetupWeb3Context>
-                    <SharedUIProvider>
-                      <GasEstimationContextProvider>
-                        <NotificationSocketProvider>
-                          <Layout {...layoutProps}>
-                            <Component {...pageProps} />
-                            <CookieBanner setValue={setValue} value={value} />
-                          </Layout>
-                        </NotificationSocketProvider>
-                      </GasEstimationContextProvider>
-                    </SharedUIProvider>
-                  </SetupWeb3Context>
-                </ModalProvider>
-              </AppContextProvider>
+              <WagmiConfig client={wagmiClient}>
+                <RainbowKitProvider chains={chains}>
+                  <AppContextProvider>
+                    <ModalProvider>
+                      <HeadTags />
+                      {seoTags}
+                      <SetupWeb3Context>
+                        <SharedUIProvider>
+                          <GasEstimationContextProvider>
+                            <NotificationSocketProvider>
+                              <Layout {...layoutProps}>
+                                <Component {...pageProps} />
+                                <CookieBanner setValue={setValue} value={value} />
+                              </Layout>
+                            </NotificationSocketProvider>
+                          </GasEstimationContextProvider>
+                        </SharedUIProvider>
+                      </SetupWeb3Context>
+                    </ModalProvider>
+                  </AppContextProvider>
+                </RainbowKitProvider>
+              </WagmiConfig>
             </Web3ReactProvider>
           </MDXProvider>
         </CacheProvider>

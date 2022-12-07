@@ -1,5 +1,7 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { getNetworkId } from '@oasisdex/web3-context'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { getMixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
@@ -28,9 +30,10 @@ import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
+import { useAccount, useDisconnect } from 'wagmi'
 
 import { useAppContext } from './AppContextProvider'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
@@ -894,10 +897,38 @@ function MainNavigation() {
 }
 
 export function AppHeader() {
-  const { context$ } = useAppContext()
+  const { context$, web3Context$ } = useAppContext()
   const [context] = useObservable(context$)
+  const [web3Context] = useObservable(web3Context$)
+  const { connector: activeConnector, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
 
-  return context?.status === 'connected' ? <ConnectedHeader /> : <DisconnectedHeader />
+  useEffect(() => {
+    if (isConnected && web3Context && web3Context.connect) {
+      console.log('Automatically connected in (since rainbowkit was connected)')
+      const networkId = getNetworkId()
+      void getConnector('injected', networkId).then((connector) => {
+        web3Context.connect(connector, 'injected')
+      })
+    }
+  }, [isConnected, activeConnector, web3Context])
+
+  useEffect(() => {
+    if (isConnected && context?.status !== 'connected') {
+      console.log('Disconnecting from rainbowkit (since web3context isnt connected)')
+
+      void disconnect()
+    }
+  }, [context?.status])
+
+  return (
+    <Flex sx={{ flexDirection: 'column' }}>
+      {context?.status === 'connected' ? <ConnectedHeader /> : <DisconnectedHeader />}
+      <Flex sx={{ justifyContent: 'center' }}>
+        <ConnectButton />
+      </Flex>
+    </Flex>
+  )
 }
 
 export function ConnectPageHeader() {
