@@ -234,9 +234,12 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       }))
     } catch (error) {
       let errMsg
+      let errStack
       if (error instanceof Error) errMsg = error.message
+      if (error instanceof Error) errStack = error.stack
       else errMsg = JSON.stringify(error)
       console.log(errMsg)
+      console.log(errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
       console.log('RPC call failed, falling back to individual calls')
