@@ -283,12 +283,13 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               result: result[0].result,
             })
           }
+        }else{
+          counters.bypassedCallsCount += 1
+          counters.bypassedPayloadSize += JSON.stringify(req.body).length
+          finalResponse = await makeCall(req.query.network.toString(), [req.body])
         }
       }
     }
-    counters.bypassedCallsCount += 1
-    counters.bypassedPayloadSize += JSON.stringify(req.body).length
-    finalResponse = await makeCall(req.query.network.toString(), req.body)
   }
 
   counters.logTime = Date.now()
