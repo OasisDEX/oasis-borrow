@@ -246,6 +246,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     if (Array.isArray(req.body)) {
       const callsCount = req.body.filter((call) => call.method === 'eth_call').length
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
+      finalResponse = await makeCall(req.query.network.toString(), req.body)
       console.log('RPC no batching of Array, falling back to individual calls')
       console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
       finalResponse = await makeCall(req.query.network.toString(), req.body)
@@ -267,11 +268,13 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             },
           ])
         } else {
-          return res.status(200).send({
-            id: req.body.id,
-            jsonrpc: req.body.jsonrpc,
-            result: cache.lastRecordedBlockNumber.toString(),
-          })
+          return res.status(200).send([
+            {
+              id: req.body.id,
+              jsonrpc: req.body.jsonrpc,
+              result: cache.lastRecordedBlockNumber.toString(),
+            },
+          ])
         }
       } else {
         if (isCodeRequest(req.body)) {
