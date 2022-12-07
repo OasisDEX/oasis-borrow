@@ -249,6 +249,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     if (Array.isArray(req.body)) {
       const callsCount = req.body.filter((call) => call.method === 'eth_call').length
       const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
+      finalResponse = await makeCall(req.query.network.toString(), req.body);
       console.log('RPC no batching of Array, falling back to individual calls')
       console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
     } else {
@@ -277,20 +278,20 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         if (isCodeRequest(req.body)) {
           if (cache.persistentCache[req.body.params[0]]) {
             console.log('contract code from cache', req.body.params[0])
-            return res.status(200).send([{
+            return res.status(200).send({
               id: req.body.id,
               jsonrpc: req.body.jsonrpc,
               result: cache.persistentCache[req.body.params[0]],
-            }])
+            })
           } else {
             console.log('Fetching contract code', req.body.params[0])
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
-            return res.status(200).send([{
+            return res.status(200).send({
               id: req.body.id,
               jsonrpc: req.body.jsonrpc,
               result: result[0].result,
-            }])
+            })
           }
         } else {
           counters.bypassedCallsCount += 1
