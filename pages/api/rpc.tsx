@@ -267,12 +267,14 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       } else {
         if (isCodeRequest(req.body)) {
           if (cache.persistentCache[req.body.params[0]]) {
+            console.log("contract code from cache", req.body.params[0])
             return res.status(200).send({
               id: req.body.id,
               jsonrpc: req.body.jsonrpc,
               result: cache.persistentCache[req.body.params[0]],
             })
           } else {
+            console.log("Fetching contract code", req.body.params[0])
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache.persistentCache[req.body.params[0]] = result[0].result
             return res.status(200).send({
