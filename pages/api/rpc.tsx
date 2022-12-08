@@ -218,7 +218,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         ],
       }
       counters.dedupedTotalPayloadSize += JSON.stringify(callBody).length
-      counters.requests += 1
       const multicallResponse = await makeCall(network, [callBody])
 
       const [, data] = multicall.interface.decodeFunctionResult(
