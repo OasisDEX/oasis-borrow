@@ -75,7 +75,7 @@ export function SidebarSetupStopLoss({
     protocol,
     triggerData: { autoSellTriggerData, constantMultipleTriggerData, stopLossTriggerData },
     reducers: {
-      stopLossReducer: { dispatch, stopLossState },
+      stopLossReducer: { stopLossState, updateStopLossState },
     },
   } = automationContext
   const { isAwaitingConfirmation } = stopLossState
@@ -211,17 +211,9 @@ export function SidebarSetupStopLoss({
         isLoading: stage === 'txInProgress',
         action: () => {
           if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
-            dispatch({
-              type: 'is-awaiting-confirmation',
-              isAwaitingConfirmation: true,
-            })
+            updateStopLossState('isAwaitingConfirmation', true)
           } else {
-            if (isAwaitingConfirmation) {
-              dispatch({
-                type: 'is-awaiting-confirmation',
-                isAwaitingConfirmation: false,
-              })
-            }
+            if (isAwaitingConfirmation) updateStopLossState('isAwaitingConfirmation', false)
             txHandler({
               callOnSuccess: () => {
                 uiChanges.publish(TAB_CHANGE_SUBJECT, {
@@ -239,14 +231,8 @@ export function SidebarSetupStopLoss({
           label: textButtonLabel,
           hidden: isFirstSetup && !isAwaitingConfirmation,
           action: () => {
-            if (isAwaitingConfirmation) {
-              dispatch({
-                type: 'is-awaiting-confirmation',
-                isAwaitingConfirmation: false,
-              })
-            } else {
-              textButtonHandler()
-            }
+            if (isAwaitingConfirmation) updateStopLossState('isAwaitingConfirmation', false)
+            else textButtonHandler()
           },
         },
       }),

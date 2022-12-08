@@ -35,7 +35,7 @@ export function StopLossFormControl({
     positionData: { id, debt, owner },
     triggerData: { stopLossTriggerData },
     reducers: {
-      stopLossReducer: { stopLossState, dispatch },
+      stopLossReducer: { stopLossState, dispatchStopLoss },
     },
   } = useAutomationContext()
 
@@ -108,7 +108,7 @@ export function StopLossFormControl({
             : CloseVaultToEnum.DAI,
         },
       }}
-      dispatch={dispatch}
+      dispatch={dispatchStopLoss}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupStopLoss

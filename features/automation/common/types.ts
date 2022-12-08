@@ -7,7 +7,7 @@ import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/a
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import {
   STOP_LOSS_PUBLISH_KEY,
-  StopLossFormAction,
+  StopLossAction,
 } from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 import { Dispatch } from 'react'
 
@@ -77,4 +77,4 @@ export type AutomationPublishType =
 
 export type AutoBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
 
-export type AutomationDispatches = Dispatch<StopLossFormAction>
+export type AutomationDispatches = Dispatch<StopLossAction>

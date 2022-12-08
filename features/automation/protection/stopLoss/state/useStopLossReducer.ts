@@ -1,10 +1,13 @@
-import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { AutomationFormType } from 'features/automation/common/state/automationFeatureChange'
+import {
+  AutomationCommonState,
+  AutomationFormType,
+  AutomationTxDetails,
+} from 'features/automation/common/state/automationFeatureChange'
 import { StopLossMetadata } from 'features/automation/metadata/types'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { TxError } from 'helpers/types'
-import { useEffect, useReducer } from 'react'
+import { StateReducerActions, useStateReducer } from 'helpers/useStateReducer'
+import { useEffect } from 'react'
 
 export type StopLossResetData = Pick<
   StopLossState,
@@ -12,98 +15,74 @@ export type StopLossResetData = Pick<
 >
 export const STOP_LOSS_PUBLISH_KEY = 'STOP_LOSS_PUBLISH_KEY' // it could be moved to single enum with all publish keys
 
-export interface StopLossState {
-  stopLossLevel: BigNumber
+export interface StopLossState extends AutomationCommonState {
   collateralActive: boolean
-  currentForm: AutomationFormType
-  isAwaitingConfirmation: boolean
-  txDetails?: {
-    txStatus?: TxStatus
-    txError?: TxError
-    txHash?: string
-    txCost?: BigNumber
-  }
+  stopLossLevel: BigNumber
 }
 
-export type StopLossFormAction =
-  | { type: 'stop-loss-level'; stopLossLevel: BigNumber }
-  | { type: 'close-type'; toCollateral: boolean }
-  | { type: 'current-form'; currentForm: AutomationFormType }
-  | { type: 'is-awaiting-confirmation'; isAwaitingConfirmation: boolean }
-  | { type: 'partial-update'; partialUpdate: Partial<StopLossState> }
-  | {
-      type: 'tx-details'
-      txDetails: {
-        txStatus?: TxStatus
-        txError?: TxError
-        txHash?: string
-        txCost?: BigNumber
-      }
-    }
+export interface StopLossReducerProps {
+  metadata: StopLossMetadata
+  positionRatio: BigNumber
+  stopLossTriggerData: StopLossTriggerData
+}
 
-function reducer(state: StopLossState, action: StopLossFormAction): StopLossState {
+interface StopLosssActionTxDetails {
+  type: 'tx-details'
+  txDetails: AutomationTxDetails
+}
+
+export type StopLossAction = StateReducerActions<StopLossState, StopLosssActionTxDetails>
+
+function stopLossReducer(state: StopLossState, action: StopLossAction) {
   switch (action.type) {
-    case 'stop-loss-level':
-      return { ...state, stopLossLevel: action.stopLossLevel }
-    case 'close-type':
-      return { ...state, collateralActive: action.toCollateral }
-    case 'current-form':
-      return { ...state, currentForm: action.currentForm }
-    case 'is-awaiting-confirmation':
-      return { ...state, isAwaitingConfirmation: action.isAwaitingConfirmation }
     case 'tx-details':
-      return { ...state, txDetails: action.txDetails }
-    case 'partial-update':
-      return { ...state, ...action.partialUpdate }
+      return { ...state, txDetails: { ...state.txDetails, ...action.txDetails } }
     default:
       return state
   }
 }
 
 export function useStopLossReducer({
-  positionRatio,
-  stopLossTriggerData,
-  metadata,
-}: {
-  positionRatio: BigNumber
-  stopLossTriggerData: StopLossTriggerData
-  metadata: StopLossMetadata
-}) {
-  const { isToCollateral, triggerId } = stopLossTriggerData
-  const {
+  metadata: {
     values: { initialSlRatioWhenTriggerDoesntExist },
-  } = metadata
-
-  const init = {
-    stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
-    collateralActive: isToCollateral,
-    currentForm: 'add' as AutomationFormType,
-    isAwaitingConfirmation: false,
-    txDetails: {},
-  }
-
-  const [stopLossState, dispatch] = useReducer(reducer, init)
+  },
+  positionRatio,
+  stopLossTriggerData: { isToCollateral, triggerId },
+}: StopLossReducerProps) {
+  const { dispatch, state, updateState } = useStateReducer<StopLossState, StopLossAction>({
+    defaults: {
+      stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
+      collateralActive: isToCollateral,
+      currentForm: 'add' as AutomationFormType,
+      isAwaitingConfirmation: false,
+      txDetails: {},
+    },
+    reducer: stopLossReducer,
+  })
 
   useEffect(() => {
     dispatch({
       type: 'partial-update',
-      partialUpdate: {
-        currentForm: 'add',
-        stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
+      state: {
         collateralActive: isToCollateral,
+        currentForm: 'add',
         isAwaitingConfirmation: false,
+        stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
       },
     })
   }, [triggerId.toNumber(), positionRatio.toNumber()])
-
   useEffect(() => {
     dispatch({
       type: 'partial-update',
-      partialUpdate: {
+      state: {
         txDetails: {},
       },
     })
   }, [positionRatio.toNumber()])
 
-  return { stopLossState, dispatch }
+  return {
+    dispatchStopLoss: dispatch,
+    stopLossState: state,
+    updateStopLossState: updateState,
+  }
 }

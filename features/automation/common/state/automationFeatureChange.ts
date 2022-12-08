@@ -1,4 +1,7 @@
+import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
 import { AutomationFeatures } from 'features/automation/common/types'
+import { TxError } from 'helpers/types'
 
 export type AutomationTypes = 'Protection' | 'Optimization'
 export type AutomationProtectionFeatures =
@@ -9,6 +12,18 @@ export type AutomationOptimizationFeatures =
   | AutomationFeatures.CONSTANT_MULTIPLE
   | AutomationFeatures.AUTO_TAKE_PROFIT
 export type AutomationFormType = 'add' | 'remove'
+
+export interface AutomationTxDetails {
+  txCost?: BigNumber
+  txError?: TxError
+  txHash?: string
+  txStatus?: TxStatus
+}
+export interface AutomationCommonState {
+  currentForm: AutomationFormType
+  isAwaitingConfirmation: boolean
+  txDetails?: AutomationTxDetails
+}
 
 export const AUTOMATION_CHANGE_FEATURE = 'automationChangeFeature'
 

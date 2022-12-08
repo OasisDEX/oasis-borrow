@@ -33,7 +33,7 @@ export function getStopLossTxHandlers({
 }: GetStopLossTxHandlersParams): StopLossTxHandlers {
   const {
     reducers: {
-      stopLossReducer: { dispatch },
+      stopLossReducer: { updateStopLossState },
     },
   } = useAutomationContext()
 
@@ -55,10 +55,7 @@ export function getStopLossTxHandlers({
 
   function textButtonHandlerExtension() {
     if (isAddForm) {
-      dispatch({
-        type: 'stop-loss-level',
-        stopLossLevel: zero,
-      })
+      updateStopLossState('stopLossLevel', zero)
     }
   }
 
