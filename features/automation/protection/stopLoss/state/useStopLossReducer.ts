@@ -6,7 +6,7 @@ import {
 } from 'features/automation/common/state/automationFeatureChange'
 import { StopLossMetadata } from 'features/automation/metadata/types'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { ReductoActions, useReducto } from 'helpers/useStateReducer'
+import { ReductoActions, useReducto } from 'helpers/useReducto'
 import { useEffect } from 'react'
 
 export type StopLossResetData = Pick<
