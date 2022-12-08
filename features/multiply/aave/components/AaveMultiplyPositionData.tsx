@@ -133,10 +133,9 @@ export function AaveMultiplyPositionData({
             }
             footnote={`${t('manage-earn-vault.below-current-price', {
               percentage: formatDecimalAsPercent(
-                // works as long as collateral is eth (debt token price is in eth from oracle)
                 currentPositionThings.liquidationPrice
-                  .minus(debtTokenPrice)
-                  .dividedBy(debtTokenPrice)
+                  .minus(collateralTokenPrice)
+                  .dividedBy(collateralTokenPrice)
                   .absoluteValue(),
               ),
             })}`}
