@@ -263,10 +263,7 @@ export function SidebarAdjustStopLossEditingStage({
           {!isOpenFlow && (
             <SidebarResetButton
               clear={() => {
-                dispatchStopLoss({
-                  type: 'partial-update',
-                  state: resetData,
-                })
+                dispatchStopLoss({ type: 'partial-update', state: resetData })
               }}
             />
           )}
