@@ -1,10 +1,10 @@
 import { Reducer, useReducer } from 'react'
 
-interface PartialUpdateAction<S> {
+interface ReductoPartialUpdateAction<S> {
   type: 'partial-update'
   state: Partial<S>
 }
-export type ReductoActions<S, A> = PartialUpdateAction<S> | A
+export type ReductoActions<S, A> = ReductoPartialUpdateAction<S> | A
 
 interface ReductoProps<S, R> {
   defaults: S
@@ -14,8 +14,8 @@ interface ReductoProps<S, R> {
 export function useReducto<S, R>({
   defaults,
   reducer,
-}: ReductoProps<S, R | PartialUpdateAction<S>>) {
-  function combinedReducer(state: S, action: R | PartialUpdateAction<S>) {
+}: ReductoProps<S, R | ReductoPartialUpdateAction<S>>) {
+  function combinedReducer(state: S, action: R | ReductoPartialUpdateAction<S>) {
     return 'type' in action && action.type === 'partial-update'
       ? { ...state, ...action.state }
       : reducer(state, action)
