@@ -872,11 +872,9 @@ export function setupAppContext() {
     switchMap(({ account }) => proxyAddress$(account)),
   )
 
-  function tempPositionFromLib$(collateralToken: string, debtToken: string) {
-    return combineLatest(context$, proxyForAccount$).pipe(
-      filter(([context, proxyAddress]) => !!context && !!proxyAddress),
-      switchMap(([context, proxyAddress]) => {
-        proxyAddress = proxyAddress!
+  function tempPositionFromLib$(collateralToken: string, debtToken: string, proxyAddress: string) {
+    return context$.pipe(
+      switchMap((context) => {
         return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
       }),
       shareReplay(1),
@@ -898,7 +896,7 @@ export function setupAppContext() {
       aaveReservesList$,
       tempPositionFromLib$,
     ),
-    (collateralToken, address) => `${collateralToken}-${address}`,
+    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
   const strategyConfig$ = memoize(
