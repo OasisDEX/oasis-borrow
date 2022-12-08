@@ -132,7 +132,8 @@ interface CallWithHashAndResponse extends CallWithHash {
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
-  counters.initialTotalPayloadSize += JSON.stringify(req.body).length
+  let requestBody = typeof(req.body) === 'string' ? JSON.parse(req.body) : req.body;
+  counters.initialTotalPayloadSize += JSON.stringify(requestBody).length
   counters.startTime = counters.startTime || Date.now()
   counters.threadId = threadId
 
@@ -142,11 +143,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   const rpcNode = getRpcNode(network)
   const provider = new ethers.providers.JsonRpcProvider(rpcNode)
 
-  if (Array.isArray(req.body) && req.body.every((call) => call.method === 'eth_call')) {
+  if (Array.isArray(requestBody) && requestBody.every((call) => call.method === 'eth_call')) {
     const multicallAddress = getMulticall(network)
     const multicall = new ethers.Contract(multicallAddress, abi, provider)
 
-    const calls = req.body
+    const calls = requestBody
       .map((rpcCall: any) => rpcCall.params)
       .map((params: any) => [params[0].to, params[0].data])
 
@@ -204,7 +205,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       counters.missingTotalCalls += missingCalls.length
       const callBody = {
         jsonrpc: '2.0',
-        id: req.body[0].id,
+        id: requestBody[0].id,
         method: 'eth_call',
         params: [
           {
@@ -240,7 +241,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         }
       })
 
-      finalResponse = req.body.map((entry, index) => ({
+      finalResponse = requestBody.map((entry, index) => ({
         id: entry.id,
         jsonrpc: entry.jsonrpc,
         result: callsWithResponses[index].response,
@@ -254,19 +255,19 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       console.log(errMsg)
       console.log(errStack)
 
-      counters.bypassedPayloadSize += JSON.stringify(req.body).length
+      counters.bypassedPayloadSize += JSON.stringify(requestBody).length
       console.log('RPC call failed, falling back to individual calls')
-      finalResponse = await makeCall(req.query.network.toString(), req.body)
+      finalResponse = await makeCall(req.query.network.toString(), requestBody)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       console.log('RPC call failed, fallback successful')
     } finally {
       cache[network].useCount--
     }
   } else {
-    if (Array.isArray(req.body)) {
-      const callsCount = req.body.filter((call) => call.method === 'eth_call').length
-      const notCallsCount = req.body.filter((call) => call.method !== 'eth_call').length
-      finalResponse = await makeCall(req.query.network.toString(), req.body)
+    if (Array.isArray(requestBody)) {
+      const callsCount = requestBody.filter((call) => call.method === 'eth_call').length
+      const notCallsCount = requestBody.filter((call) => call.method !== 'eth_call').length
+      finalResponse = await makeCall(req.query.network.toString(), requestBody)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       counters.initialTotalCalls += callsCount + notCallsCount
       if (debug) console.log('RPC no batching of Array, falling back to individual calls')
@@ -274,7 +275,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
     } else {
       counters.initialTotalCalls++
       if (debug) console.log('RPC no batching, falling back to individual calls')
-      if (isBlockNumberRequest(req.body)) {
+      if (isBlockNumberRequest(requestBody)) {
         if (
           Date.now() - cache[network].lastBlockNumberFetchTimestamp > blockRecheckDelay &&
           cache[network].locked === false
@@ -282,7 +283,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           try {
             cache[network].locked = true
             await sleepUntill(() => cache[network].useCount === 0, 100)
-            const result = await makeCall(req.query.network.toString(), [req.body])
+            const result = await makeCall(req.query.network.toString(), [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
             cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
             cache[network].lastBlockNumberFetchTimestamp = Date.now()
@@ -290,8 +291,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             cache[network].locked = false
             return res.status(200).send([
               {
-                id: req.body.id,
-                jsonrpc: req.body.jsonrpc,
+                id: requestBody.id,
+                jsonrpc: requestBody.jsonrpc,
                 result: result[0].result,
               },
             ])
@@ -305,33 +306,33 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
           return res.status(200).send([
             {
-              id: req.body.id,
-              jsonrpc: req.body.jsonrpc,
+              id: requestBody.id,
+              jsonrpc: requestBody.jsonrpc,
               result: cache[network].lastRecordedBlockNumber.toString(),
             },
           ])
         }
       } else {
-        if (isCodeRequest(req.body)) {
-          if (cache[network].persistentCache[req.body.params[0]]) {
-            if (debug) console.log('Contract code from cache', req.body.params[0])
+        if (isCodeRequest(requestBody)) {
+          if (cache[network].persistentCache[requestBody.params[0]]) {
+            if (debug) console.log('Contract code from cache', requestBody.params[0])
           } else {
-            if (debug) console.log('Fetching contract code', req.body.params[0])
-            const result = await makeCall(req.query.network.toString(), [req.body])
+            if (debug) console.log('Fetching contract code', requestBody.params[0])
+            const result = await makeCall(req.query.network.toString(), [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
-            cache[network].persistentCache[req.body.params[0]] = result[0].result
+            cache[network].persistentCache[requestBody.params[0]] = result[0].result
           }
           return res.status(200).send([
             {
-              id: req.body.id,
-              jsonrpc: req.body.jsonrpc,
-              result: cache[network].persistentCache[req.body.params[0]],
+              id: requestBody.id,
+              jsonrpc: requestBody.jsonrpc,
+              result: cache[network].persistentCache[requestBody.params[0]],
             },
           ])
         } else {
           counters.bypassedCallsCount += 1
-          counters.bypassedPayloadSize += JSON.stringify(req.body).length
-          finalResponse = await makeCall(req.query.network.toString(), req.body)
+          counters.bypassedPayloadSize += JSON.stringify(requestBody).length
+          finalResponse = await makeCall(req.query.network.toString(), requestBody)
           counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
         }
       }
