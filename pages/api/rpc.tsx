@@ -258,6 +258,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       console.log(errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(requestBody).length
+      counters.bypassedCallsCount += requestBody.length
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), requestBody)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
