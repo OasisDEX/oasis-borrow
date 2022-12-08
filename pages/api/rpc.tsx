@@ -3,13 +3,13 @@ import axios from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-const threadId = Math.random()
+const threadId = Math.floor(Math.random() * 1000000)
 
 const debug = true
 
 type Counters = {
   clientIds: { [key: string]: number }
-  threadId: string
+  threadId: number
   requests: number
   startTime: number
   logTime: number
@@ -28,7 +28,7 @@ type Counters = {
 
 const counters: Counters = {
   clientIds: {},
-  threadId: '',
+  threadId: 0,
   requests: 0,
   sleepCount: 0,
   startTime: 0,
@@ -134,7 +134,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let mappedCalls: any[] = []
   counters.initialTotalPayloadSize += JSON.stringify(req.body).length
   counters.startTime = counters.startTime || Date.now()
-  counters.threadId = threadId.toString()
+  counters.threadId = threadId
 
   const network = req.query.network.toString()
   const clientId = req.query.clientId.toString()
