@@ -165,7 +165,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
 
-    await sleepUntill(() => !cache[network].locked, 100)
+
     if (!cache[network]) {
       cache[network] = {
         lastBlockNumberFetchTimestamp: 0,
@@ -176,7 +176,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         useCount: 0,
       }
     }
-
+    await sleepUntill(() => (!cache[network].locked), 100)
     try {
       cache[network].useCount++
       const missingCalls = dedupedCalls.filter((x) => !cache[network].cachedResponses[x.hash])
