@@ -19,10 +19,7 @@ import { useAaveContext } from '../../AaveContextProvider'
 import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
-import {
-  ManageAaveStateMachineContextProvider,
-  useManageAaveStateMachineContext,
-} from './AaveManageStateMachineContext'
+import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
   address: string
@@ -124,38 +121,28 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const {
-    aaveSTETHReserveConfigurationData,
-    aaveManageStateMachine,
-    wrappedGetAaveReserveData$,
-  } = useAaveContext()
+  const { aaveSTETHReserveConfigurationData, wrappedGetAaveReserveData$ } = useAaveContext()
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   return (
-    <ManageAaveStateMachineContextProvider
-      machine={aaveManageStateMachine}
-      address={address}
-      strategy={strategyConfig}
-    >
-      <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>
-        <WithLoadingIndicator
-          value={[aaveReserveState, aaveReserveDataDebt]}
-          customLoader={<VaultContainerSpinner />}
-        >
-          {([_aaveReserveState, _aaveReserveDataDebt]) => {
-            return (
-              <AaveManageContainer
-                strategyConfig={strategyConfig}
-                aaveReserveState={_aaveReserveState}
-                aaveReserveDataDebtToken={_aaveReserveDataDebt}
-                address={address}
-              />
-            )
-          }}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
-    </ManageAaveStateMachineContextProvider>
+    <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>
+      <WithLoadingIndicator
+        value={[aaveReserveState, aaveReserveDataDebt]}
+        customLoader={<VaultContainerSpinner />}
+      >
+        {([_aaveReserveState, _aaveReserveDataDebt]) => {
+          return (
+            <AaveManageContainer
+              strategyConfig={strategyConfig}
+              aaveReserveState={_aaveReserveState}
+              aaveReserveDataDebtToken={_aaveReserveDataDebt}
+              address={address}
+            />
+          )
+        }}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
