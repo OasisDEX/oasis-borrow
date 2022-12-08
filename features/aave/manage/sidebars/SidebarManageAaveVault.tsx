@@ -102,7 +102,9 @@ function GetReviewingSidebarProps({
 
   if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
     return {
-      title: t('manage-earn.aave.vault-form.close-title'),
+      title: t('manage-earn.aave.vault-form.close-title', {
+        debtToken: state.context.strategyConfig.tokens.debt,
+      }),
       content: (
         <Grid gap={3}>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>

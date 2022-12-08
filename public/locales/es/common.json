@@ -1251,7 +1251,7 @@
         "adjust-risk": "Adjust Risk",
         "deposit": "Depositar ETH",
         "title": "Tu posición de Earn",
-        "close-title": "Cerrar posición a ETH",
+        "close-title": "Cerrar posición a {{ debtToken }}",
         "close": "Cerrar Vault",
         "confirm-btn": "Confirmar",
         "close-description": "Para cerrar tu Vault, una parte de tu posición será vendida para pagar la deuda pendiente. El resto de tu colateral será enviado a tu cartera",
