@@ -145,7 +145,7 @@ export function SidebarAdjustStopLossEditingStage({
     positionData: { id, ilk, token, debt, positionRatio },
     triggerData: { stopLossTriggerData },
     reducers: {
-      stopLossReducer: { dispatch },
+      stopLossReducer: { dispatchStopLoss, updateStopLossState },
     },
   } = useAutomationContext()
 
@@ -198,10 +198,7 @@ export function SidebarAdjustStopLossEditingStage({
               collateralTokenSymbol={token}
               isCollateralActive={stopLossState.collateralActive}
               onClickHandler={(optionName: string) => {
-                dispatch({
-                  type: 'close-type',
-                  toCollateral: optionName === closeVaultOptions[0],
-                })
+                updateStopLossState('collateralActive', optionName === closeVaultOptions[0])
 
                 trackingEvents.automation.buttonClick(
                   AutomationEventIds.CloseToX,
@@ -239,15 +236,12 @@ export function SidebarAdjustStopLossEditingStage({
             rightBoundry={rightBoundry}
             leftBoundry={stopLossState.stopLossLevel}
             onChange={(slCollRatio) => {
-              if (stopLossState.collateralActive === undefined) {
-                dispatch({
-                  type: 'close-type',
-                  toCollateral: false,
-                })
-              }
-              dispatch({
-                type: 'stop-loss-level',
-                stopLossLevel: slCollRatio,
+              dispatchStopLoss({
+                type: 'partial-update',
+                state: {
+                  ...(stopLossState.collateralActive === undefined && { collateralActive: false }),
+                  stopLossLevel: slCollRatio,
+                },
               })
 
               onSliderChange && onSliderChange({ value: slCollRatio })
@@ -269,10 +263,7 @@ export function SidebarAdjustStopLossEditingStage({
           {!isOpenFlow && (
             <SidebarResetButton
               clear={() => {
-                dispatch({
-                  type: 'partial-update',
-                  partialUpdate: resetData,
-                })
+                dispatchStopLoss({ type: 'partial-update', state: resetData })
               }}
             />
           )}

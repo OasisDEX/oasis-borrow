@@ -126,10 +126,10 @@ export function getAutomationFeatureTxHandlers({
 
         dispatch({
           type: 'partial-update',
-          partialUpdate: {
+          state: {
             ...resetData,
-            txDetails: {}, // this most likely should be always included in resetData
             currentForm: 'add',
+            txDetails: {}, // this most likely should be always included in resetData
           },
         })
 
@@ -190,7 +190,7 @@ export function getAutomationFeatureTxHandlers({
 
     dispatch({
       type: 'partial-update',
-      partialUpdate: {
+      state: {
         ...resetData,
         currentForm: isAddForm ? 'remove' : 'add',
       },
