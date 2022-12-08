@@ -8,7 +8,6 @@ const threadId = Math.random()
 const debug = true
 
 type Counters = {
-  lastLog: number
   clientIds: { [key: string]: number }
   threadId: string
   requests: number
@@ -28,7 +27,6 @@ type Counters = {
 }
 
 const counters: Counters = {
-  lastLog: 0,
   clientIds: {},
   threadId: '',
   requests: 0,
@@ -301,7 +299,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             return res.status(500).send({ error: e, message: 'Error while fetching block number' })
           }
         } else {
-          if(debug && cache[network].locked) console.log('ERROR Block number from cache due to lock');
+          if (debug && cache[network].locked)
+            console.log('ERROR Block number from cache due to lock')
 
           return res.status(200).send([
             {
@@ -315,25 +314,18 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         if (isCodeRequest(req.body)) {
           if (cache[network].persistentCache[req.body.params[0]]) {
             if (debug) console.log('Contract code from cache', req.body.params[0])
-            return res.status(200).send([
-              {
-                id: req.body.id,
-                jsonrpc: req.body.jsonrpc,
-                result: cache[network].persistentCache[req.body.params[0]],
-              },
-            ])
           } else {
             if (debug) console.log('Fetching contract code', req.body.params[0])
             const result = await makeCall(req.query.network.toString(), [req.body])
             cache[network].persistentCache[req.body.params[0]] = result[0].result
-            return res.status(200).send([
-              {
-                id: req.body.id,
-                jsonrpc: req.body.jsonrpc,
-                result: result[0].result,
-              },
-            ])
           }
+          return res.status(200).send([
+            {
+              id: req.body.id,
+              jsonrpc: req.body.jsonrpc,
+              result: cache[network].persistentCache[req.body.params[0]],
+            },
+          ])
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(req.body).length
