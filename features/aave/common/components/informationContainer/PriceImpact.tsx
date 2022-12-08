@@ -16,14 +16,14 @@ interface PriceImpactProps {
     debt: string
   }
   collateralPrice?: BigNumber
-  tokenPrice?: BigNumber
+  debtPrice?: BigNumber
   transactionParameters: IPositionTransition
 }
 
 export function PriceImpact({
   tokens,
   transactionParameters,
-  tokenPrice,
+  debtPrice,
   collateralPrice,
 }: PriceImpactProps) {
   const { t } = useTranslation()
@@ -38,7 +38,7 @@ export function PriceImpact({
     amountFromWei(fromTokenAmount, sourceToken.precision),
   )
 
-  const marketPrice = collateralPrice?.div(tokenPrice || one) || one
+  const marketPrice = collateralPrice?.div(debtPrice || one) || one
 
   const priceImpact = calculatePriceImpact(marketPrice, collateralTokenToTokenPrice)
 
