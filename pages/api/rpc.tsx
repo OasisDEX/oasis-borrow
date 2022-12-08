@@ -132,7 +132,7 @@ interface CallWithHashAndResponse extends CallWithHash {
 export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   let finalResponse: any[] = []
   let mappedCalls: any[] = []
-  let requestBody = typeof(req.body) === 'string' ? JSON.parse(req.body) : req.body;
+  const requestBody = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
   counters.initialTotalPayloadSize += JSON.stringify(requestBody).length
   counters.startTime = counters.startTime || Date.now()
   counters.threadId = threadId
@@ -289,13 +289,13 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             cache[network].lastBlockNumberFetchTimestamp = Date.now()
             cache[network].cachedResponses = {}
             cache[network].locked = false
-            return res.status(200).send([
+            return res.status(200).send(
               {
                 id: requestBody.id,
                 jsonrpc: requestBody.jsonrpc,
                 result: result[0].result,
               },
-            ])
+            )
           } catch (e) {
             console.log(e)
             return res.status(500).send({ error: e, message: 'Error while fetching block number' })
@@ -322,13 +322,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
             cache[network].persistentCache[requestBody.params[0]] = result[0].result
           }
-          return res.status(200).send([
-            {
-              id: requestBody.id,
-              jsonrpc: requestBody.jsonrpc,
-              result: cache[network].persistentCache[requestBody.params[0]],
-            },
-          ])
+          return res.status(200).send({
+            id: requestBody.id,
+            jsonrpc: requestBody.jsonrpc,
+            result: cache[network].persistentCache[requestBody.params[0]],
+          })
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(requestBody).length
