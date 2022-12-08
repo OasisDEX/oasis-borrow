@@ -1,21 +1,21 @@
 import { Reducer, useReducer } from 'react'
 
-interface UpdateAnyAction<S> {
+interface ReductoPartialUpdateAction<S> {
   type: 'partial-update'
   state: Partial<S>
 }
-export type StateReducerActions<S, A> = UpdateAnyAction<S> | A
+export type ReductoActions<S, A> = ReductoPartialUpdateAction<S> | A
 
-interface StateReducerProps<S, R> {
+interface ReductoProps<S, R> {
   defaults: S
   reducer: Reducer<S, R>
 }
 
-export function useStateReducer<S, R>({
+export function useReducto<S, R>({
   defaults,
   reducer,
-}: StateReducerProps<S, R | UpdateAnyAction<S>>) {
-  function combinedReducer(state: S, action: R | UpdateAnyAction<S>) {
+}: ReductoProps<S, R | ReductoPartialUpdateAction<S>>) {
+  function combinedReducer(state: S, action: R | ReductoPartialUpdateAction<S>) {
     return 'type' in action && action.type === 'partial-update'
       ? { ...state, ...action.state }
       : reducer(state, action)
