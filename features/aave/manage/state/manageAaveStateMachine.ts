@@ -153,7 +153,7 @@ export function createManageAaveStateMachine(
                 },
                 RESET_RISK_RATIO: {
                   cond: 'canChangePosition',
-                  target: '#manageAaveStateMachine.background.debouncing',
+                  target: '#manageAaveStateMachine.background.idle',
                   actions: 'resetRiskRatio',
                 },
                 ADJUST_POSITION: [
@@ -292,8 +292,9 @@ export function createManageAaveStateMachine(
           return {
             userInput: {
               ...context.userInput,
-              riskRatio: context.currentPosition?.riskRatio,
+              riskRatio: undefined,
             },
+            strategy: undefined,
           }
         }),
         riskRatioEvent: (context) => {

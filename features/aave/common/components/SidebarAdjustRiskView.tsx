@@ -237,11 +237,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             clear={() => {
               send({ type: 'RESET_RISK_RATIO' })
             }}
-            disabled={viewLocked}
+            disabled={viewLocked || !state.context.userInput.riskRatio}
           />
         </Grid>
       ),
-      primaryButton: { ...primaryButton, disabled: viewLocked || primaryButton.disabled },
+      primaryButton: {
+        ...primaryButton,
+        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
+      },
       textButton, // this is going back button, no need to block it
     }
 
