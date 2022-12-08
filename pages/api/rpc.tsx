@@ -272,7 +272,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       if (debug) console.log('RPC no batching of Array, falling back to individual calls')
       console.log(JSON.stringify({ callsCount, notCallsCount, ...counters }))
     } else {
-      counters.initialTotalCalls += 1
+      counters.initialTotalCalls++
       if (debug) console.log('RPC no batching, falling back to individual calls')
       if (isBlockNumberRequest(req.body)) {
         if (
@@ -288,7 +288,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             cache[network].lastBlockNumberFetchTimestamp = Date.now()
             cache[network].cachedResponses = {}
             cache[network].locked = false
-            counters.initialTotalCalls++
             return res.status(200).send([
               {
                 id: req.body.id,
@@ -298,7 +297,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             ])
           } catch (e) {
             console.log(e)
-            counters.initialTotalCalls++
             return res.status(500).send({ error: e, message: 'Error while fetching block number' })
           }
         } else {
