@@ -1,5 +1,5 @@
 import { withSentry } from '@sentry/nextjs'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import * as ethers from 'ethers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -19,6 +19,8 @@ type Counters = {
   dedupedTotalPayloadSize: number
   initialTotalCalls: number
   dedupedTotalCalls: number
+  totalPayloadSize: number
+  totalCalls: number
   missingTotalCalls: number
   bypassedPayloadSize: number
   bypassedCallsCount: number
@@ -38,6 +40,8 @@ const counters: Counters = {
   initialTotalCalls: 0,
   dedupedTotalCalls: 0,
   missingTotalCalls: 0,
+  totalPayloadSize: 0,
+  totalCalls: 0,
   bypassedPayloadSize: 0,
   bypassedCallsCount: 0,
   targets: {},
@@ -102,8 +106,19 @@ const abi = [
 ]
 
 async function makeCall(network: string, calls: any[]) {
+  const callsLength = JSON.stringify(calls).length
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Connection: 'keep-alive',
+      'Content-Encoding': 'gzip, deflate, br',
+      'Content-Length': callsLength.toString(),
+    },
+  }
+  counters.totalPayloadSize += callsLength
+  counters.totalCalls += calls.length
   counters.requests += 1
-  const response = await axios.post(getRpcNode(network), calls)
+  const response = await axios.post(getRpcNode(network), calls, config)
   return response.data
 }
 
@@ -190,28 +205,24 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
       counters.dedupedTotalCalls += dedupedCalls.length
       counters.missingTotalCalls += missingCalls.length
-
-      const callBody = `{"jsonrpc":"2.0","id":${req.body[0].id},"method":"eth_call","params":[{"data":"${multicallTx.data}","to":"${multicall.address}"},"latest"]}`
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Connection: 'keep-alive',
-          'Content-Encoding': 'gzip, deflate, br',
-          'Content-Length': callBody.length.toString(),
-        },
+      const callBody = {
+        jsonrpc: '2.0',
+        id: req.body[0].id,
+        method: 'eth_call',
+        params: [
+          {
+            data: multicallTx.data,
+            to: multicall.address,
+          },
+          'latest',
+        ],
       }
+      counters.dedupedTotalPayloadSize += JSON.stringify(callBody).length
+      const multicallResponse = await makeCall(network, [callBody])
 
-      counters.dedupedTotalPayloadSize += callBody.length
-
-      counters.requests += 1
-      const multicallResponse = await axios.post<string, AxiosResponse<{ result: string }>>(
-        provider.connection.url,
-        callBody,
-        config,
-      )
       const [, data] = multicall.interface.decodeFunctionResult(
         'aggregate((address,bytes)[])',
-        multicallResponse.data.result,
+        multicallResponse[0].result,
       )
       const callsWithResponses: CallWithHashAndResponse[] = callsWithHash.map((x, index) => {
         if (cache[network].cachedResponses[x.hash] === undefined) {
@@ -246,7 +257,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       console.log(errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
-      console.log(JSON.stringify(req.body))
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
       console.log('RPC call failed fallback successful')
