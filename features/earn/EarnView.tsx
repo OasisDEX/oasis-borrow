@@ -1,5 +1,6 @@
 import { getTokens } from 'blockchain/tokensMetadata'
 import { ProductCardEarnAave } from 'components/productCards/ProductCardEarnAave'
+import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -46,6 +47,7 @@ export function EarnView() {
         <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
           {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
+              <ProductCardEarnDsr />
               {_productCardsIlksData.map((cardData) => (
                 <ProductCardEarnMaker key={cardData.ilk} cardData={cardData} />
               ))}

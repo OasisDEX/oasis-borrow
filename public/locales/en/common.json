@@ -2062,5 +2062,20 @@
         "link-privacy": "View Privacy Policy"
       }
     }
+  },
+  "dsr": {
+    "details":{
+      "overview": "Overview",
+      "total-deposited-dai": "Total Deposited Dai",
+      "current-yield": "Current Yield"
+    },
+    "titles": {
+      "manage": "Manage Your DSR strategy",
+      "heading": "Dai Savings Rate"
+    },
+    "labels": {
+      "deposit": "Deposit",
+      "withdraw": "Withdraw"
+    }
   }
 }

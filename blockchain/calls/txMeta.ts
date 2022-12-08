@@ -19,4 +19,13 @@ export enum TxMetaKind {
   claimReferralFees = 'claimReferralFees',
   addTriggerGroup = 'addTriggerGroup',
   operationExecutor = 'operationExecutor',
+  setupDSProxy = 'setupDSProxy',
+  setOwner = 'setOwner',
+  dsrJoin = 'dsrJoin',
+  dsrExit = 'dsrExit',
+  dsrExitAll = 'dsrExitAll',
+  transferEth = 'transferEth',
+  transferErc20 = 'transferErc20',
 }
+
+

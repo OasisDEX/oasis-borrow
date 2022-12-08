@@ -28,8 +28,9 @@ export const every5Seconds$ = interval(5000).pipe(startWith(0))
 export const every10Seconds$ = interval(10000).pipe(startWith(0))
 
 interface WithContractMethod {
-  contract: <T>(desc: ContractDesc) => T
+  contract: (desc: ContractDesc) => any
 }
+
 
 interface WithWeb3ProviderGetPastLogs {
   web3ProviderGetPastLogs: Web3

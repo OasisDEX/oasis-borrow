@@ -16,6 +16,7 @@ export type WithdrawAndPaybackData = {
   paybackAmount: BigNumber
   proxyAddress: string
   shouldPaybackAll: boolean
+  spender?: any
 }
 
 export type DepositAndGenerateData = {
@@ -35,6 +36,8 @@ export type OpenData = {
   depositAmount: BigNumber
   generateAmount: BigNumber
   proxyAddress: string
+  spender?: any
+  
 }
 
 export type ClaimRewardData = {
