@@ -40,14 +40,22 @@ function getAmountGetFromPositionAfterClose(
   if (!strategy || !currentPosition) {
     return zero
   }
-  const currentDebt = amountToWei(currentPosition.debt.amount, currentPosition.debt.symbol)
   const amountFromSwap = strategy.simulation.swap.toTokenAmount
-  const fee = strategy.simulation.swap.tokenFee
+  let fee
+  if (strategy.simulation.swap.collectFeeFrom === 'sourceToken') {
+    // fee amount could have different precision - convert to toTokenAmount precision
+    fee = amountToWei(
+      amountFromWei(strategy.simulation.swap.tokenFee, strategy.simulation.swap.sourceToken.symbol),
+      strategy.simulation.swap.targetToken.symbol,
+    )
+  } else {
+    fee = strategy.simulation.swap.tokenFee
+  }
 
-  return amountFromSwap.minus(currentDebt).minus(fee)
+  return amountFromSwap.minus(currentPosition.debt.amount).minus(fee)
 }
 
-function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
+function ReturnedAmountAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
   const displayToken = state.context.strategy?.simulation.swap.targetToken || {
     symbol: 'ETH',
@@ -63,7 +71,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
-        {t('manage-earn.aave.vault-form.eth-after-closing')}
+        {t('manage-earn.aave.vault-form.eth-after-closing', { closingToken: displayToken.symbol })}
       </Text>
       <Text variant="boldParagraph3">
         {balance} {displayToken.symbol}
@@ -110,7 +118,7 @@ function GetReviewingSidebarProps({
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('manage-earn.aave.vault-form.close-description')}
           </Text>
-          <EthBalanceAfterClose state={state} send={send} />
+          <ReturnedAmountAfterClose state={state} send={send} />
           <StrategyInformationContainer state={state} />
         </Grid>
       ),
