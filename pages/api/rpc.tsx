@@ -279,21 +279,28 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           Date.now() - cache[network].lastBlockNumberFetchTimestamp > blockRecheckDelay &&
           cache[network].locked === false
         ) {
-          cache[network].locked = true
-          await sleepUntill(() => cache[network].useCount === 0, 100)
-          const result = await makeCall(req.query.network.toString(), [req.body])
-          cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
-          cache[network].lastBlockNumberFetchTimestamp = Date.now();
-          cache[network].cachedResponses = {}
-          cache[network].locked = false
+          
+          try{
+            cache[network].locked = true
+            await sleepUntill(() => cache[network].useCount === 0, 100)
+            const result = await makeCall(req.query.network.toString(), [req.body])
+            cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
+            cache[network].lastBlockNumberFetchTimestamp = Date.now();
+            cache[network].cachedResponses = {}
+            cache[network].locked = false
+            return res.status(200).send([
+              {
+                id: req.body.id,
+                jsonrpc: req.body.jsonrpc,
+                result: result[0].result,
+              },
+            ])
+          }catch(e){
+            console.log(e);
+            return res.status(500).send({error: e, message: 'Error while fetching block number'});
+          }
           counters.initialTotalCalls++
-          return res.status(200).send([
-            {
-              id: req.body.id,
-              jsonrpc: req.body.jsonrpc,
-              result: result[0].result,
-            },
-          ])
+          
         } else {
           return res.status(200).send([
             {
