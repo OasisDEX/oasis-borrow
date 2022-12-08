@@ -301,13 +301,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           if (debug && cache[network].locked)
             console.log('ERROR Block number from cache due to lock')
 
-          return res.status(200).send([
-            {
-              id: requestBody.id,
-              jsonrpc: requestBody.jsonrpc,
-              result: cache[network].lastRecordedBlockNumber.toString(),
-            },
-          ])
+          return res.status(200).send({
+            id: requestBody.id,
+            jsonrpc: requestBody.jsonrpc,
+            result: cache[network].lastRecordedBlockNumber.toString(),
+          })
         }
       } else {
         if (isCodeRequest(requestBody)) {
