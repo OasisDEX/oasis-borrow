@@ -251,15 +251,15 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       let errMsg
       let errStack
       if (error instanceof Error) errMsg = error.message
-      if (error instanceof Error) errStack = error.stack
       else errMsg = JSON.stringify(error)
+      if (error instanceof Error) errStack = error.stack
       console.log(errMsg)
       console.log(errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
-      console.log('RPC call failed fallback successful')
+      console.log('RPC call failed, fallback successful')
     } finally {
       cache[network].useCount--
     }
@@ -301,6 +301,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             return res.status(500).send({ error: e, message: 'Error while fetching block number' })
           }
         } else {
+          if(debug && cache[network].locked) console.log('ERROR Block number from cache due to lock');
+
           return res.status(200).send([
             {
               id: req.body.id,
