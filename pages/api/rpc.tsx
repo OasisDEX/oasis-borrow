@@ -283,6 +283,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           await sleepUntill(() => cache[network].useCount === 0, 100)
           const result = await makeCall(req.query.network.toString(), [req.body])
           cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
+          cache[network].lastBlockNumberFetchTimestamp = Date.now();
           cache[network].cachedResponses = {}
           cache[network].locked = false
           counters.initialTotalCalls++
