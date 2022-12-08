@@ -4,7 +4,10 @@ import React from 'react'
 import { Box, Button } from 'theme-ui'
 
 function AjnaPage() {
-  const { exampleState, dispatchExampleState, updateExampleState } = useExampleState()
+  const { exampleState, dispatchExampleState, updateExampleState } = useExampleState({
+    bar: 0,
+    foo: 'default foo',
+  })
 
   return (
     <WithFeatureToggleRedirect feature="Ajna">
@@ -15,6 +18,13 @@ function AjnaPage() {
           }}
         >
           +1 in state
+        </Button>
+        <Button
+          onClick={() => {
+            dispatchExampleState({ type: 'rename', renameTo: 'static new name' })
+          }}
+        >
+          Update string to static name
         </Button>
         <Button
           onClick={() => {

@@ -64,11 +64,9 @@ function exampleReducer(state: ExampleState, action: ExampleAction) {
   }
 }
 
-const exampleStateDefaults = { foo: 'test', bar: 0 }
-
-export function useExampleState() {
+export function useExampleState({ foo, bar }: ExampleState) {
   const { dispatch, state, updateState } = useStateReducer<ExampleState, ExampleAction>({
-    defaults: exampleStateDefaults,
+    defaults: { foo, bar },
     reducer: exampleReducer,
   })
 
