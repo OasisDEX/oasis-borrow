@@ -165,7 +165,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
 
-
     if (!cache[network]) {
       cache[network] = {
         lastBlockNumberFetchTimestamp: 0,
@@ -176,7 +175,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         useCount: 0,
       }
     }
-    await sleepUntill(() => (!cache[network].locked), 100)
+    await sleepUntill(() => !cache[network].locked, 100)
     try {
       cache[network].useCount++
       const missingCalls = dedupedCalls.filter((x) => !cache[network].cachedResponses[x.hash])
@@ -247,7 +246,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       console.log(errStack)
 
       counters.bypassedPayloadSize += JSON.stringify(req.body).length
-      console.log(JSON.stringify(req.body));
+      console.log(JSON.stringify(req.body))
       console.log('RPC call failed, falling back to individual calls')
       finalResponse = await makeCall(req.query.network.toString(), req.body)
       console.log('RPC call failed fallback successful')
