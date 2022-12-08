@@ -142,7 +142,16 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const rpcNode = getRpcNode(network)
   const provider = new ethers.providers.JsonRpcProvider(rpcNode)
-
+  if (!cache[network]) {
+    cache[network] = {
+      lastBlockNumberFetchTimestamp: 0,
+      lastRecordedBlockNumber: 0,
+      cachedResponses: {},
+      persistentCache: {},
+      locked: false,
+      useCount: 0,
+    }
+  }
   if (Array.isArray(requestBody) && requestBody.every((call) => call.method === 'eth_call')) {
     const multicallAddress = getMulticall(network)
     const multicall = new ethers.Contract(multicallAddress, abi, provider)
@@ -178,16 +187,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
 
-    if (!cache[network]) {
-      cache[network] = {
-        lastBlockNumberFetchTimestamp: 0,
-        lastRecordedBlockNumber: 0,
-        cachedResponses: {},
-        persistentCache: {},
-        locked: false,
-        useCount: 0,
-      }
-    }
     await sleepUntill(() => !cache[network].locked, 100)
     try {
       cache[network].useCount++
@@ -289,13 +288,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             cache[network].lastBlockNumberFetchTimestamp = Date.now()
             cache[network].cachedResponses = {}
             cache[network].locked = false
-            return res.status(200).send(
-              {
-                id: requestBody.id,
-                jsonrpc: requestBody.jsonrpc,
-                result: result[0].result,
-              },
-            )
+            return res.status(200).send({
+              id: requestBody.id,
+              jsonrpc: requestBody.jsonrpc,
+              result: result[0].result,
+            })
           } catch (e) {
             console.log(e)
             return res.status(500).send({ error: e, message: 'Error while fetching block number' })
