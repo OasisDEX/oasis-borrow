@@ -6,10 +6,6 @@ import {
 } from 'features/automation/common/state/autoBSFormChange'
 import { ProtectionDetailsControl } from 'features/automation/protection/common/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/common/controls/ProtectionFormControl'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
@@ -107,8 +103,13 @@ export function ProtectionControl() {
     triggerData: { autoSellTriggerData, stopLossTriggerData },
   } = useAutomationContext()
   const [txHelpersData] = useObservable(txHelpers$)
-  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+  // const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
+  const {
+    reducers: {
+      stopLossReducer: { stopLossState },
+    },
+  } = useAutomationContext()
 
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 

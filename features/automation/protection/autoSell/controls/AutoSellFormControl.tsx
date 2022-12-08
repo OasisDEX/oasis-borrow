@@ -111,6 +111,7 @@ export function AutoSellFormControl({
           maxGasFee: autoSellState.maxBaseFeeInGwei.toString(),
         },
       }}
+      dispatch={() => null}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoSell

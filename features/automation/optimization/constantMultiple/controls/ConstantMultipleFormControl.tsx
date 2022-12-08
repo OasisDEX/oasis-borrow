@@ -131,6 +131,7 @@ export function ConstantMultipleFormControl({
           maxGasFee: constantMultipleState.maxBaseFeeInGwei.toString(),
         },
       }}
+      dispatch={() => null}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupConstantMultiple

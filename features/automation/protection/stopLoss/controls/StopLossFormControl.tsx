@@ -10,12 +10,8 @@ import {
   checkIfIsEditingStopLoss,
 } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarSetupStopLoss } from 'features/automation/protection/stopLoss/sidebars/SidebarSetupStopLoss'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { getStopLossTxHandlers } from 'features/automation/protection/stopLoss/state/stopLossTxHandlers'
-import { useUIChanges } from 'helpers/uiChangesHook'
+import { STOP_LOSS_PUBLISH_KEY } from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 import React from 'react'
 
 interface StopLossFormControlProps {
@@ -29,7 +25,6 @@ export function StopLossFormControl({
   shouldRemoveAllowance,
   txHelpers,
 }: StopLossFormControlProps) {
-  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const {
     environmentData: { canInteract },
     metadata: {
@@ -39,6 +34,9 @@ export function StopLossFormControl({
     },
     positionData: { id, debt, owner },
     triggerData: { stopLossTriggerData },
+    reducers: {
+      stopLossReducer: { stopLossState, dispatch },
+    },
   } = useAutomationContext()
 
   const feature = AutomationFeatures.STOP_LOSS
@@ -89,7 +87,7 @@ export function StopLossFormControl({
       isAddForm={isAddForm}
       isEditing={isEditing}
       isRemoveForm={isRemoveForm}
-      publishType={STOP_LOSS_FORM_CHANGE}
+      publishType={STOP_LOSS_PUBLISH_KEY}
       resetData={resetData}
       shouldRemoveAllowance={shouldRemoveAllowance}
       stage={stage}
@@ -110,6 +108,7 @@ export function StopLossFormControl({
             : CloseVaultToEnum.DAI,
         },
       }}
+      dispatch={dispatch}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupStopLoss
@@ -121,7 +120,6 @@ export function StopLossFormControl({
           isRemoveForm={isRemoveForm}
           isStopLossActive={isStopLossActive}
           stage={stage}
-          stopLossState={stopLossState}
           textButtonHandler={textButtonHandler}
           txHandler={txHandler}
         />

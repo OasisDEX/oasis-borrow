@@ -6,12 +6,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex } from 'theme-ui'
@@ -30,14 +25,20 @@ export function StopLossCompleteInformation({
 }: StopLossCompleteInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: { token, liquidationPrice, liquidationRatio },
+    positionData: { token, liquidationPrice, liquidationRatio, debtToken },
     metadata: {
       stopLossMetadata: {
         methods: { getMaxToken },
       },
     },
   } = useAutomationContext()
-  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+  // const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+
+  const {
+    reducers: {
+      stopLossReducer: { stopLossState },
+    },
+  } = useAutomationContext()
 
   const dynamicStopLossPrice = getDynamicStopLossPrice({
     liquidationPrice,
@@ -70,7 +71,7 @@ export function StopLossCompleteInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-on-stop-loss-trigger', {
-          token: isCollateralActive ? token : 'DAI',
+          token: isCollateralActive ? token : debtToken,
         })}`}
         value={<Flex>{maxTokenOrDai}</Flex>}
       />

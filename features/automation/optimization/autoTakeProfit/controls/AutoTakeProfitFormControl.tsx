@@ -96,6 +96,7 @@ export function AutoTakeProfitFormControl({
             : CloseVaultToEnum.DAI,
         },
       }}
+      dispatch={() => null}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoTakeProfit

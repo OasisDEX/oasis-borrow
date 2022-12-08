@@ -6,7 +6,6 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
@@ -24,13 +23,9 @@ import {
 } from 'features/automation/common/consts'
 import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import { AutomationFeatures } from 'features/automation/common/types'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { StopLossState } from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -58,8 +53,10 @@ export function SetDownsideProtectionInformation({
         values: { collateralDuringLiquidation },
       },
     },
+    reducers: {
+      stopLossReducer: { stopLossState },
+    },
   } = useAutomationContext()
-  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
   const afterMaxToken = getMaxToken(stopLossState)
 
@@ -119,7 +116,7 @@ export interface SidebarAdjustStopLossEditingStageProps {
   executionPrice: BigNumber
   errors: string[]
   warnings: string[]
-  stopLossState: StopLossFormChange
+  stopLossState: StopLossState
   isEditing: boolean
   isOpenFlow?: boolean
 }
@@ -133,7 +130,7 @@ export function SidebarAdjustStopLossEditingStage({
   isOpenFlow,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
+  // const { uiChanges } = useAppContext()
   const {
     environmentData: { ethMarketPrice },
     metadata: {
@@ -147,6 +144,9 @@ export function SidebarAdjustStopLossEditingStage({
     },
     positionData: { id, ilk, token, debt, positionRatio },
     triggerData: { stopLossTriggerData },
+    reducers: {
+      stopLossReducer: { dispatch },
+    },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -198,10 +198,11 @@ export function SidebarAdjustStopLossEditingStage({
               collateralTokenSymbol={token}
               isCollateralActive={stopLossState.collateralActive}
               onClickHandler={(optionName: string) => {
-                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                dispatch({
                   type: 'close-type',
                   toCollateral: optionName === closeVaultOptions[0],
                 })
+
                 trackingEvents.automation.buttonClick(
                   AutomationEventIds.CloseToX,
                   Pages.StopLoss,
@@ -239,13 +240,12 @@ export function SidebarAdjustStopLossEditingStage({
             leftBoundry={stopLossState.stopLossLevel}
             onChange={(slCollRatio) => {
               if (stopLossState.collateralActive === undefined) {
-                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+                dispatch({
                   type: 'close-type',
                   toCollateral: false,
                 })
               }
-
-              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+              dispatch({
                 type: 'stop-loss-level',
                 stopLossLevel: slCollRatio,
               })
@@ -269,9 +269,9 @@ export function SidebarAdjustStopLossEditingStage({
           {!isOpenFlow && (
             <SidebarResetButton
               clear={() => {
-                uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
-                  type: 'reset',
-                  resetData,
+                dispatch({
+                  type: 'partial-update',
+                  partialUpdate: resetData,
                 })
               }}
             />

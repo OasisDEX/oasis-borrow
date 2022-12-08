@@ -109,6 +109,7 @@ export function AutoBuyFormControl({
           maxGasFee: autoBuyState.maxBaseFeeInGwei.toString(),
         },
       }}
+      dispatch={() => null}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupAutoBuy

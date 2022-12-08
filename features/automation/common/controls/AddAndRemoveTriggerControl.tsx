@@ -11,9 +11,13 @@ import {
   AutomationTxHandlerAnalytics,
   getAutomationFeatureTxHandlers,
 } from 'features/automation/common/state/automationFeatureTxHandlers'
-import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import {
+  AutomationDispatches,
+  AutomationPublishType,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
 import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { StopLossResetData } from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 import { addTransactionMap, TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { ReactElement, useEffect } from 'react'
 
@@ -39,6 +43,7 @@ interface AddAndRemoveTriggerControlProps {
     textButtonHandler: () => void,
   ) => ReactElement
   analytics: AutomationTxHandlerAnalytics
+  dispatch: AutomationDispatches
 }
 
 export function AddAndRemoveTriggerControl({
@@ -56,6 +61,7 @@ export function AddAndRemoveTriggerControl({
   triggersId,
   txHelpers,
   analytics,
+  dispatch,
 }: AddAndRemoveTriggerControlProps) {
   const { uiChanges } = useAppContext()
   const {
@@ -80,6 +86,7 @@ export function AddAndRemoveTriggerControl({
     ilk,
     positionRatio,
     analytics,
+    dispatch,
   })
 
   useEffect(() => {

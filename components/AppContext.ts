@@ -154,12 +154,6 @@ import {
   MultiplyPillChangeAction,
   multiplyPillChangeReducer,
 } from 'features/automation/protection/stopLoss/state/multiplyVaultPillChange'
-import {
-  formChangeReducer,
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-  StopLossFormChangeAction,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
 import {
@@ -328,7 +322,6 @@ function createTxHelpers$(
 }
 
 export type SupportedUIChangeType =
-  | StopLossFormChange
   | AutoBSFormChange
   | ConstantMultipleFormChange
   | TabChange
@@ -340,7 +333,6 @@ export type SupportedUIChangeType =
   | AutoTakeProfitFormChange
 
 export type LegalUiChanges = {
-  StopLossFormChange: StopLossFormChangeAction
   AutoBSChange: AutoBSChangeAction
   TabChange: TabChangeAction
   MultiplyPillChange: MultiplyPillChangeAction
@@ -434,7 +426,7 @@ function createUIChangesSubject(): UIChanges {
 function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
-  uiChangesSubject.configureSubject(STOP_LOSS_FORM_CHANGE, formChangeReducer)
+  // uiChangesSubject.configureSubject(STOP_LOSS_FORM_CHANGE, formChangeReducer)
   uiChangesSubject.configureSubject(AUTO_SELL_FORM_CHANGE, autoBSFormChangeReducer)
   uiChangesSubject.configureSubject(AUTO_BUY_FORM_CHANGE, autoBSFormChangeReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)

@@ -12,11 +12,6 @@ import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/common/state/auto
 import { AutomationFeatures } from 'features/automation/common/types'
 import { StopLossDetailsLayout } from 'features/automation/protection/stopLoss/controls/StopLossDetailsLayout'
 import { checkIfIsEditingStopLoss } from 'features/automation/protection/stopLoss/helpers'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -57,7 +52,11 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
     },
   } = useAutomationContext()
   const { uiChanges } = useAppContext()
-  const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
+  const {
+    reducers: {
+      stopLossReducer: { stopLossState },
+    },
+  } = useAutomationContext()
   const afterMaxToken = getMaxToken(stopLossState)
 
   return (

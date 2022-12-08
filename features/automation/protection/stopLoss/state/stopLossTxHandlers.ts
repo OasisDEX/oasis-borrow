@@ -1,15 +1,12 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import { useAppContext } from 'components/AppContextProvider'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import {
   prepareAddStopLossTriggerData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { StopLossState } from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 import { zero } from 'helpers/zero'
 import { useMemo } from 'react'
 
@@ -17,7 +14,7 @@ interface GetStopLossTxHandlersParams {
   id: BigNumber
   owner: string
   stopLossTriggerData: StopLossTriggerData
-  stopLossState: StopLossFormChange
+  stopLossState: StopLossState
   isAddForm: boolean
 }
 
@@ -34,7 +31,11 @@ export function getStopLossTxHandlers({
   stopLossTriggerData,
   isAddForm,
 }: GetStopLossTxHandlersParams): StopLossTxHandlers {
-  const { uiChanges } = useAppContext()
+  const {
+    reducers: {
+      stopLossReducer: { dispatch },
+    },
+  } = useAutomationContext()
 
   const addTxData = useMemo(
     () =>
@@ -54,7 +55,7 @@ export function getStopLossTxHandlers({
 
   function textButtonHandlerExtension() {
     if (isAddForm) {
-      uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+      dispatch({
         type: 'stop-loss-level',
         stopLossLevel: zero,
       })

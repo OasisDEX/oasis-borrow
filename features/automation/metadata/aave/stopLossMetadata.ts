@@ -21,7 +21,7 @@ import {
   getSliderPercentageFill,
   getStartingSlRatio,
 } from 'features/automation/protection/stopLoss/helpers'
-import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { StopLossResetData } from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 import { formatPercent } from 'helpers/formatters/format'
 import { one } from 'helpers/zero'
 

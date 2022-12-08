@@ -9,7 +9,7 @@ import {
 } from 'blockchain/calls/automationBotAggregator'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxHelpers, UIChanges } from 'components/AppContext'
-import { AutomationPublishType } from 'features/automation/common/types'
+import { AutomationDispatches, AutomationPublishType } from 'features/automation/common/types'
 import { addTransactionMap } from 'helpers/gasEstimate'
 import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
@@ -26,11 +26,13 @@ function handleTriggerTx({
   ethPrice,
   uiChanges,
   publishType,
+  dispatch,
 }: {
   txState: TxState<TxMeta>
   ethPrice: BigNumber
   uiChanges: UIChanges
   publishType: AutomationPublishType
+  dispatch: AutomationDispatches
 }) {
   const gasUsed =
     txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
@@ -52,6 +54,15 @@ function handleTriggerTx({
       txCost: totalCost,
     },
   })
+  dispatch({
+    type: 'tx-details',
+    txDetails: {
+      txHash: (txState as any).txHash,
+      txStatus: txState.status,
+      txError: txState.status === TxStatus.Error ? txState.error : undefined,
+      txCost: totalCost,
+    },
+  })
 }
 
 export function removeAutomationTrigger(
@@ -60,10 +71,13 @@ export function removeAutomationTrigger(
   uiChanges: UIChanges,
   ethPrice: BigNumber,
   publishType: AutomationPublishType,
+  dispatch: AutomationDispatches,
 ) {
   sendWithGasEstimation(removeAutomationBotAggregatorTriggers, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, publishType }))
+    .subscribe((txState) =>
+      handleTriggerTx({ txState, ethPrice, uiChanges, publishType, dispatch }),
+    )
 }
 
 export function addAutomationTrigger(
@@ -72,6 +86,7 @@ export function addAutomationTrigger(
   uiChanges: UIChanges,
   ethPrice: BigNumber,
   publishType: AutomationPublishType,
+  dispatch: AutomationDispatches,
 ) {
   const txDef = addTransactionMap[publishType] as TransactionDef<
     AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
@@ -79,5 +94,7 @@ export function addAutomationTrigger(
 
   sendWithGasEstimation(txDef, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, publishType }))
+    .subscribe((txState) =>
+      handleTriggerTx({ txState, ethPrice, uiChanges, publishType, dispatch }),
+    )
 }

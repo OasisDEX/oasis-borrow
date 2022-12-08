@@ -22,10 +22,6 @@ import {
   SidebarAdjustStopLossEditingStage,
 } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarCancelStopLossEditingStage'
-import {
-  STOP_LOSS_FORM_CHANGE,
-  StopLossFormChange,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -37,7 +33,6 @@ import { Grid, Text } from 'theme-ui'
 interface SidebarSetupStopLossProps {
   isStopLossActive: boolean
   feature: AutomationFeatures
-  stopLossState: StopLossFormChange
   txHandler: ({ callOnSuccess }: { callOnSuccess?: () => void }) => void
   textButtonHandler: () => void
   stage: SidebarAutomationStages
@@ -51,7 +46,6 @@ interface SidebarSetupStopLossProps {
 export function SidebarSetupStopLoss({
   feature,
 
-  stopLossState,
   txHandler,
   textButtonHandler,
   stage,
@@ -80,6 +74,9 @@ export function SidebarSetupStopLoss({
     positionData: { vaultType },
     protocol,
     triggerData: { autoSellTriggerData, constantMultipleTriggerData, stopLossTriggerData },
+    reducers: {
+      stopLossReducer: { dispatch, stopLossState },
+    },
   } = automationContext
   const { isAwaitingConfirmation } = stopLossState
 
@@ -214,13 +211,13 @@ export function SidebarSetupStopLoss({
         isLoading: stage === 'txInProgress',
         action: () => {
           if (!isAwaitingConfirmation && stage !== 'txSuccess' && !isRemoveForm) {
-            uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+            dispatch({
               type: 'is-awaiting-confirmation',
               isAwaitingConfirmation: true,
             })
           } else {
             if (isAwaitingConfirmation) {
-              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+              dispatch({
                 type: 'is-awaiting-confirmation',
                 isAwaitingConfirmation: false,
               })
@@ -243,7 +240,7 @@ export function SidebarSetupStopLoss({
           hidden: isFirstSetup && !isAwaitingConfirmation,
           action: () => {
             if (isAwaitingConfirmation) {
-              uiChanges.publish(STOP_LOSS_FORM_CHANGE, {
+              dispatch({
                 type: 'is-awaiting-confirmation',
                 isAwaitingConfirmation: false,
               })

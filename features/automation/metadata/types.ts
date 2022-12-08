@@ -1,15 +1,15 @@
 import BigNumber from 'bignumber.js'
-import { AutomationContext } from 'components/AutomationContextProvider'
+import { AutomationBaseContext } from 'components/AutomationContextProvider'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
-import {
-  StopLossFormChange,
-  StopLossResetData,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import {
+  StopLossResetData,
+  StopLossState,
+} from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 
-export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
+export type ContextWithoutMetadata = Omit<AutomationBaseContext, 'metadata'>
 
 export type GetAutomationMetadata<T> = (context: ContextWithoutMetadata) => T
 
@@ -76,17 +76,17 @@ type AutomationCommonMetadata<T> = {
 export interface AutoBSMetadata {}
 export interface AutoTakeProfitMetadata {}
 export interface ConstantMultipleMetadata {}
-export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
+export type StopLossMetadata = AutomationCommonMetadata<StopLossState> & {
   callbacks: {
     onCloseToChange?: AutomationCallbackMethod<{ optionName: string }>
     onSliderChange?: AutomationCallbackMethod<{ value: BigNumber }>
   }
   detailCards?: StopLossMetadataDetailCards
   methods: {
-    getExecutionPrice: AutomationStateValueMethod<StopLossFormChange>
-    getMaxToken: AutomationStateValueMethod<StopLossFormChange>
-    getRightBoundary: AutomationStateValueMethod<StopLossFormChange>
-    getSliderPercentageFill: AutomationStateValueMethod<StopLossFormChange>
+    getExecutionPrice: AutomationStateValueMethod<StopLossState>
+    getMaxToken: AutomationStateValueMethod<StopLossState>
+    getRightBoundary: AutomationStateValueMethod<StopLossState>
+    getSliderPercentageFill: AutomationStateValueMethod<StopLossState>
   }
   settings: {
     fixedCloseToToken?: string

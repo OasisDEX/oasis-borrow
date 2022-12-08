@@ -17,7 +17,11 @@ import {
   addAutomationTrigger,
   removeAutomationTrigger,
 } from 'features/automation/api/automationTxHandlers'
-import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import {
+  AutomationDispatches,
+  AutomationPublishType,
+  SidebarAutomationStages,
+} from 'features/automation/common/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useMemo } from 'react'
 
@@ -57,6 +61,7 @@ interface GetAutomationFeatureTxHandlersParams {
   ilk: string
   analytics: AutomationTxHandlerAnalytics
   txHelpers?: TxHelpers
+  dispatch: AutomationDispatches
 }
 
 interface AutomationFeatureTxHandlers {
@@ -82,6 +87,7 @@ export function getAutomationFeatureTxHandlers({
   ilk,
   positionRatio,
   analytics,
+  dispatch,
 }: GetAutomationFeatureTxHandlersParams): AutomationFeatureTxHandlers {
   const { uiChanges } = useAppContext()
   const triggerEnabled = !!triggersId.filter((item) => item).length
@@ -117,10 +123,27 @@ export function getAutomationFeatureTxHandlers({
           type: 'current-form',
           currentForm: 'add',
         })
+
+        dispatch({
+          type: 'partial-update',
+          partialUpdate: {
+            ...resetData,
+            txDetails: {}, // this most likely should be always included in resetData
+            currentForm: 'add',
+          },
+        })
+
         options?.callOnSuccess && options.callOnSuccess()
       } else {
         if (isAddForm) {
-          addAutomationTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, publishType)
+          addAutomationTrigger(
+            txHelpers,
+            addTxData,
+            uiChanges,
+            ethMarketPrice,
+            publishType,
+            dispatch,
+          )
 
           trackingEvents.automation.buttonClick(
             triggerEnabled ? analytics.id.edit : analytics.id.add,
@@ -130,7 +153,14 @@ export function getAutomationFeatureTxHandlers({
           )
         }
         if (isRemoveForm) {
-          removeAutomationTrigger(txHelpers, removeTxData, uiChanges, ethMarketPrice, publishType)
+          removeAutomationTrigger(
+            txHelpers,
+            removeTxData,
+            uiChanges,
+            ethMarketPrice,
+            publishType,
+            dispatch,
+          )
 
           trackingEvents.automation.buttonClick(
             analytics.id.remove,
@@ -157,6 +187,14 @@ export function getAutomationFeatureTxHandlers({
     })
 
     textButtonHandlerExtension && textButtonHandlerExtension()
+
+    dispatch({
+      type: 'partial-update',
+      partialUpdate: {
+        ...resetData,
+        currentForm: isAddForm ? 'remove' : 'add',
+      },
+    })
   }
 
   return {

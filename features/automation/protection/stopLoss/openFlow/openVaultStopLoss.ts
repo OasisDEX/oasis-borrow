@@ -16,9 +16,9 @@ import {
 } from 'features/automation/protection/stopLoss/helpers'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import {
-  StopLossFormChange,
   StopLossResetData,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+  StopLossState,
+} from 'features/automation/protection/stopLoss/state/useStopLossReducer'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -146,7 +146,7 @@ export function getDataForStopLoss(
       stopLossLevel,
       collateralActive: stopLossCloseType === 'collateral',
       currentForm: 'add',
-    } as StopLossFormChange,
+    } as StopLossState,
     isEditing: true,
     isOpenFlow: true,
   }
