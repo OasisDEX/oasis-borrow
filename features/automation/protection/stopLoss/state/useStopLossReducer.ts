@@ -6,7 +6,7 @@ import {
 } from 'features/automation/common/state/automationFeatureChange'
 import { StopLossMetadata } from 'features/automation/metadata/types'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { StateReducerActions, useStateReducer } from 'helpers/useStateReducer'
+import { ReductoActions, useReducto } from 'helpers/useStateReducer'
 import { useEffect } from 'react'
 
 export type StopLossResetData = Pick<
@@ -31,7 +31,7 @@ interface StopLosssActionTxDetails {
   txDetails: AutomationTxDetails
 }
 
-export type StopLossAction = StateReducerActions<StopLossState, StopLosssActionTxDetails>
+export type StopLossAction = ReductoActions<StopLossState, StopLosssActionTxDetails>
 
 function stopLossReducer(state: StopLossState, action: StopLossAction) {
   switch (action.type) {
@@ -49,7 +49,7 @@ export function useStopLossReducer({
   positionRatio,
   stopLossTriggerData: { isToCollateral, triggerId },
 }: StopLossReducerProps) {
-  const { dispatch, state, updateState } = useStateReducer<StopLossState, StopLossAction>({
+  const { dispatch, state, updateState } = useReducto<StopLossState, StopLossAction>({
     defaults: {
       stopLossLevel: initialSlRatioWhenTriggerDoesntExist,
       collateralActive: isToCollateral,
