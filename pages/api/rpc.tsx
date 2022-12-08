@@ -263,6 +263,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       finalResponse = await makeCall(req.query.network.toString(), requestBody)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       console.log('RPC call failed, fallback successful')
+      console.log(JSON.stringify(counters))
     } finally {
       cache[network].useCount--
     }
