@@ -72,12 +72,7 @@ export function useStopLossReducer({
     })
   }, [triggerId.toNumber(), positionRatio.toNumber()])
   useEffect(() => {
-    dispatch({
-      type: 'partial-update',
-      state: {
-        txDetails: {},
-      },
-    })
+    dispatch({ type: 'tx-details', txDetails: {} })
   }, [positionRatio.toNumber()])
 
   return {
