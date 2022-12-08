@@ -845,10 +845,13 @@ export function setupAppContext() {
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
 
-  const aaveAvailableLiquidityInUSDC$ = curry(prepareAaveAvailableLiquidityInUSDC$)(
-    getAaveReserveData$,
-    // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  const aaveAvailableLiquidityInUSDC$ = memoize(
+    curry(prepareAaveAvailableLiquidityInUSDC$)(
+      getAaveReserveData$,
+      // @ts-expect-error
+      getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    ),
+    ({ token }) => token,
   )
 
   const aavePositions$ = memoize(
@@ -1071,7 +1074,7 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
+  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceDataLean$)
 
   const productCardsData$ = memoize(
     curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkDataLean$, oraclePriceDataLean$),

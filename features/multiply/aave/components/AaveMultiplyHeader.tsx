@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -13,7 +13,7 @@ function AaveMultiplyHeader({
   strategyConfig,
   headerLabelString,
 }: {
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
   headerLabelString: string
 }) {
   const { t } = useTranslation()
@@ -58,7 +58,7 @@ function AaveMultiplyHeader({
   )
 }
 
-export function AaveMultiplyOpenHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
+export function AaveMultiplyOpenHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
   return (
     <AaveMultiplyHeader
       strategyConfig={strategyConfig}
@@ -67,7 +67,7 @@ export function AaveMultiplyOpenHeader({ strategyConfig }: { strategyConfig: ISt
   )
 }
 
-export function AaveMultiplyManageHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
+export function AaveMultiplyManageHeader({ strategyConfig }: { strategyConfig: StrategyConfig }) {
   return (
     <AaveMultiplyHeader
       strategyConfig={strategyConfig}

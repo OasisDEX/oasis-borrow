@@ -20,7 +20,7 @@ import {
   contextToTransactionParameters,
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
@@ -35,7 +35,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
 
   hasOpenedPosition?: boolean
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 export type OpenAaveEvent =
@@ -402,6 +402,7 @@ export function createOpenAaveStateMachine(
                 depositToken: context.tokens.deposit,
                 context: context.web3Context!,
                 slippage: context.userSettings!.slippage,
+                token: context.tokens.deposit,
               },
             }
           },

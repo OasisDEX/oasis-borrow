@@ -27,6 +27,8 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
           provider = skipCache(chainId.toString())
             ? jsonRpcBatchProvider
             : new JsonRpcCachedProvider(networksById[chainId].infuraUrl, chainId)
+        } else {
+          provider = jsonRpcBatchProvider
         }
       }
       return provider

@@ -1,5 +1,5 @@
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import React from 'react'
 
@@ -9,13 +9,13 @@ import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
+  aaveReserveDataDebtToken: PreparedAaveReserveData
   aaveProtocolData?: AaveProtocolData
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 export function ViewPositionSectionComponent({
-  aaveReserveDataETH,
+  aaveReserveDataDebtToken,
   aaveProtocolData,
   strategyConfig,
 }: ViewPositionSectionComponentProps) {
@@ -29,7 +29,7 @@ export function ViewPositionSectionComponent({
 
   return (
     <PositionInfoComponent
-      aaveReserveDataETH={aaveReserveDataETH}
+      aaveReserveDataDebtToken={aaveReserveDataDebtToken}
       accountData={accountData}
       apy={simulations?.apy}
       tokens={strategyConfig.tokens}

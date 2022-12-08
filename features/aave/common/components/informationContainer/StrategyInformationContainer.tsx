@@ -1,11 +1,10 @@
-import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
-import { amountFromWei } from '@oasisdex/utils'
+import { IPosition, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { getToken } from '../../../../../blockchain/tokensMetadata'
+import { amountFromWei } from '../../../../../blockchain/utils'
 import { VaultChangesInformationContainer } from '../../../../../components/vault/VaultChangesInformation'
 import { WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
@@ -32,7 +31,7 @@ type OpenAaveInformationContainerProps = {
       collateralPrice?: BigNumber
       tokenPrice?: BigNumber
       estimatedGasPrice?: HasGasEstimation
-      strategy?: IPositionTransition
+      strategy?: IStrategy
       userSettings?: UserSettingsState
       currentPosition?: IPosition
     }
@@ -44,13 +43,15 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
 
   const { strategy, currentPosition, tokens } = state.context
   const debtToken = tokens.debt
-  const swapFee = strategy?.simulation?.swap?.tokenFee || zero
+  const sourceTokenFee = strategy?.simulation?.swap?.sourceTokenFee || zero
+  const targetTokenFee = strategy?.simulation?.swap?.targetTokenFee || zero
+  const swapFee = sourceTokenFee.plus(targetTokenFee)
   const { convertToAaveOracleAssetPrice$ } = useAaveContext()
 
   const [feeInDebtToken, feeInDebtTokenError] = useObservable(
     convertToAaveOracleAssetPrice$({
       token: debtToken,
-      amount: amountFromWei(swapFee, getToken(debtToken).precision),
+      amount: swapFee,
     }),
   )
 
@@ -59,7 +60,7 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
       token: debtToken,
       amount: amountFromWei(
         currentPosition?.debt.amount || zero,
-        getToken(currentPosition?.debt.symbol || 'ETH').precision,
+        currentPosition?.debt.denomination || 'ETH',
       ),
     }),
   )
@@ -69,7 +70,7 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
       token: debtToken,
       amount: amountFromWei(
         strategy?.simulation.position.debt.amount || zero,
-        getToken(strategy?.simulation.position.debt.symbol || 'ETH').precision,
+        strategy?.simulation.position.debt.denomination || 'ETH',
       ),
     }),
   )

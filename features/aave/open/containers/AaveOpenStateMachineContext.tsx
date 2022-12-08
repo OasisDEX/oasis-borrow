@@ -1,7 +1,7 @@
 import { useInterpret } from '@xstate/react'
 import React from 'react'
 
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import { OpenAaveStateMachine } from '../state'
 
@@ -10,7 +10,7 @@ function setupOpenAaveStateContext({
   config,
 }: {
   machine: OpenAaveStateMachine
-  config: IStrategyConfig
+  config: StrategyConfig
 }) {
   const stateMachine = useInterpret(
     machine.withContext({
@@ -43,7 +43,7 @@ export function OpenAaveStateMachineContextProvider({
   children,
   machine,
   config,
-}: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: IStrategyConfig }>) {
+}: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: StrategyConfig }>) {
   const context = setupOpenAaveStateContext({ machine, config })
   return <openAaveStateContext.Provider value={context}>{children}</openAaveStateContext.Provider>
 }

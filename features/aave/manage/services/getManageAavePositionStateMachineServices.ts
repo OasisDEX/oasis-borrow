@@ -26,7 +26,7 @@ export function getManageAavePositionStateMachineServices(
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
-    address: string,
+    proxyAddress: string,
   ) => Observable<AaveProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
@@ -76,7 +76,7 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     prices$: (context) => {
-      return pricesFeed$(context.tokens.collateral, context.tokens.debt)
+      return pricesFeed$(context.tokens.collateral)
     },
     strategyInfo$: (context) => {
       return strategyInfo$(context.tokens.collateral).pipe(

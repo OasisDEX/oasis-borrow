@@ -17,8 +17,8 @@ import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
-import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
+import { from, Observable } from 'rxjs'
+import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { getAllowanceStateMachine } from '../stateMachines/allowance'
 import { transactionContextService } from '../stateMachines/transaction'
@@ -133,6 +133,15 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
+  function tempPositionFromLib$(collateralToken: string, debtToken: string, proxyAddress: string) {
+    return context$.pipe(
+      switchMap((context) => {
+        return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
+      }),
+      shareReplay(1),
+    )
+  }
+
   const commonTransactionServices = transactionContextService(context$)
 
   const allowanceStateMachine = getAllowanceStateMachine(
@@ -145,6 +154,18 @@ export function setupAaveContext({
     txHelpers$,
     contextForAddress$,
     commonTransactionServices,
+  )
+
+  const aaveProtocolData$ = memoize(
+    curry(getAaveProtocolData$)(
+      aaveUserReserveData$,
+      aaveUserAccountData$,
+      aaveOracleAssetPriceData$,
+      aaveUserConfiguration$,
+      aaveReservesList$,
+      tempPositionFromLib$,
+    ),
+    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
   const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
