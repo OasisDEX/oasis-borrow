@@ -218,7 +218,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       const multicallResponse = await makeCall(network, [callBody])
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
 
-      if(multicallResponse[0].error) {
+      if (multicallResponse[0].error) {
         throw new Error(multicallResponse[0].error.message)
       }
       const [, data] = multicall.interface.decodeFunctionResult(
