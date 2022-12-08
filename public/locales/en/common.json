@@ -886,6 +886,7 @@
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "pnl-value": "PnL: {{value}}",
+    "manage-token": "Manage {{token}}",
     "manage-collateral": "Manage collateral ({{token}})",
     "manage-debt": "Manage debt ({{token}})",
     "close-position": "Close position",
@@ -903,6 +904,7 @@
         "adjust": "Adjust",
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
+        "withdraw": "Withdraw",
         "switch-to-borrow": "Switch to Borrow"
       },
       "earn": {

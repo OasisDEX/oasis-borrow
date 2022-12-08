@@ -52,6 +52,8 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
   | { type: 'CLOSE_POSITION' }
+  | { type: 'MANAGE_COLLATERAL' }
+  | { type: 'MANAGE_DEBT' }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'START_TRANSACTION' }
@@ -220,6 +222,40 @@ export function createManageAaveStateMachine(
                 },
               },
             },
+            manageCollateral: {
+              on: {
+                START_TRANSACTION: {
+                  cond: 'validTransactionParameters',
+                  target: 'txInProgress',
+                  actions: ['closePositionTransactionEvent'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
+            manageDebt: {
+              on: {
+                START_TRANSACTION: {
+                  cond: 'validTransactionParameters',
+                  target: 'txInProgress',
+                  actions: ['closePositionTransactionEvent'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
             txInProgress: {
               entry: ['spawnTransactionMachine'],
               on: {
@@ -280,6 +316,14 @@ export function createManageAaveStateMachine(
         },
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
+        },
+        MANAGE_COLLATERAL: {
+          cond: 'canChangePosition',
+          target: 'frontend.manageCollateral',
+        },
+        MANAGE_DEBT: {
+          cond: 'canChangePosition',
+          target: 'frontend.manageDebt',
         },
       },
     },

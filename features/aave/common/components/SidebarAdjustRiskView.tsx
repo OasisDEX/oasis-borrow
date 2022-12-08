@@ -2,6 +2,7 @@ import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { WithArrow } from 'components/WithArrow'
+import { ManageAaveEvent } from 'features/aave/manage/state'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
@@ -19,7 +20,9 @@ import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents =
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | { type: 'RESET_RISK_RATIO' | 'CLOSE_POSITION' | 'BACK_TO_EDITING' }
+  | ({
+      type: 'RESET_RISK_RATIO'
+    } & ManageAaveEvent)
 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
