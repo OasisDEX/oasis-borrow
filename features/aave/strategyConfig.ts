@@ -46,6 +46,7 @@ export const strategies: Array<IStrategyConfig> = [
   {
     name: 'ethusdc',
     urlSlug: 'ethusdc',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveMultiplyOpenHeader,
       headerManage: AaveMultiplyManageHeader,
@@ -95,6 +96,7 @@ export const strategies: Array<IStrategyConfig> = [
   {
     name: 'wBTCusdc',
     urlSlug: 'wBTCusdc',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveMultiplyOpenHeader,
       headerManage: AaveMultiplyManageHeader,
