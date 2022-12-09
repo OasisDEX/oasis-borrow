@@ -7,18 +7,24 @@ import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
-import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
+import { IPosition } from '@oasisdex/oasis-actions'
+import { amountFromWei } from '@oasisdex/utils'
 
 interface OutstandingDebtInformationProps {
-  currentDebtInDebtToken: BigNumber
-  afterDebtInDebtToken: BigNumber
-  debtToken: string
+  currentPosition: IPosition
+  newPosition: IPosition
+}
+
+function formatDebtAmount(pos: IPosition) {
+  return `${formatAmount(amountFromWei(pos.debt.amount, pos.debt.precision), pos.debt.symbol)} ${
+    pos.debt.symbol
+  }`
 }
 
 export function OutstandingDebtInformation({
-  debtToken,
-  currentDebtInDebtToken,
-  afterDebtInDebtToken,
+  currentPosition,
+  newPosition,
 }: OutstandingDebtInformationProps) {
   const { t } = useTranslation()
 
@@ -27,9 +33,9 @@ export function OutstandingDebtInformation({
       label={t('vault-changes.outstanding-debt')}
       value={
         <Flex>
-          {currentDebtInDebtToken && formatCryptoBalance(currentDebtInDebtToken)} {debtToken}
+          {formatDebtAmount(currentPosition)}
           <VaultChangesInformationArrow />
-          {afterDebtInDebtToken && formatCryptoBalance(afterDebtInDebtToken)} {debtToken}
+          {formatDebtAmount(newPosition)}
         </Flex>
       }
     />

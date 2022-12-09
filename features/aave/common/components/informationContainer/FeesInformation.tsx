@@ -11,21 +11,22 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
+import { amountFromWei } from '@oasisdex/utils'
+import { getToken } from '../../../../../blockchain/tokensMetadata'
+import { Swap } from '@oasisdex/oasis-actions/src/helpers/calculations/Position'
 
 interface FeesInformationProps {
-  debtToken: string
-  feeInDebtToken: BigNumber
   estimatedGasPrice?: HasGasEstimation
+  swap: Swap
 }
 
-export function FeesInformation({
-  estimatedGasPrice,
-  debtToken,
-  feeInDebtToken,
-}: FeesInformationProps) {
+export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
-
+  const oasisFeeDisplayInDebtToken = formatAmount(
+    amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].precision),
+    swap[swap.collectFeeFrom].symbol,
+  )
   return (
     <>
       <VaultChangesInformationItem
@@ -35,7 +36,7 @@ export function FeesInformation({
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken} +`}
+            {`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol} +`}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -52,7 +53,7 @@ export function FeesInformation({
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken}`}
+            value={`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol}`}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}

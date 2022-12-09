@@ -42,37 +42,7 @@ type OpenAaveInformationContainerProps = {
 export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { strategy, currentPosition, tokens } = state.context
-  const debtToken = tokens.debt
-  const swapFee = strategy?.simulation?.swap?.tokenFee || zero
-  const { convertToAaveOracleAssetPrice$ } = useAaveContext()
-
-  const [feeInDebtToken, feeInDebtTokenError] = useObservable(
-    convertToAaveOracleAssetPrice$({
-      token: debtToken,
-      amount: amountFromWei(swapFee, getToken(debtToken).precision),
-    }),
-  )
-
-  const [currentDebtInDebtToken, currentDebtInDebtTokenError] = useObservable(
-    convertToAaveOracleAssetPrice$({
-      token: debtToken,
-      amount: amountFromWei(
-        currentPosition?.debt.amount || zero,
-        getToken(currentPosition?.debt.symbol || 'ETH').precision,
-      ),
-    }),
-  )
-
-  const [afterDebtInDebtToken, afterDebtInDebtTokenError] = useObservable(
-    convertToAaveOracleAssetPrice$({
-      token: debtToken,
-      amount: amountFromWei(
-        strategy?.simulation.position.debt.amount || zero,
-        getToken(strategy?.simulation.position.debt.symbol || 'ETH').precision,
-      ),
-    }),
-  )
+  const { strategy, currentPosition } = state.context
 
   return strategy && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
@@ -84,35 +54,19 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
         transactionParameters={strategy}
         currentPosition={currentPosition}
       />
-      <WithErrorHandler error={[currentDebtInDebtTokenError, afterDebtInDebtTokenError]}>
-        <WithLoadingIndicator value={[currentDebtInDebtToken, afterDebtInDebtToken]}>
-          {([currentDebtInDebtToken, afterDebtInDebtToken]) => (
-            <OutstandingDebtInformation
-              currentDebtInDebtToken={currentDebtInDebtToken}
-              afterDebtInDebtToken={afterDebtInDebtToken}
-              debtToken={state.context.tokens.debt}
-            />
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <OutstandingDebtInformation
+        currentPosition={currentPosition}
+        newPosition={strategy.simulation.position}
+      />
       <LtvInformation
         {...state.context}
         transactionParameters={strategy}
         currentPosition={currentPosition}
       />
-      <WithErrorHandler error={feeInDebtTokenError}>
-        <WithLoadingIndicator value={feeInDebtToken}>
-          {(feeInDebtToken) => {
-            return (
-              <FeesInformation
-                debtToken={debtToken}
-                feeInDebtToken={feeInDebtToken}
-                estimatedGasPrice={state.context.estimatedGasPrice}
-              />
-            )
-          }}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <FeesInformation
+        swap={strategy.simulation.swap}
+        estimatedGasPrice={state.context.estimatedGasPrice}
+      />
     </VaultChangesInformationContainer>
   ) : (
     <></>
