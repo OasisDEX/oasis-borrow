@@ -235,7 +235,7 @@ export function SidebarOpenAaveVault() {
         />
       )
     case state.matches('frontend.dpmProxyCreating'):
-      return <CreateDPMAccountView machine={state.context.refDmpAccountMachine!} />
+      return <CreateDPMAccountView machine={state.context.refDpmAccountMachine!} />
     case state.matches('frontend.allowanceSetting'):
       return (
         <AllowanceView

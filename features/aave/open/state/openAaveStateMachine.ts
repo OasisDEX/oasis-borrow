@@ -42,7 +42,7 @@ export const totalStepsMap = {
 
 export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
-  refDmpAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
+  refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
   hasOpenedPosition?: boolean
@@ -422,11 +422,11 @@ export function createOpenAaveStateMachine(
           return undefined
         }),
         spawnDpmProxyMachine: assign((_) => ({
-          refDmpAccountMachine: spawn(dmpAccountStateMachine, 'dmpAccountStateMachine'),
+          refDpmAccountMachine: spawn(dmpAccountStateMachine, 'dmpAccountStateMachine'),
         })),
         killDpmProxyMachine: pure((context) => {
-          if (context.refDmpAccountMachine && context.refDmpAccountMachine.stop) {
-            context.refDmpAccountMachine.stop()
+          if (context.refDpmAccountMachine && context.refDpmAccountMachine.stop) {
+            context.refDpmAccountMachine.stop()
           }
           return undefined
         }),
