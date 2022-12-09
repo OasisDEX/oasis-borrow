@@ -70,7 +70,16 @@ function getRpcNode(network: string) {
       throw new Error('unsupported network')
   }
 }
-
+function getSpotAddress(network: string) {
+  switch (network) {
+    case 'mainnet':
+      return `0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3`
+    case 'goerli':
+      return `0xACe2A9106ec175bd56ec05C9E38FE1FDa8a1d758`
+    default:
+      throw new Error('unsupported network')
+  }
+}
 function getMulticall(network: string) {
   switch (network) {
     case 'mainnet':
@@ -271,7 +280,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         multicallResponse[0].result,
       )
 
-      // TODO add goerli spot address
+      const spotAddress = getSpotAddress(network)
       const multicallFailedCalls = missingCalls.filter(
         (x: any, i: number) => dataFromMulticall[i] === false,
       )
@@ -289,7 +298,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
                 {
                   data: x.call[1],
                   to: x.call[0],
-                  from: '0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3',
+                  from: spotAddress,
                 },
                 'latest',
               ],
