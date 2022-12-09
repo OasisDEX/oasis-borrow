@@ -289,8 +289,23 @@ export async function getCloseAaveParameters({
   return { strategy, operationName: strategy.transaction.operationName }
 }
 
-export const EMPTY_POSITION = new Position({ amount: zero }, { amount: zero }, zero, {
-  maxLoanToValue: zero,
-  liquidationThreshold: zero,
-  dustLimit: zero,
-})
+export function getEmptyPosition(collateral: string, debt: string) {
+  return new Position(
+    {
+      amount: zero,
+      symbol: debt,
+      precision: getToken(debt).precision,
+    },
+    {
+      amount: zero,
+      symbol: collateral,
+      precision: getToken(collateral).precision,
+    },
+    zero,
+    {
+      maxLoanToValue: zero,
+      liquidationThreshold: zero,
+      dustLimit: zero,
+    },
+  )
+}

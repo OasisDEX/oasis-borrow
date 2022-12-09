@@ -149,7 +149,3 @@ export function loadStrategyFromTokens(
   }
   return strategy
 }
-
-// export const aaveStrategiesList = Object.values(strategies)
-//   .filter(({ enabled }) => enabled)
-//   .map((s) => s.name)

@@ -3,8 +3,11 @@ import React from 'react'
 
 import { ProxyType, IStrategyConfig } from '../../common/StrategyConfigTypes'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import { OpenAaveStateMachine } from '../state'
+import { Position } from '@oasisdex/oasis-actions'
+import { zero } from '../../../../helpers/zero'
+import { getToken } from '../../../../blockchain/tokensMetadata'
+import { getEmptyPosition } from '../../oasisActionsLibWrapper'
 
 function setupOpenAaveStateContext({
   machine,
@@ -25,7 +28,7 @@ function setupOpenAaveStateContext({
       tokens: config.tokens,
       currentStep: 1,
       totalSteps: 4,
-      currentPosition: EMPTY_POSITION,
+      currentPosition: getEmptyPosition(config.tokens.collateral, config.tokens.debt),
     }),
     { devTools: process.env.NODE_ENV !== 'production' },
   ).start()
