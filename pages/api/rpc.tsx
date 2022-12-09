@@ -414,9 +414,9 @@ async function sleepUntill(check: () => boolean, maxCount: number, message: stri
 }
 
 function isBlockNumberRequest(body: any) {
-  return false //body.method === 'eth_blockNumber'
+  return body.method === 'eth_blockNumber'
 }
 
 function isCodeRequest(body: any) {
-  return false //body.method === 'eth_getCode'
+  return body.method === 'eth_getCode'
 }
