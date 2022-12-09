@@ -20,8 +20,8 @@ import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
-import { combineLatest, from, Observable } from 'rxjs'
-import { distinctUntilKeyChanged, filter, map, shareReplay, switchMap } from 'rxjs/operators'
+import { from, Observable } from 'rxjs'
+import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../blockchain/tokens'
 import { AppContext } from '../../components/AppContext'
@@ -150,11 +150,9 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
-  function tempPositionFromLib$(collateralToken: string, debtToken: string) {
-    return combineLatest(context$, proxyForAccount$).pipe(
-      filter(([context, proxyAddress]) => !!context && !!proxyAddress),
-      switchMap(([context, proxyAddress]) => {
-        proxyAddress = proxyAddress!
+  function tempPositionFromLib$(collateralToken: string, debtToken: string, proxyAddress: string) {
+    return context$.pipe(
+      switchMap((context) => {
         return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
       }),
       shareReplay(1),
@@ -184,7 +182,7 @@ export function setupAaveContext({
       aaveReservesList$,
       tempPositionFromLib$,
     ),
-    (collateralToken, address) => `${collateralToken}-${address}`,
+    (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
   const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(

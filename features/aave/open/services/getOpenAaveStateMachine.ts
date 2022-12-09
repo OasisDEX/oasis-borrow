@@ -39,7 +39,7 @@ export function getOpenAavePositionStateMachineServices(
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
-    address: string,
+    proxyAddress: string,
   ) => Observable<AaveProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): OpenAaveStateMachineServices {
