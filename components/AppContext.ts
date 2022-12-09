@@ -271,7 +271,7 @@ import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } f
 
 import curry from 'ramda/src/curry'
 import { loadablifyLight } from 'helpers/loadable'
-import { createDsrWithdraw$ } from 'features/dsr/helpers/dsrWithdraw'
+import { createDsrWithdraw$ } from 'features/dsr/pipes/dsrWithdraw'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit';
 import { createDsr$ } from 'features/dsr/utils/createDsr'
 import { chi, dsr, pie } from 'features/dsr/helpers/potCalls'

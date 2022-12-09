@@ -2076,6 +2076,9 @@
     "labels": {
       "deposit": "Deposit",
       "withdraw": "Withdraw"
+    },
+    "product-card": {
+      "description": "Earn on your Dai using the Maker Protocol"
     }
   }
 }

@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { RAY, WAD } from 'components/constants'
-import { DsrExitAllData, DsrExitData, exit, exitAll } from './potCalls'
+import { DsrExitAllData, DsrExitData, exit, exitAll } from '../helpers/potCalls'
 import {
   ApplyChange,
   applyChange,

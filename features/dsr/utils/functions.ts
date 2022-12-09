@@ -1,6 +1,6 @@
 import { TFunction } from "next-i18next";
 import { DsrDepositStage, DsrDepositState } from "../helpers/dsrDeposit";
-import { DsrWithdrawStage, DsrWithdrawState } from "../helpers/dsrWithdraw";
+import { DsrWithdrawStage, DsrWithdrawState } from "../pipes/dsrWithdraw";
 import { DsrSidebarTabOptions } from "../sidebar/DsrSideBar";
 
 // TODO: Move this to translations and add withdraw logic

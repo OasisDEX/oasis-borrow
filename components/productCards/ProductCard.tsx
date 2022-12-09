@@ -306,7 +306,11 @@ export function ProductCard({
               )
             })}
           </Flex>
-          <Flex>
+          <Flex
+            sx={{
+              marginTop: 'auto'
+            }}
+          >
             <AppLink
               href={button.link}
               disabled={isFull}

@@ -10,7 +10,7 @@ import { OpenVaultAnimation } from "theme/animations"
 import DsrDepositDaiFrom from "../components/DsrDepositDaiForm"
 import DsrWithdrawDaiFrom from "../components/DsrWithdrawtDaiForm"
 import { DsrDepositStage } from "../helpers/dsrDeposit"
-import { DsrWithdrawStage } from "../helpers/dsrWithdraw"
+import { DsrWithdrawStage } from "../pipes/dsrWithdraw"
 import { createPrimaryButtonLabel } from "../utils/functions"
 
 export type DsrSidebarTabOptions = 'depositDai' | 'withdrawDai'

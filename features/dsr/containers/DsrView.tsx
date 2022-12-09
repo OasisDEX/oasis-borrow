@@ -10,7 +10,7 @@ import { Grid, Box, Card } from "theme-ui";
 import DsrDetailsSection from "../components/DsrDetailsSection";
 import { DsrDepositState } from "../helpers/dsrDeposit";
 import { DsrPot } from "../helpers/dsrPot";
-import { DsrWithdrawState } from "../helpers/dsrWithdraw";
+import { DsrWithdrawState } from "../pipes/dsrWithdraw";
 import DsrSideBar, { DsrSidebarTabOptions } from "../sidebar/DsrSideBar";
 import { selectPrimaryAction } from "../utils/functions";
 import {  handleAmountChange } from '../utils/formUtils';
@@ -35,7 +35,7 @@ export default function DsrView({
 
   const isLoading = activeTab === 'depositDai' ? (dsrDepostis.stage === 'depositInProgress') : (dsrWithdraws.stage === 'withdrawInProgress')
   const stage = activeTab === 'depositDai' ? dsrDepostis.stage : dsrWithdraws.stage
-  
+
   const currentApy = useMemo(() => {
     return formatPercent(dsrOverview.value?.apy || new BigNumber(0), { precision: 2 })
   }, [dsrOverview])
@@ -62,7 +62,7 @@ export default function DsrView({
           variant="underline"
           sections={[
             {
-              value: 'simulate',
+              value: 'overview',
               label: t('dsr.details.overview'),
               content: (
                 <Grid variant="vaultContainer">
