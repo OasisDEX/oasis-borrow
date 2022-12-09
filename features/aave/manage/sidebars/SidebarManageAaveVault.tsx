@@ -206,8 +206,8 @@ function GetReviewingSidebarProps({
               currencyCode={debt}
               tokenUsdPrice={new BigNumber(150)}
               maxAmountLabel={'Balance'}
-              amount={new BigNumber(150)}
-              onChange={handleNumericInput(() => new BigNumber(150))}
+              amount={state.context.userInput.manageTokenActionValue}
+              onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
           </Grid>
