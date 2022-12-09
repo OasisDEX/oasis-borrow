@@ -2,6 +2,7 @@ import { getAddress } from 'ethers/lib/utils'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -9,6 +10,7 @@ import { WithConnection } from '../../components/connectWallet/ConnectWallet'
 import { AppLayout } from '../../components/Layouts'
 import { AaveContextProvider, useAaveContext } from '../../features/aave/AaveContextProvider'
 import { ManageAaveStateMachineContextProvider } from '../../features/aave/manage/containers/AaveManageStateMachineContext'
+import { PositionId } from '../../features/aave/types'
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
@@ -19,27 +21,35 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      account: ctx.query.address || null,
+      vault: ctx.query.vault || null,
     },
   }
 }
 
-function WithStrategy({ address }: { address: string }) {
-  const { strategyConfig$, aaveManageStateMachine } = useAaveContext()
-  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(address))
-
+function WithStrategy(positionId: PositionId) {
+  const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext()
+  const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId))
+  const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
+    proxiesRelatedWithPosition$(positionId),
+  )
   return (
-    <WithErrorHandler error={[strategyConfigError]}>
-      <WithLoadingIndicator value={[strategyConfig]} customLoader={<VaultContainerSpinner />}>
-        {([_strategyConfig]) => (
+    <WithErrorHandler error={[strategyConfigError, proxiesRelatedWithPositionError]}>
+      <WithLoadingIndicator
+        value={[strategyConfig, proxiesRelatedWithPosition]}
+        customLoader={<VaultContainerSpinner />}
+      >
+        {([_strategyConfig, _proxies]) => (
           <ManageAaveStateMachineContextProvider
             machine={aaveManageStateMachine}
-            address={address}
+            positionId={positionId}
             strategy={_strategyConfig}
           >
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
-              <AaveManagePositionView address={address} strategyConfig={_strategyConfig} />
+              <AaveManagePositionView
+                address={_proxies.walletAddress}
+                strategyConfig={_strategyConfig}
+              />
             </Grid>
           </ManageAaveStateMachineContextProvider>
         )}
@@ -48,14 +58,22 @@ function WithStrategy({ address }: { address: string }) {
   )
 }
 
-function Position({ account }: { account: string }) {
-  const address = account ? getAddress(account) : ''
+function Position({ vault }: { vault: string }) {
+  const { replace } = useRouter()
+
+  const address: string | undefined = getAddress(vault)
+  const vaultId: number | undefined =
+    address !== undefined ? undefined : isNaN(Number(vault)) ? undefined : Number(vault)
+
+  if (address === undefined && vaultId === undefined) {
+    void replace('/')
+  }
 
   return (
     <AaveContextProvider>
       <WithConnection>
         <WithTermsOfService>
-          <WithStrategy address={address} />
+          <WithStrategy walletAddress={address} vaultId={vaultId} />
         </WithTermsOfService>
       </WithConnection>
     </AaveContextProvider>

@@ -4,7 +4,12 @@ import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xst
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
+import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
+import {
+  callOperationExecutorWithDpmProxy,
+  callOperationExecutorWithDsProxy,
+  OperationExecutorTxMeta,
+} from '../../../../blockchain/calls/operationExecutor'
 import { allDefined } from '../../../../helpers/allDefined'
 import { zero } from '../../../../helpers/zero'
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
@@ -19,8 +24,9 @@ import {
   contextToTransactionParameters,
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
 import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
+import { PositionId } from '../../types'
 
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
@@ -30,8 +36,17 @@ export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorFromTransactionParametersStateMachine
   strategyConfig: StrategyConfig
-  address: string
+  positionId: PositionId
   proxyAddress?: string
+  positionCreatedBy: ProxyType
+}
+
+function getTransactionDef(context: ManageAaveContext): TransactionDef<OperationExecutorTxMeta> {
+  const { positionCreatedBy } = context
+
+  return positionCreatedBy === ProxyType.DsProxy
+    ? callOperationExecutorWithDsProxy
+    : callOperationExecutorWithDpmProxy
 }
 
 export type ManageAaveEvent =
@@ -50,6 +65,7 @@ export function createManageAaveStateMachine(
   allowanceStateMachine: AllowanceStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
+    transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
 ) {
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
@@ -104,6 +120,7 @@ export function createManageAaveStateMachine(
           id: 'allowance$',
         },
       ],
+      entry: ['calculateEffectiveProxyAddress'],
       id: 'manageAaveStateMachine',
       type: 'parallel',
       states: {
@@ -330,7 +347,10 @@ export function createManageAaveStateMachine(
         ),
         spawnTransactionMachine: assign((context) => ({
           refTransactionMachine: spawn(
-            transactionStateMachine(contextToTransactionParameters(context)),
+            transactionStateMachine(
+              contextToTransactionParameters(context),
+              getTransactionDef(context),
+            ),
             'transactionMachine',
           ),
         })),
@@ -372,6 +392,16 @@ export function createManageAaveStateMachine(
             'allowanceMachine',
           ),
         })),
+        calculateEffectiveProxyAddress: assign((context) => {
+          const effectiveProxyAddress =
+            context.positionCreatedBy === ProxyType.DpmProxy
+              ? context.userDpmProxy?.proxy
+              : context.connectedProxyAddress
+
+          return {
+            effectiveProxyAddress,
+          }
+        }),
       },
     },
   )
@@ -381,6 +411,7 @@ class ManageAaveStateMachineTypes {
   needsConfiguration() {
     return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any)
   }
+
   withConfig() {
     // @ts-ignore
     return createManageAaveStateMachine({} as any, {} as any, {} as any).withConfig({})

@@ -7,9 +7,15 @@ import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aav
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
+export enum ProxyType {
+  DsProxy = 'DsProxy',
+  DpmProxy = 'DpmProxy',
+}
+
 export interface StrategyConfig {
   name: string
   urlSlug: string
+  proxyType: ProxyType
   viewComponents: {
     headerOpen: AaveHeader
     headerManage: AaveHeader

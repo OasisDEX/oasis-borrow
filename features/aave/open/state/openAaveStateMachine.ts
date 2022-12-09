@@ -1,13 +1,24 @@
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
+import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
+import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
+import {
+  callOperationExecutorWithDpmProxy,
+  callOperationExecutorWithDsProxy,
+  OperationExecutorTxMeta,
+} from '../../../../blockchain/calls/operationExecutor'
+import { ContextConnected } from '../../../../blockchain/network'
 import { allDefined } from '../../../../helpers/allDefined'
 import { zero } from '../../../../helpers/zero'
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
+import { createDPMAccountStateMachine } from '../../../stateMachines/dpmAccount'
+import {
+  DMPAccountStateMachineResultEvents,
+  DPMAccountStateMachine,
+} from '../../../stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { ProxyResultEvent, ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import {
@@ -20,7 +31,7 @@ import {
   contextToTransactionParameters,
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
@@ -31,11 +42,20 @@ export const totalStepsMap = {
 
 export interface OpenAaveContext extends BaseAaveContext {
   refProxyMachine?: ActorRefFrom<ProxyStateMachine>
+  refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
-
   hasOpenedPosition?: boolean
   strategyConfig: StrategyConfig
+  positionRelativeAddress?: string
+}
+
+function getTransactionDef(context: OpenAaveContext): TransactionDef<OperationExecutorTxMeta> {
+  const { strategyConfig } = context
+
+  return strategyConfig.proxyType === ProxyType.DpmProxy
+    ? callOperationExecutorWithDpmProxy
+    : callOperationExecutorWithDsProxy
 }
 
 export type OpenAaveEvent =
@@ -46,13 +66,16 @@ export type OpenAaveEvent =
   | { type: 'UPDATE_META_INFO'; hasOpenedPosition: boolean }
   | BaseAaveEvent
   | ProxyResultEvent
+  | DMPAccountStateMachineResultEvents
 
 export function createOpenAaveStateMachine(
   transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
-  proxyMachine: ProxyStateMachine,
+  proxyStateMachine: ProxyStateMachine,
+  dmpAccountStateMachine: DPMAccountStateMachine,
   allowanceStateMachine: AllowanceStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
+    transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
 ) {
   /** @xstate-layout N4IgpgJg5mDOIC5QHsAOYB2BBAhgNzAGUAXHYsAWRwGMALASwzADoAbZHCRqAYgGEA8gDkhAUT4AVUQBEA+oKFSAGhPkAJLEIDiMgNoAGALqJQqZLHrF6yDCZAAPRAFoAzABZ9zAGxuAjAA4AVgB2N2CATn99F18AGhAAT2d-f19vQJcvQMjfcLcPfwBfQvi0TFwCEjJKGgYmZkhLbmYIMAAjZABXDGpuHntYUnJmHAAzcgAnAApA-X0ASh4y7HwiIZq6RhZGqwwoFvaunu4DYyQQMwsrGztHBBd-L29gwK9fACZ9d+DfOff4pIIJwZYLMQK+F7hQLvFwvLxeIolEDLCprapUTb1HZ9QiiVRYCgCACqilOdkuTRu5zuCOY7mCCNhuQZgUCbgByXebmY73evlec38wWivl8xVK6BWlXWGLq2y4u14YhUskIUgACmTzhTrrZqYhRcF3nSfi4YQ99I8XIEOUC8i5mBCvKa8uF9G9ERLyqsquRZVsGgq+srVGrRJrfGdTOZKXrQHdfNanuFeXyvOEvNa3P9Es4IqC8pngsXWSlWeLkZLUb6NnLA009jwJAAlTSELCSACSwlk6qwrYoeNEzcIsmb4lEnYAanojOSY7rbohhU9-Bb-Hl-N99C9bU4gsahXzfD4XOEYvo3BWUT6ZbUA6gJsh7Ak+BMwGQ+urmwIlABNeRxywKRpC1aMrmsOMHANfQ8mYUIvndI19FFIU918Nx-DBeF8h+S8QUya8q1vdF73qWAwGIRUKE6VgrFQVgWFaDpul6RsBnWEZxjAaZZgWJZiOlUjMRYCiqO4Gi6PoBimMOViTjnbUF0gpcEBhflvBcFwUK3D53g3Pc3GdZg3FmE83BTNwHlmK8kRvIS-TI0TKOo2j6MYngiXVaRgNEVUW18rQAM7IQADEBDAi5lKpeNEE+GJvG+QJUkvN1wmCPdgi3ZgUzNS13RTA8iO9BzawDMTXKkmTPO83zZEHCQsFkELwsinUVP1NTvjSAJYMzTMvi5TLstyz4onTfTwWKqU0UckTmAqiS3OkjzcVUZtO0IABpMdgO7Nroqgu4uWCB1cjPMI2QeKIXGG41RvyiagjFOzBNmsryJcpaqo88c1rHTadtbCR9sU8DY1U94fGNLNj15WEUPZXMgSy+6YU+KGzVMwJpurO95sWvZJPcsAm1bIR2y7Hs+wHIcRzHCdp1nKMoogmLoLUtdQSyIJUmFT4jKRwEnFRnL1PS3JXi5cJcZIua60JqBiZW0mQ388MDrZqDha8HceSNNMIgRXcOcTN4ctmdwdzZDwPll0r-U+8SieW6qACEOx2iQBFkGROxB7RNYhzqze5TNYUeD4D1ePdjcdDcvH0qGM0vF6vRmmtHZYd88HoMAAHdg1EFUw01MHWeD2KEETLTmC5xN7VRnNATNQ8MiiNkISCGIcdekr3qz5gc7zwvGw9vgvZ9v2A60IPF06-xTLBXlTOhyIIhtZGzRyiF3TPRe1yMtPK37zOnKHsBc4LvoAopjsQep-sCTp0dxz4ScZ1A8v2vZhM13Cbw8Jshcl1t8cItouTLzZChVKKETzuHtgPc+xB7CdgwOqJ8UB3ywFgDwCANgWCMDwMgAA1iwYgEwcAYFgDQXUc8OpVw+AlDCAQo5vDdCbQE8IAEMkXtpAI0IZZ9wzvjOsKC0EYOQFguAuCeJPgmMwBiZBRjIAmAAW2YBQqhNDqB0O-odVSGFsw8kvO8Vk6V3SPE3lwnwJo8jFlOomLc7xEFn3mig0KOB6CsE6O+Hg44Wx-nob-RAIQniYUThEHc7xwjnltB8XWddWSnT3rCHCrjREBg8V4nxfjx6T19tIf2IVZ76K1qpU6oJPhugRJbdM0J4koQdPCE8UMrRZSyBk4ScoeDfk7O-V+jNP7BKOogGIxo3i8ndNEzCO50KmW5BZGJkRE7Zg7l0+WWxPK4mbKqPEM9Rx8A0NoZm85ykhxhJ4E8TCMimUlrdZGTgMKwjru6FeBQsimQ2R9Um-0PYABlNDvxGYYtkoIjSZgzBeXSGVHkYShjyN01ooRvHyC44ReNulbO-L+ACWBpDSD+oM9+TMv4sx-qMhAKZPB8mLN8GI6UET+HmbSTCHxQjCicUI9OmLNlMH4MIMQkgZDyGEMoVQRzNA6DJWcyuHNXhpDCM6UUusUxZVhcLDCbITIpliY8Lk+l9C9yRBgZArR4DnHskg+a7BODcFlfPKuTguRYXBOePKnymQaucOmbk0RYRmLZEKV03zB7Yj2MwegEBGIOoYRzcIPUYiZFhBkT4vwHnC0FvBd02ZQh+DdPkXuPK5Y-PrIqA4LFjh7FjSE+4jwTK0rgcGlJQs8z1tCHxTM2RUhTQxSWsNQYI22q4NWpS5yq7giwieeE1SgH9VjhufWKQrJdsXka0N59w1QBrZSz4dIlX10ZayVtdpF1HksVEMxlSN3zUfM+V875PyjvBo602sEAHgjMdEbIrIvjeqBDEzwkKMIbj5OlLKtli0O3PorZWMlI3RrADuyGUK67njMbyDhKq9zaSeDCVkUtk74a8DehWX0XY-VkpWti26x1yuOj3OxvxKkxDeBm5wrJwlhGtE6TCKbSPlXI0rV2jE2AcBHbRl9cbjpQyeFpeGVlXjOiGo8xjbLLQpBPEKcsfboMEyE3BmNdHX0JkiM0pKKULKwX-U4dKDpRrPJ8FkdKAn6jD2vkO8T9rjPSYNFZsEwDVXnthPErCcwXjFjXTECJJHdPWrrO50e+wo1Gak7W5kQGkoC1SLyZlyMIQOiyjXLGZjszfFc9nS+I9vNpcpUY405ioawWCzZ1COVLK9QhMlFFFXNGoPQZg7BFrauGOsvBXkrJerqosrafIngLr+uiV2ncvXsneN8Uhnz6WLKBHglZHLGF0wMi8Lac8u2PDdrmBhDt6KoPxayfYQgnRqDUBkchzq55PBGtMpEPwaTYK2m4TyBEfgQhQiNTEir72nXXW8H4IIHLIginQlDNI56IgpFSuV4ohQgA */
@@ -71,6 +94,10 @@ export function createOpenAaveStateMachine(
         {
           src: 'connectedProxyAddress$',
           id: 'connectedProxyAddress$',
+        },
+        {
+          src: 'dpmProxy$',
+          id: 'dpmProxy$',
         },
         {
           src: 'context$',
@@ -137,7 +164,7 @@ export function createOpenAaveStateMachine(
           initial: 'editing',
           states: {
             editing: {
-              entry: ['resetCurrentStep', 'setTotalSteps'],
+              entry: ['resetCurrentStep', 'setTotalSteps', 'calculateEffectiveProxyAddress'],
               on: {
                 SET_AMOUNT: {
                   target: '#openAaveStateMachine.background.debouncing',
@@ -145,8 +172,13 @@ export function createOpenAaveStateMachine(
                 },
                 NEXT_STEP: [
                   {
-                    target: 'proxyCreating',
-                    cond: 'hasProxy',
+                    target: 'dpmProxyCreating',
+                    cond: 'shouldCreateDpmProxy',
+                    actions: 'incrementCurrentStep',
+                  },
+                  {
+                    target: 'dsProxyCreating',
+                    cond: 'shouldCreateDsProxy',
                     actions: 'incrementCurrentStep',
                   },
                   {
@@ -162,13 +194,22 @@ export function createOpenAaveStateMachine(
                 ],
               },
             },
-            proxyCreating: {
+            dsProxyCreating: {
               entry: ['spawnProxyMachine'],
               exit: ['killProxyMachine'],
               on: {
                 PROXY_CREATED: {
                   target: 'editing',
                   actions: 'updateContext',
+                },
+              },
+            },
+            dpmProxyCreating: {
+              entry: ['spawnDpmProxyMachine'],
+              exit: ['killDpmProxyMachine'],
+              on: {
+                DPM_ACCOUNT_CREATED: {
+                  target: 'editing',
                 },
               },
             },
@@ -256,7 +297,7 @@ export function createOpenAaveStateMachine(
           actions: 'updateContext',
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'setTotalSteps'],
+          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
         WEB3_CONTEXT_CHANGED: {
           actions: 'updateContext',
@@ -276,19 +317,25 @@ export function createOpenAaveStateMachine(
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
         },
+        DMP_PROXY_RECEIVED: {
+          actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
+        },
       },
     },
     {
       guards: {
-        hasProxy: ({ connectedProxyAddress }) => !allDefined(connectedProxyAddress),
+        shouldCreateDpmProxy: (context) =>
+          context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmProxy,
+        shouldCreateDsProxy: (context) =>
+          context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
         validTransactionParameters: ({
           userInput,
-          connectedProxyAddress,
+          effectiveProxyAddress,
           strategy,
           operationName,
-        }) => allDefined(userInput, connectedProxyAddress, strategy, operationName),
-        canOpenPosition: ({ tokenBalance, userInput, connectedProxyAddress, hasOpenedPosition }) =>
-          allDefined(tokenBalance, userInput.amount, connectedProxyAddress, !hasOpenedPosition) &&
+        }) => allDefined(userInput, effectiveProxyAddress, strategy, operationName),
+        canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
+          allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
           tokenBalance!.gt(userInput.amount!),
         isAllowanceNeeded,
       },
@@ -311,7 +358,7 @@ export function createOpenAaveStateMachine(
         }),
         setTotalSteps: assign((context) => {
           const allowance = isAllowanceNeeded(context)
-          const proxy = !allDefined(context.connectedProxyAddress)
+          const proxy = !allDefined(context.effectiveProxyAddress)
 
           const totalSteps =
             totalStepsMap.base +
@@ -366,11 +413,20 @@ export function createOpenAaveStateMachine(
           ...event,
         })),
         spawnProxyMachine: assign((_) => ({
-          refProxyMachine: spawn(proxyMachine),
+          refProxyMachine: spawn(proxyStateMachine, 'dsProxyStateMachine'),
         })),
         killProxyMachine: pure((context) => {
           if (context.refProxyMachine && context.refProxyMachine.stop) {
             context.refProxyMachine.stop()
+          }
+          return undefined
+        }),
+        spawnDpmProxyMachine: assign((_) => ({
+          refDpmAccountMachine: spawn(dmpAccountStateMachine, 'dmpAccountStateMachine'),
+        })),
+        killDpmProxyMachine: pure((context) => {
+          if (context.refDpmAccountMachine && context.refDpmAccountMachine.stop) {
+            context.refDpmAccountMachine.stop()
           }
           return undefined
         }),
@@ -379,7 +435,10 @@ export function createOpenAaveStateMachine(
         })),
         spawnTransactionMachine: assign((context) => ({
           refTransactionMachine: spawn(
-            transactionStateMachine(contextToTransactionParameters(context)),
+            transactionStateMachine(
+              contextToTransactionParameters(context),
+              getTransactionDef(context),
+            ),
             'transactionMachine',
           ),
         })),
@@ -396,7 +455,7 @@ export function createOpenAaveStateMachine(
               parameters: {
                 amount: context.userInput.amount!,
                 riskRatio: context.userInput.riskRatio || context.strategyConfig.riskRatios.default,
-                proxyAddress: context.connectedProxyAddress!,
+                proxyAddress: context.effectiveProxyAddress!,
                 collateralToken: context.strategyConfig.tokens.collateral,
                 debtToken: context.tokens.debt,
                 depositToken: context.tokens.deposit,
@@ -418,37 +477,42 @@ export function createOpenAaveStateMachine(
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
               token: context.tokens.deposit,
-              spender: context.connectedProxyAddress!,
+              spender: context.userDpmProxy?.proxy!,
               allowanceType: 'unlimited',
               minimumAmount: context.userInput.amount!,
             }),
             'allowanceMachine',
           ),
         })),
+        calculateEffectiveProxyAddress: assign((context) => {
+          const proxyAddressToUse =
+            context.strategyConfig.proxyType === ProxyType.DpmProxy
+              ? context.userDpmProxy?.proxy
+              : context.connectedProxyAddress
+
+          const contextConnected = (context.web3Context as any) as ContextConnected | undefined
+
+          const address =
+            context.strategyConfig.proxyType === ProxyType.DpmProxy
+              ? `/aave/${context.userDpmProxy?.vaultId}`
+              : `/aave/${contextConnected?.account}`
+
+          return {
+            effectiveProxyAddress: proxyAddressToUse,
+            positionRelativeAddress: address,
+          }
+        }),
       },
     },
   )
 }
 
-class OpenAaveStateMachineTypes {
-  needsConfiguration() {
-    return createOpenAaveStateMachine({} as any, {} as any, {} as any, {} as any)
-  }
-
-  withConfig() {
-    // @ts-ignore
-    return createOpenAaveStateMachine().withConfig({})
-  }
-}
-
-export type OpenAaveStateMachineWithoutConfiguration = ReturnType<
-  OpenAaveStateMachineTypes['needsConfiguration']
+export type OpenAaveStateMachineWithoutConfiguration = ReturnType<typeof createOpenAaveStateMachine>
+export type OpenAaveStateMachine = ReturnType<
+  OpenAaveStateMachineWithoutConfiguration['withConfig']
 >
-export type OpenAaveStateMachine = ReturnType<OpenAaveStateMachineTypes['withConfig']>
 
 export type OpenAaveStateMachineServices = MachineOptionsFrom<
   OpenAaveStateMachineWithoutConfiguration,
   true
 >['services']
-
-export type OpenAaveStateMachineState = StateFrom<OpenAaveStateMachine>

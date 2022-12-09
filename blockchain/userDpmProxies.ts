@@ -8,7 +8,7 @@ import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
 import { Context, NetworkIds } from './network'
 
-interface UserDpmProxy {
+export interface UserDpmProxy {
   proxy: string
   user: string
   vaultId: string
@@ -88,6 +88,63 @@ export function getUserDpmProxies$(
         vaultId: item[0].returnValues.vaultId,
         user: walletAddress,
       }))
+    }),
+  )
+}
+
+export function getUserDpmProxy$(
+  context$: Observable<Context>,
+  onEveryBlock$: Observable<number>,
+  vaultId: number,
+): Observable<UserDpmProxy | undefined> {
+  return combineLatest(context$, onEveryBlock$).pipe(
+    switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
+      const accountFactoryContract = contract<AccountFactory>(accountFactory)
+      const accountGuardContract = contract<AccountGuard>(accountGuard)
+
+      const chainId = getNetworkId() as NetworkIds
+      const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
+      const accountGuardGenesisBlock = accountGuardNetworkMap[chainId]
+
+      const userAccountCreatedEvents = await accountFactoryContract.getPastEvents(
+        'AccountCreated',
+        {
+          filter: { vaultId: vaultId.toString() },
+          fromBlock: accountFactoryGenesisBlock,
+          toBlock: 'latest',
+        },
+      )
+
+      const dpmProxy = userAccountCreatedEvents
+        .map<UserDpmProxy>((event) => ({
+          proxy: event.returnValues.proxy,
+          vaultId: event.returnValues.vaultId,
+          user: event.returnValues.user,
+        }))
+        .reverse()
+        .pop()
+
+      if (!dpmProxy) {
+        return undefined
+      }
+
+      const userProxyOwnershipTransferredEvents = await accountGuardContract.getPastEvents(
+        'ProxyOwnershipTransferred',
+        {
+          filter: { proxy: dpmProxy.proxy },
+          fromBlock: accountGuardGenesisBlock,
+          toBlock: 'latest',
+        },
+      )
+
+      const newestOwner = userProxyOwnershipTransferredEvents
+        .map<string>((event) => event.returnValues.newOwner)
+        .pop()
+
+      return {
+        ...dpmProxy,
+        user: newestOwner || dpmProxy.user,
+      }
     }),
   )
 }

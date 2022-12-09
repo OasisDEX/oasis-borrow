@@ -4,22 +4,26 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
-import { Sender } from 'xstate'
+import { Sender, StateFrom } from 'xstate'
 
-import { ContextConnected } from '../../../../blockchain/network'
 import { MessageCard } from '../../../../components/MessageCard'
+import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
+import { getCustomNetworkParameter } from '../../../../helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { useRedirect } from '../../../../helpers/useRedirect'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
+import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from '../../../stateMachines/proxy'
+import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { useAaveRedirect } from '../../helpers/useAaveRedirect'
+import { ProxyType } from '../../common/StrategyConfigTypes'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state'
+import { OpenAaveEvent, OpenAaveStateMachine } from '../state'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
-function isLoading(state: OpenAaveStateMachineState) {
+function isLoading(state: StateFrom<OpenAaveStateMachine>) {
   return state.matches('background.loading')
 }
 
@@ -28,9 +32,8 @@ export interface OpenAaveVaultProps {
 }
 
 interface OpenAaveStateProps {
-  readonly state: OpenAaveStateMachineState
+  readonly state: StateFrom<OpenAaveStateMachine>
   readonly send: Sender<OpenAaveEvent>
-  redirectAddress?: string
   isLoading: () => boolean
 }
 
@@ -115,15 +118,53 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
   )
 }
 
+function EditingStateViewSidebarPrimaryButton({
+  state,
+  send,
+  isLoading,
+}: OpenAaveStateProps): Pick<
+  SidebarSectionFooterButtonSettings,
+  'isLoading' | 'disabled' | 'label' | 'action'
+> {
+  const { t } = useTranslation()
+
+  const hasProxy =
+    state.context.strategyConfig.proxyType === ProxyType.DpmProxy
+      ? state.context.userDpmProxy !== undefined
+      : state.context.connectedProxyAddress !== undefined
+
+  const allowanceNeeded = isAllowanceNeeded(state.context)
+
+  const label = hasProxy
+    ? allowanceNeeded
+      ? t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
+      : t('open-earn.aave.vault-form.open-btn')
+    : t('create-proxy-btn')
+
+  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
+
+  return {
+    isLoading: isLoading(),
+    disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
+    label,
+    action: () => send('NEXT_STEP'),
+  }
+}
+
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  useAaveRedirect() // redirects to active position if user has one
-
-  const hasProxy = state.context.connectedProxyAddress !== undefined
-  const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
+  const router = useRedirect()
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
+
+  if (
+    state.context.strategyConfig.proxyType === ProxyType.DsProxy &&
+    state.context.hasOpenedPosition &&
+    state.context.positionRelativeAddress
+  ) {
+    void router.replace(state.context.positionRelativeAddress, getCustomNetworkParameter()) // redirects to active position if user has one
+  }
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-earn.aave.vault-form.title'),
@@ -141,17 +182,14 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
-      isLoading: isLoading(),
-      disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
-      label: hasProxy ? t('open-earn.aave.vault-form.open-btn') : t('create-proxy-btn'),
-      action: () => send('NEXT_STEP'),
+      ...EditingStateViewSidebarPrimaryButton({ state, send, isLoading }),
     },
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveSuccessStateView({ state, redirectAddress }: OpenAaveStateProps) {
+function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -168,7 +206,7 @@ function OpenAaveSuccessStateView({ state, redirectAddress }: OpenAaveStateProps
     ),
     primaryButton: {
       label: t('open-earn.aave.vault-form.go-to-position'),
-      url: `/aave/${redirectAddress}`,
+      url: state.context.positionRelativeAddress,
     },
   }
 
@@ -189,13 +227,15 @@ export function SidebarOpenAaveVault() {
   switch (true) {
     case state.matches('frontend.editing'):
       return <OpenAaveEditingStateView state={state} send={send} isLoading={loading} />
-    case state.matches('frontend.proxyCreating'):
+    case state.matches('frontend.dsProxyCreating'):
       return (
         <ProxyView
           proxyMachine={state.context.refProxyMachine!}
           steps={[state.context.currentStep, state.context.totalSteps]}
         />
       )
+    case state.matches('frontend.dpmProxyCreating'):
+      return <CreateDPMAccountView machine={state.context.refDpmAccountMachine!} />
     case state.matches('frontend.allowanceSetting'):
       return (
         <AllowanceView
@@ -233,14 +273,7 @@ export function SidebarOpenAaveVault() {
     case state.matches('frontend.txFailure'):
       return <OpenAaveFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):
-      return (
-        <OpenAaveSuccessStateView
-          state={state}
-          send={send}
-          redirectAddress={(state.context.web3Context as ContextConnected)?.account}
-          isLoading={loading}
-        />
-      )
+      return <OpenAaveSuccessStateView state={state} send={send} isLoading={loading} />
     default: {
       return <>{JSON.stringify(state.value)}</>
     }

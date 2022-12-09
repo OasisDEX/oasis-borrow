@@ -1,9 +1,7 @@
 import { Observable } from 'rxjs'
 
-import {
-  callOperationExecutor,
-  OperationExecutorTxMeta,
-} from '../../../../blockchain/calls/operationExecutor'
+import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
+import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { ContextConnected } from '../../../../blockchain/network'
 import { TxHelpers } from '../../../../components/AppContext'
 import {
@@ -12,14 +10,15 @@ import {
   startTransactionService,
 } from '../../../stateMachines/transaction'
 
-export function getOpenAaveTransactionMachine(
+export function getOperationExecutorTransactionMachine(
   txHelpers$: Observable<TxHelpers>,
   context$: Observable<ContextConnected>,
   commonTransactionServices: CommonTransactionServices,
   transactionParameters: OperationExecutorTxMeta,
+  transactionDef: TransactionDef<OperationExecutorTxMeta>,
 ) {
-  const service = startTransactionService<OperationExecutorTxMeta>(txHelpers$, context$)
-  return createTransactionStateMachine(callOperationExecutor, transactionParameters).withConfig({
+  const service = startTransactionService<OperationExecutorTxMeta, unknown>(txHelpers$, context$)
+  return createTransactionStateMachine(transactionDef, transactionParameters).withConfig({
     services: {
       ...commonTransactionServices,
       startTransaction: service,
