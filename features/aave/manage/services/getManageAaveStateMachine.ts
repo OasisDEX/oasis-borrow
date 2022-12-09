@@ -1,3 +1,4 @@
+import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
@@ -16,6 +17,7 @@ export function getManageAaveStateMachine(
   allowanceMachine: AllowanceStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
+    transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
 ): ManageAaveStateMachine {
   return createManageAaveStateMachine(

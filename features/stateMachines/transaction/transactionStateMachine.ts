@@ -1,4 +1,4 @@
-import { TxMeta, TxStatus } from '@oasisdex/transactions'
+import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
 import { first, switchMap } from 'rxjs/operators'
@@ -17,13 +17,14 @@ type BaseTransactionStateMachineContext = {
   etherscanUrl?: string
 }
 
-type TransactionStateMachineContext<T extends TxMeta> = {
+type TransactionStateMachineContext<T extends TxMeta, TResult> = {
   readonly transactionDef: TransactionDef<T>
   transactionParameters: T
+  result?: TResult
 } & BaseTransactionStateMachineContext
 
-export type TransactionStateMachineResultEvents =
-  | { type: 'TRANSACTION_COMPLETED' }
+export type TransactionStateMachineResultEvents<TResult = unknown> =
+  | { type: 'TRANSACTION_COMPLETED'; result?: TResult }
   | { type: 'TRANSACTION_FAILED'; error: string | unknown }
 
 export type TransactionStateMachineCommonEvents = {
@@ -31,17 +32,17 @@ export type TransactionStateMachineCommonEvents = {
   etherscanUrl: string
 }
 
-export type TransactionStateMachineEvents<T extends TxMeta> =
-  | TransactionStateMachineResultEvents
+export type TransactionStateMachineEvents<T extends TxMeta, TResult> =
   | TransactionStateMachineCommonEvents
+  | TransactionStateMachineResultEvents<TResult>
   | { type: 'START' }
   | { type: 'PARAMETERS_CHANGED'; parameters: T }
   | { type: 'WAITING_FOR_APPROVAL' }
   | { type: 'IN_PROGRESS'; txHash: string }
   | { type: 'FAILURE'; txError?: string }
-  | { type: 'CONFIRMED'; confirmations: number }
+  | { type: 'CONFIRMED'; confirmations: number; result?: TResult }
 
-export function createTransactionStateMachine<T extends TxMeta>(
+export function createTransactionStateMachine<T extends TxMeta, TResult = unknown>(
   transactionDef: TransactionDef<T>,
   transactionParameters: T,
 ) {
@@ -57,8 +58,8 @@ export function createTransactionStateMachine<T extends TxMeta>(
       },
       initial: 'inProgress',
       schema: {
-        context: {} as TransactionStateMachineContext<T>,
-        events: {} as TransactionStateMachineEvents<T>,
+        context: {} as TransactionStateMachineContext<T, TResult>,
+        events: {} as TransactionStateMachineEvents<T, TResult>,
       },
       invoke: [
         {
@@ -83,16 +84,16 @@ export function createTransactionStateMachine<T extends TxMeta>(
           on: {
             WAITING_FOR_APPROVAL: {},
             IN_PROGRESS: {
-              actions: ['assignTxHash'],
+              actions: ['updateContext'],
             },
             FAILURE: {
               target: 'failure',
-              actions: ['assignTxError', 'sendFailure'],
+              actions: ['updateContext', 'sendFailure'],
             },
             CONFIRMED: {
               // Maybe here we want to notify the parent of its success
               target: 'success',
-              actions: ['assignConfirmations'],
+              actions: ['updateContext'],
             },
           },
         },
@@ -112,53 +113,42 @@ export function createTransactionStateMachine<T extends TxMeta>(
     },
     {
       actions: {
-        assignTxHash: assign((context, event) => {
-          return {
-            txHash: event.txHash,
-          }
-        }),
-        assignTxError: assign((context, event) => {
-          return {
-            txError: event.txError,
-          }
-        }),
-        assignConfirmations: assign((context, event) => {
-          return {
-            confirmations: event.confirmations,
-          }
-        }),
+        updateContext: assign((context, event) => ({ ...event })),
         getError: assign((context, event) => {
           return {
             txError: event.data,
           }
         }),
-        sendSuccess: sendParent('TRANSACTION_COMPLETED'),
+        sendSuccess: sendParent((context) => ({
+          type: 'TRANSACTION_COMPLETED',
+          result: context.result,
+        })),
         sendFailure: sendParent((context) => ({
           type: 'TRANSACTION_FAILED',
           error: context.txError,
-        })),
-        updateContext: assign((_, event) => ({
-          ...event,
         })),
       },
     },
   )
 }
 
-export function startTransactionService<T extends TxMeta>(
+export function startTransactionService<T extends TxMeta, TResult = unknown>(
   txHelpers$: Observable<TxHelpers>,
   context$: Observable<ContextConnected>,
-): (context: TransactionStateMachineContext<T>) => Observable<TransactionStateMachineEvents<T>> {
+  transformResult?: (context: ContextConnected, result: TxState<T>) => TResult | undefined,
+): (
+  context: TransactionStateMachineContext<T, TResult>,
+) => Observable<TransactionStateMachineEvents<T, TResult>> {
   return (context) => {
     return combineLatest(context$, txHelpers$).pipe(
       first(),
-      switchMap(([{ safeConfirmations }, { send }]) => {
+      switchMap(([connectedContext, { send }]) => {
         if (context.transactionParameters === undefined) {
           throw new Error('transactionParameters not set')
         }
 
         return send(context.transactionDef, context.transactionParameters).pipe(
-          transactionToX<TransactionStateMachineEvents<T>, T>(
+          transactionToX<TransactionStateMachineEvents<T, TResult>, T>(
             {
               type: 'WAITING_FOR_APPROVAL',
             },
@@ -182,9 +172,10 @@ export function startTransactionService<T extends TxMeta>(
               return of({
                 type: 'CONFIRMED',
                 confirmations: (txState as any).confirmations,
+                result: transformResult && transformResult(connectedContext, txState),
               })
             },
-            safeConfirmations,
+            connectedContext.safeConfirmations,
           ),
         )
       }),
@@ -204,18 +195,18 @@ export function transactionContextService(
   }
 }
 
-class TransactionStateMachineTypes<T extends TxMeta> {
+class TransactionStateMachineTypes<T extends TxMeta, TResult = unknown> {
   needsConfiguration(transaction: TransactionDef<T>, transactionParameters: T) {
-    return createTransactionStateMachine(transaction, transactionParameters)
+    return createTransactionStateMachine<T, TResult>(transaction, transactionParameters)
   }
   withConfig(transaction: TransactionDef<T>) {
     // @ts-ignore
-    return createTransactionStateMachine(transaction).withConfig({})
+    return createTransactionStateMachine<T, TResult>(transaction).withConfig({})
   }
 }
 
-export type TransactionStateMachine<T extends TxMeta> = ReturnType<
-  TransactionStateMachineTypes<T>['withConfig']
+export type TransactionStateMachine<T extends TxMeta, TResult = unknown> = ReturnType<
+  TransactionStateMachineTypes<T, TResult>['withConfig']
 >
 
 type MissingTransactionServices = Exclude<

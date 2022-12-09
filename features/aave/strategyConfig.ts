@@ -15,12 +15,13 @@ import {
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { IStrategyConfig } from './common/StrategyConfigTypes'
+import { ProxyType, IStrategyConfig } from './common/StrategyConfigTypes'
 
 export const strategies: Array<IStrategyConfig> = [
   {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
@@ -69,6 +70,7 @@ export const strategies: Array<IStrategyConfig> = [
   {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveMultiplyOpenHeader,
       headerManage: AaveMultiplyManageHeader,

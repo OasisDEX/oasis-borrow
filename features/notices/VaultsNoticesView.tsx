@@ -527,7 +527,7 @@ export function AavePositionNoticesView() {
 
   const {
     context: {
-      address,
+      positionId,
       proxyAddress,
       connectedProxyAddress,
       web3Context,
@@ -541,7 +541,7 @@ export function AavePositionNoticesView() {
   } = state
 
   const connectedAddress = web3Context?.status === 'connected' ? web3Context.account : undefined
-  const isPositionController = address === connectedAddress
+  const isPositionController = positionId.walletAddress === connectedAddress
 
   const banner = getAaveNoticeBanner({
     loanToValue,
@@ -564,7 +564,12 @@ export function AavePositionNoticesView() {
         />
       )
     case 'ownership':
-      return <PositionOwnershipBanner account={address} connectedWalletAddress={connectedAddress} />
+      return (
+        <PositionOwnershipBanner
+          account={positionId.walletAddress!}
+          connectedWalletAddress={connectedAddress}
+        />
+      )
     default:
       return null
   }

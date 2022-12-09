@@ -5,7 +5,7 @@ import { Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 import { actions, createMachine, sendParent } from 'xstate'
 
-import { callOperationExecutor } from '../../../blockchain/calls/operationExecutor'
+import { callOperationExecutorWithDpmProxy } from '../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { TxHelpers } from '../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
@@ -160,7 +160,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         },
         estimateGas: ({ txHelper, parameters, strategy }) => {
           return txHelper!
-            .estimateGas(callOperationExecutor, {
+            .estimateGas(callOperationExecutorWithDpmProxy, {
               kind: TxMetaKind.operationExecutor,
               calls: strategy!.transaction.calls as any,
               operationName: strategy!.transaction.operationName,

@@ -11,6 +11,8 @@ import { allDefined } from '../../../../helpers/allDefined'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { IStrategyInfo } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { ProxiesRelatedWithPosition } from '../../helpers/getProxiesRelatedWithPosition'
+import { PositionId } from '../../types'
 import { ManageAaveStateMachineServices } from '../state'
 import { AaveProtocolData } from './getAaveProtocolData'
 
@@ -19,7 +21,7 @@ export function getManageAavePositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
   connectedProxyAddress$: Observable<string | undefined>,
-  proxyAddress$: (account: string) => Observable<string | undefined>,
+  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (collateralToken: string) => Observable<IStrategyInfo>,
@@ -61,12 +63,14 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     positionProxyAddress$: (context) => {
-      return proxyAddress$(context.address).pipe(
-        distinctUntilChanged<string>(isEqual),
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
+        filter((address) => address !== undefined),
         map((address) => ({
           type: 'POSITION_PROXY_ADDRESS_RECEIVED',
           proxyAddress: address,
         })),
+        distinctUntilChanged(isEqual),
       )
     },
     userSettings$: (_) => {
@@ -87,7 +91,8 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     currentPosition$: (context) => {
-      return proxyAddress$(context.address).pipe(
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
           aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
@@ -99,7 +104,8 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     protocolData$: (context) => {
-      return proxyAddress$(context.address).pipe(
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
         switchMap((proxyAddress) =>
           aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),

@@ -2,25 +2,28 @@ import BigNumber from 'bignumber.js'
 import {
   AaveUserAccountData,
   AaveUserAccountDataParameters,
-  MINIMAL_COLLATERAL,
 } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
+import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { ContextConnected } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
+import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
+import { DPMAccountStateMachine } from '../../../stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { IStrategyInfo } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
@@ -42,6 +45,8 @@ export function getOpenAavePositionStateMachineServices(
     proxyAddress: string,
   ) => Observable<AaveProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
+  userDmpProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
+  hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -74,13 +79,17 @@ export function getOpenAavePositionStateMachineServices(
         distinctUntilChanged(isEqual),
       )
     },
-    getHasOpenedPosition$: () => {
+    getHasOpenedPosition$: (context) => {
+      if (context.strategyConfig.proxyType === ProxyType.DpmProxy) {
+        return of({ type: 'UPDATE_META_INFO', hasOpenedPosition: false })
+      }
+
       return connectedProxy$.pipe(
         filter((address) => address !== undefined),
-        switchMap((address) => aaveUserAccountData$({ address: address! })),
-        map((accountData) => ({
+        switchMap((address) => hasProxyAddressActiveAavePosition$(address!)),
+        map((hasPosition) => ({
           type: 'UPDATE_META_INFO',
-          hasOpenedPosition: accountData.totalCollateralETH.gt(MINIMAL_COLLATERAL),
+          hasOpenedPosition: hasPosition,
         })),
       )
     },
@@ -125,21 +134,42 @@ export function getOpenAavePositionStateMachineServices(
         distinctUntilChanged(isEqual),
       )
     },
+    dpmProxy$: (_) => {
+      return context$.pipe(
+        switchMap((context) => userDmpProxies$(context.account)),
+        switchMap((proxies) =>
+          combineLatest(
+            proxies.map((proxy) =>
+              hasProxyAddressActiveAavePosition$(proxy.proxy).pipe(
+                map((hasOpenedPosition) => ({ ...proxy, hasOpenedPosition })),
+              ),
+            ),
+          ),
+        ),
+        map((proxies) => proxies.find((proxy) => !proxy.hasOpenedPosition)),
+        filter((proxy) => proxy !== undefined),
+        map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })),
+        distinctUntilChanged(isEqual),
+      )
+    },
   }
 }
 
 export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
   transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
-  proxyMachine: ProxyStateMachine,
+  dsProxyMachine: ProxyStateMachine,
+  dpmProxyMachine: DPMAccountStateMachine,
   allowanceMachine: AllowanceStateMachine,
   transactionStateMachine: (
     transactionParameters: OperationExecutorTxMeta,
+    transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
 ) {
   return createOpenAaveStateMachine(
     transactionParametersMachine,
-    proxyMachine,
+    dsProxyMachine,
+    dpmProxyMachine,
     allowanceMachine,
     transactionStateMachine,
   ).withConfig({
