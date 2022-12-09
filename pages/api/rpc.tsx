@@ -70,13 +70,22 @@ function getRpcNode(network: string) {
       throw new Error('unsupported network')
   }
 }
-
+function getSpotAddress(network: string) {
+  switch (network) {
+    case 'mainnet':
+      return `0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3`
+    case 'goerli':
+      return `0xACe2A9106ec175bd56ec05C9E38FE1FDa8a1d758`
+    default:
+      throw new Error('unsupported network')
+  }
+}
 function getMulticall(network: string) {
   switch (network) {
     case 'mainnet':
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case 'goerli':
-      return `0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e`
+      return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     default:
       throw new Error('unsupported network')
   }
@@ -99,6 +108,34 @@ const abi = [
     outputs: [
       { internalType: 'uint256', name: 'blockNumber', type: 'uint256' },
       { internalType: 'bytes[]', name: 'returnData', type: 'bytes[]' },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'bool', name: 'requireSuccess', type: 'bool' },
+      {
+        components: [
+          { internalType: 'address', name: 'target', type: 'address' },
+          { internalType: 'bytes', name: 'callData', type: 'bytes' },
+        ],
+        internalType: 'struct Multicall2.Call[]',
+        name: 'calls',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'tryAggregate',
+    outputs: [
+      {
+        components: [
+          { internalType: 'bool', name: 'success', type: 'bool' },
+          { internalType: 'bytes', name: 'returnData', type: 'bytes' },
+        ],
+        internalType: 'struct Multicall2.Result[]',
+        name: 'returnData',
+        type: 'tuple[]',
+      },
     ],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -210,7 +247,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         .map((call) => call.hash)
         .map((x) => missingCalls.map((x) => x.hash).indexOf(x))
 
-      const multicallTx = await multicall.populateTransaction.aggregate(
+      const multicallTx = await multicall.populateTransaction.tryAggregate(
+        false,
         missingCalls.map((call) => call.call),
       )
 
@@ -228,17 +266,60 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           'latest',
         ],
       }
+
+      counters.totalCalls += 1
+      counters.requests += 1
+      counters.totalPayloadSize += JSON.stringify(callBody).length
+
       counters.dedupedTotalPayloadSize += JSON.stringify(callBody).length
       const multicallResponse = await makeCall(network, [callBody])
-      counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
 
+      counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       if (multicallResponse[0].error) {
         throw new Error(multicallResponse[0].error.message)
       }
-      const [, data] = multicall.interface.decodeFunctionResult(
-        'aggregate((address,bytes)[])',
+
+      const [dataFromMulticall] = multicall.interface.decodeFunctionResult(
+        'tryAggregate(bool,(address,bytes)[])',
         multicallResponse[0].result,
       )
+
+      const spotAddress = getSpotAddress(network)
+      const multicallFailedCalls = missingCalls.filter(
+        (x: any, i: number) => dataFromMulticall[i] === false,
+      )
+
+      let data: any[]
+      if (multicallFailedCalls.length !== 0) {
+        const failedMultiCallsRepsonse = await makeCall(
+          network,
+          multicallFailedCalls.map((x, i) => {
+            return {
+              jsonrpc: '2.0',
+              id: +requestBody[0].id + i,
+              method: 'eth_call',
+              params: [
+                {
+                  data: x.call[1],
+                  to: x.call[0],
+                  from: spotAddress,
+                },
+                'latest',
+              ],
+            }
+          }),
+        )
+        let z = 0
+        data = dataFromMulticall.map((x: [boolean, string]) => {
+          if (x[0] === false) {
+            return failedMultiCallsRepsonse[z++].result
+          } else {
+            return x[1]
+          }
+        })
+      } else {
+        data = dataFromMulticall.map((x: [boolean, string]) => x[1])
+      }
       const callsWithResponses: CallWithHashAndResponse[] = callsWithHash.map((x, index) => {
         if (cache[network].cachedResponses[x.hash] === undefined || !withCache) {
           if (missingCallsIndexes[mappedCalls[index]] === -1) {
@@ -413,12 +494,10 @@ async function sleepUntill(check: () => boolean, maxCount: number, message: stri
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function isBlockNumberRequest(_body: any) {
-  return false //_body.method === 'eth_blockNumber'
+  return false //body.method === 'eth_blockNumber'
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function isCodeRequest(_body: any) {
-  return false //_body.method === 'eth_getCode'
+  return false //body.method === 'eth_getCode'
 }
