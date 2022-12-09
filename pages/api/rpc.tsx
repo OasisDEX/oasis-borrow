@@ -76,7 +76,7 @@ function getMulticall(network: string) {
     case 'mainnet':
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case 'goerli':
-      return `0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e`
+      return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     default:
       throw new Error('unsupported network')
   }
@@ -262,52 +262,51 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       const multicallResponse = await makeCall(network, [callBody])
 
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
-
       if (multicallResponse[0].error) {
         throw new Error(multicallResponse[0].error.message)
       }
+
       const [dataFromMulticall] = multicall.interface.decodeFunctionResult(
         'tryAggregate(bool,(address,bytes)[])',
         multicallResponse[0].result,
       )
 
-      // TODO add goerli spot address and multicall2 address
+      // TODO add goerli spot address
       const multicallFailedCalls = missingCalls.filter(
         (x: any, i: number) => dataFromMulticall[i] === false,
       )
 
-      console.log(multicallFailedCalls.map((x) => x.call))
-      const failedMultiCallsRepsonse = await makeCall(
-        network,
-        multicallFailedCalls.map((x) => {
-          return {
-            jsonrpc: '2.0',
-            id: +requestBody[0].id + 1,
-            method: 'eth_call',
-            params: [
-              {
-                data: x.call[1],
-                to: x.call[0],
-                from: '0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3',
-              },
-              'latest',
-            ],
+      let data: any[]
+      if (multicallFailedCalls.length !== 0) {
+        const failedMultiCallsRepsonse = await makeCall(
+          network,
+          multicallFailedCalls.map((x, i) => {
+            return {
+              jsonrpc: '2.0',
+              id: +requestBody[0].id + i,
+              method: 'eth_call',
+              params: [
+                {
+                  data: x.call[1],
+                  to: x.call[0],
+                  from: '0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3',
+                },
+                'latest',
+              ],
+            }
+          }),
+        )
+        let z = 0
+        data = dataFromMulticall.map((x: [boolean, string]) => {
+          if (x[0] === false) {
+            return failedMultiCallsRepsonse[z++].result
+          } else {
+            return x[1]
           }
-        }),
-      )
-      let z = 0
-      const data = dataFromMulticall.map((x) => {
-        if (x[0] === false) {
-          return failedMultiCallsRepsonse[z++].result
-        } else {
-          return x[1]
-        }
-      })
-      console.log(failedMultiCallsRepsonse)
-
-      // @ts-ignore
-      console.log(failedMulticallCallsMap)
-      ///
+        })
+      } else {
+        data = dataFromMulticall.map((x: [boolean, string]) => x[1])
+      }
       const callsWithResponses: CallWithHashAndResponse[] = callsWithHash.map((x, index) => {
         if (cache[network].cachedResponses[x.hash] === undefined || !withCache) {
           if (missingCallsIndexes[mappedCalls[index]] === -1) {
@@ -355,7 +354,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       finalResponse = await makeCall(req.query.network.toString(), requestBody)
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       console.log('RPC call failed, fallback successful')
-      //console.log(JSON.stringify(counters))
+      console.log(JSON.stringify(counters))
     }
   } else {
     if (Array.isArray(requestBody)) {
@@ -461,7 +460,7 @@ async function sleepUntill(check: () => boolean, maxCount: number, message: stri
       try {
         counters.sleepCount++
         console.log(`Sleeping on ${message} ... current count: ${maxCount}`)
-        // console.log(JSON.stringify({ sleep: true, ...counters }))
+        console.log(JSON.stringify({ sleep: true, ...counters }))
         const interval = setInterval(() => {
           maxCount--
           if (maxCount === 0) {
@@ -482,10 +481,10 @@ async function sleepUntill(check: () => boolean, maxCount: number, message: stri
   })
 }
 
-function isBlockNumberRequest(body: any) {
+function isBlockNumberRequest(_body: any) {
   return false //body.method === 'eth_blockNumber'
 }
 
-function isCodeRequest(body: any) {
+function isCodeRequest(_body: any) {
   return false //body.method === 'eth_getCode'
 }
