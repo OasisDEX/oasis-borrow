@@ -187,7 +187,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
 
-    await sleepUntill(() => !cache[network].locked, 100)
+    await sleepUntill(() => !cache[network].locked, 100, 'cache[network].locked')
     try {
       cache[network].useCount++
       const missingCalls = dedupedCalls.filter((x) => !cache[network].cachedResponses[x.hash])
@@ -248,7 +248,10 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         jsonrpc: entry.jsonrpc,
         result: callsWithResponses[index].response,
       }))
+
+      cache[network].useCount--
     } catch (error) {
+      cache[network].useCount--
       let errMsg
       let errStack
       if (error instanceof Error) errMsg = error.message
@@ -264,8 +267,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       console.log('RPC call failed, fallback successful')
       console.log(JSON.stringify(counters))
-    } finally {
-      cache[network].useCount--
     }
   } else {
     if (Array.isArray(requestBody)) {
@@ -286,7 +287,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         ) {
           try {
             cache[network].locked = true
-            await sleepUntill(() => cache[network].useCount === 0, 100)
+            await sleepUntill(
+              () => cache[network].useCount === 0,
+              100,
+              'cache[network].useCount === 0',
+            )
             const result = await makeCall(req.query.network.toString(), [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
             cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
@@ -299,6 +304,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
               result: result[0].result,
             })
           } catch (e) {
+            cache[network].locked = false
             console.log(e)
             return res.status(500).send({ error: e, message: 'Error while fetching block number' })
           }
@@ -348,11 +354,12 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export default withSentry(rpc)
-async function sleepUntill(check: () => boolean, maxCount: number) {
+async function sleepUntill(check: () => boolean, maxCount: number, message: string) {
   return new Promise((res, rej) => {
     if (!check()) {
       try {
         counters.sleepCount++
+        console.log(`Sleeping on ${message} ... current count: ${maxCount}`)
         console.log(JSON.stringify({ sleep: true, ...counters }))
         const interval = setInterval(() => {
           maxCount--
