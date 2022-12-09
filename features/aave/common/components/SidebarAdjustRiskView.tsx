@@ -30,7 +30,7 @@ export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   viewLocked?: boolean // locks whole view
   showWarring?: boolean // displays warning
   onChainPosition?: IPosition
-  dropdownConfig: SidebarSectionHeaderDropdown
+  dropdownConfig?: SidebarSectionHeaderDropdown
 }
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {

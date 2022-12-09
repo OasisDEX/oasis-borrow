@@ -4,6 +4,10 @@ import React from 'react'
 
 import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PositionId } from '../../types'
+import {
+  ManageCollateralActionsEnum,
+  ManageDebtActionsEnum,
+} from '../sidebars/SidebarManageAaveVault'
 import { ManageAaveStateMachine } from '../state'
 
 function setupManageAaveStateContext({
@@ -24,7 +28,12 @@ function setupManageAaveStateContext({
       currentStep: 1,
       totalSteps: 3,
       strategyConfig: strategy,
-      userInput: {},
+      userInput: {
+        // defaults for the manage collateral/debt are set here
+        manageCollateralAction: ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+        manageDebtAction: ManageDebtActionsEnum.BORROW_DEBT,
+        manageTokenActionValue: undefined, // just to provide any value when debugging
+      },
       positionCreatedBy: positionCreatedBy,
       positionId: positionId,
     }),

@@ -905,7 +905,11 @@
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
         "withdraw": "Withdraw",
-        "switch-to-borrow": "Switch to Borrow"
+        "switch-to-borrow": "Switch to Borrow",
+        "deposit-collateral": "Deposit collateral",
+        "withdraw-collateral": "Withdraw collateral",
+        "payback-debt": "Payback debt",
+        "borrow-debt": "Borrow debt"
       },
       "earn": {
         "vault-overview": "Vault overview"

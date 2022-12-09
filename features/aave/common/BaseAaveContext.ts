@@ -16,16 +16,38 @@ import { TransactionStateMachineResultEvents } from '../../stateMachines/transac
 import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../userSettings/userSettings'
 import { AaveProtocolData } from '../manage/services'
+import {
+  ManageCollateralActionsEnum,
+  ManageDebtActionsEnum,
+} from '../manage/sidebars/SidebarManageAaveVault'
 
 type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
+  manageCollateralAction?: ManageCollateralActionsEnum
+  manageDebtAction?: ManageDebtActionsEnum
+  manageTokenActionValue?: BigNumber
 }
 
 export type IStrategyInfo = {
   oracleAssetPrice: BigNumber
   liquidationBonus: BigNumber
   collateralToken: string
+}
+
+export type UpdateCollateralActionType = {
+  type: 'UPDATE_COLLATERAL_TOKEN_ACTION'
+  manageTokenAction: ManageCollateralActionsEnum
+}
+
+export type UpdateDebtActionType = {
+  type: 'UPDATE_DEBT_TOKEN_ACTION'
+  manageTokenAction: ManageDebtActionsEnum
+}
+
+export type UpdateTokenActionValueType = {
+  type: 'UPDATE_TOKEN_ACTION_VALUE'
+  manageTokenActionValue: UserInput['manageTokenActionValue']
 }
 
 export type BaseAaveEvent =
@@ -38,6 +60,9 @@ export type BaseAaveEvent =
   | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
   | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | UpdateCollateralActionType
+  | UpdateDebtActionType
+  | UpdateTokenActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
   | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
   | { type: 'UPDATE_ALLOWANCE'; tokenAllowance: BigNumber }

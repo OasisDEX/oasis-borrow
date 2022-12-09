@@ -30,10 +30,14 @@ interface ManageAaveStateProps {
 }
 
 type WithDropdownConfig<T> = T & { dropdownConfig?: SidebarSectionHeaderDropdown }
-enum ManageTokenActionsEnum {
-  BUY_COLLATERAL = 'buy-coll', // actual keys from translations system.actions.multiply
-  REDUCE_DEBT = 'reduce-debt',
-  WITHDRAW = 'withdraw',
+
+export enum ManageCollateralActionsEnum {
+  DEPOSIT_COLLATERAL = 'deposit-collateral',
+  WITHDRAW_COLLATERAL = 'withdraw-collateral',
+}
+export enum ManageDebtActionsEnum {
+  BORROW_DEBT = 'borrow-debt',
+  PAYBACK_DEBT = 'payback-debt',
 }
 
 function isLoading(state: ManageAaveStateMachineState) {
@@ -120,18 +124,16 @@ function GetReviewingSidebarProps({
   const { t } = useTranslation()
   const { collateral, debt } = state.context.tokens
   const [closeToToken, setCloseToToken] = useState(collateral)
-  const [manageCollateralAction, setManageCollateralAction] = useState<ManageTokenActionsEnum>(
-    ManageTokenActionsEnum.BUY_COLLATERAL,
-  )
-  const [manageDebtAction, setManageDebtAction] = useState<ManageTokenActionsEnum>(
-    ManageTokenActionsEnum.REDUCE_DEBT,
-  )
 
-  const manageTokenActionsList = [
-    ManageTokenActionsEnum.BUY_COLLATERAL,
-    ManageTokenActionsEnum.REDUCE_DEBT,
-    ManageTokenActionsEnum.WITHDRAW,
-  ]
+  const updateCollateralTokenAction = (manageTokenAction: ManageCollateralActionsEnum) => {
+    send({ type: 'UPDATE_COLLATERAL_TOKEN_ACTION', manageTokenAction })
+  }
+  const updateDebtTokenAction = (manageTokenAction: ManageDebtActionsEnum) => {
+    send({ type: 'UPDATE_DEBT_TOKEN_ACTION', manageTokenAction })
+  }
+  const updateTokenActionValue = (manageTokenActionValue?: BigNumber) => {
+    send({ type: 'UPDATE_TOKEN_ACTION_VALUE', manageTokenActionValue })
+  }
 
   switch (true) {
     case state.matches('frontend.reviewingClosing'):
@@ -161,11 +163,11 @@ function GetReviewingSidebarProps({
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={manageCollateralAction}
-              items={manageTokenActionsList.map((action) => ({
+              active={state.context.userInput.manageCollateralAction!}
+              items={Object.values(ManageCollateralActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),
-                action: () => curry(setManageCollateralAction)(action),
+                action: () => curry(updateCollateralTokenAction)(action),
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -176,8 +178,8 @@ function GetReviewingSidebarProps({
               currencyCode={collateral}
               tokenUsdPrice={new BigNumber(150)}
               maxAmountLabel={'Balance'}
-              amount={new BigNumber(150)}
-              onChange={handleNumericInput(() => new BigNumber(150))}
+              amount={state.context.userInput.manageTokenActionValue}
+              onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
           </Grid>
@@ -189,11 +191,11 @@ function GetReviewingSidebarProps({
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={manageDebtAction}
-              items={manageTokenActionsList.map((action) => ({
+              active={state.context.userInput.manageDebtAction!}
+              items={Object.values(ManageDebtActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),
-                action: () => curry(setManageDebtAction)(action),
+                action: () => curry(updateDebtTokenAction)(action),
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>

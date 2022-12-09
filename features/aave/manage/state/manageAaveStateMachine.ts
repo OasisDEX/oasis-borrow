@@ -325,6 +325,18 @@ export function createManageAaveStateMachine(
           cond: 'canChangePosition',
           target: 'frontend.manageDebt',
         },
+        UPDATE_COLLATERAL_TOKEN_ACTION: {
+          cond: 'canChangePosition',
+          actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
+        },
+        UPDATE_DEBT_TOKEN_ACTION: {
+          cond: 'canChangePosition',
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
+        },
+        UPDATE_TOKEN_ACTION_VALUE: {
+          cond: 'canChangePosition',
+          actions: ['updateTokenActionValue'],
+        },
       },
     },
     {
@@ -341,6 +353,38 @@ export function createManageAaveStateMachine(
         isAllowanceNeeded,
       },
       actions: {
+        resetTokenActionValue: assign(({ userInput }) => {
+          return {
+            userInput: {
+              ...userInput,
+              manageTokenActionValue: undefined,
+            },
+          }
+        }),
+        updateCollateralTokenAction: assign(({ userInput }, event) => {
+          return {
+            userInput: {
+              ...userInput,
+              manageCollateralAction: event.manageTokenAction,
+            },
+          }
+        }),
+        updateDebtTokenAction: assign(({ userInput }, event) => {
+          return {
+            userInput: {
+              ...userInput,
+              manageDebtAction: event.manageTokenAction,
+            },
+          }
+        }),
+        updateTokenActionValue: assign(({ userInput }, event) => {
+          return {
+            userInput: {
+              ...userInput,
+              manageTokenActionValue: event.manageTokenActionValue,
+            },
+          }
+        }),
         userInputRiskRatio: assign((context, event) => {
           return {
             userInput: {
