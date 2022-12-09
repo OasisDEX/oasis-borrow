@@ -152,7 +152,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       useCount: 0,
     }
   }
-
   if (Array.isArray(requestBody) && requestBody.every((call) => call.method === 'eth_call')) {
     const multicallAddress = getMulticall(network)
     const multicall = new ethers.Contract(multicallAddress, abi, provider)
