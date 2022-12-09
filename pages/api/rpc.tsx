@@ -7,7 +7,7 @@ const threadId = Math.floor(Math.random() * 1000000)
 
 const debug = true
 
-let withCache = false
+const withCache = false
 
 type Counters = {
   clientIds: { [key: string]: number }
