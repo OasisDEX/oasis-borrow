@@ -339,7 +339,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           return res.status(200).send({
             id: requestBody.id,
             jsonrpc: requestBody.jsonrpc,
-            result: cache[network].lastRecordedBlockNumber.toString(),
+            result: "0x"+cache[network].lastRecordedBlockNumber.toString(16),
           })
         }
       } else {
