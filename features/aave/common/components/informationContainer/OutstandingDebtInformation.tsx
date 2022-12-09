@@ -15,10 +15,20 @@ interface OutstandingDebtInformationProps {
   newPosition: IPosition
 }
 
-function formatDebtAmount(pos: IPosition) {
-  return `${formatAmount(amountFromWei(pos.debt.amount, pos.debt.precision), pos.debt.symbol)} ${
-    pos.debt.symbol
-  }`
+function formatDebtAmount(pos: IPosition, newPositionSymbol: string) {
+  if (pos) {
+    if (!pos.debt.symbol) {
+      // not sure why currentPosition debt symbol is null sometimes, nor why the position exists when we
+      return `0 ${newPositionSymbol}`
+    } else {
+      return `${formatAmount(
+        amountFromWei(pos.debt.amount, pos.debt.precision),
+        pos.debt.symbol,
+      )} ${pos.debt.symbol}`
+    }
+  } else {
+    return '0'
+  }
 }
 
 export function OutstandingDebtInformation({
@@ -32,9 +42,9 @@ export function OutstandingDebtInformation({
       label={t('vault-changes.outstanding-debt')}
       value={
         <Flex>
-          {formatDebtAmount(currentPosition)}
+          {formatDebtAmount(currentPosition, newPosition.debt.symbol)}
           <VaultChangesInformationArrow />
-          {formatDebtAmount(newPosition)}
+          {formatDebtAmount(newPosition, newPosition.debt.symbol)}
         </Flex>
       }
     />
