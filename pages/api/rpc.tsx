@@ -413,10 +413,12 @@ async function sleepUntill(check: () => boolean, maxCount: number, message: stri
   })
 }
 
-function isBlockNumberRequest(body: any) {
-  return false //body.method === 'eth_blockNumber'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function isBlockNumberRequest(_body: any) {
+  return false //_body.method === 'eth_blockNumber'
 }
 
-function isCodeRequest(body: any) {
-  return false //body.method === 'eth_getCode'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function isCodeRequest(_body: any) {
+  return false //_body.method === 'eth_getCode'
 }
