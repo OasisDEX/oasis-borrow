@@ -8,7 +8,9 @@ import { Sender, StateFrom } from 'xstate'
 
 import { MessageCard } from '../../../../components/MessageCard'
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
+import { getCustomNetworkParameter } from '../../../../helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { useRedirect } from '../../../../helpers/useRedirect'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
@@ -17,7 +19,6 @@ import { ProxyView } from '../../../stateMachines/proxy'
 import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { ProxyType } from '../../common/StrategyConfigTypes'
-import { useAaveLegacyRedirect } from '../../helpers/useAaveLegacyRedirect'
 import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from '../state'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
@@ -152,16 +153,17 @@ function EditingStateViewSidebarPrimaryButton({
 
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const router = useRedirect()
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
 
   if (
     state.context.strategyConfig.proxyType === ProxyType.DsProxy &&
-    state.context.hasOpenedPosition
+    state.context.hasOpenedPosition &&
+    state.context.positionRelativeAddress
   ) {
-    void useAaveLegacyRedirect() // redirects to active position if user has one
-    return null
+    void router.replace(state.context.positionRelativeAddress, getCustomNetworkParameter()) // redirects to active position if user has one
   }
 
   const sidebarSectionProps: SidebarSectionProps = {
