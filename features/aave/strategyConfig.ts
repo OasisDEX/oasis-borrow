@@ -56,9 +56,9 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
     },
     tokens: {
-      collateral: 'ETH',
+      collateral: 'STETH',
       debt: 'USDC',
-      deposit: 'ETH',
+      deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     product: 'multiply',

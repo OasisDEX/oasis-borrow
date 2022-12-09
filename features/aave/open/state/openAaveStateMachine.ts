@@ -477,7 +477,7 @@ export function createOpenAaveStateMachine(
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
               token: context.tokens.deposit,
-              spender: context.userDpmProxy?.proxy!,
+              spender: context.effectiveProxyAddress!,
               allowanceType: 'unlimited',
               minimumAmount: context.userInput.amount!,
             }),

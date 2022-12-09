@@ -161,7 +161,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   if (
     state.context.strategyConfig.proxyType === ProxyType.DsProxy &&
     state.context.hasOpenedPosition &&
-    state.context.positionRelativeAddress
+    state.context.positionRelativeAddress !== undefined
   ) {
     void router.replace(state.context.positionRelativeAddress, getCustomNetworkParameter()) // redirects to active position if user has one
   }
