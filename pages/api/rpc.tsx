@@ -142,7 +142,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   const network = req.query.network.toString()
   const clientId = req.query.clientId.toString()
   //withCache = req.query.withCache.toString() === "true"
-  withCache = false;
 
   const rpcNode = getRpcNode(network)
   const provider = new ethers.providers.JsonRpcProvider(rpcNode)
