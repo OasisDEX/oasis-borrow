@@ -366,6 +366,9 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(requestBody).length
           finalResponse = await makeCall(req.query.network.toString(), [requestBody])
+          if(Array.isArray(finalResponse) && finalResponse.length === 1){
+            finalResponse = finalResponse[0];
+          }
           counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
         }
       }
