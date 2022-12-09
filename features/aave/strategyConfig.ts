@@ -15,7 +15,7 @@ import {
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { ProxyType, IStrategyConfig } from './common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
 
 export const strategies: Array<IStrategyConfig> = [
   {

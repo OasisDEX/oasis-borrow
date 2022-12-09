@@ -1,13 +1,10 @@
 import { useInterpret } from '@xstate/react'
 import React from 'react'
 
-import { ProxyType, IStrategyConfig } from '../../common/StrategyConfigTypes'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { OpenAaveStateMachine } from '../state'
-import { Position } from '@oasisdex/oasis-actions'
-import { zero } from '../../../../helpers/zero'
-import { getToken } from '../../../../blockchain/tokensMetadata'
+import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { getEmptyPosition } from '../../oasisActionsLibWrapper'
+import { OpenAaveStateMachine } from '../state'
 
 function setupOpenAaveStateContext({
   machine,
