@@ -69,9 +69,6 @@ function Position({ vault }: { vault: string }) {
     void replace('/')
   }
 
-  console.log('address', address)
-  console.log('vaultId', vaultId)
-
   return (
     <AaveContextProvider>
       <WithConnection>
