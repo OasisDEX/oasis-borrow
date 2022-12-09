@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { amountFromWei } from '@oasisdex/utils'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -11,8 +11,6 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
-import { amountFromWei } from '@oasisdex/utils'
-import { getToken } from '../../../../../blockchain/tokensMetadata'
 import { Swap } from '@oasisdex/oasis-actions/src/helpers/calculations/Position'
 
 interface FeesInformationProps {

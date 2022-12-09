@@ -13,7 +13,6 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
-import { recursiveLog } from '../../helpers/recursiveLog'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -120,15 +119,6 @@ export async function getOpenAaveParameters({
       precision: getToken(debtToken).precision,
     }
 
-    const currentPosition = await strategies.aave.view(
-      {
-        proxy: proxyAddress,
-        collateralToken: _collateralToken,
-        debtToken: _debtToken,
-      },
-      { addresses: getAddressesFromContext(context), provider: provider },
-    )
-
     let depositedByUser: {
       collateralToken?: { amountInBaseUnit: BigNumber }
       debtToken?: { amountInBaseUnit: BigNumber }
@@ -172,8 +162,6 @@ export async function getOpenAaveParameters({
     }
 
     const strategy = await strategies.aave.open(stratArgs, stratDeps)
-
-    recursiveLog(strategy, 'strategy')
 
     return {
       strategy,

@@ -1,5 +1,6 @@
+import { IPosition } from '@oasisdex/oasis-actions'
+import { amountFromWei } from '@oasisdex/utils'
 import { Flex } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -7,9 +8,7 @@ import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
-import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
-import { IPosition } from '@oasisdex/oasis-actions'
-import { amountFromWei } from '@oasisdex/utils'
+import { formatAmount } from '../../../../../helpers/formatters/format'
 
 interface OutstandingDebtInformationProps {
   currentPosition: IPosition
