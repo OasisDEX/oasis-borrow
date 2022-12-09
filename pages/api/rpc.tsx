@@ -145,8 +145,8 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const rpcNode = getRpcNode(network)
   const provider = new ethers.providers.JsonRpcProvider(rpcNode)
-  if(!withCache){
-    console.log("no cache");
+  if (!withCache) {
+    console.log('no cache')
   }
 
   if (!cache[network]) {
@@ -194,15 +194,17 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
 
-    if(withCache){
+    if (withCache) {
       await sleepUntill(() => !cache[network].locked, 100, 'cache[network].locked')
     }
 
     try {
-      if(withCache){
+      if (withCache) {
         cache[network].useCount++
       }
-      const missingCalls = dedupedCalls.filter((x) => !cache[network].cachedResponses[x.hash] || !withCache)
+      const missingCalls = dedupedCalls.filter(
+        (x) => !cache[network].cachedResponses[x.hash] || !withCache,
+      )
 
       const missingCallsIndexes = dedupedCalls
         .map((call) => call.hash)
@@ -243,7 +245,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
             throw new Error('Missing call index not found') //This means that cache do not work properly
           }
 
-          if(withCache)
+          if (withCache)
             cache[network].cachedResponses[x.hash] = data[missingCallsIndexes[mappedCalls[index]]]
 
           return {
@@ -263,11 +265,11 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         jsonrpc: entry.jsonrpc,
         result: callsWithResponses[index].response,
       }))
-      if(withCache){
+      if (withCache) {
         cache[network].useCount--
       }
     } catch (error) {
-      if(withCache){
+      if (withCache) {
         cache[network].useCount--
       }
       let errMsg
@@ -300,12 +302,12 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       if (debug) console.log('RPC no batching, falling back to individual calls')
       if (isBlockNumberRequest(requestBody)) {
         if (
-          (Date.now() - cache[network].lastBlockNumberFetchTimestamp > blockRecheckDelay || !withCache) &&
+          (Date.now() - cache[network].lastBlockNumberFetchTimestamp > blockRecheckDelay ||
+            !withCache) &&
           (cache[network].locked === false || !withCache)
         ) {
           try {
-            
-            if(withCache){
+            if (withCache) {
               cache[network].locked = true
               await sleepUntill(
                 () => cache[network].useCount === 0,
@@ -316,7 +318,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
             const result = await makeCall(req.query.network.toString(), [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
-            if(withCache){
+            if (withCache) {
               cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
               cache[network].lastBlockNumberFetchTimestamp = Date.now()
               cache[network].cachedResponses = {}
@@ -339,25 +341,26 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           return res.status(200).send({
             id: requestBody.id,
             jsonrpc: requestBody.jsonrpc,
-            result: "0x"+cache[network].lastRecordedBlockNumber.toString(16),
+            result: '0x' + cache[network].lastRecordedBlockNumber.toString(16),
           })
         }
       } else {
         if (isCodeRequest(requestBody)) {
-          let result : any ;
+          let result: any
           if (cache[network].persistentCache[requestBody.params[0]] && withCache) {
             if (debug) console.log('Contract code from cache', requestBody.params[0])
           } else {
             if (debug) console.log('Fetching contract code', requestBody.params[0])
             result = await makeCall(req.query.network.toString(), [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
-            if(withCache)
-              cache[network].persistentCache[requestBody.params[0]] = result[0].result
+            if (withCache) cache[network].persistentCache[requestBody.params[0]] = result[0].result
           }
           return res.status(200).send({
             id: requestBody.id,
             jsonrpc: requestBody.jsonrpc,
-            result: withCache?cache[network].persistentCache[requestBody.params[0]]:result[0].result,
+            result: withCache
+              ? cache[network].persistentCache[requestBody.params[0]]
+              : result[0].result,
           })
         } else {
           counters.bypassedCallsCount += 1
@@ -408,9 +411,9 @@ async function sleepUntill(check: () => boolean, maxCount: number, message: stri
 }
 
 function isBlockNumberRequest(body: any) {
-  return body.method === 'eth_blockNumber'
+  return false //body.method === 'eth_blockNumber'
 }
 
 function isCodeRequest(body: any) {
-  return body.method === 'eth_getCode'
+  return false //body.method === 'eth_getCode'
 }
