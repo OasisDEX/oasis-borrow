@@ -267,9 +267,9 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         ],
       }
 
-      counters.totalCalls += 1;
-      counters.requests += 1;
-      counters.totalPayloadSize += JSON.stringify(callBody).length;
+      counters.totalCalls += 1
+      counters.requests += 1
+      counters.totalPayloadSize += JSON.stringify(callBody).length
 
       counters.dedupedTotalPayloadSize += JSON.stringify(callBody).length
       const multicallResponse = await makeCall(network, [callBody])
