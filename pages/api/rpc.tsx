@@ -182,7 +182,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const rpcNode = getRpcNode(network)
   const provider = new ethers.providers.JsonRpcProvider(rpcNode)
-  if (!withCache) {
+  if (debug && !withCache) {
     console.log('no cache')
   }
 
@@ -286,7 +286,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
       const spotAddress = getSpotAddress(network)
       const multicallFailedCalls = missingCalls.filter(
-        (x: any, i: number) => dataFromMulticall[i] === false,
+        (x: any, i: number) => dataFromMulticall[i][0] === false,
       )
 
       let data: any[]
