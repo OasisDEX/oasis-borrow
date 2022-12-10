@@ -127,6 +127,7 @@ export const supportedIlks = [
   'WBTC-C',
   'WSTETH-B',
   'RETH-A',
+  'GNO-A',
   ...charterIlks,
   ...cropJoinIlks,
 ] as const
