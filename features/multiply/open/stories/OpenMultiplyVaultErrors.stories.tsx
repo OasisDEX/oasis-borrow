@@ -60,8 +60,8 @@ export const GenerateAmountExceedsDaiYieldFromDepositingCollateral = openMultipl
   requiredCollRatio: new BigNumber('1.49'),
 })
 
-export const GenerateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = openMultiplyVaultStory(
-  {
+export const GenerateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice =
+  openMultiplyVaultStory({
     title:
       'Amount of dai user is attempting to generate exceeds the maximum amount of DAI that can be generated at next price update, the user could proceed with this transaction but is inadvised as they would be subject to liquidations on next price update',
     proxyAddress,
@@ -69,11 +69,10 @@ export const GenerateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice = 
       collateralPrice: new BigNumber('2000'),
       ethChangePercentage: new BigNumber('-0.2'),
     },
-  },
-)({
-  depositAmount: new BigNumber('150'),
-  requiredCollRatio: new BigNumber('1.85'),
-})
+  })({
+    depositAmount: new BigNumber('150'),
+    requiredCollRatio: new BigNumber('1.85'),
+  })
 
 export const GenerateAmountExceedsDebtCeiling = openMultiplyVaultStory({
   title:

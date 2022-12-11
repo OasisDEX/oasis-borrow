@@ -158,13 +158,12 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
           sliderMax,
           stopLossLevel,
         }),
-        isStopLossTriggerCloseToConstantMultipleSellTrigger: isStopLossTriggerCloseToConstantMultipleSellTrigger(
-          {
+        isStopLossTriggerCloseToConstantMultipleSellTrigger:
+          isStopLossTriggerCloseToConstantMultipleSellTrigger({
             context,
             sliderMax,
             stopLossLevel,
-          },
-        ),
+          }),
       }),
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],

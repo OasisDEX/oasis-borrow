@@ -41,18 +41,13 @@ export function ConstantMultipleFormControl({
   } = useAutomationContext()
 
   const feature = AutomationFeatures.CONSTANT_MULTIPLE
-  const {
-    isAddForm,
-    isFirstSetup,
-    isProgressStage,
-    isRemoveForm,
-    stage,
-  } = getAutomationFeatureStatus({
-    currentForm: constantMultipleState.currentForm,
-    feature,
-    triggersId: constantMultipleTriggerData.triggersId,
-    txStatus: constantMultipleState.txDetails?.txStatus,
-  })
+  const { isAddForm, isFirstSetup, isProgressStage, isRemoveForm, stage } =
+    getAutomationFeatureStatus({
+      currentForm: constantMultipleState.currentForm,
+      feature,
+      triggersId: constantMultipleTriggerData.triggersId,
+      txStatus: constantMultipleState.txDetails?.txStatus,
+    })
   const {
     collateralToBePurchased,
     collateralToBeSold,

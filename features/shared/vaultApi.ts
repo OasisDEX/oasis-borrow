@@ -17,7 +17,7 @@ export function checkVaultTypeUsingApi$(
   id: BigNumber,
 ): Observable<VaultType> {
   const pillChange$ = pillChange.pipe(
-    startWith(({ currentChange: '' } as unknown) as MultiplyPillChange),
+    startWith({ currentChange: '' } as unknown as MultiplyPillChange),
   )
 
   return combineLatest(context$, pillChange$).pipe(

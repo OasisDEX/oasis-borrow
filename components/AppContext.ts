@@ -361,7 +361,7 @@ export type UIChanges = {
   clear: (sub: string) => void
   configureSubject: <
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(
     subject: string,
     reducer: (prev: T, event: K) => T,
@@ -416,7 +416,7 @@ function createUIChangesSubject(): UIChanges {
 
   function configureSubject<
     T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
+    K extends LegalUiChanges[keyof LegalUiChanges],
   >(subject: string, reducer: (prev: T, event: K) => T, initialState?: T): void {
     reducers[subject] = reducer
     if (initialState) {

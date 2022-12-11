@@ -134,45 +134,40 @@ export function createPositionsOverviewSummary$(
   )
 
   // calc total assets value
-  const positionsWithTotalBalance$: Observable<[
-    PositionView[],
-    BigNumber,
-  ]> = assetsAndPositions$.pipe(
-    map((assetsAndPositions) => {
-      const totalAssetsUsd = assetsAndPositions.reduce(
-        (acc, { contentsUsd }) => acc.plus(contentsUsd || zero),
-        zero,
-      )
+  const positionsWithTotalBalance$: Observable<[PositionView[], BigNumber]> =
+    assetsAndPositions$.pipe(
+      map((assetsAndPositions) => {
+        const totalAssetsUsd = assetsAndPositions.reduce(
+          (acc, { contentsUsd }) => acc.plus(contentsUsd || zero),
+          zero,
+        )
 
-      const viewModels: PositionView[] = assetsAndPositions.map((assetOrPosition) => {
-        return {
-          ...assetOrPosition,
-          proportion: assetOrPosition.contentsUsd?.div(totalAssetsUsd).times(100),
-        }
-      })
+        const viewModels: PositionView[] = assetsAndPositions.map((assetOrPosition) => {
+          return {
+            ...assetOrPosition,
+            proportion: assetOrPosition.contentsUsd?.div(totalAssetsUsd).times(100),
+          }
+        })
 
-      return [viewModels, totalAssetsUsd] as [PositionView[], BigNumber]
-    }),
-  )
+        return [viewModels, totalAssetsUsd] as [PositionView[], BigNumber]
+      }),
+    )
 
   // create percentage of other things
-  const withPercentageOther$: Observable<[
-    PositionView[],
-    BigNumber,
-    BigNumber,
-  ]> = positionsWithTotalBalance$.pipe(
-    map(([assetsAndPositions, totalAssetsUsd]) => {
-      const top5Sum = assetsAndPositions
-        .slice(0, 5)
-        .reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero)
-      const percentageOther = totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
-      return [assetsAndPositions, percentageOther, totalAssetsUsd] as [
-        PositionView[],
-        BigNumber,
-        BigNumber,
-      ]
-    }),
-  )
+  const withPercentageOther$: Observable<[PositionView[], BigNumber, BigNumber]> =
+    positionsWithTotalBalance$.pipe(
+      map(([assetsAndPositions, totalAssetsUsd]) => {
+        const top5Sum = assetsAndPositions
+          .slice(0, 5)
+          .reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero)
+        const percentageOther = totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
+        return [assetsAndPositions, percentageOther, totalAssetsUsd] as [
+          PositionView[],
+          BigNumber,
+          BigNumber,
+        ]
+      }),
+    )
 
   return withPercentageOther$.pipe(
     map(([assetsAndPositions, percentageOther, totalValueUsd]) => ({

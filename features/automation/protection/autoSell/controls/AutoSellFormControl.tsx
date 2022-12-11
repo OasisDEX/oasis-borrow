@@ -37,18 +37,13 @@ export function AutoSellFormControl({
 
   const feature = AutomationFeatures.AUTO_SELL
   const publishType = AUTO_SELL_FORM_CHANGE
-  const {
-    isAddForm,
-    isFirstSetup,
-    isProgressStage,
-    isRemoveForm,
-    stage,
-  } = getAutomationFeatureStatus({
-    currentForm: autoSellState.currentForm,
-    feature,
-    triggersId: [autoSellTriggerData.triggerId],
-    txStatus: autoSellState.txDetails?.txStatus,
-  })
+  const { isAddForm, isFirstSetup, isProgressStage, isRemoveForm, stage } =
+    getAutomationFeatureStatus({
+      currentForm: autoSellState.currentForm,
+      feature,
+      triggersId: [autoSellTriggerData.triggerId],
+      txStatus: autoSellState.txDetails?.txStatus,
+    })
   const {
     collateralDelta,
     debtDelta,

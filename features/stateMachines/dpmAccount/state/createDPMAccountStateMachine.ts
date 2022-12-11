@@ -108,7 +108,8 @@ export function createDPMAccountStateMachine(
   )
 }
 
-type DPMAccountStateMachineMissingServices = import('./createDPMAccountStateMachine.typegen').Typegen0['missingImplementations']['services']
+type DPMAccountStateMachineMissingServices =
+  import('./createDPMAccountStateMachine.typegen').Typegen0['missingImplementations']['services']
 
 export type DPMAccountStateMachineServices = Record<
   DPMAccountStateMachineMissingServices,

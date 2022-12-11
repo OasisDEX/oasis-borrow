@@ -102,32 +102,29 @@ export function createUserReferral$(
                   proofs: claimsOut.proofs,
                 })
               }),
-              map(
-                (txnState: TxState<ClaimMultipleData>): ClaimTxnState => {
-                  switch (txnState.status) {
-                    case TxStatus.CancelledByTheUser:
-                    case TxStatus.Failure:
-                    case TxStatus.Error:
-                      return ClaimTxnState.FAILED
-                    case TxStatus.Propagating:
-                    case TxStatus.WaitingForConfirmation:
-                    case TxStatus.WaitingForApproval:
-                    case undefined:
-                      return ClaimTxnState.PENDING
-                    case TxStatus.Success:
-                      return ClaimTxnState.SUCCEEDED
-                  }
-                },
-              ),
+              map((txnState: TxState<ClaimMultipleData>): ClaimTxnState => {
+                switch (txnState.status) {
+                  case TxStatus.CancelledByTheUser:
+                  case TxStatus.Failure:
+                  case TxStatus.Error:
+                    return ClaimTxnState.FAILED
+                  case TxStatus.Propagating:
+                  case TxStatus.WaitingForConfirmation:
+                  case TxStatus.WaitingForApproval:
+                  case undefined:
+                    return ClaimTxnState.PENDING
+                  case TxStatus.Success:
+                    return ClaimTxnState.SUCCEEDED
+                }
+              }),
             )
           }
 
           function claimAllFunction() {
             claimClick$.next()
           }
-          const performClaimMultiple$: Observable<
-            (() => Observable<ClaimTxnState>) | undefined
-          > = of(weeklyClaims ? performClaimMultiple : undefined)
+          const performClaimMultiple$: Observable<(() => Observable<ClaimTxnState>) | undefined> =
+            of(weeklyClaims ? performClaimMultiple : undefined)
 
           const ClaimTxnState$: Observable<ClaimTxnState | undefined> = combineLatest(
             claimClick$,

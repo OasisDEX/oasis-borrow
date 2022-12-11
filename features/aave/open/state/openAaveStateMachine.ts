@@ -490,7 +490,7 @@ export function createOpenAaveStateMachine(
               ? context.userDpmProxy?.proxy
               : context.connectedProxyAddress
 
-          const contextConnected = (context.web3Context as any) as ContextConnected | undefined
+          const contextConnected = context.web3Context as any as ContextConnected | undefined
 
           const address =
             context.strategyConfig.proxyType === ProxyType.DpmProxy

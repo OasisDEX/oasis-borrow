@@ -160,7 +160,7 @@ export function applyFormChange<S extends FormState & StateDependencies, Ch exte
 export function addFormTransitions<
   S extends FormFunctions &
     EnvironmentState &
-    TxStateDependencies & { stage: string /* TODO make it precise */ }
+    TxStateDependencies & { stage: string /* TODO make it precise */ },
 >(txHelpers: TxHelpers, change: (ch: any /* TODO make it precise */) => void, state: S): S {
   if (state.stage === 'editing') {
     return {

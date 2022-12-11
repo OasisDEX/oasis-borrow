@@ -307,60 +307,46 @@ export const productCardsConfig: {
   } as Record<string, string>,
   descriptionLinks: {
     'ETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
     },
     'ETH-B': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
     },
     'ETH-C': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
     },
     'WSTETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
     },
     'WSTETH-B': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
     },
     'WBTC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
     },
     'WBTC-B': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
     },
     'WBTC-C': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
     },
     'RENBTC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
     },
     'LINK-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
     },
     'MANA-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
     },
     'MATIC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
     },
     'GUSD-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
     },
     'YFI-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
     },
     'GUNIV3DAIUSDC1-A': {
       link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
@@ -369,16 +355,13 @@ export const productCardsConfig: {
       link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
     },
     'UNIV2USDCETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
     },
     'UNIV2DAIUSDC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
     },
     'CRVV1ETHSTETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
     },
     stETHeth: {
       link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
@@ -387,8 +370,7 @@ export const productCardsConfig: {
       link: 'https://kb.oasis.app/help/what-you-should-know-about-steth',
     },
     'RETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      link: 'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
     },
   },
 }
@@ -552,7 +534,7 @@ export function cardFiltersFromBalances(
 ): Array<ProductLandingPagesFiltersKeys> {
   return productCardsData
     .filter((cardData) => cardData.balance && cardData.balance.isGreaterThan(0))
-    .map((d) => (d.token as unknown) as ProductLandingPagesFiltersKeys)
+    .map((d) => d.token as unknown as ProductLandingPagesFiltersKeys)
 }
 
 export function createProductCardsWithBalance$(

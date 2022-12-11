@@ -67,11 +67,11 @@ function MockContextProvider({
   title: string
   userSettings: UserSettingsState
 } & WithChildren) {
-  const ctx = ({
+  const ctx = {
     web3Context$: of(protoWeb3Context),
     userSettings$: of(userSettings),
     accountData$: of({ daiBalance: new BigNumber(1000) }),
-  } as any) as AppContext
+  } as any as AppContext
 
   return (
     <appContext.Provider value={ctx as any}>

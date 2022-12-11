@@ -19,12 +19,8 @@ export function AutoBuyDetailsControl() {
     triggerData: { autoBuyTriggerData, constantMultipleTriggerData },
   } = useAutomationContext()
 
-  const {
-    execCollRatio,
-    targetCollRatio,
-    maxBuyOrMinSellPrice,
-    isTriggerEnabled,
-  } = autoBuyTriggerData
+  const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, isTriggerEnabled } =
+    autoBuyTriggerData
   const isDebtZero = debt.isZero()
 
   const executionPrice = collateralPriceAtRatio({

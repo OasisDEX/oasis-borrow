@@ -13,9 +13,10 @@ export function MakerAutomationContext({
   children,
   generalManageVault,
 }: PropsWithChildren<MakerAutomationContextProps>) {
-  const positionData = useMemo(() => getAutomationMakerPositionData({ generalManageVault }), [
-    generalManageVault,
-  ])
+  const positionData = useMemo(
+    () => getAutomationMakerPositionData({ generalManageVault }),
+    [generalManageVault],
+  )
   const {
     vault: { token, controller },
     priceInfo: { nextCollateralPrice },

@@ -87,13 +87,8 @@ export function errorsAutoSellValidation({
   autoBuyTriggerData: AutoBSTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
 }) {
-  const {
-    execCollRatio,
-    targetCollRatio,
-    withThreshold,
-    maxBuyOrMinSellPrice,
-    txDetails,
-  } = autoSellState
+  const { execCollRatio, targetCollRatio, withThreshold, maxBuyOrMinSellPrice, txDetails } =
+    autoSellState
   const insufficientEthFundsForTx = ethFundsForTxValidator({
     txError: txDetails?.txError,
   })

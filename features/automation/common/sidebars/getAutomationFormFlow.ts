@@ -12,9 +12,7 @@ export function getAutomationFormFlow({
 }): SidebarAutomationFlow {
   const suffix = sidebarAutomationFlowSuffix[feature]
 
-  return (isRemoveForm
-    ? `cancel${suffix}`
-    : isFirstSetup
-    ? `add${suffix}`
-    : `edit${suffix}`) as SidebarAutomationFlow
+  return (
+    isRemoveForm ? `cancel${suffix}` : isFirstSetup ? `add${suffix}` : `edit${suffix}`
+  ) as SidebarAutomationFlow
 }

@@ -288,15 +288,14 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     collateralizationWarningThreshold,
   })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
-    {
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    vaultWillBeAtRiskLevelWarningAtNextPriceValidator({
       vaultWillBeAtRiskLevelWarning,
       inputAmountsEmpty,
       afterCollateralizationRatioAtNextPrice,
       collateralizationDangerThreshold,
       collateralizationWarningThreshold,
-    },
-  )
+    })
 
   const vaultWillBeUnderCollateralized =
     afterOutstandingDebt?.gt(zero) &&
@@ -334,14 +333,16 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
 
   const generateAmountMoreThanMaxFlashAmount = afterOutstandingDebt.gt(FLASH_MINT_LIMIT_PER_TX)
 
-  const isLoadingStage = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'allowanceInProgress',
-    'allowanceWaitingForApproval',
-    'txInProgress',
-    'txWaitingForApproval',
-  ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
+  const isLoadingStage = (
+    [
+      'proxyInProgress',
+      'proxyWaitingForApproval',
+      'allowanceInProgress',
+      'allowanceWaitingForApproval',
+      'txInProgress',
+      'txWaitingForApproval',
+    ] as OpenMultiplyVaultStage[]
+  ).some((s) => s === stage)
 
   const isSuccessStage = stage === 'txSuccess'
   const isStopLossSuccessStage = stage === 'stopLossTxSuccess'
@@ -356,13 +357,12 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     allowanceAmount,
   })
 
-  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
-    {
+  const customAllowanceAmountLessThanDepositAmount =
+    customAllowanceAmountLessThanDepositAmountValidator({
       selectedAllowanceRadio,
       allowanceAmount,
       depositAmount,
-    },
-  )
+    })
 
   const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
 
@@ -401,15 +401,17 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     stage === 'stopLossTxWaitingForConfirmation' ||
     stage === 'stopLossTxSuccess'
 
-  const canRegress = ([
-    'proxyWaitingForConfirmation',
-    'proxyFailure',
-    'allowanceWaitingForConfirmation',
-    'allowanceFailure',
-    'stopLossEditing',
-    'txWaitingForConfirmation',
-    'txFailure',
-  ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
+  const canRegress = (
+    [
+      'proxyWaitingForConfirmation',
+      'proxyFailure',
+      'allowanceWaitingForConfirmation',
+      'allowanceFailure',
+      'stopLossEditing',
+      'txWaitingForConfirmation',
+      'txFailure',
+    ] as OpenMultiplyVaultStage[]
+  ).some((s) => s === stage)
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 

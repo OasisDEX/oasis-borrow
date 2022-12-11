@@ -35,12 +35,8 @@ export function ConstantMultipleDetailsControl({
     triggerData: { constantMultipleTriggerData },
   } = useAutomationContext()
 
-  const {
-    isTriggerEnabled,
-    targetCollRatio,
-    buyExecutionCollRatio,
-    sellExecutionCollRatio,
-  } = constantMultipleTriggerData
+  const { isTriggerEnabled, targetCollRatio, buyExecutionCollRatio, sellExecutionCollRatio } =
+    constantMultipleTriggerData
   const isDebtZero = debt.isZero()
 
   const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)

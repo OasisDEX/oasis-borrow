@@ -28,12 +28,8 @@ export function PriceImpact({
 }: PriceImpactProps) {
   const { t } = useTranslation()
 
-  const {
-    toTokenAmount,
-    targetToken,
-    fromTokenAmount,
-    sourceToken,
-  } = transactionParameters.simulation.swap
+  const { toTokenAmount, targetToken, fromTokenAmount, sourceToken } =
+    transactionParameters.simulation.swap
   const collateralTokenToTokenPrice = amountFromWei(toTokenAmount, targetToken.symbol).div(
     amountFromWei(fromTokenAmount, sourceToken.symbol),
   )

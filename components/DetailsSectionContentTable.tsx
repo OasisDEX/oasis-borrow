@@ -20,9 +20,8 @@ interface TableHeaderOption {
 export function DetailsSectionContentTable({ headers, rows, footnote }: ContentTableProps) {
   const mobileHeaders = headers.slice(1).map((header) => ({ label: header }))
   const defaultMobileHeader = mobileHeaders[0]
-  const [selectedMobileHeader, setSelectedMobileHeader] = useState<TableHeaderOption>(
-    defaultMobileHeader,
-  )
+  const [selectedMobileHeader, setSelectedMobileHeader] =
+    useState<TableHeaderOption>(defaultMobileHeader)
   const isMobileView = useMediaQuery(`(max-width: ${oasisBaseTheme?.breakpoints[0]})`)
 
   const selectedMobileHeaderIndex = headers.indexOf(selectedMobileHeader.label || '')

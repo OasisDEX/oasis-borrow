@@ -21,19 +21,16 @@ export function AutoTakeProfitInfoSectionControl({
     environmentData: { ethMarketPrice },
   } = useAutomationContext()
 
-  const {
-    estimatedGasFeeOnTrigger,
-    estimatedOasisFeeOnTrigger,
-    totalTriggerCost,
-  } = getOnCloseEstimations({
-    colMarketPrice: triggerColPrice,
-    colOraclePrice: triggerColPrice,
-    debt: debt,
-    debtOffset: debtOffset,
-    ethMarketPrice,
-    lockedCollateral: lockedCollateral,
-    toCollateral: toCollateral,
-  })
+  const { estimatedGasFeeOnTrigger, estimatedOasisFeeOnTrigger, totalTriggerCost } =
+    getOnCloseEstimations({
+      colMarketPrice: triggerColPrice,
+      colOraclePrice: triggerColPrice,
+      debt: debt,
+      debtOffset: debtOffset,
+      ethMarketPrice,
+      lockedCollateral: lockedCollateral,
+      toCollateral: toCollateral,
+    })
 
   return (
     <AddAutoTakeProfitInfoSection

@@ -37,10 +37,10 @@ function getDiscoverData$(endpoint: string, query: string): Observable<DiscoverD
 }
 
 export function getDiscoverData(endpoint: string, settings: DiscoverFiltersSettings) {
-  const discoverData$ = useMemo(() => getDiscoverData$(endpoint, stringify(settings)), [
-    endpoint,
-    settings,
-  ])
+  const discoverData$ = useMemo(
+    () => getDiscoverData$(endpoint, stringify(settings)),
+    [endpoint, settings],
+  )
   const [discoverData] = useObservable(discoverData$)
 
   return discoverData

@@ -56,7 +56,7 @@ const userSettings: UserSettingsState = {
 }
 
 function MockContextProvider({ children, title, web3Context }: MockContextProviderProps) {
-  const ctx = ({
+  const ctx = {
     web3Context$: of(web3Context),
     context$: of({
       etherscan: { url: 'etherscan' },
@@ -64,7 +64,7 @@ function MockContextProvider({ children, title, web3Context }: MockContextProvid
     readonlyAccount$: of(undefined),
     userSetting$: of(userSettings),
     accountData$: of({ daiBalance: new BigNumber(1000) }),
-  } as any) as AppContext
+  } as any as AppContext
 
   return (
     <appContext.Provider value={ctx as any}>

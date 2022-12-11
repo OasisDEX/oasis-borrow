@@ -178,33 +178,32 @@ export function applyOpenMultiplyVaultCalculations(
     loanFee,
     oazoFee,
     skipFL,
-  } =
-    depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
-      ? getMultiplyParams(
-          // Market params
-          {
-            oraclePrice,
-            marketPrice,
-            OF: OAZO_FEE,
-            FF: LOAN_FEE,
-            slippage: state.slippage,
-          },
-          // Vault info
-          {
-            currentDebt: zero,
-            currentCollateral: zero,
-            minCollRatio: zero,
-          },
-          // Desired CDP state
-          {
-            requiredCollRatio: requiredCollRatioSafe,
-            providedCollateral: depositAmount,
-            providedDai: zero,
-            withdrawDai: zero,
-            withdrawColl: zero,
-          },
-        )
-      : { debtDelta: zero, collateralDelta: zero, loanFee: zero, oazoFee: zero, skipFL: false }
+  } = depositAmount && marketPriceMaxSlippage && requiredCollRatioSafe && marketPrice
+    ? getMultiplyParams(
+        // Market params
+        {
+          oraclePrice,
+          marketPrice,
+          OF: OAZO_FEE,
+          FF: LOAN_FEE,
+          slippage: state.slippage,
+        },
+        // Vault info
+        {
+          currentDebt: zero,
+          currentCollateral: zero,
+          minCollRatio: zero,
+        },
+        // Desired CDP state
+        {
+          requiredCollRatio: requiredCollRatioSafe,
+          providedCollateral: depositAmount,
+          providedDai: zero,
+          withdrawDai: zero,
+          withdrawColl: zero,
+        },
+      )
+    : { debtDelta: zero, collateralDelta: zero, loanFee: zero, oazoFee: zero, skipFL: false }
 
   const afterOutstandingDebt = borrowedDaiAmount.times(one.plus(LOAN_FEE))
 
