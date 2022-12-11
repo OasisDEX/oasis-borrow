@@ -1,4 +1,4 @@
-import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { DsrViewContainer } from 'features/dsr/containers/DsrViewContainer'
 import { Survey } from 'features/survey'
@@ -18,13 +18,15 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 function Dsr({ walletAddress }: { walletAddress: string }) {
   return (
-    <WithWalletConnection>
+    // <WithWalletConnection>
+    <WithConnection>
       <WithTermsOfService>
         <BackgroundLight />
         <DsrViewContainer walletAddress={walletAddress} />
         <Survey for="earn" />
       </WithTermsOfService>
-    </WithWalletConnection>
+    </WithConnection>
+    // </WithWalletConnection>
   )
 }
 

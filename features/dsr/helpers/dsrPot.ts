@@ -1,7 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { call } from 'blockchain/calls/callsHelpers'
-import { ContextConnected, EveryBlockFunction$ } from 'blockchain/network'
+import { Context, EveryBlockFunction$ } from 'blockchain/network'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { RAY, WAD } from 'features/dsr/utils/constants'
 import { createProxyAddress$ } from 'features/dsr/utils/proxy'
@@ -90,7 +90,7 @@ function createEarningsToDate$(
 
 export function dsrPot$(
   account: string,
-  context: ContextConnected,
+  context: Context,
   everyBlock$: EveryBlockFunction$,
   history$: Observable<DsrEvent[]>,
   dsr$: Observable<BigNumber>,

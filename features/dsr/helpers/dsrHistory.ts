@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { funcSigTopic } from 'blockchain/utils'
 import padStart from 'lodash/padStart'
 import { combineLatest, merge, Observable, of } from 'rxjs'
@@ -55,13 +55,13 @@ const eventSigntures: Dictionary<string[]> = {
   [DsrEventKind.dsrWithdrawal]: [EVENT_POT_EXIT, EVENT_DAI_ADAPTER_EXIT],
 }
 
-async function getBlockTimestamp(context: ContextConnected, blockNumber: number): Promise<number> {
+async function getBlockTimestamp(context: Context, blockNumber: number): Promise<number> {
   const block = await context.web3.eth.getBlock(blockNumber)
   return block.timestamp as number
 }
 
 function createEventTypeHistory$(
-  context: ContextConnected,
+  context: Context,
   fromBlock: number,
   proxyAddress: string,
   kind: DsrEventKind,
@@ -110,7 +110,7 @@ function createEventTypeHistory$(
 }
 
 export function createDsrHistory$(
-  context: ContextConnected,
+  context: Context,
   proxyAddress: string,
 ): Observable<DsrEvent[]> {
   // 8600000 is 2019-09-22 on mainnet and 2018-09-04 on kovan

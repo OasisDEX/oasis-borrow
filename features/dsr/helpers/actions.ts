@@ -15,97 +15,113 @@ import { DsrWithdrawChange } from 'features/dsr/pipes/dsrWithdraw'
 import { transactionToX } from 'helpers/form'
 import { roundDown, roundHalfUp } from 'helpers/rounding'
 import { zero } from 'helpers/zero'
-import { of } from 'rxjs'
+import { Observable, of } from 'rxjs'
+import { first, switchMap } from 'rxjs/operators'
 
 export function depositDsr(
-  { sendWithGasEstimation }: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   change: (ch: DsrCreationChange) => void,
   { amount, proxyAddress, allowance }: DsrDepositState,
 ) {
-  sendWithGasEstimation(
-    join as any,
-    {
-      kind: TxMetaKind.dsrJoin,
-      proxyAddress: proxyAddress!,
-      amount: amount!,
-    } as any,
-  )
+  txHelpers$
     .pipe(
-      transactionToX<DsrCreationChange, DsrJoinData>(
-        { kind: 'stage', stage: 'depositWaiting4Approval' },
-        (txState) =>
-          of(
-            { kind: 'depositTxHash', depositTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'depositInProgress' },
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(
+          join as any,
+          {
+            kind: TxMetaKind.dsrJoin,
+            proxyAddress: proxyAddress!,
+            amount: amount!,
+          } as any,
+        ).pipe(
+          transactionToX<DsrCreationChange, DsrJoinData>(
+            { kind: 'stage', stage: 'depositWaiting4Approval' },
+            (txState) =>
+              of(
+                { kind: 'depositTxHash', depositTxHash: (txState as any).txHash as string },
+                { kind: 'stage', stage: 'depositInProgress' },
+              ),
+            { kind: 'stage', stage: 'depositFiasco' },
+            () =>
+              of(
+                { kind: 'stage', stage: 'depositSuccess' },
+                { kind: 'allowance', allowance: allowance?.minus(amount || zero) },
+              ),
           ),
-        { kind: 'stage', stage: 'depositFiasco' },
-        () =>
-          of(
-            { kind: 'stage', stage: 'depositSuccess' },
-            { kind: 'allowance', allowance: allowance?.minus(amount || zero) },
-          ),
+        ),
       ),
     )
     .subscribe((ch) => change(ch))
 }
 
 function dsrExit(
-  { sendWithGasEstimation }: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   change: (ch: DsrWithdrawChange) => void,
   proxyAddress: string,
   amount: BigNumber,
 ) {
-  sendWithGasEstimation(
-    exit as any,
-    {
-      kind: TxMetaKind.dsrExit,
-      proxyAddress: proxyAddress!,
-      amount: amount!,
-    } as any,
-  )
+  txHelpers$
     .pipe(
-      transactionToX<DsrWithdrawChange, DsrExitData>(
-        { kind: 'stage', stage: 'withdrawWaiting4Approval' },
-        (txState) =>
-          of(
-            { kind: 'withdrawTxHash', withdrawTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'withdrawInProgress' },
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(
+          exit as any,
+          {
+            kind: TxMetaKind.dsrExit,
+            proxyAddress: proxyAddress!,
+            amount: amount!,
+          } as any,
+        ).pipe(
+          transactionToX<DsrWithdrawChange, DsrExitData>(
+            { kind: 'stage', stage: 'withdrawWaiting4Approval' },
+            (txState) =>
+              of(
+                { kind: 'withdrawTxHash', withdrawTxHash: (txState as any).txHash as string },
+                { kind: 'stage', stage: 'withdrawInProgress' },
+              ),
+            { kind: 'stage', stage: 'withdrawFiasco' },
+            () => of({ kind: 'stage', stage: 'withdrawSuccess' }),
           ),
-        { kind: 'stage', stage: 'withdrawFiasco' },
-        () => of({ kind: 'stage', stage: 'withdrawSuccess' }),
+        ),
       ),
     )
     .subscribe((ch) => change(ch))
 }
 function dsrExitAll(
-  { sendWithGasEstimation }: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   change: (ch: DsrWithdrawChange) => void,
   proxyAddress: string,
 ) {
-  sendWithGasEstimation(
-    exitAll as any,
-    {
-      kind: TxMetaKind.dsrExitAll,
-      proxyAddress: proxyAddress!,
-    } as any,
-  )
+  txHelpers$
     .pipe(
-      transactionToX<DsrWithdrawChange, DsrExitAllData>(
-        { kind: 'stage', stage: 'withdrawWaiting4Approval' },
-        (txState) =>
-          of(
-            { kind: 'withdrawTxHash', withdrawTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'withdrawInProgress' },
+      first(),
+      switchMap(({ sendWithGasEstimation }) =>
+        sendWithGasEstimation(
+          exitAll as any,
+          {
+            kind: TxMetaKind.dsrExitAll,
+            proxyAddress: proxyAddress!,
+          } as any,
+        ).pipe(
+          transactionToX<DsrWithdrawChange, DsrExitAllData>(
+            { kind: 'stage', stage: 'withdrawWaiting4Approval' },
+            (txState) =>
+              of(
+                { kind: 'withdrawTxHash', withdrawTxHash: (txState as any).txHash as string },
+                { kind: 'stage', stage: 'withdrawInProgress' },
+              ),
+            { kind: 'stage', stage: 'withdrawFiasco' },
+            () => of({ kind: 'stage', stage: 'withdrawSuccess' }),
           ),
-        { kind: 'stage', stage: 'withdrawFiasco' },
-        () => of({ kind: 'stage', stage: 'withdrawSuccess' }),
+        ),
       ),
     )
     .subscribe((ch) => change(ch))
 }
 
 export function withdrawDsr(
-  txHelpers: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   change: (ch: DsrWithdrawChange) => void,
   state: DsrDepositState,
 ) {
@@ -119,9 +135,9 @@ export function withdrawDsr(
 
   if (betweenBounds) {
     if (zeroDsr) {
-      return dsrExit(txHelpers, change, proxyAddress, state.daiDeposit.plus(WEI))
+      return dsrExit(txHelpers$, change, proxyAddress, state.daiDeposit.plus(WEI))
     }
-    return dsrExitAll(txHelpers, change, proxyAddress)
+    return dsrExitAll(txHelpers$, change, proxyAddress)
   }
-  return dsrExit(txHelpers, change, proxyAddress, amount)
+  return dsrExit(txHelpers$, change, proxyAddress, amount)
 }

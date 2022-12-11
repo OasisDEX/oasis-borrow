@@ -1,13 +1,13 @@
 import { nullAddress } from '@oasisdex/utils'
+import { call } from 'blockchain/calls/callsHelpers'
+import { Context } from 'blockchain/network'
 import { defer, Observable, of } from 'rxjs'
 import { mergeMap } from 'rxjs/operators'
 
-import { call } from 'blockchain/calls/callsHelpers'
-import { ContextConnected } from 'blockchain/network'
 import { owner, proxyAddress } from '../helpers/dsrProxyCalls'
 
 export function createProxyAddress$(
-  context: ContextConnected,
+  context: Context,
   account: string,
 ): Observable<string | undefined> {
   return defer(() =>

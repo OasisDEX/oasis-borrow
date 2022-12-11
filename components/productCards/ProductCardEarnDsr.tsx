@@ -1,10 +1,8 @@
 
-import { appContext, useAppContext } from 'components/AppContextProvider';
 import { useTranslation } from 'next-i18next'
-import React, { useContext } from 'react'
+import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
-
 
 export function ProductCardEarnDsr() {
   const { t } = useTranslation()

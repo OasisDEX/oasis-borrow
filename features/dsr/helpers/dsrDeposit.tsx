@@ -1,15 +1,15 @@
 import BigNumber from 'bignumber.js'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { applyAllowanceChanges } from 'features/allowance/allowance'
 import { setAllowance } from 'features/allowance/setAllowance'
+import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
 import { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
-import { createProxy } from 'features/proxy/createProxy'
 import { applyProxyChanges } from 'features/proxy/proxy'
 import {
   ApplyChange,
@@ -119,7 +119,7 @@ const apply: ApplyChange<DsrDepositState> = combineApplyChanges(
 )
 
 function addTransitions(
-  txHelpers: TxHelpers,
+  txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: DsrCreationChange) => void,
   state: DsrDepositState,
@@ -132,7 +132,7 @@ function addTransitions(
   if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
     return {
       ...state,
-      proxyProceed: () => createProxy(txHelpers, proxyAddress$, change, { safeConfirmations: 6 }),
+      proxyProceed: () => createProxy(txHelpers$, proxyAddress$, change, { safeConfirmations: 6 }),
       proxyBack: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -165,7 +165,7 @@ function addTransitions(
           kind: 'allowanceCustom',
         }),
       progress: () => {
-        return setAllowance(txHelpers, change, state)
+        return setAllowance(txHelpers$, change, state)
       },
       regress: () => change({ kind: 'regressAllowance' }),
     }
@@ -192,7 +192,7 @@ function addTransitions(
   if (state.stage === 'depositWaiting4Confirmation') {
     return {
       ...state,
-      deposit: () => depositDsr(txHelpers, change, state),
+      deposit: () => depositDsr(txHelpers$, change, state),
       back: () => change({ kind: 'stage', stage: 'editing' }),
       reset,
     }
@@ -201,7 +201,7 @@ function addTransitions(
   if (state.stage === 'withdrawWaiting4Confirmation') {
     return {
       ...state,
-      withdraw: () => withdrawDsr(txHelpers, change, state),
+      withdraw: () => withdrawDsr(txHelpers$, change, state),
       back: () => change({ kind: 'stage', stage: 'editing' }),
       reset,
     }
@@ -227,7 +227,7 @@ function addTransitions(
         reset,
       }
     }
-    if (state.amount?.gt(state.allowance || zero)) {
+    if (state.amount?.gt(state.allowance || zero) && state.operation === 'deposit') {
       return {
         ...state,
         deposit: () => change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' }),
@@ -242,7 +242,7 @@ function addTransitions(
           change,
           proceed: () => change({ kind: 'stage', stage: 'depositWaiting4Confirmation' }),
           reset,
-          deposit: () => depositDsr(txHelpers, change, state),
+          deposit: () => depositDsr(txHelpers$, change, state),
         }
       }
 
@@ -252,7 +252,7 @@ function addTransitions(
           change,
           proceed: () => change({ kind: 'stage', stage: 'withdrawWaiting4Confirmation' }),
           reset,
-          withdraw: () => withdrawDsr(txHelpers, change, state),
+          withdraw: () => withdrawDsr(txHelpers$, change, state),
         }
       }
     }
@@ -315,7 +315,7 @@ function constructEstimateGas(
 }
 
 export function createDsrDeposit$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
@@ -324,9 +324,9 @@ export function createDsrDeposit$(
   potDsr$: Observable<BigNumber>,
   addGasEstimation$: AddGasEstimationFunction,
 ): Observable<DsrDepositState> {
-  return combineLatest(context$, txHelpers$, proxyAddress$, daiBalance$, daiDeposit$, potDsr$).pipe(
+  return combineLatest(context$, proxyAddress$, daiBalance$, daiDeposit$, potDsr$).pipe(
     first(),
-    switchMap(([context, txHelpers, proxyAddress, daiBalance, daiDeposit, potDsr]) => {
+    switchMap(([context, proxyAddress, daiBalance, daiDeposit, potDsr]) => {
       return combineLatest(
         proxyAddress && context.account
           ? allowance$('DAI', context.account, proxyAddress)
@@ -368,7 +368,7 @@ export function createDsrDeposit$(
             scan(apply, initialState),
             map(validate),
             switchMap(curry(constructEstimateGas)(addGasEstimation$)),
-            map(curry(addTransitions)(txHelpers, proxyAddress$, change)),
+            map(curry(addTransitions)(txHelpers$, proxyAddress$, change)),
           )
         }),
       )

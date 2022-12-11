@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ContextConnected, EveryBlockFunction$ } from 'blockchain/network'
+import { Context, EveryBlockFunction$ } from 'blockchain/network'
 import { DsrEvent } from 'features/dsr/helpers/dsrHistory'
 import { Loadable, loadablifyLight } from 'helpers/loadable'
 import { isEqual } from 'lodash'
@@ -24,7 +24,7 @@ export interface Dsr {
 }
 
 export function createDsr$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   everyBlock$: EveryBlockFunction$, // TODO: no need for 2 everyBlocks
   onEveryBlock$: Observable<number>,
   history$: Observable<DsrEvent[]>,

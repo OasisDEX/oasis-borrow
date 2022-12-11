@@ -723,12 +723,12 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const potDsr$ = connectedContext$.pipe(
+  const potDsr$ = context$.pipe(
     switchMap((context) => {
       return everyBlock$(defer(() => call(context, dsr)()))
     }),
   )
-  const potChi$ = connectedContext$.pipe(
+  const potChi$ = context$.pipe(
     switchMap((context) => {
       return everyBlock$(defer(() => call(context, chi)()))
     }),
@@ -736,7 +736,7 @@ export function setupAppContext() {
 
   const proxyAddressDsrObservable$ = memoize(
     (addressFromUrl: string) =>
-      connectedContext$.pipe(
+      context$.pipe(
         switchMap((context) => everyBlock$(createDsrProxyAddress$(context, addressFromUrl))),
         shareReplay(1),
       ),
@@ -745,11 +745,7 @@ export function setupAppContext() {
 
   const dsrHistory$ = memoize(
     (addressFromUrl: string) =>
-      combineLatest(
-        connectedContext$,
-        proxyAddressDsrObservable$(addressFromUrl),
-        onEveryBlock$,
-      ).pipe(
+      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl), onEveryBlock$).pipe(
         switchMap(([context, proxyAddress, _]) => {
           return proxyAddress ? defer(() => createDsrHistory$(context, proxyAddress)) : of([])
         }),
@@ -761,7 +757,7 @@ export function setupAppContext() {
   const dsr$ = memoize(
     (addressFromUrl: string) =>
       createDsr$(
-        connectedContext$,
+        context$,
         everyBlock$,
         onEveryBlock$,
         dsrHistory$(addressFromUrl),
@@ -772,15 +768,19 @@ export function setupAppContext() {
     (item) => item,
   )
 
-  const daiBalance$ = connectedContext$.pipe(
-    switchMap((context) => {
-      return everyBlock$(createTokenBalance$(context, 'DAI', context.account), compareBigNumber)
-    }),
+  const daiBalance$ = memoize(
+    (addressFromUrl: string) =>
+      context$.pipe(
+        switchMap((context) => {
+          return everyBlock$(createTokenBalance$(context, 'DAI', addressFromUrl), compareBigNumber)
+        }),
+      ),
+    (item) => item,
   )
 
   const potPie$ = memoize(
     (addressFromUrl: string) =>
-      combineLatest(connectedContext$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
+      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
         switchMap(([context, proxyAddress]) => {
           if (!proxyAddress) return of(zero)
           return everyBlock$(
@@ -800,11 +800,11 @@ export function setupAppContext() {
   const dsrDeposit$ = memoize(
     (addressFromUrl: string) =>
       createDsrDeposit$(
-        connectedContext$,
+        context$,
         txHelpers$,
         proxyAddressDsrObservable$(addressFromUrl),
         allowance$,
-        daiBalance$,
+        daiBalance$(addressFromUrl),
         daiDeposit$(addressFromUrl),
         potDsr$,
         addGasEstimation$,
