@@ -51,6 +51,9 @@ import { default as goerliAddresses } from './addresses/goerli.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
+const clientId =
+  Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+
 export function contractDesc(abi: Abi[], address: string): ContractDesc {
   return { abi, address }
 }
@@ -66,10 +69,10 @@ const mainnetCacheUrl =
 
 function getRpc(network: string): string {
   if (process.env.APP_FULL_DOMAIN) {
-    return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}`
+    return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}&clientId=${clientId}`
   }
   try {
-    return `${window?.location.origin}/api/rpc?network=${network}`
+    return `${window?.location.origin}/api/rpc?network=${network}&clientId=${clientId}`
   } catch {
     return `https://${network}.infura.io/v3/${infuraProjectId}`
   }

@@ -1,7 +1,8 @@
 import { useInterpret } from '@xstate/react'
 import React from 'react'
 
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
+import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
 import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
 import { OpenAaveStateMachine } from '../state'
 
@@ -10,11 +11,16 @@ function setupOpenAaveStateContext({
   config,
 }: {
   machine: OpenAaveStateMachine
-  config: IStrategyConfig
+  config: StrategyConfig
 }) {
+  const useDpmProxy = useFeatureToggle('AaveUseDpmProxy')
+  const effectiveStrategy = {
+    ...config,
+    proxyType: useDpmProxy ? ProxyType.DpmProxy : ProxyType.DsProxy,
+  }
   const stateMachine = useInterpret(
     machine.withContext({
-      strategyConfig: config,
+      strategyConfig: effectiveStrategy,
       userInput: {},
       tokens: config.tokens,
       currentStep: 1,
@@ -43,7 +49,7 @@ export function OpenAaveStateMachineContextProvider({
   children,
   machine,
   config,
-}: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: IStrategyConfig }>) {
+}: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: StrategyConfig }>) {
   const context = setupOpenAaveStateContext({ machine, config })
   return <openAaveStateContext.Provider value={context}>{children}</openAaveStateContext.Provider>
 }

@@ -10,7 +10,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -32,8 +32,8 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 }
 
 type PositionInfoComponentProps = {
-  aaveReserveDataETH: PreparedAaveReserveData
-  tokens: IStrategyConfig['tokens']
+  aaveReserveDataDebtToken: PreparedAaveReserveData
+  tokens: StrategyConfig['tokens']
   oraclePrice: BigNumber
   accountData: AaveUserAccountData
   apy?: BigNumber
@@ -41,7 +41,7 @@ type PositionInfoComponentProps = {
 }
 
 export const PositionInfoComponent = ({
-  aaveReserveDataETH,
+  aaveReserveDataDebtToken,
   tokens,
   oraclePrice,
   accountData,
@@ -163,8 +163,10 @@ export const PositionInfoComponent = ({
           <DetailsSectionFooterItem
             title={t('system.variable-annual-fee')}
             value={
-              aaveReserveDataETH?.variableBorrowRate
-                ? formatPercent(aaveReserveDataETH.variableBorrowRate.times(100), { precision: 2 })
+              aaveReserveDataDebtToken?.variableBorrowRate
+                ? formatPercent(aaveReserveDataDebtToken.variableBorrowRate.times(100), {
+                    precision: 2,
+                  })
                 : zero.toString()
             }
           />

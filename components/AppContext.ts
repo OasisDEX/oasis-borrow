@@ -111,7 +111,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { getUserDpmProxies$ } from 'blockchain/userDpmProxies'
+import { getUserDpmProxies$, getUserDpmProxy$ } from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
   createVault$,
@@ -122,7 +122,7 @@ import {
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
 import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
-import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
+import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
@@ -278,6 +278,7 @@ import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
+import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -301,6 +302,7 @@ export type TxData =
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
   | OperationExecutorTxMeta
+  | CreateDPMAccount
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -635,6 +637,11 @@ export function setupAppContext() {
     (walletAddress) => walletAddress,
   )
 
+  const userDpmProxy$ = memoize(
+    curry(getUserDpmProxy$)(context$, onEveryBlock$),
+    (vaultId) => vaultId,
+  )
+
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
   const tokenDecimals$ = observe(onEveryBlock$, chainContext$, tokenDecimals)
@@ -917,17 +924,25 @@ export function setupAppContext() {
 
   const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
 
-  const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
+  const aaveUserAccountData$ = observe(
+    onEveryBlock$,
+    context$,
+    getAaveUserAccountData,
+    (args) => args.address,
+  )
 
-  const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
+  const hasProxyAddressActiveAavePosition$ = memoize(curry(hasAavePosition$)(aaveUserAccountData$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
 
-  const aaveAvailableLiquidityInUSDC$ = curry(prepareAaveAvailableLiquidityInUSDC$)(
-    getAaveReserveData$,
-    // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  const aaveAvailableLiquidityInUSDC$ = memoize(
+    curry(prepareAaveAvailableLiquidityInUSDC$)(
+      getAaveReserveData$,
+      // @ts-expect-error
+      getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    ),
+    ({ token }) => token,
   )
 
   const aavePositions$ = memoize(
@@ -1089,7 +1104,7 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
+  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceDataLean$)
 
   const productCardsData$ = memoize(
     curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkDataLean$, oraclePriceDataLean$),
@@ -1164,7 +1179,19 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
+  const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
+    connectedContext$,
+    proxyAddress$,
+    hasProxyAddressActiveAavePosition$,
+  )
+
+  const accountData$ = createAccountData(
+    web3Context$,
+    balance$,
+    vaults$,
+    hasActiveDsProxyAavePosition$,
+    ensName$,
+  )
 
   const makerOracleTokenPrices$ = memoize(
     curry(createMakerOracleTokenPrices$)(chainContext$),
@@ -1220,8 +1247,6 @@ export function setupAppContext() {
       userSettings$,
     ),
   )
-
-  const hasActiveAavePosition$ = hasActiveAavePosition(web3Context$, hasAave$)
 
   return {
     web3Context$,
@@ -1282,10 +1307,12 @@ export function setupAppContext() {
     once$,
     allowance$,
     userDpmProxies$,
-    hasActiveAavePosition$,
+    userDpmProxy$,
+    hasActiveDsProxyAavePosition$,
     aaveLiquidations$,
     aaveUserAccountData$,
     aaveAvailableLiquidityInUSDC$,
+    hasProxyAddressActiveAavePosition$,
     dsr$,
     dsrDeposit$,
   }

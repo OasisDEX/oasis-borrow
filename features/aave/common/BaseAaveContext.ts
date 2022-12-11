@@ -1,10 +1,11 @@
-import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { Context } from '../../../blockchain/network'
+import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
 import { HasGasEstimation } from '../../../helpers/form'
 import { zero } from '../../../helpers/zero'
 import {
@@ -28,11 +29,12 @@ export type IStrategyInfo = {
 }
 
 export type BaseAaveEvent =
-  | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
+  | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
   | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
+  | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
   | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
@@ -54,14 +56,13 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  strategy?: IPositionTransition
+  strategy?: IStrategy
   operationName?: string
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
   tokenAllowance?: BigNumber
   tokenPrice?: BigNumber
   collateralPrice?: BigNumber
-  debtPrice?: BigNumber
   auxiliaryAmount?: BigNumber
   connectedProxyAddress?: string
   strategyInfo?: IStrategyInfo
@@ -69,7 +70,8 @@ export interface BaseAaveContext {
   userSettings?: UserSettingsState
   error?: string | unknown
   protocolData?: AaveProtocolData
-
+  userDpmProxy?: UserDpmProxy
+  effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
 }
 
@@ -84,10 +86,10 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.strategy!.transaction.calls as any,
+    calls: context.strategy!.calls as any,
     operationName: context.operationName!,
     token: context.tokens.deposit,
-    proxyAddress: context.connectedProxyAddress!,
+    proxyAddress: context.effectiveProxyAddress!,
     amount: context.userInput.amount,
   }
 }

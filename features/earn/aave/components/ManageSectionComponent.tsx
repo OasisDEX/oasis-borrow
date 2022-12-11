@@ -1,6 +1,6 @@
 import { useActor } from '@xstate/react'
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import React from 'react'
@@ -11,13 +11,13 @@ import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
-  strategyConfig: IStrategyConfig
+  aaveReserveDataDebtToken: PreparedAaveReserveData
+  strategyConfig: StrategyConfig
 }
 
 export function ManageSectionComponent({
   aaveReserveState,
-  aaveReserveDataETH,
+  aaveReserveDataDebtToken,
   strategyConfig,
 }: ManageSectionComponentProps) {
   const { stateMachine } = useManageAaveStateMachineContext()
@@ -40,7 +40,7 @@ export function ManageSectionComponent({
 
   return (
     <PositionInfoComponent
-      aaveReserveDataETH={aaveReserveDataETH}
+      aaveReserveDataDebtToken={aaveReserveDataDebtToken}
       accountData={accountData}
       apy={simulations?.apy}
       tokens={strategyConfig.tokens}

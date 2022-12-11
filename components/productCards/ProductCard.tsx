@@ -4,7 +4,6 @@ import { ProtocolLongNames, TokenMetadataType } from 'blockchain/tokensMetadata'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
-import { capitalize } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
@@ -232,7 +231,6 @@ export function ProductCard({
   floatingLabelText,
   inactive,
   labels,
-  protocol,
 }: ProductCardProps) {
   const [hover, setHover] = useState(false)
   const [clicked, setClicked] = useState(false)
@@ -244,7 +242,7 @@ export function ProductCard({
 
   const handleClick = useCallback(() => setClicked(true), [])
 
-  const buttonLabel = `${button.text} ${protocol ? `(${capitalize(protocol)})` : ''}`
+  const buttonLabel = button.text
 
   return (
     <Box

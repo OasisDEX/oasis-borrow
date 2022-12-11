@@ -6,6 +6,7 @@ import {
 } from '@oasisdex/web3-context'
 import { contract, ContractDesc } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
 import { bindNodeCallback, combineLatest, concat, interval, Observable } from 'rxjs'
 import {
   catchError,
@@ -28,9 +29,10 @@ export const every5Seconds$ = interval(5000).pipe(startWith(0))
 export const every10Seconds$ = interval(10000).pipe(startWith(0))
 
 interface WithContractMethod {
-  contract: (desc: ContractDesc) => any
+  contract: <T>(desc: ContractDesc) => T
+  contractV2: <T>(desc: ContractDesc) => T
+  rpcProvider: ethers.providers.Provider
 }
-
 
 interface WithWeb3ProviderGetPastLogs {
   web3ProviderGetPastLogs: Web3
@@ -61,9 +63,19 @@ export function createContext$(
           ? new Web3(networkData.infuraUrl)
           : web3Context.web3
 
+      const provider = new ethers.providers.JsonRpcProvider(
+        networkData.infuraUrl,
+        web3Context.chainId,
+      )
+
       return {
         ...networkData,
         ...web3Context,
+        rpcProvider: provider,
+        contractV2: <T>(c: ContractDesc) => {
+          const contract = new ethers.Contract(c.address, c.abi, provider)
+          return (contract as any) as T
+        },
         contract: <T>(c: ContractDesc) => contract(web3Context.web3, c) as T,
         web3ProviderGetPastLogs,
       } as Context

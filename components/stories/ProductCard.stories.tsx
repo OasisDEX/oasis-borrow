@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
-import EthGif from 'public/static/img/tokens/eth.gif'
-import EthImage from 'public/static/img/tokens/eth.png'
+import EthGif from 'public/static/img/tokens/MAKER_ETH.gif'
+import EthImage from 'public/static/img/tokens/maker_eth.png'
 import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from '../productCards/ProductCard'

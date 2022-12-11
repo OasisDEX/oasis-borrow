@@ -16,28 +16,25 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { AavePositionNoticesView } from '../../../notices/VaultsNoticesView'
 import { useAaveContext } from '../../AaveContextProvider'
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
-import {
-  ManageAaveStateMachineContextProvider,
-  useManageAaveStateMachineContext,
-} from './AaveManageStateMachineContext'
+import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
   address: string
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 function AaveManageContainer({
   strategyConfig,
   aaveReserveState,
-  aaveReserveDataETH,
+  aaveReserveDataDebtToken,
   address,
 }: {
   aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
-  strategyConfig: IStrategyConfig
+  aaveReserveDataDebtToken: PreparedAaveReserveData
+  strategyConfig: StrategyConfig
   address: string
 }) {
   const { t } = useTranslation()
@@ -61,7 +58,6 @@ function AaveManageContainer({
       aaveManageVault={{
         address,
         aaveReserveState,
-        aaveReserveDataETH,
         strategyConfig,
         context: state.context,
       }}
@@ -82,12 +78,11 @@ function AaveManageContainer({
                   <Box>
                     <VaultDetails
                       aaveReserveState={aaveReserveState}
-                      aaveReserveDataETH={aaveReserveDataETH}
+                      aaveReserveDataDebtToken={aaveReserveDataDebtToken}
                       strategyConfig={strategyConfig}
                       currentPosition={state.context.currentPosition}
                       collateralPrice={state.context.collateralPrice}
                       tokenPrice={state.context.tokenPrice}
-                      debtPrice={state.context.debtPrice}
                       nextPosition={state.context.strategy?.simulation.position}
                     />
                   </Box>
@@ -126,38 +121,28 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const {
-    aaveSTETHReserveConfigurationData,
-    aaveManageStateMachine,
-    wrappedGetAaveReserveData$,
-  } = useAaveContext()
-  const [aaveReserveDataCollateral, aaveReserveDataCollateralError] = useObservable(
-    wrappedGetAaveReserveData$(strategyConfig.tokens.collateral),
+  const { aaveSTETHReserveConfigurationData, wrappedGetAaveReserveData$ } = useAaveContext()
+  const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
+    wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   return (
-    <ManageAaveStateMachineContextProvider
-      machine={aaveManageStateMachine}
-      address={address}
-      strategy={strategyConfig}
-    >
-      <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataCollateralError]}>
-        <WithLoadingIndicator
-          value={[aaveReserveState, aaveReserveDataCollateral]}
-          customLoader={<VaultContainerSpinner />}
-        >
-          {([_aaveReserveState, _aaveReserveDataCollateral]) => {
-            return (
-              <AaveManageContainer
-                strategyConfig={strategyConfig}
-                aaveReserveState={_aaveReserveState}
-                aaveReserveDataETH={_aaveReserveDataCollateral}
-                address={address}
-              />
-            )
-          }}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
-    </ManageAaveStateMachineContextProvider>
+    <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>
+      <WithLoadingIndicator
+        value={[aaveReserveState, aaveReserveDataDebt]}
+        customLoader={<VaultContainerSpinner />}
+      >
+        {([_aaveReserveState, _aaveReserveDataDebt]) => {
+          return (
+            <AaveManageContainer
+              strategyConfig={strategyConfig}
+              aaveReserveState={_aaveReserveState}
+              aaveReserveDataDebtToken={_aaveReserveDataDebt}
+              address={address}
+            />
+          )
+        }}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
