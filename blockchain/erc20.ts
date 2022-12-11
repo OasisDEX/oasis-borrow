@@ -6,8 +6,6 @@ import { map } from 'rxjs/operators'
 
 import { getToken } from './config'
 
-export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
-
 export function createTokenBalance$(
   { contract, tokens }: Context,
   token: string,
@@ -18,19 +16,6 @@ export function createTokenBalance$(
       map((balance: any) => {
         return amountFromWei(new BigNumber(balance), getToken(token).precision)
       }),
-    ),
-  )
-}
-
-export function createAllowanceDsr$(
-  { tokens, contract }: Context,
-  token: string,
-  owner: string,
-  spender: string,
-): Observable<boolean> {
-  return defer(() =>
-    from(contract(tokens[token]).methods.allowance(owner, spender).call()).pipe(
-      map((x: string) => new BigNumber(x).gte(MIN_ALLOWANCE)),
     ),
   )
 }

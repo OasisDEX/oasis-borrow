@@ -1,7 +1,16 @@
 import BigNumber from 'bignumber.js'
-import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
+import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import { applyAllowanceChanges } from 'features/allowance/allowance'
+import { setAllowance } from 'features/allowance/setAllowance'
+import { depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
+import { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
+import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
+import { createProxy } from 'features/proxy/createProxy'
+import { applyProxyChanges } from 'features/proxy/proxy'
 import {
   ApplyChange,
   applyChange,
@@ -9,39 +18,53 @@ import {
   Changes,
   GasEstimationStatus,
   HasGasEstimation,
-  transactionToX,
 } from 'helpers/form'
+import { combineApplyChanges } from 'helpers/pipelines/combineApply'
+import { roundHalfUp } from 'helpers/rounding'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { filter, first, map, mergeMap, scan, shareReplay, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { approve, ApproveData } from './erc20Calls'
-import { DsrJoinData, join } from './potCalls'
+import { exit, join } from './potCalls'
 
 export type DsrDepositStage =
   | 'editing'
-  | 'allowanceWaiting4Confirmation'
-  | 'allowanceWaiting4Approval'
-  | 'allowanceInProgress'
-  | 'allowanceFiasco'
   | 'depositWaiting4Confirmation'
   | 'depositWaiting4Approval'
   | 'depositInProgress'
   | 'depositFiasco'
   | 'depositSuccess'
+  | 'withdrawWaiting4Confirmation'
+  | 'withdrawWaiting4Approval'
+  | 'withdrawInProgress'
+  | 'withdrawFiasco'
+  | 'withdrawSuccess'
+  | 'allowanceWaitingForConfirmation'
+  | 'allowanceWaitingForApproval'
+  | 'allowanceInProgress'
+  | 'allowanceFailure'
+  | 'allowanceSuccess'
+  | 'proxyWaitingForConfirmation'
+  | 'proxyWaitingForApproval'
+  | 'proxyInProgress'
+  | 'proxyFailure'
+  | 'proxySuccess'
 
 type DsrDepositMessage = {
-  kind: 'amountIsEmpty' | 'amountBiggerThanBalance'
+  kind: 'amountIsEmpty' | 'amountBiggerThanBalance' | 'amountBiggerThanDeposit'
 }
 export interface DsrDepositState extends HasGasEstimation {
   stage: DsrDepositStage
   proxyAddress: string
   allowanceTxHash?: string
   depositTxHash?: string
+  withdrawTxHash?: string
+  proxyTxHash?: string
   daiBalance: BigNumber
-  daiAllowance: boolean
+  allowance?: BigNumber
   amount?: BigNumber
+  depositAmount?: BigNumber
   messages: DsrDepositMessage[]
   change: (change: ManualChange) => void
   reset?: () => void
@@ -49,77 +72,55 @@ export interface DsrDepositState extends HasGasEstimation {
   setAllowance?: () => void
   deposit?: () => void
   back?: () => void
+  proxyProceed?: () => void
+  proxyBack?: () => void
+  selectedAllowanceRadio?: SelectedDaiAllowanceRadio
+  operation: DsrSidebarTabOptions
+  operationChange: (operation: DsrSidebarTabOptions) => void
+  withdraw?: () => void
+  daiDeposit: BigNumber
+  progress?: () => void
+  potDsr: BigNumber
+  token: string
+  proxyConfirmations?: number
+  allowanceAmount?: BigNumber
 }
 
 export type ManualChange = Change<DsrDepositState, 'amount'>
 export type DaiBalanceChange = Change<DsrDepositState, 'daiBalance'>
 export type DsrCreationChange = Changes<DsrDepositState>
 
-const apply: ApplyChange<DsrDepositState> = applyChange
+export function applyOther(state: DsrDepositState, change) {
+  if (change.kind === 'progressAllowance') {
+    return {
+      ...state,
+      stage: 'editing',
+      selectedAllowanceRadio: undefined,
+    }
+  }
 
-function setAllowance(
-  { sendWithGasEstimation }: TxHelpers,
-  daiAllowance$: Observable<boolean>,
-  change: (ch: DsrCreationChange) => void,
-  state: DsrDepositState,
-) {
-  sendWithGasEstimation(approve as any, {
-    kind: TxMetaKind.approve,
-    token: 'DAI',
-    spender: state.proxyAddress!,
-  } as any)
-    .pipe(
-      transactionToX<DsrCreationChange, ApproveData>(
-        { kind: 'stage', stage: 'allowanceWaiting4Approval' },
-        (txState) =>
-          of(
-            {
-              kind: 'allowanceTxHash',
-              allowanceTxHash: (txState as any).txHash as string,
-            },
-            { kind: 'stage', stage: 'allowanceInProgress' },
-          ),
-        { kind: 'stage', stage: 'allowanceFiasco' },
-        () =>
-          daiAllowance$.pipe(
-            filter((daiAllowance) => daiAllowance),
-            first(),
-            switchMap(() => of({ kind: 'stage', stage: 'depositWaiting4Confirmation' })),
-          ),
-      ),
-    )
-    .subscribe((ch) => change(ch))
+  if (change.kind === 'operation') {
+    return {
+      ...state,
+      operation: change.operation,
+      amount: undefined,
+      stage: 'editing',
+    }
+  }
+
+  return { ...state, change }
 }
 
-function deposit(
-  { sendWithGasEstimation }: TxHelpers,
-  change: (ch: DsrCreationChange) => void,
-  { amount, proxyAddress }: DsrDepositState,
-) {
-  sendWithGasEstimation(join as any, {
-    kind: TxMetaKind.dsrJoin,
-    proxyAddress: proxyAddress!,
-    amount: amount!,
-  } as any)
-    .pipe(
-      transactionToX<DsrCreationChange, DsrJoinData>(
-        { kind: 'stage', stage: 'depositWaiting4Approval' },
-        (txState) =>
-          of(
-            { kind: 'depositTxHash', depositTxHash: (txState as any).txHash as string },
-            { kind: 'stage', stage: 'depositInProgress' },
-          ),
-        { kind: 'stage', stage: 'depositFiasco' },
-        () => of({ kind: 'stage', stage: 'depositSuccess' }),
-      ),
-    )
-    .subscribe((ch) => change(ch))
-}
+const apply: ApplyChange<DsrDepositState> = combineApplyChanges(
+  applyChange,
+  applyProxyChanges,
+  (state, change) => applyAllowanceChanges({ ...state, depositAmount: state.amount }, change),
+  applyOther,
+)
 
 function addTransitions(
   txHelpers: TxHelpers,
   proxyAddress$: Observable<string | undefined>,
-  daiAllowance$: Observable<boolean>,
   change: (ch: DsrCreationChange) => void,
   state: DsrDepositState,
 ): DsrDepositState {
@@ -128,44 +129,131 @@ function addTransitions(
     change({ kind: 'amount', amount: undefined })
   }
 
-  if (state.stage === 'allowanceWaiting4Confirmation') {
+  if (state.stage === 'proxyWaitingForConfirmation' || state.stage === 'proxyFailure') {
     return {
       ...state,
-      reset,
-      setAllowance: () => setAllowance(txHelpers, daiAllowance$, change, state),
+      proxyProceed: () => createProxy(txHelpers, proxyAddress$, change, { safeConfirmations: 6 }),
+      proxyBack: () => change({ kind: 'backToEditing' }),
     }
   }
+
+  if (state.stage === 'proxySuccess') {
+    return {
+      ...state,
+      proxyProceed: () =>
+        change({
+          kind: 'progressProxy',
+        }),
+    }
+  }
+
+  if (state.stage === 'allowanceWaitingForConfirmation' || state.stage === 'allowanceFailure') {
+    return {
+      ...state,
+      updateAllowanceAmount: (allowanceAmount?: BigNumber) =>
+        change({
+          kind: 'allowanceAmount',
+          allowanceAmount,
+        }),
+      setAllowanceAmountUnlimited: () => change({ kind: 'allowanceUnlimited' }),
+      setAllowanceAmountToDepositAmount: () =>
+        change({
+          kind: 'allowanceAsDepositAmount',
+        }),
+      setAllowanceAmountCustom: () =>
+        change({
+          kind: 'allowanceCustom',
+        }),
+      progress: () => {
+        return setAllowance(txHelpers, change, state)
+      },
+      regress: () => change({ kind: 'regressAllowance' }),
+    }
+  }
+
+  if (state.stage === 'allowanceSuccess') {
+    return {
+      ...state,
+      progress: () =>
+        change({
+          kind: 'progressAllowance',
+        }),
+    }
+  }
+
+  // if (state.stage === 'allowanceWaiting4Confirmation') {
+  //   return {
+  //     ...state,
+  //     reset,
+  //     setAllowance: () => setAllowance(txHelpers, change, state),
+  //   }
+  // }
+
   if (state.stage === 'depositWaiting4Confirmation') {
     return {
       ...state,
-      deposit: () => deposit(txHelpers, change, state),
+      deposit: () => depositDsr(txHelpers, change, state),
       back: () => change({ kind: 'stage', stage: 'editing' }),
       reset,
     }
   }
 
-  if (
-    state.stage === 'depositFiasco' ||
-    state.stage === 'depositSuccess' ||
-    state.stage === 'allowanceFiasco'
-  ) {
+  if (state.stage === 'withdrawWaiting4Confirmation') {
+    return {
+      ...state,
+      withdraw: () => withdrawDsr(txHelpers, change, state),
+      back: () => change({ kind: 'stage', stage: 'editing' }),
+      reset,
+    }
+  }
+
+  if (state.stage === 'depositSuccess' || state.stage === 'withdrawSuccess') {
     return {
       ...state,
       reset,
     }
   }
 
-  if (state.stage === 'editing') {
-    if (state.messages.length === 0) {
+  if (
+    state.stage === 'editing' ||
+    state.stage === 'depositFiasco' ||
+    state.stage === 'withdrawFiasco'
+  ) {
+    if (state.amount && !state.proxyAddress) {
       return {
         ...state,
+        deposit: () => change({ kind: 'stage', stage: 'proxyWaitingForConfirmation' }),
         change,
-        proceed: () =>
-          state.daiAllowance
-            ? change({ kind: 'stage', stage: 'depositWaiting4Confirmation' })
-            : change({ kind: 'stage', stage: 'allowanceWaiting4Confirmation' }),
         reset,
-        deposit: () => deposit(txHelpers, change, state),
+      }
+    }
+    if (state.amount?.gt(state.allowance || zero)) {
+      return {
+        ...state,
+        deposit: () => change({ kind: 'stage', stage: 'allowanceWaitingForConfirmation' }),
+        change,
+        reset,
+      }
+    }
+    if (state.messages.length === 0) {
+      if (state.operation === 'deposit') {
+        return {
+          ...state,
+          change,
+          proceed: () => change({ kind: 'stage', stage: 'depositWaiting4Confirmation' }),
+          reset,
+          deposit: () => depositDsr(txHelpers, change, state),
+        }
+      }
+
+      if (state.operation === 'withdraw') {
+        return {
+          ...state,
+          change,
+          proceed: () => change({ kind: 'stage', stage: 'withdrawWaiting4Confirmation' }),
+          reset,
+          withdraw: () => withdrawDsr(txHelpers, change, state),
+        }
       }
     }
     return { ...state, change, reset }
@@ -178,8 +266,21 @@ function validate(state: DsrDepositState): DsrDepositState {
   if (!state.amount || state.amount.eq(zero)) {
     messages[messages.length] = { kind: 'amountIsEmpty' }
   }
-  if (state.amount && state.daiBalance && state.amount.gt(state.daiBalance)) {
+  if (
+    state.amount &&
+    state.daiBalance &&
+    state.amount.gt(state.daiBalance) &&
+    state.operation === 'deposit'
+  ) {
     messages[messages.length] = { kind: 'amountBiggerThanBalance' }
+  }
+  if (
+    state.amount &&
+    state.daiDeposit &&
+    state.amount.gt(roundHalfUp(state.daiDeposit, 'DAI')) &&
+    state.operation === 'withdraw'
+  ) {
+    messages[messages.length] = { kind: 'amountBiggerThanDeposit' }
   }
   return { ...state, messages }
 }
@@ -191,13 +292,25 @@ function constructEstimateGas(
   return addGasEstimation(state, ({ estimateGas }: TxHelpers) => {
     const { messages, amount, proxyAddress } = state
 
+    if (
+      state.stage === 'proxyWaitingForConfirmation' ||
+      state.stage === 'proxyFailure' ||
+      state.stage === 'proxyWaitingForApproval'
+    ) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
+    }
+
     if (!proxyAddress || !amount || messages.length > 0) {
       return undefined
     }
 
     const args = { amount, proxyAddress }
 
-    return estimateGas(join as any, { ...args, kind: TxMetaKind.dsrJoin as any})
+    if (state.operation === 'withdraw') {
+      return estimateGas(exit as any, { ...args, kind: TxMetaKind.dsrExit } as any)
+    }
+
+    return estimateGas(join as any, { ...args, kind: TxMetaKind.dsrJoin } as any)
   })
 }
 
@@ -205,54 +318,59 @@ export function createDsrDeposit$(
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
-  daiAllowance$: Observable<boolean>,
+  allowance$: (token: string, owner: string, spender: string) => Observable<BigNumber>,
   daiBalance$: Observable<BigNumber>,
-  addGasEstimation: AddGasEstimationFunction,
+  daiDeposit$: Observable<BigNumber>,
+  potDsr$: Observable<BigNumber>,
+  addGasEstimation$: AddGasEstimationFunction,
 ): Observable<DsrDepositState> {
-  return combineLatest(context$, txHelpers$, proxyAddress$, daiAllowance$, daiBalance$).pipe(
+  return combineLatest(context$, txHelpers$, proxyAddress$, daiBalance$, daiDeposit$, potDsr$).pipe(
     first(),
-    switchMap(([context, txHelpers, proxyAddress, daiAllowance, daiBalance]) => {
-      const change$ = new Subject<DsrCreationChange>()
-      function change(ch: DsrCreationChange) {
-        change$.next(ch)
-      }
+    switchMap(([context, txHelpers, proxyAddress, daiBalance, daiDeposit, potDsr]) => {
+      return combineLatest(
+        proxyAddress && context.account
+          ? allowance$('DAI', context.account, proxyAddress)
+          : of(undefined),
+      ).pipe(
+        first(),
+        switchMap(([allowance]) => {
+          const change$ = new Subject<DsrCreationChange>()
+          function change(ch: DsrCreationChange) {
+            change$.next(ch)
+          }
 
-      const initialState: DsrDepositState = {
-        stage: 'editing',
-        daiBalance,
-        daiAllowance,
-        proxyAddress: proxyAddress!,
-        messages: [],
-        gasEstimationStatus: GasEstimationStatus.unset,
-        change,
-      }
+          const daiDepositChange$: Observable<DaiDepositChange> = daiDeposit$.pipe(
+            map((daiDeposit) => ({ kind: 'daiDeposit', daiDeposit })),
+          )
 
-      const daiBalanceChange$: Observable<DaiBalanceChange> = daiBalance$.pipe(
-        map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
-      )
+          const initialState: DsrDepositState = {
+            daiDeposit,
+            potDsr,
+            stage: 'editing',
+            daiBalance,
+            allowance,
+            proxyAddress: proxyAddress!,
+            messages: [],
+            gasEstimationStatus: GasEstimationStatus.unset,
+            depositAmount: zero,
+            token: 'DAI',
+            operation: 'deposit',
+            operationChange: (operation: DsrSidebarTabOptions) =>
+              change({ kind: 'operation', operation }),
+            change,
+          }
 
-      const addressChange$ = context$.pipe(
-        map((ctx) => ctx.account),
-        filter((account) => account !== context.account),
-        mergeMap(() => {
-          return combineLatest(daiAllowance$, proxyAddress$).pipe(
-            switchMap(([daiAllowance, proxyAddress]) => {
-              const stage =
-                (!proxyAddress && 'proxyWaiting4Confirmation') ||
-                (!daiAllowance && 'allowanceWaiting4Confirmation') ||
-                'editing'
+          const daiBalanceChange$: Observable<DaiBalanceChange> = daiBalance$.pipe(
+            map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
+          )
 
-              return of({ kind: 'stage', stage }, { kind: 'proxyAddress', proxyAddress })
-            }),
+          return merge(change$, daiBalanceChange$, daiDepositChange$).pipe(
+            scan(apply, initialState),
+            map(validate),
+            switchMap(curry(constructEstimateGas)(addGasEstimation$)),
+            map(curry(addTransitions)(txHelpers, proxyAddress$, change)),
           )
         }),
-      )
-
-      return merge(change$, daiBalanceChange$, addressChange$).pipe(
-        scan(apply, initialState),
-        map(validate),
-        switchMap(curry(constructEstimateGas)(addGasEstimation)),
-        map(curry(addTransitions)(txHelpers, proxyAddress$, daiAllowance$, change)),
       )
     }),
     shareReplay(1),

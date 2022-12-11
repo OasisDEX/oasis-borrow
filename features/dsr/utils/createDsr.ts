@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
+import { ContextConnected, EveryBlockFunction$ } from 'blockchain/network'
+import { DsrEvent } from 'features/dsr/helpers/dsrHistory'
+import { Loadable, loadablifyLight } from 'helpers/loadable'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 import { Dictionary } from 'ts-essentials'
 
-import { ContextConnected, EveryBlockFunction$ } from 'blockchain/network'
 import { DsrPot, dsrPot$, DsrPotKind } from '../helpers/dsrPot'
-import { Loadable, loadablifyLight } from 'helpers/loadable'
 
 export type PotKind = DsrPotKind
 
@@ -26,14 +27,15 @@ export function createDsr$(
   context$: Observable<ContextConnected>,
   everyBlock$: EveryBlockFunction$, // TODO: no need for 2 everyBlocks
   onEveryBlock$: Observable<number>,
+  history$: Observable<DsrEvent[]>,
   potDsr$: Observable<BigNumber>,
   potChi$: Observable<BigNumber>,
+  addressFromUrl: string,
 ): Observable<Dsr> {
   return context$.pipe(
     switchMap((context) => {
-   
       const dsr$ = loadablifyLight(
-        dsrPot$(context.account, context, everyBlock$, potDsr$, potChi$),
+        dsrPot$(addressFromUrl, context, everyBlock$, history$, potDsr$, potChi$),
         onEveryBlock$,
       )
 

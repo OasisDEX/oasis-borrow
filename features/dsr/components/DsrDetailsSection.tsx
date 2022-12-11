@@ -1,42 +1,55 @@
-import BigNumber from "bignumber.js";
-import { DetailsSection } from "components/DetailsSection";
-import { DetailsSectionContentCard, DetailsSectionContentCardWrapper } from "components/DetailsSectionContentCard";
-import { DetailsSectionContentTable } from "components/DetailsSectionContentTable";
-import { DetailsSectionFooterItemWrapper } from "components/DetailsSectionFooterItem";
-import { calculateEarnings, YieldPeriod } from "helpers/earn/calculations";
-import { formatCryptoBalance } from "helpers/formatters/format";
-import { zero } from "helpers/zero";
-import { useTranslation } from "next-i18next";
-import { Flex } from "theme-ui";
-import DsrDetailsSectionFooter from "./DsrDetailsSectionFooter";
-import { DsrTitleSection } from "./DsrTitleSection";
+import BigNumber from 'bignumber.js'
+import { DetailsSection } from 'components/DetailsSection'
+import {
+  DetailsSectionContentCard,
+  DetailsSectionContentCardWrapper,
+} from 'components/DetailsSectionContentCard'
+import { DsrSimulationSection } from 'features/dsr/components/DsrSimulationSection'
+import { formatCryptoBalance } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 
 interface DsrDetailsSectionProps {
-  totalDepositedDai: BigNumber;
-  currentApy: string;
+  currentApy: BigNumber
+  netValue: BigNumber
+  totalDepositedDai?: BigNumber
+  depositAmount?: BigNumber
 }
 
-export default function DsrDetailsSection({
+export function DsrDetailsSection({
   totalDepositedDai,
-  currentApy
+  currentApy,
+  depositAmount,
+  netValue,
 }: DsrDetailsSectionProps) {
-  const { t } = useTranslation();
-  
+  const { t } = useTranslation()
+
   return (
-    <DetailsSection
-      title={t('dsr.details.overview')}
-      content={
-        <DetailsSectionContentCardWrapper>
-          <DetailsSectionContentCard
-            title={t('dsr.details.total-deposited-dai')}
-            value={`${formatCryptoBalance(totalDepositedDai)} DAI`}
-          />
-          <DetailsSectionContentCard
-            title={t('dsr.details.current-yield')}
-            value={currentApy}
-          />
-        </DetailsSectionContentCardWrapper>
-      }
-    />
+    <>
+      {!totalDepositedDai?.isZero() ? (
+        <DetailsSection
+          title={t('dsr.details.overview')}
+          content={
+            <DetailsSectionContentCardWrapper>
+              <DetailsSectionContentCard
+                title={t('net-value')}
+                value={`${formatCryptoBalance(netValue)}`}
+                unit="DAI"
+                footnote={`${t('net-earnings')} + ${formatCryptoBalance(
+                  totalDepositedDai || zero,
+                )} DAI`}
+              />
+              <DetailsSectionContentCard
+                title={t('dsr.details.current-dai-savings-rate')}
+                value={currentApy.toFixed(2)}
+                unit="%"
+              />
+            </DetailsSectionContentCardWrapper>
+          }
+        />
+      ) : (
+        <DsrSimulationSection apy={currentApy} userInputAmount={depositAmount || zero} />
+      )}
+    </>
   )
 }

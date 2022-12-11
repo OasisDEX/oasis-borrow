@@ -1,36 +1,45 @@
-import BigNumber from "bignumber.js"
-import { ActionPills } from "components/ActionPills"
-import { SidebarSectionProps, SidebarSection } from "components/sidebar/SidebarSection"
-import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { staticFilesRuntimeUrl } from "helpers/staticPaths"
-import { useTranslation } from "next-i18next"
-import { ChangeEvent, useMemo, useState } from "react"
-import { Grid, Box, Flex, Image } from "theme-ui"
-import { OpenVaultAnimation } from "theme/animations"
-import DsrDepositDaiFrom from "../components/DsrDepositDaiForm"
-import DsrWithdrawDaiFrom from "../components/DsrWithdrawtDaiForm"
-import { DsrDepositStage } from "../helpers/dsrDeposit"
-import { DsrWithdrawStage } from "../pipes/dsrWithdraw"
-import { createPrimaryButtonLabel } from "../utils/functions"
+import BigNumber from 'bignumber.js'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
+import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
+import { getIsAllowanceStage } from 'features/allowance/allowance'
+import { DsrEditing } from 'features/dsr/containers/DsrEditing'
+import { DsrSidebarCreation } from 'features/dsr/sidebar/DsrSidebarCreation'
+import { createPrimaryButtonLabel, isDsrButtonDisabled } from 'features/dsr/utils/helpers'
+import { isProxyStage } from 'features/proxy/proxy'
+import { HasGasEstimation } from 'helpers/form'
+import { useTranslation } from 'next-i18next'
+import React, { ChangeEvent, useMemo } from 'react'
+import { Grid } from 'theme-ui'
 
-export type DsrSidebarTabOptions = 'depositDai' | 'withdrawDai'
+import { DsrDepositStage, DsrDepositState } from '../helpers/dsrDeposit'
+
+export type DsrSidebarTabOptions = 'deposit' | 'withdraw'
 
 interface DsrSidebarProps {
-  onTabChange: (tab: DsrSidebarTabOptions) => void;
   activeTab: DsrSidebarTabOptions
-  daiBalance: BigNumber;
-  daiBalanceInDsr: BigNumber;
+  daiBalance: BigNumber
+  daiBalanceInDsr?: BigNumber
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
-  onWithdrawAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
-  depositInputValue?: BigNumber;
-  withDrawInputValue?: BigNumber;
-  onPrimaryButtonClick?: () => void;
-  stage: DsrDepositStage | DsrWithdrawStage;
-  isLoading: boolean;
+  depositInputValue?: BigNumber
+  withDrawInputValue?: BigNumber
+  onPrimaryButtonClick?: () => void
+  stage: DsrDepositStage
+  proxyAddress?: string
+  daiAllowance?: BigNumber
+  isLoading: boolean
+  isOwner: boolean
+  dsrDepositState: DsrDepositState
+  operationChange: (operation: DsrSidebarTabOptions) => void
+  netValue: BigNumber
+  gasData: HasGasEstimation
+  validationMessages: string[]
+  selectedAllowanceRadio?: SelectedDaiAllowanceRadio
+  allowanceAmount?: BigNumber
 }
 
-export default function DsrSideBar({
-  onTabChange,
+export function DsrSideBar({
   activeTab,
   daiBalance,
   onDepositAmountChange,
@@ -39,86 +48,88 @@ export default function DsrSideBar({
   stage,
   daiBalanceInDsr,
   isLoading,
-  onWithdrawAmountChange,
-  withDrawInputValue
+  withDrawInputValue,
+  proxyAddress,
+  daiAllowance,
+  dsrDepositState,
+  isOwner,
+  operationChange,
+  netValue,
+  gasData,
+  validationMessages,
+  selectedAllowanceRadio,
+  allowanceAmount,
 }: DsrSidebarProps) {
   const { t } = useTranslation()
 
-  const action = useMemo(() => {
-    return activeTab === 'depositDai' ? 'Deposit' : 'Withdraw'
-  }, [activeTab])
-
   const primaryButtonlabel = useMemo(() => {
-    return createPrimaryButtonLabel(stage, activeTab, t)
-  }, [stage, activeTab])
-
+    return createPrimaryButtonLabel({
+      stage,
+      activeTab,
+      depositInputValue,
+      proxyAddress,
+      daiAllowance,
+    })
+  }, [stage, activeTab, proxyAddress, depositInputValue?.toNumber()])
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('dsr.titles.manage'),
+    title: t(daiBalanceInDsr?.isZero() ? 'dsr.titles.setup' : 'dsr.titles.manage'),
     content: (
       <Grid gap={3}>
-        {isLoading && (
-          <Flex
-            sx={{
-              justifyContent: 'center'
-            }}
-          >
-            <OpenVaultAnimation />
-          </Flex>
+        {isProxyStage(stage) && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
+        {getIsAllowanceStage(stage) && (
+          // @ts-ignore
+          <SidebarVaultAllowanceStage
+            {...dsrDepositState}
+            depositAmount={depositInputValue}
+            token="DAI"
+          />
         )}
-        {!isLoading && ['depositSuccess', 'withdrawSuccess'].includes(stage) && (
-          <Box>
-            <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-              <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
-            </Flex>
-          </Box>
+        {['editing', 'depositFiasco', 'withdrawFiasco'].includes(stage) && (
+          <DsrEditing
+            isLoading={isLoading}
+            activeTab={activeTab}
+            stage={stage}
+            onDepositAmountChange={onDepositAmountChange}
+            depositInputValue={depositInputValue}
+            daiBalance={daiBalance}
+            daiBalanceInDsr={daiBalanceInDsr}
+            operationChange={operationChange}
+            validationMessages={validationMessages}
+            netValue={netValue}
+            gasData={gasData}
+          />
         )}
-        {!isLoading && !['depositSuccess', 'withdrawSuccess'].includes(stage) && (
-          <>
-            <ActionPills
-              active={activeTab}
-              items={[
-                {
-                  id: 'depositDai',
-                  label: t('dsr.labels.deposit'),
-                  action: () => {
-                    onTabChange('depositDai')
-                  },
-                },
-                {
-                  id: 'withdrawDai',
-                  label: t('dsr.labels.withdraw'),
-                  action: () => {
-                    onTabChange('withdrawDai')
-                  },
-                },
-              ]}
-            />
-            {activeTab === 'depositDai' && (
-              <DsrDepositDaiFrom 
-                action={action}
-                onDepositAmountChange={onDepositAmountChange}
-                amount={depositInputValue}
-                maxAmount={daiBalance}           
-              />
-            )}
-            {activeTab === 'withdrawDai' && (
-              <DsrWithdrawDaiFrom 
-                action={action}
-                onWithdrawAmountChange={onWithdrawAmountChange}
-                amount={withDrawInputValue}
-                maxAmount={daiBalanceInDsr}           
-              />
-            )}
-          </>
-        )}
+        {[
+          'depositWaiting4Approval',
+          'depositInProgress',
+          'depositSuccess',
+          'withdrawWaiting4Approval',
+          'withdrawInProgress',
+          'withdrawSuccess',
+          'allowanceSuccess',
+          'allowanceWaitingForApproval',
+          'allowanceInProgress',
+          'proxyInProgress',
+          'proxyWaitingForApproval',
+          'proxySuccess',
+        ].includes(stage) && <DsrSidebarCreation state={dsrDepositState} />}
       </Grid>
     ),
     primaryButton: {
-      label: primaryButtonlabel,
+      label: t(primaryButtonlabel),
       action: () => onPrimaryButtonClick && onPrimaryButtonClick(),
       isLoading,
-      disabled: isLoading
+      disabled: isDsrButtonDisabled({
+        isOwner,
+        stage,
+        isLoading,
+        depositInputValue,
+        withDrawInputValue,
+        selectedAllowanceRadio,
+        validationMessages,
+        allowanceAmount,
+      }),
     },
   }
 

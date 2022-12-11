@@ -1,31 +1,38 @@
-import BigNumber from "bignumber.js";
-import { VaultAction, VaultActionInput } from "components/vault/VaultActionInput";
-import { ChangeEvent } from "react";
-import { Box } from "theme-ui";
-import { DsrDepositInfoSection } from "./DsrDepositInfoSection";
+import BigNumber from 'bignumber.js'
+import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
+import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
+import { HasGasEstimation } from 'helpers/form'
+import { ChangeEvent } from 'react'
+import { Box } from 'theme-ui'
+
+import { DsrDepositInfoSection } from './DsrDepositInfoSection'
 
 interface DsrDepositDaiFormProps {
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
   action: VaultAction
   amount: BigNumber | undefined
   maxAmount: BigNumber | undefined
+  activeTab: DsrSidebarTabOptions
+  gasData: HasGasEstimation
 }
 
-export default function DsrDepositDaiFrom({
+export function DsrDepositDaiFrom({
   onDepositAmountChange,
   action,
   amount,
-  maxAmount
+  maxAmount,
+  activeTab,
+                                    gasData,
 }: DsrDepositDaiFormProps) {
   return (
     <Box
       sx={{
-        marginTop: 1
+        marginTop: 1,
       }}
     >
       <VaultActionInput
         action={action}
-        currencyCode={'DAI'}
+        currencyCode="DAI"
         onChange={onDepositAmountChange}
         hasError={false}
         amount={amount}
@@ -36,12 +43,10 @@ export default function DsrDepositDaiFrom({
       {amount && (
         <Box
           sx={{
-            mt: 3
+            mt: 3,
           }}
         >
-          <DsrDepositInfoSection
-            daiToDeposit={amount}
-          />
+          <DsrDepositInfoSection daiToDeposit={amount} activeTab={activeTab} gasData={gasData}/>
         </Box>
       )}
     </Box>

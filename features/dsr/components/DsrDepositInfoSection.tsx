@@ -1,16 +1,22 @@
 import BigNumber from 'bignumber.js'
-import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
+import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
+import { HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface DsrDepositInfoSectionProps {
-  daiToDeposit: BigNumber;
+  daiToDeposit: BigNumber
+  activeTab: DsrSidebarTabOptions
+  gasData: HasGasEstimation
 }
 
 export function DsrDepositInfoSection({
-  daiToDeposit
+  daiToDeposit,
+  activeTab,
+  gasData,
 }: DsrDepositInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -18,19 +24,15 @@ export function DsrDepositInfoSection({
 
   return (
     <InfoSection
-      title='Depoist Dai (DSR)'
+      title={t('vault-changes.order-information')}
       items={[
         {
-          label: t('Dai Being Deposited'),
-          value: daiToDepositValue
-        },
-        {
-          label: 'Current Yield',
-          value: '1.00%'
+          label: t('dsr.order.total-dai', { action: activeTab }),
+          value: daiToDepositValue,
         },
         {
           label: t('auto-sell.estimated-transaction-cost'),
-          value: <GasEstimation />,
+          value: getEstimatedGasFeeTextOld(gasData),
         },
       ]}
     />

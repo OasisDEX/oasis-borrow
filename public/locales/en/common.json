@@ -352,7 +352,9 @@
     "max-gas-fee-in-gwei": "Max gas fee in Gwei",
     "minimum-sell-price": "Minimum sell price",
     "maximum-buy-price": "Maximum buy price",
-    "target-multiple": "Target multiple"
+    "target-multiple": "Target multiple",
+    "dsrwithdrawal": "Withdrew {{daiAmount}} DAI",
+    "dsrdeposit": "Deposited {{daiAmount}} DAI"
   },
   "triggers": {
     "added": "added",
@@ -657,6 +659,7 @@
   "multiple": "Multiple",
   "metamask-unsupported-network": "You are on an unsupported network. Please switch to Mainnet.",
   "net-value": "Net Value",
+  "net-earnings": "Net earnings",
   "nav": {
     "about": "About",
     "resources": "Resources",
@@ -1993,13 +1996,13 @@
       "open-btn": "Open Multiply position"
     }
   },
-  "sidebar-titles" : {
+  "sidebar-titles": {
     "open-earn-position": "Open Earn position",
     "manage-earn-position": "Manage Earn position",
     "open-multiply-position": "Open Multiply position",
     "manage-multiply-position": "Manage Multiply position"
   },
-  "manage-position" : "Manage position",
+  "manage-position": "Manage position",
   "brand-assets": {
     "heading": "Brand Assets",
     "intro": "Find here the Oasis.app Logo and graphics.",
@@ -2064,14 +2067,16 @@
     }
   },
   "dsr": {
-    "details":{
+    "details": {
       "overview": "Overview",
       "total-deposited-dai": "Total Deposited Dai",
-      "current-yield": "Current Yield"
+      "current-yield": "Current Yield",
+      "current-dai-savings-rate": "Current Dai Savings Rate"
     },
     "titles": {
       "manage": "Manage Your DSR strategy",
-      "heading": "Dai Savings Rate"
+      "heading": "Dai Savings Rate",
+      "setup": "Set up DSR strategy"
     },
     "labels": {
       "deposit": "Deposit",
@@ -2079,6 +2084,21 @@
     },
     "product-card": {
       "description": "Earn on your Dai using the Maker Protocol"
+    },
+    "order": {
+      "total-dai": "Total DAI {{action}}"
+    },
+    "simulation": {
+      "header1": "Duration",
+      "header2": "Earnings after fees",
+      "header3": "Net value",
+      "rowlabel1": "Next 30 days",
+      "rowlabel2": "Next 90 days",
+      "rowlabel3": "Next 1 year"
+    },
+    "errors": {
+      "amountBiggerThanBalance": "You cannot deposit more Dai than the amount in your wallet",
+      "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
     }
   }
 }

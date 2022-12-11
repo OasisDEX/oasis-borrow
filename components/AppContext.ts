@@ -16,13 +16,13 @@ import {
   AutomationBotRemoveTriggersData,
 } from 'blockchain/calls/automationBotAggregator'
 import {
+  call,
   createSendTransaction,
   createSendWithGasConstraints,
   estimateGas,
   EstimateGasFunction,
   SendTransactionFunction,
   TransactionDef,
-  call
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
@@ -83,6 +83,7 @@ import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from 'blockchain/config'
 import { resolveENSName$ } from 'blockchain/ens'
+import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
@@ -96,6 +97,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
+import { compareBigNumber } from 'blockchain/network'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -161,7 +163,6 @@ import {
   StopLossFormChange,
   StopLossFormChangeAction,
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-
 import { createBonusPipe$ } from 'features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from 'features/bonus/makerProtocolBonusAdapter'
 import {
@@ -176,6 +177,12 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
+import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
+import { createDsrHistory$ } from 'features/dsr/helpers/dsrHistory'
+import { chi, dsr, pie } from 'features/dsr/helpers/potCalls'
+import { createDsr$ } from 'features/dsr/utils/createDsr'
+import { createProxyAddress$ as createDsrProxyAddress$ } from 'features/dsr/utils/proxy'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -264,23 +271,14 @@ import {
   supportedEarnIlks,
   supportedMultiplyIlks,
 } from 'helpers/productCards'
+import { zero } from 'helpers/zero'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
+import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
-import { loadablifyLight } from 'helpers/loadable'
-import { createDsrWithdraw$ } from 'features/dsr/pipes/dsrWithdraw'
-import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit';
-import { createDsr$ } from 'features/dsr/utils/createDsr'
-import { chi, dsr, pie } from 'features/dsr/helpers/potCalls'
-import { createTokenBalance$, createAllowanceDsr$ } from 'blockchain/erc20';
-import { compareBigNumber } from 'blockchain/network';
-import { createProxyAddress$ as createDsrProxyAddress$ } from 'features/dsr/utils/proxy';
-import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
-import { equals } from 'ramda'
-import { zero } from 'helpers/zero'
 
 export type TxData =
   | OpenData
@@ -373,7 +371,7 @@ export type UIChanges = {
   configureSubject: <
     T extends SupportedUIChangeType,
     K extends LegalUiChanges[keyof LegalUiChanges]
-    >(
+  >(
     subject: string,
     reducer: (prev: T, event: K) => T,
     initialState?: T,
@@ -729,28 +727,43 @@ export function setupAppContext() {
     }),
   )
 
-  // TODO: Possibly duplicat logic, needs to be replaced 
-  function addGasEstimation<S extends HasGasEstimation>(
-    state: S,
-    call: (send: TxHelpers, state: S) => Observable<number> | undefined,
-  ): Observable<S> {
-    return doGasEstimation(gasPrice$, tokenPrices$, txHelpers$, state, call)
-  }
+  const proxyAddressDsrObservable$ = memoize(
+    (addressFromUrl: string) =>
+      connectedContext$.pipe(
+        switchMap((context) => everyBlock$(createDsrProxyAddress$(context, addressFromUrl))),
+        shareReplay(1),
+      ),
+    (item) => item,
+  )
+
+  const dsrHistory$ = memoize(
+    (addressFromUrl: string) =>
+      combineLatest(
+        connectedContext$,
+        proxyAddressDsrObservable$(addressFromUrl),
+        onEveryBlock$,
+      ).pipe(
+        switchMap(([context, proxyAddress, _]) => {
+          return proxyAddress ? defer(() => createDsrHistory$(context, proxyAddress)) : of([])
+        }),
+      ),
+    (item) => item,
+  )
 
   // TODO: Lines 737 to 773, think we are needing to modify this to use different context, lots of repeated code
-  const dsr$ = createDsr$(
-    connectedContext$,
-    everyBlock$,
-    onEveryBlock$,
-    potDsr$,
-    potChi$,
+  const dsr$ = memoize(
+    (addressFromUrl: string) =>
+      createDsr$(
+        connectedContext$,
+        everyBlock$,
+        onEveryBlock$,
+        dsrHistory$(addressFromUrl),
+        potDsr$,
+        potChi$,
+        addressFromUrl,
+      ),
+    (item) => item,
   )
-
-  const proxyAddressDsrObservable$ = connectedContext$.pipe(
-    switchMap((context) => everyBlock$(createDsrProxyAddress$(context, context.account))),
-    shareReplay(1),
-  )
-
 
   const daiBalance$ = connectedContext$.pipe(
     switchMap((context) => {
@@ -758,41 +771,38 @@ export function setupAppContext() {
     }),
   )
 
-  const daiAllowance$ = combineLatest(connectedContext$, proxyAddressDsrObservable$).pipe(
-    switchMap(([context, proxyAddress]) =>
-      proxyAddress
-        ? everyBlock$(createAllowanceDsr$(context, 'DAI', context.account, proxyAddress))
-        : of(false),
-    ),
+  const potPie$ = memoize(
+    (addressFromUrl: string) =>
+      combineLatest(connectedContext$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
+        switchMap(([context, proxyAddress]) => {
+          if (!proxyAddress) return of(zero)
+          return everyBlock$(
+            defer(() => call(context, pie)(proxyAddress!)),
+            equals,
+          )
+        }),
+      ),
+    (item) => item,
   )
 
-  const potPie$ = combineLatest(connectedContext$, proxyAddressDsrObservable$).pipe(
-    switchMap(([context, proxyAddress]) => {
-      if (!proxyAddress) return of(zero)
-      return everyBlock$(
-        defer(() => call(context, pie)(proxyAddress!)),
-        equals,
-      )
-    }),
+  const daiDeposit$ = memoize(
+    (addressFromUrl: string) => createDaiDeposit$(potPie$(addressFromUrl), potChi$),
+    (item) => item,
   )
 
-  const daiDeposit$ = createDaiDeposit$(potPie$, potChi$)
-
-  const dsrDeposit$ = createDsrDeposit$(
-    connectedContext$,
-    txHelpers$,
-    proxyAddressDsrObservable$,
-    daiAllowance$,
-    daiBalance$,
-    addGasEstimation,
-  )
-
-  const dsrWithdraw$ = createDsrWithdraw$(
-    txHelpers$,
-    proxyAddressDsrObservable$,
-    daiDeposit$,
-    potDsr$,
-    addGasEstimation,
+  const dsrDeposit$ = memoize(
+    (addressFromUrl: string) =>
+      createDsrDeposit$(
+        connectedContext$,
+        txHelpers$,
+        proxyAddressDsrObservable$(addressFromUrl),
+        allowance$,
+        daiBalance$,
+        daiDeposit$(addressFromUrl),
+        potDsr$,
+        addGasEstimation$,
+      ),
+    (item) => item,
   )
 
   const vault$ = memoize(
@@ -1278,7 +1288,6 @@ export function setupAppContext() {
     aaveAvailableLiquidityInUSDC$,
     dsr$,
     dsrDeposit$,
-    dsrWithdraw$
   }
 }
 

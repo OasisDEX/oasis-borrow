@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { ManualChange } from "../pipes/dsrDeposit"
+import { ManualChange } from 'features/dsr/helpers/dsrDeposit'
 
 export function handleAmountChange(change: (ch: ManualChange) => void) {
   return (e: React.ChangeEvent<HTMLInputElement>) => {

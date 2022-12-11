@@ -1,43 +1,34 @@
-import { useAppContext } from "components/AppContextProvider";
-import { ProductCardsLoader } from "components/productCards/ProductCardsWrapper";
-import { WithLoadingIndicator } from "helpers/AppSpinner";
-import { useObservable } from "helpers/observableHook";
-import { useState } from "react";
-import { Container } from "theme-ui";
-import { DsrSidebarTabOptions } from "../sidebar/DsrSideBar";
-import DsrView from "./DsrView";
-import React from 'react';
+import { useAppContext } from 'components/AppContextProvider'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
+import React from 'react'
+import { Container } from 'theme-ui'
 
-export default function DsrViewContainer() {
-  const { dsrDeposit$, dsr$, dsrWithdraw$ } = useAppContext()
-  const dsr = useObservable(dsrDeposit$)
-  const dsrOverview = useObservable(dsr$)
-  const dsrWithdrawls = useObservable(dsrWithdraw$)
+import { DsrView } from './DsrView'
 
-  const [activeTab, setActiveTab] = useState('depositDai' as DsrSidebarTabOptions)
-
-  const [depositState] = dsr
-  const [pots] = dsrOverview
-  const [withdrawState] = dsrWithdrawls
+export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
+  const { dsrDeposit$, dsr$, context$ } = useAppContext()
+  const resolvedDsrDeposit$ = dsrDeposit$(walletAddress)
+  const resolvedDsr$ = dsr$(walletAddress)
+  const [depositState, depositStateError] = useObservable(resolvedDsrDeposit$)
+  const [context, contextError] = useObservable(context$)
+  const [pots, potsError] = useObservable(resolvedDsr$)
 
   return (
-    <Container
-      variant="vaultPageContainer"
-    >
-      <WithLoadingIndicator
-        value={[depositState, pots, withdrawState]}
-        customLoader={<ProductCardsLoader />}
-      >
-        {([_depositState, _pots, _withdrawState]) => (
-          <DsrView
-            dsrOverview={_pots.pots.dsr}
-            dsrWithdraws={_withdrawState}
-            dsrDepostis={_depositState}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        )}
-      </WithLoadingIndicator>
+    <Container variant="vaultPageContainer">
+      <WithErrorHandler error={[depositStateError, potsError, contextError]}>
+        <WithLoadingIndicator value={[depositState, pots, context]} customLoader={<VaultContainerSpinner />}>
+          {([_depositState, _pots, _context]) => (
+            <DsrView
+              dsrOverview={_pots.pots.dsr}
+              dsrDepositState={_depositState}
+              walletAddress={walletAddress}
+              context={_context}
+            />
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
     </Container>
   )
 }
