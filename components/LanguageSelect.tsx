@@ -1,6 +1,6 @@
-import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { InitOptions } from 'node_modules/i18next'
 import React, { useMemo } from 'react'
 import ReactSelect, { Props as SelectProps } from 'react-select'
 

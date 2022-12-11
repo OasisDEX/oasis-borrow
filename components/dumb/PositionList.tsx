@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
 import { checkIfVaultEmptyAndProtectionActive } from 'helpers/functions'
 import { WithChildren } from 'helpers/types'
-import { TFunction } from 'i18next'
+import type { TranslationType } from 'i18next'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -252,7 +252,7 @@ function ProductHeading({ title, count }: { title: string; count: number }) {
   )
 }
 
-function getVaultActionButtonTranslation(isOwner: boolean, t: TFunction) {
+function getVaultActionButtonTranslation(isOwner: boolean, t: TranslationType) {
   return isOwner ? t('earn.edit-vault') : t('earn.view-vault')
 }
 

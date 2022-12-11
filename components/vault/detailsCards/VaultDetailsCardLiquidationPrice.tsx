@@ -41,13 +41,15 @@ function VaultDetailsLiquidationModal({
         <Card variant="vaultDetailsCardModal">{`$${formatAmount(liquidationPrice, 'USD')}`}</Card>
         {liquidationPriceCurrentPriceDifference && (
           <Text variant="paragraph3" sx={{ pb: 2 }}>
-            {t(
-              'manage-multiply-vault.card.liquidation-percentage-below',
-              formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              }),
-            )}
+            {t('manage-multiply-vault.card.liquidation-percentage-below', {
+              percentageBelow: formatPercent(
+                liquidationPriceCurrentPriceDifference.times(100).absoluteValue(),
+                {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                },
+              ),
+            })}
           </Text>
         )}
       </Grid>

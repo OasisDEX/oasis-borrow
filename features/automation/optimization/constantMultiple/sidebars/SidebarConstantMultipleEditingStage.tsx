@@ -13,7 +13,7 @@ import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
@@ -250,7 +250,7 @@ export function SidebarConstantMultipleEditingStage({
         </>
       )}
       <VaultActionInput
-        action={t('auto-buy.set-max-buy-price')}
+        action={t('auto-buy.set-max-buy-price') as VaultAction}
         amount={constantMultipleState?.maxBuyPrice}
         hasAuxiliary={false}
         hasError={false}
@@ -297,7 +297,7 @@ export function SidebarConstantMultipleEditingStage({
       )}
 
       <VaultActionInput
-        action={t('auto-sell.set-min-sell-price')}
+        action={t('auto-sell.set-min-sell-price') as VaultAction}
         amount={constantMultipleState?.minSellPrice}
         hasAuxiliary={false}
         hasError={false}

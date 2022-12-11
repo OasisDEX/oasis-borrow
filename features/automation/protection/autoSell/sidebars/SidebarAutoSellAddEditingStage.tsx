@@ -8,7 +8,7 @@ import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
@@ -248,7 +248,7 @@ export function SidebarAutoSellAddEditingStage({
         rightThumbColor="primary100"
       />
       <VaultActionInput
-        action={t('auto-sell.set-min-sell-price')}
+        action={t('auto-sell.set-min-sell-price') as VaultAction}
         amount={autoSellState.maxBuyOrMinSellPrice}
         hasAuxiliary={false}
         hasError={false}

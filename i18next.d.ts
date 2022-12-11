@@ -14,10 +14,10 @@ type Dot<T extends string, U extends string> =
 "" extends U ? T : `${T}.${U}`
 
 type LanguageDotNotationKeys = AcceptAnyString<PathsToProps<typeof engLocales, string>>
-
+type TranslationType = (key: LanguageDotNotationKeys, translationData?: Record<string, any>) => string & string[]
 declare module 'next-i18next' {
   function useTranslation(): {
-    t: (key: LanguageDotNotationKeys, translationData?: Record<string, string>) => string
+    t: TranslationType
     i18n: Originali18n
   }
 }
