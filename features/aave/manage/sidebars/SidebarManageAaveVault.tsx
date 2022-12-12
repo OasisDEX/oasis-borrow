@@ -168,7 +168,6 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={collateral}
-              tokenUsdPrice={new BigNumber(150)}
               maxAmountLabel={'Balance'}
               amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
@@ -196,7 +195,6 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={debt}
-              tokenUsdPrice={new BigNumber(150)}
               maxAmountLabel={'Balance'}
               amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
