@@ -9,7 +9,9 @@ export async function selectVaultsFollowedByAddress(
   //   where: { user_address: address },
   // })
 
-  const results = await prisma.usersWhoFollowVaults.findMany()
+  const results = await prisma.usersWhoFollowVaults.findMany({
+    where: { user_address: { equals: address.toLocaleLowerCase() } },
+  })
 
   console.log('results', results)
   return results
