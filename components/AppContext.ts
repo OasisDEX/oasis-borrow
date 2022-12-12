@@ -820,6 +820,7 @@ export function setupAppContext() {
         daiBalance$(addressFromUrl),
         daiDeposit$(addressFromUrl),
         potDsr$,
+        dsr$(addressFromUrl),
         addGasEstimation$,
       ),
     (item) => item,

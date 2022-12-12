@@ -22,7 +22,7 @@ export function DsrDepositDaiFrom({
   amount,
   maxAmount,
   activeTab,
-                                    gasData,
+  gasData,
 }: DsrDepositDaiFormProps) {
   return (
     <Box
@@ -36,9 +36,13 @@ export function DsrDepositDaiFrom({
         onChange={onDepositAmountChange}
         hasError={false}
         amount={amount}
-        // TODO: This will be what is in the wallet or contract
         maxAmount={maxAmount}
         showMax
+        onSetMax={() =>
+          onDepositAmountChange({ target: { value: maxAmount?.toString() } } as ChangeEvent<
+            HTMLInputElement
+          >)
+        }
       />
       {amount && (
         <Box
@@ -46,7 +50,7 @@ export function DsrDepositDaiFrom({
             mt: 3,
           }}
         >
-          <DsrDepositInfoSection daiToDeposit={amount} activeTab={activeTab} gasData={gasData}/>
+          <DsrDepositInfoSection daiToDeposit={amount} activeTab={activeTab} gasData={gasData} />
         </Box>
       )}
     </Box>

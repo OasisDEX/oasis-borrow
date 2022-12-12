@@ -10,6 +10,7 @@ import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/ma
 import { depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
 import { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
+import { Dsr } from 'features/dsr/utils/createDsr'
 import { applyProxyChanges } from 'features/proxy/proxy'
 import {
   ApplyChange,
@@ -20,7 +21,6 @@ import {
   HasGasEstimation,
 } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
-import { roundHalfUp } from 'helpers/rounding'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
@@ -84,6 +84,7 @@ export interface DsrDepositState extends HasGasEstimation {
   token: string
   proxyConfirmations?: number
   allowanceAmount?: BigNumber
+  netValue?: BigNumber
 }
 
 export type ManualChange = Change<DsrDepositState, 'amount'>
@@ -276,10 +277,12 @@ function validate(state: DsrDepositState): DsrDepositState {
   }
   if (
     state.amount &&
-    state.daiDeposit &&
-    state.amount.gt(roundHalfUp(state.daiDeposit, 'DAI')) &&
+    state.netValue &&
+    state.amount.gt(state.netValue) &&
     state.operation === 'withdraw'
   ) {
+    console.log('amount', state.amount.toString())
+    console.log('amountnetValue', state.netValue.toString())
     messages[messages.length] = { kind: 'amountBiggerThanDeposit' }
   }
   return { ...state, messages }
@@ -322,6 +325,7 @@ export function createDsrDeposit$(
   daiBalance$: Observable<BigNumber>,
   daiDeposit$: Observable<BigNumber>,
   potDsr$: Observable<BigNumber>,
+  dsr$: Observable<Dsr>, // TODO make use of it instead fetching dsrOverview separately
   addGasEstimation$: AddGasEstimationFunction,
 ): Observable<DsrDepositState> {
   return combineLatest(context$, proxyAddress$, daiBalance$, daiDeposit$, potDsr$).pipe(
@@ -341,6 +345,10 @@ export function createDsrDeposit$(
 
           const daiDepositChange$: Observable<DaiDepositChange> = daiDeposit$.pipe(
             map((daiDeposit) => ({ kind: 'daiDeposit', daiDeposit })),
+          )
+
+          const netValueChange$: Observable<any> = dsr$.pipe(
+            map((dsr) => ({ kind: 'netValue', netValue: dsr?.pots?.dsr?.value?.dai })),
           )
 
           const initialState: DsrDepositState = {
@@ -364,7 +372,7 @@ export function createDsrDeposit$(
             map((daiBalance) => ({ kind: 'daiBalance', daiBalance })),
           )
 
-          return merge(change$, daiBalanceChange$, daiDepositChange$).pipe(
+          return merge(change$, daiBalanceChange$, daiDepositChange$, netValueChange$).pipe(
             scan(apply, initialState),
             map(validate),
             switchMap(curry(constructEstimateGas)(addGasEstimation$)),

@@ -54,7 +54,7 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
   const isOwner = context.status === 'connected' && walletAddress === context.account
   const earnings =
     dsrOverview.value && 'earnings' in dsrOverview.value ? dsrOverview.value.earnings : zero
-  const netValue = dsrOverview.value && 'dai' in dsrOverview.value ? dsrOverview.value.dai : zero
+  const netValue = dsrDepositState.netValue || zero
 
   return (
     <>
