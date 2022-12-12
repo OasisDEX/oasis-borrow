@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { amountFromWei } from '@oasisdex/utils'
+import { Swap } from '@oasisdex/oasis-actions'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { amountFromWei } from '../../../../../blockchain/utils'
 import {
   formatGasEstimationETH,
   getEstimatedGasFeeTextOld,
@@ -11,7 +12,6 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
-import { Swap } from '@oasisdex/oasis-actions/src/helpers/calculations/Position'
 
 interface FeesInformationProps {
   estimatedGasPrice?: HasGasEstimation
@@ -22,7 +22,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
   const oasisFeeDisplayInDebtToken = formatAmount(
-    amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].precision),
+    amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
     swap[swap.collectFeeFrom].symbol,
   )
   return (

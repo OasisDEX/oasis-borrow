@@ -30,12 +30,10 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
   prepareArgs: (data, context) => {
     return [context.operationExecutor.address, getCallData(data, context)]
   },
-  options: ({ token, amount = zero }) => {
-    return token === 'ETH' && amount.gt(zero)
-      ? { value: amountToWei(amount, 'ETH').toFixed(0) }
-      : {}
-  },
+  options: ({ token, amount = zero }) =>
+    token === 'ETH' && amount.gt(zero) ? { value: amountToWei(amount, 'ETH').toFixed(0) } : {},
 }
+
 export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutorTxMeta> = {
   call: (args, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, args.proxyAddress))

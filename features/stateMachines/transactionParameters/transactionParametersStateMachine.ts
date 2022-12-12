@@ -154,10 +154,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         })),
       },
       services: {
-        getParameters: async (context) => {
-          const call = await libraryCall(context.parameters!)
-          return call
-        },
+        getParameters: async (context) => libraryCall(context.parameters!),
         estimateGas: ({ txHelper, parameters, strategy }) => {
           return txHelper!
             .estimateGas(callOperationExecutorWithDpmProxy, {
@@ -165,13 +162,13 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               calls: strategy!.transaction.calls as any,
               operationName: strategy!.transaction.operationName,
               // @ts-ignore
-              token: parameters!.token || parameters!.debtToken,
+              token: parameters!.token || parameters!.debtToken, // should be assigned to depositToken in the parent machine
               amount: parameters!.amount,
               proxyAddress: parameters!.proxyAddress,
             })
             .pipe(
-              distinctUntilChanged<number>(isEqual),
               map((estimatedGas) => ({ type: 'GAS_ESTIMATION_CHANGED', estimatedGas })),
+              distinctUntilChanged<number>(isEqual),
             )
         },
         estimateGasPrice: ({ estimatedGas }) =>

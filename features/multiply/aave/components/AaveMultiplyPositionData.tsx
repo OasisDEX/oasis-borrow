@@ -118,8 +118,10 @@ export function AaveMultiplyPositionData({
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('system.liquidation-price')}
-            // works as long as debt token is USDC
-            value={`${formatAmount(NaNIsZero(currentPositionThings.liquidationPrice), 'USD')} USDC`}
+            value={`${formatAmount(
+              NaNIsZero(currentPositionThings.liquidationPrice),
+              currentPosition.debt.symbol,
+            )} ${currentPosition.debt.symbol}`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.liquidationPrice.gte(
@@ -127,8 +129,10 @@ export function AaveMultiplyPositionData({
                 )
                   ? 'positive'
                   : 'negative',
-                // works as long as debt token is USDC
-                value: `$${formatAmount(nextPositionThings.liquidationPrice, 'USD')} ${t('after')}`,
+                value: `$${formatAmount(
+                  nextPositionThings.liquidationPrice,
+                  nextPosition.debt.symbol,
+                )} ${t('after')}`,
               }
             }
             footnote={`${t('manage-earn-vault.below-current-price', {
@@ -186,13 +190,17 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionContentCard
             title={t('system.net-value')}
-            value={`${formatAmount(currentPositionThings.netValue, 'USD')} USDC`}
+            value={`${formatAmount(currentPositionThings.netValue, currentPosition.debt.symbol)} ${
+              currentPosition.debt.symbol
+            }`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.netValue.gt(currentPositionThings.netValue)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.netValue, 'USD')} ${t('after')}`,
+                value: `${formatAmount(nextPositionThings.netValue, nextPosition.debt.symbol)} ${t(
+                  'after',
+                )}`,
               }
             }
           />
@@ -202,13 +210,17 @@ export function AaveMultiplyPositionData({
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
             title={t('system.position-debt')}
-            value={`${formatAmount(currentPositionThings.debt, 'USD')} USDC`}
+            value={`${formatAmount(currentPositionThings.debt, currentPosition.debt.symbol)} ${
+              currentPosition.debt.symbol
+            }`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.debt.gt(currentPositionThings.debt)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.debt, 'USD')} USDC ${t('after')}`,
+                value: `${formatAmount(nextPositionThings.debt, nextPosition.debt.symbol)} ${
+                  nextPosition.debt.symbol
+                } ${t('after')}`,
               }
             }
           />
@@ -240,13 +252,18 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionFooterItem
             title={t('system.buying-power')}
-            value={`${formatAmount(currentPositionThings.buyingPower, 'USD')} USDC`}
+            value={`${formatAmount(
+              currentPositionThings.buyingPower,
+              currentPosition.debt.symbol,
+            )} ${currentPosition.debt.symbol}`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.buyingPower.gt(currentPositionThings.buyingPower)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.buyingPower, 'USD')} USDC ${t('after')}`,
+                value: `${formatAmount(nextPositionThings.buyingPower, nextPosition.debt.symbol)} ${
+                  nextPosition.debt.symbol
+                } ${t('after')}`,
               }
             }
           />

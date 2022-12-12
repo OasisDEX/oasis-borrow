@@ -40,19 +40,13 @@ function getAmountGetFromPositionAfterClose(
   if (!strategy || !currentPosition) {
     return zero
   }
-  const amountFromSwap = strategy.simulation.swap.toTokenAmount
-  let fee
-  if (strategy.simulation.swap.collectFeeFrom === 'sourceToken') {
-    // fee amount could have different precision - convert to toTokenAmount precision
-    fee = amountToWei(
-      amountFromWei(strategy.simulation.swap.tokenFee, strategy.simulation.swap.sourceToken.symbol),
-      strategy.simulation.swap.targetToken.symbol,
-    )
-  } else {
-    fee = strategy.simulation.swap.tokenFee
-  }
 
-  return amountFromSwap.minus(currentPosition.debt.amount).minus(fee)
+  const fee =
+    strategy.simulation.swap.collectFeeFrom === 'targetToken'
+      ? strategy.simulation.swap.tokenFee
+      : zero // fee already accounted for in toTokenAmount
+
+  return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
 }
 
 function ReturnedAmountAfterClose({ state }: ManageAaveStateProps) {

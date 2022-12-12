@@ -1,4 +1,5 @@
 import {
+  AAVETokens,
   IPosition,
   IPositionTransition,
   IRiskRatio,
@@ -71,8 +72,6 @@ export interface OasisActionResult {
   strategy: IPositionTransition
   operationName: string
 }
-
-type AAVETokens = 'ETH' | 'WETH' | 'STETH' | 'WBTC' | 'USDC' // todo: export from oasis-actions
 
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
   if ((context as ContextConnected).account === undefined) {
@@ -147,7 +146,7 @@ export async function getOpenAaveParameters({
       collateralToken: _collateralToken,
       depositedByUser,
       positionArgs: {
-        positionId: 123,
+        positionId: 0,
         positionType: 'Earn' as const,
         protocol: 'AAVE' as const,
       },
