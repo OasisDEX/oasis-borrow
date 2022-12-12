@@ -1,5 +1,4 @@
 import { selectVaultsFollowedByAddress } from 'handlers/follow/follow'
-import { add } from 'lodash'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
