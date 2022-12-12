@@ -20,11 +20,8 @@ export enum TxMetaKind {
   addTriggerGroup = 'addTriggerGroup',
   operationExecutor = 'operationExecutor',
   createAccount = 'createAccount',
-  setupDSProxy = 'setupDSProxy',
   setOwner = 'setOwner',
   dsrJoin = 'dsrJoin',
   dsrExit = 'dsrExit',
   dsrExitAll = 'dsrExitAll',
-  transferEth = 'transferEth',
-  transferErc20 = 'transferErc20',
 }
