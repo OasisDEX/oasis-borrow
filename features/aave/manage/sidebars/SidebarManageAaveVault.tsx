@@ -209,7 +209,7 @@ function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: `/earn/aave/open/${state.context.strategy}`,
+      url: `/${state.context.strategyConfig.type}/aave/open/${state.context.strategyConfig.urlSlug}`,
     },
   }
 

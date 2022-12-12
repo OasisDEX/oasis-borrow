@@ -120,7 +120,6 @@ export function createManageAaveStateMachine(
           id: 'allowance$',
         },
       ],
-      entry: ['calculateEffectiveProxyAddress'],
       id: 'manageAaveStateMachine',
       type: 'parallel',
       states: {
@@ -258,7 +257,7 @@ export function createManageAaveStateMachine(
           actions: 'updateContext',
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         WEB3_CONTEXT_CHANGED: {
           actions: 'updateContext',

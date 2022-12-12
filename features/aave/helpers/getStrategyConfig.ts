@@ -36,11 +36,8 @@ export function getStrategyConfig$(
       } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
         return loadStrategyFromTokens('ETH', 'USDC')
       } else {
-        throw new Error(
-          `could not resolve strategy position ID ${positionId}. aaveUserConfiguration ${JSON.stringify(
-            aaveUserConfiguration,
-          )}`,
-        )
+        // fallback to this stETH/ETH Earn strategy until we release new strategies with DPM
+        return loadStrategyFromTokens('STETH', 'ETH')
       }
     }),
     distinctUntilChanged(isEqual),
