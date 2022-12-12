@@ -353,38 +353,22 @@ export function createManageAaveStateMachine(
         isAllowanceNeeded,
       },
       actions: {
-        resetTokenActionValue: assign(({ userInput }) => {
-          return {
-            userInput: {
-              ...userInput,
-              manageTokenActionValue: undefined,
-            },
-          }
-        }),
-        updateCollateralTokenAction: assign(({ userInput }, event) => {
-          return {
-            userInput: {
-              ...userInput,
-              manageCollateralAction: event.manageTokenAction,
-            },
-          }
-        }),
-        updateDebtTokenAction: assign(({ userInput }, event) => {
-          return {
-            userInput: {
-              ...userInput,
-              manageDebtAction: event.manageTokenAction,
-            },
-          }
-        }),
-        updateTokenActionValue: assign(({ userInput }, event) => {
-          return {
-            userInput: {
-              ...userInput,
-              manageTokenActionValue: event.manageTokenActionValue,
-            },
-          }
-        }),
+        resetTokenActionValue: assign(({ manageTokenInput }) => ({
+          manageTokenInput: Object.assign(manageTokenInput!, { manageTokenActionValue: undefined }),
+        })),
+        updateCollateralTokenAction: assign(
+          ({ manageTokenInput }, { manageTokenAction: manageCollateralAction }) => ({
+            manageTokenInput: Object.assign(manageTokenInput!, { manageCollateralAction }),
+          }),
+        ),
+        updateDebtTokenAction: assign(
+          ({ manageTokenInput }, { manageTokenAction: manageDebtAction }) => ({
+            manageTokenInput: Object.assign(manageTokenInput!, { manageDebtAction }),
+          }),
+        ),
+        updateTokenActionValue: assign(({ manageTokenInput }, { manageTokenActionValue }) => ({
+          manageTokenInput: Object.assign(manageTokenInput!, { manageTokenActionValue }),
+        })),
         userInputRiskRatio: assign((context, event) => {
           return {
             userInput: {

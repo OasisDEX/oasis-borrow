@@ -7,6 +7,7 @@ import { ActionPills } from 'components/ActionPills'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
@@ -30,15 +31,6 @@ interface ManageAaveStateProps {
 }
 
 type WithDropdownConfig<T> = T & { dropdownConfig?: SidebarSectionHeaderDropdown }
-
-export enum ManageCollateralActionsEnum {
-  DEPOSIT_COLLATERAL = 'deposit-collateral',
-  WITHDRAW_COLLATERAL = 'withdraw-collateral',
-}
-export enum ManageDebtActionsEnum {
-  BORROW_DEBT = 'borrow-debt',
-  PAYBACK_DEBT = 'payback-debt',
-}
 
 function isLoading(state: ManageAaveStateMachineState) {
   return state.matches('background.loading')
@@ -159,11 +151,11 @@ function GetReviewingSidebarProps({
       }
     case state.matches('frontend.manageCollateral'):
       return {
-        title: 'Manage collateral',
+        title: t('system.manage-collateral'),
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={state.context.userInput.manageCollateralAction!}
+              active={state.context.manageTokenInput?.manageCollateralAction!}
               items={Object.values(ManageCollateralActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),
@@ -171,14 +163,14 @@ function GetReviewingSidebarProps({
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              Manage collateral
+              {t('system.manage-collateral')}
             </Text>
             <VaultActionInput
               action="Enter"
               currencyCode={collateral}
               tokenUsdPrice={new BigNumber(150)}
               maxAmountLabel={'Balance'}
-              amount={state.context.userInput.manageTokenActionValue}
+              amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
@@ -187,11 +179,11 @@ function GetReviewingSidebarProps({
       }
     case state.matches('frontend.manageDebt'):
       return {
-        title: 'Manage debt',
+        title: t('system.manage-debt'),
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={state.context.userInput.manageDebtAction!}
+              active={state.context.manageTokenInput?.manageDebtAction!}
               items={Object.values(ManageDebtActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),
@@ -199,14 +191,14 @@ function GetReviewingSidebarProps({
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              Manage debt
+              {t('system.manage-debt')}
             </Text>
             <VaultActionInput
               action="Enter"
               currencyCode={debt}
               tokenUsdPrice={new BigNumber(150)}
               maxAmountLabel={'Balance'}
-              amount={state.context.userInput.manageTokenActionValue}
+              amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
@@ -341,7 +333,7 @@ export function SidebarManageAaveVault() {
         },
       },
       {
-        label: t('system.manage-collateral', {
+        label: t('system.manage-collateral-token', {
           token: state.context.tokens.collateral,
         }),
         shortLabel: t('system.manage-token', {
@@ -356,7 +348,7 @@ export function SidebarManageAaveVault() {
         },
       },
       {
-        label: t('system.manage-debt', {
+        label: t('system.manage-debt-token', {
           token: state.context.tokens.debt,
         }),
         shortLabel: t('system.manage-token', {

@@ -887,8 +887,10 @@
     "multiply-reduce-debt": "Reduce Vault's debt",
     "pnl-value": "PnL: {{value}}",
     "manage-token": "Manage {{token}}",
-    "manage-collateral": "Manage collateral ({{token}})",
-    "manage-debt": "Manage debt ({{token}})",
+    "manage-collateral-token": "Manage collateral ({{token}})",
+    "manage-debt-token": "Manage debt ({{token}})",
+    "manage-collateral": "Manage collateral",
+    "manage-debt": "Manage debt",
     "close-position": "Close position",
     "actions": {
       "common": {

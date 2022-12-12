@@ -1,13 +1,10 @@
 import { useInterpret } from '@xstate/react'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { env } from 'process'
 import React from 'react'
 
 import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PositionId } from '../../types'
-import {
-  ManageCollateralActionsEnum,
-  ManageDebtActionsEnum,
-} from '../sidebars/SidebarManageAaveVault'
 import { ManageAaveStateMachine } from '../state'
 
 function setupManageAaveStateContext({
@@ -28,7 +25,8 @@ function setupManageAaveStateContext({
       currentStep: 1,
       totalSteps: 3,
       strategyConfig: strategy,
-      userInput: {
+      userInput: {},
+      manageTokenInput: {
         // defaults for the manage collateral/debt are set here
         manageCollateralAction: ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
         manageDebtAction: ManageDebtActionsEnum.BORROW_DEBT,

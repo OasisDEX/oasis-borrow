@@ -19,6 +19,15 @@ import { ProxyType, StrategyConfig } from './common/StrategyConfigTypes'
 
 type StrategyConfigName = 'aave-earn' | 'aave-multiply'
 
+export enum ManageCollateralActionsEnum {
+  DEPOSIT_COLLATERAL = 'deposit-collateral',
+  WITHDRAW_COLLATERAL = 'withdraw-collateral',
+}
+export enum ManageDebtActionsEnum {
+  BORROW_DEBT = 'borrow-debt',
+  PAYBACK_DEBT = 'payback-debt',
+}
+
 export const strategies: Record<StrategyConfigName, StrategyConfig> = {
   'aave-earn': {
     urlSlug: 'stETHeth',
