@@ -5,7 +5,7 @@ import { Box } from 'theme-ui'
 function AjnaLandingPage() {
   return (
     <AjnaWrapper>
-      <Box sx={{ width: '100%', height: '500px' }} />
+      <Box sx={{ width: '100%', height: '500px' }}>Test</Box>
     </AjnaWrapper>
   )
 }

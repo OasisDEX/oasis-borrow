@@ -280,6 +280,9 @@ export const oasisBaseTheme = {
       minWidth: '200px',
       width: 'unset',
     },
+    navigation: {
+      maxWidth: '1376px',
+    }
   },
   metadata: {
     fontLinkHref: 'https://rsms.me/inter/inter.css',
