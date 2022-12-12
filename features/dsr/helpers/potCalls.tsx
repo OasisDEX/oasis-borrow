@@ -1,6 +1,6 @@
 import { amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
-import * as dsProxy from 'blockchain/abi/ds-proxy.abi.json'
+import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { contractDesc } from 'blockchain/config'
