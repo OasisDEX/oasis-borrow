@@ -180,8 +180,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   const clientId = req.query.clientId.toString()
   //withCache = req.query.withCache.toString() === "true"
 
-  const rpcNode = getRpcNode(network)
-  const provider = new ethers.providers.JsonRpcProvider(rpcNode)
   if (debug && !withCache) {
     console.log('no cache')
   }
@@ -198,7 +196,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   }
   if (Array.isArray(requestBody) && requestBody.every((call) => call.method === 'eth_call')) {
     const multicallAddress = getMulticall(network)
-    const multicall = new ethers.Contract(multicallAddress, abi, provider)
+    const multicall = new ethers.Contract(multicallAddress, abi)
 
     const calls = requestBody
       .map((rpcCall: any) => rpcCall.params)
