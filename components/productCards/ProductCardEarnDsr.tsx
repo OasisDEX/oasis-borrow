@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { redirectState$ } from 'features/router/redirectState'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -14,9 +14,9 @@ export const dsrLink = '/earn/dsr'
 
 export function ProductCardEarnDsr() {
   const { t } = useTranslation()
-  const { connectedContext$, potDsr$ } = useAppContext()
+  const { connectedContext$, potDsr$, potTotalValueLocked$ } = useAppContext()
   const [potDsr] = useObservable(potDsr$)
-
+  const [potTotalValueLocked] = useObservable(potTotalValueLocked$)
   const [connectedContext] = useObservable(connectedContext$)
 
   function handleClick() {
@@ -47,7 +47,7 @@ export function ProductCardEarnDsr() {
         },
         {
           title: 'Total Value Locked',
-          value: '125.04m',
+          value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
         },
         {
           title: t('system.protocol'),

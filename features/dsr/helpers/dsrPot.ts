@@ -19,14 +19,14 @@ export type DsrPotKind = 'dsr'
 export type DsrPot =
   | { kind: DsrPotKind; proxyAddress: undefined; apy: BigNumber }
   | {
-  kind: DsrPotKind
-  proxyAddress: string
-  adapterDebtAmount: BigNumber
-  dai: BigNumber
-  apy: BigNumber
-  earnings: BigNumber
-  history: DsrEvent[]
-}
+      kind: DsrPotKind
+      proxyAddress: string
+      adapterDebtAmount: BigNumber
+      dai: BigNumber
+      apy: BigNumber
+      earnings: BigNumber
+      history: DsrEvent[]
+    }
 
 // TODO: global setting!
 BigNumber.config({ POW_PRECISION: 100 })

@@ -328,7 +328,7 @@ export function createDsrDeposit$(
     first(),
     switchMap(([context, proxyAddress, daiBalance, daiDeposit, potDsr]) => {
       return combineLatest(
-        proxyAddress && context.account
+        proxyAddress && context.status === 'connected' && context.account
           ? allowance$('DAI', context.account, proxyAddress)
           : of(undefined),
       ).pipe(

@@ -180,7 +180,7 @@ import { currentContent } from 'features/content'
 import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
 import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
 import { createDsrHistory$ } from 'features/dsr/helpers/dsrHistory'
-import { chi, dsr, pie } from 'features/dsr/helpers/potCalls'
+import { chi, dsr, Pie, pie } from 'features/dsr/helpers/potCalls'
 import { createDsr$ } from 'features/dsr/utils/createDsr'
 import { createProxyAddress$ as createDsrProxyAddress$ } from 'features/dsr/utils/proxy'
 import {
@@ -732,6 +732,19 @@ export function setupAppContext() {
     switchMap((context) => {
       return everyBlock$(defer(() => call(context, chi)()))
     }),
+  )
+
+  const potBigPie$ = context$.pipe(
+    switchMap((context) => {
+      return everyBlock$(defer(() => call(context, Pie)()))
+    }),
+  )
+
+  const potTotalValueLocked$ = combineLatest(potChi$, potBigPie$).pipe(
+    switchMap(([chi, potBigPie]) =>
+      of(potBigPie.div(new BigNumber(10).pow(18)).times(chi.div(new BigNumber(10).pow(27)))),
+    ),
+    shareReplay(1),
   )
 
   const proxyAddressDsrObservable$ = memoize(
@@ -1316,6 +1329,7 @@ export function setupAppContext() {
     dsr$,
     dsrDeposit$,
     potDsr$,
+    potTotalValueLocked$,
   }
 }
 
