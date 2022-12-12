@@ -4,9 +4,12 @@ export async function selectVaultsFollowedByAddress(
   prisma: PrismaClient,
   { address }: { address: string },
 ): Promise<UsersWhoFollowVaults[] | undefined> {
-  const results = await prisma.usersWhoFollowVaults.findMany({
-    where: { user_address: address },
-  })
+  // TODO why is wrong with this query
+  // const results = await prisma.usersWhoFollowVaults.findMany({
+  //   where: { user_address: address },
+  // })
+
+  const results = await prisma.usersWhoFollowVaults.findMany()
 
   console.log('results', results)
   return results
