@@ -7,6 +7,8 @@ const threadId = Math.floor(Math.random() * 1000000)
 
 const debug = true
 
+const withCache = false
+
 type Counters = {
   clientIds: { [key: string]: number }
   threadId: number
@@ -68,13 +70,22 @@ function getRpcNode(network: string) {
       throw new Error('unsupported network')
   }
 }
-
+function getSpotAddress(network: string) {
+  switch (network) {
+    case 'mainnet':
+      return `0x65C79fcB50Ca1594B025960e539eD7A9a6D434A3`
+    case 'goerli':
+      return `0xACe2A9106ec175bd56ec05C9E38FE1FDa8a1d758`
+    default:
+      throw new Error('unsupported network')
+  }
+}
 function getMulticall(network: string) {
   switch (network) {
     case 'mainnet':
       return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     case 'goerli':
-      return `0x77dca2c955b15e9de4dbbcf1246b4b85b651e50e`
+      return `0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696`
     default:
       throw new Error('unsupported network')
   }
@@ -97,6 +108,34 @@ const abi = [
     outputs: [
       { internalType: 'uint256', name: 'blockNumber', type: 'uint256' },
       { internalType: 'bytes[]', name: 'returnData', type: 'bytes[]' },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'bool', name: 'requireSuccess', type: 'bool' },
+      {
+        components: [
+          { internalType: 'address', name: 'target', type: 'address' },
+          { internalType: 'bytes', name: 'callData', type: 'bytes' },
+        ],
+        internalType: 'struct Multicall2.Call[]',
+        name: 'calls',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'tryAggregate',
+    outputs: [
+      {
+        components: [
+          { internalType: 'bool', name: 'success', type: 'bool' },
+          { internalType: 'bytes', name: 'returnData', type: 'bytes' },
+        ],
+        internalType: 'struct Multicall2.Result[]',
+        name: 'returnData',
+        type: 'tuple[]',
+      },
     ],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -139,9 +178,14 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
 
   const network = req.query.network.toString()
   const clientId = req.query.clientId.toString()
+  //withCache = req.query.withCache.toString() === "true"
 
   const rpcNode = getRpcNode(network)
   const provider = new ethers.providers.JsonRpcProvider(rpcNode)
+  if (debug && !withCache) {
+    console.log('no cache')
+  }
+
   if (!cache[network]) {
     cache[network] = {
       lastBlockNumberFetchTimestamp: 0,
@@ -187,16 +231,24 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       dedupedCalls.map((call) => call.hash).indexOf(item.hash),
     )
 
-    await sleepUntill(() => !cache[network].locked, 100, 'cache[network].locked')
+    if (withCache) {
+      await sleepUntill(() => !cache[network].locked, 100, 'cache[network].locked')
+    }
+
     try {
-      cache[network].useCount++
-      const missingCalls = dedupedCalls.filter((x) => !cache[network].cachedResponses[x.hash])
+      if (withCache) {
+        cache[network].useCount++
+      }
+      const missingCalls = dedupedCalls.filter(
+        (x) => !cache[network].cachedResponses[x.hash] || !withCache,
+      )
 
       const missingCallsIndexes = dedupedCalls
         .map((call) => call.hash)
         .map((x) => missingCalls.map((x) => x.hash).indexOf(x))
 
-      const multicallTx = await multicall.populateTransaction.aggregate(
+      const multicallTx = await multicall.populateTransaction.tryAggregate(
+        false,
         missingCalls.map((call) => call.call),
       )
 
@@ -214,23 +266,69 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           'latest',
         ],
       }
+
+      counters.totalCalls += 1
+      counters.requests += 1
+      counters.totalPayloadSize += JSON.stringify(callBody).length
+
       counters.dedupedTotalPayloadSize += JSON.stringify(callBody).length
       const multicallResponse = await makeCall(network, [callBody])
-      counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
 
+      counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
       if (multicallResponse[0].error) {
         throw new Error(multicallResponse[0].error.message)
       }
-      const [, data] = multicall.interface.decodeFunctionResult(
-        'aggregate((address,bytes)[])',
+
+      const [dataFromMulticall] = multicall.interface.decodeFunctionResult(
+        'tryAggregate(bool,(address,bytes)[])',
         multicallResponse[0].result,
       )
+
+      const spotAddress = getSpotAddress(network)
+      const multicallFailedCalls = missingCalls.filter(
+        (x: any, i: number) => dataFromMulticall[i][0] === false,
+      )
+
+      let data: any[]
+      if (multicallFailedCalls.length !== 0) {
+        const failedMultiCallsRepsonse = await makeCall(
+          network,
+          multicallFailedCalls.map((x, i) => {
+            return {
+              jsonrpc: '2.0',
+              id: +requestBody[0].id + i,
+              method: 'eth_call',
+              params: [
+                {
+                  data: x.call[1],
+                  to: x.call[0],
+                  from: spotAddress,
+                },
+                'latest',
+              ],
+            }
+          }),
+        )
+        let z = 0
+        data = dataFromMulticall.map((x: [boolean, string]) => {
+          if (x[0] === false) {
+            return failedMultiCallsRepsonse[z++].result
+          } else {
+            return x[1]
+          }
+        })
+      } else {
+        data = dataFromMulticall.map((x: [boolean, string]) => x[1])
+      }
       const callsWithResponses: CallWithHashAndResponse[] = callsWithHash.map((x, index) => {
-        if (cache[network].cachedResponses[x.hash] === undefined) {
+        if (cache[network].cachedResponses[x.hash] === undefined || !withCache) {
           if (missingCallsIndexes[mappedCalls[index]] === -1) {
             throw new Error('Missing call index not found') //This means that cache do not work properly
           }
-          cache[network].cachedResponses[x.hash] = data[missingCallsIndexes[mappedCalls[index]]]
+
+          if (withCache)
+            cache[network].cachedResponses[x.hash] = data[missingCallsIndexes[mappedCalls[index]]]
+
           return {
             ...x,
             response: data[missingCallsIndexes[mappedCalls[index]]],
@@ -248,10 +346,13 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
         jsonrpc: entry.jsonrpc,
         result: callsWithResponses[index].response,
       }))
-
-      cache[network].useCount--
+      if (withCache) {
+        cache[network].useCount--
+      }
     } catch (error) {
-      cache[network].useCount--
+      if (withCache) {
+        cache[network].useCount--
+      }
       let errMsg
       let errStack
       if (error instanceof Error) errMsg = error.message
@@ -282,22 +383,28 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
       if (debug) console.log('RPC no batching, falling back to individual calls')
       if (isBlockNumberRequest(requestBody)) {
         if (
-          Date.now() - cache[network].lastBlockNumberFetchTimestamp > blockRecheckDelay &&
-          cache[network].locked === false
+          (Date.now() - cache[network].lastBlockNumberFetchTimestamp > blockRecheckDelay ||
+            !withCache) &&
+          (cache[network].locked === false || !withCache)
         ) {
           try {
-            cache[network].locked = true
-            await sleepUntill(
-              () => cache[network].useCount === 0,
-              100,
-              'cache[network].useCount === 0',
-            )
+            if (withCache) {
+              cache[network].locked = true
+              await sleepUntill(
+                () => cache[network].useCount === 0,
+                100,
+                'cache[network].useCount === 0',
+              )
+            }
+
             const result = await makeCall(req.query.network.toString(), [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
-            cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
-            cache[network].lastBlockNumberFetchTimestamp = Date.now()
-            cache[network].cachedResponses = {}
-            cache[network].locked = false
+            if (withCache) {
+              cache[network].lastRecordedBlockNumber = parseInt(result[0].result, 16)
+              cache[network].lastBlockNumberFetchTimestamp = Date.now()
+              cache[network].cachedResponses = {}
+              cache[network].locked = false
+            }
             return res.status(200).send({
               id: requestBody.id,
               jsonrpc: requestBody.jsonrpc,
@@ -315,28 +422,34 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
           return res.status(200).send({
             id: requestBody.id,
             jsonrpc: requestBody.jsonrpc,
-            result: cache[network].lastRecordedBlockNumber.toString(),
+            result: '0x' + cache[network].lastRecordedBlockNumber.toString(16),
           })
         }
       } else {
         if (isCodeRequest(requestBody)) {
-          if (cache[network].persistentCache[requestBody.params[0]]) {
+          let result: any
+          if (cache[network].persistentCache[requestBody.params[0]] && withCache) {
             if (debug) console.log('Contract code from cache', requestBody.params[0])
           } else {
             if (debug) console.log('Fetching contract code', requestBody.params[0])
-            const result = await makeCall(req.query.network.toString(), [requestBody])
+            result = await makeCall(req.query.network.toString(), [requestBody])
             counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
-            cache[network].persistentCache[requestBody.params[0]] = result[0].result
+            if (withCache) cache[network].persistentCache[requestBody.params[0]] = result[0].result
           }
           return res.status(200).send({
             id: requestBody.id,
             jsonrpc: requestBody.jsonrpc,
-            result: cache[network].persistentCache[requestBody.params[0]],
+            result: withCache
+              ? cache[network].persistentCache[requestBody.params[0]]
+              : result[0].result,
           })
         } else {
           counters.bypassedCallsCount += 1
           counters.bypassedPayloadSize += JSON.stringify(requestBody).length
           finalResponse = await makeCall(req.query.network.toString(), [requestBody])
+          if (Array.isArray(finalResponse) && finalResponse.length === 1) {
+            finalResponse = finalResponse[0]
+          }
           counters.clientIds[clientId] = (counters.clientIds[clientId] || 0) + 1
         }
       }
@@ -381,10 +494,10 @@ async function sleepUntill(check: () => boolean, maxCount: number, message: stri
   })
 }
 
-function isBlockNumberRequest(body: any) {
-  return body.method === 'eth_blockNumber'
+function isBlockNumberRequest(_body: any) {
+  return false //body.method === 'eth_blockNumber'
 }
 
-function isCodeRequest(body: any) {
-  return body.method === 'eth_getCode'
+function isCodeRequest(_body: any) {
+  return false //body.method === 'eth_getCode'
 }
