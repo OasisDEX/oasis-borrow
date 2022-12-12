@@ -1,4 +1,5 @@
 import { getTokens } from 'blockchain/tokensMetadata'
+import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
 import React from 'react'
 
 import { WithLoadingIndicator } from '../../helpers/AppSpinner'
@@ -37,6 +38,8 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
       <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
         {([_productCardsData]) => (
           <ProductCardsWrapper>
+            {/* TODO prepare proper handling for DSR */}
+            {props.strategies.maker.includes('DSR') ? <ProductCardEarnDsr /> : null}
             {_productCardsData.map((cardData) => (
               <ProductCard cardData={cardData} key={cardData.ilk} />
             ))}

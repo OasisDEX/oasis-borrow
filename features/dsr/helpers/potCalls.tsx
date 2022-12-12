@@ -3,7 +3,8 @@ import { BigNumber } from 'bignumber.js'
 import * as dsProxy from 'blockchain/abi/ds-proxy.abi.json'
 import { CallDef, TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { contractDesc, getToken } from 'blockchain/config'
+import { contractDesc } from 'blockchain/config'
+import { getToken } from 'blockchain/tokensMetadata'
 
 export const pie: CallDef<string, BigNumber> = {
   call: (_, { contract, mcdPot }) => contract(mcdPot).methods.pie,

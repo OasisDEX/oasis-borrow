@@ -1315,6 +1315,7 @@ export function setupAppContext() {
     hasProxyAddressActiveAavePosition$,
     dsr$,
     dsrDeposit$,
+    potDsr$,
   }
 }
 

@@ -49,7 +49,8 @@ export const ASSETS_PAGES = [
     icon: 'dai_circle_color',
     descriptionKey: 'assets.dai.description',
     link: 'assets.dai.link',
-    earnIlks: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+    // TODO prepare proper handling for DSR
+    earnIlks: ['DSR', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
   },
   {
     slug: 'link',

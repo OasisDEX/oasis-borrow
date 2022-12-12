@@ -30,7 +30,7 @@ export type DsrPot =
 
 // TODO: global setting!
 BigNumber.config({ POW_PRECISION: 100 })
-function getYearlyRate(apy: BigNumber) {
+export function getYearlyRate(apy: BigNumber) {
   return apy.div(RAY).pow(SECONDS_PER_YEAR)
 }
 

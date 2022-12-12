@@ -1,6 +1,10 @@
+import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { redirectState$ } from 'features/router/redirectState'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -10,7 +14,9 @@ export const dsrLink = '/earn/dsr'
 
 export function ProductCardEarnDsr() {
   const { t } = useTranslation()
-  const { connectedContext$ } = useAppContext()
+  const { connectedContext$, potDsr$ } = useAppContext()
+  const [potDsr] = useObservable(potDsr$)
+
   const [connectedContext] = useObservable(connectedContext$)
 
   function handleClick() {
@@ -18,6 +24,9 @@ export function ProductCardEarnDsr() {
       redirectState$.next(dsrLink)
     }
   }
+
+  const apy = potDsr ? getYearlyRate(potDsr) : one
+  const earnUpTo = new BigNumber(100000).times(apy.div(100).decimalPlaces(3))
 
   const link = connectedContext ? `${dsrLink}/${connectedContext.account}` : '/connect'
 
@@ -29,12 +38,12 @@ export function ProductCardEarnDsr() {
       description={t(`dsr.product-card.description`)}
       banner={{
         title: 'With 100,000.00 DAI 👇',
-        description: 'Earn up to 1,000 Dai per year',
+        description: `Earn up to ${formatAmount(earnUpTo, 'USD')} Dai per year`,
       }}
       labels={[
         {
           title: 'Current APY',
-          value: '1.00%',
+          value: formatPercent(apy, { precision: 2 }),
         },
         {
           title: 'Total Value Locked',
@@ -46,7 +55,6 @@ export function ProductCardEarnDsr() {
         },
       ]}
       button={{
-        // TODO: Add the correct link here. Needs to be /earn/dsr/{walletAddress}
         link,
         text: t('nav.earn'),
         onClick: handleClick,

@@ -1,10 +1,9 @@
 import { amountFromWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
 import { defer, from, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-
-import { getToken } from './config'
 
 export function createTokenBalance$(
   { contract, tokens }: Context,

@@ -2,7 +2,7 @@ import { amountToWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { getToken } from 'blockchain/config'
+import { getToken } from 'blockchain/tokensMetadata'
 import { toBN } from 'web3-utils'
 
 export type ApproveData = {

@@ -493,36 +493,3 @@ export const networksByName = keyBy([main, kovan, hardhat, goerli], 'name')
 
 export const dappName = 'Oasis'
 export const pollingInterval = 12000
-
-const tokens = [
-  {
-    symbol: 'ETH',
-    precision: 18,
-    digits: 5,
-    maxSell: '10000000',
-    name: 'Ether',
-    icon: 'ether',
-    iconCircle: 'ether_circle_color',
-    iconColor: 'ether_color',
-    ticker: 'eth-ethereum',
-    coinbaseTicker: 'eth-usdc',
-  },
-  {
-    symbol: 'DAI',
-    precision: 18,
-    digits: 4,
-    maxSell: '10000000',
-    name: 'Dai',
-    icon: 'dai',
-    iconCircle: 'dai_circle_color',
-    iconColor: 'dai_color',
-    ticker: 'dai-dai',
-    coinbaseTicker: 'dai-usdc',
-  },
-]
-
-const tokensBySymbol = keyBy(tokens, 'symbol')
-
-export function getToken(tokenSymbol: string) {
-  return tokensBySymbol[tokenSymbol]
-}
