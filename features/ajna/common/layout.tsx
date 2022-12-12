@@ -3,16 +3,11 @@ import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
 import { Footer } from 'components/Footer'
 import { AppHeader } from 'components/Header'
 import { PageSEOTags } from 'components/HeadTags'
-import { BasicLayout, MarketingLayout } from 'components/Layouts'
+import { BasicLayout } from 'components/Layouts'
 import React, { PropsWithChildren } from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { ThemeProvider } from 'theme-ui'
 import { Background } from 'theme/Background'
-
-export const discoverPageLayout = MarketingLayout
-export const discoverPageLayoutProps = {
-  topBackground: 'lighter',
-}
 
 interface AjnaLayoutProps {
   bg?: JSX.Element
@@ -30,7 +25,7 @@ export function AjnaLayout({ children, bg = <Background /> }: PropsWithChildren<
   if (!isAppContextAvailable()) return null
 
   return (
-    <BasicLayout header={<AppHeader />} footer={<Footer />} bg={bg}>
+    <BasicLayout header={<AppHeader />} footer={<Footer />} sx={{ position: 'relative' }} bg={bg}>
       {children}
     </BasicLayout>
   )
