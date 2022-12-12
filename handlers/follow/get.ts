@@ -14,7 +14,6 @@ export async function get(req: NextApiRequest, res: NextApiResponse) {
   })
 
   if (followedVaults === undefined || !followedVaults.length) {
-    console.log(404)
     return res.status(404).send('Not Found')
   } else {
     return res.status(200).json({
