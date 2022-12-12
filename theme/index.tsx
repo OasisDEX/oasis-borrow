@@ -1072,6 +1072,8 @@ export const oasisBaseTheme = {
 
 export const ajnaExtensionTheme = {
   colors: {
+    primary100: '#031371',
+    neutral80: '#6871aa',
     interactive100: '#c527ae',
     interactive50: '#d668C6',
   }

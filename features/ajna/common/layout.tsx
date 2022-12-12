@@ -14,25 +14,23 @@ interface AjnaLayoutProps {
 }
 
 export function AjnaWrapper({ children }: PropsWithChildren<{}>) {
-  return (
-    <WithFeatureToggleRedirect feature="Ajna">
-      <ThemeProvider theme={ajnaExtensionTheme}>{children}</ThemeProvider>
-    </WithFeatureToggleRedirect>
-  )
+  return <WithFeatureToggleRedirect feature="Ajna">{children}</WithFeatureToggleRedirect>
 }
 
 export function AjnaLayout({ children, bg = <Background /> }: PropsWithChildren<AjnaLayoutProps>) {
   if (!isAppContextAvailable()) return null
 
   return (
-    <BasicLayout
-      header={<AjnaNavigationController />}
-      footer={<Footer />}
-      sx={{ position: 'relative' }}
-      bg={bg}
-    >
-      {children}
-    </BasicLayout>
+    <ThemeProvider theme={ajnaExtensionTheme}>
+      <BasicLayout
+        header={<AjnaNavigationController />}
+        footer={<Footer />}
+        sx={{ position: 'relative' }}
+        bg={bg}
+      >
+        {children}
+      </BasicLayout>
+    </ThemeProvider>
   )
 }
 

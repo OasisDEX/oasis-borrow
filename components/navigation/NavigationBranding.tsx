@@ -6,8 +6,8 @@ import { Box, Image } from 'theme-ui'
 type NavigationBrandingPillColor = string | [string, string]
 
 export interface NavigationBrandingPill {
-  text: string
   color: NavigationBrandingPillColor
+  label: string
 }
 
 interface NavigationBrandingProps {
@@ -37,7 +37,7 @@ export function NavigationBranding({ link = '/', pill }: NavigationBrandingProps
             background: getPillColor(pill.color),
           }}
         >
-          {pill.text}
+          {pill.label}
         </Box>
       )}
     </AppLink>
