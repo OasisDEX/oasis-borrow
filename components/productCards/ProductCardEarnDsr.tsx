@@ -25,8 +25,8 @@ export function ProductCardEarnDsr() {
     }
   }
 
-  const apy = potDsr ? getYearlyRate(potDsr) : one
-  const earnUpTo = new BigNumber(100000).times(apy.div(100).decimalPlaces(3))
+  const apy = potDsr ? getYearlyRate(potDsr).div(10000) : one
+  const earnUpTo = new BigNumber(100000).times(apy.decimalPlaces(5))
 
   const link = connectedContext ? `${dsrLink}/${connectedContext.account}` : '/connect'
 
@@ -43,7 +43,7 @@ export function ProductCardEarnDsr() {
       labels={[
         {
           title: 'Current APY',
-          value: formatPercent(apy, { precision: 2 }),
+          value: formatPercent(apy.times(100), { precision: 2 }),
         },
         {
           title: 'Total Value Locked',

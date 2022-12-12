@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { TabBar } from 'components/TabBar'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
@@ -42,19 +41,20 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
 
+  const apy = dsrOverview.value?.apy.div(100) || zero
+
   const currentApy = useMemo(() => {
-    return formatPercent(dsrOverview.value?.apy || new BigNumber(0), { precision: 2 })
+    return formatPercent(apy, { precision: 2 })
   }, [dsrOverview])
 
-  // console.log('dsrOverview', dsrOverview)
+  console.log('dsrOverview', dsrOverview)
   console.log('dsr', dsrDepositState)
   // console.log('walletAddress', walletAddress)
 
   const isOwner = context.status === 'connected' && walletAddress === context.account
   const earnings =
     dsrOverview.value && 'earnings' in dsrOverview.value ? dsrOverview.value.earnings : zero
-
-  const netValue = (dsrDepositState.daiDeposit || zero).plus(earnings)
+  const netValue = dsrOverview.value && 'dai' in dsrOverview.value ? dsrOverview.value.dai : zero
 
   return (
     <>
@@ -66,7 +66,7 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
             label: t('dsr.details.current-yield'),
             value: currentApy,
           },
-          ...(dsrDepositState.daiDeposit?.gt(zero)
+          ...(netValue?.gt(zero)
             ? [
                 {
                   label: t('earn-vault.headlines.total-value-locked'),
@@ -86,10 +86,10 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
               <Grid variant="vaultContainer">
                 <Box>
                   <DsrDetailsSection
-                    totalDepositedDai={dsrDepositState.daiDeposit}
-                    currentApy={dsrOverview.value?.apy || new BigNumber(0)}
+                    apy={apy}
                     depositAmount={dsrDepositState.amount}
                     netValue={netValue}
+                    earnings={earnings}
                   />
                 </Box>
                 <Box>
@@ -99,7 +99,6 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
                     onDepositAmountChange={handleAmountChange(dsrDepositState.change!)}
                     depositInputValue={dsrDepositState.amount}
                     withDrawInputValue={dsrDepositState.amount}
-                    daiBalanceInDsr={dsrDepositState.daiDeposit}
                     onPrimaryButtonClick={selectPrimaryAction(
                       dsrDepositState.stage,
                       dsrDepositState.operation,

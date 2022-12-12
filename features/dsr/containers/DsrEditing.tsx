@@ -7,6 +7,7 @@ import { DsrWithdrawStage } from 'features/dsr/pipes/dsrWithdraw'
 import { DsrSidebarTabOptions } from 'features/dsr/sidebar/DsrSideBar'
 import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent, useMemo } from 'react'
 import { Box, Flex, Image } from 'theme-ui'
@@ -15,7 +16,6 @@ import { OpenVaultAnimation } from 'theme/animations'
 interface DsrEditingProps {
   activeTab: DsrSidebarTabOptions
   daiBalance: BigNumber
-  daiBalanceInDsr?: BigNumber
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
   depositInputValue?: BigNumber
   onPrimaryButtonClick?: () => void
@@ -34,7 +34,6 @@ export function DsrEditing({
   onDepositAmountChange,
   depositInputValue,
   daiBalance,
-  daiBalanceInDsr,
   operationChange,
   validationMessages,
   netValue,
@@ -66,7 +65,7 @@ export function DsrEditing({
       )}
       {!isLoading && !['depositSuccess', 'withdrawSuccess'].includes(stage) && (
         <>
-          {!daiBalanceInDsr?.isZero() && (
+          {netValue.gt(zero) && (
             <ActionPills
               active={activeTab}
               items={[
@@ -83,7 +82,7 @@ export function DsrEditing({
                   action: () => {
                     operationChange('withdraw')
                   },
-                  disabled: daiBalanceInDsr?.isZero(),
+                  disabled: netValue.isZero(),
                 },
               ]}
             />
@@ -100,7 +99,7 @@ export function DsrEditing({
             <MessageCard
               type="error"
               messages={validationMessages.map((message) =>
-                t(`dsr.errors.${message}`, { totalValue: daiBalanceInDsr?.toFixed(2) }),
+                t(`dsr.errors.${message}`, { totalValue: netValue.toFixed(2) }),
               )}
               withBullet={false}
             />

@@ -9,6 +9,7 @@ import { DsrSidebarCreation } from 'features/dsr/sidebar/DsrSidebarCreation'
 import { createPrimaryButtonLabel, isDsrButtonDisabled } from 'features/dsr/utils/helpers'
 import { isProxyStage } from 'features/proxy/proxy'
 import { HasGasEstimation } from 'helpers/form'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent, useMemo } from 'react'
 import { Grid } from 'theme-ui'
@@ -20,7 +21,6 @@ export type DsrSidebarTabOptions = 'deposit' | 'withdraw'
 interface DsrSidebarProps {
   activeTab: DsrSidebarTabOptions
   daiBalance: BigNumber
-  daiBalanceInDsr?: BigNumber
   onDepositAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
   depositInputValue?: BigNumber
   withDrawInputValue?: BigNumber
@@ -46,7 +46,6 @@ export function DsrSideBar({
   depositInputValue,
   onPrimaryButtonClick,
   stage,
-  daiBalanceInDsr,
   isLoading,
   withDrawInputValue,
   proxyAddress,
@@ -73,7 +72,7 @@ export function DsrSideBar({
   }, [stage, activeTab, proxyAddress, depositInputValue?.toNumber()])
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(daiBalanceInDsr?.isZero() ? 'dsr.titles.setup' : 'dsr.titles.manage'),
+    title: t(netValue.gt(zero) ? 'dsr.titles.manage' : 'dsr.titles.setup'),
     content: (
       <Grid gap={3}>
         {isProxyStage(stage) && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
@@ -93,7 +92,6 @@ export function DsrSideBar({
             onDepositAmountChange={onDepositAmountChange}
             depositInputValue={depositInputValue}
             daiBalance={daiBalance}
-            daiBalanceInDsr={daiBalanceInDsr}
             operationChange={operationChange}
             validationMessages={validationMessages}
             netValue={netValue}

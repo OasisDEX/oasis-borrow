@@ -10,23 +10,23 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
 interface DsrDetailsSectionProps {
-  currentApy: BigNumber
+  apy: BigNumber
   netValue: BigNumber
-  totalDepositedDai?: BigNumber
+  earnings: BigNumber
   depositAmount?: BigNumber
 }
 
 export function DsrDetailsSection({
-  totalDepositedDai,
-  currentApy,
+  apy,
   depositAmount,
   netValue,
+  earnings,
 }: DsrDetailsSectionProps) {
   const { t } = useTranslation()
 
   return (
     <>
-      {!totalDepositedDai?.isZero() ? (
+      {netValue.gt(zero) ? (
         <DetailsSection
           title={t('dsr.details.overview')}
           content={
@@ -35,20 +35,18 @@ export function DsrDetailsSection({
                 title={t('net-value')}
                 value={`${formatCryptoBalance(netValue)}`}
                 unit="DAI"
-                footnote={`${t('net-earnings')} + ${formatCryptoBalance(
-                  totalDepositedDai || zero,
-                )} DAI`}
+                footnote={`${t('net-earnings')} ${formatCryptoBalance(earnings)} DAI`}
               />
               <DetailsSectionContentCard
                 title={t('dsr.details.current-dai-savings-rate')}
-                value={currentApy.toFixed(2)}
+                value={apy.toFixed(2)}
                 unit="%"
               />
             </DetailsSectionContentCardWrapper>
           }
         />
       ) : (
-        <DsrSimulationSection apy={currentApy} userInputAmount={depositAmount || zero} />
+        <DsrSimulationSection apy={apy} userInputAmount={depositAmount || zero} />
       )}
     </>
   )
