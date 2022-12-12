@@ -1,3 +1,4 @@
+// @ts-nocheck
 import BigNumber from 'bignumber.js'
 import { createDsProxy } from 'blockchain/calls/proxy'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -5,7 +6,7 @@ import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { applyAllowanceChanges } from 'features/allowance/allowance'
-import { setAllowance } from 'features/allowance/setAllowance'
+import { setDsrAllowance } from 'features/allowance/setAllowance'
 import { createProxy } from 'features/borrow/manage/pipes/viewStateTransforms/manageVaultTransactions'
 import { depositDsr, withdrawDsr } from 'features/dsr/helpers/actions'
 import { DaiDepositChange } from 'features/dsr/pipes/dsrWithdraw'
@@ -166,7 +167,7 @@ function addTransitions(
           kind: 'allowanceCustom',
         }),
       progress: () => {
-        return setAllowance(txHelpers$, change, state)
+        return setDsrAllowance(txHelpers$, change, state)
       },
       regress: () => change({ kind: 'regressAllowance' }),
     }

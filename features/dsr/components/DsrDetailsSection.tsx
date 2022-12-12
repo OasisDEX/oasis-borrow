@@ -8,6 +8,7 @@ import { DsrSimulationSection } from 'features/dsr/components/DsrSimulationSecti
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface DsrDetailsSectionProps {
   apy: BigNumber

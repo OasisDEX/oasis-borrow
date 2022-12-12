@@ -11,6 +11,7 @@ export function createTokenBalance$(
   account: string,
 ): Observable<BigNumber> {
   return defer(() =>
+    // @ts-ignore
     from(contract(tokens[token]).methods.balanceOf(account).call()).pipe(
       map((balance: any) => {
         return amountFromWei(new BigNumber(balance), getToken(token).precision)

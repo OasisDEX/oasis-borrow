@@ -30,6 +30,7 @@ function DsrHistoryView({ history }: { history?: DsrEvent[] }) {
               hash: item.txHash,
               ...item,
               daiAmount: amountFromWei(item.amount),
+              // @ts-ignore
               timestamp: item.timestamp * 1000,
             }}
             etherscan={{ url: etherscan }}
