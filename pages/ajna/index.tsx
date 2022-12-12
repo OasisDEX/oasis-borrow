@@ -1,10 +1,10 @@
-import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
+import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import React from 'react'
-import { Box, Text, ThemeProvider } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
-function AjnaPage() {
+function AjnaLandingPage() {
   return (
-    <WithFeatureToggleRedirect feature="Ajna">
+    <AjnaWrapper>
       <Box sx={{ width: '100%' }}>
         <Text sx={{ backgroundColor: 'interactive100' }}>
           Text component with background set to interactive100
@@ -12,23 +12,12 @@ function AjnaPage() {
         <Text sx={{ backgroundColor: 'interactive50' }}>
           Text component with background set to interactive50
         </Text>
-        <ThemeProvider
-          theme={{
-            colors: {
-              interactive100: '#b5179e',
-            },
-          }}
-        >
-          <Text sx={{ backgroundColor: 'interactive100' }}>
-            Text component with background set to interactive100, with overwriting ThemeProvider
-          </Text>
-          <Text sx={{ backgroundColor: 'interactive50' }}>
-            Text component with background set to interactive100, with overwriting ThemeProvider
-          </Text>
-        </ThemeProvider>
       </Box>
-    </WithFeatureToggleRedirect>
+    </AjnaWrapper>
   )
 }
 
-export default AjnaPage
+AjnaLandingPage.layout = AjnaLayout
+AjnaLandingPage.seoTags = ajnaPageSeoTags
+
+export default AjnaLandingPage

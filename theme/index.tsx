@@ -1067,5 +1067,12 @@ export const oasisBaseTheme = {
   },
 }
 
+export const ajnaExtensionTheme = {
+  colors: {
+    interactive100: '#c527ae',
+    interactive50: '#d668C6',
+  }
+}
+
 export const theme = oasisBaseTheme
 export type OasisTheme = typeof oasisBaseTheme
