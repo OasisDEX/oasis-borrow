@@ -41,7 +41,7 @@ export type UpdateCollateralActionType = {
 
 export type UpdateDebtActionType = {
   type: 'UPDATE_DEBT_TOKEN_ACTION'
-  manageTokenAction: ManageTokenInput['']
+  manageTokenAction: ManageTokenInput['manageDebtAction']
 }
 
 export type UpdateTokenActionValueType = {
