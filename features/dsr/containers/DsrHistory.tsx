@@ -23,22 +23,23 @@ function DsrHistoryView({ history }: { history?: DsrEvent[] }) {
         {t('vault-history')}
       </Heading>
       <DefinitionList>
-        {history && history.map((item, idx) => (
-          <VaultHistoryEntry
-            item={{
-              token: 'DAI',
-              hash: item.txHash,
-              ...item,
-              daiAmount: amountFromWei(item.amount),
-              // @ts-ignore
-              timestamp: item.timestamp * 1000,
-            }}
-            etherscan={{ url: etherscan }}
-            ethtx={{ url: ethtx }}
-            e
-            key={idx}
-          />
-        ))}
+        {history &&
+          history.map((item, idx) => (
+            <VaultHistoryEntry
+              item={{
+                token: 'DAI',
+                hash: item.txHash,
+                ...item,
+                daiAmount: amountFromWei(item.amount),
+                // @ts-ignore
+                timestamp: item.timestamp * 1000,
+              }}
+              etherscan={{ url: etherscan }}
+              ethtx={{ url: ethtx }}
+              e
+              key={idx}
+            />
+          ))}
       </DefinitionList>
     </Card>
   )

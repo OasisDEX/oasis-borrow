@@ -210,7 +210,7 @@ export interface ProductCardProps {
   title: string
   description: string
   banner: ProductCardBannerProps
-  button: { link: string; text: string, onClick?: () => void }
+  button: { link: string; text: string; onClick?: () => void }
   background: string
   isFull: boolean
   floatingLabelText?: string
@@ -309,7 +309,7 @@ export function ProductCard({
           </Flex>
           <Flex
             sx={{
-              marginTop: 'auto'
+              marginTop: 'auto',
             }}
           >
             <AppLink

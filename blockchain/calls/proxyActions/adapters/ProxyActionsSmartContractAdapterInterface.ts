@@ -37,7 +37,6 @@ export type OpenData = {
   generateAmount: BigNumber
   proxyAddress: string
   spender?: any
-  
 }
 
 export type ClaimRewardData = {

@@ -26,7 +26,7 @@ export interface TokenConfig {
   background: string
   digitsInstant?: number
   safeCollRatio?: number
-  protocol: 'maker' | 'aave' | 'dai'
+  protocol: 'maker' | 'aave'
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const

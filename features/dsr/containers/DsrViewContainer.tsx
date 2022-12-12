@@ -18,7 +18,10 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
   return (
     <Container variant="vaultPageContainer">
       <WithErrorHandler error={[depositStateError, potsError, contextError]}>
-        <WithLoadingIndicator value={[depositState, pots, context]} customLoader={<VaultContainerSpinner />}>
+        <WithLoadingIndicator
+          value={[depositState, pots, context]}
+          customLoader={<VaultContainerSpinner />}
+        >
           {([_depositState, _pots, _context]) => (
             <DsrView
               dsrOverview={_pots.pots.dsr}
