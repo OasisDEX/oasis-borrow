@@ -105,7 +105,7 @@ export function dsrPot$(
           map((dsr) => ({
             kind: 'dsr',
             proxyAddress: undefined,
-            apy: getYearlyRate(dsr).div(100).decimalPlaces(2, BigNumber.ROUND_DOWN),
+            apy: getYearlyRate(dsr).decimalPlaces(5, BigNumber.ROUND_UP).minus(1),
           })),
         )
       }
