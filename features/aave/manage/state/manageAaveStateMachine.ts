@@ -24,7 +24,7 @@ import {
   contextToTransactionParameters,
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
+import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
 import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
 import { PositionId } from '../../types'
 
@@ -35,7 +35,7 @@ type ActorFromTransactionParametersStateMachine =
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorFromTransactionParametersStateMachine
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
   positionId: PositionId
   proxyAddress?: string
   positionCreatedBy: ProxyType
@@ -120,6 +120,7 @@ export function createManageAaveStateMachine(
           id: 'allowance$',
         },
       ],
+      entry: ['calculateEffectiveProxyAddress'],
       id: 'manageAaveStateMachine',
       type: 'parallel',
       states: {
@@ -155,17 +156,12 @@ export function createManageAaveStateMachine(
           initial: 'editing',
           states: {
             editing: {
-              entry: ['reset', 'killCurrentParametersMachine', 'spawnAdjustParametersMachine'],
+              entry: ['spawnAdjustParametersMachine'],
               on: {
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: [
-                    'reset',
-                    'killCurrentParametersMachine',
-                    'spawnCloseParametersMachine',
-                    'requestParameters',
-                  ],
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
                 },
                 SET_RISK_RATIO: {
                   cond: 'canChangePosition',
@@ -174,8 +170,8 @@ export function createManageAaveStateMachine(
                 },
                 RESET_RISK_RATIO: {
                   cond: 'canChangePosition',
-                  target: '#manageAaveStateMachine.background.idle',
-                  actions: 'reset',
+                  target: '#manageAaveStateMachine.background.debouncing',
+                  actions: 'resetRiskRatio',
                 },
                 ADJUST_POSITION: [
                   {
@@ -221,7 +217,6 @@ export function createManageAaveStateMachine(
                 },
                 BACK_TO_EDITING: {
                   target: 'editing',
-                  actions: ['reset'],
                 },
               },
             },
@@ -263,7 +258,7 @@ export function createManageAaveStateMachine(
           actions: 'updateContext',
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
+          actions: 'updateContext',
         },
         WEB3_CONTEXT_CHANGED: {
           actions: 'updateContext',
@@ -310,13 +305,12 @@ export function createManageAaveStateMachine(
             },
           }
         }),
-        reset: assign((context) => {
+        resetRiskRatio: assign((context) => {
           return {
             userInput: {
               ...context.userInput,
-              riskRatio: undefined,
+              riskRatio: context.currentPosition?.riskRatio,
             },
-            strategy: undefined,
           }
         }),
         riskRatioEvent: (context) => {

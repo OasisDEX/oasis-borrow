@@ -1,4 +1,4 @@
-import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import { IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
@@ -34,22 +34,22 @@ function isLocked(state: ManageAaveStateMachineState) {
 }
 
 function getAmountGetFromPositionAfterClose(
-  strategy: IPositionTransition | undefined,
+  strategy: IStrategy | undefined,
   currentPosition: IPosition | undefined,
 ) {
   if (!strategy || !currentPosition) {
     return zero
   }
+  const currentDebt = currentPosition.debt.amount
+  const amountFromSwap = strategy.simulation.swap.toTokenAmount
+  const fromTokenFee = strategy.simulation.swap?.sourceTokenFee || zero
+  const toTokenFee = strategy.simulation.swap?.targetTokenFee || zero
+  const fee = fromTokenFee.plus(toTokenFee)
 
-  const fee =
-    strategy.simulation.swap.collectFeeFrom === 'targetToken'
-      ? strategy.simulation.swap.tokenFee
-      : zero // fee already accounted for in toTokenAmount
-
-  return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
+  return amountFromSwap.minus(currentDebt).minus(fee)
 }
 
-function ReturnedAmountAfterClose({ state }: ManageAaveStateProps) {
+function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
   const displayToken = state.context.strategy?.simulation.swap.targetToken || {
     symbol: 'ETH',
@@ -65,7 +65,7 @@ function ReturnedAmountAfterClose({ state }: ManageAaveStateProps) {
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
-        {t('manage-earn.aave.vault-form.eth-after-closing', { closingToken: displayToken.symbol })}
+        {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
       <Text variant="boldParagraph3">
         {balance} {displayToken.symbol}
@@ -100,19 +100,17 @@ function GetReviewingSidebarProps({
   send,
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
-  const operationName = state.context.strategy?.transaction.operationName
+  const { operationName } = state.context
 
   if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
     return {
-      title: t('manage-earn.aave.vault-form.close-title', {
-        debtToken: state.context.strategyConfig.tokens.debt,
-      }),
+      title: t('manage-earn.aave.vault-form.close-title'),
       content: (
         <Grid gap={3}>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('manage-earn.aave.vault-form.close-description')}
           </Text>
-          <ReturnedAmountAfterClose state={state} send={send} />
+          <EthBalanceAfterClose state={state} send={send} />
           <StrategyInformationContainer state={state} />
         </Grid>
       ),
@@ -209,7 +207,7 @@ function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: `/${state.context.strategyConfig.type}/aave/open/${state.context.strategyConfig.urlSlug}`,
+      url: `/earn/aave/open/${state.context.strategy}`,
     },
   }
 
@@ -231,11 +229,6 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.editing'):
       return (
         <AdjustRiskView
-          title={
-            state.context.strategyConfig.type === 'earn'
-              ? t('sidebar-titles.manage-earn-position')
-              : t('sidebar-titles.manage-multiply-position')
-          }
           state={state}
           onChainPosition={state.context.protocolData?.position}
           isLoading={loading}
@@ -275,7 +268,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.strategy?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />

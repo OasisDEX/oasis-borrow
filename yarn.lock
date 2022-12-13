@@ -5631,15 +5631,14 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
-"@oasisdex/oasis-actions@0.0.4-alpha.49":
-  version "0.0.4-alpha.49"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.0.4-alpha.49.tgz#5fe27d4966bc28e5fcd76cd4421a39ea64e42779"
-  integrity sha512-/VXsE9KXC4ZV69rOgTfYRP7pFVMj7ohlld844INXyI4ftA8w2xSJfwg6ZgYj9CqIHLdiBhYvioamxCsRWYrzIA==
+"@oasisdex/oasis-actions@0.0.4-alpha.21":
+  version "0.0.4-alpha.21"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.0.4-alpha.21.tgz#14b853e749a152fed2790f687ae425832061f594"
+  integrity sha512-oQ5zWgoCKQFGapw5UeEYkPcUAmY7PteDc+L3MmP33aFUuHehysTzB0ux39Z8DcrcwsslvR66o5AD2xTZZ+hRgw==
   dependencies:
     bignumber.js "^9.0.1"
     ethers "^5.0.19"
     lodash "^4.17.21"
-    utility-types "^3.10.0"
 
 "@oasisdex/transactions@^0.1.0":
   version "0.1.0"
@@ -27167,11 +27166,6 @@ utila@~0.4:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/utila/-/utila-0.4.0.tgz#8a16a05d445657a3aea5eecc5b12a4fa5379772c"
   integrity sha1-ihagXURWV6Oupe7MWxKk+lN5dyw=
-
-utility-types@^3.10.0:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/utility-types/-/utility-types-3.10.0.tgz#ea4148f9a741015f05ed74fd615e1d20e6bed82b"
-  integrity sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==
 
 utils-merge@1.0.1:
   version "1.0.1"

@@ -1,4 +1,4 @@
-import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
@@ -13,21 +13,22 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 const { assign } = actions
 
 export interface BaseTransactionParameters {
-  token?: string
-  amount?: BigNumber
+  token: string
+  amount: BigNumber
   proxyAddress: string
 }
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: IPositionTransition
+  strategy?: IStrategy
+  operationName?: string
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; strategy?: IPositionTransition }
+  | { type: 'STRATEGY_RECEIVED'; strategy?: IStrategy; operationName: string }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -42,7 +43,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'GAS_ESTIMATION_CHANGED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = IPositionTransition
+export type LibraryCallReturn = { strategy: IStrategy; operationName: string }
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
@@ -131,13 +132,12 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
     {
       actions: {
         updateContext: assign((_, event) => ({ ...event })),
-        serviceUpdateContext: assign((_, event) => {
-          return { strategy: event.data }
-        }),
+        serviceUpdateContext: assign((_, event) => ({ ...event.data })),
         sendStrategy: sendParent(
           (context): TransactionParametersStateMachineResponseEvent => ({
             type: 'STRATEGY_RECEIVED',
             strategy: context.strategy!,
+            operationName: context.operationName!,
           }),
         ),
         sendGasEstimation: sendParent(
@@ -154,20 +154,20 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         })),
       },
       services: {
-        getParameters: async (context) => libraryCall(context.parameters!),
-        estimateGas: ({ txHelper, parameters, strategy }) => {
+        getParameters: (context) => libraryCall(context.parameters!),
+        estimateGas: ({ txHelper, operationName, parameters, strategy }) => {
           return txHelper!
             .estimateGas(callOperationExecutorWithDpmProxy, {
               kind: TxMetaKind.operationExecutor,
-              calls: strategy!.transaction.calls as any,
-              operationName: strategy!.transaction.operationName,
+              calls: strategy!.calls as any,
+              operationName: operationName!,
               token: parameters!.token,
               amount: parameters!.amount,
               proxyAddress: parameters!.proxyAddress,
             })
             .pipe(
               map((estimatedGas) => ({ type: 'GAS_ESTIMATION_CHANGED', estimatedGas })),
-              distinctUntilChanged<number>(isEqual),
+              distinctUntilChanged(isEqual),
             )
         },
         estimateGasPrice: ({ estimatedGas }) =>

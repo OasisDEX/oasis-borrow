@@ -1,4 +1,4 @@
-import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { IStrategy } from '@oasisdex/oasis-actions'
 import { storiesOf } from '@storybook/react'
 import { useMachine } from '@xstate/react'
 import React from 'react'
@@ -23,7 +23,10 @@ async function libraryCall(parameters: MockParameters): Promise<LibraryCallRetur
     throw new Error('parameters is undefined')
   }
 
-  return mock<IPositionTransition>()
+  return {
+    strategy: mock<IStrategy>(),
+    operationName: 'mockOperationName',
+  }
 }
 
 const txHelpers$: Observable<TxHelpers> = of({

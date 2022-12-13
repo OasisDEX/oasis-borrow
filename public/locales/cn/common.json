@@ -1801,12 +1801,12 @@
         "adjust-risk": "Adjust Risk",
         "deposit": "存入 ETH",
         "title": "你的 Earn 仓位",
-        "close-title": "以 {{ debtToken }} 结算并关闭此仓位",
+        "close-title": "以 ETH 结算并关闭此仓位",
         "close": "关闭金库",
         "confirm-btn": "确认",
         "close-description": "为了关闭你的金库，你的部分仓位将会出售以付清尚未偿还的债务，而剩余的抵押品将会发送至你的钱包地址。",
         "stop-close": "下次再说",
-        "eth-after-closing": "关闭金库后的 {{ closingToken }}",
+        "eth-after-closing": "关闭金库后的 ETH",
         "retry-btn": "再试一次"
       }
     }
