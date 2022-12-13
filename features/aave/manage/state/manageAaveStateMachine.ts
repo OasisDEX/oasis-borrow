@@ -155,12 +155,17 @@ export function createManageAaveStateMachine(
           initial: 'editing',
           states: {
             editing: {
-              entry: ['spawnAdjustParametersMachine'],
+              entry: ['reset', 'killCurrentParametersMachine', 'spawnAdjustParametersMachine'],
               on: {
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: [
+                    'reset',
+                    'killCurrentParametersMachine',
+                    'spawnCloseParametersMachine',
+                    'requestParameters',
+                  ],
                 },
                 SET_RISK_RATIO: {
                   cond: 'canChangePosition',
@@ -170,7 +175,7 @@ export function createManageAaveStateMachine(
                 RESET_RISK_RATIO: {
                   cond: 'canChangePosition',
                   target: '#manageAaveStateMachine.background.idle',
-                  actions: 'resetRiskRatio',
+                  actions: 'reset',
                 },
                 ADJUST_POSITION: [
                   {
@@ -216,6 +221,7 @@ export function createManageAaveStateMachine(
                 },
                 BACK_TO_EDITING: {
                   target: 'editing',
+                  actions: ['reset'],
                 },
               },
             },
@@ -304,7 +310,7 @@ export function createManageAaveStateMachine(
             },
           }
         }),
-        resetRiskRatio: assign((context) => {
+        reset: assign((context) => {
           return {
             userInput: {
               ...context.userInput,
