@@ -210,7 +210,7 @@ export interface ProductCardProps {
   title: string
   description: string
   banner: ProductCardBannerProps
-  button: { link: string; text: string }
+  button: { link: string; text: string; onClick?: () => void }
   background: string
   isFull: boolean
   floatingLabelText?: string
@@ -240,7 +240,10 @@ export function ProductCard({
   const handleMouseEnter = useCallback(() => setHover(true), [])
   const handleMouseLeave = useCallback(() => setHover(false), [])
 
-  const handleClick = useCallback(() => setClicked(true), [])
+  const handleClick = useCallback(() => {
+    setClicked(true)
+    button.onClick?.()
+  }, [])
 
   const buttonLabel = button.text
 
@@ -304,7 +307,11 @@ export function ProductCard({
               )
             })}
           </Flex>
-          <Flex>
+          <Flex
+            sx={{
+              marginTop: 'auto',
+            }}
+          >
             <AppLink
               href={button.link}
               disabled={isFull}

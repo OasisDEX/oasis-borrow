@@ -16,6 +16,7 @@ import {
   AutomationBotRemoveTriggersData,
 } from 'blockchain/calls/automationBotAggregator'
 import {
+  call,
   createSendTransaction,
   createSendWithGasConstraints,
   estimateGas,
@@ -82,6 +83,7 @@ import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from 'blockchain/config'
 import { resolveENSName$ } from 'blockchain/ens'
+import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
@@ -95,6 +97,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
+import { compareBigNumber } from 'blockchain/network'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -174,6 +177,12 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
+import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
+import { createDsrHistory$ } from 'features/dsr/helpers/dsrHistory'
+import { chi, dsr, Pie, pie } from 'features/dsr/helpers/potCalls'
+import { createDsr$ } from 'features/dsr/utils/createDsr'
+import { createProxyAddress$ as createDsrProxyAddress$ } from 'features/dsr/utils/proxy'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -262,9 +271,11 @@ import {
   supportedEarnIlks,
   supportedMultiplyIlks,
 } from 'helpers/productCards'
+import { zero } from 'helpers/zero'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
+import { equals } from 'ramda'
+import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
@@ -467,7 +478,7 @@ export function setupAppContext() {
 
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
-  const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
+  const [onEveryBlock$, everyBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
   const context$ = createContext$(web3ContextConnected$)
 
@@ -710,6 +721,109 @@ export function setupAppContext() {
   const bonus$ = memoize(
     (cdpId: BigNumber) => createBonusPipe$(bonusAdapter, cdpId),
     bigNumberTostring,
+  )
+
+  const potDsr$ = context$.pipe(
+    switchMap((context) => {
+      return everyBlock$(defer(() => call(context, dsr)()))
+    }),
+  )
+  const potChi$ = context$.pipe(
+    switchMap((context) => {
+      return everyBlock$(defer(() => call(context, chi)()))
+    }),
+  )
+
+  const potBigPie$ = context$.pipe(
+    switchMap((context) => {
+      return everyBlock$(defer(() => call(context, Pie)()))
+    }),
+  )
+
+  const potTotalValueLocked$ = combineLatest(potChi$, potBigPie$).pipe(
+    switchMap(([chi, potBigPie]) =>
+      of(potBigPie.div(new BigNumber(10).pow(18)).times(chi.div(new BigNumber(10).pow(27)))),
+    ),
+    shareReplay(1),
+  )
+
+  const proxyAddressDsrObservable$ = memoize(
+    (addressFromUrl: string) =>
+      context$.pipe(
+        switchMap((context) => everyBlock$(createDsrProxyAddress$(context, addressFromUrl))),
+        shareReplay(1),
+      ),
+    (item) => item,
+  )
+
+  const dsrHistory$ = memoize(
+    (addressFromUrl: string) =>
+      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl), onEveryBlock$).pipe(
+        switchMap(([context, proxyAddress, _]) => {
+          return proxyAddress ? defer(() => createDsrHistory$(context, proxyAddress)) : of([])
+        }),
+      ),
+    (item) => item,
+  )
+
+  // TODO: Lines 737 to 773, think we are needing to modify this to use different context, lots of repeated code
+  const dsr$ = memoize(
+    (addressFromUrl: string) =>
+      createDsr$(
+        context$,
+        everyBlock$,
+        onEveryBlock$,
+        dsrHistory$(addressFromUrl),
+        potDsr$,
+        potChi$,
+        addressFromUrl,
+      ),
+    (item) => item,
+  )
+
+  const daiBalance$ = memoize(
+    (addressFromUrl: string) =>
+      context$.pipe(
+        switchMap((context) => {
+          return everyBlock$(createTokenBalance$(context, 'DAI', addressFromUrl), compareBigNumber)
+        }),
+      ),
+    (item) => item,
+  )
+
+  const potPie$ = memoize(
+    (addressFromUrl: string) =>
+      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
+        switchMap(([context, proxyAddress]) => {
+          if (!proxyAddress) return of(zero)
+          return everyBlock$(
+            defer(() => call(context, pie)(proxyAddress!)),
+            equals,
+          )
+        }),
+      ),
+    (item) => item,
+  )
+
+  const daiDeposit$ = memoize(
+    (addressFromUrl: string) => createDaiDeposit$(potPie$(addressFromUrl), potChi$),
+    (item) => item,
+  )
+
+  const dsrDeposit$ = memoize(
+    (addressFromUrl: string) =>
+      createDsrDeposit$(
+        context$,
+        txHelpers$,
+        proxyAddressDsrObservable$(addressFromUrl),
+        allowance$,
+        daiBalance$(addressFromUrl),
+        daiDeposit$(addressFromUrl),
+        potDsr$,
+        dsr$(addressFromUrl),
+        addGasEstimation$,
+      ),
+    (item) => item,
   )
 
   const vault$ = memoize(
@@ -1213,6 +1327,10 @@ export function setupAppContext() {
     aaveUserAccountData$,
     aaveAvailableLiquidityInUSDC$,
     hasProxyAddressActiveAavePosition$,
+    dsr$,
+    dsrDeposit$,
+    potDsr$,
+    potTotalValueLocked$,
   }
 }
 
