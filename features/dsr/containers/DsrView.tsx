@@ -26,6 +26,7 @@ interface DsrViewProps {
   walletAddress: string
   context: Context
   potTotalValueLocked?: BigNumber
+  apy: BigNumber
 }
 
 const isLoadingCollection = [
@@ -45,14 +46,10 @@ export function DsrView({
   walletAddress,
   context,
   potTotalValueLocked,
+  apy,
 }: DsrViewProps) {
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
-
-  const apy = (dsrOverview.value?.apy || zero)
-    .decimalPlaces(5, BigNumber.ROUND_UP)
-    .minus(1)
-    .times(100)
 
   const account = context.status === 'connected' ? context.account : undefined
   const isOwner = walletAddress === account
