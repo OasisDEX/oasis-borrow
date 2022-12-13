@@ -1,11 +1,11 @@
 import { IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box } from 'theme-ui'
 
-import { useAppContext } from '../../../../components/AppContextProvider'
 import { Banner, bannerGradientPresets } from '../../../../components/Banner'
 import { DetailsSection } from '../../../../components/DetailsSection'
 import { DetailsSectionContentTable } from '../../../../components/DetailsSectionContentTable'
@@ -46,14 +46,15 @@ function SimulationSection({
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
-  const { aaveSthEthYieldsQuery } = useAppContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext()
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = userInputAmount || new BigNumber(100)
 
-  const sourceTokenFee = strategy?.simulation.swap.sourceTokenFee || zero
-  const targetTokenFee = strategy?.simulation.swap.targetTokenFee || zero
+  const fromTokenFee = strategy?.simulation?.swap?.sourceTokenFee || zero
+  const toTokenFee = strategy?.simulation?.swap?.targetTokenFee || zero
+  const swapFee = fromTokenFee.plus(toTokenFee)
   const gasFee = gasPrice?.gasEstimationEth || zero
-  const fees = sourceTokenFee.plus(targetTokenFee).plus(gasFee)
+  const fees = swapFee.plus(gasFee)
   const riskRatio = strategy?.simulation.position.riskRatio || minRiskRatio
 
   useEffect(() => {
@@ -124,7 +125,7 @@ export function SimulateSectionComponent() {
   const simulationSectionProps = useSelector(stateMachine, (state) => {
     return {
       strategy: state.context.strategy,
-      token: state.context.token,
+      token: state.context.tokens.debt,
       userInputAmount: state.context.userInput.amount,
       gasPrice: state.context.estimatedGasPrice,
       minRiskRatio: state.context.strategyConfig.riskRatios.minimum,

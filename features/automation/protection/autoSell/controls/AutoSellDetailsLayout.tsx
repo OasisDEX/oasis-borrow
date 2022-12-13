@@ -43,9 +43,11 @@ export function AutoSellDetailsLayout({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    autoSellTriggerData,
-    constantMultipleTriggerData: { isTriggerEnabled },
     positionData: { id, ilk, token },
+    triggerData: {
+      autoSellTriggerData,
+      constantMultipleTriggerData: { isTriggerEnabled },
+    },
   } = useAutomationContext()
 
   const isConstantMultipleEnabled = isTriggerEnabled

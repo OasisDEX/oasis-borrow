@@ -12,6 +12,7 @@ import { SidebarSectionFooterButtonSettings } from '../../../../components/sideb
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
+import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
@@ -91,8 +92,11 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         )) ||
       viewConfig.riskRatios.minimum.loanToValue
 
-    const liquidationPrice =
-      targetPosition?.liquidationPrice || onChainPosition?.liquidationPrice || zero
+    const liquidationPrice = targetPosition
+      ? getLiquidationPriceAccountingForPrecision(targetPosition)
+      : onChainPosition
+      ? getLiquidationPriceAccountingForPrecision(onChainPosition)
+      : zero
 
     const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
@@ -113,7 +117,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
 
     const collateralToken = state.context.strategyInfo?.collateralToken
 
-    const debtToken = state.context.token
+    const debtToken = state.context.tokens.debt
 
     const priceMovementUntilLiquidation = one.minus(one.div(healthFactor || zero)).times(100)
 

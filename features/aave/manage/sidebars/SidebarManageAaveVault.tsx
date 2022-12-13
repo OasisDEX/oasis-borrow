@@ -6,11 +6,12 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { amountFromWei, amountToWei } from '../../../../blockchain/utils'
+import { amountFromWei } from '../../../../blockchain/utils'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
+import { AllowanceView } from '../../../stateMachines/allowance'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
@@ -39,22 +40,25 @@ function getAmountGetFromPositionAfterClose(
   if (!strategy || !currentPosition) {
     return zero
   }
-  const currentDebt = amountToWei(
-    currentPosition.debt.amount,
-    currentPosition.debt.denomination || 'ETH',
-  )
+  const currentDebt = currentPosition.debt.amount
   const amountFromSwap = strategy.simulation.swap.toTokenAmount
-  const fee = strategy.simulation.swap.targetTokenFee
+  const fromTokenFee = strategy.simulation.swap?.sourceTokenFee || zero
+  const toTokenFee = strategy.simulation.swap?.targetTokenFee || zero
+  const fee = fromTokenFee.plus(toTokenFee)
 
   return amountFromSwap.minus(currentDebt).minus(fee)
 }
 
 function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
+  const displayToken = state.context.strategy?.simulation.swap.targetToken || {
+    symbol: 'ETH',
+    precision: 18,
+  }
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountGetFromPositionAfterClose(state.context.strategy, state.context.currentPosition),
-      state.context.token,
+      displayToken.symbol,
     ),
   )
 
@@ -64,7 +68,7 @@ function EthBalanceAfterClose({ state }: ManageAaveStateProps) {
         {t('manage-earn.aave.vault-form.eth-after-closing')}
       </Text>
       <Text variant="boldParagraph3">
-        {balance} {state.context.token}
+        {balance} {displayToken.symbol}
       </Text>
     </Flex>
   )
@@ -246,6 +250,13 @@ export function SidebarManageAaveVault() {
             },
           }}
           viewLocked={isLocked(state)}
+        />
+      )
+    case state.matches('frontend.allowanceSetting'):
+      return (
+        <AllowanceView
+          allowanceMachine={state.context.refAllowanceStateMachine!}
+          steps={[state.context.currentStep, state.context.totalSteps]}
         />
       )
     case state.matches('frontend.reviewingAdjusting'):

@@ -31,8 +31,9 @@ export function BorrowView() {
       <ProductCardsFilter
         filters={productCardsConfig.borrow.cardsFilters}
         selectedFilter={tab}
-        productCardComponent={ProductCardBorrow}
+        makerProductCardComponent={ProductCardBorrow}
         filterCardsFunction={borrowPageCardsData}
+        otherStrategies={[]}
       />
     </Grid>
   )

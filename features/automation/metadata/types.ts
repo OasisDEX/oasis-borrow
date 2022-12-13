@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { AutomationContext } from 'components/AutomationContextProvider'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
-import { AutomationFeatures } from 'features/automation/common/types'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import {
@@ -10,7 +9,12 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 
+export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
+
+export type GetAutomationMetadata<T> = (context: ContextWithoutMetadata) => T
+
 type AutomationStateValueMethod<T, V = BigNumber> = (state: T) => V
+type AutomationCallbackMethod<T> = (params: T) => void
 
 export type AutomationValidationMethodParams<T = {}> = {
   context: ContextWithoutMetadata
@@ -48,66 +52,62 @@ export interface StopLossMetadataDetailCards {
   cardsConfig?: StopLossDetailsConfig
 }
 
-export interface StopLossMetadata {
-  collateralDuringLiquidation: BigNumber
-  detailCards?: StopLossMetadataDetailCards
-  fixedCloseToToken?: string
-  getExecutionPrice: AutomationStateValueMethod<StopLossFormChange>
-  getMaxToken: AutomationStateValueMethod<StopLossFormChange>
-  getRightBoundary: AutomationStateValueMethod<StopLossFormChange>
-  getSliderPercentageFill: AutomationStateValueMethod<StopLossFormChange>
-  initialSlRatioWhenTriggerDoesntExist: BigNumber
-  onCloseToChange?: (value: string) => void
-  onSliderChange?: (value: BigNumber) => void
-  ratioParam: string
-  resetData: StopLossResetData
-  sliderDirection?: 'ltr' | 'rtl'
-  sliderMax: BigNumber
-  sliderMin: BigNumber
-  sliderStep: number
-  triggerMaxToken: BigNumber
+type AutomationCommonMetadata<T> = {
+  settings: {
+    sliderDirection?: 'ltr' | 'rtl'
+    sliderStep: number
+  }
+  translations: {
+    ratioParamTranslationKey: string
+  }
   validation: {
-    getAddErrors: AutomationMetadataValidationMethod<StopLossFormChange>
-    getAddWarnings: AutomationMetadataValidationMethod<StopLossFormChange>
+    getAddErrors: AutomationMetadataValidationMethod<T>
+    getAddWarnings: AutomationMetadataValidationMethod<T>
     cancelErrors: string[]
     cancelWarnings: string[]
   }
+  values: {
+    sliderMax: BigNumber
+    sliderMin: BigNumber
+  }
 }
 
+// TODO: add AutomationCommonMetadata types to all metadata features during their implementation
 export interface AutoBSMetadata {}
-export interface TakeProfitMetadata {}
+export interface AutoTakeProfitMetadata {}
 export interface ConstantMultipleMetadata {}
-
-export type ContextWithoutMetadata = Omit<AutomationContext, 'metadata'>
-
-export type GetStopLossMetadata = (context: ContextWithoutMetadata) => StopLossMetadata
-
-export type GetTakeProfitMetadata = (context: ContextWithoutMetadata) => TakeProfitMetadata
-
-export type GetAutoBSMetadata = (context: ContextWithoutMetadata) => AutoBSMetadata
-export type GetAutoSellOrBuyMetadata = (
-  type: AutomationFeatures.AUTO_SELL | AutomationFeatures.AUTO_BUY,
-) => GetAutoBSMetadata
-
-export type GetConstantMultipleMetadata = (
-  context: ContextWithoutMetadata,
-) => ConstantMultipleMetadata
-
-export interface AutomationDefinitionMetadata {
-  stopLoss?: GetStopLossMetadata
-  autoSell?: GetAutoBSMetadata
-  autoBuy?: GetAutoBSMetadata
-  constantMultiple?: GetConstantMultipleMetadata
-  takeProfit?: GetTakeProfitMetadata
+export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
+  callbacks: {
+    onCloseToChange?: AutomationCallbackMethod<{ optionName: string }>
+    onSliderChange?: AutomationCallbackMethod<{ value: BigNumber }>
+  }
+  detailCards?: StopLossMetadataDetailCards
+  methods: {
+    getExecutionPrice: AutomationStateValueMethod<StopLossFormChange>
+    getMaxToken: AutomationStateValueMethod<StopLossFormChange>
+    getRightBoundary: AutomationStateValueMethod<StopLossFormChange>
+    getSliderPercentageFill: AutomationStateValueMethod<StopLossFormChange>
+  }
+  settings: {
+    fixedCloseToToken?: string
+  }
+  values: {
+    collateralDuringLiquidation: BigNumber
+    initialSlRatioWhenTriggerDoesntExist: BigNumber
+    resetData: StopLossResetData
+    triggerMaxToken: BigNumber
+  }
 }
 
 export interface AutomationMetadata {
-  stopLoss: GetStopLossMetadata
-  autoSell: GetAutoBSMetadata
-  autoBuy: GetAutoBSMetadata
-  constantMultiple: GetConstantMultipleMetadata
-  takeProfit: GetTakeProfitMetadata
+  autoBuy: GetAutomationMetadata<AutoBSMetadata>
+  autoSell: GetAutomationMetadata<AutoBSMetadata>
+  autoTakeProfit: GetAutomationMetadata<AutoTakeProfitMetadata>
+  constantMultiple: GetAutomationMetadata<ConstantMultipleMetadata>
+  stopLoss: GetAutomationMetadata<StopLossMetadata>
 }
+
+export type AutomationDefinitionMetadata = Partial<AutomationMetadata>
 
 export interface OverwriteTriggersDefaults {
   stopLossTriggerData?: StopLossTriggerData

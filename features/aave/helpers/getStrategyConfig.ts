@@ -1,21 +1,29 @@
-import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { isEqual } from 'lodash'
+import { combineLatest, iif, Observable, of } from 'rxjs'
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
 import { StrategyConfig } from '../common/StrategyConfigTypes'
 import { strategies } from '../strategyConfig'
-import { createAaveUserConfiguration, hasOtherAssets } from './aaveUserConfiguration'
+import { PositionId } from '../types'
+import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
+import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
-  proxyAddress$: (address: string) => Observable<string | undefined>,
+  proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
-  address: string,
+  positionId: PositionId,
 ): Observable<StrategyConfig> {
-  return proxyAddress$(address).pipe(
-    switchMap((proxyAddress) => {
+  return proxiesForPosition$(positionId).pipe(
+    switchMap(({ dsProxy, dpmProxy }) => {
+      const effectiveProxyAddress = dsProxy || dpmProxy?.proxy
       return combineLatest(
-        aaveUserConfiguration$({ address: proxyAddress || address }),
+        iif(
+          () => effectiveProxyAddress !== undefined,
+          aaveUserConfiguration$({ address: effectiveProxyAddress! }),
+          of([]),
+        ),
         aaveReservesList$(),
       )
     }),
@@ -23,11 +31,19 @@ export function getStrategyConfig$(
       return createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)
     }),
     map((aaveUserConfiguration) => {
-      if (hasOtherAssets(aaveUserConfiguration, ['ETH', 'STETH'])) {
+      if (hasAssets(aaveUserConfiguration, 'STETH', 'ETH')) {
+        return strategies['aave-earn']
+      } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
         return strategies['aave-multiply']
       } else {
         return strategies['aave-earn']
+        // throw new Error(
+        //   `could not resolve strategy for address ${address}. aaveUserConfiguration ${JSON.stringify(
+        //     aaveUserConfiguration,
+        //   )}`,
+        // )
       }
     }),
+    distinctUntilChanged(isEqual),
   )
 }

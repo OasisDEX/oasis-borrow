@@ -1,4 +1,5 @@
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 
 import {
   AavePositionHeaderNoDetails,
@@ -14,7 +15,7 @@ import {
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { StrategyConfig } from './common/StrategyConfigTypes'
+import { ProxyType, StrategyConfig } from './common/StrategyConfigTypes'
 
 type StrategyConfigName = 'aave-earn' | 'aave-multiply'
 
@@ -22,6 +23,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
   'aave-earn': {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
@@ -34,13 +36,16 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     tokens: {
       collateral: 'STETH',
       debt: 'ETH',
+      deposit: 'ETH',
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
-    enabled: true,
+    product: 'earn',
+    featureToggle: 'AaveEarnSTETHETH',
   },
   'aave-multiply': {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveMultiplyOpenHeader,
       headerManage: AaveMultiplyManageHeader,
@@ -53,12 +58,21 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
     tokens: {
       collateral: 'STETH',
       debt: 'USDC',
+      deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    enabled: false,
+    product: 'multiply',
+    featureToggle: 'AaveMultiplySTETHUSDC',
   },
-} as const
+}
 
-export const aaveStrategiesList = Object.values(strategies)
-  .filter(({ enabled }) => enabled)
-  .map((s) => s.name)
+export function aaveStrategiesList(filterProduct?: StrategyConfig['product']) {
+  return Object.values(strategies)
+    .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
+    .filter(({ product }) => (filterProduct ? product === filterProduct : true))
+    .map((s) => s.name)
+}
+
+export function getAaveStrategy(strategyName: StrategyConfig['name']) {
+  return Object.values(strategies).filter(({ name }) => strategyName === name)
+}

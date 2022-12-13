@@ -3,11 +3,10 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
-import {
-  getAaveReserveConfigurationData,
-  getAaveReserveData,
-  getAaveUserReserveData,
-} from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { getAavePositionLiquidation$ } from 'blockchain/aaveLiquidations'
+import { getAaveUserAccountData } from 'blockchain/calls/aave/aaveLendingPool'
+import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
+import { getAaveReserveData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -17,6 +16,7 @@ import {
   AutomationBotRemoveTriggersData,
 } from 'blockchain/calls/automationBotAggregator'
 import {
+  call,
   createSendTransaction,
   createSendWithGasConstraints,
   estimateGas,
@@ -52,6 +52,7 @@ import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { observe } from 'blockchain/calls/observe'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -82,6 +83,7 @@ import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { getCollateralLocked$, getTotalValueLocked$ } from 'blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from 'blockchain/config'
 import { resolveENSName$ } from 'blockchain/ens'
+import { createTokenBalance$ } from 'blockchain/erc20'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
@@ -95,6 +97,7 @@ import {
   createWeb3ContextConnected$,
   every10Seconds$,
 } from 'blockchain/network'
+import { compareBigNumber } from 'blockchain/network'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -108,6 +111,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
+import { getUserDpmProxies$, getUserDpmProxy$ } from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
   createVault$,
@@ -116,8 +120,9 @@ import {
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
-import { getAaveStEthYield } from 'features/aave/common'
-import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
+import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
+import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
+import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
@@ -172,6 +177,12 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createDaiDeposit$ } from 'features/dsr/helpers/daiDeposit'
+import { createDsrDeposit$ } from 'features/dsr/helpers/dsrDeposit'
+import { createDsrHistory$ } from 'features/dsr/helpers/dsrHistory'
+import { chi, dsr, Pie, pie } from 'features/dsr/helpers/potCalls'
+import { createDsr$ } from 'features/dsr/utils/createDsr'
+import { createProxyAddress$ as createDsrProxyAddress$ } from 'features/dsr/utils/proxy'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -245,7 +256,6 @@ import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positio
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
-import { GraphQLClient } from 'graphql-request'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
 import {
@@ -261,31 +271,14 @@ import {
   supportedEarnIlks,
   supportedMultiplyIlks,
 } from 'helpers/productCards'
+import { zero } from 'helpers/zero'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
-import {
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  switchMap,
-} from 'rxjs/operators'
+import { equals } from 'ramda'
+import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
-import {
-  getAaveReservesList,
-  getAaveUserAccountData,
-  getAaveUserConfiguration,
-} from '../blockchain/calls/aave/aaveLendingPool'
-import {
-  getAaveAssetsPrices,
-  getAaveOracleAssetPriceData,
-} from '../blockchain/calls/aave/aavePriceOracle'
-import { OperationExecutorTxMeta } from '../blockchain/calls/operationExecutor'
-import { prepareAaveAvailableLiquidityInUSD$ } from '../features/aave/helpers/aavePrepareAvailableLiquidity'
-import { hasAavePosition$ } from '../features/aave/helpers/hasAavePosition'
+import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -309,6 +302,7 @@ export type TxData =
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
   | OperationExecutorTxMeta
+  | CreateDPMAccount
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -424,8 +418,7 @@ function createUIChangesSubject(): UIChanges {
   }
 
   function lastPayload<T>(subject: string): T {
-    const val: T = latest[subject]
-    return val
+    return latest[subject]
   }
 
   function clear(subject: string): any {
@@ -485,9 +478,16 @@ export function setupAppContext() {
 
   const web3ContextConnected$ = createWeb3ContextConnected$(web3Context$)
 
-  const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
+  const [onEveryBlock$, everyBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
   const context$ = createContext$(web3ContextConnected$)
+
+  const chainContext$ = context$.pipe(
+    distinctUntilChanged(
+      (previousContext, newContext) => previousContext.chainId === newContext.chainId,
+    ),
+    shareReplay(1),
+  )
 
   const connectedContext$ = createContextConnected$(context$)
 
@@ -519,20 +519,6 @@ export function setupAppContext() {
     onEveryBlock$,
     connectedContext$,
   )
-  // saved for later?
-  // const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
-  // const graphQLClient$ = contextForAddress$.pipe(
-  //   distinctUntilKeyChanged('cacheApi'),
-  //   map(({ cacheApi }) => new GraphQLClient(cacheApi)),
-  // )
-  const disconnectedGraphQLClient$ = context$.pipe(
-    distinctUntilKeyChanged('cacheApi'),
-    map(({ cacheApi }) => new GraphQLClient(cacheApi)),
-  )
-  const aaveSthEthYieldsQuery = memoize(
-    curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
-    (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
-  )
 
   const gasPrice$ = createGasPrice$(onEveryBlock$, context$)
 
@@ -560,19 +546,19 @@ export function setupAppContext() {
   const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
-  const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
-  const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
-  const cdpRegistryCdps$ = observe(onEveryBlock$, context$, cdpRegistryCdps)
-  const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
-  const vatIlksLean$ = observe(once$, context$, vatIlk)
-  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
-  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
-  const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
-  const spotIlksLean$ = observe(once$, context$, spotIlk)
-  const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
-  const jugIlksLean$ = observe(once$, context$, jugIlk)
-  const dogIlks$ = observe(onEveryBlock$, context$, dogIlk)
-  const dogIlksLean$ = observe(once$, context$, dogIlk)
+  const cdpManagerOwner$ = observe(onEveryBlock$, chainContext$, cdpManagerOwner, bigNumberTostring)
+  const cdpRegistryOwns$ = observe(onEveryBlock$, chainContext$, cdpRegistryOwns)
+  const cdpRegistryCdps$ = observe(onEveryBlock$, chainContext$, cdpRegistryCdps)
+  const vatIlks$ = observe(onEveryBlock$, chainContext$, vatIlk)
+  const vatIlksLean$ = observe(once$, chainContext$, vatIlk)
+  const vatUrns$ = observe(onEveryBlock$, chainContext$, vatUrns, ilkUrnAddressToString)
+  const vatGem$ = observe(onEveryBlock$, chainContext$, vatGem, ilkUrnAddressToString)
+  const spotIlks$ = observe(onEveryBlock$, chainContext$, spotIlk)
+  const spotIlksLean$ = observe(once$, chainContext$, spotIlk)
+  const jugIlks$ = observe(onEveryBlock$, chainContext$, jugIlk)
+  const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
+  const dogIlks$ = observe(onEveryBlock$, chainContext$, dogIlk)
+  const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
@@ -587,8 +573,8 @@ export function setupAppContext() {
   const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
-  const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
-  const pipZzzLean$ = observe(once$, context$, pipZzz)
+  const pipZzz$ = observe(onEveryBlock$, chainContext$, pipZzz)
+  const pipZzzLean$ = observe(once$, chainContext$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipHopLean$ = observe(once$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
@@ -607,14 +593,20 @@ export function setupAppContext() {
   }
 
   const oraclePriceData$ = memoize(
-    curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    curry(createOraclePriceData$)(chainContext$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
   )
 
   const oraclePriceDataLean$ = memoize(
-    curry(createOraclePriceData$)(context$, pipPeekLean$, pipPeepLean$, pipZzzLean$, pipHopLean$),
+    curry(createOraclePriceData$)(
+      chainContext$,
+      pipPeekLean$,
+      pipPeepLean$,
+      pipZzzLean$,
+      pipHopLean$,
+    ),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
@@ -624,26 +616,41 @@ export function setupAppContext() {
   const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
 
   const balance$ = memoize(
-    curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
+    curry(createBalance$)(onEveryBlock$, chainContext$, tokenBalance$),
     (token, address) => `${token}_${address}`,
   )
 
   const balanceLean$ = memoize(
-    curry(createBalance$)(once$, context$, tokenBalanceLean$),
+    curry(createBalance$)(once$, chainContext$, tokenBalanceLean$),
     (token, address) => `${token}_${address}`,
   )
 
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
+  const aaveLiquidations$ = memoize(
+    curry(getAavePositionLiquidation$)(context$),
+    (proxyAddress) => proxyAddress,
+  )
+
+  const userDpmProxies$ = memoize(
+    curry(getUserDpmProxies$)(context$, onEveryBlock$),
+    (walletAddress) => walletAddress,
+  )
+
+  const userDpmProxy$ = memoize(
+    curry(getUserDpmProxy$)(context$, onEveryBlock$),
+    (vaultId) => vaultId,
+  )
+
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
-  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
-  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
-  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
-  const tokenName$ = observe(onEveryBlock$, context$, tokenName)
+  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
+  const tokenDecimals$ = observe(onEveryBlock$, chainContext$, tokenDecimals)
+  const tokenSymbol$ = observe(onEveryBlock$, chainContext$, tokenSymbol)
+  const tokenName$ = observe(onEveryBlock$, chainContext$, tokenName)
 
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
-  const ilkToToken$ = memoize(curry(createIlkToToken$)(context$))
+  const ilkToToken$ = memoize(curry(createIlkToToken$)(chainContext$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
@@ -656,7 +663,7 @@ export function setupAppContext() {
   const charterCdps$ = memoize(
     curry(createGetRegistryCdps$)(
       onEveryBlock$,
-      context$,
+      chainContext$,
       cdpRegistryCdps$,
       proxyAddress$,
       charterIlks,
@@ -665,7 +672,7 @@ export function setupAppContext() {
   const cropJoinCdps$ = memoize(
     curry(createGetRegistryCdps$)(
       onEveryBlock$,
-      context$,
+      chainContext$,
       cdpRegistryCdps$,
       proxyAddress$,
       cropJoinIlks,
@@ -716,6 +723,109 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const potDsr$ = context$.pipe(
+    switchMap((context) => {
+      return everyBlock$(defer(() => call(context, dsr)()))
+    }),
+  )
+  const potChi$ = context$.pipe(
+    switchMap((context) => {
+      return everyBlock$(defer(() => call(context, chi)()))
+    }),
+  )
+
+  const potBigPie$ = context$.pipe(
+    switchMap((context) => {
+      return everyBlock$(defer(() => call(context, Pie)()))
+    }),
+  )
+
+  const potTotalValueLocked$ = combineLatest(potChi$, potBigPie$).pipe(
+    switchMap(([chi, potBigPie]) =>
+      of(potBigPie.div(new BigNumber(10).pow(18)).times(chi.div(new BigNumber(10).pow(27)))),
+    ),
+    shareReplay(1),
+  )
+
+  const proxyAddressDsrObservable$ = memoize(
+    (addressFromUrl: string) =>
+      context$.pipe(
+        switchMap((context) => everyBlock$(createDsrProxyAddress$(context, addressFromUrl))),
+        shareReplay(1),
+      ),
+    (item) => item,
+  )
+
+  const dsrHistory$ = memoize(
+    (addressFromUrl: string) =>
+      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl), onEveryBlock$).pipe(
+        switchMap(([context, proxyAddress, _]) => {
+          return proxyAddress ? defer(() => createDsrHistory$(context, proxyAddress)) : of([])
+        }),
+      ),
+    (item) => item,
+  )
+
+  // TODO: Lines 737 to 773, think we are needing to modify this to use different context, lots of repeated code
+  const dsr$ = memoize(
+    (addressFromUrl: string) =>
+      createDsr$(
+        context$,
+        everyBlock$,
+        onEveryBlock$,
+        dsrHistory$(addressFromUrl),
+        potDsr$,
+        potChi$,
+        addressFromUrl,
+      ),
+    (item) => item,
+  )
+
+  const daiBalance$ = memoize(
+    (addressFromUrl: string) =>
+      context$.pipe(
+        switchMap((context) => {
+          return everyBlock$(createTokenBalance$(context, 'DAI', addressFromUrl), compareBigNumber)
+        }),
+      ),
+    (item) => item,
+  )
+
+  const potPie$ = memoize(
+    (addressFromUrl: string) =>
+      combineLatest(context$, proxyAddressDsrObservable$(addressFromUrl)).pipe(
+        switchMap(([context, proxyAddress]) => {
+          if (!proxyAddress) return of(zero)
+          return everyBlock$(
+            defer(() => call(context, pie)(proxyAddress!)),
+            equals,
+          )
+        }),
+      ),
+    (item) => item,
+  )
+
+  const daiDeposit$ = memoize(
+    (addressFromUrl: string) => createDaiDeposit$(potPie$(addressFromUrl), potChi$),
+    (item) => item,
+  )
+
+  const dsrDeposit$ = memoize(
+    (addressFromUrl: string) =>
+      createDsrDeposit$(
+        context$,
+        txHelpers$,
+        proxyAddressDsrObservable$(addressFromUrl),
+        allowance$,
+        daiBalance$(addressFromUrl),
+        daiDeposit$(addressFromUrl),
+        potDsr$,
+        dsr$(addressFromUrl),
+        addGasEstimation$,
+      ),
+    (item) => item,
+  )
+
   const vault$ = memoize(
     (id: BigNumber) =>
       createVault$(
@@ -725,7 +835,7 @@ export function setupAppContext() {
         ilkData$,
         oraclePriceData$,
         ilkToToken$,
-        context$,
+        chainContext$,
         id,
       ),
     bigNumberTostring,
@@ -744,19 +854,19 @@ export function setupAppContext() {
     ),
   )
 
-  const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(chainContext$, onEveryBlock$, vault$))
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(
-    curry(createVaults$)(onEveryBlock$, vault$, context$, [
+    curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [
       charterCdps$,
       cropJoinCdps$,
       standardCdps$,
     ]),
   )
 
-  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
+  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(chainContext$)
 
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
@@ -826,35 +936,33 @@ export function setupAppContext() {
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
 
-  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
-  const aaveUserAccountData$ = observe(onEveryBlock$, context$, getAaveUserAccountData)
-  const aaveOracleAssetPriceData$ = observe(onEveryBlock$, context$, getAaveOracleAssetPriceData)
-  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
-  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
-  const aaveReserveConfigurationData$ = observe(
+  const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
+
+  const aaveUserAccountData$ = observe(
     onEveryBlock$,
     context$,
-    getAaveReserveConfigurationData,
-    ({ token }) => token,
+    getAaveUserAccountData,
+    (args) => args.address,
   )
 
-  const hasAave$ = memoize(curry(hasAavePosition$)(proxyAddress$, aaveUserAccountData$))
+  const hasProxyAddressActiveAavePosition$ = memoize(curry(hasAavePosition$)(aaveUserAccountData$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
 
-  const aaveAvailableLiquidityETH$ = curry(prepareAaveAvailableLiquidityInUSD$('ETH'))(
-    getAaveReserveData$({ token: 'ETH' }),
-    // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  const aaveAvailableLiquidityInUSDC$ = memoize(
+    curry(prepareAaveAvailableLiquidityInUSDC$)(
+      getAaveReserveData$,
+      // @ts-expect-error
+      getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    ),
+    ({ token }) => token,
   )
-
-  const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
 
   const aavePositions$ = memoize(
     curry(createAavePosition$)(
       aaveUserAccountData$,
-      aaveAvailableLiquidityETH$,
+      aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
       ethPrice$,
       proxyAddress$,
     ),
@@ -1010,7 +1118,7 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
+  const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceDataLean$)
 
   const productCardsData$ = memoize(
     curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkDataLean$, oraclePriceDataLean$),
@@ -1025,11 +1133,11 @@ export function setupAppContext() {
   )
 
   const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, vault$),
   )
 
   const vaultsHistoryAndValue$ = memoize(
-    curry(vaultsWithHistory$)(context$, vaultWithValue$, 1000 * 60),
+    curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, 1000 * 60),
   )
 
   const positionsList$ = memoize(
@@ -1085,17 +1193,29 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$, hasAave$, ensName$)
+  const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
+    connectedContext$,
+    proxyAddress$,
+    hasProxyAddressActiveAavePosition$,
+  )
+
+  const accountData$ = createAccountData(
+    web3Context$,
+    balance$,
+    vaults$,
+    hasActiveDsProxyAavePosition$,
+    ensName$,
+  )
 
   const makerOracleTokenPrices$ = memoize(
-    curry(createMakerOracleTokenPrices$)(context$),
+    curry(createMakerOracleTokenPrices$)(chainContext$),
     (token: string, timestamp: moment.Moment) => {
       return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
     },
   )
 
   const makerOracleTokenPricesForDates$ = memoize(
-    curry(createMakerOracleTokenPricesForDates$)(context$),
+    curry(createMakerOracleTokenPricesForDates$)(chainContext$),
     (token: string, timestamps: moment.Moment[]) => {
       return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
     },
@@ -1142,8 +1262,6 @@ export function setupAppContext() {
     ),
   )
 
-  const hasActiveAavePosition$ = hasActiveAavePosition(web3Context$, hasAave$)
-
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1158,6 +1276,7 @@ export function setupAppContext() {
     vaults$,
     vault$,
     ilks$: ilksSupportedOnNetwork$,
+    balance$,
     accountBalances$,
     openVault$,
     manageVault$,
@@ -1198,17 +1317,20 @@ export function setupAppContext() {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
-    aaveUserReserveData$,
-    aaveOracleAssetPriceData$,
-    aaveReservesList$,
-    aaveReserveConfigurationData$,
-    aaveUserConfiguration$,
-    aaveSthEthYieldsQuery,
-    aaveAvailableLiquidityETH$,
-    aaveUserAccountData$,
-    hasActiveAavePosition$,
     balanceInfo$,
     once$,
+    allowance$,
+    userDpmProxies$,
+    userDpmProxy$,
+    hasActiveDsProxyAavePosition$,
+    aaveLiquidations$,
+    aaveUserAccountData$,
+    aaveAvailableLiquidityInUSDC$,
+    hasProxyAddressActiveAavePosition$,
+    dsr$,
+    dsrDeposit$,
+    potDsr$,
+    potTotalValueLocked$,
   }
 }
 

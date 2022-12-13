@@ -128,6 +128,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
       inactive={productCardsConfig.borrow.inactiveIlks.includes(cardData.ilk)}
       isFull={cardData.isFull}
       floatingLabelText={tagKey ? t(`product-card.tags.${tagKey}`) : ''}
+      protocol={cardData.protocol}
     />
   )
 }

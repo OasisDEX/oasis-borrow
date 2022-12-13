@@ -2,27 +2,31 @@ import { useInterpret } from '@xstate/react'
 import { env } from 'process'
 import React from 'react'
 
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
+import { PositionId } from '../../types'
 import { ManageAaveStateMachine } from '../state'
 
 function setupManageAaveStateContext({
   machine,
   strategy,
-  address,
+  positionId,
 }: {
   machine: ManageAaveStateMachine
   strategy: StrategyConfig
-  address: string
+  positionId: PositionId
 }) {
+  const positionCreatedBy =
+    positionId.vaultId !== undefined ? ProxyType.DpmProxy : ProxyType.DsProxy
+
   const stateMachine = useInterpret(
     machine.withContext({
-      token: strategy.tokens.debt,
-      collateralToken: strategy.tokens.collateral,
+      tokens: strategy.tokens,
       currentStep: 1,
       totalSteps: 3,
       strategyConfig: strategy,
       userInput: {},
-      address,
+      positionCreatedBy: positionCreatedBy,
+      positionId: positionId,
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()
@@ -30,6 +34,7 @@ function setupManageAaveStateContext({
     stateMachine,
   }
 }
+
 export type ManageAaveStateMachineContext = ReturnType<typeof setupManageAaveStateContext>
 
 const manageAaveStateContext = React.createContext<ManageAaveStateMachineContext | undefined>(
@@ -48,13 +53,13 @@ export function ManageAaveStateMachineContextProvider({
   children,
   machine,
   strategy,
-  address,
+  positionId,
 }: React.PropsWithChildren<{
   machine: ManageAaveStateMachine
   strategy: StrategyConfig
-  address: string
+  positionId: PositionId
 }>) {
-  const context = setupManageAaveStateContext({ machine, strategy, address })
+  const context = setupManageAaveStateContext({ machine, strategy, positionId })
   return (
     <manageAaveStateContext.Provider value={context}>{children}</manageAaveStateContext.Provider>
   )

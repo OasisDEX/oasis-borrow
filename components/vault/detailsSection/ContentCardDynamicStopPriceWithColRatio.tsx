@@ -44,7 +44,7 @@ export function ContentCardDynamicStopPriceWithColRatio({
   const contentCardModalSettings: ContentCardDynamicStopPriceModalProps = {
     dynamicStopPrice,
     dynamicStopPriceFormatted: formatted.dynamicStopPrice,
-    ratioParam: 'system.collateral-ratio',
+    ratioParamTranslationKey: 'system.collateral-ratio',
   }
 
   const contentCardSettings: ContentCardProps = {

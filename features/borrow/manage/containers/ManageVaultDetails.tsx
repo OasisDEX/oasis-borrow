@@ -132,7 +132,9 @@ export function ManageVaultDetails(
     autoTakeProfitTriggered,
   } = props
   const { t } = useTranslation()
-  const { stopLossTriggerData } = useAutomationContext()
+  const {
+    triggerData: { stopLossTriggerData },
+  } = useAutomationContext()
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'

@@ -1,0 +1,12 @@
+import { IPosition } from '@oasisdex/oasis-actions'
+import { BigNumber } from 'bignumber.js'
+
+import { amountFromWei } from '../../blockchain/utils'
+
+export function getLiquidationPriceAccountingForPrecision(position: IPosition): BigNumber {
+  return amountFromWei(position.debt.amount, position.debt.denomination || 'ETH').div(
+    amountFromWei(position.collateral.amount, position.debt.denomination || 'ETH').times(
+      position.category.liquidationThreshold,
+    ),
+  )
+}

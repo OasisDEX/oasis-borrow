@@ -1,6 +1,6 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { calculateSimulation } from 'features/aave/open/services'
 import { useEffect, useState } from 'react'
 
@@ -16,7 +16,7 @@ export function useSimulationYields({ amount, riskRatio, fields }: useSimulation
   const [simulations, setSimulations] = useState<
     ReturnType<typeof calculateSimulation> & { yields: AaveStEthYieldsResponse }
   >()
-  const { aaveSthEthYieldsQuery } = useAppContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext()
 
   useEffect(() => {
     if (riskRatio && amount && !simulations) {

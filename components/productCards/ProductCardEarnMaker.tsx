@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
+import { displayMultiple } from 'helpers/display-multiple'
 import { YieldPeriod } from 'helpers/earn/calculations'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -97,6 +98,10 @@ export function ProductCardEarnMaker({ cardData }: ProductCardEarnMakerProps) {
 
   const productCardLabels = [
     {
+      title: t('system.max-multiple'),
+      value: displayMultiple(maxMultiple),
+    },
+    {
       title: t('system.seven-day-average'),
       value:
         yields && sevenDayAverage && yieldSevenDayAsPercentage ? (
@@ -153,6 +158,7 @@ export function ProductCardEarnMaker({ cardData }: ProductCardEarnMakerProps) {
         floatingLabelText={
           tagKey ? t(`product-card.tags.${tagKey}`, { token: cardData.token }) : ''
         }
+        protocol={cardData.protocol}
       />
     </WithErrorHandler>
   )

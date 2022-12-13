@@ -1,17 +1,21 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
+import { Feature } from 'helpers/useFeatureToggle'
 
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
-type CollateralTokenTypeList = 'STETH'
-type DebtTokenTypeList = 'USDC' | 'ETH'
+export enum ProxyType {
+  DsProxy = 'DsProxy',
+  DpmProxy = 'DpmProxy',
+}
 
 export interface StrategyConfig {
   name: string
   urlSlug: string
+  proxyType: ProxyType
   viewComponents: {
     headerOpen: AaveHeader
     headerManage: AaveHeader
@@ -22,14 +26,16 @@ export interface StrategyConfig {
     adjustRiskView: AdjustRiskView
   }
   tokens: {
-    collateral: CollateralTokenTypeList
-    debt: DebtTokenTypeList
+    collateral: string
+    debt: string
+    deposit: string
   }
   riskRatios: {
     minimum: IRiskRatio
     default: IRiskRatio
   }
-  enabled: boolean
+  product: 'multiply' | 'earn'
+  featureToggle: Feature
 }
 
 export type AaveHeaderProps = {
@@ -38,7 +44,7 @@ export type AaveHeaderProps = {
 
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
+  aaveReserveDataDebtToken: PreparedAaveReserveData
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element

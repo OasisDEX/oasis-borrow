@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
@@ -6,9 +7,12 @@ import { Context } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
+import { allDefined } from '../../../../helpers/allDefined'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import { IStrategyInfo } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
+import { ProxiesRelatedWithPosition } from '../../helpers/getProxiesRelatedWithPosition'
+import { PositionId } from '../../types'
 import { ManageAaveStateMachineServices } from '../state'
 import { AaveProtocolData } from './getAaveProtocolData'
 
@@ -17,11 +21,16 @@ export function getManageAavePositionStateMachineServices(
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
   connectedProxyAddress$: Observable<string | undefined>,
-  proxyAddress$: (account: string) => Observable<string | undefined>,
+  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (collateralToken: string) => Observable<IStrategyInfo>,
-  aaveProtocolData$: (collateralToken: string, address: string) => Observable<AaveProtocolData>,
+  aaveProtocolData$: (
+    collateralToken: string,
+    debtToken: string,
+    proxyAddress: string,
+  ) => Observable<AaveProtocolData>,
+  tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
 ): ManageAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -35,7 +44,8 @@ export function getManageAavePositionStateMachineServices(
     },
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
-        map((balances) => balances[context.token!]),
+        map((balances) => balances[context.tokens.deposit]),
+        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
         map(({ balance, price }) => ({
           type: 'SET_BALANCE',
           tokenBalance: balance,
@@ -53,12 +63,14 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     positionProxyAddress$: (context) => {
-      return proxyAddress$(context.address).pipe(
-        distinctUntilChanged<string>(isEqual),
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
+        filter((address) => address !== undefined),
         map((address) => ({
           type: 'POSITION_PROXY_ADDRESS_RECEIVED',
           proxyAddress: address,
         })),
+        distinctUntilChanged(isEqual),
       )
     },
     userSettings$: (_) => {
@@ -68,10 +80,10 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     prices$: (context) => {
-      return pricesFeed$(context.collateralToken)
+      return pricesFeed$(context.tokens.collateral)
     },
     strategyInfo$: (context) => {
-      return strategyInfo$(context.collateralToken).pipe(
+      return strategyInfo$(context.tokens.collateral).pipe(
         map((strategyInfo) => ({
           type: 'UPDATE_STRATEGY_INFO',
           strategyInfo,
@@ -79,9 +91,12 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     currentPosition$: (context) => {
-      return proxyAddress$(context.address).pipe(
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
-        switchMap((proxyAddress) => aaveProtocolData$(context.collateralToken, proxyAddress!)),
+        switchMap((proxyAddress) =>
+          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+        ),
         map((aaveProtocolData) => ({
           type: 'CURRENT_POSITION_CHANGED',
           currentPosition: aaveProtocolData.position,
@@ -89,13 +104,27 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     protocolData$: (context) => {
-      return proxyAddress$(context.address).pipe(
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter((address) => !!address),
-        switchMap((proxyAddress) => aaveProtocolData$(context.collateralToken, proxyAddress!)),
+        switchMap((proxyAddress) =>
+          aaveProtocolData$(context.tokens.collateral, context.tokens.debt, proxyAddress!),
+        ),
         map((aaveProtocolData) => ({
           type: 'UPDATE_PROTOCOL_DATA',
           protocolData: aaveProtocolData,
         })),
+      )
+    },
+    allowance$: (context) => {
+      return connectedProxyAddress$.pipe(
+        filter(allDefined),
+        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+        map((allowance) => ({
+          type: 'UPDATE_ALLOWANCE',
+          tokenAllowance: allowance,
+        })),
+        distinctUntilChanged(isEqual),
       )
     },
   }

@@ -52,6 +52,8 @@
   "adding-auto-buy": "Adding Auto-Buy trigger",
   "cancelling-auto-buy": "Removing Auto-Buy trigger",
   "buy": "Buy",
+  "maker-vault": "Maker Vault",
+  "position": "Position",
   "careers": {
     "heading": "Open Roles",
     "intro": "We believe in talent. Join us to build the next generation of DeFi.",
@@ -350,7 +352,9 @@
     "max-gas-fee-in-gwei": "Max gas fee in Gwei",
     "minimum-sell-price": "Minimum sell price",
     "maximum-buy-price": "Maximum buy price",
-    "target-multiple": "Target multiple"
+    "target-multiple": "Target multiple",
+    "dsrwithdrawal": "Withdrew {{daiAmount}} DAI",
+    "dsrdeposit": "Deposited {{daiAmount}} DAI"
   },
   "triggers": {
     "added": "added",
@@ -655,6 +659,7 @@
   "multiple": "Multiple",
   "metamask-unsupported-network": "You are on an unsupported network. Please switch to Mainnet.",
   "net-value": "Net Value",
+  "net-earnings": "Net earnings",
   "nav": {
     "about": "About",
     "resources": "Resources",
@@ -856,6 +861,7 @@
     "stability-fee": "Stability Fee",
     "liquidity-available": "Current Liquidity Available",
     "protocol": "Protocol",
+    "position": "Position",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
     "vault-id": "Vault ID",
@@ -1130,12 +1136,21 @@
       "subheader3": "This Vault is now available for liquidation and can be liquidated at anytime."
     },
     "liquidated": {
-      "header1": "Your Maker Vault got liquidated",
-      "header2": "This Maker Vault got liquidated",
-      "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your Dai debt.",
-      "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
-      "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
-      "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+      "header1": "Your {{position}} got liquidated",
+      "header2": "This {{position}} got liquidated",
+      "maker": {
+        "subheader1": "This Maker Vault has been liquidated. A portion of your collateral has been auctioned to pay back your Dai debt.",
+        "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
+        "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
+        "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+      },
+      "aave": {
+        "subheader1": "A liquidation has happened on this Position."
+      }
+    },
+    "above-max-ltv": {
+      "header": "This position is currently higher than the maximum loan to value and can only be reduced.",
+      "subheader": "The current loan to value of {{loanToValue}} is higher than the maximum loan to value of {{maxLoanToValue}} allowed by the protocol. Therefore this position can only be de-risked. If the loan to value of the position reaches {{liquidationThreshold}} the position will be available for liquidation."
     },
     "aave-multi-position": {
       "header": "This position is affected by other assets on AAVE",
@@ -1276,7 +1291,6 @@
     "set-downside-protection": "Set up Stop-Loss Protection",
     "set-downside-protection-desc": "Set the {{ratioParam}} trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
-    "cancel-downside-protection-desc": "To cancel the Stop-Loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting Stop-Loss Protection",
     "setting-auto-sell": "Setting up your Auto-Sell",
     "cancelling-auto-sell": "Cancelling your Auto-Sell",
@@ -1401,6 +1415,10 @@
       "stETHeth": {
         "title": "stETH/ETH AAVE",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on AAVE to get more exposure to stETH."
+      },
+      "stETHusdc": {
+        "title": "Highest stETH multiple option",
+        "description": "Maximise your stETH exposure with Aave and USDC."
       }
     },
     "tags": {
@@ -1420,7 +1438,8 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "stETHeth": "Get up to {{value}} ETH exposure to stETH"
+      "stETHeth": "Get up to {{value}} ETH exposure to stETH",
+      "stETHusdc": "Get up to {{value}} ETH exposure"
     }
   },
   "product-card-title": {
@@ -1614,7 +1633,6 @@
     "sell-title": "Basic Auto-Sell Summary",
     "cancel-summary-title": "Cancel Auto-Sell order summary",
     "confirmation": "Confirm your auto-sell setup.",
-    "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
     "trigger-col-ratio-to-perfrom-sell": "Trigger Col. Ratio to perfrom each automated sell",
@@ -1742,7 +1760,6 @@
       "estimated-gas-fee": "Estimated gas fee",
       "setup-transaction-cost": "Setup transaction cost"
     },
-    "cancel-instructions": "To cancel the Take Profit you'll need to click the button below and confirm the transaction.",
     "adding-new-triggers-disabled": "Creation of the new Take Profit trigger is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Take Profit triggers",
     "auto-take-profit-confirmation-text": "You are setting an Auto-Take Profit order to trigger at an ETH price of ${{price}}. Your vault will be closed and your expected profit of ${{profit}} paid will be paid out in DAI."
@@ -1777,7 +1794,8 @@
       "is-stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first.",
       "is-stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
       "is-stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first"
-    }
+    },
+    "cancel-summary-description": "To cancel the {{feature}} you'll need to click the button below and confirm the transaction."
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1803,7 +1821,6 @@
     "operating-cost": "Operating Cost",
     "operating-cost-desc": "The cost of setting up and running your Constant Multiple.\nSet up cost + execution costs = Operating Cost",
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
-    "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
       "header": "Set and forget with Constant Multiple",
       "content": "Remove the day to day management of your Vault by taking advantage of volatility and staying at your target multiple. So when the market adjusts, so does your Vault. Find out more about how this works",
@@ -2034,6 +2051,41 @@
         "description": "We don't collect any personal identifiable information and do not track or store IP addresses or locations.",
         "link-privacy": "View Privacy Policy"
       }
+    }
+  },
+  "dsr": {
+    "details": {
+      "overview": "Overview",
+      "total-deposited-dai": "Total Deposited Dai",
+      "current-yield": "Current Yield",
+      "current-dai-savings-rate": "Current Dai Savings Rate"
+    },
+    "titles": {
+      "manage": "Manage Your DSR strategy",
+      "heading": "Dai Savings Rate",
+      "setup": "Set up DSR strategy"
+    },
+    "labels": {
+      "deposit": "Deposit",
+      "withdraw": "Withdraw"
+    },
+    "product-card": {
+      "description": "Earn on your Dai using the Maker Protocol"
+    },
+    "order": {
+      "total-dai": "Total DAI {{action}}"
+    },
+    "simulation": {
+      "header1": "Duration",
+      "header2": "Earnings after fees",
+      "header3": "Net value",
+      "rowlabel1": "Next 30 days",
+      "rowlabel2": "Next 90 days",
+      "rowlabel3": "Next 1 year"
+    },
+    "errors": {
+      "amountBiggerThanBalance": "You cannot deposit more Dai than the amount in your wallet",
+      "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
     }
   }
 }

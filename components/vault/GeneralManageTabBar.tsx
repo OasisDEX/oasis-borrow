@@ -49,11 +49,13 @@ export function GeneralManageTabBar({
   const { t } = useTranslation()
 
   const {
-    stopLossTriggerData,
-    autoSellTriggerData,
-    autoBuyTriggerData,
-    constantMultipleTriggerData,
-    autoTakeProfitTriggerData,
+    triggerData: {
+      autoBuyTriggerData,
+      autoSellTriggerData,
+      autoTakeProfitTriggerData,
+      constantMultipleTriggerData,
+      stopLossTriggerData,
+    },
   } = useAutomationContext()
 
   const protectionEnabled =

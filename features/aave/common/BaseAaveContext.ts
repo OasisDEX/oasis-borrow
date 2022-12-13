@@ -1,11 +1,17 @@
 import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { EventObject, Sender } from 'xstate'
+import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { Context } from '../../../blockchain/network'
+import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
 import { HasGasEstimation } from '../../../helpers/form'
+import { zero } from '../../../helpers/zero'
+import {
+  AllowanceStateMachine,
+  AllowanceStateMachineResponseEvent,
+} from '../../stateMachines/allowance'
 import { TransactionStateMachineResultEvents } from '../../stateMachines/transaction'
 import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../userSettings/userSettings'
@@ -28,17 +34,23 @@ export type BaseAaveEvent =
   | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
+  | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
   | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
   | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
+  | { type: 'UPDATE_ALLOWANCE'; tokenAllowance: BigNumber }
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
+  | AllowanceStateMachineResponseEvent
 
 export interface BaseAaveContext {
   userInput: UserInput
-  token: string
-  collateralToken: string
+  tokens: {
+    collateral: string
+    debt: string
+    deposit: string
+  }
   currentPosition?: IPosition
 
   currentStep: number
@@ -48,6 +60,7 @@ export interface BaseAaveContext {
   operationName?: string
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
+  tokenAllowance?: BigNumber
   tokenPrice?: BigNumber
   collateralPrice?: BigNumber
   auxiliaryAmount?: BigNumber
@@ -57,6 +70,9 @@ export interface BaseAaveContext {
   userSettings?: UserSettingsState
   error?: string | unknown
   protocolData?: AaveProtocolData
+  userDpmProxy?: UserDpmProxy
+  effectiveProxyAddress?: string
+  refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
@@ -72,8 +88,16 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
     kind: TxMetaKind.operationExecutor,
     calls: context.strategy!.calls as any,
     operationName: context.operationName!,
-    token: context.token,
-    proxyAddress: context.connectedProxyAddress!,
+    token: context.tokens.deposit,
+    proxyAddress: context.effectiveProxyAddress!,
     amount: context.userInput.amount,
   }
+}
+
+export function isAllowanceNeeded(context: BaseAaveContext): boolean {
+  if (context.tokens.deposit === 'ETH') {
+    return false
+  }
+
+  return (context.userInput.amount || zero).gt(context.tokenAllowance || zero)
 }

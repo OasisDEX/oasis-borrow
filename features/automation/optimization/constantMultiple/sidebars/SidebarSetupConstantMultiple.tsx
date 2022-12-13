@@ -80,13 +80,15 @@ export function SidebarSetupConstantMultiple({
   const gasEstimation = useGasEstimationContext()
   const { uiChanges } = useAppContext()
   const {
-    autoBuyTriggerData,
-    autoSellTriggerData,
-    autoTakeProfitTriggerData,
-    constantMultipleTriggerData,
-    stopLossTriggerData,
     environmentData: { ethBalance, ethMarketPrice, etherscanUrl },
     positionData: { debt, debtFloor, nextPositionRatio, token, vaultType },
+    triggerData: {
+      autoBuyTriggerData,
+      autoSellTriggerData,
+      autoTakeProfitTriggerData,
+      constantMultipleTriggerData,
+      stopLossTriggerData,
+    },
     protocol,
   } = useAutomationContext()
 

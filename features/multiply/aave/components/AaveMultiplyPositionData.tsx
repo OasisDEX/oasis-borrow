@@ -10,10 +10,15 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+
+import { amountFromWei } from '../../../../blockchain/utils'
+import { zero } from '../../../../helpers/zero'
+import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
@@ -77,9 +82,10 @@ export function AaveMultiplyPositionData({
   const totalExposure = collateral.amount
   const newTotalExposure = nextPosition && nextPosition.collateral.amount
 
-  const liquidationPrice = NaNIsZero(currentPosition.liquidationPrice)
-  const newLiquidationPrice =
-    nextPosition?.liquidationPrice && NaNIsZero(nextPosition.liquidationPrice)
+  const liquidationPrice = NaNIsZero(getLiquidationPriceAccountingForPrecision(currentPosition))
+  const newLiquidationPrice = nextPosition
+    ? getLiquidationPriceAccountingForPrecision(nextPosition)
+    : zero
 
   const positionDebt = debt.amount
   const nextPositionDebt = nextPosition && nextPosition.debt.amount
@@ -87,12 +93,14 @@ export function AaveMultiplyPositionData({
   const multiple = riskRatio.multiple
   const newMultiple = nextPosition && nextPosition.riskRatio.multiple
 
-  // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
+  // VariableBorrowRate * debt_token_amount * debt_token_oracle_price - LiquidityRate * collateral_amount * collateral_token_oracle_price
   const netBorrowCost = debtTokenReserveData.variableBorrowRate
-    .times(debt.amount)
+    .times(amountFromWei(debt.amount, debt.denomination || 'ETH'))
     .times(debtTokenPrice)
     .minus(
-      collateralTokenReserveData.liquidityRate.times(collateral.amount).times(collateralTokenPrice),
+      collateralTokenReserveData.liquidityRate
+        .times(amountFromWei(collateral.amount, collateral.denomination || 'ETH'))
+        .times(collateralTokenPrice),
     )
 
   return (
@@ -102,22 +110,35 @@ export function AaveMultiplyPositionData({
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('system.liquidation-price')}
-            value={`${formatAmount(liquidationPrice.times(collateralTokenPrice), 'USD')} USDC`}
-            footnote={`${t('manage-earn-vault.below-current-price', {
-              percentage: formatDecimalAsPercent(
-                liquidationPrice.minus(debtTokenPrice).dividedBy(debtTokenPrice).absoluteValue(),
-              ),
-            })}`}
+            // works as long as debt token is USDC
+            value={`${formatAmount(liquidationPrice, 'USD')} USDC`}
             change={
               newLiquidationPrice && {
-                variant: newLiquidationPrice.gt(liquidationPrice) ? 'positive' : 'negative',
+                variant: newLiquidationPrice.gte(liquidationPrice) ? 'positive' : 'negative',
+                // works as long as debt token is USDC
                 value: `$${formatAmount(newLiquidationPrice, 'USD')} ${t('after')}`,
               }
             }
+            footnote={`${t('manage-earn-vault.below-current-price', {
+              percentage: formatDecimalAsPercent(
+                // works as long as collateral is eth (debt token price is in eth from oracle)
+                liquidationPrice.minus(debtTokenPrice).dividedBy(debtTokenPrice).absoluteValue(),
+              ),
+            })}`}
           />
           <DetailsSectionContentCard
             title={t('system.loan-to-value')}
             value={formatDecimalAsPercent(riskRatio.loanToValue)}
+            change={
+              nextPosition?.riskRatio && {
+                variant: nextPosition.riskRatio.loanToValue.gt(riskRatio.loanToValue)
+                  ? 'positive'
+                  : 'negative',
+                value: `${formatDecimalAsPercent(nextPosition.riskRatio.loanToValue)} ${t(
+                  'after',
+                )}`,
+              }
+            }
             footnote={`${t('manage-earn-vault.liquidation-threshold', {
               percentage: formatDecimalAsPercent(category.liquidationThreshold),
             })}`}
@@ -127,14 +148,6 @@ export function AaveMultiplyPositionData({
                     category.liquidationThreshold.minus(riskRatio.loanToValue).times(100),
                   )
                 : 'transparent'
-            }
-            change={
-              nextPosition?.riskRatio && {
-                variant: nextPosition.riskRatio.loanToValue.gt(riskRatio.loanToValue)
-                  ? 'positive'
-                  : 'negative',
-                value: `${formatDecimalAsPercent(category.liquidationThreshold)} ${t('after')}`,
-              }
             }
           />
           <DetailsSectionContentCard
@@ -166,7 +179,7 @@ export function AaveMultiplyPositionData({
             }
           />
           <DetailsSectionFooterItem
-            title={t('system.total-exposure', { token: collateral.denomination })}
+            title={t('system.total-exposure', { token: collateral.denomination || 'ETH' })}
             value={`${formatAmount(totalExposure, 'ETH')} ETH`}
             change={
               newTotalExposure && {
@@ -177,7 +190,7 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionFooterItem
             title={t('system.multiple')}
-            value={`${multiple.toFormat(1, BigNumber.ROUND_DOWN)}x`}
+            value={displayMultiple(multiple)}
             change={
               newMultiple && {
                 variant: newMultiple.gt(multiple) ? 'positive' : 'negative',

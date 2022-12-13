@@ -53,7 +53,10 @@ export function SetDownsideProtectionInformation({
   const {
     positionData: { token },
     metadata: {
-      stopLoss: { getMaxToken, collateralDuringLiquidation },
+      stopLossMetadata: {
+        methods: { getMaxToken },
+        values: { collateralDuringLiquidation },
+      },
     },
   } = useAutomationContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
@@ -132,24 +135,18 @@ export function SidebarAdjustStopLossEditingStage({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const {
-    stopLossTriggerData,
     environmentData: { ethMarketPrice },
-    positionData: { id, ilk, token, debt, positionRatio },
     metadata: {
-      stopLoss: {
-        getSliderPercentageFill,
-        getRightBoundary,
-        sliderMin,
-        sliderMax,
-        resetData,
-        ratioParam,
-        fixedCloseToToken,
-        onSliderChange,
-        onCloseToChange,
-        sliderStep,
-        sliderDirection,
+      stopLossMetadata: {
+        callbacks: { onSliderChange, onCloseToChange },
+        methods: { getSliderPercentageFill, getRightBoundary },
+        settings: { fixedCloseToToken, sliderStep, sliderDirection },
+        translations: { ratioParamTranslationKey },
+        values: { sliderMin, sliderMax, resetData },
       },
     },
+    positionData: { id, ilk, token, debt, positionRatio },
+    triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
   useDebouncedCallback(
@@ -215,12 +212,14 @@ export function SidebarAdjustStopLossEditingStage({
                     closeTo: optionName as CloseVaultTo,
                   },
                 )
-                onCloseToChange && onCloseToChange(optionName)
+                onCloseToChange && onCloseToChange({ optionName })
               }}
             />
           )}
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {t('protection.set-downside-protection-desc', { ratioParam: t(ratioParam) })}{' '}
+            {t('protection.set-downside-protection-desc', {
+              ratioParam: t(ratioParamTranslationKey),
+            })}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
             </AppLink>
@@ -251,9 +250,9 @@ export function SidebarAdjustStopLossEditingStage({
                 stopLossLevel: slCollRatio,
               })
 
-              onSliderChange && onSliderChange(slCollRatio)
+              onSliderChange && onSliderChange({ value: slCollRatio })
             }}
-            leftLabel={t('protection.stop-loss-something', { value: t(ratioParam) })}
+            leftLabel={t('protection.stop-loss-something', { value: t(ratioParamTranslationKey) })}
             rightLabel={t('slider.set-stoploss.right-label')}
             direction={sliderDirection}
           />

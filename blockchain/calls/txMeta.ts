@@ -19,4 +19,8 @@ export enum TxMetaKind {
   claimReferralFees = 'claimReferralFees',
   addTriggerGroup = 'addTriggerGroup',
   operationExecutor = 'operationExecutor',
+  createAccount = 'createAccount',
+  dsrJoin = 'dsrJoin',
+  dsrExit = 'dsrExit',
+  dsrExitAll = 'dsrExitAll',
 }

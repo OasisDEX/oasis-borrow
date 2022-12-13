@@ -11,13 +11,13 @@ import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ManageSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
-  aaveReserveDataETH: PreparedAaveReserveData
+  aaveReserveDataDebtToken: PreparedAaveReserveData
   strategyConfig: StrategyConfig
 }
 
 export function ManageSectionComponent({
   aaveReserveState,
-  aaveReserveDataETH,
+  aaveReserveDataDebtToken,
   strategyConfig,
 }: ManageSectionComponentProps) {
   const { stateMachine } = useManageAaveStateMachineContext()
@@ -40,7 +40,7 @@ export function ManageSectionComponent({
 
   return (
     <PositionInfoComponent
-      aaveReserveDataETH={aaveReserveDataETH}
+      aaveReserveDataDebtToken={aaveReserveDataDebtToken}
       accountData={accountData}
       apy={simulations?.apy}
       tokens={strategyConfig.tokens}

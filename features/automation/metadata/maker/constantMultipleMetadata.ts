@@ -1,4 +1,5 @@
-import { GetConstantMultipleMetadata } from 'features/automation/metadata/types'
+import { AutoTakeProfitMetadata } from 'features/automation/metadata/types'
 
-// eslint-disable-next-line func-style
-export const makerConstantMultipleMetaData: GetConstantMultipleMetadata = (_) => ({})
+export function getMakerConstantMultipleMetadata(): AutoTakeProfitMetadata {
+  return {}
+}

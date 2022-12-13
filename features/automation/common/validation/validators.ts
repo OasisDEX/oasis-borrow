@@ -29,7 +29,9 @@ export function hasMoreDebtThanMaxForStopLoss({
 }
 
 export function isStopLossTriggerHigherThanAutoBuyTarget({
-  context: { autoBuyTriggerData },
+  context: {
+    triggerData: { autoBuyTriggerData },
+  },
   stopLossLevel,
 }: AutomationValidationMethodParams<{
   stopLossLevel?: BigNumber
@@ -57,7 +59,9 @@ export function hasPotentialInsufficientEthFundsForTx({
 }
 
 export function isStopLossTriggerCloseToAutoSellTrigger({
-  context: { autoSellTriggerData },
+  context: {
+    triggerData: { autoSellTriggerData },
+  },
   sliderMax,
   stopLossLevel,
 }: AutomationValidationMethodParams<{
@@ -68,7 +72,9 @@ export function isStopLossTriggerCloseToAutoSellTrigger({
 }
 
 export function isStopLossTriggerCloseToConstantMultipleSellTrigger({
-  context: { constantMultipleTriggerData },
+  context: {
+    triggerData: { constantMultipleTriggerData },
+  },
   sliderMax,
   stopLossLevel,
 }: AutomationValidationMethodParams<{

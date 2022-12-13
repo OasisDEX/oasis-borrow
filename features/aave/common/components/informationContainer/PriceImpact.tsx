@@ -4,30 +4,39 @@ import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { amountFromWei } from '../../../../../blockchain/utils'
 import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance, formatPercent } from '../../../../../helpers/formatters/format'
 import { one } from '../../../../../helpers/zero'
 import { calculatePriceImpact } from '../../../../shared/priceImpact'
 
 interface PriceImpactProps {
-  token: string
-  collateralToken: string
+  tokens: {
+    collateral: string
+    debt: string
+  }
   collateralPrice?: BigNumber
   tokenPrice?: BigNumber
   transactionParameters: IStrategy
 }
 
 export function PriceImpact({
-  token,
-  collateralToken,
+  tokens,
   transactionParameters,
   tokenPrice,
   collateralPrice,
 }: PriceImpactProps) {
   const { t } = useTranslation()
 
-  const { toTokenAmount, fromTokenAmount } = transactionParameters.simulation.swap
-  const collateralTokenToTokenPrice = toTokenAmount.div(fromTokenAmount)
+  const {
+    toTokenAmount,
+    targetToken,
+    fromTokenAmount,
+    sourceToken,
+  } = transactionParameters.simulation.swap
+  const collateralTokenToTokenPrice = amountFromWei(toTokenAmount, targetToken.symbol).div(
+    amountFromWei(fromTokenAmount, sourceToken.symbol),
+  )
 
   const marketPrice = collateralPrice?.div(tokenPrice || one) || one
 
@@ -35,7 +44,7 @@ export function PriceImpact({
 
   return (
     <VaultChangesInformationItem
-      label={t('vault-changes.price-impact', { token: `${collateralToken}/${token}` })}
+      label={t('vault-changes.price-impact', { token: `${tokens.collateral}/${tokens.debt}` })}
       value={
         <Text>
           {formatCryptoBalance(marketPrice)}{' '}

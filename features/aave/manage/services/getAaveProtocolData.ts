@@ -1,4 +1,4 @@
-import { IPosition, Position } from '@oasisdex/oasis-actions'
+import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import {
   AaveConfigurationData,
@@ -43,46 +43,37 @@ export function getAaveProtocolData$(
   aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
-  aaveReserveConfigurationData$: AaveReserveConfigurationDataType,
+  tempPositionFromLib$: (
+    collateralToken: string,
+    debtToken: string,
+    address: string,
+  ) => Observable<IPosition>,
   collateralToken: string,
-  address: string,
+  debtToken: string,
+  proxyAddress: string,
 ): Observable<AaveProtocolData> {
   return combineLatest(
-    aaveUserReserveData$({ token: collateralToken, address }),
-    aaveUserAccountData$({ address }),
+    aaveUserReserveData$({ token: collateralToken, address: proxyAddress }),
+    aaveUserAccountData$({ address: proxyAddress }),
     aaveOracleAssetPriceData$({ token: collateralToken }),
-    aaveReserveConfigurationData$({ token: collateralToken }),
-    aaveUserConfiguration$({ address }),
+    aaveUserConfiguration$({ address: proxyAddress }),
     aaveReservesList$(),
+    tempPositionFromLib$(collateralToken, debtToken, proxyAddress),
   ).pipe(
     map(
       ([
         reserveData,
         accountData,
         oraclePrice,
-        reserveConfigurationData,
         aaveUserConfiguration,
         aaveReservesList,
+        tempPositionFromLib,
       ]) => {
-        const pos = new Position(
-          { amount: new BigNumber(accountData.totalDebtETH.toString()), denomination: 'ETH' },
-          {
-            amount: new BigNumber(reserveData.currentATokenBalance.toString()),
-            denomination: collateralToken,
-          },
-          oraclePrice,
-          {
-            dustLimit: new BigNumber(0),
-            maxLoanToValue: reserveConfigurationData.ltv,
-            liquidationThreshold: reserveConfigurationData.liquidationThreshold,
-          },
-        )
-
         return {
           positionData: reserveData,
           accountData: accountData,
           oraclePrice: oraclePrice,
-          position: pos,
+          position: tempPositionFromLib,
           aaveUserConfiguration,
           aaveReservesList,
         }
