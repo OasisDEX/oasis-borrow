@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
 import React from 'react'
 import { Flex } from 'theme-ui'
@@ -49,6 +50,7 @@ export function VaultHeadline({ header, token, details, loading = false }: Vault
             />
           ))}
         {header}
+      <FollowButtonControl />
       </Heading>
       <Flex
         sx={{
