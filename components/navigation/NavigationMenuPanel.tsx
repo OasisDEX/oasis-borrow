@@ -23,12 +23,14 @@ export interface NavigationMenuPanelType {
 }
 type NavigationMenuPanelProps = NavigationMenuPanelType & {
   currentPanel?: string
+  isPanelOpen: boolean
   onMouseEnter(center: number): void
 }
 
 export function NavigationMenuPanel({
   currentPanel,
   label,
+  isPanelOpen,
   onMouseEnter,
 }: NavigationMenuPanelProps) {
   return (
@@ -45,7 +47,7 @@ export function NavigationMenuPanel({
         sx={{
           fontSize: 2,
           fontWeight: 'semiBold',
-          color: currentPanel === label ? 'primary100' : 'neutral80',
+          color: isPanelOpen && currentPanel === label ? 'primary100' : 'neutral80',
           cursor: 'default',
           transition: 'color 200ms',
         }}

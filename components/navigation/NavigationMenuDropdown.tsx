@@ -5,7 +5,7 @@ import { AppLink } from 'components/Links'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers'
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 export interface NavigationMenuDropdownProps {
@@ -23,6 +23,17 @@ export function NavigationMenuDropdown({
   isPanelSwitched,
   panels,
 }: NavigationMenuDropdownProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState<number>(0)
+  const [height, setHeight] = useState<number>(0)
+
+  useEffect(() => {
+    if (ref.current) {
+      setWidth(ref.current.offsetWidth)
+      setHeight(ref.current.offsetHeight)
+    }
+  }, [currentPanel])
+
   return (
     <Flex
       sx={{
@@ -67,107 +78,112 @@ export function NavigationMenuDropdown({
       >
         <Flex
           sx={{
-            flexDirection: 'column',
-            rowGap: 4,
             borderRadius: 'large',
             bg: 'neutral10',
             boxShadow: 'buttonMenu',
+            height: '600px',
+            ...(width > 0 && { width: width + 64 }),
+            ...(height > 0 && { height: height + 64 }),
             p: 4,
+            ...(isPanelSwitched && { transition: 'width 200ms, height 200ms' }),
           }}
         >
           {panels.map(({ description, label, learn, links, otherAssets }) => (
-            <>
-              {currentPanel === label && (
-                <>
-                  <Box>
-                    <Heading
-                      sx={{
-                        fontSize: '28px',
-                        fontWeight: 'bold',
-                        mb: 1,
-                        color: 'primary100',
-                        letterSpacing: '-0.02em',
-                      }}
+            <Flex
+              sx={{
+                position: 'absolute',
+                flexDirection: 'column',
+                rowGap: 4,
+                ...(isPanelSwitched && { transition: 'opacity 200ms' }),
+                ...(currentPanel === label
+                  ? { opacity: 1, pointerEvents: 'auto' }
+                  : { opacity: 0, pointerEvents: 'none' }),
+              }}
+              {...(currentPanel === label && { ref })}
+            >
+              <Box>
+                <Heading
+                  sx={{
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    mb: 1,
+                    color: 'primary100',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  {label}
+                </Heading>
+                <Text as="p" sx={{ fontSize: '14px', color: 'neutral80' }}>
+                  {description}{' '}
+                  {learn && (
+                    <AppLink href={learn.link}>
+                      <WithArrow
+                        gap={1}
+                        sx={{ display: 'inline-block', ...getAjnaWithArrowColorScheme() }}
+                      >
+                        {learn.label}
+                      </WithArrow>
+                    </AppLink>
+                  )}
+                </Text>
+              </Box>
+              <Grid
+                as="ul"
+                sx={{
+                  gap: 4,
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  p: '0',
+                  listStyle: 'none',
+                }}
+              >
+                {links.map(({ icon, footnote, link, title }) => (
+                  <Flex as="li">
+                    <AppLink
+                      href={link}
+                      sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular' }}
                     >
-                      {label}
-                    </Heading>
-                    <Text as="p" sx={{ fontSize: '14px', color: 'neutral80' }}>
-                      {description}{' '}
-                      {learn && (
-                        <AppLink href={learn.link}>
-                          <WithArrow
-                            gap={1}
-                            sx={{ display: 'inline-block', ...getAjnaWithArrowColorScheme() }}
-                          >
-                            {learn.label}
-                          </WithArrow>
-                        </AppLink>
-                      )}
-                    </Text>
-                  </Box>
-                  <Grid
-                    as="ul"
+                      <Icon size={48} name={icon} sx={{ flexShrink: 0 }} />
+                      <Flex sx={{ flexDirection: 'column', ml: 3 }}>
+                        <Text
+                          as="span"
+                          sx={{ fontSize: 4, fontWeight: 'semiBold', color: 'primary100' }}
+                        >
+                          {title}
+                        </Text>
+                        <Text as="span" sx={{ fontSize: 2, color: 'neutral80' }}>
+                          {footnote}
+                        </Text>
+                      </Flex>
+                    </AppLink>
+                  </Flex>
+                ))}
+              </Grid>
+              {otherAssets && otherAssets?.length > 0 && (
+                <Box sx={{ pt: '24px', borderTop: '1px solid', borderColor: 'neutral20' }}>
+                  <Heading
+                    as="h3"
                     sx={{
-                      gap: 4,
-                      gridTemplateColumns: 'repeat(2, 1fr)',
-                      p: '0',
-                      listStyle: 'none',
+                      fontSize: '16px',
+                      fontWeight: 'semiBold',
+                      mb: 3,
+                      color: 'primary100',
                     }}
                   >
-                    {links.map(({ icon, footnote, link, title }) => (
-                      <Flex as="li">
-                        <AppLink
-                          href={link}
-                          sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular' }}
-                        >
-                          <Icon size={48} name={icon} sx={{ flexShrink: 0 }} />
-                          <Flex sx={{ flexDirection: 'column', ml: 3 }}>
-                            <Text
-                              as="span"
-                              sx={{ fontSize: 4, fontWeight: 'semiBold', color: 'primary100' }}
-                            >
-                              {title}
-                            </Text>
-                            <Text as="span" sx={{ fontSize: 2, color: 'neutral80' }}>
-                              {footnote}
-                            </Text>
-                          </Flex>
-                        </AppLink>
-                      </Flex>
+                    Other assets you can borrow against
+                  </Heading>
+                  <Flex
+                    as="ul"
+                    sx={{ flexWrap: 'wrap', columnGap: 3, rowGap: 2, listStyle: 'none', p: 0 }}
+                  >
+                    {otherAssets.map(({ link, token }) => (
+                      <Box as="li">
+                        <AssetPill icon={getToken(token).iconCircle} label={token} link={link} />
+                      </Box>
                     ))}
-                  </Grid>
-                  {otherAssets && otherAssets?.length > 0 && (
-                    <Box sx={{ pt: '24px', borderTop: '1px solid', borderColor: 'neutral20' }}>
-                      <Heading
-                        as="h3"
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: 'semiBold',
-                          mb: 3,
-                          color: 'primary100',
-                        }}
-                      >
-                        Other assets you can borrow against
-                      </Heading>
-                      <Flex
-                        as="ul"
-                        sx={{ flexWrap: 'wrap', columnGap: 3, rowGap: 2, listStyle: 'none', p: 0 }}
-                      >
-                        {otherAssets.map(({ link, token }) => (
-                          <Box as="li">
-                            <AssetPill
-                              icon={getToken(token).iconCircle}
-                              label={token}
-                              link={link}
-                            />
-                          </Box>
-                        ))}
-                      </Flex>
-                    </Box>
-                  )}
-                </>
+                  </Flex>
+                </Box>
               )}
-            </>
+            </Flex>
           ))}
         </Flex>
       </Flex>

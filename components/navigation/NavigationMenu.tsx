@@ -23,8 +23,8 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   const [arrowPosition, setArrowPosition] = useState<number>(0)
 
   function closeDropdown() {
-    // setIsPanelSwitched(false)
-    // setIsPanelOpen(false)
+    setIsPanelSwitched(false)
+    setIsPanelOpen(false)
   }
 
   return (
@@ -35,6 +35,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
             <NavigationMenuPanel
               key={`panel-${panel.label}`}
               currentPanel={currentPanel}
+              isPanelOpen={isPanelOpen}
               {...panel}
               onMouseEnter={(center) => {
                 setIsPanelSwitched(isPanelOpen)
