@@ -2,7 +2,7 @@ import { Context } from 'blockchain/network'
 import { TabBar } from 'components/TabBar'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { AaveFaq } from 'features/content/faqs/aave'
+import { DsrFaq } from 'features/content/faqs/dsr'
 import { DsrHistory } from 'features/dsr/containers/DsrHistory'
 import { selectPrimaryAction } from 'features/dsr/utils/helpers'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
@@ -133,7 +133,7 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
             content: (
               <Card variant="faq">
                 {/* TODO: Chris to add the DSR Faq */}
-                <AaveFaq />
+                <DsrFaq />
               </Card>
             ),
           },
