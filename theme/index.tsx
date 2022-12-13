@@ -282,7 +282,7 @@ export const oasisBaseTheme = {
     navigation: {
       maxWidth: '1408px',
       px: '16px',
-    }
+    },
   },
   metadata: {
     fontLinkHref: 'https://rsms.me/inter/inter.css',
@@ -1076,7 +1076,7 @@ export const ajnaExtensionTheme = {
     neutral80: '#6871aa',
     interactive100: '#c527ae',
     interactive50: '#d668C6',
-  }
+  },
 }
 
 export const theme = oasisBaseTheme

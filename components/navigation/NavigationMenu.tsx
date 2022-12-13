@@ -1,4 +1,4 @@
-import { AppLink } from 'components/Links'
+
 import { NavigationMenuDropdown } from 'components/navigation/NavigationMenuDropdown'
 import {
   NavigationMenuLink,
@@ -8,7 +8,7 @@ import {
   NavigationMenuPanel,
   NavigationMenuPanelType,
 } from 'components/navigation/NavigationMenuPanel'
-import React, { ReactNode, useState } from 'react'
+import React, {  useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 interface NavigationMenuProps {
@@ -31,7 +31,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
     <Box sx={{ position: 'relative' }} onMouseLeave={() => closeDropdown()}>
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
         <Flex as="ul" sx={{ p: 0, listStyle: 'none', columnGap: '48px', px: '48px' }}>
-          {panels?.map((panel, i) => (
+          {panels?.map((panel) => (
             <NavigationMenuPanel
               key={`panel-${panel.label}`}
               currentPanel={currentPanel}
@@ -44,7 +44,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
               }}
             />
           ))}
-          {links?.map((link, i) => (
+          {links?.map((link) => (
             <NavigationMenuLink
               key={`link-${link.label}`}
               {...link}

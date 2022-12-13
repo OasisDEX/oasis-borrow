@@ -1,10 +1,10 @@
-import { getToken } from 'blockchain/tokensMetadata'
+
 import { useAppContext } from 'components/AppContextProvider'
 import { useVaultCount } from 'components/Header'
 import { Navigation } from 'components/navigation/Navigation'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
-import { ajnaExtensionTheme, theme } from 'theme'
+import { ajnaExtensionTheme } from 'theme'
 import { Spinner } from 'theme-ui'
 
 export function AjnaNavigationController() {
