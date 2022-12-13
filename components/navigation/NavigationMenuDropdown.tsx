@@ -57,8 +57,8 @@ export function NavigationMenuDropdown({
         sx={{
           position: 'absolute',
           top: '100%',
-          left: '-200px',
-          right: '-200px',
+          left: '-250px',
+          right: '-250px',
           pt: 3,
           transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
           transition: 'transform 200ms',
@@ -120,7 +120,7 @@ export function NavigationMenuDropdown({
                           href={link}
                           sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular' }}
                         >
-                          <Icon size={48} name={icon} />
+                          <Icon size={48} name={icon} sx={{ flexShrink: 0 }} />
                           <Flex sx={{ flexDirection: 'column', ml: 3 }}>
                             <Text
                               as="span"
@@ -137,7 +137,7 @@ export function NavigationMenuDropdown({
                     ))}
                   </Grid>
                   {otherAssets && otherAssets?.length > 0 && (
-                    <Box>
+                    <Box sx={{ pt: '24px', borderTop: '1px solid', borderColor: 'neutral20' }}>
                       <Heading
                         as="h3"
                         sx={{
@@ -149,7 +149,10 @@ export function NavigationMenuDropdown({
                       >
                         Other assets you can borrow against
                       </Heading>
-                      <Flex as="ul" sx={{ columnGap: 3, listStyle: 'none', p: 0 }}>
+                      <Flex
+                        as="ul"
+                        sx={{ flexWrap: 'wrap', columnGap: 3, rowGap: 2, listStyle: 'none', p: 0 }}
+                      >
                         {otherAssets.map(({ link, token }) => (
                           <Box as="li">
                             <AssetPill
