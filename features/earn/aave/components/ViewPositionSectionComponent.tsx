@@ -1,5 +1,5 @@
 import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import React from 'react'
 
@@ -11,7 +11,7 @@ export type ViewPositionSectionComponentProps = {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
   aaveProtocolData?: AaveProtocolData
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 export function ViewPositionSectionComponent({

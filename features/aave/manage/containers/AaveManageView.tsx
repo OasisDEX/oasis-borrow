@@ -16,14 +16,14 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { AavePositionNoticesView } from '../../../notices/VaultsNoticesView'
 import { useAaveContext } from '../../AaveContextProvider'
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
+import { StrategyConfig } from '../../common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
   address: string
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 function AaveManageContainer({
@@ -34,7 +34,7 @@ function AaveManageContainer({
 }: {
   aaveReserveState: AaveReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
   address: string
 }) {
   const { t } = useTranslation()
@@ -83,7 +83,6 @@ function AaveManageContainer({
                       currentPosition={state.context.currentPosition}
                       collateralPrice={state.context.collateralPrice}
                       tokenPrice={state.context.tokenPrice}
-                      debtPrice={state.context.debtPrice}
                       nextPosition={state.context.strategy?.simulation.position}
                     />
                   </Box>
