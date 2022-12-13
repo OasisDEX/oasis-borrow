@@ -53,6 +53,8 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
   | { type: 'CLOSE_POSITION' }
+  | { type: 'MANAGE_COLLATERAL' }
+  | { type: 'MANAGE_DEBT' }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'START_TRANSACTION' }
@@ -231,6 +233,40 @@ export function createManageAaveStateMachine(
                 },
               },
             },
+            manageCollateral: {
+              on: {
+                START_TRANSACTION: {
+                  cond: 'validTransactionParameters',
+                  target: 'txInProgress',
+                  actions: ['closePositionTransactionEvent'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
+            manageDebt: {
+              on: {
+                START_TRANSACTION: {
+                  cond: 'validTransactionParameters',
+                  target: 'txInProgress',
+                  actions: ['closePositionTransactionEvent'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
             txInProgress: {
               entry: ['spawnTransactionMachine'],
               on: {
@@ -292,6 +328,26 @@ export function createManageAaveStateMachine(
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
         },
+        MANAGE_COLLATERAL: {
+          cond: 'canChangePosition',
+          target: 'frontend.manageCollateral',
+        },
+        MANAGE_DEBT: {
+          cond: 'canChangePosition',
+          target: 'frontend.manageDebt',
+        },
+        UPDATE_COLLATERAL_TOKEN_ACTION: {
+          cond: 'canChangePosition',
+          actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
+        },
+        UPDATE_DEBT_TOKEN_ACTION: {
+          cond: 'canChangePosition',
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
+        },
+        UPDATE_TOKEN_ACTION_VALUE: {
+          cond: 'canChangePosition',
+          actions: ['updateTokenActionValue'],
+        },
       },
     },
     {
@@ -308,6 +364,22 @@ export function createManageAaveStateMachine(
         isAllowanceNeeded,
       },
       actions: {
+        resetTokenActionValue: assign(({ manageTokenInput }) => ({
+          manageTokenInput: Object.assign(manageTokenInput!, { manageTokenActionValue: undefined }),
+        })),
+        updateCollateralTokenAction: assign(
+          ({ manageTokenInput }, { manageTokenAction: manageCollateralAction }) => ({
+            manageTokenInput: Object.assign(manageTokenInput!, { manageCollateralAction }),
+          }),
+        ),
+        updateDebtTokenAction: assign(
+          ({ manageTokenInput }, { manageTokenAction: manageDebtAction }) => ({
+            manageTokenInput: Object.assign(manageTokenInput!, { manageDebtAction }),
+          }),
+        ),
+        updateTokenActionValue: assign(({ manageTokenInput }, { manageTokenActionValue }) => ({
+          manageTokenInput: Object.assign(manageTokenInput!, { manageTokenActionValue }),
+        })),
         userInputRiskRatio: assign((context, event) => {
           return {
             userInput: {

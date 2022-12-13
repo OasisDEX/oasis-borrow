@@ -1269,7 +1269,7 @@
         "confirm-btn": "Confirmar",
         "close-description": "Para cerrar tu Vault, una parte de tu posición será vendida para pagar la deuda pendiente. El resto de tu colateral será enviado a tu cartera",
         "stop-close": "No ahora",
-        "eth-after-closing": "{{ closingToken }} luego de cerrar posición",
+        "token-amount-after-closing": "{{token}} luego de cerrar posición",
         "retry-btn": "Reintentar"
       }
     }

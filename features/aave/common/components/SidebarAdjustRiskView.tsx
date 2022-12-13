@@ -1,6 +1,8 @@
 import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { WithArrow } from 'components/WithArrow'
+import { ManageAaveEvent } from 'features/aave/manage/state'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
@@ -16,7 +18,11 @@ import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liqui
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
-type RaisedEvents = { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio } | { type: 'RESET_RISK_RATIO' }
+type RaisedEvents =
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | ({
+      type: 'RESET_RISK_RATIO'
+    } & ManageAaveEvent)
 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
@@ -24,6 +30,7 @@ export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   viewLocked?: boolean // locks whole view
   showWarring?: boolean // displays warning
   onChainPosition?: IPosition
+  dropdownConfig?: SidebarSectionHeaderDropdown
   title: string
 }
 
@@ -75,6 +82,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     viewLocked = false,
     showWarring = false,
     onChainPosition,
+    dropdownConfig,
     title,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
@@ -246,6 +254,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
       },
       textButton, // this is going back button, no need to block it
+      dropdown: dropdownConfig,
     }
 
     return <SidebarSection {...sidebarSectionProps} />
