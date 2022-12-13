@@ -28,6 +28,7 @@ export type Feature =
   | 'AaveProtection'
   | 'Ajna'
   | 'AaveUseDpmProxy'
+  | 'DaiSavingsRate'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -54,6 +55,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveProtection: false,
   Ajna: false,
   AaveUseDpmProxy: false,
+  DaiSavingsRate: false,
   // your feature here....
 }
 
