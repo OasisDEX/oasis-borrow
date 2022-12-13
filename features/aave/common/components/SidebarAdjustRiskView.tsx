@@ -31,6 +31,7 @@ export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   showWarring?: boolean // displays warning
   onChainPosition?: IPosition
   dropdownConfig?: SidebarSectionHeaderDropdown
+  title: string
 }
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
@@ -82,6 +83,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     showWarring = false,
     onChainPosition,
     dropdownConfig,
+    title,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
@@ -146,7 +148,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       viewConfig.riskRatios.default.loanToValue
 
     const sidebarSectionProps: SidebarSectionProps = {
-      title: t('open-earn.aave.vault-form.title'),
+      title,
       content: (
         <Grid gap={3}>
           <SliderValuePicker
@@ -243,11 +245,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             clear={() => {
               send({ type: 'RESET_RISK_RATIO' })
             }}
-            disabled={viewLocked}
+            disabled={viewLocked || !state.context.userInput.riskRatio}
           />
         </Grid>
       ),
-      primaryButton: { ...primaryButton, disabled: viewLocked || primaryButton.disabled },
+      primaryButton: {
+        ...primaryButton,
+        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
+      },
       textButton, // this is going back button, no need to block it
       dropdown: dropdownConfig,
     }

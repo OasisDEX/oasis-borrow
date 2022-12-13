@@ -45,19 +45,19 @@ function isLocked(state: ManageAaveStateMachineState) {
 }
 
 function getAmountGetFromPositionAfterClose(
-  strategy: IStrategy | undefined,
+  strategy: IPositionTransition | undefined,
   currentPosition: IPosition | undefined,
 ) {
   if (!strategy || !currentPosition) {
     return zero
   }
-  const currentDebt = currentPosition.debt.amount
-  const amountFromSwap = strategy.simulation.swap.toTokenAmount
-  const fromTokenFee = strategy.simulation.swap?.sourceTokenFee || zero
-  const toTokenFee = strategy.simulation.swap?.targetTokenFee || zero
-  const fee = fromTokenFee.plus(toTokenFee)
 
-  return amountFromSwap.minus(currentDebt).minus(fee)
+  const fee =
+    strategy.simulation.swap.collectFeeFrom === 'targetToken'
+      ? strategy.simulation.swap.tokenFee
+      : zero // fee already accounted for in toTokenAmount
+
+  return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
 }
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
@@ -300,7 +300,7 @@ function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: `/earn/aave/open/${state.context.strategy}`,
+      url: `/${state.context.strategyConfig.type}/aave/open/${state.context.strategyConfig.urlSlug}`,
     },
   }
 
@@ -379,6 +379,11 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.editing'):
       return (
         <AdjustRiskView
+          title={
+            state.context.strategyConfig.type === 'earn'
+              ? t('sidebar-titles.manage-earn-position')
+              : t('sidebar-titles.manage-multiply-position')
+          }
           state={state}
           onChainPosition={state.context.protocolData?.position}
           isLoading={loading}
@@ -422,7 +427,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.strategy?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />

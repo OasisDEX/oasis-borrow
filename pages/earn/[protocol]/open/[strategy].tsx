@@ -9,25 +9,34 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { strategies } from '../../../../features/aave/strategyConfig'
+import { loadStrategyFromSlug } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const strategy = ctx.query.strategy as string
+  try {
+    loadStrategyFromSlug(strategy)
+  } catch (e) {
+    console.log(`could not load strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
+    return {
+      notFound: true,
+    }
+  }
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      strategy: ctx.query.strategy || null,
+      strategy: strategy,
     },
   }
 }
 
-function OpenVault({ strategy: _strategy }: { strategy: string }) {
+function OpenVault({ strategy }: { strategy: string }) {
   return (
     <AaveContextProvider>
       <WithWalletConnection>
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView config={strategies['aave-earn']} />
+          <AaveOpenView config={loadStrategyFromSlug(strategy)} />
 
           <Survey for="earn" />
         </WithTermsOfService>
