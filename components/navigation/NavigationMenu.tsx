@@ -1,33 +1,33 @@
 import { AppLink } from 'components/Links'
-import React from 'react'
+import {
+  NavigationMenuLink,
+  NavigationMenuPanelLinkProps,
+} from 'components/navigation/NavigationMenuLink'
+import {
+  NavigationMenuPanel,
+  NavigationMenuPanelProps,
+} from 'components/navigation/NavigationMenuPanel'
+import React, { ReactNode } from 'react'
 import { Box, Flex } from 'theme-ui'
 
-export interface NavigationMenuLink {
-  label: string
-  link: string
-}
-
 interface NavigationMenuProps {
-  links: NavigationMenuLink[]
+  links?: NavigationMenuPanelLinkProps[]
+  panels?: NavigationMenuPanelProps[]
 }
 
-export function NavigationMenu({ links }: NavigationMenuProps) {
+export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   return (
-    <Flex as="ul" sx={{ p: 0, listStyle: 'none', columnGap: '48px' }}>
-      {links?.map(({ label, link }) => (
-        <Box key={link} as="li">
-          <AppLink
-            href={link}
-            sx={{
-              color: 'neutral80',
-              transition: 'color 200ms',
-              '&:hover': { color: 'primary100' },
-            }}
-          >
-            {label}
-          </AppLink>
-        </Box>
-      ))}
-    </Flex>
+    <>
+      {(links || panels) && (
+        <Flex as="ul" sx={{ p: 0, listStyle: 'none', columnGap: '48px' }}>
+          {panels?.map((panel, i) => (
+            <NavigationMenuPanel key={`panel-${panel.label}`} {...panel} />
+          ))}
+          {links?.map((link, i) => (
+            <NavigationMenuLink key={`link-${link.label}`} {...link} />
+          ))}
+        </Flex>
+      )}
+    </>
   )
 }

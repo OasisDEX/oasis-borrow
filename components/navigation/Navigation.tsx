@@ -2,17 +2,20 @@ import {
   NavigationBranding,
   NavigationBrandingPill,
 } from 'components/navigation/NavigationBranding'
-import { NavigationMenu, NavigationMenuLink } from 'components/navigation/NavigationMenu'
+import { NavigationMenu } from 'components/navigation/NavigationMenu'
+import { NavigationMenuPanelLinkProps } from 'components/navigation/NavigationMenuLink'
+import { NavigationMenuPanelProps } from 'components/navigation/NavigationMenuPanel'
 import React from 'react'
 import { Box, Container } from 'theme-ui'
 
 interface NavigationProps {
   brandingLink?: string
-  links: NavigationMenuLink[]
+  links?: NavigationMenuPanelLinkProps[]
+  panels?: NavigationMenuPanelProps[]
   pill?: NavigationBrandingPill
 }
 
-export function Navigation({ brandingLink = '/', links, pill }: NavigationProps) {
+export function Navigation({ brandingLink = '/', links, panels, pill }: NavigationProps) {
   return (
     <Container
       as="header"
@@ -20,7 +23,7 @@ export function Navigation({ brandingLink = '/', links, pill }: NavigationProps)
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: '24px' }}
     >
       <NavigationBranding link={brandingLink} pill={pill} />
-      <NavigationMenu links={links} />
+      <NavigationMenu links={links} panels={panels} />
       <Box>Panels</Box>
     </Container>
   )

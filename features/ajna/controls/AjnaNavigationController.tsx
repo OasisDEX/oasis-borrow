@@ -11,15 +11,27 @@ export function AjnaNavigationController() {
 
   return (
     <Navigation
-      links={[
+      panels={[
         {
+          description: 'Borrow against your favorite crypto assets.',
           label: 'Borrow',
-          link: '/borrow',
+          learn: {
+            label: 'Learn more about Borrow',
+            link: 'https://kb.oasis.app/',
+          },
+          links: [],
         },
         {
+          description: 'Multiply your exposure to your favorite crypto assets.',
           label: 'Multiply',
-          link: '/multiply',
+          learn: {
+            label: 'Learn more about Multiply',
+            link: 'https://kb.oasis.app/',
+          },
+          links: [],
         },
+      ]}
+      links={[
         {
           label: 'Earn',
           link: '/earn',
