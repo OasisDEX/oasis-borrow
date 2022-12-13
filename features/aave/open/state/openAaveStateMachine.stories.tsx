@@ -31,6 +31,7 @@ const openAaveStateMachine = createOpenAaveStateMachine(
   emptyObject,
   emptyObject,
   emptyObject,
+  emptyObject,
 ).withConfig({
   services: {
     ...({} as OpenAaveStateMachineServices),

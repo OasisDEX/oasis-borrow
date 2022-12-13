@@ -433,18 +433,27 @@ export function daiAllowanceProgressionDisabledValidator({
 }
 
 export function afterCollRatioThresholdRatioValidator({
+  collateralizationRatioAtNextPrice,
   afterCollateralizationRatio,
   afterCollateralizationRatioAtNextPrice,
   threshold,
   margin = new BigNumber(0.02),
   type,
 }: {
+  collateralizationRatioAtNextPrice: BigNumber
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
   threshold: BigNumber
   margin?: BigNumber
   type: 'below' | 'above'
 }) {
+  if (
+    afterCollateralizationRatioAtNextPrice.gt(collateralizationRatioAtNextPrice) &&
+    type === 'below'
+  ) {
+    return false
+  }
+
   if (afterCollateralizationRatio.isZero() || afterCollateralizationRatioAtNextPrice.isZero()) {
     return false
   }

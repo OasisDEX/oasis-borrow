@@ -92,6 +92,7 @@ export const supportedBorrowIlks = [
   'CRVV1ETHSTETH-A',
   'WSTETH-B',
   'RETH-A',
+  'GNO-A',
 ]
 
 export const supportedMultiplyIlks = [
@@ -268,7 +269,8 @@ export const productCardsConfig: {
         'WSTETH-B',
       ],
       multiply: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
-      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      // TODO prepare proper handling for DSR
+      earn: ['DSR', 'GUNIV3DAIUSDC2-A'],
     },
     featuredAaveCards: {
       borrow: [],

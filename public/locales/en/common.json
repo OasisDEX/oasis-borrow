@@ -352,7 +352,9 @@
     "max-gas-fee-in-gwei": "Max gas fee in Gwei",
     "minimum-sell-price": "Minimum sell price",
     "maximum-buy-price": "Maximum buy price",
-    "target-multiple": "Target multiple"
+    "target-multiple": "Target multiple",
+    "dsrwithdrawal": "Withdrew {{daiAmount}} DAI",
+    "dsrdeposit": "Deposited {{daiAmount}} DAI"
   },
   "triggers": {
     "added": "added",
@@ -657,6 +659,7 @@
   "multiple": "Multiple",
   "metamask-unsupported-network": "You are on an unsupported network. Please switch to Mainnet.",
   "net-value": "Net Value",
+  "net-earnings": "Net earnings",
   "nav": {
     "about": "About",
     "resources": "Resources",
@@ -2048,6 +2051,41 @@
         "description": "We don't collect any personal identifiable information and do not track or store IP addresses or locations.",
         "link-privacy": "View Privacy Policy"
       }
+    }
+  },
+  "dsr": {
+    "details": {
+      "overview": "Overview",
+      "total-deposited-dai": "Total Deposited Dai",
+      "current-yield": "Current Yield",
+      "current-dai-savings-rate": "Current Dai Savings Rate"
+    },
+    "titles": {
+      "manage": "Manage Your DSR strategy",
+      "heading": "Dai Savings Rate",
+      "setup": "Set up DSR strategy"
+    },
+    "labels": {
+      "deposit": "Deposit",
+      "withdraw": "Withdraw"
+    },
+    "product-card": {
+      "description": "Earn on your Dai using the Maker Protocol"
+    },
+    "order": {
+      "total-dai": "Total DAI {{action}}"
+    },
+    "simulation": {
+      "header1": "Duration",
+      "header2": "Earnings after fees",
+      "header3": "Net value",
+      "rowlabel1": "Next 30 days",
+      "rowlabel2": "Next 90 days",
+      "rowlabel3": "Next 1 year"
+    },
+    "errors": {
+      "amountBiggerThanBalance": "You cannot deposit more Dai than the amount in your wallet",
+      "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
     }
   }
 }

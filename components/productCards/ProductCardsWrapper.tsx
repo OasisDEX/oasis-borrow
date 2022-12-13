@@ -28,11 +28,14 @@ export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
         margin: '0 auto',
       }}
     >
-      {children.flat().map((productCard, index) => (
-        <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5), width: '100%' }} key={index}>
-          {productCard}
-        </Box>
-      ))}
+      {children
+        .flat()
+        .filter((item) => item)
+        .map((productCard, index) => (
+          <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5), width: '100%' }} key={index}>
+            {productCard}
+          </Box>
+        ))}
     </Grid>
   )
 }

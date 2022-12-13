@@ -773,6 +773,23 @@ export const tokens: TokenConfig[] = [
     tags: [],
     protocol: 'maker',
   },
+  {
+    symbol: 'GNO',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'Gnosis',
+    icon: 'gno_circle_color',
+    iconCircle: 'gno_circle_color',
+    iconColor: 'gno_circle_color',
+    color: '#FFEAEA',
+    coinGeckoTicker: 'gnosis',
+    background: '',
+    bannerIcon: '',
+    bannerGif: '',
+    tags: [],
+    protocol: 'maker',
+  },
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers

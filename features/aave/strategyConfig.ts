@@ -15,7 +15,7 @@ import {
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { StrategyConfig } from './common/StrategyConfigTypes'
+import { ProxyType, StrategyConfig } from './common/StrategyConfigTypes'
 
 type StrategyConfigName = 'aave-earn' | 'aave-multiply'
 
@@ -23,6 +23,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
   'aave-earn': {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
@@ -44,6 +45,7 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
   'aave-multiply': {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
+    proxyType: ProxyType.DpmProxy,
     viewComponents: {
       headerOpen: AaveMultiplyOpenHeader,
       headerManage: AaveMultiplyManageHeader,
@@ -54,9 +56,9 @@ export const strategies: Record<StrategyConfigName, StrategyConfig> = {
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
     },
     tokens: {
-      collateral: 'ETH',
+      collateral: 'STETH',
       debt: 'USDC',
-      deposit: 'ETH',
+      deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     product: 'multiply',

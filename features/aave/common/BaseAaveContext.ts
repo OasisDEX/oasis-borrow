@@ -5,6 +5,7 @@ import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { Context } from '../../../blockchain/network'
+import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
 import { HasGasEstimation } from '../../../helpers/form'
 import { zero } from '../../../helpers/zero'
 import {
@@ -33,6 +34,7 @@ export type BaseAaveEvent =
   | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
+  | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
   | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
@@ -68,7 +70,8 @@ export interface BaseAaveContext {
   userSettings?: UserSettingsState
   error?: string | unknown
   protocolData?: AaveProtocolData
-
+  userDpmProxy?: UserDpmProxy
+  effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
 }
 
@@ -86,7 +89,7 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
     calls: context.strategy!.calls as any,
     operationName: context.operationName!,
     token: context.tokens.deposit,
-    proxyAddress: context.connectedProxyAddress!,
+    proxyAddress: context.effectiveProxyAddress!,
     amount: context.userInput.amount,
   }
 }

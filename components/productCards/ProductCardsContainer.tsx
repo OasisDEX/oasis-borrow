@@ -1,10 +1,12 @@
 import { getTokens } from 'blockchain/tokensMetadata'
+import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
+import { ProductCardData } from 'helpers/productCards'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
-import { WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
-import { ProductCardData } from '../../helpers/productCards'
 import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
@@ -25,6 +27,7 @@ type ProductCardsContainerProps = {
 
 function ProductCardsContainer(props: ProductCardsContainerProps) {
   const ProductCard = props.renderProductCard
+  const daiSavingsRate = useFeatureToggle('DaiSavingsRate')
 
   const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(
@@ -37,6 +40,10 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
       <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
         {([_productCardsData]) => (
           <ProductCardsWrapper>
+            {/* TODO prepare proper handling for DSR */}
+            {props.strategies.maker.includes('DSR') && daiSavingsRate ? (
+              <ProductCardEarnDsr />
+            ) : null}
             {_productCardsData.map((cardData) => (
               <ProductCard cardData={cardData} key={cardData.ilk} />
             ))}
