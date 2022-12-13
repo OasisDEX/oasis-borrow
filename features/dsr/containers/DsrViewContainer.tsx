@@ -40,7 +40,7 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
               walletAddress={walletAddress}
               context={_context}
               potTotalValueLocked={potTotalValueLocked}
-              apy={apy}
+              apy={apy.times(100)}
             />
           )}
         </WithLoadingIndicator>
