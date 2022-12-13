@@ -77,14 +77,10 @@ export function DsrView({
             label: t('dsr.details.current-yield'),
             value: currentApy,
           },
-          ...(netValue?.gt(zero)
-            ? [
-                {
-                  label: t('earn-vault.headlines.total-value-locked'),
-                  value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
-                },
-              ]
-            : []),
+          {
+            label: t('earn-vault.headlines.total-value-locked'),
+            value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
+          },
         ]}
       />
       <TabBar
