@@ -1,11 +1,15 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { useVaultCount } from 'components/Header'
 import { Navigation } from 'components/navigation/Navigation'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
+import { ajnaExtensionTheme, theme } from 'theme'
+import { Spinner } from 'theme-ui'
 
 export function AjnaNavigationController() {
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
+  const vaultCount = useVaultCount()
 
   const isConnected = context?.status === 'connected'
 
@@ -43,7 +47,21 @@ export function AjnaNavigationController() {
         ...(isConnected
           ? [
               {
-                label: 'My position',
+                label: (
+                  <>
+                    My positions (
+                    {vaultCount !== null ? (
+                      vaultCount
+                    ) : (
+                      <Spinner
+                        size={14}
+                        color={ajnaExtensionTheme.colors.neutral80}
+                        sx={{ verticalAlign: 'text-bottom' }}
+                      />
+                    )}
+                    )
+                  </>
+                ),
                 link: '/my',
               },
             ]
