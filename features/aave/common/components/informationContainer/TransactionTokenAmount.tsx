@@ -1,4 +1,4 @@
-import { IStrategy } from '@oasisdex/oasis-actions'
+import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +10,7 @@ import { AppSpinner } from '../../../../../helpers/AppSpinner'
 import { formatAmount, formatFiatBalance } from '../../../../../helpers/formatters/format'
 
 interface BuyingTokenAmountProps {
-  transactionParameters: IStrategy
+  transactionParameters: IPositionTransition
   tokens: { collateral: string }
   collateralPrice?: BigNumber
 }
