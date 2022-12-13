@@ -273,7 +273,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext'],
         },
         POSITION_PROXY_ADDRESS_RECEIVED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress']
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         UPDATE_PROTOCOL_DATA: {
           actions: ['updateContext'],
