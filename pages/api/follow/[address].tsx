@@ -7,7 +7,7 @@ const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse
     case 'GET':
       return await getFollow(req, res)
     case 'POST':
-      return await follow(req,res)
+      return await follow(req, res)
     default:
       return res.status(405).end()
   }
