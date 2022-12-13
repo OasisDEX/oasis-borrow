@@ -11,7 +11,6 @@ import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { Loadable } from 'helpers/loadable'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import { useMemo } from 'react'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 
@@ -50,11 +49,10 @@ export function DsrView({
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
 
-  const apy = dsrOverview.value?.apy.div(100) || zero
-
-  const currentApy = useMemo(() => {
-    return formatPercent(apy, { precision: 2 })
-  }, [dsrOverview])
+  const apy = (dsrOverview.value?.apy || zero)
+    .decimalPlaces(5, BigNumber.ROUND_UP)
+    .minus(1)
+    .times(100)
 
   const account = context.status === 'connected' ? context.account : undefined
   const isOwner = walletAddress === account
@@ -75,16 +73,12 @@ export function DsrView({
         details={[
           {
             label: t('dsr.details.current-yield'),
-            value: currentApy,
+            value: formatPercent(apy, { precision: 2 }),
           },
-          ...(netValue?.gt(zero)
-            ? [
-                {
-                  label: t('earn-vault.headlines.total-value-locked'),
-                  value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
-                },
-              ]
-            : []),
+          {
+            label: t('earn-vault.headlines.total-value-locked'),
+            value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
+          },
         ]}
       />
       <TabBar
