@@ -23,10 +23,7 @@ async function libraryCall(parameters: MockParameters): Promise<LibraryCallRetur
     throw new Error('parameters is undefined')
   }
 
-  return {
-    strategy: mock<IPositionTransition>(),
-    operationName: 'mockOperationName',
-  }
+  return mock<IPositionTransition>()
 }
 
 const txHelpers$: Observable<TxHelpers> = of({

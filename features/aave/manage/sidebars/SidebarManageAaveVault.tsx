@@ -100,7 +100,7 @@ function GetReviewingSidebarProps({
   send,
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
-  const { operationName } = state.context
+  const operationName = state.context.strategy?.transaction.operationName
 
   if (operationName === OPERATION_NAMES.aave.CLOSE_POSITION) {
     return {
@@ -275,7 +275,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.strategy?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />

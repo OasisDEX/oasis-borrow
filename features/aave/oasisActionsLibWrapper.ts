@@ -68,12 +68,6 @@ export interface AdjustAaveParameters {
   amount: BigNumber
 }
 
-// todo: remove this
-export interface OasisActionResult {
-  strategy: IPositionTransition
-  operationName: string
-}
-
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
   if ((context as ContextConnected).account === undefined) {
     console.error('Context is not connected', context)
@@ -104,7 +98,7 @@ export async function getOpenAaveParameters({
   riskRatio,
   slippage,
   proxyAddress,
-}: OpenAaveParameters): Promise<OasisActionResult> {
+}: OpenAaveParameters): Promise<IPositionTransition> {
   try {
     checkContext(context, 'open position')
     const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
@@ -161,12 +155,7 @@ export async function getOpenAaveParameters({
       user: context.account,
     }
 
-    const strategy = await strategies.aave.open(stratArgs, stratDeps)
-
-    return {
-      strategy,
-      operationName: strategy.transaction.operationName,
-    }
+    return strategies.aave.open(stratArgs, stratDeps)
   } catch (e) {
     console.error(e)
     throw e
@@ -207,7 +196,7 @@ export async function getAdjustAaveParameters({
   slippage,
   riskRatio,
   currentPosition,
-}: AdjustAaveParameters): Promise<OasisActionResult> {
+}: AdjustAaveParameters): Promise<IPositionTransition> {
   try {
     checkContext(context, 'adjust position')
 
@@ -239,9 +228,7 @@ export async function getAdjustAaveParameters({
       user: context.account,
     }
 
-    const strategy = await strategies.aave.adjust(stratArgs, stratDeps)
-
-    return { strategy, operationName: strategy.transaction.operationName }
+    return strategies.aave.adjust(stratArgs, stratDeps)
   } catch (e) {
     console.error(e)
     throw e
@@ -253,7 +240,7 @@ export async function getCloseAaveParameters({
   proxyAddress,
   slippage,
   currentPosition,
-}: CloseAaveParameters): Promise<OasisActionResult> {
+}: CloseAaveParameters): Promise<IPositionTransition> {
   checkContext(context, 'adjust position')
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
@@ -284,9 +271,7 @@ export async function getCloseAaveParameters({
     user: context.account,
   }
 
-  const strategy = await strategies.aave.close(stratArgs, stratDeps)
-
-  return { strategy, operationName: strategy.transaction.operationName }
+  return strategies.aave.close(stratArgs, stratDeps)
 }
 
 export function getEmptyPosition(collateral: string, debt: string) {
