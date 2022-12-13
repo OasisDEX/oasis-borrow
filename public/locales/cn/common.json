@@ -1029,16 +1029,10 @@
   "reset": "重置",
   "finished": "已完成",
   "smart-proxy-desc": "为了关闭金库，你的部分仓位将会出售以支付尚未偿还的债务，剩余的抵押品将会发送到你的钱包地址。",
-  "proxy-advantages": {
-    "0": "一个账户只需一个代理合约",
-    "1": "让钱包可以与 Maker 协议互动",
-    "2": "有效使用燃料费"
-  },
-  "proxy-advantages-new": {
-    "0": "一个账户只需<1>一个</1>代理合约<1>",
-    "1": "让钱包可以与 Maker 协议互动",
-    "2": "有效使用燃料费"
-  },
+  "proxy-advantages": [
+    "让钱包可以与 Maker 协议互动",
+    "有效使用燃料费"
+  ],
   "proxy-waiting-text": "了解更多关于智能代理合约在",
   "proxy-waiting-text-link": "知识中心",
   "creating-proxy-contract": "正在建立你的智能代理合约",
