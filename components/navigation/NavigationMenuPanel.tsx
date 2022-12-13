@@ -1,9 +1,14 @@
 import React, { ReactNode } from 'react'
 import { Box, Text } from 'theme-ui'
 
+export interface NavigationMenuPanelAsset {
+  token: string
+  link: string
+}
 export interface NavigationMenuPanelLink {
-  icon?: string
+  icon: string
   title: string
+  link: string
   footnote?: ReactNode
 }
 export interface NavigationMenuPanelType {
@@ -14,6 +19,7 @@ export interface NavigationMenuPanelType {
     link: string
   }
   links: NavigationMenuPanelLink[]
+  otherAssets?: NavigationMenuPanelAsset[]
 }
 type NavigationMenuPanelProps = NavigationMenuPanelType & {
   currentPanel?: string

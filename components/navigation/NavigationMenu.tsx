@@ -19,19 +19,18 @@ interface NavigationMenuProps {
 export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false)
   const [isPanelSwitched, setIsPanelSwitched] = useState<boolean>(false)
-  const [currentPanel, setCurrentPanel] = useState<string>()
+  const [currentPanel, setCurrentPanel] = useState<string>(panels?.length ? panels[0].label : '')
   const [arrowPosition, setArrowPosition] = useState<number>(0)
 
   function closeDropdown() {
     setIsPanelSwitched(false)
     setIsPanelOpen(false)
-    setCurrentPanel(undefined)
   }
 
   return (
     <Box sx={{ position: 'relative' }} onMouseLeave={() => closeDropdown()}>
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
-        <Flex as="ul" sx={{ p: 0, listStyle: 'none', columnGap: '48px' }}>
+        <Flex as="ul" sx={{ p: 0, listStyle: 'none', columnGap: '48px', px: '48px' }}>
           {panels?.map((panel, i) => (
             <NavigationMenuPanel
               key={`panel-${panel.label}`}
@@ -60,6 +59,7 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
           currentPanel={currentPanel}
           isPanelOpen={isPanelOpen}
           isPanelSwitched={isPanelSwitched}
+          panels={panels}
         />
       )}
     </Box>

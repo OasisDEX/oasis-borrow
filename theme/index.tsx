@@ -129,7 +129,6 @@ export const oasisBaseTheme = {
     },
     paragraph1: {
       fontFamily: 'body',
-
       lineHeight: '28px',
       fontSize: '18px',
       color: 'primary100',
@@ -281,7 +280,8 @@ export const oasisBaseTheme = {
       width: 'unset',
     },
     navigation: {
-      maxWidth: '1376px',
+      maxWidth: '1408px',
+      px: '16px',
     }
   },
   metadata: {

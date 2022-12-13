@@ -1,3 +1,4 @@
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { useVaultCount } from 'components/Header'
 import { Navigation } from 'components/navigation/Navigation'
@@ -23,7 +24,74 @@ export function AjnaNavigationController() {
             label: 'Learn more about Borrow',
             link: 'https://kb.oasis.app/',
           },
-          links: [],
+          links: [
+            {
+              title: 'Borrow against ETH',
+              icon: 'ether_circle_color',
+              link: '/',
+              footnote: (
+                <>
+                  Borrowing from as little as <strong>0.25%</strong> a year
+                </>
+              ),
+            },
+            {
+              title: 'Borrow against stETH',
+              icon: 'wsteth_circle_color',
+              link: '/',
+              footnote: 'Lorem ipsum dolor sit amet.',
+            },
+            {
+              title: 'Borrow against BTC',
+              icon: 'btc_circle_color',
+              link: '/',
+              footnote: (
+                <>
+                  Borrowing from as little as <strong>0.25%</strong> a year
+                </>
+              ),
+            },
+            {
+              title: 'Borrow against CRV',
+              icon: 'curve_full_circle_color',
+              link: '/',
+              footnote: 'Donec consectetur tellus quis augue vehicula lobortis.',
+            },
+          ],
+          otherAssets: [
+            {
+              token: 'AAVE',
+              link: '/',
+            },
+            {
+              token: 'BAL',
+              link: '/',
+            },
+            {
+              token: 'COMP',
+              link: '/',
+            },
+            {
+              token: 'LINK',
+              link: '/',
+            },
+            {
+              token: 'COMP',
+              link: '/',
+            },
+            {
+              token: 'MANA',
+              link: '/',
+            },
+            {
+              token: 'UNI',
+              link: '/',
+            },
+            {
+              token: 'YFI',
+              link: '/',
+            },
+          ],
         },
         {
           description: 'Multiply your exposure to your favorite crypto assets.',
@@ -32,7 +100,24 @@ export function AjnaNavigationController() {
             label: 'Learn more about Multiply',
             link: 'https://kb.oasis.app/',
           },
-          links: [],
+          links: [
+            {
+              title: 'Multiply your rETH',
+              icon: 'reth_circle_color',
+              link: '/',
+              footnote: (
+                <>
+                  Get up to <strong>150%</strong> exposure
+                </>
+              ),
+            },
+            {
+              title: 'Multiply your wBTC',
+              icon: 'wbtc_circle_color',
+              link: '/',
+              footnote: 'Duis posuere nisl quis tellus iaculis consectetur',
+            },
+          ],
         },
       ]}
       links={[
