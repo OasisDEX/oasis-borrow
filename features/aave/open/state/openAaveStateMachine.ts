@@ -459,6 +459,7 @@ export function createOpenAaveStateMachine(
                 collateralToken: context.strategyConfig.tokens.collateral,
                 debtToken: context.tokens.debt,
                 depositToken: context.tokens.deposit,
+                token: context.tokens.deposit,
                 context: context.web3Context!,
                 slippage: context.userSettings!.slippage,
               },

@@ -37,6 +37,7 @@ export interface OpenAaveParameters {
   collateralToken: string
   debtToken: string
   depositToken: string
+  token?: string // required for transaction parameters machine - set as deposit token
   riskRatio: IRiskRatio
   slippage: BigNumber
   proxyAddress: string

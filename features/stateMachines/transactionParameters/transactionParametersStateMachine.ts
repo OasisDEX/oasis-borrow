@@ -161,8 +161,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
               kind: TxMetaKind.operationExecutor,
               calls: strategy!.transaction.calls as any,
               operationName: strategy!.transaction.operationName,
-              // @ts-ignore
-              token: parameters!.token || parameters!.debtToken, // should be assigned to depositToken in the parent machine
+              token: parameters!.token,
               amount: parameters!.amount,
               proxyAddress: parameters!.proxyAddress,
             })
