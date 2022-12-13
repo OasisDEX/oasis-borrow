@@ -8,7 +8,6 @@ export interface NavigationMenuLink {
 }
 
 interface NavigationMenuProps {
-  isConnected: boolean
   links: NavigationMenuLink[]
 }
 
