@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IPosition, IStrategy, OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
