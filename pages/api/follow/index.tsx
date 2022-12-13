@@ -4,11 +4,6 @@ import { userJwt } from 'helpers/useJwt'
 import { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
-  console.log('POST follow')
-  console.log('req.method')
-  console.log(req.method)
-  console.log('req')
-  console.log(req)
   switch (req.method) {
     case 'POST':
       console.log('POST follow')
