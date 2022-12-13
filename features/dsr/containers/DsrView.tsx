@@ -5,6 +5,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { DsrFaq } from 'features/content/faqs/dsr'
 import { DsrHistory } from 'features/dsr/containers/DsrHistory'
 import { selectPrimaryAction } from 'features/dsr/utils/helpers'
+import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { Loadable } from 'helpers/loadable'
 import { zero } from 'helpers/zero'
@@ -50,14 +51,19 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
   console.log('dsrOverview', dsrOverview)
   console.log('dsr', dsrDepositState)
   // console.log('walletAddress', walletAddress)
-
-  const isOwner = context.status === 'connected' && walletAddress === context.account
+  const account = context.status === 'connected' ? context.account : undefined
+  const isOwner = walletAddress === account
   const earnings =
     dsrOverview.value && 'earnings' in dsrOverview.value ? dsrOverview.value.earnings : zero
   const netValue = dsrDepositState.netValue || zero
 
   return (
     <>
+      {account !== walletAddress && (
+        <Box mb={4}>
+          <VaultOwnershipBanner account={account} controller={walletAddress} />
+        </Box>
+      )}
       <VaultHeadline
         header={t('dsr.titles.heading')}
         token={['DAI']}
