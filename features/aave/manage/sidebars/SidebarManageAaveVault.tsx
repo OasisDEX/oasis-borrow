@@ -6,7 +6,7 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
-import { amountFromWei, amountToWei } from '../../../../blockchain/utils'
+import { amountFromWei } from '../../../../blockchain/utils'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'

@@ -3,12 +3,12 @@ import { Flex } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { amountFromWei } from '../../../../../blockchain/utils'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
 import { formatAmount } from '../../../../../helpers/formatters/format'
-import { amountFromWei } from '../../../../../blockchain/utils'
 
 interface OutstandingDebtInformationProps {
   currentPosition: IPosition
