@@ -1818,7 +1818,7 @@
         "confirm-btn": "确认",
         "close-description": "为了关闭你的金库，你的部分仓位将会出售以付清尚未偿还的债务，而剩余的抵押品将会发送至你的钱包地址。",
         "stop-close": "下次再说",
-        "eth-after-closing": "关闭金库后的 {{ closingToken }}",
+        "token-amount-after-closing": "关闭金库后的 {{token}}",
         "retry-btn": "再试一次"
       }
     }

@@ -16,10 +16,16 @@ import { TransactionStateMachineResultEvents } from '../../stateMachines/transac
 import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../userSettings/userSettings'
 import { AaveProtocolData } from '../manage/services'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 
 type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
+}
+type ManageTokenInput = {
+  manageCollateralAction?: ManageCollateralActionsEnum
+  manageDebtAction?: ManageDebtActionsEnum
+  manageTokenActionValue?: BigNumber
 }
 
 export type IStrategyInfo = {
@@ -28,15 +34,34 @@ export type IStrategyInfo = {
   collateralToken: string
 }
 
+export type UpdateCollateralActionType = {
+  type: 'UPDATE_COLLATERAL_TOKEN_ACTION'
+  manageTokenAction: ManageTokenInput['manageCollateralAction']
+}
+
+export type UpdateDebtActionType = {
+  type: 'UPDATE_DEBT_TOKEN_ACTION'
+  manageTokenAction: ManageTokenInput['manageDebtAction']
+}
+
+export type UpdateTokenActionValueType = {
+  type: 'UPDATE_TOKEN_ACTION_VALUE'
+  manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
+}
+
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
   | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
+  | { type: 'CLOSE_POSITION' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
   | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
   | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | UpdateCollateralActionType
+  | UpdateDebtActionType
+  | UpdateTokenActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
   | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
   | { type: 'UPDATE_ALLOWANCE'; tokenAllowance: BigNumber }
@@ -46,6 +71,7 @@ export type BaseAaveEvent =
 
 export interface BaseAaveContext {
   userInput: UserInput
+  manageTokenInput?: ManageTokenInput
   tokens: {
     collateral: string
     debt: string
