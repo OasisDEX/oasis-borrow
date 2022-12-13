@@ -5639,7 +5639,6 @@
     bignumber.js "9.0.1"
     ethers "5.6.2"
     lodash "^4.17.21"
-    utility-types "^3.10.0"
 
 "@oasisdex/transactions@^0.1.0":
   version "0.1.0"
