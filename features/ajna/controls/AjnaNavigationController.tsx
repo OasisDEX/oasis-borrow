@@ -39,7 +39,7 @@ export function AjnaNavigationController() {
               title: 'Borrow against stETH',
               icon: 'wsteth_circle_color',
               link: '/',
-              footnote: 'Lorem ipsum dolor sit amet.',
+              footnote: 'Lorem ipsum dolor sit amet',
             },
             {
               title: 'Borrow against BTC',
@@ -55,7 +55,7 @@ export function AjnaNavigationController() {
               title: 'Borrow against CRV',
               icon: 'curve_full_circle_color',
               link: '/',
-              footnote: 'Donec consectetur tellus quis augue vehicula lobortis.',
+              footnote: 'Donec consectetur tellus quis augue vehicula lobortis',
             },
           ],
           otherAssets: [
@@ -119,12 +119,40 @@ export function AjnaNavigationController() {
             },
           ],
         },
+        {
+          description: 'Put your crypto assets to work today.',
+          label: 'Earn',
+          learn: {
+            label: 'Learn more about Earn',
+            link: 'https://kb.oasis.app/',
+          },
+          links: [
+            {
+              title: 'Earn on DAI',
+              icon: 'dai_circle_color',
+              link: '/',
+              footnote: (
+                <>
+                  Average 90 day yield is <strong>22.3%</strong>
+                </>
+              ),
+            },
+            {
+              title: 'Earn on USDC',
+              icon: 'usdc_circle_color',
+              link: '/',
+              footnote: 'Proin vel nibh consectetur risus hendrerit suscipit',
+            },
+          ],
+          otherAssets: [
+            {
+              token: 'AAVE',
+              link: '/',
+            },
+          ],
+        },
       ]}
       links={[
-        {
-          label: 'Earn',
-          link: '/earn',
-        },
         {
           label: 'Ajna Tokens',
           link: '/ajna/tokens',

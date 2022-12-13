@@ -24,7 +24,7 @@ export function NavigationMenuDropdown({
   panels,
 }: NavigationMenuDropdownProps) {
   return (
-    <Box
+    <Flex
       sx={{
         opacity: isPanelOpen ? 1 : 0,
         pointerEvents: isPanelOpen ? 'auto' : 'none',
@@ -53,12 +53,13 @@ export function NavigationMenuDropdown({
           }}
         />
       </Box>
-      <Box
+      <Flex
         sx={{
           position: 'absolute',
           top: '100%',
-          left: '-250px',
-          right: '-250px',
+          left: '-500px',
+          right: '-500px',
+          justifyContent: 'center',
           pt: 3,
           transform: isPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
           transition: 'transform 200ms',
@@ -68,7 +69,6 @@ export function NavigationMenuDropdown({
           sx={{
             flexDirection: 'column',
             rowGap: 4,
-            position: 'relative',
             borderRadius: 'large',
             bg: 'neutral10',
             boxShadow: 'buttonMenu',
@@ -170,7 +170,7 @@ export function NavigationMenuDropdown({
             </>
           ))}
         </Flex>
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   )
 }
