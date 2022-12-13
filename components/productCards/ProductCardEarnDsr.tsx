@@ -24,7 +24,9 @@ export function ProductCardEarnDsr() {
     }
   }
 
-  const apy = potDsr ? getYearlyRate(potDsr).div(10000) : new BigNumber(0.01)
+  const apy = potDsr
+    ? getYearlyRate(potDsr).div(100).decimalPlaces(2, BigNumber.ROUND_DOWN)
+    : new BigNumber(0.01)
   const earnUpTo = new BigNumber(100000).times(apy.decimalPlaces(5))
 
   const link = connectedContext ? `${dsrLink}/${connectedContext.account}` : '/connect'

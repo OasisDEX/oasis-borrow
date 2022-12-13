@@ -50,7 +50,7 @@ export function DsrView({
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
 
-  const apy = dsrOverview.value?.apy.div(100) || zero
+  const apy = dsrOverview.value?.apy.decimalPlaces(2, BigNumber.ROUND_DOWN) || zero
 
   const currentApy = useMemo(() => {
     return formatPercent(apy, { precision: 2 })
