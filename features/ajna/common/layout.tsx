@@ -9,15 +9,13 @@ import { ajnaExtensionTheme } from 'theme'
 import { ThemeProvider } from 'theme-ui'
 import { Background } from 'theme/Background'
 
-interface AjnaLayoutProps {
-  bg?: JSX.Element
-}
+interface AjnaLayoutProps {}
 
-export function AjnaWrapper({ children }: PropsWithChildren<{}>) {
+export function AjnaWrapper({ children }: PropsWithChildren<AjnaLayoutProps>) {
   return <WithFeatureToggleRedirect feature="Ajna">{children}</WithFeatureToggleRedirect>
 }
 
-export function AjnaLayout({ children, bg = <Background /> }: PropsWithChildren<AjnaLayoutProps>) {
+export function AjnaLayout({ children }: PropsWithChildren<{}>) {
   if (!isAppContextAvailable()) return null
 
   return (
@@ -26,7 +24,7 @@ export function AjnaLayout({ children, bg = <Background /> }: PropsWithChildren<
         header={<AjnaNavigationController />}
         footer={<Footer />}
         sx={{ position: 'relative' }}
-        bg={bg}
+        bg={<Background isAjnaPage />}
       >
         {children}
       </BasicLayout>

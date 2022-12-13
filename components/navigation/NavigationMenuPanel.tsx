@@ -6,7 +6,7 @@ export interface NavigationMenuPanelLink {
   title: string
   footnote?: ReactNode
 }
-export interface NavigationMenuPanelProps {
+export interface NavigationMenuPanelType {
   description: string
   label: string
   learn?: {
@@ -15,16 +15,31 @@ export interface NavigationMenuPanelProps {
   }
   links: NavigationMenuPanelLink[]
 }
+type NavigationMenuPanelProps = NavigationMenuPanelType & {
+  currentPanel?: string
+  onMouseEnter(center: number): void
+}
 
-export function NavigationMenuPanel({ label }: NavigationMenuPanelProps) {
+export function NavigationMenuPanel({
+  currentPanel,
+  label,
+  onMouseEnter,
+}: NavigationMenuPanelProps) {
   return (
-    <Box as="li">
+    <Box
+      as="li"
+      onMouseEnter={(e) => {
+        const target = e.target as HTMLDivElement
+
+        onMouseEnter(target.offsetLeft + target.offsetWidth / 2)
+      }}
+    >
       <Text
         as="span"
         sx={{
           fontSize: 2,
           fontWeight: 'semiBold',
-          color: 'neutral80',
+          color: currentPanel === label ? 'primary100' : 'neutral80',
           cursor: 'default',
           transition: 'color 200ms',
         }}

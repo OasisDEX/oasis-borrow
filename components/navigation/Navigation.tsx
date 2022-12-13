@@ -3,15 +3,15 @@ import {
   NavigationBrandingPill,
 } from 'components/navigation/NavigationBranding'
 import { NavigationMenu } from 'components/navigation/NavigationMenu'
-import { NavigationMenuPanelLinkProps } from 'components/navigation/NavigationMenuLink'
-import { NavigationMenuPanelProps } from 'components/navigation/NavigationMenuPanel'
+import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
+import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import React from 'react'
 import { Box, Container } from 'theme-ui'
 
 interface NavigationProps {
   brandingLink?: string
-  links?: NavigationMenuPanelLinkProps[]
-  panels?: NavigationMenuPanelProps[]
+  links?: NavigationMenuPanelLinkType[]
+  panels?: NavigationMenuPanelType[]
   pill?: NavigationBrandingPill
 }
 
