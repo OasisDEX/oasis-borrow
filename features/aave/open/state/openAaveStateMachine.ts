@@ -328,12 +328,8 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmProxy,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
-        validTransactionParameters: ({
-          userInput,
-          effectiveProxyAddress,
-          strategy,
-          operationName,
-        }) => allDefined(userInput, effectiveProxyAddress, strategy, operationName),
+        validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
+          allDefined(userInput, effectiveProxyAddress, strategy),
         canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
           allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
           tokenBalance!.gt(userInput.amount!),

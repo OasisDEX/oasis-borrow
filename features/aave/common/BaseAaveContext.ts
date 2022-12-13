@@ -57,7 +57,6 @@ export interface BaseAaveContext {
   totalSteps: number
 
   strategy?: IPositionTransition
-  operationName?: string
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
   tokenAllowance?: BigNumber
@@ -88,7 +87,7 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.strategy!.transaction.calls as any,
-    operationName: context.operationName!,
+    operationName: context.strategy!.transaction.operationName,
     token: context.tokens.deposit,
     proxyAddress: context.effectiveProxyAddress!,
     amount: context.userInput.amount,

@@ -21,14 +21,13 @@ export interface BaseTransactionParameters {
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
   strategy?: IPositionTransition
-  operationName?: string
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; strategy?: IPositionTransition; operationName: string }
+  | { type: 'STRATEGY_RECEIVED'; strategy?: IPositionTransition }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -137,7 +136,6 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
           (context): TransactionParametersStateMachineResponseEvent => ({
             type: 'STRATEGY_RECEIVED',
             strategy: context.strategy!,
-            operationName: context.operationName!,
           }),
         ),
         sendGasEstimation: sendParent(
