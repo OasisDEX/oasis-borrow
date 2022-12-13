@@ -51,7 +51,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveProtection: false,
   Ajna: false,
   AaveUseDpmProxy: false,
-  DaiSavingsRate: false,
+  DaiSavingsRate: true,
   // your feature here....
 }
 

@@ -8,7 +8,8 @@ import { Container } from 'theme-ui'
 import { DsrView } from './DsrView'
 
 export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
-  const { dsrDeposit$, dsr$, context$ } = useAppContext()
+  const { dsrDeposit$, dsr$, context$, potTotalValueLocked$ } = useAppContext()
+  const [potTotalValueLocked] = useObservable(potTotalValueLocked$)
   const resolvedDsrDeposit$ = dsrDeposit$(walletAddress)
   const resolvedDsr$ = dsr$(walletAddress)
   const [depositState, depositStateError] = useObservable(resolvedDsrDeposit$)
@@ -28,6 +29,7 @@ export function DsrViewContainer({ walletAddress }: { walletAddress: string }) {
               dsrDepositState={_depositState}
               walletAddress={walletAddress}
               context={_context}
+              potTotalValueLocked={potTotalValueLocked}
             />
           )}
         </WithLoadingIndicator>
