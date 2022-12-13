@@ -199,7 +199,7 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingAdjusting: {
-              onEntry: ['riskRatioConfirmEvent'],
+              entry: ['riskRatioConfirmEvent'],
               on: {
                 BACK_TO_EDITING: {
                   target: 'editing',
@@ -278,7 +278,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext'],
         },
         POSITION_PROXY_ADDRESS_RECEIVED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         UPDATE_PROTOCOL_DATA: {
           actions: ['updateContext'],
@@ -342,7 +342,7 @@ export function createManageAaveStateMachine(
             parameters: {
               amount: context.userInput.amount || zero,
               riskRatio: context.userInput.riskRatio || context.currentPosition!.riskRatio,
-              proxyAddress: context.connectedProxyAddress!,
+              proxyAddress: context.effectiveProxyAddress!,
               token: context.tokens.deposit,
               context: context.web3Context!,
               slippage: context.userSettings!.slippage,

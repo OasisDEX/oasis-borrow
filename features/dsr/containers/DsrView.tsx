@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { TabBar } from 'components/TabBar'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
@@ -6,7 +7,7 @@ import { DsrFaq } from 'features/content/faqs/dsr'
 import { DsrHistory } from 'features/dsr/containers/DsrHistory'
 import { selectPrimaryAction } from 'features/dsr/utils/helpers'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { Loadable } from 'helpers/loadable'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -25,6 +26,7 @@ interface DsrViewProps {
   dsrDepositState: DsrDepositState
   walletAddress: string
   context: Context
+  potTotalValueLocked?: BigNumber
 }
 
 const isLoadingCollection = [
@@ -38,7 +40,13 @@ const isLoadingCollection = [
   'withdrawWaiting4Approval',
 ]
 
-export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }: DsrViewProps) {
+export function DsrView({
+  dsrDepositState,
+  dsrOverview,
+  walletAddress,
+  context,
+  potTotalValueLocked,
+}: DsrViewProps) {
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
 
@@ -48,9 +56,6 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
     return formatPercent(apy, { precision: 2 })
   }, [dsrOverview])
 
-  console.log('dsrOverview', dsrOverview)
-  console.log('dsr', dsrDepositState)
-  // console.log('walletAddress', walletAddress)
   const account = context.status === 'connected' ? context.account : undefined
   const isOwner = walletAddress === account
   const earnings =
@@ -76,7 +81,7 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
             ? [
                 {
                   label: t('earn-vault.headlines.total-value-locked'),
-                  value: `$${formatAmount(netValue, 'USD')}`,
+                  value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
                 },
               ]
             : []),
