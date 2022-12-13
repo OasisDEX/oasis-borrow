@@ -15,6 +15,7 @@ import {
   getAaveReserveData,
   getAaveUserReserveData,
 } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -130,12 +131,13 @@ import {
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
 import { createAavePrepareReserveData$ } from 'features/aave/helpers/aavePrepareReserveData'
+import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
-import { hasActiveAavePosition } from 'features/aave/helpers/hasActiveAavePosition'
 import { getAaveProtocolData$ } from 'features/aave/manage/services'
 import { getOnChainPosition } from 'features/aave/oasisActionsLibWrapper'
+import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
@@ -289,9 +291,7 @@ import { zero } from 'helpers/zero'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
-import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
-import { combineLatest, from, Observable, of, Subject } from 'rxjs'
+import { combineLatest, defer, from, Observable, of, Subject } from 'rxjs'
 import {
   distinctUntilChanged,
   distinctUntilKeyChanged,
@@ -302,7 +302,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -1028,8 +1027,18 @@ export function setupAppContext() {
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
+  const proxiesRelatedWithPosition$ = memoize(
+    curry(getProxiesRelatedWithPosition$)(proxyAddress$, userDpmProxy$),
+    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+  )
+
   const strategyConfig$ = memoize(
-    curry(getStrategyConfig$)(proxyAddress$, aaveUserConfiguration$, aaveReservesList$),
+    curry(getStrategyConfig$)(
+      proxiesRelatedWithPosition$,
+      aaveUserConfiguration$,
+      aaveReservesList$,
+    ),
+    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
   const wrappedGetAaveReserveData$ = memoize(
@@ -1409,7 +1418,6 @@ export function setupAppContext() {
     userDpmProxy$,
     hasActiveDsProxyAavePosition$,
     aaveDpmPositions$,
-    hasActiveAavePosition$,
     aaveLiquidations$,
     aaveUserAccountData$,
     aaveAvailableLiquidityInUSDC$,
@@ -1423,6 +1431,7 @@ export function setupAppContext() {
     proxyForAccount$,
     strategyConfig$,
     wrappedGetAaveReserveData$,
+    proxiesRelatedWithPosition$,
   }
 }
 
