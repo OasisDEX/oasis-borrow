@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
+import BigNumber from 'bignumber.js'
 import { getTokens } from 'blockchain/tokensMetadata'
 import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
@@ -50,7 +51,14 @@ export function VaultHeadline({ header, token, details, loading = false }: Vault
             />
           ))}
         {header}
-      <FollowButtonControl />
+        {/* test data example vault */}
+        {/* 0x497cb171ddf49af82250d7723195d7e47ca38a95 433 version-11.07.2022 5 */}
+        <FollowButtonControl
+          followerAddress={'0x497cb171ddf49af82250d7723195d7e47ca38a95'}
+          vaultId={new BigNumber(433)}
+          docVersion={'version-11.07.2022'}
+          chainId={5}
+        />
       </Heading>
       <Flex
         sx={{
