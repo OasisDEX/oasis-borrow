@@ -31,7 +31,7 @@ import {
   contextToTransactionParameters,
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
-import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
@@ -46,7 +46,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
   hasOpenedPosition?: boolean
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
 }
 
@@ -328,12 +328,8 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmProxy,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
-        validTransactionParameters: ({
-          userInput,
-          effectiveProxyAddress,
-          strategy,
-          operationName,
-        }) => allDefined(userInput, effectiveProxyAddress, strategy, operationName),
+        validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
+          allDefined(userInput, effectiveProxyAddress, strategy),
         canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
           allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
           tokenBalance!.gt(userInput.amount!),
@@ -459,9 +455,9 @@ export function createOpenAaveStateMachine(
                 collateralToken: context.strategyConfig.tokens.collateral,
                 debtToken: context.tokens.debt,
                 depositToken: context.tokens.deposit,
+                token: context.tokens.deposit,
                 context: context.web3Context!,
                 slippage: context.userSettings!.slippage,
-                token: context.tokens.deposit,
               },
             }
           },
