@@ -453,6 +453,10 @@ export function createManageAaveStateMachine(
             type: 'VARIABLES_RECEIVED',
             parameters: {
               amount: context.manageTokenInput?.manageTokenActionValue || zero,
+              token:
+                context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT
+                  ? context.tokens.debt
+                  : context.tokens.collateral,
               proxyAddress: context.effectiveProxyAddress!,
               context: context.web3Context!,
               slippage: context.userSettings!.slippage,
