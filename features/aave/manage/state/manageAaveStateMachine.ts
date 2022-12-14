@@ -1,5 +1,6 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -23,14 +24,21 @@ import {
   BaseAaveEvent,
   contextToTransactionParameters,
   isAllowanceNeeded,
+  ManageTokenInput,
 } from '../../common/BaseAaveContext'
 import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
-import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
+import {
+  AdjustAaveParameters,
+  CloseAaveParameters,
+  DepositBorrowAaveParameters,
+} from '../../oasisActionsLibWrapper'
 import { PositionId } from '../../types'
+import { defaultManageTokenInputValues } from '../containers/AaveManageStateMachineContext'
 
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
   | ActorRefFrom<TransactionParametersStateMachine<AdjustAaveParameters>>
+  | ActorRefFrom<TransactionParametersStateMachine<DepositBorrowAaveParameters>>
 
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
@@ -53,8 +61,8 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
   | { type: 'CLOSE_POSITION' }
-  | { type: 'MANAGE_COLLATERAL' }
-  | { type: 'MANAGE_DEBT' }
+  | { type: 'MANAGE_COLLATERAL'; manageTokenAction: ManageTokenInput['manageTokenAction'] }
+  | { type: 'MANAGE_DEBT'; manageTokenAction: ManageTokenInput['manageTokenAction'] }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'START_TRANSACTION' }
@@ -75,6 +83,7 @@ export function createManageAaveStateMachine(
     transactionParameters: OperationExecutorTxMeta,
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
+  depositBorrowAaveMachine: TransactionParametersStateMachine<DepositBorrowAaveParameters>,
 ) {
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
   return createMachine(
@@ -234,6 +243,8 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
+              entry: ['spawnDepositBorrowMachine', 'requestManageParameters'],
+              exit: ['killCurrentParametersMachine'],
               on: {
                 START_TRANSACTION: {
                   cond: 'validTransactionParameters',
@@ -251,6 +262,8 @@ export function createManageAaveStateMachine(
               },
             },
             manageDebt: {
+              entry: ['spawnDepositBorrowMachine', 'requestManageParameters'],
+              exit: ['killCurrentParametersMachine'],
               on: {
                 START_TRANSACTION: {
                   cond: 'validTransactionParameters',
@@ -331,10 +344,12 @@ export function createManageAaveStateMachine(
         MANAGE_COLLATERAL: {
           cond: 'canChangePosition',
           target: 'frontend.manageCollateral',
+          actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
         },
         MANAGE_DEBT: {
           cond: 'canChangePosition',
           target: 'frontend.manageDebt',
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',
@@ -346,7 +361,7 @@ export function createManageAaveStateMachine(
         },
         UPDATE_TOKEN_ACTION_VALUE: {
           cond: 'canChangePosition',
-          actions: ['updateTokenActionValue'],
+          actions: ['updateTokenActionValue', 'requestManageParameters'],
         },
       },
     },
@@ -364,17 +379,20 @@ export function createManageAaveStateMachine(
         isAllowanceNeeded,
       },
       actions: {
-        resetTokenActionValue: assign(({ manageTokenInput }) => ({
-          manageTokenInput: Object.assign(manageTokenInput!, { manageTokenActionValue: undefined }),
+        resetTokenActionValue: assign((_) => ({
+          manageTokenInput: defaultManageTokenInputValues,
         })),
         updateCollateralTokenAction: assign(
-          ({ manageTokenInput }, { manageTokenAction: manageCollateralAction }) => ({
-            manageTokenInput: Object.assign(manageTokenInput!, { manageCollateralAction }),
+          (
+            { manageTokenInput },
+            { manageTokenAction = ManageCollateralActionsEnum.DEPOSIT_COLLATERAL },
+          ) => ({
+            manageTokenInput: Object.assign(manageTokenInput!, { manageTokenAction }),
           }),
         ),
         updateDebtTokenAction: assign(
-          ({ manageTokenInput }, { manageTokenAction: manageDebtAction }) => ({
-            manageTokenInput: Object.assign(manageTokenInput!, { manageDebtAction }),
+          ({ manageTokenInput }, { manageTokenAction = ManageDebtActionsEnum.BORROW_DEBT }) => ({
+            manageTokenInput: Object.assign(manageTokenInput!, { manageTokenAction }),
           }),
         ),
         updateTokenActionValue: assign(({ manageTokenInput }, { manageTokenActionValue }) => ({
@@ -430,6 +448,20 @@ export function createManageAaveStateMachine(
           }),
           { to: (context) => context.refParametersMachine! },
         ),
+        requestManageParameters: send(
+          (context): TransactionParametersStateMachineEvent<DepositBorrowAaveParameters> => ({
+            type: 'VARIABLES_RECEIVED',
+            parameters: {
+              amount: context.manageTokenInput?.manageTokenActionValue || zero,
+              proxyAddress: context.effectiveProxyAddress!,
+              context: context.web3Context!,
+              slippage: context.userSettings!.slippage,
+              currentPosition: context.currentPosition!,
+              manageTokenInput: context.manageTokenInput,
+            },
+          }),
+          { to: (context) => context.refParametersMachine! },
+        ),
         spawnTransactionMachine: assign((context) => ({
           refTransactionMachine: spawn(
             transactionStateMachine(
@@ -438,6 +470,9 @@ export function createManageAaveStateMachine(
             ),
             'transactionMachine',
           ),
+        })),
+        spawnDepositBorrowMachine: assign((_) => ({
+          refParametersMachine: spawn(depositBorrowAaveMachine, 'transactionParameters'),
         })),
         killTransactionMachine: pure((context) => {
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
@@ -487,7 +522,7 @@ export function createManageAaveStateMachine(
 
 class ManageAaveStateMachineTypes {
   needsConfiguration() {
-    return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any)
+    return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any, {} as any)
   }
 
   withConfig() {

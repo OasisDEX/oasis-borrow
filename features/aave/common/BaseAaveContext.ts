@@ -22,9 +22,8 @@ type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
 }
-type ManageTokenInput = {
-  manageCollateralAction?: ManageCollateralActionsEnum
-  manageDebtAction?: ManageDebtActionsEnum
+export type ManageTokenInput = {
+  manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
   manageTokenActionValue?: BigNumber
 }
 
@@ -36,12 +35,12 @@ export type IStrategyInfo = {
 
 export type UpdateCollateralActionType = {
   type: 'UPDATE_COLLATERAL_TOKEN_ACTION'
-  manageTokenAction: ManageTokenInput['manageCollateralAction']
+  manageTokenAction: ManageCollateralActionsEnum
 }
 
 export type UpdateDebtActionType = {
   type: 'UPDATE_DEBT_TOKEN_ACTION'
-  manageTokenAction: ManageTokenInput['manageDebtAction']
+  manageTokenAction: ManageDebtActionsEnum
 }
 
 export type UpdateTokenActionValueType = {

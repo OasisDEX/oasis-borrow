@@ -153,7 +153,7 @@ function GetReviewingSidebarProps({
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={state.context.manageTokenInput?.manageCollateralAction!}
+              active={state.context.manageTokenInput?.manageTokenAction!}
               items={Object.values(ManageCollateralActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),
@@ -180,7 +180,7 @@ function GetReviewingSidebarProps({
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={state.context.manageTokenInput?.manageDebtAction!}
+              active={state.context.manageTokenInput?.manageTokenAction!}
               items={Object.values(ManageDebtActionsEnum).map((action) => ({
                 id: action,
                 label: t(`system.actions.multiply.${action}`),

@@ -14,12 +14,19 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { ManageTokenInput } from './common/BaseAaveContext'
 import { ProxyType } from './common/StrategyConfigTypes'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyConfig'
+import { AAVEStrategyAddresses } from '@oasisdex/oasis-actions/lib/src/operations/aave/addresses'
+import {
+  Address,
+  IPositionTransitionDependencies,
+} from '@oasisdex/oasis-actions/lib/src/strategies/types/IPositionRepository'
 
 function getAddressesFromContext(context: Context) {
   return {
     DAI: context.tokens['DAI'].address,
-    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    ETH: context.tokens['WETH'].address, // TODO FIX AFTER LIB CHANGE
     WETH: context.tokens['WETH'].address,
     stETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
@@ -71,6 +78,15 @@ export interface AdjustAaveParameters {
   proxyAddress: string
   amount: BigNumber
   proxyType: ProxyType
+}
+
+export interface DepositBorrowAaveParameters {
+  context: Context
+  currentPosition: IPosition
+  slippage: BigNumber
+  proxyAddress: string
+  manageTokenInput?: ManageTokenInput
+  amount: BigNumber
 }
 
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
@@ -236,6 +252,59 @@ export async function getAdjustAaveParameters({
     }
 
     return strategies.aave.adjust(stratArgs, stratDeps)
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
+}
+
+export async function getDepositBorrowAaveParameters({
+  context,
+  proxyAddress,
+  slippage,
+  currentPosition,
+  manageTokenInput,
+}: DepositBorrowAaveParameters): Promise<IPositionTransition> {
+  try {
+    checkContext(context, 'deposit/borrow position')
+
+    const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+    const addresses = getAddressesFromContext(context)
+
+    const stratArgs: {
+      entryToken?: Address
+      entryTokenAmount?: BigNumber
+      slippage?: BigNumber
+      borrowAmount?: BigNumber
+      collectFeeFrom: 'sourceToken' | 'targetToken'
+    } = {
+      slippage,
+      collectFeeFrom: 'sourceToken' as const,
+    }
+    switch (manageTokenInput?.manageTokenAction) {
+      case ManageDebtActionsEnum.BORROW_DEBT:
+        stratArgs.entryToken = addresses[currentPosition.debt.symbol as keyof typeof addresses]
+        stratArgs.borrowAmount = manageTokenInput?.manageTokenActionValue
+        break
+      case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
+        stratArgs.entryToken =
+          addresses[currentPosition.collateral.symbol as keyof typeof addresses]
+        stratArgs.entryTokenAmount = manageTokenInput?.manageTokenActionValue
+        break
+      default:
+        break
+    }
+
+    const stratDeps: IPositionTransitionDependencies<AAVEStrategyAddresses> = {
+      addresses,
+      currentPosition,
+      provider: provider,
+      getSwapData: getOneInchCall(context.swapAddress),
+      proxy: proxyAddress,
+      user: context.account,
+    }
+
+    return strategies.aave.depositBorrow(stratArgs, stratDeps)
   } catch (e) {
     console.error(e)
     throw e
