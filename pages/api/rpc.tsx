@@ -144,28 +144,31 @@ const abi = [
 
 async function makeCall(network: string, calls: any[]) {
   const callsLength = JSON.stringify(calls).length
-
+  let config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Connection: 'keep-alive',
+      'Content-Encoding': 'gzip, deflate, br',
+      'Content-Length': '',
+    },
+  }
   counters.totalPayloadSize += callsLength
   counters.totalCalls += calls.length
   counters.requests += 1
 
   if (calls.length === 1) {
-    const config = {
+    config = {
       headers: {
-        'Content-Type': 'application/json',
-        Connection: 'keep-alive',
-        'Content-Encoding': 'gzip, deflate, br',
+        ...config.headers,
         'Content-Length': JSON.stringify(calls[0]).length.toString(),
       },
     }
     const response = await axios.post(getRpcNode(network), JSON.stringify(calls[0]), config)
     return [response.data]
   } else {
-    const config = {
+    config = {
       headers: {
-        'Content-Type': 'application/json',
-        Connection: 'keep-alive',
-        'Content-Encoding': 'gzip, deflate, br',
+        ...config.headers,
         'Content-Length': callsLength.toString(),
       },
     }
