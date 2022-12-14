@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Swap } from '@oasisdex/oasis-actions'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { amountFromWei } from '../../../../../blockchain/utils'
 import {
   formatGasEstimationETH,
   getEstimatedGasFeeTextOld,
@@ -13,19 +14,17 @@ import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
 
 interface FeesInformationProps {
-  debtToken: string
-  feeInDebtToken: BigNumber
   estimatedGasPrice?: HasGasEstimation
+  swap: Swap
 }
 
-export function FeesInformation({
-  estimatedGasPrice,
-  debtToken,
-  feeInDebtToken,
-}: FeesInformationProps) {
+export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
-
+  const oasisFeeDisplayInDebtToken = formatAmount(
+    amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
+    swap[swap.collectFeeFrom].symbol,
+  )
   return (
     <>
       <VaultChangesInformationItem
@@ -35,7 +34,7 @@ export function FeesInformation({
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken} +`}
+            {`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol} +`}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -52,7 +51,7 @@ export function FeesInformation({
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={`${feeInDebtToken && formatAmount(feeInDebtToken, debtToken)} ${debtToken}`}
+            value={`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol}`}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}

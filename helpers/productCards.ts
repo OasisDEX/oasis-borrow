@@ -15,6 +15,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
   TokenMetadataType,
 } from '../blockchain/tokensMetadata'
+import { IStrategyConfig } from '../features/aave/common/StrategyConfigTypes'
 import { aaveStrategiesList } from '../features/aave/strategyConfig'
 import { zero } from './zero'
 
@@ -92,6 +93,7 @@ export const supportedBorrowIlks = [
   'CRVV1ETHSTETH-A',
   'WSTETH-B',
   'RETH-A',
+  'GNO-A',
 ]
 
 export const supportedMultiplyIlks = [
@@ -196,7 +198,7 @@ export const productCardsConfig: {
   earn: ProductPageType
   landing: {
     featuredIlkCards: Record<ProductTypes, Array<Ilk>>
-    featuredAaveCards: Record<ProductTypes, Array<AaveStrategy>>
+    featuredAaveCards: Record<ProductTypes, Array<IStrategyConfig>>
   }
   descriptionCustomKeys: Record<Ilk, string>
   descriptionLinks: Record<Ilk, { link: string }>
@@ -268,7 +270,8 @@ export const productCardsConfig: {
         'WSTETH-B',
       ],
       multiply: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
-      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      // TODO prepare proper handling for DSR
+      earn: ['DSR', 'GUNIV3DAIUSDC2-A'],
     },
     featuredAaveCards: {
       borrow: [],

@@ -68,7 +68,7 @@ function InfoStateView({ state, send }: InternalViewsProps) {
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('proxy-advantages-new', { returnObjects: true })}
+              items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
               listStyle={{ my: 2 }}
             />
             <VaultChangesInformationContainer title={t('creating-proxy-contract')}>
@@ -153,7 +153,7 @@ function SuccessStateView({ send }: InternalViewsProps) {
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('proxy-advantages-new', { returnObjects: true })}
+              items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
               listStyle={{ my: 2 }}
             />
           </>

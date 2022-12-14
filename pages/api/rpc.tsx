@@ -144,19 +144,37 @@ const abi = [
 
 async function makeCall(network: string, calls: any[]) {
   const callsLength = JSON.stringify(calls).length
-  const config = {
+  let config = {
     headers: {
       'Content-Type': 'application/json',
       Connection: 'keep-alive',
       'Content-Encoding': 'gzip, deflate, br',
-      'Content-Length': callsLength.toString(),
+      'Content-Length': '',
     },
   }
   counters.totalPayloadSize += callsLength
   counters.totalCalls += calls.length
   counters.requests += 1
-  const response = await axios.post(getRpcNode(network), calls, config)
-  return response.data
+
+  if (calls.length === 1) {
+    config = {
+      headers: {
+        ...config.headers,
+        'Content-Length': JSON.stringify(calls[0]).length.toString(),
+      },
+    }
+    const response = await axios.post(getRpcNode(network), JSON.stringify(calls[0]), config)
+    return [response.data]
+  } else {
+    config = {
+      headers: {
+        ...config.headers,
+        'Content-Length': callsLength.toString(),
+      },
+    }
+    const response = await axios.post(getRpcNode(network), calls, config)
+    return response.data
+  }
 }
 
 interface CallWithHash {
@@ -180,8 +198,6 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   const clientId = req.query.clientId.toString()
   //withCache = req.query.withCache.toString() === "true"
 
-  const rpcNode = getRpcNode(network)
-  const provider = new ethers.providers.JsonRpcProvider(rpcNode)
   if (debug && !withCache) {
     console.log('no cache')
   }
@@ -198,7 +214,7 @@ export async function rpc(req: NextApiRequest, res: NextApiResponse) {
   }
   if (Array.isArray(requestBody) && requestBody.every((call) => call.method === 'eth_call')) {
     const multicallAddress = getMulticall(network)
-    const multicall = new ethers.Contract(multicallAddress, abi, provider)
+    const multicall = new ethers.Contract(multicallAddress, abi)
 
     const calls = requestBody
       .map((rpcCall: any) => rpcCall.params)
