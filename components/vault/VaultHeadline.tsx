@@ -20,7 +20,7 @@ export function VaultHeadline({ header, token, details, loading = false }: Vault
   return (
     <Flex
       sx={{
-        flexDirection: ['column', null, null, 'row'],
+        flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'flex-end'],
         mb: 4,
