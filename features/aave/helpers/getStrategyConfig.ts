@@ -31,13 +31,17 @@ export function getStrategyConfig$(
       return createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)
     }),
     map((aaveUserConfiguration) => {
-      if (hasAssets(aaveUserConfiguration, 'STETH', 'ETH')) {
-        return loadStrategyFromTokens('STETH', 'ETH')
-      } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
-        return loadStrategyFromTokens('ETH', 'USDC')
-      } else {
-        // fallback to this stETH/ETH Earn strategy until we release new strategies with DPM
-        return loadStrategyFromTokens('STETH', 'ETH')
+      switch (true) {
+        case hasAssets(aaveUserConfiguration, 'STETH', 'ETH'):
+          return loadStrategyFromTokens('STETH', 'ETH')
+        case hasAssets(aaveUserConfiguration, 'ETH', 'USDC'):
+          return loadStrategyFromTokens('ETH', 'USDC')
+        case hasAssets(aaveUserConfiguration, 'WBTC', 'USDC'):
+          return loadStrategyFromTokens('WBTC', 'USDC')
+        case hasAssets(aaveUserConfiguration, 'STETH', 'USDC'):
+          return loadStrategyFromTokens('STETH', 'USDC')
+        default:
+          return loadStrategyFromTokens('STETH', 'ETH')
       }
     }),
     distinctUntilChanged(isEqual),
