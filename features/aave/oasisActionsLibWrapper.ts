@@ -87,6 +87,7 @@ export interface DepositBorrowAaveParameters {
   proxyAddress: string
   manageTokenInput?: ManageTokenInput
   amount: BigNumber
+  token?: string
 }
 
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
