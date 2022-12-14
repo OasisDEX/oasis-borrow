@@ -88,8 +88,9 @@ export function NavigationMenuDropdown({
             ...(isPanelSwitched && { transition: 'width 200ms, height 200ms' }),
           }}
         >
-          {panels.map(({ description, label, learn, links, otherAssets }) => (
+          {panels.map(({ description, label, learn, links, otherAssets }, i) => (
             <Flex
+              key={i}
               sx={{
                 position: 'absolute',
                 flexDirection: 'column',
@@ -136,8 +137,8 @@ export function NavigationMenuDropdown({
                   listStyle: 'none',
                 }}
               >
-                {links.map(({ icon, footnote, link, title }) => (
-                  <Flex as="li">
+                {links.map(({ icon, footnote, link, title }, i) => (
+                  <Flex key={i} as="li">
                     <AppLink
                       href={link}
                       sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular' }}
@@ -175,8 +176,8 @@ export function NavigationMenuDropdown({
                     as="ul"
                     sx={{ flexWrap: 'wrap', columnGap: 3, rowGap: 2, listStyle: 'none', p: 0 }}
                   >
-                    {otherAssets.map(({ link, token }) => (
-                      <Box as="li">
+                    {otherAssets.map(({ link, token }, i) => (
+                      <Box key={i} as="li">
                         <AssetPill icon={getToken(token).iconCircle} label={token} link={link} />
                       </Box>
                     ))}
