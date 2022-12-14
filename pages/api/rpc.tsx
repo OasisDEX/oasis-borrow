@@ -144,19 +144,37 @@ const abi = [
 
 async function makeCall(network: string, calls: any[]) {
   const callsLength = JSON.stringify(calls).length
-  const config = {
+  let config = {
     headers: {
       'Content-Type': 'application/json',
       Connection: 'keep-alive',
       'Content-Encoding': 'gzip, deflate, br',
-      'Content-Length': callsLength.toString(),
+      'Content-Length': '',
     },
   }
   counters.totalPayloadSize += callsLength
   counters.totalCalls += calls.length
   counters.requests += 1
-  const response = await axios.post(getRpcNode(network), calls, config)
-  return response.data
+
+  if (calls.length === 1) {
+    config = {
+      headers: {
+        ...config.headers,
+        'Content-Length': JSON.stringify(calls[0]).length.toString(),
+      },
+    }
+    const response = await axios.post(getRpcNode(network), JSON.stringify(calls[0]), config)
+    return [response.data]
+  } else {
+    config = {
+      headers: {
+        ...config.headers,
+        'Content-Length': callsLength.toString(),
+      },
+    }
+    const response = await axios.post(getRpcNode(network), calls, config)
+    return response.data
+  }
 }
 
 interface CallWithHash {

@@ -3,8 +3,8 @@ import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
-import { StrategyConfig } from '../common/StrategyConfigTypes'
-import { strategies } from '../strategyConfig'
+import { IStrategyConfig } from '../common/StrategyConfigTypes'
+import { loadStrategyFromTokens } from '../strategyConfig'
 import { PositionId } from '../types'
 import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
 import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
@@ -14,7 +14,7 @@ export function getStrategyConfig$(
   aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   positionId: PositionId,
-): Observable<StrategyConfig> {
+): Observable<IStrategyConfig> {
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {
       const effectiveProxyAddress = dsProxy || dpmProxy?.proxy
@@ -32,16 +32,12 @@ export function getStrategyConfig$(
     }),
     map((aaveUserConfiguration) => {
       if (hasAssets(aaveUserConfiguration, 'STETH', 'ETH')) {
-        return strategies['aave-earn']
+        return loadStrategyFromTokens('STETH', 'ETH')
       } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
-        return strategies['aave-multiply']
+        return loadStrategyFromTokens('ETH', 'USDC')
       } else {
-        return strategies['aave-earn']
-        // throw new Error(
-        //   `could not resolve strategy for address ${address}. aaveUserConfiguration ${JSON.stringify(
-        //     aaveUserConfiguration,
-        //   )}`,
-        // )
+        // fallback to this stETH/ETH Earn strategy until we release new strategies with DPM
+        return loadStrategyFromTokens('STETH', 'ETH')
       }
     }),
     distinctUntilChanged(isEqual),

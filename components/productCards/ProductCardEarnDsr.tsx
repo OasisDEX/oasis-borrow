@@ -4,7 +4,7 @@ import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { redirectState$ } from 'features/router/redirectState'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { one } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -25,7 +25,12 @@ export function ProductCardEarnDsr() {
     }
   }
 
-  const apy = potDsr ? getYearlyRate(potDsr).div(10000) : one
+  const apy = potDsr
+    ? getYearlyRate(potDsr || zero)
+        .decimalPlaces(5, BigNumber.ROUND_UP)
+        .minus(1)
+    : new BigNumber(0.01)
+
   const earnUpTo = new BigNumber(100000).times(apy.decimalPlaces(5))
 
   const link = connectedContext ? `${dsrLink}/${connectedContext.account}` : '/connect'

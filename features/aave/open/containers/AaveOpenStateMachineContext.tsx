@@ -2,8 +2,8 @@ import { useInterpret } from '@xstate/react'
 import React from 'react'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
-import { EMPTY_POSITION } from '../../oasisActionsLibWrapper'
+import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
+import { getEmptyPosition } from '../../oasisActionsLibWrapper'
 import { OpenAaveStateMachine } from '../state'
 
 function setupOpenAaveStateContext({
@@ -11,7 +11,7 @@ function setupOpenAaveStateContext({
   config,
 }: {
   machine: OpenAaveStateMachine
-  config: StrategyConfig
+  config: IStrategyConfig
 }) {
   const useDpmProxy = useFeatureToggle('AaveUseDpmProxy')
   const effectiveStrategy = {
@@ -25,7 +25,7 @@ function setupOpenAaveStateContext({
       tokens: config.tokens,
       currentStep: 1,
       totalSteps: 4,
-      currentPosition: EMPTY_POSITION,
+      currentPosition: getEmptyPosition(config.tokens.collateral, config.tokens.debt),
     }),
     { devTools: process.env.NODE_ENV !== 'production' },
   ).start()
@@ -49,7 +49,7 @@ export function OpenAaveStateMachineContextProvider({
   children,
   machine,
   config,
-}: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: StrategyConfig }>) {
+}: React.PropsWithChildren<{ machine: OpenAaveStateMachine; config: IStrategyConfig }>) {
   const context = setupOpenAaveStateContext({ machine, config })
   return <openAaveStateContext.Provider value={context}>{children}</openAaveStateContext.Provider>
 }
