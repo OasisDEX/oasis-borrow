@@ -8,7 +8,7 @@ import { AaveAssetsPricesParameters } from 'blockchain/calls/aave/aavePriceOracl
 import { Context } from 'blockchain/network'
 import { UserDpmProxy } from 'blockchain/userDpmProxies'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
-import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { AaveProtocolData } from 'features/aave/manage/services'
 import { zero } from 'helpers/zero'
@@ -146,7 +146,7 @@ export function createAaveDpmPosition$(
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
-  strategyConfig$: (proxyAddress: string) => Observable<StrategyConfig>,
+  strategyConfig$: (proxyAddress: string) => Observable<IStrategyConfig>,
   getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
   context$: Observable<Context>,
