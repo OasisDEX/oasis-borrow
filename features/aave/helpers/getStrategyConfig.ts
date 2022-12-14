@@ -35,6 +35,10 @@ export function getStrategyConfig$(
         return loadStrategyFromTokens('STETH', 'ETH')
       } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
         return loadStrategyFromTokens('ETH', 'USDC')
+      } else if (hasAssets(aaveUserConfiguration, 'WBTC', 'USDC')) {
+        return loadStrategyFromTokens('WBTC', 'USDC')
+      } else if (hasAssets(aaveUserConfiguration, 'STETH', 'USDC')) {
+        return loadStrategyFromTokens('STETH', 'USDC')
       } else {
         // fallback to this stETH/ETH Earn strategy until we release new strategies with DPM
         return loadStrategyFromTokens('STETH', 'ETH')
