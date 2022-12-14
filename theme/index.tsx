@@ -129,7 +129,6 @@ export const oasisBaseTheme = {
     },
     paragraph1: {
       fontFamily: 'body',
-
       lineHeight: '28px',
       fontSize: '18px',
       color: 'primary100',
@@ -279,6 +278,10 @@ export const oasisBaseTheme = {
     buttonPair: {
       minWidth: '200px',
       width: 'unset',
+    },
+    navigation: {
+      maxWidth: '1408px',
+      px: '16px',
     },
   },
   metadata: {
@@ -1064,6 +1067,15 @@ export const oasisBaseTheme = {
       borderBottomLeftRadius: 'mediumLarge',
       borderBottomRightRadius: 'mediumLarge',
     },
+  },
+}
+
+export const ajnaExtensionTheme = {
+  colors: {
+    primary100: '#031371',
+    neutral80: '#6871aa',
+    interactive100: '#c527ae',
+    interactive50: '#d668C6',
   },
 }
 

@@ -1,34 +1,19 @@
-import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import React from 'react'
-import { Box, Text, ThemeProvider } from 'theme-ui'
+import { Box } from 'theme-ui'
 
-function AjnaPage() {
+function AjnaLandingPage() {
   return (
-    <WithFeatureToggleRedirect feature="Ajna">
-      <Box sx={{ width: '100%' }}>
-        <Text sx={{ backgroundColor: 'interactive100' }}>
-          Text component with background set to interactive100
-        </Text>
-        <Text sx={{ backgroundColor: 'interactive50' }}>
-          Text component with background set to interactive50
-        </Text>
-        <ThemeProvider
-          theme={{
-            colors: {
-              interactive100: '#b5179e',
-            },
-          }}
-        >
-          <Text sx={{ backgroundColor: 'interactive100' }}>
-            Text component with background set to interactive100, with overwriting ThemeProvider
-          </Text>
-          <Text sx={{ backgroundColor: 'interactive50' }}>
-            Text component with background set to interactive100, with overwriting ThemeProvider
-          </Text>
-        </ThemeProvider>
-      </Box>
-    </WithFeatureToggleRedirect>
+    <WithConnection>
+      <AjnaWrapper>
+        <Box sx={{ width: '100%', height: '500px' }}>Test</Box>
+      </AjnaWrapper>
+    </WithConnection>
   )
 }
 
-export default AjnaPage
+AjnaLandingPage.layout = AjnaLayout
+AjnaLandingPage.seoTags = ajnaPageSeoTags
+
+export default AjnaLandingPage

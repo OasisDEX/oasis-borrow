@@ -2,7 +2,7 @@ import { useInterpret } from '@xstate/react'
 import { env } from 'process'
 import React from 'react'
 
-import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { PositionId } from '../../types'
 import { ManageAaveStateMachine } from '../state'
 
@@ -12,7 +12,7 @@ function setupManageAaveStateContext({
   positionId,
 }: {
   machine: ManageAaveStateMachine
-  strategy: StrategyConfig
+  strategy: IStrategyConfig
   positionId: PositionId
 }) {
   const positionCreatedBy =
@@ -56,7 +56,7 @@ export function ManageAaveStateMachineContextProvider({
   positionId,
 }: React.PropsWithChildren<{
   machine: ManageAaveStateMachine
-  strategy: StrategyConfig
+  strategy: IStrategyConfig
   positionId: PositionId
 }>) {
   const context = setupManageAaveStateContext({ machine, strategy, positionId })

@@ -3,17 +3,18 @@ import { Box } from 'theme-ui'
 
 import { fadeOut } from './keyframes'
 
-export function Background() {
+export function Background({ isAjnaPage = false }: { isAjnaPage?: boolean }) {
   return (
     <Box
       sx={{
         position: 'absolute',
-        left: 'calc((100% - 1882px) / 2)',
-        top: '-200px',
+        left: `calc((100% - ${isAjnaPage ? 1820 : 1882}px) / 2)`,
+        top: isAjnaPage ? '-650px' : '-200px',
         right: 0,
         zIndex: -1,
         backgroundColor: 'white',
         overflow: 'hidden',
+        ...(isAjnaPage && { transform: 'scaleY(-1)' }),
         '&::after': {
           position: 'absolute',
           top: 0,
@@ -35,7 +36,7 @@ export function Background() {
         sx={{
           userSelect: 'none',
           pointerEvents: 'none',
-          maxHeight: 'calc(100vh + 200px)',
+          maxHeight: `calc(100vh + ${isAjnaPage ? 650 : 200}px)`,
         }}
       >
         <svg

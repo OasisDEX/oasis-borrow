@@ -15,7 +15,7 @@ export function WithArrow({
         fontSize: [1, 2],
         position: 'relative',
         '& .arrow': {
-          transition: 'ease-in-out 0.2s',
+          transition: 'transform 200ms',
           transform: 'translateX(0px)',
         },
         '&:hover .arrow': {

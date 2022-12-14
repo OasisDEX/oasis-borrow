@@ -81,7 +81,7 @@ function BasicHeader({
   )
 }
 
-function useVaultCount() {
+export function useVaultCount() {
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
