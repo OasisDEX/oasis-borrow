@@ -38,6 +38,7 @@ export interface ManageAaveContext extends BaseAaveContext {
   strategyConfig: IStrategyConfig
   positionId: PositionId
   proxyAddress?: string
+  ownerAddress?: string
   positionCreatedBy: ProxyType
 }
 
@@ -55,7 +56,12 @@ export type ManageAaveEvent =
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
   | { type: 'START_TRANSACTION' }
-  | { type: 'POSITION_PROXY_ADDRESS_RECEIVED'; proxyAddress: string }
+  | {
+      type: 'POSITION_PROXY_ADDRESS_RECEIVED'
+      proxyAddress: string
+      ownerAddress: string
+      effectiveProxyAddress: string
+    }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
   | BaseAaveEvent
 
@@ -290,13 +296,13 @@ export function createManageAaveStateMachine(
     },
     {
       guards: {
-        validTransactionParameters: ({ connectedProxyAddress, strategy }) => {
-          return allDefined(connectedProxyAddress, strategy)
+        validTransactionParameters: ({ proxyAddress, strategy }) => {
+          return allDefined(proxyAddress, strategy)
         },
-        canChangePosition: ({ proxyAddress, connectedProxyAddress, currentPosition }) => {
+        canChangePosition: ({ web3Context, ownerAddress, currentPosition }) => {
           return (
-            allDefined(proxyAddress, connectedProxyAddress, currentPosition) &&
-            proxyAddress === connectedProxyAddress
+            allDefined(web3Context, ownerAddress, currentPosition) &&
+            web3Context!.account === ownerAddress
           )
         },
         isAllowanceNeeded,
@@ -342,11 +348,12 @@ export function createManageAaveStateMachine(
             parameters: {
               amount: context.userInput.amount || zero,
               riskRatio: context.userInput.riskRatio || context.currentPosition!.riskRatio,
-              proxyAddress: context.effectiveProxyAddress!,
+              proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
               context: context.web3Context!,
               slippage: context.userSettings!.slippage,
               currentPosition: context.currentPosition!,
+              proxyType: context.positionCreatedBy,
             },
           }),
           { to: (context) => context.refParametersMachine! },
@@ -398,16 +405,9 @@ export function createManageAaveStateMachine(
             'allowanceMachine',
           ),
         })),
-        calculateEffectiveProxyAddress: assign((context) => {
-          const effectiveProxyAddress =
-            context.positionCreatedBy === ProxyType.DpmProxy
-              ? context.userDpmProxy?.proxy
-              : context.connectedProxyAddress
-
-          return {
-            effectiveProxyAddress,
-          }
-        }),
+        calculateEffectiveProxyAddress: assign((context) => ({
+          effectiveProxyAddress: context.proxyAddress,
+        })),
       },
     },
   )

@@ -458,6 +458,7 @@ export function createOpenAaveStateMachine(
                 token: context.tokens.deposit,
                 context: context.web3Context!,
                 slippage: context.userSettings!.slippage,
+                proxyType: context.strategyConfig.proxyType,
               },
             }
           },
