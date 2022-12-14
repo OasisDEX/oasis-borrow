@@ -777,6 +777,10 @@
     "discover": {
       "title": "Discover Oasis.app",
       "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
+    },
+    "ajna": {
+      "title": "Oasis.app × Ajna",
+      "description": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
