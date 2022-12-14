@@ -97,16 +97,10 @@
   "create-your-vault": "Cree su Vault",
   "creating-proxy": "Creando Proxy",
   "creating-vault": "Creando Vault",
-  "proxy-advantages": {
-    "0": "Solo se necesita un proxy por cuenta",
-    "1": "Le permite a su cartera interactuar con el protocolo Maker",
-    "2": "Más eficiente en consumo de gas"
-  },
-  "proxy-advantages-new": {
-    "0": "<0>Solo se</0> necesita un proxy por cuenta",
-    "1": "Le permite a su cartera interactuar con el protocolo Maker",
-    "2": "Más eficiente en consumo de gas"
-  },
+  "proxy-advantages": [
+    "Permite a tu cartera interactuar con protocolos DeFi",
+    "Mayor eficiencia en consumo de gas"
+  ],
   "currency": "Moneda",
   "custom": "Personalizado",
   "dai-being-generated": "Generando Dai",
@@ -874,7 +868,8 @@
       "edit": "Simule su Vault configurando la cantidad de colateral a depositar y Dai a generar.",
       "edit-multiply": "Simule su Vault configurando la cantidad de colateral a depositar, y variando el factor de múltiplo.",
       "edit-multiply-dai": "Este Vault puede ser creado simplemente <1>depositando Dai</1>. La transacción creará su posición en {{token}} a partir de su depósito de Dai.",
-      "proxy": "Con su proxy inteligente podrá realizar múltiples acciones de su Vault en una transacción. Este proxy sólo necesita ser configurado una vez. Más información en la <1><2>Base de Conocimiento</2></1>",
+      "proxy": "Con su proxy inteligente podrá realizar múltiples acciones de su Vault en una transacción. Más información en la <1><2>Base de Conocimiento</2></1>",
+      "proxy-start": "Con su proxy inteligente podrá realizar múltiples acciones de su Vault en una transacción. Más información en la <1><2>Base de Conocimiento</2></1>",
       "proxy-success": "Su Proxy inteligente fue configurado exitosamente. Más información en la <1>Base de Conocimiento →</1>",
       "allowance": "Especifique un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
       "daiAllowance": "Especifique un permiso para configurar la cantidad máxima de tokens con la que el Vault puede interactuar.",
