@@ -1,4 +1,4 @@
-import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio, IStrategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
@@ -29,7 +29,7 @@ export type IStrategyInfo = {
 }
 
 export type BaseAaveEvent =
-  | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
+  | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
   | { type: 'WEB3_CONTEXT_CHANGED'; web3Context: Context }
   | { type: 'RESET_RISK_RATIO' }
@@ -56,13 +56,13 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  strategy?: IPositionTransition
+  strategy?: IStrategy
+  operationName?: string
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
   tokenAllowance?: BigNumber
   tokenPrice?: BigNumber
   collateralPrice?: BigNumber
-  debtPrice?: BigNumber
   auxiliaryAmount?: BigNumber
   connectedProxyAddress?: string
   strategyInfo?: IStrategyInfo
@@ -86,8 +86,8 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.strategy!.transaction.calls as any,
-    operationName: context.strategy!.transaction.operationName,
+    calls: context.strategy!.calls as any,
+    operationName: context.operationName!,
     token: context.tokens.deposit,
     proxyAddress: context.effectiveProxyAddress!,
     amount: context.userInput.amount,

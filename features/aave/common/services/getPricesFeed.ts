@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged } from 'rxjs/internal/operators'
@@ -8,17 +9,16 @@ import { BaseAaveEvent } from '../BaseAaveContext'
 
 export function getPricesFeed$(
   prices$: (tokens: string[]) => Observable<Tickers>,
-): (collateralToken: string, debtToken: string) => Observable<BaseAaveEvent> {
-  return (collateralToken: string, debtToken: string) => {
-    return prices$([collateralToken, debtToken]).pipe(
+): (collateralToken: string) => Observable<BaseAaveEvent> {
+  return (collateralToken: string) => {
+    return prices$([collateralToken]).pipe(
       map((tickers) => {
-        return { collateralPrice: tickers[collateralToken], debtPrice: tickers[debtToken] }
+        return tickers[collateralToken]
       }),
-      distinctUntilChanged(isEqual),
-      map(({ collateralPrice, debtPrice }) => ({
+      distinctUntilChanged<BigNumber>(isEqual),
+      map((ticker) => ({
         type: 'PRICES_RECEIVED',
-        collateralPrice: collateralPrice,
-        debtPrice: debtPrice,
+        collateralPrice: ticker,
       })),
     )
   }

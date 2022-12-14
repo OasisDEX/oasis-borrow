@@ -12,7 +12,7 @@ export enum ProxyType {
   DpmProxy = 'DpmProxy',
 }
 
-export interface IStrategyConfig {
+export interface StrategyConfig {
   name: string
   urlSlug: string
   proxyType: ProxyType
@@ -24,8 +24,6 @@ export interface IStrategyConfig {
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
     adjustRiskView: AdjustRiskView
-    sidebarTitle: string
-    sidebarButton: string
   }
   tokens: {
     collateral: string
@@ -36,12 +34,12 @@ export interface IStrategyConfig {
     minimum: IRiskRatio
     default: IRiskRatio
   }
-  type: 'multiply' | 'earn'
+  product: 'multiply' | 'earn'
   featureToggle: Feature
 }
 
 export type AaveHeaderProps = {
-  strategyConfig: IStrategyConfig
+  strategyConfig: StrategyConfig
 }
 
 export type ManageSectionComponentProps = {
