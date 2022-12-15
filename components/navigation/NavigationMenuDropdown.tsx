@@ -115,11 +115,9 @@ export function NavigationMenuDropdown({
                     position: 'absolute',
                     flexDirection: 'column',
                     rowGap: 4,
-                    // ml: '100%',
+                    opacity: currentPanel === label ? 1 : 0,
+                    pointerEvents: isPanelOpen && currentPanel === label ? 'auto' : 'none',
                     ...(isPanelSwitched && { transition: 'opacity 200ms, transform 200ms' }),
-                    ...(currentPanel === label
-                      ? { opacity: 1, pointerEvents: 'auto' }
-                      : { opacity: 0, pointerEvents: 'none' }),
                     transform: `translateX(${getDropdownTranslation(
                       labelsMap,
                       label,

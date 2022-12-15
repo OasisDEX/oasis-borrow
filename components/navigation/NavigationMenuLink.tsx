@@ -12,7 +12,13 @@ type NavigationMenuPanelLinkProps = NavigationMenuPanelLinkType & {
 
 export function NavigationMenuLink({ label, link, onMouseEnter }: NavigationMenuPanelLinkProps) {
   return (
-    <Box as="li" sx={{ p: 1 }} onMouseEnter={onMouseEnter}>
+    <Box
+      as="li"
+      sx={{
+        p: 1,
+      }}
+      onMouseEnter={onMouseEnter}
+    >
       <AppLink
         href={link}
         sx={{
