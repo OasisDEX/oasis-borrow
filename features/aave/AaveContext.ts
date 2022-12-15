@@ -213,7 +213,7 @@ export function setupAaveContext({
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
-  const getAvailableDPMProxy$: (
+  const getAvailableDPMProxy: (
     walletAddress: string,
   ) => Observable<UserDpmProxy | undefined> = memoize(
     curry(getAvailableDPMProxy$)(userDpmProxies$, hasProxyAddressActiveAavePosition$),
@@ -234,7 +234,7 @@ export function setupAaveContext({
     strategyInfo$,
     aaveProtocolData$,
     allowanceForAccount$,
-    dpmForConnectedAccount$,
+    unconsumedDpmProxyForConnectedAccount$,
     hasProxyAddressActiveAavePosition$,
   )
 

@@ -12,7 +12,7 @@ export function getAvailableDPMProxy$(
     switchMap((proxies) =>
       combineLatest(
         proxies.map((proxy) =>
-          hasProxyAddressActiveAavePosition$(proxy.proxy).pipe(
+          hasAavePositionForProxyAddress$(proxy.proxy).pipe(
             map((hasOpenedPosition) => ({ ...proxy, hasOpenedPosition })),
           ),
         ),

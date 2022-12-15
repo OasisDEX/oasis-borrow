@@ -126,7 +126,7 @@ export function getOpenAavePositionStateMachineServices(
     allowance$: (context) => {
       return iif(
         () => context.strategyConfig.proxyType === ProxyType.DpmProxy,
-        userDmpProxy$.pipe(map((userDpmProxy) => userDpmProxy?.proxy)),
+        userDpmProxy$.pipe(map((userDpmProxy) => userDpmProxy?.proxy)),
         connectedProxy$,
       ).pipe(
         filter(allDefined),
@@ -139,7 +139,7 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     dpmProxy$: (_) => {
-      return userDmpProxy$.pipe(
+      return userDpmProxy$.pipe(
         filter((proxy) => proxy !== undefined),
         map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })),
         distinctUntilChanged(isEqual),
