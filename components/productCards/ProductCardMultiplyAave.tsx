@@ -19,7 +19,6 @@ type ProductCardMultiplyAaveProps = {
 
 const aaveMultiplyCalcValueBasis = {
   amount: new BigNumber(100),
-  token: 'ETH',
 }
 
 export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAaveProps) {
@@ -44,13 +43,13 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
       banner={{
         title: t('product-card-banner.with', {
           value: aaveMultiplyCalcValueBasis.amount.toString(),
-          token: aaveMultiplyCalcValueBasis.token,
+          token: strategy.tokens.deposit,
         }),
-        description: t(`product-card-banner.aave.${cardData.symbol}`, {
+        description: t(`product-card-banner.multiply`, {
           value: maximumMultiple
             ? maximumMultiple.multiple.times(aaveMultiplyCalcValueBasis.amount).toFormat(0)
             : zero.toString(),
-          token: cardData.symbol,
+          token: strategy.tokens.deposit,
         }),
         isLoading: !maximumMultiple,
       }}

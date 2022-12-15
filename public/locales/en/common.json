@@ -1437,7 +1437,6 @@
     },
     "aave": {
       "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "stETHusdc": "Get up to {{value}} ETH exposure"
     }
   },
   "product-card-title": {
