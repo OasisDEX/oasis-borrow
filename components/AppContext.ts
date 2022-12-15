@@ -1000,7 +1000,11 @@ export function setupAppContext() {
     switchMap(({ account }) => proxyAddress$(account)),
   )
 
-  function tempPositionFromLib$(collateralToken: string, debtToken: string, proxyAddress: string) {
+  function getAaveOnChainPosition$(
+    collateralToken: string,
+    debtToken: string,
+    proxyAddress: string,
+  ) {
     return context$.pipe(
       switchMap((context) => {
         return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
@@ -1022,7 +1026,7 @@ export function setupAppContext() {
       aaveOracleAssetPriceData$,
       aaveUserConfiguration$,
       aaveReservesList$,
-      tempPositionFromLib$,
+      getAaveOnChainPosition$,
     ),
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
