@@ -219,7 +219,7 @@ export function setupAaveContext({
     curry(getAvailableDPMProxy$)(userDpmProxies$, hasProxyAddressActiveAavePosition$),
   )
 
-  const dpmForConnectedAccount$ = contextForAddress$.pipe(
+  const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
     switchMap(({ account }) => getAvailableDPMProxy(account)),
   )
 
