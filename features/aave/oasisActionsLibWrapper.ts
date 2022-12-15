@@ -17,11 +17,6 @@ import { zero } from '../../helpers/zero'
 import { ManageTokenInput } from './common/BaseAaveContext'
 import { ProxyType } from './common/StrategyConfigTypes'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyConfig'
-import { AAVEStrategyAddresses } from '@oasisdex/oasis-actions/lib/src/operations/aave/addresses'
-import {
-  Address,
-  IPositionTransitionDependencies,
-} from '@oasisdex/oasis-actions/lib/src/strategies/types/IPositionRepository'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -272,13 +267,7 @@ export async function getDepositBorrowAaveParameters({
     const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
     const addresses = getAddressesFromContext(context)
 
-    const stratArgs: {
-      entryToken?: Address
-      entryTokenAmount?: BigNumber
-      slippage?: BigNumber
-      borrowAmount?: BigNumber
-      collectFeeFrom: 'sourceToken' | 'targetToken'
-    } = {
+    const stratArgs: Parameters<typeof strategies.aave.depositBorrow[1]> = {
       slippage,
       collectFeeFrom: 'sourceToken' as const,
     }
@@ -296,7 +285,7 @@ export async function getDepositBorrowAaveParameters({
         break
     }
 
-    const stratDeps: IPositionTransitionDependencies<AAVEStrategyAddresses> = {
+    const stratDeps: Parameters<typeof strategies.aave.depositBorrow[2]> = {
       addresses,
       currentPosition,
       provider: provider,
