@@ -300,7 +300,7 @@ export function createOpenAaveStateMachine(
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
@@ -481,17 +481,19 @@ export function createOpenAaveStateMachine(
           ),
         })),
         calculateEffectiveProxyAddress: assign((context) => {
-          const proxyAddressToUse =
-            context.strategyConfig.proxyType === ProxyType.DpmProxy
-              ? context.userDpmProxy?.proxy
-              : context.connectedProxyAddress
+          const shouldUseDpmProxy =
+            context.strategyConfig.proxyType === ProxyType.DpmProxy &&
+            context.userDpmProxy !== undefined
+
+          const proxyAddressToUse = shouldUseDpmProxy
+            ? context.userDpmProxy?.proxy
+            : context.connectedProxyAddress
 
           const contextConnected = (context.web3Context as any) as ContextConnected | undefined
 
-          const address =
-            context.strategyConfig.proxyType === ProxyType.DpmProxy
-              ? `/aave/${context.userDpmProxy?.vaultId}`
-              : `/aave/${contextConnected?.account}`
+          const address = shouldUseDpmProxy
+            ? `/aave/${context.userDpmProxy?.vaultId}`
+            : `/aave/${contextConnected?.account}`
 
           return {
             effectiveProxyAddress: proxyAddressToUse,

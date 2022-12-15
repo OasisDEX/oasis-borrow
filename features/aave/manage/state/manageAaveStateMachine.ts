@@ -266,7 +266,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
