@@ -1436,7 +1436,7 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "stETHeth": "Get up to {{value}} ETH exposure to stETH",
+      "stETHeth": "Get up to {{value}} ETH exposure to stETH"
     }
   },
   "product-card-title": {
