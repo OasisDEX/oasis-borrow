@@ -1000,18 +1000,18 @@ export function setupAppContext() {
     switchMap(({ account }) => proxyAddress$(account)),
   )
 
-  function getAaveOnChainPosition$(
-    collateralToken: string,
-    debtToken: string,
-    proxyAddress: string,
-  ) {
-    return context$.pipe(
-      switchMap((context) => {
-        return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
-      }),
-      shareReplay(1),
-    )
-  }
+  const getAaveOnChainPosition$ = memoize(
+    (collateralToken: string, debtToken: string, proxyAddress: string) => {
+      return context$.pipe(
+        switchMap((context) => {
+          return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
+        }),
+        shareReplay(1),
+      )
+    },
+    (collateralToken: string, debtToken: string, proxyAddress: string) =>
+      collateralToken + debtToken + proxyAddress,
+  )
 
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
   const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
