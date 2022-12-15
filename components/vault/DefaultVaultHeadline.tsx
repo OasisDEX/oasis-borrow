@@ -1,4 +1,5 @@
-import BigNumber from 'bignumber.js'
+
+import { FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { moreMinutes } from 'helpers/time'
@@ -14,11 +15,14 @@ export function DefaultVaultHeadline({
   token,
   priceInfo,
   colRatio,
+  followButtonProps,
 }: {
   header: VaultHeadlineProps['header']
   token: VaultHeadlineProps['token']
   priceInfo: PriceInfo
   colRatio?: string
+  // followButtonProps?: FollowButtonProps
+  followButtonProps: FollowButtonProps
 }) {
   const { t } = useTranslation()
   const {
@@ -66,14 +70,12 @@ export function DefaultVaultHeadline({
     })
   }
 
-  // followerAddress={'0x497CB171dDF49af82250D7723195D7E47Ca38A95'}
-  // vaultId={new BigNumber(433)}
-  // docVersion={'version-11.07.2022'}
-  // chainId={5}
-  return <VaultHeadline header={header} token={token} details={detailsList} followButtonProps={{
-    followerAddress: '0x497CB171dDF49af82250D7723195D7E47Ca38A95',
-    vaultId: new BigNumber(433),
-    docVersion: 'version-11.07.2022',
-    chainId: 5
-  }} />
+  return (
+    <VaultHeadline
+      header={header}
+      token={token}
+      details={detailsList}
+      followButtonProps={followButtonProps}
+    />
+  )
 }

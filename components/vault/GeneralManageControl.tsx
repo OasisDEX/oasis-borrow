@@ -13,9 +13,13 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$ } = useAppContext()
+  const { generalManageVault$, context$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [context, contextError] = useObservable(context$)
+
+  const account = context?.status === 'connected' ? context.account : ''
+  const chainId = context?.chainId
 
   useEffect(() => {
     return () => {
@@ -33,7 +37,12 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <GeneralManageLayout generalManageVault={generalManageVault} />
+            <GeneralManageLayout generalManageVault={generalManageVault} followButtonProps={{
+              followerAddress: account,
+              vaultId: id,
+              docVersion: 'version-11.07.2022',
+              chainId: chainId
+            }} />
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>

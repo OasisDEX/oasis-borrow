@@ -13,7 +13,7 @@ export type VaultHeadlineProps = {
   token: string[]
   details: HeadlineDetailsProp[]
   loading?: boolean
-  followButtonProps: FollowButtonProps
+  followButtonProps?: FollowButtonProps
 }
 
 export function VaultHeadline({
@@ -57,14 +57,13 @@ export function VaultHeadline({
             />
           ))}
         {header}
-        {/* test data example vault */}
-        {/* 0x497cb171ddf49af82250d7723195d7e47ca38a95 433 version-11.07.2022 5 */}
+        {followButtonProps &&
         <FollowButtonControl
           followerAddress={followButtonProps.followerAddress}
           vaultId={followButtonProps.vaultId}
           docVersion={followButtonProps.docVersion}
           chainId={followButtonProps.chainId}
-        />
+        />}
       </Heading>
       <Flex
         sx={{
