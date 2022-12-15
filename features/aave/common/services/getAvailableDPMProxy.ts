@@ -5,7 +5,7 @@ import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
 
 export function getAvailableDPMProxy$(
   userDpmProxies$: (account: string) => Observable<UserDpmProxy[]>,
-  hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
+  hasAavePositionForProxyAddress$: (proxyAddress: string) => Observable<boolean>,
   walletAddress: string,
 ): Observable<UserDpmProxy | undefined> {
   return userDpmProxies$(walletAddress).pipe(
