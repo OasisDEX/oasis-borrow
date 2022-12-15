@@ -462,6 +462,7 @@ export function createManageAaveStateMachine(
               slippage: context.userSettings!.slippage,
               currentPosition: context.currentPosition!,
               manageTokenInput: context.manageTokenInput,
+              proxyType: context.positionCreatedBy,
             },
           }),
           { to: (context) => context.refParametersMachine! },
@@ -509,7 +510,7 @@ export function createManageAaveStateMachine(
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
               token: context.tokens.deposit,
-              spender: context.connectedProxyAddress!,
+              spender: context.proxyAddress!,
               allowanceType: 'unlimited',
               minimumAmount: context.userInput.amount!,
             }),
