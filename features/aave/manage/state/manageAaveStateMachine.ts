@@ -150,7 +150,7 @@ export function createManageAaveStateMachine(
               },
             },
             loading: {
-              entry: ['requestParameters'],
+              entry: ['requestParameters', 'requestManageParameters'],
               on: {
                 STRATEGY_RECEIVED: {
                   target: 'idle',
@@ -243,7 +243,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
-              entry: ['spawnDepositBorrowMachine', 'requestManageParameters'],
+              entry: ['spawnDepositBorrowMachine'],
               exit: ['killCurrentParametersMachine'],
               on: {
                 START_TRANSACTION: {
@@ -262,7 +262,7 @@ export function createManageAaveStateMachine(
               },
             },
             manageDebt: {
-              entry: ['spawnDepositBorrowMachine', 'requestManageParameters'],
+              entry: ['spawnDepositBorrowMachine'],
               exit: ['killCurrentParametersMachine'],
               on: {
                 START_TRANSACTION: {
@@ -353,15 +353,18 @@ export function createManageAaveStateMachine(
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',
+          target: '#manageAaveStateMachine.background.debouncing',
           actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
         },
         UPDATE_DEBT_TOKEN_ACTION: {
           cond: 'canChangePosition',
+          target: '#manageAaveStateMachine.background.debouncing',
           actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
         },
         UPDATE_TOKEN_ACTION_VALUE: {
           cond: 'canChangePosition',
-          actions: ['updateTokenActionValue', 'requestManageParameters'],
+          target: '#manageAaveStateMachine.background.debouncing',
+          actions: ['updateTokenActionValue'],
         },
       },
     },

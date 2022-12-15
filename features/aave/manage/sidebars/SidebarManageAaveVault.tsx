@@ -172,6 +172,7 @@ function GetReviewingSidebarProps({
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
+            <StrategyInformationContainer state={state} />
           </Grid>
         ),
       }
@@ -199,6 +200,7 @@ function GetReviewingSidebarProps({
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
+            <StrategyInformationContainer state={state} />
           </Grid>
         ),
       }
