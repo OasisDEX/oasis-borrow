@@ -113,7 +113,7 @@ function GetReviewingSidebarProps({
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
   const { collateral, debt } = state.context.tokens
-  const [closeToToken, setCloseToToken] = useState(collateral)
+  const [closeToToken, setCloseToToken] = useState(debt) // only close to debt is available ATM
 
   const updateCollateralTokenAction = (manageTokenAction: ManageCollateralActionsEnum) => {
     send({ type: 'UPDATE_COLLATERAL_TOKEN_ACTION', manageTokenAction })
@@ -136,6 +136,7 @@ function GetReviewingSidebarProps({
               items={[collateral, debt].map((token) => ({
                 id: token,
                 label: t('close-to', { token }),
+                disabled: token === collateral, // only close to debt is available ATM
                 action: () => curry(setCloseToToken)(token),
               }))}
             />
