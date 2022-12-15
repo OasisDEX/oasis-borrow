@@ -3,11 +3,12 @@ import {
   AaveReserveDataParameters,
   AaveReserveDataReply,
 } from 'blockchain/calls/aave/aaveProtocolDataProvider'
-import { amountFromRay } from 'blockchain/utils'
+import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export type PreparedAaveReserveData = {
+  availableLiquidity: BigNumber
   variableBorrowRate: BigNumber
   liquidityRate: BigNumber
 }
@@ -19,8 +20,9 @@ export function createAavePrepareReserveData$(
   return aaveReserveData$({ token }).pipe(
     map((reserveData: AaveReserveDataReply) => ({
       // TODO: if/when all things below are required from observe(aaveReserveData$), we can get rid of this file
-      variableBorrowRate: amountFromRay(new BigNumber(reserveData.variableBorrowRate)),
+      availableLiquidity: amountFromWei(new BigNumber(reserveData.availableLiquidity), token),
       liquidityRate: amountFromRay(new BigNumber(reserveData.liquidityRate)), // the current variable borrow rate. Expressed in ray
+      variableBorrowRate: amountFromRay(new BigNumber(reserveData.variableBorrowRate)),
     })),
   )
 }
