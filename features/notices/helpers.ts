@@ -12,21 +12,23 @@ export function getAaveNoticeBanner({
   loanToValue,
   maxLoanToValue,
   liquidationThreshold,
-  connectedProxyAddress,
-  proxyAddress,
+
   aaveLiquidations,
+  ownerAddress,
+  connectedAddress,
 }: {
   loanToValue: BigNumber
   maxLoanToValue: BigNumber
   liquidationThreshold: BigNumber
   connectedProxyAddress?: string
-  proxyAddress?: string
   aaveLiquidations?: Web3ContractEvent[]
+  ownerAddress: string
+  connectedAddress?: string
 }) {
   const isLiquidated = !!aaveLiquidations?.length
   const isAboveMaxLtv = loanToValue.gt(maxLoanToValue) && loanToValue?.lt(liquidationThreshold)
   const isOwnership = !(
-    allDefined([connectedProxyAddress, proxyAddress]) && connectedProxyAddress === proxyAddress
+    allDefined(connectedAddress, ownerAddress) && connectedAddress === ownerAddress
   )
 
   switch (true) {

@@ -7,6 +7,7 @@ import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
 import { amountFromWei } from '../../../../blockchain/utils'
+import { allDefined } from '../../../../helpers/allDefined'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
@@ -26,11 +27,8 @@ function isLoading(state: ManageAaveStateMachineState) {
 }
 
 function isLocked(state: ManageAaveStateMachineState) {
-  return (
-    state.context.proxyAddress === undefined ||
-    state.context.connectedProxyAddress === undefined ||
-    state.context.connectedProxyAddress !== state.context.proxyAddress
-  )
+  const { ownerAddress, web3Context } = state.context
+  return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 
 function getAmountGetFromPositionAfterClose(

@@ -64,11 +64,10 @@ export function getManageAavePositionStateMachineServices(
     },
     positionProxyAddress$: (context) => {
       return proxiesRelatedWithPosition$(context.positionId).pipe(
-        map((result) => result.dsProxy || result.dpmProxy?.proxy),
-        filter((address) => address !== undefined),
-        map((address) => ({
+        map((result) => ({
           type: 'POSITION_PROXY_ADDRESS_RECEIVED',
-          proxyAddress: address,
+          proxyAddress: result.dsProxy || result.dpmProxy?.proxy,
+          ownerAddress: result.walletAddress,
         })),
         distinctUntilChanged(isEqual),
       )
@@ -117,9 +116,10 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     allowance$: (context) => {
-      return connectedProxyAddress$.pipe(
-        filter(allDefined),
-        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        switchMap((result) =>
+          tokenAllowance$(context.tokens.deposit, result.dsProxy || result.dpmProxy?.proxy!),
+        ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
           tokenAllowance: allowance,

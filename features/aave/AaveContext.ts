@@ -24,6 +24,7 @@ import { from, Observable } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../blockchain/tokens'
+import { UserDpmProxy } from '../../blockchain/userDpmProxies'
 import { AppContext } from '../../components/AppContext'
 import { getAllowanceStateMachine } from '../stateMachines/allowance'
 import {
@@ -32,6 +33,7 @@ import {
 } from '../stateMachines/dpmAccount'
 import { transactionContextService } from '../stateMachines/transaction'
 import { getAaveStEthYield } from './common'
+import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -211,6 +213,16 @@ export function setupAaveContext({
     (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
   )
 
+  const getAvailableDPMProxy$: (
+    walletAddress: string,
+  ) => Observable<UserDpmProxy | undefined> = memoize(
+    curry(getAvailableDPMProxy$)(userDpmProxies$, hasProxyAddressActiveAavePosition$),
+  )
+
+  const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
+    switchMap(({ account }) => getAvailableDPMProxy(account)),
+  )
+
   const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
     connectedContext$,
     txHelpers$,
@@ -222,7 +234,7 @@ export function setupAaveContext({
     strategyInfo$,
     aaveProtocolData$,
     allowanceForAccount$,
-    userDpmProxies$,
+    dpmForConnectedAccount$,
     hasProxyAddressActiveAavePosition$,
   )
 

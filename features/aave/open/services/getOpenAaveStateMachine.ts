@@ -4,7 +4,7 @@ import {
   AaveUserAccountDataParameters,
 } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import { iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
@@ -45,7 +45,7 @@ export function getOpenAavePositionStateMachineServices(
     proxyAddress: string,
   ) => Observable<AaveProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
-  userDmpProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
+  userDpmProxy$: Observable<UserDpmProxy | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
@@ -124,7 +124,11 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     allowance$: (context) => {
-      return connectedProxy$.pipe(
+      return iif(
+        () => context.strategyConfig.proxyType === ProxyType.DpmProxy,
+        userDmpProxy$.pipe(map((userDpmProxy) => userDpmProxy?.proxy)),
+        connectedProxy$,
+      ).pipe(
         filter(allDefined),
         switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
         map((allowance) => ({
@@ -135,18 +139,7 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     dpmProxy$: (_) => {
-      return context$.pipe(
-        switchMap((context) => userDmpProxies$(context.account)),
-        switchMap((proxies) =>
-          combineLatest(
-            proxies.map((proxy) =>
-              hasProxyAddressActiveAavePosition$(proxy.proxy).pipe(
-                map((hasOpenedPosition) => ({ ...proxy, hasOpenedPosition })),
-              ),
-            ),
-          ),
-        ),
-        map((proxies) => proxies.find((proxy) => !proxy.hasOpenedPosition)),
+      return userDmpProxy$.pipe(
         filter((proxy) => proxy !== undefined),
         map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })),
         distinctUntilChanged(isEqual),

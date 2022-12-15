@@ -58,10 +58,21 @@ function WithStrategy(positionId: PositionId) {
   )
 }
 
+function safeGetAddress(address: string | undefined) {
+  if (address) {
+    try {
+      return getAddress(address)
+    } catch (e) {
+      return undefined
+    }
+  }
+  return undefined
+}
+
 function Position({ vault }: { vault: string }) {
   const { replace } = useRouter()
 
-  const address: string | undefined = getAddress(vault)
+  const address: string | undefined = safeGetAddress(vault)
   const vaultId: number | undefined =
     address !== undefined ? undefined : isNaN(Number(vault)) ? undefined : Number(vault)
 

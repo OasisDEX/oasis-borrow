@@ -14,6 +14,7 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { ProxyType } from './common/StrategyConfigTypes'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -41,6 +42,7 @@ export interface OpenAaveParameters {
   riskRatio: IRiskRatio
   slippage: BigNumber
   proxyAddress: string
+  proxyType: ProxyType
 }
 
 export interface GetOnChainPositionParams {
@@ -57,6 +59,7 @@ export interface CloseAaveParameters {
   proxyAddress: string
   token: string
   amount: BigNumber
+  proxyType: ProxyType
 }
 
 export interface AdjustAaveParameters {
@@ -66,6 +69,7 @@ export interface AdjustAaveParameters {
   slippage: BigNumber
   proxyAddress: string
   amount: BigNumber
+  proxyType: ProxyType
 }
 
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
@@ -98,10 +102,10 @@ export async function getOpenAaveParameters({
   riskRatio,
   slippage,
   proxyAddress,
+  proxyType,
 }: OpenAaveParameters): Promise<IPositionTransition> {
   try {
     checkContext(context, 'open position')
-    const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
     const _collateralToken = {
       symbol: collateralToken as AAVETokens,
@@ -134,25 +138,22 @@ export async function getOpenAaveParameters({
       throw new Error('Deposit token is not collateral or debt token')
     }
 
-    const stratArgs = {
+    const stratArgs: Parameters<typeof strategies.aave.open>[0] = {
       slippage,
       multiple: riskRatio.multiple,
       debtToken: _debtToken,
       collateralToken: _collateralToken,
       depositedByUser,
-      positionArgs: {
-        positionId: 0,
-        positionType: 'Earn' as const,
-        protocol: 'AAVE' as const,
-      },
+      positionType: 'Multiply' as const,
     }
 
-    const stratDeps = {
+    const stratDeps: Parameters<typeof strategies.aave.open>[1] = {
       addresses: getAddressesFromContext(context),
-      provider: provider,
+      provider: context.rpcProvider,
       getSwapData: getOneInchCall(context.swapAddress),
       proxy: proxyAddress,
       user: context.account,
+      isDPMProxy: proxyType === ProxyType.DpmProxy,
     }
 
     return strategies.aave.open(stratArgs, stratDeps)
@@ -196,6 +197,7 @@ export async function getAdjustAaveParameters({
   slippage,
   riskRatio,
   currentPosition,
+  proxyType,
 }: AdjustAaveParameters): Promise<IPositionTransition> {
   try {
     checkContext(context, 'adjust position')
@@ -212,20 +214,23 @@ export async function getAdjustAaveParameters({
       precision: currentPosition.debt.precision,
     }
 
-    const stratArgs = {
+    type adjustParameters = Parameters<typeof strategies.aave.adjust>
+
+    const stratArgs: adjustParameters[0] = {
       slippage,
       multiple: riskRatio.multiple,
       debtToken: debtToken,
       collateralToken: collateralToken,
     }
 
-    const stratDeps = {
+    const stratDeps: adjustParameters[1] = {
       addresses: getAddressesFromContext(context),
       currentPosition,
       provider: provider,
       getSwapData: getOneInchCall(context.swapAddress),
       proxy: proxyAddress,
       user: context.account,
+      isDPMProxy: proxyType === ProxyType.DpmProxy,
     }
 
     return strategies.aave.adjust(stratArgs, stratDeps)
@@ -240,10 +245,9 @@ export async function getCloseAaveParameters({
   proxyAddress,
   slippage,
   currentPosition,
+  proxyType,
 }: CloseAaveParameters): Promise<IPositionTransition> {
   checkContext(context, 'adjust position')
-
-  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
 
   const collateralToken = {
     symbol: currentPosition.collateral.symbol as AAVETokens,
@@ -255,20 +259,22 @@ export async function getCloseAaveParameters({
     precision: currentPosition.debt.precision,
   }
 
-  const stratArgs = {
+  type closeParameters = Parameters<typeof strategies.aave.close>
+  const stratArgs: closeParameters[0] = {
     slippage,
     debtToken,
     collateralToken,
     collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount,
   }
 
-  const stratDeps = {
+  const stratDeps: closeParameters[1] = {
     addresses: getAddressesFromContext(context),
     currentPosition,
-    provider: provider,
+    provider: context.rpcProvider,
     getSwapData: getOneInchCall(context.swapAddress),
     proxy: proxyAddress,
     user: context.account,
+    isDPMProxy: proxyType === ProxyType.DpmProxy,
   }
 
   return strategies.aave.close(stratArgs, stratDeps)
