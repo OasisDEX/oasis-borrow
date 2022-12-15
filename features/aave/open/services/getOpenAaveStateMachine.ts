@@ -45,7 +45,7 @@ export function getOpenAavePositionStateMachineServices(
     proxyAddress: string,
   ) => Observable<AaveProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
-  userDmpProxy$: Observable<UserDpmProxy | undefined>,
+  userDpmProxy$: Observable<UserDpmProxy | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
