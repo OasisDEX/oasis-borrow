@@ -6,7 +6,7 @@ import { TransactionParametersStateMachine } from '../../../stateMachines/transa
 import {
   AdjustAaveParameters,
   CloseAaveParameters,
-  DepositBorrowAaveParameters,
+  ManageAaveParameters,
 } from '../../oasisActionsLibWrapper'
 import {
   createManageAaveStateMachine,
@@ -23,7 +23,7 @@ export function getManageAaveStateMachine(
     transactionParameters: OperationExecutorTxMeta,
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
-  depositBorrowAaveMachine: TransactionParametersStateMachine<DepositBorrowAaveParameters>,
+  depositBorrowAaveMachine: TransactionParametersStateMachine<ManageAaveParameters>,
 ): ManageAaveStateMachine {
   return createManageAaveStateMachine(
     closeParametersMachine,

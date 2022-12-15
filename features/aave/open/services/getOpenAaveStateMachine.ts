@@ -4,7 +4,7 @@ import {
   AaveUserAccountDataParameters,
 } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
-import { iif, Observable, of } from 'rxjs'
+import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
@@ -21,7 +21,7 @@ import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../../userSettings/userSettings'
-import { IStrategyInfo } from '../../common/BaseAaveContext'
+import { IStrategyInfo, StrategyTokenAllowance } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
@@ -130,10 +130,23 @@ export function getOpenAavePositionStateMachineServices(
         connectedProxy$,
       ).pipe(
         filter(allDefined),
-        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+        switchMap((proxyAddress) => {
+          return combineLatest([
+            tokenAllowance$(context.tokens.deposit, proxyAddress!),
+            tokenAllowance$(context.tokens.collateral, proxyAddress!),
+            tokenAllowance$(context.tokens.debt, proxyAddress!),
+          ])
+        }),
+        map(
+          ([deposit, collateral, debt]): StrategyTokenAllowance => ({
+            collateral,
+            debt,
+            deposit,
+          }),
+        ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
-          tokenAllowance: allowance,
+          allowance: allowance,
         })),
         distinctUntilChanged(isEqual),
       )
