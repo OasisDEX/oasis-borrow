@@ -32,7 +32,7 @@ export const mockContext: Context = {
   ...mockWeb3ContextConnectedReadonly,
   contractV2: () => null as any,
   rpcProvider: null as any,
-  account: undefined
+  account: undefined,
 }
 
 export const mockContextConnected: ContextConnected = {
