@@ -54,7 +54,7 @@ export function VaultHeadline({ header, token, details, loading = false }: Vault
         {/* test data example vault */}
         {/* 0x497cb171ddf49af82250d7723195d7e47ca38a95 433 version-11.07.2022 5 */}
         <FollowButtonControl
-          followerAddress={'0x497cb171ddf49af82250d7723195d7e47ca38a95'}
+          followerAddress={'0x497CB171dDF49af82250D7723195D7E47Ca38A95'}
           vaultId={new BigNumber(433)}
           docVersion={'version-11.07.2022'}
           chainId={5}

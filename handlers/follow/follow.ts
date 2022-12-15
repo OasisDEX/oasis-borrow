@@ -32,11 +32,13 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
   } = usersWhoFollowVaultsSchema.parse(req.body)
 
   const usersWhoFollowVaultsData = {
-    user_address,
+    user_address: user_address.toLocaleLowerCase(),
     vault_id,
     tos_doc_version,
     vault_chain_id,
   }
+  console.log('user who follow vaults data')
+  console.log(usersWhoFollowVaultsData)
 
   await prisma.usersWhoFollowVaults.create({
     data: usersWhoFollowVaultsData,

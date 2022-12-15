@@ -36,11 +36,11 @@ export function FollowButtonControl({
     console.log(jwtToken)
     if (vaultId && jwtToken) {
       console.log('follow using api')
-      followVaultUsingApi$(vaultId, followerAddress, docVersion, chainId, jwtToken)
+      followVaultUsingApi$(vaultId, followerAddress, docVersion, chainId, jwtToken).subscribe()
     }
-    if (!isProcessing) {
-      setProcessing(true)
-    }
+    // if (!isProcessing) {
+    //   setProcessing(true)
+    // }
   }
   return (
     <FollowButton
