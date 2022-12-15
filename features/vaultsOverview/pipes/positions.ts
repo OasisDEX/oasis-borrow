@@ -17,6 +17,7 @@ import { filter, map, startWith, switchMap, toArray } from 'rxjs/operators'
 
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
+import { PositionId } from '../../aave/types'
 
 function makerPositionName(vault: VaultWithType): string {
   if (isMakerEarnPosition(vault)) {
@@ -146,7 +147,7 @@ export function createAaveDpmPosition$(
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
-  strategyConfig$: (proxyAddress: string) => Observable<IStrategyConfig>,
+  strategyConfig$: (position: PositionId) => Observable<IStrategyConfig>,
   getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
   context$: Observable<Context>,
@@ -155,7 +156,7 @@ export function createAaveDpmPosition$(
   return combineLatest(userDpmProxies$(walletAddress), context$).pipe(
     switchMap(([userProxiesData, context]) => {
       return combineLatest(
-        userProxiesData.map((proxyData) => strategyConfig$(proxyData.proxy)),
+        userProxiesData.map((proxyData) => strategyConfig$({ walletAddress })),
       ).pipe(
         switchMap((strategyConfig) => {
           const protocolDataObservableList = strategyConfig.map(
