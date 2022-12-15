@@ -521,16 +521,15 @@ export function AavePositionNoticesView() {
   const preparedAaveLiquidations$ = aaveLiquidations$(state.context.proxyAddress || '')
   const [aaveLiquidations] = useObservable(preparedAaveLiquidations$)
 
-  if (!state.context.protocolData || !state.context.proxyAddress) {
+  if (!state.context.protocolData || !state.context.proxyAddress || !state.context.ownerAddress) {
     return null
   }
 
   const {
     context: {
-      positionId,
-      proxyAddress,
       connectedProxyAddress,
       web3Context,
+      ownerAddress,
       protocolData: {
         position: {
           category: { maxLoanToValue, liquidationThreshold },
@@ -540,16 +539,16 @@ export function AavePositionNoticesView() {
     },
   } = state
 
-  const connectedAddress = web3Context?.status === 'connected' ? web3Context.account : undefined
-  const isPositionController = positionId.walletAddress === connectedAddress
+  const isPositionController = ownerAddress === web3Context?.account
 
   const banner = getAaveNoticeBanner({
     loanToValue,
     maxLoanToValue,
     liquidationThreshold,
     connectedProxyAddress,
-    proxyAddress,
     aaveLiquidations,
+    ownerAddress,
+    connectedAddress: web3Context?.account,
   })
 
   switch (banner) {
@@ -566,8 +565,8 @@ export function AavePositionNoticesView() {
     case 'ownership':
       return (
         <PositionOwnershipBanner
-          account={positionId.walletAddress!}
-          connectedWalletAddress={connectedAddress}
+          account={ownerAddress}
+          connectedWalletAddress={web3Context?.account}
         />
       )
     default:
