@@ -12,7 +12,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { displayMultiple } from 'helpers/display-multiple'
-import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -118,10 +118,9 @@ export function AaveMultiplyPositionData({
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('system.liquidation-price')}
-            value={`${formatAmount(
-              NaNIsZero(currentPositionThings.liquidationPrice),
-              currentPosition.debt.symbol,
-            )} ${currentPosition.debt.symbol}`}
+            value={`${formatPrecision(NaNIsZero(currentPositionThings.liquidationPrice), 2)} ${
+              currentPosition.debt.symbol
+            }`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.liquidationPrice.gte(
@@ -129,10 +128,7 @@ export function AaveMultiplyPositionData({
                 )
                   ? 'positive'
                   : 'negative',
-                value: `$${formatAmount(
-                  nextPositionThings.liquidationPrice,
-                  nextPosition.debt.symbol,
-                )} ${t('after')}`,
+                value: `$${formatPrecision(nextPositionThings.liquidationPrice, 2)} ${t('after')}`,
               }
             }
             footnote={`${t('manage-earn-vault.below-current-price', {
@@ -190,7 +186,7 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionContentCard
             title={t('system.net-value')}
-            value={`${formatAmount(currentPositionThings.netValue, currentPosition.debt.symbol)} ${
+            value={`${formatPrecision(currentPositionThings.netValue, 2)} ${
               currentPosition.debt.symbol
             }`}
             change={
@@ -198,9 +194,7 @@ export function AaveMultiplyPositionData({
                 variant: nextPositionThings.netValue.gt(currentPositionThings.netValue)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.netValue, nextPosition.debt.symbol)} ${t(
-                  'after',
-                )}`,
+                value: `${formatPrecision(nextPositionThings.netValue, 2)} ${t('after')}`,
               }
             }
           />
@@ -210,7 +204,7 @@ export function AaveMultiplyPositionData({
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
             title={t('system.position-debt')}
-            value={`${formatAmount(currentPositionThings.debt, currentPosition.debt.symbol)} ${
+            value={`${formatPrecision(currentPositionThings.debt, 4)} ${
               currentPosition.debt.symbol
             }`}
             change={
@@ -218,7 +212,7 @@ export function AaveMultiplyPositionData({
                 variant: nextPositionThings.debt.gt(currentPositionThings.debt)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.debt, nextPosition.debt.symbol)} ${
+                value: `${formatPrecision(nextPositionThings.debt, 4)} ${
                   nextPosition.debt.symbol
                 } ${t('after')}`,
               }
@@ -252,16 +246,15 @@ export function AaveMultiplyPositionData({
           />
           <DetailsSectionFooterItem
             title={t('system.buying-power')}
-            value={`${formatAmount(
-              currentPositionThings.buyingPower,
-              currentPosition.debt.symbol,
-            )} ${currentPosition.debt.symbol}`}
+            value={`${formatPrecision(currentPositionThings.buyingPower, 2)} ${
+              currentPosition.debt.symbol
+            }`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.buyingPower.gt(currentPositionThings.buyingPower)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.buyingPower, nextPosition.debt.symbol)} ${
+                value: `${formatPrecision(nextPositionThings.buyingPower, 2)} ${
                   nextPosition.debt.symbol
                 } ${t('after')}`,
               }
