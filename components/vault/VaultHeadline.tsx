@@ -1,8 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
 import { getTokens } from 'blockchain/tokensMetadata'
-import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
+import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
 import React from 'react'
 import { Flex } from 'theme-ui'
@@ -14,9 +13,16 @@ export type VaultHeadlineProps = {
   token: string[]
   details: HeadlineDetailsProp[]
   loading?: boolean
+  followButtonProps: FollowButtonProps
 }
 
-export function VaultHeadline({ header, token, details, loading = false }: VaultHeadlineProps) {
+export function VaultHeadline({
+  header,
+  token,
+  details,
+  loading = false,
+  followButtonProps,
+}: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   return (
     <Flex
@@ -54,10 +60,10 @@ export function VaultHeadline({ header, token, details, loading = false }: Vault
         {/* test data example vault */}
         {/* 0x497cb171ddf49af82250d7723195d7e47ca38a95 433 version-11.07.2022 5 */}
         <FollowButtonControl
-          followerAddress={'0x497CB171dDF49af82250D7723195D7E47Ca38A95'}
-          vaultId={new BigNumber(433)}
-          docVersion={'version-11.07.2022'}
-          chainId={5}
+          followerAddress={followButtonProps.followerAddress}
+          vaultId={followButtonProps.vaultId}
+          docVersion={followButtonProps.docVersion}
+          chainId={followButtonProps.chainId}
         />
       </Heading>
       <Flex
