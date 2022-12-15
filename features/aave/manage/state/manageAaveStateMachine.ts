@@ -65,6 +65,7 @@ export type ManageAaveEvent =
   | { type: 'MANAGE_DEBT'; manageTokenAction: ManageTokenInput['manageTokenAction'] }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
+  | { type: 'NEXT_STEP' }
   | { type: 'START_TRANSACTION' }
   | {
       type: 'POSITION_PROXY_ADDRESS_RECEIVED'
@@ -206,12 +207,80 @@ export function createManageAaveStateMachine(
                 ],
               },
             },
+            manageCollateral: {
+              entry: ['spawnDepositBorrowMachine'],
+              exit: ['killCurrentParametersMachine'],
+              on: {
+                NEXT_STEP: [
+                  {
+                    cond: 'isAllowanceNeeded',
+                    target: 'allowanceCollateralSetting',
+                  },
+                  {
+                    cond: 'validTransactionParameters',
+                    target: 'txInProgress',
+                    actions: ['closePositionTransactionEvent'],
+                  },
+                ],
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
+            manageDebt: {
+              entry: ['spawnDepositBorrowMachine'],
+              exit: ['killCurrentParametersMachine'],
+              on: {
+                NEXT_STEP: [
+                  {
+                    cond: 'isAllowanceNeeded',
+                    target: 'allowanceDebtSetting',
+                  },
+                  {
+                    cond: 'validTransactionParameters',
+                    target: 'txInProgress',
+                    actions: ['closePositionTransactionEvent'],
+                  },
+                ],
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
             allowanceSetting: {
               entry: ['spawnAllowanceMachine'],
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
                   target: 'reviewingAdjusting',
+                },
+              },
+            },
+            allowanceDebtSetting: {
+              entry: ['spawnAllowanceMachine'],
+              exit: ['killAllowanceMachine'],
+              on: {
+                ALLOWANCE_SUCCESS: {
+                  target: 'manageDebt',
+                },
+              },
+            },
+            allowanceCollateralSetting: {
+              entry: ['spawnAllowanceMachine'],
+              exit: ['killAllowanceMachine'],
+              on: {
+                ALLOWANCE_SUCCESS: {
+                  target: 'manageCollateral',
                 },
               },
             },
@@ -242,44 +311,7 @@ export function createManageAaveStateMachine(
                 },
               },
             },
-            manageCollateral: {
-              entry: ['spawnDepositBorrowMachine'],
-              exit: ['killCurrentParametersMachine'],
-              on: {
-                START_TRANSACTION: {
-                  cond: 'validTransactionParameters',
-                  target: 'txInProgress',
-                  actions: ['closePositionTransactionEvent'],
-                },
-                BACK_TO_EDITING: {
-                  target: 'editing',
-                },
-                CLOSE_POSITION: {
-                  cond: 'canChangePosition',
-                  target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
-                },
-              },
-            },
-            manageDebt: {
-              entry: ['spawnDepositBorrowMachine'],
-              exit: ['killCurrentParametersMachine'],
-              on: {
-                START_TRANSACTION: {
-                  cond: 'validTransactionParameters',
-                  target: 'txInProgress',
-                  actions: ['closePositionTransactionEvent'],
-                },
-                BACK_TO_EDITING: {
-                  target: 'editing',
-                },
-                CLOSE_POSITION: {
-                  cond: 'canChangePosition',
-                  target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
-                },
-              },
-            },
+
             txInProgress: {
               entry: ['spawnTransactionMachine'],
               on: {
@@ -344,12 +376,16 @@ export function createManageAaveStateMachine(
         MANAGE_COLLATERAL: {
           cond: 'canChangePosition',
           target: 'frontend.manageCollateral',
-          actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
+          actions: [
+            'resetTokenActionValue',
+            'updateCollateralTokenAction',
+            'setTransactionTokenToCollateral',
+          ],
         },
         MANAGE_DEBT: {
           cond: 'canChangePosition',
           target: 'frontend.manageDebt',
-          actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction', 'setTransactionTokenToDebt'],
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',
@@ -458,7 +494,8 @@ export function createManageAaveStateMachine(
             parameters: {
               amount: context.manageTokenInput?.manageTokenActionValue || zero,
               token:
-                context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT
+                context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT ||
+                context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT
                   ? context.tokens.debt
                   : context.tokens.collateral,
               proxyAddress: context.proxyAddress!,
@@ -513,16 +550,25 @@ export function createManageAaveStateMachine(
         spawnAllowanceMachine: assign((context) => ({
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
-              token: context.tokens.deposit,
+              token: context.transactionToken || context.tokens.deposit,
               spender: context.proxyAddress!,
               allowanceType: 'unlimited',
-              minimumAmount: context.userInput.amount!,
+              minimumAmount:
+                context.manageTokenInput?.manageTokenActionValue ||
+                context.userInput.amount ||
+                zero,
             }),
             'allowanceMachine',
           ),
         })),
         calculateEffectiveProxyAddress: assign((context) => ({
           effectiveProxyAddress: context.proxyAddress,
+        })),
+        setTransactionTokenToDebt: assign((context) => ({
+          transactionToken: context.strategyConfig.tokens.debt,
+        })),
+        setTransactionTokenToCollateral: assign((context) => ({
+          transactionToken: context.strategyConfig.tokens.collateral,
         })),
       },
     },

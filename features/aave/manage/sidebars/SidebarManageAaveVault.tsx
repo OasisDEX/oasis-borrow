@@ -22,6 +22,7 @@ import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
+import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
@@ -168,6 +169,7 @@ function GetReviewingSidebarProps({
               action="Enter"
               currencyCode={collateral}
               maxAmountLabel={'Balance'}
+              maxAmount={state.context.currentPosition?.collateral.amount}
               amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
@@ -226,13 +228,23 @@ function ManageAaveReviewingStateView({
 }: WithDropdownConfig<ManageAaveStateProps>) {
   const { t } = useTranslation()
 
+  const allowanceNeeded = isAllowanceNeeded(state.context)
+
+  console.log('allowanceNeeded', allowanceNeeded)
+
+  const label = allowanceNeeded
+    ? t('set-allowance-for', {
+        token: state.context.transactionToken || state.context.strategyConfig.tokens.deposit,
+      })
+    : t('manage-earn.aave.vault-form.confirm-btn')
+
   const sidebarSectionProps: SidebarSectionProps = {
     ...GetReviewingSidebarProps({ state, send }),
     primaryButton: {
       isLoading: false,
-      disabled: !state.can('START_TRANSACTION') || isLocked(state),
-      label: t('manage-earn.aave.vault-form.confirm-btn'),
-      action: () => send('START_TRANSACTION'),
+      disabled: !state.can('NEXT_STEP') || isLocked(state),
+      label: label,
+      action: () => send('NEXT_STEP'),
     },
     textButton: {
       label: t('manage-earn.aave.vault-form.back-to-editing'),
@@ -410,6 +422,8 @@ export function SidebarManageAaveVault() {
         />
       )
     case state.matches('frontend.allowanceSetting'):
+    case state.matches('frontend.allowanceDebtSetting'):
+    case state.matches('frontend.allowanceCollateralSetting'):
       return (
         <AllowanceView
           allowanceMachine={state.context.refAllowanceStateMachine!}

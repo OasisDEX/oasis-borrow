@@ -250,6 +250,8 @@ export async function getAdjustAaveParameters({
 }
 
 function getTokensInBaseUnit({ manageTokenInput, currentPosition }: ManageAaveParameters): [collateralInBaseUnit: BigNumber, debtInBaseUnit: BigNumber] {
+  console.log('manageTokenInput', manageTokenInput?.manageTokenAction)
+  console.log('manageTone', manageTokenInput?.manageTokenActionValue?.toString())
   if (!manageTokenInput?.manageTokenAction) {
     return [zero, zero]
   }
@@ -258,9 +260,11 @@ function getTokensInBaseUnit({ manageTokenInput, currentPosition }: ManageAavePa
   ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.collateral.symbol)
     : zero
 
-  const debtInBaseUnit = manageTokenInput?.manageTokenAction in [ManageDebtActionsEnum.PAYBACK_DEBT, ManageDebtActionsEnum.BORROW_DEBT]
+  const debtInBaseUnit = manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT || manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT
   ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.debt.symbol)
     : zero
+
+  console.log(`results`, collateralInBaseUnit.toString(), debtInBaseUnit.toString())
 
   return [collateralInBaseUnit, debtInBaseUnit]
 }
