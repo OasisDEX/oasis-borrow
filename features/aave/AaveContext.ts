@@ -3,10 +3,6 @@ import {
   createAaveOracleAssetPriceData$,
   createConvertToAaveOracleAssetPrice$,
 } from 'blockchain/aave/oracleAssetPriceData'
-import {
-  getAaveReservesList,
-  getAaveUserConfiguration,
-} from 'blockchain/calls/aave/aaveLendingPool'
 import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
 import {
   getAaveReserveConfigurationData,
@@ -42,7 +38,6 @@ import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
 import { createAavePrepareReserveData$ } from './helpers/aavePrepareReserveData'
 import { getProxiesRelatedWithPosition$ } from './helpers/getProxiesRelatedWithPosition'
-import { getStrategyConfig$ } from './helpers/getStrategyConfig'
 import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine,
@@ -74,6 +69,7 @@ export function setupAaveContext({
   userDpmProxy$,
   hasProxyAddressActiveAavePosition$,
   aaveProtocolData$,
+  strategyConfig$,
 }: AppContext) {
   const chainlinkUSDCUSDOraclePrice$ = memoize(
     observe(onEveryBlock$, context$, getChainlinkOraclePrice('USDCUSD'), () => 'true'),
@@ -100,8 +96,6 @@ export function setupAaveContext({
       observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
     ),
   )
-  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
-  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
   const aaveReserveConfigurationData$ = observe(
     onEveryBlock$,
     context$,
@@ -189,18 +183,6 @@ export function setupAaveContext({
     commonTransactionServices,
   )
 
-  // const aaveProtocolData$ = memoize(
-  //   curry(getAaveProtocolData$)(
-  //     aaveUserReserveData$,
-  //     aaveUserAccountData$,
-  //     aaveOracleAssetPriceData$,
-  //     aaveUserConfiguration$,
-  //     aaveReservesList$,
-  //     tempPositionFromLib$,
-  //   ),
-  //   (collateralToken, debtToken, proxyAddress) => `${collateralToken}-${debtToken}-${proxyAddress}`,
-  // )
-
   const getAvailableDPMProxy: (
     walletAddress: string,
   ) => Observable<UserDpmProxy | undefined> = memoize(
@@ -272,15 +254,6 @@ export function setupAaveContext({
     getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
-  )
-
-  const strategyConfig$ = memoize(
-    curry(getStrategyConfig$)(
-      proxiesRelatedWithPosition$,
-      aaveUserConfiguration$,
-      aaveReservesList$,
-    ),
-    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
   return {

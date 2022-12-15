@@ -1414,6 +1414,7 @@ export function setupAppContext() {
     potDsr$,
     potTotalValueLocked$,
     aaveProtocolData$,
+    strategyConfig$,
   }
 }
 
