@@ -33,6 +33,12 @@ export type IStrategyInfo = {
   collateralToken: string
 }
 
+export type StrategyTokenAllowance = {
+  collateral: BigNumber
+  debt: BigNumber
+  deposit: BigNumber
+}
+
 export type UpdateCollateralActionType = {
   type: 'UPDATE_COLLATERAL_TOKEN_ACTION'
   manageTokenAction: ManageCollateralActionsEnum
@@ -63,7 +69,7 @@ export type BaseAaveEvent =
   | UpdateTokenActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
   | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
-  | { type: 'UPDATE_ALLOWANCE'; tokenAllowance: BigNumber }
+  | { type: 'UPDATE_ALLOWANCE'; allowance: StrategyTokenAllowance }
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
@@ -84,7 +90,7 @@ export interface BaseAaveContext {
   strategy?: IPositionTransition
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
-  tokenAllowance?: BigNumber
+  allowance?: StrategyTokenAllowance
   tokenPrice?: BigNumber
   collateralPrice?: BigNumber
   debtPrice?: BigNumber
@@ -124,5 +130,5 @@ export function isAllowanceNeeded(context: BaseAaveContext): boolean {
     return false
   }
 
-  return (context.userInput.amount || zero).gt(context.tokenAllowance || zero)
+  return (context.userInput.amount || zero).gt(context.allowance?.deposit || zero)
 }

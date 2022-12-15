@@ -6,11 +6,11 @@ import { createTransactionParametersStateMachine } from '../../../stateMachines/
 import {
   AdjustAaveParameters,
   CloseAaveParameters,
-  DepositBorrowAaveParameters,
   getAdjustAaveParameters,
   getCloseAaveParameters,
-  getDepositBorrowAaveParameters,
+  getManageAaveParameters,
   getOpenAaveParameters,
+  ManageAaveParameters,
   OpenAaveParameters,
 } from '../../oasisActionsLibWrapper'
 
@@ -54,6 +54,6 @@ export function getDepositBorrowAaveMachine(
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
-    (parameters: DepositBorrowAaveParameters) => getDepositBorrowAaveParameters(parameters),
+    (parameters: ManageAaveParameters) => getManageAaveParameters(parameters),
   )
 }
