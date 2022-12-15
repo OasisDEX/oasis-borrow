@@ -8,6 +8,7 @@ import { amountFromWei } from '../../../../../blockchain/utils'
 import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
 import { AppSpinner } from '../../../../../helpers/AppSpinner'
 import { formatAmount, formatFiatBalance } from '../../../../../helpers/formatters/format'
+import { zero } from '../../../../../helpers/zero'
 
 interface BuyingTokenAmountProps {
   transactionParameters: IPositionTransition
@@ -21,6 +22,10 @@ export function TransactionTokenAmount({
   collateralPrice,
 }: BuyingTokenAmountProps) {
   const { t } = useTranslation()
+
+  if (transactionParameters.simulation.swap.toTokenAmount.lte(zero)) {
+    return <></>
+  }
   const isBuyingCollateral =
     transactionParameters.simulation.swap.targetToken.symbol === tokens.collateral
 

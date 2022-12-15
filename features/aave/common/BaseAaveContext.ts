@@ -104,6 +104,7 @@ export interface BaseAaveContext {
   userDpmProxy?: UserDpmProxy
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
+  transactionToken?: string
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
@@ -125,10 +126,31 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
   }
 }
 
+function allowanceForToken(
+  transactionToken: string,
+  context: BaseAaveContext,
+): BigNumber | undefined {
+  switch (transactionToken) {
+    case context.tokens.collateral:
+      return context.allowance?.collateral
+    case context.tokens.debt:
+      return context.allowance?.debt
+    case context.tokens.deposit:
+      return context.allowance?.deposit
+    default:
+      return zero
+  }
+}
+
 export function isAllowanceNeeded(context: BaseAaveContext): boolean {
-  if (context.tokens.deposit === 'ETH') {
+  const token = context.transactionToken || context.tokens.deposit
+  if (token === 'ETH') {
     return false
   }
 
-  return (context.userInput.amount || zero).gt(context.allowance?.deposit || zero)
+  const allowance = allowanceForToken(token, context)
+
+  return (context.userInput.amount || context.manageTokenInput?.manageTokenActionValue || zero).gt(
+    allowance || zero,
+  )
 }
