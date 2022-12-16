@@ -2097,5 +2097,12 @@
       "amountBiggerThanBalance": "You cannot deposit more Dai than the amount in your wallet",
       "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
     }
+  },
+  "ajna": {
+    "navigation": {
+      "common": {
+        "other-assets": "Other assets you can borrow against"
+      }
+    }
   }
 }

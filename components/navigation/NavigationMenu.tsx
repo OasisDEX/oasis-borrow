@@ -29,7 +29,15 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   return (
     <Box sx={{ position: 'relative' }} onMouseLeave={() => closeDropdown()}>
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
-        <Flex as="ul" sx={{ p: 0, listStyle: 'none', columnGap: '48px', px: '48px' }}>
+        <Flex
+          as="ul"
+          sx={{
+            listStyle: 'none',
+            columnGap: '40px',
+            px: '40px',
+            py: 2,
+          }}
+        >
           {panels?.map((panel) => (
             <NavigationMenuPanel
               key={`panel-${panel.label}`}

@@ -20,7 +20,12 @@ export function Navigation({ brandingLink = '/', links, panels, pill }: Navigati
     <Container
       as="header"
       variant="navigation"
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: '24px' }}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        mt: 3,
+      }}
     >
       <NavigationBranding link={brandingLink} pill={pill} />
       <NavigationMenu links={links} panels={panels} />

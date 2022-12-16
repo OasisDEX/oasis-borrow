@@ -36,6 +36,7 @@ export function NavigationMenuPanel({
   return (
     <Box
       as="li"
+      sx={{ p: 1 }}
       onMouseEnter={(e) => {
         const target = e.target as HTMLDivElement
 
