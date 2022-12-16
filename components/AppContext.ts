@@ -1291,6 +1291,7 @@ export function setupAppContext() {
     balance$,
     vaults$,
     hasActiveDsProxyAavePosition$,
+    readPositionCreatedEvents$,
     ensName$,
   )
 
