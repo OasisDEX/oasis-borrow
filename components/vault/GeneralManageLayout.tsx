@@ -19,7 +19,7 @@ interface GeneralManageLayoutProps {
   followButtonProps: FollowButtonProps
 }
 
-export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutProps) {
+export function GeneralManageLayout({ generalManageVault, followButtonProps }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
 
@@ -41,12 +41,7 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
           token={[vault.token]}
           priceInfo={priceInfo}
           colRatio={colRatioPercnentage} 
-          followButtonProps={{
-            // followerAddress: '0x497CB171dDF49af82250D7723195D7E47Ca38A95',
-            // vaultId: new BigNumber(433),
-            // docVersion: 'version-11.07.2022',
-            // chainId: 5
-          }} 
+          followButtonProps={followButtonProps} 
       />
     )
 

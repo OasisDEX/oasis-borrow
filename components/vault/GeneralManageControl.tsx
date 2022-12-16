@@ -37,12 +37,15 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <GeneralManageLayout generalManageVault={generalManageVault} followButtonProps={{
-              followerAddress: account,
-              vaultId: id,
-              docVersion: 'version-11.07.2022',
-              chainId: chainId
-            }} />
+            <GeneralManageLayout
+              generalManageVault={generalManageVault}
+              followButtonProps={{
+                followerAddress: account,
+                vaultId: id,
+                docVersion: 'version-11.07.2022',
+                chainId: chainId,
+              }}
+            />
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>
