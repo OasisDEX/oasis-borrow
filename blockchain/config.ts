@@ -40,7 +40,6 @@ import * as merkleRedeemer from './abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as operationExecutor from './abi/operation-executor.json'
 import * as otcSupport from './abi/otc-support-methods.json'
-import * as positionCreated from './abi/position-created.json'
 import * as vat from './abi/vat.json'
 import {
   getCollateralJoinContracts,
