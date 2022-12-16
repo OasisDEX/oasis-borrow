@@ -71,7 +71,7 @@ function calcViewValuesForPosition(
     .times(collateralTokenPrice)
   const netBorrowCostPercentage = costOfBorrowingDebt
     .minus(profitFromProvidingCollateral)
-    .div(debt.times(debtTokenPrice))
+    .div(netValue)
 
   return {
     collateral,
