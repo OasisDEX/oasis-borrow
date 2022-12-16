@@ -15,6 +15,7 @@ import { findKey } from 'lodash'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
+import { Tickers } from '../../../blockchain/prices'
 import { amountFromPrecision } from '../../../blockchain/utils'
 import { PositionCreatedEventPayload } from '../../aave/services/readPositionCreatedEvents'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
@@ -175,6 +176,7 @@ export function createAaveDpmPosition$(
     address: string,
   ) => Observable<AaveProtocolData>,
   getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>,
+  tickerPrices$: (tokens: string[]) => Observable<Tickers>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
   context$: Observable<Context>,
   readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreatedEventPayload[]>,
@@ -202,6 +204,12 @@ export function createAaveDpmPosition$(
             },
           )
 
+          const tickerPrices = positionCreatedEvents.map(({ collateralToken, debtToken }) => {
+            const collateral = getTokenFromAddress(context, collateralToken)
+            const debt = getTokenFromAddress(context, debtToken)
+            return tickerPrices$([collateral, debt])
+          })
+
           const wrappedGetAaveReserveDataObservableList = positionCreatedEvents.map(
             ({ debtToken }) => {
               const debt = getTokenFromAddress(context, debtToken)
@@ -212,9 +220,10 @@ export function createAaveDpmPosition$(
           return combineLatest(
             combineLatest(...protocolDataObservableList),
             combineLatest(...assetPricesListObservableList),
+            combineLatest(...tickerPrices),
             combineLatest(...wrappedGetAaveReserveDataObservableList),
           ).pipe(
-            map(([protocolDataList, assetPricesList, preparedAaveReserveData]) => {
+            map(([protocolDataList, assetPricesList, tickerPrices, preparedAaveReserveData]) => {
               return protocolDataList.map(
                 (
                   {
@@ -228,9 +237,14 @@ export function createAaveDpmPosition$(
                   index,
                 ) => {
                   const isDebtZero = debt.amount.isZero()
-                  const collateralTokenPrice = assetPricesList[index][0]
-                  const debtTokenPrice = assetPricesList[index][1]
-                  const token = getTokenFromAddress(
+
+                  const tickerCollateralTokenPriceInUsd = tickerPrices[index][collateral.symbol]
+                  const tickerDebtTokenPriceInUsd = tickerPrices[index][debt.symbol]
+
+                  const oracleCollateralTokenPriceInEth = assetPricesList[index][0]
+                  const oracleDebtTokenPriceInEth = assetPricesList[index][1]
+
+                  const collateralToken = getTokenFromAddress(
                     context,
                     positionCreatedEvents[index].collateralToken,
                   )
@@ -245,9 +259,9 @@ export function createAaveDpmPosition$(
                   )
                   const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
 
-                  const netValue = collateralNotWei
-                    .times(collateralTokenPrice)
-                    .minus(debtNotWei.times(debtTokenPrice))
+                  const netValueInEthAccordingToOracle = collateralNotWei
+                    .times(oracleCollateralTokenPriceInEth)
+                    .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
 
                   const liquidationPrice = !isDebtZero
                     ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
@@ -257,25 +271,29 @@ export function createAaveDpmPosition$(
 
                   const fundingCost = !isDebtZero
                     ? debtNotWei
-                        .times(debtTokenPrice)
-                        .div(netValue)
+                        .times(oracleDebtTokenPriceInEth)
+                        .div(netValueInEthAccordingToOracle)
                         .multipliedBy(variableBorrowRate)
                         .times(100)
                     : zero
+
+                  const netValueUsd = collateralNotWei
+                    .times(tickerCollateralTokenPriceInUsd)
+                    .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
 
                   const isOwner =
                     context.status === 'connected' && context.account === walletAddress
 
                   const position: AaveDpmPosition = {
-                    token,
-                    title: `${token}/${debtToken} AAVE`,
+                    token: collateralToken,
+                    title: `${collateralToken}/${debtToken} AAVE`,
                     url: `/aave/${userProxiesData[index].vaultId}`,
                     id: userProxiesData[index].vaultId,
-                    netValue,
+                    netValue: netValueUsd,
                     multiple,
                     liquidationPrice,
                     fundingCost,
-                    contentsUsd: netValue,
+                    contentsUsd: netValueUsd,
                     isOwner,
                     lockedCollateral: collateralNotWei,
                     type: mappymap[positionCreatedEvents[index].positionType],
