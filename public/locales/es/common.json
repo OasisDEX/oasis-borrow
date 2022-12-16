@@ -1151,6 +1151,24 @@
       "GUNIV3DAIUSDC2-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 1bps de UNI V3",
       "GUNIV3DAIUSDC1-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 5bps de UNI V3"
     },
+    "aave": {
+      "stETHeth": {
+        "title": "stETH/ETH AAVE",
+        "description": "Gana con tu ETH con aumentando las recompenzas de staking. Pide prestado ETH en AAVE para obtener más exposición a stETH."
+      },
+      "stETHusdc": {
+        "title": "Mayor multiple de stETH ",
+        "description": "Maximiza tu exposición a stETH con AAVE y USDC."
+      },
+      "ethusdc": {
+        "title": "Mayor multiple de ETH ",
+        "description": "Maximiza tu exposición a ETH con AAVE y USDC.."
+      },
+      "wBTCusdc": {
+        "title": "Mayor multiple de WBTC",
+        "description": "Maximiza tu exposición a WBTC con AAVE y USDC."
+      }
+    },
     "tags": {
       "lowest-fees-for-borrowing": "La menor tasa para préstamos",
       "staking-rewards": "Recompensas de staking",
