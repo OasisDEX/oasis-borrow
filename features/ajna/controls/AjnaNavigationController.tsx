@@ -1,6 +1,7 @@
 import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { Navigation } from 'components/navigation/Navigation'
+import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
 
@@ -160,7 +161,16 @@ export function AjnaNavigationController() {
             ]
           : []),
       ]}
-      actions={isConnected ? 'Wallet connected' : <ConnectWalletButton />}
+      actions={
+        isConnected ? (
+          <>
+            <NavigationOrb icon="exchange" iconSize={20} />
+            <NavigationOrb icon="bell" />
+          </>
+        ) : (
+          <ConnectWalletButton />
+        )
+      }
     />
   )
 }
