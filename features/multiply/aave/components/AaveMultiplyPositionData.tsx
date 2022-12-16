@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { NaNIsZero } from '../../../../helpers/nanIsZero'
+import { zero } from '../../../../helpers/zero'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
@@ -173,9 +174,7 @@ export function AaveMultiplyPositionData({
             value={formatDecimalAsPercent(NaNIsZero(currentPositionThings.netBorrowCostPercentage))}
             change={
               nextPositionThings && {
-                variant: nextPositionThings.netBorrowCostPercentage.lt(
-                  currentPositionThings.netBorrowCostPercentage,
-                )
+                variant: nextPositionThings.netBorrowCostPercentage.lte(zero)
                   ? 'positive'
                   : 'negative',
                 value: `${formatDecimalAsPercent(nextPositionThings.netBorrowCostPercentage)} ${t(
