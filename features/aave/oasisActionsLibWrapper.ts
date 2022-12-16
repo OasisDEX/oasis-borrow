@@ -1,4 +1,11 @@
-import { AAVETokens, IPosition, IPositionTransition, IRiskRatio, Position, strategies } from '@oasisdex/oasis-actions'
+import {
+  AAVETokens,
+  IPosition,
+  IPositionTransition,
+  IRiskRatio,
+  Position,
+  strategies,
+} from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
 
@@ -249,20 +256,30 @@ export async function getAdjustAaveParameters({
   }
 }
 
-function getTokensInBaseUnit({ manageTokenInput, currentPosition }: ManageAaveParameters): [collateralInBaseUnit: BigNumber, debtInBaseUnit: BigNumber] {
+function getTokensInBaseUnit({
+  manageTokenInput,
+  currentPosition,
+}: ManageAaveParameters): [BigNumber, BigNumber] {
   console.log('manageTokenInput', manageTokenInput?.manageTokenAction)
   console.log('manageTone', manageTokenInput?.manageTokenActionValue?.toString())
   if (!manageTokenInput?.manageTokenAction) {
     return [zero, zero]
   }
 
-  const collateralInBaseUnit = manageTokenInput?.manageTokenAction in [ManageCollateralActionsEnum.WITHDRAW_COLLATERAL, ManageCollateralActionsEnum.DEPOSIT_COLLATERAL]
-  ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.collateral.symbol)
-    : zero
+  const collateralInBaseUnit =
+    manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL ||
+    manageTokenInput.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
+      ? amountToWei(
+          manageTokenInput?.manageTokenActionValue || zero,
+          currentPosition.collateral.symbol,
+        )
+      : zero
 
-  const debtInBaseUnit = manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT || manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT
-  ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.debt.symbol)
-    : zero
+  const debtInBaseUnit =
+    manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT ||
+    manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT
+      ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.debt.symbol)
+      : zero
 
   console.log(`results`, collateralInBaseUnit.toString(), debtInBaseUnit.toString())
 
