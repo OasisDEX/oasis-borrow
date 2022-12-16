@@ -2,6 +2,7 @@ import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { allDefined } from 'helpers/allDefined'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -36,6 +37,9 @@ export function PriceImpact({
   } = transactionParameters.simulation.swap
 
   let swapPrice
+  if (!allDefined(toTokenAmount, fromTokenAmount) || !transactionParameters.simulation.swap) {
+    return <></>
+  }
 
   if (sourceToken.symbol === tokens.collateral) {
     swapPrice = amountFromWei(toTokenAmount, targetToken.precision).div(

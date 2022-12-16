@@ -1,6 +1,7 @@
 import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { allDefined } from 'helpers/allDefined'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -23,15 +24,15 @@ export function TransactionTokenAmount({
 }: BuyingTokenAmountProps) {
   const { t } = useTranslation()
 
-  if (transactionParameters.simulation.swap.toTokenAmount.lte(zero)) {
+  const { toTokenAmount, fromTokenAmount, targetToken } = transactionParameters.simulation.swap
+
+  if (!allDefined(toTokenAmount, fromTokenAmount) || toTokenAmount?.lte(zero)) {
     return <></>
   }
-  const isBuyingCollateral =
-    transactionParameters.simulation.swap.targetToken.symbol === tokens.collateral
+  const isBuyingCollateral = targetToken.symbol === tokens.collateral
 
-  const collateralMovement = isBuyingCollateral
-    ? transactionParameters.simulation.swap.toTokenAmount
-    : transactionParameters.simulation.swap.fromTokenAmount
+  const collateralMovement = isBuyingCollateral ? toTokenAmount : fromTokenAmount
+
   const amount = amountFromWei(collateralMovement, tokens.collateral)
 
   const labelKey = isBuyingCollateral ? 'vault-changes.buying-token' : 'vault-changes.selling-token'
