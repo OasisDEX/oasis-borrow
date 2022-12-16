@@ -19,7 +19,7 @@ import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { AavePosition } from './pipes/positions'
+import { AaveDpmPosition, AavePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
 
 export interface VaultsOverview {
@@ -29,15 +29,20 @@ export interface VaultsOverview {
 export function createVaultsOverview$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
   aavePositions$: (address: string) => Observable<AavePosition | undefined>,
+  aaveDpmPositions$: (address: string) => Observable<AaveDpmPosition[]>,
   address: string,
 ): Observable<VaultsOverview> {
-  return combineLatest(makerPositions$(address), aavePositions$(address)).pipe(
-    map(([makerPositions, aavePositions]) => {
+  return combineLatest(
+    makerPositions$(address),
+    aavePositions$(address),
+    aaveDpmPositions$(address),
+  ).pipe(
+    map(([makerPositions, aavePositions, aaveDpmPositions]) => {
       const makerVMs = mapToPositionVM(makerPositions)
       const aaveVMs = mapAavePositions(aavePositions ? [aavePositions] : [])
-
+      const aaveDpmVMs = mapAaveDpmPositions(aaveDpmPositions)
       return {
-        positions: [...makerVMs, ...aaveVMs],
+        positions: [...makerVMs, ...aaveVMs, ...aaveDpmVMs],
       }
     }),
   )
@@ -160,6 +165,57 @@ function mapAavePositions(position: AavePosition[]): PositionVM[] {
         hash: VaultViewMode.Overview,
         internalInNewTab: false,
       },
+    }
+  })
+}
+
+function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
+  return position.map((position) => {
+    if (position.type === 'multiply') {
+      return {
+        type: 'multiply' as const,
+        isOwnerView: position.isOwner,
+        icon: getToken(position.token).iconCircle,
+        ilk: position.title,
+        positionId: position.id.toString(),
+        multiple: `${position.multiple.toFixed(2)}x`,
+        netValue: `$${formatFiatBalance(position.netValue)}`,
+        liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+        fundingCost: formatPercent(position.fundingCost, {
+          precision: 2,
+        }),
+        collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+        automationEnabled: false,
+        editLinkProps: {
+          href: position.url,
+          hash: VaultViewMode.Overview,
+          internalInNewTab: false,
+        },
+      }
+    } else {
+      return {
+        type: 'earn' as const,
+        isOwnerView: position.isOwner,
+        icon: getToken(position.token).iconCircle,
+        ilk: position.title,
+        positionId: position.id.toString(),
+        multiple: `${position.multiple.toFixed(2)}x`,
+        netValue: `$${formatFiatBalance(position.netValue)}`,
+        liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+        fundingCost: formatPercent(position.fundingCost, {
+          precision: 2,
+        }),
+        collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+        automationEnabled: false,
+        editLinkProps: {
+          href: position.url,
+          hash: VaultViewMode.Overview,
+          internalInNewTab: false,
+        },
+        pnl: 'N/A',
+        sevenDayYield: 'sevenDayYield',
+        liquidity: 'liquidity',
+      }
     }
   })
 }

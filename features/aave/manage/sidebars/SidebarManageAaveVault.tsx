@@ -230,7 +230,7 @@ export function SidebarManageAaveVault() {
       return (
         <AdjustRiskView
           title={
-            state.context.strategyConfig.type === 'earn'
+            state.context.strategyConfig.type === 'Earn'
               ? t('sidebar-titles.manage-earn-position')
               : t('sidebar-titles.manage-multiply-position')
           }

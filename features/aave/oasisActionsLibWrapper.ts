@@ -43,6 +43,7 @@ export interface OpenAaveParameters {
   slippage: BigNumber
   proxyAddress: string
   proxyType: ProxyType
+  positionType: 'Multiply' | 'Earn' | 'Borrow'
 }
 
 export interface GetOnChainPositionParams {
@@ -103,6 +104,7 @@ export async function getOpenAaveParameters({
   slippage,
   proxyAddress,
   proxyType,
+  positionType,
 }: OpenAaveParameters): Promise<IPositionTransition> {
   try {
     checkContext(context, 'open position')
@@ -144,7 +146,7 @@ export async function getOpenAaveParameters({
       debtToken: _debtToken,
       collateralToken: _collateralToken,
       depositedByUser,
-      positionType: 'Multiply' as const,
+      positionType: positionType,
     }
 
     const stratDeps: Parameters<typeof strategies.aave.open>[1] = {

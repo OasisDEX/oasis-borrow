@@ -43,7 +43,7 @@ export function getAaveProtocolData$(
   aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
   aaveUserConfiguration$: AaveUserConfigurationType,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
-  tempPositionFromLib$: (
+  aaveOnChainPosition$: (
     collateralToken: string,
     debtToken: string,
     address: string,
@@ -58,7 +58,7 @@ export function getAaveProtocolData$(
     aaveOracleAssetPriceData$({ token: collateralToken }),
     aaveUserConfiguration$({ address: proxyAddress }),
     aaveReservesList$(),
-    tempPositionFromLib$(collateralToken, debtToken, proxyAddress),
+    aaveOnChainPosition$(collateralToken, debtToken, proxyAddress),
   ).pipe(
     map(
       ([
@@ -67,13 +67,13 @@ export function getAaveProtocolData$(
         oraclePrice,
         aaveUserConfiguration,
         aaveReservesList,
-        tempPositionFromLib,
+        onChainPosition,
       ]) => {
         return {
           positionData: reserveData,
           accountData: accountData,
           oraclePrice: oraclePrice,
-          position: tempPositionFromLib,
+          position: onChainPosition,
           aaveUserConfiguration,
           aaveReservesList,
         }

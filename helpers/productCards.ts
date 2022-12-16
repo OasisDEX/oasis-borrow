@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
+import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
@@ -15,8 +16,6 @@ import {
   ONLY_MULTIPLY_TOKENS,
   TokenMetadataType,
 } from '../blockchain/tokensMetadata'
-import { IStrategyConfig } from '../features/aave/common/StrategyConfigTypes'
-import { aaveStrategiesList } from '../features/aave/strategyConfig'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -72,7 +71,6 @@ export type ProductLandingPagesFilter = {
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
 export type Ilk = typeof supportedIlks[number]
-export type AaveStrategy = ReturnType<typeof aaveStrategiesList>[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -192,13 +190,19 @@ export function mapTokenToFilter(token: string) {
   return tokenKeyedFilters[token]
 }
 
+function getAaveEnabledStrategies(strategies: { strategy: string; featureToggle: Feature }[]) {
+  return strategies
+    .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
+    .map((item) => item.strategy)
+}
+
 export const productCardsConfig: {
   borrow: ProductPageType
   multiply: ProductPageType
   earn: ProductPageType
   landing: {
     featuredIlkCards: Record<ProductTypes, Array<Ilk>>
-    featuredAaveCards: Record<ProductTypes, Array<IStrategyConfig>>
+    featuredAaveCards: Record<ProductTypes, Array<string>>
   }
   descriptionCustomKeys: Record<Ilk, string>
   descriptionLinks: Record<Ilk, { link: string }>
@@ -275,8 +279,12 @@ export const productCardsConfig: {
     },
     featuredAaveCards: {
       borrow: [],
-      multiply: aaveStrategiesList('multiply'),
-      earn: aaveStrategiesList('earn'),
+      multiply: getAaveEnabledStrategies([
+        { strategy: 'ethusdc', featureToggle: 'AaveMultiplyETHUSDC' },
+        { strategy: 'stETHusdc', featureToggle: 'AaveMultiplySTETHUSDC' },
+        { strategy: 'wBTCusdc', featureToggle: 'AaveMultiplyWBTCUSDC' },
+      ]),
+      earn: getAaveEnabledStrategies([{ strategy: 'stETHeth', featureToggle: 'AaveEarnSTETHETH' }]),
     },
   },
   descriptionCustomKeys: {

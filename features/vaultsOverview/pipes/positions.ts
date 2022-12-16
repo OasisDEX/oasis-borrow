@@ -1,13 +1,22 @@
 import BigNumber from 'bignumber.js'
-import { combineLatest, EMPTY, Observable, of } from 'rxjs'
-import { filter, map, startWith, switchMap } from 'rxjs/operators'
-
 import {
   AaveUserAccountData,
   AaveUserAccountDataParameters,
   MINIMAL_COLLATERAL,
-} from '../../../blockchain/calls/aave/aaveLendingPool'
-import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
+} from 'blockchain/calls/aave/aaveLendingPool'
+import { AaveAssetsPricesParameters } from 'blockchain/calls/aave/aavePriceOracle'
+import { Context } from 'blockchain/network'
+import { UserDpmProxy } from 'blockchain/userDpmProxies'
+import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { AaveProtocolData } from 'features/aave/manage/services'
+import { zero } from 'helpers/zero'
+import { findKey } from 'lodash'
+import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import { filter, map, startWith, switchMap } from 'rxjs/operators'
+
+import { amountFromPrecision } from '../../../blockchain/utils'
+import { PositionCreatedEventPayload } from '../../aave/services/readPositionCreatedEvents'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
 
@@ -87,6 +96,17 @@ export type AavePosition = Position & {
   ownerAddress: string
 }
 
+export type AaveDpmPosition = Position & {
+  netValue: BigNumber
+  liquidationPrice: BigNumber
+  fundingCost: BigNumber
+  lockedCollateral: BigNumber
+  id: string
+  multiple: BigNumber
+  isOwner: boolean
+  type: 'multiply' | 'earn'
+}
+
 export function createAavePosition$(
   userAaveAccountData$: (
     parameters: AaveUserAccountDataParameters,
@@ -125,13 +145,155 @@ export function createAavePosition$(
 export function createPositions$(
   makerPositions$: (address: string) => Observable<Position[]>,
   aavePositions$: (address: string) => Observable<Position | undefined>,
+  aaveDpmPositions$: (address: string) => Observable<Position[]>,
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aavePositions$ = aavePositions$(address)
-  return combineLatest(_makerPositions$, _aavePositions$).pipe(
-    map(([makerPositions, aavePosition]) => {
-      return makerPositions.concat(aavePosition ? [aavePosition] : [])
+  const _aaveDpmPositions$ = aaveDpmPositions$(address)
+  return combineLatest(_makerPositions$, _aavePositions$, _aaveDpmPositions$).pipe(
+    map(([makerPositions, aavePosition, aaveDpmPositions]) => {
+      return [...makerPositions, ...(aavePosition ? [aavePosition] : []), ...aaveDpmPositions]
     }),
   )
 }
+
+function getTokenFromAddress(context: Context, tokenAddress: string) {
+  const token = findKey(context.tokens, (contractDesc) => contractDesc.address === tokenAddress)
+  if (!token) {
+    throw new Error(`could not find token for address ${tokenAddress}`)
+  }
+
+  return token
+}
+
+export function createAaveDpmPosition$(
+  userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
+  aaveProtocolData$: (
+    collateralToken: string,
+    debtToken: string,
+    address: string,
+  ) => Observable<AaveProtocolData>,
+  getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>,
+  wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
+  context$: Observable<Context>,
+  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreatedEventPayload[]>,
+  walletAddress: string,
+): Observable<AaveDpmPosition[]> {
+  return combineLatest(userDpmProxies$(walletAddress), context$).pipe(
+    switchMap(([userProxiesData, context]) => {
+      return combineLatest(readPositionCreatedEvents$(walletAddress)).pipe(
+        switchMap(([positionCreatedEvents]) => {
+          const protocolDataObservableList = positionCreatedEvents.map(
+            ({ collateralToken, debtToken }, index) => {
+              const collateral = getTokenFromAddress(context, collateralToken)
+              const debt = getTokenFromAddress(context, debtToken)
+              return aaveProtocolData$(collateral, debt, userProxiesData[index].proxy)
+            },
+          )
+
+          const assetPricesListObservableList = positionCreatedEvents.map(
+            ({ collateralToken, debtToken }) => {
+              const collateral = getTokenFromAddress(context, collateralToken)
+              const debt = getTokenFromAddress(context, debtToken)
+              return getAaveAssetsPrices$({
+                tokens: [debt, collateral],
+              })
+            },
+          )
+
+          const wrappedGetAaveReserveDataObservableList = positionCreatedEvents.map(
+            ({ debtToken }) => {
+              const debt = getTokenFromAddress(context, debtToken)
+              return wrappedGetAaveReserveData$(debt)
+            },
+          )
+
+          return combineLatest(
+            combineLatest(...protocolDataObservableList),
+            combineLatest(...assetPricesListObservableList),
+            combineLatest(...wrappedGetAaveReserveDataObservableList),
+          ).pipe(
+            map(([protocolDataList, assetPricesList, preparedAaveReserveData]) => {
+              return protocolDataList.map(
+                (
+                  {
+                    position: {
+                      riskRatio: { multiple },
+                      debt,
+                      collateral,
+                      category: { liquidationThreshold },
+                    },
+                  },
+                  index,
+                ) => {
+                  const isDebtZero = debt.amount.isZero()
+                  const collateralTokenPrice = assetPricesList[index][0]
+                  const debtTokenPrice = assetPricesList[index][1]
+                  const token = getTokenFromAddress(
+                    context,
+                    positionCreatedEvents[index].collateralToken,
+                  )
+                  const debtToken = getTokenFromAddress(
+                    context,
+                    positionCreatedEvents[index].debtToken,
+                  )
+
+                  const collateralNotWei = amountFromPrecision(
+                    collateral.amount,
+                    new BigNumber(collateral.precision),
+                  )
+                  const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
+
+                  const netValue = collateralNotWei
+                    .times(collateralTokenPrice)
+                    .minus(debtNotWei.times(debtTokenPrice))
+
+                  const liquidationPrice = !isDebtZero
+                    ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
+                    : zero
+
+                  const variableBorrowRate = preparedAaveReserveData[index].variableBorrowRate
+
+                  const fundingCost = !isDebtZero
+                    ? debtNotWei
+                        .times(debtTokenPrice)
+                        .div(netValue)
+                        .multipliedBy(variableBorrowRate)
+                        .times(100)
+                    : zero
+
+                  const isOwner =
+                    context.status === 'connected' && context.account === walletAddress
+
+                  const position: AaveDpmPosition = {
+                    token,
+                    title: `${token}/${debtToken} AAVE`,
+                    url: `/aave/${userProxiesData[index].vaultId}`,
+                    id: userProxiesData[index].vaultId,
+                    netValue,
+                    multiple,
+                    liquidationPrice,
+                    fundingCost,
+                    contentsUsd: netValue,
+                    isOwner,
+                    lockedCollateral: collateralNotWei,
+                    type: mappymap[positionCreatedEvents[index].positionType],
+                  }
+
+                  return position
+                },
+              )
+            }),
+          )
+        }),
+      )
+    }),
+    startWith([]),
+  )
+}
+
+const mappymap = {
+  Multiply: 'multiply',
+  Earn: 'earn',
+} as const

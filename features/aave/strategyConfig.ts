@@ -39,7 +39,7 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
-    type: 'earn',
+    type: 'Earn',
     featureToggle: 'AaveEarnSTETHETH',
   },
 
@@ -65,7 +65,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     featureToggle: 'AaveMultiplyETHUSDC',
-    type: 'multiply',
+    type: 'Multiply',
   },
 
   {
@@ -90,7 +90,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     featureToggle: 'AaveMultiplySTETHUSDC',
-    type: 'multiply',
+    type: 'Multiply',
   },
 
   {
@@ -115,7 +115,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     featureToggle: 'AaveMultiplyWBTCUSDC',
-    type: 'multiply',
+    type: 'Multiply',
   },
 ]
 
