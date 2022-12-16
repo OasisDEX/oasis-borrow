@@ -164,8 +164,8 @@ export function AjnaNavigationController() {
       actions={
         isConnected ? (
           <>
-            <NavigationOrb icon="exchange" iconSize={20} />
-            <NavigationOrb icon="bell" />
+            <NavigationOrb icon="exchange" iconSize={20} beacon />
+            <NavigationOrb icon="bell" beacon={11} />
           </>
         ) : (
           <ConnectWalletButton />
