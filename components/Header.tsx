@@ -287,7 +287,7 @@ function UserDesktopMenu() {
               ':hover': { color: 'primary100' },
             }}
           >
-            {showNewUniswapWidgetBeacon && (
+            {!showNewUniswapWidgetBeacon && (
               <Icon
                 name="new_beacon"
                 sx={{
