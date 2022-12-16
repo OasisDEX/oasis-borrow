@@ -13,10 +13,12 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$, context$ } = useAppContext()
+  const { generalManageVault$, context$, termsAcceptance$, checkAcceptanceFromApi$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context, contextError] = useObservable(context$)
+  // TODO ŁW use api to check version of tos for user
+  // const [termsAcceptance] = useObservable(termsAcceptance$)
 
   const account = context?.status === 'connected' ? context.account : ''
   const chainId = context?.chainId
@@ -42,7 +44,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
               followButtonProps={{
                 followerAddress: account,
                 vaultId: id,
-                docVersion: 'version-11.07.2022',
+                docVersion: 'version-11.07.2022', //TODO replace with version from api ł
                 chainId: chainId,
               }}
             />

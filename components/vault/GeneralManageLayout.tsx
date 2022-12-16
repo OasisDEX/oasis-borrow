@@ -1,5 +1,4 @@
 import { getNetworkName } from '@oasisdex/web3-context'
-import BigNumber from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
@@ -19,7 +18,10 @@ interface GeneralManageLayoutProps {
   followButtonProps: FollowButtonProps
 }
 
-export function GeneralManageLayout({ generalManageVault, followButtonProps }: GeneralManageLayoutProps) {
+export function GeneralManageLayout({
+  generalManageVault,
+  followButtonProps,
+}: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
 
@@ -37,11 +39,11 @@ export function GeneralManageLayout({ generalManageVault, followButtonProps }: G
       <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} />
     ) : (
       <DefaultVaultHeadline
-          header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
-          token={[vault.token]}
-          priceInfo={priceInfo}
-          colRatio={colRatioPercnentage} 
-          followButtonProps={followButtonProps} 
+        header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
+        token={[vault.token]}
+        priceInfo={priceInfo}
+        colRatio={colRatioPercnentage}
+        followButtonProps={followButtonProps}
       />
     )
 
