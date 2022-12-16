@@ -187,7 +187,7 @@ function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
         collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
         automationEnabled: false,
         editLinkProps: {
-          href: `/${position.id}`,
+          href: position.url,
           hash: VaultViewMode.Overview,
           internalInNewTab: false,
         },
@@ -208,7 +208,7 @@ function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
         collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
         automationEnabled: false,
         editLinkProps: {
-          href: `/${position.id}`,
+          href: position.url,
           hash: VaultViewMode.Overview,
           internalInNewTab: false,
         },
