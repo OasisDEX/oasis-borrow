@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React from 'react'
+import React, { PropsWithChildren, useEffect, useRef } from 'react'
 import { Box, Button } from 'theme-ui'
 
 export interface NavigationMenuOrbProps {
@@ -9,6 +9,8 @@ export interface NavigationMenuOrbProps {
   iconSize?: number
   isDisabled?: boolean
   beacon?: boolean | number
+  onClose?: () => void
+  onOpen?: () => void
 }
 
 export function NavigationOrb({
@@ -16,9 +18,20 @@ export function NavigationOrb({
   iconSize = 16,
   isDisabled,
   beacon,
-}: NavigationMenuOrbProps) {
+  children,
+  onClose,
+  onOpen,
+}: PropsWithChildren<NavigationMenuOrbProps>) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
+  const didMountRef = useRef(false)
   const ref = useOutsideElementClickHandler(() => setIsOpen(false))
+
+  useEffect(() => {
+    if (didMountRef.current) {
+      if (isOpen && onOpen) onOpen()
+      else if (!isOpen && onClose) onClose()
+    } else didMountRef.current = true
+  }, [isOpen])
 
   return (
     <Box ref={ref} sx={{ position: 'relative' }}>
@@ -93,7 +106,7 @@ export function NavigationOrb({
           position: 'absolute',
           top: '100%',
           right: 0,
-          mt: 1,
+          mt: 2,
           backgroundColor: 'neutral10',
           boxShadow: 'buttonMenu',
           borderRadius: 'large',
@@ -105,7 +118,7 @@ export function NavigationOrb({
           zIndex: 1,
         }}
       >
-        -
+        {children}
       </Box>
     </Box>
   )

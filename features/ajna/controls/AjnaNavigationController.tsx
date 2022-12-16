@@ -1,5 +1,6 @@
 import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
+import { SwapOrb } from 'components/navigation/content/SwapOrb'
 import { Navigation } from 'components/navigation/Navigation'
 import { NavigationOrb } from 'components/navigation/NavigationMenuOrb'
 import { useAccount } from 'helpers/useAccount'
@@ -164,7 +165,7 @@ export function AjnaNavigationController() {
       actions={
         isConnected ? (
           <>
-            <NavigationOrb icon="exchange" iconSize={20} beacon />
+            <SwapOrb />
             <NavigationOrb icon="bell" beacon={11} />
           </>
         ) : (
