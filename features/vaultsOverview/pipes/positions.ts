@@ -265,7 +265,10 @@ export function createAaveDpmPosition$(
 
                   const isOwner =
                     context.status === 'connected' && context.account === walletAddress
-
+                  console.log(
+                    'mappymap[positionCreatedEvents[index].positionType',
+                    mappymap[positionCreatedEvents[index].positionType],
+                  )
                   const position: AaveDpmPosition = {
                     token,
                     title: `${token}/${debtToken} AAVE`,

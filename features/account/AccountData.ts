@@ -2,6 +2,7 @@ import { Web3Context } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { PositionCreatedEventPayload } from 'features/aave/services/readPositionCreatedEvents'
 import { startWithDefault } from 'helpers/operators'
 import { combineLatest, Observable } from 'rxjs'
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
@@ -17,6 +18,7 @@ export function createAccountData(
   balance$: (token: string, address: string) => Observable<BigNumber>,
   vaults$: (address: string) => Observable<Vault[]>,
   hasActiveDsProxyAavePosition$: Observable<boolean>,
+  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreatedEventPayload[]>,
   ensName$: (address: string) => Observable<string>,
 ): Observable<AccountDetails> {
   return context$.pipe(
@@ -27,12 +29,20 @@ export function createAccountData(
         startWithDefault(vaults$(context.account).pipe(map((vault) => vault.length)), undefined),
         startWithDefault(ensName$(context.account), null),
         startWithDefault(hasActiveDsProxyAavePosition$, false),
+        startWithDefault(readPositionCreatedEvents$(context.account), []),
       ).pipe(
-        map(([balance, numberOfVaults, ensName, hasAavePosition]) => ({
-          numberOfVaults: hasAavePosition ? (numberOfVaults || 0) + 1 : numberOfVaults,
-          daiBalance: balance,
-          ensName,
-        })),
+        map(([balance, numberOfVaults, ensName, hasAavePosition, dpmPositionCreatedEvents]) => {
+          const numberOfDpmVaults = dpmPositionCreatedEvents.length
+            ? dpmPositionCreatedEvents.length
+            : 0
+          const numberOfAavePositions = hasAavePosition ? 1 : 0
+
+          return {
+            numberOfVaults: (numberOfVaults || 0) + numberOfDpmVaults + numberOfAavePositions,
+            daiBalance: balance,
+            ensName,
+          }
+        }),
       ),
     ),
     shareReplay(1),
