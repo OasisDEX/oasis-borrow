@@ -23,8 +23,6 @@ export function NotificationsIconButton({
 }: NotificationsIconButtonProps) {
   const { analyticsData } = useNotificationSocket()
 
-  notificationsCount = 99
-
   const handleButtonClick = () => {
     onButtonClick()
     trackingEvents.notifications.buttonClick(
