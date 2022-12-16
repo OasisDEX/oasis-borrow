@@ -25,7 +25,9 @@ export function createReadPositionCreatedEvents$(
         dpmProxies.map((dpmProxy) => {
           const positionCreatedContract = context.contract<AccountImplementation>({
             address: dpmProxy.proxy,
-            abi: positionCreatedAbi, // using this abi to get to the event
+            // the event is raised by the DPM proxy contract, but we need the position created
+            // ABI to read the event
+            abi: positionCreatedAbi,
           })
           return from(
             positionCreatedContract.getPastEvents('CreatePosition', {

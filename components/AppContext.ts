@@ -1044,7 +1044,6 @@ export function setupAppContext() {
     curry(createAaveDpmPosition$)(
       userDpmProxies$,
       aaveProtocolData$,
-      strategyConfig$,
       getAaveAssetsPrices$,
       wrappedGetAaveReserveData$,
       context$,
