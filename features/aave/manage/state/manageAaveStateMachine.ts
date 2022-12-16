@@ -290,7 +290,7 @@ export function createManageAaveStateMachine(
                 BACK_TO_EDITING: {
                   target: 'editing',
                 },
-                START_TRANSACTION: {
+                NEXT_STEP: {
                   cond: 'validTransactionParameters',
                   target: 'txInProgress',
                   actions: ['riskRatioConfirmTransactionEvent'],
@@ -300,7 +300,7 @@ export function createManageAaveStateMachine(
             reviewingClosing: {
               entry: ['closePositionEvent'],
               on: {
-                START_TRANSACTION: {
+                NEXT_STEP: {
                   cond: 'validTransactionParameters',
                   target: 'txInProgress',
                   actions: ['closePositionTransactionEvent'],
