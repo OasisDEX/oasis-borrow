@@ -460,6 +460,7 @@ export const oasisBaseTheme = {
       borderRadius: 'round',
       px: 4,
       py: 2,
+      transition: 'background-color 200ms',
       '&:focus': {
         outline: 'none',
       },
