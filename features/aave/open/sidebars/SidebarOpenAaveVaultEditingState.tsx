@@ -27,6 +27,9 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
         maxAmount={state.context.tokenBalance}
         showMax={true}
         maxAmountLabel={t('balance')}
+        onSetMax={() => {
+          send({ type: 'SET_AMOUNT', amount: state.context.tokenBalance! })
+        }}
         onChange={handleNumericInput((amount) => {
           if (amount) {
             send({ type: 'SET_AMOUNT', amount: amount })
