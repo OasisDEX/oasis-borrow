@@ -40,6 +40,7 @@ import * as merkleRedeemer from './abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as operationExecutor from './abi/operation-executor.json'
 import * as otcSupport from './abi/otc-support-methods.json'
+import * as positionCreated from './abi/position-created.json'
 import * as vat from './abi/vat.json'
 import {
   getCollateralJoinContracts,
@@ -255,6 +256,7 @@ const protoMain = {
   swapAddress: mainnetAddresses.SWAP,
   accountFactory: contractDesc(accountFactory, mainnetAddresses.ACCOUNT_FACTORY),
   accountGuard: contractDesc(accountGuard, mainnetAddresses.ACCOUNT_GUARD),
+  positionCreated: contractDesc(positionCreated, mainnetAddresses.POSITION_CREATED),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -359,6 +361,7 @@ const kovan: NetworkConfig = {
   swapAddress: main.swapAddress,
   accountFactory: contractDesc(accountFactory, '0x0'),
   accountGuard: contractDesc(accountGuard, '0x0'),
+  positionCreated: contractDesc(positionCreated, '0x0'),
 }
 
 const goerli: NetworkConfig = {
@@ -466,6 +469,7 @@ const goerli: NetworkConfig = {
   swapAddress: goerliAddresses.SWAP,
   accountFactory: contractDesc(accountFactory, goerliAddresses.ACCOUNT_FACTORY),
   accountGuard: contractDesc(accountGuard, goerliAddresses.ACCOUNT_GUARD),
+  positionCreated: contractDesc(positionCreated, '0x0'),
 }
 
 const hardhat: NetworkConfig = {

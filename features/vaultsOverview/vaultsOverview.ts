@@ -171,25 +171,51 @@ function mapAavePositions(position: AavePosition[]): PositionVM[] {
 
 function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
   return position.map((position) => {
-    return {
-      type: 'multiply' as const,
-      isOwnerView: position.isOwner,
-      icon: getToken(position.token).iconCircle,
-      ilk: position.title,
-      positionId: position.id.toString(),
-      multiple: `${position.multiple.toFixed(2)}x`,
-      netValue: `$${formatFiatBalance(position.netValue)}`,
-      liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
-      fundingCost: formatPercent(position.fundingCost, {
-        precision: 2,
-      }),
-      collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
-      automationEnabled: false,
-      editLinkProps: {
-        href: `/${position.id}`,
-        hash: VaultViewMode.Overview,
-        internalInNewTab: false,
-      },
+    if (position.type === 'multiply') {
+      return {
+        type: 'multiply' as const,
+        isOwnerView: position.isOwner,
+        icon: getToken(position.token).iconCircle,
+        ilk: position.title,
+        positionId: position.id.toString(),
+        multiple: `${position.multiple.toFixed(2)}x`,
+        netValue: `$${formatFiatBalance(position.netValue)}`,
+        liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+        fundingCost: formatPercent(position.fundingCost, {
+          precision: 2,
+        }),
+        collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+        automationEnabled: false,
+        editLinkProps: {
+          href: `/${position.id}`,
+          hash: VaultViewMode.Overview,
+          internalInNewTab: false,
+        },
+      }
+    } else {
+      return {
+        type: 'earn' as const,
+        isOwnerView: position.isOwner,
+        icon: getToken(position.token).iconCircle,
+        ilk: position.title,
+        positionId: position.id.toString(),
+        multiple: `${position.multiple.toFixed(2)}x`,
+        netValue: `$${formatFiatBalance(position.netValue)}`,
+        liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+        fundingCost: formatPercent(position.fundingCost, {
+          precision: 2,
+        }),
+        collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+        automationEnabled: false,
+        editLinkProps: {
+          href: `/${position.id}`,
+          hash: VaultViewMode.Overview,
+          internalInNewTab: false,
+        },
+        pnl: 'N/A',
+        sevenDayYield: 'sevenDayYield',
+        liquidity: 'liquidity',
+      }
     }
   })
 }

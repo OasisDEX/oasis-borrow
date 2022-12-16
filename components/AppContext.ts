@@ -294,6 +294,7 @@ import { combineLatest, defer, from, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
+import { createReadPositionCreatedEvents$ } from '../features/aave/services/readPositionCreatedEvents'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -1035,6 +1036,10 @@ export function setupAppContext() {
     ),
   )
 
+  const readPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
+  )
+
   const aaveDpmPositions$ = memoize(
     curry(createAaveDpmPosition$)(
       userDpmProxies$,
@@ -1043,6 +1048,7 @@ export function setupAppContext() {
       getAaveAssetsPrices$,
       wrappedGetAaveReserveData$,
       context$,
+      readPositionCreatedEvents$,
     ),
   )
 

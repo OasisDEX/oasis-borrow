@@ -13,9 +13,12 @@ import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserv
 import { AaveProtocolData } from 'features/aave/manage/services'
 import { PositionId } from 'features/aave/types'
 import { zero } from 'helpers/zero'
-import { combineLatest, concat, EMPTY, Observable, of } from 'rxjs'
-import { filter, map, startWith, switchMap, toArray } from 'rxjs/operators'
+import { findKey } from 'lodash'
+import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
+import { amountFromPrecision } from '../../../blockchain/utils'
+import { PositionCreatedEventPayload } from '../../aave/services/readPositionCreatedEvents'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
 
@@ -103,6 +106,7 @@ export type AaveDpmPosition = Position & {
   id: string
   multiple: BigNumber
   isOwner: boolean
+  type: 'multiply' | 'earn'
 }
 
 export function createAavePosition$(
@@ -156,6 +160,15 @@ export function createPositions$(
   )
 }
 
+function getTokenFromAddress(context: Context, tokenAddress: string) {
+  const token = findKey(context.tokens, (contractDesc) => contractDesc.address === tokenAddress)
+  if (!token) {
+    throw new Error(`could not find token for address ${tokenAddress}`)
+  }
+
+  return token
+}
+
 export function createAaveDpmPosition$(
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
   aaveProtocolData$: (
@@ -167,35 +180,44 @@ export function createAaveDpmPosition$(
   getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
   context$: Observable<Context>,
+  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreatedEventPayload[]>,
   walletAddress: string,
 ): Observable<AaveDpmPosition[]> {
   return combineLatest(userDpmProxies$(walletAddress), context$).pipe(
     switchMap(([userProxiesData, context]) => {
-      return combineLatest(
-        userProxiesData.map((proxyData) => strategyConfig$({ walletAddress: proxyData.user })),
-      ).pipe(
-        switchMap((strategyConfig) => {
-          const protocolDataObservableList = strategyConfig.map(
-            ({ tokens: { collateral, debt } }, index) =>
-              aaveProtocolData$(collateral, debt, userProxiesData[index].proxy),
-          )
-          const assetPricesListObservableList = strategyConfig.map(
-            ({ tokens: { collateral, debt } }) =>
-              getAaveAssetsPrices$({
-                tokens: [debt, collateral],
-              }),
+      return combineLatest(readPositionCreatedEvents$(walletAddress)).pipe(
+        switchMap(([positionCreatedEvents]) => {
+          const protocolDataObservableList = positionCreatedEvents.map(
+            ({ collateralToken, debtToken }, index) => {
+              const collateral = getTokenFromAddress(context, collateralToken)
+              const debt = getTokenFromAddress(context, debtToken)
+              return aaveProtocolData$(collateral, debt, userProxiesData[index].proxy)
+            },
           )
 
-          const wrappedGetAaveReserveDataObservableList = strategyConfig.map(
-            ({ tokens: { debt } }) => wrappedGetAaveReserveData$(debt),
+          const assetPricesListObservableList = positionCreatedEvents.map(
+            ({ collateralToken, debtToken }) => {
+              const collateral = getTokenFromAddress(context, collateralToken)
+              const debt = getTokenFromAddress(context, debtToken)
+              return getAaveAssetsPrices$({
+                tokens: [debt, collateral],
+              })
+            },
+          )
+
+          const wrappedGetAaveReserveDataObservableList = positionCreatedEvents.map(
+            ({ debtToken }) => {
+              const debt = getTokenFromAddress(context, debtToken)
+              return wrappedGetAaveReserveData$(debt)
+            },
           )
 
           return combineLatest(
-            concat(...protocolDataObservableList).pipe(toArray()),
-            concat(...assetPricesListObservableList).pipe(toArray()),
-            concat(...wrappedGetAaveReserveDataObservableList).pipe(toArray()),
+            combineLatest(...protocolDataObservableList),
+            combineLatest(...assetPricesListObservableList),
+            combineLatest(...wrappedGetAaveReserveDataObservableList),
           ).pipe(
-            switchMap(([protocolDataList, assetPricesList, preparedAaveReserveData]) => {
+            map(([protocolDataList, assetPricesList, preparedAaveReserveData]) => {
               return protocolDataList.map(
                 (
                   {
@@ -211,21 +233,33 @@ export function createAaveDpmPosition$(
                   const isDebtZero = debt.amount.isZero()
                   const collateralTokenPrice = assetPricesList[index][0]
                   const debtTokenPrice = assetPricesList[index][1]
-                  const token = strategyConfig[index].tokens.collateral
-                  const debtToken = strategyConfig[index].tokens.debt
+                  const token = getTokenFromAddress(
+                    context,
+                    positionCreatedEvents[index].collateralToken,
+                  )
+                  const debtToken = getTokenFromAddress(
+                    context,
+                    positionCreatedEvents[index].debtToken,
+                  )
 
-                  const netValue = collateral.amount
+                  const collateralNotWei = amountFromPrecision(
+                    collateral.amount,
+                    new BigNumber(collateral.precision),
+                  )
+                  const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
+
+                  const netValue = collateralNotWei
                     .times(collateralTokenPrice)
-                    .minus(debt.amount.times(debtTokenPrice))
+                    .minus(debtNotWei.times(debtTokenPrice))
 
                   const liquidationPrice = !isDebtZero
-                    ? debt.amount.div(collateral.amount.times(liquidationThreshold))
+                    ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
                     : zero
 
                   const variableBorrowRate = preparedAaveReserveData[index].variableBorrowRate
 
                   const fundingCost = !isDebtZero
-                    ? debt.amount
+                    ? debtNotWei
                         .times(debtTokenPrice)
                         .div(netValue)
                         .multipliedBy(variableBorrowRate)
@@ -235,7 +269,7 @@ export function createAaveDpmPosition$(
                   const isOwner =
                     context.status === 'connected' && context.account === walletAddress
 
-                  return {
+                  const position: AaveDpmPosition = {
                     token,
                     title: `${token}/${debtToken} AAVE`,
                     url: `/aave/${userProxiesData[index].vaultId}`,
@@ -246,7 +280,11 @@ export function createAaveDpmPosition$(
                     fundingCost,
                     contentsUsd: netValue,
                     isOwner,
+                    lockedCollateral: collateralNotWei,
+                    type: mappymap[positionCreatedEvents[index].positionType],
                   }
+
+                  return position
                 },
               )
             }),
@@ -257,3 +295,8 @@ export function createAaveDpmPosition$(
     startWith([]),
   )
 }
+
+const mappymap = {
+  Multiply: 'multiply',
+  Earn: 'earn',
+} as const
