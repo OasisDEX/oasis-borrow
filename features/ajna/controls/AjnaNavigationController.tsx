@@ -1,24 +1,21 @@
-import { useAppContext } from 'components/AppContextProvider'
-import { useVaultCount } from 'components/Header'
+import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
+import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
+import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
+import { SwapOrb } from 'components/navigation/content/SwapOrb'
 import { Navigation } from 'components/navigation/Navigation'
-import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
-import { Spinner } from 'theme-ui'
 
 export function AjnaNavigationController() {
-  const { context$ } = useAppContext()
-  const [context] = useObservable(context$)
-  const vaultCount = useVaultCount()
-
-  const isConnected = context?.status === 'connected'
+  const { isConnected } = useAccount()
 
   return (
     <Navigation
+      pill={{ label: 'Ajna', color: ['#f154db', '#974eea'] }}
       panels={[
         {
-          description: 'Borrow against your favorite crypto assets.',
           label: 'Borrow',
+          description: 'Borrow against your favorite crypto assets.',
           learn: {
             label: 'Learn more about Borrow',
             link: 'https://kb.oasis.app/',
@@ -93,8 +90,8 @@ export function AjnaNavigationController() {
           ],
         },
         {
-          description: 'Multiply your exposure to your favorite crypto assets.',
           label: 'Multiply',
+          description: 'Multiply your exposure to your favorite crypto assets.',
           learn: {
             label: 'Learn more about Multiply',
             link: 'https://kb.oasis.app/',
@@ -119,8 +116,8 @@ export function AjnaNavigationController() {
           ],
         },
         {
-          description: 'Put your crypto assets to work today.',
           label: 'Earn',
+          description: 'Put your crypto assets to work today.',
           learn: {
             label: 'Learn more about Earn',
             link: 'https://kb.oasis.app/',
@@ -159,27 +156,22 @@ export function AjnaNavigationController() {
         ...(isConnected
           ? [
               {
-                label: (
-                  <>
-                    My positions (
-                    {vaultCount !== null ? (
-                      vaultCount
-                    ) : (
-                      <Spinner
-                        size={14}
-                        color={ajnaExtensionTheme.colors.neutral80}
-                        sx={{ verticalAlign: 'text-bottom' }}
-                      />
-                    )}
-                    )
-                  </>
-                ),
+                label: <MyPositionsLink />,
                 link: '/my',
               },
             ]
           : []),
       ]}
-      pill={{ label: 'Ajna', color: ['#f154db', '#974eea'] }}
+      actions={
+        isConnected ? (
+          <>
+            <SwapOrb />
+            <NotificationsOrb />
+          </>
+        ) : (
+          <ConnectWalletButton />
+        )
+      }
     />
   )
 }
