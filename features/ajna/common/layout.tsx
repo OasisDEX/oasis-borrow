@@ -1,6 +1,6 @@
+import { AnjaFooter } from 'components/AnjaFooter'
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
-import { Footer } from 'components/Footer'
 import { PageSEOTags } from 'components/HeadTags'
 import { BasicLayout } from 'components/Layouts'
 import { AjnaNavigationController } from 'features/ajna/controls/AjnaNavigationController'
@@ -22,7 +22,7 @@ export function AjnaLayout({ children }: PropsWithChildren<{}>) {
     <ThemeProvider theme={ajnaExtensionTheme}>
       <BasicLayout
         header={<AjnaNavigationController />}
-        footer={<Footer />}
+        footer={<AnjaFooter />}
         sx={{ position: 'relative' }}
         bg={<Background isAjnaPage />}
       >

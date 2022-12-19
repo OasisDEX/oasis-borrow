@@ -1,13 +1,20 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
+import { AnjaHomepageView } from 'features/homepage/AnjaHomepageView'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box } from 'theme-ui'
+
+export const getStaticProps = async ({ locale }: { locale: string }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+})
 
 function AjnaLandingPage() {
   return (
     <WithConnection>
       <AjnaWrapper>
-        <Box sx={{ width: '100%', height: '500px' }}>Test</Box>
+        <AnjaHomepageView />
       </AjnaWrapper>
     </WithConnection>
   )

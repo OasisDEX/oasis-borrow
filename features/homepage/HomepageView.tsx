@@ -20,7 +20,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
@@ -116,7 +116,7 @@ function Stats({ sx }: { sx?: SxProps }) {
   )
 }
 
-function HomepageTabLayout(props: { paraText?: JSX.Element; cards: JSX.Element }) {
+export function HomepageTabLayout(props: { paraText?: JSX.Element; cards: JSX.Element }) {
   return (
     <Flex
       sx={{
@@ -189,12 +189,8 @@ export function HomepageView() {
       {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
       <Hero
         isConnected={context?.status === 'connected'}
-        sx={{
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: standardAnimationDuration,
-          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
-        }}
+        heading="landing.hero.maker.headline"
+        subheading={<Trans i18nKey="landing.hero.maker.subheader" components={[<br />]} />}
       />
 
       <Pills
@@ -232,15 +228,15 @@ export function HomepageView() {
           defaultTab="earn"
           sections={[
             {
-              label: t('landing.tabs.multiply.tabLabel'),
+              label: t('landing.tabs.maker.multiply.tabLabel'),
               value: 'multiply',
               content: (
                 <HomepageTabLayout
                   paraText={
                     <>
-                      {t('landing.tabs.multiply.tabParaContent')}{' '}
+                      {t('landing.tabs.maker.multiply.tabParaContent')}{' '}
                       <AppLink href="/multiply" variant="inText">
-                        {t('landing.tabs.multiply.tabParaLinkContent')}
+                        {t('landing.tabs.maker.multiply.tabParaLinkContent')}
                       </AppLink>
                     </>
                   }
@@ -256,15 +252,15 @@ export function HomepageView() {
               ),
             },
             {
-              label: t('landing.tabs.borrow.tabLabel'),
+              label: t('landing.tabs.maker.borrow.tabLabel'),
               value: 'borrow',
               content: (
                 <HomepageTabLayout
                   paraText={
                     <>
-                      <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+                      <Text as="p">{t('landing.tabs.maker.borrow.tabParaContent')} </Text>
                       <AppLink href="/borrow" variant="inText">
-                        {t('landing.tabs.borrow.tabParaLinkContent')}
+                        {t('landing.tabs.maker.borrow.tabParaLinkContent')}
                       </AppLink>
                     </>
                   }
@@ -281,15 +277,15 @@ export function HomepageView() {
             },
 
             {
-              label: t('landing.tabs.earn.tabLabel'),
+              label: t('landing.tabs.maker.earn.tabLabel'),
               value: 'earn',
               content: (
                 <HomepageTabLayout
                   paraText={
                     <>
-                      {t('landing.tabs.earn.tabParaContent')}{' '}
+                      {t('landing.tabs.maker.earn.tabParaContent')}{' '}
                       <AppLink href="/earn" variant="inText">
-                        {t('landing.tabs.earn.tabParaLinkContent')}
+                        {t('landing.tabs.maker.earn.tabParaLinkContent')}
                       </AppLink>
                     </>
                   }
@@ -451,28 +447,41 @@ export function HomepageView() {
   )
 }
 
-export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
+export function Hero({
+  sx,
+  isConnected,
+  heading,
+  subheading,
+}: {
+  sx?: SxStyleProp
+  isConnected: boolean
+  heading: string
+  subheading: ReactNode
+}) {
   const { t } = useTranslation()
   const referralsEnabled = useFeatureToggle('Referrals')
-  const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
 
   return (
     <Flex
       sx={{
-        ...sx,
+        ...slideInAnimation,
+        position: 'relative',
+        animationDuration: '0.7s',
+        animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         justifySelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
         mt: referralsEnabled ? '24px' : '64px',
         mb: 5,
         flexDirection: 'column',
+        ...sx,
       }}
     >
       <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
         {t(heading)}
       </Heading>
       <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
-        <Trans i18nKey={subheading} components={[<br />]} />
+        {subheading}
       </Text>
       <AppLink
         href={isConnected ? '/' : '/connect'}
