@@ -1,10 +1,10 @@
+import { ethers, utils } from 'ethers'
 import { combineLatest, from, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import * as positionCreatedAbi from '../../../blockchain/abi/position-created.json'
+import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
 import { Context } from '../../../blockchain/network'
 import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
-import { AccountImplementation } from '../../../types/web3-v1-contracts/account-implementation'
 
 export type PositionCreatedEventPayload = {
   collateralToken: string
@@ -23,17 +23,22 @@ export function createReadPositionCreatedEvents$(
     switchMap(([context, dpmProxies]) => {
       return combineLatest(
         dpmProxies.map((dpmProxy) => {
-          const positionCreatedContract = context.contract<AccountImplementation>({
-            address: dpmProxy.proxy,
-            // the event is raised by the DPM proxy contract, but we need the position created
-            // ABI to read the event
-            abi: positionCreatedAbi,
-          })
+          // using the contract from the context was causing issues when mutating
+          // multiply position
+          const positionCreatedContract = new ethers.Contract(
+            dpmProxy.proxy,
+            positionCreatedAbi,
+            context.rpcProvider,
+          )
+
           return from(
-            positionCreatedContract.getPastEvents('CreatePosition', {
-              fromBlock: 16183119,
-              toBlock: 'latest',
-            }),
+            positionCreatedContract.queryFilter(
+              {
+                address: dpmProxy.proxy,
+                topics: [utils.id('CreatePosition(address,string,string,address,address)')],
+              },
+              16183119,
+            ),
           )
         }),
       ).pipe(
@@ -41,7 +46,7 @@ export function createReadPositionCreatedEvents$(
           return positionCreatedEvents
             .flatMap((events) => events)
             .filter((e) => e.event === 'CreatePosition')
-            .map((e) => e.returnValues as PositionCreatedEventPayload)
+            .map((e) => (e.args as unknown) as PositionCreatedEventPayload)
         }),
       )
     }),
