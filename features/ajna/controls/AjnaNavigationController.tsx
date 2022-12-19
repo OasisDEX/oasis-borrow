@@ -6,6 +6,41 @@ import { Navigation } from 'components/navigation/Navigation'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
 
+export const otherAssets = [
+  {
+    token: 'AAVE',
+    link: '/',
+  },
+  {
+    token: 'BAL',
+    link: '/',
+  },
+  {
+    token: 'COMP',
+    link: '/',
+  },
+  {
+    token: 'LINK',
+    link: '/',
+  },
+  {
+    token: 'COMP',
+    link: '/',
+  },
+  {
+    token: 'MANA',
+    link: '/',
+  },
+  {
+    token: 'UNI',
+    link: '/',
+  },
+  {
+    token: 'YFI',
+    link: '/',
+  },
+]
+
 export function AjnaNavigationController() {
   const { isConnected } = useAccount()
 
@@ -54,40 +89,7 @@ export function AjnaNavigationController() {
               footnote: 'Donec consectetur tellus quis augue vehicula lobortis',
             },
           ],
-          otherAssets: [
-            {
-              token: 'AAVE',
-              link: '/',
-            },
-            {
-              token: 'BAL',
-              link: '/',
-            },
-            {
-              token: 'COMP',
-              link: '/',
-            },
-            {
-              token: 'LINK',
-              link: '/',
-            },
-            {
-              token: 'COMP',
-              link: '/',
-            },
-            {
-              token: 'MANA',
-              link: '/',
-            },
-            {
-              token: 'UNI',
-              link: '/',
-            },
-            {
-              token: 'YFI',
-              link: '/',
-            },
-          ],
+          otherAssets,
         },
         {
           label: 'Multiply',

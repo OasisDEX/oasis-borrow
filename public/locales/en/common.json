@@ -365,10 +365,14 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "headlinePreAssetLandingPages": "Borrow Dai and Multiply your exposure to crypto",
-      "subheaderPreAssetLandingPages": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start.",
-      "headline": "Deploy your crypto into DeFi",
-      "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+      "maker": {
+        "headline": "Deploy your crypto into DeFi",
+        "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+      },
+      "ajna": {
+        "headline": "Borrow and lend your crypto on Ajna",
+        "subheader": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
+      }
     },
     "stats": {
       "30-day-volume": "30 Day Volume",
@@ -386,20 +390,48 @@
       }
     },
     "tabs": {
-      "borrow": {
-        "tabLabel": "Borrow on Oasis",
-        "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
-        "tabParaLinkContent": "See all Borrow collateral types →"
+      "maker": {
+        "borrow": {
+          "tabLabel": "Borrow on Oasis",
+          "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
+          "tabParaLinkContent": "See all Borrow collateral types →"
+        },
+        "multiply": {
+          "tabLabel": "Multiply on Oasis",
+          "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
+          "tabParaLinkContent": "See all Multiply collateral types →"
+        },
+        "earn": {
+          "tabLabel": "Earn on Oasis",
+          "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
+          "tabParaLinkContent": "Learn more about Earn →"
+        }
       },
-      "multiply": {
-        "tabLabel": "Multiply on Oasis",
-        "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
-        "tabParaLinkContent": "See all Multiply collateral types →"
-      },
-      "earn": {
-        "tabLabel": "Earn on Oasis",
-        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
-        "tabParaLinkContent": "Learn more about Earn →"
+      "ajna": {
+        "borrow": {
+          "tabLabel": "Borrow on Ajna",
+          "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
+          "tabParaLinkContent": "See all Borrow collateral types →"
+        },
+        "multiply": {
+          "tabLabel": "Multiply your exposure on Ajna",
+          "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
+          "tabParaLinkContent": "See all Multiply collateral types →"
+        },
+        "earn": {
+          "tabLabel": "Earn a yield with Ajna",
+          "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
+          "tabParaLinkContent": "Learn more about Earn →"
+        }
+      }
+    },
+    "benefits": {
+      "ajna": {
+        "header": "Benefits of Ajna protocol",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin mollis fringilla. Nunc bibendum ultricies mi. Donec vitae elementum turpis.",
+        "card-header-1": "Borrow and lend against your entire crypto portfolio",
+        "card-header-2": "Immutable and governance free system",
+        "card-header-3": "Competitive, market-driven parameters"
       }
     },
     "info-cards": {
@@ -2001,13 +2033,13 @@
       "open-btn": "Open Multiply position"
     }
   },
-  "sidebar-titles" : {
+  "sidebar-titles": {
     "open-earn-position": "Open Earn position",
     "manage-earn-position": "Manage Earn position",
     "open-multiply-position": "Open Multiply position",
     "manage-multiply-position": "Manage Multiply position"
   },
-  "manage-position" : "Manage position",
+  "manage-position": "Manage position",
   "brand-assets": {
     "heading": "Brand Assets",
     "intro": "Find here the Oasis.app Logo and graphics.",
@@ -2107,10 +2139,16 @@
     }
   },
   "ajna": {
+    "title": "Anja Website",
     "navigation": {
       "common": {
         "other-assets": "Other assets you can borrow against"
       }
+    },
+    "landing-banner": {
+      "title": "Get Ajna token when you use Ajna protocol",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin mollis fringilla. Nunc bibendum ultricies mi. Donec vitae elementum turpis.",
+      "linkLabel": "Visit Anja website ->"
     }
   }
 }

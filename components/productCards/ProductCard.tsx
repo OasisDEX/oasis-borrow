@@ -1,15 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { ProtocolLongNames, TokenMetadataType } from 'blockchain/tokensMetadata'
+import { ProductCardLabels } from 'components/ProductCardLabels'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from 'helpers/productCards'
+import { useWindowSize } from 'helpers/useWindowSize'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
+import { fadeInAnimation } from 'theme/animations'
 
-import { useWindowSize } from '../../helpers/useWindowSize'
-import { fadeInAnimation } from '../../theme/animations'
 import { FloatingLabel } from '../FloatingLabel'
 import { AppLink } from '../Links'
 import { WithArrow } from '../WithArrow'
@@ -283,30 +284,7 @@ export function ProductCard({
             />
             <ProductCardBanner {...banner} />
           </Box>
-          <Flex sx={{ flexDirection: 'column', justifyContent: 'space-around' }}>
-            {labels?.map(({ title, value }, index) => {
-              return (
-                <Flex
-                  key={`${index}-${title}`}
-                  sx={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    lineHeight: '22px',
-                    pb: 2,
-                    fontSize: '14px',
-                    ':last-child': {
-                      pb: '0',
-                    },
-                  }}
-                >
-                  <Text sx={{ color: 'neutral80', pb: 1 }} variant="paragraph3">
-                    {title}
-                  </Text>
-                  <Text variant="boldParagraph3">{value}</Text>
-                </Flex>
-              )
-            })}
-          </Flex>
+          <ProductCardLabels labels={labels} />
           <Flex
             sx={{
               marginTop: 'auto',
@@ -331,8 +309,7 @@ export function ProductCard({
                   backgroundColor: inactive || isFull ? 'neutral70' : 'primary100',
                   '&:hover': {
                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-                    transition: '0.2s ease-in',
-                    backgroundColor: isFull ? 'neutral70' : 'primary100',
+                    backgroundColor: isFull ? 'neutral70' : 'primary60',
                     cursor: isFull ? 'default' : 'pointer',
                   },
                 }}
