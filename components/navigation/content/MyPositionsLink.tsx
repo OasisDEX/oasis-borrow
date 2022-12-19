@@ -11,7 +11,9 @@ export function MyPositionsLink() {
   return (
     <>
       {t('my-positions')} (
-      {amountOfPositions || (
+      {amountOfPositions !== undefined && amountOfPositions >= 0 ? (
+        amountOfPositions
+      ) : (
         <Spinner
           size={14}
           color={ajnaExtensionTheme.colors.neutral80}
