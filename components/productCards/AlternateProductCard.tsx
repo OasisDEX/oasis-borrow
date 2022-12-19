@@ -1,91 +1,26 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
 import { ProductCardLabels } from 'components/ProductCardLabels'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Spinner, SxStyleProp, Text } from 'theme-ui'
 import { fadeInAnimation } from 'theme/animations'
-
-// STATIC FOR NOW
-export const productCardsAjna = {
-  borrow: [
-    {
-      token: 'ETH',
-      header: 'Borrow against your ETH',
-      icon: 'ether_circle_color',
-      background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-      banner: {
-        title: 'Collaterals you can borrow',
-        collateralsToBorrow: ['USDC', 'DAI', 'stETH', 'wBTC', 'renBTC'],
-      },
-      button: {
-        link: '/',
-        label: 'Get started',
-      },
-      labels: [
-        {
-          title: 'Annual variable rates',
-          value: '0.25% ↑',
-        },
-      ],
-    },
-    {
-      token: 'RETH',
-      header: 'Borrow against your RETH',
-      icon: 'reth_circle_color',
-      background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)',
-      banner: {
-        title: 'Collaterals you can borrow',
-        collateralsToBorrow: ['USDC', 'DAI', 'stETH', 'wBTC', 'renBTC'],
-      },
-      button: {
-        link: '/',
-        label: 'Get started',
-      },
-      labels: [
-        {
-          title: 'Annual variable rates',
-          value: '0.25% ↑',
-        },
-      ],
-    },
-    {
-      token: 'BTC',
-      header: 'Borrow against your BTC',
-      icon: 'btc_circle_color',
-      background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-      banner: {
-        title: 'Collaterals you can borrow',
-        collateralsToBorrow: ['USDC', 'DAI', 'stETH', 'wBTC', 'renBTC'],
-      },
-      button: {
-        link: '/',
-        label: 'Get started',
-      },
-      labels: [
-        {
-          title: 'Annual variable rates',
-          value: '0.25% ↑',
-        },
-      ],
-    },
-  ],
-}
 
 interface AlternateProductCardProps {
   header: string
   background: string
   icon: string
   banner: {
-    title: string
+    titleKey: string
     collateralsToBorrow: string[]
   }
   button: {
-    label: string
+    labelKey: string
     link: string
     onClick?: () => void
   }
   labels?: {
-    title: string
+    titleKey: string
     value: ReactNode
     textSx?: SxStyleProp
   }[]
@@ -100,6 +35,7 @@ export function AlternateProductCard({
   labels,
 }: AlternateProductCardProps) {
   const [clicked, setClicked] = useState(false)
+  const { t } = useTranslation()
 
   const handleClick = useCallback(() => {
     setClicked(true)
@@ -149,14 +85,16 @@ export function AlternateProductCard({
           <Card sx={{ border: 'unset' }}>
             <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
               <Text as="p" sx={{ color: 'neutral80', fontSize: 2 }} variant="paragraph2">
-                {banner.title}
+                {t(banner.titleKey)}
               </Text>
               <Text as="p" variant="boldParagraph1" sx={{ textAlign: 'center', fontSize: 2 }}>
                 {banner.collateralsToBorrow.join(', ')}
               </Text>
             </Flex>
           </Card>
-          <ProductCardLabels labels={labels} />
+          <ProductCardLabels
+            labels={labels?.map((item) => ({ title: t(item.titleKey), ...item }))}
+          />
           <Flex
             sx={{
               marginTop: 'auto',
@@ -181,7 +119,7 @@ export function AlternateProductCard({
                   },
                 }}
               >
-                {button.label}
+                {t(button.labelKey)}
                 {clicked && (
                   <Spinner
                     variant="styles.spinner.medium"

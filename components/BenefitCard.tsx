@@ -13,7 +13,7 @@ export function BenefitCardsWrapper({ children }: PropsWithChildren<{}>) {
         ...slideInAnimation,
         position: 'relative',
         width: '100%',
-        gap: 3,
+        gap: [4, 4, 3],
         margin: '0 auto',
       }}
     >
@@ -41,7 +41,7 @@ export function BenefitCard({ header, background, image }: BenefitCardProps) {
       sx={{
         background,
         minHeight: '328px',
-        maxWidth: '389px',
+        width: ['inherit', 'inherit', 'auto'],
         position: 'relative',
         flex: 1,
         p: 4,
@@ -57,7 +57,7 @@ export function BenefitCard({ header, background, image }: BenefitCardProps) {
           sx={{
             borderRadius: '24px 24px 0 0',
             height: '208px',
-            width: image.bgWidth || ['80%', '325px'],
+            width: image.bgWidth || ['calc(100% - 32px)', 'calc(100% - 32px)', '325px'],
             backgroundColor: 'primary100',
             position: 'absolute',
             left: '50%',

@@ -2145,10 +2145,24 @@
         "other-assets": "Other assets you can borrow against"
       }
     },
+    "other-assets": "Other assets you can borrow against",
     "landing-banner": {
       "title": "Get Ajna token when you use Ajna protocol",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin mollis fringilla. Nunc bibendum ultricies mi. Donec vitae elementum turpis.",
       "linkLabel": "Visit Anja website ->"
+    },
+    "learn": {
+      "ajna-website": "Ajna website",
+      "anja-faq": "Ajna FAQ",
+      "ajna-discord": "Anja Discord",
+      "ajna-twitter": "Ajna Twitter",
+      "oasis-discord": "Oasis.app Discord",
+      "oasis-twitter": "Oasis.app Twitter"
+    },
+    "product-cards": {
+      "borrow-against-your": "Borrow against your {{token}}",
+      "collaterals-you-can-borrow": "Collaterals you can borrow",
+      "annual-variable-rates": "Annual variable rates"
     }
   }
 }
