@@ -74,7 +74,6 @@ export function LandingBanner({
           sx={{
             justifyContent: 'flex-end',
             height: 'inherit',
-
             display: ['none', 'flex'],
             overflow: 'hidden',
           }}
@@ -84,15 +83,12 @@ export function LandingBanner({
             sx={{
               minWidth: 'unset',
               maxWidth: 'unset',
-              // width: 'calc(100% + 100px)',
               height: ['calc(100% + 10px)', 'calc(100% + 52px)'],
-              // m: '12px',
               transform: [
                 'translateX(30px) translateY(-5px)',
                 'translateX(60px) translateY(-27px)',
               ],
               objectFit: 'contain',
-              // height: 'inherit',
             }}
           />
         </Box>
