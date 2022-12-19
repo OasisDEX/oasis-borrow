@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
+import { currentContent } from 'features/content'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -13,15 +14,19 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$, context$, termsAcceptance$, checkAcceptanceFromApi$ } = useAppContext()
+  const {
+    generalManageVault$,
+    context$
+  } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
-  const [context, contextError] = useObservable(context$)
+  const [context] = useObservable(context$)
   // TODO ŁW use api to check version of tos for user
   // const [termsAcceptance] = useObservable(termsAcceptance$)
 
   const account = context?.status === 'connected' ? context.account : ''
   const chainId = context?.chainId
+  const docVersion = currentContent.tos.version
 
   useEffect(() => {
     return () => {
@@ -44,7 +49,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
               followButtonProps={{
                 followerAddress: account,
                 vaultId: id,
-                docVersion: 'version-11.07.2022', //TODO replace with version from api ł
+                docVersion: docVersion,
                 chainId: chainId,
               }}
             />
