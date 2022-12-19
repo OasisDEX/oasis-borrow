@@ -2,6 +2,7 @@ import { ConnectWalletButton } from 'components/navigation/content/ConnectWallet
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
 import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
 import { SwapOrb } from 'components/navigation/content/SwapOrb'
+import { WalletOrb } from 'components/navigation/content/WalletOrb'
 import { Navigation } from 'components/navigation/Navigation'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
@@ -167,6 +168,7 @@ export function AjnaNavigationController() {
           <>
             <SwapOrb />
             <NotificationsOrb />
+            <WalletOrb />
           </>
         ) : (
           <ConnectWalletButton />
