@@ -144,7 +144,7 @@ export function ProductCardAnja({
           sx={{ flexDirection: 'column', justifyContent: 'flex-start', gap: 4, height: '100%' }}
         >
           <Flex sx={{ justifyContent: 'center', mt: '39px' }}>
-            <Heading sx={{ fontSize: '20px' }}>{header}</Heading>
+            <Heading sx={{ fontSize: 5 }}>{header}</Heading>
           </Flex>
           <Card sx={{ border: 'unset' }}>
             <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
@@ -176,8 +176,7 @@ export function ProductCardAnja({
                   backgroundColor: 'primary100',
                   '&:hover': {
                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-                    transition: '0.2s ease-in',
-                    backgroundColor: 'primary100',
+                    backgroundColor: 'primary60',
                     cursor: 'pointer',
                   },
                 }}

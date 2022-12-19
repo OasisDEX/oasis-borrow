@@ -22,7 +22,7 @@ export function ProductCardLabels({ labels, textSx = {} }: ProductCardLabelsProp
               lineHeight: '22px',
               pb: 2,
               fontSize: '14px',
-              ':last-child': {
+              '&:last-child': {
                 pb: '0',
               },
             }}

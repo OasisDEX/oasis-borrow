@@ -5,19 +5,19 @@ import { Flex } from 'theme-ui'
 
 const content = [
   {
-    title: 'ajna.title',
+    titleTranslationKey: 'ajna.title',
     link: 'https://www.ajna.finance/',
   },
   {
-    title: 'seo.default.title',
+    titleTranslationKey: 'seo.default.title',
     link: 'https://oasis.app',
   },
   {
-    title: 'nav.terms',
+    titleTranslationKey: 'nav.terms',
     link: 'https://oasis.app/ajna',
   },
   {
-    title: 'nav.privacy',
+    titleTranslationKey: 'nav.privacy',
     link: 'https://oasis.app/ajna',
   },
 ]
@@ -30,7 +30,7 @@ export function AnjaFooter() {
         {content.map((item) => (
           <AppLink
             href={item.link}
-            key={item.title}
+            key={item.titleTranslationKey}
             sx={{
               fontWeight: 'regular',
               fontSize: 4,
@@ -38,7 +38,7 @@ export function AnjaFooter() {
               '&:hover': { color: 'neutral80' },
             }}
           >
-            {t(item.title)}
+            {t(item.titleTranslationKey)}
           </AppLink>
         ))}
       </Flex>

@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { HomePageBanner } from 'components/HomePageBanner'
+import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { InfoCard } from 'components/InfoCard'
 import { AppLink } from 'components/Links'
 import {
@@ -22,7 +23,7 @@ import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
-import { fadeInAnimation, slideInAnimation } from 'theme/animations'
+import { slideInAnimation } from 'theme/animations'
 
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
@@ -113,33 +114,6 @@ function Stats({ sx }: { sx?: SxProps }) {
         value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
       />
     </Grid>
-  )
-}
-
-export function HomepageTabLayout(props: { paraText?: JSX.Element; cards: JSX.Element }) {
-  return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
-      }}
-    >
-      <Text
-        variant="paragraph2"
-        sx={{
-          mt: 4,
-          color: 'neutral80',
-          maxWidth: 617,
-          textAlign: 'center',
-          mb: 5,
-          ...fadeInAnimation,
-        }}
-      >
-        {props.paraText}
-      </Text>
-      {props.cards}
-    </Flex>
   )
 }
 

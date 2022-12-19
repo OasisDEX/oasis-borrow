@@ -1,11 +1,10 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Box, Card, Flex, Grid, Image, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
-export function BenefitCardsWrapper({ children }: WithChildren) {
+export function BenefitCardsWrapper({ children }: PropsWithChildren<{}>) {
   return (
     <Grid
       columns={[1, 2, 3]}
@@ -51,12 +50,12 @@ export function BenefitCard({ header, background, image }: BenefitCardProps) {
       }}
     >
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-        <Text as="p" variant="boldParagraph1" sx={{ fontSize: '20px', lineHeight: '32px' }}>
+        <Text as="p" variant="boldParagraph1" sx={{ fontSize: 5, lineHeight: '32px' }}>
           {t(header)}
         </Text>
         <Box
           sx={{
-            borderRadius: '24px 24px 0px 0px',
+            borderRadius: '24px 24px 0 0',
             height: '208px',
             width: image.bgWidth || ['80%', '325px'],
             backgroundColor: 'primary100',
