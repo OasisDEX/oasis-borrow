@@ -71,7 +71,7 @@ export const productCardsAjna = {
   ],
 }
 
-interface ProductCardAnjaProps {
+interface AlternateProductCardProps {
   header: string
   background: string
   icon: string
@@ -91,14 +91,14 @@ interface ProductCardAnjaProps {
   }[]
 }
 
-export function ProductCardAnja({
+export function AlternateProductCard({
   background,
   icon,
   banner,
   button,
   header,
   labels,
-}: ProductCardAnjaProps) {
+}: AlternateProductCardProps) {
   const [clicked, setClicked] = useState(false)
 
   const handleClick = useCallback(() => {

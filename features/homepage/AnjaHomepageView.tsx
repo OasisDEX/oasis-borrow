@@ -7,7 +7,10 @@ import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { InfoCard } from 'components/InfoCard'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
-import { ProductCardAnja, productCardsAjna } from 'components/productCards/ProductCardAnja'
+import {
+  AlternateProductCard,
+  productCardsAjna,
+} from 'components/productCards/AlternateProductCard'
 import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
 import { TabBar } from 'components/TabBar'
 import { otherAssets } from 'features/ajna/controls/AjnaNavigationController'
@@ -100,7 +103,7 @@ export function AnjaHomepageView() {
                   cards={
                     <ProductCardsWrapper sx={{ mt: '48px' }}>
                       {productCardsAjna.borrow.map((card) => (
-                        <ProductCardAnja
+                        <AlternateProductCard
                           header={card.header}
                           background={card.background}
                           icon={card.icon}
@@ -123,7 +126,7 @@ export function AnjaHomepageView() {
                   cards={
                     <ProductCardsWrapper sx={{ mt: '48px' }}>
                       {productCardsAjna.borrow.map((card) => (
-                        <ProductCardAnja
+                        <AlternateProductCard
                           header={card.header}
                           background={card.background}
                           icon={card.icon}
@@ -146,7 +149,7 @@ export function AnjaHomepageView() {
                   cards={
                     <ProductCardsWrapper sx={{ mt: '48px' }}>
                       {productCardsAjna.borrow.map((card) => (
-                        <ProductCardAnja
+                        <AlternateProductCard
                           header={card.header}
                           background={card.background}
                           icon={card.icon}
