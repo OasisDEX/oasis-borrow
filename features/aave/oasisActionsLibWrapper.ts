@@ -260,8 +260,6 @@ function getTokensInBaseUnit({
   manageTokenInput,
   currentPosition,
 }: ManageAaveParameters): [BigNumber, BigNumber] {
-  console.log('manageTokenInput', manageTokenInput?.manageTokenAction)
-  console.log('manageTone', manageTokenInput?.manageTokenActionValue?.toString())
   if (!manageTokenInput?.manageTokenAction) {
     return [zero, zero]
   }
@@ -288,7 +286,7 @@ function getTokensInBaseUnit({
 
 export async function getManageAaveParameters(
   parameters: ManageAaveParameters,
-): Promise<IPositionTransition> {
+): Promise<IPositionTransition | undefined> {
   try {
     const {
       context,
@@ -310,7 +308,7 @@ export async function getManageAaveParameters(
       case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
         type types = Parameters<typeof paybackWithdraw>
 
-        const stratArgs: types[0] = {
+        const paybackWithdrawStratArgs: types[0] = {
           slippage,
           debtToken: {
             symbol: currentPosition.debt.symbol as AAVETokens,
@@ -324,7 +322,7 @@ export async function getManageAaveParameters(
           amountDebtToPaybackInBaseUnit: debt,
         }
 
-        const stratDeps: types[1] = {
+        const paybackWithdrawStratDeps: types[1] = {
           addresses,
           currentPosition,
           provider: provider,
@@ -334,42 +332,39 @@ export async function getManageAaveParameters(
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
 
-        return await paybackWithdraw(stratArgs, stratDeps)
-
+        return await paybackWithdraw(paybackWithdrawStratArgs, paybackWithdrawStratDeps)
       case ManageDebtActionsEnum.BORROW_DEBT:
       case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
+        const borrowDepositStratArgs: Parameters<typeof strategies.aave.depositBorrow>[0] = {
+          slippage,
+          collectFeeFrom: 'sourceToken',
+        }
+        if (manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
+          borrowDepositStratArgs.entryToken =
+            addresses[currentPosition.debt.symbol as keyof typeof addresses]
+          borrowDepositStratArgs.borrowAmount = manageTokenInput?.manageTokenActionValue
+        }
+        if (
+          manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
+        ) {
+          borrowDepositStratArgs.entryToken =
+            addresses[currentPosition.collateral.symbol as keyof typeof addresses]
+          borrowDepositStratArgs.entryTokenAmount = manageTokenInput?.manageTokenActionValue
+        }
+        const borrowDepositStratDeps: Parameters<typeof strategies.aave.depositBorrow>[1] = {
+          addresses,
+          currentPosition,
+          provider: provider,
+          getSwapData: getOneInchCall(context.swapAddress),
+          proxy: proxyAddress,
+          user: context.account,
+          isDPMProxy: proxyType === ProxyType.DpmProxy,
+        }
+
+        return strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
       default:
         throw Error('Not implemented')
     }
-
-    // const stratArgs: Parameters<typeof strategies.aave.[1]> = {
-    //   slippage,
-    //   collectFeeFrom: 'sourceToken' as const,
-    // }
-    // switch (manageTokenInput?.manageTokenAction) {
-    //   case ManageDebtActionsEnum.BORROW_DEBT:
-    //     stratArgs.entryToken = addresses[currentPosition.debt.symbol as keyof typeof addresses]
-    //     stratArgs.borrowAmount = manageTokenInput?.manageTokenActionValue
-    //     break
-    //   case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
-    //     stratArgs.entryToken =
-    //       addresses[currentPosition.collateral.symbol as keyof typeof addresses]
-    //     stratArgs.entryTokenAmount = manageTokenInput?.manageTokenActionValue
-    //     break
-    //   default:
-    //     break
-    // }
-    //
-    // const stratDeps: Parameters<typeof strategies.aave.depositBorrow[2]> = {
-    //   addresses,
-    //   currentPosition,
-    //   provider: provider,
-    //   getSwapData: getOneInchCall(context.swapAddress),
-    //   proxy: proxyAddress,
-    //   user: context.account,
-    // }
-    //
-    // return strategies.aave.depositBorrow(stratArgs, stratDeps)
   } catch (e) {
     console.error(e)
     throw e
