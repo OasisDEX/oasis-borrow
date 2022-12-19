@@ -34,13 +34,22 @@ export function PriceImpact({
     fromTokenAmount,
     sourceToken,
   } = transactionParameters.simulation.swap
-  const collateralTokenToTokenPrice = amountFromWei(toTokenAmount, targetToken.precision).div(
-    amountFromWei(fromTokenAmount, sourceToken.precision),
-  )
+
+  let swapPrice
+
+  if (sourceToken.symbol === tokens.collateral) {
+    swapPrice = amountFromWei(toTokenAmount, targetToken.precision).div(
+      amountFromWei(fromTokenAmount, sourceToken.precision),
+    )
+  } else {
+    swapPrice = amountFromWei(fromTokenAmount, sourceToken.precision).div(
+      amountFromWei(toTokenAmount, targetToken.precision),
+    )
+  }
 
   const marketPrice = collateralPrice?.div(debtPrice || one) || one
 
-  const priceImpact = calculatePriceImpact(marketPrice, collateralTokenToTokenPrice)
+  const priceImpact = calculatePriceImpact(marketPrice, swapPrice)
 
   return (
     <VaultChangesInformationItem

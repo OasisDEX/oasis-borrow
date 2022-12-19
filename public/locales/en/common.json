@@ -1417,6 +1417,14 @@
       "stETHusdc": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
+      },
+      "ethusdc": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC."
+      },
+      "wBTCusdc": {
+        "title": "Highest WBTC multiple option",
+        "description": "Maximise your WBTC exposure with Aave and USDC."
       }
     },
     "tags": {

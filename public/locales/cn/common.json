@@ -944,7 +944,25 @@
       "max-exposure": "{{token}} 最大的风险敞口"
     },
     "lowest-annual-fee-cheapest-vault": "此为使用质押 ETH 借贷选项中，最低年费和最便宜的金库",
-    "unprofitable-position": "此仓位目前无法获利，但只要您明白现况，仍可以开启金库。"
+    "unprofitable-position": "此仓位目前无法获利，但只要您明白现况，仍可以开启金库。",
+    "aave": {
+      "stETHeth": {
+        "title": "stETH/ETH AAVE",
+        "description": "通过增加质押奖励赚取你的 ETH，在 AAVE 上借贷 ETH 来得到更多 stETH 的风险敞口。"
+      },
+      "stETHusdc": {
+        "title": "最大的 stETH 杠杆倍率",
+        "description": "通过 AAVE 和 USDC 最大化你的 stETH 敞口。"
+      },
+      "ethusdc": {
+        "title": "最大的 ETH 杠杆倍率",
+        "description": "通过 AAVE 和 USDC 最大化你的 ETH 敞口。"
+      },
+      "wBTCusdc": {
+        "title": "最大的 WBTC 杠杆倍率",
+        "description": "通过 AAVE 和 USDC 最大化你的 WBTC 敞口。"
+      }
+    }
   },
   "product-card-banner": {
     "with": "以 {{value}} {{token}} 👇",
