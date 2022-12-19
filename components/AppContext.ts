@@ -1049,6 +1049,7 @@ export function setupAppContext() {
       wrappedGetAaveReserveData$,
       context$,
       readPositionCreatedEvents$,
+      aaveAvailableLiquidityInUSDC$,
     ),
   )
 

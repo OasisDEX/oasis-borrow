@@ -214,7 +214,7 @@ function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
         },
         pnl: 'N/A',
         sevenDayYield: 'sevenDayYield',
-        liquidity: 'liquidity',
+        liquidity: `${formatFiatBalance(position.liquidity)} USDC`,
       }
     }
   })
