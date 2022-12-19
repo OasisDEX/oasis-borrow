@@ -26,7 +26,8 @@ export function Navigation({ actions, brandingLink = '/', links, panels, pill }:
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        mt: 3,
+        mt: '24px',
+        zIndex: 3,
       }}
     >
       <NavigationBranding link={brandingLink} pill={pill} />
