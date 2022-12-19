@@ -1045,6 +1045,7 @@ export function setupAppContext() {
       userDpmProxies$,
       aaveProtocolData$,
       getAaveAssetsPrices$,
+      tokenPriceUSD$,
       wrappedGetAaveReserveData$,
       context$,
       readPositionCreatedEvents$,
@@ -1291,6 +1292,7 @@ export function setupAppContext() {
     balance$,
     vaults$,
     hasActiveDsProxyAavePosition$,
+    readPositionCreatedEvents$,
     ensName$,
   )
 
