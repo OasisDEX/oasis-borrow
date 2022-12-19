@@ -84,7 +84,24 @@ export function NotificationsIconButton({
         </>
       </Button>
 
-      <NotificationsCenter isOpen={notificationsPanelOpen} />
+      <Box
+        sx={{
+          bg: 'white',
+          position: 'absolute',
+          right: 0,
+          mt: 2,
+          borderRadius: 'large',
+          boxShadow: 'buttonMenu',
+          pt: 2,
+          px: 2,
+          opacity: notificationsPanelOpen ? 1 : 0,
+          transform: notificationsPanelOpen ? 'translateY(0)' : 'translateY(-5px)',
+          pointerEvents: notificationsPanelOpen ? 'auto' : 'none',
+          transition: 'opacity 200ms, transform 200ms',
+        }}
+      >
+        <NotificationsCenter isOpen={notificationsPanelOpen} />
+      </Box>
     </Box>
   )
 }

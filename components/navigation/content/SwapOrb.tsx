@@ -8,7 +8,7 @@ export function SwapOrb() {
 
   return (
     <NavigationOrb icon="exchange" iconSize={20} {...(!exchangeOnboarded && { beacon: true })}>
-      <UniswapWidget />
+      {() => <UniswapWidget />}
     </NavigationOrb>
   )
 }
