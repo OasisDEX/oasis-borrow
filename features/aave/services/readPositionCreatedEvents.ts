@@ -4,11 +4,20 @@ import { map, switchMap } from 'rxjs/operators'
 
 import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
 import { Context } from '../../../blockchain/network'
+import { getTokenSymbolFromAddress } from '../../../blockchain/tokensMetadata'
 import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
 
-export type PositionCreatedEventPayload = {
-  collateralToken: string
-  debtToken: string
+type PositionCreatedTypeFromChain = {
+  collateralToken: string // address
+  debtToken: string // address
+  positionType: 'Multiply' | 'Earn'
+  protocol: string
+  proxyAddress: string
+}
+
+export type PositionCreated = {
+  collateralTokenSymbol: string
+  debtTokenSymbol: string
   positionType: 'Multiply' | 'Earn'
   protocol: string
   proxyAddress: string
@@ -18,7 +27,7 @@ export function createReadPositionCreatedEvents$(
   context$: Observable<Context>,
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
   walletAddress: string,
-): Observable<Array<PositionCreatedEventPayload>> {
+): Observable<Array<PositionCreated>> {
   return combineLatest(context$, userDpmProxies$(walletAddress)).pipe(
     switchMap(([context, dpmProxies]) => {
       return combineLatest(
@@ -46,7 +55,20 @@ export function createReadPositionCreatedEvents$(
           return positionCreatedEvents
             .flatMap((events) => events)
             .filter((e) => e.event === 'CreatePosition')
-            .map((e) => (e.args as unknown) as PositionCreatedEventPayload)
+            .map((e) => {
+              const positionCreatedFromChain = (e.args as unknown) as PositionCreatedTypeFromChain
+              return {
+                ...positionCreatedFromChain,
+                collateralTokenSymbol: getTokenSymbolFromAddress(
+                  context,
+                  positionCreatedFromChain.collateralToken,
+                ),
+                debtTokenSymbol: getTokenSymbolFromAddress(
+                  context,
+                  positionCreatedFromChain.debtToken,
+                ),
+              }
+            })
         }),
       )
     }),

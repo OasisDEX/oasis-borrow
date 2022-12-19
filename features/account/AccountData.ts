@@ -2,7 +2,7 @@ import { Web3Context } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { PositionCreatedEventPayload } from 'features/aave/services/readPositionCreatedEvents'
+import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { startWithDefault } from 'helpers/operators'
 import { combineLatest, Observable } from 'rxjs'
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators'
@@ -18,7 +18,7 @@ export function createAccountData(
   balance$: (token: string, address: string) => Observable<BigNumber>,
   vaults$: (address: string) => Observable<Vault[]>,
   hasActiveDsProxyAavePosition$: Observable<boolean>,
-  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreatedEventPayload[]>,
+  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
   ensName$: (address: string) => Observable<string>,
 ): Observable<AccountDetails> {
   return context$.pipe(

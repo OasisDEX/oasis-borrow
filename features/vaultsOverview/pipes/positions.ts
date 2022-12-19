@@ -11,13 +11,12 @@ import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { AaveProtocolData } from 'features/aave/manage/services'
 import { zero } from 'helpers/zero'
-import { findKey } from 'lodash'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
 import { Tickers } from '../../../blockchain/prices'
 import { amountFromPrecision } from '../../../blockchain/utils'
-import { PositionCreatedEventPayload } from '../../aave/services/readPositionCreatedEvents'
+import { PositionCreated } from '../../aave/services/readPositionCreatedEvents'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
 
@@ -160,15 +159,6 @@ export function createPositions$(
   )
 }
 
-function getTokenFromAddress(context: Context, tokenAddress: string) {
-  const token = findKey(context.tokens, (contractDesc) => contractDesc.address === tokenAddress)
-  if (!token) {
-    throw new Error(`could not find token for address ${tokenAddress}`)
-  }
-
-  return token
-}
-
 export function createAaveDpmPosition$(
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
   aaveProtocolData$: (
@@ -180,7 +170,7 @@ export function createAaveDpmPosition$(
   tickerPrices$: (tokens: string[]) => Observable<Tickers>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
   context$: Observable<Context>,
-  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreatedEventPayload[]>,
+  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: {
     token: string
   }) => Observable<BigNumber>,
@@ -191,38 +181,39 @@ export function createAaveDpmPosition$(
       return combineLatest(readPositionCreatedEvents$(walletAddress)).pipe(
         switchMap(([positionCreatedEvents]) => {
           const protocolDataObservableList = positionCreatedEvents.map(
-            ({ collateralToken, debtToken }, index) => {
-              const collateral = getTokenFromAddress(context, collateralToken)
-              const debt = getTokenFromAddress(context, debtToken)
-              return aaveProtocolData$(collateral, debt, userProxiesData[index].proxy)
+            ({ collateralTokenSymbol, debtTokenSymbol }, index) => {
+              return aaveProtocolData$(
+                collateralTokenSymbol,
+                debtTokenSymbol,
+                userProxiesData[index].proxy,
+              )
             },
           )
 
           const assetPricesListObservableList = positionCreatedEvents.map(
-            ({ collateralToken, debtToken }) => {
-              const collateral = getTokenFromAddress(context, collateralToken)
-              const debt = getTokenFromAddress(context, debtToken)
+            ({ collateralTokenSymbol, debtTokenSymbol }) => {
               return getAaveAssetsPrices$({
-                tokens: [debt, collateral],
+                tokens: [collateralTokenSymbol, debtTokenSymbol],
               })
             },
           )
 
-          const tickerPrices = positionCreatedEvents.map(({ collateralToken, debtToken }) => {
-            const collateral = getTokenFromAddress(context, collateralToken)
-            const debt = getTokenFromAddress(context, debtToken)
-            return tickerPrices$([collateral, debt])
-          })
-
-          const wrappedGetAaveReserveDataObservableList = positionCreatedEvents.map(
-            ({ debtToken }) => {
-              const debt = getTokenFromAddress(context, debtToken)
-              return wrappedGetAaveReserveData$(debt)
+          const tickerPrices = positionCreatedEvents.map(
+            ({ collateralTokenSymbol, debtTokenSymbol }) => {
+              return tickerPrices$([collateralTokenSymbol, debtTokenSymbol])
             },
           )
 
-          const liquidityObservables = positionCreatedEvents.map(({ debtToken }) => {
-            return aaveAvailableLiquidityInUSDC$({ token: getTokenFromAddress(context, debtToken) })
+          const wrappedGetAaveReserveDataObservableList = positionCreatedEvents.map(
+            ({ debtTokenSymbol }) => {
+              return wrappedGetAaveReserveData$(debtTokenSymbol)
+            },
+          )
+
+          const liquidityObservables = positionCreatedEvents.map(({ debtTokenSymbol }) => {
+            return aaveAvailableLiquidityInUSDC$({
+              token: debtTokenSymbol,
+            })
           })
 
           return combineLatest(
@@ -262,14 +253,8 @@ export function createAaveDpmPosition$(
 
                     const liquidity = liquidities[index]
 
-                    const collateralToken = getTokenFromAddress(
-                      context,
-                      positionCreatedEvents[index].collateralToken,
-                    )
-                    const debtToken = getTokenFromAddress(
-                      context,
-                      positionCreatedEvents[index].debtToken,
-                    )
+                    const collateralToken = positionCreatedEvents[index].collateralTokenSymbol
+                    const debtToken = positionCreatedEvents[index].debtTokenSymbol
 
                     const collateralNotWei = amountFromPrecision(
                       collateral.amount,
