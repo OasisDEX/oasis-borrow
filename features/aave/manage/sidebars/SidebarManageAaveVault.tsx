@@ -230,8 +230,6 @@ function ManageAaveReviewingStateView({
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
 
-  console.log('allowanceNeeded', allowanceNeeded)
-
   const label = allowanceNeeded
     ? t('set-allowance-for', {
         token: state.context.transactionToken || state.context.strategyConfig.tokens.deposit,
