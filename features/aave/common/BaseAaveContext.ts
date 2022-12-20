@@ -23,8 +23,8 @@ type UserInput = {
   amount?: BigNumber
 }
 export type ManageTokenInput = {
-  manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum | undefined
-  manageTokenActionValue?: BigNumber | undefined
+  manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
+  manageTokenActionValue?: BigNumber
 }
 
 export type IStrategyInfo = {
