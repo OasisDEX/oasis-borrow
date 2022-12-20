@@ -438,10 +438,7 @@ export function Hero({
   return (
     <Flex
       sx={{
-        ...slideInAnimation,
         position: 'relative',
-        animationDuration: '0.7s',
-        animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         justifySelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
