@@ -4,6 +4,7 @@ import { MyPositionsOrb } from 'components/navigation/content/MyPositionsOrb'
 import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
 import { SwapOrb } from 'components/navigation/content/SwapOrb'
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
+import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
@@ -47,7 +48,7 @@ export const otherAssets = [
 export function AjnaNavigationController() {
   const { isConnected, walletAddress } = useAccount()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
-  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
+  const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1]})`)
 
   return (
     <Navigation
@@ -175,7 +176,7 @@ export function AjnaNavigationController() {
             {isViewBelowXl && <MyPositionsOrb />}
             <SwapOrb />
             <NotificationsOrb />
-            {!isViewBelowL && <WalletOrb />}
+            {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>
         ) : (
           <ConnectWalletButton />
