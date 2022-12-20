@@ -36,7 +36,10 @@ export function NavigationMenuPanel({
   return (
     <Box
       as="li"
-      sx={{ p: 1 }}
+      sx={{
+        p: 1,
+        flexShrink: 0,
+      }}
       onMouseEnter={(e) => {
         const target = e.target as HTMLDivElement
 

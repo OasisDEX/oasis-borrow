@@ -21,7 +21,7 @@ function getPillColor(color: NavigationBrandingPillColor) {
 
 export function NavigationBranding({ link = '/', pill }: NavigationBrandingProps) {
   return (
-    <AppLink withAccountPrefix={false} href={link} sx={{ display: 'flex', flexShrink: 0 }}>
+    <AppLink withAccountPrefix={false} href={link} sx={{ display: 'flex', flexShrink: 0, zIndex: 3, }}>
       <Image src={staticFilesRuntimeUrl('/static/img/logo_v2.svg')} />
       {pill && (
         <Box

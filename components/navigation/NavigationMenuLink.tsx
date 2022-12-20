@@ -16,6 +16,7 @@ export function NavigationMenuLink({ label, link, onMouseEnter }: NavigationMenu
       as="li"
       sx={{
         p: 1,
+        flexShrink: 0
       }}
       onMouseEnter={onMouseEnter}
     >
