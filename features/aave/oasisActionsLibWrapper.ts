@@ -4,7 +4,7 @@ import {
   IPositionTransition,
   IRiskRatio,
   Position,
-  strategies,
+  strategies, ZERO,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
@@ -24,9 +24,9 @@ function getAddressesFromContext(context: Context) {
     DAI: context.tokens['DAI'].address,
     ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // TODO FIX AFTER LIB CHANGE
     WETH: context.tokens['WETH'].address,
-    stETH: context.tokens['STETH'].address,
+    STETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
-    wBTC: context.tokens['WBTC'].address,
+    WBTC: context.tokens['WBTC'].address,
     chainlinkEthUsdPriceFeed: context.chainlinkPriceOracle['ETHUSD'].address,
     aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
     aavePriceOracle: context.aavePriceOracle.address,
@@ -340,15 +340,16 @@ export async function getManageAaveParameters(
           collectFeeFrom: 'sourceToken',
         }
         if (manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-          borrowDepositStratArgs.entryToken =
-            addresses[currentPosition.debt.symbol as keyof typeof addresses]
           borrowDepositStratArgs.borrowAmount = manageTokenInput?.manageTokenActionValue
         }
         if (
           manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
         ) {
-          borrowDepositStratArgs.entryToken = currentPosition.collateral.symbol
-          borrowDepositStratArgs.entryTokenAmount = manageTokenInput?.manageTokenActionValue
+          borrowDepositStratArgs.entryToken = {
+            amountInBaseUnit: manageTokenInput?.manageTokenActionValue || ZERO,
+            symbol: currentPosition.collateral.symbol as AAVETokens,
+            precision: currentPosition.collateral.precision
+          }
         }
         const borrowDepositStratDeps: Parameters<typeof strategies.aave.depositBorrow>[1] = {
           addresses,
@@ -359,7 +360,6 @@ export async function getManageAaveParameters(
           user: context.account,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
-
         return await strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
       default:
         throw Error('Not implemented')
