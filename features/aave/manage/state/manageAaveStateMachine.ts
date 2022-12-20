@@ -419,7 +419,10 @@ export function createManageAaveStateMachine(
       },
       actions: {
         resetTokenActionValue: assign((_) => ({
-          manageTokenInput: defaultManageTokenInputValues,
+          manageTokenInput: {
+            manageTokenAction: defaultManageTokenInputValues.manageTokenAction,
+            manageTokenActionValue: defaultManageTokenInputValues.manageTokenActionValue,
+          },
         })),
         updateCollateralTokenAction: assign(
           (
@@ -489,23 +492,28 @@ export function createManageAaveStateMachine(
           { to: (context) => context.refParametersMachine! },
         ),
         requestManageParameters: send(
-          (context): TransactionParametersStateMachineEvent<ManageAaveParameters> => ({
-            type: 'VARIABLES_RECEIVED',
-            parameters: {
-              amount: context.manageTokenInput?.manageTokenActionValue || zero,
-              token:
-                context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT ||
-                context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT
-                  ? context.tokens.debt
-                  : context.tokens.collateral,
-              proxyAddress: context.proxyAddress!,
-              context: context.web3Context!,
-              slippage: context.userSettings!.slippage,
-              currentPosition: context.currentPosition!,
-              manageTokenInput: context.manageTokenInput,
-              proxyType: context.positionCreatedBy,
-            },
-          }),
+          (context): TransactionParametersStateMachineEvent<ManageAaveParameters> => {
+            const isBorrowOrPaybackDebt = [
+              ManageDebtActionsEnum.BORROW_DEBT,
+              ManageDebtActionsEnum.PAYBACK_DEBT,
+            ].includes(context.manageTokenInput!.manageTokenAction as ManageDebtActionsEnum)
+            return {
+              type: 'VARIABLES_RECEIVED',
+              parameters: {
+                amount:
+                  isBorrowOrPaybackDebt && context.tokens.debt === 'ETH'
+                    ? context.manageTokenInput?.manageTokenActionValue || zero
+                    : zero,
+                token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.collateral,
+                proxyAddress: context.proxyAddress!,
+                context: context.web3Context!,
+                slippage: context.userSettings!.slippage,
+                currentPosition: context.currentPosition!,
+                manageTokenInput: context.manageTokenInput,
+                proxyType: context.positionCreatedBy,
+              },
+            }
+          },
           { to: (context) => context.refParametersMachine! },
         ),
         spawnTransactionMachine: assign((context) => ({

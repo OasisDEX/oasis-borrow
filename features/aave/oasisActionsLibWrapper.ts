@@ -341,13 +341,14 @@ export async function getManageAaveParameters(
           collectFeeFrom: 'sourceToken',
         }
         if (manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-          borrowDepositStratArgs.borrowAmount = manageTokenInput?.manageTokenActionValue
+          borrowDepositStratArgs.borrowAmount = debt
+          borrowDepositStratArgs.collectFeeFrom = 'targetToken'
         }
         if (
           manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
         ) {
           borrowDepositStratArgs.entryToken = {
-            amountInBaseUnit: manageTokenInput?.manageTokenActionValue || ZERO,
+            amountInBaseUnit: collateral || ZERO,
             symbol: currentPosition.collateral.symbol as AAVETokens,
             precision: currentPosition.collateral.precision,
           }
@@ -361,6 +362,7 @@ export async function getManageAaveParameters(
           user: context.account,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
+
         return await strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
       default:
         throw Error('Not implemented')

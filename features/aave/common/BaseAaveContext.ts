@@ -23,8 +23,8 @@ type UserInput = {
   amount?: BigNumber
 }
 export type ManageTokenInput = {
-  manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
-  manageTokenActionValue?: BigNumber
+  manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum | undefined
+  manageTokenActionValue?: BigNumber | undefined
 }
 
 export type IStrategyInfo = {
@@ -116,13 +116,20 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 }
 
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
+  const isBorrowOrPaybackDebt = [
+    ManageDebtActionsEnum.BORROW_DEBT,
+    ManageDebtActionsEnum.PAYBACK_DEBT,
+  ].includes(context.manageTokenInput!.manageTokenAction as ManageDebtActionsEnum)
+  const isAmountFromUserInputNeeded = (context.transactionToken || context.tokens.deposit) === 'ETH'
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.strategy!.transaction.calls as any,
     operationName: context.strategy!.transaction.operationName,
-    token: context.tokens.deposit,
+    token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.deposit,
     proxyAddress: context.effectiveProxyAddress!,
-    amount: context.userInput.amount,
+    amount: isAmountFromUserInputNeeded
+      ? context.userInput.amount || context.manageTokenInput?.manageTokenActionValue
+      : zero,
   }
 }
 
