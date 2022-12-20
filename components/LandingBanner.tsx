@@ -65,7 +65,7 @@ export function LandingBanner({
             }}
           >
             {button}
-            <AppLink href={link.href} sx={{ fontSize: '18px', fontWeight: 'regular', mb: [4, 0] }}>
+            <AppLink href={link.href} sx={{ fontSize: 4, fontWeight: 'regular', mb: [4, 0] }}>
               {link.label}
             </AppLink>
           </Flex>
