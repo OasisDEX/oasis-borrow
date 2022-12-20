@@ -22,7 +22,7 @@ import { paybackWithdraw } from '@oasisdex/oasis-actions/lib/src/strategies/aave
 function getAddressesFromContext(context: Context) {
   return {
     DAI: context.tokens['DAI'].address,
-    ETH: context.tokens['WETH'].address, // TODO FIX AFTER LIB CHANGE
+    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // TODO FIX AFTER LIB CHANGE
     WETH: context.tokens['WETH'].address,
     STETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
@@ -360,7 +360,7 @@ export async function getManageAaveParameters(
           user: context.account,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
-        return strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
+        return await strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
       default:
         throw Error('Not implemented')
     }
