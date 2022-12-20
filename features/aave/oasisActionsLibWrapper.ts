@@ -4,7 +4,8 @@ import {
   IPositionTransition,
   IRiskRatio,
   Position,
-  strategies, ZERO,
+  strategies,
+  ZERO,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
@@ -348,7 +349,7 @@ export async function getManageAaveParameters(
           borrowDepositStratArgs.entryToken = {
             amountInBaseUnit: manageTokenInput?.manageTokenActionValue || ZERO,
             symbol: currentPosition.collateral.symbol as AAVETokens,
-            precision: currentPosition.collateral.precision
+            precision: currentPosition.collateral.precision,
           }
         }
         const borrowDepositStratDeps: Parameters<typeof strategies.aave.depositBorrow>[1] = {

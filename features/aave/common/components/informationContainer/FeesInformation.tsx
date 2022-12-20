@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Swap } from '@oasisdex/oasis-actions'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
-import { allDefined } from 'helpers/allDefined'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -22,12 +21,6 @@ interface FeesInformationProps {
 export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
-  if (
-    !allDefined(swap.tokenFee, swap.collectFeeFrom, swap[swap.collectFeeFrom].symbol) ||
-    swap[swap.collectFeeFrom].symbol === ''
-  ) {
-    return null
-  }
 
   const oasisFeeDisplayInDebtToken = formatAmount(
     amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
