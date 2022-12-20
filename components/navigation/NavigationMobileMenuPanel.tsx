@@ -6,19 +6,26 @@ import { mobileLinkSx } from 'components/navigation/common'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
 import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-type NavigationMobileMenuPanelProps = NavigationMenuPanelType
+type NavigationMobileMenuPanelProps = NavigationMenuPanelType & {
+  isOpen: boolean
+}
 
 export function NavigationMobileMenuPanel({
   description,
   label,
   links,
   learn,
+  isOpen,
   otherAssets,
 }: NavigationMobileMenuPanelProps) {
   const [isActive, setIsActive] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (!isOpen) setIsActive(false)
+  }, [isOpen])
 
   return (
     <Box key={`link-${label}`} as="li">
@@ -42,9 +49,11 @@ export function NavigationMobileMenuPanel({
           bottom: 0,
           p: 3,
           bg: 'neutral10',
+          opacity: isActive ? 1 : 0,
           overflowY: 'auto',
-          transform: `translateX(${isActive ? '0' : '100%'})`,
-          transition: 'transform 200ms',
+          pointerEvents: isActive ? 'auto' : 'none',
+          transform: `translateX(${isActive ? '0' : '-20%'})`,
+          transition: 'opacity 200ms, transform 200ms',
         }}
       >
         <Button

@@ -37,7 +37,7 @@ export function NavigationMobileMenu({ isOpen, links, panels }: NavigationMobile
           left: 0,
           boxShadow: 'inset 0 -20px 10px -10px white, inset 0 20px 10px -10px white',
           pointerEvents: 'none',
-        }
+        },
       }}
     >
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
@@ -49,7 +49,7 @@ export function NavigationMobileMenu({ isOpen, links, panels }: NavigationMobile
           }}
         >
           {panels?.map((panel) => (
-            <NavigationMobileMenuPanel key={`panel-${panel.label}`} {...panel} />
+            <NavigationMobileMenuPanel key={`panel-${panel.label}`} isOpen={isOpen} {...panel} />
           ))}
           {links?.map((link) => (
             <NavigationMobileMenuLink key={`link-${link.label}`} {...link} />
