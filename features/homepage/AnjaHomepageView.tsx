@@ -214,10 +214,11 @@ export function AnjaHomepageView() {
           mb: 7,
         }}
       >
-        <Text variant="header3" sx={{ mt: [6, 6, 7], mb: 4, textAlign: 'center' }}>
+        <Text as="p" variant="header3" sx={{ mt: [6, 6, 7], mb: 4, textAlign: 'center' }}>
           {t('landing.benefits.ajna.header')}
         </Text>
         <Text
+          as="p"
           variant="paragraph1"
           sx={{ mb: [5, '48px'], color: 'neutral80', maxWidth: '740px', textAlign: 'center' }}
         >
@@ -280,7 +281,7 @@ export function AnjaHomepageView() {
           mb: [3, 3, 6],
         }}
       >
-        <Text variant="header3" sx={{ textAlign: 'center', mt: [6, 6, '205px'], mb: 4 }}>
+        <Text as="p" variant="header3" sx={{ textAlign: 'center', mt: [6, 6, '205px'], mb: 4 }}>
           {t('landing.info-cards.have-some-questions')}
         </Text>
         <Grid
