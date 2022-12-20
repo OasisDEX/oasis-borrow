@@ -13,6 +13,7 @@ export interface NavigationMenuOrbProps {
   iconSize?: number
   isDisabled?: boolean
   link?: string
+  onClick?: () => void
   onClose?: () => void
   onOpen?: () => void
 }
@@ -33,6 +34,7 @@ export function NavigationOrb({
   iconSize = 16,
   isDisabled,
   link,
+  onClick,
   onClose,
   onOpen,
 }: NavigationMenuOrbProps) {
@@ -49,10 +51,13 @@ export function NavigationOrb({
 
   return (
     <Box ref={ref} sx={{ position: 'relative' }}>
-      {children && (
+      {(children || onClick) && (
         <Button
           variant="menuButtonRound"
-          onClick={toggleIsOpen}
+          onClick={() => {
+            toggleIsOpen()
+            onClick && onClick()
+          }}
           disabled={isDisabled}
           sx={{
             position: 'relative',
