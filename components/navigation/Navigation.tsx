@@ -49,7 +49,14 @@ export function Navigation({ actions, brandingLink = '/', links, panels, pill }:
           {isViewBelowL && (
             <Box ref={ref}>
               <NavigationOrb icon="menu" iconSize={20} onClick={toggleIsMobileMenuOpen} />
-              <NavigationMobileMenu isOpen={isMobileMenuOpen} links={links} panels={panels} />
+              <NavigationMobileMenu
+                close={() => {
+                  setIsMobileMenuOpen(false)
+                }}
+                isOpen={isMobileMenuOpen}
+                links={links}
+                panels={panels}
+              />
             </Box>
           )}
         </NavigationActions>

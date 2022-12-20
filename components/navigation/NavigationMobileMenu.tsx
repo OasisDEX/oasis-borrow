@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { NavigationMobileMenuLink } from 'components/navigation/NavigationMobileMenuLink'
@@ -6,12 +7,13 @@ import React from 'react'
 import { Box } from 'theme-ui'
 
 interface NavigationMobileMenuProps {
+  close: () => void
   isOpen: boolean
   links?: NavigationMenuPanelLinkType[]
   panels?: NavigationMenuPanelType[]
 }
 
-export function NavigationMobileMenu({ isOpen, links, panels }: NavigationMobileMenuProps) {
+export function NavigationMobileMenu({ close, isOpen, links, panels }: NavigationMobileMenuProps) {
   return (
     <Box
       sx={{
@@ -56,6 +58,34 @@ export function NavigationMobileMenu({ isOpen, links, panels }: NavigationMobile
           ))}
         </Box>
       )}
+      <Box
+        sx={{
+          position: 'absolute',
+          right: 0,
+          bottom: 3,
+          left: 0,
+          width: '58px',
+          margin: 'auto',
+          color: 'neutral80',
+          overflow: 'hidden',
+          cursor: 'pointer',
+          '&:hover': {
+            color: 'primary100',
+          },
+        }}
+        onClick={close}
+      >
+        <Icon
+          name="mobile_menu_close"
+          size={58}
+          sx={{
+            p: 1,
+            borderRadius: 'circle',
+            bg: 'neutral10',
+            transition: 'color 200ms',
+          }}
+        />
+      </Box>
     </Box>
   )
 }

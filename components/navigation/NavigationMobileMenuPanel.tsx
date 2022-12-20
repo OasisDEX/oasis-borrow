@@ -48,6 +48,7 @@ export function NavigationMobileMenuPanel({
           right: 0,
           bottom: 0,
           p: 3,
+          pb: '88px',
           bg: 'neutral10',
           opacity: isActive ? 1 : 0,
           overflowY: 'auto',
