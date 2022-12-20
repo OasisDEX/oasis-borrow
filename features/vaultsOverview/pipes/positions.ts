@@ -1,9 +1,4 @@
 import BigNumber from 'bignumber.js'
-import {
-  AaveUserAccountData,
-  AaveUserAccountDataParameters,
-  MINIMAL_COLLATERAL,
-} from 'blockchain/calls/aave/aaveLendingPool'
 import { AaveAssetsPricesParameters } from 'blockchain/calls/aave/aavePriceOracle'
 import { Context } from 'blockchain/network'
 import { UserDpmProxy } from 'blockchain/userDpmProxies'
@@ -11,12 +6,15 @@ import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { AaveProtocolData } from 'features/aave/manage/services'
 import { zero } from 'helpers/zero'
-import { combineLatest, EMPTY, Observable, of } from 'rxjs'
-import { filter, map, startWith, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { map, startWith, switchMap } from 'rxjs/operators'
 
 import { Tickers } from '../../../blockchain/prices'
 import { amountFromPrecision } from '../../../blockchain/utils'
+import { formatAddress } from '../../../helpers/formatters/format'
+import { IStrategyConfig } from '../../aave/common/StrategyConfigTypes'
 import { PositionCreated } from '../../aave/services/readPositionCreatedEvents'
+import { PositionId, positionIdIsAddress } from '../../aave/types'
 import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
 
@@ -91,13 +89,6 @@ export function decorateAaveTokensPrice$(
 
 export type AavePosition = Position & {
   netValue: BigNumber
-  liquidity: BigNumber
-  pln: string
-  ownerAddress: string
-}
-
-export type AaveDpmPosition = Position & {
-  netValue: BigNumber
   liquidationPrice: BigNumber
   fundingCost: BigNumber
   lockedCollateral: BigNumber
@@ -108,59 +99,27 @@ export type AaveDpmPosition = Position & {
   liquidity: BigNumber
 }
 
-export function createAavePosition$(
-  userAaveAccountData$: (
-    parameters: AaveUserAccountDataParameters,
-  ) => Observable<AaveUserAccountData>,
-  aaveAvailableLiquidityETH$: Observable<BigNumber>,
-  ethPrice$: Observable<BigNumber>,
-  getUserProxyAddress$: (userAddress: string) => Observable<string | undefined>,
-  address: string,
-): Observable<AavePosition | undefined> {
-  return combineLatest(getUserProxyAddress$(address), aaveAvailableLiquidityETH$, ethPrice$).pipe(
-    switchMap(([proxyAddress, liquidity, ethPrice]) => {
-      if (!proxyAddress) return EMPTY
-      return userAaveAccountData$({ address: proxyAddress }).pipe(
-        filter((accountData) => accountData.totalCollateralETH.gt(MINIMAL_COLLATERAL)),
-        map((accountData) => {
-          const netValue = accountData.totalCollateralETH
-            .minus(accountData.totalDebtETH)
-            .times(ethPrice)
-          return {
-            token: 'STETH',
-            contentsUsd: netValue,
-            title: 'AAVE-stETH-ETH',
-            url: `/aave/${address}`,
-            netValue: netValue,
-            liquidity: liquidity,
-            pln: 'N/A',
-            ownerAddress: address,
-          }
-        }),
-      )
-    }),
-    startWith(undefined),
-  )
-}
-
 export function createPositions$(
   makerPositions$: (address: string) => Observable<Position[]>,
-  aavePositions$: (address: string) => Observable<Position | undefined>,
-  aaveDpmPositions$: (address: string) => Observable<Position[]>,
+  aavePositions$: (address: string) => Observable<Position[]>,
   address: string,
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aavePositions$ = aavePositions$(address)
-  const _aaveDpmPositions$ = aaveDpmPositions$(address)
-  return combineLatest(_makerPositions$, _aavePositions$, _aaveDpmPositions$).pipe(
-    map(([makerPositions, aavePosition, aaveDpmPositions]) => {
-      return [...makerPositions, ...(aavePosition ? [aavePosition] : []), ...aaveDpmPositions]
+  return combineLatest(_makerPositions$, _aavePositions$).pipe(
+    map(([makerPositions, aavePositions]) => {
+      return [...makerPositions, ...aavePositions]
     }),
   )
 }
 
-export function createAaveDpmPosition$(
-  userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
+type ProxyAddresses = {
+  dsProxy$: (walletAddress: string) => Observable<string | undefined>
+  userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>
+}
+
+export function createAavePosition$(
+  proxyAddresses: ProxyAddresses,
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
@@ -174,19 +133,47 @@ export function createAaveDpmPosition$(
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: {
     token: string
   }) => Observable<BigNumber>,
+  getStrategyConfig$: (positionId: PositionId) => Observable<IStrategyConfig>,
   walletAddress: string,
-): Observable<AaveDpmPosition[]> {
-  return combineLatest(userDpmProxies$(walletAddress), context$).pipe(
-    switchMap(([userProxiesData, context]) => {
-      return combineLatest(readPositionCreatedEvents$(walletAddress)).pipe(
-        switchMap(([positionCreatedEvents]) => {
+): Observable<AavePosition[]> {
+  return combineLatest(
+    proxyAddresses.userDpmProxies$(walletAddress),
+    proxyAddresses.dsProxy$(walletAddress),
+    getStrategyConfig$({ walletAddress }),
+    context$,
+  ).pipe(
+    switchMap(([userProxiesData, dsProxyAddress, strategyConfig, context]) => {
+      // if we have a DS proxy make a fake position created event so we can read any position out below
+      let dsFakeEvent: PositionCreated[] = []
+      if (dsProxyAddress) {
+        dsFakeEvent = [
+          {
+            collateralTokenSymbol: strategyConfig.tokens.collateral,
+            debtTokenSymbol: strategyConfig.tokens.debt,
+            positionType: strategyConfig.type,
+            proxyAddress: dsProxyAddress,
+            protocol: 'AAVE',
+          },
+        ]
+
+        userProxiesData = [
+          ...userProxiesData,
+          {
+            user: walletAddress,
+            proxy: dsProxyAddress,
+            vaultId: walletAddress,
+          },
+        ]
+      }
+
+      return readPositionCreatedEvents$(walletAddress).pipe(
+        map((positionCreatedEvents) => {
+          return [...positionCreatedEvents, ...dsFakeEvent]
+        }),
+        switchMap((positionCreatedEvents) => {
           const protocolDataObservableList = positionCreatedEvents.map(
-            ({ collateralTokenSymbol, debtTokenSymbol }, index) => {
-              return aaveProtocolData$(
-                collateralTokenSymbol,
-                debtTokenSymbol,
-                userProxiesData[index].proxy,
-              )
+            ({ collateralTokenSymbol, debtTokenSymbol, proxyAddress }) => {
+              return aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
             },
           )
 
@@ -222,6 +209,7 @@ export function createAaveDpmPosition$(
             combineLatest(...tickerPrices),
             combineLatest(...wrappedGetAaveReserveDataObservableList),
             combineLatest(...liquidityObservables),
+            of(positionCreatedEvents),
           ).pipe(
             map(
               ([
@@ -230,8 +218,9 @@ export function createAaveDpmPosition$(
                 tickerPrices,
                 preparedAaveReserveData,
                 liquidities,
+                positionCreatedEvents,
               ]) => {
-                return protocolDataList.map(
+                const positions = protocolDataList.map(
                   (
                     {
                       position: {
@@ -243,6 +232,16 @@ export function createAaveDpmPosition$(
                     },
                     index,
                   ) => {
+                    const positionId = userProxiesData.find(
+                      ({ proxy }) => proxy === positionCreatedEvents[index].proxyAddress,
+                    )?.vaultId
+
+                    if (!positionId) {
+                      throw new Error(
+                        `Could not find position ID for proxy address ${positionCreatedEvents[index].proxyAddress}`,
+                      )
+                    }
+
                     const isDebtZero = debt.amount.isZero()
 
                     const tickerCollateralTokenPriceInUsd = tickerPrices[index][collateral.symbol]
@@ -290,11 +289,11 @@ export function createAaveDpmPosition$(
                     const isOwner =
                       context.status === 'connected' && context.account === walletAddress
 
-                    const position: AaveDpmPosition = {
+                    const position: AavePosition = {
                       token: collateralToken,
                       title: `${collateralToken}/${debtToken} AAVE`,
-                      url: `/aave/${userProxiesData[index].vaultId}`,
-                      id: userProxiesData[index].vaultId,
+                      url: `/aave/${positionId}`,
+                      id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
                       netValue: netValueUsd,
                       multiple,
                       liquidationPrice,
@@ -309,6 +308,8 @@ export function createAaveDpmPosition$(
                     return position
                   },
                 )
+
+                return positions
               },
             ),
           )
