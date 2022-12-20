@@ -48,6 +48,7 @@ export const otherAssets = [
 export function AjnaNavigationController() {
   const { isConnected, walletAddress } = useAccount()
   const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
+  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
   const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1]})`)
 
   return (
@@ -179,7 +180,7 @@ export function AjnaNavigationController() {
             {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>
         ) : (
-          <ConnectWalletButton />
+          <>{!isViewBelowL && <ConnectWalletButton />}</>
         )
       }
     />

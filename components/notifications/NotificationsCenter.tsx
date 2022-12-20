@@ -9,22 +9,18 @@ import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { throttle } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Grid } from 'theme-ui'
-import { useOnMobile } from 'theme/useBreakpointIndex'
 
 export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
   const { t } = useTranslation()
   const [showPreferencesTab, setShowPrefencesTab] = useState(false)
   const { analyticsData } = useNotificationSocket()
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
-  const onMobile = useOnMobile()
 
   useEffect(() => {
     setShowPrefencesTab(false)
   }, [analyticsData.walletAddress, isOpen])
-
-  const notificationCenterStyles = useMemo(() => ({ width: onMobile ? '95%' : 380 }), [onMobile])
 
   const handleScroll = throttle(() => {
     trackingEvents.notifications.scroll(
@@ -35,7 +31,7 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
   }, 500)
 
   return (
-    <Box sx={{ ...notificationCenterStyles }}>
+    <Box sx={{ width: '100%' }}>
       <NotificationsCenterHeader
         onButtonClick={() => {
           trackingEvents.notifications.buttonClick(

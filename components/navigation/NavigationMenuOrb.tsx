@@ -16,6 +16,7 @@ export interface NavigationMenuOrbProps {
   onClick?: () => void
   onClose?: () => void
   onOpen?: () => void
+  width?: number
 }
 
 interface NavigationMenuOrbIconProps {
@@ -37,6 +38,7 @@ export function NavigationOrb({
   onClick,
   onClose,
   onOpen,
+  width,
 }: NavigationMenuOrbProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const didMountRef = useRef(false)
@@ -50,7 +52,7 @@ export function NavigationOrb({
   }, [isOpen])
 
   return (
-    <Box ref={ref} sx={{ position: 'relative' }}>
+    <Box ref={ref} sx={{ position: ['static', 'relative'] }}>
       {(children || onClick) && (
         <Button
           variant="menuButtonRound"
@@ -106,8 +108,10 @@ export function NavigationOrb({
         <Box
           sx={{
             position: 'absolute',
-            top: '100%',
-            right: 0,
+            top: ['auto', '100%'],
+            right: [3, 0],
+            left: [3, 'auto'],
+            ...(width && { width: ['auto', `${width}px`] }),
             mt: 2,
             backgroundColor: 'neutral10',
             boxShadow: 'buttonMenu',

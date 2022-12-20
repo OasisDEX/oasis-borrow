@@ -88,7 +88,9 @@ export function NotificationsIconButton({
         sx={{
           bg: 'white',
           position: 'absolute',
-          right: 0,
+          right: [3, 0],
+          left: [3, 'auto'],
+          width: ['auto', '380px'],
           mt: 2,
           borderRadius: 'large',
           boxShadow: 'buttonMenu',
