@@ -59,7 +59,7 @@ export function AnjaHomepageView() {
         flex: 1,
         ...slideInAnimation,
         position: 'relative',
-        animationDuration: '0.3s',
+        animationDuration: '0.4s',
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
