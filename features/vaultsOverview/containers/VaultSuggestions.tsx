@@ -81,13 +81,13 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
         useDropdownOnMobile
         sections={[
           {
-            label: t('landing.tabs.multiply.tabLabel'),
+            label: t('landing.tabs.maker.multiply.tabLabel'),
             value: 'multiply',
             topContent: (
               <TabHeaderParagraph>
-                {t('landing.tabs.multiply.tabParaContent')}{' '}
+                {t('landing.tabs.maker.multiply.tabParaContent')}{' '}
                 <AppLink href="/multiply" variant="inText">
-                  {t('landing.tabs.multiply.tabParaLinkContent')}
+                  {t('landing.tabs.maker.multiply.tabParaLinkContent')}
                 </AppLink>
               </TabHeaderParagraph>
             ),
@@ -100,13 +100,13 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
             ),
           },
           {
-            label: t('landing.tabs.borrow.tabLabel'),
+            label: t('landing.tabs.maker.borrow.tabLabel'),
             value: 'borrow',
             topContent: (
               <TabHeaderParagraph>
-                <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+                <Text as="p">{t('landing.tabs.maker.borrow.tabParaContent')} </Text>
                 <AppLink href="/borrow" variant="inText">
-                  {t('landing.tabs.borrow.tabParaLinkContent')}
+                  {t('landing.tabs.maker.borrow.tabParaLinkContent')}
                 </AppLink>
               </TabHeaderParagraph>
             ),
@@ -119,13 +119,13 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
             ),
           },
           {
-            label: t('landing.tabs.earn.tabLabel'),
+            label: t('landing.tabs.maker.earn.tabLabel'),
             value: 'earn',
             topContent: (
               <TabHeaderParagraph>
-                {t('landing.tabs.earn.tabParaContent')}{' '}
+                {t('landing.tabs.maker.earn.tabParaContent')}{' '}
                 <AppLink href="/multiply" variant="inText">
-                  {t('landing.tabs.earn.tabParaLinkContent')}
+                  {t('landing.tabs.maker.earn.tabParaLinkContent')}
                 </AppLink>
               </TabHeaderParagraph>
             ),
