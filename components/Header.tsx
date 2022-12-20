@@ -117,7 +117,7 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
       >
         <Icon name="home" size="auto" width="20" />
       </Button>
-      {amountOfPositions && (
+      {!!amountOfPositions && (
         <Flex
           sx={{
             position: 'absolute',
@@ -264,7 +264,7 @@ function UserDesktopMenu() {
             width="20"
             sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
           />
-          {t('my-positions')} {amountOfPositions && `(${amountOfPositions})`}
+          {t('my-positions')} {!!amountOfPositions && `(${amountOfPositions})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
         <Box>
