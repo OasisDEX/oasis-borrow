@@ -116,20 +116,23 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 }
 
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
-  const isBorrowOrPaybackDebt = [
-    ManageDebtActionsEnum.BORROW_DEBT,
-    ManageDebtActionsEnum.PAYBACK_DEBT,
-  ].includes(context.manageTokenInput!.manageTokenAction as ManageDebtActionsEnum)
+  const isBorrowOrPaybackDebt = context.manageTokenInput
+    ? [ManageDebtActionsEnum.BORROW_DEBT, ManageDebtActionsEnum.PAYBACK_DEBT].includes(
+        context.manageTokenInput.manageTokenAction as ManageDebtActionsEnum,
+      )
+    : false
   const isAmountFromUserInputNeeded = (context.transactionToken || context.tokens.deposit) === 'ETH'
+
   return {
     kind: TxMetaKind.operationExecutor,
     calls: context.strategy!.transaction.calls as any,
     operationName: context.strategy!.transaction.operationName,
     token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.deposit,
     proxyAddress: context.effectiveProxyAddress!,
-    amount: isAmountFromUserInputNeeded
-      ? context.userInput.amount || context.manageTokenInput?.manageTokenActionValue
-      : zero,
+    amount:
+      isAmountFromUserInputNeeded && !isBorrowOrPaybackDebt
+        ? context.userInput.amount || context.manageTokenInput?.manageTokenActionValue
+        : zero,
   }
 }
 

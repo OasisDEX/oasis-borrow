@@ -493,10 +493,11 @@ export function createManageAaveStateMachine(
         ),
         requestManageParameters: send(
           (context): TransactionParametersStateMachineEvent<ManageAaveParameters> => {
-            const isBorrowOrPaybackDebt = [
-              ManageDebtActionsEnum.BORROW_DEBT,
-              ManageDebtActionsEnum.PAYBACK_DEBT,
-            ].includes(context.manageTokenInput!.manageTokenAction as ManageDebtActionsEnum)
+            const isBorrowOrPaybackDebt = context.manageTokenInput
+              ? [ManageDebtActionsEnum.BORROW_DEBT, ManageDebtActionsEnum.PAYBACK_DEBT].includes(
+                  context.manageTokenInput.manageTokenAction as ManageDebtActionsEnum,
+                )
+              : false
             return {
               type: 'VARIABLES_RECEIVED',
               parameters: {
