@@ -1,6 +1,7 @@
+import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { FollowButton } from 'features/follow/common/FollowButton'
-import { followVaultUsingApi$ } from 'features/shared/followApi'
+import { followVaultUsingApi$, getFollowFromApi } from 'features/shared/followApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import React, { useEffect, useState } from 'react'
 
@@ -17,30 +18,57 @@ export function FollowButtonControl({
   docVersion,
   chainId,
 }: FollowButtonProps) {
-  const [isFollowing, setIsFollowing] = useState(false)
+  // const getFollowedVaults$ = useMemo(() => getFollowFromApi(followerAddress), [followerAddress])
+  // const [getFollowFromApi] = useObservable(getFollowedVaults$)
+
+  // const currentFollowedVault = getFollowFromApi?.find((item) =>
+  //   new BigNumber(item.vault_id).eq(vaultId),
+  // )
+  const [isFollowing, setIsFollowing] = useState(true)
   const [isProcessing, setProcessing] = useState(true)
   //   TODO ŁW - Error handling when working with real api
 
+  console.log('isProcessing', isProcessing)
   useEffect(() => {
-    setTimeout(() => {
-      setIsFollowing(false)
-      setProcessing(false)
-    }, 1000)
-    setProcessing(isProcessing)
-  }, [])
-  function buttonClickHandler() {
     console.log('followerAddress')
     console.log(followerAddress)
+    void getFollowFromApi(followerAddress).then((resp) => {
+      handleGetFollowedVaults(resp)
+    })
+  }, [])
+
+  function handleGetFollowedVaults(resp: UsersWhoFollowVaults[]) {
+    const followedVaults = Object.values(resp)
+    const currentFollowedVault = followedVaults.find((item) =>
+      new BigNumber(item.vault_id).eq(vaultId),
+    )
+    setIsFollowing(currentFollowedVault !== undefined)
+    setProcessing(false)
+  }
+
+  // useEffect(() => {
+  //   console.log('itmes')
+  //   console.log(getFollowFromApi?.flatMap((item) => item))
+  //   console.log('followedVault')
+  //   console.log(currentFollowedVault)
+  //   console.log('followedVault !== undefined')
+  //   console.log(currentFollowedVault !== undefined)
+  //   setIsFollowing(currentFollowedVault !== undefined)
+  //   if (getFollowFromApi) {
+  //     setProcessing(false)
+  //   }
+  // }, [getFollowFromApi])
+  async function buttonClickHandler() {
+    setProcessing(true)
     const jwtToken = jwtAuthGetToken(followerAddress)
-    console.log('jwtToken')
-    console.log(jwtToken)
     if (vaultId && jwtToken) {
-      console.log('follow using api')
+      // this observable is causing race condition, rewrite using async await, fetch - timeout proofs that observable causes the problem
       followVaultUsingApi$(vaultId, followerAddress, docVersion, chainId, jwtToken).subscribe()
+      setTimeout(async () => {
+        const followedVault = await getFollowFromApi(followerAddress)
+        handleGetFollowedVaults(followedVault)
+      }, 1000)
     }
-    // if (!isProcessing) {
-    //   setProcessing(true)
-    // }
   }
   return (
     <FollowButton

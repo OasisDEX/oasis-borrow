@@ -68,14 +68,18 @@ export function FollowButton(props: FollowButtonProps) {
           </Box>
         )}
       </Box>
+      {/* {props.isProcessing && t('loading')}
+    {props.isFollowing && !props.isProcessing && t('following')}
+    {props.isFollowing && !props.isProcessing && isHovering && t('unfollow')}
+    {!props.isFollowing && !props.isProcessing && t('follow')} */}
 
       {props.isProcessing
         ? t('loading')
-        : props.isFollowing
-        ? t('follow')
-        : isHovering
+        : isHovering && props.isFollowing
         ? t('unfollow')
-        : t('following')}
+        : props.isFollowing
+        ? t('following')
+        : t('follow')}
     </Button>
   )
 }
