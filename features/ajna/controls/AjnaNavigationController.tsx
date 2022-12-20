@@ -46,8 +46,8 @@ export const otherAssets = [
 
 export function AjnaNavigationController() {
   const { isConnected, walletAddress } = useAccount()
-  const isViewNotL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
-  const isViewNotXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
+  const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
+  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
 
   return (
     <Navigation
@@ -160,7 +160,7 @@ export function AjnaNavigationController() {
           label: 'Ajna Tokens',
           link: '/ajna/tokens',
         },
-        ...(isConnected && !isViewNotXl
+        ...(isConnected && !isViewBelowXl
           ? [
               {
                 label: <MyPositionsLink />,
@@ -172,10 +172,10 @@ export function AjnaNavigationController() {
       actions={
         isConnected ? (
           <>
-            {isViewNotXl && <MyPositionsOrb />}
+            {isViewBelowXl && <MyPositionsOrb />}
             <SwapOrb />
             <NotificationsOrb />
-            {!isViewNotL && <WalletOrb />}
+            {!isViewBelowL && <WalletOrb />}
           </>
         ) : (
           <ConnectWalletButton />

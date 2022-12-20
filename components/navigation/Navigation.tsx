@@ -27,7 +27,7 @@ export const navigationBreakpoints = ['531px', '744px', '1025px', '1279px']
 export function Navigation({ actions, brandingLink = '/', links, panels, pill }: NavigationProps) {
   const [isMobileMenuOpen, toggleIsMobileMenuOpen, setIsMobileMenuOpen] = useToggle(false)
   const ref = useOutsideElementClickHandler(() => setIsMobileMenuOpen(false))
-  const isViewNotL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
+  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
 
   return (
     <ThemeProvider theme={{ breakpoints: navigationBreakpoints }}>
@@ -43,10 +43,10 @@ export function Navigation({ actions, brandingLink = '/', links, panels, pill }:
         }}
       >
         <NavigationBranding link={brandingLink} pill={pill} />
-        {!isViewNotL && <NavigationMenu links={links} panels={panels} />}
+        {!isViewBelowL && <NavigationMenu links={links} panels={panels} />}
         <NavigationActions>
           {actions}
-          {isViewNotL && (
+          {isViewBelowL && (
             <Box ref={ref}>
               <NavigationOrb icon="menu" iconSize={20} onClick={toggleIsMobileMenuOpen} />
               <NavigationMobileMenu isOpen={isMobileMenuOpen} links={links} panels={panels} />
