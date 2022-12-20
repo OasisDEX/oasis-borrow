@@ -18,7 +18,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
 
   const tabs = () => {
     const borrowTab = content.borrowIlks && {
-      label: t('landing.tabs.borrow.tabLabel'),
+      label: t('landing.tabs.maker.borrow.tabLabel'),
       value: 'borrow',
       content: (
         <Box sx={{ mt: 5 }}>
@@ -28,7 +28,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
     }
 
     const multiplyTab = content.multiplyIlks && {
-      label: t('landing.tabs.multiply.tabLabel'),
+      label: t('landing.tabs.maker.multiply.tabLabel'),
       value: 'multiply',
       content: (
         <Box sx={{ mt: 5 }}>
@@ -38,7 +38,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
     }
 
     const earnTab = content.earnIlks && {
-      label: t('landing.tabs.earn.tabLabel'),
+      label: t('landing.tabs.maker.earn.tabLabel'),
       value: 'earn',
       content: (
         <Box sx={{ mt: 5 }}>

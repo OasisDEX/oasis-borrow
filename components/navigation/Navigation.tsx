@@ -1,3 +1,4 @@
+import { NavigationActions } from 'components/navigation/NavigationActions'
 import {
   NavigationBranding,
   NavigationBrandingPill,
@@ -5,17 +6,18 @@ import {
 import { NavigationMenu } from 'components/navigation/NavigationMenu'
 import { NavigationMenuPanelLinkType } from 'components/navigation/NavigationMenuLink'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
-import React from 'react'
-import { Box, Container } from 'theme-ui'
+import React, { ReactNode } from 'react'
+import { Container } from 'theme-ui'
 
 interface NavigationProps {
+  actions?: ReactNode
   brandingLink?: string
   links?: NavigationMenuPanelLinkType[]
   panels?: NavigationMenuPanelType[]
   pill?: NavigationBrandingPill
 }
 
-export function Navigation({ brandingLink = '/', links, panels, pill }: NavigationProps) {
+export function Navigation({ actions, brandingLink = '/', links, panels, pill }: NavigationProps) {
   return (
     <Container
       as="header"
@@ -24,12 +26,13 @@ export function Navigation({ brandingLink = '/', links, panels, pill }: Navigati
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        mt: 3,
+        mt: '24px',
+        zIndex: 3,
       }}
     >
       <NavigationBranding link={brandingLink} pill={pill} />
       <NavigationMenu links={links} panels={panels} />
-      <Box>Panels</Box>
+      <NavigationActions>{actions}</NavigationActions>
     </Container>
   )
 }

@@ -87,9 +87,8 @@ export function NavigationMenuDropdown({
             }}
           >
             {panels.map(({ label, ...panel }, i) => (
-              <Flex sx={{ ml: '-100%', transform: 'translateX(50%)' }}>
+              <Flex key={i} sx={{ ml: '-100%', transform: 'translateX(50%)' }}>
                 <Flex
-                  key={i}
                   sx={{
                     position: 'absolute',
                     flexDirection: 'column',

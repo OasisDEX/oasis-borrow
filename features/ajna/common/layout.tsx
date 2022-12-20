@@ -1,8 +1,8 @@
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { WithFeatureToggleRedirect } from 'components/FeatureToggleRedirect'
-import { Footer } from 'components/Footer'
 import { PageSEOTags } from 'components/HeadTags'
 import { BasicLayout } from 'components/Layouts'
+import { AnjaFooter } from 'features/ajna/components/AnjaFooter'
 import { AjnaNavigationController } from 'features/ajna/controls/AjnaNavigationController'
 import React, { PropsWithChildren } from 'react'
 import { ajnaExtensionTheme } from 'theme'
@@ -22,7 +22,7 @@ export function AjnaLayout({ children }: PropsWithChildren<{}>) {
     <ThemeProvider theme={ajnaExtensionTheme}>
       <BasicLayout
         header={<AjnaNavigationController />}
-        footer={<Footer />}
+        footer={<AnjaFooter />}
         sx={{ position: 'relative' }}
         bg={<Background isAjnaPage />}
       >
