@@ -287,7 +287,7 @@ function getTokensInBaseUnit({
 
 export async function getManageAaveParameters(
   parameters: ManageAaveParameters,
-): Promise<IPositionTransition | undefined> {
+): Promise<IPositionTransition> {
   try {
     const {
       context,
