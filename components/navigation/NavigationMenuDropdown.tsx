@@ -75,7 +75,7 @@ export function NavigationMenuDropdown({
             bg: 'neutral10',
             boxShadow: 'buttonMenu',
             overflow: 'hidden',
-            pointerEvents: 'auto',
+            pointerEvents: isPanelOpen ? 'auto' : 'none',
           }}
         >
           <Flex

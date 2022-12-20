@@ -49,6 +49,7 @@ export function NavigationMenuPanel({
           fontSize: 2,
           fontWeight: 'semiBold',
           color: isPanelOpen && currentPanel === label ? 'primary100' : 'neutral80',
+          whiteSpace: 'nowrap',
           cursor: 'default',
           transition: 'color 200ms',
         }}

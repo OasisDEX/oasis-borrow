@@ -4,6 +4,7 @@ import { useObservable } from 'helpers/observableHook'
 interface AccountState {
   amountOfPositions?: number
   isConnected: boolean
+  walletAddress?: string
 }
 
 export function useAccount(): AccountState {
@@ -14,5 +15,6 @@ export function useAccount(): AccountState {
   return {
     amountOfPositions: accountData?.numberOfVaults,
     isConnected: context?.status === 'connected',
+    walletAddress: context?.account,
   }
 }
