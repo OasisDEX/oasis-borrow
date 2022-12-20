@@ -22,7 +22,7 @@ import { paybackWithdraw } from '@oasisdex/oasis-actions/lib/src/strategies/aave
 function getAddressesFromContext(context: Context) {
   return {
     DAI: context.tokens['DAI'].address,
-    ETH: context.tokens['WETH'].address, // TODO FIX AFTER LIB CHANGE
+    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // TODO FIX AFTER LIB CHANGE
     WETH: context.tokens['WETH'].address,
     stETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
@@ -347,8 +347,7 @@ export async function getManageAaveParameters(
         if (
           manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
         ) {
-          borrowDepositStratArgs.entryToken =
-            addresses[currentPosition.collateral.symbol as keyof typeof addresses]
+          borrowDepositStratArgs.entryToken = currentPosition.collateral.symbol
           borrowDepositStratArgs.entryTokenAmount = manageTokenInput?.manageTokenActionValue
         }
         const borrowDepositStratDeps: Parameters<typeof strategies.aave.depositBorrow>[1] = {
@@ -361,7 +360,7 @@ export async function getManageAaveParameters(
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
 
-        return strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
+        return await strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
       default:
         throw Error('Not implemented')
     }
