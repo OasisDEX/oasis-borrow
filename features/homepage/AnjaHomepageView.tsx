@@ -7,12 +7,10 @@ import { HomepageTabLayout } from 'components/HomepageTabLayout'
 import { InfoCard } from 'components/InfoCard'
 import { LandingBanner } from 'components/LandingBanner'
 import { AppLink } from 'components/Links'
-import {
-  AlternateProductCard,
-  productCardsAjna,
-} from 'components/productCards/AlternateProductCard'
+import { AlternateProductCard } from 'components/productCards/AlternateProductCard'
 import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
 import { TabBar } from 'components/TabBar'
+import { productCardsAjna } from 'features/ajna/common/consts'
 import { otherAssets } from 'features/ajna/controls/AjnaNavigationController'
 import { Hero } from 'features/homepage/HomepageView'
 import { useObservable } from 'helpers/observableHook'
@@ -35,8 +33,8 @@ const benefitCardsAnja = [
     image: {
       src: '/static/img/info_cards/benefit_2.png',
       bottom: '30px',
-      width: '350px',
-      bgWidth: '293px',
+      width: '382px',
+      bgWidth: 'calc(100% - 64px)',
     },
     background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
   },
@@ -59,6 +57,10 @@ export function AnjaHomepageView() {
     <Box
       sx={{
         flex: 1,
+        ...slideInAnimation,
+        position: 'relative',
+        animationDuration: '0.4s',
+        animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
       <Hero
@@ -81,10 +83,6 @@ export function AnjaHomepageView() {
       />
       <Box
         sx={{
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: '0.3s',
-          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
           width: '100%',
           mt: '126px',
         }}
@@ -101,13 +99,13 @@ export function AnjaHomepageView() {
               content: (
                 <HomepageTabLayout
                   cards={
-                    <ProductCardsWrapper sx={{ mt: '48px' }}>
+                    <ProductCardsWrapper sx={{ mt: ['9px', '48px'], gap: ['88px', 3, 3] }}>
                       {productCardsAjna.borrow.map((card) => (
                         <AlternateProductCard
-                          header={card.header}
+                          header={t(card.headerKey, { token: card.token })}
                           background={card.background}
                           icon={card.icon}
-                          key={card.header}
+                          key={card.headerKey}
                           banner={card.banner}
                           button={card.button}
                           labels={card.labels}
@@ -124,13 +122,13 @@ export function AnjaHomepageView() {
               content: (
                 <HomepageTabLayout
                   cards={
-                    <ProductCardsWrapper sx={{ mt: '48px' }}>
+                    <ProductCardsWrapper sx={{ mt: ['9px', '48px'], gap: ['88px', 3, 3] }}>
                       {productCardsAjna.borrow.map((card) => (
                         <AlternateProductCard
-                          header={card.header}
+                          header={t(card.headerKey, { token: card.token })}
                           background={card.background}
                           icon={card.icon}
-                          key={card.header}
+                          key={card.headerKey}
                           banner={card.banner}
                           button={card.button}
                           labels={card.labels}
@@ -147,13 +145,13 @@ export function AnjaHomepageView() {
               content: (
                 <HomepageTabLayout
                   cards={
-                    <ProductCardsWrapper sx={{ mt: '48px' }}>
+                    <ProductCardsWrapper sx={{ mt: ['9px', '48px'], gap: ['88px', 3, 3] }}>
                       {productCardsAjna.borrow.map((card) => (
                         <AlternateProductCard
-                          header={card.header}
+                          header={t(card.headerKey, { token: card.token })}
                           background={card.background}
                           icon={card.icon}
-                          key={card.header}
+                          key={card.headerKey}
                           banner={card.banner}
                           button={card.button}
                           labels={card.labels}
@@ -185,11 +183,22 @@ export function AnjaHomepageView() {
               fontWeight: 'semiBold',
               mb: '40px',
               color: 'primary100',
+              textAlign: 'center',
             }}
           >
-            Other assets you can borrow against
+            {t('ajna.other-assets')}
           </Heading>
-          <Flex as="ul" sx={{ flexWrap: 'wrap', columnGap: 3, rowGap: 2, listStyle: 'none', p: 0 }}>
+          <Flex
+            as="ul"
+            sx={{
+              flexWrap: 'wrap',
+              columnGap: 3,
+              rowGap: 2,
+              listStyle: 'none',
+              p: 0,
+              justifyContent: 'center',
+            }}
+          >
             {otherAssets.map(({ link, token }, i) => (
               <Box key={i} as="li">
                 <AssetPill icon={getToken(token).iconCircle} label={token} link={link} />
@@ -200,21 +209,18 @@ export function AnjaHomepageView() {
       )}
       <Flex
         sx={{
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: '0.6s',
-          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
           flexDirection: 'column',
           alignItems: 'center',
           mb: 7,
         }}
       >
-        <Text variant="header3" sx={{ mt: 7, mb: 4 }}>
+        <Text as="p" variant="header3" sx={{ mt: [6, 6, 7], mb: 4, textAlign: 'center' }}>
           {t('landing.benefits.ajna.header')}
         </Text>
         <Text
+          as="p"
           variant="paragraph1"
-          sx={{ mb: '48px', color: 'neutral80', maxWidth: '740px', textAlign: 'center' }}
+          sx={{ mb: [5, '48px'], color: 'neutral80', maxWidth: '740px', textAlign: 'center' }}
         >
           {t('landing.benefits.ajna.description')}
         </Text>
@@ -272,14 +278,10 @@ export function AnjaHomepageView() {
       />
       <Box
         sx={{
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: '0.6s',
-          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
-          mb: '127px',
+          mb: [3, 3, 6],
         }}
       >
-        <Text variant="header3" sx={{ textAlign: 'center', mt: '205px', mb: 4 }}>
+        <Text as="p" variant="header3" sx={{ textAlign: 'center', mt: [6, 6, '205px'], mb: 4 }}>
           {t('landing.info-cards.have-some-questions')}
         </Text>
         <Grid
@@ -295,8 +297,8 @@ export function AnjaHomepageView() {
             subtitle={t('landing.info-cards.learn.deep-dive')}
             links={[
               {
-                href: 'https://kb.oasis.app/help/getting-started',
-                text: t('landing.info-cards.learn.get-started'),
+                href: 'https://www.ajna.finance/',
+                text: t('ajna.learn.ajna-website'),
               },
               {
                 href: 'https://kb.oasis.app/help/tutorials',
@@ -316,19 +318,23 @@ export function AnjaHomepageView() {
             links={[
               {
                 href: 'https://kb.oasis.app/help/frequently-asked-questions',
-                text: t('landing.info-cards.support.faq'),
+                text: t('ajna.learn.anja-faq'),
+              },
+              {
+                href: '/',
+                text: t('ajna.learn.ajna-discord'),
+              },
+              {
+                href: '/',
+                text: t('ajna.learn.ajna-twitter'),
               },
               {
                 href: 'https://discord.gg/oasisapp',
-                text: t('landing.info-cards.support.discord'),
-              },
-              {
-                href: '/daiwallet/contact',
-                text: t('landing.info-cards.support.contact-us'),
+                text: t('ajna.learn.oasis-discord'),
               },
               {
                 href: 'https://twitter.com/oasisdotapp',
-                text: t('landing.info-cards.support.twitter'),
+                text: t('ajna.learn.oasis-twitter'),
               },
             ]}
             backgroundGradient="linear-gradient(135.35deg, #FEF7FF 0.6%, #FEE9EF 100%), radial-gradient(261.45% 254.85% at 3.41% 2.19%, #FFFADD 0%, #FFFBE3 0.01%, #F0FFF2 52.6%, #FBEDFD 100%)"

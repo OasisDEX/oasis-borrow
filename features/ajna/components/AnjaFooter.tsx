@@ -26,7 +26,18 @@ export function AnjaFooter() {
   const { t } = useTranslation()
   return (
     <Flex sx={{ justifyContent: 'center' }}>
-      <Flex as="ul" sx={{ my: '48px', gap: [3, 5], width: 'fit-content', flexWrap: 'wrap', pl: 0 }}>
+      <Flex
+        as="ul"
+        sx={{
+          my: '48px',
+          gap: [5, 5],
+          width: 'fit-content',
+          flexWrap: 'wrap',
+          pl: 0,
+          flexDirection: ['column', 'row'],
+          textAlign: 'center',
+        }}
+      >
         {content.map((item) => (
           <AppLink
             href={item.link}

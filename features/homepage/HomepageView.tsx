@@ -130,7 +130,6 @@ export function HomepageView() {
   const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
 
   const router = useRouter()
-  const standardAnimationDuration = '0.7s'
 
   useEffect(() => {
     if (!localReferral && referralsEnabled) {
@@ -146,6 +145,10 @@ export function HomepageView() {
     <Box
       sx={{
         flex: 1,
+        ...slideInAnimation,
+        position: 'relative',
+        animationDuration: '0.4s',
+        animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
       <Flex
@@ -170,27 +173,17 @@ export function HomepageView() {
       <Pills
         sx={{
           mb: 5,
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: standardAnimationDuration,
         }}
       />
 
       <Stats
         sx={{
           mb: 6,
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: standardAnimationDuration,
         }}
       />
 
       <Box
         sx={{
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: '0.3s',
-          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
           width: '100%',
           mt: '126px',
         }}
@@ -277,14 +270,7 @@ export function HomepageView() {
           ]}
         />
       </Box>
-      <Box
-        sx={{
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: '0.6s',
-          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
-        }}
-      >
+      <Box>
         <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
           {t('landing.info-cards.have-some-questions')}
         </Text>
@@ -342,14 +328,7 @@ export function HomepageView() {
           />
         </Grid>
       </Box>
-      <Box
-        sx={{
-          ...slideInAnimation,
-          position: 'relative',
-          animationDuration: '0.9s',
-          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
-        }}
-      >
+      <Box>
         <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
           {t('landing.info-cards.get-started')}
         </Text>
@@ -438,10 +417,7 @@ export function Hero({
   return (
     <Flex
       sx={{
-        ...slideInAnimation,
         position: 'relative',
-        animationDuration: '0.7s',
-        animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         justifySelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
