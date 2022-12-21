@@ -352,7 +352,10 @@ export function SidebarManageAaveVault() {
         panel: 'manageCollateral',
         action: () => {
           if (!state.matches('frontend.manageCollateral')) {
-            send('MANAGE_COLLATERAL')
+            send({
+              type: 'MANAGE_COLLATERAL',
+              manageTokenAction: ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+            })
           }
         },
       },
@@ -367,7 +370,7 @@ export function SidebarManageAaveVault() {
         panel: 'manageDebt',
         action: () => {
           if (!state.matches('frontend.manageDebt')) {
-            send('MANAGE_DEBT')
+            send({ type: 'MANAGE_DEBT', manageTokenAction: ManageDebtActionsEnum.BORROW_DEBT })
           }
         },
       },
