@@ -68,10 +68,6 @@ export function FollowButton(props: FollowButtonProps) {
           </Box>
         )}
       </Box>
-      {/* {props.isProcessing && t('loading')}
-    {props.isFollowing && !props.isProcessing && t('following')}
-    {props.isFollowing && !props.isProcessing && isHovering && t('unfollow')}
-    {!props.isFollowing && !props.isProcessing && t('follow')} */}
 
       {props.isProcessing
         ? t('loading')

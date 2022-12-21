@@ -1,4 +1,3 @@
-
 import { FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'

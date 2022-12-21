@@ -1,7 +1,7 @@
 import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { FollowButton } from 'features/follow/common/FollowButton'
-import {  followVaultUsingApi, getFollowFromApi } from 'features/shared/followApi'
+import { followVaultUsingApi, getFollowFromApi } from 'features/shared/followApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import React, { useEffect, useState } from 'react'
 
@@ -59,14 +59,18 @@ export function FollowButtonControl({
     if (vaultId && jwtToken) {
       // this observable is causing race condition, rewrite using async await, fetch - timeout proofs that observable causes the problem
       // followVaultUsingApi$(vaultId, followerAddress, docVersion, chainId, jwtToken).subscribe()
-      // setTimeout(async () => {
-      const followedVaults = await followVaultUsingApi(vaultId, followerAddress, docVersion, chainId, jwtToken)
+      const followedVaults = await followVaultUsingApi(
+        vaultId,
+        followerAddress,
+        docVersion,
+        chainId,
+        jwtToken,
+      )
       console.log('return from post')
       console.log(followedVaults)
       // TODO Ł this post is ok, but now rewrite method to also return all followed vaults so I won't need to do get request afterwards ~Ł
-      const followedVault = await getFollowFromApi(followerAddress)
-      handleGetFollowedVaults(followedVault)
-      // }, 1000)
+      // const followedVault = await getFollowFromApi(followerAddress)
+      handleGetFollowedVaults(followedVaults)
     }
   }
   return (

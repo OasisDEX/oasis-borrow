@@ -57,13 +57,14 @@ export function VaultHeadline({
             />
           ))}
         {header}
-        {followButtonProps &&
-        <FollowButtonControl
-          followerAddress={followButtonProps.followerAddress}
-          vaultId={followButtonProps.vaultId}
-          docVersion={followButtonProps.docVersion}
-          chainId={followButtonProps.chainId}
-        />}
+        {followButtonProps && (
+          <FollowButtonControl
+            followerAddress={followButtonProps.followerAddress}
+            vaultId={followButtonProps.vaultId}
+            docVersion={followButtonProps.docVersion}
+            chainId={followButtonProps.chainId}
+          />
+        )}
       </Heading>
       <Flex
         sx={{

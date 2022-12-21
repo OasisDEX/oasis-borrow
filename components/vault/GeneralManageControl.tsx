@@ -14,10 +14,7 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const {
-    generalManageVault$,
-    context$
-  } = useAppContext()
+  const { generalManageVault$, context$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
