@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { BaseAaveContext } from '../common/BaseAaveContext'
@@ -14,8 +15,11 @@ export function getTxTokenAndAmount(context: BaseAaveContext) {
   return {
     amount:
       isAmountFromUserInputNeeded && !isBorrowOrPaybackDebt
-        ? context.userInput.amount || context.manageTokenInput?.manageTokenActionValue
+        ? context.userInput.amount || context.manageTokenInput!.manageTokenActionValue
         : zero,
     token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.collateral,
+  } as {
+    amount: BigNumber
+    token: string
   }
 }
