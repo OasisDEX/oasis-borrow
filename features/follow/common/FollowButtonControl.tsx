@@ -24,7 +24,7 @@ export function FollowButtonControl({
   // const currentFollowedVault = getFollowFromApi?.find((item) =>
   //   new BigNumber(item.vault_id).eq(vaultId),
   // )
-  const [isFollowing, setIsFollowing] = useState(true)
+  const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
   //   TODO ŁW - Error handling when working with real api
 

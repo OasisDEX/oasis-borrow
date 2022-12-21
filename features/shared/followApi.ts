@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators'
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
 // TODO ŁW rewrite to fetch and async function
-export async function followVaultUsingApi$(
+export function followVaultUsingApi$(
   vaultId: BigNumber,
   followerAddress: string,
   docVersion: string,
