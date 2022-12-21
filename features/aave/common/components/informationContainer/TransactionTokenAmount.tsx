@@ -1,6 +1,7 @@
 import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { allDefined } from 'helpers/allDefined'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -8,6 +9,7 @@ import { amountFromWei } from '../../../../../blockchain/utils'
 import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
 import { AppSpinner } from '../../../../../helpers/AppSpinner'
 import { formatAmount, formatFiatBalance } from '../../../../../helpers/formatters/format'
+import { zero } from '../../../../../helpers/zero'
 
 interface BuyingTokenAmountProps {
   transactionParameters: IPositionTransition
@@ -21,12 +23,16 @@ export function TransactionTokenAmount({
   collateralPrice,
 }: BuyingTokenAmountProps) {
   const { t } = useTranslation()
-  const isBuyingCollateral =
-    transactionParameters.simulation.swap.targetToken.symbol === tokens.collateral
 
-  const collateralMovement = isBuyingCollateral
-    ? transactionParameters.simulation.swap.toTokenAmount
-    : transactionParameters.simulation.swap.fromTokenAmount
+  const { toTokenAmount, fromTokenAmount, targetToken } = transactionParameters.simulation.swap
+
+  if (!allDefined(toTokenAmount, fromTokenAmount) || toTokenAmount?.lte(zero)) {
+    return <></>
+  }
+  const isBuyingCollateral = targetToken.symbol === tokens.collateral
+
+  const collateralMovement = isBuyingCollateral ? toTokenAmount : fromTokenAmount
+
   const amount = amountFromWei(collateralMovement, tokens.collateral)
 
   const labelKey = isBuyingCollateral ? 'vault-changes.buying-token' : 'vault-changes.selling-token'

@@ -7,7 +7,7 @@ import React from 'react'
 
 import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance, formatPercent } from '../../../../../helpers/formatters/format'
-import { one } from '../../../../../helpers/zero'
+import { one, zero } from '../../../../../helpers/zero'
 import { calculatePriceImpact } from '../../../../shared/priceImpact'
 
 interface PriceImpactProps {
@@ -35,17 +35,18 @@ export function PriceImpact({
     sourceToken,
   } = transactionParameters.simulation.swap
 
-  let swapPrice
-
-  if (sourceToken.symbol === tokens.collateral) {
-    swapPrice = amountFromWei(toTokenAmount, targetToken.precision).div(
-      amountFromWei(fromTokenAmount, sourceToken.precision),
-    )
-  } else {
-    swapPrice = amountFromWei(fromTokenAmount, sourceToken.precision).div(
-      amountFromWei(toTokenAmount, targetToken.precision),
-    )
+  if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
+    return <></>
   }
+
+  const swapPrice =
+    sourceToken.symbol === tokens.collateral
+      ? amountFromWei(toTokenAmount, targetToken.precision).div(
+          amountFromWei(fromTokenAmount, sourceToken.precision),
+        )
+      : amountFromWei(fromTokenAmount, sourceToken.precision).div(
+          amountFromWei(toTokenAmount, targetToken.precision),
+        )
 
   const marketPrice = collateralPrice?.div(debtPrice || one) || one
 

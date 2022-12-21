@@ -32,6 +32,7 @@ import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
+  getDepositBorrowAaveMachine,
   getOpenAaveParametersMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
@@ -150,6 +151,7 @@ export function setupAaveContext({
   const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$)
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
+  const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
 
   const commonTransactionServices = transactionContextService(context$)
 
@@ -236,6 +238,7 @@ export function setupAaveContext({
     adjustAaveParameters,
     allowanceStateMachine,
     operationExecutorTransactionMachine,
+    depositBorrowAaveMachine,
   )
 
   const getAaveReserveData$ = observe(

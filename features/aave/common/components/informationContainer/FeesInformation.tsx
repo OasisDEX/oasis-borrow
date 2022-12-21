@@ -21,6 +21,7 @@ interface FeesInformationProps {
 export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
+
   const oasisFeeDisplayInDebtToken = formatAmount(
     amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
     swap[swap.collectFeeFrom].symbol,

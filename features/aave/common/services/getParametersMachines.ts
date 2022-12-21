@@ -8,7 +8,9 @@ import {
   CloseAaveParameters,
   getAdjustAaveParameters,
   getCloseAaveParameters,
+  getManageAaveParameters,
   getOpenAaveParameters,
+  ManageAaveParameters,
   OpenAaveParameters,
 } from '../../oasisActionsLibWrapper'
 
@@ -42,5 +44,16 @@ export function getAdjustAaveParametersMachine(
     txHelpers$,
     gasPriceEstimation$,
     (parameters: AdjustAaveParameters) => getAdjustAaveParameters(parameters),
+  )
+}
+
+export function getDepositBorrowAaveMachine(
+  txHelpers$: Observable<TxHelpers>,
+  gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
+) {
+  return createTransactionParametersStateMachine(
+    txHelpers$,
+    gasPriceEstimation$,
+    (parameters: ManageAaveParameters) => getManageAaveParameters(parameters),
   )
 }

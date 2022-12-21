@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { Context } from '../../../../blockchain/network'
@@ -9,7 +9,7 @@ import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
 import { UserSettingsState } from '../../../userSettings/userSettings'
-import { IStrategyInfo } from '../../common/BaseAaveContext'
+import { IStrategyInfo, StrategyTokenAllowance } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxiesRelatedWithPosition } from '../../helpers/getProxiesRelatedWithPosition'
 import { PositionId } from '../../types'
@@ -117,12 +117,25 @@ export function getManageAavePositionStateMachineServices(
     },
     allowance$: (context) => {
       return proxiesRelatedWithPosition$(context.positionId).pipe(
-        switchMap((result) =>
-          tokenAllowance$(context.tokens.deposit, result.dsProxy || result.dpmProxy?.proxy!),
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
+        filter(allDefined),
+        switchMap((proxyAddress) => {
+          return combineLatest([
+            tokenAllowance$(context.tokens.deposit, proxyAddress),
+            tokenAllowance$(context.tokens.collateral, proxyAddress),
+            tokenAllowance$(context.tokens.debt, proxyAddress),
+          ])
+        }),
+        map(
+          ([deposit, collateral, debt]): StrategyTokenAllowance => ({
+            collateral,
+            debt,
+            deposit,
+          }),
         ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
-          tokenAllowance: allowance,
+          allowance: allowance,
         })),
         distinctUntilChanged(isEqual),
       )

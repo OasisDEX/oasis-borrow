@@ -5,6 +5,7 @@ import {
   IRiskRatio,
   Position,
   strategies,
+  ZERO,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { providers } from 'ethers'
@@ -14,16 +15,18 @@ import { getToken } from '../../blockchain/tokensMetadata'
 import { amountToWei } from '../../blockchain/utils'
 import { getOneInchCall } from '../../helpers/swap'
 import { zero } from '../../helpers/zero'
+import { ManageTokenInput } from './common/BaseAaveContext'
 import { ProxyType } from './common/StrategyConfigTypes'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyConfig'
 
 function getAddressesFromContext(context: Context) {
   return {
     DAI: context.tokens['DAI'].address,
     ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     WETH: context.tokens['WETH'].address,
-    stETH: context.tokens['STETH'].address,
+    STETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
-    wBTC: context.tokens['WBTC'].address,
+    WBTC: context.tokens['WBTC'].address,
     chainlinkEthUsdPriceFeed: context.chainlinkPriceOracle['ETHUSD'].address,
     aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
     aavePriceOracle: context.aavePriceOracle.address,
@@ -70,6 +73,17 @@ export interface AdjustAaveParameters {
   slippage: BigNumber
   proxyAddress: string
   amount: BigNumber
+  proxyType: ProxyType
+}
+
+export interface ManageAaveParameters {
+  context: Context
+  currentPosition: IPosition
+  slippage: BigNumber
+  proxyAddress: string
+  manageTokenInput?: ManageTokenInput
+  amount: BigNumber
+  token?: string
   proxyType: ProxyType
 }
 
@@ -236,6 +250,122 @@ export async function getAdjustAaveParameters({
     }
 
     return strategies.aave.adjust(stratArgs, stratDeps)
+  } catch (e) {
+    console.error(e)
+    throw e
+  }
+}
+
+function getTokensInBaseUnit({
+  manageTokenInput,
+  currentPosition,
+}: ManageAaveParameters): [BigNumber, BigNumber] {
+  if (!manageTokenInput?.manageTokenAction) {
+    return [zero, zero]
+  }
+
+  const collateralInBaseUnit =
+    manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL ||
+    manageTokenInput.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
+      ? amountToWei(
+          manageTokenInput?.manageTokenActionValue || zero,
+          currentPosition.collateral.symbol,
+        )
+      : zero
+
+  const debtInBaseUnit =
+    manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT ||
+    manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT
+      ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.debt.symbol)
+      : zero
+
+  return [collateralInBaseUnit, debtInBaseUnit]
+}
+
+export async function getManageAaveParameters(
+  parameters: ManageAaveParameters,
+): Promise<IPositionTransition> {
+  try {
+    const {
+      context,
+      proxyAddress,
+      slippage,
+      currentPosition,
+      manageTokenInput,
+      proxyType,
+    } = parameters
+
+    checkContext(context, 'deposit/borrow position')
+    const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+    const addresses = getAddressesFromContext(context)
+
+    const [collateral, debt] = getTokensInBaseUnit(parameters)
+
+    switch (manageTokenInput?.manageTokenAction) {
+      case ManageDebtActionsEnum.PAYBACK_DEBT:
+      case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
+        type types = Parameters<typeof strategies.aave.paybackWithdraw>
+
+        const paybackWithdrawStratArgs: types[0] = {
+          slippage,
+          debtToken: {
+            symbol: currentPosition.debt.symbol as AAVETokens,
+            precision: currentPosition.debt.precision,
+          },
+          collateralToken: {
+            symbol: currentPosition.collateral.symbol as AAVETokens,
+            precision: currentPosition.collateral.precision,
+          },
+          amountCollateralToWithdrawInBaseUnit: collateral,
+          amountDebtToPaybackInBaseUnit: debt,
+        }
+
+        const paybackWithdrawStratDeps: types[1] = {
+          addresses,
+          currentPosition,
+          provider: provider,
+          getSwapData: getOneInchCall(context.swapAddress),
+          proxy: proxyAddress,
+          user: context.account,
+          isDPMProxy: proxyType === ProxyType.DpmProxy,
+        }
+
+        return await strategies.aave.paybackWithdraw(
+          paybackWithdrawStratArgs,
+          paybackWithdrawStratDeps,
+        )
+      case ManageDebtActionsEnum.BORROW_DEBT:
+      case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
+        const borrowDepositStratArgs: Parameters<typeof strategies.aave.depositBorrow>[0] = {
+          slippage,
+          collectFeeFrom: 'sourceToken',
+        }
+        if (manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
+          borrowDepositStratArgs.borrowAmount = debt || ZERO
+          borrowDepositStratArgs.collectFeeFrom = 'targetToken'
+        }
+        if (
+          manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL
+        ) {
+          borrowDepositStratArgs.entryToken = {
+            amountInBaseUnit: collateral || ZERO,
+            symbol: currentPosition.collateral.symbol as AAVETokens,
+            precision: currentPosition.collateral.precision,
+          }
+        }
+        const borrowDepositStratDeps: Parameters<typeof strategies.aave.depositBorrow>[1] = {
+          addresses,
+          currentPosition,
+          provider: provider,
+          getSwapData: getOneInchCall(context.swapAddress),
+          proxy: proxyAddress,
+          user: context.account,
+          isDPMProxy: proxyType === ProxyType.DpmProxy,
+        }
+        return await strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
+      default:
+        throw Error('Not implemented')
+    }
   } catch (e) {
     console.error(e)
     throw e

@@ -17,6 +17,15 @@ import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../mul
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
 
+export enum ManageCollateralActionsEnum {
+  DEPOSIT_COLLATERAL = 'deposit-collateral',
+  WITHDRAW_COLLATERAL = 'withdraw-collateral',
+}
+export enum ManageDebtActionsEnum {
+  BORROW_DEBT = 'borrow-debt',
+  PAYBACK_DEBT = 'payback-debt',
+}
+
 export const strategies: Array<IStrategyConfig> = [
   {
     urlSlug: 'stETHeth',

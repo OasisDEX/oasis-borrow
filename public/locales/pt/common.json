@@ -874,7 +874,7 @@
         "confirm-btn": "Confirm",
         "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
         "stop-close": "Not right now",
-        "eth-after-closing": "{{ closingToken }} after closing",
+        "token-amount-after-closing": "{{token}} after closing",
         "retry-btn": "Retry"
       }
     }
