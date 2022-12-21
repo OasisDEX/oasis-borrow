@@ -280,8 +280,6 @@ function getTokensInBaseUnit({
       ? amountToWei(manageTokenInput?.manageTokenActionValue || zero, currentPosition.debt.symbol)
       : zero
 
-  console.log(`results`, collateralInBaseUnit.toString(), debtInBaseUnit.toString())
-
   return [collateralInBaseUnit, debtInBaseUnit]
 }
 
@@ -341,7 +339,7 @@ export async function getManageAaveParameters(
           collectFeeFrom: 'sourceToken',
         }
         if (manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-          borrowDepositStratArgs.borrowAmount = debt
+          borrowDepositStratArgs.borrowAmount = debt || ZERO
           borrowDepositStratArgs.collectFeeFrom = 'targetToken'
         }
         if (

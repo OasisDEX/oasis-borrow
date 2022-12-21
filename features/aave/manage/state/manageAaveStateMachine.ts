@@ -424,12 +424,9 @@ export function createManageAaveStateMachine(
         validTransactionParameters: ({ proxyAddress, strategy }) => {
           return allDefined(proxyAddress, strategy)
         },
-        canChangePosition: ({ web3Context, ownerAddress, currentPosition }) => {
-          return (
-            allDefined(web3Context, ownerAddress, currentPosition) &&
-            web3Context!.account === ownerAddress
-          )
-        },
+        canChangePosition: ({ web3Context, ownerAddress, currentPosition }) =>
+          allDefined(web3Context, ownerAddress, currentPosition) &&
+          web3Context!.account === ownerAddress,
         isAllowanceNeeded,
       },
       actions: {
@@ -438,40 +435,39 @@ export function createManageAaveStateMachine(
             manageTokenAction: defaultManageTokenInputValues.manageTokenAction,
             manageTokenActionValue: defaultManageTokenInputValues.manageTokenActionValue,
           },
+          strategy: undefined,
         })),
-        updateCollateralTokenAction: assign(
-          (
-            { manageTokenInput },
-            { manageTokenAction = ManageCollateralActionsEnum.DEPOSIT_COLLATERAL },
-          ) => ({
-            manageTokenInput: Object.assign(manageTokenInput!, { manageTokenAction }),
-          }),
-        ),
-        updateDebtTokenAction: assign(
-          ({ manageTokenInput }, { manageTokenAction = ManageDebtActionsEnum.BORROW_DEBT }) => ({
-            manageTokenInput: Object.assign(manageTokenInput!, { manageTokenAction }),
-          }),
-        ),
+        updateCollateralTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
+          manageTokenInput: {
+            ...manageTokenInput!,
+            manageTokenAction: manageTokenAction || ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+          },
+        })),
+        updateDebtTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
+          manageTokenInput: {
+            ...manageTokenInput!,
+            manageTokenAction: manageTokenAction || ManageDebtActionsEnum.BORROW_DEBT,
+          },
+        })),
         updateTokenActionValue: assign(({ manageTokenInput }, { manageTokenActionValue }) => ({
-          manageTokenInput: Object.assign(manageTokenInput!, { manageTokenActionValue }),
+          manageTokenInput: {
+            ...manageTokenInput!,
+            manageTokenActionValue,
+          },
         })),
-        userInputRiskRatio: assign((context, event) => {
-          return {
-            userInput: {
-              ...context.userInput,
-              riskRatio: event.riskRatio,
-            },
-          }
-        }),
-        reset: assign((context) => {
-          return {
-            userInput: {
-              ...context.userInput,
-              riskRatio: undefined,
-            },
-            strategy: undefined,
-          }
-        }),
+        userInputRiskRatio: assign((context, event) => ({
+          userInput: {
+            ...context.userInput,
+            riskRatio: event.riskRatio,
+          },
+        })),
+        reset: assign((context) => ({
+          userInput: {
+            ...context.userInput,
+            riskRatio: undefined,
+          },
+          strategy: undefined,
+        })),
         riskRatioEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
         },
