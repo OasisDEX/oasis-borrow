@@ -439,19 +439,19 @@ export function createManageAaveStateMachine(
         })),
         updateCollateralTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
           manageTokenInput: {
-            ...manageTokenInput!,
+            ...manageTokenInput,
             manageTokenAction: manageTokenAction || ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
           },
         })),
         updateDebtTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
           manageTokenInput: {
-            ...manageTokenInput!,
+            ...manageTokenInput,
             manageTokenAction: manageTokenAction || ManageDebtActionsEnum.BORROW_DEBT,
           },
         })),
         updateTokenActionValue: assign(({ manageTokenInput }, { manageTokenActionValue }) => ({
           manageTokenInput: {
-            ...manageTokenInput!,
+            ...manageTokenInput,
             manageTokenActionValue,
           },
         })),

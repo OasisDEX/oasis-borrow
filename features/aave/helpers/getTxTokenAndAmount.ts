@@ -14,7 +14,7 @@ export function getTxTokenAndAmount(context: BaseAaveContext) {
   return {
     amount:
       isAmountFromUserInputNeeded && !isBorrowOrPaybackDebt
-        ? context.userInput.amount! || context.manageTokenInput?.manageTokenActionValue
+        ? context.userInput.amount || context.manageTokenInput?.manageTokenActionValue
         : zero,
     token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.collateral,
   }

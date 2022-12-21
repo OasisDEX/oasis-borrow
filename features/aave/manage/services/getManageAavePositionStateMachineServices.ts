@@ -121,9 +121,9 @@ export function getManageAavePositionStateMachineServices(
         filter(allDefined),
         switchMap((proxyAddress) => {
           return combineLatest([
-            tokenAllowance$(context.tokens.deposit, proxyAddress!),
-            tokenAllowance$(context.tokens.collateral, proxyAddress!),
-            tokenAllowance$(context.tokens.debt, proxyAddress!),
+            tokenAllowance$(context.tokens.deposit, proxyAddress),
+            tokenAllowance$(context.tokens.collateral, proxyAddress),
+            tokenAllowance$(context.tokens.debt, proxyAddress),
           ])
         }),
         map(

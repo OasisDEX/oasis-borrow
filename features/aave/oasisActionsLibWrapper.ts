@@ -18,12 +18,11 @@ import { zero } from '../../helpers/zero'
 import { ManageTokenInput } from './common/BaseAaveContext'
 import { ProxyType } from './common/StrategyConfigTypes'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyConfig'
-import { paybackWithdraw } from '@oasisdex/oasis-actions/lib/src/strategies/aave/paybackWithdraw' //TODO: Temporary solution
 
 function getAddressesFromContext(context: Context) {
   return {
     DAI: context.tokens['DAI'].address,
-    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // TODO FIX AFTER LIB CHANGE
+    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
     WETH: context.tokens['WETH'].address,
     STETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
@@ -305,7 +304,7 @@ export async function getManageAaveParameters(
     switch (manageTokenInput?.manageTokenAction) {
       case ManageDebtActionsEnum.PAYBACK_DEBT:
       case ManageCollateralActionsEnum.WITHDRAW_COLLATERAL:
-        type types = Parameters<typeof paybackWithdraw>
+        type types = Parameters<typeof strategies.aave.paybackWithdraw>
 
         const paybackWithdrawStratArgs: types[0] = {
           slippage,
@@ -331,7 +330,10 @@ export async function getManageAaveParameters(
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
 
-        return await paybackWithdraw(paybackWithdrawStratArgs, paybackWithdrawStratDeps)
+        return await strategies.aave.paybackWithdraw(
+          paybackWithdrawStratArgs,
+          paybackWithdrawStratDeps,
+        )
       case ManageDebtActionsEnum.BORROW_DEBT:
       case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
         const borrowDepositStratArgs: Parameters<typeof strategies.aave.depositBorrow>[0] = {
