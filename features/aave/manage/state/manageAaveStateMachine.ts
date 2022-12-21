@@ -1,5 +1,6 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
+import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
 import { pure } from 'xstate/lib/actions'
@@ -150,8 +151,22 @@ export function createManageAaveStateMachine(
                 500: 'loading',
               },
             },
+            debouncingManage: {
+              after: {
+                500: 'loadingManage',
+              },
+            },
             loading: {
-              entry: ['requestParameters', 'requestManageParameters'],
+              entry: ['requestParameters'],
+              on: {
+                STRATEGY_RECEIVED: {
+                  target: 'idle',
+                  actions: ['updateContext'],
+                },
+              },
+            },
+            loadingManage: {
+              entry: ['requestManageParameters'],
               on: {
                 STRATEGY_RECEIVED: {
                   target: 'idle',
@@ -389,17 +404,17 @@ export function createManageAaveStateMachine(
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',
-          target: '#manageAaveStateMachine.background.debouncing',
+          target: '#manageAaveStateMachine.background.debouncingManage',
           actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
         },
         UPDATE_DEBT_TOKEN_ACTION: {
           cond: 'canChangePosition',
-          target: '#manageAaveStateMachine.background.debouncing',
+          target: '#manageAaveStateMachine.background.debouncingManage',
           actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
         },
         UPDATE_TOKEN_ACTION_VALUE: {
           cond: 'canChangePosition',
-          target: '#manageAaveStateMachine.background.debouncing',
+          target: '#manageAaveStateMachine.background.debouncingManage',
           actions: ['updateTokenActionValue'],
         },
       },
@@ -493,25 +508,18 @@ export function createManageAaveStateMachine(
         ),
         requestManageParameters: send(
           (context): TransactionParametersStateMachineEvent<ManageAaveParameters> => {
-            const isBorrowOrPaybackDebt = context.manageTokenInput
-              ? [ManageDebtActionsEnum.BORROW_DEBT, ManageDebtActionsEnum.PAYBACK_DEBT].includes(
-                  context.manageTokenInput.manageTokenAction as ManageDebtActionsEnum,
-                )
-              : false
+            const { token, amount } = getTxTokenAndAmount(context)
             return {
               type: 'VARIABLES_RECEIVED',
               parameters: {
-                amount:
-                  isBorrowOrPaybackDebt && context.tokens.debt === 'ETH'
-                    ? context.manageTokenInput?.manageTokenActionValue || zero
-                    : zero,
-                token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.collateral,
                 proxyAddress: context.proxyAddress!,
                 context: context.web3Context!,
                 slippage: context.userSettings!.slippage,
                 currentPosition: context.currentPosition!,
                 manageTokenInput: context.manageTokenInput,
                 proxyType: context.positionCreatedBy,
+                token,
+                amount,
               },
             }
           },

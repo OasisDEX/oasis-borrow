@@ -362,7 +362,6 @@ export async function getManageAaveParameters(
           user: context.account,
           isDPMProxy: proxyType === ProxyType.DpmProxy,
         }
-
         return await strategies.aave.depositBorrow(borrowDepositStratArgs, borrowDepositStratDeps)
       default:
         throw Error('Not implemented')

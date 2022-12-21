@@ -15,6 +15,7 @@ import {
 import { TransactionStateMachineResultEvents } from '../../stateMachines/transaction'
 import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../userSettings/userSettings'
+import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
 import { AaveProtocolData } from '../manage/services'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 
@@ -116,24 +117,18 @@ export type BaseViewProps<AaveEvent extends EventObject> = {
 }
 
 export function contextToTransactionParameters(context: BaseAaveContext): OperationExecutorTxMeta {
-  const isBorrowOrPaybackDebt = context.manageTokenInput
-    ? [ManageDebtActionsEnum.BORROW_DEBT, ManageDebtActionsEnum.PAYBACK_DEBT].includes(
-        context.manageTokenInput.manageTokenAction as ManageDebtActionsEnum,
-      )
-    : false
-  const isAmountFromUserInputNeeded = (context.transactionToken || context.tokens.deposit) === 'ETH'
-
-  return {
+  const { token, amount } = getTxTokenAndAmount(context)
+  const txParams = {
     kind: TxMetaKind.operationExecutor,
     calls: context.strategy!.transaction.calls as any,
     operationName: context.strategy!.transaction.operationName,
-    token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.deposit,
     proxyAddress: context.effectiveProxyAddress!,
-    amount:
-      isAmountFromUserInputNeeded && !isBorrowOrPaybackDebt
-        ? context.userInput.amount || context.manageTokenInput?.manageTokenActionValue
-        : zero,
+    token,
+    amount,
   }
+  console.log('txParams', txParams)
+
+  return txParams
 }
 
 function allowanceForToken(
