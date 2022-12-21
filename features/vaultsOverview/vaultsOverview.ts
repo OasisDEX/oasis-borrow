@@ -7,19 +7,14 @@ import {
   PositionVM,
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import {
-  formatAddress,
-  formatCryptoBalance,
-  formatFiatBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { AaveDpmPosition, AavePosition } from './pipes/positions'
+import { AavePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
 
 export interface VaultsOverview {
@@ -28,21 +23,15 @@ export interface VaultsOverview {
 
 export function createVaultsOverview$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
-  aavePositions$: (address: string) => Observable<AavePosition | undefined>,
-  aaveDpmPositions$: (address: string) => Observable<AaveDpmPosition[]>,
+  aavePositions$: (address: string) => Observable<AavePosition[]>,
   address: string,
 ): Observable<VaultsOverview> {
-  return combineLatest(
-    makerPositions$(address),
-    aavePositions$(address),
-    aaveDpmPositions$(address),
-  ).pipe(
-    map(([makerPositions, aavePositions, aaveDpmPositions]) => {
+  return combineLatest(makerPositions$(address), aavePositions$(address)).pipe(
+    map(([makerPositions, aavePositions]) => {
       const makerVMs = mapToPositionVM(makerPositions)
-      const aaveVMs = mapAavePositions(aavePositions ? [aavePositions] : [])
-      const aaveDpmVMs = mapAaveDpmPositions(aaveDpmPositions)
+      const aaveVMs = mapAavePositions(aavePositions)
       return {
-        positions: [...makerVMs, ...aaveVMs, ...aaveDpmVMs],
+        positions: [...makerVMs, ...aaveVMs],
       }
     }),
   )
@@ -150,27 +139,6 @@ function mapToPositionVM(vaults: MakerPositionDetails[]): PositionVM[] {
 
 function mapAavePositions(position: AavePosition[]): PositionVM[] {
   return position.map((position) => {
-    return {
-      type: 'earn' as const,
-      isOwnerView: true,
-      icon: getToken(position.token).iconCircle,
-      ilk: position.title,
-      positionId: formatAddress(position.ownerAddress),
-      pnl: position.pln,
-      netValue: `$${formatFiatBalance(position.netValue)}`,
-      sevenDayYield: '',
-      liquidity: `${formatCryptoBalance(position.liquidity)} USDC`,
-      editLinkProps: {
-        href: position.url,
-        hash: VaultViewMode.Overview,
-        internalInNewTab: false,
-      },
-    }
-  })
-}
-
-function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
-  return position.map((position) => {
     if (position.type === 'multiply') {
       return {
         type: 'multiply' as const,
@@ -214,7 +182,7 @@ function mapAaveDpmPositions(position: AaveDpmPosition[]): PositionVM[] {
         },
         pnl: 'N/A',
         sevenDayYield: 'sevenDayYield',
-        liquidity: 'liquidity',
+        liquidity: `${formatFiatBalance(position.liquidity)} USDC`,
       }
     }
   })

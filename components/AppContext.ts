@@ -262,7 +262,6 @@ import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from 'features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from 'features/vaultsOverview/pipes/assetActions'
 import {
-  createAaveDpmPosition$,
   createAavePosition$,
   createMakerPositions$,
   createPositions$,
@@ -952,8 +951,6 @@ export function setupAppContext() {
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
 
-  const ethPrice$ = curry(tokenPriceUSD$)(['ETH']).pipe(map((price) => price['ETH']))
-
   const aaveUserAccountData$ = observe(
     onEveryBlock$,
     context$,
@@ -973,15 +970,6 @@ export function setupAppContext() {
       getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
     ),
     ({ token }) => token,
-  )
-
-  const aavePositions$ = memoize(
-    curry(createAavePosition$)(
-      aaveUserAccountData$,
-      aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
-      ethPrice$,
-      proxyAddress$,
-    ),
   )
 
   const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
@@ -1040,22 +1028,25 @@ export function setupAppContext() {
     curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
   )
 
-  const aaveDpmPositions$ = memoize(
-    curry(createAaveDpmPosition$)(
-      userDpmProxies$,
+  const aavePositions$ = memoize(
+    curry(createAavePosition$)(
+      {
+        dsProxy$: proxyAddress$,
+        userDpmProxies$,
+      },
       aaveProtocolData$,
       getAaveAssetsPrices$,
       tokenPriceUSD$,
       wrappedGetAaveReserveData$,
       context$,
       readPositionCreatedEvents$,
+      aaveAvailableLiquidityInUSDC$,
+      strategyConfig$,
     ),
   )
 
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
-  const positions$ = memoize(
-    curry(createPositions$)(makerPositions$, aavePositions$, aaveDpmPositions$),
-  )
+  const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -1230,9 +1221,7 @@ export function setupAppContext() {
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(positionsList$, aavePositions$, aaveDpmPositions$),
-  )
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$, aavePositions$))
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
