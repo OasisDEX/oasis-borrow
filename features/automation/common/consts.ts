@@ -73,7 +73,4 @@ export const protocolAutomations = {
   [VaultProtocol.Aave]: [AutomationFeatures.STOP_LOSS],
 }
 
-export const aaveTokenPairsAllowedAutomation = [
-  ['STETH', 'USDC'],
-  ['STETH', 'ETH'],
-] // should be just ['ETH', 'USDC'] but no data source available for now
+export const aaveTokenPairsAllowedAutomation = [['ETH', 'USDC']]

@@ -96,6 +96,7 @@ export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
     initialSlRatioWhenTriggerDoesntExist: BigNumber
     resetData: StopLossResetData
     triggerMaxToken: BigNumber
+    dynamicStopLossPrice: BigNumber
   }
 }
 

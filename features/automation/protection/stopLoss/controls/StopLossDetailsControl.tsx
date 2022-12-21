@@ -30,12 +30,13 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
     metadata: {
       stopLossMetadata: {
         detailCards,
-        methods: { getMaxToken },
+        methods: { getMaxToken, getExecutionPrice },
         translations: { ratioParamTranslationKey },
         values: {
           collateralDuringLiquidation,
           initialSlRatioWhenTriggerDoesntExist,
           triggerMaxToken,
+          dynamicStopLossPrice,
         },
       },
     },
@@ -59,6 +60,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
   const { uiChanges } = useAppContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const afterMaxToken = getMaxToken(stopLossState)
+  const afterDynamicStopLossPrice = getExecutionPrice(stopLossState)
 
   return (
     <>
@@ -91,6 +93,8 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
           positionRatio={positionRatio}
           ratioParamTranslationKey={ratioParamTranslationKey}
           detailCards={detailCards}
+          dynamicStopLossPrice={dynamicStopLossPrice}
+          afterDynamicStopLossPrice={afterDynamicStopLossPrice}
         />
       ) : (
         <Banner

@@ -5,7 +5,6 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
 import {
   STOP_LOSS_FORM_CHANGE,
   StopLossFormChange,
@@ -30,21 +29,16 @@ export function StopLossCompleteInformation({
 }: StopLossCompleteInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: { token, liquidationPrice, liquidationRatio },
+    positionData: { token },
     metadata: {
       stopLossMetadata: {
-        methods: { getMaxToken },
+        methods: { getMaxToken, getExecutionPrice },
       },
     },
   } = useAutomationContext()
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
 
-  const dynamicStopLossPrice = getDynamicStopLossPrice({
-    liquidationPrice,
-    liquidationRatio,
-    stopLossLevel: stopLossState.stopLossLevel,
-  })
-
+  const afterDynamicStopLossPrice = getExecutionPrice(stopLossState)
   const maxToken = getMaxToken(stopLossState)
 
   const maxTokenOrDai = isCollateralActive
@@ -66,7 +60,7 @@ export function StopLossCompleteInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.dynamic-stop-loss')}`}
-        value={<Flex>${formatAmount(dynamicStopLossPrice, 'USD')}</Flex>}
+        value={<Flex>${formatAmount(afterDynamicStopLossPrice, 'USD')}</Flex>}
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-on-stop-loss-trigger', {
