@@ -1,6 +1,6 @@
 import { utils } from 'ethers'
 import { combineLatest, from, Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { map, startWith, switchMap } from 'rxjs/operators'
 
 import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
 import { Context } from '../../../blockchain/network'
@@ -72,5 +72,6 @@ export function createReadPositionCreatedEvents$(
         }),
       )
     }),
+    startWith([]),
   )
 }
