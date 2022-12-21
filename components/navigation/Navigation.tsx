@@ -35,6 +35,7 @@ export function Navigation({ actions, brandingLink = '/', links, panels, pill }:
         as="header"
         variant="navigation"
         sx={{
+          position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',

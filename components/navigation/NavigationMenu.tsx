@@ -27,7 +27,10 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   }
 
   return (
-    <Box sx={{ position: 'relative', flexGrow: 1, zIndex: 2 }} onMouseLeave={() => closeDropdown()}>
+    <Box
+      sx={{ position: ['static', null, null, null, 'relative'], flexGrow: 1, zIndex: 2 }}
+      onMouseLeave={() => closeDropdown()}
+    >
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
         <Flex
           as="ul"
