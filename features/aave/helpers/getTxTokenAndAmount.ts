@@ -12,12 +12,18 @@ export function getTxTokenAndAmount(context: BaseAaveContext) {
     : false
   const isAmountFromUserInputNeeded = (context.transactionToken || context.tokens.deposit) === 'ETH'
 
+  console.log(`isAmountFromUserInputNeeded: ${isAmountFromUserInputNeeded}`)
+
   return {
     amount:
       isAmountFromUserInputNeeded && !isBorrowOrPaybackDebt
         ? context.userInput.amount || context.manageTokenInput!.manageTokenActionValue
         : zero,
-    token: isBorrowOrPaybackDebt ? context.tokens.debt : context.tokens.collateral,
+    token: context.userInput.amount
+      ? context.tokens.deposit
+      : isBorrowOrPaybackDebt
+      ? context.tokens.debt
+      : context.tokens.collateral,
   } as {
     amount: BigNumber
     token: string
