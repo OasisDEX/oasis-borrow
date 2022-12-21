@@ -158,8 +158,6 @@ export function isAllowanceNeeded(context: BaseAaveContext): boolean {
     context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.PAYBACK_DEBT ||
     (context.userInput.amount || zero).gt(zero)
 
-  console.log(`isDepositingAction: ${isDepositingAction}`)
-
   return (
     isDepositingAction &&
     (context.userInput.amount || context.manageTokenInput?.manageTokenActionValue || zero).gt(

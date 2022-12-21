@@ -35,7 +35,6 @@ export function PriceImpact({
     sourceToken,
   } = transactionParameters.simulation.swap
 
-  console.log('swap', transactionParameters.simulation.swap)
   if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
     return <></>
   }
