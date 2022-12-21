@@ -15,7 +15,7 @@ import { GeneralManageTabBar } from './GeneralManageTabBar'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
-  followButtonProps: FollowButtonProps
+  followButtonProps: FollowButtonProps | undefined
 }
 
 export function GeneralManageLayout({
@@ -28,11 +28,6 @@ export function GeneralManageLayout({
   const colRatioPercnentage = vault.collateralizationRatio.times(100).toFixed(2)
 
   const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
-
-  // followerAddress={'0x497CB171dDF49af82250D7723195D7E47Ca38A95'}
-  // vaultId={new BigNumber(433)}
-  // docVersion={'version-11.07.2022'}
-  // chainId={5}
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (

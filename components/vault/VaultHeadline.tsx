@@ -3,6 +3,7 @@ import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
 import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Flex } from 'theme-ui'
 
@@ -24,6 +25,7 @@ export function VaultHeadline({
   followButtonProps,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
+  const followVaultEnabled = useFeatureToggle('FollowVaults')
   return (
     <Flex
       sx={{
@@ -57,7 +59,7 @@ export function VaultHeadline({
             />
           ))}
         {header}
-        {followButtonProps && (
+        {followVaultEnabled && followButtonProps && (
           <FollowButtonControl
             followerAddress={followButtonProps.followerAddress}
             vaultId={followButtonProps.vaultId}

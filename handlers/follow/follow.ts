@@ -22,8 +22,6 @@ const usersWhoFollowVaultsSchema = z.object({
 })
 
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
-  console.log('POST body')
-  console.log(req.body)
   const {
     user_address,
     vault_id,
@@ -38,8 +36,6 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
     tos_doc_version,
     vault_chain_id,
   }
-  console.log('user who follow vaults data')
-  console.log(userWhoFollowsVaultData)
 
   await prisma.usersWhoFollowVaults.create({
     data: userWhoFollowsVaultData,

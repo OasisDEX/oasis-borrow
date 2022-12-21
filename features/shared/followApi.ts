@@ -25,7 +25,7 @@ export async function followVaultUsingApi(
     }),
   })
     .then((resp) => {
-      return resp.json() as UsersWhoFollowVaults[]
+      return (resp.json() as unknown) as UsersWhoFollowVaults[]
     })
     .catch((err) => {
       if (err.status === 404) {
@@ -43,9 +43,7 @@ export function getFollowFromApi(address: string): Promise<UsersWhoFollowVaults[
     },
   })
     .then((resp) => {
-      // console.log('resp.json()')
-      // console.log(resp.json())
-      return resp.json() as UsersWhoFollowVaults[]
+      return (resp.json() as unknown) as UsersWhoFollowVaults[]
     })
     .catch((err) => {
       if (err.status === 404) {

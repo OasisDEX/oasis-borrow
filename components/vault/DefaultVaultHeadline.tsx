@@ -20,8 +20,7 @@ export function DefaultVaultHeadline({
   token: VaultHeadlineProps['token']
   priceInfo: PriceInfo
   colRatio?: string
-  // followButtonProps?: FollowButtonProps
-  followButtonProps: FollowButtonProps
+  followButtonProps?: FollowButtonProps
 }) {
   const { t } = useTranslation()
   const {

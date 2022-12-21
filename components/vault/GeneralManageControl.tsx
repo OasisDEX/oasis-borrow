@@ -18,8 +18,6 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const [context] = useObservable(context$)
-  // TODO ŁW use api to check version of tos for user
-  // const [termsAcceptance] = useObservable(termsAcceptance$)
 
   const account = context?.status === 'connected' ? context.account : ''
   const chainId = context?.chainId
@@ -43,12 +41,16 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
           <MakerAutomationContext generalManageVault={generalManageVault}>
             <GeneralManageLayout
               generalManageVault={generalManageVault}
-              followButtonProps={{
-                followerAddress: account,
-                vaultId: id,
-                docVersion: docVersion,
-                chainId: chainId,
-              }}
+              followButtonProps={
+                chainId
+                  ? {
+                      followerAddress: account,
+                      vaultId: id,
+                      docVersion: docVersion,
+                      chainId: chainId,
+                    }
+                  : undefined
+              }
             />
           </MakerAutomationContext>
         )}
