@@ -5,8 +5,7 @@ import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/
 import { getShouldHideHeaderSettings } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import { useState } from 'react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Card, Flex } from 'theme-ui'
 
 export function WalletPanelMobile() {
