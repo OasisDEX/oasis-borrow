@@ -132,34 +132,6 @@ export function AaveMultiplyPositionData({
             liquidationThreshold={currentPosition.category.liquidationThreshold}
             afterLoanToValue={nextPosition?.riskRatio.loanToValue}
           />
-          {/*<DetailsSectionContentCard*/}
-          {/*  title={t('system.loan-to-value')}*/}
-          {/*  value={formatDecimalAsPercent(currentPosition.riskRatio.loanToValue)}*/}
-          {/*  change={*/}
-          {/*    nextPosition && {*/}
-          {/*      variant: nextPosition.riskRatio.loanToValue.lt(*/}
-          {/*        currentPosition.riskRatio.loanToValue,*/}
-          {/*      )*/}
-          {/*        ? 'negative'*/}
-          {/*        : 'positive',*/}
-          {/*      value: `${formatDecimalAsPercent(nextPosition.riskRatio.loanToValue)} ${t(*/}
-          {/*        'after',*/}
-          {/*      )}`,*/}
-          {/*    }*/}
-          {/*  }*/}
-          {/*  footnote={`${t('manage-earn-vault.liquidation-threshold', {*/}
-          {/*    percentage: formatDecimalAsPercent(currentPosition.category.liquidationThreshold),*/}
-          {/*  })}`}*/}
-          {/*  customBackground={*/}
-          {/*    !nextPosition?.riskRatio*/}
-          {/*      ? getLTVRatioColor(*/}
-          {/*          currentPosition.category.liquidationThreshold*/}
-          {/*            .minus(currentPosition.riskRatio.loanToValue)*/}
-          {/*            .times(100),*/}
-          {/*        )*/}
-          {/*      : 'transparent'*/}
-          {/*  }*/}
-          {/*/>*/}
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}
             value={formatDecimalAsPercent(NaNIsZero(currentPositionThings.netBorrowCostPercentage))}
