@@ -1,4 +1,4 @@
-import { ethers, utils } from 'ethers'
+import { utils } from 'ethers'
 import { combineLatest, from, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -6,8 +6,9 @@ import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
 import { Context } from '../../../blockchain/network'
 import { getTokenSymbolFromAddress } from '../../../blockchain/tokensMetadata'
 import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
+import { PositionCreated as PositionCreatedContract } from '../../../types/ethers-contracts/PositionCreated'
 
-type PositionCreatedTypeFromChain = {
+type PositionCreatedChainEvent = {
   collateralToken: string // address
   debtToken: string // address
   positionType: 'Multiply' | 'Earn'
@@ -34,11 +35,10 @@ export function createReadPositionCreatedEvents$(
         dpmProxies.map((dpmProxy) => {
           // using the contract from the context was causing issues when mutating
           // multiply position
-          const positionCreatedContract = new ethers.Contract(
-            dpmProxy.proxy,
-            positionCreatedAbi,
-            context.rpcProvider,
-          )
+          const positionCreatedContract = context.contractV2<PositionCreatedContract>({
+            address: dpmProxy.proxy,
+            abi: positionCreatedAbi,
+          })
 
           return from(
             positionCreatedContract.queryFilter(
@@ -56,7 +56,7 @@ export function createReadPositionCreatedEvents$(
             .flatMap((events) => events)
             .filter((e) => e.event === 'CreatePosition')
             .map((e) => {
-              const positionCreatedFromChain = (e.args as unknown) as PositionCreatedTypeFromChain
+              const positionCreatedFromChain = (e.args as unknown) as PositionCreatedChainEvent
               return {
                 ...positionCreatedFromChain,
                 collateralTokenSymbol: getTokenSymbolFromAddress(

@@ -118,6 +118,107 @@ type ProxyAddresses = {
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>
 }
 
+type BuildPositionArgs = {
+  aaveProtocolData$: (
+    collateralToken: string,
+    debtToken: string,
+    address: string,
+  ) => Observable<AaveProtocolData>
+  getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>
+  tickerPrices$: (tokens: string[]) => Observable<Tickers>
+  wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>
+  aaveAvailableLiquidityInUSDC$: (reserveDataParameters: { token: string }) => Observable<BigNumber>
+}
+
+function buildPosition(
+  positionCreatedEvent: PositionCreated,
+  positionId: string,
+  context: Context,
+  walletAddress: string,
+  observables: BuildPositionArgs,
+): Observable<AavePosition> {
+  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress } = positionCreatedEvent
+  return combineLatest(
+    observables.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+    observables.getAaveAssetsPrices$({
+      tokens: [collateralTokenSymbol, debtTokenSymbol],
+    }),
+    observables.tickerPrices$([collateralTokenSymbol, debtTokenSymbol]),
+    observables.wrappedGetAaveReserveData$(debtTokenSymbol),
+    observables.aaveAvailableLiquidityInUSDC$({
+      token: debtTokenSymbol,
+    }),
+  ).pipe(
+    map(([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity]) => {
+      const {
+        position: {
+          riskRatio: { multiple },
+          debt,
+          collateral,
+          category: { liquidationThreshold },
+        },
+      } = protocolData
+
+      const isDebtZero = debt.amount.isZero()
+
+      const tickerCollateralTokenPriceInUsd = tickerPrices[collateral.symbol]
+      const tickerDebtTokenPriceInUsd = tickerPrices[debt.symbol]
+
+      const oracleCollateralTokenPriceInEth = assetPrices[0]
+      const oracleDebtTokenPriceInEth = assetPrices[1]
+
+      const collateralToken = positionCreatedEvent.collateralTokenSymbol
+      const debtToken = positionCreatedEvent.debtTokenSymbol
+
+      const collateralNotWei = amountFromPrecision(
+        collateral.amount,
+        new BigNumber(collateral.precision),
+      )
+      const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
+
+      const netValueInEthAccordingToOracle = collateralNotWei
+        .times(oracleCollateralTokenPriceInEth)
+        .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
+
+      const liquidationPrice = !isDebtZero
+        ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
+        : zero
+
+      const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+
+      const fundingCost = !isDebtZero
+        ? debtNotWei
+            .times(oracleDebtTokenPriceInEth)
+            .div(netValueInEthAccordingToOracle)
+            .multipliedBy(variableBorrowRate)
+            .times(100)
+        : zero
+
+      const netValueUsd = collateralNotWei
+        .times(tickerCollateralTokenPriceInUsd)
+        .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
+
+      const isOwner = context.status === 'connected' && context.account === walletAddress
+
+      return {
+        token: collateralToken,
+        title: `${collateralToken}/${debtToken} AAVE`,
+        url: `/aave/${positionId}`,
+        id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
+        netValue: netValueUsd,
+        multiple,
+        liquidationPrice,
+        fundingCost,
+        contentsUsd: netValueUsd,
+        isOwner,
+        lockedCollateral: collateralNotWei,
+        type: mappymap[positionCreatedEvent.positionType],
+        liquidity: liquidity,
+      }
+    }),
+  )
+}
+
 export function createAavePosition$(
   proxyAddresses: ProxyAddresses,
   aaveProtocolData$: (
@@ -145,7 +246,7 @@ export function createAavePosition$(
     switchMap(([userProxiesData, dsProxyAddress, strategyConfig, context]) => {
       // if we have a DS proxy make a fake position created event so we can read any position out below
       let dsFakeEvent: PositionCreated[] = []
-      if (dsProxyAddress) {
+      if (dsProxyAddress && !userProxiesData.find((proxy) => proxy.proxy === dsProxyAddress)) {
         dsFakeEvent = [
           {
             collateralTokenSymbol: strategyConfig.tokens.collateral,
@@ -171,147 +272,22 @@ export function createAavePosition$(
           return [...positionCreatedEvents, ...dsFakeEvent]
         }),
         switchMap((positionCreatedEvents) => {
-          const protocolDataObservableList = positionCreatedEvents.map(
-            ({ collateralTokenSymbol, debtTokenSymbol, proxyAddress }) => {
-              return aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
-            },
-          )
-
-          const assetPricesListObservableList = positionCreatedEvents.map(
-            ({ collateralTokenSymbol, debtTokenSymbol }) => {
-              return getAaveAssetsPrices$({
-                tokens: [collateralTokenSymbol, debtTokenSymbol],
-              })
-            },
-          )
-
-          const tickerPrices = positionCreatedEvents.map(
-            ({ collateralTokenSymbol, debtTokenSymbol }) => {
-              return tickerPrices$([collateralTokenSymbol, debtTokenSymbol])
-            },
-          )
-
-          const wrappedGetAaveReserveDataObservableList = positionCreatedEvents.map(
-            ({ debtTokenSymbol }) => {
-              return wrappedGetAaveReserveData$(debtTokenSymbol)
-            },
-          )
-
-          const liquidityObservables = positionCreatedEvents.map(({ debtTokenSymbol }) => {
-            return aaveAvailableLiquidityInUSDC$({
-              token: debtTokenSymbol,
-            })
-          })
-
           return combineLatest(
-            combineLatest(...protocolDataObservableList),
-            combineLatest(...assetPricesListObservableList),
-            combineLatest(...tickerPrices),
-            combineLatest(...wrappedGetAaveReserveDataObservableList),
-            combineLatest(...liquidityObservables),
-            of(positionCreatedEvents),
-          ).pipe(
-            map(
-              ([
-                protocolDataList,
-                assetPricesList,
-                tickerPrices,
-                preparedAaveReserveData,
-                liquidities,
-                positionCreatedEvents,
-              ]) => {
-                const positions = protocolDataList.map(
-                  (
-                    {
-                      position: {
-                        riskRatio: { multiple },
-                        debt,
-                        collateral,
-                        category: { liquidationThreshold },
-                      },
-                    },
-                    index,
-                  ) => {
-                    const positionId = userProxiesData.find(
-                      ({ proxy }) => proxy === positionCreatedEvents[index].proxyAddress,
-                    )?.vaultId
-
-                    if (!positionId) {
-                      throw new Error(
-                        `Could not find position ID for proxy address ${positionCreatedEvents[index].proxyAddress}`,
-                      )
-                    }
-
-                    const isDebtZero = debt.amount.isZero()
-
-                    const tickerCollateralTokenPriceInUsd = tickerPrices[index][collateral.symbol]
-                    const tickerDebtTokenPriceInUsd = tickerPrices[index][debt.symbol]
-
-                    const oracleCollateralTokenPriceInEth = assetPricesList[index][0]
-                    const oracleDebtTokenPriceInEth = assetPricesList[index][1]
-
-                    const liquidity = liquidities[index]
-
-                    const collateralToken = positionCreatedEvents[index].collateralTokenSymbol
-                    const debtToken = positionCreatedEvents[index].debtTokenSymbol
-
-                    const collateralNotWei = amountFromPrecision(
-                      collateral.amount,
-                      new BigNumber(collateral.precision),
-                    )
-                    const debtNotWei = amountFromPrecision(
-                      debt.amount,
-                      new BigNumber(debt.precision),
-                    )
-
-                    const netValueInEthAccordingToOracle = collateralNotWei
-                      .times(oracleCollateralTokenPriceInEth)
-                      .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
-
-                    const liquidationPrice = !isDebtZero
-                      ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
-                      : zero
-
-                    const variableBorrowRate = preparedAaveReserveData[index].variableBorrowRate
-
-                    const fundingCost = !isDebtZero
-                      ? debtNotWei
-                          .times(oracleDebtTokenPriceInEth)
-                          .div(netValueInEthAccordingToOracle)
-                          .multipliedBy(variableBorrowRate)
-                          .times(100)
-                      : zero
-
-                    const netValueUsd = collateralNotWei
-                      .times(tickerCollateralTokenPriceInUsd)
-                      .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
-
-                    const isOwner =
-                      context.status === 'connected' && context.account === walletAddress
-
-                    const position: AavePosition = {
-                      token: collateralToken,
-                      title: `${collateralToken}/${debtToken} AAVE`,
-                      url: `/aave/${positionId}`,
-                      id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
-                      netValue: netValueUsd,
-                      multiple,
-                      liquidationPrice,
-                      fundingCost,
-                      contentsUsd: netValueUsd,
-                      isOwner,
-                      lockedCollateral: collateralNotWei,
-                      type: mappymap[positionCreatedEvents[index].positionType],
-                      liquidity: liquidity,
-                    }
-
-                    return position
-                  },
-                )
-
-                return positions
-              },
-            ),
+            positionCreatedEvents.map((pce) => {
+              const userProxy = userProxiesData.find(
+                (userProxy) => userProxy.proxy === pce.proxyAddress,
+              )
+              if (!userProxy) {
+                throw new Error('nope')
+              }
+              return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
+                aaveProtocolData$,
+                getAaveAssetsPrices$,
+                tickerPrices$,
+                wrappedGetAaveReserveData$,
+                aaveAvailableLiquidityInUSDC$,
+              })
+            }),
           )
         }),
       )
