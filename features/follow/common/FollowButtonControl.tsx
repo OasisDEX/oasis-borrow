@@ -32,13 +32,20 @@ export function FollowButtonControl({
   useEffect(() => {
     console.log('followerAddress')
     console.log(followerAddress)
-    void getFollowFromApi(followerAddress).then((resp) => {
-      handleGetFollowedVaults(resp)
-    })
+    void getFollowFromApi(followerAddress)
+      .then((resp) => {
+        handleGetFollowedVaults(resp)
+      })
+      .finally(() => {
+        setProcessing(false)
+      })
   }, [])
 
   function handleGetFollowedVaults(resp: UsersWhoFollowVaults[]) {
+    console.log('inside handleGetFollowedVaults')
     const followedVaults = Object.values(resp)
+    console.log(followedVaults)
+    console.log(followedVaults)
     const currentFollowedVault = followedVaults.find((item) =>
       new BigNumber(item.vault_id).eq(vaultId),
     )
