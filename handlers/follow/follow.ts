@@ -31,18 +31,23 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
     vault_chain_id,
   } = usersWhoFollowVaultsSchema.parse(req.body)
 
-  const usersWhoFollowVaultsData = {
-    user_address: user_address.toLocaleLowerCase(),
+  const usersAddressWhoJustFollowedVaultLowercased = user_address.toLocaleLowerCase()
+  const userWhoFollowsVaultData = {
+    user_address: usersAddressWhoJustFollowedVaultLowercased,
     vault_id,
     tos_doc_version,
     vault_chain_id,
   }
   console.log('user who follow vaults data')
-  console.log(usersWhoFollowVaultsData)
+  console.log(userWhoFollowsVaultData)
 
   await prisma.usersWhoFollowVaults.create({
-    data: usersWhoFollowVaultsData,
+    data: userWhoFollowsVaultData,
   })
 
-  return res.status(200).json(usersWhoFollowVaultsData)
+  const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
+    where: { user_address: usersAddressWhoJustFollowedVaultLowercased },
+  })
+
+  return res.status(200).json(allVaultsFollowedByUser)
 }
