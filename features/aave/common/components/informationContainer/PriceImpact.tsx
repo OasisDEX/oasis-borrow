@@ -2,13 +2,12 @@ import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import { Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { allDefined } from 'helpers/allDefined'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
 import { formatCryptoBalance, formatPercent } from '../../../../../helpers/formatters/format'
-import { one } from '../../../../../helpers/zero'
+import { one, zero } from '../../../../../helpers/zero'
 import { calculatePriceImpact } from '../../../../shared/priceImpact'
 
 interface PriceImpactProps {
@@ -36,20 +35,19 @@ export function PriceImpact({
     sourceToken,
   } = transactionParameters.simulation.swap
 
-  let swapPrice
-  if (!allDefined(toTokenAmount, fromTokenAmount) || !transactionParameters.simulation.swap) {
+  console.log('swap', transactionParameters.simulation.swap)
+  if (fromTokenAmount.eq(zero) || toTokenAmount.eq(zero)) {
     return <></>
   }
 
-  if (sourceToken.symbol === tokens.collateral) {
-    swapPrice = amountFromWei(toTokenAmount, targetToken.precision).div(
-      amountFromWei(fromTokenAmount, sourceToken.precision),
-    )
-  } else {
-    swapPrice = amountFromWei(fromTokenAmount, sourceToken.precision).div(
-      amountFromWei(toTokenAmount, targetToken.precision),
-    )
-  }
+  const swapPrice =
+    sourceToken.symbol === tokens.collateral
+      ? amountFromWei(toTokenAmount, targetToken.precision).div(
+          amountFromWei(fromTokenAmount, sourceToken.precision),
+        )
+      : amountFromWei(fromTokenAmount, sourceToken.precision).div(
+          amountFromWei(toTokenAmount, targetToken.precision),
+        )
 
   const marketPrice = collateralPrice?.div(debtPrice || one) || one
 
