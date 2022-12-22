@@ -22,6 +22,8 @@ export type Feature =
   | 'DiscoverOasis'
   | 'AaveEarnSTETHETH'
   | 'AaveMultiplySTETHUSDC'
+  | 'AaveMultiplyETHUSDC'
+  | 'AaveMultiplyWBTCUSDC'
   | 'FollowVaults'
   | 'AaveProtection'
   | 'Ajna'
@@ -47,11 +49,13 @@ const configuredFeatures: Record<Feature, boolean> = {
   DiscoverOasis: true,
   AaveEarnSTETHETH: true,
   AaveMultiplySTETHUSDC: false,
+  AaveMultiplyETHUSDC: false,
+  AaveMultiplyWBTCUSDC: false,
   FollowVaults: false,
   AaveProtection: false,
   Ajna: false,
   AaveUseDpmProxy: false,
-  DaiSavingsRate: false,
+  DaiSavingsRate: true,
   // your feature here....
 }
 

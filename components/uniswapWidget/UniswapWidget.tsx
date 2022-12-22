@@ -327,6 +327,7 @@ export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
           left: 'auto',
           right: '240px',
           bottom: 0,
+          width: '360px',
           transform: 'translateY(calc(100% + 10px))',
           bg: 'neutral10',
           boxShadow: 'elevation',
@@ -463,6 +464,7 @@ export function UniswapWidget(props: { token?: string }) {
         convenienceFee={20}
         convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
         defaultInputTokenAddress={requestTokenAddress}
+        width="100%"
       />
     </Box>
   )

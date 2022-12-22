@@ -8,7 +8,7 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 
 import { AavePositionAlreadyOpenedNotice } from '../../../notices/VaultsNoticesView'
 import { useAaveContext } from '../../AaveContextProvider'
-import { StrategyConfig } from '../../common/StrategyConfigTypes'
+import { IStrategyConfig } from '../../common/StrategyConfigTypes'
 import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 import { OpenAaveStateMachine } from '../state'
 import {
@@ -27,7 +27,7 @@ function AavePositionNotice() {
   return null
 }
 
-function SimulateSectionComponent({ config }: { config: StrategyConfig }) {
+function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
   const SimulateSection = config.viewComponents.simulateSection
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state] = useActor(stateMachine)
@@ -38,7 +38,12 @@ function SimulateSectionComponent({ config }: { config: StrategyConfig }) {
       currentPosition={state.context.currentPosition}
       collateralPrice={state.context.collateralPrice}
       tokenPrice={state.context.tokenPrice}
-      nextPosition={state.context.strategy?.simulation.position}
+      debtPrice={state.context.debtPrice}
+      nextPosition={
+        state.matches('frontend.reviewing')
+          ? state.context.strategy?.simulation.position
+          : undefined
+      }
     />
   )
 }
@@ -48,7 +53,7 @@ function AaveOpenContainer({
   config,
 }: {
   aaveStateMachine: OpenAaveStateMachine
-  config: StrategyConfig
+  config: IStrategyConfig
 }) {
   const { t } = useTranslation()
   const Header = config.viewComponents.headerOpen
@@ -89,7 +94,7 @@ function AaveOpenContainer({
   )
 }
 
-export function AaveOpenView({ config }: { config: StrategyConfig }) {
+export function AaveOpenView({ config }: { config: IStrategyConfig }) {
   const { aaveStateMachine } = useAaveContext()
   return <AaveOpenContainer aaveStateMachine={aaveStateMachine} config={config} />
 }

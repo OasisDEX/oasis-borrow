@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { isEqual } from 'lodash'
-import { Observable } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { Context } from '../../../../blockchain/network'
@@ -9,7 +9,11 @@ import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
 import { UserSettingsState } from '../../../userSettings/userSettings'
-import { IStrategyInfo } from '../../common/BaseAaveContext'
+import {
+  IStrategyInfo,
+  StrategyTokenAllowance,
+  StrategyTokenBalance,
+} from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxiesRelatedWithPosition } from '../../helpers/getProxiesRelatedWithPosition'
 import { PositionId } from '../../types'
@@ -44,12 +48,17 @@ export function getManageAavePositionStateMachineServices(
     },
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
-        map((balances) => balances[context.tokens.deposit]),
-        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
-        map(({ balance, price }) => ({
+        map((balances) => {
+          const strategyBalance: StrategyTokenBalance = {
+            collateral: balances[context.tokens.collateral],
+            debt: balances[context.tokens.debt],
+            deposit: balances[context.tokens.deposit],
+          }
+          return strategyBalance
+        }),
+        map((balance) => ({
           type: 'SET_BALANCE',
-          tokenBalance: balance,
-          tokenPrice: price,
+          balance: balance,
         })),
       )
     },
@@ -64,11 +73,10 @@ export function getManageAavePositionStateMachineServices(
     },
     positionProxyAddress$: (context) => {
       return proxiesRelatedWithPosition$(context.positionId).pipe(
-        map((result) => result.dsProxy || result.dpmProxy?.proxy),
-        filter((address) => address !== undefined),
-        map((address) => ({
+        map((result) => ({
           type: 'POSITION_PROXY_ADDRESS_RECEIVED',
-          proxyAddress: address,
+          proxyAddress: result.dsProxy || result.dpmProxy?.proxy,
+          ownerAddress: result.walletAddress,
         })),
         distinctUntilChanged(isEqual),
       )
@@ -80,7 +88,7 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     prices$: (context) => {
-      return pricesFeed$(context.tokens.collateral)
+      return pricesFeed$(context.tokens.collateral, context.tokens.debt)
     },
     strategyInfo$: (context) => {
       return strategyInfo$(context.tokens.collateral).pipe(
@@ -117,12 +125,26 @@ export function getManageAavePositionStateMachineServices(
       )
     },
     allowance$: (context) => {
-      return connectedProxyAddress$.pipe(
+      return proxiesRelatedWithPosition$(context.positionId).pipe(
+        map((result) => result.dsProxy || result.dpmProxy?.proxy),
         filter(allDefined),
-        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+        switchMap((proxyAddress) => {
+          return combineLatest([
+            tokenAllowance$(context.tokens.deposit, proxyAddress),
+            tokenAllowance$(context.tokens.collateral, proxyAddress),
+            tokenAllowance$(context.tokens.debt, proxyAddress),
+          ])
+        }),
+        map(
+          ([deposit, collateral, debt]): StrategyTokenAllowance => ({
+            collateral,
+            debt,
+            deposit,
+          }),
+        ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
-          tokenAllowance: allowance,
+          allowance: allowance,
         })),
         distinctUntilChanged(isEqual),
       )

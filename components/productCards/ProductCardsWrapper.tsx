@@ -1,15 +1,15 @@
+import { AppSpinner } from 'helpers/AppSpinner'
 import React, { ReactNode } from 'react'
-import { Box, Flex, Grid } from 'theme-ui'
-
-import { AppSpinner } from '../../helpers/AppSpinner'
-import { fadeInAnimationDelay, slideInAnimation } from '../../theme/animations'
-import { useTheme } from '../../theme/useThemeUI'
+import { Box, Flex, Grid, SxStyleProp } from 'theme-ui'
+import { fadeInAnimationDelay, slideInAnimation } from 'theme/animations'
+import { useTheme } from 'theme/useThemeUI'
 
 interface ProductCardWrapperProps {
   children: Array<ReactNode>
+  sx?: SxStyleProp
 }
 
-export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
+export function ProductCardsWrapper({ children, sx }: ProductCardWrapperProps) {
   const { theme } = useTheme()
   const childrenLength = children.flat().filter(Boolean).length
   const gapSpace = theme.space[4]
@@ -26,6 +26,7 @@ export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
         width: ['100%', childrenLength <= 2 ? `${desktopWidthOfGrid}px` : '100%'],
         gap: `${gapSpace}px`,
         margin: '0 auto',
+        ...sx,
       }}
     >
       {children

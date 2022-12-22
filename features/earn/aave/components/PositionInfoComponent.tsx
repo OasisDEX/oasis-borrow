@@ -10,7 +10,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
-import { StrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -19,7 +19,7 @@ import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../components/DetailsSection'
-import { ManageSectionModal } from '../../../aave/manage/components/ManageSectionModal'
+import { ManageSectionModal } from '../../../aave/manage/components'
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
   const critical = new BigNumber(5)
@@ -33,7 +33,7 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 
 type PositionInfoComponentProps = {
   aaveReserveDataDebtToken: PreparedAaveReserveData
-  tokens: StrategyConfig['tokens']
+  tokens: IStrategyConfig['tokens']
   oraclePrice: BigNumber
   accountData: AaveUserAccountData
   apy?: BigNumber
@@ -133,7 +133,10 @@ export const PositionInfoComponent = ({
                   <Trans
                     i18nKey="manage-earn-vault.liquidation-price-ratio-modal-aave"
                     components={[
-                      <AppLink target="_blank" href="https://dune.com/dataalways/stETH-De-Peg" />,
+                      <AppLink
+                        target="_blank"
+                        href="https://dune.com/chrisbduck/steth-eth-monitor"
+                      />,
                       <br />,
                     ]}
                   />

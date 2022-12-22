@@ -79,7 +79,12 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     debt,
   })
 
-  // TODO calculation methods in general to be updated when correct manage aave multiply state will be available
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio: one.div(liquidationRatio),
+    stopLossLevel: one.div(stopLossLevel).times(100),
+  })
+
   return {
     callbacks: {},
     detailCards: {
@@ -103,15 +108,15 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     methods: {
       getExecutionPrice: ({ stopLossLevel }) =>
         collateralPriceAtRatio({
-          colRatio: stopLossLevel.div(100),
+          colRatio: one.div(stopLossLevel.div(100)),
           collateral: lockedCollateral,
           vaultDebt: debt,
         }),
       getMaxToken: ({ stopLossLevel }) =>
         getMaxToken({
-          stopLossLevel,
+          stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
           lockedCollateral,
-          liquidationRatio,
+          liquidationRatio: one.div(liquidationRatio),
           liquidationPrice,
           debt,
         }),
@@ -124,8 +129,8 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       getRightBoundary: ({ stopLossLevel }) =>
         getDynamicStopLossPrice({
           liquidationPrice,
-          liquidationRatio,
-          stopLossLevel,
+          liquidationRatio: one.div(liquidationRatio),
+          stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
         }),
     },
     settings: {
@@ -176,6 +181,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       sliderMax,
       sliderMin,
       triggerMaxToken,
+      dynamicStopLossPrice,
     },
   }
 }

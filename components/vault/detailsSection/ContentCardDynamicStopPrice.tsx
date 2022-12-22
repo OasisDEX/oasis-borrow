@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -15,10 +14,9 @@ export interface ContentCardDynamicStopPriceModalProps {
 interface ContentCardDynamicStopPriceProps {
   isStopLossEnabled: boolean
   isEditing: boolean
-  stopLossLevel: BigNumber
   liquidationPrice: BigNumber
-  liquidationRatio: BigNumber
-  afterStopLossLevel: BigNumber
+  dynamicStopLossPrice: BigNumber
+  afterDynamicStopLossPrice: BigNumber
   ratioParamTranslationKey: string
 }
 
@@ -52,25 +50,12 @@ export function ContentCardDynamicStopPriceModal({
 export function ContentCardDynamicStopPrice({
   isStopLossEnabled,
   isEditing,
-  stopLossLevel,
   liquidationPrice,
-  liquidationRatio,
-  afterStopLossLevel,
   ratioParamTranslationKey,
+  dynamicStopLossPrice,
+  afterDynamicStopLossPrice,
 }: ContentCardDynamicStopPriceProps) {
   const { t } = useTranslation()
-
-  const dynamicStopLossPrice = getDynamicStopLossPrice({
-    liquidationPrice,
-    liquidationRatio,
-    stopLossLevel: stopLossLevel.times(100),
-  })
-
-  const afterDynamicStopLossPrice = getDynamicStopLossPrice({
-    liquidationPrice,
-    liquidationRatio,
-    stopLossLevel: afterStopLossLevel,
-  })
 
   const formatted = {
     dynamicStopPrice: `$${formatAmount(dynamicStopLossPrice, 'USD')}`,

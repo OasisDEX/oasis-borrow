@@ -31,7 +31,7 @@ import {
   contextToTransactionParameters,
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
-import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
@@ -46,7 +46,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
   hasOpenedPosition?: boolean
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
 }
 
@@ -294,13 +294,13 @@ export function createOpenAaveStateMachine(
           actions: 'updateContext',
         },
         SET_BALANCE: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'updateLegacyTokenBalance'],
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
@@ -328,12 +328,8 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmProxy,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
-        validTransactionParameters: ({
-          userInput,
-          effectiveProxyAddress,
-          strategy,
-          operationName,
-        }) => allDefined(userInput, effectiveProxyAddress, strategy, operationName),
+        validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
+          allDefined(userInput, effectiveProxyAddress, strategy),
         canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
           allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
           tokenBalance!.gt(userInput.amount!),
@@ -459,9 +455,11 @@ export function createOpenAaveStateMachine(
                 collateralToken: context.strategyConfig.tokens.collateral,
                 debtToken: context.tokens.debt,
                 depositToken: context.tokens.deposit,
+                token: context.tokens.deposit,
                 context: context.web3Context!,
                 slippage: context.userSettings!.slippage,
-                token: context.tokens.deposit,
+                proxyType: context.strategyConfig.proxyType,
+                positionType: context.strategyConfig.type,
               },
             }
           },
@@ -485,21 +483,29 @@ export function createOpenAaveStateMachine(
           ),
         })),
         calculateEffectiveProxyAddress: assign((context) => {
-          const proxyAddressToUse =
-            context.strategyConfig.proxyType === ProxyType.DpmProxy
-              ? context.userDpmProxy?.proxy
-              : context.connectedProxyAddress
+          const shouldUseDpmProxy =
+            context.strategyConfig.proxyType === ProxyType.DpmProxy &&
+            context.userDpmProxy !== undefined
+
+          const proxyAddressToUse = shouldUseDpmProxy
+            ? context.userDpmProxy?.proxy
+            : context.connectedProxyAddress
 
           const contextConnected = (context.web3Context as any) as ContextConnected | undefined
 
-          const address =
-            context.strategyConfig.proxyType === ProxyType.DpmProxy
-              ? `/aave/${context.userDpmProxy?.vaultId}`
-              : `/aave/${contextConnected?.account}`
+          const address = shouldUseDpmProxy
+            ? `/aave/${context.userDpmProxy?.vaultId}`
+            : `/aave/${contextConnected?.account}`
 
           return {
             effectiveProxyAddress: proxyAddressToUse,
             positionRelativeAddress: address,
+          }
+        }),
+        updateLegacyTokenBalance: assign((context, event) => {
+          return {
+            tokenBalance: event.balance.deposit.balance,
+            tokenPrice: event.balance.deposit.price,
           }
         }),
       },

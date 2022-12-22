@@ -19,7 +19,7 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
     translationKey: 'open-earn.aave.vault-form.configure-multiple.current-price',
   },
   link: {
-    url: 'https://dune.com/dataalways/stETH-De-Peg',
+    url: 'https://dune.com/chrisbduck/steth-eth-monitor',
     textTranslationKey: 'open-earn.aave.vault-form.configure-multiple.historical-ratio',
   },
   riskRatios: {

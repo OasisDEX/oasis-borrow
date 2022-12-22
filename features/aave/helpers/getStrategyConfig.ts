@@ -3,8 +3,8 @@ import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
-import { StrategyConfig } from '../common/StrategyConfigTypes'
-import { strategies } from '../strategyConfig'
+import { IStrategyConfig } from '../common/StrategyConfigTypes'
+import { loadStrategyFromTokens } from '../strategyConfig'
 import { PositionId } from '../types'
 import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
 import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
@@ -14,7 +14,7 @@ export function getStrategyConfig$(
   aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
   positionId: PositionId,
-): Observable<StrategyConfig> {
+): Observable<IStrategyConfig> {
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {
       const effectiveProxyAddress = dsProxy || dpmProxy?.proxy
@@ -31,17 +31,17 @@ export function getStrategyConfig$(
       return createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)
     }),
     map((aaveUserConfiguration) => {
-      if (hasAssets(aaveUserConfiguration, 'STETH', 'ETH')) {
-        return strategies['aave-earn']
-      } else if (hasAssets(aaveUserConfiguration, 'ETH', 'USDC')) {
-        return strategies['aave-multiply']
-      } else {
-        return strategies['aave-earn']
-        // throw new Error(
-        //   `could not resolve strategy for address ${address}. aaveUserConfiguration ${JSON.stringify(
-        //     aaveUserConfiguration,
-        //   )}`,
-        // )
+      switch (true) {
+        case hasAssets(aaveUserConfiguration, 'STETH', 'ETH'):
+          return loadStrategyFromTokens('STETH', 'ETH')
+        case hasAssets(aaveUserConfiguration, 'ETH', 'USDC'):
+          return loadStrategyFromTokens('ETH', 'USDC')
+        case hasAssets(aaveUserConfiguration, 'WBTC', 'USDC'):
+          return loadStrategyFromTokens('WBTC', 'USDC')
+        case hasAssets(aaveUserConfiguration, 'STETH', 'USDC'):
+          return loadStrategyFromTokens('STETH', 'USDC')
+        default:
+          return loadStrategyFromTokens('STETH', 'ETH')
       }
     }),
     distinctUntilChanged(isEqual),

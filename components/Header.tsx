@@ -3,6 +3,8 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { getMixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
+import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
+import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
 import { LANDING_PILLS } from 'content/landing'
 import { DISCOVER_URL } from 'features/discover/helpers'
 import { getUnreadNotificationCount } from 'features/notifications/helpers'
@@ -18,6 +20,7 @@ import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
@@ -30,9 +33,7 @@ import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } fr
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
-import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
-import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
 function Logo({ sx }: { sx?: SxStyleProp }) {
@@ -81,17 +82,6 @@ function BasicHeader({
   )
 }
 
-function useVaultCount() {
-  const { accountData$ } = useAppContext()
-  const [accountData] = useObservable(accountData$)
-
-  // TODO: Add aave vault.
-
-  const count = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
-
-  return count && count > 0 ? count : null
-}
-
 function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -116,7 +106,7 @@ function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
 }
 
 function PositionsButton({ sx }: { sx?: SxStyleProp }) {
-  const vaultCount = useVaultCount()
+  const { amountOfPositions } = useAccount()
 
   return (
     <PositionsLink sx={{ position: 'relative', ...sx }}>
@@ -126,7 +116,7 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
       >
         <Icon name="home" size="auto" width="20" />
       </Button>
-      {vaultCount && (
+      {!!amountOfPositions && (
         <Flex
           sx={{
             position: 'absolute',
@@ -142,7 +132,7 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
             zIndex: 'menu',
           }}
         >
-          {vaultCount}
+          {amountOfPositions}
         </Flex>
       )}
     </PositionsLink>
@@ -231,7 +221,7 @@ function UserDesktopMenu() {
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
-  const vaultCount = useVaultCount()
+  const { amountOfPositions } = useAccount()
   const [exchangeOnboarded] = useOnboarding('Exchange')
   const [exchangeOpened, setExchangeOpened] = useState(false)
   const [widgetUiChanges] = useObservable(
@@ -273,7 +263,7 @@ function UserDesktopMenu() {
             width="20"
             sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
           />
-          {t('my-positions')} {vaultCount && `(${vaultCount})`}
+          {t('my-positions')} {!!amountOfPositions && `(${amountOfPositions})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
         <Box>
@@ -340,90 +330,6 @@ function UserDesktopMenu() {
         )}
       </Flex>
     </Flex>
-  )
-}
-
-function MobileSettings() {
-  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
-  const [opened, setOpened] = useState(false)
-  const { accountData$, context$, web3Context$ } = useAppContext()
-  const [context] = useObservable(context$)
-  const [accountData] = useObservable(accountData$)
-  const [web3Context] = useObservable(web3Context$)
-  const componentRef = useOutsideElementClickHandler(() => setOpened(false))
-
-  const shouldHideSettings = getShouldHideHeaderSettings(context, accountData, web3Context)
-
-  if (shouldHideSettings) return null
-
-  return (
-    <>
-      <Flex
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          bg: 'rgba(255,255,255,0.9)',
-          p: 3,
-          justifyContent: 'space-between',
-          gap: 2,
-          zIndex: 3,
-        }}
-      >
-        <Button
-          variant="menuButton"
-          onClick={() => setOpened(true)}
-          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'neutral80' }}
-        >
-          <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
-        </Button>
-        {vaultFormToggleTitle && (
-          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
-            <Box>{vaultFormToggleTitle}</Box>
-          </Button>
-        )}
-      </Flex>
-      <MobileSidePanelPortal>
-        <Box
-          sx={{
-            display: 'block',
-            position: 'fixed',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            transition: '0.3s transform ease-in-out',
-            transform: `translateY(${opened ? '0' : '100'}%)`,
-            bg: 'neutral10',
-            p: 3,
-            pt: 0,
-            zIndex: 'modal',
-            boxShadow: 'bottomSheet',
-            borderTopLeftRadius: 'large',
-            borderTopRightRadius: 'large',
-          }}
-          ref={componentRef}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              pt: 2,
-            }}
-          >
-            <ModalCloseIcon
-              close={() => setOpened(false)}
-              sx={{ top: 0, right: 0, color: 'primary100', position: 'relative' }}
-              size={3}
-            />
-          </Box>
-          <Card variant="vaultFormContainer" sx={{ p: 2 }}>
-            <UserSettings />
-          </Card>
-        </Box>
-      </MobileSidePanelPortal>
-    </>
   )
 }
 
@@ -510,7 +416,7 @@ function ConnectedHeader() {
               />
               <MobileMenu />
             </Flex>
-            <MobileSettings />
+            <WalletPanelMobile />
           </BasicHeader>
         </Box>
       )}
@@ -882,36 +788,13 @@ function MobileMenu() {
 }
 
 function DisconnectedHeader() {
-  const { t } = useTranslation()
-
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <MainNavigation />
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
-            <AppLink
-              variant="buttons.secondary"
-              href="/connect"
-              sx={{
-                boxShadow: 'cardLanding',
-                bg: 'neutral10',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                '&:hover svg': {
-                  transform: 'translateX(8px)',
-                },
-                flexShrink: 0,
-              }}
-            >
-              <Text variant="boldParagraph2">{t('connect-wallet-button')}</Text>
-              <Icon
-                name="arrow_right"
-                size="15px"
-                sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
-              />
-            </AppLink>
+            <ConnectWalletButton />
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}
             />

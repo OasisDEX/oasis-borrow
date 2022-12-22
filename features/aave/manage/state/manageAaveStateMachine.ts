@@ -1,5 +1,7 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
+import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -23,21 +25,29 @@ import {
   BaseAaveEvent,
   contextToTransactionParameters,
   isAllowanceNeeded,
+  ManageTokenInput,
 } from '../../common/BaseAaveContext'
-import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
-import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
+import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
+import {
+  AdjustAaveParameters,
+  CloseAaveParameters,
+  ManageAaveParameters,
+} from '../../oasisActionsLibWrapper'
 import { PositionId } from '../../types'
+import { defaultManageTokenInputValues } from '../containers/AaveManageStateMachineContext'
 
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
   | ActorRefFrom<TransactionParametersStateMachine<AdjustAaveParameters>>
+  | ActorRefFrom<TransactionParametersStateMachine<ManageAaveParameters>>
 
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorFromTransactionParametersStateMachine
-  strategyConfig: StrategyConfig
+  strategyConfig: IStrategyConfig
   positionId: PositionId
   proxyAddress?: string
+  ownerAddress?: string
   positionCreatedBy: ProxyType
 }
 
@@ -52,10 +62,18 @@ function getTransactionDef(context: ManageAaveContext): TransactionDef<Operation
 export type ManageAaveEvent =
   | { type: 'ADJUST_POSITION' }
   | { type: 'CLOSE_POSITION' }
+  | { type: 'MANAGE_COLLATERAL'; manageTokenAction: ManageTokenInput['manageTokenAction'] }
+  | { type: 'MANAGE_DEBT'; manageTokenAction: ManageTokenInput['manageTokenAction'] }
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
+  | { type: 'NEXT_STEP' }
   | { type: 'START_TRANSACTION' }
-  | { type: 'POSITION_PROXY_ADDRESS_RECEIVED'; proxyAddress: string }
+  | {
+      type: 'POSITION_PROXY_ADDRESS_RECEIVED'
+      proxyAddress: string
+      ownerAddress: string
+      effectiveProxyAddress: string
+    }
   | { type: 'CURRENT_POSITION_CHANGED'; currentPosition: IPosition }
   | BaseAaveEvent
 
@@ -67,6 +85,7 @@ export function createManageAaveStateMachine(
     transactionParameters: OperationExecutorTxMeta,
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
+  depositBorrowAaveMachine: TransactionParametersStateMachine<ManageAaveParameters>,
 ) {
   /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhgBdyCoAFAe1lyrvwBF1z0yxLqaAnOgA8AngEEIEfnFgBiCCzAkCANzoBrJRQHDxk6bHhIQABwZNcLRKCGIAbABYAnCQCsDgBxOHAdg8OARncAJicAGhARRGDPEgBmAAYnOI84gLiUgKdgnwBfXIi0LDxCUgoqfFpzZjYOLnLqMXQVMHpGGvlFZXw1TW5yJpa2iytjM3bLfGsQWwQAhITXEicnBICfDOyEuLtgiKiEV22SXdc-VyOEhxiHfMKMHAJiEkgLStkAZQBRABUAfQAQmIADJiAByAGEvtNxiMpsZZkFgh54g5XE4jikMtsfPtEIEfCRPHENg44pd3AE7iAio9Si8IG8oLIwV8ABr-D4-L40GHVSbTWZ2HwuZxxVYrZLrBwOPEIZJLAIedbBIIJUIZOLU2klZ6vCrMiHAgDy3z+NFNAEkfpbjWC+RNRjZEOknAESAFgq47AEAnYEj4fD6AnL-YTkeiAmi4sEch5gtqHrrSNIVLgwAB3ags9mc7m8sb8p0zfF+okeeNpJyBnzojxynxkkheBwJDx2RIkrK3Ao0pNPFNgNOZ7NAiEAaT+P2Nfy+rGtlrBAHEHXDBYgUii7EdvWda44PLjIi7PXYSF6Y2k7B2smdE8UByRU+ms+8fgAlcEfMQQm1281iJ+ACyvxfO+Hx-O+XxQpaABqc6rjU64IMESTLCSyJtqEqR+nK6SBCQ6oBm20rItW950s85BCJa+A6FABhyD8bJ-B8ACqEJQh8HyIQKCKIK4ezHnMZIogsCxOMqboONeFHJiQ1EAGLoLgAA2ACu0iyFBH4AJq8cWiIXMskrKsKbr+q4cRyhiRKSiKuwJB2CpyY+z4jpUEKqeY7xGlay4AcBoHgZB0FfHBCGFo68LOnMFzujuyTbB22ypHhAbun6Ti7NG4peHkvY6m5Q4vtQXk+cyrIcqx+YGTFJZzFkmVkY4CzosSeFxDJzZnE56SCes26ufS7mvlA5WMO8Y6TtOs7zjay51chKrBPEQTKj4qqHsE1nCXYHgJOh6TksEPpJKd+S9vgdAQHA0xFfSDSVMMNTsJw-QGjoogSFIMhLfxKFnMsvgpB2PhtsldhyjtZ6JMkklnDkZEJoV-aPTwn1FrU71PVAgytFj-2xYeDhuEkh5ZMG7hHgcF4nNcGyqr60lksNzy4y9kxvegRMNTtcTAxs7YkhDOxQ8Jfqk3DeXeMqKQFfcD70vq1C84iMarWS1yodGzjbKGorJMKtZBlG6IK32SvPKNqtRWuANZIddgrGsKS+JtAb1sJqwC-t6xWfGwphmzpDUbR9GMWr9jpCQgZkosKzitcu0HJ47pkr68xRl4Cwo4rlGh0IylqZpYBRwg1w2Yd4kLKb27IvGIcKUIHzqZgmB-XbSEAzEq2Nqqpt+OkoRCQcUYxoRCyZ2LudNzbnneZNUDl-hZ4+H6-oyeqSXiwch5iVW2zIo4kkhyvXsHAAtKtRwdrGVz+DKXo9vkQA */
   return createMachine(
@@ -120,7 +139,6 @@ export function createManageAaveStateMachine(
           id: 'allowance$',
         },
       ],
-      entry: ['calculateEffectiveProxyAddress'],
       id: 'manageAaveStateMachine',
       type: 'parallel',
       states: {
@@ -133,8 +151,22 @@ export function createManageAaveStateMachine(
                 500: 'loading',
               },
             },
+            debouncingManage: {
+              after: {
+                500: 'loadingManage',
+              },
+            },
             loading: {
               entry: ['requestParameters'],
+              on: {
+                STRATEGY_RECEIVED: {
+                  target: 'idle',
+                  actions: ['updateContext'],
+                },
+              },
+            },
+            loadingManage: {
+              entry: ['requestManageParameters'],
               on: {
                 STRATEGY_RECEIVED: {
                   target: 'idle',
@@ -156,12 +188,17 @@ export function createManageAaveStateMachine(
           initial: 'editing',
           states: {
             editing: {
-              entry: ['spawnAdjustParametersMachine'],
+              entry: ['reset', 'killCurrentParametersMachine', 'spawnAdjustParametersMachine'],
               on: {
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: [
+                    'reset',
+                    'killCurrentParametersMachine',
+                    'spawnCloseParametersMachine',
+                    'requestParameters',
+                  ],
                 },
                 SET_RISK_RATIO: {
                   cond: 'canChangePosition',
@@ -170,8 +207,8 @@ export function createManageAaveStateMachine(
                 },
                 RESET_RISK_RATIO: {
                   cond: 'canChangePosition',
-                  target: '#manageAaveStateMachine.background.debouncing',
-                  actions: 'resetRiskRatio',
+                  target: '#manageAaveStateMachine.background.idle',
+                  actions: 'reset',
                 },
                 ADJUST_POSITION: [
                   {
@@ -185,6 +222,52 @@ export function createManageAaveStateMachine(
                 ],
               },
             },
+            manageCollateral: {
+              on: {
+                NEXT_STEP: [
+                  {
+                    cond: 'isAllowanceNeeded',
+                    target: 'allowanceCollateralSetting',
+                  },
+                  {
+                    cond: 'validTransactionParameters',
+                    target: 'txInProgress',
+                    actions: ['closePositionTransactionEvent'],
+                  },
+                ],
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
+            manageDebt: {
+              on: {
+                NEXT_STEP: [
+                  {
+                    cond: 'isAllowanceNeeded',
+                    target: 'allowanceDebtSetting',
+                  },
+                  {
+                    cond: 'validTransactionParameters',
+                    target: 'txInProgress',
+                    actions: ['closePositionTransactionEvent'],
+                  },
+                ],
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+                CLOSE_POSITION: {
+                  cond: 'canChangePosition',
+                  target: 'reviewingClosing',
+                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+              },
+            },
             allowanceSetting: {
               entry: ['spawnAllowanceMachine'],
               exit: ['killAllowanceMachine'],
@@ -194,13 +277,31 @@ export function createManageAaveStateMachine(
                 },
               },
             },
+            allowanceDebtSetting: {
+              entry: ['spawnAllowanceMachine'],
+              exit: ['killAllowanceMachine'],
+              on: {
+                ALLOWANCE_SUCCESS: {
+                  target: 'manageDebt',
+                },
+              },
+            },
+            allowanceCollateralSetting: {
+              entry: ['spawnAllowanceMachine'],
+              exit: ['killAllowanceMachine'],
+              on: {
+                ALLOWANCE_SUCCESS: {
+                  target: 'manageCollateral',
+                },
+              },
+            },
             reviewingAdjusting: {
-              onEntry: ['riskRatioConfirmEvent'],
+              entry: ['riskRatioConfirmEvent'],
               on: {
                 BACK_TO_EDITING: {
                   target: 'editing',
                 },
-                START_TRANSACTION: {
+                NEXT_STEP: {
                   cond: 'validTransactionParameters',
                   target: 'txInProgress',
                   actions: ['riskRatioConfirmTransactionEvent'],
@@ -210,16 +311,18 @@ export function createManageAaveStateMachine(
             reviewingClosing: {
               entry: ['closePositionEvent'],
               on: {
-                START_TRANSACTION: {
+                NEXT_STEP: {
                   cond: 'validTransactionParameters',
                   target: 'txInProgress',
                   actions: ['closePositionTransactionEvent'],
                 },
                 BACK_TO_EDITING: {
                   target: 'editing',
+                  actions: ['reset'],
                 },
               },
             },
+
             txInProgress: {
               entry: ['spawnTransactionMachine'],
               on: {
@@ -238,6 +341,10 @@ export function createManageAaveStateMachine(
                 RETRY: {
                   target: 'txInProgress',
                 },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                  actions: ['reset'],
+                },
               },
             },
             txSuccess: {
@@ -255,13 +362,13 @@ export function createManageAaveStateMachine(
           actions: 'updateContext',
         },
         SET_BALANCE: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'updateLegacyTokenBalance'],
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
@@ -273,7 +380,7 @@ export function createManageAaveStateMachine(
           actions: ['updateContext'],
         },
         POSITION_PROXY_ADDRESS_RECEIVED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
         },
         UPDATE_PROTOCOL_DATA: {
           actions: ['updateContext'],
@@ -281,38 +388,94 @@ export function createManageAaveStateMachine(
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
         },
+        MANAGE_COLLATERAL: {
+          cond: 'canChangePosition',
+          target: 'frontend.manageCollateral',
+          actions: [
+            'killCurrentParametersMachine',
+            'spawnDepositBorrowMachine',
+            'resetTokenActionValue',
+            'updateCollateralTokenAction',
+            'setTransactionTokenToCollateral',
+          ],
+        },
+        MANAGE_DEBT: {
+          cond: 'canChangePosition',
+          target: 'frontend.manageDebt',
+          actions: [
+            'killCurrentParametersMachine',
+            'spawnDepositBorrowMachine',
+            'resetTokenActionValue',
+            'updateDebtTokenAction',
+            'setTransactionTokenToDebt',
+          ],
+        },
+        UPDATE_COLLATERAL_TOKEN_ACTION: {
+          cond: 'canChangePosition',
+          target: '#manageAaveStateMachine.background.debouncingManage',
+          actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
+        },
+        UPDATE_DEBT_TOKEN_ACTION: {
+          cond: 'canChangePosition',
+          target: '#manageAaveStateMachine.background.debouncingManage',
+          actions: ['resetTokenActionValue', 'updateDebtTokenAction'],
+        },
+        UPDATE_TOKEN_ACTION_VALUE: {
+          cond: 'canChangePosition',
+          target: '#manageAaveStateMachine.background.debouncingManage',
+          actions: ['updateTokenActionValue'],
+        },
       },
     },
     {
       guards: {
-        validTransactionParameters: ({ connectedProxyAddress, strategy }) => {
-          return allDefined(connectedProxyAddress, strategy)
+        validTransactionParameters: ({ proxyAddress, strategy }) => {
+          return allDefined(proxyAddress, strategy)
         },
-        canChangePosition: ({ proxyAddress, connectedProxyAddress, currentPosition }) => {
-          return (
-            allDefined(proxyAddress, connectedProxyAddress, currentPosition) &&
-            proxyAddress === connectedProxyAddress
-          )
-        },
+        canChangePosition: ({ web3Context, ownerAddress, currentPosition }) =>
+          allDefined(web3Context, ownerAddress, currentPosition) &&
+          web3Context!.account === ownerAddress,
         isAllowanceNeeded,
       },
       actions: {
-        userInputRiskRatio: assign((context, event) => {
-          return {
-            userInput: {
-              ...context.userInput,
-              riskRatio: event.riskRatio,
-            },
-          }
-        }),
-        resetRiskRatio: assign((context) => {
-          return {
-            userInput: {
-              ...context.userInput,
-              riskRatio: context.currentPosition?.riskRatio,
-            },
-          }
-        }),
+        resetTokenActionValue: assign((_) => ({
+          manageTokenInput: {
+            manageTokenAction: defaultManageTokenInputValues.manageTokenAction,
+            manageTokenActionValue: defaultManageTokenInputValues.manageTokenActionValue,
+          },
+          strategy: undefined,
+        })),
+        updateCollateralTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
+          manageTokenInput: {
+            ...manageTokenInput,
+            manageTokenAction: manageTokenAction || ManageCollateralActionsEnum.DEPOSIT_COLLATERAL,
+          },
+        })),
+        updateDebtTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
+          manageTokenInput: {
+            ...manageTokenInput,
+            manageTokenAction: manageTokenAction || ManageDebtActionsEnum.BORROW_DEBT,
+          },
+        })),
+        updateTokenActionValue: assign(({ manageTokenInput }, { manageTokenActionValue }) => ({
+          manageTokenInput: {
+            ...manageTokenInput,
+            manageTokenActionValue,
+          },
+        })),
+        userInputRiskRatio: assign((context, event) => ({
+          userInput: {
+            ...context.userInput,
+            riskRatio: event.riskRatio,
+          },
+        })),
+        reset: assign((context) => ({
+          userInput: {
+            ...context.userInput,
+            riskRatio: undefined,
+          },
+          strategy: undefined,
+        })),
         riskRatioEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
         },
@@ -330,19 +493,40 @@ export function createManageAaveStateMachine(
           (
             context,
           ): TransactionParametersStateMachineEvent<
-            AdjustAaveParameters | CloseAaveParameters
+            AdjustAaveParameters | CloseAaveParameters | ManageAaveParameters
           > => ({
             type: 'VARIABLES_RECEIVED',
             parameters: {
               amount: context.userInput.amount || zero,
               riskRatio: context.userInput.riskRatio || context.currentPosition!.riskRatio,
-              proxyAddress: context.connectedProxyAddress!,
+              proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
               context: context.web3Context!,
               slippage: context.userSettings!.slippage,
               currentPosition: context.currentPosition!,
+              manageTokenInput: context.manageTokenInput,
+              proxyType: context.positionCreatedBy,
             },
           }),
+          { to: (context) => context.refParametersMachine! },
+        ),
+        requestManageParameters: send(
+          (context): TransactionParametersStateMachineEvent<ManageAaveParameters> => {
+            const { token, amount } = getTxTokenAndAmount(context)
+            return {
+              type: 'VARIABLES_RECEIVED',
+              parameters: {
+                proxyAddress: context.proxyAddress!,
+                context: context.web3Context!,
+                slippage: context.userSettings!.slippage,
+                currentPosition: context.currentPosition!,
+                manageTokenInput: context.manageTokenInput,
+                proxyType: context.positionCreatedBy,
+                token,
+                amount,
+              },
+            }
+          },
           { to: (context) => context.refParametersMachine! },
         ),
         spawnTransactionMachine: assign((context) => ({
@@ -360,6 +544,9 @@ export function createManageAaveStateMachine(
           }
           return undefined
         }),
+        spawnDepositBorrowMachine: assign((_) => ({
+          refParametersMachine: spawn(depositBorrowAaveMachine, 'transactionParameters'),
+        })),
         spawnAdjustParametersMachine: assign((_) => ({
           refParametersMachine: spawn(adjustParametersStateMachine, 'transactionParameters'),
         })),
@@ -384,22 +571,30 @@ export function createManageAaveStateMachine(
         spawnAllowanceMachine: assign((context) => ({
           refAllowanceStateMachine: spawn(
             allowanceStateMachine.withContext({
-              token: context.tokens.deposit,
-              spender: context.connectedProxyAddress!,
+              token: context.transactionToken || context.tokens.deposit,
+              spender: context.proxyAddress!,
               allowanceType: 'unlimited',
-              minimumAmount: context.userInput.amount!,
+              minimumAmount:
+                context.manageTokenInput?.manageTokenActionValue ||
+                context.userInput.amount ||
+                zero,
             }),
             'allowanceMachine',
           ),
         })),
-        calculateEffectiveProxyAddress: assign((context) => {
-          const effectiveProxyAddress =
-            context.positionCreatedBy === ProxyType.DpmProxy
-              ? context.userDpmProxy?.proxy
-              : context.connectedProxyAddress
-
+        calculateEffectiveProxyAddress: assign((context) => ({
+          effectiveProxyAddress: context.proxyAddress,
+        })),
+        setTransactionTokenToDebt: assign((context) => ({
+          transactionToken: context.strategyConfig.tokens.debt,
+        })),
+        setTransactionTokenToCollateral: assign((context) => ({
+          transactionToken: context.strategyConfig.tokens.collateral,
+        })),
+        updateLegacyTokenBalance: assign((context, event) => {
           return {
-            effectiveProxyAddress,
+            tokenBalance: event.balance.deposit.balance,
+            tokenPrice: event.balance.deposit.price,
           }
         }),
       },
@@ -409,7 +604,7 @@ export function createManageAaveStateMachine(
 
 class ManageAaveStateMachineTypes {
   needsConfiguration() {
-    return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any)
+    return createManageAaveStateMachine({} as any, {} as any, {} as any, {} as any, {} as any)
   }
 
   withConfig() {

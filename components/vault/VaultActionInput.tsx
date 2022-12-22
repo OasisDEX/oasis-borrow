@@ -9,7 +9,7 @@ import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
 
-export type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback' | 'Sell' | 'Buy'
+export type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback' | 'Sell' | 'Buy' | 'Enter'
 const FIAT_PRECISION = 2
 
 export const PlusIcon = () => (

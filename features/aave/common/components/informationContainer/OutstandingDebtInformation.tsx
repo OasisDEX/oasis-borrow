@@ -1,25 +1,37 @@
+import { IPosition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { amountFromWei } from '../../../../../blockchain/utils'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
-import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
+import { formatAmount } from '../../../../../helpers/formatters/format'
 
-interface OutstandingDebtInformationProps {
-  currentDebtInDebtToken: BigNumber
-  afterDebtInDebtToken: BigNumber
-  debtToken: string
+interface DebtCollateralInformation {
+  currentPosition: IPosition
+  newPosition: IPosition
+}
+
+function formatDebtAmount(pos: IPosition) {
+  return `${formatAmount(amountFromWei(pos.debt.amount, pos.debt.symbol), pos.debt.symbol)} ${
+    pos.debt.symbol
+  }`
+}
+
+function formatCollateralAmount(pos: IPosition) {
+  return `${formatAmount(
+    amountFromWei(pos.collateral.amount, pos.collateral.symbol),
+    pos.collateral.symbol,
+  )} ${pos.collateral.symbol}`
 }
 
 export function OutstandingDebtInformation({
-  debtToken,
-  currentDebtInDebtToken,
-  afterDebtInDebtToken,
-}: OutstandingDebtInformationProps) {
+  currentPosition,
+  newPosition,
+}: DebtCollateralInformation) {
   const { t } = useTranslation()
 
   return (
@@ -27,9 +39,29 @@ export function OutstandingDebtInformation({
       label={t('vault-changes.outstanding-debt')}
       value={
         <Flex>
-          {currentDebtInDebtToken && formatCryptoBalance(currentDebtInDebtToken)} {debtToken}
+          {formatDebtAmount(currentPosition)}
           <VaultChangesInformationArrow />
-          {afterDebtInDebtToken && formatCryptoBalance(afterDebtInDebtToken)} {debtToken}
+          {formatDebtAmount(newPosition)}
+        </Flex>
+      }
+    />
+  )
+}
+
+export function TotalCollateralInformation({
+  currentPosition,
+  newPosition,
+}: DebtCollateralInformation) {
+  const { t } = useTranslation()
+
+  return (
+    <VaultChangesInformationItem
+      label={t('system.total-collateral')}
+      value={
+        <Flex>
+          {formatCollateralAmount(currentPosition)}
+          <VaultChangesInformationArrow />
+          {formatCollateralAmount(newPosition)}
         </Flex>
       }
     />

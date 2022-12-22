@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { funcSigTopic } from 'blockchain/utils'
+import { gql, GraphQLClient } from 'graphql-request'
 import padStart from 'lodash/padStart'
 import { combineLatest, merge, Observable, of } from 'rxjs'
 import { fromPromise } from 'rxjs/internal-compatibility'
@@ -56,8 +57,11 @@ const eventSigntures: Dictionary<string[]> = {
 }
 
 async function getBlockTimestamp(context: Context, blockNumber: number): Promise<number> {
-  const block = await context.web3.eth.getBlock(blockNumber)
-  return block.timestamp as number
+  const apiClient = new GraphQLClient(context.cacheApi)
+  const block = await apiClient.request(historicalBlockNumbers, {
+    blockNumber,
+  })
+  return new Date(block.allHistoricBlocks.nodes[0].timestamp).getTime() / 1000
 }
 
 function createEventTypeHistory$(
@@ -141,3 +145,13 @@ export function createDsrHistory$(context: Context, proxyAddress: string): Obser
     }),
   )
 }
+
+export const historicalBlockNumbers = gql`
+  query timestamp($blockNumber: Int) {
+    allHistoricBlocks(first: 1, filter: { number: { equalTo: $blockNumber } }) {
+      nodes {
+        timestamp
+      }
+    }
+  }
+`

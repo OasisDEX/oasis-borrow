@@ -7,12 +7,7 @@ import {
   PositionVM,
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import {
-  formatAddress,
-  formatCryptoBalance,
-  formatFiatBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable } from 'rxjs'
@@ -28,14 +23,13 @@ export interface VaultsOverview {
 
 export function createVaultsOverview$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
-  aavePositions$: (address: string) => Observable<AavePosition | undefined>,
+  aavePositions$: (address: string) => Observable<AavePosition[]>,
   address: string,
 ): Observable<VaultsOverview> {
   return combineLatest(makerPositions$(address), aavePositions$(address)).pipe(
     map(([makerPositions, aavePositions]) => {
       const makerVMs = mapToPositionVM(makerPositions)
-      const aaveVMs = mapAavePositions(aavePositions ? [aavePositions] : [])
-
+      const aaveVMs = mapAavePositions(aavePositions)
       return {
         positions: [...makerVMs, ...aaveVMs],
       }
@@ -145,21 +139,51 @@ function mapToPositionVM(vaults: MakerPositionDetails[]): PositionVM[] {
 
 function mapAavePositions(position: AavePosition[]): PositionVM[] {
   return position.map((position) => {
-    return {
-      type: 'earn' as const,
-      isOwnerView: true,
-      icon: getToken(position.token).iconCircle,
-      ilk: position.title,
-      positionId: formatAddress(position.ownerAddress),
-      pnl: position.pln,
-      netValue: `$${formatFiatBalance(position.netValue)}`,
-      sevenDayYield: '',
-      liquidity: `${formatCryptoBalance(position.liquidity)} USDC`,
-      editLinkProps: {
-        href: position.url,
-        hash: VaultViewMode.Overview,
-        internalInNewTab: false,
-      },
+    if (position.type === 'multiply') {
+      return {
+        type: 'multiply' as const,
+        isOwnerView: position.isOwner,
+        icon: getToken(position.token).iconCircle,
+        ilk: position.title,
+        positionId: position.id.toString(),
+        multiple: `${position.multiple.toFixed(2)}x`,
+        netValue: `$${formatFiatBalance(position.netValue)}`,
+        liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+        fundingCost: formatPercent(position.fundingCost, {
+          precision: 2,
+        }),
+        collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+        automationEnabled: false,
+        editLinkProps: {
+          href: position.url,
+          hash: VaultViewMode.Overview,
+          internalInNewTab: false,
+        },
+      }
+    } else {
+      return {
+        type: 'earn' as const,
+        isOwnerView: position.isOwner,
+        icon: getToken(position.token).iconCircle,
+        ilk: position.title,
+        positionId: position.id.toString(),
+        multiple: `${position.multiple.toFixed(2)}x`,
+        netValue: `$${formatFiatBalance(position.netValue)}`,
+        liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+        fundingCost: formatPercent(position.fundingCost, {
+          precision: 2,
+        }),
+        collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+        automationEnabled: false,
+        editLinkProps: {
+          href: position.url,
+          hash: VaultViewMode.Overview,
+          internalInNewTab: false,
+        },
+        pnl: 'N/A',
+        sevenDayYield: 'sevenDayYield',
+        liquidity: `${formatFiatBalance(position.liquidity)} USDC`,
+      }
     }
   })
 }

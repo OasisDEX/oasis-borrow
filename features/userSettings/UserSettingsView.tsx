@@ -406,7 +406,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>
-      <Flex sx={{ ml: 2 }}>
+      <Flex sx={{ ml: 2, transition: 'color 200ms' }}>
         <Icon
           size="auto"
           width="16"

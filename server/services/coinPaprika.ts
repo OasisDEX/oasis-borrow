@@ -48,10 +48,11 @@ function fetchTicker(): Promise<{ data: CoinPaprikaApiResponse[] }> {
   return axios({
     method: 'get',
     timeout: 1000,
-    url: `https://api.coinpaprika.com/v1/tickers/`,
+    url: `${process.env.COINPAPRIKA_API_URL}/tickers`,
     responseType: 'json',
     headers: {
       Accept: 'application/json',
+      Authorization: `${process.env.COINPAPRIKA_API_KEY}`,
     },
   })
 }

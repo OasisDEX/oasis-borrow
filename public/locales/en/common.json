@@ -33,6 +33,7 @@
   "adding-auto-sell": "Adding Auto-Sell",
   "cancelling-auto-sell": "Cancelling Auto-Sell",
   "adjust-your-position": "Adjust your position",
+  "adjust": "Adjust",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
   "after-closing": "{{token}} after closing",
@@ -68,6 +69,7 @@
   "close": "Close",
   "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
+  "closing-to": "Closing to {{token}}",
   "close-vault": "Close Vault",
   "coming-soon": "Coming soon",
   "completed": "Completed",
@@ -124,12 +126,6 @@
   "creating-proxy": "Creating Proxy",
   "creating-vault": "Creating Vault",
   "proxy-advantages": [
-    "Just one proxy needed per account",
-    "Enables your wallet to interact with the DeFi protocols",
-    "More gas efficient"
-  ],
-  "proxy-advantages-new": [
-    "<1>Just one</1> proxy needed per account",
     "Enables your wallet to interact with the DeFi protocols",
     "More gas efficient"
   ],
@@ -371,10 +367,14 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "headlinePreAssetLandingPages": "Borrow Dai and Multiply your exposure to crypto",
-      "subheaderPreAssetLandingPages": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start.",
-      "headline": "Deploy your crypto into DeFi",
-      "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+      "maker": {
+        "headline": "Deploy your crypto into DeFi",
+        "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+      },
+      "ajna": {
+        "headline": "Borrow and lend your crypto on Ajna",
+        "subheader": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters. <0>Learn more about Ajna on Oasis.app →</0>"
+      }
     },
     "stats": {
       "30-day-volume": "30 Day Volume",
@@ -392,20 +392,48 @@
       }
     },
     "tabs": {
-      "borrow": {
-        "tabLabel": "Borrow on Oasis",
-        "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
-        "tabParaLinkContent": "See all Borrow collateral types →"
+      "maker": {
+        "borrow": {
+          "tabLabel": "Borrow on Oasis",
+          "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
+          "tabParaLinkContent": "See all Borrow collateral types →"
+        },
+        "multiply": {
+          "tabLabel": "Multiply on Oasis",
+          "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
+          "tabParaLinkContent": "See all Multiply collateral types →"
+        },
+        "earn": {
+          "tabLabel": "Earn on Oasis",
+          "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
+          "tabParaLinkContent": "Learn more about Earn →"
+        }
       },
-      "multiply": {
-        "tabLabel": "Multiply on Oasis",
-        "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
-        "tabParaLinkContent": "See all Multiply collateral types →"
-      },
-      "earn": {
-        "tabLabel": "Earn on Oasis",
-        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
-        "tabParaLinkContent": "Learn more about Earn →"
+      "ajna": {
+        "borrow": {
+          "tabLabel": "Borrow on Ajna",
+          "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
+          "tabParaLinkContent": "See all Borrow collateral types →"
+        },
+        "multiply": {
+          "tabLabel": "Multiply your exposure on Ajna",
+          "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
+          "tabParaLinkContent": "See all Multiply collateral types →"
+        },
+        "earn": {
+          "tabLabel": "Earn a yield with Ajna",
+          "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
+          "tabParaLinkContent": "Learn more about Earn →"
+        }
+      }
+    },
+    "benefits": {
+      "ajna": {
+        "header": "Benefits of Ajna protocol",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin mollis fringilla. Nunc bibendum ultricies mi. Donec vitae elementum turpis.",
+        "card-header-1": "Borrow and lend against your entire crypto portfolio",
+        "card-header-2": "Immutable and governance free system",
+        "card-header-3": "Competitive, market-driven parameters"
       }
     },
     "info-cards": {
@@ -783,6 +811,10 @@
     "discover": {
       "title": "Discover Oasis.app",
       "description": "Discover and find the most interesting Vaults on Oasis.app. See in real-time and follow you favorites."
+    },
+    "ajna": {
+      "title": "Oasis.app × Ajna",
+      "description": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -887,6 +919,12 @@
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "pnl-value": "PnL: {{value}}",
+    "manage-token": "Manage {{token}}",
+    "manage-collateral-token": "Manage collateral ({{token}})",
+    "manage-debt-token": "Manage debt ({{token}})",
+    "manage-collateral": "Manage collateral",
+    "manage-debt": "Manage debt",
+    "close-position": "Close position",
     "actions": {
       "common": {
         "close-vault": "Close vault",
@@ -901,7 +939,12 @@
         "adjust": "Adjust",
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
-        "switch-to-borrow": "Switch to Borrow"
+        "withdraw": "Withdraw",
+        "switch-to-borrow": "Switch to Borrow",
+        "deposit-collateral": "Deposit collateral",
+        "withdraw-collateral": "Withdraw collateral",
+        "payback-debt": "Payback debt",
+        "borrow-debt": "Borrow debt"
       },
       "earn": {
         "vault-overview": "Vault overview"
@@ -993,6 +1036,8 @@
     "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collateralization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
     "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
     "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
+    "payback-amount-exceeds": "You cannot payback more than {{maxPaybackAmount}} {{token}}",
+    "borrow-amount-exceeds-max": "You cannot borrow more than {{maxBorrowAmount}} {{token}}",
     "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
     "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
@@ -1231,8 +1276,8 @@
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
       "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "edit-multiply-dai": "This vault can be created by simply <1>depositing DAI</1>. The transaction will create the {{token}} position for you based on this DAI deposit.",
-      "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once. Read more in the <1><2>Knowledge Base</2></1>",
-      "proxy-start": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once. Read more in the <1>Knowledge Base</1>.",
+      "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. Read more in the <1><2>Knowledge Base</2></1>",
+      "proxy-start": "With your smart proxy multiple actions can be performed in one transaction for your Vault. Read more in the <1>Knowledge Base</1>.",
       "proxy-success": "Your smart Proxy has been successfully set up. Read more in the <1>Knowledge Base →</1>",
       "proxy-progress": "Read more on smart proxy in the <1>Knowledge Base</1>.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
@@ -1419,6 +1464,14 @@
       "stETHusdc": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
+      },
+      "ethusdc": {
+        "title": "Highest ETH multiple option",
+        "description": "Maximise your ETH exposure with Aave and USDC."
+      },
+      "wBTCusdc": {
+        "title": "Highest WBTC multiple option",
+        "description": "Maximise your WBTC exposure with Aave and USDC."
       }
     },
     "tags": {
@@ -1438,8 +1491,7 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "stETHeth": "Get up to {{value}} ETH exposure to stETH",
-      "stETHusdc": "Get up to {{value}} ETH exposure"
+      "stETHeth": "Get up to {{value}} ETH exposure to stETH"
     }
   },
   "product-card-title": {
@@ -1944,11 +1996,12 @@
         "deposit": "Deposit ETH",
         "title": "Your Earn position",
         "close-title": "Close position to ETH",
+        "close-to-title": "Close position to {{token}}",
         "close": "Close vault",
         "confirm-btn": "Confirm",
         "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
         "stop-close": "Not right now",
-        "eth-after-closing": "ETH after closing",
+        "token-amount-after-closing": "{{token}} after closing",
         "retry-btn": "Retry",
         "adjust-title": "Confirm adjustment",
         "adjust-description": "You are about to adjust the risk level of your vault. Please confirm the changes below.",
@@ -1990,6 +2043,19 @@
       }
     }
   },
+  "open-multiply": {
+    "sidebar": {
+      "title": "Open Multiply position",
+      "open-btn": "Open Multiply position"
+    }
+  },
+  "sidebar-titles": {
+    "open-earn-position": "Open Earn position",
+    "manage-earn-position": "Manage Earn position",
+    "open-multiply-position": "Open Multiply position",
+    "manage-multiply-position": "Manage Multiply position"
+  },
+  "manage-position": "Manage position",
   "brand-assets": {
     "heading": "Brand Assets",
     "intro": "Find here the Oasis.app Logo and graphics.",
@@ -2086,6 +2152,33 @@
     "errors": {
       "amountBiggerThanBalance": "You cannot deposit more Dai than the amount in your wallet",
       "amountBiggerThanDeposit": "You cannot withdraw more than {{totalValue}} DAI"
+    }
+  },
+  "ajna": {
+    "title": "Anja Website",
+    "navigation": {
+      "common": {
+        "other-assets": "Other assets you can borrow against"
+      }
+    },
+    "other-assets": "Other assets you can borrow against",
+    "landing-banner": {
+      "title": "Get Ajna token when you use Ajna protocol",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sollicitudin mollis fringilla. Nunc bibendum ultricies mi. Donec vitae elementum turpis.",
+      "linkLabel": "Visit Anja website ->"
+    },
+    "learn": {
+      "ajna-website": "Ajna website",
+      "anja-faq": "Ajna FAQ",
+      "ajna-discord": "Anja Discord",
+      "ajna-twitter": "Ajna Twitter",
+      "oasis-discord": "Oasis.app Discord",
+      "oasis-twitter": "Oasis.app Twitter"
+    },
+    "product-cards": {
+      "borrow-against-your": "Borrow against your {{token}}",
+      "collaterals-you-can-borrow": "Collaterals you can borrow",
+      "annual-variable-rates": "Annual variable rates"
     }
   }
 }

@@ -8,10 +8,7 @@ import { Box, Grid, Text } from 'theme-ui'
 import { VaultDetailsCardCollateralLocked } from '../detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollaterlizationRatioModal } from '../detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from '../detailsCards/VaultDetailsCardCurrentPrice'
-import { VaultDetailsCardDynamicStopPrice } from '../detailsCards/VaultDetailsCardDynamicStopPrice'
 import { VaultDetailsCardLiquidationPrice } from '../detailsCards/VaultDetailsCardLiquidationPrice'
-import { VaultDetailsCardMaxTokenOnStopLossTrigger } from '../detailsCards/VaultDetailsCardMaxTokenOnStopLossTrigger'
-import { VaultDetailsCardStopLossCollRatio } from '../detailsCards/VaultDetailsCardStopLossCollRatio'
 import { VaultDetailsCard } from '../VaultDetails'
 
 const MaxWidthWrapper = ({ children }: { children: ReactNode }) => (
@@ -27,64 +24,11 @@ interface CardsControl {
 export const AllCards = (props: CardsControl) => {
   return (
     <Grid columns={2}>
-      <StopLossCollRatioCard {...props} />
-      <DynamicStopPrice {...props} />
-      <MaxTokenOnStopLossTrigger {...props} />
       <CurrentPrice {...props} />
       <LiquidationPrice {...props} />
       <CollaterizationRatio {...props} />
       <CollateralLocked {...props} />
     </Grid>
-  )
-}
-
-export const StopLossCollRatioCard = ({ hasAfter, isProtected }: CardsControl) => {
-  return (
-    <MaxWidthWrapper>
-      <VaultDetailsCardStopLossCollRatio
-        slRatio={new BigNumber(160)}
-        afterSlRatio={new BigNumber(180)}
-        collateralizationRatioAtNextPrice={new BigNumber(200)}
-        showAfterPill={hasAfter}
-        isProtected={isProtected}
-      />
-    </MaxWidthWrapper>
-  )
-}
-
-export const DynamicStopPrice = ({ hasAfter, isProtected }: CardsControl) => {
-  return (
-    <MaxWidthWrapper>
-      <VaultDetailsCardDynamicStopPrice
-        slRatio={new BigNumber(1.6)}
-        afterSlRatio={new BigNumber(1.7)}
-        liquidationPrice={new BigNumber(900)}
-        liquidationRatio={new BigNumber(1.5)}
-        showAfterPill={hasAfter}
-        isProtected={isProtected}
-      />
-    </MaxWidthWrapper>
-  )
-}
-
-export const MaxTokenOnStopLossTrigger = ({ hasAfter, isProtected }: CardsControl) => {
-  return (
-    <MaxWidthWrapper>
-      <VaultDetailsCardMaxTokenOnStopLossTrigger
-        slRatio={new BigNumber(1.6)}
-        afterSlRatio={new BigNumber(1.7)}
-        liquidationPrice={new BigNumber(2000)}
-        liquidationPenalty={new BigNumber(0.1)}
-        isProtected={isProtected}
-        debt={new BigNumber(12000)}
-        lockedCollateral={new BigNumber(20)}
-        liquidationRatio={new BigNumber(1.3)}
-        token="ETH"
-        showAfterPill={hasAfter}
-        isCollateralActive={true}
-        tokenPrice={new BigNumber(2000)}
-      />
-    </MaxWidthWrapper>
   )
 }
 

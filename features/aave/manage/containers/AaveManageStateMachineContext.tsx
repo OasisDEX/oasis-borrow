@@ -2,9 +2,15 @@ import { useInterpret } from '@xstate/react'
 import { env } from 'process'
 import React from 'react'
 
-import { ProxyType, StrategyConfig } from '../../common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { PositionId } from '../../types'
 import { ManageAaveStateMachine } from '../state'
+
+export const defaultManageTokenInputValues = {
+  // defaults for the manage collateral/debt are set here
+  manageTokenAction: undefined,
+  manageTokenActionValue: undefined, // just to provide any value when debugging
+}
 
 function setupManageAaveStateContext({
   machine,
@@ -12,7 +18,7 @@ function setupManageAaveStateContext({
   positionId,
 }: {
   machine: ManageAaveStateMachine
-  strategy: StrategyConfig
+  strategy: IStrategyConfig
   positionId: PositionId
 }) {
   const positionCreatedBy =
@@ -25,6 +31,7 @@ function setupManageAaveStateContext({
       totalSteps: 3,
       strategyConfig: strategy,
       userInput: {},
+      manageTokenInput: defaultManageTokenInputValues,
       positionCreatedBy: positionCreatedBy,
       positionId: positionId,
     }),
@@ -56,7 +63,7 @@ export function ManageAaveStateMachineContextProvider({
   positionId,
 }: React.PropsWithChildren<{
   machine: ManageAaveStateMachine
-  strategy: StrategyConfig
+  strategy: IStrategyConfig
   positionId: PositionId
 }>) {
   const context = setupManageAaveStateContext({ machine, strategy, positionId })

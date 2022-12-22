@@ -48,9 +48,13 @@ const styles = {
     },
   },
   largeSelected: {
-    color: 'primary100',
-    bg: 'neutral10',
+    bg: 'primary100',
+    color: 'neutral10',
     boxShadow: '0px 1px 6px rgba(37, 39, 61, 0.15)',
+    '&:hover': {
+      bg: 'primary60',
+      color: 'neutral10',
+    },
   },
   medium: {
     fontSize: 3,

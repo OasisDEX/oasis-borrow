@@ -19,23 +19,13 @@ type ProductCardMultiplyAaveProps = {
 
 const aaveMultiplyCalcValueBasis = {
   amount: new BigNumber(100),
-  token: 'ETH',
 }
 
 export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAaveProps) {
   const { t } = useTranslation()
-  const {
-    aaveAvailableLiquidityInUSDC$,
-    wrappedGetAaveReserveData$,
-    aaveReserveConfigurationData$,
-  } = useAaveContext()
+  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext()
   const [strategy] = getAaveStrategy(cardData.symbol)
-  const [aaveAvailableLiquidityInUSDC] = useObservable(
-    aaveAvailableLiquidityInUSDC$({ token: strategy.tokens.collateral }),
-  )
-  const [collateralReserveData] = useObservable(
-    wrappedGetAaveReserveData$(strategy.tokens.collateral),
-  )
+  const [debtReserveData] = useObservable(wrappedGetAaveReserveData$(strategy.tokens.debt))
   const [collateralReserveConfigurationData] = useObservable(
     aaveReserveConfigurationData$({ token: strategy.tokens.collateral }),
   )
@@ -53,13 +43,13 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
       banner={{
         title: t('product-card-banner.with', {
           value: aaveMultiplyCalcValueBasis.amount.toString(),
-          token: aaveMultiplyCalcValueBasis.token,
+          token: strategy.tokens.deposit,
         }),
-        description: t(`product-card-banner.aave.${cardData.symbol}`, {
+        description: t(`product-card-banner.multiply`, {
           value: maximumMultiple
             ? maximumMultiple.multiple.times(aaveMultiplyCalcValueBasis.amount).toFormat(0)
             : zero.toString(),
-          token: cardData.symbol,
+          token: strategy.tokens.deposit,
         }),
         isLoading: !maximumMultiple,
       }}
@@ -74,16 +64,16 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
         },
         {
           title: t('system.liquidity-available'),
-          value: aaveAvailableLiquidityInUSDC ? (
-            formatHugeNumbersToShortHuman(aaveAvailableLiquidityInUSDC)
+          value: debtReserveData ? (
+            formatHugeNumbersToShortHuman(debtReserveData.availableLiquidity)
           ) : (
             <AppSpinner />
           ),
         },
         {
           title: t('system.variable-annual-fee'),
-          value: collateralReserveData?.variableBorrowRate ? (
-            formatPercent(collateralReserveData.variableBorrowRate.times(100), {
+          value: debtReserveData?.variableBorrowRate ? (
+            formatPercent(debtReserveData.variableBorrowRate.times(100), {
               precision: 2,
             })
           ) : (

@@ -89,7 +89,7 @@ export type MultiplyPositionVM = {
   automationEnabled: boolean
   protectionAmount?: string
   collateralLocked?: string
-  automationLinkProps: AppLinkProps
+  automationLinkProps?: AppLinkProps
 } & PositionCommonProps
 
 export type EarnPositionVM = {
@@ -113,7 +113,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
   const { automationLinkProps } = position
   const emptyVaultAndProtectionActive = checkIfVaultEmptyAndProtectionActive(position)
 
-  if (position.automationEnabled) {
+  if (position.automationEnabled && automationLinkProps) {
     return (
       <AppLink {...automationLinkProps}>
         <Button
@@ -130,7 +130,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
         </Button>
       </AppLink>
     )
-  } else if (position.isOwnerView) {
+  } else if (position.isOwnerView && automationLinkProps) {
     return (
       <AppLink {...automationLinkProps}>
         <Button variant="action" sx={{ px: '24px', py: '11px' }}>

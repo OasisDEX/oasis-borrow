@@ -1,6 +1,8 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { keyBy } from 'lodash'
+import { findKey, keyBy } from 'lodash'
 import type { ElementOf } from 'ts-essentials'
+
+import { Context } from './network'
 
 export interface TokenConfig {
   symbol: string
@@ -810,6 +812,15 @@ export function getTokens(tokenSymbol: TokenSymbolType[]): typeof tokens {
     return tokenSymbol.map(getToken)
   }
   throw new Error(`tokenSymbol should be an array, got ${tokenSymbol}`)
+}
+
+export function getTokenSymbolFromAddress(context: Context, tokenAddress: string) {
+  const token = findKey(context.tokens, (contractDesc) => contractDesc.address === tokenAddress)
+  if (!token) {
+    throw new Error(`could not find token for address ${tokenAddress}`)
+  }
+
+  return token
 }
 
 export const ALLOWED_MULTIPLY_TOKENS = tokens

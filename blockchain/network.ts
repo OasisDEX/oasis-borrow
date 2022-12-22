@@ -41,7 +41,7 @@ interface WithWeb3ProviderGetPastLogs {
 export type ContextConnectedReadOnly = NetworkConfig &
   Web3ContextConnectedReadonly &
   WithContractMethod &
-  WithWeb3ProviderGetPastLogs
+  WithWeb3ProviderGetPastLogs & { account: undefined }
 
 export type ContextConnected = NetworkConfig &
   Web3ContextConnected &

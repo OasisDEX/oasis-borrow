@@ -190,6 +190,7 @@ export function getDataForStopLoss(
         sliderMax,
         sliderMin,
         triggerMaxToken: zero,
+        dynamicStopLossPrice: zero,
       },
     }
   }

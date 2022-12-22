@@ -8,9 +8,7 @@ import { Sender, StateFrom } from 'xstate'
 
 import { MessageCard } from '../../../../components/MessageCard'
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
-import { getCustomNetworkParameter } from '../../../../helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { useRedirect } from '../../../../helpers/useRedirect'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
@@ -41,7 +39,7 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
@@ -63,7 +61,7 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
       <Grid gap={3}>
         <StrategyInformationContainer state={state} />
@@ -93,7 +91,7 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
       <Grid gap={3}>
         <StrategyInformationContainer state={state} />
@@ -138,7 +136,7 @@ function EditingStateViewSidebarPrimaryButton({
   const label = hasProxy
     ? allowanceNeeded
       ? t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
-      : t('open-earn.aave.vault-form.open-btn')
+      : t(state.context.strategyConfig.viewComponents.sidebarButton)
     : t('create-proxy-btn')
 
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
@@ -153,21 +151,12 @@ function EditingStateViewSidebarPrimaryButton({
 
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const router = useRedirect()
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
 
-  if (
-    state.context.strategyConfig.proxyType === ProxyType.DsProxy &&
-    state.context.hasOpenedPosition &&
-    state.context.positionRelativeAddress !== undefined
-  ) {
-    void router.replace(state.context.positionRelativeAddress, getCustomNetworkParameter()) // redirects to active position if user has one
-  }
-
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
       <Grid gap={3}>
         <SidebarOpenAaveVaultEditingState state={state} send={send} />
@@ -246,6 +235,11 @@ export function SidebarOpenAaveVault() {
     case state.matches('frontend.settingMultiple'):
       return (
         <AdjustRiskView
+          title={
+            state.context.strategyConfig.type === 'Earn'
+              ? t('sidebar-titles.open-earn-position')
+              : t('sidebar-titles.open-multiply-position')
+          }
           state={state}
           send={send}
           isLoading={loading}
@@ -253,7 +247,7 @@ export function SidebarOpenAaveVault() {
             steps: [state.context.currentStep, state.context.totalSteps],
             isLoading: isLoading(state),
             disabled: !state.can('NEXT_STEP'),
-            label: t('open-earn.aave.vault-form.open-btn'),
+            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
             action: () => send('NEXT_STEP'),
           }}
           textButton={{

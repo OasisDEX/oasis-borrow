@@ -3,7 +3,11 @@ import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationE
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
-import { AdjustAaveParameters, CloseAaveParameters } from '../../oasisActionsLibWrapper'
+import {
+  AdjustAaveParameters,
+  CloseAaveParameters,
+  ManageAaveParameters,
+} from '../../oasisActionsLibWrapper'
 import {
   createManageAaveStateMachine,
   ManageAaveStateMachine,
@@ -19,12 +23,14 @@ export function getManageAaveStateMachine(
     transactionParameters: OperationExecutorTxMeta,
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
+  depositBorrowAaveMachine: TransactionParametersStateMachine<ManageAaveParameters>,
 ): ManageAaveStateMachine {
   return createManageAaveStateMachine(
     closeParametersMachine,
     adjustParametersMachine,
     allowanceMachine,
     transactionStateMachine,
+    depositBorrowAaveMachine,
   ).withConfig({
     services: {
       ...services,

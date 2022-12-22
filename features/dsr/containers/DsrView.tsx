@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { TabBar } from 'components/TabBar'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
@@ -6,11 +7,10 @@ import { DsrFaq } from 'features/content/faqs/dsr'
 import { DsrHistory } from 'features/dsr/containers/DsrHistory'
 import { selectPrimaryAction } from 'features/dsr/utils/helpers'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { Loadable } from 'helpers/loadable'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import { useMemo } from 'react'
 import React from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 
@@ -25,6 +25,8 @@ interface DsrViewProps {
   dsrDepositState: DsrDepositState
   walletAddress: string
   context: Context
+  potTotalValueLocked?: BigNumber
+  apy: BigNumber
 }
 
 const isLoadingCollection = [
@@ -38,19 +40,17 @@ const isLoadingCollection = [
   'withdrawWaiting4Approval',
 ]
 
-export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }: DsrViewProps) {
+export function DsrView({
+  dsrDepositState,
+  dsrOverview,
+  walletAddress,
+  context,
+  potTotalValueLocked,
+  apy,
+}: DsrViewProps) {
   const { t } = useTranslation()
   const isLoading = isLoadingCollection.includes(dsrDepositState.stage)
 
-  const apy = dsrOverview.value?.apy.div(100) || zero
-
-  const currentApy = useMemo(() => {
-    return formatPercent(apy, { precision: 2 })
-  }, [dsrOverview])
-
-  console.log('dsrOverview', dsrOverview)
-  console.log('dsr', dsrDepositState)
-  // console.log('walletAddress', walletAddress)
   const account = context.status === 'connected' ? context.account : undefined
   const isOwner = walletAddress === account
   const earnings =
@@ -70,16 +70,12 @@ export function DsrView({ dsrDepositState, dsrOverview, walletAddress, context }
         details={[
           {
             label: t('dsr.details.current-yield'),
-            value: currentApy,
+            value: formatPercent(apy, { precision: 2 }),
           },
-          ...(netValue?.gt(zero)
-            ? [
-                {
-                  label: t('earn-vault.headlines.total-value-locked'),
-                  value: `$${formatAmount(netValue, 'USD')}`,
-                },
-              ]
-            : []),
+          {
+            label: t('earn-vault.headlines.total-value-locked'),
+            value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
+          },
         ]}
       />
       <TabBar

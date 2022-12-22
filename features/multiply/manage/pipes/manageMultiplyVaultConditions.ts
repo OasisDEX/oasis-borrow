@@ -1,7 +1,6 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { isNullish } from 'helpers/functions'
-import { STOP_LOSS_MARGIN } from 'helpers/multiply/calculations'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
@@ -320,7 +319,6 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
 export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(state: VS): VS {
   const {
-    collateralizationRatioAtNextPrice,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
     afterDebt,
@@ -594,18 +592,15 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
   const afterCollRatioBelowStopLossRatio =
     !!stopLossData?.isStopLossEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: stopLossData.stopLossLevel,
       type: 'below',
-      margin: STOP_LOSS_MARGIN,
     })
 
   const afterCollRatioBelowAutoSellRatio =
     !!autoSellData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: autoSellData.execCollRatio.div(100),
@@ -615,7 +610,6 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
   const afterCollRatioAboveAutoBuyRatio =
     !!autoBuyData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: autoBuyData.execCollRatio.div(100),
@@ -625,7 +619,6 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
   const afterCollRatioBelowConstantMultipleSellRatio =
     !!constantMultipleData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: constantMultipleData.sellExecutionCollRatio.div(100),
@@ -635,7 +628,6 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
   const afterCollRatioAboveConstantMultipleBuyRatio =
     !!constantMultipleData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: constantMultipleData.buyExecutionCollRatio.div(100),

@@ -4,7 +4,7 @@ import {
   AaveUserAccountDataParameters,
 } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
@@ -21,7 +21,11 @@ import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../../userSettings/userSettings'
-import { IStrategyInfo } from '../../common/BaseAaveContext'
+import {
+  IStrategyInfo,
+  StrategyTokenAllowance,
+  StrategyTokenBalance,
+} from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
@@ -45,7 +49,7 @@ export function getOpenAavePositionStateMachineServices(
     proxyAddress: string,
   ) => Observable<AaveProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
-  userDmpProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
+  userDpmProxy$: Observable<UserDpmProxy | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
@@ -60,12 +64,17 @@ export function getOpenAavePositionStateMachineServices(
     },
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
-        map((balances) => balances[context.tokens.deposit]),
-        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
-        map(({ balance, price }) => ({
+        map((balances) => {
+          const strategyBalance: StrategyTokenBalance = {
+            collateral: balances[context.tokens.collateral],
+            debt: balances[context.tokens.debt],
+            deposit: balances[context.tokens.deposit],
+          }
+          return strategyBalance
+        }),
+        map((balance) => ({
           type: 'SET_BALANCE',
-          tokenBalance: balance,
-          tokenPrice: price,
+          balance: balance,
         })),
         distinctUntilChanged(isEqual),
       )
@@ -100,7 +109,7 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     prices$: (context) => {
-      return pricesFeed$(context.tokens.collateral)
+      return pricesFeed$(context.tokens.collateral, context.tokens.debt)
     },
     strategyInfo$: (context) => {
       return strategyInfo$(context.tokens.collateral).pipe(
@@ -124,29 +133,35 @@ export function getOpenAavePositionStateMachineServices(
       )
     },
     allowance$: (context) => {
-      return connectedProxy$.pipe(
+      return iif(
+        () => context.strategyConfig.proxyType === ProxyType.DpmProxy,
+        userDpmProxy$.pipe(map((userDpmProxy) => userDpmProxy?.proxy)),
+        connectedProxy$,
+      ).pipe(
         filter(allDefined),
-        switchMap((proxyAddress) => tokenAllowance$(context.tokens.deposit, proxyAddress!)),
+        switchMap((proxyAddress) => {
+          return combineLatest([
+            tokenAllowance$(context.tokens.deposit, proxyAddress!),
+            tokenAllowance$(context.tokens.collateral, proxyAddress!),
+            tokenAllowance$(context.tokens.debt, proxyAddress!),
+          ])
+        }),
+        map(
+          ([deposit, collateral, debt]): StrategyTokenAllowance => ({
+            collateral,
+            debt,
+            deposit,
+          }),
+        ),
         map((allowance) => ({
           type: 'UPDATE_ALLOWANCE',
-          tokenAllowance: allowance,
+          allowance: allowance,
         })),
         distinctUntilChanged(isEqual),
       )
     },
     dpmProxy$: (_) => {
-      return context$.pipe(
-        switchMap((context) => userDmpProxies$(context.account)),
-        switchMap((proxies) =>
-          combineLatest(
-            proxies.map((proxy) =>
-              hasProxyAddressActiveAavePosition$(proxy.proxy).pipe(
-                map((hasOpenedPosition) => ({ ...proxy, hasOpenedPosition })),
-              ),
-            ),
-          ),
-        ),
-        map((proxies) => proxies.find((proxy) => !proxy.hasOpenedPosition)),
+      return userDpmProxy$.pipe(
         filter((proxy) => proxy !== undefined),
         map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })),
         distinctUntilChanged(isEqual),
