@@ -39,7 +39,11 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
       collateralPrice={state.context.collateralPrice}
       tokenPrice={state.context.tokenPrice}
       debtPrice={state.context.debtPrice}
-      nextPosition={state.context.strategy?.simulation.position}
+      nextPosition={
+        state.matches('frontend.reviewing')
+          ? state.context.strategy?.simulation.position
+          : undefined
+      }
     />
   )
 }
