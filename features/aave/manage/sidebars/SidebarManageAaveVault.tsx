@@ -342,7 +342,7 @@ function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps
     ),
     primaryButton: {
       label: t('manage-earn.aave.vault-form.position-adjusted-btn'),
-      url: `/${state.context.strategyConfig.type.toLocaleLowerCase()}/aave/open/${state.context.strategyConfig.urlSlug.toLocaleLowerCase()}`,
+      url: `/${state.context.strategyConfig.type.toLocaleLowerCase()}/aave/open/${state.context.strategyConfig.urlSlug}`,
     },
   }
 
