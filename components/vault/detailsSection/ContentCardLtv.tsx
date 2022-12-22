@@ -1,8 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
+import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { theme } from 'theme'
+
+const { colors } = theme
 
 const getLTVRatioColor = (ratio: BigNumber) => {
   const critical = new BigNumber(5)
@@ -10,11 +13,11 @@ const getLTVRatioColor = (ratio: BigNumber) => {
 
   switch (true) {
     case ratio.isLessThanOrEqualTo(critical):
-      return 'critical10'
+      return colors.critical10
     case ratio.isLessThanOrEqualTo(warning):
-      return 'warning10'
+      return colors.warning10
     default:
-      return 'success10'
+      return colors.success10
   }
 }
 
@@ -31,24 +34,29 @@ export function ContentCardLtv({
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
 
-  return (
-    <DetailsSectionContentCard
-      title={t('system.loan-to-value')}
-      value={formatDecimalAsPercent(loanToValue)}
-      change={
-        afterLoanToValue && {
-          variant: afterLoanToValue.lt(loanToValue) ? 'negative' : 'positive',
-          value: `${formatDecimalAsPercent(afterLoanToValue)} ${t('after')}`,
-        }
-      }
-      footnote={`${t('manage-earn-vault.liquidation-threshold', {
-        percentage: formatDecimalAsPercent(liquidationThreshold),
-      })}`}
-      customBackground={
-        !afterLoanToValue
-          ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
-          : 'transparent'
-      }
-    />
-  )
+  const formatted = {
+    loanToValue: formatDecimalAsPercent(loanToValue),
+    afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
+    liquidationThreshold: liquidationThreshold,
+  }
+
+  const contentCardSettings: ContentCardProps = {
+    title: t('system.loan-to-value'),
+    value: formatted.loanToValue,
+    footnote: `${t('manage-earn-vault.liquidation-threshold', {
+      percentage: formatted.liquidationThreshold,
+    })}`,
+    customBackground: !afterLoanToValue
+      ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
+      : 'transparent',
+  }
+
+  if (afterLoanToValue) {
+    contentCardSettings.change = {
+      variant: afterLoanToValue.lt(loanToValue) ? 'negative' : 'positive',
+      value: `${formatted.afterLoanToValue} ${t('after')}`,
+    }
+  }
+
+  return <DetailsSectionContentCard {...contentCardSettings} />
 }
