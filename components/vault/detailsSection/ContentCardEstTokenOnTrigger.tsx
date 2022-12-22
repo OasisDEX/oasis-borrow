@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { getDynamicStopLossPrice } from 'features/automation/protection/stopLoss/helpers'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -17,14 +16,13 @@ interface ContentCardEstTokenOnTriggerProps {
   isEditing: boolean
   token: string
   debtToken: string
-  stopLossLevel: BigNumber
-  liquidationPrice: BigNumber
-  liquidationRatio: BigNumber
   liquidationPenalty: BigNumber
   afterStopLossLevel: BigNumber
   triggerMaxToken: BigNumber
   collateralDuringLiquidation: BigNumber
   afterMaxToken: BigNumber
+  dynamicStopLossPrice: BigNumber
+  afterDynamicStopLossPrice: BigNumber
 }
 
 function ContentCardEstTokenOnTriggerModal({
@@ -54,28 +52,15 @@ export function ContentCardEstTokenOnTrigger({
   isEditing,
   token,
   debtToken,
-  stopLossLevel,
-  liquidationPrice,
   liquidationPenalty,
-  liquidationRatio,
   afterStopLossLevel,
   triggerMaxToken,
   afterMaxToken,
   collateralDuringLiquidation,
+  dynamicStopLossPrice,
+  afterDynamicStopLossPrice,
 }: ContentCardEstTokenOnTriggerProps) {
   const { t } = useTranslation()
-
-  const dynamicStopLossPrice = getDynamicStopLossPrice({
-    liquidationPrice,
-    liquidationRatio,
-    stopLossLevel: stopLossLevel.times(100),
-  })
-
-  const afterDynamicStopLossPrice = getDynamicStopLossPrice({
-    liquidationPrice,
-    liquidationRatio,
-    stopLossLevel: afterStopLossLevel,
-  })
 
   const savingCompareToLiquidation = triggerMaxToken.minus(collateralDuringLiquidation)
   const symbol = isCollateralActive ? token : debtToken
