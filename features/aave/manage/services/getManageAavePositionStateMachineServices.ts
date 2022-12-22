@@ -9,7 +9,11 @@ import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
 import { UserSettingsState } from '../../../userSettings/userSettings'
-import { IStrategyInfo, StrategyTokenAllowance } from '../../common/BaseAaveContext'
+import {
+  IStrategyInfo,
+  StrategyTokenAllowance,
+  StrategyTokenBalance,
+} from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxiesRelatedWithPosition } from '../../helpers/getProxiesRelatedWithPosition'
 import { PositionId } from '../../types'
@@ -44,12 +48,17 @@ export function getManageAavePositionStateMachineServices(
     },
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
-        map((balances) => balances[context.tokens.deposit]),
-        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
-        map(({ balance, price }) => ({
+        map((balances) => {
+          const strategyBalance: StrategyTokenBalance = {
+            collateral: balances[context.tokens.collateral],
+            debt: balances[context.tokens.debt],
+            deposit: balances[context.tokens.deposit],
+          }
+          return strategyBalance
+        }),
+        map((balance) => ({
           type: 'SET_BALANCE',
-          tokenBalance: balance,
-          tokenPrice: price,
+          balance: balance,
         })),
       )
     },

@@ -25,7 +25,7 @@ import { AllowanceView } from '../../../stateMachines/allowance'
 import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveEvent, ManageAaveStateMachineState } from '../state'
+import { ManageAaveContext, ManageAaveEvent, ManageAaveStateMachineState } from '../state'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
@@ -108,6 +108,28 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
   return <SidebarSection {...sidebarSectionProps} />
 }
 
+function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
+  if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
+    return amountFromWei(
+      context.currentPosition?.debt.amount || zero,
+      context.currentPosition?.debt.symbol || '',
+    )
+  }
+  return context.balance?.debt.balance || zero
+}
+
+function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
+  if (
+    context.manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
+  ) {
+    return amountFromWei(
+      context.currentPosition?.collateral.amount || zero,
+      context.currentPosition?.collateral.symbol || '',
+    )
+  }
+  return context.balance?.collateral.balance || zero
+}
+
 function GetReviewingSidebarProps({
   state,
   send,
@@ -150,6 +172,7 @@ function GetReviewingSidebarProps({
         ),
       }
     case state.matches('frontend.manageCollateral'):
+      const maxCollateralAmount = calculateMaxCollateralAmount(state.context)
       return {
         title: t('system.manage-collateral'),
         content: (
@@ -168,8 +191,9 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={collateral}
-              maxAmountLabel={'Balance'}
-              maxAmount={state.context.currentPosition?.collateral.amount}
+              maxAmountLabel={t('balance')}
+              maxAmount={maxCollateralAmount}
+              showMax={true}
               amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
@@ -179,6 +203,7 @@ function GetReviewingSidebarProps({
         ),
       }
     case state.matches('frontend.manageDebt'):
+      const maxDebtAmount = calculateMaxDebtAmount(state.context)
       return {
         title: t('system.manage-debt'),
         content: (
@@ -197,7 +222,9 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={debt}
-              maxAmountLabel={'Balance'}
+              maxAmountLabel={t('balance')}
+              maxAmount={maxDebtAmount}
+              showMax={true}
               amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
@@ -264,6 +291,10 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
       disabled: false,
       label: t('manage-earn.aave.vault-form.retry-btn'),
       action: () => send({ type: 'RETRY' }),
+    },
+    textButton: {
+      label: t('manage-earn.aave.vault-form.back-to-editing'),
+      action: () => send('BACK_TO_EDITING'),
     },
   }
 

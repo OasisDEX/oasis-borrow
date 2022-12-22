@@ -10,14 +10,14 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
+import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
+import { NaNIsZero } from 'helpers/nanIsZero'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { NaNIsZero } from '../../../../helpers/nanIsZero'
-import { zero } from '../../../../helpers/zero'
 
 type AaveMultiplyPositionDataProps = {
   currentPosition: IPosition
@@ -26,20 +26,6 @@ type AaveMultiplyPositionDataProps = {
   debtTokenPrice: BigNumber
   collateralTokenReserveData: PreparedAaveReserveData
   debtTokenReserveData: PreparedAaveReserveData
-}
-
-const getLTVRatioColor = (ratio: BigNumber) => {
-  const critical = new BigNumber(5)
-  const warning = new BigNumber(20)
-
-  switch (true) {
-    case ratio.isLessThanOrEqualTo(critical):
-      return 'critical10'
-    case ratio.isLessThanOrEqualTo(warning):
-      return 'warning10'
-    default:
-      return 'success10'
-  }
 }
 
 function calcViewValuesForPosition(
@@ -141,33 +127,10 @@ export function AaveMultiplyPositionData({
               ),
             })}`}
           />
-          <DetailsSectionContentCard
-            title={t('system.loan-to-value')}
-            value={formatDecimalAsPercent(currentPosition.riskRatio.loanToValue)}
-            change={
-              nextPosition && {
-                variant: nextPosition.riskRatio.loanToValue.lt(
-                  currentPosition.riskRatio.loanToValue,
-                )
-                  ? 'negative'
-                  : 'positive',
-                value: `${formatDecimalAsPercent(nextPosition.riskRatio.loanToValue)} ${t(
-                  'after',
-                )}`,
-              }
-            }
-            footnote={`${t('manage-earn-vault.liquidation-threshold', {
-              percentage: formatDecimalAsPercent(currentPosition.category.liquidationThreshold),
-            })}`}
-            customBackground={
-              !nextPosition?.riskRatio
-                ? getLTVRatioColor(
-                    currentPosition.category.liquidationThreshold
-                      .minus(currentPosition.riskRatio.loanToValue)
-                      .times(100),
-                  )
-                : 'transparent'
-            }
+          <ContentCardLtv
+            loanToValue={currentPosition.riskRatio.loanToValue}
+            liquidationThreshold={currentPosition.category.liquidationThreshold}
+            afterLoanToValue={nextPosition?.riskRatio.loanToValue}
           />
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}

@@ -1,3 +1,4 @@
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
 import { AaveManageVaultState } from 'features/automation/contexts/AaveAutomationContext'
@@ -18,7 +19,6 @@ export function getAutomationAavePositionData({
     aaveReserveState: { liquidationBonus },
     strategyConfig,
     context: {
-      tokenPrice,
       tokens: { debt: debtToken, collateral: collateralToken },
       protocolData,
     },
@@ -28,29 +28,29 @@ export function getAutomationAavePositionData({
   const {
     position: {
       riskRatio: { loanToValue },
-      category: { maxLoanToValue, dustLimit },
+      category: { dustLimit, liquidationThreshold },
       debt,
       collateral,
     },
   } = protocolData!
 
-  // it is dummy calculation for now, most likely incorrect
-  // will be provided by earn team
-  const liquidationPrice =
-    tokenPrice?.times(debt.amount).div(collateral.amount.times(loanToValue)) || zero
+  const lockedCollateral = amountFromWei(collateral.amount, collateral.precision)
+  const positionDebt = amountFromWei(debt.amount, debt.precision)
+
+  const liquidationPrice = positionDebt.div(lockedCollateral.times(liquidationThreshold)) || zero
 
   return {
     positionRatio: loanToValue.decimalPlaces(4),
     nextPositionRatio: loanToValue.decimalPlaces(4),
-    debt: debt.amount,
+    debt: positionDebt,
     debtFloor: dustLimit,
     debtOffset: zero,
     id: new BigNumber(parseInt(address, 16)),
     ilk: ilkOrToken,
     liquidationPenalty: liquidationBonus.div(10000),
     liquidationPrice,
-    liquidationRatio: maxLoanToValue,
-    lockedCollateral: collateral.amount,
+    liquidationRatio: liquidationThreshold,
+    lockedCollateral,
     owner: address,
     token: collateralToken,
     debtToken: debtToken,

@@ -21,6 +21,7 @@ import {
 } from 'features/automation/metadata/types'
 import {
   getCollateralDuringLiquidation,
+  getDynamicStopLossPrice,
   getMaxToken,
   getSliderPercentageFill,
   getStartingSlRatio,
@@ -89,6 +90,12 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
     liquidationRatio,
     liquidationPrice,
     debt,
+  })
+
+  const dynamicStopLossPrice = getDynamicStopLossPrice({
+    liquidationPrice,
+    liquidationRatio,
+    stopLossLevel: stopLossLevel.times(100),
   })
 
   return {
@@ -183,6 +190,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
       sliderMax,
       sliderMin,
       triggerMaxToken,
+      dynamicStopLossPrice,
     },
   }
 }

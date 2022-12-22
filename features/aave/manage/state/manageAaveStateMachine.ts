@@ -223,8 +223,6 @@ export function createManageAaveStateMachine(
               },
             },
             manageCollateral: {
-              entry: ['spawnDepositBorrowMachine'],
-              exit: ['killCurrentParametersMachine'],
               on: {
                 NEXT_STEP: [
                   {
@@ -248,8 +246,6 @@ export function createManageAaveStateMachine(
               },
             },
             manageDebt: {
-              entry: ['spawnDepositBorrowMachine'],
-              exit: ['killCurrentParametersMachine'],
               on: {
                 NEXT_STEP: [
                   {
@@ -345,6 +341,10 @@ export function createManageAaveStateMachine(
                 RETRY: {
                   target: 'txInProgress',
                 },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                  actions: ['reset'],
+                },
               },
             },
             txSuccess: {
@@ -362,7 +362,7 @@ export function createManageAaveStateMachine(
           actions: 'updateContext',
         },
         SET_BALANCE: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'updateLegacyTokenBalance'],
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress'],
@@ -392,6 +392,8 @@ export function createManageAaveStateMachine(
           cond: 'canChangePosition',
           target: 'frontend.manageCollateral',
           actions: [
+            'killCurrentParametersMachine',
+            'spawnDepositBorrowMachine',
             'resetTokenActionValue',
             'updateCollateralTokenAction',
             'setTransactionTokenToCollateral',
@@ -400,7 +402,13 @@ export function createManageAaveStateMachine(
         MANAGE_DEBT: {
           cond: 'canChangePosition',
           target: 'frontend.manageDebt',
-          actions: ['resetTokenActionValue', 'updateDebtTokenAction', 'setTransactionTokenToDebt'],
+          actions: [
+            'killCurrentParametersMachine',
+            'spawnDepositBorrowMachine',
+            'resetTokenActionValue',
+            'updateDebtTokenAction',
+            'setTransactionTokenToDebt',
+          ],
         },
         UPDATE_COLLATERAL_TOKEN_ACTION: {
           cond: 'canChangePosition',
@@ -530,15 +538,15 @@ export function createManageAaveStateMachine(
             'transactionMachine',
           ),
         })),
-        spawnDepositBorrowMachine: assign((_) => ({
-          refParametersMachine: spawn(depositBorrowAaveMachine, 'transactionParameters'),
-        })),
         killTransactionMachine: pure((context) => {
           if (context.refTransactionMachine && context.refTransactionMachine.stop) {
             context.refTransactionMachine.stop()
           }
           return undefined
         }),
+        spawnDepositBorrowMachine: assign((_) => ({
+          refParametersMachine: spawn(depositBorrowAaveMachine, 'transactionParameters'),
+        })),
         spawnAdjustParametersMachine: assign((_) => ({
           refParametersMachine: spawn(adjustParametersStateMachine, 'transactionParameters'),
         })),
@@ -583,6 +591,12 @@ export function createManageAaveStateMachine(
         setTransactionTokenToCollateral: assign((context) => ({
           transactionToken: context.strategyConfig.tokens.collateral,
         })),
+        updateLegacyTokenBalance: assign((context, event) => {
+          return {
+            tokenBalance: event.balance.deposit.balance,
+            tokenPrice: event.balance.deposit.price,
+          }
+        }),
       },
     },
   )
