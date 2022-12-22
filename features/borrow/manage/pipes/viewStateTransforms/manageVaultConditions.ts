@@ -31,7 +31,6 @@ import {
   withdrawCollateralOnVaultUnderDebtFloorValidator,
 } from 'features/form/commonValidators'
 import { isNullish } from 'helpers/functions'
-import { STOP_LOSS_MARGIN } from 'helpers/multiply/calculations'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
@@ -303,7 +302,6 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     paybackAmount,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
-    collateralizationRatioAtNextPrice,
     ilkData: {
       liquidationRatio,
       collateralizationDangerThreshold,
@@ -524,18 +522,15 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   const afterCollRatioBelowStopLossRatio =
     !!stopLossData?.isStopLossEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: stopLossData.stopLossLevel,
       type: 'below',
-      margin: STOP_LOSS_MARGIN,
     })
 
   const afterCollRatioBelowAutoSellRatio =
     !!autoSellData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: autoSellData.execCollRatio.div(100),
@@ -545,7 +540,6 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   const afterCollRatioAboveAutoBuyRatio =
     !!autoBuyData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: autoBuyData.execCollRatio.div(100),
@@ -555,7 +549,6 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   const afterCollRatioBelowConstantMultipleSellRatio =
     !!constantMultipleData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: constantMultipleData.sellExecutionCollRatio.div(100),
@@ -565,7 +558,6 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   const afterCollRatioAboveConstantMultipleBuyRatio =
     !!constantMultipleData?.isTriggerEnabled &&
     afterCollRatioThresholdRatioValidator({
-      collateralizationRatioAtNextPrice,
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
       threshold: constantMultipleData.buyExecutionCollRatio.div(100),
