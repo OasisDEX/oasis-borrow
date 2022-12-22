@@ -110,7 +110,10 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
 
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
   if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-    return context.currentPosition?.debt.amount || zero
+    return amountFromWei(
+      context.currentPosition?.debt.amount || zero,
+      context.currentPosition?.debt.symbol || '',
+    )
   }
   return context.balance?.debt.balance || zero
 }
@@ -119,7 +122,10 @@ function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
   if (
     context.manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
   ) {
-    return context.currentPosition?.collateral.amount || zero
+    return amountFromWei(
+      context.currentPosition?.collateral.amount || zero,
+      context.currentPosition?.collateral.symbol || '',
+    )
   }
   return context.balance?.collateral.balance || zero
 }
