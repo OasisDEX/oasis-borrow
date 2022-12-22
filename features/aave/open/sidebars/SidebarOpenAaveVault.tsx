@@ -8,9 +8,7 @@ import { Sender, StateFrom } from 'xstate'
 
 import { MessageCard } from '../../../../components/MessageCard'
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
-import { getCustomNetworkParameter } from '../../../../helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { useRedirect } from '../../../../helpers/useRedirect'
 import { zero } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
@@ -153,19 +151,9 @@ function EditingStateViewSidebarPrimaryButton({
 
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const router = useRedirect()
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
-
-  if (
-    state.context.strategyConfig.proxyType === ProxyType.DsProxy &&
-    state.context.hasOpenedPosition &&
-    state.context.positionRelativeAddress !== undefined &&
-    !state.context.positionRelativeAddress.endsWith('undefined')
-  ) {
-    void router.replace(state.context.positionRelativeAddress, getCustomNetworkParameter()) // redirects to active position if user has one
-  }
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
