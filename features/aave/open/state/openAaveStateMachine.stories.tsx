@@ -126,8 +126,11 @@ const Machine = () => {
       <Grid columns={3} gap={10}>
         <OpenAaveButton
           type={'SET_BALANCE'}
-          tokenBalance={new BigNumber(1000)}
-          tokenPrice={new BigNumber(100)}
+          balance={{
+            collateral: { price: new BigNumber(1.5), balance: new BigNumber(100) },
+            debt: { price: new BigNumber(1.5), balance: new BigNumber(100) },
+            deposit: { price: new BigNumber(1.5), balance: new BigNumber(100) },
+          }}
         />
         <OpenAaveButton type={'SET_AMOUNT'} amount={new BigNumber(100)} />
         <OpenAaveButton
