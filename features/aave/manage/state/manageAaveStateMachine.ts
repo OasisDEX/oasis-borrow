@@ -345,6 +345,10 @@ export function createManageAaveStateMachine(
                 RETRY: {
                   target: 'txInProgress',
                 },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                  actions: ['reset'],
+                },
               },
             },
             txSuccess: {
@@ -362,7 +366,7 @@ export function createManageAaveStateMachine(
           actions: 'updateContext',
         },
         SET_BALANCE: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'updateLegacyTokenBalance'],
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress'],
@@ -583,6 +587,12 @@ export function createManageAaveStateMachine(
         setTransactionTokenToCollateral: assign((context) => ({
           transactionToken: context.strategyConfig.tokens.collateral,
         })),
+        updateLegacyTokenBalance: assign((context, event) => {
+          return {
+            tokenBalance: event.balance.deposit.balance,
+            tokenPrice: event.balance.deposit.price,
+          }
+        }),
       },
     },
   )

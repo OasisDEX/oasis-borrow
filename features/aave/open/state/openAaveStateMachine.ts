@@ -294,7 +294,7 @@ export function createOpenAaveStateMachine(
           actions: 'updateContext',
         },
         SET_BALANCE: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'updateLegacyTokenBalance'],
         },
         CONNECTED_PROXY_ADDRESS_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
@@ -500,6 +500,12 @@ export function createOpenAaveStateMachine(
           return {
             effectiveProxyAddress: proxyAddressToUse,
             positionRelativeAddress: address,
+          }
+        }),
+        updateLegacyTokenBalance: assign((context, event) => {
+          return {
+            tokenBalance: event.balance.deposit.balance,
+            tokenPrice: event.balance.deposit.price,
           }
         }),
       },
