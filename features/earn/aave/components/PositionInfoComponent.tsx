@@ -19,7 +19,7 @@ import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
 import { DetailsSection } from '../../../../components/DetailsSection'
-import { ManageSectionModal } from '../../../aave/manage/components/ManageSectionModal'
+import { ManageSectionModal } from '../../../aave/manage/components'
 
 const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
   const critical = new BigNumber(5)
@@ -133,7 +133,10 @@ export const PositionInfoComponent = ({
                   <Trans
                     i18nKey="manage-earn-vault.liquidation-price-ratio-modal-aave"
                     components={[
-                      <AppLink target="_blank" href="https://dune.com/dataalways/stETH-De-Peg" />,
+                      <AppLink
+                        target="_blank"
+                        href="https://dune.com/chrisbduck/steth-eth-monitor"
+                      />,
                       <br />,
                     ]}
                   />

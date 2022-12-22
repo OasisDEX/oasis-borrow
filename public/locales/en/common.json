@@ -1036,6 +1036,8 @@
     "generate-amount-exceeds-dai-yield-from-total-collateral-at-next-price": "The collateralization ratio for this Maker Vault is too low at the next price update. Please generate less Dai",
     "payback-amount-exceeds-dai-balance": "You cannot payback more Dai than the amount in your wallet",
     "payback-amount-exceeds-vault-debt": "You are trying to payback more than your Dai debt for this Maker Vault",
+    "payback-amount-exceeds": "You cannot payback more than {{maxPaybackAmount}} {{token}}",
+    "borrow-amount-exceeds-max": "You cannot borrow more than {{maxBorrowAmount}} {{token}}",
     "custom-collateral-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-collateral-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
     "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",

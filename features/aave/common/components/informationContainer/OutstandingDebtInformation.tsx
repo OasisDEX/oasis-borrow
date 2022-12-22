@@ -10,7 +10,7 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { formatAmount } from '../../../../../helpers/formatters/format'
 
-interface OutstandingDebtInformationProps {
+interface DebtCollateralInformation {
   currentPosition: IPosition
   newPosition: IPosition
 }
@@ -21,10 +21,17 @@ function formatDebtAmount(pos: IPosition) {
   }`
 }
 
+function formatCollateralAmount(pos: IPosition) {
+  return `${formatAmount(
+    amountFromWei(pos.collateral.amount, pos.collateral.symbol),
+    pos.collateral.symbol,
+  )} ${pos.collateral.symbol}`
+}
+
 export function OutstandingDebtInformation({
   currentPosition,
   newPosition,
-}: OutstandingDebtInformationProps) {
+}: DebtCollateralInformation) {
   const { t } = useTranslation()
 
   return (
@@ -35,6 +42,26 @@ export function OutstandingDebtInformation({
           {formatDebtAmount(currentPosition)}
           <VaultChangesInformationArrow />
           {formatDebtAmount(newPosition)}
+        </Flex>
+      }
+    />
+  )
+}
+
+export function TotalCollateralInformation({
+  currentPosition,
+  newPosition,
+}: DebtCollateralInformation) {
+  const { t } = useTranslation()
+
+  return (
+    <VaultChangesInformationItem
+      label={t('system.total-collateral')}
+      value={
+        <Flex>
+          {formatCollateralAmount(currentPosition)}
+          <VaultChangesInformationArrow />
+          {formatCollateralAmount(newPosition)}
         </Flex>
       }
     />

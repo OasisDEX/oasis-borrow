@@ -16,6 +16,7 @@ import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
 import { amountFromWei } from '../../../../blockchain/utils'
+import { MessageCard } from '../../../../components/MessageCard'
 import { allDefined } from '../../../../helpers/allDefined'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
@@ -111,11 +112,18 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
   if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
     return amountFromWei(
-      context.currentPosition?.debt.amount || zero,
+      context.currentPosition?.maxDebtToBorrow || zero,
       context.currentPosition?.debt.symbol || '',
     )
   }
-  return context.balance?.debt.balance || zero
+  const currentDebt = amountFromWei(
+    context.currentPosition?.debt.amount || zero,
+    context.currentPosition?.debt.symbol || '',
+  )
+
+  const currentBalance = context.balance?.debt.balance || zero
+
+  return currentDebt.lte(currentBalance) ? currentDebt : currentBalance
 }
 
 function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
@@ -123,7 +131,7 @@ function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
     context.manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
   ) {
     return amountFromWei(
-      context.currentPosition?.collateral.amount || zero,
+      context.currentPosition?.maxCollateralToWithdraw || zero,
       context.currentPosition?.collateral.symbol || '',
     )
   }
@@ -173,6 +181,9 @@ function GetReviewingSidebarProps({
       }
     case state.matches('frontend.manageCollateral'):
       const maxCollateralAmount = calculateMaxCollateralAmount(state.context)
+      const amountCollateralTooHigh = maxCollateralAmount.lt(
+        state.context.manageTokenInput?.manageTokenActionValue || zero,
+      )
       return {
         title: t('system.manage-collateral'),
         content: (
@@ -194,16 +205,38 @@ function GetReviewingSidebarProps({
               maxAmountLabel={t('balance')}
               maxAmount={maxCollateralAmount}
               showMax={true}
+              onSetMax={() => {
+                updateTokenActionValue(maxCollateralAmount)
+              }}
               amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
+            {amountCollateralTooHigh && (
+              <MessageCard
+                messages={
+                  state.context.manageTokenInput?.manageTokenAction ===
+                  ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
+                    ? [
+                        t('vault-errors.withdraw-amount-exceeds-free-collateral', {
+                          maxWithdrawAmount: formatCryptoBalance(maxCollateralAmount),
+                          token: state.context.tokens.collateral,
+                        }),
+                      ]
+                    : [t('vault-errors.deposit-amount-exceeds-collateral-balance')]
+                }
+                type="error"
+              />
+            )}
             <StrategyInformationContainer state={state} />
           </Grid>
         ),
       }
     case state.matches('frontend.manageDebt'):
       const maxDebtAmount = calculateMaxDebtAmount(state.context)
+      const amountDebtTooHigh = maxDebtAmount.lt(
+        state.context.manageTokenInput?.manageTokenActionValue || zero,
+      )
       return {
         title: t('system.manage-debt'),
         content: (
@@ -225,10 +258,34 @@ function GetReviewingSidebarProps({
               maxAmountLabel={t('balance')}
               maxAmount={maxDebtAmount}
               showMax={true}
+              onSetMax={() => {
+                updateTokenActionValue(maxDebtAmount)
+              }}
               amount={state.context.manageTokenInput?.manageTokenActionValue}
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
+            {amountDebtTooHigh && (
+              <MessageCard
+                messages={
+                  state.context.manageTokenInput?.manageTokenAction ===
+                  ManageDebtActionsEnum.PAYBACK_DEBT
+                    ? [
+                        t('vault-errors.payback-amount-exceeds', {
+                          maxPaybackAmount: formatCryptoBalance(maxDebtAmount),
+                          token: state.context.tokens.debt,
+                        }),
+                      ]
+                    : [
+                        t('vault-errors.borrow-amount-exceeds-max', {
+                          maxBorrowAmount: formatCryptoBalance(maxDebtAmount),
+                          token: state.context.tokens.debt,
+                        }),
+                      ]
+                }
+                type="error"
+              />
+            )}
             <StrategyInformationContainer state={state} />
           </Grid>
         ),
