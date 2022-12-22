@@ -27,14 +27,18 @@ export function NavigationMenu({ links, panels }: NavigationMenuProps) {
   }
 
   return (
-    <Box sx={{ position: 'relative' }} onMouseLeave={() => closeDropdown()}>
+    <Box
+      sx={{ position: ['static', null, null, null, 'relative'], flexGrow: 1, zIndex: 2 }}
+      onMouseLeave={() => closeDropdown()}
+    >
       {((links && links.length > 0) || (panels && panels.length > 0)) && (
         <Flex
           as="ul"
           sx={{
             listStyle: 'none',
-            columnGap: '40px',
-            px: '40px',
+            columnGap: ['24px', null, null, null, '40px'],
+            justifyContent: 'center',
+            px: '20px',
             py: 2,
           }}
         >

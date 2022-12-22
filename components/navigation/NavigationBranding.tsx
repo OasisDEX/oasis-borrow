@@ -1,7 +1,9 @@
 import { AppLink } from 'components/Links'
+import { navigationBreakpoints } from 'components/navigation/Navigation'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
 import { Box, Image } from 'theme-ui'
+import { useMediaQuery } from 'usehooks-ts'
 
 type NavigationBrandingPillColor = string | [string, string]
 
@@ -20,21 +22,37 @@ function getPillColor(color: NavigationBrandingPillColor) {
 }
 
 export function NavigationBranding({ link = '/', pill }: NavigationBrandingProps) {
+  const isViewBelowS = useMediaQuery(`(max-width: ${navigationBreakpoints[0]})`)
+
   return (
-    <AppLink withAccountPrefix={false} href={link} sx={{ display: 'flex' }}>
-      <Image src={staticFilesRuntimeUrl('/static/img/logo_v2.svg')} />
+    <AppLink
+      withAccountPrefix={false}
+      href={link}
+      sx={{
+        position: 'relative',
+        display: 'flex',
+        flexShrink: 0,
+        alignItems: 'center',
+        columnGap: 2,
+      }}
+    >
+      <Image src={staticFilesRuntimeUrl(`/static/img/logo${isViewBelowS ? '-dot' : ''}_v2.svg`)} />
       {pill && (
         <Box
           sx={{
-            height: '24px',
-            ml: 2,
-            lineHeight: '24px',
+            lineHeight: isViewBelowS ? '22px' : '24px',
             px: 2,
             fontSize: 1,
             fontWeight: 'medium',
             color: 'neutral10',
             borderRadius: 'roundish',
             background: getPillColor(pill.color),
+            ...(isViewBelowS && {
+              position: 'absolute',
+              top: '-10px',
+              left: '100%',
+              ml: '-10px',
+            }),
           }}
         >
           {pill.label}

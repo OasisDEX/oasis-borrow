@@ -14,6 +14,7 @@ export function NotificationsOrb() {
       icon="bell"
       iconSize={16}
       isDisabled={!notificationsState}
+      width={380}
       {...(unreadNotificationCount > 0 && { beacon: unreadNotificationCount })}
     >
       {(isOpen) => <NotificationsCenter isOpen={isOpen} />}

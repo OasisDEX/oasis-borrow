@@ -7,7 +7,12 @@ export function SwapOrb() {
   const [exchangeOnboarded] = useOnboarding('Exchange')
 
   return (
-    <NavigationOrb icon="exchange" iconSize={20} {...(!exchangeOnboarded && { beacon: true })}>
+    <NavigationOrb
+      icon="exchange"
+      iconSize={20}
+      width={360}
+      {...(!exchangeOnboarded && { beacon: true })}
+    >
       {() => <UniswapWidget />}
     </NavigationOrb>
   )

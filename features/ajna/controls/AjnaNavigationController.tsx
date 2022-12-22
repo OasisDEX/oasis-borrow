@@ -1,11 +1,14 @@
 import { ConnectWalletButton } from 'components/navigation/content/ConnectWalletButton'
 import { MyPositionsLink } from 'components/navigation/content/MyPositionsLink'
+import { MyPositionsOrb } from 'components/navigation/content/MyPositionsOrb'
 import { NotificationsOrb } from 'components/navigation/content/NotificationsOrb'
 import { SwapOrb } from 'components/navigation/content/SwapOrb'
 import { WalletOrb } from 'components/navigation/content/WalletOrb'
-import { Navigation } from 'components/navigation/Navigation'
+import { WalletPanelMobile } from 'components/navigation/content/WalletPanelMobile'
+import { Navigation, navigationBreakpoints } from 'components/navigation/Navigation'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
+import { useMediaQuery } from 'usehooks-ts'
 
 export const otherAssets = [
   {
@@ -43,7 +46,10 @@ export const otherAssets = [
 ]
 
 export function AjnaNavigationController() {
-  const { isConnected } = useAccount()
+  const { isConnected, walletAddress } = useAccount()
+  const isViewBelowXl = useMediaQuery(`(max-width: ${navigationBreakpoints[3]})`)
+  const isViewBelowL = useMediaQuery(`(max-width: ${navigationBreakpoints[2]})`)
+  const isViewBelowM = useMediaQuery(`(max-width: ${navigationBreakpoints[1]})`)
 
   return (
     <Navigation
@@ -156,11 +162,11 @@ export function AjnaNavigationController() {
           label: 'Ajna Tokens',
           link: '/ajna/tokens',
         },
-        ...(isConnected
+        ...(isConnected && !isViewBelowXl
           ? [
               {
                 label: <MyPositionsLink />,
-                link: '/my',
+                link: `/owner/${walletAddress}`,
               },
             ]
           : []),
@@ -168,12 +174,13 @@ export function AjnaNavigationController() {
       actions={
         isConnected ? (
           <>
+            {isViewBelowXl && <MyPositionsOrb />}
             <SwapOrb />
             <NotificationsOrb />
-            <WalletOrb />
+            {isViewBelowM ? <WalletPanelMobile /> : <WalletOrb />}
           </>
         ) : (
-          <ConnectWalletButton />
+          <>{!isViewBelowL && <ConnectWalletButton />}</>
         )
       }
     />

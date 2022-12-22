@@ -16,6 +16,7 @@ export function NavigationMenuLink({ label, link, onMouseEnter }: NavigationMenu
       as="li"
       sx={{
         p: 1,
+        flexShrink: 0,
       }}
       onMouseEnter={onMouseEnter}
     >
@@ -23,6 +24,7 @@ export function NavigationMenuLink({ label, link, onMouseEnter }: NavigationMenu
         href={link}
         sx={{
           color: 'neutral80',
+          whiteSpace: 'nowrap',
           transition: 'color 200ms',
           '&:hover': { color: 'primary100' },
         }}

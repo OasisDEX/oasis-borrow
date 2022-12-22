@@ -4,5 +4,5 @@ import { Flex } from 'theme-ui'
 interface NavigationActionsProps {}
 
 export function NavigationActions({ children }: PropsWithChildren<NavigationActionsProps>) {
-  return <Flex sx={{ columnGap: 2 }}>{children}</Flex>
+  return <Flex sx={{ flexShrink: 0, columnGap: 2, zIndex: 1 }}>{children}</Flex>
 }

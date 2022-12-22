@@ -36,7 +36,10 @@ export function NavigationMenuPanel({
   return (
     <Box
       as="li"
-      sx={{ p: 1 }}
+      sx={{
+        p: 1,
+        flexShrink: 0,
+      }}
       onMouseEnter={(e) => {
         const target = e.target as HTMLDivElement
 
@@ -49,6 +52,7 @@ export function NavigationMenuPanel({
           fontSize: 2,
           fontWeight: 'semiBold',
           color: isPanelOpen && currentPanel === label ? 'primary100' : 'neutral80',
+          whiteSpace: 'nowrap',
           cursor: 'default',
           transition: 'color 200ms',
         }}
