@@ -40,6 +40,12 @@ export type StrategyTokenAllowance = {
   deposit: BigNumber
 }
 
+export type StrategyTokenBalance = {
+  collateral: { price: BigNumber; balance: BigNumber }
+  debt: { price: BigNumber; balance: BigNumber }
+  deposit: { price: BigNumber; balance: BigNumber }
+}
+
 export type UpdateCollateralActionType = {
   type: 'UPDATE_COLLATERAL_TOKEN_ACTION'
   manageTokenAction: ManageCollateralActionsEnum
@@ -63,7 +69,7 @@ export type BaseAaveEvent =
   | { type: 'CLOSE_POSITION' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
   | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
-  | { type: 'SET_BALANCE'; tokenBalance: BigNumber; tokenPrice: BigNumber }
+  | { type: 'SET_BALANCE'; balance: StrategyTokenBalance }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | UpdateCollateralActionType
   | UpdateDebtActionType
@@ -92,6 +98,7 @@ export interface BaseAaveContext {
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
   allowance?: StrategyTokenAllowance
+  balance?: StrategyTokenBalance
   tokenPrice?: BigNumber
   collateralPrice?: BigNumber
   debtPrice?: BigNumber

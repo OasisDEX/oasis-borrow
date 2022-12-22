@@ -21,7 +21,11 @@ import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../../userSettings/userSettings'
-import { IStrategyInfo, StrategyTokenAllowance } from '../../common/BaseAaveContext'
+import {
+  IStrategyInfo,
+  StrategyTokenAllowance,
+  StrategyTokenBalance,
+} from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
@@ -60,12 +64,17 @@ export function getOpenAavePositionStateMachineServices(
     },
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
-        map((balances) => balances[context.tokens.deposit]),
-        filter<{ balance: BigNumber; price: BigNumber }>(allDefined),
-        map(({ balance, price }) => ({
+        map((balances) => {
+          const strategyBalance: StrategyTokenBalance = {
+            collateral: balances[context.tokens.collateral],
+            debt: balances[context.tokens.debt],
+            deposit: balances[context.tokens.deposit],
+          }
+          return strategyBalance
+        }),
+        map((balance) => ({
           type: 'SET_BALANCE',
-          tokenBalance: balance,
-          tokenPrice: price,
+          balance: balance,
         })),
         distinctUntilChanged(isEqual),
       )
