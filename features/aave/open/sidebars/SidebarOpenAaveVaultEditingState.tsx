@@ -31,9 +31,7 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
           send({ type: 'SET_AMOUNT', amount: state.context.tokenBalance! })
         }}
         onChange={handleNumericInput((amount) => {
-          if (amount) {
-            send({ type: 'SET_AMOUNT', amount: amount })
-          }
+          send({ type: 'SET_AMOUNT', amount })
         })}
         currencyCode={state.context.tokens.deposit}
         disabled={false}
