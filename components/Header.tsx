@@ -1,7 +1,5 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { getNetworkId } from '@oasisdex/web3-context'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { getMixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
@@ -18,6 +16,7 @@ import {
 } from 'features/uniswapWidget/SwapWidgetChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { getShouldHideHeaderSettings } from 'helpers/functions'
+import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -33,10 +32,12 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
-import { useAccount, useDisconnect } from 'wagmi'
+import { useAccount as useWagmiAccount, useConnect, useDisconnect } from 'wagmi'
 
 import { useAppContext } from './AppContextProvider'
+import { getConnector } from './connectWallet/ConnectWallet'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
+import { SwitchNetworkModal, SwitchNetworkModalType } from './SwitchNetworkModal'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
 function Logo({ sx }: { sx?: SxStyleProp }) {
@@ -897,36 +898,49 @@ function MainNavigation() {
 }
 
 export function AppHeader() {
-  const { context$, web3Context$ } = useAppContext()
+  const { context$ } = useAppContext()
   const [context] = useObservable(context$)
-  const [web3Context] = useObservable(web3Context$)
-  const { connector: activeConnector, isConnected } = useAccount()
+  const { connector: wagmiConnector, isConnected, isConnecting } = useWagmiAccount()
+  const { connect: wagmiConnect, connectors } = useConnect({ chainId: context?.chainId })
   const { disconnect } = useDisconnect()
+  const openModal = useModal()
+  const switchNetworkModal = (type: SwitchNetworkModalType) =>
+    openModal(SwitchNetworkModal, { type })
+  useEffect(() => {
+    // connecting from rainbowkit to our web3
+    if (!isConnecting && isConnected && wagmiConnector) {
+      void (async () => {
+        const chainId = await wagmiConnector!.getChainId()
+        if (context && context.status === 'connectedReadonly') {
+          getConnector('injected', chainId, { switchNetworkModal })
+            .then((connector) => {
+              context.connect(connector, 'injected')
+            })
+            .catch((error) => {
+              console.log('getConnector error', error)
+            })
+        }
+      })()
+    }
+  }, [isConnected, isConnecting, wagmiConnector])
 
   useEffect(() => {
-    if (isConnected && web3Context && web3Context.connect) {
-      console.log('Automatically connected in (since rainbowkit was connected)')
-      const networkId = getNetworkId()
-      void getConnector('injected', networkId).then((connector) => {
-        web3Context.connect(connector, 'injected')
-      })
+    if (!isConnecting) {
+      if (context && !isConnected && context?.status === 'connected' && context?.chainId) {
+        // connecting the rainbowkit from our web3
+        const connector = connectors.find((con) => con.id === 'injected')
+        wagmiConnect({ chainId: context?.chainId, connector })
+      }
+      // disconnecting the rainbowkit if our web3 is disconnected
+      if (context && isConnected && context?.status !== 'connected' && context?.chainId) {
+        void disconnect()
+      }
     }
-  }, [isConnected, activeConnector, web3Context])
-
-  useEffect(() => {
-    if (isConnected && context?.status !== 'connected') {
-      console.log('Disconnecting from rainbowkit (since web3context isnt connected)')
-
-      void disconnect()
-    }
-  }, [context?.status])
+  }, [isConnected, isConnecting, context])
 
   return (
     <Flex sx={{ flexDirection: 'column' }}>
       {context?.status === 'connected' ? <ConnectedHeader /> : <DisconnectedHeader />}
-      <Flex sx={{ justifyContent: 'center' }}>
-        <ConnectButton />
-      </Flex>
     </Flex>
   )
 }

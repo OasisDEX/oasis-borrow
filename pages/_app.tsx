@@ -3,7 +3,8 @@ import '@rainbow-me/rainbowkit/styles.css'
 import { CacheProvider, Global } from '@emotion/core'
 // @ts-ignore
 import { MDXProvider } from '@mdx-js/react'
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { connectorsForWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { injectedWallet, rainbowWallet, walletConnectWallet } from '@rainbow-me/rainbowkit/wallets'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
@@ -28,7 +29,8 @@ import React, { useEffect } from 'react'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi'
+import { goerli, mainnet } from 'wagmi/chains'
 import { infuraProvider } from 'wagmi/providers/infura'
 import { publicProvider } from 'wagmi/providers/public'
 import Web3 from 'web3'
@@ -41,25 +43,35 @@ import { loadFeatureToggles } from '../helpers/useFeatureToggle'
 import { useLocalStorage } from '../helpers/useLocalStorage'
 import nextI18NextConfig from '../next-i18next.config.js'
 
+const customHardhat: Chain = {
+  id: 2137,
+  name: 'Hardhat',
+  network: 'hardhat',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: { http: ['http://localhost:8545'] },
+  },
+}
+
 const { chains, provider } = configureChains(
-  [
-    chain.mainnet,
-    {
-      id: 2137,
-      name: 'Hardhat',
-      network: 'hardhat',
-      rpcUrls: {
-        default: 'http://localhost:8545',
-      },
-    },
-  ],
+  [mainnet, customHardhat, goerli],
   [infuraProvider({ apiKey: getConfig()?.publicRuntimeConfig?.infuraProjectId }), publicProvider()],
 )
 
-const { connectors } = getDefaultWallets({
-  appName: 'Oasis.app × Rainbow Kit',
-  chains,
-})
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Oasis.app × Rainbow Kit',
+    wallets: [
+      injectedWallet({ chains }),
+      rainbowWallet({ chains }),
+      walletConnectWallet({ chains }),
+    ],
+  },
+])
 
 const wagmiClient = createClient({
   autoConnect: false,
