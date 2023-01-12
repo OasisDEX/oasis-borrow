@@ -9,14 +9,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Heading } from 'theme-ui'
 
-function AjnaOpenBorrow({ product }: { product: string }) {
+interface AjnaProductSelectorPageProps {
+  product: string
+}
+
+function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
   const pairs = tokens[product as keyof typeof tokens]
   const [collateralToken, setCollateralToken] = useState<string>()
   const [debtToken, setDebtToken] = useState<string>()
   const isDisabled = !collateralToken || !debtToken
-
-  console.log('isDisabled')
-  console.log(isDisabled)
 
   return (
     <WithConnection>
@@ -59,10 +60,10 @@ function AjnaOpenBorrow({ product }: { product: string }) {
   )
 }
 
-AjnaOpenBorrow.layout = AjnaLayout
-AjnaOpenBorrow.seoTags = ajnaPageSeoTags
+AjnaProductSelectorPage.layout = AjnaLayout
+AjnaProductSelectorPage.seoTags = ajnaPageSeoTags
 
-export default AjnaOpenBorrow
+export default AjnaProductSelectorPage
 
 export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   return {
