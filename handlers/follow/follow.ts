@@ -47,3 +47,28 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
 
   return res.status(200).json(allVaultsFollowedByUser)
 }
+
+export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
+  const {
+    user_address,
+    vault_id,
+    // tos_doc_version,
+    vault_chain_id,
+  } = usersWhoFollowVaultsSchema.parse(req.body)
+
+  const usersAddressWhoJustUnfollowedVaultLowercased = user_address.toLocaleLowerCase()
+
+  await prisma.usersWhoFollowVaults.deleteMany({
+    where: {
+      user_address: usersAddressWhoJustUnfollowedVaultLowercased,
+      vault_id,
+      vault_chain_id,
+    },
+  })
+
+  const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
+    where: { user_address: usersAddressWhoJustUnfollowedVaultLowercased },
+  })
+
+  return res.status(200).json(allVaultsFollowedByUser)
+}
