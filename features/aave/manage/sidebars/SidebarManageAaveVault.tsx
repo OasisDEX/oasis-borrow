@@ -121,7 +121,7 @@ function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
     context.currentPosition?.debt.symbol || '',
   )
 
-  const currentBalance = context.balance?.debt.balance || zero
+  const currentBalance = context.balance?.debt?.balance || zero
 
   return currentDebt.lte(currentBalance) ? currentDebt : currentBalance
 }
