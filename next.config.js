@@ -64,7 +64,6 @@ const conf = withBundleAnalyzer(
               ? {
                   chunks: 'all',
                   minChunks: 2,
-                  enforce: true,
                   cacheGroups: {
                     vendors: {
                       test: /[\\/]node_modules[\\/]/,
