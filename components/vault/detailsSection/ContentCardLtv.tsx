@@ -25,12 +25,14 @@ interface ContentCardLtvProps {
   loanToValue: BigNumber
   liquidationThreshold: BigNumber
   afterLoanToValue?: BigNumber
+  modal?: JSX.Element
 }
 
 export function ContentCardLtv({
   loanToValue,
   liquidationThreshold,
   afterLoanToValue,
+  modal = undefined,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
 
@@ -58,5 +60,5 @@ export function ContentCardLtv({
     }
   }
 
-  return <DetailsSectionContentCard {...contentCardSettings} />
+  return <DetailsSectionContentCard {...contentCardSettings} modal={modal} />
 }
