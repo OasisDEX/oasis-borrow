@@ -29,7 +29,7 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
               <GenericSelect
                 placeholder="Select collateral token"
                 options={Object.keys(pairs).map((item) => ({
-                  label: item.toUpperCase(),
+                  label: item,
                   value: item,
                 }))}
                 wrapperSx={{ width: '100%', maxWidth: '250px' }}
@@ -45,7 +45,7 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
                 options={
                   collateralToken
                     ? pairs[collateralToken as keyof typeof pairs].map((item) => ({
-                        label: item.toUpperCase(),
+                        label: item,
                         value: item,
                       }))
                     : []

@@ -3,7 +3,7 @@ export const products = ['borrow']
 
 export const tokens = {
   borrow: {
-    eth: ['dai', 'usdc'],
-    wtbc: ['dai'],
+    ETH: ['DAI', 'USDC'],
+    WBTC: ['DAI'],
   },
 }
