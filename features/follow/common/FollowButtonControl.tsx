@@ -2,7 +2,7 @@ import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { FollowButton } from 'features/follow/common/FollowButton'
 import { followVaultUsingApi, getFollowFromApi } from 'features/shared/followApi'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import React, { useEffect, useState } from 'react'
 
 export type FollowButtonProps = {

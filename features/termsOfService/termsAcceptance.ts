@@ -5,7 +5,7 @@ import { catchError, map, repeat, shareReplay, startWith, switchMap } from 'rxjs
 import Web3 from 'web3'
 
 import { checkIfGnosisSafe } from '../../helpers/checkIfGnosisSafe'
-import { jwtAuthGetToken, JWToken } from './jwt'
+import { jwtAuthGetToken, JWToken } from '../shared/jwt'
 
 export type TermsAcceptanceStage =
   | 'walletConnectionInProgress'
