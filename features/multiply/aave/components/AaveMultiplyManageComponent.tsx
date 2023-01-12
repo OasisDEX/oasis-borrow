@@ -25,16 +25,25 @@ export function AaveMultiplyManageComponent({
   strategyConfig,
   nextPosition,
 }: AaveMultiplyManageComponentProps) {
-  const { wrappedGetAaveReserveData$ } = useAaveContext()
+  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext()
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )
   const [collateralTokenReserveData, collateralTokenReserveDataError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.collateral),
   )
+  const [debtTokenReserveConfigurationData, debtTokenReserveConfigurationDataError] = useObservable(
+    aaveReserveConfigurationData$({ token: strategyConfig.tokens.debt }),
+  )
 
   return (
-    <WithErrorHandler error={[debtTokenReserveDataError, collateralTokenReserveDataError]}>
+    <WithErrorHandler
+      error={[
+        debtTokenReserveDataError,
+        collateralTokenReserveDataError,
+        debtTokenReserveConfigurationDataError,
+      ]}
+    >
       <WithLoadingIndicator
         value={[
           currentPosition,
@@ -42,6 +51,7 @@ export function AaveMultiplyManageComponent({
           debtPrice,
           debtTokenReserveData,
           collateralTokenReserveData,
+          debtTokenReserveConfigurationData,
         ]}
         customLoader={<AppSpinner />}
       >
@@ -51,6 +61,7 @@ export function AaveMultiplyManageComponent({
           _debtTokenPrice,
           _debtTokenReserveData,
           _collateralTokenReserveData,
+          _debtTokenReserveConfigurationData,
         ]) => {
           return (
             <AaveMultiplyPositionData
@@ -59,6 +70,7 @@ export function AaveMultiplyManageComponent({
               collateralTokenReserveData={_collateralTokenReserveData}
               debtTokenPrice={_debtTokenPrice}
               debtTokenReserveData={_debtTokenReserveData}
+              debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
             />
           )
