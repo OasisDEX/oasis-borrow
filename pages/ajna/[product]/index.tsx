@@ -28,19 +28,28 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
             <Flex sx={{ columnGap: 3, mt: 3 }}>
               <GenericSelect
                 placeholder="Select collateral token"
-                options={pairs.collateral.map((item) => ({
-                  label: item,
-                  value: item.toLowerCase(),
+                options={Object.keys(pairs).map((item) => ({
+                  label: item.toUpperCase(),
+                  value: item,
                 }))}
                 wrapperSx={{ width: '100%', maxWidth: '250px' }}
-                onChange={(currentValue) => setCollateralToken(currentValue.value)}
+                onChange={(currentValue) => {
+                  setCollateralToken(currentValue.value)
+                  setDebtToken(undefined)
+                }}
               />
               <GenericSelect
+                key={collateralToken}
+                isDisabled={!collateralToken}
                 placeholder="Select debt token"
-                options={pairs.debt.map((item) => ({
-                  label: item,
-                  value: item.toLowerCase(),
-                }))}
+                options={
+                  collateralToken
+                    ? pairs[collateralToken as keyof typeof pairs].map((item) => ({
+                        label: item.toUpperCase(),
+                        value: item,
+                      }))
+                    : []
+                }
                 wrapperSx={{ width: '100%', maxWidth: '250px' }}
                 onChange={(currentValue) => setDebtToken(currentValue.value)}
               />

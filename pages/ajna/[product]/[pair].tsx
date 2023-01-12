@@ -38,18 +38,17 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
       locales
         ?.map((locale) =>
           products.map((product) =>
-            [
-              tokens[product as keyof typeof tokens].collateral,
-              tokens[product as keyof typeof tokens].debt,
-            ]
-              .reduce<string[][]>(
-                (results, ids) => results.flatMap((result) => ids.map((id) => [result, id].flat())),
-                [[]],
-              )
-              .map((pair) => ({ params: { pair: pair.join('-').toLowerCase(), product }, locale })),
+            Object.keys(tokens[product as keyof typeof tokens]).map((collateralToken) =>
+              // TODO: update to formula that doesn't require @ts-ignore when final version of white-listing is available
+              // @ts-ignore
+              tokens[product][collateralToken].map((debtToken) => ({
+                locale,
+                params: { pair: `${collateralToken}-${debtToken}`, product },
+              })),
+            ),
           ),
         )
-        .flat(2) ?? [],
+        .flat(3) ?? [],
     fallback: false,
   }
 }
@@ -58,7 +57,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const pair = (params?.pair as string).split('-')
 
   return {
-    // ...(!products.includes(params?.product as string) && { notFound: true }),
+    ...(!products.includes(params?.product as string) && { notFound: true }),
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
       collateralToken: pair[0],

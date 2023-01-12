@@ -3,7 +3,7 @@ export const products = ['borrow']
 
 export const tokens = {
   borrow: {
-    collateral: ['ETH', 'WBTC'],
-    debt: ['DAI', 'USDC'],
+    eth: ['dai', 'usdc'],
+    wtbc: ['dai'],
   },
 }
