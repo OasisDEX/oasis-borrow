@@ -26,8 +26,6 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
       ?.map((locale) => discoverPagesMeta.map(({ kind }) => ({ params: { slug: kind }, locale })))
       .flat() || []
 
-  console.log(paths)
-
   return {
     paths,
     fallback: false,
