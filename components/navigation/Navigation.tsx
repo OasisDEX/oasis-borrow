@@ -40,6 +40,7 @@ export function Navigation({ actions, brandingLink = '/', links, panels, pill }:
           alignItems: 'center',
           justifyContent: 'space-between',
           mt: '24px',
+          mb: '64px',
           zIndex: 3,
         }}
       >

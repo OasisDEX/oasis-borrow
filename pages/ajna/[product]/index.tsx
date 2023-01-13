@@ -16,8 +16,8 @@ interface AjnaProductSelectorPageProps {
 function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
   const pairs = tokens[product as keyof typeof tokens]
   const [collateralToken, setCollateralToken] = useState<string>()
-  const [debtToken, setDebtToken] = useState<string>()
-  const isDisabled = !collateralToken || !debtToken
+  const [quoteToken, setQuoteToken] = useState<string>()
+  const isDisabled = !collateralToken || !quoteToken
 
   return (
     <WithConnection>
@@ -35,13 +35,13 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
                 wrapperSx={{ width: '100%', maxWidth: '250px' }}
                 onChange={(currentValue) => {
                   setCollateralToken(currentValue.value)
-                  setDebtToken(undefined)
+                  setQuoteToken(undefined)
                 }}
               />
               <GenericSelect
                 key={collateralToken}
                 isDisabled={!collateralToken}
-                placeholder="Select debt token"
+                placeholder="Select quote token"
                 options={
                   collateralToken
                     ? pairs[collateralToken as keyof typeof pairs].map((item) => ({
@@ -51,10 +51,10 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
                     : []
                 }
                 wrapperSx={{ width: '100%', maxWidth: '250px' }}
-                onChange={(currentValue) => setDebtToken(currentValue.value)}
+                onChange={(currentValue) => setQuoteToken(currentValue.value)}
               />
               <AppLink
-                href={`/ajna/${product}/${collateralToken}-${debtToken}`}
+                href={`/ajna/${product}/${collateralToken}-${quoteToken}`}
                 sx={{ pointerEvents: isDisabled ? 'none' : 'auto' }}
               >
                 <Button variant="primary" sx={{ px: 4 }} disabled={isDisabled}>

@@ -1,29 +1,29 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { AjnaOpenBorrowView } from 'features/ajna/borrow/AjnaOpenBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box } from 'theme-ui'
 
 interface AjnaProductFlowPageProps {
   collateralToken: string
-  debtToken: string
+  quoteToken: string
   product: string
 }
 
-function AjnaProductFlowPage({ collateralToken, debtToken, product }: AjnaProductFlowPageProps) {
+function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProductFlowPageProps) {
   return (
-    <WithConnection>
+    <WithWalletConnection>
       <WithTermsOfService>
         <AjnaWrapper>
-          <Box sx={{ width: '100%', mt: '100px' }}>
-            Open {product} {collateralToken}-{debtToken} position.
-          </Box>
+          {product === 'borrow' && (
+            <AjnaOpenBorrowView collateralToken={collateralToken} quoteToken={quoteToken} />
+          )}
         </AjnaWrapper>
       </WithTermsOfService>
-    </WithConnection>
+    </WithWalletConnection>
   )
 }
 
@@ -41,9 +41,9 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
             Object.keys(tokens[product as keyof typeof tokens]).map((collateralToken) =>
               // TODO: update to formula that doesn't require @ts-ignore when final version of white-listing is available
               // @ts-ignore
-              tokens[product][collateralToken].map((debtToken) => ({
+              tokens[product][collateralToken].map((quoteToken) => ({
                 locale,
-                params: { pair: `${collateralToken}-${debtToken}`, product },
+                params: { pair: `${collateralToken}-${quoteToken}`, product },
               })),
             ),
           ),
@@ -61,7 +61,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
       collateralToken: pair[0],
-      debtToken: pair[1],
+      quoteToken: pair[1],
       ...params,
     },
   }
