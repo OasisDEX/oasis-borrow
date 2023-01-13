@@ -4,6 +4,7 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
 import { IStrategyConfig } from '../common/StrategyConfigTypes'
+import { PositionCreated } from '../services/readPositionCreatedEvents'
 import { loadStrategyFromTokens } from '../strategyConfig'
 import { PositionId } from '../types'
 import { createAaveUserConfiguration, hasAssets } from './aaveUserConfiguration'
@@ -13,6 +14,7 @@ export function getStrategyConfig$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
   aaveReservesList$: () => Observable<AaveConfigurationData>,
+  lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated>,
   positionId: PositionId,
 ): Observable<IStrategyConfig> {
   return proxiesForPosition$(positionId).pipe(
@@ -25,12 +27,16 @@ export function getStrategyConfig$(
           of([]),
         ),
         aaveReservesList$(),
+        effectiveProxyAddress ? lastCreatedPositionForProxy$(effectiveProxyAddress) : of(undefined),
       )
     }),
-    map(([aaveUserConfiguration, aaveReservesList]) => {
-      return createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList)
+    map(([aaveUserConfiguration, aaveReservesList, lastCreatedPosition]) => {
+      return {
+        aaveUserConfiguration: createAaveUserConfiguration(aaveUserConfiguration, aaveReservesList),
+        lastCreatedPosition,
+      }
     }),
-    map((aaveUserConfiguration) => {
+    map(({ aaveUserConfiguration, lastCreatedPosition }) => {
       switch (true) {
         case hasAssets(aaveUserConfiguration, 'STETH', 'ETH'):
           return loadStrategyFromTokens('STETH', 'ETH')
@@ -41,6 +47,12 @@ export function getStrategyConfig$(
         case hasAssets(aaveUserConfiguration, 'STETH', 'USDC'):
           return loadStrategyFromTokens('STETH', 'USDC')
         default:
+          if (lastCreatedPosition !== undefined) {
+            return loadStrategyFromTokens(
+              lastCreatedPosition.collateralTokenSymbol,
+              lastCreatedPosition.debtTokenSymbol,
+            )
+          }
           return loadStrategyFromTokens('STETH', 'ETH')
       }
     }),
