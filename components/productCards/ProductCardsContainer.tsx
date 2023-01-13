@@ -1,5 +1,6 @@
 import { getTokens } from 'blockchain/tokensMetadata'
 import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
+import { getAaveStrategy } from 'features/aave/strategyConfig'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -11,6 +12,7 @@ import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
 import { ProductCardEarnMaker } from './ProductCardEarnMaker'
+import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardMultiplyMaker } from './ProductCardMultiplyMaker'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
@@ -47,12 +49,22 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
             {_productCardsData.map((cardData) => (
               <ProductCard cardData={cardData} key={cardData.ilk} />
             ))}
-            {aaveStrategyCards.map((tokenData) => (
-              <ProductCardEarnAave
-                cardData={tokenData}
-                key={`ProductCardEarnAave_${tokenData.symbol}`}
-              />
-            ))}
+            {aaveStrategyCards.map((tokenData) => {
+              if (getAaveStrategy(tokenData.symbol)[0].type === 'Multiply') {
+                return (
+                  <ProductCardMultiplyAave
+                    cardData={tokenData}
+                    key={`ProductCardEarnAave_${tokenData.symbol}`}
+                  />
+                )
+              }
+              return (
+                <ProductCardEarnAave
+                  cardData={tokenData}
+                  key={`ProductCardEarnAave_${tokenData.symbol}`}
+                />
+              )
+            })}
           </ProductCardsWrapper>
         )}
       </WithLoadingIndicator>

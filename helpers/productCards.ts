@@ -190,7 +190,9 @@ export function mapTokenToFilter(token: string) {
   return tokenKeyedFilters[token]
 }
 
-function getAaveEnabledStrategies(strategies: { strategy: string; featureToggle: Feature }[]) {
+export function getAaveEnabledStrategies(
+  strategies: { strategy: string; featureToggle: Feature }[],
+) {
   return strategies
     .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
     .map((item) => item.strategy)
