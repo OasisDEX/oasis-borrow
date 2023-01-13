@@ -1307,6 +1307,7 @@
       "proxy-progress": "Read more on smart proxy in the <1>Knowledge Base</1>.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
+      "commonAllowance": "Select a maximum allowance amount for your Smart DeFi Account. Your Smart Defi Account will be able to interact with up to:",
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
