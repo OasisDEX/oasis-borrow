@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
@@ -25,19 +25,21 @@ interface ContentCardLtvProps {
   loanToValue: BigNumber
   liquidationThreshold: BigNumber
   afterLoanToValue?: BigNumber
+  modal?: JSX.Element
 }
 
 export function ContentCardLtv({
   loanToValue,
   liquidationThreshold,
   afterLoanToValue,
+  modal = undefined,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
 
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
     afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
-    liquidationThreshold: liquidationThreshold,
+    liquidationThreshold: formatPercent(liquidationThreshold.times(100)),
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -58,5 +60,5 @@ export function ContentCardLtv({
     }
   }
 
-  return <DetailsSectionContentCard {...contentCardSettings} />
+  return <DetailsSectionContentCard {...contentCardSettings} modal={modal} />
 }

@@ -92,7 +92,7 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('manage-earn.aave.vault-form.title'),
+    title: t('manage-earn.aave.vault-form.adjust-title'),
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
@@ -121,7 +121,7 @@ function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
     context.currentPosition?.debt.symbol || '',
   )
 
-  const currentBalance = context.balance?.debt.balance || zero
+  const currentBalance = context.balance?.debt?.balance || zero
 
   return currentDebt.lte(currentBalance) ? currentDebt : currentBalance
 }

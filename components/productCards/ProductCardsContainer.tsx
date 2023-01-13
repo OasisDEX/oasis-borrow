@@ -1,5 +1,6 @@
 import { getTokens } from 'blockchain/tokensMetadata'
 import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
+import { getAaveStrategy } from 'features/aave/strategyConfig'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -11,6 +12,7 @@ import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
 import { ProductCardEarnMaker } from './ProductCardEarnMaker'
+import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardMultiplyMaker } from './ProductCardMultiplyMaker'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
@@ -33,7 +35,7 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
   const [productCardsData, productCardsDataError] = useObservable(
     productCardsData$(props.strategies.maker),
   )
-  const aaveStrategyCards = getTokens(props.strategies.aave)
+  const aaveStrategyCards = getTokens(props.strategies.aave ?? [])
 
   return (
     <WithErrorHandler error={[productCardsDataError]}>
@@ -47,12 +49,26 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
             {_productCardsData.map((cardData) => (
               <ProductCard cardData={cardData} key={cardData.ilk} />
             ))}
-            {aaveStrategyCards.map((tokenData) => (
-              <ProductCardEarnAave
-                cardData={tokenData}
-                key={`ProductCardEarnAave_${tokenData.symbol}`}
-              />
-            ))}
+            {aaveStrategyCards.map((tokenData) => {
+              switch (getAaveStrategy(tokenData.symbol)[0].type) {
+                case 'Multiply':
+                  return (
+                    <ProductCardMultiplyAave
+                      cardData={tokenData}
+                      key={`ProductCardMultiplyAave_${tokenData.symbol}`}
+                    />
+                  )
+                case 'Earn':
+                  return (
+                    <ProductCardEarnAave
+                      cardData={tokenData}
+                      key={`ProductCardEarnAave_${tokenData.symbol}`}
+                    />
+                  )
+                default:
+                  return null
+              }
+            })}
           </ProductCardsWrapper>
         )}
       </WithLoadingIndicator>
