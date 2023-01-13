@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
@@ -39,7 +39,7 @@ export function ContentCardLtv({
   const formatted = {
     loanToValue: formatDecimalAsPercent(loanToValue),
     afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
-    liquidationThreshold: liquidationThreshold,
+    liquidationThreshold: formatPercent(liquidationThreshold.times(100)),
   }
 
   const contentCardSettings: ContentCardProps = {
