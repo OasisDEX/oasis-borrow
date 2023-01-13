@@ -92,7 +92,7 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('manage-earn.aave.vault-form.title'),
+    title: t('manage-earn.aave.vault-form.adjust-title'),
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
