@@ -50,20 +50,24 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
               <ProductCard cardData={cardData} key={cardData.ilk} />
             ))}
             {aaveStrategyCards.map((tokenData) => {
-              if (getAaveStrategy(tokenData.symbol)[0].type === 'Multiply') {
-                return (
-                  <ProductCardMultiplyAave
-                    cardData={tokenData}
-                    key={`ProductCardEarnAave_${tokenData.symbol}`}
-                  />
-                )
+              switch (getAaveStrategy(tokenData.symbol)[0].type) {
+                case 'Multiply':
+                  return (
+                    <ProductCardMultiplyAave
+                      cardData={tokenData}
+                      key={`ProductCardMultiplyAave_${tokenData.symbol}`}
+                    />
+                  )
+                case 'Earn':
+                  return (
+                    <ProductCardEarnAave
+                      cardData={tokenData}
+                      key={`ProductCardEarnAave_${tokenData.symbol}`}
+                    />
+                  )
+                default:
+                  return null
               }
-              return (
-                <ProductCardEarnAave
-                  cardData={tokenData}
-                  key={`ProductCardEarnAave_${tokenData.symbol}`}
-                />
-              )
             })}
           </ProductCardsWrapper>
         )}
