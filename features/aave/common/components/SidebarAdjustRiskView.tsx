@@ -196,6 +196,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
             <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
           </Flex>
+
+          <SidebarResetButton
+            clear={() => {
+              send({ type: 'RESET_RISK_RATIO' })
+            }}
+            disabled={viewLocked || !state.context.userInput.riskRatio}
+          />
+
           {collateralToken && debtToken && viewConfig.link && (
             <Link target="_blank" href={viewConfig.link.url}>
               <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
@@ -240,13 +248,6 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             )
           )}
           <StrategyInformationContainer state={state} />
-
-          <SidebarResetButton
-            clear={() => {
-              send({ type: 'RESET_RISK_RATIO' })
-            }}
-            disabled={viewLocked || !state.context.userInput.riskRatio}
-          />
         </Grid>
       ),
       primaryButton: {
