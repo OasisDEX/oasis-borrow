@@ -34,7 +34,7 @@ export function VaultHeadline({
       sx={{
         flexDirection: ['column', null, null, 'row'],
         justifyContent: 'space-between',
-        alignItems: ['flex-start', null, null, 'flex-end'],
+        alignItems: ['flex-start', null, null, 'center'],
         mb: 4,
       }}
     >
