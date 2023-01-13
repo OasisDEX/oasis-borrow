@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { AjnaOpenBorrowOverviewController } from 'features/ajna/borrow/AjnaOpenBorrowOverviewController'
+import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
+import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import { ajnaExtensionTheme } from 'theme'
@@ -41,14 +42,19 @@ export function AjnaOpenBorrowView({ collateralToken, quoteToken }: AjnaOpenBorr
             label: t('setup'),
             content: (
               <Grid variant="vaultContainer">
-                <AjnaOpenBorrowOverviewController />
+                <AjnaBorrowOverviewWrapper />
+                <AjnaBorrowFormWrapper />
               </Grid>
             ),
           },
           {
             value: 'position-info',
             label: t('system.position-info'),
-            content: <Card variant="faq">FAQ</Card>,
+            content: (
+              <Grid variant="vaultContainer">
+                <Card variant="faq">FAQ</Card>
+              </Grid>
+            ),
           },
         ]}
       />

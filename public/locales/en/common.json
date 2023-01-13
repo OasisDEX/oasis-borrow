@@ -2186,6 +2186,9 @@
           "header": "Borrow {{collateralToken}} against {{quoteToken}}",
           "current-collateral-price": "Current {{collateralToken}} price",
           "current-quote-price": "Current {{quoteToken}} price"
+        },
+        "form": {
+          "title": "Configure your Ajna Position"
         }
       }
     }

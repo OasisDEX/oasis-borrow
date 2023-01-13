@@ -1,5 +1,5 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
-import { AjnaOpenBorrowView } from 'features/ajna/borrow/AjnaOpenBorrowView'
+import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'

@@ -383,7 +383,6 @@ export const oasisBaseTheme = {
       variant: 'cards.primary',
       p: 4,
       border: ['none', 'lightMuted'],
-      borderRadius: 'mediumLarge',
       maxWidth: '711px',
     },
   },

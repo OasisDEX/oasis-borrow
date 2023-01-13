@@ -2,7 +2,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { useTranslation } from 'next-i18next'
 
-export function AjnaOpenBorrowOverviewController() {
+export function AjnaBorrowOverviewWrapper() {
   const { t } = useTranslation()
 
   return (
