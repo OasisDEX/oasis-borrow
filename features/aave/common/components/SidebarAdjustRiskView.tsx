@@ -13,7 +13,7 @@ import { SidebarSection, SidebarSectionProps } from '../../../../components/side
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
-import { one, zero } from '../../../../helpers/zero'
+import { zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
@@ -110,30 +110,19 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
 
     const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
 
-    enum RiskLevel {
-      OK = 'OK',
-      AT_RISK = 'AT_RISK',
-    }
+    const priceMovementUntilLiquidationPercent = (
+      (targetPosition
+        ? targetPosition?.relativeCollateralPriceMovementUntilLiquidation
+        : onChainPosition?.relativeCollateralPriceMovementUntilLiquidation) || zero
+    ).times(100)
 
-    const healthFactor = targetPosition
-      ? targetPosition?.healthFactor
-      : onChainPosition?.healthFactor
+    const warningPriceMovementPercentThreshold = new BigNumber('20')
 
-    const warningHealthFactor = new BigNumber('1.25')
-
-    const riskTrafficLight = healthFactor?.gt(warningHealthFactor)
-      ? RiskLevel.OK
-      : RiskLevel.AT_RISK
+    const isWarning = priceMovementUntilLiquidationPercent.lte(warningPriceMovementPercentThreshold)
 
     const collateralToken = state.context.strategyInfo?.collateralToken
 
     const debtToken = state.context.tokens.debt
-
-    const priceMovementUntilLiquidation = one.minus(one.div(healthFactor || zero)).times(100)
-
-    const priceMovementWarningThreshold = new BigNumber(20)
-
-    const isWarning = priceMovementUntilLiquidation.lte(priceMovementWarningThreshold)
 
     const liquidationPenalty = formatPercent(
       (state.context.strategyInfo?.liquidationBonus || zero).times(100),
@@ -173,7 +162,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
             }}
             leftBoundryStyling={{
-              color: riskTrafficLight !== RiskLevel.OK ? 'warning100' : 'neutral100',
+              color: isWarning ? 'warning100' : 'neutral100',
             }}
             minBoundry={minRisk}
             maxBoundry={maxRisk || zero}
@@ -227,7 +216,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
                   isWarning
                     ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
                         collateralToken,
-                        priceMovement: formatPercent(priceMovementUntilLiquidation, {
+                        priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
                           precision: 2,
                         }),
                         debtToken,
@@ -235,7 +224,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
                       })
                     : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
                         collateralToken,
-                        priceMovement: formatPercent(priceMovementUntilLiquidation, {
+                        priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
                           precision: 2,
                         }),
                         debtToken,
