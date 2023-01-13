@@ -1,6 +1,7 @@
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 import { Sender, StateFrom } from 'xstate'
 
 import { VaultActionInput } from '../../../../components/vault/VaultActionInput'
@@ -18,24 +19,37 @@ export function SidebarOpenAaveVaultEditingState(props: OpenAaveEditingStateProp
 
   return (
     <Grid gap={3}>
-      <VaultActionInput
-        action={'Deposit'}
-        amount={state.context.userInput?.amount}
-        hasAuxiliary={true}
-        auxiliaryAmount={state.context.auxiliaryAmount}
-        hasError={false}
-        maxAmount={state.context.tokenBalance}
-        showMax={true}
-        maxAmountLabel={t('balance')}
-        onSetMax={() => {
-          send({ type: 'SET_AMOUNT', amount: state.context.tokenBalance! })
-        }}
-        onChange={handleNumericInput((amount) => {
-          send({ type: 'SET_AMOUNT', amount })
-        })}
-        currencyCode={state.context.tokens.deposit}
-        disabled={false}
-      />
+      <WithLoadingIndicator
+        // this loader seems to be pointless, but undefined tokenUsdPrice (below) breaks the proper decimals input so it needs to be there
+        value={[state.context.collateralPrice]}
+        customLoader={
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <AppSpinner size={24} />
+          </Box>
+        }
+      >
+        {([collateralPrice]) => (
+          <VaultActionInput
+            action={'Deposit'}
+            amount={state.context.userInput?.amount}
+            hasAuxiliary={true}
+            auxiliaryAmount={state.context.auxiliaryAmount}
+            hasError={false}
+            maxAmount={state.context.tokenBalance}
+            showMax={true}
+            maxAmountLabel={t('balance')}
+            onSetMax={() => {
+              send({ type: 'SET_AMOUNT', amount: state.context.tokenBalance! })
+            }}
+            onChange={handleNumericInput((amount) => {
+              send({ type: 'SET_AMOUNT', amount })
+            })}
+            currencyCode={state.context.tokens.deposit}
+            disabled={false}
+            tokenUsdPrice={collateralPrice}
+          />
+        )}
+      </WithLoadingIndicator>
     </Grid>
   )
 }
