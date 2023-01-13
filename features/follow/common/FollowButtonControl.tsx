@@ -12,12 +12,7 @@ export type FollowButtonProps = {
   chainId: number
 }
 
-export function FollowButtonControl({
-  followerAddress,
-  vaultId,
-  docVersion,
-  chainId,
-}: FollowButtonProps) {
+export function FollowButtonControl({ followerAddress, vaultId, chainId }: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
 
@@ -44,13 +39,7 @@ export function FollowButtonControl({
     setProcessing(true)
     const jwtToken = jwtAuthGetToken(followerAddress)
     if (vaultId && jwtToken) {
-      const followedVaults = await followVaultUsingApi(
-        vaultId,
-        followerAddress,
-        docVersion,
-        chainId,
-        jwtToken,
-      )
+      const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
 
       handleGetFollowedVaults(followedVaults)
     }

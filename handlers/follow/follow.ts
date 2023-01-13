@@ -15,25 +15,25 @@ export async function selectVaultsFollowedByAddress(
 }
 
 const usersWhoFollowVaultsSchema = z.object({
-  user_address: z.string(),
   vault_id: z.number(),
-  tos_doc_version: z.string(),
   vault_chain_id: z.number(),
 })
 
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
-  const {
-    user_address,
-    vault_id,
-    tos_doc_version,
-    vault_chain_id,
-  } = usersWhoFollowVaultsSchema.parse(req.body)
-
+  const { vault_id, vault_chain_id } = usersWhoFollowVaultsSchema.parse(req.body)
+  console.log('jwt', req.headers.authorization)
+  const user_address = req.headers.authorization
+    ? JSON.parse(atob(req.headers.authorization.split('.')[1])).address
+    : null
+  console.log('user_address', user_address)
+  if (!user_address) {
+    console.log('address missing in jwt token')
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
   const usersAddressWhoJustFollowedVaultLowercased = user_address.toLocaleLowerCase()
   const userWhoFollowsVaultData = {
     user_address: usersAddressWhoJustFollowedVaultLowercased,
     vault_id,
-    tos_doc_version,
     vault_chain_id,
   }
 
