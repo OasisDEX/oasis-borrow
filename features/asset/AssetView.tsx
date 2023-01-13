@@ -35,8 +35,6 @@ export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
 
   const aaveStrategies = aaveAssets[content.slug as keyof typeof aaveAssets] ?? []
-  console.log('aaveStrategies', aaveStrategies)
-
   const tabs = () => {
     const borrowTab = content.borrowIlks && {
       label: t('landing.tabs.maker.borrow.tabLabel'),
