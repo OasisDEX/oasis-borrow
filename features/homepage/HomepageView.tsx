@@ -192,7 +192,7 @@ export function HomepageView() {
         <TabBar
           variant="large"
           useDropdownOnMobile
-          defaultTab="earn"
+          defaultTab="multiply"
           sections={[
             {
               label: t('landing.tabs.maker.multiply.tabLabel'),
@@ -205,6 +205,12 @@ export function HomepageView() {
                       <AppLink href="/multiply" variant="inText">
                         {t('landing.tabs.maker.multiply.tabParaLinkContent')}
                       </AppLink>
+                      <Box sx={{ mt: 3 }}>
+                        {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
+                        <AppLink href="/multiply" variant="inText">
+                          {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
+                        </AppLink>
+                      </Box>
                     </>
                   }
                   cards={
