@@ -162,7 +162,6 @@ export function getOpenAavePositionStateMachineServices(
     },
     dpmProxy$: (_) => {
       return userDpmProxy$.pipe(
-        filter((proxy) => proxy !== undefined),
         map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })),
         distinctUntilChanged(isEqual),
       )

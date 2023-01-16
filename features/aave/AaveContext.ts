@@ -68,7 +68,7 @@ export function setupAaveContext({
   aaveAvailableLiquidityInUSDC$,
   userDpmProxies$,
   userDpmProxy$,
-  hasProxyAddressActiveAavePosition$,
+  proxyConsumed$,
   aaveProtocolData$,
   strategyConfig$,
 }: AppContext) {
@@ -192,7 +192,7 @@ export function setupAaveContext({
   const getAvailableDPMProxy: (
     walletAddress: string,
   ) => Observable<UserDpmProxy | undefined> = memoize(
-    curry(getAvailableDPMProxy$)(userDpmProxies$, hasProxyAddressActiveAavePosition$),
+    curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
   )
 
   const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
@@ -211,7 +211,7 @@ export function setupAaveContext({
     aaveProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
-    hasProxyAddressActiveAavePosition$,
+    proxyConsumed$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

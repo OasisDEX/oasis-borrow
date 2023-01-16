@@ -132,7 +132,6 @@ import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aave
 import { createAavePrepareReserveData$ } from 'features/aave/helpers/aavePrepareReserveData'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
-import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
 import { getAaveProtocolData$ } from 'features/aave/manage/services'
 import { getOnChainPosition } from 'features/aave/oasisActionsLibWrapper'
@@ -294,6 +293,7 @@ import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } f
 
 import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
 import {
+  createProxyConsumed$,
   createReadPositionCreatedEvents$,
   getLastCreatedPositionForProxy$,
 } from '../features/aave/services/readPositionCreatedEvents'
@@ -961,7 +961,7 @@ export function setupAppContext() {
     (args) => args.address,
   )
 
-  const hasProxyAddressActiveAavePosition$ = memoize(curry(hasAavePosition$)(aaveUserAccountData$))
+  const proxyConsumed$ = memoize(curry(createProxyConsumed$)(context$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
@@ -1279,7 +1279,7 @@ export function setupAppContext() {
   const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
     connectedContext$,
     proxyAddress$,
-    hasProxyAddressActiveAavePosition$,
+    proxyConsumed$,
   )
 
   const accountData$ = createAccountData(
@@ -1410,7 +1410,7 @@ export function setupAppContext() {
     aaveLiquidations$,
     aaveUserAccountData$,
     aaveAvailableLiquidityInUSDC$,
-    hasProxyAddressActiveAavePosition$,
+    proxyConsumed$,
     dsr$,
     dsrDeposit$,
     potDsr$,
