@@ -1499,7 +1499,7 @@
       },
       "wBTCusdc": {
         "title": "Highest WBTC multiple option",
-        "description": "Maximise your WBTC exposure with Aave and USDC."
+        "description": "The biggest possible Multiple to maximize your exposure to WBTC"
       }
     },
     "tags": {
@@ -1525,7 +1525,7 @@
   },
   "product-card-title": {
     "ETH-A": "ETH with medium cost and multiple",
-    "ETH-B": "Highest ETH multiple option",
+    "ETH-B": "High ETH multiple with liquidation delay",
     "ETH-C": "Lowest ETH borrowing cost",
     "WBTC-A": "wBTC with medium cost and multiple",
     "WBTC-B": "Highest wBTC multiple option",
