@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
 import { formatAmount } from 'helpers/formatters/format'
@@ -8,13 +9,11 @@ import { useTranslation } from 'next-i18next'
 import { ajnaExtensionTheme } from 'theme'
 import { Card, Container, Grid } from 'theme-ui'
 
-interface AjnaOpenBorrowViewProps {
-  collateralToken: string
-  quoteToken: string
-}
-
-export function AjnaOpenBorrowView({ collateralToken, quoteToken }: AjnaOpenBorrowViewProps) {
+export function AjnaOpenBorrowView() {
   const { t } = useTranslation()
+  const {
+    environment: { collateralToken, quoteToken },
+  } = useAjnaBorrowContext()
 
   return (
     <Container variant="vaultPageContainer">

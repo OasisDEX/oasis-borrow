@@ -1,4 +1,5 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { AjnaBorrowContextProvider } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
@@ -15,15 +16,13 @@ interface AjnaProductFlowPageProps {
 
 function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProductFlowPageProps) {
   return (
-    <WithWalletConnection>
-      <WithTermsOfService>
-        <AjnaWrapper>
-          {product === 'borrow' && (
-            <AjnaOpenBorrowView collateralToken={collateralToken} quoteToken={quoteToken} />
-          )}
-        </AjnaWrapper>
-      </WithTermsOfService>
-    </WithWalletConnection>
+    <AjnaBorrowContextProvider collateralToken={collateralToken} quoteToken={quoteToken}>
+      <WithWalletConnection>
+        <WithTermsOfService>
+          <AjnaWrapper>{product === 'borrow' && <AjnaOpenBorrowView />}</AjnaWrapper>
+        </WithTermsOfService>
+      </WithWalletConnection>
+    </AjnaBorrowContextProvider>
   )
 }
 
