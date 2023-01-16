@@ -1,8 +1,9 @@
+import BigNumber from 'bignumber.js'
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
-import { AjnaBorrowContextProvider } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
+import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -16,13 +17,19 @@ interface AjnaProductFlowPageProps {
 
 function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProductFlowPageProps) {
   return (
-    <AjnaBorrowContextProvider collateralToken={collateralToken} quoteToken={quoteToken}>
+    // market prices are temporary hardcored and are suppose to represent ETH/DAI pair
+    <AjnaProductContextProvider
+      collateralToken={collateralToken}
+      collateralTokenMarketPrice={new BigNumber(1300)}
+      quoteToken={quoteToken}
+      quoteTokenMarketPrice={new BigNumber(1)}
+    >
       <WithWalletConnection>
         <WithTermsOfService>
           <AjnaWrapper>{product === 'borrow' && <AjnaOpenBorrowView />}</AjnaWrapper>
         </WithTermsOfService>
       </WithWalletConnection>
-    </AjnaBorrowContextProvider>
+    </AjnaProductContextProvider>
   )
 }
 
