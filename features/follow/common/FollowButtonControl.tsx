@@ -28,8 +28,9 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
 
   function handleGetFollowedVaults(resp: UsersWhoFollowVaults[]) {
     const followedVaults = Object.values(resp)
-    const currentFollowedVault = followedVaults.find((item) =>
-      new BigNumber(item.vault_id).eq(vaultId),
+    const currentFollowedVault = followedVaults.find(
+      (item) =>
+        new BigNumber(item.vault_id).eq(vaultId) && new BigNumber(item.vault_chain_id).eq(chainId),
     )
     setIsFollowing(currentFollowedVault !== undefined)
     setProcessing(false) // this is required finally doesn't handle it!

@@ -42,6 +42,8 @@ export function VaultHeadline({
           fontWeight: 'semiBold',
           fontSize: '28px',
           color: 'primary100',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
         {tokenData instanceof Array &&

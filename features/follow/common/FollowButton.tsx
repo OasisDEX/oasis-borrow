@@ -32,6 +32,7 @@ export function FollowButton(props: FollowButtonProps) {
         border: '1px solid',
         borderColor: 'neutral20',
         borderRadius: 'large',
+        marginLeft: '16px',
         backgroundColor: 'neutral10',
         '&:hover': {
           backgroundColor: 'neutral10',
