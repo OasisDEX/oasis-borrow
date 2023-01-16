@@ -1,10 +1,9 @@
-import BigNumber from 'bignumber.js'
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import { ajnaExtensionTheme } from 'theme'
 import { Card, Container, Grid } from 'theme-ui'
@@ -12,7 +11,7 @@ import { Card, Container, Grid } from 'theme-ui'
 export function AjnaOpenBorrowView() {
   const { t } = useTranslation()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
   } = useAjnaProductContext()
 
   return (
@@ -24,12 +23,10 @@ export function AjnaOpenBorrowView() {
         label="/static/img/ajna-product-card-label.svg"
         details={[
           {
-            label: t('ajna.borrow.open.headline.current-collateral-price', { collateralToken }),
-            value: `$${formatAmount(new BigNumber(1400), 'USD')}`,
-          },
-          {
-            label: t('ajna.borrow.open.headline.current-quote-price', { quoteToken }),
-            value: `$${formatAmount(new BigNumber(1), 'USD')}`,
+            label: t('ajna.borrow.open.headline.current-market-price', { collateralToken }),
+            value: `${formatCryptoBalance(
+              collateralPrice.dividedBy(quotePrice),
+            )} ${collateralToken}/${quoteToken}`,
           },
         ]}
       />

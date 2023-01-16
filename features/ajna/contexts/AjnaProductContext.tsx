@@ -4,10 +4,11 @@ import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowF
 import React, { PropsWithChildren, useContext, useEffect, useState } from 'react'
 
 interface AjnaProductContextProviderProps {
+  collateralBalance: BigNumber
+  collateralPrice: BigNumber
   collateralToken: string
-  collateralTokenMarketPrice: BigNumber
+  quotePrice: BigNumber
   quoteToken: string
-  quoteTokenMarketPrice: BigNumber
 }
 
 // external data, could be extended later by some stuff that comes from calculationsm, not directly from outside
@@ -38,7 +39,7 @@ export function useAjnaProductContext(): AjnaProductContext {
 
 export function AjnaProductContextProvider({
   children,
-  ...rest
+  ...props
 }: PropsWithChildren<AjnaProductContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
@@ -46,7 +47,7 @@ export function AjnaProductContextProvider({
 
   const [context, setContext] = useState<AjnaProductContext>({
     environment: {
-      ...rest,
+      ...props,
     },
     form,
     position: {},
@@ -55,9 +56,10 @@ export function AjnaProductContextProvider({
   useEffect(() => {
     setContext((prev) => ({
       ...prev,
+      environment: { ...prev.environment, collateralBalance: props.collateralBalance },
       form: { ...prev.form, state: form.state },
     }))
-  }, [form.state])
+  }, [props.collateralBalance, form.state])
 
   return <ajnaProductContext.Provider value={context}>{children}</ajnaProductContext.Provider>
 }

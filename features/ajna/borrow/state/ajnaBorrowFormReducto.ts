@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
-import { useEffect } from 'react'
 
 export interface AjnaProductFormState {
   depositAmount?: BigNumber
@@ -14,8 +13,16 @@ interface AjnaBorrowFormActionsUpdateDeposit {
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdateGenerate {
+  type: 'update-generate'
+  generateAmount?: BigNumber
+  generateAmountUSD?: BigNumber
+}
 
-type AjnaBorrowFormAction = ReductoActions<AjnaProductFormState, AjnaBorrowFormActionsUpdateDeposit>
+type AjnaBorrowFormAction = ReductoActions<
+  AjnaProductFormState,
+  AjnaBorrowFormActionsUpdateDeposit | AjnaBorrowFormActionsUpdateGenerate
+>
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaProductFormState>) {
   const { dispatch, state, updateState } = useReducto<AjnaProductFormState, AjnaBorrowFormAction>({
@@ -34,16 +41,17 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaProductFormSta
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
           }
+        case 'update-generate':
+          return {
+            ...state,
+            generateAmount: action.generateAmount,
+            generateAmountUSD: action.generateAmountUSD,
+          }
         default:
           return state
       }
     },
   })
-
-  useEffect(() => {
-    console.log(`depositAmount: ${state?.depositAmount}`)
-    console.log(`depositAmountUSD: ${state?.depositAmountUSD}`)
-  }, [state])
 
   return {
     dispatch,

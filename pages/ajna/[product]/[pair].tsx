@@ -1,13 +1,17 @@
-import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 interface AjnaProductFlowPageProps {
   collateralToken: string
@@ -16,20 +20,42 @@ interface AjnaProductFlowPageProps {
 }
 
 function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProductFlowPageProps) {
+  const { balanceInfo$, tokenPriceUSD$ } = useAppContext()
+  const { walletAddress } = useAccount()
+  const _balanceInfo$ = useMemo(() => balanceInfo$(collateralToken, walletAddress), [
+    collateralToken,
+    walletAddress,
+  ])
+  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([collateralToken, quoteToken]), [
+    collateralToken,
+    quoteToken,
+  ])
+  const [balanceInfoData, balanceInfoError] = useObservable(_balanceInfo$)
+  const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(_tokenPriceUSD$)
+
   return (
-    // market prices are temporary hardcored and are suppose to represent ETH/DAI pair
-    <AjnaProductContextProvider
-      collateralToken={collateralToken}
-      collateralTokenMarketPrice={new BigNumber(1300)}
-      quoteToken={quoteToken}
-      quoteTokenMarketPrice={new BigNumber(1)}
-    >
-      <WithWalletConnection>
-        <WithTermsOfService>
-          <AjnaWrapper>{product === 'borrow' && <AjnaOpenBorrowView />}</AjnaWrapper>
-        </WithTermsOfService>
-      </WithWalletConnection>
-    </AjnaProductContextProvider>
+    <WithErrorHandler error={[balanceInfoError, tokenPriceUSDError]}>
+      <WithLoadingIndicator
+        value={[balanceInfoData, tokenPriceUSDData]}
+        customLoader={<VaultContainerSpinner />}
+      >
+        {([{ collateralBalance }, tokenPriceUSD]) => (
+          <AjnaProductContextProvider
+            collateralBalance={collateralBalance}
+            collateralToken={collateralToken}
+            collateralPrice={tokenPriceUSD[collateralToken]}
+            quoteToken={quoteToken}
+            quotePrice={tokenPriceUSD[quoteToken]}
+          >
+            <WithWalletConnection>
+              <WithTermsOfService>
+                <AjnaWrapper>{product === 'borrow' && <AjnaOpenBorrowView />}</AjnaWrapper>
+              </WithTermsOfService>
+            </WithWalletConnection>
+          </AjnaProductContextProvider>
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
 
