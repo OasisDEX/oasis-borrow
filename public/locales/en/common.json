@@ -112,7 +112,7 @@
   "copy-address": "Copy address",
   "country": "Country",
   "configure-your-vault": "Configure your vault",
-  "edit-vault": "Edit vault",
+  "edit-vault": "Manage vault",
   "mark-as-read": "Mark as read",
   "edit-allowance": "Edit allowance",
   "reset": "Reset",
@@ -1680,15 +1680,15 @@
       },
       "multiple": {
         "label": "Multiple",
-        "tooltip": "The current multiple of the position. Indicating the extra exposure on the underlying collateral in comparison to holding the collateral without a multiply position."
+        "tooltip": "The current multiple of the position. It shows the exposure to price changes compared to holding the collateral directly."
       },
       "liquidation-price": {
         "label": "Liquidation Price",
         "tooltip": "The price of the collateral at which this position becomes vulnerable to liquidation."
       },
-      "funding-cost": {
-        "label": "Funding Cost",
-        "tooltip": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Dai Debt / Net Value * Variable annual fee."
+      "borrow-cost": {
+        "label": "Borrow Cost",
+        "tooltip": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Debt / Net Value * Variable annual fee."
       },
       "pnl": {
         "label": "PnL",
@@ -2112,6 +2112,7 @@
     "manage-multiply-position": "Manage Multiply position"
   },
   "manage-position": "Manage position",
+  "view-position": "View Position",
   "brand-assets": {
     "heading": "Brand Assets",
     "intro": "Find here the Oasis.app Logo and graphics.",
