@@ -1,6 +1,5 @@
 import { useActor } from '@xstate/react'
 import { TabBar } from 'components/TabBar'
-import { AaveFaq } from 'features/content/faqs/aave'
 import { Survey } from 'features/survey'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -52,6 +51,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
   const { t } = useTranslation()
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [, send] = useActor(stateMachine)
+  const PositionInfo = strategyConfig.viewComponents.positionInfo
   return (
     <TabBar
       variant="underline"
@@ -73,7 +73,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
           label: t('system.position-info'),
           content: (
             <Card variant="faq">
-              <AaveFaq />
+              <PositionInfo />
             </Card>
           ),
           callback: () => {
