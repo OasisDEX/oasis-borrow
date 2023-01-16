@@ -1,4 +1,5 @@
 import { PrismaClient, UsersWhoFollowVaults } from '@prisma/client'
+import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -21,16 +22,11 @@ const usersWhoFollowVaultsSchema = z.object({
 
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
   const { vault_id, vault_chain_id } = usersWhoFollowVaultsSchema.parse(req.body)
-  console.log('jwt', req.headers.authorization)
-  const user_address = req.headers.authorization
-    ? JSON.parse(atob(req.headers.authorization.split('.')[1])).address
-    : null
-  console.log('user_address', user_address)
-  if (!user_address) {
-    console.log('address missing in jwt token')
+  const user = getUserFromRequest(req)
+  if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
-  const usersAddressWhoJustFollowedVaultLowercased = user_address.toLocaleLowerCase()
+  const usersAddressWhoJustFollowedVaultLowercased = user.address.toLocaleLowerCase()
   const userWhoFollowsVaultData = {
     user_address: usersAddressWhoJustFollowedVaultLowercased,
     vault_id,
