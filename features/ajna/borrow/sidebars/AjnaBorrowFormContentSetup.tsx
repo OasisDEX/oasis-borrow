@@ -3,6 +3,7 @@ import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useRef } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function AjnaBorrowFormContentSetup() {

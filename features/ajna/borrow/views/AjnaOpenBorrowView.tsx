@@ -5,6 +5,7 @@ import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowF
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { ajnaExtensionTheme } from 'theme'
 import { Card, Container, Grid } from 'theme-ui'
 

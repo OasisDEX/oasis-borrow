@@ -1,6 +1,7 @@
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 export function AjnaBorrowFormWrapper() {
   const { t } = useTranslation()

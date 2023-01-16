@@ -1,4 +1,5 @@
 import { AjnaBorrowFormContentSetup } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSetup'
+import React from 'react'
 
 export function AjnaBorrowFormContent() {
   return (
