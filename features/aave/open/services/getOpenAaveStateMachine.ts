@@ -5,7 +5,7 @@ import {
 } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
 
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
@@ -162,8 +162,12 @@ export function getOpenAavePositionStateMachineServices(
     },
     dpmProxy$: (_) => {
       return userDpmProxy$.pipe(
-        filter((proxy) => proxy !== undefined),
-        map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })),
+        tap(() => console.log('triggered before DMP_PROXY_RECEIVED')),
+        // filter((proxy) => proxy !== undefined),
+        map((proxy) => {
+          console.log({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })
+          return { type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy }
+        }),
         distinctUntilChanged(isEqual),
       )
     },

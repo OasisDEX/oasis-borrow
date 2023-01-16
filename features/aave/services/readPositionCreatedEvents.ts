@@ -107,3 +107,16 @@ export function createReadPositionCreatedEvents$(
     startWith([]),
   )
 }
+
+// returns true if the proxy has been consumed by a position, false otherwise.
+export function createProxyConsumed$(
+  context$: Observable<Context>,
+  dpmProxyAddress: string,
+): Observable<boolean> {
+  return getLastCreatedPositionForProxy$(context$, dpmProxyAddress).pipe(
+    startWith(undefined),
+    map((proxy) => {
+      return !!proxy
+    }),
+  )
+}
