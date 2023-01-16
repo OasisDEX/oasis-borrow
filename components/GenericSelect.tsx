@@ -163,6 +163,7 @@ export function GenericSelect({
         border: `1px solid ${isOpen ? theme.colors.primary100 : theme.colors.secondary100}`,
         borderRadius: 'medium',
         transition: 'border-color 200ms',
+        pointerEvents: isDisabled ? 'none' : 'auto',
         '&:hover': {
           borderColor: isOpen ? theme.colors.primary100 : theme.colors.neutral70,
         },
