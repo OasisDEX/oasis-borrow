@@ -214,7 +214,10 @@ export function HomepageView() {
                       {dpmEnabled && (
                         <Box sx={{ mt: 3 }}>
                           {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
-                          <AppLink href="/multiply" variant="inText">
+                          <AppLink
+                            href="https://blog.oasis.app/multiply-for-aave/"
+                            variant="inText"
+                          >
                             {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
                           </AppLink>
                         </Box>
