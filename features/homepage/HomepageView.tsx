@@ -160,7 +160,10 @@ export function HomepageView() {
             mb: 0,
           }}
         >
-          <HomePageBanner heading={t('ref.banner')} link="/earn/aave/open/stETHeth" />
+          <HomePageBanner
+            heading={t('ref.banner')}
+            link="https://blog.oasis.app/multiply-for-aave/"
+          />
         </Flex>
       )}
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
