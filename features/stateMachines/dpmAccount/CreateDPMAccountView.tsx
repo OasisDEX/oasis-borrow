@@ -56,7 +56,12 @@ function InfoStateView({ state, send }: InternalViewsProps) {
             <Trans
               i18nKey={'dpm.create-flow.welcome-screen.paragraph'}
               components={{
-                1: <AppLink href="https://example.com" sx={{ fontSize: 2 }} />,
+                1: (
+                  <AppLink
+                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
+                    sx={{ fontSize: 2 }}
+                  />
+                ),
               }}
             />
           </Text>
@@ -103,7 +108,12 @@ function InProgressView(_: InternalViewsProps) {
             <Trans
               i18nKey={'dpm.create-flow.proxy-creating-screen.paragraph'}
               components={{
-                1: <AppLink href="https://example.com" sx={{ fontSize: 2 }} />,
+                1: (
+                  <AppLink
+                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
+                    sx={{ fontSize: 2 }}
+                  />
+                ),
               }}
             />
           </Text>
@@ -135,7 +145,12 @@ function SuccessStateView({ send }: InternalViewsProps) {
             <Trans
               i18nKey={'dpm.create-flow.proxy-created-screen.paragraph'}
               components={{
-                1: <AppLink href="https://example.com" sx={{ fontSize: 2 }} />,
+                1: (
+                  <AppLink
+                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
+                    sx={{ fontSize: 2 }}
+                  />
+                ),
               }}
             />
           </Text>
