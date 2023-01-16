@@ -48,7 +48,7 @@ export function ContentCardLtv({
     footnote: `${t('manage-earn-vault.liquidation-threshold', {
       percentage: formatted.liquidationThreshold,
     })}`,
-    customBackground: !afterLoanToValue
+    customBackground: afterLoanToValue
       ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
       : 'transparent',
   }
