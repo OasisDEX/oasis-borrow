@@ -162,11 +162,7 @@ export function getOpenAavePositionStateMachineServices(
     },
     dpmProxy$: (_) => {
       return userDpmProxy$.pipe(
-        tap(() => console.log('triggered before DMP_PROXY_RECEIVED')),
-        map((proxy) => {
-          console.log({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })
-          return { type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy }
-        }),
+        map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmProxy: proxy })),
         distinctUntilChanged(isEqual),
       )
     },
