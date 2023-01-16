@@ -1,7 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Flex } from 'theme-ui'
 
@@ -12,14 +14,22 @@ export type VaultHeadlineProps = {
   token: string[]
   details: HeadlineDetailsProp[]
   loading?: boolean
+  followButtonProps?: FollowButtonProps
 }
 
-export function VaultHeadline({ header, token, details, loading = false }: VaultHeadlineProps) {
+export function VaultHeadline({
+  header,
+  token,
+  details,
+  loading = false,
+  followButtonProps,
+}: VaultHeadlineProps) {
   const tokenData = getTokens(token)
+  const followVaultEnabled = useFeatureToggle('FollowVaults')
   return (
     <Flex
       sx={{
-        flexDirection: ['column', null, null, 'row'],
+        flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'flex-end'],
         mb: 4,
@@ -32,6 +42,8 @@ export function VaultHeadline({ header, token, details, loading = false }: Vault
           fontWeight: 'semiBold',
           fontSize: '28px',
           color: 'primary100',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
         {tokenData instanceof Array &&
@@ -49,6 +61,14 @@ export function VaultHeadline({ header, token, details, loading = false }: Vault
             />
           ))}
         {header}
+        {followVaultEnabled && followButtonProps && (
+          <FollowButtonControl
+            followerAddress={followButtonProps.followerAddress}
+            vaultId={followButtonProps.vaultId}
+            docVersion={followButtonProps.docVersion}
+            chainId={followButtonProps.chainId}
+          />
+        )}
       </Heading>
       <Flex
         sx={{

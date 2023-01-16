@@ -2,7 +2,7 @@ import { getNetworkId, Web3Context } from '@oasisdex/web3-context'
 import { Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import { jwtAuthGetToken } from '../termsOfService/jwt'
+import { jwtAuthGetToken } from '../shared/jwt'
 import { TermsAcceptanceState } from '../termsOfService/termsAcceptance'
 import { getWalletRisk$, WalletRiskResponse } from './walletRiskApi'
 

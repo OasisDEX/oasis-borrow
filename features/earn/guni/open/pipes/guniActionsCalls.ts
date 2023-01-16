@@ -15,9 +15,9 @@ import { GuniToken } from 'types/ethers-contracts/GuniToken'
 
 import { TxError } from '../../../../../helpers/types'
 import { VaultType } from '../../../../generalManageVault/vaultType'
+import { jwtAuthGetToken } from '../../../../shared/jwt'
 import { parseVaultIdFromReceiptLogs } from '../../../../shared/transactions'
 import { saveVaultUsingApi$ } from '../../../../shared/vaultApi'
-import { jwtAuthGetToken } from '../../../../termsOfService/jwt'
 
 export type TxChange =
   | { kind: 'txWaitingForApproval' }
