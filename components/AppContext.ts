@@ -961,8 +961,6 @@ export function setupAppContext() {
     (args) => args.address,
   )
 
-  // const hasProxyAddressActiveAavePosition$ = memoize(curry(hasAavePosition$)(aaveUserAccountData$))
-
   const proxyConsumed$ = memoize(curry(createProxyConsumed$)(context$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
