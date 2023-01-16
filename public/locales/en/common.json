@@ -2030,7 +2030,7 @@
         "close-to-title": "Close position to {{token}}",
         "close": "Close vault",
         "confirm-btn": "Confirm",
-        "close-description": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
+        "close-description": "To close your position, all your collateral will be sold to pay back the outstanding debt. The remaining {{closeToToken}} will be sent to your address.",
         "stop-close": "Not right now",
         "token-amount-after-closing": "{{token}} after closing",
         "retry-btn": "Retry",
