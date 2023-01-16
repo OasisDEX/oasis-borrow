@@ -33,7 +33,6 @@ const conf = withBundleAnalyzer(
         ignoreBuildErrors: isProduction,
       },
       productionBrowserSourceMaps: true,
-      cssModules: true,
       pageExtensions: ['mdx', 'tsx'],
       publicRuntimeConfig: publicRuntimeConfig,
       webpack: function (config, { isServer }) {
@@ -122,11 +121,6 @@ const conf = withBundleAnalyzer(
         }
 
         return config
-      },
-      pwa: {
-        disable: process.env.NODE_ENV !== 'production',
-        register: process.env.NODE_ENV === 'production',
-        dest: 'public',
       },
       i18n,
       async redirects() {
