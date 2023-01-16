@@ -42,13 +42,6 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
       <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
         {([_productCardsData]) => (
           <ProductCardsWrapper>
-            {/* TODO prepare proper handling for DSR */}
-            {props.strategies.maker.includes('DSR') && daiSavingsRate ? (
-              <ProductCardEarnDsr />
-            ) : null}
-            {_productCardsData.map((cardData) => (
-              <ProductCard cardData={cardData} key={cardData.ilk} />
-            ))}
             {aaveStrategyCards.map((tokenData) => {
               switch (getAaveStrategy(tokenData.symbol)[0].type) {
                 case 'Multiply':
@@ -69,6 +62,13 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
                   return null
               }
             })}
+            {/* TODO prepare proper handling for DSR */}
+            {props.strategies.maker.includes('DSR') && daiSavingsRate ? (
+              <ProductCardEarnDsr />
+            ) : null}
+            {_productCardsData.map((cardData) => (
+              <ProductCard cardData={cardData} key={cardData.ilk} />
+            ))}
           </ProductCardsWrapper>
         )}
       </WithLoadingIndicator>

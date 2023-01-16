@@ -34,6 +34,8 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
     collateralReserveConfigurationData?.ltv &&
     new RiskRatio(collateralReserveConfigurationData.ltv, RiskRatio.TYPE.LTV)
 
+  console.log('cardData', cardData)
+
   return (
     <ProductCard
       tokenImage={cardData.bannerIcon}
@@ -85,6 +87,7 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
           value: <ProductCardProtocolLink ilk={cardData.symbol} protocol={cardData.protocol} />,
         },
       ]}
+      floatingLabelText={t('product-card.tags.new')}
       button={{
         link: `/multiply/aave/open/${strategy.urlSlug}`,
         text: t('nav.multiply'),
