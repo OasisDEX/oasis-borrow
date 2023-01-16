@@ -273,7 +273,7 @@ export function createManageAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
-                  target: 'reviewingAdjusting',
+                  target: ['reviewingAdjusting', '#manageAaveStateMachine.background.debouncing'],
                 },
               },
             },
@@ -282,7 +282,7 @@ export function createManageAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
-                  target: 'manageDebt',
+                  target: ['manageDebt', '#manageAaveStateMachine.background.debouncingManage'],
                 },
               },
             },
@@ -291,7 +291,10 @@ export function createManageAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
-                  target: 'manageCollateral',
+                  target: [
+                    'manageCollateral',
+                    '#manageAaveStateMachine.background.debouncingManage',
+                  ],
                 },
               },
             },

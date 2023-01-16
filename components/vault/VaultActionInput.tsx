@@ -33,6 +33,7 @@ export const MinusIcon = () => (
 interface VaultActionInputProps {
   action: VaultAction
   currencyCode: string
+  currencyDigits?: number
   tokenUsdPrice?: BigNumber
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
@@ -70,6 +71,7 @@ interface VaultActionInputProps {
 export function VaultActionInput({
   action,
   currencyCode,
+  currencyDigits,
   tokenUsdPrice = one,
   amount,
   onChange,
@@ -110,13 +112,15 @@ export function VaultActionInput({
 
   const toggleResolved = typeof defaultToggle === 'boolean' ? defaultToggle : toggleStatus
 
-  const currencyDigits =
-    currencyCode !== 'USD'
-      ? calculateTokenPrecisionByValue({
-          token: currencyCode,
-          usdPrice: tokenUsdPrice,
-        })
-      : FIAT_PRECISION
+  if (currencyDigits === undefined) {
+    currencyDigits =
+      currencyCode !== 'USD'
+        ? calculateTokenPrecisionByValue({
+            token: currencyCode,
+            usdPrice: tokenUsdPrice,
+          })
+        : FIAT_PRECISION
+  }
 
   const auxiliaryDigits = auxiliaryCurrencyCode
     ? calculateTokenPrecisionByValue({

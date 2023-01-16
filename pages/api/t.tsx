@@ -21,14 +21,15 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse<{ stat
       userId,
     } = req.body
 
-    mixpanel.track(`${eventName}`, {
-      ...eventBody,
-      distinct_id: distinctId,
-      $current_url: currentUrl,
-      $initial_referrer: initialReferrer,
-      $initial_referring_domain: initialReferrerHost,
-      $user_id: userId,
-    })
+    !currentUrl.endsWith('vault-info') && // disables tracking for this particular tab
+      mixpanel.track(`${eventName}`, {
+        ...eventBody,
+        distinct_id: distinctId,
+        $current_url: currentUrl,
+        $initial_referrer: initialReferrer,
+        $initial_referring_domain: initialReferrerHost,
+        $user_id: userId,
+      })
 
     res.json({ status: 200 })
   } catch (err) {

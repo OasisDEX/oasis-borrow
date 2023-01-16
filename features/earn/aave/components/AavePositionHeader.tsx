@@ -4,7 +4,7 @@ import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -105,7 +105,7 @@ function AavePositionHeader({
   aaveTVL?.totalValueLocked &&
     headlineDetails.push({
       label: t('open-earn.aave.product-header.total-value-locked'),
-      value: formatHugeNumbersToShortHuman(aaveTVL.totalValueLocked),
+      value: formatCryptoBalance(aaveTVL.totalValueLocked),
     })
 
   return (

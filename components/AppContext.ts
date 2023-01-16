@@ -293,7 +293,10 @@ import { combineLatest, defer, from, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
-import { createReadPositionCreatedEvents$ } from '../features/aave/services/readPositionCreatedEvents'
+import {
+  createReadPositionCreatedEvents$,
+  getLastCreatedPositionForProxy$,
+} from '../features/aave/services/readPositionCreatedEvents'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -1009,11 +1012,18 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
+  const readPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
+  )
+
+  const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
+
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
       aaveUserConfiguration$,
       aaveReservesList$,
+      lastCreatedPositionForProxy$,
     ),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
@@ -1022,10 +1032,6 @@ export function setupAppContext() {
     curry(createAavePrepareReserveData$)(
       observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
     ),
-  )
-
-  const readPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
   )
 
   const aavePositions$ = memoize(
@@ -1411,6 +1417,7 @@ export function setupAppContext() {
     potTotalValueLocked$,
     aaveProtocolData$,
     strategyConfig$,
+    readPositionCreatedEvents$,
   }
 }
 
