@@ -34,8 +34,6 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
     collateralReserveConfigurationData?.ltv &&
     new RiskRatio(collateralReserveConfigurationData.ltv, RiskRatio.TYPE.LTV)
 
-  console.log('cardData', cardData)
-
   return (
     <ProductCard
       tokenImage={cardData.bannerIcon}
