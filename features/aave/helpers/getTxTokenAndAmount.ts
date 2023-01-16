@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
 import { BaseAaveContext } from '../common/BaseAaveContext'
-import { ManageDebtActionsEnum } from '../strategyConfig'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 
 export function getTxTokenAndAmount(context: BaseAaveContext) {
   // FIX IT whole logic below should be happening in xstate machine probably, we should not do that here
@@ -13,11 +13,15 @@ export function getTxTokenAndAmount(context: BaseAaveContext) {
     : false
   const isBorrowingDebt =
     context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT
+
+  const isWithdrawingCollateral =
+    context.manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.WITHDRAW_COLLATERAL
+
   const amountAndToken = {
     amount: context.userInput.amount || context.manageTokenInput?.manageTokenActionValue || zero,
     token: context.userInput.amount ? context.tokens.deposit : context.tokens.collateral,
   }
-  if (isBorrowingDebt) {
+  if (isBorrowingDebt || isWithdrawingCollateral) {
     amountAndToken.amount = zero
   }
   if (isBorrowOrPaybackDebt) {

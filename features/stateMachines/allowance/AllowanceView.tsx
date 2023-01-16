@@ -41,7 +41,7 @@ function AllowanceInfoStateViewContent({
   return (
     <Grid gap={3}>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-        {t('vault-form.subtext.allowance', { token })}
+        {t('vault-form.subtext.commonAllowance', { token })}
       </Text>
       <Radio
         onChange={() => send({ type: 'SET_ALLOWANCE', allowanceType: 'unlimited' })}
@@ -124,7 +124,7 @@ function AllowanceInProgressStateViewContent({ state }: Pick<AllowanceViewStateP
   return (
     <Grid gap={3}>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-        {t('vault-form.subtext.allowance', { token })}
+        {t('vault-form.subtext.commonAllowance', { token })}
       </Text>
       <TxStatusCardProgress
         text={t('setting-allowance-for', { token })}
@@ -162,7 +162,7 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
     content: (
       <Grid gap={3}>
         <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-          {t('vault-form.subtext.allowance', { token })}
+          {t('vault-form.subtext.commonAllowance', { token })}
         </Text>
         <TxStatusCardSuccess
           text={t('setting-allowance-for', { token })}
@@ -191,7 +191,7 @@ function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
     content: (
       <Grid gap={3}>
         <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-          {t('vault-form.subtext.allowance', { token })}
+          {t('vault-form.subtext.commonAllowance', { token })}
         </Text>
       </Grid>
     ),

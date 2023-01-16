@@ -4,8 +4,6 @@ import { AaveLendingPool } from '../../../types/web3-v1-contracts/aave-lending-p
 import { amountFromWei } from '../../utils'
 import { CallDef } from '../callsHelpers'
 
-export const MINIMAL_COLLATERAL = new BigNumber(0.00001)
-
 export interface AaveUserAccountData {
   totalCollateralETH: BigNumber
   totalDebtETH: BigNumber

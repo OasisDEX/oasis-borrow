@@ -5,7 +5,7 @@ import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import { useTranslation } from 'next-i18next'
@@ -89,7 +89,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               },
               {
                 title: 'Current Liquidity Available',
-                value: formatHugeNumbersToShortHuman(_availableLiquidity),
+                value: formatCryptoBalance(_availableLiquidity),
               },
               {
                 title: t('system.protocol'),
