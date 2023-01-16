@@ -178,7 +178,7 @@ function GetReviewingSidebarProps({
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('manage-earn.aave.vault-form.close-description')}
+              {t('manage-earn.aave.vault-form.close-description', { closeToToken })}
             </Text>
             <BalanceAfterClose state={state} send={send} token={closeToToken} />
             <StrategyInformationContainer state={state} />
