@@ -208,6 +208,7 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={collateral}
+              currencyDigits={getToken(collateral).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxCollateralAmount}
               showMax={true}
@@ -261,6 +262,7 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={debt}
+              currencyDigits={getToken(debt).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxDebtAmount}
               showMax={true}
