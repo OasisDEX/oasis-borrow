@@ -5,14 +5,14 @@ import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
 
 export function getAvailableDPMProxy$(
   userDpmProxies$: (account: string) => Observable<UserDpmProxy[]>,
-  hasAavePositionForProxyAddress$: (proxyAddress: string) => Observable<boolean>,
+  proxyConsumed: (proxyAddress: string) => Observable<boolean>,
   walletAddress: string,
 ): Observable<UserDpmProxy | undefined> {
   return userDpmProxies$(walletAddress).pipe(
     switchMap((proxies) =>
       combineLatest(
         proxies.map((proxy) =>
-          hasAavePositionForProxyAddress$(proxy.proxy).pipe(
+          proxyConsumed(proxy.proxy).pipe(
             map((hasOpenedPosition) => ({ ...proxy, hasOpenedPosition })),
           ),
         ),

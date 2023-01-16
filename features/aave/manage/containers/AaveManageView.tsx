@@ -4,7 +4,6 @@ import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
-import { AaveFaq } from 'features/content/faqs/aave'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -40,6 +39,7 @@ function AaveManageContainer({
   const { t } = useTranslation()
   const Header = strategyConfig.viewComponents.headerManage
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
+  const PositionInfo = strategyConfig.viewComponents.positionInfo
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
   const aaveProtection = useFeatureToggle('AaveProtection')
@@ -96,7 +96,7 @@ function AaveManageContainer({
               label: t('system.position-info'),
               content: (
                 <Card variant="faq">
-                  <AaveFaq />
+                  <PositionInfo />
                 </Card>
               ),
             },

@@ -24,6 +24,7 @@ export interface IStrategyConfig {
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
     adjustRiskView: AdjustRiskView
+    positionInfo: PositionInfo
     sidebarTitle: string
     sidebarButton: string
   }
@@ -57,3 +58,4 @@ type VaultDetails = (
     AaveMultiplyManageComponentProps,
 ) => JSX.Element
 type AdjustRiskView = (props: AdjustRiskViewProps) => JSX.Element
+type PositionInfo = () => JSX.Element

@@ -401,7 +401,9 @@
         "multiply": {
           "tabLabel": "Multiply on Oasis",
           "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
-          "tabParaLinkContent": "See all Multiply collateral types →"
+          "tabParaLinkContent": "See all Multiply collateral types →",
+          "aaveTabParaContent": "We've launched multiply functionality for AAVE.",
+          "aaveTabParaLinkContent": "Read more →"
         },
         "earn": {
           "tabLabel": "Earn on Oasis",
@@ -1503,6 +1505,7 @@
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
+      "automation-enabled": "Automation Enabled",
       "max-exposure": "Max {{token}} exposure"
     },
     "unprofitable-position": "This position is currently likely unprofitable. Proceed if you know what you are doing."
@@ -1547,7 +1550,9 @@
     "multiply": {
       "title": "Oasis Multiply",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset.",
-      "link": "Learn more about Multiply ->"
+      "link": "Learn more about Multiply ->",
+      "aaveDescription": "We've launched multiply functionality for AAVE.",
+      "aaveLink": "Read more →"
     },
     "borrow": {
       "title": "Oasis Borrow",
@@ -1927,7 +1932,7 @@
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
-    "banner": "Earn on ETH with our new stETH product. Check it out today",
+    "banner": "We've launched multiply functionality for AAVE. Read more here",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",
