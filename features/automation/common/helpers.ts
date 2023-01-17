@@ -56,7 +56,7 @@ export function getTriggersByType(
     const decodedTriggers = triggers.map((trigger) => {
       // TODO temp workaround until common lib will be updated
       const result =
-        trigger.commandAddress === '0xab837301d12cdc4b97f1e910fc56c9179894d9cf'
+        trigger.commandAddress === '0xec1bb74f5799811c0c1bff94ef76fb40abccbe4a'
           ? utils.defaultAbiCoder.decode(
               ['address', 'uint16', 'address', 'address', 'uint256', 'uint32'],
               trigger.executionParams,

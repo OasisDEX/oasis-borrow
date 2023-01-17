@@ -39,7 +39,7 @@ export function AaveAutomationContext({
 
   const defaultStopLossTriggerData = {
     ...defaultStopLossData,
-    isToCollateral: true,
+    isToCollateral: false,
   }
 
   return (

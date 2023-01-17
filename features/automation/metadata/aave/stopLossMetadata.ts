@@ -84,9 +84,9 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
   }
 
   const triggerMaxToken = getMaxToken({
-    stopLossLevel: stopLossLevel.times(100),
+    stopLossLevel: one.div(stopLossLevel).times(100),
     lockedCollateral,
-    liquidationRatio,
+    liquidationRatio: one.div(liquidationRatio),
     liquidationPrice,
     debt,
   })
