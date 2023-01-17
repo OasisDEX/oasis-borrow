@@ -148,7 +148,7 @@ async function makeCall(network: string, calls: any[]) {
     headers: {
       'Content-Type': 'application/json',
       Connection: 'keep-alive',
-      'Content-Encoding': 'gzip, deflate, br',
+      // 'Content-Encoding': 'gzip, br',
       'Content-Length': '',
     },
   }
