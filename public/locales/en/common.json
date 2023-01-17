@@ -112,7 +112,7 @@
   "copy-address": "Copy address",
   "country": "Country",
   "configure-your-vault": "Configure your vault",
-  "edit-vault": "Edit vault",
+  "edit-vault": "Manage vault",
   "mark-as-read": "Mark as read",
   "edit-allowance": "Edit allowance",
   "reset": "Reset",
@@ -132,6 +132,31 @@
   "proxy-waiting-text": "Read more on smart proxy in the",
   "proxy-waiting-text-link": "Knowledge Base",
   "creating-proxy-contract": "Creating your smart proxy contract",
+  "dpm": {
+    "create-flow": {
+      "welcome-screen": {
+        "header": "Create your Smart DeFi account",
+        "create-button": "Create Smart DeFi account",
+        "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>",
+        "retry-create-button": "Retry Create Smart DeFi account",
+        "create-order-summary-heading":"Creating your Smart DeFi account"
+      },
+      "proxy-creating-screen": {
+        "header": "Create your Smart DeFi account",
+        "button": "Creating Smart DeFi account",
+        "paragraph": "Read more in the the <1>knowledge base</1>"
+      },
+      "proxy-created-screen": {
+        "header": "Smart DeFi account created",
+        "paragraph": "Read more in the the <1>knowledge base</1>"
+      },
+      "bullet-points": [
+        "Multiple Aave positions with the same wallet",
+        "Enables advanced Oasis.app features such as Automation and Re-financing",
+        "Better security with allowances set and removed within transactions"
+      ]
+    }
+  },
   "currency": "Currency",
   "custom": "Custom",
   "please-try-again-later": "Please try again later",
@@ -1619,7 +1644,7 @@
     "view-vault": "View Vault",
     "automation-button-on": "On",
     "automation-button-off": "Activate",
-    "automation-button-off-disabled": "No protection",
+    "automation-button-off-disabled": "Not available yet",
     "position-headers": {
       "asset": {
         "label": "Asset",
@@ -1655,15 +1680,15 @@
       },
       "multiple": {
         "label": "Multiple",
-        "tooltip": "The current multiple of the position. Indicating the extra exposure on the underlying collateral in comparison to holding the collateral without a multiply position."
+        "tooltip": "The current multiple of the position. It shows the exposure to price changes compared to holding the collateral directly."
       },
       "liquidation-price": {
         "label": "Liquidation Price",
         "tooltip": "The price of the collateral at which this position becomes vulnerable to liquidation."
       },
-      "funding-cost": {
-        "label": "Funding Cost",
-        "tooltip": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Dai Debt / Net Value * Variable annual fee."
+      "borrow-cost": {
+        "label": "Borrow Cost",
+        "tooltip": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Debt / Net Value * Variable annual fee."
       },
       "pnl": {
         "label": "PnL",
@@ -2087,6 +2112,7 @@
     "manage-multiply-position": "Manage Multiply position"
   },
   "manage-position": "Manage position",
+  "view-position": "View Position",
   "brand-assets": {
     "heading": "Brand Assets",
     "intro": "Find here the Oasis.app Logo and graphics.",

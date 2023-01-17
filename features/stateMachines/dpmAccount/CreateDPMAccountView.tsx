@@ -37,7 +37,9 @@ function buttonInfoSettings({
   const isRetry = state.matches('txFailure')
 
   return {
-    label: isRetry ? t('retry-create-proxy') : t('create-proxy-btn'),
+    label: isRetry
+      ? t('dpm.create-flow.welcome-screen.retry-create-button')
+      : t('dpm.create-flow.welcome-screen.create-button'),
     action: isRetry ? () => send('RETRY') : () => send('START'),
   }
 }
@@ -46,17 +48,17 @@ function InfoStateView({ state, send }: InternalViewsProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('vault-form.header.proxy'),
+    title: t('dpm.create-flow.welcome-screen.header'),
     content: (
       <Grid gap={3}>
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'vault-form.subtext.proxy-start'}
+              i18nKey={'dpm.create-flow.welcome-screen.paragraph'}
               components={{
                 1: (
                   <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-proxy-contract"
+                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
                     sx={{ fontSize: 2 }}
                   />
                 ),
@@ -68,10 +70,14 @@ function InfoStateView({ state, send }: InternalViewsProps) {
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
+              items={t<string, string[]>('dpm.create-flow.bullet-points', {
+                returnObjects: true,
+              })}
               listStyle={{ my: 2 }}
             />
-            <VaultChangesInformationContainer title={t('creating-proxy-contract')}>
+            <VaultChangesInformationContainer
+              title={t('dpm.create-flow.welcome-screen.create-order-summary-heading')}
+            >
               <VaultChangesInformationItem
                 label={t('transaction-fee')}
                 value={getEstimatedGasFeeTextOld(state.context.gasData)}
@@ -94,17 +100,17 @@ function InfoStateView({ state, send }: InternalViewsProps) {
 function InProgressView(_: InternalViewsProps) {
   const { t } = useTranslation()
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('vault-form.header.proxy'),
+    title: t('dpm.create-flow.proxy-creating-screen.header'),
     content: (
       <Grid gap={3}>
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'vault-form.subtext.proxy-progress'}
+              i18nKey={'dpm.create-flow.proxy-creating-screen.paragraph'}
               components={{
                 1: (
                   <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-proxy-contract"
+                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
                     sx={{ fontSize: 2 }}
                   />
                 ),
@@ -121,7 +127,7 @@ function InProgressView(_: InternalViewsProps) {
     primaryButton: {
       isLoading: true,
       disabled: true,
-      label: t('creating-proxy'),
+      label: t('dpm.create-flow.proxy-creating-screen.button'),
     },
   }
   return <SidebarSection {...sidebarSectionProps} />
@@ -131,17 +137,17 @@ function SuccessStateView({ send }: InternalViewsProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('vault-form.header.proxy'),
+    title: t('dpm.create-flow.proxy-created-screen.header'),
     content: (
       <Grid gap={3}>
         <>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             <Trans
-              i18nKey={'vault-form.subtext.proxy-start'}
+              i18nKey={'dpm.create-flow.proxy-created-screen.paragraph'}
               components={{
                 1: (
                   <AppLink
-                    href="https://kb.oasis.app/help/what-is-a-proxy-contract"
+                    href="https://kb.oasis.app/help/what-is-a-smart-defi-account"
                     sx={{ fontSize: 2 }}
                   />
                 ),
@@ -153,7 +159,7 @@ function SuccessStateView({ send }: InternalViewsProps) {
               icon="checkmark"
               iconSize="14px"
               iconColor="primary100"
-              items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
+              items={t<string, string[]>('dpm.create-flow.bullet-points', { returnObjects: true })}
               listStyle={{ my: 2 }}
             />
           </>
