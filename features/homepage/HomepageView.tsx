@@ -162,7 +162,7 @@ export function HomepageView() {
         >
           <HomePageBanner
             heading={t('ref.banner')}
-            link="https://blog.oasis.app/multiply-for-aave/"
+            link="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
           />
         </Flex>
       )}
@@ -215,7 +215,7 @@ export function HomepageView() {
                         <Box sx={{ mt: 3 }}>
                           {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
                           <AppLink
-                            href="https://blog.oasis.app/multiply-for-aave/"
+                            href="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
                             variant="inText"
                           >
                             {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
