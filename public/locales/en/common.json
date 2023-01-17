@@ -1529,6 +1529,7 @@
     },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
+      "new": "New",
       "staking-rewards": "Staking rewards",
       "automation-enabled": "Automation Enabled",
       "max-exposure": "Max {{token}} exposure"
