@@ -124,6 +124,7 @@ import {
   createStandardCdps$,
   createVault$,
   createVaults$,
+  createVaultsFromIds$,
   decorateVaultsWithValue$,
   Vault,
 } from 'blockchain/vaults'
@@ -208,6 +209,7 @@ import {
   createMakerOracleTokenPricesForDates$,
 } from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
+import { followedVaults$ } from 'features/follow/api'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import {
   TAB_CHANGE_SUBJECT,
@@ -1346,6 +1348,28 @@ export function setupAppContext() {
     ),
   )
 
+  const vaultsFromId$ = memoize(
+    curry(createVaultsFromIds$)(onEveryBlock$, followedVaults$, vault$, chainContext$, [
+      charterCdps$,
+      cropJoinCdps$,
+      standardCdps$,
+    ]),
+  )
+
+  const followedList$ = memoize(
+    curry(createMakerPositionsList$)(
+      context$,
+      ilksWithBalance$,
+      memoize(
+        curry(vaultsWithHistory$)(
+          chainContext$,
+          curry(decorateVaultsWithValue$)(vaultsFromId$, exchangeQuote$, userSettings$),
+          1000 * 60,
+        ),
+      ),
+    ),
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1418,6 +1442,7 @@ export function setupAppContext() {
     aaveProtocolData$,
     strategyConfig$,
     readPositionCreatedEvents$,
+    followedList$,
   }
 }
 

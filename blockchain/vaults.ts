@@ -1,4 +1,4 @@
-import { VaultType } from '@prisma/client'
+import { UsersWhoFollowVaults, VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
@@ -72,6 +72,36 @@ export function createVaults$(
         map((nestedIds) => nestedIds.flat()),
         switchMap((ids) =>
           ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(id, context.chainId))),
+        ),
+        distinctUntilChanged<Vault[]>(isEqual),
+        switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
+      ),
+    ),
+    shareReplay(1),
+  )
+}
+
+export function createVaultsFromIds$(
+  refreshInterval: Observable<any>,
+  followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  context$: Observable<Context>,
+  cdpIdResolvers: CdpIdsResolver[],
+  address: string,
+): Observable<VaultWithType[]> {
+  return combineLatest(refreshInterval, context$, followedVaults$(address)).pipe(
+    switchMap(([_, context, followedVaults]) =>
+      combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
+        switchMap(() =>
+          followedVaults.length === 0
+            ? of([])
+            : combineLatest(
+                followedVaults
+                  .filter((vault) => vault.vault_chain_id === context.chainId)
+                  .map((followedVault) =>
+                    vault$(new BigNumber(followedVault.vault_id), context.chainId),
+                  ),
+              ),
         ),
         distinctUntilChanged<Vault[]>(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),

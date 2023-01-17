@@ -23,7 +23,7 @@ export function VaultsOverviewView({ address }: Props) {
       </Flex>
 
       <PositionsList address={address} />
-      <FollowedList />
+      <FollowedList address={address} />
 
       <VaultSuggestions address={address} />
     </Grid>
