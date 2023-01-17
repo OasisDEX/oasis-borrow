@@ -396,7 +396,7 @@ export async function getCloseAaveParameters({
     slippage,
     debtToken,
     collateralToken,
-    collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount,
+    collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount.minus(1),
   }
 
   const stratDeps: closeParameters[1] = {

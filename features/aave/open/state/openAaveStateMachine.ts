@@ -48,6 +48,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   hasOpenedPosition?: boolean
   strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
+  blockSettingCalculatedAddresses?: boolean
 }
 
 function getTransactionDef(context: OpenAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -257,7 +258,11 @@ export function createOpenAaveStateMachine(
               },
             },
             txInProgress: {
-              entry: ['eventConfirmTransaction', 'spawnTransactionMachine'],
+              entry: [
+                'eventConfirmTransaction',
+                'spawnTransactionMachine',
+                'disableChangingAddresses',
+              ],
               on: {
                 TRANSACTION_COMPLETED: {
                   target: 'txSuccess',
@@ -332,7 +337,7 @@ export function createOpenAaveStateMachine(
           allDefined(userInput, effectiveProxyAddress, strategy),
         canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
           allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
-          tokenBalance!.gt(userInput.amount!),
+          tokenBalance!.gte(userInput.amount!),
         isAllowanceNeeded,
       },
       actions: {
@@ -482,6 +487,10 @@ export function createOpenAaveStateMachine(
           ),
         })),
         calculateEffectiveProxyAddress: assign((context) => {
+          if (context.blockSettingCalculatedAddresses) {
+            return {}
+          }
+
           const shouldUseDpmProxy =
             context.strategyConfig.proxyType === ProxyType.DpmProxy &&
             context.userDpmProxy !== undefined
@@ -505,6 +514,11 @@ export function createOpenAaveStateMachine(
           return {
             tokenBalance: event.balance.deposit.balance,
             tokenPrice: event.balance.deposit.price,
+          }
+        }),
+        disableChangingAddresses: assign((_) => {
+          return {
+            blockSettingCalculatedAddresses: true,
           }
         }),
       },

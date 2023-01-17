@@ -48,13 +48,13 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: true,
   AaveEarnSTETHETH: true,
-  AaveMultiplySTETHUSDC: false,
-  AaveMultiplyETHUSDC: false,
-  AaveMultiplyWBTCUSDC: false,
+  AaveMultiplySTETHUSDC: true,
+  AaveMultiplyETHUSDC: true,
+  AaveMultiplyWBTCUSDC: true,
   FollowVaults: false,
   AaveProtection: false,
   Ajna: false,
-  AaveUseDpmProxy: false,
+  AaveUseDpmProxy: true,
   DaiSavingsRate: true,
   // your feature here....
 }

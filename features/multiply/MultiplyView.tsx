@@ -43,7 +43,10 @@ export function MultiplyView() {
           }}
         >
           {t('product-page.multiply.aaveDescription')}{' '}
-          <AppLink href="/multiply" sx={{ fontSize: 4, fontWeight: 'body' }}>
+          <AppLink
+            href="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
+            sx={{ fontSize: 4, fontWeight: 'body' }}
+          >
             {t('product-page.multiply.aaveLink')}
           </AppLink>
         </Text>
