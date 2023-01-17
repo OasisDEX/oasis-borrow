@@ -63,9 +63,9 @@ const cache: { [key: string]: Cache } = {}
 function getRpcNode(network: string) {
   switch (network) {
     case 'mainnet':
-      return `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+      return process.env.MAINNET_RPC_URL
     case 'goerli':
-      return `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
+      return process.env.GOERLI_RPC_URL
     default:
       throw new Error('unsupported network')
   }
