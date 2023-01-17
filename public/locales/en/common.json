@@ -1644,7 +1644,7 @@
     "view-vault": "View Vault",
     "automation-button-on": "On",
     "automation-button-off": "Activate",
-    "automation-button-off-disabled": "No protection",
+    "automation-button-off-disabled": "Not available yet",
     "position-headers": {
       "asset": {
         "label": "Asset",
