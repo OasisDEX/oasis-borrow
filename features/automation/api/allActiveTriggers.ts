@@ -14,26 +14,54 @@ const query = gql`
   }
 `
 
+const queryV2 = gql`
+  query activeTriggersV2ForVault($proxyAddress: String) {
+    allActiveTriggers(
+      filter: { proxyAddress: { equalTo: $proxyAddress } }
+      orderBy: [BLOCK_ID_ASC]
+    ) {
+      nodes {
+        triggerId
+        groupId
+        commandAddress
+        triggerData
+        proxyAddress
+      }
+    }
+  }
+`
+
 interface ActiveTrigger {
   triggerId: number
   groupId?: number
   commandAddress: string
   triggerData: string
+  proxyAddress: string
 }
 
 // vaultId is string here because gql expects type BigFloat but can only parse string values
 export async function getAllActiveTriggers(
   client: GraphQLClient,
   vaultId: string,
+  proxyAddress?: string,
 ): Promise<TriggerRecord[]> {
-  const data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(query, {
-    vaultId,
-  })
+  let data
+
+  if (proxyAddress) {
+    data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(queryV2, {
+      proxyAddress: proxyAddress.toLowerCase(),
+    })
+  } else {
+    data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(query, {
+      vaultId,
+    })
+  }
 
   return data.allActiveTriggers.nodes.map((record) => ({
     triggerId: record.triggerId,
     groupId: record.groupId,
     commandAddress: record.commandAddress,
     executionParams: record.triggerData,
+    proxyAddress: record.proxyAddress,
   }))
 }

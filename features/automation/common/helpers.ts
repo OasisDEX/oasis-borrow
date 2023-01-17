@@ -1,3 +1,4 @@
+import { Result } from '@ethersproject/abi'
 import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import {
@@ -9,6 +10,7 @@ import {
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
 import { UIChanges } from 'components/AppContext'
+import { utils } from 'ethers'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   aaveTokenPairsAllowedAutomation,
@@ -37,14 +39,35 @@ import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 
-export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
+export interface TriggerDataType {
+  triggerId: number
+  result: Result
+  executionParams: string
+  commandAddress: string
+}
+
+export function getTriggersByType(
+  triggers: TriggerRecord[],
+  triggerTypes: TriggerType[],
+): TriggerDataType[] {
   const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
 
   try {
     const decodedTriggers = triggers.map((trigger) => {
+      // TODO temp workaround until common lib will be updated
+      const result =
+        trigger.commandAddress === '0xab837301d12cdc4b97f1e910fc56c9179894d9cf'
+          ? utils.defaultAbiCoder.decode(
+              ['address', 'uint16', 'address', 'address', 'uint256', 'uint32'],
+              trigger.executionParams,
+            )
+          : decodeTriggerData(trigger.commandAddress, networkId, trigger.executionParams)
+
       return {
         triggerId: trigger.triggerId,
-        result: decodeTriggerData(trigger.commandAddress, networkId, trigger.executionParams),
+        result,
+        executionParams: trigger.executionParams,
+        commandAddress: trigger.commandAddress,
       }
     })
 

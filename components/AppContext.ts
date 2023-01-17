@@ -17,7 +17,8 @@ import {
 } from 'blockchain/calls/aave/aaveProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
-  AutomationBotRemoveTriggerData,
+  AutomationBotV2AddTriggerData,
+  AutomationBotV2RemoveTriggerData,
 } from 'blockchain/calls/automationBot'
 import {
   AutomationBotAddAggregatorTriggerData,
@@ -310,14 +311,22 @@ export type TxData =
   | CloseVaultData
   | OpenGuniMultiplyData
   | AutomationBotAddTriggerData
-  | AutomationBotRemoveTriggerData
+  | AutomationBotV2AddTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
   | OperationExecutorTxMeta
   | CreateDPMAccount
+
+export type AutomationTxData =
+  | AutomationBotAddTriggerData
+  | AutomationBotV2AddTriggerData
+  | AutomationBotAddAggregatorTriggerData
+  | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -1210,7 +1219,7 @@ export function setupAppContext() {
   )
 
   const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, vault$),
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
   )
 
   const vaultsHistoryAndValue$ = memoize(

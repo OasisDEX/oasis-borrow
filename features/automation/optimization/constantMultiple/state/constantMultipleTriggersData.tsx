@@ -1,11 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
-import {
-  AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
+import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Vault } from 'blockchain/vaults'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/optimization/constantMultiple/state/useConstantMultipleStateInitialization'
 
@@ -71,22 +67,5 @@ export function prepareAddConstantMultipleTriggerData({
     triggersData: [buyTriggerData.triggerData, sellTriggerData.triggerData],
     proxyAddress: owner,
     kind: TxMetaKind.addTriggerGroup,
-  }
-}
-
-export function prepareRemoveConstantMultipleTriggerData({
-  vaultData,
-  triggersId,
-  shouldRemoveAllowance,
-}: {
-  vaultData: Vault
-  triggersId: BigNumber[]
-  shouldRemoveAllowance: boolean
-}): AutomationBotRemoveTriggersData {
-  return {
-    triggersId: triggersId.map((item) => item.toNumber()),
-    removeAllowance: shouldRemoveAllowance,
-    proxyAddress: vaultData.owner,
-    kind: TxMetaKind.removeTriggers,
   }
 }

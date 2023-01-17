@@ -1,8 +1,10 @@
 import { TriggerType } from '@oasisdex/automation'
+import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context, every5Seconds$ } from 'blockchain/network'
-import { Vault } from 'blockchain/vaults'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers/getProxiesRelatedWithPosition'
+import { PositionId } from 'features/aave/types'
 import { getAllActiveTriggers } from 'features/automation/api/allActiveTriggers'
 import {
   AutoBSTriggerData,
@@ -26,10 +28,19 @@ import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from
 
 // TODO - ŁW - Implement tests for this file
 
-async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Promise<TriggersData> {
+async function loadTriggerDataFromCache({
+  positionId,
+  proxyAddress,
+  cacheApi,
+}: {
+  positionId: number
+  cacheApi: string
+  proxyAddress?: string
+}): Promise<TriggersData> {
   const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
-    vaultId.toFixed(0),
+    positionId.toFixed(0),
+    proxyAddress,
   )
 
   return {
@@ -53,14 +64,20 @@ export interface TriggersData {
 export function createAutomationTriggersData(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
-  vault$: (id: BigNumber) => Observable<Vault>,
+  proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   id: BigNumber,
 ): Observable<TriggersData> {
   return every5Seconds$.pipe(
-    withLatestFrom(context$, vault$(id)),
-    mergeMap(([, , vault]) => {
-      const networkConfig = networksById[vault.chainId]
-      return loadTriggerDataFromCache(vault.id.toNumber(), networkConfig.cacheApi)
+    withLatestFrom(context$, proxiesRelatedWithPosition$({ vaultId: id.toNumber() })),
+    mergeMap(([, , proxies]) => {
+      const networkId = getNetworkId()
+      const networkConfig = networksById[networkId]
+
+      return loadTriggerDataFromCache({
+        positionId: id.toNumber(),
+        proxyAddress: proxies.dpmProxy?.proxy,
+        cacheApi: networkConfig.cacheApi,
+      })
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)

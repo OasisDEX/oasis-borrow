@@ -1,6 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { AutomationContext } from 'components/AutomationContextProvider'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import {
+  AutomationAddTriggerData,
+  AutomationAddTriggerTxDef,
+  AutomationRemoveTriggerData,
+  AutomationRemoveTriggerTxDef,
+} from 'features/automation/common/txDefinitions'
 import { AutoTakeProfitTriggerData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitTriggerData'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/constantMultiple/state/constantMultipleTriggerData'
 import {
@@ -76,6 +82,12 @@ type AutomationCommonMetadata<T> = {
 export interface AutoBSMetadata {}
 export interface AutoTakeProfitMetadata {}
 export interface ConstantMultipleMetadata {}
+
+export interface AutomationContracts {
+  addTrigger: AutomationAddTriggerTxDef
+  removeTrigger: AutomationRemoveTriggerTxDef
+}
+
 export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
   callbacks: {
     onCloseToChange?: AutomationCallbackMethod<{ optionName: string }>
@@ -87,6 +99,7 @@ export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
     getMaxToken: AutomationStateValueMethod<StopLossFormChange>
     getRightBoundary: AutomationStateValueMethod<StopLossFormChange>
     getSliderPercentageFill: AutomationStateValueMethod<StopLossFormChange>
+    prepareAddStopLossTriggerData: (stopLossState: StopLossFormChange) => AutomationAddTriggerData
   }
   settings: {
     fixedCloseToToken?: string
@@ -97,7 +110,9 @@ export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
     resetData: StopLossResetData
     triggerMaxToken: BigNumber
     dynamicStopLossPrice: BigNumber
+    removeTxData: AutomationRemoveTriggerData
   }
+  contracts: AutomationContracts
 }
 
 export interface AutomationMetadata {

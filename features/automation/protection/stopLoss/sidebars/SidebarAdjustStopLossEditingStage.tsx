@@ -51,7 +51,7 @@ export function SetDownsideProtectionInformation({
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: { token },
+    positionData: { token, debtToken },
     metadata: {
       stopLossMetadata: {
         methods: { getMaxToken },
@@ -65,13 +65,13 @@ export function SetDownsideProtectionInformation({
 
   const savingCompareToLiquidation = afterMaxToken.minus(collateralDuringLiquidation)
 
-  const maxTokenOrDai = isCollateralActive
+  const maxTokenOrDebtToken = isCollateralActive
     ? `${formatAmount(afterMaxToken, token)} ${token}`
-    : `${formatAmount(afterMaxToken.multipliedBy(executionPrice), 'USD')} DAI`
+    : `${formatAmount(afterMaxToken.multipliedBy(executionPrice), 'USD')} ${debtToken}`
 
-  const savingTokenOrDai = isCollateralActive
+  const savingTokenOrDebtToken = isCollateralActive
     ? `${formatAmount(savingCompareToLiquidation, token)} ${token}`
-    : `${formatAmount(savingCompareToLiquidation.multipliedBy(executionPrice), 'USD')} DAI`
+    : `${formatAmount(savingCompareToLiquidation.multipliedBy(executionPrice), 'USD')} ${debtToken}`
 
   const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
   const closeVaultGasPrice = new BigNumber(200) // gwei
@@ -88,7 +88,7 @@ export function SetDownsideProtectionInformation({
         label={`${t('protection.estimated-to-receive')}`}
         value={
           <Flex>
-            {t('protection.up-to')} {maxTokenOrDai}
+            {t('protection.up-to')} {maxTokenOrDebtToken}
           </Flex>
         }
       />
@@ -96,7 +96,7 @@ export function SetDownsideProtectionInformation({
         label={`${t('protection.saving-comp-to-liquidation')}`}
         value={
           <Flex>
-            {t('protection.up-to')} {savingTokenOrDai}
+            {t('protection.up-to')} {savingTokenOrDebtToken}
           </Flex>
         }
       />
