@@ -332,7 +332,7 @@ export function createOpenAaveStateMachine(
           allDefined(userInput, effectiveProxyAddress, strategy),
         canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
           allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
-          tokenBalance!.gt(userInput.amount!),
+          tokenBalance!.gte(userInput.amount!),
         isAllowanceNeeded,
       },
       actions: {
