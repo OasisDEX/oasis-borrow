@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { Observable, of } from 'rxjs'
 import { catchError, delay, map, startWith } from 'rxjs/operators'
 

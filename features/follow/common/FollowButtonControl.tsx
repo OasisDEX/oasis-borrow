@@ -1,21 +1,48 @@
+import { UsersWhoFollowVaults } from '@prisma/client'
+import BigNumber from 'bignumber.js'
 import { FollowButton } from 'features/follow/common/FollowButton'
+import { followVaultUsingApi, getFollowFromApi } from 'features/shared/followApi'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import React, { useEffect, useState } from 'react'
 
-export function FollowButtonControl() {
-  const [isFollowing, setIsFollowing] = useState(true)
+export type FollowButtonProps = {
+  followerAddress: string
+  vaultId: BigNumber
+  docVersion: string
+  chainId: number
+}
+
+export function FollowButtonControl({ followerAddress, vaultId, chainId }: FollowButtonProps) {
+  const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
-  //   TODO ŁW - Error handling when working with real api
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsFollowing(false)
-      setProcessing(false)
-    }, 1000)
-    setProcessing(isProcessing)
+    void getFollowFromApi(followerAddress)
+      .then((resp) => {
+        handleGetFollowedVaults(resp)
+      })
+      .finally(() => {
+        setProcessing(false)
+      })
   }, [])
-  function buttonClickHandler() {
-    if (!isProcessing) {
-      setProcessing(true)
+
+  function handleGetFollowedVaults(resp: UsersWhoFollowVaults[]) {
+    const followedVaults = Object.values(resp)
+    const currentFollowedVault = followedVaults.find(
+      (item) =>
+        new BigNumber(item.vault_id).eq(vaultId) && new BigNumber(item.vault_chain_id).eq(chainId),
+    )
+    setIsFollowing(currentFollowedVault !== undefined)
+    setProcessing(false) // this is required finally doesn't handle it!
+  }
+
+  async function buttonClickHandler() {
+    setProcessing(true)
+    const jwtToken = jwtAuthGetToken(followerAddress)
+    if (vaultId && jwtToken) {
+      const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
+
+      handleGetFollowedVaults(followedVaults)
     }
   }
   return (

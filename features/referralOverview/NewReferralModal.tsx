@@ -1,6 +1,6 @@
 import { UserReferralState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { formatAddress } from 'helpers/formatters/format'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'

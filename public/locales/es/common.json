@@ -101,6 +101,31 @@
     "Permite a tu cartera interactuar con protocolos DeFi",
     "Mayor eficiencia en consumo de gas"
   ],
+  "dpm": {
+    "create-flow": {
+      "welcome-screen": {
+        "header": "Crear tu Smart DeFi Account",
+        "create-button": "Crear tu Smart DeFi Account",
+        "paragraph": "Para abrir una posicion en AAVE, es necesario una Smart DeFi Account para cada una. Podras gestionar multiples posiciones abriendo mas cuentas. Puedes aprender mas en nuestra <1>knowledge base</1>",
+        "retry-create-button": "Intentar crear tu Smart DeFi Account nuevamente",
+        "create-order-summary-heading":"Creando tu Smart DeFi account"
+      },
+      "proxy-creating-screen": {
+        "header": "Crear tu Smart DeFi Account",
+        "button": "Creando tu Smart DeFi account",
+        "paragraph": "Aprende mas en nuestra <1>knowledge base</1>"
+      },
+      "proxy-created-screen": {
+        "header": "Smart DeFi account creada",
+        "paragraph": "Aprende mas en nuestra <1>knowledge base</1>"
+      },
+      "bullet-points": [
+        "Multiples posiciones en Aave con la misma cartera",
+        "Habilita funciones avanzadas de Oasis.app como Automatizaciones y Refinanciamiento",
+        "Seguridad mejorada con limites establecidos y eliminados dentro de las transacciones"
+      ]
+    }
+  },
   "currency": "Moneda",
   "custom": "Personalizado",
   "dai-being-generated": "Generando Dai",

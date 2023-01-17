@@ -1,3 +1,4 @@
+import { FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { moreMinutes } from 'helpers/time'
@@ -13,11 +14,13 @@ export function DefaultVaultHeadline({
   token,
   priceInfo,
   colRatio,
+  followButtonProps,
 }: {
   header: VaultHeadlineProps['header']
   token: VaultHeadlineProps['token']
   priceInfo: PriceInfo
   colRatio?: string
+  followButtonProps?: FollowButtonProps
 }) {
   const { t } = useTranslation()
   const {
@@ -65,5 +68,12 @@ export function DefaultVaultHeadline({
     })
   }
 
-  return <VaultHeadline header={header} token={token} details={detailsList} />
+  return (
+    <VaultHeadline
+      header={header}
+      token={token}
+      details={detailsList}
+      followButtonProps={followButtonProps}
+    />
+  )
 }

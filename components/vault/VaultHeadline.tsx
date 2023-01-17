@@ -1,8 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Box, Flex, Image } from 'theme-ui'
 
@@ -10,6 +12,7 @@ import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetail
 
 export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]
+  followButtonProps?: FollowButtonProps
   header: string
   label?: string
   loading?: boolean
@@ -22,6 +25,7 @@ export type VaultHeadlineProps = {
 
 export function VaultHeadline({
   details,
+  followButtonProps,
   header,
   label,
   loading = false,
@@ -29,10 +33,11 @@ export function VaultHeadline({
   token,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
+  const followVaultEnabled = useFeatureToggle('FollowVaults')
   return (
     <Flex
       sx={{
-        flexDirection: ['column', null, null, 'row'],
+        flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'center'],
         mb: 4,
@@ -46,6 +51,7 @@ export function VaultHeadline({
           fontWeight: 'semiBold',
           fontSize: '28px',
           color: 'primary100',
+          alignItems: 'center',
         }}
       >
         {tokenData instanceof Array && tokenData.length > 0 && (
@@ -79,6 +85,14 @@ export function VaultHeadline({
         )}
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
+        {followVaultEnabled && followButtonProps && (
+          <FollowButtonControl
+            followerAddress={followButtonProps.followerAddress}
+            vaultId={followButtonProps.vaultId}
+            docVersion={followButtonProps.docVersion}
+            chainId={followButtonProps.chainId}
+          />
+        )}
       </Heading>
       <Flex
         sx={{

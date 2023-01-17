@@ -15,9 +15,9 @@ import { GuniToken } from '../../../../../types/ethers-contracts'
 import { Quote } from '../../../../exchange/exchange'
 import { VaultType } from '../../../../generalManageVault/vaultType'
 import { ManageChange } from '../../../../multiply/manage/pipes/manageMultiplyVaultTransactions'
+import { jwtAuthGetToken } from '../../../../shared/jwt'
 import { parseVaultIdFromReceiptLogs } from '../../../../shared/transactions'
 import { saveVaultUsingApi$ } from '../../../../shared/vaultApi'
-import { jwtAuthGetToken } from '../../../../termsOfService/jwt'
 
 export const getUnderlyingBalances: CallDef<
   { token: string },

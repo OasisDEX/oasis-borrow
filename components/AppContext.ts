@@ -238,9 +238,9 @@ import {
 import { redirectState$ } from 'features/router/redirectState'
 import { BalanceInfo, createBalanceInfo$ } from 'features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
+import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
-import { jwtAuthSetupToken$ } from 'features/termsOfService/jwt'
 import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
