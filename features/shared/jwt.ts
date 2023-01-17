@@ -13,7 +13,6 @@ const LOCAL_STORAGE_GNOSIS_SAFE_PENDING = 'gnosis-safe-pending'
 const basePath = getConfig()?.publicRuntimeConfig.basePath || ''
 
 export type JWToken = string
-
 // return 'invalid' if we have forced the removal of the token again
 export function jwtAuthGetToken(address: string): JWToken | undefined | 'invalid' {
   const token = localStorage.getItem(`token-b/${address}`)

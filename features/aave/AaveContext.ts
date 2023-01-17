@@ -68,7 +68,7 @@ export function setupAaveContext({
   aaveAvailableLiquidityInUSDC$,
   userDpmProxies$,
   userDpmProxy$,
-  hasProxyAddressActiveAavePosition$,
+  proxyConsumed$,
   aaveProtocolData$,
   strategyConfig$,
 }: AppContext) {
@@ -130,7 +130,11 @@ export function setupAaveContext({
   )
 
   const supportedTokens = Array.from(
-    new Set(Object.values(strategies).map((strategy) => strategy.tokens.deposit)),
+    new Set(
+      Object.values(strategies)
+        .map((strategy) => Object.values(strategy.tokens))
+        .flatMap((tokens) => tokens),
+    ),
   )
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
@@ -188,7 +192,7 @@ export function setupAaveContext({
   const getAvailableDPMProxy: (
     walletAddress: string,
   ) => Observable<UserDpmProxy | undefined> = memoize(
-    curry(getAvailableDPMProxy$)(userDpmProxies$, hasProxyAddressActiveAavePosition$),
+    curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
   )
 
   const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
@@ -207,7 +211,7 @@ export function setupAaveContext({
     aaveProtocolData$,
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
-    hasProxyAddressActiveAavePosition$,
+    proxyConsumed$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

@@ -32,6 +32,7 @@ export function FollowButton(props: FollowButtonProps) {
         border: '1px solid',
         borderColor: 'neutral20',
         borderRadius: 'large',
+        marginLeft: '16px',
         backgroundColor: 'neutral10',
         '&:hover': {
           backgroundColor: 'neutral10',
@@ -71,11 +72,11 @@ export function FollowButton(props: FollowButtonProps) {
 
       {props.isProcessing
         ? t('loading')
-        : props.isFollowing
-        ? t('follow')
-        : isHovering
+        : isHovering && props.isFollowing
         ? t('unfollow')
-        : t('following')}
+        : props.isFollowing
+        ? t('following')
+        : t('follow')}
     </Button>
   )
 }

@@ -2,6 +2,7 @@ import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
+import { FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
@@ -14,9 +15,13 @@ import { GeneralManageTabBar } from './GeneralManageTabBar'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
+  followButtonProps: FollowButtonProps | undefined
 }
 
-export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutProps) {
+export function GeneralManageLayout({
+  generalManageVault,
+  followButtonProps,
+}: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
 
@@ -33,6 +38,7 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageLayoutP
         token={[vault.token]}
         priceInfo={priceInfo}
         colRatio={colRatioPercnentage}
+        followButtonProps={followButtonProps}
       />
     )
 

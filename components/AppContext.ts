@@ -133,7 +133,6 @@ import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aave
 import { createAavePrepareReserveData$ } from 'features/aave/helpers/aavePrepareReserveData'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
-import { hasAavePosition$ } from 'features/aave/helpers/hasAavePosition'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
 import { getAaveProtocolData$ } from 'features/aave/manage/services'
 import { getOnChainPosition } from 'features/aave/oasisActionsLibWrapper'
@@ -240,9 +239,9 @@ import {
 import { redirectState$ } from 'features/router/redirectState'
 import { BalanceInfo, createBalanceInfo$ } from 'features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
+import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
-import { jwtAuthSetupToken$ } from 'features/termsOfService/jwt'
 import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
@@ -294,7 +293,11 @@ import { combineLatest, defer, from, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
-import { createReadPositionCreatedEvents$ } from '../features/aave/services/readPositionCreatedEvents'
+import {
+  createProxyConsumed$,
+  createReadPositionCreatedEvents$,
+  getLastCreatedPositionForProxy$,
+} from '../features/aave/services/readPositionCreatedEvents'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -967,7 +970,7 @@ export function setupAppContext() {
     (args) => args.address,
   )
 
-  const hasProxyAddressActiveAavePosition$ = memoize(curry(hasAavePosition$)(aaveUserAccountData$))
+  const proxyConsumed$ = memoize(curry(createProxyConsumed$)(context$))
 
   const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
@@ -1018,11 +1021,18 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
+  const readPositionCreatedEvents$ = memoize(
+    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
+  )
+
+  const lastCreatedPositionForProxy$ = memoize(curry(getLastCreatedPositionForProxy$)(context$))
+
   const strategyConfig$ = memoize(
     curry(getStrategyConfig$)(
       proxiesRelatedWithPosition$,
       aaveUserConfiguration$,
       aaveReservesList$,
+      lastCreatedPositionForProxy$,
     ),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
@@ -1031,10 +1041,6 @@ export function setupAppContext() {
     curry(createAavePrepareReserveData$)(
       observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
     ),
-  )
-
-  const readPositionCreatedEvents$ = memoize(
-    curry(createReadPositionCreatedEvents$)(context$, userDpmProxies$),
   )
 
   const aavePositions$ = memoize(
@@ -1282,7 +1288,7 @@ export function setupAppContext() {
   const hasActiveDsProxyAavePosition$ = hasActiveAavePositionOnDsProxy$(
     connectedContext$,
     proxyAddress$,
-    hasProxyAddressActiveAavePosition$,
+    proxyConsumed$,
   )
 
   const accountData$ = createAccountData(
@@ -1413,13 +1419,14 @@ export function setupAppContext() {
     aaveLiquidations$,
     aaveUserAccountData$,
     aaveAvailableLiquidityInUSDC$,
-    hasProxyAddressActiveAavePosition$,
+    proxyConsumed$,
     dsr$,
     dsrDeposit$,
     potDsr$,
     potTotalValueLocked$,
     aaveProtocolData$,
     strategyConfig$,
+    readPositionCreatedEvents$,
   }
 }
 

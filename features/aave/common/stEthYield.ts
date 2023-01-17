@@ -181,21 +181,21 @@ export async function getAaveStEthYield(
   })
   return {
     annualisedYield7days:
-      response.yield7days && new BigNumber(response.yield7days.yield.netAnnualisedYield),
+      response.yield7days?.yield && new BigNumber(response.yield7days.yield.netAnnualisedYield),
     annualisedYield7daysOffset:
-      response.yield7daysOffset &&
+      response.yield7daysOffset?.yield &&
       new BigNumber(response.yield7daysOffset.yield.netAnnualisedYield),
     annualisedYield30days:
-      response.yield30days && new BigNumber(response.yield30days.yield.netAnnualisedYield),
+      response.yield30days?.yield && new BigNumber(response.yield30days.yield.netAnnualisedYield),
     annualisedYield90days:
-      response.yield90days && new BigNumber(response.yield90days.yield.netAnnualisedYield),
+      response.yield90days?.yield && new BigNumber(response.yield90days.yield.netAnnualisedYield),
     annualisedYield90daysOffset:
-      response.yield90daysOffset &&
+      response.yield90daysOffset?.yield &&
       new BigNumber(response.yield90daysOffset.yield.netAnnualisedYield),
     annualisedYield1Year:
-      response.yield1year && new BigNumber(response.yield1year.yield.netAnnualisedYield),
+      response.yield1year?.yield && new BigNumber(response.yield1year.yield.netAnnualisedYield),
     annualisedYieldSinceInception:
-      response.yieldSinceInception &&
+      response.yieldSinceInception?.yield &&
       new BigNumber(response.yieldSinceInception.yield.netAnnualisedYield),
   }
 }

@@ -1,19 +1,21 @@
 import { getTokens } from 'blockchain/tokensMetadata'
+import { AppLink } from 'components/Links'
 import { aaveStrategiesList } from 'features/aave/strategyConfig'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import { ProductCardMultiplyMaker } from '../../components/productCards/ProductCardMultiplyMaker'
 import { ProductCardsFilter } from '../../components/productCards/ProductCardsFilter'
 import { ProductHeader } from '../../components/ProductHeader'
 import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export function MultiplyView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
   const aaveMultiplyStrategies = getTokens(aaveStrategiesList('Multiply').map(({ name }) => name))
-
+  const dpmEnabled = useFeatureToggle('AaveUseDpmProxy')
   return (
     <Grid
       sx={{
@@ -31,6 +33,24 @@ export function MultiplyView() {
         }}
         scrollToId={tab}
       />
+      {dpmEnabled && (
+        <Text
+          variant="paragraph1"
+          sx={{
+            color: 'neutral80',
+            mt: '-50px',
+            textAlign: 'center',
+          }}
+        >
+          {t('product-page.multiply.aaveDescription')}{' '}
+          <AppLink
+            href="https://blog.oasis.app/multiply-for-aave/"
+            sx={{ fontSize: 4, fontWeight: 'body' }}
+          >
+            {t('product-page.multiply.aaveLink')}
+          </AppLink>
+        </Text>
+      )}
       <ProductCardsFilter
         filters={productCardsConfig.multiply.cardsFilters}
         selectedFilter={tab}

@@ -137,7 +137,7 @@ function EditingStateViewSidebarPrimaryButton({
     ? allowanceNeeded
       ? t('set-allowance-for', { token: state.context.strategyConfig.tokens.deposit })
       : t(state.context.strategyConfig.viewComponents.sidebarButton)
-    : t('create-proxy-btn')
+    : t('dpm.create-flow.welcome-screen.create-button')
 
   const isProxyCreationDisabled = useFeatureToggle('ProxyCreationDisabled')
 

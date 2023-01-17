@@ -9,6 +9,7 @@ import { zero } from '../../../../../helpers/zero'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
 import { FeesInformation } from './FeesInformation'
 import { LtvInformation } from './LtvInformation'
+import { MultiplyInformation } from './MultiplyInformation'
 import {
   OutstandingDebtInformation,
   TotalCollateralInformation,
@@ -49,11 +50,11 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
       )}
       {simulationHasSwap && <PriceImpact {...state.context} transactionParameters={strategy} />}
       {simulationHasSwap && <SlippageInformation {...state.context.userSettings!} />}
-      {/*<MultiplyInformation*/}
-      {/*  {...state.context}*/}
-      {/*  transactionParameters={strategy}*/}
-      {/*  currentPosition={currentPosition}*/}
-      {/*/>*/}
+      <MultiplyInformation
+        {...state.context}
+        transactionParameters={strategy}
+        currentPosition={currentPosition}
+      />
       <OutstandingDebtInformation
         currentPosition={currentPosition}
         newPosition={strategy.simulation.position}

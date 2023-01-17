@@ -3,6 +3,7 @@ import { AppLink } from 'components/Links'
 import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
+import { getAaveEnabledStrategies } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -13,9 +14,27 @@ import {
   MultiplyProductCardsContainer,
 } from '../../components/productCards/ProductCardsContainer'
 
+const aaveAssets = {
+  // not putting this to ASSETS_PAGES cause we need feature toggles
+  eth: {
+    multiply: getAaveEnabledStrategies([
+      { strategy: 'ethusdc', featureToggle: 'AaveMultiplyETHUSDC' },
+      { strategy: 'stETHusdc', featureToggle: 'AaveMultiplySTETHUSDC' },
+    ]),
+    earn: getAaveEnabledStrategies([{ strategy: 'stETHeth', featureToggle: 'AaveEarnSTETHETH' }]),
+  },
+  btc: {
+    multiply: getAaveEnabledStrategies([
+      { strategy: 'wBTCusdc', featureToggle: 'AaveMultiplyWBTCUSDC' },
+    ]),
+    earn: [],
+  },
+}
+
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
 
+  const aaveStrategies = aaveAssets[content.slug as keyof typeof aaveAssets] ?? []
   const tabs = () => {
     const borrowTab = content.borrowIlks && {
       label: t('landing.tabs.maker.borrow.tabLabel'),
@@ -32,7 +51,9 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       value: 'multiply',
       content: (
         <Box sx={{ mt: 5 }}>
-          <MultiplyProductCardsContainer strategies={{ maker: content.multiplyIlks, aave: [] }} />
+          <MultiplyProductCardsContainer
+            strategies={{ maker: content.multiplyIlks, aave: aaveStrategies.multiply }}
+          />
         </Box>
       ),
     }
@@ -42,7 +63,9 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       value: 'earn',
       content: (
         <Box sx={{ mt: 5 }}>
-          <EarnProductCardsContainer strategies={{ maker: content.earnIlks, aave: [] }} />
+          <EarnProductCardsContainer
+            strategies={{ maker: content.earnIlks, aave: aaveStrategies.earn }}
+          />
         </Box>
       ),
     }

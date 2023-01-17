@@ -16,14 +16,18 @@ interface DebtCollateralInformation {
 }
 
 function formatDebtAmount(pos: IPosition) {
-  return `${formatAmount(amountFromWei(pos.debt.amount, pos.debt.symbol), pos.debt.symbol)} ${
-    pos.debt.symbol
-  }`
+  return `${formatAmount(
+    amountFromWei(pos.debt.amount, pos.debt.symbol),
+    pos.debt.symbol === 'USDC' ? 'USD' : pos.debt.symbol,
+  )} ${pos.debt.symbol}`
 }
 
 function formatCollateralAmount(pos: IPosition) {
   return `${formatAmount(
-    amountFromWei(pos.collateral.amount, pos.collateral.symbol),
+    amountFromWei(
+      pos.collateral.amount,
+      pos.collateral.symbol === 'USDC' ? 'USD' : pos.collateral.symbol,
+    ),
     pos.collateral.symbol,
   )} ${pos.collateral.symbol}`
 }

@@ -5,7 +5,7 @@ import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { getAaveStrategy } from 'features/aave/strategyConfig'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
-import { formatHugeNumbersToShortHuman, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -65,7 +65,7 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
         {
           title: t('system.liquidity-available'),
           value: debtReserveData ? (
-            formatHugeNumbersToShortHuman(debtReserveData.availableLiquidity)
+            formatCryptoBalance(debtReserveData.availableLiquidity)
           ) : (
             <AppSpinner />
           ),
@@ -85,6 +85,7 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
           value: <ProductCardProtocolLink ilk={cardData.symbol} protocol={cardData.protocol} />,
         },
       ]}
+      floatingLabelText={t('product-card.tags.new')}
       button={{
         link: `/multiply/aave/open/${strategy.urlSlug}`,
         text: t('nav.multiply'),

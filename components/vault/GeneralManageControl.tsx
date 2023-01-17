@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
+import { currentContent } from 'features/content'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -13,9 +14,14 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$ } = useAppContext()
+  const { generalManageVault$, context$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const [generalManageVaultData, generalManageVaultError] = useObservable(generalManageVaultWithId$)
+  const [context] = useObservable(context$)
+
+  const account = context?.status === 'connected' ? context.account : ''
+  const chainId = context?.chainId
+  const docVersion = currentContent.tos.version
 
   useEffect(() => {
     return () => {
@@ -33,7 +39,19 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
       >
         {([generalManageVault]) => (
           <MakerAutomationContext generalManageVault={generalManageVault}>
-            <GeneralManageLayout generalManageVault={generalManageVault} />
+            <GeneralManageLayout
+              generalManageVault={generalManageVault}
+              followButtonProps={
+                chainId
+                  ? {
+                      followerAddress: account,
+                      vaultId: id,
+                      docVersion: docVersion,
+                      chainId: chainId,
+                    }
+                  : undefined
+              }
+            />
           </MakerAutomationContext>
         )}
       </WithLoadingIndicator>

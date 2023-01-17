@@ -45,7 +45,8 @@ export function TransactionTokenAmount({
       value={
         <Flex>
           <Text>
-            {formatAmount(amount, tokens.collateral)} {tokens.collateral}
+            {formatAmount(amount, tokens.collateral === 'USDC' ? 'USD' : tokens.collateral)}{' '}
+            {tokens.collateral}
             {` `}
             <Text as="span" sx={{ color: 'neutral80' }}>
               {price ? `$${formatFiatBalance(price)}` : <AppSpinner />}

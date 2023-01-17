@@ -1,6 +1,8 @@
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { getFeatureToggle } from 'helpers/useFeatureToggle'
 
+import { AaveEarnFaq } from '../content/faqs/aave/earn'
+import { AaveMultiplyFaq } from '../content/faqs/aave/multiply'
 import {
   AavePositionHeaderNoDetails,
   headerWithDetails,
@@ -39,6 +41,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
+      positionInfo: AaveEarnFaq,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
@@ -64,6 +67,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
     },
@@ -89,6 +93,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
     },
@@ -114,6 +119,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
       adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+      positionInfo: AaveMultiplyFaq,
       sidebarTitle: 'open-multiply.sidebar.title',
       sidebarButton: 'open-multiply.sidebar.open-btn',
     },

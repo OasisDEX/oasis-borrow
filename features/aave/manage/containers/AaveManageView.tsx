@@ -32,6 +32,8 @@ function AaveManageContainer({
   address: string
 }) {
   const Header = strategyConfig.viewComponents.headerManage
+
+  const PositionInfo = strategyConfig.viewComponents.positionInfo
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
 

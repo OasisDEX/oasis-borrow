@@ -10,7 +10,7 @@ import {
   NOTIFICATION_CHANGE,
   notificationInitialState,
 } from 'features/notifications/notificationChange'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { getBrowserName } from 'helpers/functions'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
