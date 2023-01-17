@@ -139,7 +139,7 @@
         "create-button": "Create Smart DeFi account",
         "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>",
         "retry-create-button": "Retry Create Smart DeFi account",
-        "create-order-summary-heading":"Creating your Smart DeFi account"
+        "create-order-summary-heading": "Creating your Smart DeFi account"
       },
       "proxy-creating-screen": {
         "header": "Create your Smart DeFi account",
@@ -2053,7 +2053,8 @@
         "deposit": "Deposit ETH",
         "title": "Your Earn position",
         "close-title": "Close position to ETH",
-        "close-to-title": "Close position to {{token}}",
+        "close-position": "Close position",
+        "close-position-to": "Close position to {{token}}",
         "close": "Close vault",
         "confirm-btn": "Confirm",
         "close-description": "To close your position, all your collateral will be sold to pay back the outstanding debt. The remaining {{closeToToken}} will be sent to your address.",

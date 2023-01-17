@@ -26,6 +26,7 @@ type UserInput = {
 export type ManageTokenInput = {
   manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
   manageTokenActionValue?: BigNumber
+  closingToken?: string
 }
 
 export type IStrategyInfo = {
@@ -44,6 +45,11 @@ export type StrategyTokenBalance = {
   collateral: { price: BigNumber; balance: BigNumber }
   debt: { price: BigNumber; balance: BigNumber }
   deposit: { price: BigNumber; balance: BigNumber }
+}
+
+export type UpdateClosingAction = {
+  type: 'UPDATE_CLOSING_ACTION'
+  closingToken: string
 }
 
 export type UpdateCollateralActionType = {
@@ -72,6 +78,7 @@ export type BaseAaveEvent =
   | { type: 'SET_BALANCE'; balance: StrategyTokenBalance }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | UpdateCollateralActionType
+  | UpdateClosingAction
   | UpdateDebtActionType
   | UpdateTokenActionValueType
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
