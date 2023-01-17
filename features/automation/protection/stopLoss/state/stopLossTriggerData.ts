@@ -141,7 +141,7 @@ export function prepareStopLossTriggerDataV2(
       tokenAddress, // collateralToken
       debtTokenAddress, // debtToken
       stopLossLevel.toString(), // stop loss level
-      DEFAULT_MAX_BASE_FEE_IN_GWEI, // max gas fee
+      DEFAULT_MAX_BASE_FEE_IN_GWEI.toString(), // max gas fee
     ],
   )
   return {
