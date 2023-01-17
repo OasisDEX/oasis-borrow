@@ -2,7 +2,7 @@ import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { FollowButton } from 'features/follow/common/FollowButton'
 import { followVaultUsingApi, getFollowFromApi } from 'features/shared/followApi'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import React, { useEffect, useState } from 'react'
 
 export type FollowButtonProps = {
@@ -12,12 +12,7 @@ export type FollowButtonProps = {
   chainId: number
 }
 
-export function FollowButtonControl({
-  followerAddress,
-  vaultId,
-  docVersion,
-  chainId,
-}: FollowButtonProps) {
+export function FollowButtonControl({ followerAddress, vaultId, chainId }: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
 
@@ -33,8 +28,9 @@ export function FollowButtonControl({
 
   function handleGetFollowedVaults(resp: UsersWhoFollowVaults[]) {
     const followedVaults = Object.values(resp)
-    const currentFollowedVault = followedVaults.find((item) =>
-      new BigNumber(item.vault_id).eq(vaultId),
+    const currentFollowedVault = followedVaults.find(
+      (item) =>
+        new BigNumber(item.vault_id).eq(vaultId) && new BigNumber(item.vault_chain_id).eq(chainId),
     )
     setIsFollowing(currentFollowedVault !== undefined)
     setProcessing(false) // this is required finally doesn't handle it!
@@ -44,13 +40,7 @@ export function FollowButtonControl({
     setProcessing(true)
     const jwtToken = jwtAuthGetToken(followerAddress)
     if (vaultId && jwtToken) {
-      const followedVaults = await followVaultUsingApi(
-        vaultId,
-        followerAddress,
-        docVersion,
-        chainId,
-        jwtToken,
-      )
+      const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
 
       handleGetFollowedVaults(followedVaults)
     }

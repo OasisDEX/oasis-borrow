@@ -190,7 +190,9 @@ export function mapTokenToFilter(token: string) {
   return tokenKeyedFilters[token]
 }
 
-function getAaveEnabledStrategies(strategies: { strategy: string; featureToggle: Feature }[]) {
+export function getAaveEnabledStrategies(
+  strategies: { strategy: string; featureToggle: Feature }[],
+) {
   return strategies
     .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
     .map((item) => item.strategy)
@@ -252,8 +254,14 @@ export const productCardsConfig: {
       BTC: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
     },
     tags: {
-      'WBTC-B': 'max-exposure',
-      'ETH-B': 'max-exposure',
+      'WBTC-A': 'automation-enabled',
+      'WBTC-B': 'automation-enabled',
+      'WBTC-C': 'automation-enabled',
+      'ETH-A': 'automation-enabled',
+      'ETH-B': 'automation-enabled',
+      'ETH-C': 'automation-enabled',
+      'YFI-A': 'automation-enabled',
+      'LINK-A': 'automation-enabled',
       'WSTETH-A': 'staking-rewards',
       'RETH-A': 'staking-rewards',
     },

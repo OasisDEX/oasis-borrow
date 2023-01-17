@@ -61,7 +61,7 @@ function getTransactionDef(context: OpenAaveContext): TransactionDef<OperationEx
 export type OpenAaveEvent =
   | { type: 'BACK_TO_EDITING' }
   | { type: 'RETRY' }
-  | { type: 'SET_AMOUNT'; amount: BigNumber }
+  | { type: 'SET_AMOUNT'; amount?: BigNumber }
   | { type: 'NEXT_STEP' }
   | { type: 'UPDATE_META_INFO'; hasOpenedPosition: boolean }
   | BaseAaveEvent
@@ -364,14 +364,13 @@ export function createOpenAaveStateMachine(
             totalSteps: totalSteps,
           }
         }),
-        setAmount: assign((context, event) => {
-          return {
-            userInput: {
-              ...context.userInput,
-              amount: event.amount,
-            },
-          }
-        }),
+        setAmount: assign((context, event) => ({
+          userInput: {
+            ...context.userInput,
+            amount: event.amount,
+          },
+          strategy: event.amount ? context.strategy : undefined,
+        })),
         calculateAuxiliaryAmount: assign((context) => {
           return {
             auxiliaryAmount: context.userInput.amount?.times(context.tokenPrice || zero),

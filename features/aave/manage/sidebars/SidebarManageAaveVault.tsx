@@ -92,7 +92,7 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('manage-earn.aave.vault-form.title'),
+    title: t('manage-earn.aave.vault-form.adjust-title'),
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
@@ -111,17 +111,23 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
 
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
   if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-    return amountFromWei(
-      context.currentPosition?.maxDebtToBorrow || zero,
-      context.currentPosition?.debt.symbol || '',
-    )
+    if (context.currentPosition === undefined) {
+      return zero
+    }
+    const position = context.currentPosition
+    const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
+    const debt = amountFromWei(position.debt.amount, position.debt.symbol)
+    return collateral
+      .times(context.collateralPrice || zero)
+      .times(position.category.maxLoanToValue)
+      .minus(debt.times(context.debtPrice || zero))
   }
   const currentDebt = amountFromWei(
     context.currentPosition?.debt.amount || zero,
     context.currentPosition?.debt.symbol || '',
   )
 
-  const currentBalance = context.balance?.debt.balance || zero
+  const currentBalance = context.balance?.debt?.balance || zero
 
   return currentDebt.lte(currentBalance) ? currentDebt : currentBalance
 }
@@ -172,7 +178,7 @@ function GetReviewingSidebarProps({
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('manage-earn.aave.vault-form.close-description')}
+              {t('manage-earn.aave.vault-form.close-description', { closeToToken })}
             </Text>
             <BalanceAfterClose state={state} send={send} token={closeToToken} />
             <StrategyInformationContainer state={state} />
@@ -202,6 +208,7 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={collateral}
+              currencyDigits={getToken(collateral).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxCollateralAmount}
               showMax={true}
@@ -255,6 +262,7 @@ function GetReviewingSidebarProps({
             <VaultActionInput
               action="Enter"
               currencyCode={debt}
+              currencyDigits={getToken(debt).digits}
               maxAmountLabel={t('balance')}
               maxAmount={maxDebtAmount}
               showMax={true}

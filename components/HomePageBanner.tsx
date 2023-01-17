@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
+import { Flex, Image, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
 import { Notice } from './Notice'
@@ -20,7 +21,7 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
         marginBottom: 0,
         overflow: 'hidden',
         borderRadius: '50px',
-        maxWidth: ['400px', '520px'],
+        maxWidth: ['400px', '530px'],
         p: '3px 8px 3px 4px',
         '&:hover': {
           opacity: '80%',
@@ -45,24 +46,18 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
         >
           <Flex
             sx={{
-              background: '#D3F3F5',
-              borderRadius: '50px',
               flexDirection: 'row',
               justifySelf: 'center',
               alignItems: 'center',
               textAlign: 'left',
-              minHeight: '42px',
+              minHeight: '44px',
               minWidth: '44px',
-              px: '8px',
               mr: '8px',
             }}
           >
-            <Icon
-              name="steth_circle_color"
-              size="30px"
-              sx={{
-                transform: 'none !important',
-              }}
+            <Image
+              src={staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png')}
+              sx={{ height: '44px', width: '44px' }}
             />
           </Flex>
           <Flex

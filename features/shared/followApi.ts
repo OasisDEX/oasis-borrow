@@ -6,8 +6,6 @@ const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
 export async function followVaultUsingApi(
   vaultId: BigNumber,
-  followerAddress: string,
-  docVersion: string,
   chainId: number,
   token: string,
 ): Promise<UsersWhoFollowVaults[]> {
@@ -18,9 +16,7 @@ export async function followVaultUsingApi(
       authorization: 'Bearer ' + token,
     },
     body: JSON.stringify({
-      user_address: followerAddress,
       vault_id: parseInt(vaultId.toFixed(0)),
-      tos_doc_version: docVersion,
       vault_chain_id: chainId,
     }),
   })

@@ -122,6 +122,7 @@ export function HomepageView() {
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const notificationsEnabled = useFeatureToggle('Notifications')
+  const dpmEnabled = useFeatureToggle('AaveUseDpmProxy')
   const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
@@ -151,15 +152,17 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      <Flex
-        sx={{
-          justifyContent: 'center',
-          mt: '80px',
-          mb: 0,
-        }}
-      >
-        <HomePageBanner heading={t('ref.banner')} link="/earn/aave/open/stETHeth" />
-      </Flex>
+      {dpmEnabled && (
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            mt: '80px',
+            mb: 0,
+          }}
+        >
+          <HomePageBanner heading={t('ref.banner')} link="/earn/aave/open/stETHeth" />
+        </Flex>
+      )}
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
@@ -192,7 +195,7 @@ export function HomepageView() {
         <TabBar
           variant="large"
           useDropdownOnMobile
-          defaultTab="earn"
+          defaultTab="multiply"
           sections={[
             {
               label: t('landing.tabs.maker.multiply.tabLabel'),
@@ -205,6 +208,14 @@ export function HomepageView() {
                       <AppLink href="/multiply" variant="inText">
                         {t('landing.tabs.maker.multiply.tabParaLinkContent')}
                       </AppLink>
+                      {dpmEnabled && (
+                        <Box sx={{ mt: 3 }}>
+                          {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
+                          <AppLink href="/multiply" variant="inText">
+                            {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
+                          </AppLink>
+                        </Box>
+                      )}
                     </>
                   }
                   cards={

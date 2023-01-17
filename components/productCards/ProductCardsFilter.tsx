@@ -65,7 +65,6 @@ export function ProductCardsFilter({
   function handleHover(filter: string) {
     setHover(filter)
   }
-
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
@@ -120,7 +119,11 @@ export function ProductCardsFilter({
             {([_productCardsData]) => (
               <ProductCardsWrapper>
                 {otherStrategies
-                  .filter(({ protocol }) => protocol === 'aave')
+                  .filter(
+                    ({ protocol, name }) =>
+                      protocol === 'aave' &&
+                      name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()),
+                  )
                   .map((cardData) => (
                     <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData} />
                   ))}

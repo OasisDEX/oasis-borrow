@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { jwtAuthGetToken } from 'features/shared/jwt'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

@@ -216,7 +216,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
           info: position.liquidationPrice,
         },
         {
-          header: <Header name="funding-cost" />,
+          header: <Header name="borrow-cost" />,
           info: position.fundingCost,
         },
         {
@@ -253,7 +253,7 @@ function ProductHeading({ title, count }: { title: string; count: number }) {
 }
 
 function getVaultActionButtonTranslation(isOwner: boolean, t: TFunction) {
-  return isOwner ? t('earn.edit-vault') : t('earn.view-vault')
+  return isOwner ? t('manage-position') : t('view-position')
 }
 
 export function PositionList({ positions }: { positions: PositionVM[] }) {

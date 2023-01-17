@@ -1,6 +1,8 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { ProductPagesLayout } from 'components/Layouts'
 import { AssetPageContent, ASSETS_PAGES, assetsPageContentBySlug } from 'content/assets'
+import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -43,13 +45,17 @@ function AssetPage({ content }: { content: AssetPageContent }) {
   }
 
   return (
-    <WithConnection>
-      <WithTermsOfService>
-        <WithWalletAssociatedRisk>
-          <AssetView content={content} />
-        </WithWalletAssociatedRisk>
-      </WithTermsOfService>
-    </WithConnection>
+    <AaveContextProvider>
+      <DeferedContextProvider context={aaveContext}>
+        <WithConnection>
+          <WithTermsOfService>
+            <WithWalletAssociatedRisk>
+              <AssetView content={content} />
+            </WithWalletAssociatedRisk>
+          </WithTermsOfService>
+        </WithConnection>
+      </DeferedContextProvider>
+    </AaveContextProvider>
   )
 }
 

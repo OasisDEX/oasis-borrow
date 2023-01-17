@@ -48,11 +48,8 @@ const conf = withBundleAnalyzer(
           },
         })
 
-        if (isProduction) {
-        }
-
         config.optimization = {
-          minimize: true,
+          minimize: config.mode !== 'development',
           minimizer: [
             new TerserPlugin({
               // TODO: Figure out how to disable mangling partially without breaking the aplication.
@@ -62,6 +59,19 @@ const conf = withBundleAnalyzer(
               },
             }),
           ],
+          splitChunks:
+            !isServer && config.mode !== 'development'
+              ? {
+                  chunks: 'all',
+                  minChunks: 2,
+                  cacheGroups: {
+                    vendors: {
+                      test: /[\\/]node_modules[\\/]/,
+                      name: 'vendors-chunk',
+                    },
+                  },
+                }
+              : {},
         }
         // Moment.js locales take up a lot of space, so it's good to remove unused ones. "en" is there by default and can not be removed
         // config.plugins.push(new MomentLocalesPlugin({ localesToKeep: ['es', 'pt'] }))
