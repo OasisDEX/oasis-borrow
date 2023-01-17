@@ -194,6 +194,7 @@
         "asset": "Vault",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
+        "collateral-locked": "Collateral locked",
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
         "earnings-to-date": "Earnings to date",
@@ -203,6 +204,7 @@
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
         "status": "Status",
+        "variable": "Variable %",
         "vault-debt": "Vault debt"
       },
       "status": {

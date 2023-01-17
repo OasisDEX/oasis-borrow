@@ -83,7 +83,15 @@ export function DiscoverTableDataCellContent({
     case 'vaultDebt':
       return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
     case 'currentMultiple':
-      return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
+      return <>{(row[label] as number)?.toFixed(2)}x</>
+    case 'variable':
+      return <>{(row[label] as number)?.toFixed(2)}%</>
+    case 'collateralLocked':
+      return (
+        <>
+          {formatCryptoBalance(new BigNumber(row[label]))} {row.asset}
+        </>
+      )
     case 'colRatio':
       return (
         <>
