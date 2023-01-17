@@ -1020,7 +1020,7 @@ export const trackingEvents = {
         ...userContext,
       })
     },
-    clickedTableBanner: (kind: DiscoverPages, link: string, userContext: MixpanelUserContext) => {
+    clickedTableBanner: (kind: DiscoverPages, link: string, userContext?: MixpanelUserContext) => {
       mixpanelInternalAPI(EventTypes.ButtonClick, {
         product: Pages.DiscoverOasis,
         page: getDiscoverMixpanelPage(kind),

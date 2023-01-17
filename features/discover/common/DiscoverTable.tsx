@@ -11,18 +11,18 @@ import { Box } from 'theme-ui'
 
 export function DiscoverTable({
   banner,
-  isLoading,
-  isSticky,
+  isLoading = false,
+  isSticky = false,
   kind,
   rows,
   userContext,
 }: {
   banner?: DiscoverBanner
-  isLoading: boolean
-  isSticky: boolean
+  isLoading?: boolean
+  isSticky?: boolean
   kind: DiscoverPages
   rows: DiscoverTableRowData[]
-  userContext: MixpanelUserContext
+  userContext?: MixpanelUserContext
 }) {
   const rowsForBanner = Math.min(rows.length - 1, 9)
 

@@ -10,7 +10,7 @@ export function DiscoverTableBanner({
   icon,
   link,
   userContext,
-}: { kind: DiscoverPages; userContext: MixpanelUserContext } & DiscoverBanner) {
+}: { kind: DiscoverPages; userContext?: MixpanelUserContext } & DiscoverBanner) {
   const { t } = useTranslation()
 
   return (
