@@ -13,7 +13,8 @@ const publicRuntimeConfig = {
   useTermsOfService: process.env.USE_TERMS_OF_SERVICE === '1',
   useTrmApi: process.env.USE_TRM_API === '1',
   showBuildInfo: process.env.SHOW_BUILD_INFO === '1',
-  infuraProjectId: process.env.INFURA_PROJECT_ID,
+  mainnetRPCUrl: process.env.MAINNET_RPC_URL,
+  goerliRPCUrl: process.env.GOERLI_RPC_URL,
   etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
   sentryRelease: process.env.SENTRY_RELEASE,
   exchangeAddress:

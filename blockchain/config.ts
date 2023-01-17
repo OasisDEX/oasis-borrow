@@ -71,6 +71,9 @@ function getRpc(network: string): string {
   if (process.env.APP_FULL_DOMAIN) {
     return `${process.env.APP_FULL_DOMAIN}/api/rpc?network=${network}&clientId=${clientId}`
   }
+  // TODO: remove/change below code
+  // try/catch below should not happen because now we're using custom rpc route
+  // but this is TODO after introducing process.env.MAINNET_RPC_URL
   try {
     return `${window?.location.origin}/api/rpc?network=${network}&clientId=${clientId}`
   } catch {
