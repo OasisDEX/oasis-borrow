@@ -8,7 +8,6 @@ import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserv
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
-import { AaveFaq } from 'features/content/faqs/aave'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -34,6 +33,7 @@ export function AaveManageTabBar({
   const [state] = useActor(stateMachine)
 
   const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
+  const PositionInfo = strategyConfig.viewComponents.positionInfo
 
   const {
     tokens: { collateral: collateralToken, debt: debtToken },
@@ -72,7 +72,7 @@ export function AaveManageTabBar({
           label: t('system.position-info'),
           content: (
             <Card variant="faq">
-              <AaveFaq />
+              <PositionInfo />
             </Card>
           ),
         },
