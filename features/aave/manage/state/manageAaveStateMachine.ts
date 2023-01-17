@@ -315,13 +315,13 @@ export function createManageAaveStateMachine(
               entry: ['closePositionEvent'],
               on: {
                 NEXT_STEP: {
-                  cond: 'validTransactionParameters',
+                  cond: 'validClosingTransactionParameters',
                   target: 'txInProgress',
                   actions: ['closePositionTransactionEvent'],
                 },
                 BACK_TO_EDITING: {
                   target: 'editing',
-                  actions: ['reset'],
+                  actions: ['reset', 'resetTokenActionValue'],
                 },
               },
             },
@@ -418,6 +418,11 @@ export function createManageAaveStateMachine(
           target: '#manageAaveStateMachine.background.debouncingManage',
           actions: ['resetTokenActionValue', 'updateCollateralTokenAction'],
         },
+        UPDATE_CLOSING_ACTION: {
+          cond: 'canChangePosition',
+          target: '#manageAaveStateMachine.background.debouncingManage',
+          actions: ['resetTokenActionValue', 'updateClosingAction'],
+        },
         UPDATE_DEBT_TOKEN_ACTION: {
           cond: 'canChangePosition',
           target: '#manageAaveStateMachine.background.debouncingManage',
@@ -435,6 +440,9 @@ export function createManageAaveStateMachine(
         validTransactionParameters: ({ proxyAddress, strategy }) => {
           return allDefined(proxyAddress, strategy)
         },
+        validClosingTransactionParameters: ({ proxyAddress, strategy, manageTokenInput }) => {
+          return allDefined(proxyAddress, strategy, manageTokenInput?.closingToken)
+        },
         canChangePosition: ({ web3Context, ownerAddress, currentPosition }) =>
           allDefined(web3Context, ownerAddress, currentPosition) &&
           web3Context!.account === ownerAddress,
@@ -445,8 +453,15 @@ export function createManageAaveStateMachine(
           manageTokenInput: {
             manageTokenAction: defaultManageTokenInputValues.manageTokenAction,
             manageTokenActionValue: defaultManageTokenInputValues.manageTokenActionValue,
+            closingToken: defaultManageTokenInputValues.closingToken,
           },
           strategy: undefined,
+        })),
+        updateClosingAction: assign(({ manageTokenInput }, { closingToken }) => ({
+          manageTokenInput: {
+            ...manageTokenInput,
+            closingToken,
+          },
         })),
         updateCollateralTokenAction: assign(({ manageTokenInput }, { manageTokenAction }) => ({
           manageTokenInput: {

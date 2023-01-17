@@ -53,6 +53,12 @@ function AaveManageContainer({
   } = state.context
   const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
 
+  const isClosingPosition = state.matches('frontend.reviewingClosing')
+  const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
+
+  const nextPosition =
+    !isClosingPosition || hasCloseTokenSet ? state.context.strategy?.simulation.position : undefined
+
   return (
     <AaveAutomationContext
       aaveManageVault={{
@@ -84,7 +90,7 @@ function AaveManageContainer({
                       collateralPrice={state.context.collateralPrice}
                       tokenPrice={state.context.tokenPrice}
                       debtPrice={state.context.debtPrice}
-                      nextPosition={state.context.strategy?.simulation.position}
+                      nextPosition={nextPosition}
                     />
                   </Box>
                   <Box>{<SidebarManageAaveVault />}</Box>

@@ -11,7 +11,7 @@ import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aav
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { Sender } from 'xstate'
 
@@ -63,7 +63,7 @@ function getAmountGetFromPositionAfterClose(
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
   const displayToken = state.context.strategy?.simulation.swap.targetToken || {
-    symbol: 'ETH',
+    symbol: token,
     precision: 18,
   }
   const balance = formatCryptoBalance(
@@ -150,7 +150,11 @@ function GetReviewingSidebarProps({
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
   const { collateral, debt } = state.context.tokens
-  const [closeToToken, setCloseToToken] = useState(debt) // only close to debt is available ATM
+
+  const updateClosingAction = (closingToken: string) => {
+    if (closingToken === state.context.manageTokenInput?.closingToken) return
+    send({ type: 'UPDATE_CLOSING_ACTION', closingToken })
+  }
 
   const updateCollateralTokenAction = (manageTokenAction: ManageCollateralActionsEnum) => {
     send({ type: 'UPDATE_COLLATERAL_TOKEN_ACTION', manageTokenAction })
@@ -162,26 +166,30 @@ function GetReviewingSidebarProps({
     send({ type: 'UPDATE_TOKEN_ACTION_VALUE', manageTokenActionValue })
   }
 
+  const closeToToken = state.context.manageTokenInput?.closingToken
+
   switch (true) {
     case state.matches('frontend.reviewingClosing'):
       return {
-        title: t('manage-earn.aave.vault-form.close-to-title', { token: closeToToken }),
+        title: closeToToken
+          ? t('manage-earn.aave.vault-form.close-position-to', { token: closeToToken })
+          : t('manage-earn.aave.vault-form.close-position'),
         content: (
           <Grid gap={3}>
             <ActionPills
-              active={closeToToken}
+              active={closeToToken || ''}
               items={[collateral, debt].map((token) => ({
                 id: token,
                 label: t('close-to', { token }),
                 disabled: token === collateral, // only close to debt is available ATM
-                action: () => curry(setCloseToToken)(token),
+                action: () => curry(updateClosingAction)(token),
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {t('manage-earn.aave.vault-form.close-description', { closeToToken })}
             </Text>
-            <BalanceAfterClose state={state} send={send} token={closeToToken} />
-            <StrategyInformationContainer state={state} />
+            {closeToToken && <BalanceAfterClose state={state} send={send} token={closeToToken} />}
+            {closeToToken && <StrategyInformationContainer state={state} />}
           </Grid>
         ),
       }

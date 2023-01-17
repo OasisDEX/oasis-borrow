@@ -10,6 +10,7 @@ export const defaultManageTokenInputValues = {
   // defaults for the manage collateral/debt are set here
   manageTokenAction: undefined,
   manageTokenActionValue: undefined, // just to provide any value when debugging
+  closingToken: undefined,
 }
 
 function setupManageAaveStateContext({
