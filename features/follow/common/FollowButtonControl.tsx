@@ -47,10 +47,12 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
       const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
 
       handleGetFollowedVaults(followedVaults)
+      setIsFollowing(true)
     } else if (vaultId && jwtToken && isFollowing) {
       await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
+      setIsFollowing(false)
+      setProcessing(false)
     }
-    setProcessing(false)
   }
   return (
     <FollowButton

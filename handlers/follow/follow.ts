@@ -61,7 +61,7 @@ export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
       where: userWhoUnfollowsVaultData,
     })
     .then(() => {
-      return res.status(200).send('OK')
+      return res.status(200).json({ message: 'Unfollowed' })
     })
     .catch((err) => {
       return res.status(500).json({ error: err })
