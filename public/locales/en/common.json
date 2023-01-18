@@ -634,6 +634,7 @@
       "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
       "current-stop-loss-coll-ratio": "The current Stop-Loss Collateral Ratio is:",
       "stop-loss-coll-ratio-desc": "The Stop-Loss Collateral Ratio is the trigger point for executing the Stop-Loss on this Vault based on the Collateral Ratio at the next OSM price. Should the next OSM price take the current Vault Collateralisation Ratio below the Stop-Loss Collateral Ratio, then the Vault will be automatically closed.",
+      "stop-loss-ltv-desc": "The Stop-Loss Loan to Value (LTV) is the trigger point for executing the Stop-Loss for this vault based on it's LTV. If the Vault's LTV is equal to or higher than the Trigger LTV, then the stop-loss protection will execute and the vault will be automatically closed.",
       "dynamic-stop-price": "Dynamic Stop price",
       "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
       "dynamic-stop-loss-price-desc": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss Collateralisation Ratio. The reason this price is dynamic is that the Stop-Loss trigger is based on a collateralisation ratio, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",

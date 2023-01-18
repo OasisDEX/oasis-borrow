@@ -50,7 +50,7 @@ export function getAutomationAavePositionData({
     debtOffset: zero,
     id,
     ilk: ilkOrToken,
-    liquidationPenalty: liquidationBonus.div(10000),
+    liquidationPenalty: liquidationBonus,
     liquidationPrice,
     liquidationRatio: liquidationThreshold,
     lockedCollateral,

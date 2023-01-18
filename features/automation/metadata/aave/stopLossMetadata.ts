@@ -118,7 +118,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
         // most likely it won't be needed when we switch to LTV in maker
         stopLossLevelCard: {
           // TODO copy to be udpated
-          modalDescription: 'manage-multiply-vault.card.stop-loss-coll-ratio-desc',
+          modalDescription: 'manage-multiply-vault.card.stop-loss-ltv-desc',
           belowCurrentPositionRatio: formatPercent(stopLossLevel.minus(positionRatio).times(100), {
             precision: 2,
           }),
