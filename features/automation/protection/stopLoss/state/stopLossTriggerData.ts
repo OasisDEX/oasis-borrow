@@ -103,7 +103,7 @@ export function extractStopLossData(
   return defaultState
 }
 
-export function prepareStopLossTriggerData(
+function getBaseTriggerData(
   id: BigNumber,
   owner: string,
   isCloseToCollateral: boolean,
@@ -122,6 +122,28 @@ export function prepareStopLossTriggerData(
       triggerType.toString(),
       stopLossLevel.toString(),
     ]),
+  }
+}
+
+export function prepareAddStopLossTriggerData({
+  id,
+  owner,
+  isCloseToCollateral,
+  stopLossLevel,
+  replacedTriggerId,
+}: {
+  id: BigNumber
+  owner: string
+  isCloseToCollateral: boolean
+  stopLossLevel: BigNumber
+  replacedTriggerId: number
+}): AutomationBotAddTriggerData {
+  const baseTriggerData = getBaseTriggerData(id, owner, isCloseToCollateral, stopLossLevel)
+
+  return {
+    ...baseTriggerData,
+    replacedTriggerId,
+    kind: TxMetaKind.addTrigger,
   }
 }
 
@@ -149,27 +171,5 @@ export function prepareStopLossTriggerDataV2(
     proxyAddress: owner,
     triggersData: [triggerData],
     continuous: [false],
-  }
-}
-
-export function prepareAddStopLossTriggerData({
-  id,
-  owner,
-  isCloseToCollateral,
-  stopLossLevel,
-  replacedTriggerId,
-}: {
-  id: BigNumber
-  owner: string
-  isCloseToCollateral: boolean
-  stopLossLevel: BigNumber
-  replacedTriggerId: number
-}): AutomationBotAddTriggerData {
-  const baseTriggerData = prepareStopLossTriggerData(id, owner, isCloseToCollateral, stopLossLevel)
-
-  return {
-    ...baseTriggerData,
-    replacedTriggerId,
-    kind: TxMetaKind.addTrigger,
   }
 }
