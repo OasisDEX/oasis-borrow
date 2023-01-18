@@ -49,7 +49,7 @@ export function FollowedList({ address }: { address: string }) {
 
           return followedList.length ? (
             <DiscoverTableContainer title={`${t('following')} (${followedList.length})`}>
-              {borrowPositions.length && (
+              {borrowPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
                     Oasis {t('nav.borrow')} ({borrowPositions.length})
@@ -61,7 +61,7 @@ export function FollowedList({ address }: { address: string }) {
                   />
                 </>
               )}
-              {makerPositions.length && (
+              {makerPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
                     Oasis {t('nav.multiply')} ({makerPositions.length})
@@ -73,7 +73,7 @@ export function FollowedList({ address }: { address: string }) {
                   />
                 </>
               )}
-              {earnPositions.length && (
+              {earnPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
                     Oasis {t('nav.earn')} ({earnPositions.length})
@@ -91,13 +91,17 @@ export function FollowedList({ address }: { address: string }) {
               <Flex
                 sx={{
                   flexDirection: 'column',
-                  alignItems: 'center',
-                  my: '92px',
-                  p: 4,
-                  textAlign: 'center',
+                  alignItems: ['flex-start', 'center'],
+                  my: [3, null, '92px'],
+                  px: ['24px', 4],
+                  py: 4,
+                  textAlign: ['left', 'center'],
                 }}
               >
-                <Image src={staticFilesRuntimeUrl('/static/img/no-positions.svg')} />
+                <Image
+                  src={staticFilesRuntimeUrl('/static/img/no-positions.svg')}
+                  sx={{ alignSelf: 'center' }}
+                />
                 <Heading variant="boldParagraph2" sx={{ mt: 4, mb: 1 }}>
                   {t(`vaults-overview.no-follow-header-${isOwner ? 'owner' : 'non-owner'}`, {
                     address: formatAddress(address),
