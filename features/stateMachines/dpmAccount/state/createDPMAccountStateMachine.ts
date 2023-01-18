@@ -16,7 +16,7 @@ export interface DMPAccountStateMachineContext {
   gasData: HasGasEstimation
 }
 
-export type DMPAccountStateMachineResultEvents = { type: 'DPM_ACCOUNT_CREATED' }
+export type DMPAccountStateMachineResultEvents = { type: 'DPM_ACCOUNT_CREATED'; payload: any }
 
 export type DPMAccountStateMachineEvents =
   | TransactionStateMachineResultEvents
@@ -64,6 +64,7 @@ export function createDPMAccountStateMachine(
           entry: ['spawnTransactionMachine'],
           on: {
             TRANSACTION_COMPLETED: {
+              actions: ['updateContext'],
               target: 'txSuccess',
             },
             TRANSACTION_FAILED: {
@@ -102,7 +103,10 @@ export function createDPMAccountStateMachine(
           }
           return undefined
         }),
-        sendResultToParent: sendParent((_) => ({ type: 'DPM_ACCOUNT_CREATED' })),
+        sendResultToParent: sendParent((context) => {
+          // @ts-ignore
+          return { type: 'DPM_ACCOUNT_CREATED', userDpmProxy: context.result }
+        }),
       },
     },
   )

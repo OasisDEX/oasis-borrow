@@ -113,7 +113,12 @@ export function createTransactionStateMachine<T extends TxMeta, TResult = unknow
     },
     {
       actions: {
-        updateContext: assign((context, event) => ({ ...event })),
+        updateContext: assign((context, event) => {
+          console.log('update trxn sate machine context')
+          console.log('context', context)
+          console.log('event', event)
+          return { ...event }
+        }),
         getError: assign((context, event) => {
           return {
             txError: event.data,

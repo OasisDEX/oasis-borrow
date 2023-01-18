@@ -208,8 +208,10 @@ export function createOpenAaveStateMachine(
             dpmProxyCreating: {
               entry: ['spawnDpmProxyMachine'],
               exit: ['killDpmProxyMachine'],
+              // @ts-ignore
               on: {
                 DPM_ACCOUNT_CREATED: {
+                  actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
                   target: 'editing',
                 },
               },
