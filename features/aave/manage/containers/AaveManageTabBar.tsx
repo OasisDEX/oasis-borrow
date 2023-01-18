@@ -42,6 +42,12 @@ export function AaveManageTabBar({
   const protectionEnabled = stopLossTriggerData.isStopLossEnabled
   const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
 
+  const isClosingPosition = state.matches('frontend.reviewingClosing')
+  const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
+
+  const nextPosition =
+    !isClosingPosition || hasCloseTokenSet ? state.context.strategy?.simulation.position : undefined
+
   return (
     <TabBar
       variant="underline"
@@ -60,7 +66,7 @@ export function AaveManageTabBar({
                   collateralPrice={state.context.collateralPrice}
                   tokenPrice={state.context.tokenPrice}
                   debtPrice={state.context.debtPrice}
-                  nextPosition={state.context.strategy?.simulation.position}
+                  nextPosition={nextPosition}
                 />
               </Box>
               <Box>{<SidebarManageAaveVault />}</Box>
