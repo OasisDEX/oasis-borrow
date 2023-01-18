@@ -16,7 +16,6 @@ export interface UserDpmProxy {
 
 export function getUserDpmProxies$(
   context$: Observable<Context>,
-  onEveryBlock$: Observable<number>,
   walletAddress: string,
 ): Observable<UserDpmProxy[]> {
   if (!walletAddress) {
@@ -27,7 +26,7 @@ export function getUserDpmProxies$(
   const accountGuardGenesisBlock = accountGuardNetworkMap[chainId]
   const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
 
-  return combineLatest(context$, onEveryBlock$).pipe(
+  return combineLatest(context$).pipe(
     switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
       const accountGuardContract = contract<AccountGuard>(accountGuard)
@@ -94,10 +93,9 @@ export function getUserDpmProxies$(
 
 export function getUserDpmProxy$(
   context$: Observable<Context>,
-  onEveryBlock$: Observable<number>,
   vaultId: number,
 ): Observable<UserDpmProxy | undefined> {
-  return combineLatest(context$, onEveryBlock$).pipe(
+  return combineLatest(context$).pipe(
     switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
       const accountGuardContract = contract<AccountGuard>(accountGuard)

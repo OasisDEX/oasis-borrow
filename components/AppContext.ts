@@ -651,14 +651,11 @@ export function setupAppContext() {
   )
 
   const userDpmProxies$ = memoize(
-    curry(getUserDpmProxies$)(context$, onEveryBlock$),
+    curry(getUserDpmProxies$)(context$),
     (walletAddress) => walletAddress,
   )
 
-  const userDpmProxy$ = memoize(
-    curry(getUserDpmProxy$)(context$, onEveryBlock$),
-    (vaultId) => vaultId,
-  )
+  const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
