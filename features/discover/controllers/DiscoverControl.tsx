@@ -66,7 +66,6 @@ export function DiscoverControl({ kind, userContext }: DiscoverControlProps) {
         banner={banner}
         isLoading={isLoading}
         isSticky={isSticky}
-        isSmallerScreen={isSmallerScreen}
         kind={kind}
         response={response}
         userContext={userContext}

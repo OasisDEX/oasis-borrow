@@ -68,8 +68,6 @@ export type DiscoverTableRowData = {
   [key: string]: string | number
 } & {
   colRatio?: DiscoverTableColRatioRowData
-} & {
   activity?: DiscoverTableActivityRowData
-} & {
   status?: DiscoverTableStatusRowData
 }

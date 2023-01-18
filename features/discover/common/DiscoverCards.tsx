@@ -1,4 +1,3 @@
-import { MixpanelUserContext } from 'analytics/analytics'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
@@ -16,13 +15,15 @@ export function DiscoverCards({
   isLoading,
   kind,
   rows = [],
-  userContext,
+  onBannerClick,
+  onPositionClick,
 }: {
   banner?: DiscoverBanner
   isLoading: boolean
-  kind: DiscoverPages
+  kind?: DiscoverPages
   rows: DiscoverTableRowData[]
-  userContext: MixpanelUserContext
+  onBannerClick?: (link: string) => void
+  onPositionClick?: (cdpId: string) => void
 }) {
   const rowsForBanner = Math.min(rows.length - 1, 9)
 
@@ -51,10 +52,10 @@ export function DiscoverCards({
       >
         {rows.map((row, i) => (
           <Fragment key={getRowKey(i, row)}>
-            <DiscoverCard kind={kind} row={row} />
-            {banner && i === Math.floor(rowsForBanner / 2) && (
+            <DiscoverCard row={row} onPositionClick={onPositionClick} />
+            {kind && banner && i === Math.floor(rowsForBanner / 2) && (
               <Box as="li">
-                <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
+                <DiscoverTableBanner kind={kind} onBannerClick={onBannerClick} {...banner} />
               </Box>
             )}
           </Fragment>
@@ -64,7 +65,13 @@ export function DiscoverCards({
   )
 }
 
-export function DiscoverCard({ kind, row }: { kind: DiscoverPages; row: DiscoverTableRowData }) {
+export function DiscoverCard({
+  row,
+  onPositionClick,
+}: {
+  row: DiscoverTableRowData
+  onPositionClick?: (cdpId: string) => void
+}) {
   const { t } = useTranslation()
 
   return (
@@ -96,7 +103,11 @@ export function DiscoverCard({ kind, row }: { kind: DiscoverPages; row: Discover
                 {t(`discover.table.header.${kebabCase(label)}`)}
               </Box>
             )}
-            <DiscoverTableDataCellContent kind={kind} label={label} row={row} />
+            <DiscoverTableDataCellContent
+              label={label}
+              row={row}
+              onPositionClick={onPositionClick}
+            />
           </Box>
         ))}
       </Grid>

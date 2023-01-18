@@ -15,17 +15,17 @@ interface Props {
 export function VaultsOverviewView({ address }: Props) {
   return (
     <Grid sx={{ flex: 1, zIndex: 1, gap: 4 }}>
-      <VaultOwnershipNotice address={address} />
+      {/* <VaultOwnershipNotice address={address} />
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
         <AssetsAndPositionsOverview address={address} />
 
         <ConnectWalletPrompt address={address} />
       </Flex>
 
-      <PositionsList address={address} />
+      <PositionsList address={address} /> */}
       <FollowedList address={address} />
 
-      <VaultSuggestions address={address} />
+      {/* <VaultSuggestions address={address} /> */}
     </Grid>
   )
 }

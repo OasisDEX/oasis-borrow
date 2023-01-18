@@ -6,9 +6,8 @@ export function DiscoverTableContainer({ children, title }: PropsWithChildren<{ 
     <Box
       sx={{
         backgroundColor: 'neutral10',
-        border: '1px solid',
-        borderColor: 'neutral20',
         borderRadius: 'large',
+        boxShadow: 'buttonMenu',
       }}
     >
       {title && (

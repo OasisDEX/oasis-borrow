@@ -1,4 +1,3 @@
-import { MixpanelUserContext } from 'analytics/analytics'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
@@ -15,15 +14,20 @@ export function DiscoverTable({
   isSticky = false,
   kind,
   rows,
-  userContext,
+  skip = [],
+  onPositionClick,
+  onBannerClick,
 }: {
   banner?: DiscoverBanner
   isLoading?: boolean
   isSticky?: boolean
-  kind: DiscoverPages
+  kind?: DiscoverPages
   rows: DiscoverTableRowData[]
-  userContext?: MixpanelUserContext
+  skip?: string[]
+  onBannerClick?: (link: string) => void
+  onPositionClick?: (cdpId: string) => void
 }) {
+  const filteredRowKeys = Object.keys(rows[0]).filter((key) => !skip.includes(key))
   const rowsForBanner = Math.min(rows.length - 1, 9)
 
   return (
@@ -53,11 +57,11 @@ export function DiscoverTable({
           }}
         >
           <tr>
-            {Object.keys(rows[0]).map((label, i) => (
+            {filteredRowKeys.map((label, i) => (
               <DiscoverTableHeaderCell
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
-                last={i + 1 === Object.keys(rows[0]).length}
+                last={i + 1 === filteredRowKeys.length}
                 label={label}
               />
             ))}
@@ -73,11 +77,15 @@ export function DiscoverTable({
         >
           {rows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <DiscoverTableDataRow kind={kind} row={row} />
-              {banner && i === Math.floor(rowsForBanner / 2) && (
+              <DiscoverTableDataRow
+                filteredRowKeys={filteredRowKeys}
+                row={row}
+                onPositionClick={onPositionClick}
+              />
+              {kind && banner && i === Math.floor(rowsForBanner / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
-                    <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
+                    <DiscoverTableBanner kind={kind} onBannerClick={onBannerClick} {...banner} />
                   </td>
                 </tr>
               )}
@@ -145,11 +153,13 @@ export function DiscoverTableHeaderCell({
 }
 
 export function DiscoverTableDataRow({
-  kind,
   row,
+  filteredRowKeys,
+  onPositionClick,
 }: {
-  kind: DiscoverPages
   row: DiscoverTableRowData
+  filteredRowKeys: string[]
+  onPositionClick?: (cdpId: string) => void
 }) {
   return (
     <Box
@@ -162,21 +172,26 @@ export function DiscoverTableDataRow({
         },
       }}
     >
-      {Object.keys(row).map((label, i) => (
-        <DiscoverTableDataCell key={getRowKey(i, row)} kind={kind} label={label} row={row} />
+      {filteredRowKeys.map((label, i) => (
+        <DiscoverTableDataCell
+          key={getRowKey(i, row)}
+          label={label}
+          row={row}
+          onPositionClick={onPositionClick}
+        />
       ))}
     </Box>
   )
 }
 
 export function DiscoverTableDataCell({
-  kind,
   label,
   row,
+  onPositionClick,
 }: {
-  kind: DiscoverPages
   label: string
   row: DiscoverTableRowData
+  onPositionClick?: (cdpId: string) => void
 }) {
   return (
     <Box
@@ -190,7 +205,7 @@ export function DiscoverTableDataCell({
         },
       }}
     >
-      <DiscoverTableDataCellContent kind={kind} label={label} row={row} />
+      <DiscoverTableDataCellContent label={label} row={row} onPositionClick={onPositionClick} />
     </Box>
   )
 }
