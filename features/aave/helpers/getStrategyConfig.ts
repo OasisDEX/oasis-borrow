@@ -27,7 +27,9 @@ export function getStrategyConfig$(
           of([]),
         ),
         aaveReservesList$(),
-        effectiveProxyAddress ? lastCreatedPositionForProxy$(effectiveProxyAddress) : of(undefined),
+        effectiveProxyAddress && effectiveProxyAddress === dpmProxy?.proxy
+          ? lastCreatedPositionForProxy$(effectiveProxyAddress)
+          : of(undefined),
       )
     }),
     map(([aaveUserConfiguration, aaveReservesList, lastCreatedPosition]) => {
