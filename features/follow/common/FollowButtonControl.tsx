@@ -12,7 +12,6 @@ import React, { useEffect, useState } from 'react'
 export type FollowButtonProps = {
   followerAddress: string
   vaultId: BigNumber
-  docVersion: string
   chainId: number
 }
 
