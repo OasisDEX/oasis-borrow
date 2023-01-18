@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators'
 
 import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
 import { IStrategyConfig } from '../common/StrategyConfigTypes'
@@ -20,6 +20,7 @@ export function getStrategyConfig$(
   return proxiesForPosition$(positionId).pipe(
     switchMap(({ dsProxy, dpmProxy }) => {
       const effectiveProxyAddress = dsProxy || dpmProxy?.proxy
+      console.log('effectiveProxyAddress', effectiveProxyAddress)
       return combineLatest(
         iif(
           () => effectiveProxyAddress !== undefined,
@@ -27,7 +28,9 @@ export function getStrategyConfig$(
           of([]),
         ),
         aaveReservesList$(),
-        effectiveProxyAddress ? lastCreatedPositionForProxy$(effectiveProxyAddress) : of(undefined),
+        effectiveProxyAddress && effectiveProxyAddress === dpmProxy?.proxy
+          ? lastCreatedPositionForProxy$(effectiveProxyAddress)
+          : of(undefined),
       )
     }),
     map(([aaveUserConfiguration, aaveReservesList, lastCreatedPosition]) => {
