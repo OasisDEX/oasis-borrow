@@ -1054,6 +1054,31 @@
   "proxy-waiting-text": "了解更多关于智能代理合约在",
   "proxy-waiting-text-link": "知识中心",
   "creating-proxy-contract": "正在建立你的智能代理合约",
+  "dpm": {
+    "create-flow": {
+      "welcome-screen": {
+        "header": " 创建您的智能 DeFi 帳戶",
+        "create-button": "创建智能 DeFi 帳戶",
+        "paragraph": "为了在 Aave 上创建仓位，每个仓位都需要一个智能 DeFi 帳戶。您可以通过开启更多的帐户来管理多个仓位。在<1>知识中心</1>了解更多",
+        "retry-create-button": "重新尝试创建智能 DeFi 帳戶",
+        "create-order-summary-heading":"正在创建您的智能 DeFi 帳戶"
+      },
+      "proxy-creating-screen": {
+        "header": "创建您的智能 DeFi 帳戶",
+        "button": "正在创建智能 DeFi 帳戶",
+        "paragraph": "Read more in the the <1>knowledge base</1>"
+      },
+      "proxy-created-screen": {
+        "header": "已创建智能 DeFi 帳戶",
+        "paragraph": "在<1>知识中心</1>了解更多"
+      },
+      "bullet-points": [
+        "在同个钱包里拥有多个 Aave 仓位",
+        "启用进阶的 Oasis.app 功能，如：自动化和再融資",
+        "通过在交易中设置和删除限额以提高安全性"
+      ]
+    }
+  },
   "please-try-again-later": "请稍后再试一次",
   "dai-depositing": "正存入 Dai ({{amount}})",
   "decide-later": "稍后再决定",
@@ -1485,7 +1510,7 @@
     "view-vault": "查看金库",
     "automation-button-on": "已启用",
     "automation-button-off": "启用",
-    "automation-button-off-disabled": "关闭保护",
+    "automation-button-off-disabled": "尚未设置",
     "position-headers": {
       "asset": {
         "label": "资产",
