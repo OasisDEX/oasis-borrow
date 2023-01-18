@@ -1,13 +1,18 @@
 import React, { PropsWithChildren } from 'react'
 import { Box, Heading } from 'theme-ui'
 
-export function DiscoverTableContainer({ children, title }: PropsWithChildren<{ title?: string }>) {
+export function DiscoverTableContainer({
+  children,
+  padded = false,
+  title,
+}: PropsWithChildren<{ padded?: boolean; title?: string }>) {
   return (
     <Box
       sx={{
         backgroundColor: 'neutral10',
         borderRadius: 'large',
         boxShadow: 'buttonMenu',
+        ...(padded && { p: 4 }),
       }}
     >
       {title && (
