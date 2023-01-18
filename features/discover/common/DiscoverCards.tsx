@@ -15,6 +15,7 @@ export function DiscoverCards({
   isLoading,
   kind,
   rows = [],
+  skip = [],
   onBannerClick,
   onPositionClick,
 }: {
@@ -22,6 +23,7 @@ export function DiscoverCards({
   isLoading: boolean
   kind?: DiscoverPages
   rows: DiscoverTableRowData[]
+  skip?: string[]
   onBannerClick?: (link: string) => void
   onPositionClick?: (cdpId: string) => void
 }) {
@@ -52,7 +54,7 @@ export function DiscoverCards({
       >
         {rows.map((row, i) => (
           <Fragment key={getRowKey(i, row)}>
-            <DiscoverCard row={row} onPositionClick={onPositionClick} />
+            <DiscoverCard row={row} skip={skip} onPositionClick={onPositionClick} />
             {kind && banner && i === Math.floor(rowsForBanner / 2) && (
               <Box as="li">
                 <DiscoverTableBanner kind={kind} onBannerClick={onBannerClick} {...banner} />
@@ -67,12 +69,15 @@ export function DiscoverCards({
 
 export function DiscoverCard({
   row,
+  skip,
   onPositionClick,
 }: {
   row: DiscoverTableRowData
+  skip: string[]
   onPositionClick?: (cdpId: string) => void
 }) {
   const { t } = useTranslation()
+  const filteredRowKeys = Object.keys(row).filter((key) => !skip.includes(key))
 
   return (
     <Box as="li">
@@ -80,7 +85,7 @@ export function DiscoverCard({
         as="ul"
         sx={{ gridTemplateColumns: ['100%', 'repeat(2, 1fr)'], gap: 4, p: 0, listStyle: 'none' }}
       >
-        {Object.keys(row).map((label, i) => (
+        {filteredRowKeys.map((label, i) => (
           <Box
             as="li"
             key={i}

@@ -11,7 +11,7 @@ export function DiscoverTableContainer({ children, title }: PropsWithChildren<{ 
       }}
     >
       {title && (
-        <Heading as="h3" variant="boldParagraph2" sx={{ pt: 4, px: 4 }}>
+        <Heading as="h3" variant="boldParagraph2" sx={{ pt: 4, px: ['24px', null, null, 4] }}>
           {title}
         </Heading>
       )}

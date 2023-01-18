@@ -139,7 +139,7 @@
         "create-button": "Create Smart DeFi account",
         "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>",
         "retry-create-button": "Retry Create Smart DeFi account",
-        "create-order-summary-heading":"Creating your Smart DeFi account"
+        "create-order-summary-heading": "Creating your Smart DeFi account"
       },
       "proxy-creating-screen": {
         "header": "Create your Smart DeFi account",
@@ -209,6 +209,18 @@
         "status": "Status",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
+      },
+      "tooltip": {
+        "col-ratio": "The value of the collateral in comparison to the amount of debt. Needs to be above the minimum required to avoid liquidation.",
+        "collateral-locked": "The amount of collateral in this position",
+        "current-multiple": "The current multiple of the position. It shows the exposure to price changes compared to holding the collateral directly.",
+        "funding-cost": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Debt / Net Value * Variable annual fee.",
+        "liquidation-price": "The price of the collateral at which this position becomes vulnerable to liquidation.",
+        "liquidity": "The current available liquidity allowing increases of positions.",
+        "net-usd-value": "The current net value of the position based on the oracle price of the collateral in the position minus the debt.",
+        "pnl": "The current profit or loss percentage of your position, including incurred gas costs. For a more detailed look on the profit and loss, please check the position.",
+        "variable": "The variable annual rate paid over the debt in this position. This can be changed by the governance body of the protocol.",
+        "vault-debt": "The amount of dai debt in this position"
       },
       "status": {
         "1": "Liquidated {{timeAgo}}",

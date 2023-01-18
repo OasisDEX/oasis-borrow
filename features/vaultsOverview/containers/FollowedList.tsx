@@ -6,26 +6,17 @@ import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverRespon
 import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
 import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHeading'
 import {
+  followTableSkippedHeaders,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
+  positionsTableTooltips,
 } from 'features/vaultsOverview/helpers'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-const rows = [
-  {
-    asset: 'WBTC',
-    // colRatio: { level: 301.7, isAtRiskDanger: false, isAtRiskWarning: false },
-    vaultDebt: 61465632.43,
-    collateralLocked: 493,
-    variable: 0.1,
-    cdpId: 29623,
-  },
-]
 
 export function FollowedList({ address }: { address: string }) {
   const { t } = useTranslation()
@@ -51,7 +42,11 @@ export function FollowedList({ address }: { address: string }) {
                     <DiscoverTableHeading>
                       Oasis {t('nav.borrow')} ({borrowPositions.length})
                     </DiscoverTableHeading>
-                    <DiscoverResponsiveTable rows={borrowPositions} skip={['ilk', 'isOwner']} />
+                    <DiscoverResponsiveTable
+                      rows={borrowPositions}
+                      skip={followTableSkippedHeaders}
+                      tooltips={positionsTableTooltips}
+                    />
                   </>
                 )}
                 {makerPositions.length && (
@@ -59,7 +54,11 @@ export function FollowedList({ address }: { address: string }) {
                     <DiscoverTableHeading>
                       Oasis {t('nav.multiply')} ({makerPositions.length})
                     </DiscoverTableHeading>
-                    <DiscoverResponsiveTable rows={makerPositions} skip={['ilk', 'isOwner']} />
+                    <DiscoverResponsiveTable
+                      rows={makerPositions}
+                      skip={followTableSkippedHeaders}
+                      tooltips={positionsTableTooltips}
+                    />
                   </>
                 )}
                 {earnPositions.length && (
@@ -67,7 +66,11 @@ export function FollowedList({ address }: { address: string }) {
                     <DiscoverTableHeading>
                       Oasis {t('nav.earn')} ({earnPositions.length})
                     </DiscoverTableHeading>
-                    <DiscoverResponsiveTable rows={earnPositions} skip={['ilk', 'isOwner']} />
+                    <DiscoverResponsiveTable
+                      rows={earnPositions}
+                      skip={followTableSkippedHeaders}
+                      tooltips={positionsTableTooltips}
+                    />
                   </>
                 )}
               </>

@@ -4,6 +4,20 @@ import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsLis
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
+export const positionsTableTooltips = [
+  'collateralLocked',
+  'colRatio',
+  'currentMultiple',
+  'fundingCost',
+  'liquidationPrice',
+  'liquidity',
+  'netUSDValue',
+  'pnl',
+  'variable',
+  'vaultDebt',
+]
+export const followTableSkippedHeaders = ['ilk', 'isOwner']
+
 function getFundingCost({
   debt,
   stabilityFee,

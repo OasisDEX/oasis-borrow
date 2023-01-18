@@ -1,3 +1,5 @@
+import { Icon } from '@makerdao/dai-ui-icons'
+import { StatefulTooltip } from 'components/Tooltip'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
@@ -6,7 +8,7 @@ import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 
 export function DiscoverTable({
   banner,
@@ -15,6 +17,7 @@ export function DiscoverTable({
   kind,
   rows,
   skip = [],
+  tooltips = [],
   onPositionClick,
   onBannerClick,
 }: {
@@ -23,6 +26,7 @@ export function DiscoverTable({
   isSticky?: boolean
   kind?: DiscoverPages
   rows: DiscoverTableRowData[]
+  tooltips?: string[]
   skip?: string[]
   onBannerClick?: (link: string) => void
   onPositionClick?: (cdpId: string) => void
@@ -63,6 +67,7 @@ export function DiscoverTable({
                 first={i === 0}
                 last={i + 1 === filteredRowKeys.length}
                 label={label}
+                tooltip={tooltips.includes(label)}
               />
             ))}
           </tr>
@@ -101,10 +106,12 @@ export function DiscoverTableHeaderCell({
   first,
   last,
   label,
+  tooltip,
 }: {
   first: boolean
   last: boolean
   label: string
+  tooltip: boolean
 }) {
   const { t } = useTranslation()
 
@@ -119,10 +126,10 @@ export function DiscoverTableHeaderCell({
         fontWeight: 'semiBold',
         color: 'neutral80',
         lineHeight: '10px',
-        textAlign: 'right',
+        textAlign: 'left',
         whiteSpace: 'nowrap',
-        '&:first-child': {
-          textAlign: 'left',
+        '&:first-child > span': {
+          justifyContent: 'flex-start',
         },
       }}
     >
@@ -145,9 +152,35 @@ export function DiscoverTableHeaderCell({
           },
         }}
       />
-      <Box as="span" sx={{ position: 'relative' }}>
+      <Flex
+        as="span"
+        sx={{
+          position: 'relative',
+          alignItems: 'center',
+          width: '100%',
+          justifyContent: 'flex-end',
+        }}
+      >
         {t(`discover.table.header.${kebabCase(label)}`)}
-      </Box>
+        {tooltip && (
+          <StatefulTooltip
+            containerSx={{ ml: 1 }}
+            tooltip={t(`discover.table.tooltip.${kebabCase(label)}`)}
+            tooltipSx={{
+              width: '200px',
+              px: 3,
+              py: 2,
+              borderRadius: 'medium',
+              border: 'none',
+              whiteSpace: 'initial',
+              color: 'neutral80',
+              lineHeight: 'body',
+            }}
+          >
+            <Icon name="question_o" size={16} color="neutral80" />
+          </StatefulTooltip>
+        )}
+      </Flex>
     </Box>
   )
 }

@@ -13,6 +13,7 @@ export function DiscoverResponsiveTable({
   kind,
   rows,
   skip = [],
+  tooltips = [],
   onPositionClick,
   onBannerClick,
 }: {
@@ -22,6 +23,7 @@ export function DiscoverResponsiveTable({
   kind?: DiscoverPages
   rows: DiscoverTableRowData[]
   skip?: string[]
+  tooltips?: string[]
   onBannerClick?: (link: string) => void
   onPositionClick?: (cdpId: string) => void
 }) {
@@ -35,6 +37,7 @@ export function DiscoverResponsiveTable({
           isLoading={isLoading}
           kind={kind}
           rows={rows}
+          skip={skip}
           onBannerClick={onBannerClick}
           onPositionClick={onPositionClick}
         />
@@ -46,6 +49,7 @@ export function DiscoverResponsiveTable({
           kind={kind}
           rows={rows}
           skip={skip}
+          tooltips={tooltips}
           onBannerClick={onBannerClick}
           onPositionClick={onPositionClick}
         />

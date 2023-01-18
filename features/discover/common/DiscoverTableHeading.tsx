@@ -8,8 +8,8 @@ export function DiscoverTableHeading({ children }: PropsWithChildren<{}>) {
       variant="boldParagraph3"
       sx={{
         position: 'relative',
-        px: 4,
-        pt: 4,
+        px: ['24px', null, null, 4],
+        pt: [3, null, null, 4],
         pb: 3,
         borderBottom: '1px solid',
         borderColor: 'neutral20',
