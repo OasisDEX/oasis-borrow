@@ -2,7 +2,7 @@ import { getNetworkId } from '@oasisdex/web3-context'
 import { accountFactoryNetworkMap } from 'blockchain/dpm/accountFactory'
 import { accountGuardNetworkMap } from 'blockchain/dpm/accountGuard'
 import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { shareReplay, switchMap, take } from 'rxjs/operators'
 import { AccountFactory } from 'types/web3-v1-contracts/account-factory'
 import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
@@ -16,10 +16,10 @@ export interface UserDpmProxy {
 
 export function getUserDpmProxies$(
   context$: Observable<Context>,
-  onEveryBlock$: Observable<number>,
+  blockFrequency$: Observable<number | undefined>,
   walletAddress: string,
 ): Observable<UserDpmProxy[]> {
-  if (!walletAddress) {
+  if (!walletAddress || !blockFrequency$) {
     return of([])
   }
 
@@ -27,7 +27,7 @@ export function getUserDpmProxies$(
   const accountGuardGenesisBlock = accountGuardNetworkMap[chainId]
   const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
 
-  return combineLatest(context$, onEveryBlock$).pipe(
+  return combineLatest(context$.pipe(take(1)), blockFrequency$).pipe(
     switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
       const accountGuardContract = contract<AccountGuard>(accountGuard)
@@ -89,6 +89,7 @@ export function getUserDpmProxies$(
         user: walletAddress,
       }))
     }),
+    shareReplay(1),
   )
 }
 
