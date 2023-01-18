@@ -81,16 +81,7 @@ export function getMakerMultiplyPositions(
   positions: MakerPositionDetails[],
 ): DiscoverTableRowData[] {
   return getMakerPositionOfType(positions).multiply.map(
-    ({
-      debt,
-      id,
-      ilk,
-      liquidationPrice,
-      lockedCollateralUSD,
-      stabilityFee,
-      token,
-      value,
-    }) => ({
+    ({ debt, id, ilk, liquidationPrice, lockedCollateralUSD, stabilityFee, token, value }) => ({
       asset: token,
       ilk,
       netUSDValue: value.toNumber(),
