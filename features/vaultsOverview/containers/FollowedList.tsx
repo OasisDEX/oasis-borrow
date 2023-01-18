@@ -5,10 +5,15 @@ import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
 import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
 import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHeading'
-import { getMakerBorrowPositions, getMakerMultiplyPositions } from 'features/vaultsOverview/helpers'
+import {
+  getMakerBorrowPositions,
+  getMakerEarnPositions,
+  getMakerMultiplyPositions,
+} from 'features/vaultsOverview/helpers'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 const rows = [
@@ -23,36 +28,46 @@ const rows = [
 ]
 
 export function FollowedList({ address }: { address: string }) {
+  const { t } = useTranslation()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const { followedList$ } = useAppContext()
   const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))
 
   return (
     <DiscoverTableContainer
-      title={`Following${followedListData ? ` (${followedListData.length})` : ''}`}
+      title={`${t('following')}${followedListData ? ` (${followedListData.length})` : ''}`}
     >
       <WithErrorHandler error={[followedListError]}>
         <WithLoadingIndicator value={[followedListData]} customLoader={<DiscoverPreloader />}>
           {([followedList]) => {
-            const borrowVaults = getMakerBorrowPositions(followedList)
-            const makerVaults = getMakerMultiplyPositions(followedList)
+            const borrowPositions = getMakerBorrowPositions(followedList)
+            const makerPositions = getMakerMultiplyPositions(followedList)
+            const earnPositions = getMakerEarnPositions(followedList)
 
             return followedList.length ? (
               <>
-                {borrowVaults.length && (
+                {borrowPositions.length && (
                   <>
                     <DiscoverTableHeading>
-                      Oasis Borrow ({borrowVaults.length})
+                      Oasis {t('nav.borrow')} ({borrowPositions.length})
                     </DiscoverTableHeading>
-                    <DiscoverResponsiveTable rows={borrowVaults} skip={['ilk', 'isOwner']} />
+                    <DiscoverResponsiveTable rows={borrowPositions} skip={['ilk', 'isOwner']} />
                   </>
                 )}
-                {makerVaults.length && (
+                {makerPositions.length && (
                   <>
                     <DiscoverTableHeading>
-                      Oasis Multiply ({makerVaults.length})
+                      Oasis {t('nav.multiply')} ({makerPositions.length})
                     </DiscoverTableHeading>
-                    <DiscoverResponsiveTable rows={makerVaults} skip={['ilk', 'isOwner']} />
+                    <DiscoverResponsiveTable rows={makerPositions} skip={['ilk', 'isOwner']} />
+                  </>
+                )}
+                {earnPositions.length && (
+                  <>
+                    <DiscoverTableHeading>
+                      Oasis {t('nav.earn')} ({earnPositions.length})
+                    </DiscoverTableHeading>
+                    <DiscoverResponsiveTable rows={earnPositions} skip={['ilk', 'isOwner']} />
                   </>
                 )}
               </>

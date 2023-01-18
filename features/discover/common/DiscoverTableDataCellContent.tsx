@@ -80,6 +80,7 @@ export function DiscoverTableDataCellContent({
     case '30DayAvgApy':
       return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
     case 'earningsToDate':
+    case 'liquidity':
     case 'netValue':
     case 'vaultDebt':
       return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
