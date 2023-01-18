@@ -176,6 +176,7 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
     },
     translations: {
       ratioParamTranslationKey: 'system.collateral-ratio',
+      stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-below',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({

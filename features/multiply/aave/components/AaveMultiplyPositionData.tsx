@@ -178,31 +178,7 @@ export function AaveMultiplyPositionData({
             loanToValue={currentPosition.riskRatio.loanToValue}
             liquidationThreshold={currentPosition.category.liquidationThreshold}
             afterLoanToValue={nextPosition?.riskRatio.loanToValue}
-            modal={
-              <Grid gap={2}>
-                <Heading variant="header4">{t('aave-position-modal.ltv.first-header')}</Heading>
-                <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                  {t('aave-position-modal.ltv.first-description-line')}
-                </Text>
-                <Card as="p" variant="vaultDetailsCardModal">
-                  {formatDecimalAsPercent(currentPosition.riskRatio.loanToValue)}
-                </Card>
-                <Heading variant="header4">{t('aave-position-modal.ltv.second-header')}</Heading>
-                <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                  {t('aave-position-modal.ltv.second-description-line')}
-                </Text>
-                <Card as="p" variant="vaultDetailsCardModal">
-                  {formatDecimalAsPercent(currentPosition.category.maxLoanToValue)}
-                </Card>
-                <Heading variant="header4">{t('aave-position-modal.ltv.third-header')}</Heading>
-                <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
-                  {t('aave-position-modal.ltv.third-description-line')}
-                </Text>
-                <Card as="p" variant="vaultDetailsCardModal">
-                  {formatDecimalAsPercent(currentPosition.category.liquidationThreshold)}
-                </Card>
-              </Grid>
-            }
+            maxLoanToValue={currentPosition.category.maxLoanToValue}
           />
           <DetailsSectionContentCard
             title={t('system.net-borrow-cost')}

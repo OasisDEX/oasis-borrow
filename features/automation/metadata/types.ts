@@ -65,6 +65,7 @@ type AutomationCommonMetadata<T> = {
   }
   translations: {
     ratioParamTranslationKey: string
+    stopLossLevelCardFootnoteKey: string
   }
   validation: {
     getAddErrors: AutomationMetadataValidationMethod<T>

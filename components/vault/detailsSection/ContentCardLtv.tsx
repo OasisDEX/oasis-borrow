@@ -4,6 +4,7 @@ import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
+import { Card, Grid, Heading, Text } from 'theme-ui'
 
 const { colors } = theme
 
@@ -21,18 +22,62 @@ const getLTVRatioColor = (ratio: BigNumber) => {
   }
 }
 
+interface ContentCardLtvModalProps {
+  loanToValue: BigNumber
+  liquidationThreshold: BigNumber
+  maxLoanToValue?: BigNumber
+}
+
+function ContentCardLtvModal({
+  loanToValue,
+  liquidationThreshold,
+  maxLoanToValue,
+}: ContentCardLtvModalProps) {
+  const { t } = useTranslation()
+
+  return (
+    <Grid gap={2}>
+      <Heading variant="header4">{t('aave-position-modal.ltv.first-header')}</Heading>
+      <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
+        {t('aave-position-modal.ltv.first-description-line')}
+      </Text>
+      <Card as="p" variant="vaultDetailsCardModal">
+        {formatDecimalAsPercent(loanToValue)}
+      </Card>
+      {maxLoanToValue && (
+        <>
+          <Heading variant="header4">{t('aave-position-modal.ltv.second-header')}</Heading>
+          <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
+            {t('aave-position-modal.ltv.second-description-line')}
+          </Text>
+          <Card as="p" variant="vaultDetailsCardModal">
+            {formatDecimalAsPercent(maxLoanToValue)}
+          </Card>
+        </>
+      )}
+      <Heading variant="header4">{t('aave-position-modal.ltv.third-header')}</Heading>
+      <Text as="p" variant="paragraph3" sx={{ mb: 1 }}>
+        {t('aave-position-modal.ltv.third-description-line')}
+      </Text>
+      <Card as="p" variant="vaultDetailsCardModal">
+        {formatDecimalAsPercent(liquidationThreshold)}
+      </Card>
+    </Grid>
+  )
+}
+
 interface ContentCardLtvProps {
   loanToValue: BigNumber
   liquidationThreshold: BigNumber
+  maxLoanToValue?: BigNumber
   afterLoanToValue?: BigNumber
-  modal?: JSX.Element
 }
 
 export function ContentCardLtv({
   loanToValue,
   liquidationThreshold,
   afterLoanToValue,
-  modal = undefined,
+  maxLoanToValue,
 }: ContentCardLtvProps) {
   const { t } = useTranslation()
 
@@ -60,5 +105,16 @@ export function ContentCardLtv({
     }
   }
 
-  return <DetailsSectionContentCard {...contentCardSettings} modal={modal} />
+  return (
+    <DetailsSectionContentCard
+      {...contentCardSettings}
+      modal={
+        <ContentCardLtvModal
+          loanToValue={loanToValue}
+          maxLoanToValue={maxLoanToValue}
+          liquidationThreshold={liquidationThreshold}
+        />
+      }
+    />
+  )
 }

@@ -43,8 +43,8 @@ export function getAutomationAavePositionData({
   const liquidationPrice = positionDebt.div(lockedCollateral.times(liquidationThreshold)) || zero
 
   return {
-    positionRatio: loanToValue.decimalPlaces(4),
-    nextPositionRatio: loanToValue.decimalPlaces(4),
+    positionRatio: loanToValue.decimalPlaces(5),
+    nextPositionRatio: loanToValue.decimalPlaces(5),
     debt: positionDebt,
     debtFloor: dustLimit,
     debtOffset: zero,

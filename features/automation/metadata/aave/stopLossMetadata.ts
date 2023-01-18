@@ -31,7 +31,7 @@ import {
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatPercent } from 'helpers/formatters/format'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
@@ -128,13 +128,13 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     methods: {
       getExecutionPrice: ({ stopLossLevel }) =>
         collateralPriceAtRatio({
-          colRatio: one.div(stopLossLevel.div(100)),
+          colRatio: stopLossLevel.isZero() ? zero : one.div(stopLossLevel.div(100)),
           collateral: lockedCollateral,
           vaultDebt: debt,
         }),
       getMaxToken: ({ stopLossLevel }) =>
         getMaxToken({
-          stopLossLevel: one.div(stopLossLevel.div(100)).times(100),
+          stopLossLevel: stopLossLevel.isZero() ? zero : one.div(stopLossLevel.div(100)).times(100),
           lockedCollateral,
           liquidationRatio: one.div(liquidationRatio),
           liquidationPrice,
@@ -175,6 +175,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     },
     translations: {
       ratioParamTranslationKey: 'vault-changes.loan-to-value',
+      stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-above',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({

@@ -139,7 +139,7 @@
         "create-button": "Create Smart DeFi account",
         "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>",
         "retry-create-button": "Retry Create Smart DeFi account",
-        "create-order-summary-heading":"Creating your Smart DeFi account"
+        "create-order-summary-heading": "Creating your Smart DeFi account"
       },
       "proxy-creating-screen": {
         "header": "Create your Smart DeFi account",
@@ -1016,7 +1016,8 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} below {{value}}"
+        "footnote-below": "{{amount}} below {{value}}",
+        "footnote-above": "{{amount}} above {{value}}"
       },
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"
@@ -1434,7 +1435,7 @@
     "stop-loss-triggered": "Stop-Loss triggered",
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
     "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop Loss event on the right.",
-    "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
+    "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your {{ratioParam}}.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "This fee represents the expected Gas Cost based on the current price of ETH and an assumed Gas Price of 200 GWEI.",
