@@ -7,6 +7,8 @@ import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHead
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
+  getAaveEarnPositions,
+  getAaveMultiplyPositions,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
@@ -19,7 +21,7 @@ import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 export function PositionsTable({ address }: { address: string }) {
   const { t } = useTranslation()
@@ -44,8 +46,16 @@ export function PositionsTable({ address }: { address: string }) {
             ...ownersPositionsList.aavePositions,
           ]
           const borrowPositions = getMakerBorrowPositions(ownersPositionsList.makerPositions)
-          const makerPositions = getMakerMultiplyPositions(ownersPositionsList.makerPositions)
-          const earnPositions = getMakerEarnPositions(ownersPositionsList.makerPositions)
+          const makerPositions = useMemo(() => {
+            return [
+              ...getMakerMultiplyPositions(ownersPositionsList.makerPositions),
+              ...getAaveMultiplyPositions(ownersPositionsList.aavePositions),
+            ]
+          }, [ownersPositionsList])
+          const earnPositions = [
+            ...getMakerEarnPositions(ownersPositionsList.makerPositions),
+            ...getAaveEarnPositions(ownersPositionsList.aavePositions),
+          ]
 
           return combinedPositionsData.length ? (
             <DiscoverTableContainer

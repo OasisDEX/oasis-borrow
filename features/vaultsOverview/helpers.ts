@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { AavePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
@@ -20,8 +22,8 @@ export const positionsTableTooltips = [
   'variable',
   'vaultDebt',
 ]
-export const positionsTableSkippedHeaders = ['ilk']
-export const followTableSkippedHeaders = ['ilk', 'protection']
+export const positionsTableSkippedHeaders = ['icon', 'ilk', 'liquidityToken', 'url']
+export const followTableSkippedHeaders = ['icon', 'ilk', 'protection', 'liquidityToken', 'url']
 
 function getFundingCost({
   debt,
@@ -65,6 +67,21 @@ function getMakerPositionOfType(position: MakerPositionDetails[]) {
       return v
     },
     { borrow: [], multiply: [], earn: [] },
+  )
+}
+
+function getAavePositionOfType(position: AavePosition[]) {
+  return position.reduce<{
+    multiply: AavePosition[]
+    earn: AavePosition[]
+  }>(
+    (v, position) => {
+      if (position.type === 'earn') v.earn.push(position)
+      else if (position.type === 'multiply') v.multiply.push(position)
+
+      return v
+    },
+    { multiply: [], earn: [] },
   )
 }
 
@@ -140,6 +157,42 @@ export function getMakerEarnPositions(positions: MakerPositionDetails[]): Discov
         liquidity: ilkDebtAvailable.toNumber(),
         protection: -1,
         cdpId: id.toNumber(),
+      }
+    },
+  )
+}
+
+export function getAaveMultiplyPositions(positions: AavePosition[]): DiscoverTableRowData[] {
+  return getAavePositionOfType(positions).multiply.map(
+    ({ fundingCost, id, liquidationPrice, multiple, netValue, title, token, url }) => {
+      return {
+        icon: getToken(token).iconCircle,
+        asset: title,
+        netUSDValue: netValue.toNumber(),
+        currentMultiple: multiple.toNumber(),
+        liquidationPrice: liquidationPrice.toNumber(),
+        fundingCost: fundingCost.toNumber(),
+        protection: -1,
+        cdpId: id,
+        url,
+      }
+    },
+  )
+}
+
+export function getAaveEarnPositions(positions: AavePosition[]): DiscoverTableRowData[] {
+  return getAavePositionOfType(positions).earn.map(
+    ({ id, liquidity, netValue, title, token, url }) => {
+      return {
+        icon: getToken(token).iconCircle,
+        asset: title,
+        netUSDValue: netValue.toNumber(),
+        pnl: 'n/a',
+        liquidity: liquidity.toNumber(),
+        liquidityToken: 'USDC',
+        protection: -1,
+        cdpId: id,
+        url,
       }
     },
   )

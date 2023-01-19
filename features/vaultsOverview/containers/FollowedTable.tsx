@@ -35,7 +35,7 @@ export function FollowedTable({ address }: { address: string }) {
       <WithLoadingIndicator value={[followedListData]} customLoader={<PositionTableLoadingState />}>
         {([followedList]) => {
           const borrowPositions = getMakerBorrowPositions(followedList)
-          const makerPositions = getMakerMultiplyPositions(followedList)
+          const multiplyPositions = getMakerMultiplyPositions(followedList)
           const earnPositions = getMakerEarnPositions(followedList)
 
           return followedList.length ? (
@@ -56,13 +56,13 @@ export function FollowedTable({ address }: { address: string }) {
                   />
                 </>
               )}
-              {makerPositions.length > 0 && (
+              {multiplyPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
-                    Oasis {t('nav.multiply')} ({makerPositions.length})
+                    Oasis {t('nav.multiply')} ({multiplyPositions.length})
                   </DiscoverTableHeading>
                   <DiscoverResponsiveTable
-                    rows={makerPositions}
+                    rows={multiplyPositions}
                     skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                   />

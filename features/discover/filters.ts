@@ -9,6 +9,7 @@ export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOpti
     icon: 'curve_full_circle_color',
   },
   eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
+  reth: { value: 'RETH', label: 'RETH', icon: getToken('RETH').iconCircle },
   guniv3daiusdc1: {
     value: 'GUNIV3DAIUSDC1',
     label: 'GUNIV3DAIUSDC1',

@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
@@ -35,7 +36,9 @@ export function DiscoverTableDataCellContent({
 
       return (
         <Flex sx={{ alignItems: 'center' }}>
-          {asset && asset.icon && <Icon size={44} name={asset.icon} />}
+          {(primitives.icon || (asset && asset.icon)) && (
+            <Icon size={44} name={(primitives.icon || asset.icon) as string} />
+          )}
           <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
             <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
               {primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset}
@@ -65,12 +68,13 @@ export function DiscoverTableDataCellContent({
         </DiscoverTableDataCellPill>
       )
     case 'cdpId':
+    case 'url':
       return (
         <AppLink
-          href={`/${primitives[label]}`}
+          href={`${row.url || `/${row.cdpId}`}`}
           internalInNewTab={true}
           onClick={() => {
-            onPositionClick && onPositionClick(String(primitives[label]))
+            onPositionClick && onPositionClick(String(row.url || row.cdpId))
           }}
         >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
@@ -84,12 +88,23 @@ export function DiscoverTableDataCellContent({
       return <>${formatFiatBalance(new BigNumber(primitives[label]))}</>
     case 'pnl':
     case '30DayAvgApy':
-      return <>{formatPercent(new BigNumber(primitives[label]), { precision: 2 })}</>
+      return (
+        <>
+          {typeof primitives[label] === 'number'
+            ? formatPercent(new BigNumber(primitives[label]), { precision: 2 })
+            : primitives[label]}
+        </>
+      )
     case 'earningsToDate':
-    case 'liquidity':
     case 'netValue':
     case 'vaultDebt':
       return <>{formatCryptoBalance(new BigNumber(primitives[label]))} DAI</>
+    case 'liquidity':
+      return (
+        <>
+          {formatCryptoBalance(new BigNumber(primitives[label]))} {row.liquidityToken || 'DAI'}
+        </>
+      )
     case 'currentMultiple':
       return <>{(primitives[label] as number)?.toFixed(2)}x</>
     case 'fundingCost':
@@ -124,7 +139,11 @@ export function DiscoverTableDataCellContent({
       return (
         <>
           {primitives.cdpId && primitives[label] >= 0 ? (
-            <AppLink href={`/${primitives.cdpId}`} hash="protection" internalInNewTab={true}>
+            <AppLink
+              href={`/${primitives.cdpId}`}
+              hash={VaultViewMode.Overview}
+              internalInNewTab={true}
+            >
               <Button variant={primitives[label] > 0 ? 'actionActiveGreen' : 'action'}>
                 {primitives[label] > 0
                   ? t('discover.table.protection-value', { protection: primitives[label] })
@@ -132,7 +151,9 @@ export function DiscoverTableDataCellContent({
               </Button>
             </AppLink>
           ) : (
-            <Text as="span" sx={{ fontSize: 2, color: 'neutral80' }}>{t('discover.table.not-available')}</Text>
+            <Text as="span" sx={{ fontSize: 2, color: 'neutral80' }}>
+              {t('discover.table.not-available')}
+            </Text>
           )}
         </>
       )
