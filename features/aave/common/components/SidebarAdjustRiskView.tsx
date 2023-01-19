@@ -9,12 +9,14 @@ import { Flex, Grid, Link, Text } from 'theme-ui'
 
 import { SliderValuePicker } from '../../../../components/dumb/SliderValuePicker'
 import { MessageCard } from '../../../../components/MessageCard'
+import { SidebarSection, SidebarSectionProps } from '../../../../components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
 import { zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 import { BaseViewProps } from '../BaseAaveContext'
+import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents =
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
@@ -30,6 +32,7 @@ export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   onChainPosition?: IPosition
   dropdownConfig?: SidebarSectionHeaderDropdown
   title: string
+  noSidebar?: boolean
 }
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
@@ -75,9 +78,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     state,
     send,
     isLoading,
+    primaryButton,
+    textButton,
     viewLocked = false,
     showWarring = false,
     onChainPosition,
+    dropdownConfig,
+    title,
+    noSidebar,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
@@ -130,7 +138,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       onChainPosition?.riskRatio.loanToValue ||
       viewConfig.riskRatios.default.loanToValue
 
-    return (
+    const sidebarContent = (
       <Grid gap={3}>
         <SliderValuePicker
           leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
@@ -228,7 +236,24 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             />
           )
         )}
+        <StrategyInformationContainer state={state} />
       </Grid>
     )
+    if (noSidebar) {
+      return sidebarContent
+    }
+
+    const sidebarSectionProps: SidebarSectionProps = {
+      title,
+      content: sidebarContent,
+      primaryButton: {
+        ...primaryButton,
+        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
+      },
+      textButton, // this is going back button, no need to block it
+      dropdown: dropdownConfig,
+    }
+
+    return <SidebarSection {...sidebarSectionProps} />
   }
 }

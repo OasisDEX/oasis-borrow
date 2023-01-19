@@ -190,6 +190,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
           }}
           viewLocked={hasOpenedPosition}
           showWarring={hasOpenedPosition}
+          noSidebar
         />
         <StrategyInformationContainer state={state} />
       </Grid>
