@@ -3,26 +3,34 @@ import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
 import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import { Flex } from 'theme-ui'
+import { Box, Flex, Image } from 'theme-ui'
 
 import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetails'
 
 export type VaultHeadlineProps = {
-  header: string
-  token: string[]
   details: HeadlineDetailsProp[]
-  loading?: boolean
   followButtonProps?: FollowButtonProps
+  header: string
+  label?: string
+  loading?: boolean
+  outline?: {
+    color: string
+    size: number
+  }
+  token: string[]
 }
 
 export function VaultHeadline({
-  header,
-  token,
   details,
-  loading = false,
   followButtonProps,
+  header,
+  label,
+  loading = false,
+  outline,
+  token,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
@@ -31,7 +39,7 @@ export function VaultHeadline({
       sx={{
         flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
-        alignItems: ['flex-start', null, null, 'flex-end'],
+        alignItems: ['flex-start', null, null, 'center'],
         mb: 4,
       }}
     >
@@ -39,28 +47,44 @@ export function VaultHeadline({
         as="h1"
         variant="heading1"
         sx={{
+          display: 'flex',
           fontWeight: 'semiBold',
           fontSize: '28px',
           color: 'primary100',
-          display: 'flex',
           alignItems: 'center',
         }}
       >
-        {tokenData instanceof Array &&
-          tokenData.map(({ iconCircle }, iconIndex) => (
-            <Icon
-              key={`VaultHeadlineIcon_${iconCircle}`}
-              name={iconCircle}
-              size="32px"
-              sx={{
-                verticalAlign: 'text-bottom',
-                position: 'relative',
-                zIndex: tokenData.length - iconIndex,
-                mr: tokenData.length - 1 === iconIndex ? 2 : -16,
-              }}
-            />
-          ))}
+        {tokenData instanceof Array && tokenData.length > 0 && (
+          <Box
+            sx={{
+              mr: 2,
+              ...(outline && {
+                filter: `
+                  drop-shadow(${outline.size}px ${outline.size}px 0 ${outline.color})
+                  drop-shadow(${outline.size}px -${outline.size}px 0 ${outline.color})
+                  drop-shadow(-${outline.size}px ${outline.size}px 0 ${outline.color})
+                  drop-shadow(-${outline.size}px -${outline.size}px 0 ${outline.color})
+                `,
+              }),
+            }}
+          >
+            {tokenData.map(({ iconCircle }, iconIndex) => (
+              <Icon
+                key={`VaultHeadlineIcon_${iconCircle}`}
+                name={iconCircle}
+                size="32px"
+                sx={{
+                  verticalAlign: 'text-bottom',
+                  position: 'relative',
+                  zIndex: tokenData.length - iconIndex,
+                  mr: tokenData.length - 1 === iconIndex ? 0 : '-16px',
+                }}
+              />
+            ))}
+          </Box>
+        )}
         {header}
+        {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
         {followVaultEnabled && followButtonProps && (
           <FollowButtonControl
             followerAddress={followButtonProps.followerAddress}

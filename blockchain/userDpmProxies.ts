@@ -1,14 +1,14 @@
 import { getNetworkId } from '@oasisdex/web3-context'
 import { accountFactoryNetworkMap } from 'blockchain/dpm/accountFactory'
 import { accountGuardNetworkMap } from 'blockchain/dpm/accountGuard'
-import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory } from 'types/web3-v1-contracts/account-factory'
 import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
 import { Context, NetworkIds } from './network'
 
-export interface UserDpmProxy {
+export interface UserDpmAccount {
   proxy: string
   user: string
   vaultId: string
@@ -16,9 +16,8 @@ export interface UserDpmProxy {
 
 export function getUserDpmProxies$(
   context$: Observable<Context>,
-  onEveryBlock$: Observable<number>,
   walletAddress: string,
-): Observable<UserDpmProxy[]> {
+): Observable<UserDpmAccount[]> {
   if (!walletAddress) {
     return of([])
   }
@@ -27,8 +26,8 @@ export function getUserDpmProxies$(
   const accountGuardGenesisBlock = accountGuardNetworkMap[chainId]
   const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
 
-  return combineLatest(context$, onEveryBlock$).pipe(
-    switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
+  return context$.pipe(
+    switchMap(async ({ accountFactory, accountGuard, contract }) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
       const accountGuardContract = contract<AccountGuard>(accountGuard)
 
@@ -89,16 +88,16 @@ export function getUserDpmProxies$(
         user: walletAddress,
       }))
     }),
+    shareReplay(1),
   )
 }
 
 export function getUserDpmProxy$(
   context$: Observable<Context>,
-  onEveryBlock$: Observable<number>,
   vaultId: number,
-): Observable<UserDpmProxy | undefined> {
-  return combineLatest(context$, onEveryBlock$).pipe(
-    switchMap(async ([{ accountFactory, accountGuard, contract }]) => {
+): Observable<UserDpmAccount | undefined> {
+  return context$.pipe(
+    switchMap(async ({ accountFactory, accountGuard, contract }) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
       const accountGuardContract = contract<AccountGuard>(accountGuard)
 
@@ -116,7 +115,7 @@ export function getUserDpmProxy$(
       )
 
       const dpmProxy = userAccountCreatedEvents
-        .map<UserDpmProxy>((event) => ({
+        .map<UserDpmAccount>((event) => ({
           proxy: event.returnValues.proxy,
           vaultId: event.returnValues.vaultId,
           user: event.returnValues.user,

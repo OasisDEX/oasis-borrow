@@ -2,18 +2,18 @@ import { isEqual } from 'lodash'
 import { iif, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 
-import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
 import { PositionId } from '../types'
 
 export interface ProxiesRelatedWithPosition {
   dsProxy: string | undefined
-  dpmProxy: UserDpmProxy | undefined
+  dpmProxy: UserDpmAccount | undefined
   walletAddress: string
 }
 
 export function getProxiesRelatedWithPosition$(
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  dpmProxy$: (vaultId: number) => Observable<UserDpmProxy | undefined>,
+  dpmProxy$: (vaultId: number) => Observable<UserDpmAccount | undefined>,
   positionId: PositionId,
 ): Observable<ProxiesRelatedWithPosition> {
   return iif(
