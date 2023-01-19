@@ -2,6 +2,8 @@ import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { WithArrow } from 'components/WithArrow'
+import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { ManageAaveEvent } from 'features/aave/manage/state'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -32,6 +34,7 @@ export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   onChainPosition?: IPosition
   dropdownConfig?: SidebarSectionHeaderDropdown
   title: string
+  automation?: ManageAaveAutomation
 }
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
@@ -84,6 +87,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     onChainPosition,
     dropdownConfig,
     title,
+    automation,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
@@ -135,6 +139,11 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       state.context.userInput.riskRatio?.loanToValue ||
       onChainPosition?.riskRatio.loanToValue ||
       viewConfig.riskRatios.default.loanToValue
+
+    const stopLossError =
+      automation?.stopLoss.isStopLossEnabled &&
+      automation?.stopLoss.stopLossLevel &&
+      sliderValue.gte(automation?.stopLoss.stopLossLevel)
 
     const sidebarSectionProps: SidebarSectionProps = {
       title,
@@ -203,6 +212,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               </WithArrow>
             </Link>
           )}
+          {stopLossError && <StopLossAaveErrorMessage />}
           {showWarring ? (
             <MessageCard
               messages={[t('manage-earn-vault.has-asset-already')]}
@@ -241,7 +251,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       ),
       primaryButton: {
         ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
+        disabled: viewLocked || primaryButton.disabled || !state.context.strategy || stopLossError,
       },
       textButton, // this is going back button, no need to block it
       dropdown: dropdownConfig,
