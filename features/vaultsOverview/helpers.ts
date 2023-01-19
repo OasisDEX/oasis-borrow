@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
@@ -17,7 +19,8 @@ export const positionsTableTooltips = [
   'variable',
   'vaultDebt',
 ]
-export const followTableSkippedHeaders = ['ilk', 'isOwner']
+export const positionsTableSkippedHeaders = ['ilk']
+export const followTableSkippedHeaders = ['ilk', 'protection']
 
 function getFundingCost({
   debt,
@@ -29,6 +32,21 @@ function getFundingCost({
   value: BigNumber
 }) {
   return value.gt(zero) ? debt.div(value).multipliedBy(stabilityFee).times(100) : zero
+}
+
+function getProtection({
+  stopLossData,
+  autoSellData,
+}: {
+  stopLossData: StopLossTriggerData
+  autoSellData: AutoBSTriggerData
+}): number {
+  return (stopLossData.stopLossLevel.gt(zero)
+    ? stopLossData.stopLossLevel.times(100)
+    : autoSellData.execCollRatio.gt(zero)
+    ? autoSellData.execCollRatio
+    : zero
+  ).toNumber()
 }
 
 function getMakerPositionOfType(position: MakerPositionDetails[]) {
@@ -61,6 +79,8 @@ export function getMakerBorrowPositions(positions: MakerPositionDetails[]): Disc
       lockedCollateral,
       stabilityFee,
       token,
+      stopLossData,
+      autoSellData,
     }) => ({
       asset: token,
       ilk,
@@ -72,6 +92,7 @@ export function getMakerBorrowPositions(positions: MakerPositionDetails[]): Disc
       vaultDebt: debt.toNumber(),
       collateralLocked: lockedCollateral.toNumber(),
       variable: stabilityFee.times(100).toNumber(),
+      protection: getProtection({ stopLossData, autoSellData }),
       cdpId: id.toNumber(),
     }),
   )

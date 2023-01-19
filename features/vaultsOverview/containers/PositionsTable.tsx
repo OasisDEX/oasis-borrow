@@ -7,8 +7,8 @@ import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHead
 import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
-  followTableSkippedHeaders,
   getMakerBorrowPositions,
+  positionsTableSkippedHeaders,
   positionsTableTooltips,
 } from 'features/vaultsOverview/helpers'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -58,7 +58,7 @@ export function PositionsTable({ address }: { address: string }) {
                   </DiscoverTableHeading>
                   <DiscoverResponsiveTable
                     rows={borrowPositions}
-                    skip={followTableSkippedHeaders}
+                    skip={positionsTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                   />
                 </>

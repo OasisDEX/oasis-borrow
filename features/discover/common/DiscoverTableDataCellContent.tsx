@@ -120,6 +120,22 @@ export function DiscoverTableDataCellContent({
           )}
         </>
       )
+    case 'protection':
+      return (
+        <>
+          {primitives.cdpId && primitives[label] >= 0 ? (
+            <AppLink href={`/${primitives.cdpId}`} hash="protection" internalInNewTab={true}>
+              <Button variant={primitives[label] > 0 ? 'actionActiveGreen' : 'action'}>
+                {primitives[label] > 0
+                  ? t('discover.table.protection-value', { protection: primitives[label] })
+                  : t('discover.table.activate')}
+              </Button>
+            </AppLink>
+          ) : (
+            t('discover.table.not-available')
+          )}
+        </>
+      )
     default:
       return <>{primitives[label]}</>
   }

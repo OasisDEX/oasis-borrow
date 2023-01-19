@@ -185,7 +185,10 @@
       "2": "There are no positions available for selected filters."
     },
     "table": {
+      "activate": "Activate",
+      "not-available": "Not available yet",
       "no-entries": "There are no entries available for selected filters.",
+      "protection-value": "On {{protection}}%",
       "vault-number": "Vault #{{cdpId}}",
       "view-position": "View Position",
       "header": {
@@ -206,6 +209,7 @@
         "net-value": "Net value",
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
+        "protection": "Protection",
         "status": "Status",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
