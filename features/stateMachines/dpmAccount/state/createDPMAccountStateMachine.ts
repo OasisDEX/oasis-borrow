@@ -15,7 +15,7 @@ export interface DMPAccountStateMachineContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount>>
   error?: string | unknown
   gasData: HasGasEstimation
-  result?: any
+  result?: any // transaction result from events raised from transactionStateMachine
 }
 
 export type DMPAccountStateMachineResultEvents = {
