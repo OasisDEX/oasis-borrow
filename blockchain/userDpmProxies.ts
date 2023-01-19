@@ -8,7 +8,7 @@ import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
 import { Context, NetworkIds } from './network'
 
-export interface UserDpmProxy {
+export interface UserDpmAccount {
   proxy: string
   user: string
   vaultId: string
@@ -17,7 +17,7 @@ export interface UserDpmProxy {
 export function getUserDpmProxies$(
   context$: Observable<Context>,
   walletAddress: string,
-): Observable<UserDpmProxy[]> {
+): Observable<UserDpmAccount[]> {
   if (!walletAddress) {
     return of([])
   }
@@ -95,7 +95,7 @@ export function getUserDpmProxies$(
 export function getUserDpmProxy$(
   context$: Observable<Context>,
   vaultId: number,
-): Observable<UserDpmProxy | undefined> {
+): Observable<UserDpmAccount | undefined> {
   return context$.pipe(
     switchMap(async ({ accountFactory, accountGuard, contract }) => {
       const accountFactoryContract = contract<AccountFactory>(accountFactory)
@@ -115,7 +115,7 @@ export function getUserDpmProxy$(
       )
 
       const dpmProxy = userAccountCreatedEvents
-        .map<UserDpmProxy>((event) => ({
+        .map<UserDpmAccount>((event) => ({
           proxy: event.returnValues.proxy,
           vaultId: event.returnValues.vaultId,
           user: event.returnValues.user,

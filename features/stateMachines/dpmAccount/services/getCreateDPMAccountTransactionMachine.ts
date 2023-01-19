@@ -5,7 +5,7 @@ import { Observable } from 'rxjs'
 import { createAccount, CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
 import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../blockchain/network'
-import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import {
   CommonTransactionServices,
@@ -24,7 +24,7 @@ export function getCreateDPMAccountTransactionMachine(
     context$,
     extractDpmProxyFromTxnReceipt,
   )
-  return createTransactionStateMachine<CreateDPMAccount, UserDpmProxy>(createAccount, {
+  return createTransactionStateMachine<CreateDPMAccount, UserDpmAccount>(createAccount, {
     kind: TxMetaKind.createAccount,
   }).withConfig({
     services: {
@@ -37,7 +37,7 @@ export function getCreateDPMAccountTransactionMachine(
 function extractDpmProxyFromTxnReceipt(
   context: ContextConnected,
   txnReceipt: SuccessTxState | TxState<CreateDPMAccount>,
-): UserDpmProxy | undefined {
+): UserDpmAccount | undefined {
   if ('receipt' in txnReceipt) {
     const logParser = new ethers.utils.Interface(context.accountFactory.abi.default)
 
@@ -48,7 +48,7 @@ function extractDpmProxyFromTxnReceipt(
           return discoveredProxy
         }
         try {
-          return (logParser.parseLog(log).args as unknown) as UserDpmProxy // args is the proxy
+          return (logParser.parseLog(log).args as unknown) as UserDpmAccount // args is the proxy
         } catch (e) {
           // throws when reading an event from a non AccountFactory ABI - assume no proxy from this event
           return undefined

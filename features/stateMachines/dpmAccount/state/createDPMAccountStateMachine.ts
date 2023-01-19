@@ -6,25 +6,25 @@ import { pure } from 'xstate/lib/actions'
 
 import { createAccount, CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
 import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
-import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { TransactionStateMachine, TransactionStateMachineResultEvents } from '../../transaction'
 
 export interface DMPAccountStateMachineContext {
-  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount, UserDpmProxy>>
+  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount, UserDpmAccount>>
   error?: string | unknown
   gasData: HasGasEstimation
-  result?: UserDpmProxy // transaction result from transactionStateMachine
+  result?: UserDpmAccount // transaction result from transactionStateMachine
 }
 
 export type DMPAccountStateMachineResultEvents = {
   type: 'DPM_ACCOUNT_CREATED'
-  userDpmAccount: UserDpmProxy
+  userDpmAccount: UserDpmAccount
 }
 
 export type DPMAccountStateMachineEvents =
-  | TransactionStateMachineResultEvents<UserDpmProxy>
+  | TransactionStateMachineResultEvents<UserDpmAccount>
   | DMPAccountStateMachineResultEvents
   | { type: 'START' }
   | { type: 'RETRY' }
@@ -32,7 +32,7 @@ export type DPMAccountStateMachineEvents =
   | { type: 'GAS_COST_ESTIMATION'; gasData: HasGasEstimation }
 
 export function createDPMAccountStateMachine(
-  transactionStateMachine: TransactionStateMachine<CreateDPMAccount, UserDpmProxy>,
+  transactionStateMachine: TransactionStateMachine<CreateDPMAccount, UserDpmAccount>,
 ) {
   return createMachine(
     {

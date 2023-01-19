@@ -19,7 +19,7 @@ import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../blockchain/tokens'
-import { UserDpmProxy } from '../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../blockchain/userDpmProxies'
 import { AppContext } from '../../components/AppContext'
 import { getAllowanceStateMachine } from '../stateMachines/allowance'
 import {
@@ -191,7 +191,7 @@ export function setupAaveContext({
 
   const getAvailableDPMProxy: (
     walletAddress: string,
-  ) => Observable<UserDpmProxy | undefined> = memoize(
+  ) => Observable<UserDpmAccount | undefined> = memoize(
     curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
   )
 

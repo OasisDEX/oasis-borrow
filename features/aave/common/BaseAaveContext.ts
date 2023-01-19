@@ -5,7 +5,7 @@ import { ActorRefFrom, EventObject, Sender } from 'xstate'
 import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { Context } from '../../../blockchain/network'
-import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
 import { HasGasEstimation } from '../../../helpers/form'
 import { zero } from '../../../helpers/zero'
 import {
@@ -74,7 +74,7 @@ export type BaseAaveEvent =
   | { type: 'RESET_RISK_RATIO' }
   | { type: 'CLOSE_POSITION' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
-  | { type: 'DMP_PROXY_RECEIVED'; userDpmAccount: UserDpmProxy }
+  | { type: 'DMP_PROXY_RECEIVED'; userDpmAccount: UserDpmAccount }
   | { type: 'SET_BALANCE'; balance: StrategyTokenBalance }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | UpdateCollateralActionType
@@ -116,7 +116,7 @@ export interface BaseAaveContext {
   userSettings?: UserSettingsState
   error?: string | unknown
   protocolData?: AaveProtocolData
-  userDpmAccount?: UserDpmProxy
+  userDpmAccount?: UserDpmAccount
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string
