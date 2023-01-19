@@ -33,6 +33,8 @@ import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/sto
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 
+const offsetFromMinAndMax = new BigNumber(0.05)
+
 export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
     automationTriggersData,
@@ -60,12 +62,10 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     liquidationPenalty,
   })
 
-  // FOR NOW ASSUMED OFFSET OF 1% FROM MIN
   const sliderMin = new BigNumber(
-    positionRatio.multipliedBy(100).plus(one).toFixed(0, BigNumber.ROUND_DOWN),
+    positionRatio.plus(offsetFromMinAndMax).times(100).toFixed(0, BigNumber.ROUND_UP),
   )
-  // FOR NOW ASSUMED OFFSET OF 1% FROM MAX
-  const sliderMax = liquidationRatio.minus(one.div(100)).times(100)
+  const sliderMax = liquidationRatio.minus(offsetFromMinAndMax).times(100)
 
   const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
     stopLossLevel: stopLossLevel,
