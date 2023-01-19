@@ -406,6 +406,8 @@ export type ReducersMap = {
   [key: string]: UIReducer
 }
 
+const refreshInterval = 1000 * 60
+
 function createUIChangesSubject(): UIChanges {
   const latest: any = {}
 
@@ -1222,7 +1224,7 @@ export function setupAppContext() {
   )
 
   const vaultsHistoryAndValue$ = memoize(
-    curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, 1000 * 60),
+    curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, refreshInterval),
   )
 
   const positionsList$ = memoize(
@@ -1364,7 +1366,7 @@ export function setupAppContext() {
         curry(vaultsWithHistory$)(
           chainContext$,
           curry(decorateVaultsWithValue$)(vaultsFromId$, exchangeQuote$, userSettings$),
-          1000 * 60,
+          refreshInterval,
         ),
       ),
     ),
