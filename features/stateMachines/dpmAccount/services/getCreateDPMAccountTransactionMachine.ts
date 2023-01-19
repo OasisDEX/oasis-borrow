@@ -1,18 +1,18 @@
+import { TxState } from '@oasisdex/transactions'
 import { ethers } from 'ethers'
 import { Observable } from 'rxjs'
 
 import { createAccount, CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
 import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../blockchain/network'
+import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import {
   CommonTransactionServices,
   createTransactionStateMachine,
   startTransactionService,
 } from '../../transaction'
-import { TxState } from '@oasisdex/transactions'
 import { SuccessTxState } from '@oasisdex/transactions/lib/src/types'
-import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
 
 export function getCreateDPMAccountTransactionMachine(
   txHelpers$: Observable<TxHelpers>,
@@ -24,7 +24,7 @@ export function getCreateDPMAccountTransactionMachine(
     context$,
     extractDpmProxyFromTxnReceipt,
   )
-  return createTransactionStateMachine<CreateDPMAccount>(createAccount, {
+  return createTransactionStateMachine<CreateDPMAccount, UserDpmProxy>(createAccount, {
     kind: TxMetaKind.createAccount,
   }).withConfig({
     services: {

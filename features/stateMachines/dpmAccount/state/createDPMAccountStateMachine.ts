@@ -12,10 +12,10 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { TransactionStateMachine, TransactionStateMachineResultEvents } from '../../transaction'
 
 export interface DMPAccountStateMachineContext {
-  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount>>
+  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount, UserDpmProxy>>
   error?: string | unknown
   gasData: HasGasEstimation
-  result?: any // transaction result from transactionStateMachine
+  result?: UserDpmProxy // transaction result from transactionStateMachine
 }
 
 export type DMPAccountStateMachineResultEvents = {
@@ -24,7 +24,7 @@ export type DMPAccountStateMachineResultEvents = {
 }
 
 export type DPMAccountStateMachineEvents =
-  | TransactionStateMachineResultEvents
+  | TransactionStateMachineResultEvents<UserDpmProxy>
   | DMPAccountStateMachineResultEvents
   | { type: 'START' }
   | { type: 'RETRY' }
@@ -32,7 +32,7 @@ export type DPMAccountStateMachineEvents =
   | { type: 'GAS_COST_ESTIMATION'; gasData: HasGasEstimation }
 
 export function createDPMAccountStateMachine(
-  transactionStateMachine: TransactionStateMachine<CreateDPMAccount>,
+  transactionStateMachine: TransactionStateMachine<CreateDPMAccount, UserDpmProxy>,
 ) {
   return createMachine(
     {
