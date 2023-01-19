@@ -171,6 +171,14 @@ export function createOpenAaveStateMachine(
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: ['setAmount', 'calculateAuxiliaryAmount'],
                 },
+                SET_RISK_RATIO: {
+                  target: '#openAaveStateMachine.background.debouncing',
+                  actions: 'setRiskRatio',
+                },
+                RESET_RISK_RATIO: {
+                  target: '#openAaveStateMachine.background.debouncing',
+                  actions: 'resetRiskRatio',
+                },
                 NEXT_STEP: [
                   {
                     target: 'dpmProxyCreating',
@@ -188,7 +196,7 @@ export function createOpenAaveStateMachine(
                     actions: 'incrementCurrentStep',
                   },
                   {
-                    target: 'settingMultiple',
+                    target: 'reviewing',
                     cond: 'canOpenPosition',
                     actions: 'incrementCurrentStep',
                   },
@@ -220,27 +228,6 @@ export function createOpenAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
-                  target: 'editing',
-                },
-              },
-            },
-            settingMultiple: {
-              entry: 'eventConfirmDeposit',
-              on: {
-                SET_RISK_RATIO: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: 'setRiskRatio',
-                },
-                RESET_RISK_RATIO: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: 'resetRiskRatio',
-                },
-                NEXT_STEP: {
-                  target: 'reviewing',
-                  cond: 'validTransactionParameters',
-                  actions: 'incrementCurrentStep',
-                },
-                BACK_TO_EDITING: {
                   target: 'editing',
                 },
               },
@@ -323,7 +310,7 @@ export function createOpenAaveStateMachine(
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
         },
-        DMP_PROXY_RECEIVED: {
+        DPM_PROXY_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
       },

@@ -9,14 +9,12 @@ import { Flex, Grid, Link, Text } from 'theme-ui'
 
 import { SliderValuePicker } from '../../../../components/dumb/SliderValuePicker'
 import { MessageCard } from '../../../../components/MessageCard'
-import { SidebarSection, SidebarSectionProps } from '../../../../components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
 import { zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 import { BaseViewProps } from '../BaseAaveContext'
-import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents =
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
@@ -77,13 +75,9 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     state,
     send,
     isLoading,
-    primaryButton,
-    textButton,
     viewLocked = false,
     showWarring = false,
     onChainPosition,
-    dropdownConfig,
-    title,
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
@@ -136,117 +130,105 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       onChainPosition?.riskRatio.loanToValue ||
       viewConfig.riskRatios.default.loanToValue
 
-    const sidebarSectionProps: SidebarSectionProps = {
-      title,
-      content: (
-        <Grid gap={3}>
-          <SliderValuePicker
-            leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
-            leftBoundry={liquidationPrice}
-            leftBoundryFormatter={(value) => {
-              if (isLoading()) {
-                return '...'
-              } else {
-                return viewConfig.liquidationPriceFormatter(value)
-              }
-            }}
-            rightBoundry={viewConfig.rightBoundary.valueExtractor({
-              oracleAssetPrice,
-              ltv: sliderValue,
-            })}
-            rightBoundryFormatter={(value) => {
-              return viewConfig.rightBoundary.formatter(value)
-            }}
-            rightLabel={t(viewConfig.rightBoundary.translationKey)}
-            onChange={(ltv) => {
-              send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
-            }}
-            leftBoundryStyling={{
-              color: isWarning ? 'warning100' : 'neutral100',
-            }}
-            minBoundry={minRisk}
-            maxBoundry={maxRisk || zero}
-            lastValue={sliderValue}
-            disabled={viewLocked}
-            step={0.01}
-            sliderPercentageFill={
-              maxRisk
-                ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
-                : new BigNumber(0)
+    return (
+      <Grid gap={3}>
+        <SliderValuePicker
+          leftLabel={t('open-earn.aave.vault-form.configure-multiple.liquidation-price')}
+          leftBoundry={liquidationPrice}
+          leftBoundryFormatter={(value) => {
+            if (isLoading()) {
+              return '...'
+            } else {
+              return viewConfig.liquidationPriceFormatter(value)
             }
-          />
-          <Flex
-            sx={{
-              variant: 'text.paragraph4',
-              justifyContent: 'space-between',
-              color: 'neutral80',
-            }}
-          >
-            <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
-            <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
-          </Flex>
+          }}
+          rightBoundry={viewConfig.rightBoundary.valueExtractor({
+            oracleAssetPrice,
+            ltv: sliderValue,
+          })}
+          rightBoundryFormatter={(value) => {
+            return viewConfig.rightBoundary.formatter(value)
+          }}
+          rightLabel={t(viewConfig.rightBoundary.translationKey)}
+          onChange={(ltv) => {
+            send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
+          }}
+          leftBoundryStyling={{
+            color: isWarning ? 'warning100' : 'neutral100',
+          }}
+          minBoundry={minRisk}
+          maxBoundry={maxRisk || zero}
+          lastValue={sliderValue}
+          disabled={viewLocked}
+          step={0.01}
+          sliderPercentageFill={
+            maxRisk
+              ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
+              : new BigNumber(0)
+          }
+        />
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            color: 'neutral80',
+          }}
+        >
+          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.decrease-risk')}</Text>
+          <Text as="span">{t('open-earn.aave.vault-form.configure-multiple.increase-risk')}</Text>
+        </Flex>
 
-          <SidebarResetButton
-            clear={() => {
-              send({ type: 'RESET_RISK_RATIO' })
-            }}
-            disabled={viewLocked || !state.context.userInput.riskRatio}
-          />
+        <SidebarResetButton
+          clear={() => {
+            send({ type: 'RESET_RISK_RATIO' })
+          }}
+          disabled={viewLocked || !state.context.userInput.riskRatio}
+        />
 
-          {collateralToken && debtToken && viewConfig.link && (
-            <Link target="_blank" href={viewConfig.link.url}>
-              <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
-                {t(viewConfig.link.textTranslationKey, {
-                  collateralToken,
-                  debtToken,
-                })}
-              </WithArrow>
-            </Link>
-          )}
-          {showWarring ? (
+        {collateralToken && debtToken && viewConfig.link && (
+          <Link target="_blank" href={viewConfig.link.url}>
+            <WithArrow variant="paragraph4" sx={{ color: 'interactive100' }}>
+              {t(viewConfig.link.textTranslationKey, {
+                collateralToken,
+                debtToken,
+              })}
+            </WithArrow>
+          </Link>
+        )}
+        {showWarring ? (
+          <MessageCard
+            messages={[t('manage-earn-vault.has-asset-already')]}
+            type="error"
+            withBullet={false}
+          />
+        ) : (
+          state.context.strategy && (
             <MessageCard
-              messages={[t('manage-earn-vault.has-asset-already')]}
-              type="error"
-              withBullet={false}
-            />
-          ) : (
-            state.context.strategy && (
-              <MessageCard
-                messages={[
-                  isWarning
-                    ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
-                        collateralToken,
-                        priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
-                          precision: 2,
-                        }),
-                        debtToken,
-                        liquidationPenalty,
-                      })
-                    : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
-                        collateralToken,
-                        priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
-                          precision: 2,
-                        }),
-                        debtToken,
-                        liquidationPenalty,
+              messages={[
+                isWarning
+                  ? t('open-earn.aave.vault-form.configure-multiple.vault-message-warning', {
+                      collateralToken,
+                      priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
+                        precision: 2,
                       }),
-                ]}
-                withBullet={false}
-                type={isWarning ? 'warning' : 'ok'}
-              />
-            )
-          )}
-          <StrategyInformationContainer state={state} />
-        </Grid>
-      ),
-      primaryButton: {
-        ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
-      },
-      textButton, // this is going back button, no need to block it
-      dropdown: dropdownConfig,
-    }
-
-    return <SidebarSection {...sidebarSectionProps} />
+                      debtToken,
+                      liquidationPenalty,
+                    })
+                  : t('open-earn.aave.vault-form.configure-multiple.vault-message-ok', {
+                      collateralToken,
+                      priceMovement: formatPercent(priceMovementUntilLiquidationPercent, {
+                        precision: 2,
+                      }),
+                      debtToken,
+                      liquidationPenalty,
+                    }),
+              ]}
+              withBullet={false}
+              type={isWarning ? 'warning' : 'ok'}
+            />
+          )
+        )}
+      </Grid>
+    )
   }
 }

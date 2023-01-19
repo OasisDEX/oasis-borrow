@@ -151,6 +151,8 @@ function EditingStateViewSidebarPrimaryButton({
 
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const { hasOpenedPosition } = state.context
+  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
@@ -166,6 +168,29 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
             type="error"
           />
         )}
+        <AdjustRiskView
+          title={
+            state.context.strategyConfig.type === 'Earn'
+              ? t('sidebar-titles.open-earn-position')
+              : t('sidebar-titles.open-multiply-position')
+          }
+          state={state}
+          send={send}
+          isLoading={isLoading}
+          primaryButton={{
+            steps: [state.context.currentStep, state.context.totalSteps],
+            isLoading: isLoading(),
+            disabled: !state.can('NEXT_STEP'),
+            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
+            action: () => send('NEXT_STEP'),
+          }}
+          textButton={{
+            label: t('open-earn.aave.vault-form.back-to-editing'),
+            action: () => send('BACK_TO_EDITING'),
+          }}
+          viewLocked={hasOpenedPosition}
+          showWarring={hasOpenedPosition}
+        />
         <StrategyInformationContainer state={state} />
       </Grid>
     ),
@@ -205,14 +230,11 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
 export function SidebarOpenAaveVault() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
-  const { t } = useTranslation()
-  const { hasOpenedPosition } = state.context
 
   function loading(): boolean {
     return isLoading(state)
   }
 
-  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
   switch (true) {
     case state.matches('frontend.editing'):
       return <OpenAaveEditingStateView state={state} send={send} isLoading={loading} />
@@ -230,32 +252,6 @@ export function SidebarOpenAaveVault() {
         <AllowanceView
           allowanceMachine={state.context.refAllowanceStateMachine!}
           steps={[state.context.currentStep, state.context.totalSteps]}
-        />
-      )
-    case state.matches('frontend.settingMultiple'):
-      return (
-        <AdjustRiskView
-          title={
-            state.context.strategyConfig.type === 'Earn'
-              ? t('sidebar-titles.open-earn-position')
-              : t('sidebar-titles.open-multiply-position')
-          }
-          state={state}
-          send={send}
-          isLoading={loading}
-          primaryButton={{
-            steps: [state.context.currentStep, state.context.totalSteps],
-            isLoading: isLoading(state),
-            disabled: !state.can('NEXT_STEP'),
-            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
-            action: () => send('NEXT_STEP'),
-          }}
-          textButton={{
-            label: t('open-earn.aave.vault-form.back-to-editing'),
-            action: () => send('BACK_TO_EDITING'),
-          }}
-          viewLocked={hasOpenedPosition}
-          showWarring={hasOpenedPosition}
         />
       )
     case state.matches('frontend.reviewing'):
