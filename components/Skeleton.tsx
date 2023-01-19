@@ -50,8 +50,8 @@ function SkeletonLine({ width = '100%', height = 3, sx }: Omit<SkeletonProps, 'l
 export function Skeleton({ lines = 1, gap = 3, ...rest }: SkeletonProps) {
   return (
     <Grid gap={gap}>
-      {[...Array(lines)].map(() => (
-        <SkeletonLine {...rest} />
+      {[...Array(lines)].map((_item, i) => (
+        <SkeletonLine key={i} {...rest} />
       ))}
     </Grid>
   )

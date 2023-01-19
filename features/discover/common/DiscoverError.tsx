@@ -24,7 +24,7 @@ export function DiscoverError({
     >
       {message}
       {message && error && '<br />'}
-      {error && t(`discover.api-error.${error?.code}`)}
+      {error && t(`discover.api-error.${error.code}`)}
     </Text>
   )
 }

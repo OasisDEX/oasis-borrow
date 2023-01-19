@@ -2,7 +2,7 @@ import { DiscoverCards } from 'features/discover/common/DiscoverCards'
 import { DiscoverTable } from 'features/discover/common/DiscoverTable'
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
-import React, { Fragment } from 'react'
+import React from 'react'
 import { theme } from 'theme'
 import { useMediaQuery } from 'usehooks-ts'
 
@@ -29,31 +29,27 @@ export function DiscoverResponsiveTable({
 }) {
   const isSmallerScreen = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`)
 
-  return (
-    <>
-      {isSmallerScreen ? (
-        <DiscoverCards
-          banner={banner}
-          isLoading={isLoading}
-          kind={kind}
-          rows={rows}
-          skip={skip}
-          onBannerClick={onBannerClick}
-          onPositionClick={onPositionClick}
-        />
-      ) : (
-        <DiscoverTable
-          banner={banner}
-          isLoading={isLoading}
-          isSticky={isSticky}
-          kind={kind}
-          rows={rows}
-          skip={skip}
-          tooltips={tooltips}
-          onBannerClick={onBannerClick}
-          onPositionClick={onPositionClick}
-        />
-      )}
-    </>
+  return isSmallerScreen ? (
+    <DiscoverCards
+      banner={banner}
+      isLoading={isLoading}
+      kind={kind}
+      rows={rows}
+      skip={skip}
+      onBannerClick={onBannerClick}
+      onPositionClick={onPositionClick}
+    />
+  ) : (
+    <DiscoverTable
+      banner={banner}
+      isLoading={isLoading}
+      isSticky={isSticky}
+      kind={kind}
+      rows={rows}
+      skip={skip}
+      tooltips={tooltips}
+      onBannerClick={onBannerClick}
+      onPositionClick={onPositionClick}
+    />
   )
 }

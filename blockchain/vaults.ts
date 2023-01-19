@@ -60,7 +60,7 @@ interface CdpIdsResolver {
   (address: string): Observable<BigNumber[]>
 }
 export function createVaults$(
-  refreshInterval: Observable<any>,
+  refreshInterval: Observable<number>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   context$: Observable<Context>,
   cdpIdResolvers: CdpIdsResolver[],
@@ -82,7 +82,7 @@ export function createVaults$(
 }
 
 export function createVaultsFromIds$(
-  refreshInterval: Observable<any>,
+  refreshInterval: Observable<number>,
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   context$: Observable<Context>,
