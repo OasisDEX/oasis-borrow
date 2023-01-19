@@ -14,12 +14,7 @@ function PositionsListView({ positions }: { positions: PositionVM[] }) {
 
   if (numberOfVaults !== 0) {
     return (
-      <Card
-        variant="positionsPage"
-        sx={{
-          mb: 4,
-        }}
-      >
+      <Card variant="positionsPage">
         <PositionList positions={positions} />
       </Card>
     )

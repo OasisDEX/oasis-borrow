@@ -1,30 +1,36 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { AppLink } from 'components/Links'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
-import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { DiscoverTableRowData } from 'features/discover/types'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
 
 export function DiscoverTableDataCellContent({
-  kind,
   label,
   row,
+  onPositionClick,
 }: {
-  kind: DiscoverPages
   label: string
   row: DiscoverTableRowData
+  onPositionClick?: (cdpId: string) => void
 }) {
   const { i18n, t } = useTranslation()
+  const primitives = Object.keys(row)
+    .filter((item) => typeof row[item] === 'string' || typeof row[item] === 'number')
+    .reduce<{ [key: string]: string | number }>(
+      (a, v) => ({ ...a, [v]: row[v] as string | number }),
+      {},
+    )
 
   switch (label) {
     case 'asset':
       const asset = Object.values(discoverFiltersAssetItems).filter(
-        (item) => item.value === row.asset,
+        (item) => item.value === primitives.asset,
       )[0]
 
       return (
@@ -32,11 +38,11 @@ export function DiscoverTableDataCellContent({
           {asset && asset.icon && <Icon size={44} name={asset.icon} />}
           <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
             <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
-              {asset ? asset.label : row.asset}
+              {primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset}
             </Text>
-            {row.cdpId && (
+            {primitives.cdpId && (
               <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-                {t('discover.table.vault-number', { cdpId: row.cdpId })}
+                {t('discover.table.vault-number', { cdpId: primitives.cdpId })}
               </Text>
             )}
           </Flex>
@@ -60,30 +66,41 @@ export function DiscoverTableDataCellContent({
       )
     case 'cdpId':
       return (
-        <a
-          href={`/${row?.cdpId}`}
-          target="_blank"
+        <AppLink
+          href={`/${primitives[label]}`}
+          internalInNewTab={true}
           onClick={() => {
-            trackingEvents.discover.viewPosition(kind, row?.cdpId)
+            onPositionClick && onPositionClick(String(primitives[label]))
           }}
         >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
-        </a>
+        </AppLink>
       )
     case 'collateralValue':
     case 'liquidationPrice':
     case 'maxLiquidationAmount':
+    case 'netUSDValue':
     case 'nextOsmPrice':
-      return <>${formatCryptoBalance(new BigNumber(row[label]))}</>
+      return <>${formatFiatBalance(new BigNumber(primitives[label]))}</>
     case 'pnl':
     case '30DayAvgApy':
-      return <>{formatPercent(new BigNumber(row[label]), { precision: 2 })}</>
+      return <>{formatPercent(new BigNumber(primitives[label]), { precision: 2 })}</>
     case 'earningsToDate':
+    case 'liquidity':
     case 'netValue':
     case 'vaultDebt':
-      return <>{formatCryptoBalance(new BigNumber(row[label]))} DAI</>
+      return <>{formatCryptoBalance(new BigNumber(primitives[label]))} DAI</>
     case 'currentMultiple':
-      return <>{(row.currentMultiple as number)?.toFixed(2)}x</>
+      return <>{(primitives[label] as number)?.toFixed(2)}x</>
+    case 'fundingCost':
+    case 'variable':
+      return <>{(primitives[label] as number)?.toFixed(2)}%</>
+    case 'collateralLocked':
+      return (
+        <>
+          {formatCryptoBalance(new BigNumber(primitives[label]))} {primitives.asset}
+        </>
+      )
     case 'colRatio':
       return (
         <>
@@ -104,6 +121,6 @@ export function DiscoverTableDataCellContent({
         </>
       )
     default:
-      return <>{row[label]}</>
+      return <>{primitives[label]}</>
   }
 }

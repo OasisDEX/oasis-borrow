@@ -65,11 +65,14 @@ export type DiscoverTableStatusRowDataApi = DiscoverTableStatusRowData & {
 }
 
 export type DiscoverTableRowData = {
-  [key: string]: string | number
+  [key: string]:
+    | string
+    | number
+    | DiscoverTableColRatioRowData
+    | DiscoverTableActivityRowData
+    | DiscoverTableStatusRowData
 } & {
   colRatio?: DiscoverTableColRatioRowData
-} & {
   activity?: DiscoverTableActivityRowData
-} & {
   status?: DiscoverTableStatusRowData
 }
