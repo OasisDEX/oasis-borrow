@@ -43,15 +43,12 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
   async function buttonClickHandler() {
     setProcessing(true)
     const jwtToken = jwtAuthGetToken(followerAddress)
-    if (vaultId && jwtToken && !isFollowing) {
-      const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
-
-      handleGetFollowedVaults(followedVaults)
-      setIsFollowing(true)
-    } else if (vaultId && jwtToken && isFollowing) {
-      await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
-      setIsFollowing(false)
-      setProcessing(false)
+    if (vaultId && jwtToken) {
+      if (!isFollowing) {
+        await followVault(jwtToken)
+      } else {
+        await unfollowVault(jwtToken)
+      }
     }
   }
   return (
@@ -61,4 +58,17 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
       buttonClickHandler={buttonClickHandler}
     />
   )
+
+  async function unfollowVault(jwtToken: string) {
+    await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
+    setIsFollowing(false)
+    setProcessing(false)
+  }
+
+  async function followVault(jwtToken: string) {
+    const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
+
+    handleGetFollowedVaults(followedVaults)
+    setIsFollowing(true)
+  }
 }

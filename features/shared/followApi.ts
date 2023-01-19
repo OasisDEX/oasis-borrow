@@ -53,7 +53,7 @@ export async function unfollowVaultUsingApi(
   vaultId: BigNumber,
   chainId: number,
   token: string,
-): Promise<void> {
+): Promise<{ message: String }> {
   return fetch(`${basePath}/api/follow`, {
     method: 'DELETE',
     headers: {
