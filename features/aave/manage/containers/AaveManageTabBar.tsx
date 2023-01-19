@@ -11,7 +11,7 @@ import { isSupportedAutomationTokenPair } from 'features/automation/common/helpe
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Card, Grid } from 'theme-ui'
+import { Card, Grid } from 'theme-ui'
 
 interface AaveManageTabBarProps {
   aaveReserveState: AaveReserveConfigurationData
@@ -57,19 +57,17 @@ export function AaveManageTabBar({
           label: t('system.overview'),
           content: (
             <Grid variant="vaultContainer">
-              <Box>
-                <VaultDetails
-                  aaveReserveState={aaveReserveState}
-                  aaveReserveDataDebtToken={aaveReserveDataDebtToken}
-                  strategyConfig={strategyConfig}
-                  currentPosition={state.context.currentPosition}
-                  collateralPrice={state.context.collateralPrice}
-                  tokenPrice={state.context.tokenPrice}
-                  debtPrice={state.context.debtPrice}
-                  nextPosition={nextPosition}
-                />
-              </Box>
-              <Box>{<SidebarManageAaveVault />}</Box>
+              <VaultDetails
+                aaveReserveState={aaveReserveState}
+                aaveReserveDataDebtToken={aaveReserveDataDebtToken}
+                strategyConfig={strategyConfig}
+                currentPosition={state.context.currentPosition}
+                collateralPrice={state.context.collateralPrice}
+                tokenPrice={state.context.tokenPrice}
+                debtPrice={state.context.debtPrice}
+                nextPosition={nextPosition}
+              />
+              <SidebarManageAaveVault />
             </Grid>
           ),
         },

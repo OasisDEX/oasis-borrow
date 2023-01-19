@@ -74,7 +74,7 @@ export interface AutomationPositionData {
   token: string
   vaultType: VaultType
   debtTokenAddress?: string
-  tokenAddress?: string
+  collateralTokenAddress?: string
 }
 
 export interface AutomationContext {

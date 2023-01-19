@@ -49,7 +49,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       debt,
       owner,
       debtTokenAddress,
-      tokenAddress,
+      collateralTokenAddress,
     },
   } = context
 
@@ -158,7 +158,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
           collateralActive,
           stopLossLevel,
           debtTokenAddress!,
-          tokenAddress!,
+          collateralTokenAddress!,
         )
 
         return {

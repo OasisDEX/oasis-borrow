@@ -35,8 +35,6 @@ export function getAutomationAavePositionData({
     },
   } = protocolData!
 
-  const id = new BigNumber(vaultId!)
-
   const lockedCollateral = amountFromWei(collateral.amount, collateral.precision)
   const positionDebt = amountFromWei(debt.amount, debt.precision)
 
@@ -48,7 +46,7 @@ export function getAutomationAavePositionData({
     debt: positionDebt,
     debtFloor: dustLimit,
     debtOffset: zero,
-    id,
+    id: new BigNumber(vaultId!),
     ilk: ilkOrToken,
     liquidationPenalty: liquidationBonus,
     liquidationPrice,
@@ -62,6 +60,6 @@ export function getAutomationAavePositionData({
     // @ts-ignore
     debtTokenAddress: debt.address,
     // @ts-ignore
-    tokenAddress: collateral.address,
+    collateralTokenAddress: collateral.address,
   }
 }

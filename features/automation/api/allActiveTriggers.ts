@@ -45,17 +45,13 @@ export async function getAllActiveTriggers(
   vaultId: string,
   proxyAddress?: string,
 ): Promise<TriggerRecord[]> {
-  let data
-
-  if (proxyAddress) {
-    data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(queryV2, {
-      proxyAddress: proxyAddress.toLowerCase(),
-    })
-  } else {
-    data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(query, {
-      vaultId,
-    })
-  }
+  const data = proxyAddress
+    ? await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(queryV2, {
+        proxyAddress: proxyAddress.toLowerCase(),
+      })
+    : await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(query, {
+        vaultId,
+      })
 
   return data.allActiveTriggers.nodes.map((record) => ({
     triggerId: record.triggerId,

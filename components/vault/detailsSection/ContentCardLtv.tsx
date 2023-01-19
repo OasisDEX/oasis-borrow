@@ -87,6 +87,12 @@ export function ContentCardLtv({
     liquidationThreshold: formatPercent(liquidationThreshold.times(100)),
   }
 
+  const contentCardModalSettings: ContentCardLtvModalProps = {
+    loanToValue,
+    maxLoanToValue,
+    liquidationThreshold,
+  }
+
   const contentCardSettings: ContentCardProps = {
     title: t('system.loan-to-value'),
     value: formatted.loanToValue,
@@ -96,6 +102,7 @@ export function ContentCardLtv({
     customBackground: afterLoanToValue
       ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
       : 'transparent',
+    modal: <ContentCardLtvModal {...contentCardModalSettings} />,
   }
 
   if (afterLoanToValue) {
@@ -105,16 +112,5 @@ export function ContentCardLtv({
     }
   }
 
-  return (
-    <DetailsSectionContentCard
-      {...contentCardSettings}
-      modal={
-        <ContentCardLtvModal
-          loanToValue={loanToValue}
-          maxLoanToValue={maxLoanToValue}
-          liquidationThreshold={liquidationThreshold}
-        />
-      }
-    />
-  )
+  return <DetailsSectionContentCard {...contentCardSettings} />
 }
