@@ -8,6 +8,8 @@ import { PositionTableEmptyState } from 'features/vaultsOverview/components/Posi
 import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
   getMakerBorrowPositions,
+  getMakerEarnPositions,
+  getMakerMultiplyPositions,
   positionsTableSkippedHeaders,
   positionsTableTooltips,
 } from 'features/vaultsOverview/helpers'
@@ -42,8 +44,8 @@ export function PositionsTable({ address }: { address: string }) {
             ...ownersPositionsList.aavePositions,
           ]
           const borrowPositions = getMakerBorrowPositions(ownersPositionsList.makerPositions)
-          // const makerPositions = getMakerMultiplyPositions(followedList)
-          // const earnPositions = getMakerEarnPositions(followedList)
+          const makerPositions = getMakerMultiplyPositions(ownersPositionsList.makerPositions)
+          const earnPositions = getMakerEarnPositions(ownersPositionsList.makerPositions)
 
           return combinedPositionsData.length ? (
             <DiscoverTableContainer
@@ -63,14 +65,14 @@ export function PositionsTable({ address }: { address: string }) {
                   />
                 </>
               )}
-              {/* {makerPositions.length > 0 && (
+              {makerPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
                     Oasis {t('nav.multiply')} ({makerPositions.length})
                   </DiscoverTableHeading>
                   <DiscoverResponsiveTable
                     rows={makerPositions}
-                    skip={followTableSkippedHeaders}
+                    skip={positionsTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                   />
                 </>
@@ -82,11 +84,11 @@ export function PositionsTable({ address }: { address: string }) {
                   </DiscoverTableHeading>
                   <DiscoverResponsiveTable
                     rows={earnPositions}
-                    skip={followTableSkippedHeaders}
+                    skip={positionsTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                   />
                 </>
-              )} */}
+              )}
             </DiscoverTableContainer>
           ) : (
             <PositionTableEmptyState

@@ -42,7 +42,7 @@ export function DiscoverTableDataCellContent({
             </Text>
             {primitives.cdpId && (
               <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-                {t('discover.table.vault-number', { cdpId: primitives.cdpId })}
+                {t('position')} #{primitives.cdpId}
               </Text>
             )}
           </Flex>
@@ -132,7 +132,7 @@ export function DiscoverTableDataCellContent({
               </Button>
             </AppLink>
           ) : (
-            t('discover.table.not-available')
+            <Text as="span" sx={{ fontSize: 2, color: 'neutral80' }}>{t('discover.table.not-available')}</Text>
           )}
         </>
       )

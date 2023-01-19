@@ -16,6 +16,7 @@ export const positionsTableTooltips = [
   'liquidity',
   'netUSDValue',
   'pnl',
+  'protection',
   'variable',
   'vaultDebt',
 ]
@@ -72,15 +73,16 @@ export function getMakerBorrowPositions(positions: MakerPositionDetails[]): Disc
     ({
       atRiskLevelDanger,
       atRiskLevelWarning,
+      autoSellData,
       collateralizationRatio,
       debt,
       id,
       ilk,
+      isOwner,
       lockedCollateral,
       stabilityFee,
-      token,
       stopLossData,
-      autoSellData,
+      token,
     }) => ({
       asset: token,
       ilk,
@@ -92,7 +94,7 @@ export function getMakerBorrowPositions(positions: MakerPositionDetails[]): Disc
       vaultDebt: debt.toNumber(),
       collateralLocked: lockedCollateral.toNumber(),
       variable: stabilityFee.times(100).toNumber(),
-      protection: getProtection({ stopLossData, autoSellData }),
+      ...(isOwner && { protection: getProtection({ stopLossData, autoSellData }) }),
       cdpId: id.toNumber(),
     }),
   )
@@ -102,13 +104,26 @@ export function getMakerMultiplyPositions(
   positions: MakerPositionDetails[],
 ): DiscoverTableRowData[] {
   return getMakerPositionOfType(positions).multiply.map(
-    ({ debt, id, ilk, liquidationPrice, lockedCollateralUSD, stabilityFee, token, value }) => ({
+    ({
+      autoSellData,
+      debt,
+      id,
+      ilk,
+      isOwner,
+      liquidationPrice,
+      lockedCollateralUSD,
+      stabilityFee,
+      stopLossData,
+      token,
+      value,
+    }) => ({
       asset: token,
       ilk,
       netUSDValue: value.toNumber(),
       currentMultiple: calculateMultiply({ debt, lockedCollateralUSD }).toNumber(),
       liquidationPrice: liquidationPrice.toNumber(),
       fundingCost: getFundingCost({ debt, stabilityFee, value }).toNumber(),
+      ...(isOwner && { protection: getProtection({ stopLossData, autoSellData }) }),
       cdpId: id.toNumber(),
     }),
   )
@@ -123,6 +138,7 @@ export function getMakerEarnPositions(positions: MakerPositionDetails[]): Discov
         netUSDValue: value.toNumber(),
         pnl: calculatePNL(history, lockedCollateralUSD.minus(debt)).times(100).toNumber(),
         liquidity: ilkDebtAvailable.toNumber(),
+        protection: -1,
         cdpId: id.toNumber(),
       }
     },
