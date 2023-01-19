@@ -74,7 +74,7 @@ export type BaseAaveEvent =
   | { type: 'RESET_RISK_RATIO' }
   | { type: 'CLOSE_POSITION' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
-  | { type: 'DMP_PROXY_RECEIVED'; userDpmProxy: UserDpmProxy }
+  | { type: 'DMP_PROXY_RECEIVED'; userDpmAccount: UserDpmProxy }
   | { type: 'SET_BALANCE'; balance: StrategyTokenBalance }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | UpdateCollateralActionType
@@ -116,7 +116,7 @@ export interface BaseAaveContext {
   userSettings?: UserSettingsState
   error?: string | unknown
   protocolData?: AaveProtocolData
-  userDpmProxy?: UserDpmProxy
+  userDpmAccount?: UserDpmProxy
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string

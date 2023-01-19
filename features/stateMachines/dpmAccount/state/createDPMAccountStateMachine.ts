@@ -20,7 +20,7 @@ export interface DMPAccountStateMachineContext {
 
 export type DMPAccountStateMachineResultEvents = {
   type: 'DPM_ACCOUNT_CREATED'
-  userDpmProxy: UserDpmProxy
+  userDpmAccount: UserDpmProxy
 }
 
 export type DPMAccountStateMachineEvents =

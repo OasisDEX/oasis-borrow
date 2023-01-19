@@ -128,7 +128,7 @@ function EditingStateViewSidebarPrimaryButton({
 
   const hasProxy =
     state.context.strategyConfig.proxyType === ProxyType.DpmProxy
-      ? state.context.userDpmProxy !== undefined
+      ? state.context.userDpmAccount !== undefined
       : state.context.connectedProxyAddress !== undefined
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
