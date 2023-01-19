@@ -269,7 +269,7 @@ import {
 } from 'features/vaultsOverview/pipes/positions'
 import { createMakerPositionsList$ } from 'features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from 'features/vaultsOverview/pipes/positionsOverviewSummary'
-import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createPositionsList$, createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import { getYieldChange$, getYields$ } from 'helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from 'helpers/form'
@@ -1358,6 +1358,8 @@ export function setupAppContext() {
     ]),
   )
 
+  const ownersPositionsList$ = memoize(curry(createPositionsList$)(positionsList$, aavePositions$))
+
   const followedList$ = memoize(
     curry(createMakerPositionsList$)(
       context$,
@@ -1444,6 +1446,7 @@ export function setupAppContext() {
     aaveProtocolData$,
     strategyConfig$,
     readPositionCreatedEvents$,
+    ownersPositionsList$,
     followedList$,
   }
 }

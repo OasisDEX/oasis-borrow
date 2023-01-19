@@ -17,8 +17,26 @@ import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultC
 import { AavePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
 
+export interface PositionsList {
+  makerPositions: MakerPositionDetails[]
+  aavePositions: AavePosition[]
+}
+
 export interface VaultsOverview {
   positions: PositionVM[]
+}
+
+export function createPositionsList$(
+  makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
+  aavePositions$: (address: string) => Observable<AavePosition[]>,
+  address: string,
+): Observable<PositionsList> {
+  return combineLatest(makerPositions$(address), aavePositions$(address)).pipe(
+    map(([makerPositions, aavePositions]) => ({
+      makerPositions: makerPositions,
+      aavePositions: aavePositions,
+    })),
+  )
 }
 
 export function createVaultsOverview$(

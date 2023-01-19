@@ -1,54 +1,56 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { Skeleton } from 'components/Skeleton'
 import { getAddress } from 'ethers/lib/utils'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
 import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
 import { DiscoverTableHeading } from 'features/discover/common/DiscoverTableHeading'
+import { PositionTableEmptyState } from 'features/vaultsOverview/components/PositionTableEmptyState'
+import { PositionTableLoadingState } from 'features/vaultsOverview/components/PositionTableLoadingState'
 import {
   followTableSkippedHeaders,
   getMakerBorrowPositions,
-  getMakerEarnPositions,
-  getMakerMultiplyPositions,
   positionsTableTooltips,
 } from 'features/vaultsOverview/helpers'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useAccount } from 'helpers/useAccount'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Heading, Image, Text } from 'theme-ui'
 
-export function FollowedList({ address }: { address: string }) {
+export function PositionsTable({ address }: { address: string }) {
   const { t } = useTranslation()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
-  const { followedList$ } = useAppContext()
+  const { ownersPositionsList$ } = useAppContext()
   const { walletAddress } = useAccount()
-  const [followedListData, followedListError] = useObservable(followedList$(checksumAddress))
+  const [ownersPositionsListData, ownersPositionsListError] = useObservable(
+    ownersPositionsList$(checksumAddress),
+  )
 
   const isOwner = address === walletAddress
 
   return (
-    <WithErrorHandler error={[followedListError]}>
+    <WithErrorHandler error={[ownersPositionsListError]}>
       <WithLoadingIndicator
-        value={[followedListData]}
-        customLoader={
-          <DiscoverTableContainer padded>
-            <Skeleton width="150px" lines={2} />
-            <Skeleton height="175px" sx={{ mt: 4 }} />
-          </DiscoverTableContainer>
-        }
+        value={[ownersPositionsListData]}
+        customLoader={<PositionTableLoadingState />}
       >
-        {([followedList]) => {
-          const borrowPositions = getMakerBorrowPositions(followedList)
-          const makerPositions = getMakerMultiplyPositions(followedList)
-          const earnPositions = getMakerEarnPositions(followedList)
+        {([ownersPositionsList]) => {
+          const combinedPositionsData = [
+            ...ownersPositionsList.makerPositions,
+            ...ownersPositionsList.aavePositions,
+          ]
+          const borrowPositions = getMakerBorrowPositions(ownersPositionsList.makerPositions)
+          // const makerPositions = getMakerMultiplyPositions(followedList)
+          // const earnPositions = getMakerEarnPositions(followedList)
 
-          return followedList.length ? (
-            <DiscoverTableContainer title={`${t('following')} (${followedList.length})`}>
+          return combinedPositionsData.length ? (
+            <DiscoverTableContainer
+              title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-positions`, {
+                address: formatAddress(address),
+              })} (${combinedPositionsData.length})`}
+            >
               {borrowPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
@@ -61,7 +63,7 @@ export function FollowedList({ address }: { address: string }) {
                   />
                 </>
               )}
-              {makerPositions.length > 0 && (
+              {/* {makerPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
                     Oasis {t('nav.multiply')} ({makerPositions.length})
@@ -84,39 +86,27 @@ export function FollowedList({ address }: { address: string }) {
                     tooltips={positionsTableTooltips}
                   />
                 </>
-              )}
+              )} */}
             </DiscoverTableContainer>
           ) : (
-            <DiscoverTableContainer title={t('following')}>
-              <Flex
-                sx={{
-                  flexDirection: 'column',
-                  alignItems: ['flex-start', 'center'],
-                  my: [3, null, '92px'],
-                  px: ['24px', 4],
-                  py: 4,
-                  textAlign: ['left', 'center'],
-                }}
-              >
-                <Image
-                  src={staticFilesRuntimeUrl('/static/img/no-positions.svg')}
-                  sx={{ alignSelf: 'center' }}
+            <PositionTableEmptyState
+              title={`${t(`vaults-overview.${isOwner ? 'owner' : 'non-owner'}-positions`, {
+                address: formatAddress(address),
+              })}`}
+              header={t(`vaults-overview.no-positions-header-${isOwner ? 'owner' : 'non-owner'}`, {
+                address: formatAddress(address),
+              })}
+              content={
+                <Trans
+                  i18nKey="vaults-overview.no-positions-content"
+                  components={[
+                    <AppLink href="/multiply" sx={{ fontWeight: 'regular', fontSize: 3 }} />,
+                    <AppLink href="/earn" sx={{ fontWeight: 'regular', fontSize: 3 }} />,
+                    <AppLink href="/borrow" sx={{ fontWeight: 'regular', fontSize: 3 }} />,
+                  ]}
                 />
-                <Heading variant="boldParagraph2" sx={{ mt: 4, mb: 1 }}>
-                  {t(`vaults-overview.no-follow-header-${isOwner ? 'owner' : 'non-owner'}`, {
-                    address: formatAddress(address),
-                  })}
-                </Heading>
-                <Text as="p" variant="paragraph2" sx={{ m: 0, color: 'neutral80' }}>
-                  <Trans
-                    i18nKey="vaults-overview.no-follow-content"
-                    components={[
-                      <AppLink href="/discover" sx={{ fontWeight: 'regular', fontSize: 3 }} />,
-                    ]}
-                  />
-                </Text>
-              </Flex>
-            </DiscoverTableContainer>
+              }
+            />
           )
         }}
       </WithLoadingIndicator>
