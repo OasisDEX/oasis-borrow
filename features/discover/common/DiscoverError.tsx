@@ -3,7 +3,13 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-export function DiscoverError({ error }: { error?: DiscoverDataResponseError }) {
+export function DiscoverError({
+  error,
+  message,
+}: {
+  error?: DiscoverDataResponseError
+  message?: string
+}) {
   const { t } = useTranslation()
 
   return (
@@ -16,7 +22,9 @@ export function DiscoverError({ error }: { error?: DiscoverDataResponseError }) 
         color: 'neutral80',
       }}
     >
-      {t(`discover.api-error.${error?.code}`)}
+      {message}
+      {message && error && '<br />'}
+      {error && t(`discover.api-error.${error.code}`)}
     </Text>
   )
 }

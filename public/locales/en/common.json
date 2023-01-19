@@ -194,16 +194,33 @@
         "asset": "Vault",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
+        "collateral-locked": "Collateral locked",
         "collateral-value": "Collateral value",
         "current-multiple": "Current multiple",
         "earnings-to-date": "Earnings to date",
+        "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
+        "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
+        "net-usd-value": "Net value",
         "net-value": "Net value",
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
         "status": "Status",
+        "variable": "Variable %",
         "vault-debt": "Vault debt"
+      },
+      "tooltip": {
+        "col-ratio": "The value of the collateral in comparison to the amount of debt. Needs to be above the minimum required to avoid liquidation.",
+        "collateral-locked": "The amount of collateral in this position",
+        "current-multiple": "The current multiple of the position. It shows the exposure to price changes compared to holding the collateral directly.",
+        "funding-cost": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Debt / Net Value * Variable annual fee.",
+        "liquidation-price": "The price of the collateral at which this position becomes vulnerable to liquidation.",
+        "liquidity": "The current available liquidity allowing increases of positions.",
+        "net-usd-value": "The current net value of the position based on the oracle price of the collateral in the position minus the debt.",
+        "pnl": "The current profit or loss percentage of your position, including incurred gas costs. For a more detailed look on the profit and loss, please check the position.",
+        "variable": "The variable annual rate paid over the debt in this position. This can be changed by the governance body of the protocol.",
+        "vault-debt": "The amount of dai debt in this position"
       },
       "status": {
         "1": "Liquidated {{timeAgo}}",
@@ -1212,7 +1229,10 @@
     "your-vaults": "Your Vaults",
     "assets-and-positions": "Top {{number}} assets and positions",
     "total-assets": "Total Assets",
-    "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>"
+    "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>",
+    "no-follow-header-owner": "You are not following any vaults",
+    "no-follow-header-non-owner": "{{address}} is not following any vaults",
+    "no-follow-content": "You can find the most interesting Vaults that are worth following in <0>Discover Oasis</0>."
   },
   "vault-notices": {
     "ownership": {
