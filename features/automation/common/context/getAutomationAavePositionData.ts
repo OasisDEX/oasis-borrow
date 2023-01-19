@@ -22,6 +22,7 @@ export function getAutomationAavePositionData({
       protocolData,
       proxyAddress,
       positionId: { vaultId },
+      web3Context,
     },
   } = aaveManageVault
   const ilkOrToken = strategyConfig.tokens?.collateral!
@@ -56,10 +57,7 @@ export function getAutomationAavePositionData({
     token: collateralToken,
     debtToken: debtToken,
     vaultType,
-    // TODO missing types in lib?
-    // @ts-ignore
-    debtTokenAddress: debt.address,
-    // @ts-ignore
-    collateralTokenAddress: collateral.address,
+    debtTokenAddress: web3Context!.tokens[debtToken].address,
+    collateralTokenAddress: web3Context!.tokens[collateralToken].address,
   }
 }
