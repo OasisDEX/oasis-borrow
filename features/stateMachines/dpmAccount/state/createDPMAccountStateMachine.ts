@@ -6,20 +6,25 @@ import { pure } from 'xstate/lib/actions'
 
 import { createAccount, CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
 import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
+import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { TransactionStateMachine, TransactionStateMachineResultEvents } from '../../transaction'
 
 export interface DMPAccountStateMachineContext {
-  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount>>
+  refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount, UserDpmAccount>>
   error?: string | unknown
   gasData: HasGasEstimation
+  result?: UserDpmAccount // transaction result from transactionStateMachine
 }
 
-export type DMPAccountStateMachineResultEvents = { type: 'DPM_ACCOUNT_CREATED' }
+export type DMPAccountStateMachineResultEvents = {
+  type: 'DPM_ACCOUNT_CREATED'
+  userDpmAccount: UserDpmAccount
+}
 
 export type DPMAccountStateMachineEvents =
-  | TransactionStateMachineResultEvents
+  | TransactionStateMachineResultEvents<UserDpmAccount>
   | DMPAccountStateMachineResultEvents
   | { type: 'START' }
   | { type: 'RETRY' }
@@ -27,7 +32,7 @@ export type DPMAccountStateMachineEvents =
   | { type: 'GAS_COST_ESTIMATION'; gasData: HasGasEstimation }
 
 export function createDPMAccountStateMachine(
-  transactionStateMachine: TransactionStateMachine<CreateDPMAccount>,
+  transactionStateMachine: TransactionStateMachine<CreateDPMAccount, UserDpmAccount>,
 ) {
   return createMachine(
     {
@@ -64,6 +69,7 @@ export function createDPMAccountStateMachine(
           entry: ['spawnTransactionMachine'],
           on: {
             TRANSACTION_COMPLETED: {
+              actions: ['updateContext'],
               target: 'txSuccess',
             },
             TRANSACTION_FAILED: {
@@ -102,7 +108,9 @@ export function createDPMAccountStateMachine(
           }
           return undefined
         }),
-        sendResultToParent: sendParent((_) => ({ type: 'DPM_ACCOUNT_CREATED' })),
+        sendResultToParent: sendParent((context) => {
+          return { type: 'DPM_ACCOUNT_CREATED', userDpmAccount: context.result }
+        }),
       },
     },
   )

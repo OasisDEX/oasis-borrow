@@ -2,7 +2,7 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import React from 'react'
 import { Box } from 'theme-ui'
 
-export function DiscoverPreloader({ isContentLoaded }: { isContentLoaded: boolean }) {
+export function DiscoverPreloader({ isContentLoaded = false }: { isContentLoaded?: boolean }) {
   return (
     <Box sx={{ position: 'sticky', top: '120px', zIndex: 1 }}>
       <AppSpinner

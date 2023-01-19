@@ -1,4 +1,5 @@
-import { MixpanelUserContext } from 'analytics/analytics'
+import { Icon } from '@makerdao/dai-ui-icons'
+import { StatefulTooltip } from 'components/Tooltip'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
@@ -7,23 +8,30 @@ import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 
 export function DiscoverTable({
   banner,
-  isLoading,
-  isSticky,
+  isLoading = false,
+  isSticky = false,
   kind,
   rows,
-  userContext,
+  skip = [],
+  tooltips = [],
+  onPositionClick,
+  onBannerClick,
 }: {
   banner?: DiscoverBanner
-  isLoading: boolean
-  isSticky: boolean
-  kind: DiscoverPages
+  isLoading?: boolean
+  isSticky?: boolean
+  kind?: DiscoverPages
   rows: DiscoverTableRowData[]
-  userContext: MixpanelUserContext
+  tooltips?: string[]
+  skip?: string[]
+  onBannerClick?: (link: string) => void
+  onPositionClick?: (cdpId: string) => void
 }) {
+  const filteredRowKeys = Object.keys(rows[0]).filter((key) => !skip.includes(key))
   const rowsForBanner = Math.min(rows.length - 1, 9)
 
   return (
@@ -53,12 +61,13 @@ export function DiscoverTable({
           }}
         >
           <tr>
-            {Object.keys(rows[0]).map((label, i) => (
+            {filteredRowKeys.map((label, i) => (
               <DiscoverTableHeaderCell
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
-                last={i + 1 === Object.keys(rows[0]).length}
+                last={i + 1 === filteredRowKeys.length}
                 label={label}
+                tooltip={tooltips.includes(label)}
               />
             ))}
           </tr>
@@ -73,11 +82,15 @@ export function DiscoverTable({
         >
           {rows.map((row, i) => (
             <Fragment key={getRowKey(i, row)}>
-              <DiscoverTableDataRow kind={kind} row={row} />
-              {banner && i === Math.floor(rowsForBanner / 2) && (
+              <DiscoverTableDataRow
+                filteredRowKeys={filteredRowKeys}
+                row={row}
+                onPositionClick={onPositionClick}
+              />
+              {kind && banner && i === Math.floor(rowsForBanner / 2) && (
                 <tr>
                   <td colSpan={Object.keys(row).length}>
-                    <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
+                    <DiscoverTableBanner kind={kind} onBannerClick={onBannerClick} {...banner} />
                   </td>
                 </tr>
               )}
@@ -93,10 +106,12 @@ export function DiscoverTableHeaderCell({
   first,
   last,
   label,
+  tooltip,
 }: {
   first: boolean
   last: boolean
   label: string
+  tooltip: boolean
 }) {
   const { t } = useTranslation()
 
@@ -111,10 +126,10 @@ export function DiscoverTableHeaderCell({
         fontWeight: 'semiBold',
         color: 'neutral80',
         lineHeight: '10px',
-        textAlign: 'right',
+        textAlign: 'left',
         whiteSpace: 'nowrap',
-        '&:first-child': {
-          textAlign: 'left',
+        '&:first-child > span': {
+          justifyContent: 'flex-start',
         },
       }}
     >
@@ -137,19 +152,47 @@ export function DiscoverTableHeaderCell({
           },
         }}
       />
-      <Box as="span" sx={{ position: 'relative' }}>
+      <Flex
+        as="span"
+        sx={{
+          position: 'relative',
+          alignItems: 'center',
+          width: '100%',
+          justifyContent: 'flex-end',
+        }}
+      >
         {t(`discover.table.header.${kebabCase(label)}`)}
-      </Box>
+        {tooltip && (
+          <StatefulTooltip
+            containerSx={{ ml: 1 }}
+            tooltip={t(`discover.table.tooltip.${kebabCase(label)}`)}
+            tooltipSx={{
+              width: '200px',
+              px: 3,
+              py: 2,
+              borderRadius: 'medium',
+              border: 'none',
+              whiteSpace: 'initial',
+              color: 'neutral80',
+              lineHeight: 'body',
+            }}
+          >
+            <Icon name="question_o" size={16} color="neutral80" />
+          </StatefulTooltip>
+        )}
+      </Flex>
     </Box>
   )
 }
 
 export function DiscoverTableDataRow({
-  kind,
   row,
+  filteredRowKeys,
+  onPositionClick,
 }: {
-  kind: DiscoverPages
   row: DiscoverTableRowData
+  filteredRowKeys: string[]
+  onPositionClick?: (cdpId: string) => void
 }) {
   return (
     <Box
@@ -162,21 +205,26 @@ export function DiscoverTableDataRow({
         },
       }}
     >
-      {Object.keys(row).map((label, i) => (
-        <DiscoverTableDataCell key={getRowKey(i, row)} kind={kind} label={label} row={row} />
+      {filteredRowKeys.map((label, i) => (
+        <DiscoverTableDataCell
+          key={getRowKey(i, row)}
+          label={label}
+          row={row}
+          onPositionClick={onPositionClick}
+        />
       ))}
     </Box>
   )
 }
 
 export function DiscoverTableDataCell({
-  kind,
   label,
   row,
+  onPositionClick,
 }: {
-  kind: DiscoverPages
   label: string
   row: DiscoverTableRowData
+  onPositionClick?: (cdpId: string) => void
 }) {
   return (
     <Box
@@ -190,7 +238,7 @@ export function DiscoverTableDataCell({
         },
       }}
     >
-      <DiscoverTableDataCellContent kind={kind} label={label} row={row} />
+      <DiscoverTableDataCellContent label={label} row={row} onPositionClick={onPositionClick} />
     </Box>
   )
 }

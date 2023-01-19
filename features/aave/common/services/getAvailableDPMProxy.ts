@@ -1,13 +1,13 @@
 import { combineLatest, Observable } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
 
 export function getAvailableDPMProxy$(
-  userDpmProxies$: (account: string) => Observable<UserDpmProxy[]>,
+  userDpmProxies$: (account: string) => Observable<UserDpmAccount[]>,
   proxyConsumed: (proxyAddress: string) => Observable<boolean>,
   walletAddress: string,
-): Observable<UserDpmProxy | undefined> {
+): Observable<UserDpmAccount | undefined> {
   return userDpmProxies$(walletAddress).pipe(
     switchMap((proxies) =>
       combineLatest(

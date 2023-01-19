@@ -210,6 +210,7 @@ export function createOpenAaveStateMachine(
               exit: ['killDpmProxyMachine'],
               on: {
                 DPM_ACCOUNT_CREATED: {
+                  actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
                   target: 'editing',
                 },
               },
@@ -330,7 +331,7 @@ export function createOpenAaveStateMachine(
     {
       guards: {
         shouldCreateDpmProxy: (context) =>
-          context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmProxy,
+          context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
         validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
@@ -493,16 +494,16 @@ export function createOpenAaveStateMachine(
 
           const shouldUseDpmProxy =
             context.strategyConfig.proxyType === ProxyType.DpmProxy &&
-            context.userDpmProxy !== undefined
+            context.userDpmAccount !== undefined
 
           const proxyAddressToUse = shouldUseDpmProxy
-            ? context.userDpmProxy?.proxy
+            ? context.userDpmAccount?.proxy
             : context.connectedProxyAddress
 
           const contextConnected = (context.web3Context as any) as ContextConnected | undefined
 
           const address = shouldUseDpmProxy
-            ? `/aave/${context.userDpmProxy?.vaultId}`
+            ? `/aave/${context.userDpmAccount?.vaultId}`
             : `/aave/${contextConnected?.account}`
 
           return {
