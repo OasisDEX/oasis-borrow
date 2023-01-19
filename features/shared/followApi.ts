@@ -48,3 +48,30 @@ export function getFollowFromApi(address: string): Promise<UsersWhoFollowVaults[
       throw err
     })
 }
+
+export async function unfollowVaultUsingApi(
+  vaultId: BigNumber,
+  chainId: number,
+  token: string,
+): Promise<{ message: String }> {
+  return fetch(`${basePath}/api/follow`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: 'Bearer ' + token,
+    },
+    body: JSON.stringify({
+      vault_id: parseInt(vaultId.toFixed(0)),
+      vault_chain_id: chainId,
+    }),
+  })
+    .then((resp) => {
+      return resp.json()
+    })
+    .catch((err) => {
+      if (err.status === 404) {
+        return []
+      }
+      throw err
+    })
+}

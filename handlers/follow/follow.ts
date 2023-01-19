@@ -43,3 +43,27 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
 
   return res.status(200).json(allVaultsFollowedByUser)
 }
+
+export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
+  const { vault_id, vault_chain_id } = usersWhoFollowVaultsSchema.parse(req.body)
+  const user = getUserFromRequest(req)
+  if (!user) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  const usersAddressWhoJustUnfollowedVaultLowercased = user.address.toLocaleLowerCase()
+  const userWhoUnfollowsVaultData = {
+    user_address: usersAddressWhoJustUnfollowedVaultLowercased,
+    vault_id,
+    vault_chain_id,
+  }
+  await prisma.usersWhoFollowVaults
+    .deleteMany({
+      where: userWhoUnfollowsVaultData,
+    })
+    .then(() => {
+      return res.status(200).json({ message: 'Unfollowed' })
+    })
+    .catch((err) => {
+      return res.status(500).json({ error: err })
+    })
+}
