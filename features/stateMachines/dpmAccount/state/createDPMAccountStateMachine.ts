@@ -6,6 +6,7 @@ import { pure } from 'xstate/lib/actions'
 
 import { createAccount, CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
 import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
+import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { TransactionStateMachine, TransactionStateMachineResultEvents } from '../../transaction'
@@ -14,9 +15,13 @@ export interface DMPAccountStateMachineContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<CreateDPMAccount>>
   error?: string | unknown
   gasData: HasGasEstimation
+  result?: any
 }
 
-export type DMPAccountStateMachineResultEvents = { type: 'DPM_ACCOUNT_CREATED'; payload: any }
+export type DMPAccountStateMachineResultEvents = {
+  type: 'DPM_ACCOUNT_CREATED'
+  userDpmProxy: UserDpmProxy
+}
 
 export type DPMAccountStateMachineEvents =
   | TransactionStateMachineResultEvents
@@ -104,7 +109,6 @@ export function createDPMAccountStateMachine(
           return undefined
         }),
         sendResultToParent: sendParent((context) => {
-          // @ts-ignore
           return { type: 'DPM_ACCOUNT_CREATED', userDpmProxy: context.result }
         }),
       },
