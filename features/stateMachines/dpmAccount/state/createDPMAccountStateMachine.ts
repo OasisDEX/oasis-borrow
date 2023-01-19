@@ -109,7 +109,7 @@ export function createDPMAccountStateMachine(
           return undefined
         }),
         sendResultToParent: sendParent((context) => {
-          return { type: 'DPM_ACCOUNT_CREATED', userDpmProxy: context.result }
+          return { type: 'DPM_ACCOUNT_CREATED', userDpmAccount: context.result }
         }),
       },
     },
