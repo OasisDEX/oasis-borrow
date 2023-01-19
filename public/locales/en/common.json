@@ -2238,6 +2238,17 @@
       "borrow-against-your": "Borrow against your {{token}}",
       "collaterals-you-can-borrow": "Collaterals you can borrow",
       "annual-variable-rates": "Annual variable rates"
+    },
+    "borrow": {
+      "open": {
+        "headline": {
+          "header": "Borrow {{collateralToken}} against {{quoteToken}}",
+          "current-market-price": "Current Market Price"
+        },
+        "form": {
+          "title": "Configure your Ajna Position"
+        }
+      }
     }
   }
 }
