@@ -4,7 +4,7 @@ import {
   AaveUserAccountDataParameters,
 } from 'blockchain/calls/aave/aaveLendingPool'
 import { isEqual } from 'lodash'
-import { combineLatest, iif, Observable, of, Subject } from 'rxjs'
+import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'

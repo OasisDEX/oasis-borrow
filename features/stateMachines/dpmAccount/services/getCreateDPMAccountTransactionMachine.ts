@@ -1,3 +1,4 @@
+import { ethers } from 'ethers'
 import { Observable } from 'rxjs'
 
 import { createAccount, CreateDPMAccount } from '../../../../blockchain/calls/accountFactory'
@@ -9,11 +10,6 @@ import {
   createTransactionStateMachine,
   startTransactionService,
 } from '../../transaction'
-import { AccountFactory } from '../../../../types/web3-v1-contracts/account-factory'
-import * as accountFactoryAbi from '../../../../blockchain/abi/account-factory.json'
-import { ethers } from 'ethers'
-import { SuccessTxState, TransactionReceiptLike } from '@oasisdex/transactions/src/types'
-import { TxState } from '@oasisdex/transactions'
 
 export function getCreateDPMAccountTransactionMachine(
   txHelpers$: Observable<TxHelpers>,
@@ -23,7 +19,7 @@ export function getCreateDPMAccountTransactionMachine(
   const service = startTransactionService<CreateDPMAccount>(
     txHelpers$,
     context$,
-    extractDpmProxyIdFromTxnReceipt,
+    extractDpmProxyFromTxnReceipt,
   )
   return createTransactionStateMachine<CreateDPMAccount>(createAccount, {
     kind: TxMetaKind.createAccount,
@@ -35,7 +31,7 @@ export function getCreateDPMAccountTransactionMachine(
   })
 }
 
-function extractDpmProxyIdFromTxnReceipt(context: ContextConnected, txnReceipt: any) {
+function extractDpmProxyFromTxnReceipt(context: ContextConnected, txnReceipt: any) {
   const iface = new ethers.utils.Interface(context.accountFactory.abi.default)
 
   // find proxy address event
@@ -44,15 +40,18 @@ function extractDpmProxyIdFromTxnReceipt(context: ContextConnected, txnReceipt: 
       return discoveredProxy
     }
     try {
-      return iface.parseLog(log).args // this is the proxy
+      return iface.parseLog(log).args // args is the proxy
     } catch (e) {
-      // throws when reading an event from a different contract
+      // throws when reading an event from a non AccountFactory ABI - assume no proxy from this event
       return undefined
     }
   }, undefined)
 
   if (!proxy) {
-    throw new Error(`could not read proxy address from txnReceipt ${JSON.stringify(txnReceipt)}`)
+    throw new Error(
+      `could not read DPM proxy address from txnReceipt ${JSON.stringify(txnReceipt)}`,
+    )
   }
+
   return proxy
 }
