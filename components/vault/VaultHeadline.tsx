@@ -89,7 +89,6 @@ export function VaultHeadline({
           <FollowButtonControl
             followerAddress={followButtonProps.followerAddress}
             vaultId={followButtonProps.vaultId}
-            docVersion={followButtonProps.docVersion}
             chainId={followButtonProps.chainId}
           />
         )}

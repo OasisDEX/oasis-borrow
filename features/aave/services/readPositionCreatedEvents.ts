@@ -5,7 +5,7 @@ import { filter, map, startWith, switchMap } from 'rxjs/operators'
 import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
 import { Context } from '../../../blockchain/network'
 import { getTokenSymbolFromAddress } from '../../../blockchain/tokensMetadata'
-import { UserDpmProxy } from '../../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
 import { TypedEvent } from '../../../types/ethers-contracts/commons'
 import { PositionCreated as PositionCreatedContract } from '../../../types/ethers-contracts/PositionCreated'
 
@@ -87,7 +87,7 @@ export function getLastCreatedPositionForProxy$(
 
 export function createReadPositionCreatedEvents$(
   context$: Observable<Context>,
-  userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>,
+  userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
   walletAddress: string,
 ): Observable<Array<PositionCreated>> {
   return combineLatest(context$, userDpmProxies$(walletAddress)).pipe(

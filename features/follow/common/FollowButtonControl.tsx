@@ -1,14 +1,17 @@
 import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { FollowButton } from 'features/follow/common/FollowButton'
-import { followVaultUsingApi, getFollowFromApi } from 'features/shared/followApi'
+import {
+  followVaultUsingApi,
+  getFollowFromApi,
+  unfollowVaultUsingApi,
+} from 'features/shared/followApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import React, { useEffect, useState } from 'react'
 
 export type FollowButtonProps = {
   followerAddress: string
   vaultId: BigNumber
-  docVersion: string
   chainId: number
 }
 
@@ -40,9 +43,11 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
     setProcessing(true)
     const jwtToken = jwtAuthGetToken(followerAddress)
     if (vaultId && jwtToken) {
-      const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
-
-      handleGetFollowedVaults(followedVaults)
+      if (!isFollowing) {
+        await followVault(jwtToken)
+      } else {
+        await unfollowVault(jwtToken)
+      }
     }
   }
   return (
@@ -52,4 +57,17 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
       buttonClickHandler={buttonClickHandler}
     />
   )
+
+  async function unfollowVault(jwtToken: string) {
+    await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
+    setIsFollowing(false)
+    setProcessing(false)
+  }
+
+  async function followVault(jwtToken: string) {
+    const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
+
+    handleGetFollowedVaults(followedVaults)
+    setIsFollowing(true)
+  }
 }

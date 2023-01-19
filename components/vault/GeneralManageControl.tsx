@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import { MakerAutomationContext } from 'features/automation/contexts/MakerAutomationContext'
-import { currentContent } from 'features/content'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -21,7 +20,6 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
 
   const account = context?.status === 'connected' ? context.account : ''
   const chainId = context?.chainId
-  const docVersion = currentContent.tos.version
 
   useEffect(() => {
     return () => {
@@ -46,7 +44,6 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
                   ? {
                       followerAddress: account,
                       vaultId: id,
-                      docVersion: docVersion,
                       chainId: chainId,
                     }
                   : undefined
