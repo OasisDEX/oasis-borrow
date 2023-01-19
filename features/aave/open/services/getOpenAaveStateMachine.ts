@@ -12,7 +12,7 @@ import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationE
 import { ContextConnected } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
-import { UserDpmProxy } from '../../../../blockchain/userDpmProxies'
+import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
@@ -49,7 +49,7 @@ export function getOpenAavePositionStateMachineServices(
     proxyAddress: string,
   ) => Observable<AaveProtocolData>,
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
-  userDpmProxy$: Observable<UserDpmProxy | undefined>,
+  userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)

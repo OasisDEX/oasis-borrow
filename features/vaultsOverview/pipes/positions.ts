@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { AaveAssetsPricesParameters } from 'blockchain/calls/aave/aavePriceOracle'
 import { Context } from 'blockchain/network'
-import { UserDpmProxy } from 'blockchain/userDpmProxies'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { AaveProtocolData } from 'features/aave/manage/services'
@@ -115,7 +115,7 @@ export function createPositions$(
 
 type ProxyAddresses = {
   dsProxy$: (walletAddress: string) => Observable<string | undefined>
-  userDpmProxies$: (walletAddress: string) => Observable<UserDpmProxy[]>
+  userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
 }
 
 type BuildPositionArgs = {
