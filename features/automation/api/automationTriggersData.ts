@@ -39,7 +39,7 @@ async function loadTriggerDataFromCache({
 }): Promise<TriggersData> {
   const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
-    positionId.toFixed(0),
+    positionId.toString(),
     proxyAddress,
   )
 
