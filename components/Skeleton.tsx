@@ -2,14 +2,19 @@ import React from 'react'
 import { Box, Grid, SxStyleProp } from 'theme-ui'
 
 interface SkeletonProps {
+  cols?: number
+  count?: number
   gap?: string | number
-  lines?: number
   width?: string | number
   height?: string | number
   sx?: SxStyleProp
 }
 
-function SkeletonLine({ width = '100%', height = 3, sx }: Omit<SkeletonProps, 'lines' | 'gap'>) {
+function SkeletonLine({
+  width = '100%',
+  height = 3,
+  sx,
+}: Omit<SkeletonProps, 'cols' | 'count' | 'gap'>) {
   return (
     <Box
       sx={{
@@ -47,10 +52,10 @@ function SkeletonLine({ width = '100%', height = 3, sx }: Omit<SkeletonProps, 'l
   )
 }
 
-export function Skeleton({ lines = 1, gap = 3, ...rest }: SkeletonProps) {
+export function Skeleton({ cols = 1, count = 1, gap = 3, ...rest }: SkeletonProps) {
   return (
-    <Grid gap={gap}>
-      {[...Array(lines)].map((_item, i) => (
+    <Grid gap={gap} sx={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+      {[...Array(count)].map((_item, i) => (
         <SkeletonLine key={i} {...rest} />
       ))}
     </Grid>

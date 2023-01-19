@@ -1,20 +1,15 @@
-import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
+import { ProductCardBorrow } from 'components/productCards/ProductCardBorrow'
+import { ProductCardEarnMaker } from 'components/productCards/ProductCardEarnMaker'
+import { ProductCardMultiplyMaker } from 'components/productCards/ProductCardMultiplyMaker'
+import { ProductCardsWrapper } from 'components/productCards/ProductCardsWrapper'
 import { TabBar } from 'components/TabBar'
+import { VaultSuggestionsLoadingState } from 'features/vaultsOverview/components/VaultSuggestionsLoadingState'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import uniqBy from 'lodash/uniqBy'
-import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
-import { Box, Flex, Heading, Text } from 'theme-ui'
-
-import { AppLink } from '../../../components/Links'
-import { ProductCardBorrow } from '../../../components/productCards/ProductCardBorrow'
-import { ProductCardEarnMaker } from '../../../components/productCards/ProductCardEarnMaker'
-import { ProductCardMultiplyMaker } from '../../../components/productCards/ProductCardMultiplyMaker'
-import { ProductCardsWrapper } from '../../../components/productCards/ProductCardsWrapper'
-import { formatAddress } from '../../../helpers/formatters/format'
 import {
   borrowPageCardsData,
   cardFiltersFromBalances,
@@ -24,57 +19,29 @@ import {
   ProductCardData,
   ProductLandingPagesFiltersKeys,
   ProductTypes,
-} from '../../../helpers/productCards'
-import { WithChildren } from '../../../helpers/types'
-import { fadeInAnimation, slideInAnimation } from '../../../theme/animations'
+} from 'helpers/productCards'
+import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import uniqBy from 'lodash/uniqBy'
+import { useTranslation } from 'next-i18next'
+import React, { PropsWithChildren } from 'react'
+import { Box, Flex, Heading, Text } from 'theme-ui'
 
-interface Props {
-  address: string
-}
-
-export function VaultSuggestions({ address }: Props) {
-  const { productCardsWithBalance$, context$, accountData$ } = useAppContext()
-  const [context, contextError] = useObservable(context$)
-  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsWithBalance$)
+export function VaultSuggestions({ address }: { address: string }) {
+  const { t } = useTranslation()
+  const { productCardsWithBalance$, accountData$ } = useAppContext()
+  const { walletAddress } = useAccount()
+  const productCardsWithBalanceObservable = useObservable(productCardsWithBalance$)
   const [accountData] = useObservable(accountData$)
 
-  return (
-    <WithErrorHandler error={[contextError, productCardsDataError]}>
-      <WithLoadingIndicator value={[context, productCardsDataValue]}>
-        {([_context, _productCardsDataValue]) => (
-          <VaultSuggestionsView
-            address={accountData?.ensName || address}
-            context={_context}
-            productCardsData={_productCardsDataValue}
-          />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
-  )
-}
+  const isOwner = address === walletAddress
 
-interface ViewProps {
-  productCardsData: ProductCardData[]
-  context: Context
-  address: string
-}
-
-function VaultSuggestionsView({ productCardsData, context, address }: ViewProps) {
-  const { t } = useTranslation()
-
-  const connectedAccount = context?.status === 'connected' ? context.account : undefined
-  const isOwnerViewing = !!connectedAccount && address === connectedAccount
-
-  if (!isOwnerViewing) return null
-
-  return (
-    <Box mt={5}>
-      <Heading variant="header2" sx={{ textAlign: 'center', fontWeight: 'regular' }} as="h1">
-        <Trans
-          i18nKey="vaults-overview.headers.vault-suggestions"
-          values={{ address: formatAddress(address) }}
-          components={[<br />]}
-        />
+  return isOwner ? (
+    <Box sx={{ mt: '112px' }}>
+      <Heading as="h1" variant="header3" sx={{ textAlign: 'center', fontWeight: 'regular' }}>
+        {t('vaults-overview.headers.vault-suggestions', {
+          address: accountData?.ensName || formatAddress(address),
+        })}
       </Heading>
       <TabBar
         variant="large"
@@ -95,7 +62,7 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
               <TabContent
                 type="multiply"
                 renderProductCard={ProductCardMultiplyMaker}
-                productCardsData={productCardsData}
+                productCardsWithBalanceObservable={productCardsWithBalanceObservable}
               />
             ),
           },
@@ -114,7 +81,7 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
               <TabContent
                 type="borrow"
                 renderProductCard={ProductCardBorrow}
-                productCardsData={productCardsData}
+                productCardsWithBalanceObservable={productCardsWithBalanceObservable}
               />
             ),
           },
@@ -133,14 +100,14 @@ function VaultSuggestionsView({ productCardsData, context, address }: ViewProps)
               <TabContent
                 type="earn"
                 renderProductCard={ProductCardEarnMaker}
-                productCardsData={productCardsData}
+                productCardsWithBalanceObservable={productCardsWithBalanceObservable}
               />
             ),
           },
         ]}
       />
     </Box>
-  )
+  ) : null
 }
 
 function filterCards(props: {
@@ -184,56 +151,73 @@ function fallbackToFeaturedCards(props: {
   })
 }
 
-function TabContent(props: {
-  type: ProductTypes
-  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-  productCardsData: ProductCardData[]
-}) {
-  const { productCardsData } = props
-  const ProductCard = props.renderProductCard
-
-  const balancedDerivedCardFilters = cardFiltersFromBalances(productCardsData)
-
-  const hasFilters = balancedDerivedCardFilters.length > 0
-  const filteredCards = hasFilters
-    ? filterCards({ productCardsData, cardFilters: balancedDerivedCardFilters, type: props.type })
-    : fallbackToFeaturedCards({ productCardsData, type: props.type })
-
+function TabHeaderParagraph({ children }: PropsWithChildren<{}>) {
   return (
-    <Flex
-      key={props.type}
-      sx={{ flexDirection: 'column', mt: 5, alignItems: 'center', width: '100%' }}
-    >
-      <ProductCardsWrapper>
-        {filteredCards.map((cardData) => (
-          <ProductCard cardData={cardData} key={cardData.ilk} />
-        ))}
-      </ProductCardsWrapper>
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center', mt: '24px', mb: 4 }}>
+      <Text
+        as="p"
+        variant="paragraph2"
+        sx={{
+          maxWidth: '617px',
+          textAlign: 'center',
+          color: 'neutral80',
+        }}
+      >
+        {children}
+      </Text>
     </Flex>
   )
 }
 
-function TabHeaderParagraph({ children }: WithChildren) {
+function TabContent({
+  type,
+  renderProductCard,
+  productCardsWithBalanceObservable,
+}: {
+  type: ProductTypes
+  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
+  productCardsWithBalanceObservable: [ProductCardData[] | undefined, any]
+}) {
+  const followVaultsEnabled = useFeatureToggle('FollowVaults')
+
+  const [
+    productCardsWithBalanceData,
+    productCardsWithBalanceError,
+  ] = productCardsWithBalanceObservable
+  const ProductCard = renderProductCard
+
   return (
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center', my: 3 }}>
-      <Box
-        sx={{
-          ...slideInAnimation,
+    <WithErrorHandler
+      error={[productCardsWithBalanceError]}
+      {...(followVaultsEnabled && { customLoader: <VaultSuggestionsLoadingState /> })}
+    >
+      <WithLoadingIndicator value={[productCardsWithBalanceData]}>
+        {([productCardsData]) => {
+          const balancedDerivedCardFilters = cardFiltersFromBalances(productCardsData)
+          const filteredCards =
+            balancedDerivedCardFilters.length > 0
+              ? filterCards({
+                  productCardsData,
+                  cardFilters: balancedDerivedCardFilters,
+                  type,
+                })
+              : fallbackToFeaturedCards({ productCardsData, type })
+
+          return (
+            <Box key={type} sx={{ mt: '48px' }}>
+              {!followVaultsEnabled || (followVaultsEnabled && filteredCards.length > 0) ? (
+                <ProductCardsWrapper>
+                  {filteredCards.map((cardData) => (
+                    <ProductCard cardData={cardData} key={cardData.ilk} />
+                  ))}
+                </ProductCardsWrapper>
+              ) : (
+                <VaultSuggestionsLoadingState />
+              )}
+            </Box>
+          )
         }}
-      >
-        <Text
-          variant="paragraph2"
-          sx={{
-            color: 'neutral80',
-            maxWidth: 617,
-            textAlign: 'center',
-            mb: 4,
-            ...fadeInAnimation,
-          }}
-        >
-          {children}
-        </Text>
-      </Box>
-    </Flex>
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }

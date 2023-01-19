@@ -1,8 +1,10 @@
+import { AssetsAndPositionsOverview } from 'features/vaultsOverview/containers/AssetsAndPositionsOverview'
+import { ConnectWalletPrompt } from 'features/vaultsOverview/containers/ConnectWalletPrompt'
 import { FollowedTable } from 'features/vaultsOverview/containers/FollowedTable'
 import { PositionsTable } from 'features/vaultsOverview/containers/PositionsTable'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import {  Grid } from 'theme-ui'
+import { Flex, Grid } from 'theme-ui'
 
 import { PositionsList } from './containers/PositionsList'
 import { VaultOwnershipNotice } from './containers/VaultOwnershipNotice'
@@ -18,11 +20,10 @@ export function VaultsOverviewView({ address }: Props) {
   return (
     <Grid sx={{ flex: 1, zIndex: 1, gap: 4 }}>
       <VaultOwnershipNotice address={address} />
-      {/* <Flex sx={{ mt: 5, flexDirection: 'column' }}>
+      <Flex sx={{ mt: 5, flexDirection: 'column' }}>
         <AssetsAndPositionsOverview address={address} />
-
         <ConnectWalletPrompt address={address} />
-      </Flex> */}
+      </Flex>
 
       {!followVaultsEnabled ? (
         <PositionsList address={address} />
@@ -32,7 +33,6 @@ export function VaultsOverviewView({ address }: Props) {
           <FollowedTable address={address} />
         </>
       )}
-
       <VaultSuggestions address={address} />
     </Grid>
   )
