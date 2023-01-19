@@ -1,4 +1,3 @@
-import { MixpanelUserContext } from 'analytics/analytics'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
@@ -16,13 +15,17 @@ export function DiscoverCards({
   isLoading,
   kind,
   rows = [],
-  userContext,
+  skip = [],
+  onBannerClick,
+  onPositionClick,
 }: {
   banner?: DiscoverBanner
   isLoading: boolean
-  kind: DiscoverPages
+  kind?: DiscoverPages
   rows: DiscoverTableRowData[]
-  userContext: MixpanelUserContext
+  skip?: string[]
+  onBannerClick?: (link: string) => void
+  onPositionClick?: (cdpId: string) => void
 }) {
   const rowsForBanner = Math.min(rows.length - 1, 9)
 
@@ -51,10 +54,10 @@ export function DiscoverCards({
       >
         {rows.map((row, i) => (
           <Fragment key={getRowKey(i, row)}>
-            <DiscoverCard kind={kind} row={row} />
-            {banner && i === Math.floor(rowsForBanner / 2) && (
+            <DiscoverCard row={row} skip={skip} onPositionClick={onPositionClick} />
+            {kind && banner && i === Math.floor(rowsForBanner / 2) && (
               <Box as="li">
-                <DiscoverTableBanner kind={kind} userContext={userContext} {...banner} />
+                <DiscoverTableBanner kind={kind} onBannerClick={onBannerClick} {...banner} />
               </Box>
             )}
           </Fragment>
@@ -64,8 +67,17 @@ export function DiscoverCards({
   )
 }
 
-export function DiscoverCard({ kind, row }: { kind: DiscoverPages; row: DiscoverTableRowData }) {
+export function DiscoverCard({
+  row,
+  skip,
+  onPositionClick,
+}: {
+  row: DiscoverTableRowData
+  skip: string[]
+  onPositionClick?: (cdpId: string) => void
+}) {
   const { t } = useTranslation()
+  const filteredRowKeys = Object.keys(row).filter((key) => !skip.includes(key))
 
   return (
     <Box as="li">
@@ -73,7 +85,7 @@ export function DiscoverCard({ kind, row }: { kind: DiscoverPages; row: Discover
         as="ul"
         sx={{ gridTemplateColumns: ['100%', 'repeat(2, 1fr)'], gap: 4, p: 0, listStyle: 'none' }}
       >
-        {Object.keys(row).map((label, i) => (
+        {filteredRowKeys.map((label, i) => (
           <Box
             as="li"
             key={i}
@@ -96,7 +108,11 @@ export function DiscoverCard({ kind, row }: { kind: DiscoverPages; row: Discover
                 {t(`discover.table.header.${kebabCase(label)}`)}
               </Box>
             )}
-            <DiscoverTableDataCellContent kind={kind} label={label} row={row} />
+            <DiscoverTableDataCellContent
+              label={label}
+              row={row}
+              onPositionClick={onPositionClick}
+            />
           </Box>
         ))}
       </Grid>
