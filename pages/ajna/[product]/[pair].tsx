@@ -5,6 +5,7 @@ import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -49,7 +50,9 @@ function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProdu
           >
             <WithWalletConnection>
               <WithTermsOfService>
-                <AjnaWrapper>{product === 'borrow' && <AjnaOpenBorrowView />}</AjnaWrapper>
+                <WithWalletAssociatedRisk>
+                  <AjnaWrapper>{product === 'borrow' && <AjnaOpenBorrowView />}</AjnaWrapper>
+                </WithWalletAssociatedRisk>
               </WithTermsOfService>
             </WithWalletConnection>
           </AjnaProductContextProvider>
