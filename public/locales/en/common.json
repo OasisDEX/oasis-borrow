@@ -185,8 +185,11 @@
       "2": "There are no positions available for selected filters."
     },
     "table": {
+      "activate": "Activate",
+      "not-available": "Not available yet",
       "no-entries": "There are no entries available for selected filters.",
-      "vault-number": "Vault #{{cdpId}}",
+      "position": "Position",
+      "protection-value": "On {{protection}}%",
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
@@ -206,6 +209,7 @@
         "net-value": "Net value",
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
+        "protection": "Protection",
         "status": "Status",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
@@ -219,6 +223,7 @@
         "liquidity": "The current available liquidity allowing increases of positions.",
         "net-usd-value": "The current net value of the position based on the oracle price of the collateral in the position minus the debt.",
         "pnl": "The current profit or loss percentage of your position, including incurred gas costs. For a more detailed look on the profit and loss, please check the position.",
+        "protection": "Indicates if a any Protection feature has been set up for this position. If not, you can activate it on the Protection page by clicking the button.",
         "variable": "The variable annual rate paid over the debt in this position. This can be changed by the governance body of the protocol.",
         "vault-debt": "The amount of dai debt in this position"
       },
@@ -1217,7 +1222,8 @@
       "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet.",
-      "vault-suggestions": "{{address}}, do more on Oasis.app"
+      "vault-suggestions": "{{address}}, do more on Oasis.app",
+      "not-connected-suggestions": "Connect your own wallet and do more on Oasis.app"
     },
     "number-of-vaults": "No. of Vaults",
     "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and borrow Dai or buy additional collateral against it.",
@@ -1230,9 +1236,17 @@
     "assets-and-positions": "Top {{number}} assets and positions",
     "total-assets": "Total Assets",
     "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>",
-    "no-follow-header-owner": "You are not following any vaults",
+    "owner-positions": "Your Positions",
+    "non-owner-positions": "{{address}}'s Positions",
+    "owner-followed-positions": "Your followed Positions",
+    "non-owner-followed-positions": "{{address}}'s followed Positions",
+    "no-positions-header-owner": "You don't have any positions",
+    "no-positions-header-non-owner": "{{address}} doesn't have any positions",
+    "no-positions-content": "You can open your first position on Oasis.app and <0>Multiply</0>, <1>Earn</1> or <2>Borrow</2> against your assets.",
+    "no-follow-header-owner": "You are not following any positions",
     "no-follow-header-non-owner": "{{address}} is not following any vaults",
-    "no-follow-content": "You can find the most interesting Vaults that are worth following in <0>Discover Oasis</0>."
+    "no-follow-content": "You can find the most interesting Vaults that are worth following in <0>Discover Oasis</0>.",
+    "no-assets": "There are no assets in your wallet"
   },
   "vault-notices": {
     "ownership": {

@@ -1,25 +1,30 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
 import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { PieChart } from 'components/dumb/PieChart'
+import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
+import { AssetsAndPositionsOverviewLoadingState } from 'features/vaultsOverview/components/AssetsAndPositionsOverviewLoadingState'
+import { AssetAction, isUrlAction } from 'features/vaultsOverview/pipes/assetActions'
+import {
+  PositionView,
+  TopAssetsAndPositionsViewModal,
+} from 'features/vaultsOverview/pipes/positionsOverviewSummary'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Box, Card, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
-
-import { getToken } from '../../../blockchain/tokensMetadata'
-import { PieChart } from '../../../components/dumb/PieChart'
-import { AppLink } from '../../../components/Links'
-import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
-import { useOutsideElementClickHandler } from '../../../helpers/useOutsideElementClickHandler'
-import { zero } from '../../../helpers/zero'
-import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
-import { AssetAction, isUrlAction } from '../pipes/assetActions'
-import { PositionView, TopAssetsAndPositionsViewModal } from '../pipes/positionsOverviewSummary'
+import { Box, Card, Flex, Grid, Heading, Image, Link, SxStyleProp, Text } from 'theme-ui'
+import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -241,7 +246,14 @@ function Menu(props: {
 function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
   const { t } = useTranslation()
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box
+      sx={{
+        mr: [0, '48px'],
+        pr: [0, '48px'],
+        borderRight: ['none', 'solid 1px'],
+        borderRightColor: ['transparent', 'neutral20'],
+      }}
+    >
       <Text
         variant="paragraph2"
         sx={{
@@ -256,7 +268,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
           components={[
             <AppLink
               href="https://kb.oasis.app/help/curated-token-list"
-              target="_blank"
+              internalInNewTab={true}
               sx={{ fontWeight: 'regular', fontSize: 3 }}
             />,
           ]}
@@ -281,28 +293,12 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
     { value: props.percentageOther, color: '#999' },
   ]
 
-  if (props.totalValueUsd.lte(zero)) {
-    return null
-  }
-
   return (
     <>
       {breakpointIndex === 0 && <TotalAssetsContent totalValueUsd={props.totalValueUsd} />}
       <Card variant="positionsPage">
-        <Flex sx={{ justifyContent: 'space-between', alignContent: 'stretch' }}>
-          {breakpointIndex !== 0 && (
-            <>
-              <TotalAssetsContent totalValueUsd={props.totalValueUsd} />
-              <Box
-                sx={{
-                  borderLeft: 'solid 1px',
-                  borderLeftColor: 'neutral20',
-                  ml: '45px',
-                  mr: '45px',
-                }}
-              />
-            </>
-          )}
+        <Grid gap={0} sx={{ gridTemplateColumns: ['100%', '40% 60%'] }}>
+          {breakpointIndex !== 0 && <TotalAssetsContent totalValueUsd={props.totalValueUsd} />}
           <Box sx={{ flexGrow: 1 }}>
             <Text
               variant="paragraph2"
@@ -310,25 +306,47 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
                 fontWeight: 'semiBold',
               }}
             >
-              {t('vaults-overview.assets-and-positions', { number: topAssetsAndPositions.length })}
+              {t('vaults-overview.assets-and-positions', {
+                number: topAssetsAndPositions.length || '',
+              })}
             </Text>
-            <Flex sx={{ mt: '36px', justifyContent: 'space-between', alignContent: 'stretch' }}>
-              {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
-
-              <Box sx={{ flex: 1, ml: [null, '53px'] }}>
-                {topAssetsAndPositions.map((row, index) => (
-                  <LinkedRow key={`${index}-${row.token}`} {...row} />
-                ))}
-              </Box>
-            </Flex>
+            {props.totalValueUsd.gt(zero) ? (
+              <Flex sx={{ mt: 4, justifyContent: 'space-between', alignContent: 'stretch' }}>
+                {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
+                <Box sx={{ flex: 1, ml: [null, '48px'] }}>
+                  {topAssetsAndPositions.map((row, index) => (
+                    <LinkedRow key={`${index}-${row.token}`} {...row} />
+                  ))}
+                </Box>
+              </Flex>
+            ) : (
+              <Flex
+                sx={{
+                  flexDirection: 'column',
+                  alignItems: ['flex-start', 'center'],
+                  py: 5,
+                  textAlign: ['left', 'center'],
+                }}
+              >
+                <Image
+                  src={staticFilesRuntimeUrl('/static/img/no-assets.svg')}
+                  sx={{ alignSelf: 'center' }}
+                />
+                <Text as="p" variant="paragraph3" sx={{ mt: 3, color: 'neutral80' }}>
+                  {t('vaults-overview.no-assets')}
+                </Text>
+              </Flex>
+            )}
           </Box>
-        </Flex>
+        </Grid>
       </Card>
     </>
   )
 }
 
 export function AssetsAndPositionsOverview({ address }: { address: string }) {
+  const followVaultsEnabled = useFeatureToggle('FollowVaults')
+
   const { positionsOverviewSummary$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
 
@@ -338,7 +356,10 @@ export function AssetsAndPositionsOverview({ address }: { address: string }) {
 
   return (
     <WithErrorHandler error={[positionOverviewSummaryError]}>
-      <WithLoadingIndicator value={[positionsOverviewSummary]}>
+      <WithLoadingIndicator
+        value={[positionsOverviewSummary]}
+        {...(followVaultsEnabled && { customLoader: <AssetsAndPositionsOverviewLoadingState /> })}
+      >
         {([_positionsOverviewSummary]) => <AssetsAndPositionsView {..._positionsOverviewSummary} />}
       </WithLoadingIndicator>
     </WithErrorHandler>

@@ -193,6 +193,7 @@ export const oasisBaseTheme = {
     rounder: 24,
     round: 32,
     circle: 50,
+    ellipse: '50%',
   },
   shadows: {
     card: '0px 0px 8px rgba(37, 39, 61, 0.1)',
@@ -483,7 +484,7 @@ export const oasisBaseTheme = {
       color: 'primary100',
       borderRadius: 'round',
       whiteSpace: 'nowrap',
-      transition: 'background-color 200ms',
+      transition: 'background-color 200ms, border-color 200ms',
       '&:hover': {
         bg: 'secondary100',
       },
@@ -493,6 +494,25 @@ export const oasisBaseTheme = {
       '&:disabled': {
         pointerEvents: 'none',
         opacity: 0.5,
+      },
+    },
+    action: {
+      variant: 'buttons.tertiary',
+      bg: 'neutral10',
+      border: '1px solid',
+      borderColor: 'neutral20',
+      borderRadius: 'rounder',
+      '&:hover': {
+        bg: 'neutral10',
+        borderColor: 'primary100',
+      },
+    },
+    actionActiveGreen: {
+      variant: 'buttons.tertiary',
+      bg: 'success100',
+      color: 'neutral10',
+      '&:hover': {
+        bg: 'success100',
       },
     },
     square: {
@@ -689,32 +709,9 @@ export const oasisBaseTheme = {
       cursor: 'pointer',
       fontFamily: 'body',
     },
-    action: {
-      px: '24px',
-      py: 2,
-      fontFamily: 'body',
-      fontSize: 1,
-      fontWeight: 'semiBold',
-      lineHeight: '18px',
-      color: 'primary100',
-      backgroundColor: 'neutral10',
-      border: 'lightMuted',
-      borderRadius: 'rounder',
-      cursor: 'pointer',
-      transition: 'border-color 200ms',
-      '&:hover': {
-        borderColor: 'primary100',
-      },
-    },
     actionActive: {
       variant: 'buttons.action',
       borderColor: 'primary100',
-    },
-    actionActiveGreen: {
-      variant: 'buttons.action',
-      border: 'none',
-      bg: 'success100',
-      color: 'neutral10',
     },
     pill: {
       px: '24px',
