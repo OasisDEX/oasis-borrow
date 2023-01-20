@@ -4,6 +4,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
+const LIMIT_OF_FOLLOWED_VAULTS = 30
+
 export async function selectVaultsFollowedByAddress(
   prisma: PrismaClient,
   { address }: { address: string },
@@ -32,16 +34,22 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
     vault_id,
     vault_chain_id,
   }
-
-  await prisma.usersWhoFollowVaults.create({
-    data: userWhoFollowsVaultData,
-  })
-
   const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
     where: { user_address: usersAddressWhoJustFollowedVaultLowercased },
   })
+  if (allVaultsFollowedByUser.length <= LIMIT_OF_FOLLOWED_VAULTS) {
+    await prisma.usersWhoFollowVaults.create({
+      data: userWhoFollowsVaultData,
+    })
+    allVaultsFollowedByUser.push(userWhoFollowsVaultData)
 
-  return res.status(200).json(allVaultsFollowedByUser)
+    return res.status(200).json(allVaultsFollowedByUser)
+  } else {
+    return res.status(422).json({
+      error:
+        'You have reached the Followed Vaults limit, please unfollow vaults before continuing.',
+    })
+  }
 }
 
 export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
