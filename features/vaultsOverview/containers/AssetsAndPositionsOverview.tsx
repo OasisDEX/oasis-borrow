@@ -307,7 +307,7 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
               }}
             >
               {t('vaults-overview.assets-and-positions', {
-                number: topAssetsAndPositions.length ? topAssetsAndPositions.length : '',
+                number: topAssetsAndPositions.length || '',
               })}
             </Text>
             {props.totalValueUsd.gt(zero) ? (
