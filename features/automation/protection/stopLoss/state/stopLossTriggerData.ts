@@ -44,7 +44,7 @@ const resultMap: Record<
     triggerType: BigNumber
   }
 > = {
-  '0xec1bb74f5799811c0c1bff94ef76fb40abccbe4a': getStopLossResultsV2,
+  '0x09120eaed8e4cd86d85a616680151daa653880f2': getStopLossResultsV2,
 }
 
 function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataType[]) {
