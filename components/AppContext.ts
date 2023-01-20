@@ -1044,18 +1044,25 @@ export function setupAppContext() {
     ),
   )
 
+  const automationTriggersData$ = memoize(
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
+  )
+
   const aavePositions$ = memoize(
     curry(createAavePosition$)(
       {
         dsProxy$: proxyAddress$,
         userDpmProxies$,
       },
+      {
+        tickerPrices$: tokenPriceUSD$,
+        context$,
+        automationTriggersData$,
+        readPositionCreatedEvents$,
+      },
       aaveProtocolData$,
       getAaveAssetsPrices$,
-      tokenPriceUSD$,
       wrappedGetAaveReserveData$,
-      context$,
-      readPositionCreatedEvents$,
       aaveAvailableLiquidityInUSDC$,
       strategyConfig$,
     ),
@@ -1223,10 +1230,6 @@ export function setupAppContext() {
   const productCardsWithBalance$ = createProductCardsWithBalance$(
     ilksWithBalance$,
     oraclePriceDataLean$,
-  )
-
-  const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
   )
 
   const vaultsHistoryAndValue$ = memoize(
