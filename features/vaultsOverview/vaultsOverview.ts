@@ -7,6 +7,7 @@ import {
   PositionVM,
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { Dsr } from 'features/dsr/utils/createDsr'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
@@ -19,8 +20,29 @@ import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultC
 import { AavePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
 
+export interface PositionsList {
+  makerPositions: MakerPositionDetails[]
+  aavePositions: AavePosition[]
+  dsrPosition: Dsr
+}
+
 export interface VaultsOverview {
   positions: PositionVM[]
+}
+
+export function createPositionsList$(
+  makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
+  aavePositions$: (address: string) => Observable<AavePosition[]>,
+  dsr$: (address: string) => Observable<Dsr>,
+  address: string,
+): Observable<PositionsList> {
+  return combineLatest(makerPositions$(address), aavePositions$(address), dsr$(address)).pipe(
+    map(([makerPositions, aavePositions, dsrPosition]) => ({
+      makerPositions: makerPositions,
+      aavePositions: aavePositions,
+      dsrPosition: dsrPosition,
+    })),
+  )
 }
 
 export function createVaultsOverview$(

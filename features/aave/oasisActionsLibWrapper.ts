@@ -338,11 +338,9 @@ export async function getManageAaveParameters(
       case ManageCollateralActionsEnum.DEPOSIT_COLLATERAL:
         const borrowDepositStratArgs: Parameters<typeof strategies.aave.depositBorrow>[0] = {
           slippage,
-          collectFeeFrom: 'sourceToken',
         }
         if (manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
           borrowDepositStratArgs.borrowAmount = debt || ZERO
-          borrowDepositStratArgs.collectFeeFrom = 'targetToken'
         }
         if (
           manageTokenInput?.manageTokenAction === ManageCollateralActionsEnum.DEPOSIT_COLLATERAL

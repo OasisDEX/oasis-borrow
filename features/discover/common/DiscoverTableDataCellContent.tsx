@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
@@ -35,14 +36,16 @@ export function DiscoverTableDataCellContent({
 
       return (
         <Flex sx={{ alignItems: 'center' }}>
-          {asset && asset.icon && <Icon size={44} name={asset.icon} />}
+          {(primitives.icon || (asset && asset.icon)) && (
+            <Icon size={44} name={(primitives.icon || asset.icon) as string} />
+          )}
           <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
             <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
               {primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset}
             </Text>
             {primitives.cdpId && (
               <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-                {t('discover.table.vault-number', { cdpId: primitives.cdpId })}
+                {t('position')} #{primitives.cdpId}
               </Text>
             )}
           </Flex>
@@ -65,12 +68,13 @@ export function DiscoverTableDataCellContent({
         </DiscoverTableDataCellPill>
       )
     case 'cdpId':
+    case 'url':
       return (
         <AppLink
-          href={`/${primitives[label]}`}
+          href={`${row.url || `/${row.cdpId}`}`}
           internalInNewTab={true}
           onClick={() => {
-            onPositionClick && onPositionClick(String(primitives[label]))
+            onPositionClick && onPositionClick(String(row.url || row.cdpId))
           }}
         >
           <Button variant="tertiary">{t('discover.table.view-position')}</Button>
@@ -84,12 +88,29 @@ export function DiscoverTableDataCellContent({
       return <>${formatFiatBalance(new BigNumber(primitives[label]))}</>
     case 'pnl':
     case '30DayAvgApy':
-      return <>{formatPercent(new BigNumber(primitives[label]), { precision: 2 })}</>
+      return (
+        <>
+          {typeof primitives[label] === 'number'
+            ? formatPercent(new BigNumber(primitives[label]), { precision: 2 })
+            : primitives[label]}
+        </>
+      )
     case 'earningsToDate':
-    case 'liquidity':
     case 'netValue':
     case 'vaultDebt':
       return <>{formatCryptoBalance(new BigNumber(primitives[label]))} DAI</>
+    case 'liquidity':
+      return (
+        <>
+          {typeof primitives[label] === 'number' ? (
+            <>
+              {formatCryptoBalance(new BigNumber(primitives[label]))} {row.liquidityToken || 'DAI'}
+            </>
+          ) : (
+            primitives[label]
+          )}
+        </>
+      )
     case 'currentMultiple':
       return <>{(primitives[label] as number)?.toFixed(2)}x</>
     case 'fundingCost':
@@ -116,6 +137,28 @@ export function DiscoverTableDataCellContent({
               }}
             >
               {formatPercent(new BigNumber(row.colRatio.level), { precision: 2 })}
+            </Text>
+          )}
+        </>
+      )
+    case 'protection':
+      return (
+        <>
+          {primitives.cdpId && primitives[label] >= 0 ? (
+            <AppLink
+              href={`/${primitives.cdpId}`}
+              hash={VaultViewMode.Overview}
+              internalInNewTab={true}
+            >
+              <Button variant={primitives[label] > 0 ? 'actionActiveGreen' : 'action'}>
+                {primitives[label] > 0
+                  ? t('discover.table.protection-value', { protection: primitives[label] })
+                  : t('discover.table.activate')}
+              </Button>
+            </AppLink>
+          ) : (
+            <Text as="span" sx={{ fontSize: 2, color: 'neutral80' }}>
+              {t('discover.table.not-available')}
             </Text>
           )}
         </>
