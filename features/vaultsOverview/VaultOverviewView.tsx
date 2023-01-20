@@ -22,7 +22,6 @@ export function VaultsOverviewView({ address }: Props) {
       <VaultOwnershipNotice address={address} />
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
         <AssetsAndPositionsOverview address={address} />
-        <ConnectWalletPrompt address={address} />
       </Flex>
 
       {!followVaultsEnabled ? (
@@ -33,6 +32,7 @@ export function VaultsOverviewView({ address }: Props) {
           <FollowedTable address={address} />
         </>
       )}
+      <ConnectWalletPrompt />
       <VaultSuggestions address={address} />
     </Grid>
   )

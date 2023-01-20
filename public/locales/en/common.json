@@ -1222,7 +1222,8 @@
       "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
       "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet.",
-      "vault-suggestions": "{{address}}, do more on Oasis.app"
+      "vault-suggestions": "{{address}}, do more on Oasis.app",
+      "not-connected-suggestions": "Connect your own wallet and do more on Oasis.app"
     },
     "number-of-vaults": "No. of Vaults",
     "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and borrow Dai or buy additional collateral against it.",
