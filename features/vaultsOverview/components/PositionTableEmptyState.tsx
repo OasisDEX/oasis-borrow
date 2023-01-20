@@ -18,9 +18,9 @@ export function PositionTableEmptyState({
         sx={{
           flexDirection: 'column',
           alignItems: ['flex-start', 'center'],
-          my: [3, null, '92px'],
           px: ['24px', 4],
-          py: 4,
+          pt: 5,
+          pb: '96px',
           textAlign: ['left', 'center'],
         }}
       >
