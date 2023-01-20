@@ -26,6 +26,7 @@ import uniqBy from 'lodash/uniqBy'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
+import { fadeInAnimation } from 'theme/animations'
 
 export function VaultSuggestions({ address }: { address: string }) {
   const { t } = useTranslation()
@@ -51,7 +52,7 @@ export function VaultSuggestions({ address }: { address: string }) {
             label: t('landing.tabs.maker.multiply.tabLabel'),
             value: 'multiply',
             topContent: (
-              <TabHeaderParagraph>
+              <TabHeaderParagraph key="multiply">
                 {t('landing.tabs.maker.multiply.tabParaContent')}{' '}
                 <AppLink href="/multiply" variant="inText">
                   {t('landing.tabs.maker.multiply.tabParaLinkContent')}
@@ -70,7 +71,7 @@ export function VaultSuggestions({ address }: { address: string }) {
             label: t('landing.tabs.maker.borrow.tabLabel'),
             value: 'borrow',
             topContent: (
-              <TabHeaderParagraph>
+              <TabHeaderParagraph key="borrow">
                 <Text as="p">{t('landing.tabs.maker.borrow.tabParaContent')} </Text>
                 <AppLink href="/borrow" variant="inText">
                   {t('landing.tabs.maker.borrow.tabParaLinkContent')}
@@ -89,7 +90,7 @@ export function VaultSuggestions({ address }: { address: string }) {
             label: t('landing.tabs.maker.earn.tabLabel'),
             value: 'earn',
             topContent: (
-              <TabHeaderParagraph>
+              <TabHeaderParagraph key="earn">
                 {t('landing.tabs.maker.earn.tabParaContent')}{' '}
                 <AppLink href="/multiply" variant="inText">
                   {t('landing.tabs.maker.earn.tabParaLinkContent')}
@@ -161,6 +162,7 @@ function TabHeaderParagraph({ children }: PropsWithChildren<{}>) {
           maxWidth: '617px',
           textAlign: 'center',
           color: 'neutral80',
+          ...fadeInAnimation,
         }}
       >
         {children}
@@ -205,14 +207,14 @@ function TabContent({
 
           return (
             <Box key={type} sx={{ mt: '48px' }}>
-              {!followVaultsEnabled || (followVaultsEnabled && filteredCards.length > 0) ? (
+              {filteredCards.length > 0 ? (
                 <ProductCardsWrapper>
                   {filteredCards.map((cardData) => (
                     <ProductCard cardData={cardData} key={cardData.ilk} />
                   ))}
                 </ProductCardsWrapper>
               ) : (
-                <VaultSuggestionsLoadingState />
+                <>{followVaultsEnabled && <VaultSuggestionsLoadingState />}</>
               )}
             </Box>
           )

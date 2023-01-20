@@ -225,7 +225,7 @@ export function VaultOverviewOwnershipNotice({
       subheader={
         <Text>
           {t('vaults-overview.banner-content')}{' '}
-          <AppLink href={`/owner/${account}`} target="_blank">
+          <AppLink href={`/owner/${account}`} internalInNewTab={true} sx={{ fontSize: 3 }}>
             {t('here')}
           </AppLink>
         </Text>
