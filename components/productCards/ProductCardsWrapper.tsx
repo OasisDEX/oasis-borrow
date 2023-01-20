@@ -26,6 +26,7 @@ export function ProductCardsWrapper({ children, sx }: ProductCardWrapperProps) {
         width: ['100%', childrenLength <= 2 ? `${desktopWidthOfGrid}px` : '100%'],
         gap: `${gapSpace}px`,
         margin: '0 auto',
+        animationDelay: '0s',
         ...sx,
       }}
     >
@@ -33,7 +34,10 @@ export function ProductCardsWrapper({ children, sx }: ProductCardWrapperProps) {
         .flat()
         .filter((item) => item)
         .map((productCard, index) => (
-          <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5), width: '100%' }} key={index}>
+          <Box
+            sx={{ ...fadeInAnimationDelay(Math.min(index, 3) * 0.2), width: '100%' }}
+            key={index}
+          >
             {productCard}
           </Box>
         ))}

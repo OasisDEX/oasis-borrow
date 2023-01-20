@@ -87,7 +87,7 @@ export function createDPMAccountStateMachine(
           },
         },
         txSuccess: {
-          entry: ['killTransactionMachine', 'sendResultToParent'],
+          entry: ['killTransactionMachine'],
           on: {
             CONTINUE: {
               actions: ['sendResultToParent'],

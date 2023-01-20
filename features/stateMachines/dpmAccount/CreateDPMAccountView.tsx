@@ -154,15 +154,10 @@ function SuccessStateView({ send }: InternalViewsProps) {
               }}
             />
           </Text>
-          <>
-            <ListWithIcon
-              icon="checkmark"
-              iconSize="14px"
-              iconColor="primary100"
-              items={t<string, string[]>('dpm.create-flow.bullet-points', { returnObjects: true })}
-              listStyle={{ my: 2 }}
-            />
-          </>
+          <Image
+            src={staticFilesRuntimeUrl('/static/img/proxy_complete.gif')}
+            sx={{ display: 'block', maxWidth: '210px', mx: 'auto' }}
+          />
         </>
       </Grid>
     ),
