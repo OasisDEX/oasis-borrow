@@ -176,6 +176,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     translations: {
       ratioParamTranslationKey: 'vault-changes.loan-to-value',
       stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-above',
+      bannerStrategiesKey: 'protection.stop-loss',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({

@@ -1448,8 +1448,8 @@
     "total-cost": "Total transaction cost",
     "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on Stop-Loss trigger",
-    "zero-debt-heading": "You need to Generate DAI before you can set up Automated Protection",
-    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic Stop-Loss or Auto-Sell Strategy on your vault based on the collateralization ratio. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
+    "zero-debt-heading": "You need to Generate {{debtToken}} before you can set up Automated Protection",
+    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic {{bannerStrategiesKey}} Strategy on your vault based on the {{ratioParamTranslationKey}}. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
     "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop-Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
@@ -1491,7 +1491,8 @@
     "unable-to-access-protection": "Unable to access Protection",
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
     "stop-loss-something": "Stop-Loss {{value}}",
-    "current-stop-loss-something": "The current Stop-Loss {{value}} is:"
+    "current-stop-loss-something": "The current Stop-Loss {{value}} is:",
+    "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1931,8 +1932,8 @@
     "confirmation-text": "Confirm your {{feature}} setup",
     "closed-vault-existing-trigger-header": "Your vault is closed but {{feature}} is still active",
     "closed-vault-existing-trigger-description": "You can cancel your existing {{feature}} here or deposit into your vault in overview tab",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up {{feature}}",
-    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab",
+    "closed-vault-not-existing-trigger-header": "You need to generate {{debtToken}} before you can set up {{feature}}",
+    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate {{debtToken}} in overview tab",
     "validation": {
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-more-debt-than-max-for-stop-loss": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20M DAI",

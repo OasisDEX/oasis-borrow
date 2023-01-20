@@ -27,6 +27,9 @@ interface ZeroDebtProtectionBannerProps {
   useTranslationKeys?: boolean
   header: string
   description: string
+  debtToken?: string
+  ratioParamTranslationKey?: string
+  bannerStrategiesKey?: string
   showLink?: boolean
 }
 
@@ -35,6 +38,9 @@ function ZeroDebtProtectionBanner({
   header,
   description,
   showLink = true,
+  debtToken,
+  ratioParamTranslationKey,
+  bannerStrategiesKey,
 }: ZeroDebtProtectionBannerProps) {
   const { t } = useTranslation()
 
@@ -42,10 +48,15 @@ function ZeroDebtProtectionBanner({
     <VaultNotice
       status={<Icon size="34px" name="warning" />}
       withClose={false}
-      header={useTranslationKeys ? t(header) : header}
+      header={useTranslationKeys ? t(header, { debtToken }) : header}
       subheader={
         <>
-          {useTranslationKeys ? t(description) : description}
+          {useTranslationKeys
+            ? t(description, {
+                ratioParamTranslationKey: t(ratioParamTranslationKey!),
+                bannerStrategiesKey: t(bannerStrategiesKey!),
+              })
+            : description}
           {showLink && (
             <>
               {', '}
@@ -64,12 +75,18 @@ function ZeroDebtProtectionBanner({
 function getZeroDebtProtectionBannerProps({
   stopLossWriteEnabled,
   isVaultDebtZero,
-  isVaultDebtBelowDustLumit,
+  isVaultDebtBelowDustLimit,
   vaultHasNoProtection,
+  debtToken,
+  ratioParamTranslationKey,
+  bannerStrategiesKey,
 }: {
   stopLossWriteEnabled: boolean
   isVaultDebtZero: boolean
-  isVaultDebtBelowDustLumit: boolean
+  isVaultDebtBelowDustLimit: boolean
+  debtToken: string
+  ratioParamTranslationKey: string
+  bannerStrategiesKey: string
   vaultHasNoProtection?: boolean
 }): ZeroDebtProtectionBannerProps {
   if (stopLossWriteEnabled) {
@@ -77,11 +94,17 @@ function getZeroDebtProtectionBannerProps({
       return {
         header: 'protection.zero-debt-heading',
         description: 'protection.zero-debt-description',
+        debtToken,
+        ratioParamTranslationKey,
+        bannerStrategiesKey,
       }
-    } else if (isVaultDebtBelowDustLumit) {
+    } else if (isVaultDebtBelowDustLimit) {
       return {
         header: 'protection.below-dust-limit-heading',
         description: 'protection.zero-debt-description',
+        debtToken,
+        ratioParamTranslationKey,
+        bannerStrategiesKey,
       }
     } else
       return {
@@ -103,7 +126,12 @@ function getZeroDebtProtectionBannerProps({
 export function ProtectionControl() {
   const { txHelpers$ } = useAppContext()
   const {
-    positionData: { debt, debtFloor },
+    positionData: { debt, debtFloor, debtToken },
+    metadata: {
+      stopLossMetadata: {
+        translations: { ratioParamTranslationKey, bannerStrategiesKey },
+      },
+    },
     triggerData: { autoSellTriggerData, stopLossTriggerData },
   } = useAutomationContext()
   const [txHelpersData] = useObservable(txHelpers$)
@@ -140,8 +168,11 @@ export function ProtectionControl() {
               {...getZeroDebtProtectionBannerProps({
                 stopLossWriteEnabled,
                 isVaultDebtZero: debt.isZero(),
-                isVaultDebtBelowDustLumit: debt.lte(debtFloor),
+                isVaultDebtBelowDustLimit: debt.lte(debtFloor),
                 vaultHasNoProtection: !vaultHasActiveTrigger,
+                debtToken,
+                ratioParamTranslationKey,
+                bannerStrategiesKey,
               })}
             />
           </Container>
