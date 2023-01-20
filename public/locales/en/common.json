@@ -147,8 +147,8 @@
         "paragraph": "Read more in the the <1>knowledge base</1>"
       },
       "proxy-created-screen": {
-        "header": "Smart DeFi account created",
-        "paragraph": "Read more in the the <1>knowledge base</1>"
+        "header": "Account successfully created",
+        "paragraph": "Your account has been successfully created. <1>Read more in the Knowledge Base</1>\""
       },
       "bullet-points": [
         "Multiple Aave positions with the same wallet",
