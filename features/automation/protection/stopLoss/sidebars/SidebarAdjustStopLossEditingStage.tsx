@@ -145,7 +145,7 @@ export function SidebarAdjustStopLossEditingStage({
         values: { sliderMin, sliderMax, resetData },
       },
     },
-    positionData: { id, ilk, token, debt, positionRatio },
+    positionData: { id, ilk, token, debt, positionRatio, debtToken },
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
@@ -180,8 +180,11 @@ export function SidebarAdjustStopLossEditingStage({
   if (isVaultEmpty) {
     return (
       <SidebarFormInfo
-        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
-        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
+        title={t('automation.closed-vault-not-existing-trigger-header', { feature, debtToken })}
+        description={t('automation.closed-vault-not-existing-trigger-description', {
+          feature,
+          debtToken,
+        })}
       />
     )
   }

@@ -1918,8 +1918,8 @@
     "confirmation-text": "Confirm your {{feature}} setup",
     "closed-vault-existing-trigger-header": "Your vault is closed but {{feature}} is still active",
     "closed-vault-existing-trigger-description": "You can cancel your existing {{feature}} here or deposit into your vault in overview tab",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up {{feature}}",
-    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab",
+    "closed-vault-not-existing-trigger-header": "You need to generate {{debtToken}} before you can set up {{feature}}",
+    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate {{debtToken}} in overview tab",
     "validation": {
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-more-debt-than-max-for-stop-loss": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20M DAI",
