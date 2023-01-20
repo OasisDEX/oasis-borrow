@@ -2,6 +2,7 @@ import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { WithArrow } from 'components/WithArrow'
+import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { ManageAaveEvent } from 'features/aave/manage/state'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -13,7 +14,7 @@ import { SidebarSection, SidebarSectionProps } from '../../../../components/side
 import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
-import { zero } from '../../../../helpers/zero'
+import { one, zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
@@ -120,7 +121,9 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
 
     const warningPriceMovementPercentThreshold = new BigNumber('20')
 
-    const isWarning = priceMovementUntilLiquidationPercent.lte(warningPriceMovementPercentThreshold)
+    const isWarning =
+      targetPosition &&
+      priceMovementUntilLiquidationPercent.lte(warningPriceMovementPercentThreshold)
 
     const collateralToken = state.context.strategyInfo?.collateralToken
 
@@ -134,9 +137,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     )
 
     const sliderValue =
-      state.context.userInput.riskRatio?.loanToValue ||
-      onChainPosition?.riskRatio.loanToValue ||
-      viewConfig.riskRatios.default.loanToValue
+      state.context.userInput.riskRatio?.loanToValue || onChainPosition?.riskRatio.loanToValue
 
     const sidebarContent = (
       <Grid gap={3}>
@@ -147,30 +148,43 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             if (isLoading()) {
               return '...'
             } else {
-              return viewConfig.liquidationPriceFormatter(value)
+              return onChainPosition
+                ? viewConfig.liquidationPriceFormatter(value)
+                : hasUserInteracted(state)
+                ? viewConfig.liquidationPriceFormatter(value)
+                : '-'
             }
           }}
-          rightBoundry={viewConfig.rightBoundary.valueExtractor({
-            oracleAssetPrice,
-            ltv: sliderValue,
-          })}
+          leftBoundryStyling={{
+            color: isWarning ? 'warning100' : 'neutral100',
+          }}
+          rightBoundry={
+            sliderValue
+              ? viewConfig.rightBoundary.valueExtractor({
+                  oracleAssetPrice,
+                  ltv: sliderValue,
+                })
+              : one
+          }
           rightBoundryFormatter={(value) => {
-            return viewConfig.rightBoundary.formatter(value)
+            return onChainPosition
+              ? viewConfig.rightBoundary.formatter(value)
+              : hasUserInteracted(state)
+              ? viewConfig.rightBoundary.formatter(value)
+              : '-'
           }}
           rightLabel={t(viewConfig.rightBoundary.translationKey)}
           onChange={(ltv) => {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
           }}
-          leftBoundryStyling={{
-            color: isWarning ? 'warning100' : 'neutral100',
-          }}
           minBoundry={minRisk}
           maxBoundry={maxRisk || zero}
-          lastValue={sliderValue}
-          disabled={viewLocked}
+          lastValue={sliderValue || viewConfig.riskRatios.default.loanToValue}
+          disabled={viewLocked || !maxRisk}
+          disabledVisually={viewLocked || !maxRisk}
           step={0.01}
           sliderPercentageFill={
-            maxRisk
+            maxRisk && sliderValue
               ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
               : new BigNumber(0)
           }
@@ -210,7 +224,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             withBullet={false}
           />
         ) : (
-          state.context.strategy && (
+          state.context.strategy &&
+          hasUserInteracted(state) && (
             <MessageCard
               messages={[
                 isWarning
@@ -236,7 +251,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             />
           )
         )}
-        <StrategyInformationContainer state={state} />
+        {hasUserInteracted(state) && <StrategyInformationContainer state={state} />}
       </Grid>
     )
     if (noSidebar) {
