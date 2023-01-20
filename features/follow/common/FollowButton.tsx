@@ -8,6 +8,7 @@ interface FollowButtonProps {
   isProcessing: boolean
   isFollowing: boolean
   buttonClickHandler: () => void
+  isShort?: boolean
 }
 
 export function FollowButton(props: FollowButtonProps) {
@@ -26,33 +27,66 @@ export function FollowButton(props: FollowButtonProps) {
     <Button
       disabled={props.isProcessing}
       onClick={props.buttonClickHandler}
-      sx={{
-        position: 'relative',
-        p: '0 12px 0 30px',
-        border: '1px solid',
-        borderColor: 'neutral20',
-        borderRadius: 'large',
-        marginLeft: '16px',
-        backgroundColor: 'neutral10',
-        '&:hover': {
-          backgroundColor: 'neutral10',
-          borderColor: 'primary100',
-          color: 'primary60',
-          '.star': { color: '#878BFC', fill: '#878BFC' },
-          '.star_empty': { color: '#EAEAEA', fill: 'white', stroke: '#25273D' },
-        },
-        '&:disabled': {
-          backgroundColor: 'neutral10',
-          color: 'primary60',
-        },
-        fontSize: 1,
-        lineHeight: '26px',
-        color: 'primary100',
-        boxShadow: 'surface',
-        transition: 'border-color 200ms, background-color 200ms, color 200ms',
-        '.star': { color: '#575CFE', fill: '#575CFE' },
-        '.star_empty': { fill: 'white', stroke: '#EAEAEA' },
-      }}
+      sx={
+        !props.isShort
+          ? {
+              position: 'relative',
+              p: '0 12px 0 30px',
+              border: '1px solid',
+              borderColor: 'neutral20',
+              borderRadius: 'large',
+              marginLeft: '16px',
+              backgroundColor: 'neutral10',
+              '&:hover': {
+                backgroundColor: 'neutral10',
+                borderColor: 'primary100',
+                color: 'primary60',
+                '.star': { color: '#878BFC', fill: '#878BFC' },
+                '.star_empty': { color: '#EAEAEA', fill: 'white', stroke: '#25273D' },
+              },
+              '&:disabled': {
+                backgroundColor: 'neutral10',
+                color: 'primary60',
+              },
+              fontSize: 1,
+              lineHeight: '26px',
+              color: 'primary100',
+              boxShadow: 'surface',
+              transition: 'border-color 200ms, background-color 200ms, color 200ms',
+              '.star': { color: '#575CFE', fill: '#575CFE' },
+              '.star_empty': { fill: 'white', stroke: '#EAEAEA' },
+            }
+          : {
+              position: 'relative',
+              p: '4px 12px 4px 12px',
+              border: '1px solid',
+              borderColor: 'neutral20',
+              borderRadius: '18px',
+              marginLeft: '16px',
+              gap: '4px',
+              width: '32px',
+              height: '32px',
+              backgroundColor: 'neutral10',
+              '&:hover': {
+                backgroundColor: 'neutral10',
+                borderColor: 'primary100',
+                color: 'primary60',
+                '.star': { color: '#878BFC', fill: '#878BFC' },
+                '.star_empty': { color: '#EAEAEA', fill: 'white', stroke: '#25273D' },
+              },
+              '&:disabled': {
+                backgroundColor: 'neutral10',
+                color: 'primary60',
+              },
+              fontSize: 1,
+              lineHeight: '26px',
+              color: 'primary100',
+              boxShadow: 'surface',
+              transition: 'border-color 200ms, background-color 200ms, color 200ms',
+              '.star': { color: '#575CFE', fill: '#575CFE' },
+              '.star_empty': { fill: 'white', stroke: '#EAEAEA' },
+            }
+      }
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
     >
@@ -61,22 +95,34 @@ export function FollowButton(props: FollowButtonProps) {
           <Spinner
             size={15}
             color="#878BFC"
-            sx={{ position: 'relative', top: '1px', left: '-3px' }}
+            sx={
+              !props.isShort
+                ? { position: 'relative', top: '1px', left: '-3px' }
+                : { position: 'relative', top: '4px', right: '5px' }
+            }
           />
         ) : (
           <Box className={props.isFollowing ? 'star_empty' : 'star'}>
-            <Icon name="star" size={12} />
+            <Icon
+              name="star"
+              size={!props.isShort ? 12 : 16}
+              sx={!props.isShort ? {} : { position: 'relative', top: '4px', right: '5px' }}
+            />
           </Box>
         )}
       </Box>
 
-      {props.isProcessing
-        ? t('loading')
-        : isHovering && props.isFollowing
-        ? t('unfollow')
-        : props.isFollowing
-        ? t('following')
-        : t('follow')}
+      {!props.isShort && (
+        <>
+          {props.isProcessing
+            ? t('loading')
+            : isHovering && props.isFollowing
+            ? t('unfollow')
+            : props.isFollowing
+            ? t('following')
+            : t('follow')}
+        </>
+      )}
     </Button>
   )
 }
