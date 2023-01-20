@@ -189,11 +189,11 @@ function TabContent({
   const ProductCard = renderProductCard
 
   return (
-    <WithErrorHandler
-      error={[productCardsWithBalanceError]}
-      {...(followVaultsEnabled && { customLoader: <VaultSuggestionsLoadingState /> })}
-    >
-      <WithLoadingIndicator value={[productCardsWithBalanceData]}>
+    <WithErrorHandler error={[productCardsWithBalanceError]}>
+      <WithLoadingIndicator
+        value={[productCardsWithBalanceData]}
+        {...(followVaultsEnabled && { customLoader: <VaultSuggestionsLoadingState /> })}
+      >
         {([productCardsData]) => {
           const balancedDerivedCardFilters = cardFiltersFromBalances(productCardsData)
           const filteredCards =

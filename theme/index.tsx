@@ -193,6 +193,7 @@ export const oasisBaseTheme = {
     rounder: 24,
     round: 32,
     circle: 50,
+    ellipse: '50%',
   },
   shadows: {
     card: '0px 0px 8px rgba(37, 39, 61, 0.1)',

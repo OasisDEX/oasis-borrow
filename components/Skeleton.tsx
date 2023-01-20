@@ -4,6 +4,7 @@ import { Box, Grid, SxStyleProp } from 'theme-ui'
 interface SkeletonProps {
   cols?: number
   count?: number
+  doughnut?: string | number
   gap?: string | number
   width?: string | number
   height?: string | number
@@ -11,6 +12,7 @@ interface SkeletonProps {
 }
 
 function SkeletonLine({
+  doughnut,
   width = '100%',
   height = 3,
   sx,
@@ -21,7 +23,7 @@ function SkeletonLine({
         position: 'relative',
         width,
         height,
-        borderRadius: 'medium',
+        borderRadius: doughnut ? 'ellipse' : 'medium',
         backgroundColor: '#e6e9eb',
         overflow: 'hidden',
         ...sx,
@@ -48,7 +50,22 @@ function SkeletonLine({
           },
         },
       }}
-    />
+    >
+      {doughnut && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: doughnut,
+            right: doughnut,
+            bottom: doughnut,
+            left: doughnut,
+            bg: 'neutral10',
+            borderRadius: 'ellipse',
+            zIndex: 1,
+          }}
+        />
+      )}
+    </Box>
   )
 }
 
