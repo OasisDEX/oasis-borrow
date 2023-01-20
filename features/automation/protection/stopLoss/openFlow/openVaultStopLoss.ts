@@ -196,6 +196,7 @@ export function getDataForStopLoss(
       translations: {
         ratioParamTranslationKey: 'system.collateral-ratio',
         stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-below',
+        bannerStrategiesKey: 'protection.stop-loss-or-auto-sell',
       },
       validation: {
         getAddErrors: () => ({}),
