@@ -102,7 +102,13 @@ export function DiscoverTableDataCellContent({
     case 'liquidity':
       return (
         <>
-          {formatCryptoBalance(new BigNumber(primitives[label]))} {row.liquidityToken || 'DAI'}
+          {typeof primitives[label] === 'number' ? (
+            <>
+              {formatCryptoBalance(new BigNumber(primitives[label]))} {row.liquidityToken || 'DAI'}
+            </>
+          ) : (
+            primitives[label]
+          )}
         </>
       )
     case 'currentMultiple':

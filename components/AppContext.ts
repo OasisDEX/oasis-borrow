@@ -1355,7 +1355,9 @@ export function setupAppContext() {
     ]),
   )
 
-  const ownersPositionsList$ = memoize(curry(createPositionsList$)(positionsList$, aavePositions$))
+  const ownersPositionsList$ = memoize(
+    curry(createPositionsList$)(positionsList$, aavePositions$, dsr$),
+  )
 
   const followedList$ = memoize(
     curry(createMakerPositionsList$)(

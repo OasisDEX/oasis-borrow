@@ -3,6 +3,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { DiscoverTableRowData } from 'features/discover/types'
+import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { AavePosition } from 'features/vaultsOverview/pipes/positions'
 import { MakerPositionDetails } from 'features/vaultsOverview/pipes/positionsList'
@@ -196,4 +197,29 @@ export function getAaveEarnPositions(positions: AavePosition[]): DiscoverTableRo
       }
     },
   )
+}
+
+export function getDsrPosition({
+  address,
+  dsr,
+}: {
+  address: string
+  dsr?: Dsr
+}): DiscoverTableRowData[] {
+  const netValue =
+    dsr?.pots.dsr.value && 'dai' in dsr?.pots.dsr.value ? dsr.pots.dsr.value.dai : zero
+
+  const dsrPosition = [
+    {
+      icon: getToken('DAI').iconCircle,
+      asset: 'DAI Savings Rate',
+      netUSDValue: netValue.toNumber(),
+      pnl: 'n/a',
+      liquidity: 'Unlimited',
+      protection: -1,
+      url: `/earn/dsr/${address}`,
+    },
+  ]
+
+  return netValue.gt(zero) ? dsrPosition : []
 }

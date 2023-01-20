@@ -28,7 +28,7 @@ export function AssetsAndPositionsOverviewLoadingState() {
             {breakpointIndex !== 0 && (
               <Skeleton width="258px" height="258px" doughnut={4} sx={{ mt: 2 }} />
             )}
-            <Box sx={{ flex: 1, ml: [null, '48px'] }}>
+            <Box sx={{ flex: 1, mt: 2, ml: [null, '48px'] }}>
               <Skeleton count={5} />
             </Box>
           </Flex>

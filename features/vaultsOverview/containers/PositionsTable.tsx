@@ -9,6 +9,7 @@ import { PositionTableLoadingState } from 'features/vaultsOverview/components/Po
 import {
   getAaveEarnPositions,
   getAaveMultiplyPositions,
+  getDsrPosition,
   getMakerBorrowPositions,
   getMakerEarnPositions,
   getMakerMultiplyPositions,
@@ -34,6 +35,8 @@ export function PositionsTable({ address }: { address: string }) {
 
   const isOwner = address === walletAddress
 
+  console.log(ownersPositionsListData)
+
   return (
     <WithErrorHandler error={[ownersPositionsListError]}>
       <WithLoadingIndicator
@@ -41,9 +44,11 @@ export function PositionsTable({ address }: { address: string }) {
         customLoader={<PositionTableLoadingState />}
       >
         {([ownersPositionsList]) => {
+          const dsrPosition = getDsrPosition({ dsr: ownersPositionsList.dsrPosition, address })
           const combinedPositionsData = [
             ...ownersPositionsList.makerPositions,
             ...ownersPositionsList.aavePositions,
+            ...dsrPosition,
           ]
           const borrowPositions = getMakerBorrowPositions(ownersPositionsList.makerPositions)
           const makerPositions = useMemo(() => {
@@ -55,6 +60,7 @@ export function PositionsTable({ address }: { address: string }) {
           const earnPositions = [
             ...getMakerEarnPositions(ownersPositionsList.makerPositions),
             ...getAaveEarnPositions(ownersPositionsList.aavePositions),
+            ...dsrPosition,
           ]
 
           return combinedPositionsData.length ? (
