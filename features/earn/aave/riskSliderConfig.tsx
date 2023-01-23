@@ -23,7 +23,7 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
     textTranslationKey: 'open-earn.aave.vault-form.configure-multiple.historical-ratio',
   },
   riskRatios: {
-    minimum: new RiskRatio(new BigNumber(1.1), RiskRatio.TYPE.MULITPLE),
-    default: new RiskRatio(new BigNumber(2.01), RiskRatio.TYPE.MULITPLE),
+    minimum: new RiskRatio(new BigNumber('1.1'), RiskRatio.TYPE.MULITPLE),
+    default: new RiskRatio(new BigNumber('0.70'), RiskRatio.TYPE.LTV),
   },
 }
