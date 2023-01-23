@@ -189,10 +189,10 @@ function buildPosition(
 
       const fundingCost = !isDebtZero
         ? debtNotWei
-          .times(oracleDebtTokenPriceInEth)
-          .div(netValueInEthAccordingToOracle)
-          .multipliedBy(variableBorrowRate)
-          .times(100)
+            .times(oracleDebtTokenPriceInEth)
+            .div(netValueInEthAccordingToOracle)
+            .multipliedBy(variableBorrowRate)
+            .times(100)
         : zero
 
       const netValueUsd = collateralNotWei
@@ -256,7 +256,9 @@ export function createAavePosition$(
   ).pipe(
     switchMap(([userProxiesData, dsProxyAddress, strategyConfig, context]) => {
       // if we have a DS proxy make a fake position created event so we can read any position out below
-      let dsFakeEvent: Array<PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean }> = []
+      let dsFakeEvent: Array<
+        PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean }
+      > = []
       if (dsProxyAddress && !userProxiesData.find((proxy) => proxy.proxy === dsProxyAddress)) {
         dsFakeEvent = [
           {
@@ -265,7 +267,7 @@ export function createAavePosition$(
             positionType: strategyConfig.type,
             proxyAddress: dsProxyAddress,
             protocol: 'AAVE',
-            fakePositionCreatedEvtForDsProxyUsers: true
+            fakePositionCreatedEvtForDsProxyUsers: true,
           },
         ]
 
@@ -285,23 +287,25 @@ export function createAavePosition$(
         }),
         switchMap((positionCreatedEvents) => {
           return combineLatest(
-            positionCreatedEvents.map((pce) => {
-              const userProxy = userProxiesData.find(
-                (userProxy) => userProxy.proxy === pce.proxyAddress,
-              )
-              if (!userProxy) {
-                throw new Error('nope')
-              }
-              return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
-                aaveProtocolData$,
-                getAaveAssetsPrices$,
-                tickerPrices$,
-                wrappedGetAaveReserveData$,
-                aaveAvailableLiquidityInUSDC$,
+            positionCreatedEvents
+              .map((pce) => {
+                const userProxy = userProxiesData.find(
+                  (userProxy) => userProxy.proxy === pce.proxyAddress,
+                )
+                if (!userProxy) {
+                  throw new Error('nope')
+                }
+                return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
+                  aaveProtocolData$,
+                  getAaveAssetsPrices$,
+                  tickerPrices$,
+                  wrappedGetAaveReserveData$,
+                  aaveAvailableLiquidityInUSDC$,
+                })
               })
-            }).filter(position => {
-              return position !== EMPTY
-            })
+              .filter((position) => {
+                return position !== EMPTY
+              }),
           )
         }),
       )
