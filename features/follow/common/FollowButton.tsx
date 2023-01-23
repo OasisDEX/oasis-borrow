@@ -59,8 +59,11 @@ export function FollowButton(props: FollowButtonProps) {
           : {
               position: 'relative',
               p: '4px 12px 4px 12px',
-              border: '1px solid',
-              borderColor: 'neutral20',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: '1px solid #626472',
+              // borderColor: 'neutral20',
               borderRadius: '18px',
               marginLeft: '16px',
               gap: '4px',
@@ -81,10 +84,9 @@ export function FollowButton(props: FollowButtonProps) {
               fontSize: 1,
               lineHeight: '26px',
               color: 'primary100',
-              boxShadow: 'surface',
               transition: 'border-color 200ms, background-color 200ms, color 200ms',
               '.star': { color: '#575CFE', fill: '#575CFE' },
-              '.star_empty': { fill: 'white', stroke: '#EAEAEA' },
+              '.star_empty': { fill: 'white', stroke: 'neutral80' },
             }
       }
       onMouseOver={handleMouseOver}
@@ -98,15 +100,15 @@ export function FollowButton(props: FollowButtonProps) {
             sx={
               !props.isShort
                 ? { position: 'relative', top: '1px', left: '-3px' }
-                : { position: 'relative', top: '4px', right: '5px' }
+                : { position: 'relative', top: '3px', right: '5px' }
             }
           />
         ) : (
           <Box className={props.isFollowing ? 'star_empty' : 'star'}>
             <Icon
               name="star"
-              size={!props.isShort ? 12 : 16}
-              sx={!props.isShort ? {} : { position: 'relative', top: '4px', right: '5px' }}
+              size={!props.isShort ? 12 : 14}
+              sx={!props.isShort ? {} : { position: 'relative', top: '3px', right: '5px' }}
             />
           </Box>
         )}
