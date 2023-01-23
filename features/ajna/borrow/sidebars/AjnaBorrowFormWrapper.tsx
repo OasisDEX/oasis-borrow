@@ -1,18 +1,23 @@
-import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
-import { useTranslation } from 'next-i18next'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormWrapper() {
-  const { t } = useTranslation()
+  const {
+    steps: { currentStep, isExternalStep },
+  } = useAjnaProductContext()
 
-  const sidebarSectionProps: SidebarSectionProps = {
-    title: t('ajna.borrow.open.form.title'),
-    content: <AjnaBorrowFormContent />,
-    primaryButton: {
-      label: t('confirm'),
-    },
-  }
-
-  return <SidebarSection {...sidebarSectionProps} />
+  return (
+    <>
+      {!isExternalStep() ? (
+        <AjnaBorrowFormContent />
+      ) : (
+        <>
+          {currentStep === 'proxy' && 'DPM external component'}
+          {currentStep === 'allowance-collateral' && 'Allowance for collateral external component'}
+          {currentStep === 'allowance-quote' && 'Allowance for quote external component'}
+        </>
+      )}
+    </>
+  )
 }

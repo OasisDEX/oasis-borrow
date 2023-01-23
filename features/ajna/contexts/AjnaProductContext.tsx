@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
+import { externalSteps } from 'features/ajna/common/consts'
+import { AjnaStatusStep } from 'features/ajna/common/types'
 import React, { PropsWithChildren, useContext, useEffect, useState } from 'react'
 
 interface AjnaProductContextProviderProps {
@@ -18,10 +20,18 @@ interface AjnaProductPosition {
   // ...
 }
 
+interface AjnaProductSteps {
+  currentStep: AjnaStatusStep
+  order: AjnaStatusStep[]
+  isExternalStep: () => boolean
+  setStep: (step: AjnaStatusStep) => void
+}
+
 interface AjnaProductContext {
   environment: AjnaEnvironment
   form: ReturnType<typeof useAjnaBorrowFormReducto>
   position: AjnaProductPosition
+  steps: AjnaProductSteps
 }
 
 const ajnaProductContext = React.createContext<AjnaProductContext | undefined>(undefined)
@@ -44,6 +54,7 @@ export function AjnaProductContextProvider({
   if (!isAppContextAvailable()) return null
 
   const form = useAjnaBorrowFormReducto({})
+  const [currentStep, setCurrentStep] = useState<AjnaStatusStep>('risk')
 
   const [context, setContext] = useState<AjnaProductContext>({
     environment: {
@@ -51,6 +62,12 @@ export function AjnaProductContextProvider({
     },
     form,
     position: {},
+    steps: {
+      currentStep,
+      order: ['risk', 'setup', 'confirm'],
+      isExternalStep: () => externalSteps.includes(currentStep),
+      setStep: (step) => setCurrentStep(step),
+    },
   })
 
   useEffect(() => {
@@ -58,8 +75,9 @@ export function AjnaProductContextProvider({
       ...prev,
       environment: { ...prev.environment, collateralBalance: props.collateralBalance },
       form: { ...prev.form, state: form.state },
+      steps: { ...prev.steps, step: currentStep },
     }))
-  }, [props.collateralBalance, form.state])
+  }, [props.collateralBalance, form.state, currentStep])
 
   return <ajnaProductContext.Provider value={context}>{children}</ajnaProductContext.Provider>
 }
