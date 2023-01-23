@@ -9,7 +9,7 @@ import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { ContextConnected } from '../../../../blockchain/network'
+import { Context } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
@@ -33,7 +33,7 @@ import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
 
 export function getOpenAavePositionStateMachineServices(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances>,
   connectedProxy$: Observable<string | undefined>,
@@ -162,7 +162,7 @@ export function getOpenAavePositionStateMachineServices(
     },
     dpmProxy$: (_) => {
       return userDpmProxy$.pipe(
-        map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmAccount: proxy })),
+        map((proxy) => ({ type: 'DPM_PROXY_RECEIVED', userDpmAccount: proxy })),
         distinctUntilChanged(isEqual),
       )
     },

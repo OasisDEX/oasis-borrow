@@ -74,7 +74,7 @@ export type BaseAaveEvent =
   | { type: 'RESET_RISK_RATIO' }
   | { type: 'CLOSE_POSITION' }
   | { type: 'CONNECTED_PROXY_ADDRESS_RECEIVED'; connectedProxyAddress: string | undefined }
-  | { type: 'DMP_PROXY_RECEIVED'; userDpmAccount: UserDpmAccount }
+  | { type: 'DPM_PROXY_RECEIVED'; userDpmAccount: UserDpmAccount }
   | { type: 'SET_BALANCE'; balance: StrategyTokenBalance }
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
   | UpdateCollateralActionType

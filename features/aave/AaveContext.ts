@@ -200,7 +200,7 @@ export function setupAaveContext({
   )
 
   const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
-    connectedContext$,
+    context$,
     txHelpers$,
     tokenBalances$,
     proxyForAccount$,
