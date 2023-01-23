@@ -6,6 +6,7 @@ import { Box, Grid, Image, Text } from 'theme-ui'
 
 export function AjnaBorrowFormContentRisk() {
   const { t } = useTranslation()
+
   return (
     <Grid gap={3}>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>

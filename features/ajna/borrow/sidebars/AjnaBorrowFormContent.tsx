@@ -1,4 +1,5 @@
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { AjnaBorrowFormContentConfirm } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentConfirm'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentSetup } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSetup'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
@@ -9,7 +10,7 @@ import React from 'react'
 export function AjnaBorrowFormContent() {
   const { t } = useTranslation()
   const {
-    steps: { currentStep },
+    steps: { currentStep, isStepValid, setNextStep },
   } = useAjnaProductContext()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -18,11 +19,16 @@ export function AjnaBorrowFormContent() {
       <>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
         {currentStep === 'setup' && <AjnaBorrowFormContentSetup />}
-        {/* TODO: include rest of the steps: risk assesment, proxy, allowance, progress, success, failure  */}
+        {currentStep === 'confirm' && <AjnaBorrowFormContentConfirm />}
       </>
     ),
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep })),
+      disabled: !isStepValid(),
+      action: () => {
+        if (currentStep === 'confirm') alert('Submit transaction!')
+        else setNextStep()
+      },
     },
   }
 

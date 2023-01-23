@@ -24,7 +24,9 @@ interface AjnaProductSteps {
   currentStep: AjnaStatusStep
   order: AjnaStatusStep[]
   isExternalStep: () => boolean
+  isStepValid: () => boolean
   setStep: (step: AjnaStatusStep) => void
+  setNextStep: () => void
 }
 
 interface AjnaProductContext {
@@ -55,6 +57,22 @@ export function AjnaProductContextProvider({
 
   const form = useAjnaBorrowFormReducto({})
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>('risk')
+  const order: AjnaStatusStep[] = ['risk', 'setup', 'confirm']
+
+  const isStepValid = () => {
+    switch (currentStep) {
+      case 'setup':
+        return !!form.state.depositAmount?.gt(0)
+      default:
+        return true
+    }
+  }
+  const setStep = (step: AjnaStatusStep) => {
+    setCurrentStep(step)
+  }
+  const setNextStep = () => {
+    setCurrentStep(order[order.indexOf(currentStep) + 1])
+  }
 
   const [context, setContext] = useState<AjnaProductContext>({
     environment: {
@@ -64,9 +82,11 @@ export function AjnaProductContextProvider({
     position: {},
     steps: {
       currentStep,
-      order: ['risk', 'setup', 'confirm'],
+      order,
       isExternalStep: () => externalSteps.includes(currentStep),
-      setStep: (step) => setCurrentStep(step),
+      isStepValid,
+      setStep,
+      setNextStep,
     },
   })
 
@@ -75,7 +95,7 @@ export function AjnaProductContextProvider({
       ...prev,
       environment: { ...prev.environment, collateralBalance: props.collateralBalance },
       form: { ...prev.form, state: form.state },
-      steps: { ...prev.steps, step: currentStep },
+      steps: { ...prev.steps, currentStep, isStepValid, setNextStep },
     }))
   }, [props.collateralBalance, form.state, currentStep])
 
