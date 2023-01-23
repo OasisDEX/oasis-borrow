@@ -16,7 +16,7 @@ export function AjnaOpenBorrowView() {
   } = useAjnaProductContext()
 
   return (
-    <Container variant="vaultPageContainer">
+    <Container variant="vaultPageContainerStatic">
       <VaultHeadline
         header={t('ajna.borrow.open.headline.header', { collateralToken, quoteToken })}
         token={[collateralToken, quoteToken]}

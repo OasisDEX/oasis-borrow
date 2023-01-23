@@ -1,8 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { Skeleton } from 'components/Skeleton'
 import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
-import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -103,7 +103,7 @@ export function VaultHeadline({
           details.map((detail) => (
             <VaultHeadlineDetails {...detail} key={`VaultHeadlineDetails_${detail.label}`} />
           ))}
-        {loading && <AppSpinner variant="styles.spinner.large" />}
+        {loading && <Skeleton width="250px" height="24px" />}
       </Flex>
     </Flex>
   )
