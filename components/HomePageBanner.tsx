@@ -56,7 +56,7 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
             }}
           >
             <Image
-              src={staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png')}
+              src={staticFilesRuntimeUrl('/static/img/tokens/Aave.png')}
               sx={{ height: '44px', width: '44px' }}
             />
           </Flex>
