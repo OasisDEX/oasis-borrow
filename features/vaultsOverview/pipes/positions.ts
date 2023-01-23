@@ -6,8 +6,8 @@ import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
 import { AaveProtocolData } from 'features/aave/manage/services'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap } from 'rxjs/operators'
+import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
 import { Tickers } from '../../../blockchain/prices'
 import { amountFromPrecision } from '../../../blockchain/utils'
@@ -97,6 +97,7 @@ export type AavePosition = Position & {
   isOwner: boolean
   type: 'multiply' | 'earn'
   liquidity: BigNumber
+  fakePositionCreatedEvtForDsProxyUsers?: boolean
 }
 
 export function createPositions$(
@@ -131,7 +132,7 @@ type BuildPositionArgs = {
 }
 
 function buildPosition(
-  positionCreatedEvent: PositionCreated,
+  positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
   positionId: string,
   context: Context,
   walletAddress: string,
@@ -188,10 +189,10 @@ function buildPosition(
 
       const fundingCost = !isDebtZero
         ? debtNotWei
-            .times(oracleDebtTokenPriceInEth)
-            .div(netValueInEthAccordingToOracle)
-            .multipliedBy(variableBorrowRate)
-            .times(100)
+          .times(oracleDebtTokenPriceInEth)
+          .div(netValueInEthAccordingToOracle)
+          .multipliedBy(variableBorrowRate)
+          .times(100)
         : zero
 
       const netValueUsd = collateralNotWei
@@ -199,6 +200,15 @@ function buildPosition(
         .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
 
       const isOwner = context.status === 'connected' && context.account === walletAddress
+
+      if (netValueUsd.eq(zero) && positionCreatedEvent.fakePositionCreatedEvtForDsProxyUsers) {
+        /*
+         * Used to filter out faked positions for dsProxy users where the user has not created a position yet.
+         * Is needed because our strategy config observable returns a fallback strategy which will show an empty position
+         * Unless we filter it out here
+         */
+        return EMPTY
+      }
 
       return {
         token: collateralToken,
@@ -216,6 +226,7 @@ function buildPosition(
         liquidity: liquidity,
       }
     }),
+    filter<Observable<AavePosition>>((position) => position !== EMPTY),
   )
 }
 
@@ -245,7 +256,7 @@ export function createAavePosition$(
   ).pipe(
     switchMap(([userProxiesData, dsProxyAddress, strategyConfig, context]) => {
       // if we have a DS proxy make a fake position created event so we can read any position out below
-      let dsFakeEvent: PositionCreated[] = []
+      let dsFakeEvent: Array<PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean }> = []
       if (dsProxyAddress && !userProxiesData.find((proxy) => proxy.proxy === dsProxyAddress)) {
         dsFakeEvent = [
           {
@@ -254,6 +265,7 @@ export function createAavePosition$(
             positionType: strategyConfig.type,
             proxyAddress: dsProxyAddress,
             protocol: 'AAVE',
+            fakePositionCreatedEvtForDsProxyUsers: true
           },
         ]
 
@@ -287,7 +299,9 @@ export function createAavePosition$(
                 wrappedGetAaveReserveData$,
                 aaveAvailableLiquidityInUSDC$,
               })
-            }),
+            }).filter(position => {
+              return position !== EMPTY
+            })
           )
         }),
       )
