@@ -127,7 +127,7 @@ export function FollowButton({
           </>
         )}
       </Button>
-      {isShort && isLimitReached && displayTooltip && (
+      {isShort && isLimitReached && !isFollowing && displayTooltip && (
         <Tooltip sx={{ width: ['auto'] }}>
           <Box p={1} sx={{ fontWeight: 'semiBold', fontSize: 1, whiteSpace: 'pre' }}>
             {t('followed-vaults-limit')}

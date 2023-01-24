@@ -63,6 +63,10 @@ export function FollowButtonControl({
         await unfollowVault(jwtToken)
       }
     }
+    console.log('isLimitReached', isLimitReached)
+    console.log('isFollowing', isFollowing)
+    console.log('isProcessing', isProcessing    )
+    console.log('vaultId', vaultId)
   }
   return (
     <FollowButton
@@ -81,7 +85,9 @@ export function FollowButtonControl({
     setIsFollowing(false)
     setProcessing(false)
     setIsLimitReached(false)
-    console.log(isLimitReached)
+    console.log('isLimitReached',isLimitReached)
+    console.log('isFollowing',isFollowing)
+    console.log('isProcessing',isProcessing)
   }
 
   async function followVault(jwtToken: string) {
