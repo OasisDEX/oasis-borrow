@@ -1,3 +1,4 @@
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import {
   discoverPageLayout,
   discoverPageLayoutProps,
@@ -11,7 +12,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
 function DiscoverPage({ kind }: { kind: DiscoverPages }) {
-  return <DiscoverView kind={kind} />
+  return (
+    <WithConnection>
+      <DiscoverView kind={kind} />
+    </WithConnection>
+  )
 }
 
 DiscoverPage.layout = discoverPageLayout

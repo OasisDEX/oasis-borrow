@@ -1,10 +1,12 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
+import { NetworkIds } from 'blockchain/network'
 import { DiscoverDataResponse } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
+import { useAccount } from 'helpers/useAccount'
 import React from 'react'
 import { Box } from 'theme-ui'
 
@@ -25,6 +27,8 @@ export function DiscoverData({
   response,
   userContext,
 }: DiscoverDataProps) {
+  const { walletAddress } = useAccount()
+
   return (
     <Box sx={{ position: 'relative' }}>
       {response?.rows ? (
@@ -36,6 +40,9 @@ export function DiscoverData({
             isSticky={isSticky}
             kind={kind}
             rows={response.rows}
+            {...(!!walletAddress && {
+              follow: { followerAddress: walletAddress, chainId: NetworkIds.MAINNET },
+            })}
             onBannerClick={(link) => {
               trackingEvents.discover.clickedTableBanner(kind, link, userContext)
             }}

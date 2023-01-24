@@ -21,6 +21,10 @@ export interface DiscoverFiltersListItem {
 export interface DiscoverFiltersList {
   [key: string]: DiscoverFiltersListItem
 }
+export interface DiscoverFollow {
+  followerAddress: string
+  chainId: number
+}
 export interface DiscoverBanner {
   icon: JSX.Element
   link: string
