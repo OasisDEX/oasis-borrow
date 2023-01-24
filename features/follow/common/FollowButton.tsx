@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Tooltip } from 'components/Tooltip'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import React from 'react'
@@ -26,6 +27,7 @@ export function FollowButton({
   const { t } = useTranslation()
   const [isHovering, setIsHovering] = useState(false)
   const isShort = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`) || short
+  const [displayTooltip, setDisplayTooltip] = useState(false)
 
   const handleMouseOver = () => {
     setIsHovering(true)
@@ -35,85 +37,103 @@ export function FollowButton({
     setIsHovering(false)
   }
 
-  return (
-    <Button
-      disabled={isProcessing || isLimitReached}
-      onClick={buttonClickHandler}
-      sx={{
-        position: 'relative',
-        py: 0,
-        pr: isShort ? 0 : '12px',
-        pl: isShort ? 0 : '30px',
-        fontSize: 1,
-        width: isShort ? ['32px', null, null, '36px'] : 'auto',
-        height: isShort ? ['32px', null, null, '36px'] : 'auto',
-        lineHeight: '26px',
-        color: isFollowing ? 'primary100' : 'primary60',
-        border: '1px solid',
-        borderColor: 'neutral20',
-        borderRadius: isShort ? 'ellipse' : 'large',
-        backgroundColor: 'neutral10',
-        boxShadow: isShort ? 'none' : 'surface',
-        transition: 'border-color 200ms, background-color 200ms, color 200ms',
-        '&:hover': {
-          backgroundColor: 'neutral10',
-          borderColor: 'primary100',
-          color: isFollowing ? 'primary60' : 'primary100',
-          '.star': {
-            fill: isFollowing ? 'interactive50' : 'neutral10',
-            stroke: isFollowing ? 'interactive50' : 'primary100',
-            strokeWidth: isFollowing ? 0 : '1.5px',
-          },
-        },
-        '&:disabled': {
-          backgroundColor: 'neutral10',
-          color: 'primary60',
-        },
-        '.star': {
-          fill: isFollowing ? 'interactive100' : 'neutral10',
-          stroke: isFollowing ? 'interactive100' : 'primary60',
-          strokeWidth: isFollowing ? 0 : '1px',
-          transition: 'stroke 200ms, stroke-width 200ms, fill 200ms',
-        },
-        ...sx,
-      }}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-    >
-      <Box
-        sx={{
-          position: 'absolute',
-          top: isShort ? ['5px', null, null, '7px'] : '2px',
-          left: isShort ? ['8px', null, null, '10px'] : '13px',
-          margin: 'auto',
-        }}
-      >
-        {isProcessing ? (
-          <Spinner
-            size={isShort ? 20 : 15}
-            color="#878BFC"
-            sx={{ position: 'relative', top: isShort ? 0 : '1px', left: '-3px' }}
-          />
-        ) : (
-          <Box className="star">
-            <Icon name="star" size={isShort ? 14 : 12} />
-          </Box>
-        )}
-      </Box>
-      {!isShort && (
-        <>
-          {!isLimitReached &&
-            (isProcessing
-              ? t('loading')
-              : isHovering && isFollowing
-              ? t('unfollow')
-              : isFollowing
-              ? t('following')
-              : t('follow'))}
+  const handleMouseOverParent = () => {
+    setDisplayTooltip(true)
+  }
 
-          {isLimitReached && t('followed-vaults-limit')}
-        </>
+  const handleMouseOutParent = () => {
+    setDisplayTooltip(false)
+  }
+
+  return (
+    <div onMouseOver={handleMouseOverParent} onMouseOut={handleMouseOutParent}>
+      <Button
+        disabled={isProcessing || isLimitReached}
+        onClick={buttonClickHandler}
+        sx={{
+          position: 'relative',
+          py: 0,
+          pr: isShort ? 0 : '12px',
+          pl: isShort ? 0 : '30px',
+          fontSize: 1,
+          width: isShort ? ['32px', null, null, '36px'] : 'auto',
+          height: isShort ? ['32px', null, null, '36px'] : 'auto',
+          lineHeight: '26px',
+          color: isFollowing ? 'primary100' : 'primary60',
+          border: '1px solid',
+          borderColor: 'neutral20',
+          borderRadius: isShort ? 'ellipse' : 'large',
+          backgroundColor: 'neutral10',
+          boxShadow: isShort ? 'none' : 'surface',
+          transition: 'border-color 200ms, background-color 200ms, color 200ms',
+          '&:hover': {
+            backgroundColor: 'neutral10',
+            borderColor: 'primary100',
+            color: isFollowing ? 'primary60' : 'primary100',
+            '.star': {
+              fill: isFollowing ? 'interactive50' : 'neutral10',
+              stroke: isFollowing ? 'interactive50' : 'primary100',
+              strokeWidth: isFollowing ? 0 : '1.5px',
+            },
+          },
+          '&:disabled': {
+            backgroundColor: 'neutral10',
+            color: 'primary60',
+          },
+          '.star': {
+            fill: isFollowing ? 'interactive100' : 'neutral10',
+            stroke: isFollowing ? 'interactive100' : 'primary60',
+            strokeWidth: isFollowing ? 0 : '1px',
+            transition: 'stroke 200ms, stroke-width 200ms, fill 200ms',
+          },
+          ...sx,
+        }}
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: isShort ? ['5px', null, null, '7px'] : '2px',
+            left: isShort ? ['8px', null, null, '10px'] : '13px',
+            margin: 'auto',
+          }}
+        >
+          {isProcessing ? (
+            <Spinner
+              size={isShort ? 20 : 15}
+              color="#878BFC"
+              sx={{ position: 'relative', top: isShort ? 0 : '1px', left: '-3px' }}
+            />
+          ) : (
+            <Box className="star">
+              <Icon name="star" size={isShort ? 14 : 12} />
+            </Box>
+          )}
+        </Box>
+
+        {!isShort && (
+          <>
+            {!isLimitReached &&
+              (isProcessing
+                ? t('loading')
+                : isHovering && isFollowing
+                ? t('unfollow')
+                : isFollowing
+                ? t('following')
+                : t('follow'))}
+
+            {isLimitReached && t('followed-vaults-limit')}
+          </>
+        )}
+      </Button>
+      {isShort && isLimitReached && displayTooltip && (
+        <Tooltip sx={{ width: ['auto'] }}>
+          <Box p={1} sx={{ fontWeight: 'semiBold', fontSize: 1, whiteSpace: 'pre' }}>
+            {t('followed-vaults-limit')}
+          </Box>
+        </Tooltip>
       )}
-    </Button>
+    </div>
   )
 }
