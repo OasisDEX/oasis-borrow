@@ -1,7 +1,11 @@
 import { TriggerType } from '@oasisdex/automation'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import {
+  addAutomationBotTrigger,
+  addAutomationBotTriggerV2,
+  removeAutomationBotTriggerV2,
+} from 'blockchain/calls/automationBot'
 import {
   AutomationBotRemoveTriggersData,
   removeAutomationBotAggregatorTriggers,
@@ -196,8 +200,8 @@ export function getAaveStopLossData(
         removeTxData: {} as AutomationBotRemoveTriggersData,
       },
       contracts: {
-        addTrigger: addAutomationBotTrigger,
-        removeTrigger: removeAutomationBotAggregatorTriggers,
+        addTrigger: addAutomationBotTriggerV2,
+        removeTrigger: removeAutomationBotTriggerV2,
       },
     }
   }
