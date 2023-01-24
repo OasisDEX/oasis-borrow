@@ -13,11 +13,18 @@ import { SxStyleProp } from 'theme-ui'
 export type FollowButtonControlProps = {
   chainId: number
   followerAddress: string
+  short?: boolean
   sx?: SxStyleProp
   vaultId: BigNumber
 }
 
-export function FollowButtonControl({ chainId, followerAddress, sx, vaultId }: FollowButtonControlProps) {
+export function FollowButtonControl({
+  chainId,
+  followerAddress,
+  short,
+  sx,
+  vaultId,
+}: FollowButtonControlProps) {
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
 
@@ -57,6 +64,7 @@ export function FollowButtonControl({ chainId, followerAddress, sx, vaultId }: F
       isProcessing={isProcessing}
       isFollowing={isFollowing}
       buttonClickHandler={buttonClickHandler}
+      short={short}
       sx={sx}
     />
   )
