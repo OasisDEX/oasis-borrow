@@ -31,6 +31,7 @@ export type AutomationBotV2AddTriggerData = {
   kind: TxMetaKind.addTrigger
   proxyAddress: string
   replacedTriggerIds: any // BigNumber[]
+  replacedTriggersData: any // string[]
   triggersData: any // string[]
   triggerTypes: any // number[]
   continuous: any // boolean[]
@@ -68,6 +69,7 @@ function getAddAutomationV2TriggerCallData(
     data.continuous,
     data.replacedTriggerIds,
     data.triggersData,
+    data.replacedTriggersData,
     data.triggerTypes,
   )
 }

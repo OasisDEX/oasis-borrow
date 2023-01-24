@@ -5,7 +5,6 @@ import {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { Result } from 'ethers/lib/utils'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { getTriggersByType } from 'features/automation/common/helpers'
 import {
@@ -109,13 +108,12 @@ export function prepareAddAutoTakeProfitTriggerData({
 
 export function pickTriggerWithLowestExecutionPrice(
   autoTakeProfitTriggersData: {
-    // TODO is sth like this required here ?
     triggerId: number
-    result: Result
+    result: Record<string, string | number | BigNumber>
   }[],
 ): AutoTakeProfitTriggerData {
   const mappedAutoTakeProfitTriggers = autoTakeProfitTriggersData.map((trigger) => {
-    const [, triggerType, executionPrice, maxBaseFeeInGwei] = trigger.result
+    const { triggerType, executionPrice, maxBaseFeeInGwei } = trigger.result
 
     return {
       executionPrice: new BigNumber(executionPrice.toString()).div(new BigNumber(10).pow(18)),

@@ -1,3 +1,4 @@
+import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTriggerV2,
@@ -42,7 +43,6 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       stopLossTriggerData: { isStopLossEnabled, stopLossLevel, triggerId, executionParams },
     },
     positionData: {
-      token,
       positionRatio,
       liquidationRatio,
       liquidationPrice,
@@ -52,6 +52,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       owner,
       debtTokenAddress,
       collateralTokenAddress,
+      debtToken,
     },
   } = context
 
@@ -155,6 +156,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       prepareAddStopLossTriggerData: ({ stopLossLevel, collateralActive }) => {
         const baseTriggerData = prepareStopLossTriggerDataV2(
           owner,
+          TriggerType.AaveStopLossToDebt,
           collateralActive,
           stopLossLevel,
           debtTokenAddress!,
@@ -164,12 +166,13 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
         return {
           ...baseTriggerData,
           replacedTriggerIds: [triggerId],
+          replacedTriggersData: [executionParams],
           kind: TxMetaKind.addTrigger,
         }
       },
     },
     settings: {
-      fixedCloseToToken: token,
+      fixedCloseToToken: debtToken,
       sliderDirection: 'rtl',
       sliderStep: 1,
     },
