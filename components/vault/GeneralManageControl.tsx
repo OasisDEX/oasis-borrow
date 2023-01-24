@@ -39,7 +39,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
           <MakerAutomationContext generalManageVault={generalManageVault}>
             <GeneralManageLayout
               generalManageVault={generalManageVault}
-              followButtonProps={
+              followButton={
                 chainId
                   ? {
                       followerAddress: account,

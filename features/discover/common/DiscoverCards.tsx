@@ -1,8 +1,9 @@
+import { DiscoverTableProps } from 'features/discover/common/DiscoverTable'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
-import { DiscoverBanner } from 'features/discover/meta'
-import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
+import { DiscoverFollow } from 'features/discover/meta'
+import { DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
@@ -12,21 +13,14 @@ const fullWidthColumns = ['asset', 'cdpId']
 
 export function DiscoverCards({
   banner,
-  isLoading,
+  follow,
+  isLoading = false,
   kind,
   rows = [],
   skip = [],
   onBannerClick,
   onPositionClick,
-}: {
-  banner?: DiscoverBanner
-  isLoading: boolean
-  kind?: DiscoverPages
-  rows: DiscoverTableRowData[]
-  skip?: string[]
-  onBannerClick?: (link: string) => void
-  onPositionClick?: (cdpId: string) => void
-}) {
+}: Omit<DiscoverTableProps, 'isSticky' | 'tooltips'>) {
   const rowsForBanner = Math.min(rows.length - 1, 9)
 
   return (
@@ -47,14 +41,14 @@ export function DiscoverCards({
           opacity: isLoading ? 0.5 : 1,
           pointerEvents: isLoading ? 'none' : 'auto',
           transition: '200ms opacity',
-          button: {
+          '.discover-action': {
             width: '100%',
           },
         }}
       >
         {rows.map((row, i) => (
           <Fragment key={getRowKey(i, row)}>
-            <DiscoverCard row={row} skip={skip} onPositionClick={onPositionClick} />
+            <DiscoverCard follow={follow} row={row} skip={skip} onPositionClick={onPositionClick} />
             {kind && banner && i === Math.floor(rowsForBanner / 2) && (
               <Box as="li">
                 <DiscoverTableBanner kind={kind} onBannerClick={onBannerClick} {...banner} />
@@ -68,10 +62,12 @@ export function DiscoverCards({
 }
 
 export function DiscoverCard({
+  follow,
   row,
   skip,
   onPositionClick,
 }: {
+  follow?: DiscoverFollow
   row: DiscoverTableRowData
   skip: string[]
   onPositionClick?: (cdpId: string) => void
@@ -109,6 +105,7 @@ export function DiscoverCard({
               </Box>
             )}
             <DiscoverTableDataCellContent
+              follow={follow}
               label={label}
               row={row}
               onPositionClick={onPositionClick}
