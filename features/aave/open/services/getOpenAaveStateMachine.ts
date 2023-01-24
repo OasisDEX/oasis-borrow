@@ -36,7 +36,7 @@ import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../sta
 export function getOpenAavePositionStateMachineServices(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
-  tokenBalances$: Observable<TokenBalances>,
+  tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
   aaveUserAccountData$: (
     parameters: AaveUserAccountDataParameters,
@@ -67,6 +67,7 @@ export function getOpenAavePositionStateMachineServices(
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
         map((balances) => {
+          if (!balances) return {}
           const strategyBalance: StrategyTokenBalance = {
             collateral: balances[context.tokens.collateral],
             debt: balances[context.tokens.debt],
@@ -74,9 +75,9 @@ export function getOpenAavePositionStateMachineServices(
           }
           return strategyBalance
         }),
-        map((balance) => ({
+        map((balances) => ({
           type: 'SET_BALANCE',
-          balance: balance,
+          balance: balances,
         })),
         distinctUntilChanged(isEqual),
       )
