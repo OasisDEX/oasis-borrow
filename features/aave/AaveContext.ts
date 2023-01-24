@@ -212,6 +212,7 @@ export function setupAaveContext({
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
+    aaveReserveConfigurationData$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

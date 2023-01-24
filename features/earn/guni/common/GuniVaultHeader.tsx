@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
-import { FollowButtonProps } from 'features/follow/common/FollowButtonControl'
+import { FollowButtonControlProps } from 'features/follow/common/FollowButtonControl'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { YieldChange } from 'helpers/earn/calculations'
 import moment from 'moment'
@@ -17,13 +17,13 @@ import { zero } from '../../../../helpers/zero'
 export interface EarnVaultHeaderProps {
   ilk: string
   token: string
-  followButtonProps?: FollowButtonProps
+  followButton?: FollowButtonControlProps
 }
 
 const currentDate = moment().startOf('day')
 const previousDate = currentDate.clone().subtract(1, 'day')
 
-export function GuniVaultHeader({ ilk, token, followButtonProps }: EarnVaultHeaderProps) {
+export function GuniVaultHeader({ ilk, token, followButton }: EarnVaultHeaderProps) {
   const { yieldsChange$, totalValueLocked$ } = useAppContext()
   const [yieldChanges, changesError] = useObservable(yieldsChange$(currentDate, previousDate, ilk))
   const [totalValueLocked, totalValueLockedError] = useObservable(totalValueLocked$(ilk))
@@ -48,7 +48,7 @@ export function GuniVaultHeader({ ilk, token, followButtonProps }: EarnVaultHead
               header={ilk}
               token={[token]}
               details={details}
-              followButtonProps={followButtonProps}
+              followButton={followButton}
             />
           )
         }}
