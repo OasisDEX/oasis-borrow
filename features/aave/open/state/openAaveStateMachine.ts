@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ethNullAddress } from 'blockchain/config'
@@ -6,6 +7,7 @@ import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -35,8 +37,6 @@ import {
 } from '../../common/BaseAaveContext'
 import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
-import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 
 export const totalStepsMap = {
   base: 2,

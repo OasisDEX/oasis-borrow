@@ -7,6 +7,7 @@ import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
+import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { Context } from '../../../../blockchain/network'
@@ -31,7 +32,6 @@ import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
-import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 
 export function getOpenAavePositionStateMachineServices(
   context$: Observable<Context>,
