@@ -89,7 +89,7 @@
   "unfollow": "Unfollow",
   "loading": "Loading",
   "following": "Following",
-  "followed-vaults-limit": "You have reached the \"Followed Vaults\" limit, please unfollow vaults before continuing.",
+  "followed-vaults-limit": "Follow Limit Reached",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {

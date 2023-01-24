@@ -9,6 +9,8 @@ import {
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import React, { useEffect, useState } from 'react'
 
+const LIMIT_OF_FOLLOWED_VAULTS = 30
+
 export type FollowButtonProps = {
   followerAddress: string
   vaultId: BigNumber
@@ -18,6 +20,7 @@ export type FollowButtonProps = {
 export function FollowButtonControl({ followerAddress, vaultId, chainId }: FollowButtonProps) {
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
+  const [isLimitReached, setIsLimitReached] = useState(false)
 
   useEffect(() => {
     void getFollowFromApi(followerAddress)
@@ -36,6 +39,9 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
         new BigNumber(item.vault_id).eq(vaultId) && new BigNumber(item.vault_chain_id).eq(chainId),
     )
     setIsFollowing(currentFollowedVault !== undefined)
+    setIsLimitReached(
+      currentFollowedVault === undefined && followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS,
+    )
     setProcessing(false) // this is required finally doesn't handle it!
   }
 
@@ -54,6 +60,7 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
     <FollowButton
       isProcessing={isProcessing}
       isFollowing={isFollowing}
+      isLimitReached={isLimitReached}
       buttonClickHandler={buttonClickHandler}
     />
   )

@@ -7,6 +7,7 @@ import { Box, Button, Spinner } from 'theme-ui'
 interface FollowButtonProps {
   isProcessing: boolean
   isFollowing: boolean
+  isLimitReached: boolean
   buttonClickHandler: () => void
 }
 
@@ -24,7 +25,7 @@ export function FollowButton(props: FollowButtonProps) {
 
   return (
     <Button
-      disabled={props.isProcessing}
+      disabled={props.isProcessing || props.isLimitReached}
       onClick={props.buttonClickHandler}
       sx={{
         position: 'relative',
@@ -64,19 +65,22 @@ export function FollowButton(props: FollowButtonProps) {
             sx={{ position: 'relative', top: '1px', left: '-3px' }}
           />
         ) : (
-          <Box className={props.isFollowing ? 'star_empty' : 'star'}>
+          <Box className={props.isFollowing ? 'star' : 'star_empty'}>
             <Icon name="star" size={12} />
           </Box>
         )}
       </Box>
 
-      {props.isProcessing
-        ? t('loading')
-        : isHovering && props.isFollowing
-        ? t('unfollow')
-        : props.isFollowing
-        ? t('following')
-        : t('follow')}
+      {!props.isLimitReached &&
+        (props.isProcessing
+          ? t('loading')
+          : isHovering && props.isFollowing
+          ? t('unfollow')
+          : props.isFollowing
+          ? t('following')
+          : t('follow'))}
+
+      {props.isLimitReached && t('followed-vaults-limit')}
     </Button>
   )
 }
