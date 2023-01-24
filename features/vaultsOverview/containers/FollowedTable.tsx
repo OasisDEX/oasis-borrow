@@ -33,7 +33,10 @@ export function FollowedTable({ address }: { address: string }) {
 
   return (
     <WithErrorHandler error={[contextError, followedListError]}>
-      <WithLoadingIndicator value={[contextData, followedListData]} customLoader={<PositionTableLoadingState />}>
+      <WithLoadingIndicator
+        value={[contextData, followedListData]}
+        customLoader={<PositionTableLoadingState />}
+      >
         {([context, followedList]) => {
           const borrowPositions = getMakerBorrowPositions(followedList)
           const multiplyPositions = getMakerMultiplyPositions(followedList)
