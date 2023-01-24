@@ -3,6 +3,7 @@ import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
 import { Survey } from 'features/survey'
+import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -33,11 +34,13 @@ function OpenVault({ strategy }: { strategy: string }) {
   return (
     <AaveContextProvider>
       <WithConnection>
-        <BackgroundLight />
-        <DeferedContextProvider context={aaveContext}>
-          <AaveOpenView config={loadStrategyFromSlug(strategy)} />
-        </DeferedContextProvider>
-        <Survey for="earn" />
+        <WithTermsOfService>
+          <BackgroundLight />
+          <DeferedContextProvider context={aaveContext}>
+            <AaveOpenView config={loadStrategyFromSlug(strategy)} />
+          </DeferedContextProvider>
+          <Survey for="earn" />
+        </WithTermsOfService>
       </WithConnection>
     </AaveContextProvider>
   )
