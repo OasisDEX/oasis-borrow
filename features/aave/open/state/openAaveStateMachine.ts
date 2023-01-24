@@ -1,3 +1,4 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ethNullAddress } from 'blockchain/config'
@@ -6,6 +7,7 @@ import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -51,6 +53,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
   blockSettingCalculatedAddresses?: boolean
+  reserveConfig?: AaveReserveConfigurationData
 }
 
 function getTransactionDef(context: OpenAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -67,6 +70,7 @@ export type OpenAaveEvent =
   | { type: 'SET_AMOUNT'; amount?: BigNumber }
   | { type: 'NEXT_STEP' }
   | { type: 'UPDATE_META_INFO'; hasOpenedPosition: boolean }
+  | { type: 'RESERVE_CONFIG_UPDATED'; reserveConfig: AaveReserveConfigurationData }
   | BaseAaveEvent
   | ProxyResultEvent
   | DMPAccountStateMachineResultEvents
@@ -129,6 +133,10 @@ export function createOpenAaveStateMachine(
         {
           src: 'allowance$',
           id: 'allowance$',
+        },
+        {
+          src: 'aaveReserveConfiguration$',
+          id: 'aaveReserveConfiguration$',
         },
       ],
       id: 'openAaveStateMachine',
@@ -315,6 +323,9 @@ export function createOpenAaveStateMachine(
         DPM_PROXY_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
+        RESERVE_CONFIG_UPDATED: {
+          actions: ['updateContext', 'setDefaultRiskRatio'],
+        },
       },
     },
     {
@@ -343,8 +354,18 @@ export function createOpenAaveStateMachine(
           return {
             userInput: {
               ...context.userInput,
-              riskRatio: context.strategyConfig.riskRatios.default,
+              riskRatio: context.defaultRiskRatio,
             },
+          }
+        }),
+        setDefaultRiskRatio: assign((context) => {
+          const defaultRiskRatio =
+            context.strategyConfig.riskRatios.default === 'slightlyLessThanMaxRisk'
+              ? new RiskRatio(context.reserveConfig?.ltv.times('0.999') || zero, RiskRatio.TYPE.LTV)
+              : context.strategyConfig.riskRatios.default
+
+          return {
+            defaultRiskRatio,
           }
         }),
         setTotalSteps: assign((context) => {
@@ -441,7 +462,10 @@ export function createOpenAaveStateMachine(
               type: 'VARIABLES_RECEIVED',
               parameters: {
                 amount: context.userInput.amount!,
-                riskRatio: context.userInput.riskRatio || context.strategyConfig.riskRatios.default,
+                riskRatio:
+                  context.userInput.riskRatio ||
+                  context.defaultRiskRatio ||
+                  new RiskRatio(zero, RiskRatio.TYPE.LTV),
                 // ethNullAddress just for the simulation, theres a guard for that
                 proxyAddress: context.effectiveProxyAddress! || ethNullAddress,
                 collateralToken: context.strategyConfig.tokens.collateral,
