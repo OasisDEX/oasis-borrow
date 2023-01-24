@@ -523,6 +523,11 @@ export function createOpenAaveStateMachine(
           }
         }),
         updateLegacyTokenBalance: assign((context, event) => {
+          if (!event.balance.deposit) {
+            return {
+              tokenBalance: undefined,
+            }
+          }
           return {
             tokenBalance: event.balance.deposit.balance,
             tokenPrice: event.balance.deposit.price,
