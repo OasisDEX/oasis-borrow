@@ -6,14 +6,14 @@ export function EarnVaultHeadline({
   header,
   token,
   details,
-  followButtonProps,
+  followButton,
 }: VaultHeadlineProps) {
   return (
     <VaultHeadline
       header={header}
       token={token}
       details={details}
-      followButtonProps={followButtonProps}
+      followButton={followButton}
     />
   )
 }
