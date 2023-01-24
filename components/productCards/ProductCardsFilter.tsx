@@ -119,11 +119,13 @@ export function ProductCardsFilter({
             {([_productCardsData]) => (
               <ProductCardsWrapper>
                 {otherStrategies
-                  .filter(
-                    ({ protocol, name }) =>
+                  .filter(({ protocol, name }) => {
+                    return (
                       protocol === 'aave' &&
-                      name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()),
-                  )
+                      (name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()) ||
+                        currentFilter.toLocaleUpperCase() === 'FEATURED')
+                    )
+                  })
                   .map((cardData) => (
                     <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData} />
                   ))}
