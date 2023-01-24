@@ -1,4 +1,6 @@
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
@@ -16,6 +18,8 @@ export function AjnaBorrowFormContentSetup() {
     environment: { collateralBalance, collateralPrice, collateralToken, quotePrice, quoteToken },
   } = useAjnaProductContext()
   const didMountRef = useRef(false)
+
+  const isEditing = depositAmount?.gt(0)
 
   useEffect(() => {
     if (didMountRef.current) {
@@ -90,6 +94,20 @@ export function AjnaBorrowFormContentSetup() {
           })
         })}
       />
+      {isEditing && (
+        <>
+          <SidebarResetButton
+            clear={() => {
+              dispatch({
+                type: 'update-deposit',
+                depositAmount: undefined,
+                depositAmountUSD: undefined,
+              })
+            }}
+          />
+          <AjnaBorrowFormOrder />
+        </>
+      )}
     </Grid>
   )
 }

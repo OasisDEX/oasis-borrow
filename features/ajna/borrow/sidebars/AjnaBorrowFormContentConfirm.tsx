@@ -1,3 +1,4 @@
+import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -7,9 +8,10 @@ export function AjnaBorrowFormContentConfirm() {
 
   return (
     <Grid gap={3}>
-      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+      <Text as="p" variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
         {t('ajna.borrow.open.form.confirm')}
       </Text>
+      <AjnaBorrowFormOrder />
     </Grid>
   )
 }
