@@ -1,14 +1,14 @@
-import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
 import { Survey } from 'features/survey'
-import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
+import { aaveContext, AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
 import { loadStrategyFromSlug } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -33,15 +33,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function OpenVault({ strategy }: { strategy: string }) {
   return (
     <AaveContextProvider>
-      <WithWalletConnection>
-        <WithTermsOfService>
-          <BackgroundLight />
-
+      <WithConnection>
+        <BackgroundLight />
+        <DeferedContextProvider context={aaveContext}>
           <AaveOpenView config={loadStrategyFromSlug(strategy)} />
-
-          <Survey for="earn" />
-        </WithTermsOfService>
-      </WithWalletConnection>
+        </DeferedContextProvider>
+        <Survey for="earn" />
+      </WithConnection>
     </AaveContextProvider>
   )
 }

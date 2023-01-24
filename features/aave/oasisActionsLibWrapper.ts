@@ -8,6 +8,7 @@ import {
   ZERO,
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { ethNullAddress } from 'blockchain/config'
 import { providers } from 'ethers'
 
 import { Context, ContextConnected } from '../../blockchain/network'
@@ -22,7 +23,7 @@ import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyCo
 function getAddressesFromContext(context: Context) {
   return {
     DAI: context.tokens['DAI'].address,
-    ETH: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    ETH: ethNullAddress,
     WETH: context.tokens['WETH'].address,
     STETH: context.tokens['STETH'].address,
     USDC: context.tokens['USDC'].address,
@@ -121,8 +122,6 @@ export async function getOpenAaveParameters({
   positionType,
 }: OpenAaveParameters): Promise<IPositionTransition> {
   try {
-    checkContext(context, 'open position')
-
     const _collateralToken = {
       symbol: collateralToken as AAVETokens,
       precision: getToken(collateralToken).precision,
@@ -168,7 +167,7 @@ export async function getOpenAaveParameters({
       provider: context.rpcProvider,
       getSwapData: getOneInchCall(context.swapAddress),
       proxy: proxyAddress,
-      user: context.account,
+      user: proxyAddress !== ethNullAddress ? context.account! : ethNullAddress, // mocking the address before wallet connection
       isDPMProxy: proxyType === ProxyType.DpmProxy,
     }
 

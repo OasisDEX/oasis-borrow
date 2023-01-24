@@ -1,5 +1,6 @@
 import { IPositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { ethNullAddress } from 'blockchain/config'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
@@ -78,7 +79,13 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
             onDone: [
               {
                 target: 'estimating',
+                cond: 'hasRealProxyAddress',
                 actions: ['serviceUpdateContext', 'sendStrategy', 'sendGasEstimation'],
+              },
+              {
+                target: 'idle',
+                cond: 'hasMockProxyAddress',
+                actions: ['serviceUpdateContext', 'sendStrategy'],
               },
             ],
             onError: {
@@ -180,6 +187,14 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
           ),
         txHelpers$: (_) =>
           txHelpers$.pipe(map((txHelper) => ({ type: 'TX_HELPER_CHANGED', txHelper }))),
+      },
+      guards: {
+        hasRealProxyAddress: ({ parameters }) => {
+          return parameters?.proxyAddress !== ethNullAddress
+        },
+        hasMockProxyAddress: ({ parameters }) => {
+          return parameters?.proxyAddress === ethNullAddress
+        },
       },
     },
   )
