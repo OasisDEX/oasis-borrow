@@ -24,6 +24,6 @@ export const adjustRiskSliderConfig: AdjustRiskViewConfig = {
   },
   riskRatios: {
     minimum: new RiskRatio(new BigNumber('1.1'), RiskRatio.TYPE.MULITPLE),
-    default: new RiskRatio(new BigNumber('0.70'), RiskRatio.TYPE.LTV),
+    default: 'slightlyLessThanMaxRisk',
   },
 }

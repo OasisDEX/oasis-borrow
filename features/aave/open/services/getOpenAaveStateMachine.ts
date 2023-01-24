@@ -31,6 +31,7 @@ import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
+import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 
 export function getOpenAavePositionStateMachineServices(
   context$: Observable<Context>,
@@ -51,6 +52,7 @@ export function getOpenAavePositionStateMachineServices(
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
+  aaveReserveConfiguration$: (args: { token: string }) => Observable<AaveReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -163,6 +165,17 @@ export function getOpenAavePositionStateMachineServices(
     dpmProxy$: (_) => {
       return userDpmProxy$.pipe(
         map((proxy) => ({ type: 'DPM_PROXY_RECEIVED', userDpmAccount: proxy })),
+        distinctUntilChanged(isEqual),
+      )
+    },
+    aaveReserveConfiguration$: (context) => {
+      return aaveReserveConfiguration$({ token: context.strategyConfig.tokens.collateral }).pipe(
+        map((reserveConfig) => {
+          return {
+            type: 'RESERVE_CONFIG_UPDATED',
+            reserveConfig,
+          }
+        }),
         distinctUntilChanged(isEqual),
       )
     },

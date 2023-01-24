@@ -120,6 +120,7 @@ export interface BaseAaveContext {
   effectiveProxyAddress?: string
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string
+  defaultRiskRatio?: IRiskRatio
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
