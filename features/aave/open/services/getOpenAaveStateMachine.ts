@@ -36,7 +36,7 @@ import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../sta
 export function getOpenAavePositionStateMachineServices(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
-  tokenBalances$: Observable<TokenBalances>,
+  tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
   aaveUserAccountData$: (
     parameters: AaveUserAccountDataParameters,
