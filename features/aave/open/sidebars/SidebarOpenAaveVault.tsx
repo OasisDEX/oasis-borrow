@@ -1,16 +1,19 @@
 import { useActor } from '@xstate/react'
+import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
+import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
+import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
+import { OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
-import { MessageCard } from '../../../../components/MessageCard'
-import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { zero } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
 import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from '../../../stateMachines/proxy'
@@ -202,6 +205,45 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
+export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+  const { stopLossSidebarProps, automationContextProps } = getAaveStopLossData(
+    state.context,
+    send,
+    'multiply',
+  )
+  console.log('stopLossSidebarProps', stopLossSidebarProps)
+  console.log('automationContextProps', automationContextProps)
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    content: (
+      <Grid gap={3}>
+        <SidebarAdjustStopLossEditingStage {...stopLossSidebarProps} />
+      </Grid>
+    ),
+    primaryButton: {
+      steps: [state.context.currentStep, state.context.totalSteps],
+      isLoading: isLoading(),
+      disabled: !state.can('NEXT_STEP'),
+      label: t('open-earn.aave.vault-form.confirm-btn'),
+      action: () => send('NEXT_STEP'),
+    },
+  }
+
+  return (
+    <AutomationContextInput {...automationContextProps}>
+      <SidebarSection
+        {...sidebarSectionProps}
+        textButton={{
+          label: t('open-earn.aave.vault-form.back-to-editing'),
+          action: () => send('BACK_TO_EDITING'),
+        }}
+      />
+    </AutomationContextInput>
+  )
+}
+
 export function SidebarOpenAaveVault() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
@@ -258,6 +300,8 @@ export function SidebarOpenAaveVault() {
           showWarring={hasOpenedPosition}
         />
       )
+    case state.matches('frontend.stopLoss'):
+      return <AaveOpenPositionStopLoss state={state} send={send} isLoading={loading} />
     case state.matches('frontend.reviewing'):
       return <OpenAaveReviewingStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txInProgress'):
