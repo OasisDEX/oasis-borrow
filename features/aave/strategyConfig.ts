@@ -51,9 +51,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
     type: 'Earn',
-    featureToggle: 'AaveEarnSTETHETH',
   },
-
   {
     name: 'ethusdc',
     urlSlug: 'ethusdc',
@@ -76,10 +74,8 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    featureToggle: 'AaveMultiplyETHUSDC',
     type: 'Multiply',
   },
-
   {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
@@ -102,10 +98,8 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    featureToggle: 'AaveMultiplySTETHUSDC',
     type: 'Multiply',
   },
-
   {
     name: 'wBTCusdc',
     urlSlug: 'wBTCusdc',
@@ -128,7 +122,6 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'WBTC',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    featureToggle: 'AaveMultiplyWBTCUSDC',
     type: 'Multiply',
   },
 
@@ -163,7 +156,7 @@ export const strategies: Array<IStrategyConfig> = [
 
 export function aaveStrategiesList(filterProduct?: IStrategyConfig['type']): IStrategyConfig[] {
   return Object.values(strategies)
-    .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
+    .filter(({ featureToggle }) => (featureToggle ? getFeatureToggle(featureToggle) : true))
     .filter(({ type }) => (filterProduct ? type === filterProduct : true))
 }
 

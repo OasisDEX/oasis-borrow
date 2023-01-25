@@ -1,7 +1,6 @@
 import { useInterpret } from '@xstate/react'
 import React from 'react'
 
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { getEmptyPosition } from '../../oasisActionsLibWrapper'
 import { OpenAaveStateMachine } from '../state'
@@ -13,10 +12,9 @@ function setupOpenAaveStateContext({
   machine: OpenAaveStateMachine
   config: IStrategyConfig
 }) {
-  const useDpmProxy = useFeatureToggle('AaveUseDpmProxy')
   const effectiveStrategy = {
     ...config,
-    proxyType: useDpmProxy ? ProxyType.DpmProxy : ProxyType.DsProxy,
+    proxyType: ProxyType.DpmProxy,
   }
   const stateMachine = useInterpret(
     machine.withContext({

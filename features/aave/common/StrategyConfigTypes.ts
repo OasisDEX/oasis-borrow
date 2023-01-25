@@ -40,7 +40,7 @@ export interface IStrategyConfig {
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
   type: ProductType
-  featureToggle: Feature
+  featureToggle?: Feature
 }
 
 export type AaveHeaderProps = {
