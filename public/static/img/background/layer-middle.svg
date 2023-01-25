@@ -10,7 +10,7 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur" result="shape"/>
 </filter>
 <linearGradient id="paint0_linear" x1="319.272" y1="-77.0093" x2="1227.59" y2="619.34" gradientUnits="userSpaceOnUse">
-<stop stop-color="#141414"/>
+<stop stopColor="#141414"/>
 <stop offset="1"/>
 </linearGradient>
 </defs>

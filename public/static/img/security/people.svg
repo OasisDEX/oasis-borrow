@@ -10,24 +10,24 @@
     fill="url(#paint3_radial_11790_78887)" />
   <defs>
     <linearGradient id="paint0_linear_11790_78887" x1="21" y1="11" x2="80" y2="95" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFD0E8" />
-      <stop offset="1" stop-color="#97F2E9" />
+      <stop stopColor="#FFD0E8" />
+      <stop offset="1" stopColor="#97F2E9" />
     </linearGradient>
     <linearGradient id="paint1_linear_11790_78887" x1="43.4326" y1="37" x2="55.9767" y2="50.4635"
       gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2A30EE" />
-      <stop offset="1" stop-color="#A4A6FF" />
+      <stop stopColor="#2A30EE" />
+      <stop offset="1" stopColor="#A4A6FF" />
     </linearGradient>
     <linearGradient id="paint2_linear_11790_78887" x1="32.4863" y1="52.3243" x2="38.8187" y2="72.714"
       gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2A30EE" />
-      <stop offset="1" stop-color="#A4A6FF" />
+      <stop stopColor="#2A30EE" />
+      <stop offset="1" stopColor="#A4A6FF" />
     </linearGradient>
     <radialGradient id="paint3_radial_11790_78887" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
       gradientTransform="translate(59.7778 34.5556) rotate(40.8335) scale(6.93882 21.3813)">
-      <stop stop-color="#FFCCEB" />
-      <stop offset="0.473958" stop-color="#BFC6FF" />
-      <stop offset="1" stop-color="#96E4D2" />
+      <stop stopColor="#FFCCEB" />
+      <stop offset="0.473958" stopColor="#BFC6FF" />
+      <stop offset="1" stopColor="#96E4D2" />
     </radialGradient>
   </defs>
 </svg>

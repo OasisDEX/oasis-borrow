@@ -27,33 +27,33 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_64_41870" result="shape"/>
 </filter>
 <linearGradient id="paint0_linear_64_41870" x1="258" y1="135.5" x2="40.5" y2="38" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F55252"/>
-<stop offset="0.635417" stop-color="#FFB0E1"/>
-<stop offset="1" stop-color="#F57952"/>
+<stop stopColor="#F55252"/>
+<stop offset="0.635417" stopColor="#FFB0E1"/>
+<stop offset="1" stopColor="#F57952"/>
 </linearGradient>
 <linearGradient id="paint1_linear_64_41870" x1="238" y1="126.138" x2="57.5213" y2="45.234" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F55252"/>
-<stop offset="0.635417" stop-color="#FFB0E1"/>
-<stop offset="1" stop-color="#F57952"/>
+<stop stopColor="#F55252"/>
+<stop offset="0.635417" stopColor="#FFB0E1"/>
+<stop offset="1" stopColor="#F57952"/>
 </linearGradient>
 <linearGradient id="paint2_linear_64_41870" x1="211" y1="113.5" x2="80.5" y2="55" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F55252"/>
-<stop offset="0.635417" stop-color="#FFB0E1"/>
-<stop offset="1" stop-color="#F57952"/>
+<stop stopColor="#F55252"/>
+<stop offset="0.635417" stopColor="#FFB0E1"/>
+<stop offset="1" stopColor="#F57952"/>
 </linearGradient>
 <linearGradient id="paint3_linear_64_41870" x1="193" y1="105.074" x2="95.8191" y2="61.5106" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F55252"/>
-<stop offset="0.635417" stop-color="#FA95D3"/>
-<stop offset="1" stop-color="#F57952"/>
+<stop stopColor="#F55252"/>
+<stop offset="0.635417" stopColor="#FA95D3"/>
+<stop offset="1" stopColor="#F57952"/>
 </linearGradient>
 <linearGradient id="paint4_linear_64_41870" x1="167" y1="93.3896" x2="119.404" y2="73.5422" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="white" stop-opacity="0.3"/>
+<stop stopColor="white"/>
+<stop offset="1" stopColor="white" stop-opacity="0.3"/>
 </linearGradient>
 <linearGradient id="paint5_linear_64_41870" x1="151.013" y1="73.5599" x2="133.76" y2="83.8295" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F55252"/>
-<stop offset="0.635417" stop-color="#FF68C6"/>
-<stop offset="1" stop-color="#F57952"/>
+<stop stopColor="#F55252"/>
+<stop offset="0.635417" stopColor="#FF68C6"/>
+<stop offset="1" stopColor="#F57952"/>
 </linearGradient>
 </defs>
 </svg>

@@ -6,13 +6,13 @@
 <path d="M45 52L47.6316 55L55 47" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 <defs>
 <linearGradient id="paint0_linear_11790_79018" x1="8" y1="13" x2="67" y2="100" gradientUnits="userSpaceOnUse">
-<stop stop-color="#FDD7EB"/>
-<stop offset="0.645833" stop-color="#FFE4D9"/>
-<stop offset="1" stop-color="#D9FFE6"/>
+<stop stopColor="#FDD7EB"/>
+<stop offset="0.645833" stopColor="#FFE4D9"/>
+<stop offset="1" stopColor="#D9FFE6"/>
 </linearGradient>
 <linearGradient id="paint1_linear_11790_79018" x1="31" y1="32" x2="69.2884" y2="71.0401" gradientUnits="userSpaceOnUse">
-<stop stop-color="#2A30EE"/>
-<stop offset="1" stop-color="#A4A6FF"/>
+<stop stopColor="#2A30EE"/>
+<stop offset="1" stopColor="#A4A6FF"/>
 </linearGradient>
 </defs>
 </svg>

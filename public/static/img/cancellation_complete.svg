@@ -22,18 +22,18 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_6168_42583" result="shape"/>
 </filter>
 <radialGradient id="paint0_radial_6168_42583" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(77.2222 47.2778) rotate(42.8925) scale(112.608 349.744)">
-<stop stop-color="#FFCCEB"/>
-<stop offset="0.473958" stop-color="#BFC6FF"/>
-<stop offset="1" stop-color="#96E4D2"/>
+<stop stopColor="#FFCCEB"/>
+<stop offset="0.473958" stopColor="#BFC6FF"/>
+<stop offset="1" stopColor="#96E4D2"/>
 </radialGradient>
 <linearGradient id="paint1_linear_6168_42583" x1="119.999" y1="34.3336" x2="119.999" y2="128.452" gradientUnits="userSpaceOnUse">
-<stop offset="0.473958" stop-color="white" stop-opacity="0.8"/>
-<stop offset="1" stop-color="white" stop-opacity="0"/>
+<stop offset="0.473958" stopColor="white" stop-opacity="0.8"/>
+<stop offset="1" stopColor="white" stop-opacity="0"/>
 </linearGradient>
 <radialGradient id="paint2_radial_6168_42583" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(106.937 71.3442) rotate(36.3593) scale(34.5751 102.816)">
-<stop stop-color="#FFCCEB"/>
-<stop offset="0.473958" stop-color="#BFC6FF"/>
-<stop offset="1" stop-color="#96E4D2"/>
+<stop stopColor="#FFCCEB"/>
+<stop offset="0.473958" stopColor="#BFC6FF"/>
+<stop offset="1" stopColor="#96E4D2"/>
 </radialGradient>
 </defs>
 </svg>

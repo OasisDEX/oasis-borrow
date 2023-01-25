@@ -28,15 +28,15 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur" result="shape"/>
 </filter>
 <linearGradient id="paint0_linear" x1="479.479" y1="295.749" x2="1671.58" y2="941.718" gradientUnits="userSpaceOnUse">
-<stop stop-color="#141414"/>
+<stop stopColor="#141414"/>
 <stop offset="1"/>
 </linearGradient>
 <linearGradient id="paint1_linear" x1="372.709" y1="41.9907" x2="1281.03" y2="738.34" gradientUnits="userSpaceOnUse">
-<stop stop-color="#141414"/>
+<stop stopColor="#141414"/>
 <stop offset="1"/>
 </linearGradient>
 <linearGradient id="paint2_linear" x1="229" y1="206.783" x2="1617" y2="656.783" gradientUnits="userSpaceOnUse">
-<stop stop-color="#141414"/>
+<stop stopColor="#141414"/>
 <stop offset="1" stop-opacity="0.57"/>
 </linearGradient>
 </defs>

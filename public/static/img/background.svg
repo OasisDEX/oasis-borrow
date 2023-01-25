@@ -46,31 +46,31 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_backgroundBlur" result="shape"/>
 </filter>
 <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1387 619.782) rotate(90) scale(379)">
-<stop stop-color="#BFFFF0"/>
-<stop offset="1" stop-color="#FEFFC7" stop-opacity="0"/>
+<stop stopColor="#BFFFF0"/>
+<stop offset="1" stopColor="#FEFFC7" stop-opacity="0"/>
 </radialGradient>
 <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(533 617.782) rotate(90) scale(379)">
-<stop stop-color="#EAE2FF"/>
-<stop offset="1" stop-color="#FFC8CE" stop-opacity="0"/>
+<stop stopColor="#EAE2FF"/>
+<stop offset="1" stopColor="#FFC8CE" stop-opacity="0"/>
 </radialGradient>
 <radialGradient id="paint2_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1025 447.782) rotate(90) scale(379)">
-<stop stop-color="#EAE2FF"/>
-<stop offset="1" stop-color="#FFC8CE" stop-opacity="0"/>
+<stop stopColor="#EAE2FF"/>
+<stop offset="1" stopColor="#FFC8CE" stop-opacity="0"/>
 </radialGradient>
 <radialGradient id="paint3_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(979.001 603.783) rotate(90) scale(379)">
-<stop stop-color="#FFF8E0"/>
-<stop offset="1" stop-color="#D3EFFF" stop-opacity="0"/>
+<stop stopColor="#FFF8E0"/>
+<stop offset="1" stopColor="#D3EFFF" stop-opacity="0"/>
 </radialGradient>
 <linearGradient id="paint4_linear" x1="479.479" y1="295.749" x2="1671.58" y2="941.718" gradientUnits="userSpaceOnUse">
-<stop stop-color="#141414"/>
+<stop stopColor="#141414"/>
 <stop offset="1"/>
 </linearGradient>
 <linearGradient id="paint5_linear" x1="372.709" y1="41.9907" x2="1281.03" y2="738.34" gradientUnits="userSpaceOnUse">
-<stop stop-color="#141414"/>
+<stop stopColor="#141414"/>
 <stop offset="1"/>
 </linearGradient>
 <linearGradient id="paint6_linear" x1="229" y1="206.783" x2="1617" y2="656.783" gradientUnits="userSpaceOnUse">
-<stop stop-color="#141414"/>
+<stop stopColor="#141414"/>
 <stop offset="1" stop-opacity="0.57"/>
 </linearGradient>
 </defs>
