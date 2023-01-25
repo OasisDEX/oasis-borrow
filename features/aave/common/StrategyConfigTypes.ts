@@ -37,7 +37,7 @@ export interface IStrategyConfig {
     minimum: IRiskRatio
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
-  type: 'Multiply' | 'Earn'
+  type: 'Multiply' | 'Earn' | 'Borrow'
   featureToggle?: Feature
 }
 

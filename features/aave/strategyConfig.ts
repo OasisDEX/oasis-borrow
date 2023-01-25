@@ -125,6 +125,30 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
   },
+  {
+    urlSlug: 'eth',
+    name: 'ETH',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
+      headerManage: AavePositionHeaderNoDetails,
+      headerView: AavePositionHeaderNoDetails,
+      simulateSection: SimulateSectionComponent,
+      vaultDetailsManage: ManageSectionComponent,
+      vaultDetailsView: ViewPositionSectionComponent,
+      adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
+      positionInfo: AaveEarnFaq,
+      sidebarTitle: 'open-earn.aave.vault-form.title',
+      sidebarButton: 'open-earn.aave.vault-form.open-btn',
+    },
+    tokens: {
+      collateral: 'ETH',
+      debt: 'ETH',
+      deposit: 'ETH',
+    },
+    riskRatios: earnAdjustRiskSliderConfig.riskRatios,
+    type: 'Borrow',
+  },
 ]
 
 export function aaveStrategiesList(filterProduct?: IStrategyConfig['type']): IStrategyConfig[] {

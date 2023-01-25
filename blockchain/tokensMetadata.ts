@@ -800,6 +800,8 @@ export type TokenSymbolType = ElementOf<typeof tokens>['symbol']
 export type TokenMetadataType = typeof tokens[number]
 
 export function getToken(tokenSymbol: TokenSymbolType): TokenMetadataType {
+  console.log('tokenSymbol', tokenSymbol);
+
   if (!tokensBySymbol[tokenSymbol]) {
     throw new Error(`No meta information for token: ${tokenSymbol}`)
   }

@@ -15,6 +15,7 @@ import { ProductCardEarnMaker } from './ProductCardEarnMaker'
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardMultiplyMaker } from './ProductCardMultiplyMaker'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
+import { ProductCardBorrowAave } from "./ProductCardBorrowAave";
 
 type StrategyTypes = {
   maker: string[]
@@ -44,6 +45,13 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
           <ProductCardsWrapper>
             {aaveStrategyCards.map((tokenData) => {
               switch (getAaveStrategy(tokenData.symbol)[0].type) {
+                case 'Borrow':
+                  return (
+                    <ProductCardBorrowAave
+                      cardData={tokenData}
+                      key={`ProductCardBorrowAave_${tokenData.symbol}`}
+                    />
+                  )
                 case 'Multiply':
                   return (
                     <ProductCardMultiplyAave
