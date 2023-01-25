@@ -99,6 +99,7 @@ export function DiscoverTableDataCellContent({
           <AppLink
             href={`${row.url || `/${row.cdpId}`}`}
             internalInNewTab={true}
+            sx={{ flexGrow: [1, null, null, 'initial'] }}
             onClick={() => {
               onPositionClick && onPositionClick(String(row.url || row.cdpId))
             }}
@@ -112,11 +113,12 @@ export function DiscoverTableDataCellContent({
               href={`https://twitter.com/intent/tweet?text=${shareText}&url=${basePath}${
                 row.url || `/${row.cdpId}`
               }&hashtags=${shareHashtags}&via=${shareVia}`}
+              sx={{ ml: 2 }}
             >
               <Button
                 className="discover-action"
                 variant="tertiary"
-                sx={{ height: '36px', ml: 2, px: 2, pt: '5px', pb: 0 }}
+                sx={{ height: '36px', px: 2, pt: '5px', pb: 0 }}
               >
                 <Icon name="share" size={20} />
               </Button>
