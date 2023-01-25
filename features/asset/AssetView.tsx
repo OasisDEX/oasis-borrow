@@ -17,16 +17,11 @@ import {
 const aaveAssets = {
   // not putting this to ASSETS_PAGES cause we need feature toggles
   eth: {
-    multiply: getAaveEnabledStrategies([
-      { strategy: 'ethusdc', featureToggle: 'AaveMultiplyETHUSDC' },
-      { strategy: 'stETHusdc', featureToggle: 'AaveMultiplySTETHUSDC' },
-    ]),
-    earn: getAaveEnabledStrategies([{ strategy: 'stETHeth', featureToggle: 'AaveEarnSTETHETH' }]),
+    multiply: getAaveEnabledStrategies([{ strategy: 'ethusdc' }, { strategy: 'stETHusdc' }]),
+    earn: getAaveEnabledStrategies([{ strategy: 'stETHeth' }]),
   },
   btc: {
-    multiply: getAaveEnabledStrategies([
-      { strategy: 'wBTCusdc', featureToggle: 'AaveMultiplyWBTCUSDC' },
-    ]),
+    multiply: getAaveEnabledStrategies([{ strategy: 'wBTCusdc' }]),
     earn: [],
   },
 }
