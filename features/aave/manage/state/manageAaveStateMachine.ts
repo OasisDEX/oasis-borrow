@@ -610,6 +610,11 @@ export function createManageAaveStateMachine(
           transactionToken: context.strategyConfig.tokens.collateral,
         })),
         updateLegacyTokenBalance: assign((context, event) => {
+          if (!event.balance.deposit) {
+            return {
+              tokenBalance: undefined,
+            }
+          }
           return {
             tokenBalance: event.balance.deposit.balance,
             tokenPrice: event.balance.deposit.price,

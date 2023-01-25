@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
@@ -99,9 +100,10 @@ export function ContentCardLtv({
     footnote: `${t('manage-earn-vault.liquidation-threshold', {
       percentage: formatted.liquidationThreshold,
     })}`,
-    customBackground: afterLoanToValue
-      ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
-      : 'transparent',
+    customBackground:
+      afterLoanToValue && !liquidationThreshold.eq(zero)
+        ? getLTVRatioColor(liquidationThreshold.minus(loanToValue).times(100))
+        : 'transparent',
     modal: <ContentCardLtvModal {...contentCardModalSettings} />,
   }
 

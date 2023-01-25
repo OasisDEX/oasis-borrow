@@ -493,6 +493,8 @@ const hardhat: NetworkConfig = {
   ), */
 }
 
+export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+
 export const networksById = keyBy([main, kovan, hardhat, goerli], 'id')
 export const networksByName = keyBy([main, kovan, hardhat, goerli], 'name')
 

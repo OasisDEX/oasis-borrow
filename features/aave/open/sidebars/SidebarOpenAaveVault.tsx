@@ -1,12 +1,16 @@
 import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -62,6 +66,23 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
 
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const { push } = useRedirect()
+
+  const primaryButton = !isUserWalletConnected(state.context)
+    ? {
+        label: t('connect-wallet'),
+        action: () => {
+          void push(`/connect`, getCustomNetworkParameter())
+        },
+        steps: undefined,
+      }
+    : {
+        steps: [state.context.currentStep, state.context.totalSteps] as [number, number],
+        isLoading: isLoading(),
+        disabled: !state.can('NEXT_STEP'),
+        label: t('open-earn.aave.vault-form.confirm-btn'),
+        action: () => send('NEXT_STEP'),
+      }
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
@@ -70,13 +91,7 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
         <StrategyInformationContainer state={state} />
       </Grid>
     ),
-    primaryButton: {
-      steps: [state.context.currentStep, state.context.totalSteps],
-      isLoading: isLoading(),
-      disabled: !state.can('NEXT_STEP'),
-      label: t('open-earn.aave.vault-form.confirm-btn'),
-      action: () => send('NEXT_STEP'),
-    },
+    primaryButton,
   }
 
   return (
@@ -125,9 +140,20 @@ function EditingStateViewSidebarPrimaryButton({
   isLoading,
 }: OpenAaveStateProps): Pick<
   SidebarSectionFooterButtonSettings,
-  'isLoading' | 'disabled' | 'label' | 'action'
+  'isLoading' | 'disabled' | 'label' | 'action' | 'steps'
 > {
   const { t } = useTranslation()
+  const { push } = useRedirect()
+
+  if (!isUserWalletConnected(state.context)) {
+    return {
+      label: t('connect-wallet'),
+      action: () => {
+        void push(`/connect`, getCustomNetworkParameter())
+      },
+      steps: undefined,
+    }
+  }
 
   const hasProxy =
     state.context.strategyConfig.proxyType === ProxyType.DpmProxy
@@ -154,6 +180,8 @@ function EditingStateViewSidebarPrimaryButton({
 
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const { hasOpenedPosition } = state.context
+  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
@@ -161,16 +189,51 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
-      <Grid gap={3}>
-        <SidebarOpenAaveVaultEditingState state={state} send={send} />
-        {amountTooHigh && (
-          <MessageCard
-            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
-            type="error"
-          />
+      <WithLoadingIndicator
+        // this loader seems to be pointless, but undefined tokenUsdPrice (below) breaks the proper decimals input so it needs to be there
+        value={[state.context.collateralPrice]}
+        customLoader={
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <AppSpinner size={24} />
+          </Box>
+        }
+      >
+        {() => (
+          <Grid gap={3}>
+            <SidebarOpenAaveVaultEditingState state={state} send={send} />
+            {state.context.tokenBalance && amountTooHigh && (
+              <MessageCard
+                messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+                type="error"
+              />
+            )}
+            <AdjustRiskView
+              title={
+                state.context.strategyConfig.type === 'Earn'
+                  ? t('sidebar-titles.open-earn-position')
+                  : t('sidebar-titles.open-multiply-position')
+              }
+              state={state}
+              send={send}
+              isLoading={isLoading}
+              primaryButton={{
+                steps: [state.context.currentStep, state.context.totalSteps],
+                isLoading: isLoading(),
+                disabled: !state.can('NEXT_STEP'),
+                label: t(state.context.strategyConfig.viewComponents.sidebarButton),
+                action: () => send('NEXT_STEP'),
+              }}
+              textButton={{
+                label: t('open-earn.aave.vault-form.back-to-editing'),
+                action: () => send('BACK_TO_EDITING'),
+              }}
+              viewLocked={hasOpenedPosition}
+              showWarring={hasOpenedPosition}
+              noSidebar
+            />
+          </Grid>
         )}
-        <StrategyInformationContainer state={state} />
-      </Grid>
+      </WithLoadingIndicator>
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
@@ -247,14 +310,11 @@ export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveSta
 export function SidebarOpenAaveVault() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
-  const { t } = useTranslation()
-  const { hasOpenedPosition } = state.context
 
   function loading(): boolean {
     return isLoading(state)
   }
 
-  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
   switch (true) {
     case state.matches('frontend.editing'):
       return <OpenAaveEditingStateView state={state} send={send} isLoading={loading} />
@@ -272,32 +332,6 @@ export function SidebarOpenAaveVault() {
         <AllowanceView
           allowanceMachine={state.context.refAllowanceStateMachine!}
           steps={[state.context.currentStep, state.context.totalSteps]}
-        />
-      )
-    case state.matches('frontend.settingMultiple'):
-      return (
-        <AdjustRiskView
-          title={
-            state.context.strategyConfig.type === 'Earn'
-              ? t('sidebar-titles.open-earn-position')
-              : t('sidebar-titles.open-multiply-position')
-          }
-          state={state}
-          send={send}
-          isLoading={loading}
-          primaryButton={{
-            steps: [state.context.currentStep, state.context.totalSteps],
-            isLoading: isLoading(state),
-            disabled: !state.can('NEXT_STEP'),
-            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
-            action: () => send('NEXT_STEP'),
-          }}
-          textButton={{
-            label: t('open-earn.aave.vault-form.back-to-editing'),
-            action: () => send('BACK_TO_EDITING'),
-          }}
-          viewLocked={hasOpenedPosition}
-          showWarring={hasOpenedPosition}
         />
       )
     case state.matches('frontend.stopLoss'):

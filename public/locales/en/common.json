@@ -684,7 +684,7 @@
     "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Oasis fees. The 'After fees' value is accounting for the earnings including the Oasis fee, and the Ethereum Gas fees.",
     "net-apy": "Net APY",
     "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
-    "net-apy-modal-aave": "The annual percentage yield, accounting for fees. Calculated as the yield on the stETH token over the last 7 days, annualised, and subtracting the variable annual fee paid in AAVE for the ETH.",
+    "net-apy-modal-aave": "The annual percentage yield, accounting for fees. Calculated as the yield on the stETH token over the last 7 days, annualised, and subtracting the variable annual fee paid in Aave for the ETH.",
     "eth-value": "ETH Value",
     "collateral-value-in-vault": "Collateral value in vault",
     "debt-value-in-vault": "Debt value in vault",
@@ -697,7 +697,7 @@
     "below-current-ratio": "({{percentage}} below current ratio)",
     "below-current-price": "{{percentage}} below current price",
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
-    "has-asset-already": "There is an active AAVE position open in this address. Therefore, you cannot open a stETH earn position. Close your AAVE position first to continue.",
+    "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
     "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH.",
     "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it below your Stop-Loss Loan to Value"
@@ -1083,7 +1083,7 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
-    "header-aave-open": "Open {{collateral}}/{{debt}} AAVE position",
+    "header-aave-open": "Open {{collateral}}/{{debt}} Aave position",
     "header-aave-view": "Aave {{collateral}}/{{debt}}",
     "header-aave-view-id": "Aave {{collateral}}/{{debt}} Vault {{vaultId}}",
     "insti-header": "Institutional {{ilk}} Vault {{id}}",
@@ -1287,8 +1287,8 @@
       "subheader": "The current loan to value of {{loanToValue}} is higher than the maximum loan to value of {{maxLoanToValue}} allowed by the protocol. Therefore this position can only be de-risked. If the loan to value of the position reaches {{liquidationThreshold}} the position will be available for liquidation."
     },
     "aave-multi-position": {
-      "header": "This position is affected by other assets on AAVE",
-      "subheader": "This position is not reflecting the entire position on AAVE, as there are other assets put up as collateral or debt on this same DS-Proxy. Contact us to see what you can do."
+      "header": "This position is affected by other assets on Aave",
+      "subheader": "This position is not reflecting the entire position on Aave, as there are other assets put up as collateral or debt on this same DS-Proxy. Contact us to see what you can do."
     }
   },
   "vault-banners": {
@@ -1549,8 +1549,8 @@
     },
     "aave": {
       "stETHeth": {
-        "title": "stETH/ETH AAVE",
-        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on AAVE to get more exposure to stETH."
+        "title": "stETH/ETH Aave",
+        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
       },
       "stETHusdc": {
         "title": "Highest stETH multiple option",
@@ -1561,7 +1561,7 @@
         "description": "Maximise your ETH exposure with Aave and USDC."
       },
       "wBTCusdc": {
-        "title": "Highest WBTC multiple option",
+        "title": "High wBTC multiple option",
         "description": "The biggest possible Multiple to maximize your exposure to WBTC"
       }
     },
@@ -1592,7 +1592,7 @@
     "ETH-B": "High ETH multiple with liquidation delay",
     "ETH-C": "Lowest ETH borrowing cost",
     "WBTC-A": "wBTC with medium cost and multiple",
-    "WBTC-B": "Highest wBTC multiple option",
+    "WBTC-B": "High wBTC multiple with liquidation delay",
     "WBTC-C": "Lowest wBTC borrowing cost",
     "RENBTC-A": "Ren Bitcoin (RenBTC)",
     "WSTETH-A": "StETH with medium cost and multiple",
@@ -2111,7 +2111,7 @@
     "aave": {
       "product-header": {
         "token-pair-list": {
-          "aave-steth-eth": "AAVE stETH yield multiple"
+          "aave-steth-eth": "Aave stETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",
@@ -2133,8 +2133,8 @@
           "back-to-enter-eth": "Back to enter ETH",
           "increase-risk": "Increase risk",
           "decrease-risk": "Decrease risk",
-          "vault-message-ok": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{priceMovement}} with respect to {{debtToken}} for this position to be available for liquidation. AAVE's liquidations penalty is at least {{liquidationPenalty}}.",
-          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. AAVE's liquidations penalty is at least {{liquidationPenalty}}."
+          "vault-message-ok": "At the chosen risk level, the price of {{collateralToken}} needs to move over {{priceMovement}} with respect to {{debtToken}} for this position to be available for liquidation. Aave's liquidations penalty is at least {{liquidationPenalty}}.",
+          "vault-message-warning": "At the chosen risk level, if the price of {{collateralToken}} moves over {{priceMovement}} with respect to {{debtToken}} this Earn position could be liquidated. Aave's liquidations penalty is at least {{liquidationPenalty}}."
         }
       }
     }

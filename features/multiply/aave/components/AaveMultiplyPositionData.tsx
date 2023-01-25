@@ -52,7 +52,9 @@ function calcViewValuesForPosition(
 
   const totalExposure = collateral
 
-  const liquidationPrice = debt.div(collateral.times(position.category.liquidationThreshold))
+  const liquidationPrice = NaNIsZero(
+    debt.div(collateral.times(position.category.liquidationThreshold)),
+  )
 
   const costOfBorrowingDebt = debtVariableBorrowRate.times(debt).times(debtTokenPrice)
   const profitFromProvidingCollateral = collateralLiquidityRate
@@ -120,7 +122,7 @@ export function AaveMultiplyPositionData({
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('system.liquidation-price')}
-            value={`${formatPrecision(NaNIsZero(currentPositionThings.liquidationPrice), 2)} ${
+            value={`${formatPrecision(currentPositionThings.liquidationPrice, 2)} ${
               currentPosition.debt.symbol
             }`}
             change={
@@ -136,7 +138,8 @@ export function AaveMultiplyPositionData({
               }
             }
             footnote={
-              !currentPositionThings.liquidationPrice.isNaN()
+              !currentPositionThings.liquidationPrice.isNaN() &&
+              !currentPositionThings.liquidationPrice.eq(zero)
                 ? `${t('manage-earn-vault.below-current-price', {
                     percentage: belowCurrentPricePercentage,
                   })}`

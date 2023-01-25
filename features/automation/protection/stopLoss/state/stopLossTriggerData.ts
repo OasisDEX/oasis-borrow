@@ -5,7 +5,6 @@ import {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { utils } from 'ethers'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import { DEFAULT_MAX_BASE_FEE_IN_GWEI } from 'features/automation/common/consts'
 import { getTriggersByType, TriggerDataType } from 'features/automation/common/helpers'
@@ -19,54 +18,25 @@ export interface StopLossTriggerData {
   executionParams: string
 }
 
-// could be moved to common
-function getStopLossResultsV1(trigger: TriggerDataType) {
-  return {
-    triggerType: trigger.result[1],
-    stopLossLevel: trigger.result[2],
-  }
-}
-// could be moved to common
-function getStopLossResultsV2(trigger: TriggerDataType) {
-  return {
-    triggerType: trigger.result[1],
-    stopLossLevel: trigger.result[4],
-  }
-}
-
-// could be moved to common
-const resultMap: Record<
-  string,
-  (
-    trigger: TriggerDataType,
-  ) => {
-    stopLossLevel: BigNumber
-    triggerType: BigNumber
-  }
-> = {
-  '0x09120eaed8e4cd86d85a616680151daa653880f2': getStopLossResultsV2,
-}
-
 function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataType[]) {
-  const commandAddress = stopLossTriggersData[0].commandAddress
-
   const mappedStopLossTriggers = stopLossTriggersData.map((trigger) => {
-    const { triggerType, stopLossLevel } = resultMap[trigger.commandAddress]
-      ? resultMap[trigger.commandAddress](trigger)
-      : getStopLossResultsV1(trigger)
+    const { triggerType, ltv, collRatio } = trigger.result
+
+    const triggerTypeAsNumber = new BigNumber(triggerType).toNumber()
 
     return {
       triggerId: new BigNumber(trigger.triggerId),
       isStopLossEnabled: true,
-      stopLossLevel: new BigNumber(stopLossLevel.toString()).div(100),
+      stopLossLevel: new BigNumber((ltv || collRatio).toString()).div(100),
       isToCollateral:
-        new BigNumber(triggerType.toString()).toNumber() === TriggerType.StopLossToCollateral,
+        triggerTypeAsNumber === TriggerType.StopLossToCollateral ||
+        triggerTypeAsNumber === TriggerType.AaveStopLossToCollateral,
       executionParams: trigger.executionParams,
     }
   })
 
   return mappedStopLossTriggers.reduce((acc, obj) => {
-    if (resultMap[commandAddress]) {
+    if (TriggerType.AaveStopLossToDebt || TriggerType.AaveStopLossToCollateral) {
       return acc.stopLossLevel.lt(obj.stopLossLevel) ? acc : obj
     }
     return acc.stopLossLevel.gt(obj.stopLossLevel) ? acc : obj
@@ -78,7 +48,7 @@ export const defaultStopLossData = {
   stopLossLevel: zero,
   triggerId: zero,
   isToCollateral: false,
-  executionParams: '',
+  executionParams: '0x',
 } as StopLossTriggerData
 
 export function extractStopLossData(
@@ -90,7 +60,8 @@ export function extractStopLossData(
     const stopLossTriggersData = getTriggersByType(data.triggers, [
       TriggerType.StopLossToCollateral,
       TriggerType.StopLossToDai,
-      10, // TODO TriggerType.sth
+      TriggerType.AaveStopLossToDebt,
+      TriggerType.AaveStopLossToCollateral,
     ])
 
     if (stopLossTriggersData.length) {
@@ -149,25 +120,23 @@ export function prepareAddStopLossTriggerData({
 
 export function prepareStopLossTriggerDataV2(
   owner: string,
+  triggerType: TriggerType,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
   debtTokenAddress: string,
   tokenAddress: string,
 ) {
-  // TODO temporary encoding until we will have command address definition within common
-  const triggerData = utils.defaultAbiCoder.encode(
-    ['address', 'uint16', 'address', 'address', 'uint256', 'uint32'],
-    [
-      owner, // proxy
-      10, // triggerType // TODO we should have it from TriggerType.sth
-      tokenAddress, // collateralToken
-      debtTokenAddress, // debtToken
-      stopLossLevel.toString(), // stop loss level
-      DEFAULT_MAX_BASE_FEE_IN_GWEI.toString(), // max gas fee
-    ],
-  )
+  const triggerData = encodeTriggerDataByType(CommandContractType.AaveStopLossCommand, [
+    owner, // proxy
+    triggerType, // triggerType
+    tokenAddress, // collateralToken
+    debtTokenAddress, // debtToken
+    stopLossLevel.toString(), // stop loss level
+    DEFAULT_MAX_BASE_FEE_IN_GWEI.toString(), // max gas fee
+  ])
+
   return {
-    triggerTypes: [10], // TODO we should have it from TriggerType.sth
+    triggerTypes: [triggerType],
     proxyAddress: owner,
     triggersData: [triggerData],
     continuous: [false],
