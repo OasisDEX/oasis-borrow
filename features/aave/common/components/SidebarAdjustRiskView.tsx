@@ -1,40 +1,19 @@
-import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
-import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { WithArrow } from 'components/WithArrow'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
-import { ManageAaveEvent } from 'features/aave/manage/state'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
 import { SliderValuePicker } from '../../../../components/dumb/SliderValuePicker'
 import { MessageCard } from '../../../../components/MessageCard'
-import { SidebarSection, SidebarSectionProps } from '../../../../components/sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
 import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
 import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
-import { BaseViewProps } from '../BaseAaveContext'
+import { SecondaryInputProps } from '../StrategyConfigTypes'
 import { StrategyInformationContainer } from './informationContainer'
-
-type RaisedEvents =
-  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | ({
-      type: 'RESET_RISK_RATIO'
-    } & ManageAaveEvent)
-
-export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
-  primaryButton: SidebarSectionFooterButtonSettings
-  textButton: SidebarSectionFooterButtonSettings
-  viewLocked?: boolean // locks whole view
-  showWarring?: boolean // displays warning
-  onChainPosition?: IPosition
-  dropdownConfig?: SidebarSectionHeaderDropdown
-  title: string
-  noSidebar?: boolean
-}
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (
@@ -79,15 +58,10 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     state,
     send,
     isLoading,
-    primaryButton,
-    textButton,
     viewLocked = false,
     showWarring = false,
     onChainPosition,
-    dropdownConfig,
-    title,
-    noSidebar,
-  }: AdjustRiskViewProps) {
+  }: SecondaryInputProps) {
     const { t } = useTranslation()
 
     const simulation = state.context.strategy?.simulation
@@ -255,21 +229,6 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
         {hasUserInteracted(state) && <StrategyInformationContainer state={state} />}
       </Grid>
     )
-    if (noSidebar) {
-      return sidebarContent
-    }
-
-    const sidebarSectionProps: SidebarSectionProps = {
-      title,
-      content: sidebarContent,
-      primaryButton: {
-        ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
-      },
-      textButton, // this is going back button, no need to block it
-      dropdown: dropdownConfig,
-    }
-
-    return <SidebarSection {...sidebarSectionProps} />
+    return sidebarContent
   }
 }

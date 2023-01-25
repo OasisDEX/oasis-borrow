@@ -1,11 +1,11 @@
-import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
 
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
-import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
+import { BaseViewProps } from './BaseAaveContext'
 
 export enum ProxyType {
   DsProxy = 'DsProxy',
@@ -25,7 +25,7 @@ export interface IStrategyConfig {
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
-    adjustRiskView: AdjustRiskView
+    secondaryInput: SecondaryInput
     positionInfo: PositionInfo
     sidebarTitle: string
     sidebarButton: string
@@ -52,6 +52,12 @@ export type ManageSectionComponentProps = {
   aaveReserveDataDebtToken: PreparedAaveReserveData
 }
 
+export type SecondaryInputProps = BaseViewProps<EventsRaisedFromSecondaryInput> & {
+  viewLocked?: boolean // locks whole view
+  showWarring?: boolean // displays warning
+  onChainPosition?: IPosition
+}
+
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
 type SimulateSection = (props: AaveMultiplyManageComponentProps) => JSX.Element
 type VaultDetails = (
@@ -59,5 +65,13 @@ type VaultDetails = (
     ViewPositionSectionComponentProps &
     AaveMultiplyManageComponentProps,
 ) => JSX.Element
-type AdjustRiskView = (props: AdjustRiskViewProps) => JSX.Element
+
+type SecondaryInput = (props: SecondaryInputProps) => JSX.Element
+
+type EventsRaisedFromSecondaryInput =
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | {
+      type: 'RESET_RISK_RATIO'
+    }
+
 type PositionInfo = () => JSX.Element

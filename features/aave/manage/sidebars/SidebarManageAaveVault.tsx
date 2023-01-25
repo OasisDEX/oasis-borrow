@@ -493,24 +493,29 @@ export function SidebarManageAaveVault() {
     ],
   }
 
-  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
+  const SecondaryInputComponent = state.context.strategyConfig.viewComponents.secondaryInput
 
   switch (true) {
     case state.matches('frontend.editing'):
       return (
-        <AdjustRiskView
+        <SidebarSection
           title={
             state.context.strategyConfig.type === 'Earn'
               ? t('sidebar-titles.manage-earn-position')
               : t('sidebar-titles.manage-multiply-position')
           }
-          state={state}
-          onChainPosition={state.context.protocolData?.position}
-          isLoading={loading}
-          send={send}
+          content={
+            <SecondaryInputComponent
+              state={state}
+              onChainPosition={state.context.protocolData?.position}
+              isLoading={loading}
+              send={send}
+              viewLocked={isLocked(state)}
+            />
+          }
           primaryButton={{
             isLoading: loading(),
-            disabled: !state.can('ADJUST_POSITION') || isLocked(state),
+            disabled: !state.can('ADJUST_POSITION') || isLocked(state) || !state.context.strategy,
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')
@@ -524,8 +529,7 @@ export function SidebarManageAaveVault() {
               send('CLOSE_POSITION')
             },
           }}
-          viewLocked={isLocked(state)}
-          dropdownConfig={dropdownConfig}
+          dropdown={dropdownConfig}
         />
       )
     case state.matches('frontend.allowanceSetting'):

@@ -178,7 +178,7 @@ function EditingStateViewSidebarPrimaryButton({
 function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { hasOpenedPosition } = state.context
-  const AdjustRiskView = state.context.strategyConfig.viewComponents.adjustRiskView
+  const SecondaryInputComponent = state.context.strategyConfig.viewComponents.secondaryInput
 
   const amountTooHigh =
     state.context.userInput.amount?.gt(state.context.tokenBalance || zero) ?? false
@@ -204,29 +204,12 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
                 type="error"
               />
             )}
-            <AdjustRiskView
-              title={
-                state.context.strategyConfig.type === 'Earn'
-                  ? t('sidebar-titles.open-earn-position')
-                  : t('sidebar-titles.open-multiply-position')
-              }
+            <SecondaryInputComponent
               state={state}
               send={send}
               isLoading={isLoading}
-              primaryButton={{
-                steps: [state.context.currentStep, state.context.totalSteps],
-                isLoading: isLoading(),
-                disabled: !state.can('NEXT_STEP'),
-                label: t(state.context.strategyConfig.viewComponents.sidebarButton),
-                action: () => send('NEXT_STEP'),
-              }}
-              textButton={{
-                label: t('open-earn.aave.vault-form.back-to-editing'),
-                action: () => send('BACK_TO_EDITING'),
-              }}
               viewLocked={hasOpenedPosition}
               showWarring={hasOpenedPosition}
-              noSidebar
             />
           </Grid>
         )}
