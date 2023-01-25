@@ -4,7 +4,8 @@ import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
-import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaProduct } from 'features/ajna/common/types'
+import { AjnaBorrowContextProvider } from 'features/ajna/contexts/AjnaProductContext'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -20,7 +21,7 @@ import { ajnaExtensionTheme } from 'theme'
 interface AjnaProductFlowPageProps {
   collateralToken: string
   quoteToken: string
-  product: string
+  product: AjnaProduct
 }
 
 function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProductFlowPageProps) {
@@ -56,15 +57,16 @@ function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProdu
                 }
               >
                 {([{ collateralBalance }, tokenPriceUSD]) => (
-                  <AjnaProductContextProvider
+                  <AjnaBorrowContextProvider
                     collateralBalance={collateralBalance}
                     collateralToken={collateralToken}
                     collateralPrice={tokenPriceUSD[collateralToken]}
+                    product={product}
                     quoteToken={quoteToken}
                     quotePrice={tokenPriceUSD[quoteToken]}
                   >
                     {product === 'borrow' && <AjnaOpenBorrowView />}
-                  </AjnaProductContextProvider>
+                  </AjnaBorrowContextProvider>
                 )}
               </WithLoadingIndicator>
             </WithErrorHandler>

@@ -3,7 +3,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -13,7 +13,7 @@ export function AjnaOpenBorrowView() {
   const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
-  } = useAjnaProductContext()
+  } = useAjnaBorrowContext()
 
   return (
     <Container variant="vaultPageContainerStatic">

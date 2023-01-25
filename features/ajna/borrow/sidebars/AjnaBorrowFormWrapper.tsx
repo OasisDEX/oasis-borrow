@@ -1,15 +1,15 @@
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormWrapper() {
   const {
     steps: { currentStep, isExternalStep },
-  } = useAjnaProductContext()
+  } = useAjnaBorrowContext()
 
   return (
     <>
-      {!isExternalStep() ? (
+      {!isExternalStep ? (
         <AjnaBorrowFormContent />
       ) : (
         <>

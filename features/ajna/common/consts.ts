@@ -11,8 +11,10 @@ export const tokens = {
   },
 }
 
-export const externalSteps: AjnaStatusStep[] = [
+export const ajnaFormExternalSteps: AjnaStatusStep[] = [
   'allowance-collateral',
   'allowance-collateral',
   'proxy',
 ]
+
+export const ajnaFormStepsWithBack: AjnaStatusStep[] = ['setup', 'confirm']
