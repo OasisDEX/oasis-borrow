@@ -218,7 +218,16 @@ model UsersWhoFollowVaults {
     user_address    String
     vault_id        Int // relation scalar field (used in the `@relation` attribute above)
     vault_chain_id  Int
+    protocol        Protocol
 
     @@id([user_address, vault_id, vault_chain_id])
     @@map("users_who_follow_vaults")
+}
+
+enum Protocol {
+    AAVE
+    AJNA
+    MAKERDAO
+
+    @@map("protocol")
 }
