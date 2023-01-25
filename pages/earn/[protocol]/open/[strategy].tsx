@@ -10,12 +10,12 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { aaveContext, AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { loadStrategyFromSlug } from '../../../../features/aave/strategyConfig'
+import { loadStrategyFromUrl } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const strategy = ctx.query.strategy as string
   try {
-    loadStrategyFromSlug(strategy)
+    loadStrategyFromUrl(strategy, 'earn')
   } catch (e) {
     console.log(`could not load strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
     return {
@@ -37,7 +37,7 @@ function OpenVault({ strategy }: { strategy: string }) {
         <WithTermsOfService>
           <BackgroundLight />
           <DeferedContextProvider context={aaveContext}>
-            <AaveOpenView config={loadStrategyFromSlug(strategy)} />
+            <AaveOpenView config={loadStrategyFromUrl(strategy, 'earn')} />
           </DeferedContextProvider>
           <Survey for="earn" />
         </WithTermsOfService>

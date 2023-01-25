@@ -7,6 +7,7 @@ import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverRespon
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import { useAccount } from 'helpers/useAccount'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useState } from 'react'
 import { Box } from 'theme-ui'
 
@@ -27,6 +28,7 @@ export function DiscoverData({
   response,
   userContext,
 }: DiscoverDataProps) {
+  const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { walletAddress } = useAccount()
 
   const [isLimitReached, setIsLimitReached] = useState(false)
@@ -50,6 +52,15 @@ export function DiscoverData({
                 setIsLimitReached,
               },
             })}
+            {...(followVaultsEnabled &&
+              !!walletAddress && {
+                follow: {
+                  followerAddress: walletAddress,
+                  chainId: NetworkIds.MAINNET,
+                  isLimitReached,
+                  setIsLimitReached,
+                },
+              })}
             onBannerClick={(link) => {
               trackingEvents.discover.clickedTableBanner(kind, link, userContext)
             }}

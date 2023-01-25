@@ -3,6 +3,7 @@ import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { ethNullAddress } from 'blockchain/config'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -359,13 +360,11 @@ export function createOpenAaveStateMachine(
           }
         }),
         setDefaultRiskRatio: assign((context) => {
-          const defaultRiskRatio =
-            context.strategyConfig.riskRatios.default === 'slightlyLessThanMaxRisk'
-              ? new RiskRatio(context.reserveConfig?.ltv.times('0.999') || zero, RiskRatio.TYPE.LTV)
-              : context.strategyConfig.riskRatios.default
-
           return {
-            defaultRiskRatio,
+            defaultRiskRatio: convertDefaultRiskRatioToActualRiskRatio(
+              context.strategyConfig.riskRatios.default,
+              context.reserveConfig?.ltv,
+            ),
           }
         }),
         setTotalSteps: assign((context) => {
