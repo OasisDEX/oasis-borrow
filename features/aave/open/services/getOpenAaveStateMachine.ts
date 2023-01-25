@@ -7,9 +7,10 @@ import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
+import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { ContextConnected } from '../../../../blockchain/network'
+import { Context } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
@@ -33,9 +34,9 @@ import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
 
 export function getOpenAavePositionStateMachineServices(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
-  tokenBalances$: Observable<TokenBalances>,
+  tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
   aaveUserAccountData$: (
     parameters: AaveUserAccountDataParameters,
@@ -51,6 +52,7 @@ export function getOpenAavePositionStateMachineServices(
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
+  aaveReserveConfiguration$: (args: { token: string }) => Observable<AaveReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {
@@ -65,6 +67,7 @@ export function getOpenAavePositionStateMachineServices(
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
         map((balances) => {
+          if (!balances) return {}
           const strategyBalance: StrategyTokenBalance = {
             collateral: balances[context.tokens.collateral],
             debt: balances[context.tokens.debt],
@@ -72,9 +75,9 @@ export function getOpenAavePositionStateMachineServices(
           }
           return strategyBalance
         }),
-        map((balance) => ({
+        map((balances) => ({
           type: 'SET_BALANCE',
-          balance: balance,
+          balance: balances,
         })),
         distinctUntilChanged(isEqual),
       )
@@ -162,7 +165,18 @@ export function getOpenAavePositionStateMachineServices(
     },
     dpmProxy$: (_) => {
       return userDpmProxy$.pipe(
-        map((proxy) => ({ type: 'DMP_PROXY_RECEIVED', userDpmAccount: proxy })),
+        map((proxy) => ({ type: 'DPM_PROXY_RECEIVED', userDpmAccount: proxy })),
+        distinctUntilChanged(isEqual),
+      )
+    },
+    aaveReserveConfiguration$: (context) => {
+      return aaveReserveConfiguration$({ token: context.strategyConfig.tokens.collateral }).pipe(
+        map((reserveConfig) => {
+          return {
+            type: 'RESERVE_CONFIG_UPDATED',
+            reserveConfig,
+          }
+        }),
         distinctUntilChanged(isEqual),
       )
     },

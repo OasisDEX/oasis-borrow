@@ -8,14 +8,23 @@ import {
 } from 'features/shared/followApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
 import React, { useEffect, useState } from 'react'
+import { SxStyleProp } from 'theme-ui'
 
-export type FollowButtonProps = {
-  followerAddress: string
-  vaultId: BigNumber
+export type FollowButtonControlProps = {
   chainId: number
+  followerAddress: string
+  short?: boolean
+  sx?: SxStyleProp
+  vaultId: BigNumber
 }
 
-export function FollowButtonControl({ followerAddress, vaultId, chainId }: FollowButtonProps) {
+export function FollowButtonControl({
+  chainId,
+  followerAddress,
+  short,
+  sx,
+  vaultId,
+}: FollowButtonControlProps) {
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
 
@@ -55,6 +64,8 @@ export function FollowButtonControl({ followerAddress, vaultId, chainId }: Follo
       isProcessing={isProcessing}
       isFollowing={isFollowing}
       buttonClickHandler={buttonClickHandler}
+      short={short}
+      sx={sx}
     />
   )
 

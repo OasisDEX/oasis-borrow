@@ -3,15 +3,29 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { DiscoverTableBanner } from 'features/discover/common/DiscoverTableBanner'
 import { DiscoverTableDataCellContent } from 'features/discover/common/DiscoverTableDataCellContent'
 import { getRowKey } from 'features/discover/helpers'
-import { DiscoverBanner } from 'features/discover/meta'
+import { DiscoverBanner, DiscoverFollow } from 'features/discover/meta'
 import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { Fragment } from 'react'
 import { Box, Flex } from 'theme-ui'
 
+export interface DiscoverTableProps {
+  banner?: DiscoverBanner
+  follow?: DiscoverFollow
+  isLoading?: boolean
+  isSticky?: boolean
+  kind?: DiscoverPages
+  rows: DiscoverTableRowData[]
+  skip?: string[]
+  tooltips?: string[]
+  onBannerClick?: (link: string) => void
+  onPositionClick?: (cdpId: string) => void
+}
+
 export function DiscoverTable({
   banner,
+  follow,
   isLoading = false,
   isSticky = false,
   kind,
@@ -20,17 +34,7 @@ export function DiscoverTable({
   tooltips = [],
   onPositionClick,
   onBannerClick,
-}: {
-  banner?: DiscoverBanner
-  isLoading?: boolean
-  isSticky?: boolean
-  kind?: DiscoverPages
-  rows: DiscoverTableRowData[]
-  tooltips?: string[]
-  skip?: string[]
-  onBannerClick?: (link: string) => void
-  onPositionClick?: (cdpId: string) => void
-}) {
+}: DiscoverTableProps) {
   const filteredRowKeys = Object.keys(rows[0]).filter((key) => !skip.includes(key))
   const rowsForBanner = Math.min(rows.length - 1, 9)
 
@@ -65,8 +69,9 @@ export function DiscoverTable({
               <DiscoverTableHeaderCell
                 key={getRowKey(i, rows[0])}
                 first={i === 0}
-                last={i + 1 === filteredRowKeys.length}
+                follow={follow}
                 label={label}
+                last={i + 1 === filteredRowKeys.length}
                 tooltip={tooltips.includes(label)}
               />
             ))}
@@ -84,6 +89,7 @@ export function DiscoverTable({
             <Fragment key={getRowKey(i, row)}>
               <DiscoverTableDataRow
                 filteredRowKeys={filteredRowKeys}
+                follow={follow}
                 row={row}
                 onPositionClick={onPositionClick}
               />
@@ -104,13 +110,15 @@ export function DiscoverTable({
 
 export function DiscoverTableHeaderCell({
   first,
-  last,
+  follow,
   label,
+  last,
   tooltip,
 }: {
   first: boolean
-  last: boolean
+  follow?: DiscoverFollow
   label: string
+  last: boolean
   tooltip: boolean
 }) {
   const { t } = useTranslation()
@@ -122,6 +130,7 @@ export function DiscoverTableHeaderCell({
         position: 'relative',
         px: '12px',
         py: '20px',
+        ...(first && follow && { pl: '80px' }),
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'neutral80',
@@ -188,10 +197,12 @@ export function DiscoverTableHeaderCell({
 export function DiscoverTableDataRow({
   row,
   filteredRowKeys,
+  follow,
   onPositionClick,
 }: {
-  row: DiscoverTableRowData
   filteredRowKeys: string[]
+  follow?: DiscoverFollow
+  row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
 }) {
   return (
@@ -208,6 +219,7 @@ export function DiscoverTableDataRow({
       {filteredRowKeys.map((label, i) => (
         <DiscoverTableDataCell
           key={getRowKey(i, row)}
+          follow={follow}
           label={label}
           row={row}
           onPositionClick={onPositionClick}
@@ -218,10 +230,12 @@ export function DiscoverTableDataRow({
 }
 
 export function DiscoverTableDataCell({
+  follow,
   label,
   row,
   onPositionClick,
 }: {
+  follow?: DiscoverFollow
   label: string
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
@@ -238,7 +252,12 @@ export function DiscoverTableDataCell({
         },
       }}
     >
-      <DiscoverTableDataCellContent label={label} row={row} onPositionClick={onPositionClick} />
+      <DiscoverTableDataCellContent
+        label={label}
+        follow={follow}
+        row={row}
+        onPositionClick={onPositionClick}
+      />
     </Box>
   )
 }

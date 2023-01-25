@@ -5,17 +5,21 @@ import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
+import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
+import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
 
 export function DiscoverTableDataCellContent({
+  follow,
   label,
   row,
   onPositionClick,
 }: {
+  follow?: DiscoverFollow
   label: string
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
@@ -36,6 +40,19 @@ export function DiscoverTableDataCellContent({
 
       return (
         <Flex sx={{ alignItems: 'center' }}>
+          {follow && primitives.cdpId && (
+            <FollowButtonControl
+              chainId={follow.chainId}
+              followerAddress={follow.followerAddress}
+              vaultId={new BigNumber(primitives.cdpId)}
+              short
+              sx={{
+                position: ['absolute', null, null, 'relative'],
+                right: [0, null, null, 'auto'],
+                mr: ['24px', null, null, 4],
+              }}
+            />
+          )}
           {(primitives.icon || (asset && asset.icon)) && (
             <Icon size={44} name={(primitives.icon || asset.icon) as string} />
           )}
@@ -77,7 +94,9 @@ export function DiscoverTableDataCellContent({
             onPositionClick && onPositionClick(String(row.url || row.cdpId))
           }}
         >
-          <Button variant="tertiary">{t('discover.table.view-position')}</Button>
+          <Button className="discover-action" variant="tertiary">
+            {t('discover.table.view-position')}
+          </Button>
         </AppLink>
       )
     case 'collateralValue':
@@ -150,7 +169,10 @@ export function DiscoverTableDataCellContent({
               hash={VaultViewMode.Overview}
               internalInNewTab={true}
             >
-              <Button variant={primitives[label] > 0 ? 'actionActiveGreen' : 'action'}>
+              <Button
+                className="discover-action"
+                variant={primitives[label] > 0 ? 'actionActiveGreen' : 'action'}
+              >
                 {primitives[label] > 0
                   ? t('discover.table.protection-value', { protection: primitives[label] })
                   : t('discover.table.activate')}
