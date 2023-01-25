@@ -191,10 +191,10 @@ export function mapTokenToFilter(token: string) {
 }
 
 export function getAaveEnabledStrategies(
-  strategies: { strategy: string; featureToggle: Feature }[],
+  strategies: { strategy: string; featureToggle?: Feature }[],
 ) {
   return strategies
-    .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
+    .filter(({ featureToggle }) => (featureToggle ? getFeatureToggle(featureToggle) : true))
     .map((item) => item.strategy)
 }
 
@@ -288,11 +288,11 @@ export const productCardsConfig: {
     featuredAaveCards: {
       borrow: [],
       multiply: getAaveEnabledStrategies([
-        { strategy: 'ethusdc', featureToggle: 'AaveMultiplyETHUSDC' },
-        { strategy: 'stETHusdc', featureToggle: 'AaveMultiplySTETHUSDC' },
-        { strategy: 'wBTCusdc', featureToggle: 'AaveMultiplyWBTCUSDC' },
+        { strategy: 'ethusdc' },
+        { strategy: 'stETHusdc' },
+        { strategy: 'wBTCusdc' },
       ]),
-      earn: getAaveEnabledStrategies([{ strategy: 'stETHeth', featureToggle: 'AaveEarnSTETHETH' }]),
+      earn: getAaveEnabledStrategies([{ strategy: 'stETHeth' }]),
     },
   },
   descriptionCustomKeys: {

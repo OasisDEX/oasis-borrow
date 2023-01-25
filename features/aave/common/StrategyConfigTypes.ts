@@ -38,7 +38,7 @@ export interface IStrategyConfig {
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
   type: 'Multiply' | 'Earn'
-  featureToggle: Feature
+  featureToggle?: Feature
 }
 
 export type AaveHeaderProps = {
