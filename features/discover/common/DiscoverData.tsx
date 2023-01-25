@@ -7,6 +7,7 @@ import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverRespon
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import { useAccount } from 'helpers/useAccount'
+import {useFeatureToggle} from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Box } from 'theme-ui'
 
@@ -27,6 +28,7 @@ export function DiscoverData({
   response,
   userContext,
 }: DiscoverDataProps) {
+  const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { walletAddress } = useAccount()
 
   return (
@@ -40,7 +42,7 @@ export function DiscoverData({
             isSticky={isSticky}
             kind={kind}
             rows={response.rows}
-            {...(!!walletAddress && {
+            {...(followVaultsEnabled && !!walletAddress && {
               follow: { followerAddress: walletAddress, chainId: NetworkIds.MAINNET },
             })}
             onBannerClick={(link) => {
