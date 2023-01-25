@@ -119,10 +119,7 @@ export function DiscoverTableDataCellContent({
               })}
               sx={{ ml: 2 }}
             >
-              <Button
-                variant="tertiary"
-                sx={{ height: '36px', px: 2, pt: '5px', pb: 0 }}
-              >
+              <Button variant="tertiary" sx={{ height: '36px', px: 2, pt: '5px', pb: 0 }}>
                 <Icon name="share" size={20} />
               </Button>
             </AppLink>
