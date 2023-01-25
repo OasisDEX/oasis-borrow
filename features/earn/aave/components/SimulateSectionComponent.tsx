@@ -2,6 +2,7 @@ import { IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box } from 'theme-ui'
@@ -37,13 +38,13 @@ function SimulationSection({
   token,
   userInputAmount,
   gasPrice,
-  minRiskRatio,
+  defaultRiskRatio,
 }: {
   strategy?: IPositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
-  minRiskRatio: IRiskRatio
+  defaultRiskRatio: IRiskRatio
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
@@ -54,7 +55,7 @@ function SimulationSection({
   const swapFee = (strategy?.simulation.swap && getFee(strategy?.simulation.swap)) || zero
   const gasFee = gasPrice?.gasEstimationEth || zero
   const fees = swapFee.plus(gasFee)
-  const riskRatio = strategy?.simulation.position.riskRatio || minRiskRatio
+  const riskRatio = strategy?.simulation.position.riskRatio || defaultRiskRatio
 
   useEffect(() => {
     aaveSthEthYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
@@ -127,7 +128,10 @@ export function SimulateSectionComponent() {
       token: state.context.tokens.debt,
       userInputAmount: state.context.userInput.amount,
       gasPrice: state.context.estimatedGasPrice,
-      minRiskRatio: state.context.strategyConfig.riskRatios.minimum,
+      defaultRiskRatio: convertDefaultRiskRatioToActualRiskRatio(
+        state.context.strategyConfig.riskRatios.default,
+        state.context.reserveConfig?.ltv,
+      ),
     }
   })
 
