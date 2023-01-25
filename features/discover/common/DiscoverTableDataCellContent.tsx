@@ -95,7 +95,7 @@ export function DiscoverTableDataCellContent({
     case 'cdpId':
     case 'url':
       return (
-        <Flex>
+        <Flex sx={{ justifyContent: 'flex-end' }}>
           <AppLink
             href={`${row.url || `/${row.cdpId}`}`}
             internalInNewTab={true}
