@@ -9,9 +9,16 @@ import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
+import getConfig from 'next/config'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
+
+const basePath = getConfig()?.publicRuntimeConfig?.basePath
+const shareText = ''
+const shareHashtags = ''
+const shareVia = ''
 
 export function DiscoverTableDataCellContent({
   follow,
@@ -24,6 +31,7 @@ export function DiscoverTableDataCellContent({
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
 }) {
+  const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { i18n, t } = useTranslation()
   const primitives = Object.keys(row)
     .filter((item) => typeof row[item] === 'string' || typeof row[item] === 'number')
@@ -87,17 +95,34 @@ export function DiscoverTableDataCellContent({
     case 'cdpId':
     case 'url':
       return (
-        <AppLink
-          href={`${row.url || `/${row.cdpId}`}`}
-          internalInNewTab={true}
-          onClick={() => {
-            onPositionClick && onPositionClick(String(row.url || row.cdpId))
-          }}
-        >
-          <Button className="discover-action" variant="tertiary">
-            {t('discover.table.view-position')}
-          </Button>
-        </AppLink>
+        <Flex>
+          <AppLink
+            href={`${row.url || `/${row.cdpId}`}`}
+            internalInNewTab={true}
+            onClick={() => {
+              onPositionClick && onPositionClick(String(row.url || row.cdpId))
+            }}
+          >
+            <Button className="discover-action" variant="tertiary">
+              {t('view')}
+            </Button>
+          </AppLink>
+          {followVaultsEnabled && (
+            <AppLink
+              href={`https://twitter.com/intent/tweet?text=${shareText}&url=${basePath}${
+                row.url || `/${row.cdpId}`
+              }&hashtags=${shareHashtags}&via=${shareVia}`}
+            >
+              <Button
+                className="discover-action"
+                variant="tertiary"
+                sx={{ height: '36px', ml: 2, px: 2, pt: '5px', pb: 0 }}
+              >
+                <Icon name="share" size={20} />
+              </Button>
+            </AppLink>
+          )}
+        </Flex>
       )
     case 'collateralValue':
     case 'liquidationPrice':
