@@ -1,7 +1,5 @@
 import { VaultType } from '@prisma/client'
-import {
-  AutomationBotV2AddTriggerData,
-} from 'blockchain/calls/automationBot'
+import { AutomationBotV2AddTriggerData } from 'blockchain/calls/automationBot'
 import { AutomationBotRemoveTriggersData } from 'blockchain/calls/automationBotAggregator'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
@@ -9,9 +7,15 @@ import { StopLossResetData } from 'features/automation/protection/stopLoss/state
 import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { zero } from 'helpers/zero'
 
+/*
+ * This file contains definitions of constants that are required for automation
+ * metadata interface but are not required during open position flow. You can use
+ * it to mock required properties and ensure type safety.
+ * */
+
 export const notRequiredMethods = {
   getExecutionPrice: () => zero,
-  prepareAddStopLossTriggerData: () => ({}) as AutomationAddTriggerData,
+  prepareAddStopLossTriggerData: () => ({} as AutomationAddTriggerData),
 }
 
 export const notRequiredAaveTranslations = {
@@ -58,6 +62,6 @@ export const notRequiredCommonData = {
 }
 
 export const notRequiredAutomationContext = {
-  protocol: '' as unknown as VaultProtocol,
+  protocol: ('' as unknown) as VaultProtocol,
   commonData: notRequiredCommonData,
 }
