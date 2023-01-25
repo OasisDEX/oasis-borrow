@@ -46,6 +46,8 @@ export function DiscoverTableDataCellContent({
               followerAddress={follow.followerAddress}
               vaultId={new BigNumber(primitives.cdpId)}
               short
+              isLimitReached={follow.isLimitReached}
+              setIsLimitReached={follow.setIsLimitReached}
               sx={{
                 position: ['absolute', null, null, 'relative'],
                 right: [0, null, null, 'auto'],

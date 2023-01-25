@@ -17,6 +17,8 @@ export type FollowButtonControlProps = {
   short?: boolean
   sx?: SxStyleProp
   vaultId: BigNumber
+  isLimitReached: boolean
+  setIsLimitReached: (value: boolean) => void
 }
 
 export function FollowButtonControl({
@@ -25,10 +27,11 @@ export function FollowButtonControl({
   short,
   sx,
   vaultId,
+  isLimitReached,
+  setIsLimitReached,
 }: FollowButtonControlProps) {
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
-  const [isLimitReached, setIsLimitReached] = useState(false)
 
   useEffect(() => {
     void getFollowFromApi(followerAddress)
@@ -47,9 +50,8 @@ export function FollowButtonControl({
         new BigNumber(item.vault_id).eq(vaultId) && new BigNumber(item.vault_chain_id).eq(chainId),
     )
     setIsFollowing(currentFollowedVault !== undefined)
-    setIsLimitReached(
-      currentFollowedVault === undefined && followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS,
-    )
+
+    setIsLimitReached(followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS)
     setProcessing(false) // this is required finally doesn't handle it!
   }
 
@@ -65,7 +67,7 @@ export function FollowButtonControl({
     }
     console.log('isLimitReached', isLimitReached)
     console.log('isFollowing', isFollowing)
-    console.log('isProcessing', isProcessing    )
+    console.log('isProcessing', isProcessing)
     console.log('vaultId', vaultId)
   }
   return (
@@ -85,9 +87,6 @@ export function FollowButtonControl({
     setIsFollowing(false)
     setProcessing(false)
     setIsLimitReached(false)
-    console.log('isLimitReached',isLimitReached)
-    console.log('isFollowing',isFollowing)
-    console.log('isProcessing',isProcessing)
   }
 
   async function followVault(jwtToken: string) {

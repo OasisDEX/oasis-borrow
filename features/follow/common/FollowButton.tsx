@@ -48,7 +48,7 @@ export function FollowButton({
   return (
     <div onMouseOver={handleMouseOverParent} onMouseOut={handleMouseOutParent}>
       <Button
-        disabled={isProcessing || isLimitReached}
+        disabled={isProcessing || (isLimitReached && !isFollowing)}
         onClick={buttonClickHandler}
         sx={{
           position: 'relative',

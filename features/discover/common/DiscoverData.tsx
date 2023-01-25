@@ -7,7 +7,7 @@ import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverRespon
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import { useAccount } from 'helpers/useAccount'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box } from 'theme-ui'
 
 interface DiscoverDataProps {
@@ -29,6 +29,8 @@ export function DiscoverData({
 }: DiscoverDataProps) {
   const { walletAddress } = useAccount()
 
+  const [isLimitReached, setIsLimitReached] = useState(false)
+
   return (
     <Box sx={{ position: 'relative' }}>
       {response?.rows ? (
@@ -41,7 +43,12 @@ export function DiscoverData({
             kind={kind}
             rows={response.rows}
             {...(!!walletAddress && {
-              follow: { followerAddress: walletAddress, chainId: NetworkIds.MAINNET },
+              follow: {
+                followerAddress: walletAddress,
+                chainId: NetworkIds.MAINNET,
+                isLimitReached,
+                setIsLimitReached,
+              },
             })}
             onBannerClick={(link) => {
               trackingEvents.discover.clickedTableBanner(kind, link, userContext)

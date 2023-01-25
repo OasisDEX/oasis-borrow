@@ -24,6 +24,8 @@ export interface DiscoverFiltersList {
 export interface DiscoverFollow {
   followerAddress: string
   chainId: number
+  isLimitReached: boolean
+  setIsLimitReached: (value: boolean) => void
 }
 export interface DiscoverBanner {
   icon: JSX.Element
