@@ -3,7 +3,7 @@ import { MakerAutomationContext } from 'features/automation/contexts/MakerAutoma
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useAppContext } from '../AppContextProvider'
 import { GeneralManageLayout } from './GeneralManageLayout'
@@ -28,6 +28,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   }, [])
 
   const vaultHistoryCheck = generalManageVaultData?.state.vaultHistory.length || undefined
+  const [isLimitReached, setIsLimitReached] = useState(false)
 
   return (
     <WithErrorHandler error={[generalManageVaultError]}>
@@ -45,6 +46,8 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
                       followerAddress: account,
                       vaultId: id,
                       chainId: chainId,
+                      isLimitReached,
+                      setIsLimitReached,
                     }
                   : undefined
               }
