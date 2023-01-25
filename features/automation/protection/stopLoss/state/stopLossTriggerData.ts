@@ -20,14 +20,14 @@ export interface StopLossTriggerData {
 
 function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataType[]) {
   const mappedStopLossTriggers = stopLossTriggersData.map((trigger) => {
-    const { triggerType, slLevel, collRatio } = trigger.result
+    const { triggerType, ltv, collRatio } = trigger.result
 
     const triggerTypeAsNumber = new BigNumber(triggerType).toNumber()
 
     return {
       triggerId: new BigNumber(trigger.triggerId),
       isStopLossEnabled: true,
-      stopLossLevel: new BigNumber((slLevel || collRatio).toString()).div(100),
+      stopLossLevel: new BigNumber((ltv || collRatio).toString()).div(100),
       isToCollateral:
         triggerTypeAsNumber === TriggerType.StopLossToCollateral ||
         triggerTypeAsNumber === TriggerType.AaveStopLossToCollateral,
