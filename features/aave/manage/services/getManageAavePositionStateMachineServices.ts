@@ -23,7 +23,7 @@ import { AaveProtocolData } from './getAaveProtocolData'
 export function getManageAavePositionStateMachineServices(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
-  tokenBalances$: Observable<TokenBalances>,
+  tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxyAddress$: Observable<string | undefined>,
   proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   userSettings$: Observable<UserSettingsState>,
@@ -49,16 +49,20 @@ export function getManageAavePositionStateMachineServices(
     getBalance: (context, _) => {
       return tokenBalances$.pipe(
         map((balances) => {
-          const strategyBalance: StrategyTokenBalance = {
-            collateral: balances[context.tokens.collateral],
-            debt: balances[context.tokens.debt],
-            deposit: balances[context.tokens.deposit],
+          if (!balances) {
+            return {}
+          } else {
+            const strategyBalance: StrategyTokenBalance = {
+              collateral: balances[context.tokens.collateral],
+              debt: balances[context.tokens.debt],
+              deposit: balances[context.tokens.deposit],
+            }
+            return strategyBalance
           }
-          return strategyBalance
         }),
-        map((balance) => ({
+        map((balances) => ({
           type: 'SET_BALANCE',
-          balance: balance,
+          balance: balances,
         })),
       )
     },

@@ -1,7 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
-import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
+import {
+  FollowButtonControl,
+  FollowButtonControlProps,
+} from 'features/follow/common/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -12,7 +15,7 @@ import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetail
 
 export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]
-  followButtonProps?: FollowButtonProps
+  followButton?: FollowButtonControlProps
   header: string
   label?: string
   loading?: boolean
@@ -25,7 +28,7 @@ export type VaultHeadlineProps = {
 
 export function VaultHeadline({
   details,
-  followButtonProps,
+  followButton,
   header,
   label,
   loading = false,
@@ -85,12 +88,8 @@ export function VaultHeadline({
         )}
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
-        {followVaultEnabled && followButtonProps && (
-          <FollowButtonControl
-            followerAddress={followButtonProps.followerAddress}
-            vaultId={followButtonProps.vaultId}
-            chainId={followButtonProps.chainId}
-          />
+        {followVaultEnabled && followButton && (
+          <FollowButtonControl {...followButton} sx={{ ml: 3 }} />
         )}
       </Heading>
       <Flex

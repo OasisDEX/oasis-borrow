@@ -70,7 +70,7 @@ export type AdjustRiskViewConfig = {
   }
   riskRatios: {
     minimum: IRiskRatio
-    default: IRiskRatio
+    default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
 }
 
@@ -93,9 +93,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     const simulation = state.context.strategy?.simulation
     const targetPosition = simulation?.position
 
-    const maxRisk = targetPosition
-      ? targetPosition?.category.maxLoanToValue
-      : onChainPosition?.category.maxLoanToValue
+    const maxRisk =
+      targetPosition?.category.maxLoanToValue || onChainPosition?.category.maxLoanToValue || zero
 
     const minRisk =
       (simulation?.minConfigurableRiskRatio &&
@@ -137,7 +136,9 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     )
 
     const sliderValue =
-      state.context.userInput.riskRatio?.loanToValue || onChainPosition?.riskRatio.loanToValue
+      state.context.userInput.riskRatio?.loanToValue ||
+      onChainPosition?.riskRatio.loanToValue ||
+      state.context.defaultRiskRatio?.loanToValue
 
     const sidebarContent = (
       <Grid gap={3}>
@@ -178,8 +179,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
           }}
           minBoundry={minRisk}
-          maxBoundry={maxRisk || zero}
-          lastValue={sliderValue || viewConfig.riskRatios.default.loanToValue}
+          maxBoundry={maxRisk}
+          lastValue={sliderValue || zero}
           disabled={viewLocked || !maxRisk}
           disabledVisually={viewLocked || !maxRisk}
           step={0.01}

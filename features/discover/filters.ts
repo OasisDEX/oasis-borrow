@@ -23,6 +23,7 @@ export const discoverFiltersAssetItems: { [key: string]: DiscoverFiltersListOpti
   link: { value: 'LINK', label: 'LINK', icon: getToken('LINK').iconCircle },
   mana: { value: 'MANA', label: 'MANA', icon: getToken('MANA').iconCircle },
   matic: { value: 'MATIC', label: 'MATIC', icon: getToken('MATIC').iconCircle },
+  uni: { value: 'UNI', label: 'UNI', icon: getToken('UNI').iconCircle },
   wbtc: { value: 'WBTC', label: 'WBTC', icon: getToken('WBTC').iconCircle },
   wsteth: { value: 'WSTETH', label: 'WSTETH', icon: getToken('WSTETH').iconCircle },
   yfi: { value: 'YFI', label: 'YFI', icon: getToken('YFI').iconCircle },

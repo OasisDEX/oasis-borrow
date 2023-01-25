@@ -35,7 +35,7 @@ export interface IStrategyConfig {
   }
   riskRatios: {
     minimum: IRiskRatio
-    default: IRiskRatio
+    default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
   type: 'Multiply' | 'Earn'
   featureToggle?: Feature

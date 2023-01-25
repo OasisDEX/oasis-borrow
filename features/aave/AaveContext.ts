@@ -15,7 +15,7 @@ import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
-import { Observable } from 'rxjs'
+import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../blockchain/tokens'
@@ -49,7 +49,7 @@ import {
   getOperationExecutorTransactionMachine,
 } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
-import { strategies } from './strategyConfig'
+import { supportedTokens } from './strategyConfig'
 import { PositionId } from './types'
 
 export function setupAaveContext({
@@ -128,14 +128,6 @@ export function setupAaveContext({
       contextForAddress$.pipe(switchMap(({ account }) => allowance$(token, account, spender))),
     (token, spender) => `${token}-${spender}`,
   )
-
-  const supportedTokens = Array.from(
-    new Set(
-      Object.values(strategies)
-        .map((strategy) => Object.values(strategy.tokens))
-        .flatMap((tokens) => tokens),
-    ),
-  )
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
       balance$,
@@ -144,8 +136,12 @@ export function setupAaveContext({
       supportedTokens,
     ),
   )
-  const tokenBalances$: Observable<TokenBalances> = contextForAddress$.pipe(
-    switchMap(({ account }) => aaveSupportedTokenBalances$(account)),
+
+  const tokenBalances$: Observable<TokenBalances | undefined> = context$.pipe(
+    switchMap(({ account }) => {
+      if (!account) return of(undefined)
+      return aaveSupportedTokenBalances$(account)
+    }),
   )
 
   const strategyInfo$ = memoize(
@@ -212,6 +208,7 @@ export function setupAaveContext({
     allowanceForAccount$,
     unconsumedDpmProxyForConnectedAccount$,
     proxyConsumed$,
+    aaveReserveConfigurationData$,
   )
 
   const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(

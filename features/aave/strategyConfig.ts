@@ -157,3 +157,11 @@ export function loadStrategyFromTokens(
   }
   return strategy
 }
+
+export const supportedTokens = Array.from(
+  new Set(
+    Object.values(strategies)
+      .map((strategy) => Object.values(strategy.tokens))
+      .flatMap((tokens) => tokens),
+  ),
+)
