@@ -82,7 +82,6 @@ export function FollowButtonControl({
   )
 
   async function unfollowVault(jwtToken: string) {
-    console.log('unfollowing vault')
     await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
     setIsFollowing(false)
     setProcessing(false)
