@@ -2,9 +2,9 @@ import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { WithArrow } from 'components/WithArrow'
+import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
 import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { ManageAaveEvent } from 'features/aave/manage/state'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -147,7 +147,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     const stopLossError =
       automation?.stopLoss.isStopLossEnabled &&
       automation?.stopLoss.stopLossLevel &&
-      sliderValue.gte(automation?.stopLoss.stopLossLevel)
+      sliderValue?.gte(automation?.stopLoss.stopLossLevel)
 
     const sidebarContent = (
       <Grid gap={3}>
@@ -228,7 +228,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           </Link>
         )}
         {stopLossError && <StopLossAaveErrorMessage />}
-          {showWarring ? (
+        {showWarring ? (
           <MessageCard
             messages={[t('manage-earn-vault.has-asset-already')]}
             type="error"
