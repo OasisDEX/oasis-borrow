@@ -1,5 +1,6 @@
 import { Result } from '@ethersproject/abi'
-import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
+import { TriggerType } from '@oasisdex/automation'
+import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import {
   AutomationEventIds,
@@ -10,7 +11,6 @@ import {
 import BigNumber from 'bignumber.js'
 import { NetworkIds } from 'blockchain/network'
 import { UIChanges } from 'components/AppContext'
-import { utils } from 'ethers'
 import { TriggerRecord, TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   aaveTokenPairsAllowedAutomation,
@@ -54,14 +54,11 @@ export function getTriggersByType(
 
   try {
     const decodedTriggers = triggers.map((trigger) => {
-      // TODO temp workaround until common lib will be updated
-      const result =
-        trigger.commandAddress === '0x09120eaed8e4cd86d85a616680151daa653880f2'
-          ? utils.defaultAbiCoder.decode(
-              ['address', 'uint16', 'address', 'address', 'uint256', 'uint32'],
-              trigger.executionParams,
-            )
-          : decodeTriggerData(trigger.commandAddress, networkId, trigger.executionParams)
+      const result = decodeTriggerDataAsJson(
+        trigger.commandAddress,
+        networkId,
+        trigger.executionParams,
+      )
 
       return {
         triggerId: trigger.triggerId,
@@ -72,7 +69,7 @@ export function getTriggersByType(
     })
 
     return decodedTriggers.filter((decodedTrigger) => {
-      const triggerType = decodedTrigger.result[1]
+      const triggerType = Number(decodedTrigger.result.triggerType)
       return triggerTypes.includes(triggerType)
     })
   } catch (e) {

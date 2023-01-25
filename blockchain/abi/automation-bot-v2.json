@@ -168,6 +168,11 @@
         "internalType": "bytes",
         "name": "triggerData",
         "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "replacedTriggerData",
+        "type": "bytes"
       }
     ],
     "name": "addRecord",
@@ -198,6 +203,11 @@
         "type": "bytes[]"
       },
       {
+        "internalType": "bytes[]",
+        "name": "replacedTriggerData",
+        "type": "bytes[]"
+      },
+      {
         "internalType": "uint256[]",
         "name": "triggerTypes",
         "type": "uint256[]"
@@ -219,6 +229,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "clearLock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
