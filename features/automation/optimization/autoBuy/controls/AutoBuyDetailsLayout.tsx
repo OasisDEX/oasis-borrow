@@ -6,12 +6,15 @@ import {
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { useAutomationContext } from 'components/AutomationContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
+import { MessageCard } from 'components/MessageCard'
 import { ContentCardTargetColRatioAfterBuy } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterBuy'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
+import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation/common/consts'
 import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -21,7 +24,7 @@ import { AutomationFeatures } from 'features/automation/common/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 export interface AutoBuyDetailsLayoutProps {
   ilk: string
@@ -52,9 +55,19 @@ export function AutoBuyDetailsLayout({
 }: AutoBuyDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const {
+    triggerData: {
+      autoBuyTriggerData: { isTriggerEnabled, maxBuyOrMinSellPrice },
+    },
+  } = useAutomationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const isAutoBuyOn = autoBuyTriggerData.isTriggerEnabled
+
+  const shouldShowOverrideAutoBuy =
+    isTriggerEnabled &&
+    maxBuyOrMinSellPrice.isZero() &&
+    vaultIdsThatAutoBuyTriggerShouldBeRecreated.includes(vaultId.toNumber())
 
   return (
     <>
@@ -64,22 +77,33 @@ export function AutoBuyDetailsLayout({
           title={t('auto-buy.title')}
           badge={isAutoBuyOn}
           content={
-            <DetailsSectionContentCardWrapper>
-              <ContentCardTriggerColRatioToBuy
-                token={token}
-                triggerColRatio={triggerColRatio}
-                afterTriggerColRatio={afterTriggerColRatio}
-                nextBuyPrice={nextBuyPrice}
-                changeVariant="positive"
-              />
-              <ContentCardTargetColRatioAfterBuy
-                targetColRatio={targetColRatio}
-                afterTargetColRatio={afterTargetColRatio}
-                threshold={threshold}
-                changeVariant="positive"
-                token={token}
-              />
-            </DetailsSectionContentCardWrapper>
+            <>
+              {shouldShowOverrideAutoBuy && (
+                <Box mb={3}>
+                  <MessageCard
+                    type="warning"
+                    messages={[t('vault-warnings.auto-buy-override')]}
+                    withBullet={false}
+                  />
+                </Box>
+              )}
+              <DetailsSectionContentCardWrapper>
+                <ContentCardTriggerColRatioToBuy
+                  token={token}
+                  triggerColRatio={triggerColRatio}
+                  afterTriggerColRatio={afterTriggerColRatio}
+                  nextBuyPrice={nextBuyPrice}
+                  changeVariant="positive"
+                />
+                <ContentCardTargetColRatioAfterBuy
+                  targetColRatio={targetColRatio}
+                  afterTargetColRatio={afterTargetColRatio}
+                  threshold={threshold}
+                  changeVariant="positive"
+                  token={token}
+                />
+              </DetailsSectionContentCardWrapper>
+            </>
           }
         />
       ) : (
