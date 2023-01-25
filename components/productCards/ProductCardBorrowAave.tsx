@@ -2,17 +2,16 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { displayMultiple } from 'helpers/display-multiple'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useSimulationYields } from 'helpers/useSimulationYields'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
+import { Icon } from "@makerdao/dai-ui-icons";
 
 type ProductCardBorrowAaveProps = {
   cardData: TokenMetadataType
@@ -25,27 +24,23 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$ } = useAaveContext()
+  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$, getAaveAssetsPrices$ } = useAaveContext()
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )
-  const maximumMultiple =
-    aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
+  const [aaveUSDCPrice] = useObservable(getAaveAssetsPrices$({ tokens: ['USDC'] }))
 
-  const simulationYields = useSimulationYields({
-    amount: aaveEarnCalcValueBasis.amount,
-    riskRatio: maximumMultiple,
-    fields: ['7Days', '90Days'],
-  })
+  const maximumLoanToValue =
+    aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
       <WithLoadingIndicator
-        value={[aaveReserveState, aaveAvailableLiquidityETH, maximumMultiple]}
+        value={[aaveReserveState, aaveAvailableLiquidityETH, maximumLoanToValue, aaveUSDCPrice]}
         customLoader={<ProductCardsLoader />}
       >
-        {([_aaveReserveState, _availableLiquidity, _maximumMultiple]) => (
+        {([_aaveReserveState, _availableLiquidity, _maximumLoanToValue, _aaveUSDCPrice]) => (
           <ProductCard
             tokenImage={cardData.bannerIcon}
             tokenGif={cardData.bannerGif}
@@ -57,39 +52,18 @@ export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) 
                 token: aaveEarnCalcValueBasis.token,
               }),
               description: t(`product-card-banner.aave.${cardData.symbol}`, {
-                value: _maximumMultiple.multiple.times(aaveEarnCalcValueBasis.amount).toFormat(0),
+                value: _maximumLoanToValue.loanToValue.times(aaveEarnCalcValueBasis.amount).div(_aaveUSDCPrice[0]).toFormat(0),
                 token: cardData.symbol,
               }),
             }}
             labels={[
               {
-                title: t('system.max-multiple'),
-                value: displayMultiple(_maximumMultiple.multiple),
+                title: t('system.max-loan-to-value'),
+                value: formatDecimalAsPercent(_maximumLoanToValue.loanToValue)
               },
               {
-                title: '7 day net APY',
-                value: simulationYields?.yields?.annualisedYield7days ? (
-                  // this takes a while, so we show a spinner until it's ready
-                  formatPercent(simulationYields.yields.annualisedYield7days, {
-                    precision: 2,
-                  })
-                ) : (
-                  <AppSpinner />
-                ),
-              },
-              {
-                title: '90 day net APY',
-                value: simulationYields?.yields?.annualisedYield90days ? (
-                  formatPercent(simulationYields.yields.annualisedYield90days, {
-                    precision: 2,
-                  })
-                ) : (
-                  <AppSpinner />
-                ),
-              },
-              {
-                title: 'Current Liquidity Available',
-                value: formatCryptoBalance(_availableLiquidity),
+                title: t('product-card.aave.tokens-for-borrowing'),
+                value: <Icon name={`usdc`} size="26px" sx={{ mr: 2 }} />
               },
               {
                 title: t('system.protocol'),
@@ -99,8 +73,8 @@ export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) 
               },
             ]}
             button={{
-              link: `/earn/aave/open/${cardData.symbol}`,
-              text: t('nav.earn'),
+              link: `/borrow/aave/open/${cardData.symbol}`,
+              text: t('nav.borrow'),
             }}
             background={cardData.background}
             protocol={cardData.protocol}

@@ -36,6 +36,7 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
   const [productCardsData, productCardsDataError] = useObservable(
     productCardsData$(props.strategies.maker),
   )
+
   const aaveStrategyCards = getTokens(props.strategies.aave ?? [])
 
   return (

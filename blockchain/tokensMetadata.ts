@@ -757,6 +757,22 @@ export const tokens: TokenConfig[] = [
     protocol: 'aave',
   },
   {
+    symbol: 'borrow-against-ETH',
+    precision: 18,
+    digits: 5,
+    maxSell: '10000000',
+    name: 'Borrow ETH',
+    icon: 'aave_eth_usdc',
+    iconCircle: 'aave_eth_usdc',
+    iconColor: 'aave_eth_usdc',
+    color: '#E2F7F9',
+    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_ETH.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
+    tags: [],
+    protocol: 'aave',
+  },
+  {
     symbol: 'RETH',
     precision: 18,
     digits: 5,
@@ -800,8 +816,6 @@ export type TokenSymbolType = ElementOf<typeof tokens>['symbol']
 export type TokenMetadataType = typeof tokens[number]
 
 export function getToken(tokenSymbol: TokenSymbolType): TokenMetadataType {
-  console.log('tokenSymbol', tokenSymbol);
-
   if (!tokensBySymbol[tokenSymbol]) {
     throw new Error(`No meta information for token: ${tokenSymbol}`)
   }

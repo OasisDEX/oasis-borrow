@@ -286,7 +286,7 @@ export const productCardsConfig: {
       earn: ['DSR', 'GUNIV3DAIUSDC2-A'],
     },
     featuredAaveCards: {
-      borrow: [],
+      borrow: getAaveEnabledStrategies([{ strategy: 'borrow-against-ETH', featureToggle: 'AaveBorrow' }]),
       multiply: getAaveEnabledStrategies([
         { strategy: 'ethusdc' },
         { strategy: 'stETHusdc' },
@@ -443,9 +443,9 @@ export function uniLpProductCards<T extends IlkTokenMap>(ilkToTokenMappings: Arr
 }
 
 export function landingPageCardsData({
-  productCardsData,
-  product = 'multiply',
-}: {
+                                       productCardsData,
+                                       product = 'multiply',
+                                     }: {
   productCardsData: ProductCardData[]
   product?: ProductTypes
 }) {
@@ -455,9 +455,9 @@ export function landingPageCardsData({
 }
 
 export function pageCardsDataByProduct({
-  productCardsData,
-  product = 'multiply',
-}: {
+                                         productCardsData,
+                                         product = 'multiply',
+                                       }: {
   productCardsData: ProductCardData[]
   product?: ProductTypes
 }) {
@@ -493,8 +493,8 @@ function sortCards<T extends IlkTokenMap>(
 }
 
 export function earnPageCardsData<T extends IlkTokenMap>({
-  ilkToTokenMapping,
-}: {
+                                                           ilkToTokenMapping,
+                                                         }: {
   ilkToTokenMapping: Array<T>
 }): Array<T> {
   return ilkToTokenMapping.filter((data) =>
@@ -503,9 +503,9 @@ export function earnPageCardsData<T extends IlkTokenMap>({
 }
 
 export function multiplyPageCardsData<T extends IlkTokenMap>({
-  ilkToTokenMapping,
-  cardsFilter,
-}: {
+                                                               ilkToTokenMapping,
+                                                               cardsFilter,
+                                                             }: {
   ilkToTokenMapping: Array<T>
   cardsFilter?: ProductLandingPagesFiltersKeys
 }): Array<T> {
@@ -533,9 +533,9 @@ export function multiplyPageCardsData<T extends IlkTokenMap>({
 }
 
 export function borrowPageCardsData<T extends IlkTokenMap>({
-  ilkToTokenMapping,
-  cardsFilter,
-}: {
+                                                             ilkToTokenMapping,
+                                                             cardsFilter,
+                                                           }: {
   ilkToTokenMapping: Array<T>
   cardsFilter?: ProductLandingPagesFiltersKeys
 }): Array<T> {

@@ -127,7 +127,7 @@ export const strategies: Array<IStrategyConfig> = [
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
     return {
-      name: `borrow-${collateral}`,
+      name: `borrow-against-${collateral}`,
       urlSlug: collateral,
       proxyType: ProxyType.DpmProxy,
       viewComponents: {
@@ -148,7 +148,7 @@ export const strategies: Array<IStrategyConfig> = [
         deposit: collateral,
       },
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-      featureToggle: 'AaveMultiplyWBTCUSDC' as Feature, // this will get set optional with https://github.com/OasisDEX/oasis-borrow/pull/1928
+      featureToggle: 'AaveBorrow' as Feature, // this will get set optional with https://github.com/OasisDEX/oasis-borrow/pull/1928
       type: 'Borrow' as ProductType,
     }
   }),
