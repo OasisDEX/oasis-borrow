@@ -148,7 +148,7 @@ export const strategies: Array<IStrategyConfig> = [
         deposit: collateral,
       },
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-      featureToggle: 'AaveMultiplyWBTCUSDC' as Feature, // this will get set optional with https://github.com/OasisDEX/oasis-borrow/pull/1928
+      featureToggle: 'AaveBorrow' as Feature,
       type: 'Borrow' as ProductType,
     }
   }),
