@@ -1,15 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import {
-  addAutomationBotTrigger,
-  addAutomationBotTriggerV2,
-  removeAutomationBotTriggerV2,
-} from 'blockchain/calls/automationBot'
-import {
-  AutomationBotRemoveTriggersData,
-  removeAutomationBotAggregatorTriggers,
-} from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { AutomationPositionData } from 'components/AutomationContextProvider'
@@ -23,16 +14,21 @@ import {
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
-import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import {
-  StopLossFormChange,
-  StopLossResetData,
-} from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+  notRequiredAaveTranslations,
+  notRequiredAutomationContext,
+  notRequiredContracts,
+  notRequiredMethods,
+  notRequiredPositionData,
+  notRequiredValidations,
+  notRequiredValues,
+} from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
+import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import { StopLossFormChange } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import {
   defaultStopLossData,
   prepareStopLossTriggerDataV2,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { VaultProtocol } from 'helpers/getVaultProtocol'
 import { one, zero } from 'helpers/zero'
 import { Sender } from 'xstate'
 
@@ -54,10 +50,8 @@ export function extractStopLossDataInput(context: OpenAaveContext) {
       context.strategy?.simulation.position.debt.precision,
     ),
     liquidationPrice: context.strategy?.simulation.position.liquidationPrice || zero,
-    nextCollateralPrice: context.collateralPrice || zero,
     liquidationPenalty: context.strategyInfo?.liquidationBonus || zero,
     liquidationRatio: context?.strategy?.simulation.position.category.liquidationThreshold || zero,
-    debtFloor: context?.strategy?.simulation.position.category.dustLimit || zero,
     debtTokenAddress: context.web3Context!.tokens[debtToken].address,
     collateralTokenAddress: context.web3Context!.tokens[collateralToken].address,
     // TODO these two below will need to be on context
@@ -66,11 +60,7 @@ export function extractStopLossDataInput(context: OpenAaveContext) {
   }
 }
 
-export function getAaveStopLossData(
-  context: OpenAaveContext,
-  send: Sender<OpenAaveEvent>,
-  feature: 'borrow' | 'multiply',
-) {
+export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenAaveEvent>) {
   const {
     collateralToken,
     debtToken,
@@ -79,10 +69,8 @@ export function getAaveStopLossData(
     debt,
     lockedCollateral,
     proxyAddress,
-    nextCollateralPrice,
     liquidationPenalty,
     liquidationRatio,
-    debtFloor,
     debtTokenAddress,
     collateralTokenAddress,
     stopLossLevel,
@@ -167,11 +155,10 @@ export function getAaveStopLossData(
         },
       },
       methods: {
-        getExecutionPrice: () => executionPrice,
         getMaxToken: () => maxToken,
         getRightBoundary: () => afterNewLiquidationPrice,
         getSliderPercentageFill: () => sliderPercentageFill,
-        prepareAddStopLossTriggerData: () => preparedAddStopLossTriggerData,
+        ...notRequiredMethods,
       },
       settings: {
         fixedCloseToToken: debtToken,
@@ -180,29 +167,16 @@ export function getAaveStopLossData(
       },
       translations: {
         ratioParamTranslationKey: 'vault-changes.loan-to-value',
-        stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-above',
-        bannerStrategiesKey: 'protection.stop-loss',
+        ...notRequiredAaveTranslations,
       },
-      validation: {
-        getAddErrors: () => ({}),
-        getAddWarnings: () => ({}),
-        cancelErrors: [],
-        cancelWarnings: [],
-      },
+      validation: notRequiredValidations,
       values: {
         collateralDuringLiquidation,
-        initialSlRatioWhenTriggerDoesntExist: zero,
-        resetData: {} as StopLossResetData,
         sliderMax,
         sliderMin,
-        triggerMaxToken: zero,
-        dynamicStopLossPrice: zero,
-        removeTxData: {} as AutomationBotRemoveTriggersData,
+        ...notRequiredValues,
       },
-      contracts: {
-        addTrigger: addAutomationBotTriggerV2,
-        removeTrigger: removeAutomationBotTriggerV2,
-      },
+      contracts: notRequiredContracts,
     }
   }
 
@@ -215,32 +189,19 @@ export function getAaveStopLossData(
     positionData: {
       token: collateralToken,
       debtToken: debtToken,
-      owner: proxyAddress,
       positionRatio: positionRatio,
-      nextPositionRatio: positionRatio,
       debt,
-      debtFloor,
-      debtOffset: zero,
       id: zero,
       ilk: collateralToken,
-      liquidationPenalty,
-      liquidationPrice,
-      liquidationRatio,
-      lockedCollateral,
-      vaultType: feature,
+      ...notRequiredPositionData,
     } as AutomationPositionData,
-    commonData: {
-      controller: proxyAddress,
-      nextCollateralPrice,
-      token: collateralToken,
-    },
-    protocol: VaultProtocol.Aave,
     metadata: {
       stopLoss: getOpenVaultStopLossMetadata,
     },
     overwriteTriggersDefaults: {
       stopLossTriggerData: defaultStopLossTriggerData,
     },
+    ...notRequiredAutomationContext,
   }
 
   return { stopLossSidebarProps, automationContextProps }

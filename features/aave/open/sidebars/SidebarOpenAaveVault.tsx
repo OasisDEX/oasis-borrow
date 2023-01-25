@@ -270,11 +270,8 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
 
 export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const { stopLossSidebarProps, automationContextProps } = getAaveStopLossData(
-    state.context,
-    send,
-    'multiply',
-  )
+  const { stopLossSidebarProps, automationContextProps } = getAaveStopLossData(state.context, send)
+
   console.log('stopLossSidebarProps', stopLossSidebarProps)
   console.log('automationContextProps', automationContextProps)
 

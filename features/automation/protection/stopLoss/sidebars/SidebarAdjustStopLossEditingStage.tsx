@@ -153,10 +153,10 @@ export function SidebarAdjustStopLossEditingStage({
     (value) =>
       trackingEvents.automation.inputChange(
         AutomationEventIds.MoveSlider,
-        id ? Pages.StopLoss : Pages.OpenVault,
+        !id.isZero() ? Pages.StopLoss : Pages.OpenVault,
         CommonAnalyticsSections.Form,
         {
-          vaultId: id ? id.toString() : 'n/a',
+          vaultId: !id.isZero() ? id.toString() : 'n/a',
           ilk: ilk,
           collateralRatio: positionRatio.times(100).decimalPlaces(2).toString(),
           triggerValue: value,
@@ -207,10 +207,10 @@ export function SidebarAdjustStopLossEditingStage({
                 })
                 trackingEvents.automation.buttonClick(
                   AutomationEventIds.CloseToX,
-                  Pages.StopLoss,
+                  !id.isZero() ? Pages.StopLoss : Pages.OpenVault,
                   CommonAnalyticsSections.Form,
                   {
-                    vaultId: id.toString(),
+                    vaultId: !id.isZero() ? id.toString() : 'n/a',
                     ilk: ilk,
                     closeTo: optionName as CloseVaultTo,
                   },
