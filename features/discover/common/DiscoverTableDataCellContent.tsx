@@ -8,6 +8,11 @@ import { parsePillAdditionalData } from 'features/discover/helpers'
 import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
+import {
+  getTwitterShareUrl,
+  twitterSharePositionText,
+  twitterSharePositionVia,
+} from 'features/follow/common/ShareButton'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -16,9 +21,6 @@ import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath
-const shareText = ''
-const shareHashtags = ''
-const shareVia = ''
 
 export function DiscoverTableDataCellContent({
   follow,
@@ -110,13 +112,14 @@ export function DiscoverTableDataCellContent({
           </AppLink>
           {followVaultsEnabled && (
             <AppLink
-              href={`https://twitter.com/intent/tweet?text=${shareText}&url=${basePath}${
-                row.url || `/${row.cdpId}`
-              }&hashtags=${shareHashtags}&via=${shareVia}`}
+              href={getTwitterShareUrl({
+                text: twitterSharePositionText,
+                url: `${basePath}${row.url ? (row.url as string) : `/${row.cdpId}`}`,
+                via: twitterSharePositionVia,
+              })}
               sx={{ ml: 2 }}
             >
               <Button
-                className="discover-action"
                 variant="tertiary"
                 sx={{ height: '36px', px: 2, pt: '5px', pb: 0 }}
               >
