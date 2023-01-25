@@ -1,5 +1,6 @@
 import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
@@ -67,6 +68,11 @@ export type UpdateTokenActionValueType = {
   manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
 }
 
+type AaveOpenPositionWithStopLossEvents =
+  | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
+  | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
+  | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
+
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
@@ -87,6 +93,7 @@ export type BaseAaveEvent =
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
+  | AaveOpenPositionWithStopLossEvents
 
 export interface BaseAaveContext {
   userInput: UserInput
@@ -121,6 +128,10 @@ export interface BaseAaveContext {
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
+
+  stopLossLevel?: BigNumber
+  collateralActive?: boolean
+  stopLossTxData?: AutomationAddTriggerData
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

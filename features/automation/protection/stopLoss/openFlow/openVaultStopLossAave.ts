@@ -54,9 +54,8 @@ export function extractStopLossDataInput(context: OpenAaveContext) {
     liquidationRatio: context?.strategy?.simulation.position.category.liquidationThreshold || zero,
     debtTokenAddress: context.web3Context!.tokens[debtToken].address,
     collateralTokenAddress: context.web3Context!.tokens[collateralToken].address,
-    // TODO these two below will need to be on context
-    stopLossLevel: context.stopLossLevel,
-    collateralActive: context.collateralActive,
+    stopLossLevel: context.stopLossLevel || zero,
+    collateralActive: context.collateralActive || false,
   }
 }
 

@@ -326,6 +326,15 @@ export function createOpenAaveStateMachine(
         RESERVE_CONFIG_UPDATED: {
           actions: ['updateContext', 'setDefaultRiskRatio'],
         },
+        SET_STOP_LOSS_LEVEL: {
+          actions: 'updateContext',
+        },
+        SET_COLLATERAL_ACTIVE: {
+          actions: 'updateContext',
+        },
+        SET_STOP_LOSS_TX_DATA: {
+          actions: 'updateContext',
+        },
       },
     },
     {
