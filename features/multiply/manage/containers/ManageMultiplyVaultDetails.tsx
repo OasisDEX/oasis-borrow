@@ -5,6 +5,7 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { MessageCard } from 'components/MessageCard'
 import { ContentCardBuyingPower } from 'components/vault/detailsSection/ContentCardBuyingPower'
 import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
 import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
@@ -12,13 +13,14 @@ import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCard
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { UpdatedContentCardNetValue } from 'components/vault/detailsSection/UpdatedContentCardNetvalue'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation/common/consts'
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 import {
@@ -55,7 +57,10 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   } = props
   const { t } = useTranslation()
   const {
-    triggerData: { stopLossTriggerData },
+    triggerData: {
+      stopLossTriggerData,
+      autoBuyTriggerData: { maxBuyOrMinSellPrice, isTriggerEnabled },
+    },
   } = useAutomationContext()
   const updatedPnlToogle = useFeatureToggle('UpdatedPnL')
 
@@ -72,6 +77,11 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const totalGasFeesInEth = calculateTotalGasFeeInEth(vaultHistory)
   const currentPnLInUSD = calculateCurrentPnLInUSD(currentPnL, netValueUSD)
 
+  const shouldShowOverrideAutoBuy =
+    isTriggerEnabled &&
+    maxBuyOrMinSellPrice.isZero() &&
+    vaultIdsThatAutoBuyTriggerShouldBeRecreated.includes(id.toNumber())
+
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
@@ -79,64 +89,75 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       <DetailsSection
         title={t('system.overview')}
         content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
-              liquidationPrice={liquidationPrice}
-              liquidationRatio={liquidationRatio}
-              liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-              afterLiquidationPrice={afterLiquidationPrice}
-              changeVariant={changeVariant}
-            />
-            <ContentCardBuyingPower
-              token={token}
-              buyingPower={buyingPower}
-              buyingPowerUSD={buyingPowerUSD}
-              afterBuyingPowerUSD={afterBuyingPowerUSD}
-              changeVariant={changeVariant}
-            />
-            {updatedPnlToogle ? (
-              <UpdatedContentCardNetValue
-                token={token}
-                oraclePrice={oraclePrice}
-                marketPrice={marketPrice}
-                netValueUSD={netValueUSD}
-                afterNetValueUSD={afterNetValueUSD}
-                totalGasSpentUSD={totalGasSpentUSD}
-                currentPnL={currentPnL}
-                currentPnLInUSD={currentPnLInUSD}
-                lockedCollateral={lockedCollateral}
-                lockedCollateralUSD={lockedCollateralUSD}
-                debt={debt}
-                changeVariant={changeVariant}
-                depositTotalAmounts={depositTotalAmounts}
-                withdrawTotalAmounts={withdrawTotalAmounts}
-                totalGasFeesInEth={totalGasFeesInEth}
-              />
-            ) : (
-              <ContentCardNetValue
-                token={token}
-                oraclePrice={oraclePrice}
-                marketPrice={marketPrice}
-                netValueUSD={netValueUSD}
-                afterNetValueUSD={afterNetValueUSD}
-                totalGasSpentUSD={totalGasSpentUSD}
-                currentPnL={currentPnL}
-                lockedCollateral={lockedCollateral}
-                lockedCollateralUSD={lockedCollateralUSD}
-                debt={debt}
-                changeVariant={changeVariant}
-              />
+          <>
+            {shouldShowOverrideAutoBuy && (
+              <Box mb={3}>
+                <MessageCard
+                  type="warning"
+                  messages={[t('vault-warnings.auto-buy-override')]}
+                  withBullet={false}
+                />
+              </Box>
             )}
-            {stopLossTriggerData.isStopLossEnabled && (
-              <ContentCardDynamicStopPriceWithColRatio
-                slData={stopLossTriggerData}
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
                 liquidationPrice={liquidationPrice}
-                afterLiquidationPrice={afterLiquidationPrice}
                 liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
                 changeVariant={changeVariant}
               />
-            )}
-          </DetailsSectionContentCardWrapper>
+              <ContentCardBuyingPower
+                token={token}
+                buyingPower={buyingPower}
+                buyingPowerUSD={buyingPowerUSD}
+                afterBuyingPowerUSD={afterBuyingPowerUSD}
+                changeVariant={changeVariant}
+              />
+              {updatedPnlToogle ? (
+                <UpdatedContentCardNetValue
+                  token={token}
+                  oraclePrice={oraclePrice}
+                  marketPrice={marketPrice}
+                  netValueUSD={netValueUSD}
+                  afterNetValueUSD={afterNetValueUSD}
+                  totalGasSpentUSD={totalGasSpentUSD}
+                  currentPnL={currentPnL}
+                  currentPnLInUSD={currentPnLInUSD}
+                  lockedCollateral={lockedCollateral}
+                  lockedCollateralUSD={lockedCollateralUSD}
+                  debt={debt}
+                  changeVariant={changeVariant}
+                  depositTotalAmounts={depositTotalAmounts}
+                  withdrawTotalAmounts={withdrawTotalAmounts}
+                  totalGasFeesInEth={totalGasFeesInEth}
+                />
+              ) : (
+                <ContentCardNetValue
+                  token={token}
+                  oraclePrice={oraclePrice}
+                  marketPrice={marketPrice}
+                  netValueUSD={netValueUSD}
+                  afterNetValueUSD={afterNetValueUSD}
+                  totalGasSpentUSD={totalGasSpentUSD}
+                  currentPnL={currentPnL}
+                  lockedCollateral={lockedCollateral}
+                  lockedCollateralUSD={lockedCollateralUSD}
+                  debt={debt}
+                  changeVariant={changeVariant}
+                />
+              )}
+              {stopLossTriggerData.isStopLossEnabled && (
+                <ContentCardDynamicStopPriceWithColRatio
+                  slData={stopLossTriggerData}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  liquidationRatio={liquidationRatio}
+                  changeVariant={changeVariant}
+                />
+              )}
+            </DetailsSectionContentCardWrapper>
+          </>
         }
         footer={
           <DetailsSectionFooterItemWrapper>

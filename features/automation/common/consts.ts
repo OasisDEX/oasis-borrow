@@ -78,3 +78,14 @@ export const aaveTokenPairsAllowedAutomation = [
   ['WBTC', 'USDC'],
   ['STETH', 'USDC'],
 ]
+
+export const vaultIdsThatAutoBuyTriggerShouldBeRecreated = [
+  10804,
+  29568,
+  29186,
+  30084,
+  29628,
+  29928,
+  29574,
+  29643,
+]

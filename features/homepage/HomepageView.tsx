@@ -63,6 +63,7 @@ function Pill(props: PillProps) {
     </AppLink>
   )
 }
+
 function Pills({ sx }: { sx?: SxProps }) {
   return (
     <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
@@ -122,7 +123,6 @@ export function HomepageView() {
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const notificationsEnabled = useFeatureToggle('Notifications')
-  const dpmEnabled = useFeatureToggle('AaveUseDpmProxy')
   const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
@@ -152,20 +152,18 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      {dpmEnabled && (
-        <Flex
-          sx={{
-            justifyContent: 'center',
-            mt: '80px',
-            mb: 0,
-          }}
-        >
-          <HomePageBanner
-            heading={t('ref.banner')}
-            link="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
-          />
-        </Flex>
-      )}
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          mt: '80px',
+          mb: 0,
+        }}
+      >
+        <HomePageBanner
+          heading={t('ref.banner')}
+          link="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
+        />
+      </Flex>
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
@@ -211,17 +209,15 @@ export function HomepageView() {
                       <AppLink href="/multiply" variant="inText">
                         {t('landing.tabs.maker.multiply.tabParaLinkContent')}
                       </AppLink>
-                      {dpmEnabled && (
-                        <Box sx={{ mt: 3 }}>
-                          {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
-                          <AppLink
-                            href="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
-                            variant="inText"
-                          >
-                            {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
-                          </AppLink>
-                        </Box>
-                      )}
+                      <Box sx={{ mt: 3 }}>
+                        {t('landing.tabs.maker.multiply.aaveTabParaContent')}{' '}
+                        <AppLink
+                          href="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
+                          variant="inText"
+                        >
+                          {t('landing.tabs.maker.multiply.aaveTabParaLinkContent')}
+                        </AppLink>
+                      </Box>
                     </>
                   }
                   cards={

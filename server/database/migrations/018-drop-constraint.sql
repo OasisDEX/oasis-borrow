@@ -1,0 +1,1 @@
+ALTER TABLE "users_who_follow_vaults" DROP CONSTRAINT "users_who_follow_vaults_vault_id_vault_chain_id_fkey";

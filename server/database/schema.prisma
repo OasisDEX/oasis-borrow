@@ -33,7 +33,6 @@ model Vault {
     type          VaultType
     owner_address String
     chain_id      Int?
-    users         UsersWhoFollowVaults[]
 
     @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
     @@map("vault")
@@ -217,7 +216,6 @@ model LargestDebt {
 
 model UsersWhoFollowVaults {
     user_address    String
-    vault           Vault       @relation(fields: [vault_id, vault_chain_id], references: [vault_id, chain_id])
     vault_id        Int // relation scalar field (used in the `@relation` attribute above)
     vault_chain_id  Int
 

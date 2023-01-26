@@ -20,7 +20,7 @@ type PositionCreatedChainEvent = {
 export type PositionCreated = {
   collateralTokenSymbol: string
   debtTokenSymbol: string
-  positionType: 'Multiply' | 'Earn'
+  positionType: 'Borrow' | 'Multiply' | 'Earn'
   protocol: string
   proxyAddress: string
 }

@@ -186,7 +186,7 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
   automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
-  automationBotV2: contractDesc(automationBotV2, '0x25C0a2F0A077F537Bd11897F04946794c2f6f1Ef'),
+  automationBotV2: contractDesc(automationBotV2, '0x0Bb879563ce6BD7cf66d6906D6Cd754d7038572F'),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
     '0x5f1d184204775fBB351C4b2C61a2fD4aAbd3fB76',

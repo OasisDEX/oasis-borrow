@@ -20,14 +20,10 @@ export type Feature =
   | 'UpdatedPnL'
   | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
-  | 'AaveEarnSTETHETH'
-  | 'AaveMultiplySTETHUSDC'
-  | 'AaveMultiplyETHUSDC'
-  | 'AaveMultiplyWBTCUSDC'
+  | 'AaveBorrow'
   | 'FollowVaults'
   | 'AaveProtection'
   | 'Ajna'
-  | 'AaveUseDpmProxy'
   | 'DaiSavingsRate'
 
 const configuredFeatures: Record<Feature, boolean> = {
@@ -47,16 +43,11 @@ const configuredFeatures: Record<Feature, boolean> = {
   UpdatedPnL: false,
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: true,
-  AaveEarnSTETHETH: true,
-  AaveMultiplySTETHUSDC: true,
-  AaveMultiplyETHUSDC: true,
-  AaveMultiplyWBTCUSDC: true,
+  AaveBorrow: false,
   FollowVaults: false,
   AaveProtection: false,
   Ajna: false,
-  AaveUseDpmProxy: true,
   DaiSavingsRate: true,
-  // your feature here....
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
