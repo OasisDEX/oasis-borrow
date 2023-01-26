@@ -65,7 +65,3 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
 export function AaveManageHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
   return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-view'} />
 }
-
-export function GenericThing() {
-  return <>here is generic thing</>
-}

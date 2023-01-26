@@ -15,9 +15,10 @@ import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectio
 import { adjustRiskSliderConfig as earnAdjustRiskSliderConfig } from '../earn/aave/riskSliderConfig'
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
-import { AaveManageHeader, AaveOpenHeader, GenericThing } from './common/components/AaveHeader'
+import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { IStrategyConfig, ProductType, ProxyType } from './common/StrategyConfigTypes'
+import { DebtInput } from './open/components/DebtInput'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
@@ -140,7 +141,7 @@ export const strategies: Array<IStrategyConfig> = [
         simulateSection: AaveMultiplyManageComponent,
         vaultDetailsManage: AaveMultiplyManageComponent,
         vaultDetailsView: AaveMultiplyManageComponent,
-        secondaryInput: GenericThing,
+        secondaryInput: DebtInput,
         positionInfo: AaveMultiplyFaq,
         sidebarTitle: 'open-multiply.sidebar.title',
         sidebarButton: 'open-multiply.sidebar.open-btn',
