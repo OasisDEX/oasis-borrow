@@ -1,6 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
+import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
@@ -13,10 +14,8 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useMemo } from 'react'
-import { ajnaExtensionTheme } from 'theme'
 
 interface AjnaProductFlowPageProps {
   collateralToken: string
@@ -25,7 +24,6 @@ interface AjnaProductFlowPageProps {
 }
 
 function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProductFlowPageProps) {
-  const { t } = useTranslation()
   const { balanceInfo$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
   const _balanceInfo$ = useMemo(() => balanceInfo$(collateralToken, walletAddress), [
@@ -49,10 +47,7 @@ function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProdu
                 value={[balanceInfoData, tokenPriceUSDData]}
                 customLoader={
                   <PositionLoadingState
-                    header={t('ajna.borrow.open.headline.header', { collateralToken, quoteToken })}
-                    token={[collateralToken, quoteToken]}
-                    outline={{ size: 1, color: ajnaExtensionTheme.colors.interactive100 }}
-                    label="/static/img/ajna-product-card-label.svg"
+                    {...getAjnaBorrowHeadlineProps(collateralToken, quoteToken)}
                   />
                 }
               >

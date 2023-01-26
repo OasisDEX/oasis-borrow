@@ -16,10 +16,6 @@ export type VaultHeadlineProps = {
   header: string
   label?: string
   loading?: boolean
-  outline?: {
-    color: string
-    size: number
-  }
   token: string[]
 }
 
@@ -29,7 +25,6 @@ export function VaultHeadline({
   header,
   label,
   loading = false,
-  outline,
   token,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
@@ -55,19 +50,7 @@ export function VaultHeadline({
         }}
       >
         {tokenData instanceof Array && tokenData.length > 0 && (
-          <Box
-            sx={{
-              mr: 2,
-              ...(outline && {
-                filter: `
-                  drop-shadow(${outline.size}px ${outline.size}px 0 ${outline.color})
-                  drop-shadow(${outline.size}px -${outline.size}px 0 ${outline.color})
-                  drop-shadow(-${outline.size}px ${outline.size}px 0 ${outline.color})
-                  drop-shadow(-${outline.size}px -${outline.size}px 0 ${outline.color})
-                `,
-              }),
-            }}
-          >
+          <Box sx={{ mr: 2 }}>
             {tokenData.map(({ iconCircle }, iconIndex) => (
               <Icon
                 key={`VaultHeadlineIcon_${iconCircle}`}

@@ -25,10 +25,7 @@ export function AjnaBorrowFormContent() {
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep })),
       disabled: !isStepValid,
-      action: () => {
-        if (currentStep === 'confirm') alert('Submit transaction!')
-        else setNextStep()
-      },
+      action: setNextStep,
     },
     ...(isStepWithBack && {
       textButton: {

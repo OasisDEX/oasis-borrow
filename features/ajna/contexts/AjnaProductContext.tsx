@@ -3,7 +3,11 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
-import { isExternalStep, isStepWithBack } from 'features/ajna/contexts/ajnaStepManager'
+import {
+  isExternalStep,
+  isStepWithBack,
+  isStepWithTransaction,
+} from 'features/ajna/contexts/ajnaStepManager'
 import React, { PropsWithChildren, useContext, useEffect, useState } from 'react'
 
 interface AjnaBorrowContextProviderProps {
@@ -27,9 +31,11 @@ interface AjnaBorrowSteps {
   order: AjnaStatusStep[]
   isExternalStep: boolean
   isStepWithBack: boolean
+  isStepWithTransaction: boolean
   isStepValid: boolean
   setStep: (step: AjnaStatusStep) => void
   setNextStep: () => void
+  setPrevStep: () => void
 }
 
 interface AjnaBorrowContext {
@@ -60,19 +66,19 @@ export function AjnaBorrowContextProvider({
 
   const form = useAjnaBorrowFormReducto({})
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>('risk')
-  const order: AjnaStatusStep[] = ['risk', 'setup', 'confirm']
+  const order: AjnaStatusStep[] = ['risk', 'setup', 'confirm', 'progress', 'failure', 'success']
 
   const setStep = (step: AjnaStatusStep) => {
-    setCurrentStep(step)
+    if (isBorrowStepValid({ currentStep, formState: form.state })) {
+      if (isStepWithTransaction({ currentStep })) alert('Submit transaction')
+      else setCurrentStep(step)
+    } else throw new Error(`A state of current step in not valid.`)
   }
-  const shiftStep = (direction: 'prev' | 'next') => {
+  const shiftStep = (direction: 'next' | 'prev') => {
     const i = order.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
 
-    if (order[i]) setCurrentStep(order[order.indexOf(currentStep) + 1])
-    else console.error(`index ${i} exceeds `)
-  }
-  const setNextStep = () => {
-    setCurrentStep(order[order.indexOf(currentStep) + 1])
+    if (order[i]) setStep(order[i])
+    else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
   const setupStepManager = () => {
@@ -81,16 +87,16 @@ export function AjnaBorrowContextProvider({
       order,
       isExternalStep: isExternalStep({ currentStep }),
       isStepWithBack: isStepWithBack({ currentStep }),
+      isStepWithTransaction: isStepWithTransaction({ currentStep }),
       isStepValid: isBorrowStepValid({ currentStep, formState: form.state }),
       setStep,
-      setNextStep,
+      setNextStep: () => shiftStep('next'),
+      setPrevStep: () => shiftStep('prev'),
     }
   }
 
   const [context, setContext] = useState<AjnaBorrowContext>({
-    environment: {
-      ...props,
-    },
+    environment: { ...props },
     form,
     position: {},
     steps: setupStepManager(),
