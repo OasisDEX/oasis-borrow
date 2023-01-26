@@ -11,7 +11,7 @@ import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
-import { Icon } from "@makerdao/dai-ui-icons";
+import { Icon } from '@makerdao/dai-ui-icons'
 
 type ProductCardBorrowAaveProps = {
   cardData: TokenMetadataType
@@ -24,7 +24,11 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$, getAaveAssetsPrices$ } = useAaveContext()
+  const {
+    aaveSTETHReserveConfigurationData,
+    aaveAvailableLiquidityInUSDC$,
+    getAaveAssetsPrices$,
+  } = useAaveContext()
   const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
@@ -52,18 +56,21 @@ export function ProductCardBorrowAave({ cardData }: ProductCardBorrowAaveProps) 
                 token: aaveEarnCalcValueBasis.token,
               }),
               description: t(`product-card-banner.aave.${cardData.symbol}`, {
-                value: _maximumLoanToValue.loanToValue.times(aaveEarnCalcValueBasis.amount).div(_aaveUSDCPrice[0]).toFormat(0),
+                value: _maximumLoanToValue.loanToValue
+                  .times(aaveEarnCalcValueBasis.amount)
+                  .div(_aaveUSDCPrice[0])
+                  .toFormat(0),
                 token: cardData.symbol,
               }),
             }}
             labels={[
               {
                 title: t('system.max-loan-to-value'),
-                value: formatDecimalAsPercent(_maximumLoanToValue.loanToValue)
+                value: formatDecimalAsPercent(_maximumLoanToValue.loanToValue),
               },
               {
                 title: t('product-card.aave.tokens-for-borrowing'),
-                value: <Icon name={`usdc`} size="26px" sx={{ mr: 2 }} />
+                value: <Icon name={`usdc`} size="26px" sx={{ mr: 2 }} />,
               },
               {
                 title: t('system.protocol'),

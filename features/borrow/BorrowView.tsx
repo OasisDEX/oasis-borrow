@@ -6,7 +6,7 @@ import { ProductCardBorrow } from '../../components/productCards/ProductCardBorr
 import { ProductCardsFilter } from '../../components/productCards/ProductCardsFilter'
 import { ProductHeader } from '../../components/ProductHeader'
 import { borrowPageCardsData, productCardsConfig } from '../../helpers/productCards'
-import { aaveStrategiesList } from "../aave/strategyConfig";
+import { aaveStrategiesList } from '../aave/strategyConfig'
 
 export function BorrowView() {
   const { t } = useTranslation()

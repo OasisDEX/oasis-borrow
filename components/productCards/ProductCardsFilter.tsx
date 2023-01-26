@@ -4,7 +4,7 @@ import { AaveContextProvider, isAaveContextAvailable } from 'features/aave/AaveC
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import { IStrategyConfig } from "../../features/aave/common/StrategyConfigTypes";
+import { IStrategyConfig } from '../../features/aave/common/StrategyConfigTypes'
 import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
@@ -17,7 +17,7 @@ import {
   ProductLandingPagesFiltersKeys,
 } from '../../helpers/productCards'
 import { useAppContext } from '../AppContextProvider'
-import { ProductCardBorrowAave } from "./ProductCardBorrowAave";
+import { ProductCardBorrowAave } from './ProductCardBorrowAave'
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardsSelect } from './ProductCardsSelect'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
@@ -39,12 +39,12 @@ type FilterCardsFunction = ({
 }) => Array<IlkTokenMap>
 
 export function ProductCardsFilter({
-   filters,
-   makerProductCardComponent: ProductCardMakerComponent,
-   selectedFilter,
-   filterCardsFunction,
-   otherStrategies,
-  }: ProductCardFilterProps) {
+  filters,
+  makerProductCardComponent: ProductCardMakerComponent,
+  selectedFilter,
+  filterCardsFunction,
+  otherStrategies,
+}: ProductCardFilterProps) {
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
@@ -73,9 +73,10 @@ export function ProductCardsFilter({
   // TODO: No way to filter strategies in strategy config by protocol yet
   const aaveStrategies = otherStrategies
   const aaveStrategyTokens = getTokens(aaveStrategies.map(({ name }) => name))
-  const aaveStrategyConfigPlusTokenMeta = aaveStrategies.map((strategy, index) =>
-    ({ ...strategy, ...aaveStrategyTokens[index] })
-  );
+  const aaveStrategyConfigPlusTokenMeta = aaveStrategies.map((strategy, index) => ({
+    ...strategy,
+    ...aaveStrategyTokens[index],
+  }))
 
   return (
     <>
@@ -126,7 +127,7 @@ export function ProductCardsFilter({
         <WithErrorHandler error={[productCardsDataError]}>
           <WithLoadingIndicator
             value={[productCardsData, isAaveContextAvailable()]}
-            customLoader={<ProductCardsLoader/>}
+            customLoader={<ProductCardsLoader />}
           >
             {([_productCardsData]) => (
               <ProductCardsWrapper>
@@ -141,15 +142,15 @@ export function ProductCardsFilter({
                   .map((cardData) => {
                     switch (cardData.type) {
                       case 'Borrow':
-                        return <ProductCardBorrowAave key={cardData.symbol} cardData={cardData}/>
+                        return <ProductCardBorrowAave key={cardData.symbol} cardData={cardData} />
                       case 'Multiply':
-                        return <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData}/>
+                        return <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData} />
                       default:
                         return null
                     }
                   })}
                 {_productCardsData.map((cardData) => (
-                  <ProductCardMakerComponent key={cardData.ilk} cardData={cardData}/>
+                  <ProductCardMakerComponent key={cardData.ilk} cardData={cardData} />
                 ))}
               </ProductCardsWrapper>
             )}

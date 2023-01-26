@@ -15,7 +15,7 @@ import { ProductCardEarnMaker } from './ProductCardEarnMaker'
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardMultiplyMaker } from './ProductCardMultiplyMaker'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
-import { ProductCardBorrowAave } from "./ProductCardBorrowAave";
+import { ProductCardBorrowAave } from './ProductCardBorrowAave'
 
 type StrategyTypes = {
   maker: string[]
