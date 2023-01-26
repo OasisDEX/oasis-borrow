@@ -119,8 +119,11 @@ export function DiscoverTableDataCellContent({
               })}
               sx={{ ml: 2 }}
             >
-              <Button variant="tertiary" sx={{ height: '36px', px: 2, pt: '5px', pb: 0 }}>
-                <Icon name="share" size={20} />
+              <Button
+                variant="tertiary"
+                sx={{ width: '36px', height: '36px', pt: '3px', pr: 0, pb: 0, pl: '2px' }}
+              >
+                <Icon name="share" size={14} />
               </Button>
             </AppLink>
           )}

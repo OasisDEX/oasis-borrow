@@ -45,8 +45,10 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
         sx={{
           height: '28px',
           width: '28px',
-          p: 0,
-          pt: '3px',
+          pt: '2px',
+          pr: 0,
+          pb: 0,
+          pl: '2px',
           fontSize: 1,
           border: '1px solid',
           borderColor: 'neutral20',
@@ -67,7 +69,7 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
           },
         }}
       >
-        <Icon name="share" size={16} />
+        <Icon name="share" size={12} />
       </Button>
     </AppLink>
   )
