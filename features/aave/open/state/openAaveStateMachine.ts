@@ -336,6 +336,9 @@ export function createOpenAaveStateMachine(
         SET_STOP_LOSS_TX_DATA: {
           actions: 'updateContext',
         },
+        SET_STOP_LOSS_SKIPPED: {
+          actions: 'updateContext',
+        },
       },
     },
     {
