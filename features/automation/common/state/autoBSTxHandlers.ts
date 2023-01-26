@@ -56,6 +56,7 @@ export function getAutoBSTxHandlers({
         maxBaseFeeInGwei: autoBSState.maxBaseFeeInGwei,
       }),
     [
+      autoBSState.withThreshold,
       autoBSState.execCollRatio.toNumber(),
       autoBSState.targetCollRatio.toNumber(),
       autoBSState.maxBuyOrMinSellPrice?.toNumber(),
