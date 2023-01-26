@@ -76,10 +76,16 @@ export function AjnaBorrowContextProvider({
     const i = order.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
 
     if (order[i]) {
-      if (direction === 'next' && isStepWithTransaction({ currentStep }))
-        alert('Submit transaction')
+      if (direction === 'next' && isStepWithTransaction({ currentStep })) void transactionStep()
       else setCurrentStep(order[i])
     } else throw new Error(`A step with index ${i} does not exist in form flow.`)
+  }
+  const transactionStep = async () => {
+    setStep('progress')
+
+    const fakeTransactionStatus = await simulateFakeTransaction()
+
+    setStep(fakeTransactionStatus ? 'success' : 'failure')
   }
 
   const setupStepManager = () => {
@@ -113,4 +119,13 @@ export function AjnaBorrowContextProvider({
   }, [props.collateralBalance, form.state, currentStep])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
+}
+
+async function simulateFakeTransaction(): Promise<boolean> {
+  return await new Promise((resolve) => {
+    const interval = setInterval(() => {
+      clearInterval(interval)
+      resolve(Math.random() > 0.2)
+    }, Math.floor(Math.random() * (3000 - 1000) + 1000))
+  })
 }
