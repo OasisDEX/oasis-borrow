@@ -65,10 +65,6 @@ export function FollowButtonControl({
         await unfollowVault(jwtToken)
       }
     }
-    console.log('isLimitReached', isLimitReached)
-    console.log('isFollowing', isFollowing)
-    console.log('isProcessing', isProcessing)
-    console.log('vaultId', vaultId)
   }
   return (
     <FollowButton
@@ -92,6 +88,5 @@ export function FollowButtonControl({
     const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
 
     handleGetFollowedVaults(followedVaults)
-    // setIsFollowing(true)
   }
 }
