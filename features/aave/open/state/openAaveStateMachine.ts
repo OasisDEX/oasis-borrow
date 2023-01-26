@@ -1,9 +1,14 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { ethNullAddress } from 'blockchain/config'
+import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
+import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -35,7 +40,7 @@ import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
-  base: 3,
+  base: 2,
   proxySteps: (needCreateProxy: boolean) => (needCreateProxy ? 2 : 0),
   allowanceSteps: (needAllowance: boolean) => (needAllowance ? 1 : 0),
 }
@@ -49,6 +54,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
   blockSettingCalculatedAddresses?: boolean
+  reserveConfig?: AaveReserveConfigurationData
 }
 
 function getTransactionDef(context: OpenAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -65,6 +71,7 @@ export type OpenAaveEvent =
   | { type: 'SET_AMOUNT'; amount?: BigNumber }
   | { type: 'NEXT_STEP' }
   | { type: 'UPDATE_META_INFO'; hasOpenedPosition: boolean }
+  | { type: 'RESERVE_CONFIG_UPDATED'; reserveConfig: AaveReserveConfigurationData }
   | BaseAaveEvent
   | ProxyResultEvent
   | DMPAccountStateMachineResultEvents
@@ -128,6 +135,10 @@ export function createOpenAaveStateMachine(
           src: 'allowance$',
           id: 'allowance$',
         },
+        {
+          src: 'aaveReserveConfiguration$',
+          id: 'aaveReserveConfiguration$',
+        },
       ],
       id: 'openAaveStateMachine',
       type: 'parallel',
@@ -171,6 +182,14 @@ export function createOpenAaveStateMachine(
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: ['setAmount', 'calculateAuxiliaryAmount'],
                 },
+                SET_RISK_RATIO: {
+                  target: '#openAaveStateMachine.background.debouncing',
+                  actions: 'setRiskRatio',
+                },
+                RESET_RISK_RATIO: {
+                  target: '#openAaveStateMachine.background.debouncing',
+                  actions: 'resetRiskRatio',
+                },
                 NEXT_STEP: [
                   {
                     target: 'dpmProxyCreating',
@@ -188,7 +207,7 @@ export function createOpenAaveStateMachine(
                     actions: 'incrementCurrentStep',
                   },
                   {
-                    target: 'settingMultiple',
+                    target: 'reviewing',
                     cond: 'canOpenPosition',
                     actions: 'incrementCurrentStep',
                   },
@@ -220,27 +239,6 @@ export function createOpenAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
-                  target: 'editing',
-                },
-              },
-            },
-            settingMultiple: {
-              entry: 'eventConfirmDeposit',
-              on: {
-                SET_RISK_RATIO: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: 'setRiskRatio',
-                },
-                RESET_RISK_RATIO: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: 'resetRiskRatio',
-                },
-                NEXT_STEP: {
-                  target: 'reviewing',
-                  cond: 'validTransactionParameters',
-                  actions: 'incrementCurrentStep',
-                },
-                BACK_TO_EDITING: {
                   target: 'editing',
                 },
               },
@@ -294,7 +292,7 @@ export function createOpenAaveStateMachine(
       },
       on: {
         PRICES_RECEIVED: {
-          actions: 'updateContext',
+          actions: ['updateContext', 'setFallbackTokenPrice'],
         },
         USER_SETTINGS_CHANGED: {
           actions: 'updateContext',
@@ -306,7 +304,7 @@ export function createOpenAaveStateMachine(
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
         },
         WEB3_CONTEXT_CHANGED: {
-          actions: ['updateContext', 'calculateEffectiveProxyAddress'],
+          actions: ['resetWalletValues', 'updateContext', 'calculateEffectiveProxyAddress'],
         },
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
@@ -323,8 +321,11 @@ export function createOpenAaveStateMachine(
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
         },
-        DMP_PROXY_RECEIVED: {
+        DPM_PROXY_RECEIVED: {
           actions: ['updateContext', 'calculateEffectiveProxyAddress', 'setTotalSteps'],
+        },
+        RESERVE_CONFIG_UPDATED: {
+          actions: ['updateContext', 'setDefaultRiskRatio'],
         },
       },
     },
@@ -354,8 +355,16 @@ export function createOpenAaveStateMachine(
           return {
             userInput: {
               ...context.userInput,
-              riskRatio: context.strategyConfig.riskRatios.default,
+              riskRatio: context.defaultRiskRatio,
             },
+          }
+        }),
+        setDefaultRiskRatio: assign((context) => {
+          return {
+            defaultRiskRatio: convertDefaultRiskRatioToActualRiskRatio(
+              context.strategyConfig.riskRatios.default,
+              context.reserveConfig?.ltv,
+            ),
           }
         }),
         setTotalSteps: assign((context) => {
@@ -391,9 +400,6 @@ export function createOpenAaveStateMachine(
         decrementCurrentStep: assign((context) => ({
           currentStep: context.currentStep - 1,
         })),
-        eventConfirmDeposit: ({ userInput }) => {
-          userInput.amount && trackingEvents.earn.stETHOpenPositionConfirmDeposit(userInput.amount)
-        },
         eventConfirmRiskRatio: ({ userInput }) => {
           userInput.amount &&
             userInput.riskRatio?.loanToValue &&
@@ -455,8 +461,12 @@ export function createOpenAaveStateMachine(
               type: 'VARIABLES_RECEIVED',
               parameters: {
                 amount: context.userInput.amount!,
-                riskRatio: context.userInput.riskRatio || context.strategyConfig.riskRatios.default,
-                proxyAddress: context.effectiveProxyAddress!,
+                riskRatio:
+                  context.userInput.riskRatio ||
+                  context.defaultRiskRatio ||
+                  new RiskRatio(zero, RiskRatio.TYPE.LTV),
+                // ethNullAddress just for the simulation, theres a guard for that
+                proxyAddress: context.effectiveProxyAddress! || ethNullAddress,
                 collateralToken: context.strategyConfig.tokens.collateral,
                 debtToken: context.tokens.debt,
                 depositToken: context.tokens.deposit,
@@ -512,10 +522,31 @@ export function createOpenAaveStateMachine(
           }
         }),
         updateLegacyTokenBalance: assign((context, event) => {
+          if (!event.balance.deposit) {
+            return {
+              tokenBalance: undefined,
+            }
+          }
           return {
             tokenBalance: event.balance.deposit.balance,
             tokenPrice: event.balance.deposit.price,
           }
+        }),
+        setFallbackTokenPrice: assign((context, event) => {
+          return {
+            // fallback if we dont have the tokenPrice - happens if no
+            // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
+            tokenPrice: context.tokenPrice ? context.tokenPrice : event.collateralPrice,
+          }
+        }),
+        resetWalletValues: assign((context) => {
+          if (!isUserWalletConnected(context)) {
+            return {
+              tokenBalance: undefined,
+              tokenPrice: undefined,
+            }
+          }
+          return {}
         }),
         disableChangingAddresses: assign((_) => {
           return {

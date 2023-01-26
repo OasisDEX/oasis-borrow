@@ -1,5 +1,8 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
 
 import { AaveEarnFaq } from '../content/faqs/aave/earn'
 import { AaveMultiplyFaq } from '../content/faqs/aave/multiply'
@@ -10,14 +13,11 @@ import {
 import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
 import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectionComponent'
 import { adjustRiskSliderConfig as earnAdjustRiskSliderConfig } from '../earn/aave/riskSliderConfig'
-import {
-  AaveMultiplyManageHeader,
-  AaveMultiplyOpenHeader,
-} from '../multiply/aave/components/AaveMultiplyHeader'
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
+import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
+import { IStrategyConfig, ProductType, ProxyType } from './common/StrategyConfigTypes'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
@@ -27,6 +27,8 @@ export enum ManageDebtActionsEnum {
   BORROW_DEBT = 'borrow-debt',
   PAYBACK_DEBT = 'payback-debt',
 }
+
+const supportedAaveBorrowCollateralTokens = ['ETH']
 
 export const strategies: Array<IStrategyConfig> = [
   {
@@ -52,17 +54,15 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
     type: 'Earn',
-    featureToggle: 'AaveEarnSTETHETH',
   },
-
   {
     name: 'ethusdc',
     urlSlug: 'ethusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
-      headerOpen: AaveMultiplyOpenHeader,
-      headerManage: AaveMultiplyManageHeader,
-      headerView: AaveMultiplyManageHeader,
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
@@ -77,18 +77,16 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'ETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    featureToggle: 'AaveMultiplyETHUSDC',
     type: 'Multiply',
   },
-
   {
     name: 'stETHusdc',
     urlSlug: 'stETHusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
-      headerOpen: AaveMultiplyOpenHeader,
-      headerManage: AaveMultiplyManageHeader,
-      headerView: AaveMultiplyManageHeader,
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
@@ -103,18 +101,16 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'STETH',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    featureToggle: 'AaveMultiplySTETHUSDC',
     type: 'Multiply',
   },
-
   {
     name: 'wBTCusdc',
     urlSlug: 'wBTCusdc',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
-      headerOpen: AaveMultiplyOpenHeader,
-      headerManage: AaveMultiplyManageHeader,
-      headerView: AaveMultiplyManageHeader,
+      headerOpen: AaveOpenHeader,
+      headerManage: AaveManageHeader,
+      headerView: AaveManageHeader,
       simulateSection: AaveMultiplyManageComponent,
       vaultDetailsManage: AaveMultiplyManageComponent,
       vaultDetailsView: AaveMultiplyManageComponent,
@@ -129,14 +125,41 @@ export const strategies: Array<IStrategyConfig> = [
       deposit: 'WBTC',
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-    featureToggle: 'AaveMultiplyWBTCUSDC',
     type: 'Multiply',
   },
+
+  ...supportedAaveBorrowCollateralTokens.map((collateral) => {
+    return {
+      name: `borrow-${collateral}`,
+      urlSlug: collateral,
+      proxyType: ProxyType.DpmProxy,
+      viewComponents: {
+        headerOpen: AaveOpenHeader,
+        headerManage: AaveManageHeader,
+        headerView: AaveManageHeader,
+        simulateSection: AaveMultiplyManageComponent,
+        vaultDetailsManage: AaveMultiplyManageComponent,
+        vaultDetailsView: AaveMultiplyManageComponent,
+        adjustRiskView: adjustRiskView(multiplyAdjustRiskSliderConfig),
+        positionInfo: AaveMultiplyFaq,
+        sidebarTitle: 'open-multiply.sidebar.title',
+        sidebarButton: 'open-multiply.sidebar.open-btn',
+      },
+      tokens: {
+        collateral: collateral,
+        debt: 'USDC',
+        deposit: collateral,
+      },
+      riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
+      featureToggle: 'AaveBorrow' as Feature,
+      type: 'Borrow' as ProductType,
+    }
+  }),
 ]
 
 export function aaveStrategiesList(filterProduct?: IStrategyConfig['type']): IStrategyConfig[] {
   return Object.values(strategies)
-    .filter(({ featureToggle }) => getFeatureToggle(featureToggle))
+    .filter(({ featureToggle }) => (featureToggle ? getFeatureToggle(featureToggle) : true))
     .filter(({ type }) => (filterProduct ? type === filterProduct : true))
 }
 
@@ -144,8 +167,12 @@ export function getAaveStrategy(strategyName: IStrategyConfig['name']) {
   return Object.values(strategies).filter(({ name }) => strategyName === name)
 }
 
-export function loadStrategyFromSlug(slug: string): IStrategyConfig {
-  const strategy = strategies.find((s) => s.urlSlug === slug)
+export function loadStrategyFromUrl(slug: string, positionType: string): IStrategyConfig {
+  const strategy = strategies.find(
+    (s) =>
+      s.urlSlug.toUpperCase() === slug.toUpperCase() &&
+      s.type.toUpperCase() === positionType.toUpperCase(),
+  )
   if (!strategy) {
     throw new Error(`Strategy not found for slug: ${slug}`)
   }
@@ -163,4 +190,21 @@ export function loadStrategyFromTokens(
     throw new Error(`Strategy not found for ${collateralToken}/${debtToken}`)
   }
   return strategy
+}
+
+export const supportedTokens = Array.from(
+  new Set(
+    Object.values(strategies)
+      .map((strategy) => Object.values(strategy.tokens))
+      .flatMap((tokens) => tokens),
+  ),
+)
+
+export function convertDefaultRiskRatioToActualRiskRatio(
+  defaultRiskRatio: IStrategyConfig['riskRatios']['default'],
+  ltv?: BigNumber,
+) {
+  return defaultRiskRatio === 'slightlyLessThanMaxRisk'
+    ? new RiskRatio(ltv?.times('0.999') || zero, RiskRatio.TYPE.LTV)
+    : defaultRiskRatio
 }

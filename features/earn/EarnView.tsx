@@ -49,13 +49,13 @@ export function EarnView() {
         <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
           {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
+              {aaveEarnStrategies.map((cardData) => (
+                <ProductCardEarnAave key={cardData.symbol} cardData={cardData} />
+              ))}
               {/* TODO move logic regarding dsr to productCardsData$ */}
               {daiSavingsRate && <ProductCardEarnDsr />}
               {_productCardsIlksData.map((cardData) => (
                 <ProductCardEarnMaker key={cardData.ilk} cardData={cardData} />
-              ))}
-              {aaveEarnStrategies.map((cardData) => (
-                <ProductCardEarnAave key={cardData.symbol} cardData={cardData} />
               ))}
             </ProductCardsWrapper>
           )}

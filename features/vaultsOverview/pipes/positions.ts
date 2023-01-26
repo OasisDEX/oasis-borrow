@@ -95,7 +95,7 @@ export type AavePosition = Position & {
   id: string
   multiple: BigNumber
   isOwner: boolean
-  type: 'multiply' | 'earn'
+  type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
 }
 
@@ -297,6 +297,7 @@ export function createAavePosition$(
 }
 
 const mappymap = {
+  Borrow: 'borrow',
   Multiply: 'multiply',
   Earn: 'earn',
 } as const

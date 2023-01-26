@@ -1,5 +1,6 @@
 import { useActor } from '@xstate/react'
 import { TabBar } from 'components/TabBar'
+import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { Survey } from 'features/survey'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -39,9 +40,7 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
       tokenPrice={state.context.tokenPrice}
       debtPrice={state.context.debtPrice}
       nextPosition={
-        state.matches('frontend.reviewing')
-          ? state.context.strategy?.simulation.position
-          : undefined
+        hasUserInteracted(state) ? state.context.strategy?.simulation.position : undefined
       }
     />
   )

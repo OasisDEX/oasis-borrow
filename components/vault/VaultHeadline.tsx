@@ -2,7 +2,15 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
 import { Skeleton } from 'components/Skeleton'
-import { FollowButtonControl, FollowButtonProps } from 'features/follow/common/FollowButtonControl'
+import {
+  FollowButtonControl,
+  FollowButtonControlProps,
+} from 'features/follow/common/FollowButtonControl'
+import {
+  ShareButton,
+  twitterSharePositionText,
+  twitterSharePositionVia,
+} from 'features/follow/common/ShareButton'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -12,7 +20,7 @@ import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetail
 
 export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]
-  followButtonProps?: FollowButtonProps
+  followButton?: FollowButtonControlProps
   header: string
   label?: string
   loading?: boolean
@@ -21,7 +29,7 @@ export type VaultHeadlineProps = {
 
 export function VaultHeadline({
   details,
-  followButtonProps,
+  followButton,
   header,
   label,
   loading = false,
@@ -29,6 +37,7 @@ export function VaultHeadline({
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
+
   return (
     <Flex
       sx={{
@@ -68,12 +77,15 @@ export function VaultHeadline({
         )}
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
-        {followVaultEnabled && followButtonProps && (
-          <FollowButtonControl
-            followerAddress={followButtonProps.followerAddress}
-            vaultId={followButtonProps.vaultId}
-            chainId={followButtonProps.chainId}
-          />
+        {followVaultEnabled && (
+          <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
+            {followButton && <FollowButtonControl {...followButton} />}
+            <ShareButton
+              text={twitterSharePositionText}
+              url={document.location.href.replace(document.location.hash, '')}
+              via={twitterSharePositionVia}
+            />
+          </Flex>
         )}
       </Heading>
       <Flex

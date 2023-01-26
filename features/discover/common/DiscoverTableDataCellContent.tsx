@@ -5,21 +5,35 @@ import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
+import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
+import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
+import {
+  getTwitterShareUrl,
+  twitterSharePositionText,
+  twitterSharePositionVia,
+} from 'features/follow/common/ShareButton'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
+import getConfig from 'next/config'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
 
+const basePath = getConfig()?.publicRuntimeConfig?.basePath
+
 export function DiscoverTableDataCellContent({
+  follow,
   label,
   row,
   onPositionClick,
 }: {
+  follow?: DiscoverFollow
   label: string
   row: DiscoverTableRowData
   onPositionClick?: (cdpId: string) => void
 }) {
+  const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { i18n, t } = useTranslation()
   const primitives = Object.keys(row)
     .filter((item) => typeof row[item] === 'string' || typeof row[item] === 'number')
@@ -36,6 +50,19 @@ export function DiscoverTableDataCellContent({
 
       return (
         <Flex sx={{ alignItems: 'center' }}>
+          {follow && primitives.cdpId && (
+            <FollowButtonControl
+              chainId={follow.chainId}
+              followerAddress={follow.followerAddress}
+              vaultId={new BigNumber(primitives.cdpId)}
+              short
+              sx={{
+                position: ['absolute', null, null, 'relative'],
+                right: [0, null, null, 'auto'],
+                mr: ['24px', null, null, 4],
+              }}
+            />
+          )}
           {(primitives.icon || (asset && asset.icon)) && (
             <Icon size={44} name={(primitives.icon || asset.icon) as string} />
           )}
@@ -70,15 +97,37 @@ export function DiscoverTableDataCellContent({
     case 'cdpId':
     case 'url':
       return (
-        <AppLink
-          href={`${row.url || `/${row.cdpId}`}`}
-          internalInNewTab={true}
-          onClick={() => {
-            onPositionClick && onPositionClick(String(row.url || row.cdpId))
-          }}
-        >
-          <Button variant="tertiary">{t('discover.table.view-position')}</Button>
-        </AppLink>
+        <Flex sx={{ justifyContent: 'flex-end' }}>
+          <AppLink
+            href={`${row.url || `/${row.cdpId}`}`}
+            internalInNewTab={true}
+            sx={{ flexGrow: [1, null, null, 'initial'] }}
+            onClick={() => {
+              onPositionClick && onPositionClick(String(row.url || row.cdpId))
+            }}
+          >
+            <Button className="discover-action" variant="tertiary">
+              {t('view')}
+            </Button>
+          </AppLink>
+          {followVaultsEnabled && (
+            <AppLink
+              href={getTwitterShareUrl({
+                text: twitterSharePositionText,
+                url: `${basePath}${row.url ? (row.url as string) : `/${row.cdpId}`}`,
+                via: twitterSharePositionVia,
+              })}
+              sx={{ ml: 2 }}
+            >
+              <Button
+                variant="tertiary"
+                sx={{ width: '36px', height: '36px', pt: '3px', pr: 0, pb: 0, pl: '2px' }}
+              >
+                <Icon name="share" size={14} />
+              </Button>
+            </AppLink>
+          )}
+        </Flex>
       )
     case 'collateralValue':
     case 'liquidationPrice':
@@ -150,7 +199,10 @@ export function DiscoverTableDataCellContent({
               hash={VaultViewMode.Overview}
               internalInNewTab={true}
             >
-              <Button variant={primitives[label] > 0 ? 'actionActiveGreen' : 'action'}>
+              <Button
+                className="discover-action"
+                variant={primitives[label] > 0 ? 'actionActiveGreen' : 'action'}
+              >
                 {primitives[label] > 0
                   ? t('discover.table.protection-value', { protection: primitives[label] })
                   : t('discover.table.activate')}

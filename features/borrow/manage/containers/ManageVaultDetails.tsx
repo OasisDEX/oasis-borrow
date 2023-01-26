@@ -6,6 +6,7 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { MessageCard } from 'components/MessageCard'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
 import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
@@ -17,6 +18,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { vaultIdsThatAutoBuyTriggerShouldBeRecreated } from 'features/automation/common/consts'
 import { AutoTakeProfitTriggeredBanner } from 'features/automation/optimization/autoTakeProfit/controls/AutoTakeProfitTriggeredBanner'
 import { GetProtectionBannerControl } from 'features/automation/protection/stopLoss/controls/GetProtectionBannerControl'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
@@ -24,7 +26,7 @@ import { formatAmount } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 import { BonusContainer } from '../../../bonus/BonusContainer'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
@@ -133,7 +135,10 @@ export function ManageVaultDetails(
   } = props
   const { t } = useTranslation()
   const {
-    triggerData: { stopLossTriggerData },
+    triggerData: {
+      stopLossTriggerData,
+      autoBuyTriggerData: { isTriggerEnabled, maxBuyOrMinSellPrice },
+    },
   } = useAutomationContext()
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -143,6 +148,11 @@ export function ManageVaultDetails(
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const autoTakeProfitEnabled = useFeatureToggle('AutoTakeProfit')
 
+  const shouldShowOverrideAutoBuy =
+    isTriggerEnabled &&
+    maxBuyOrMinSellPrice.isZero() &&
+    vaultIdsThatAutoBuyTriggerShouldBeRecreated.includes(id.toNumber())
+
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBanner />}</>}
@@ -150,37 +160,48 @@ export function ManageVaultDetails(
       <DetailsSection
         title={t('system.overview')}
         content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
-              liquidationPrice={liquidationPrice}
-              liquidationRatio={liquidationRatio}
-              liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-              afterLiquidationPrice={afterLiquidationPrice}
-              changeVariant={changeVariant}
-            />
-            <ContentCardCollateralizationRatio
-              positionRatio={collateralizationRatio}
-              nextPositionRatio={collateralizationRatioAtNextPrice}
-              afterPositionRatio={afterCollateralizationRatio}
-              changeVariant={changeVariant}
-            />
-            <ContentCardCollateralLocked
-              token={token}
-              lockedCollateralUSD={lockedCollateralUSD}
-              lockedCollateral={lockedCollateral}
-              afterLockedCollateralUSD={afterLockedCollateralUSD}
-              changeVariant={changeVariant}
-            />
-            {stopLossTriggerData.isStopLossEnabled && (
-              <ContentCardDynamicStopPriceWithColRatio
-                slData={stopLossTriggerData}
+          <>
+            {shouldShowOverrideAutoBuy && (
+              <Box mb={3}>
+                <MessageCard
+                  type="warning"
+                  messages={[t('vault-warnings.auto-buy-override')]}
+                  withBullet={false}
+                />
+              </Box>
+            )}
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
                 liquidationPrice={liquidationPrice}
-                afterLiquidationPrice={afterLiquidationPrice}
                 liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
                 changeVariant={changeVariant}
               />
-            )}
-          </DetailsSectionContentCardWrapper>
+              <ContentCardCollateralizationRatio
+                positionRatio={collateralizationRatio}
+                nextPositionRatio={collateralizationRatioAtNextPrice}
+                afterPositionRatio={afterCollateralizationRatio}
+                changeVariant={changeVariant}
+              />
+              <ContentCardCollateralLocked
+                token={token}
+                lockedCollateralUSD={lockedCollateralUSD}
+                lockedCollateral={lockedCollateral}
+                afterLockedCollateralUSD={afterLockedCollateralUSD}
+                changeVariant={changeVariant}
+              />
+              {stopLossTriggerData.isStopLossEnabled && (
+                <ContentCardDynamicStopPriceWithColRatio
+                  slData={stopLossTriggerData}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  liquidationRatio={liquidationRatio}
+                  changeVariant={changeVariant}
+                />
+              )}
+            </DetailsSectionContentCardWrapper>
+          </>
         }
         footer={
           <DetailsSectionFooterItemWrapper>

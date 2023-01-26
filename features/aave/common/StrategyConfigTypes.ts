@@ -12,6 +12,8 @@ export enum ProxyType {
   DpmProxy = 'DpmProxy',
 }
 
+export type ProductType = 'Multiply' | 'Earn' | 'Borrow'
+
 export interface IStrategyConfig {
   name: string
   urlSlug: string
@@ -35,10 +37,10 @@ export interface IStrategyConfig {
   }
   riskRatios: {
     minimum: IRiskRatio
-    default: IRiskRatio
+    default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
-  type: 'Multiply' | 'Earn'
-  featureToggle: Feature
+  type: ProductType
+  featureToggle?: Feature
 }
 
 export type AaveHeaderProps = {

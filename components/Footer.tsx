@@ -14,13 +14,14 @@ import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
-  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
+  publicRuntimeConfig: { buildHash, buildDate, showBuildInfo },
 } = getConfig()
 
 const ROUTES = {
-  CONTACT: `${apiHost}/daiwallet/contact`,
+  CONTACT: 'https://kb.oasis.app/help/contact-us',
   TWITTER: 'https://twitter.com/oasisdotapp',
   DISCORD: 'https://discord.gg/Kc2bBB59GC',
+  BUG_BOUNTY: 'https://immunefi.com/bounty/oasis/',
 }
 
 const FOOTER_SECTIONS = [
@@ -33,7 +34,6 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.cookie', url: '/cookie' },
       { labelKey: 'nav.terms', url: '/terms' },
       { labelKey: 'nav.security', url: '/security' },
-      { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
     ],
   },
   {
@@ -42,8 +42,8 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.blog', url: 'https://blog.oasis.app', target: '_self' },
       // add link
       { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
-      { labelKey: 'nav.bug-bounty', url: 'https://immunefi.com/bounty/oasis/', target: '_blank' },
-      { labelKey: 'nav.oracles', url: '/oracles' },
+      { labelKey: 'nav.contact', url: ROUTES.CONTACT, target: '_blank' },
+      { labelKey: 'nav.bug-bounty', url: ROUTES.BUG_BOUNTY, target: '_blank' },
       { labelKey: 'nav.referrals', url: '/referrals' },
       { labelKey: 'nav.brand-assets', url: '/brand' },
     ],
@@ -51,11 +51,6 @@ const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.products',
     links: [
-      {
-        labelKey: 'nav.dai-wallet',
-        url: `${apiHost}/daiwallet`,
-        target: '_self',
-      },
       { labelKey: 'nav.borrow', url: '/borrow' },
       { labelKey: 'nav.multiply', url: '/multiply' },
       { labelKey: 'nav.earn', url: '/earn' },

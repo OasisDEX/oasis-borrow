@@ -1,4 +1,5 @@
-import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { AppLayout } from 'components/Layouts'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
 import { Survey } from 'features/survey'
@@ -8,13 +9,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-import { AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { loadStrategyFromSlug } from '../../../../features/aave/strategyConfig'
+import { aaveContext, AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
+import { loadStrategyFromUrl } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const strategy = ctx.query.strategy as string
   try {
-    loadStrategyFromSlug(strategy)
+    loadStrategyFromUrl(strategy, 'earn')
   } catch (e) {
     console.log(`could not load strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
     return {
@@ -32,15 +33,15 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function OpenVault({ strategy }: { strategy: string }) {
   return (
     <AaveContextProvider>
-      <WithWalletConnection>
+      <WithConnection>
         <WithTermsOfService>
           <BackgroundLight />
-
-          <AaveOpenView config={loadStrategyFromSlug(strategy)} />
-
+          <DeferedContextProvider context={aaveContext}>
+            <AaveOpenView config={loadStrategyFromUrl(strategy, 'earn')} />
+          </DeferedContextProvider>
           <Survey for="earn" />
         </WithTermsOfService>
-      </WithWalletConnection>
+      </WithConnection>
     </AaveContextProvider>
   )
 }

@@ -1,7 +1,9 @@
+import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { useAppContext } from 'components/AppContextProvider'
+import { maxUint256 } from 'features/automation/common/consts'
 import { AutoBSFormChange } from 'features/automation/common/state/autoBSFormChange'
 import { prepareAddAutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
 import { AutoBSTriggerTypes, AutomationBSPublishType } from 'features/automation/common/types'
@@ -35,6 +37,8 @@ export function getAutoBSTxHandlers({
 }: GetAutoBSTxHandlersParams): AutoBSTxHandlers {
   const { uiChanges } = useAppContext()
 
+  const unlimitedMaxMinPrice = triggerType === TriggerType.BasicSell ? zero : maxUint256
+
   const addTxData = useMemo(
     () =>
       prepareAddAutoBSTriggerData({
@@ -45,13 +49,14 @@ export function getAutoBSTxHandlers({
         targetCollRatio: autoBSState.targetCollRatio,
         maxBuyOrMinSellPrice: autoBSState.withThreshold
           ? autoBSState.maxBuyOrMinSellPrice || zero
-          : zero,
+          : unlimitedMaxMinPrice,
         continuous: autoBSState.continuous,
         deviation: autoBSState.deviation,
         replacedTriggerId: autoBSState.triggerId,
         maxBaseFeeInGwei: autoBSState.maxBaseFeeInGwei,
       }),
     [
+      autoBSState.withThreshold,
       autoBSState.execCollRatio.toNumber(),
       autoBSState.targetCollRatio.toNumber(),
       autoBSState.maxBuyOrMinSellPrice?.toNumber(),
