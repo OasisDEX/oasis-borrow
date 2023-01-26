@@ -69,16 +69,17 @@ export function AjnaBorrowContextProvider({
   const order: AjnaStatusStep[] = ['risk', 'setup', 'confirm', 'progress', 'failure', 'success']
 
   const setStep = (step: AjnaStatusStep) => {
-    if (isBorrowStepValid({ currentStep, formState: form.state })) {
-      if (isStepWithTransaction({ currentStep })) alert('Submit transaction')
-      else setCurrentStep(step)
-    } else throw new Error(`A state of current step in not valid.`)
+    if (isBorrowStepValid({ currentStep, formState: form.state })) setCurrentStep(step)
+    else throw new Error(`A state of current step in not valid.`)
   }
   const shiftStep = (direction: 'next' | 'prev') => {
     const i = order.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
 
-    if (order[i]) setStep(order[i])
-    else throw new Error(`A step with index ${i} does not exist in form flow.`)
+    if (order[i]) {
+      if (direction === 'next' && isStepWithTransaction({ currentStep }))
+        alert('Submit transaction')
+      else setCurrentStep(order[i])
+    } else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
   const setupStepManager = () => {
