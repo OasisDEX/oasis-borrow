@@ -182,6 +182,10 @@ export function createOpenAaveStateMachine(
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: ['setAmount', 'calculateAuxiliaryAmount'],
                 },
+                SET_DEBT: {
+                  target: '#openAaveStateMachine.background.debouncing',
+                  actions: ['setDebt'],
+                },
                 SET_RISK_RATIO: {
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: 'setRiskRatio',
@@ -386,6 +390,13 @@ export function createOpenAaveStateMachine(
           },
           strategy: event.amount ? context.strategy : undefined,
         })),
+        setDebt: assign((context, event) => ({
+          userInput: {
+            ...context.userInput,
+            debtAmount: event.debt,
+          },
+          strategy: event.debt ? context.strategy : undefined,
+        })),
         calculateAuxiliaryAmount: assign((context) => {
           return {
             auxiliaryAmount: context.userInput.amount?.times(context.tokenPrice || zero),
@@ -416,9 +427,14 @@ export function createOpenAaveStateMachine(
               userInput.riskRatio.loanToValue,
             )
         },
-        updateContext: assign((_, event) => ({
-          ...event,
-        })),
+        updateContext: assign((_, event) => {
+          console.log(`update context, current context amount: ${_.userInput.amount}`)
+          console.log(`update context, aux amount: ${_.auxiliaryAmount}`)
+          console.log(`update context, event: ${event.toString()}`)
+          return {
+            ...event,
+          }
+        }),
         spawnProxyMachine: assign((_) => ({
           refProxyMachine: spawn(proxyStateMachine, 'dsProxyStateMachine'),
         })),

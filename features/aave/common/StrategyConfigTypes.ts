@@ -6,6 +6,7 @@ import { Feature } from 'helpers/useFeatureToggle'
 import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
 import { BaseViewProps } from './BaseAaveContext'
+import BigNumber from 'bignumber.js'
 
 export enum ProxyType {
   DsProxy = 'DsProxy',
@@ -73,5 +74,6 @@ type EventsRaisedFromSecondaryInput =
   | {
       type: 'RESET_RISK_RATIO'
     }
+  | { type: 'SET_DEBT'; debt: BigNumber }
 
 type PositionInfo = () => JSX.Element

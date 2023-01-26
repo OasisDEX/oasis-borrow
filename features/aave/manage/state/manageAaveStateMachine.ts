@@ -577,9 +577,13 @@ export function createManageAaveStateMachine(
           }
           return undefined
         }),
-        updateContext: assign((_, event) => ({
-          ...event,
-        })),
+        updateContext: assign((_, event) => {
+          console.log(`update context, current context amount: ${_.userInput.amount}`)
+          console.log(`update context, event: ${event.toString()}`)
+          return {
+            ...event,
+          }
+        }),
         killAllowanceMachine: pure((context) => {
           if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
             context.refAllowanceStateMachine.stop()

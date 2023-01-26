@@ -22,6 +22,7 @@ import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyC
 type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
+  debtAmount?: BigNumber
 }
 export type ManageTokenInput = {
   manageTokenAction?: ManageDebtActionsEnum | ManageCollateralActionsEnum
@@ -87,6 +88,7 @@ export type BaseAaveEvent =
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
+  | { type: 'SET_DEBT'; debt: BigNumber }
 
 export interface BaseAaveContext {
   userInput: UserInput
