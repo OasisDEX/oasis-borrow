@@ -10,12 +10,12 @@ import React from 'react'
 
 import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
+import { ProductCardBorrowAave } from './ProductCardBorrowAave'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
 import { ProductCardEarnMaker } from './ProductCardEarnMaker'
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardMultiplyMaker } from './ProductCardMultiplyMaker'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
-import { ProductCardBorrowAave } from './ProductCardBorrowAave'
 
 type StrategyTypes = {
   maker: string[]

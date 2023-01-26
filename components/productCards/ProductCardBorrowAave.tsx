@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
@@ -11,7 +12,6 @@ import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
-import { Icon } from '@makerdao/dai-ui-icons'
 
 type ProductCardBorrowAaveProps = {
   cardData: TokenMetadataType

@@ -1,4 +1,3 @@
-import { getTokens } from 'blockchain/tokensMetadata'
 import { AppLink } from 'components/Links'
 import { aaveStrategiesList } from 'features/aave/strategyConfig'
 import { useTranslation } from 'next-i18next'
