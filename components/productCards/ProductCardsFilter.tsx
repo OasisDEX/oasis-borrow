@@ -31,20 +31,20 @@ interface ProductCardFilterProps {
 }
 
 type FilterCardsFunction = ({
-                              ilkToTokenMapping,
-                              cardsFilter,
-                            }: {
+  ilkToTokenMapping,
+  cardsFilter,
+}: {
   ilkToTokenMapping: Array<IlkTokenMap>
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) => Array<IlkTokenMap>
 
 export function ProductCardsFilter({
-                                     filters,
-                                     makerProductCardComponent: ProductCardMakerComponent,
-                                     selectedFilter,
-                                     filterCardsFunction,
-                                     otherStrategies,
-                                   }: ProductCardFilterProps) {
+   filters,
+   makerProductCardComponent: ProductCardMakerComponent,
+   selectedFilter,
+   filterCardsFunction,
+   otherStrategies,
+  }: ProductCardFilterProps) {
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
@@ -73,7 +73,7 @@ export function ProductCardsFilter({
   // TODO: No way to filter strategies in strategy config by protocol yet
   const aaveStrategies = otherStrategies
   const aaveStrategyTokens = getTokens(aaveStrategies.map(({ name }) => name))
-  const aaveStrategyPlusTokenMeta = aaveStrategies.map((strategy, index) =>
+  const aaveStrategyConfigPlusTokenMeta = aaveStrategies.map((strategy, index) =>
     ({ ...strategy, ...aaveStrategyTokens[index] })
   );
 
@@ -130,7 +130,7 @@ export function ProductCardsFilter({
           >
             {([_productCardsData]) => (
               <ProductCardsWrapper>
-                {aaveStrategyPlusTokenMeta
+                {aaveStrategyConfigPlusTokenMeta
                   .filter(({ protocol, name }) => {
                     return (
                       protocol === 'aave' &&

@@ -1,5 +1,8 @@
+import { RiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
 
 import { AaveEarnFaq } from '../content/faqs/aave/earn'
 import { AaveMultiplyFaq } from '../content/faqs/aave/multiply'
@@ -148,7 +151,7 @@ export const strategies: Array<IStrategyConfig> = [
         deposit: collateral,
       },
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-      featureToggle: 'AaveBorrow' as Feature, // this will get set optional with https://github.com/OasisDEX/oasis-borrow/pull/1928
+      featureToggle: 'AaveBorrow' as Feature,
       type: 'Borrow' as ProductType,
     }
   }),
@@ -196,3 +199,12 @@ export const supportedTokens = Array.from(
       .flatMap((tokens) => tokens),
   ),
 )
+
+export function convertDefaultRiskRatioToActualRiskRatio(
+  defaultRiskRatio: IStrategyConfig['riskRatios']['default'],
+  ltv?: BigNumber,
+) {
+  return defaultRiskRatio === 'slightlyLessThanMaxRisk'
+    ? new RiskRatio(ltv?.times('0.999') || zero, RiskRatio.TYPE.LTV)
+    : defaultRiskRatio
+}
