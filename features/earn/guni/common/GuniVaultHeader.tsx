@@ -18,12 +18,13 @@ export interface EarnVaultHeaderProps {
   ilk: string
   token: string
   followButton?: FollowButtonControlProps
+  shareButton?: boolean
 }
 
 const currentDate = moment().startOf('day')
 const previousDate = currentDate.clone().subtract(1, 'day')
 
-export function GuniVaultHeader({ ilk, token, followButton }: EarnVaultHeaderProps) {
+export function GuniVaultHeader({ ilk, token, followButton, shareButton }: EarnVaultHeaderProps) {
   const { yieldsChange$, totalValueLocked$ } = useAppContext()
   const [yieldChanges, changesError] = useObservable(yieldsChange$(currentDate, previousDate, ilk))
   const [totalValueLocked, totalValueLockedError] = useObservable(totalValueLocked$(ilk))
@@ -49,6 +50,7 @@ export function GuniVaultHeader({ ilk, token, followButton }: EarnVaultHeaderPro
               token={[token]}
               details={details}
               followButton={followButton}
+              shareButton={shareButton}
             />
           )
         }}

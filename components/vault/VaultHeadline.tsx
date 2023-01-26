@@ -24,6 +24,7 @@ export type VaultHeadlineProps = {
   header: string
   label?: string
   loading?: boolean
+  shareButton?: boolean
   token: string[]
 }
 
@@ -33,6 +34,7 @@ export function VaultHeadline({
   header,
   label,
   loading = false,
+  shareButton,
   token,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
@@ -80,11 +82,13 @@ export function VaultHeadline({
         {followVaultEnabled && (
           <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
             {followButton && <FollowButtonControl {...followButton} />}
-            <ShareButton
-              text={twitterSharePositionText}
-              url={document.location.href.replace(document.location.hash, '')}
-              via={twitterSharePositionVia}
-            />
+            {shareButton && (
+              <ShareButton
+                text={twitterSharePositionText}
+                url={document.location.href.replace(document.location.hash, '')}
+                via={twitterSharePositionVia}
+              />
+            )}
           </Flex>
         )}
       </Heading>
