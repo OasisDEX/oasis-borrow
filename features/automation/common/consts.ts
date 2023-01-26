@@ -83,4 +83,5 @@ export const vaultIdsThatAutoBuyTriggerShouldBeRecreated = [
   29628,
   29928,
   29574,
+  29643,
 ]
