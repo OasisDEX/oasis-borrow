@@ -6,7 +6,4 @@ export type AjnaStatusStep =
   | 'proxy'
   | 'allowance-collateral'
   | 'allowance-quote'
-  | 'confirm'
-  | 'progress'
-  | 'failure'
-  | 'success'
+  | 'transaction'

@@ -1,3 +1,4 @@
+import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
@@ -8,7 +9,15 @@ import {
   isStepWithBack,
   isStepWithTransaction,
 } from 'features/ajna/contexts/ajnaStepManager'
-import React, { PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
+import React, {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
@@ -33,9 +42,20 @@ interface AjnaBorrowSteps {
   isStepWithBack: boolean
   isStepWithTransaction: boolean
   isStepValid: boolean
+  txStatus?: TxStatus
   setStep: (step: AjnaStatusStep) => void
   setNextStep: () => void
   setPrevStep: () => void
+}
+
+interface AjnaBorrowTx {
+  txStatus?: TxStatus
+  isTxError: boolean
+  isTxStarted: boolean
+  isTxWaitingForApproval: boolean
+  isTxInProgress: boolean
+  isTxSuccess: boolean
+  setTxStatus: Dispatch<SetStateAction<TxStatus | undefined>>
 }
 
 interface AjnaBorrowContext {
@@ -43,6 +63,7 @@ interface AjnaBorrowContext {
   form: ReturnType<typeof useAjnaBorrowFormReducto>
   position: AjnaBorrowPosition
   steps: AjnaBorrowSteps
+  tx: AjnaBorrowTx
 }
 
 const ajnaBorrowContext = React.createContext<AjnaBorrowContext | undefined>(undefined)
@@ -66,7 +87,8 @@ export function AjnaBorrowContextProvider({
 
   const form = useAjnaBorrowFormReducto({})
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>('risk')
-  const order: AjnaStatusStep[] = ['risk', 'setup', 'confirm', 'progress', 'failure', 'success']
+  const [txStatus, setTxStatus] = useState<TxStatus>()
+  const order: AjnaStatusStep[] = ['risk', 'setup', 'transaction']
 
   const setStep = (step: AjnaStatusStep) => {
     if (isBorrowStepValid({ currentStep, formState: form.state })) setCurrentStep(step)
@@ -75,17 +97,8 @@ export function AjnaBorrowContextProvider({
   const shiftStep = (direction: 'next' | 'prev') => {
     const i = order.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
 
-    if (order[i]) {
-      if (direction === 'next' && isStepWithTransaction({ currentStep })) void transactionStep()
-      else setCurrentStep(order[i])
-    } else throw new Error(`A step with index ${i} does not exist in form flow.`)
-  }
-  const transactionStep = async () => {
-    setStep('progress')
-
-    const fakeTransactionStatus = await simulateFakeTransaction()
-
-    setStep(fakeTransactionStatus ? 'success' : 'failure')
+    if (order[i]) setCurrentStep(order[i])
+    else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
   const setupStepManager = () => {
@@ -102,11 +115,20 @@ export function AjnaBorrowContextProvider({
     }
   }
 
+  const setupTxManager = () => {
+    return {
+      txStatus,
+      setTxStatus,
+      ...getTxStatuses(txStatus),
+    }
+  }
+
   const [context, setContext] = useState<AjnaBorrowContext>({
     environment: { ...props },
     form,
     position: {},
     steps: setupStepManager(),
+    tx: setupTxManager(),
   })
 
   useEffect(() => {
@@ -115,17 +137,9 @@ export function AjnaBorrowContextProvider({
       environment: { ...prev.environment, collateralBalance: props.collateralBalance },
       form: { ...prev.form, state: form.state },
       steps: setupStepManager(),
+      tx: setupTxManager(),
     }))
-  }, [props.collateralBalance, form.state, currentStep])
+  }, [props.collateralBalance, form.state, currentStep, txStatus])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
-}
-
-async function simulateFakeTransaction(): Promise<boolean> {
-  return await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      clearInterval(interval)
-      resolve(Math.random() > 0.2)
-    }, Math.floor(Math.random() * (3000 - 1000) + 1000))
-  })
 }

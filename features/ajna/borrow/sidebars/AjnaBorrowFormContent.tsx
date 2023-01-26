@@ -1,7 +1,7 @@
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { AjnaBorrowFormContentConfirm } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentConfirm'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentSetup } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSetup'
+import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey, getTextButtonLabelKey } from 'features/ajna/common/helpers'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
@@ -20,7 +20,7 @@ export function AjnaBorrowFormContent() {
       <>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
         {currentStep === 'setup' && <AjnaBorrowFormContentSetup />}
-        {currentStep === 'confirm' && <AjnaBorrowFormContentConfirm />}
+        {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
       </>
     ),
     primaryButton: {

@@ -2292,7 +2292,7 @@
           "title": {
             "risk": "Things to know before opening an Ajna position",
             "setup": "Configure your Ajna Position",
-            "confirm": "Confirm your Ajna Position"
+            "transaction": "Confirm your Ajna Position"
           },
           "confirm": "Review and confirm changes in your Ajna Position."
         }

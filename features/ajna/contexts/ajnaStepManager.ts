@@ -20,11 +20,3 @@ export function isStepWithBack({ currentStep }: GeneralStepManager) {
 export function isStepWithTransaction({ currentStep }: GeneralStepManager) {
   return ajnaFormStepsWithTransaction.includes(currentStep)
 }
-
-// export function setStep(step: AjnaStatusStep) {
-//   setCurrentStep(step)
-// }
-
-// export function setNextStep() {
-//   setCurrentStep(order[order.indexOf(currentStep) + 1])
-// }

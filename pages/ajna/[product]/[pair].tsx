@@ -2,7 +2,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
-import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
+import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
@@ -60,7 +60,7 @@ function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProdu
                     quoteToken={quoteToken}
                     quotePrice={tokenPriceUSD[quoteToken]}
                   >
-                    {product === 'borrow' && <AjnaOpenBorrowView />}
+                    {product === 'borrow' && <AjnaBorrowView />}
                   </AjnaBorrowContextProvider>
                 )}
               </WithLoadingIndicator>

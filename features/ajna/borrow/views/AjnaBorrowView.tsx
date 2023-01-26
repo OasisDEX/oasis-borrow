@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Container, Grid } from 'theme-ui'
 
-export function AjnaOpenBorrowView() {
+export function AjnaBorrowView() {
   const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
