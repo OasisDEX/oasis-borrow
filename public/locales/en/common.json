@@ -1172,7 +1172,7 @@
     "auto-buy-trigger-greater-than-auto-take-profit": "Setting your trigger ratio at this level may result in your Auto-Buy Trigger not executing. Find out more <0>here</0>.",
     "constant-multiple-buy-trigger-greater-than-auto-take-profit": "Setting your buy trigger ratio at this level may result in your Constant Multiple Buy Trigger not executing. Find out more <0>here</0>.",
     "existing-take-profit-trigger-after-vault-reopen": "You have an existing Take Profit Trigger, it will remain active after you reopen this vault.",
-    "auto-buy-override":"We have updated our Auto-Buy Feature. In order for your Auto-Buy automation to trigger, please cancel your existing Auto-Buy and create a new one. Oasis.app will refund any gas costs associated with these transaction, just contact oasis.app support."
+    "auto-buy-override": "We recently discovered an issue with Auto-Buy which prevents it from executing and affects your current Auto-Buy setup. It only affects execution and no funds are at risk. Please cancel your existing Auto-Buy from the Optimisation Tab and re-enable it. Oasis.app will refund any gas costs associated with cancelling and re-enabling. If you have any questions, you can contact us at support@oasis.app"
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",

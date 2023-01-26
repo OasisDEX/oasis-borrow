@@ -5,6 +5,11 @@ import {
   FollowButtonControl,
   FollowButtonControlProps,
 } from 'features/follow/common/FollowButtonControl'
+import {
+  ShareButton,
+  twitterSharePositionText,
+  twitterSharePositionVia,
+} from 'features/follow/common/ShareButton'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -23,6 +28,7 @@ export type VaultHeadlineProps = {
     color: string
     size: number
   }
+  shareButton?: boolean
   token: string[]
 }
 
@@ -33,10 +39,12 @@ export function VaultHeadline({
   label,
   loading = false,
   outline,
+  shareButton,
   token,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
+
   return (
     <Flex
       sx={{
@@ -88,8 +96,17 @@ export function VaultHeadline({
         )}
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
-        {followVaultEnabled && followButton && (
-          <FollowButtonControl {...followButton} sx={{ ml: 3 }} />
+        {followVaultEnabled && (
+          <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
+            {followButton && <FollowButtonControl {...followButton} />}
+            {shareButton && (
+              <ShareButton
+                text={twitterSharePositionText}
+                url={document.location.href.replace(document.location.hash, '')}
+                via={twitterSharePositionVia}
+              />
+            )}
+          </Flex>
         )}
       </Heading>
       <Flex
