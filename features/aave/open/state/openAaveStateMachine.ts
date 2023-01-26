@@ -428,9 +428,6 @@ export function createOpenAaveStateMachine(
             )
         },
         updateContext: assign((_, event) => {
-          console.log(`update context, current context amount: ${_.userInput.amount}`)
-          console.log(`update context, aux amount: ${_.auxiliaryAmount}`)
-          console.log(`update context, event: ${event.toString()}`)
           return {
             ...event,
           }
