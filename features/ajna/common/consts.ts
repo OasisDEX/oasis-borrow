@@ -17,5 +17,5 @@ export const ajnaFormExternalSteps: AjnaStatusStep[] = [
   'proxy',
 ]
 
-export const ajnaFormStepsWithBack: AjnaStatusStep[] = []
-export const ajnaFormStepsWithTransaction: AjnaStatusStep[] = []
+export const ajnaFormStepsWithBack: AjnaStatusStep[] = ['transaction']
+export const ajnaFormStepsWithTransaction: AjnaStatusStep[] = ['transaction']
