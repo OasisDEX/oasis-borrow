@@ -13,7 +13,7 @@ import { multiplyPageCardsData, productCardsConfig } from '../../helpers/product
 export function MultiplyView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
-  const aaveMultiplyStrategies = getTokens(aaveStrategiesList('Multiply').map(({ name }) => name))
+  const aaveMultiplyStrategies = aaveStrategiesList('Multiply')
 
   return (
     <Grid

@@ -6,10 +6,12 @@ import { ProductCardBorrow } from '../../components/productCards/ProductCardBorr
 import { ProductCardsFilter } from '../../components/productCards/ProductCardsFilter'
 import { ProductHeader } from '../../components/ProductHeader'
 import { borrowPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import { aaveStrategiesList } from "../aave/strategyConfig";
 
 export function BorrowView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
+  const aaveBorrowStrategies = aaveStrategiesList('Borrow')
 
   return (
     <Grid
@@ -33,7 +35,7 @@ export function BorrowView() {
         selectedFilter={tab}
         makerProductCardComponent={ProductCardBorrow}
         filterCardsFunction={borrowPageCardsData}
-        otherStrategies={[]}
+        otherStrategies={aaveBorrowStrategies}
       />
     </Grid>
   )

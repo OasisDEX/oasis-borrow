@@ -1,9 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { TokenConfig } from 'blockchain/tokensMetadata'
+import { getTokens } from 'blockchain/tokensMetadata'
 import { AaveContextProvider, isAaveContextAvailable } from 'features/aave/AaveContextProvider'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
+import { IStrategyConfig } from "../../features/aave/common/StrategyConfigTypes";
 import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
@@ -16,6 +17,7 @@ import {
   ProductLandingPagesFiltersKeys,
 } from '../../helpers/productCards'
 import { useAppContext } from '../AppContextProvider'
+import { ProductCardBorrowAave } from "./ProductCardBorrowAave";
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardsSelect } from './ProductCardsSelect'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
@@ -25,24 +27,24 @@ interface ProductCardFilterProps {
   makerProductCardComponent: (props: { cardData: ProductCardData }) => JSX.Element
   selectedFilter?: string
   filterCardsFunction: FilterCardsFunction
-  otherStrategies: TokenConfig[]
+  otherStrategies: IStrategyConfig[]
 }
 
 type FilterCardsFunction = ({
-  ilkToTokenMapping,
-  cardsFilter,
-}: {
+                              ilkToTokenMapping,
+                              cardsFilter,
+                            }: {
   ilkToTokenMapping: Array<IlkTokenMap>
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) => Array<IlkTokenMap>
 
 export function ProductCardsFilter({
-  filters,
-  makerProductCardComponent: ProductCardMakerComponent,
-  selectedFilter,
-  filterCardsFunction,
-  otherStrategies,
-}: ProductCardFilterProps) {
+                                     filters,
+                                     makerProductCardComponent: ProductCardMakerComponent,
+                                     selectedFilter,
+                                     filterCardsFunction,
+                                     otherStrategies,
+                                   }: ProductCardFilterProps) {
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
@@ -55,9 +57,11 @@ export function ProductCardsFilter({
     productCardsData$(productsToDisplay.map(({ ilk }) => ilk)),
   )
   const [hover, setHover] = useState('')
+
   function handleTabClick(token: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(token)
   }
+
   function handleSelectChange(filter: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(filter)
   }
@@ -65,6 +69,14 @@ export function ProductCardsFilter({
   function handleHover(filter: string) {
     setHover(filter)
   }
+
+  // TODO: No way to filter strategies in strategy config by protocol yet
+  const aaveStrategies = otherStrategies
+  const aaveStrategyTokens = getTokens(aaveStrategies.map(({ name }) => name))
+  const aaveStrategyPlusTokenMeta = aaveStrategies.map((strategy, index) =>
+    ({ ...strategy, ...aaveStrategyTokens[index] })
+  );
+
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
@@ -114,11 +126,11 @@ export function ProductCardsFilter({
         <WithErrorHandler error={[productCardsDataError]}>
           <WithLoadingIndicator
             value={[productCardsData, isAaveContextAvailable()]}
-            customLoader={<ProductCardsLoader />}
+            customLoader={<ProductCardsLoader/>}
           >
             {([_productCardsData]) => (
               <ProductCardsWrapper>
-                {otherStrategies
+                {aaveStrategyPlusTokenMeta
                   .filter(({ protocol, name }) => {
                     return (
                       protocol === 'aave' &&
@@ -126,11 +138,18 @@ export function ProductCardsFilter({
                         currentFilter.toLocaleUpperCase() === 'FEATURED')
                     )
                   })
-                  .map((cardData) => (
-                    <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData} />
-                  ))}
+                  .map((cardData) => {
+                    switch (cardData.type) {
+                      case 'Borrow':
+                        return <ProductCardBorrowAave key={cardData.symbol} cardData={cardData}/>
+                      case 'Multiply':
+                        return <ProductCardMultiplyAave key={cardData.symbol} cardData={cardData}/>
+                      default:
+                        return null
+                    }
+                  })}
                 {_productCardsData.map((cardData) => (
-                  <ProductCardMakerComponent key={cardData.ilk} cardData={cardData} />
+                  <ProductCardMakerComponent key={cardData.ilk} cardData={cardData}/>
                 ))}
               </ProductCardsWrapper>
             )}

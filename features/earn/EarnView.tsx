@@ -26,8 +26,8 @@ export function EarnView() {
     productCardsData$(supportedEarnIlks),
   )
   const daiSavingsRate = useFeatureToggle('DaiSavingsRate')
-
   const aaveEarnStrategies = getTokens(aaveStrategiesList('Earn').map(({ name }) => name))
+
   return (
     <Grid
       sx={{
