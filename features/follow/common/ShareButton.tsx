@@ -63,7 +63,7 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
           },
           svg: {
             color: 'primary60',
-            transition: 'color 200ms'
+            transition: 'color 200ms',
           },
         }}
       >
