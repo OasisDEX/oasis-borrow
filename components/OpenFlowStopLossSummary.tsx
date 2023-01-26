@@ -7,20 +7,16 @@ import React from 'react'
 
 interface OpenFlowStopLossSummaryProps {
   stopLossLevel: BigNumber
-  afterLiquidationPrice: BigNumber
-  liquidationRatio: BigNumber
+  ratioTranslationKey: string
+  dynamicStopLossPrice: BigNumber
 }
 
 export function OpenFlowStopLossSummary({
   stopLossLevel,
-  afterLiquidationPrice,
-  liquidationRatio,
+  ratioTranslationKey,
+  dynamicStopLossPrice,
 }: OpenFlowStopLossSummaryProps) {
   const { t } = useTranslation()
-
-  const dynamicStopLossPrice = afterLiquidationPrice
-    .div(liquidationRatio)
-    .times(stopLossLevel.div(100))
 
   return (
     <>
@@ -30,7 +26,7 @@ export function OpenFlowStopLossSummary({
         </Text>
       </Box>
       <VaultChangesInformationItem
-        label={`${t('protection.stop-loss-coll-ratio')}`}
+        label={`${t(ratioTranslationKey)}`}
         value={
           <Flex>
             {formatPercent(stopLossLevel, {

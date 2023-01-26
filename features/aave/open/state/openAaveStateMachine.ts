@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js'
 import { ethNullAddress } from 'blockchain/config'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
+import { aaveOffsetFromMinAndMax } from 'features/automation/metadata/aave/stopLossMetadata'
+import { canOpenPosition } from 'helpers/canOpenPosition'
 import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -40,7 +42,7 @@ import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
-  base: 2,
+  base: 3,
   proxySteps: (needCreateProxy: boolean) => (needCreateProxy ? 2 : 0),
   allowanceSteps: (needAllowance: boolean) => (needAllowance ? 1 : 0),
 }
@@ -207,6 +209,11 @@ export function createOpenAaveStateMachine(
                     actions: 'incrementCurrentStep',
                   },
                   {
+                    target: 'optionalStopLoss',
+                    cond: 'canSetupStopLoss',
+                    actions: 'incrementCurrentStep',
+                  },
+                  {
                     target: 'reviewing',
                     cond: 'canOpenPosition',
                     actions: 'incrementCurrentStep',
@@ -240,6 +247,23 @@ export function createOpenAaveStateMachine(
               on: {
                 ALLOWANCE_SUCCESS: {
                   target: 'editing',
+                },
+              },
+            },
+            optionalStopLoss: {
+              entry: 'updateStopLossInitialState',
+              on: {
+                NEXT_STEP: {
+                  target: 'reviewing',
+                  actions: 'incrementCurrentStep',
+                },
+                SET_STOP_LOSS_SKIPPED: {
+                  target: 'reviewing',
+                  actions: ['updateContext', 'incrementCurrentStep'],
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                  actions: 'decrementCurrentStep',
                 },
               },
             },
@@ -349,9 +373,16 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
         validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
           allDefined(userInput, effectiveProxyAddress, strategy),
-        canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
-          allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
-          tokenBalance!.gte(userInput.amount!),
+        canOpenPosition,
+        canSetupStopLoss: ({
+          strategyConfig,
+          tokenBalance,
+          userInput,
+          effectiveProxyAddress,
+          hasOpenedPosition,
+        }) =>
+          strategyConfig.type === 'Multiply' &&
+          canOpenPosition({ userInput, hasOpenedPosition, tokenBalance, effectiveProxyAddress }),
         isAllowanceNeeded,
       },
       actions: {
@@ -411,6 +442,7 @@ export function createOpenAaveStateMachine(
         })),
         decrementCurrentStep: assign((context) => ({
           currentStep: context.currentStep - 1,
+          stopLossSkipped: false,
         })),
         eventConfirmRiskRatio: ({ userInput }) => {
           userInput.amount &&
@@ -477,7 +509,7 @@ export function createOpenAaveStateMachine(
                   context.userInput.riskRatio ||
                   context.defaultRiskRatio ||
                   new RiskRatio(zero, RiskRatio.TYPE.LTV),
-                // ethNullAddress just for the simulation, theres a guard for that
+                // ethNullAddress just for the simulation, there is a guard for that
                 proxyAddress: context.effectiveProxyAddress! || ethNullAddress,
                 collateralToken: context.strategyConfig.tokens.collateral,
                 debtToken: context.tokens.debt,
@@ -546,7 +578,7 @@ export function createOpenAaveStateMachine(
         }),
         setFallbackTokenPrice: assign((context, event) => {
           return {
-            // fallback if we dont have the tokenPrice - happens if no
+            // fallback if we don't have the tokenPrice - happens if no
             // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
             tokenPrice: context.tokenPrice ? context.tokenPrice : event.collateralPrice,
           }
@@ -563,6 +595,13 @@ export function createOpenAaveStateMachine(
         disableChangingAddresses: assign((_) => {
           return {
             blockSettingCalculatedAddresses: true,
+          }
+        }),
+        updateStopLossInitialState: assign(({ reserveConfig }) => {
+          return {
+            stopLossLevel: reserveConfig!.liquidationThreshold
+              .minus(aaveOffsetFromMinAndMax)
+              .times(100),
           }
         }),
       },

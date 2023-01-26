@@ -1446,6 +1446,7 @@
     "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
     "dynamic-stop-loss": "Dynamic Stop-Loss",
     "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
+    "stop-loss-ltv": "Stop-Loss Loan to Value",
     "total-cost": "Total transaction cost",
     "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on Stop-Loss trigger",

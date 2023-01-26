@@ -36,22 +36,29 @@ export function extractStopLossDataInput(context: OpenAaveContext) {
   const collateralToken = context.tokens.collateral
   const debtToken = context.tokens.debt
 
+  const debt = amountFromWei(
+    context.strategy?.simulation.position.debt.amount || zero,
+    context.strategy?.simulation.position.debt.precision,
+  )
+
+  const lockedCollateral = amountFromWei(
+    context.strategy?.simulation.position.collateral.amount || zero,
+    context.strategy?.simulation.position.collateral.precision,
+  )
+  const liquidationRatio =
+    context?.strategy?.simulation.position.category.liquidationThreshold || zero
+  const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
+
   return {
     collateralToken,
     debtToken,
-    proxyAddress: context.connectedProxyAddress,
+    proxyAddress: context.effectiveProxyAddress,
     positionRatio: context.strategy?.simulation.position.riskRatio.loanToValue || zero,
-    lockedCollateral: amountFromWei(
-      context.strategy?.simulation.position.collateral.amount || zero,
-      context.strategy?.simulation.position.collateral.precision,
-    ),
-    debt: amountFromWei(
-      context.strategy?.simulation.position.debt.amount || zero,
-      context.strategy?.simulation.position.debt.precision,
-    ),
-    liquidationPrice: context.strategy?.simulation.position.liquidationPrice || zero,
+    lockedCollateral,
+    debt,
+    liquidationPrice,
     liquidationPenalty: context.strategyInfo?.liquidationBonus || zero,
-    liquidationRatio: context?.strategy?.simulation.position.category.liquidationThreshold || zero,
+    liquidationRatio,
     debtTokenAddress: context.web3Context!.tokens[debtToken].address,
     collateralTokenAddress: context.web3Context!.tokens[collateralToken].address,
     stopLossLevel: context.stopLossLevel || zero,
@@ -75,6 +82,21 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
     stopLossLevel,
     collateralActive,
   } = extractStopLossDataInput(context)
+  console.table([
+    collateralToken,
+    debtToken,
+    positionRatio.toString(),
+    liquidationPrice.toString(),
+    debt.toString(),
+    lockedCollateral.toString(),
+    proxyAddress,
+    liquidationPenalty.toString(),
+    liquidationRatio.toString(),
+    debtTokenAddress,
+    collateralTokenAddress,
+    stopLossLevel.toString(),
+    collateralActive,
+  ])
 
   const preparedAddStopLossTriggerData = {
     ...prepareStopLossTriggerDataV2(

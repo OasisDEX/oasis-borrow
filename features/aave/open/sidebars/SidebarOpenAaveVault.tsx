@@ -289,6 +289,10 @@ export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveSta
       label: t('open-earn.aave.vault-form.confirm-btn'),
       action: () => send('NEXT_STEP'),
     },
+    headerButton: {
+      label: t('protection.continue-without-stop-loss'),
+      action: () => send({ type: 'SET_STOP_LOSS_SKIPPED', stopLossSkipped: true }),
+    },
   }
 
   return (
@@ -331,7 +335,7 @@ export function SidebarOpenAaveVault() {
           steps={[state.context.currentStep, state.context.totalSteps]}
         />
       )
-    case state.matches('frontend.stopLoss'):
+    case state.matches('frontend.optionalStopLoss'):
       return <AaveOpenPositionStopLoss state={state} send={send} isLoading={loading} />
     case state.matches('frontend.reviewing'):
       return <OpenAaveReviewingStateView state={state} send={send} isLoading={loading} />

@@ -20,7 +20,7 @@ import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
 import { AaveProtocolData } from '../manage/services'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 
-type UserInput = {
+export type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
 }
@@ -133,6 +133,7 @@ export interface BaseAaveContext {
   stopLossLevel?: BigNumber
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
+  stopLossSkipped?: boolean
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
