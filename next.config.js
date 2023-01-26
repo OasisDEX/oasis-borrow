@@ -132,11 +132,6 @@ const conf = withBundleAnalyzer(
       async redirects() {
         return [
           {
-            source: '/borrow/:slug(.{1,})', // wildcard redirect `:slug*` was causing an infinite redirect loop
-            destination: '/:slug',
-            permanent: true,
-          },
-          {
             source: '/dashboard',
             destination: '/daiwallet/dashboard',
             permanent: true,

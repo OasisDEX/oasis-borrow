@@ -9,7 +9,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-function AaveMultiplyHeader({
+function AaveHeader({
   strategyConfig,
   headerLabelString,
 }: {
@@ -58,20 +58,10 @@ function AaveMultiplyHeader({
   )
 }
 
-export function AaveMultiplyOpenHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
-  return (
-    <AaveMultiplyHeader
-      strategyConfig={strategyConfig}
-      headerLabelString={'vault.header-aave-open'}
-    />
-  )
+export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
+  return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
 }
 
-export function AaveMultiplyManageHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
-  return (
-    <AaveMultiplyHeader
-      strategyConfig={strategyConfig}
-      headerLabelString={'vault.header-aave-view'}
-    />
-  )
+export function AaveManageHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
+  return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-view'} />
 }
