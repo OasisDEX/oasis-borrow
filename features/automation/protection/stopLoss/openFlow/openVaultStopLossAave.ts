@@ -140,8 +140,8 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
 
   const sliderPercentageFill = getSliderPercentageFill({
     value: stopLossLevel,
-    min: sliderMax,
-    max: sliderMin,
+    min: sliderMin,
+    max: sliderMax,
   })
 
   const stopLossSidebarProps: SidebarAdjustStopLossEditingStageProps = {
@@ -191,7 +191,7 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
       },
       settings: {
         fixedCloseToToken: debtToken,
-        sliderDirection: 'rtl',
+        sliderDirection: 'ltr',
         sliderStep: 1,
       },
       translations: {

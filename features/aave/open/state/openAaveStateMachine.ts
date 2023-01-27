@@ -4,8 +4,9 @@ import BigNumber from 'bignumber.js'
 import { ethNullAddress } from 'blockchain/config'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
-import { aaveOffsetFromMinAndMax } from 'features/automation/metadata/aave/stopLossMetadata'
+import { aaveOffsetFromMaxDuringOpenFLow } from 'features/automation/metadata/aave/stopLossMetadata'
 import { canOpenPosition } from 'helpers/canOpenPosition'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -48,7 +49,7 @@ import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
-  base: 3,
+  base: 2,
   proxySteps: (needCreateProxy: boolean) => (needCreateProxy ? 2 : 0),
   allowanceSteps: (needAllowance: boolean) => (needAllowance ? 1 : 0),
 }
@@ -99,6 +100,7 @@ export function createOpenAaveStateMachine(
     addTriggerDef: AutomationAddTriggerTxDef,
   ) => TransactionStateMachine<AutomationTxData>,
 ) {
+  const aaveProtection = useFeatureToggle('AaveProtection')
   /** @xstate-layout N4IgpgJg5mDOIC5QHsAOYB2BBAhgNzAGUAXHYsAWRwGMALASwzADoAbZHCRqAYgGEA8gDkhAUT4AVUQBEA+oKFSAGhPkAJLEIDiMgNoAGALqJQqZLHrF6yDCZAAPRAFoAzABZ9zAGxuAjAA4AVgB2N2CATn99F18AGhAAT2d-f19vQJcvQMjfcLcPfwBfQvi0TFwCEjJKGgYmZkhLbmYIMAAjZABXDGpuHntYUnJmHAAzcgAnAApA-X0ASh4y7HwiIZq6RhZGqwwoFvaunu4DYyQQMwsrGztHBBd-L29gwK9fACZ9d+DfOff4pIIJwZYLMQK+F7hQLvFwvLxeIolEDLCprapUTb1HZ9QiiVRYCgCACqilOdkuTRu5zuCOY7mCCNhuQZgUCbgByXebmY73evlec38wWivl8xVK6BWlXWGLq2y4u14YhUskIUgACmTzhTrrZqYhRcF3nSfi4YQ99I8XIEOUC8i5mBCvKa8uF9G9ERLyqsquRZVsGgq+srVGrRJrfGdTOZKXrQHdfNanuFeXyvOEvNa3P9Es4IqC8pngsXWSlWeLkZLUb6NnLA009jwJAAlTSELCSACSwlk6qwrYoeNEzcIsmb4lEnYAanojOSY7rbohhU9-Bb-Hl-N99C9bU4gsahXzfD4XOEYvo3BWUT6ZbUA6gJsh7Ak+BMwGQ+urmwIlABNeRxywKRpC1aMrmsOMHANfQ8mYUIvndI19FFIU918Nx-DBeF8h+S8QUya8q1vdF73qWAwGIRUKE6VgrFQVgWFaDpul6RsBnWEZxjAaZZgWJZiOlUjMRYCiqO4Gi6PoBimMOViTjnbUF0gpcEBhflvBcFwUK3D53g3Pc3GdZg3FmE83BTNwHlmK8kRvIS-TI0TKOo2j6MYngiXVaRgNEVUW18rQAM7IQADEBDAi5lKpeNEE+GJvG+QJUkvN1wmCPdgi3ZgUzNS13RTA8iO9BzawDMTXKkmTPO83zZEHCQsFkELwsinUVP1NTvjSAJYMzTMvi5TLstyz4onTfTwWKqU0UckTmAqiS3OkjzcVUZtO0IABpMdgO7Nroqgu4uWCB1cjPMI2QeKIXGG41RvyiagjFOzBNmsryJcpaqo88c1rHTadtbCR9sU8DY1U94fGNLNj15WEUPZXMgSy+6YU+KGzVMwJpurO95sWvZJPcsAm1bIR2y7Hs+wHIcRzHCdp1nKMoogmLoLUtdQSyIJUmFT4jKRwEnFRnL1PS3JXi5cJcZIua60JqBiZW0mQ388MDrZqDha8HceSNNMIgRXcOcTN4ctmdwdzZDwPll0r-U+8SieW6qACEOx2iQBFkGROxB7RNYhzqze5TNYUeD4D1ePdjcdDcvH0qGM0vF6vRmmtHZYd88HoMAAHdg1EFUw01MHWeD2KEETLTmC5xN7VRnNATNQ8MiiNkISCGIcdekr3qz5gc7zwvGw9vgvZ9v2A60IPF06-xTLBXlTOhyIIhtZGzRyiF3TPRe1yMtPK37zOnKHsBc4LvoAopjsQep-sCTp0dxz4ScZ1A8v2vZhM13Cbw8Jshcl1t8cItouTLzZChVKKETzuHtgPc+xB7CdgwOqJ8UB3ywFgDwCANgWCMDwMgAA1iwYgEwcAYFgDQXUc8OpVw+AlDCAQo5vDdCbQE8IAEMkXtpAI0IZZ9wzvjOsKC0EYOQFguAuCeJPgmMwBiZBRjIAmAAW2YBQqhNDqB0O-odVSGFsw8kvO8Vk6V3SPE3lwnwJo8jFlOomLc7xEFn3mig0KOB6CsE6O+Hg44Wx-nob-RAIQniYUThEHc7xwjnltB8XWddWSnT3rCHCrjREBg8V4nxfjx6T19tIf2IVZ76K1qpU6oJPhugRJbdM0J4koQdPCE8UMrRZSyBk4ScoeDfk7O-V+jNP7BKOogGIxo3i8ndNEzCO50KmW5BZGJkRE7Zg7l0+WWxPK4mbKqPEM9Rx8A0NoZm85ykhxhJ4E8TCMimUlrdZGTgMKwjru6FeBQsimQ2R9Um-0PYABlNDvxGYYtkoIjSZgzBeXSGVHkYShjyN01ooRvHyC44ReNulbO-L+ACWBpDSD+oM9+TMv4sx-qMhAKZPB8mLN8GI6UET+HmbSTCHxQjCicUI9OmLNlMH4MIMQkgZDyGEMoVQRzNA6DJWcyuHNXhpDCM6UUusUxZVhcLDCbITIpliY8Lk+l9C9yRBgZArR4DnHskg+a7BODcFlfPKuTguRYXBOePKnymQaucOmbk0RYRmLZEKV03zB7Yj2MwegEBGIOoYRzcIPUYiZFhBkT4vwHnC0FvBd02ZQh+DdPkXuPK5Y-PrIqA4LFjh7FjSE+4jwTK0rgcGlJQs8z1tCHxTM2RUhTQxSWsNQYI22q4NWpS5yq7giwieeE1SgH9VjhufWKQrJdsXka0N59w1QBrZSz4dIlX10ZayVtdpF1HksVEMxlSN3zUfM+V875PyjvBo602sEAHgjMdEbIrIvjeqBDEzwkKMIbj5OlLKtli0O3PorZWMlI3RrADuyGUK67njMbyDhKq9zaSeDCVkUtk74a8DehWX0XY-VkpWti26x1yuOj3OxvxKkxDeBm5wrJwlhGtE6TCKbSPlXI0rV2jE2AcBHbRl9cbjpQyeFpeGVlXjOiGo8xjbLLQpBPEKcsfboMEyE3BmNdHX0JkiM0pKKULKwX-U4dKDpRrPJ8FkdKAn6jD2vkO8T9rjPSYNFZsEwDVXnthPErCcwXjFjXTECJJHdPWrrO50e+wo1Gak7W5kQGkoC1SLyZlyMIQOiyjXLGZjszfFc9nS+I9vNpcpUY405ioawWCzZ1COVLK9QhMlFFFXNGoPQZg7BFrauGOsvBXkrJerqosrafIngLr+uiV2ncvXsneN8Uhnz6WLKBHglZHLGF0wMi8Lac8u2PDdrmBhDt6KoPxayfYQgnRqDUBkchzq55PBGtMpEPwaTYK2m4TyBEfgQhQiNTEir72nXXW8H4IIHLIginQlDNI56IgpFSuV4ohQgA */
   return createMachine(
     {
@@ -219,11 +221,15 @@ export function createOpenAaveStateMachine(
                     cond: 'isAllowanceNeeded',
                     actions: 'incrementCurrentStep',
                   },
-                  {
-                    target: 'optionalStopLoss',
-                    cond: 'canSetupStopLoss',
-                    actions: 'incrementCurrentStep',
-                  },
+                  ...(aaveProtection
+                    ? [
+                        {
+                          target: 'optionalStopLoss',
+                          cond: 'canSetupStopLoss',
+                          actions: 'incrementCurrentStep',
+                        },
+                      ]
+                    : []),
                   {
                     target: 'reviewing',
                     cond: 'canOpenPosition',
@@ -450,11 +456,14 @@ export function createOpenAaveStateMachine(
         setTotalSteps: assign((context) => {
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
+          const optionalStopLoss =
+            aaveProtection && context.strategyConfig.type === 'Multiply' ? 1 : 0
 
           const totalSteps =
             totalStepsMap.base +
             totalStepsMap.proxySteps(proxy) +
-            totalStepsMap.allowanceSteps(allowance)
+            totalStepsMap.allowanceSteps(allowance) +
+            optionalStopLoss
           return {
             totalSteps: totalSteps,
           }
@@ -649,7 +658,7 @@ export function createOpenAaveStateMachine(
         updateStopLossInitialState: assign(({ reserveConfig }) => {
           return {
             stopLossLevel: reserveConfig!.liquidationThreshold
-              .minus(aaveOffsetFromMinAndMax)
+              .minus(aaveOffsetFromMaxDuringOpenFLow)
               .times(100),
           }
         }),

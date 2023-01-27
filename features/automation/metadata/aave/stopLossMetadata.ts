@@ -32,6 +32,7 @@ import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
 
 export const aaveOffsetFromMinAndMax = new BigNumber(0.05)
+export const aaveOffsetFromMaxDuringOpenFLow = new BigNumber(0.1)
 
 export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {

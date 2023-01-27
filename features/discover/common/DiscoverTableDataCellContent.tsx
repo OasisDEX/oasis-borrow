@@ -165,8 +165,8 @@ export function DiscoverTableDataCellContent({
         <>
           {primitives.cdpId && primitives[label] >= 0 ? (
             <AppLink
-              href={`/${primitives.cdpId}`}
-              hash={VaultViewMode.Overview}
+              href={`${primitives.url || `/${primitives.cdpId}`}`}
+              hash={VaultViewMode.Protection}
               internalInNewTab={true}
             >
               <Button
