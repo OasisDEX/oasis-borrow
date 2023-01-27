@@ -13,9 +13,6 @@ import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
   hasPotentialInsufficientEthFundsForTx,
-  isStopLossTriggerCloseToAutoSellTrigger,
-  isStopLossTriggerCloseToConstantMultipleSellTrigger,
-  isStopLossTriggerHigherThanAutoBuyTarget,
 } from 'features/automation/common/validation/validators'
 import {
   ContextWithoutMetadata,
@@ -144,8 +141,8 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       getSliderPercentageFill: ({ stopLossLevel }) =>
         getSliderPercentageFill({
           value: stopLossLevel,
-          max: sliderMin,
-          min: sliderMax,
+          max: sliderMax,
+          min: sliderMin,
         }),
       getRightBoundary: ({ stopLossLevel }) =>
         getDynamicStopLossPrice({
@@ -173,7 +170,7 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     },
     settings: {
       fixedCloseToToken: debtToken,
-      sliderDirection: 'rtl',
+      sliderDirection: 'ltr',
       sliderStep: 1,
     },
     translations: {
@@ -182,34 +179,18 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       bannerStrategiesKey: 'protection.stop-loss',
     },
     validation: {
-      getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({
+      getAddErrors: ({ state: { txDetails } }) => ({
         hasInsufficientEthFundsForTx: hasInsufficientEthFundsForTx({
           context,
           txError: txDetails?.txError,
         }),
         hasMoreDebtThanMaxForStopLoss: hasMoreDebtThanMaxForStopLoss({ context }),
-        isStopLossTriggerHigherThanAutoBuyTarget: isStopLossTriggerHigherThanAutoBuyTarget({
-          context,
-          stopLossLevel,
-        }),
       }),
-      getAddWarnings: ({ gasEstimationUsd, state: { stopLossLevel } }) => ({
+      getAddWarnings: ({ gasEstimationUsd }) => ({
         hasPotentialInsufficientEthFundsForTx: hasPotentialInsufficientEthFundsForTx({
           context,
           gasEstimationUsd,
         }),
-        isStopLossTriggerCloseToAutoSellTrigger: isStopLossTriggerCloseToAutoSellTrigger({
-          context,
-          sliderMax,
-          stopLossLevel,
-        }),
-        isStopLossTriggerCloseToConstantMultipleSellTrigger: isStopLossTriggerCloseToConstantMultipleSellTrigger(
-          {
-            context,
-            sliderMax,
-            stopLossLevel,
-          },
-        ),
       }),
       cancelErrors: ['hasInsufficientEthFundsForTx'],
       cancelWarnings: ['hasPotentialInsufficientEthFundsForTx'],
