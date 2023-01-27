@@ -7,6 +7,9 @@ import { Dictionary } from 'ts-essentials'
 import * as aaveV2LendingPool from './abi/aave-v2-lending-pool.json'
 import * as aaveV2PriceOracle from './abi/aave-v2-price-oracle.json'
 import * as aaveV2ProtocolDataProvider from './abi/aave-v2-protocol-data-provider.json'
+import * as aaveV3Oracle from './abi/aave-v3-oracle.json'
+import * as aaveV3PoolDataProvider from './abi/aave-v3-pool-data-provider.json'
+import * as aaveV3Pool from './abi/aave-v3-pool.json'
 import * as accountFactory from './abi/account-factory.json'
 import * as accountGuard from './abi/account-guard.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
@@ -255,6 +258,12 @@ const protoMain = {
   swapAddress: mainnetAddresses.SWAP,
   accountFactory: contractDesc(accountFactory, mainnetAddresses.ACCOUNT_FACTORY),
   accountGuard: contractDesc(accountGuard, mainnetAddresses.ACCOUNT_GUARD),
+  aaveV3Pool: contractDesc(aaveV3Pool, mainnetAddresses.AAVE_V3_POOL),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, mainnetAddresses.AAVE_V3_ORACLE),
+  aaveV3PoolDataProvider: contractDesc(
+    aaveV3PoolDataProvider,
+    mainnetAddresses.AAVE_V3_POOL_DATA_PROVIDER,
+  ),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -359,6 +368,9 @@ const kovan: NetworkConfig = {
   swapAddress: main.swapAddress,
   accountFactory: contractDesc(accountFactory, '0x0'),
   accountGuard: contractDesc(accountGuard, '0x0'),
+  aaveV3Pool: contractDesc(aaveV3Pool, '0x0'),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, '0x0'),
+  aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, '0x0'),
 }
 
 const goerli: NetworkConfig = {
@@ -466,6 +478,12 @@ const goerli: NetworkConfig = {
   swapAddress: goerliAddresses.SWAP,
   accountFactory: contractDesc(accountFactory, goerliAddresses.ACCOUNT_FACTORY),
   accountGuard: contractDesc(accountGuard, goerliAddresses.ACCOUNT_GUARD),
+  aaveV3Pool: contractDesc(aaveV3Pool, goerliAddresses.AAVE_V3_POOL),
+  aaveV3Oracle: contractDesc(aaveV3Oracle, goerliAddresses.AAVE_V3_ORACLE),
+  aaveV3PoolDataProvider: contractDesc(
+    aaveV3PoolDataProvider,
+    goerliAddresses.AAVE_V3_POOL_DATA_PROVIDER,
+  ),
 }
 
 const hardhat: NetworkConfig = {
