@@ -301,7 +301,7 @@ export function createOpenAaveStateMachine(
                 TRANSACTION_COMPLETED: [
                   {
                     cond: 'isStopLossSet',
-                    target: 'txStopLossInProgress',
+                    target: 'txStopLoss',
                   },
                   {
                     target: 'txSuccess',
@@ -321,6 +321,13 @@ export function createOpenAaveStateMachine(
                 },
                 BACK_TO_EDITING: {
                   target: 'editing',
+                },
+              },
+            },
+            txStopLoss: {
+              on: {
+                NEXT_STEP: {
+                  target: 'txStopLossInProgress',
                 },
               },
             },

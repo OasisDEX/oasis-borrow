@@ -64,6 +64,30 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
+function StopLossTxStateView({ state, send }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    content: (
+      <Grid gap={3}>
+        <AddingStopLossAnimation />
+        <StrategyInformationContainer state={state} />
+      </Grid>
+    ),
+    primaryButton: {
+      isLoading: false,
+      disabled: false,
+      action: () => {
+        send('NEXT_STEP')
+      },
+      label: t('set-up-stop-loss-tx'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
 function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
@@ -76,7 +100,6 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
       </Grid>
     ),
     primaryButton: {
-      steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: true,
       disabled: true,
       label: t('set-up-stop-loss-tx'),
@@ -367,8 +390,10 @@ export function SidebarOpenAaveVault() {
       return (
         <OpenAaveTransactionInProgressStateView state={state} send={send} isLoading={loading} />
       )
+    case state.matches('frontend.txStopLoss'):
+      return <StopLossTxStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txStopLossInProgress'):
-      return <MemoizedStopLossInProgressStateView state={state} send={send} isLoading={loading} />
+      return <StopLossInProgressStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txFailure'):
       return <OpenAaveFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):
