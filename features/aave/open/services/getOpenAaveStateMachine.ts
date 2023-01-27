@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
 import {
-  AaveUserAccountData,
-  AaveUserAccountDataParameters,
-} from 'blockchain/calls/aave/aaveLendingPool'
+  AaveV2UserAccountData,
+  AaveV2UserAccountDataParameters,
+} from 'blockchain/calls/aave/aaveV2LendingPool'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
-import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { Context } from '../../../../blockchain/network'
@@ -39,8 +39,8 @@ export function getOpenAavePositionStateMachineServices(
   tokenBalances$: Observable<TokenBalances | undefined>,
   connectedProxy$: Observable<string | undefined>,
   aaveUserAccountData$: (
-    parameters: AaveUserAccountDataParameters,
-  ) => Observable<AaveUserAccountData>,
+    parameters: AaveV2UserAccountDataParameters,
+  ) => Observable<AaveV2UserAccountData>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
   strategyInfo$: (collateralToken: string) => Observable<IStrategyInfo>,
@@ -52,7 +52,9 @@ export function getOpenAavePositionStateMachineServices(
   tokenAllowance$: (token: string, spender: string) => Observable<BigNumber>,
   userDpmProxy$: Observable<UserDpmAccount | undefined>,
   hasProxyAddressActiveAavePosition$: (proxyAddress: string) => Observable<boolean>,
-  aaveReserveConfiguration$: (args: { token: string }) => Observable<AaveReserveConfigurationData>,
+  aaveReserveConfiguration$: (args: {
+    token: string
+  }) => Observable<AaveV2ReserveConfigurationData>,
 ): OpenAaveStateMachineServices {
   const pricesFeed$ = getPricesFeed$(prices$)
   return {

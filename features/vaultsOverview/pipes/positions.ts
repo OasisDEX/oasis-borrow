@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { AaveAssetsPricesParameters } from 'blockchain/calls/aave/aavePriceOracle'
+import { AaveV2AssetsPricesParameters } from 'blockchain/calls/aave/aaveV2PriceOracle'
 import { Context } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { AaveProtocolData } from 'features/aave/manage/services'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
@@ -124,7 +124,7 @@ type BuildPositionArgs = {
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>
-  getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>
+  getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: { token: string }) => Observable<BigNumber>
@@ -226,7 +226,7 @@ export function createAavePosition$(
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
-  getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>,
+  getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>,
   tickerPrices$: (tokens: string[]) => Observable<Tickers>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
   context$: Observable<Context>,

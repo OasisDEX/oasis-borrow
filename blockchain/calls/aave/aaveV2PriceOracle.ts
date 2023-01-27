@@ -1,23 +1,23 @@
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import { AavePriceOracle } from 'types/web3-v1-contracts/aave-price-oracle'
+import { AaveV2PriceOracle } from 'types/web3-v1-contracts/aave-v2-price-oracle'
 
 import { CallDef } from '../callsHelpers'
-export interface AaveAssetsPricesParameters {
+export interface AaveV2AssetsPricesParameters {
   tokens: string[]
 }
 
-export const getAaveAssetsPrices: CallDef<AaveAssetsPricesParameters, BigNumber[]> = {
-  call: (_, { contract, aavePriceOracle }) =>
-    contract<AavePriceOracle>(aavePriceOracle).methods.getAssetsPrices,
+export const getAaveV2AssetsPrices: CallDef<AaveV2AssetsPricesParameters, BigNumber[]> = {
+  call: (_, { contract, aaveV2PriceOracle }) =>
+    contract<AaveV2PriceOracle>(aaveV2PriceOracle).methods.getAssetsPrices,
   prepareArgs: ({ tokens }, context) => [tokens.map((token) => context.tokens[token].address)],
   postprocess: (tokenPrices) =>
     tokenPrices.map((tokenPriceInEth) => amountFromWei(new BigNumber(tokenPriceInEth), 'ETH')),
 }
 
-export const getAaveOracleAssetPriceData: CallDef<{ token: string }, BigNumber> = {
-  call: (args, { contract, aavePriceOracle }) => {
-    return contract<AavePriceOracle>(aavePriceOracle).methods.getAssetPrice
+export const getAaveV2OracleAssetPriceData: CallDef<{ token: string }, BigNumber> = {
+  call: (args, { contract, aaveV2PriceOracle }) => {
+    return contract<AaveV2PriceOracle>(aaveV2PriceOracle).methods.getAssetPrice
   },
   prepareArgs: ({ token }, context) => {
     return [context.tokens[token].address]
