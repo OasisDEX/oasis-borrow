@@ -177,6 +177,7 @@ export function setupAaveV2Context(appContext: AppContext) {
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
+    unconsumedDpmProxyForConnectedAccount$,
   }
 }
 
