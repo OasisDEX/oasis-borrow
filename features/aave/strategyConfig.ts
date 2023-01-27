@@ -143,8 +143,8 @@ export const strategies: Array<IStrategyConfig> = [
         vaultDetailsView: AaveMultiplyManageComponent,
         secondaryInput: DebtInput,
         positionInfo: AaveMultiplyFaq,
-        sidebarTitle: 'open-multiply.sidebar.title',
-        sidebarButton: 'open-multiply.sidebar.open-btn',
+        sidebarTitle: 'open-borrow.sidebar.title',
+        sidebarButton: 'open-borrow.sidebar.open-btn',
       },
       tokens: {
         collateral: collateral,

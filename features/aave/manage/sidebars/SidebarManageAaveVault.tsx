@@ -512,8 +512,8 @@ export function SidebarManageAaveVault() {
         <SidebarSection
           title={
             state.context.strategyConfig.type === 'Earn'
-              ? t('sidebar-titles.manage-earn-position')
-              : t('sidebar-titles.manage-multiply-position')
+              ? t('manage-earn.aave.vault-form.manage-title')
+              : t('manage-multiply.sidebar.title')
           }
           content={
             <SecondaryInputComponent

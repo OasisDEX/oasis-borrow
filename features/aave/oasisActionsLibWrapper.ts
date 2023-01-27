@@ -498,8 +498,9 @@ export function transitionHasSwap(
 
 export function transitionHasMinConfigurableRiskRatio(
   transition?: ISimplePositionTransition,
-): asserts transition is IPositionTransition {
-  if (!(!!transition && (transition.simulation as ISimulatedTransition).swap !== undefined)) {
-    throw new Error('transition is not for min configurable risk ratio')
-  }
+): transition is IPositionTransition {
+  return (
+    !!transition &&
+    (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
+  )
 }

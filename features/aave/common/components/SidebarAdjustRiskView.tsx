@@ -1,4 +1,9 @@
-import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import {
+  IPositionTransition,
+  IRiskRatio,
+  ISimplePositionTransition,
+  RiskRatio,
+} from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { WithArrow } from 'components/WithArrow'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
@@ -64,22 +69,21 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     onChainPosition,
   }: SecondaryInputProps) {
     const { t } = useTranslation()
+    const strategy = state.context.strategy
+    const positionTransitionHasMinConfigurableRisk = transitionHasMinConfigurableRiskRatio(strategy)
 
-    transitionHasMinConfigurableRiskRatio(state.context.strategy)
-
-    const simulation = state.context.strategy?.simulation
+    const simulation = strategy?.simulation
     const targetPosition = simulation?.position
 
     const maxRisk =
       targetPosition?.category.maxLoanToValue || onChainPosition?.category.maxLoanToValue || zero
 
-    const minRisk =
-      (simulation?.minConfigurableRiskRatio &&
-        BigNumber.max(
-          simulation?.minConfigurableRiskRatio.loanToValue,
+    const minRisk = positionTransitionHasMinConfigurableRisk
+      ? BigNumber.max(
+          strategy?.simulation?.minConfigurableRiskRatio.loanToValue,
           viewConfig.riskRatios.minimum.loanToValue,
-        )) ||
-      viewConfig.riskRatios.minimum.loanToValue
+        )
+      : viewConfig.riskRatios.minimum.loanToValue
 
     const liquidationPrice = targetPosition
       ? getLiquidationPriceAccountingForPrecision(targetPosition)

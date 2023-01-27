@@ -358,9 +358,15 @@ export function createOpenAaveStateMachine(
           hasOpenedPosition,
           strategy,
         }) =>
-          allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
+          allDefined(
+            tokenBalance,
+            userInput.amount,
+            effectiveProxyAddress,
+            !hasOpenedPosition,
+            strategy,
+          ) &&
           tokenBalance!.gte(userInput.amount!) &&
-          userInput.debtAmount!.lte(
+          (userInput.debtAmount || zero).lte(
             strategy!.simulation.position.maxDebtToBorrowWithCurrentCollateral,
           ),
         isAllowanceNeeded,
