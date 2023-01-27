@@ -2,7 +2,7 @@ import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
-import { AaveConfigurationData } from '../../../blockchain/calls/aave/aaveLendingPool'
+import { AaveV2ConfigurationData } from '../../../blockchain/calls/aave/aaveV2LendingPool'
 import { IStrategyConfig } from '../common/StrategyConfigTypes'
 import { PositionCreated } from '../services/readPositionCreatedEvents'
 import { loadStrategyFromTokens } from '../strategyConfig'
@@ -12,8 +12,8 @@ import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
-  aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveConfigurationData>,
-  aaveReservesList$: () => Observable<AaveConfigurationData>,
+  aaveUserConfiguration$: ({ address }: { address: string }) => Observable<AaveV2ConfigurationData>,
+  aaveReservesList$: () => Observable<AaveV2ConfigurationData>,
   lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated>,
   positionId: PositionId,
 ): Observable<IStrategyConfig> {

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Web3ContractEvent } from 'blockchain/aaveLiquidations'
+import { Web3ContractEvent } from 'blockchain/aaveV2Liquidations'
 import { allDefined } from 'helpers/allDefined'
 
 export function getLiquidatedHeaderNotice(isPositionController: boolean) {

@@ -3,8 +3,8 @@ import { ViewPositionSectionComponentProps } from 'features/earn/aave/components
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
 
-import { AaveReserveConfigurationData } from '../../../blockchain/calls/aave/aaveProtocolDataProvider'
-import { PreparedAaveReserveData } from '../helpers/aavePrepareReserveData'
+import { AaveV2ReserveConfigurationData } from '../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { PreparedAaveReserveData } from '../helpers/aaveV2PrepareReserveData'
 import { BaseViewProps } from './BaseAaveContext'
 import BigNumber from 'bignumber.js'
 
@@ -49,7 +49,7 @@ export type AaveHeaderProps = {
 }
 
 export type ManageSectionComponentProps = {
-  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveState: AaveV2ReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
 }
 

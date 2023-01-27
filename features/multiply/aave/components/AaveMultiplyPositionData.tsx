@@ -1,7 +1,7 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCard,
@@ -12,7 +12,7 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
@@ -28,7 +28,7 @@ type AaveMultiplyPositionDataProps = {
   debtTokenPrice: BigNumber
   collateralTokenReserveData: PreparedAaveReserveData
   debtTokenReserveData: PreparedAaveReserveData
-  debtTokenReserveConfigurationData: AaveReserveConfigurationData
+  debtTokenReserveConfigurationData: AaveV2ReserveConfigurationData
 }
 
 function calcViewValuesForPosition(
