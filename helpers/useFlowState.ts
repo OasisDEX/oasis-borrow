@@ -1,5 +1,4 @@
 import { useAppContext } from 'components/AppContextProvider'
-import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { useEffect, useState } from 'react'
 
 import { setupDpmContext } from './dummyStateMachine'
@@ -11,7 +10,7 @@ type useFlowStateProps = {
 export function useFlowState({ onProxyReady }: useFlowStateProps) {
   const [isConnected, setIsConnected] = useState<boolean>()
   const [freeProxyAddress, setFreeProxyAddress] = useState<string>()
-  const { dpmAccountStateMachine, unconsumedDpmProxyForConnectedAccount$ } = useAaveContext()
+  const { dpmAccountStateMachine, unconsumedDpmProxyForConnectedAccount$ } = useAppContext()
   const { context$ } = useAppContext()
   const { stateMachine } = setupDpmContext(dpmAccountStateMachine)
 
@@ -35,9 +34,7 @@ export function useFlowState({ onProxyReady }: useFlowStateProps) {
       }
     })
     const currentFreeProxySubscription = unconsumedDpmProxyForConnectedAccount$.subscribe(
-      (...data) => {
-        console.log('data', data)
-        return
+      (data) => {
         // unused proxy found
         if (data?.proxy) {
           updateProxyValues(data?.proxy)

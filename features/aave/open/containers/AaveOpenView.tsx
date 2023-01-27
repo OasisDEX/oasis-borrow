@@ -2,6 +2,7 @@ import { useActor } from '@xstate/react'
 import { TabBar } from 'components/TabBar'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { Survey } from 'features/survey'
+import { useFlowState } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
@@ -49,6 +50,13 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
   const { t } = useTranslation()
   const { stateMachine } = useOpenAaveStateMachineContext()
+  const { freeProxyAddress, dpmMachine, isConnected } = useFlowState({
+    onProxyReady: (freeProxyAddress) => {
+      console.log('wow onProxyReady', freeProxyAddress)
+    },
+  })
+
+  console.log('===============', { freeProxyAddress, dpmMachine, isConnected })
   const [, send] = useActor(stateMachine)
   const PositionInfo = strategyConfig.viewComponents.positionInfo
   return (

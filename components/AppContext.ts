@@ -107,7 +107,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { getUserDpmProxies$, getUserDpmProxy$ } from 'blockchain/userDpmProxies'
+import { getUserDpmProxies$, getUserDpmProxy$, UserDpmAccount } from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
   createVault$,
@@ -231,6 +231,12 @@ import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import {
+  getCreateDPMAccountTransactionMachine,
+  getDPMAccountStateMachine,
+} from 'features/stateMachines/dpmAccount'
+import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
+import { transactionContextService } from 'features/stateMachines/transaction'
 import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
