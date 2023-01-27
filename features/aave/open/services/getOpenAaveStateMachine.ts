@@ -14,8 +14,12 @@ import { Context } from '../../../../blockchain/network'
 import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
-import { TxHelpers } from '../../../../components/AppContext'
+import { AutomationTxData, TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
+import {
+  AutomationAddTriggerData,
+  AutomationAddTriggerTxDef,
+} from '../../../automation/common/txDefinitions'
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
 import { DPMAccountStateMachine } from '../../../stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
@@ -193,6 +197,10 @@ export function getOpenAaveStateMachine(
     transactionParameters: OperationExecutorTxMeta,
     transactionDef: TransactionDef<OperationExecutorTxMeta>,
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
+  stopLossStateMachine: (
+    txData: AutomationAddTriggerData,
+    addTriggerDef: AutomationAddTriggerTxDef,
+  ) => TransactionStateMachine<AutomationTxData>,
 ) {
   return createOpenAaveStateMachine(
     transactionParametersMachine,
@@ -200,6 +208,7 @@ export function getOpenAaveStateMachine(
     dpmProxyMachine,
     allowanceMachine,
     transactionStateMachine,
+    stopLossStateMachine,
   ).withConfig({
     services: {
       ...services,

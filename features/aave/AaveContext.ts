@@ -238,6 +238,7 @@ export function setupAaveContext({
     dpmAccountStateMachine,
     allowanceStateMachine,
     operationExecutorTransactionMachine,
+    stopLossTransactionStateMachine,
   )
 
   const aaveManageStateMachine = getManageAaveStateMachine(
@@ -286,7 +287,6 @@ export function setupAaveContext({
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
-    stopLossTransactionStateMachine,
   }
 }
 

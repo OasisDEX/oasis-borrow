@@ -1,4 +1,4 @@
-import { useActor, useInterpret } from '@xstate/react'
+import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -18,11 +18,9 @@ import { Box, Flex, Grid, Image } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
-import { addAutomationBotTriggerV2 } from '../../../../blockchain/calls/automationBot'
 import { AllowanceView } from '../../../stateMachines/allowance'
 import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from '../../../stateMachines/proxy'
-import { useAaveContext } from '../../AaveContextProvider'
 import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { ProxyType } from '../../common/StrategyConfigTypes'
@@ -68,14 +66,6 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
 
 function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const { stopLossTransactionStateMachine } = useAaveContext()
-  const { stateMachine } = useOpenAaveStateMachineContext()
-  const transactionService = useInterpret(
-    stopLossTransactionStateMachine(state.context.stopLossTxData!, addAutomationBotTriggerV2),
-    { parent: stateMachine },
-  )
-
-  transactionService.start()
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
@@ -89,7 +79,7 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
       steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: true,
       disabled: true,
-      label: t('open-earn.aave.vault-form.confirm-btn'),
+      label: t('set-up-stop-loss-tx'),
     },
   }
 
