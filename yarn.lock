@@ -5591,10 +5591,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oasisdex/automation@1.2.5":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.2.5.tgz#478516be0e35d1132fc2b0b0f160825960e3c7e7"
-  integrity sha512-sfe3Miy7p3F1l6HzjNcSSqWD4sPf7yGtUOeD5hbRdDD45zbH9Y9npl39g+RmTJkpRuv8+ZOF2d8Jxrwy9biaxQ==
+"@oasisdex/automation@1.2.8-alpha.2":
+  version "1.2.8-alpha.2"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.2.8-alpha.2.tgz#988e847d991c8a477c1ff3618721000fecbd7703"
+  integrity sha512-D8d/jyo44G2RtDsqPtQuvC3SDZP6VV5HJjCLTX3i1rF/gXdSg2eIXX6BguB9ldvR1jCqF5zQ6FsF92XLHTYU7Q==
   dependencies:
     ethers "^5.6.2"
 
