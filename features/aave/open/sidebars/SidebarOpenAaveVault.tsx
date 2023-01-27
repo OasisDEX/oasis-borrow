@@ -343,6 +343,8 @@ export function SidebarOpenAaveVault() {
       return (
         <OpenAaveTransactionInProgressStateView state={state} send={send} isLoading={loading} />
       )
+    case state.matches('frontend.txStopLossInProgress'):
+      return <>TODO</>
     case state.matches('frontend.txFailure'):
       return <OpenAaveFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):

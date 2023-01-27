@@ -287,9 +287,15 @@ export function createOpenAaveStateMachine(
                 'disableChangingAddresses',
               ],
               on: {
-                TRANSACTION_COMPLETED: {
-                  target: 'txSuccess',
-                },
+                TRANSACTION_COMPLETED: [
+                  {
+                    cond: 'isStopLossSet',
+                    target: 'txStopLossInProgress',
+                  },
+                  {
+                    target: 'txSuccess',
+                  },
+                ],
                 TRANSACTION_FAILED: {
                   target: 'txFailure',
                   actions: ['updateContext'],
@@ -304,6 +310,17 @@ export function createOpenAaveStateMachine(
                 },
                 BACK_TO_EDITING: {
                   target: 'editing',
+                },
+              },
+            },
+            txStopLossInProgress: {
+              on: {
+                TRANSACTION_COMPLETED: {
+                  target: 'txSuccess',
+                },
+                TRANSACTION_FAILED: {
+                  target: 'txFailure',
+                  actions: ['updateContext'],
                 },
               },
             },
@@ -384,6 +401,7 @@ export function createOpenAaveStateMachine(
           strategyConfig.type === 'Multiply' &&
           canOpenPosition({ userInput, hasOpenedPosition, tokenBalance, effectiveProxyAddress }),
         isAllowanceNeeded,
+        isStopLossSet: ({ stopLossSkipped }) => !stopLossSkipped,
       },
       actions: {
         setRiskRatio: assign((context, event) => {
