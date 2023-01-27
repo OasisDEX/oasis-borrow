@@ -98,19 +98,21 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
     collateralActive,
   ])
 
-  const preparedAddStopLossTriggerData = {
-    ...prepareStopLossTriggerDataV2(
-      proxyAddress!,
-      TriggerType.AaveStopLossToDebt,
-      collateralActive,
-      stopLossLevel,
-      debtTokenAddress!,
-      collateralTokenAddress!,
-    ),
-    replacedTriggerIds: [0],
-    replacedTriggersData: ['0x'],
-    kind: TxMetaKind.addTrigger,
-  } as AutomationAddTriggerData
+  function preparedAddStopLossTriggerData(stopLossValue: BigNumber) {
+    return {
+      ...prepareStopLossTriggerDataV2(
+        proxyAddress!,
+        TriggerType.AaveStopLossToDebt,
+        collateralActive,
+        stopLossValue,
+        debtTokenAddress!,
+        collateralTokenAddress!,
+      ),
+      replacedTriggerIds: [0],
+      replacedTriggersData: ['0x'],
+      kind: TxMetaKind.addTrigger,
+    } as AutomationAddTriggerData
+  }
 
   const collateralDuringLiquidation = getCollateralDuringLiquidation({
     lockedCollateral,
@@ -168,11 +170,17 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
       callbacks: {
         onCloseToChange: ({ optionName }) => {
           send({ type: 'SET_COLLATERAL_ACTIVE', collateralActive: optionName === 'collateral' })
-          send({ type: 'SET_STOP_LOSS_TX_DATA', stopLossTxData: preparedAddStopLossTriggerData })
+          send({
+            type: 'SET_STOP_LOSS_TX_DATA',
+            stopLossTxData: preparedAddStopLossTriggerData(stopLossLevel),
+          })
         },
         onSliderChange: ({ value }) => {
           send({ type: 'SET_STOP_LOSS_LEVEL', stopLossLevel: value })
-          send({ type: 'SET_STOP_LOSS_TX_DATA', stopLossTxData: preparedAddStopLossTriggerData })
+          send({
+            type: 'SET_STOP_LOSS_TX_DATA',
+            stopLossTxData: preparedAddStopLossTriggerData(value),
+          })
         },
       },
       methods: {
