@@ -8,7 +8,7 @@ import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React, { useState } from 'react'
+import React from 'react'
 import { Box } from 'theme-ui'
 
 interface DiscoverDataProps {
@@ -31,7 +31,7 @@ export function DiscoverData({
   const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { walletAddress } = useAccount()
 
-  const [isLimitReached, setIsLimitReached] = useState(false)
+  // const [isLimitReached, setIsLimitReached] = useState(false)
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -48,8 +48,8 @@ export function DiscoverData({
               follow: {
                 followerAddress: walletAddress,
                 chainId: NetworkIds.MAINNET,
-                isLimitReached,
-                setIsLimitReached,
+                // isLimitReached,
+                // setIsLimitReached,
               },
             })}
             {...(followVaultsEnabled &&
@@ -57,8 +57,8 @@ export function DiscoverData({
                 follow: {
                   followerAddress: walletAddress,
                   chainId: NetworkIds.MAINNET,
-                  isLimitReached,
-                  setIsLimitReached,
+                  // isLimitReached,
+                  // setIsLimitReached,
                 },
               })}
             onBannerClick={(link) => {

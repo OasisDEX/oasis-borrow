@@ -1,6 +1,12 @@
 import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/automation/common/consts'
+import {
+  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+  FollowedVaultsLimitReachedChange,
+} from 'features/automation/follow/followedVaultsLimitReached'
+import { useFollowInitialization } from 'features/automation/follow/useFollowInitialization'
 import { FollowButton } from 'features/follow/common/FollowButton'
 import {
   followVaultUsingApi,
@@ -8,6 +14,7 @@ import {
   unfollowVaultUsingApi,
 } from 'features/shared/followApi'
 import { jwtAuthGetToken } from 'features/shared/jwt'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect, useState } from 'react'
 import { SxStyleProp } from 'theme-ui'
 
@@ -17,8 +24,8 @@ export type FollowButtonControlProps = {
   short?: boolean
   sx?: SxStyleProp
   vaultId: BigNumber
-  isLimitReached: boolean
-  setIsLimitReached: (value: boolean) => void
+  // isLimitReached: boolean
+  // setIsLimitReached: (value: boolean) => void
 }
 
 export function FollowButtonControl({
@@ -27,11 +34,16 @@ export function FollowButtonControl({
   short,
   sx,
   vaultId,
-  isLimitReached,
-  setIsLimitReached,
-}: FollowButtonControlProps) {
+}: // isLimitReached,
+// setIsLimitReached,
+FollowButtonControlProps) {
+  const { uiChanges } = useAppContext()
+
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
+  const [isLimitReachedState] = useUIChanges<FollowedVaultsLimitReachedChange>(
+    FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+  )
 
   useEffect(() => {
     void getFollowFromApi(followerAddress)
@@ -51,7 +63,11 @@ export function FollowButtonControl({
     )
     setIsFollowing(currentFollowedVault !== undefined)
 
-    setIsLimitReached(followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS)
+    // setIsLimitReached(followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS)
+    uiChanges.publish(FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE, {
+      type: 'followed-vaults-limit-reached-change',
+      isLimitReached: followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS,
+    })
     setProcessing(false) // this is required finally doesn't handle it!
   }
 
@@ -66,11 +82,15 @@ export function FollowButtonControl({
       }
     }
   }
+  if (isLimitReachedState === undefined) {
+    useFollowInitialization({ isLimitReached: false })
+  }
+  console.log('isLimitReachedState', isLimitReachedState)
   return (
     <FollowButton
       isProcessing={isProcessing}
       isFollowing={isFollowing}
-      isLimitReached={isLimitReached}
+      isLimitReached={isLimitReachedState.isLimitReached}
       buttonClickHandler={buttonClickHandler}
       short={short}
       sx={sx}
@@ -81,7 +101,10 @@ export function FollowButtonControl({
     await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
     setIsFollowing(false)
     setProcessing(false)
-    setIsLimitReached(false)
+    uiChanges.publish(FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE, {
+      type: 'followed-vaults-limit-reached-change',
+      isLimitReached: false,
+    })
   }
 
   async function followVault(jwtToken: string) {

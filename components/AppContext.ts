@@ -154,6 +154,12 @@ import {
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
 import {
+  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+  FollowedVaultsLimitReachedChange,
+  FollowedVaultsLimitReachedChangeAction,
+  followedVaultsLimitReachedChangeReducer,
+} from 'features/automation/follow/followedVaultsLimitReached'
+import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
   AutoTakeProfitFormChangeAction,
@@ -300,7 +306,6 @@ import {
   getLastCreatedPositionForProxy$,
 } from '../features/aave/services/readPositionCreatedEvents'
 import curry from 'ramda/src/curry'
-
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -371,6 +376,7 @@ export type SupportedUIChangeType =
   | NotificationChange
   | TxPayloadChange
   | AutoTakeProfitFormChange
+  | FollowedVaultsLimitReachedChange
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
@@ -383,6 +389,7 @@ export type LegalUiChanges = {
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
   AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
+  FollowedVaultsLimitReachedChangeAction: FollowedVaultsLimitReachedChangeAction
 }
 
 export type UIChanges = {
@@ -483,7 +490,10 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
   uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
-
+  uiChangesSubject.configureSubject(
+    FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+    followedVaultsLimitReachedChangeReducer,
+  )
   return uiChangesSubject
 }
 
