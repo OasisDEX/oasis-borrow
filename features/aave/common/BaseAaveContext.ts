@@ -18,6 +18,7 @@ import { UserSettingsState } from '../../userSettings/userSettings'
 import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
 import { AaveProtocolData } from '../manage/services'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
+import { ISimplePositionTransition } from '@oasisdex/oasis-actions/lib/src/strategies/types'
 
 type UserInput = {
   riskRatio?: IRiskRatio
@@ -103,7 +104,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  strategy?: IPositionTransition
+  strategy?: IPositionTransition | ISimplePositionTransition
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
   allowance?: StrategyTokenAllowance

@@ -30,7 +30,11 @@ import {
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
-import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
+import {
+  ManageAaveParameters,
+  OpenAaveParameters,
+  OpenDepositBorrowParameters,
+} from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
 
 export function getOpenAavePositionStateMachineServices(
@@ -185,7 +189,10 @@ export function getOpenAavePositionStateMachineServices(
 
 export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
-  transactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
+  openParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
+  openDepositBorrowParametersMachine: TransactionParametersStateMachine<
+    OpenDepositBorrowParameters
+  >,
   dsProxyMachine: ProxyStateMachine,
   dpmProxyMachine: DPMAccountStateMachine,
   allowanceMachine: AllowanceStateMachine,
@@ -195,7 +202,8 @@ export function getOpenAaveStateMachine(
   ) => TransactionStateMachine<OperationExecutorTxMeta>,
 ) {
   return createOpenAaveStateMachine(
-    transactionParametersMachine,
+    openParametersMachine,
+    openDepositBorrowParametersMachine,
     dsProxyMachine,
     dpmProxyMachine,
     allowanceMachine,

@@ -476,6 +476,10 @@ const hardhat: NetworkConfig = {
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
+  operationExecutor: contractDesc(operationExecutor, '0xb04CB6c52E73CF3e2753776030CE85a36549c9C2'),
+  swapAddress: '0xAe2563b4315469bF6bdD41A6ea26157dE57Ed94e',
+  accountFactory: contractDesc(accountFactory, '0x6212cb549De37c25071cF506aB7E115D140D9e42'),
+  accountGuard: contractDesc(accountGuard, '0xa195ACcEB1945163160CD5703Ed43E4f78176a54'),
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||

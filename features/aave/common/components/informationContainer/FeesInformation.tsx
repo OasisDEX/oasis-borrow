@@ -15,17 +15,20 @@ import { formatAmount } from '../../../../../helpers/formatters/format'
 
 interface FeesInformationProps {
   estimatedGasPrice?: HasGasEstimation
-  swap: Swap
+  swap?: Swap
 }
 
 export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProps) {
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
 
-  const oasisFeeDisplayInDebtToken = formatAmount(
-    amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
-    swap[swap.collectFeeFrom].symbol,
-  )
+  const oasisFeeDisplayInDebtToken = swap
+    ? formatAmount(
+        amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
+        swap[swap.collectFeeFrom].symbol,
+      ) + `${swap[swap.collectFeeFrom].symbol} +`
+    : '$0.00 +'
+
   return (
     <>
       <VaultChangesInformationItem
@@ -35,7 +38,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol} +`}
+            {oasisFeeDisplayInDebtToken}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -52,7 +55,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={`${oasisFeeDisplayInDebtToken} ${swap[swap.collectFeeFrom].symbol}`}
+            value={oasisFeeDisplayInDebtToken}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}

@@ -41,7 +41,7 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
 
   const { strategy, currentPosition } = state.context
 
-  const simulationHasSwap = strategy?.simulation.swap.toTokenAmount.gt(zero)
+  const simulationHasSwap = strategy?.simulation.swap?.toTokenAmount.gt(zero)
 
   return strategy && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>

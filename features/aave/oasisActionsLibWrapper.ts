@@ -19,6 +19,11 @@ import { zero } from '../../helpers/zero'
 import { ManageTokenInput } from './common/BaseAaveContext'
 import { ProxyType } from './common/StrategyConfigTypes'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyConfig'
+import {
+  ISimplePositionTransition,
+  PositionType,
+} from '@oasisdex/oasis-actions/lib/src/strategies/types'
+import { recursiveLog } from '../../helpers/recursiveLog'
 
 function getAddressesFromContext(context: Context) {
   return {
@@ -407,6 +412,60 @@ export async function getCloseAaveParameters({
   }
 
   return strategies.aave.close(stratArgs, stratDeps)
+}
+
+export type OpenDepositBorrowParameters = {
+  context: Context
+  collateralToken: AAVETokens
+  debtToken: AAVETokens
+  slippage: BigNumber
+  collateralAmount: BigNumber
+  borrowAmount: BigNumber
+  proxyAddress: string
+  proxyType: ProxyType
+}
+
+export async function getOpenDepositBorrowParameters(
+  blah: OpenDepositBorrowParameters,
+): Promise<ISimplePositionTransition> {
+  const {
+    context,
+    collateralToken,
+    debtToken,
+    slippage,
+    collateralAmount,
+    borrowAmount,
+    proxyAddress,
+    proxyType,
+  } = blah
+  checkContext(context, 'getOpenDepositBorrowParameters')
+  const args = {
+    slippage,
+    collateralToken: {
+      symbol: collateralToken,
+      precision: getToken(collateralToken).precision,
+    },
+    debtToken: {
+      symbol: debtToken,
+      precision: getToken(debtToken).precision,
+    },
+    amountCollateralToDepositInBaseUnit: amountToWei(collateralAmount, collateralToken),
+    amountDebtToBorrowInBaseUnit: amountToWei(borrowAmount, debtToken),
+    positionType: 'Borrow' as PositionType,
+  }
+  recursiveLog(args, 'args')
+  const deps = {
+    addresses: getAddressesFromContext(context),
+    provider: context.rpcProvider,
+    getSwapData: getOneInchCall(context.swapAddress),
+    proxy: proxyAddress,
+    user: context.account,
+    isDPMProxy: proxyType === ProxyType.DpmProxy,
+    proxyAddress,
+  }
+  const blah2 = await strategies.aave.openDepositAndBorrowDebt(args, deps)
+
+  return blah2
 }
 
 export function getEmptyPosition(collateral: string, debt: string) {

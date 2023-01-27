@@ -10,6 +10,7 @@ import { callOperationExecutorWithDpmProxy } from '../../../blockchain/calls/ope
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { TxHelpers } from '../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
+import { ISimplePositionTransition } from '@oasisdex/oasis-actions/lib/src/strategies/types'
 
 const { assign } = actions
 
@@ -21,14 +22,14 @@ export interface BaseTransactionParameters {
 
 export type TransactionParametersStateMachineContext<T extends BaseTransactionParameters> = {
   parameters?: T
-  strategy?: IPositionTransition
+  strategy?: IPositionTransition | ISimplePositionTransition
   estimatedGas?: number
   estimatedGasPrice?: HasGasEstimation
   txHelper?: TxHelpers
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; strategy?: IPositionTransition }
+  | { type: 'STRATEGY_RECEIVED'; strategy?: IPositionTransition | ISimplePositionTransition }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -43,7 +44,7 @@ export type TransactionParametersStateMachineEvent<T> =
   | { type: 'GAS_ESTIMATION_CHANGED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_CHANGED'; estimatedGasPrice: HasGasEstimation }
 
-export type LibraryCallReturn = IPositionTransition
+export type LibraryCallReturn = IPositionTransition | ISimplePositionTransition
 export type LibraryCallDelegate<T> = (parameters: T) => Promise<LibraryCallReturn>
 
 export function createTransactionParametersStateMachine<T extends BaseTransactionParameters>(
@@ -161,7 +162,9 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         })),
       },
       services: {
-        getParameters: async (context) => libraryCall(context.parameters!),
+        getParameters: async (context) => {
+          return libraryCall(context.parameters!)
+        },
         estimateGas: ({ txHelper, parameters, strategy }) => {
           return txHelper!
             .estimateGas(callOperationExecutorWithDpmProxy, {

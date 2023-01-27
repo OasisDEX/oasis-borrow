@@ -35,6 +35,7 @@ import {
 } from '../../oasisActionsLibWrapper'
 import { PositionId } from '../../types'
 import { defaultManageTokenInputValues } from '../containers/AaveManageStateMachineContext'
+import { recursiveLog } from '../../../../helpers/recursiveLog'
 
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
@@ -578,6 +579,8 @@ export function createManageAaveStateMachine(
           return undefined
         }),
         updateContext: assign((_, event) => {
+          // if (event.type === 'GAS_PRICE_ESTIMATION_RECEIVED' || event.type === 'STRATEGY_RECEIVED')
+          //   recursiveLog(event, 'updatecontext event')
           return {
             ...event,
           }

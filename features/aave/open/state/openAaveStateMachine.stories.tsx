@@ -10,7 +10,7 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { ProxyEvent, ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
-import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
+import { ManageAaveParameters, OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import {
   createOpenAaveStateMachine,
   OpenAaveEvent,
@@ -32,6 +32,7 @@ const openAaveStateMachine = createOpenAaveStateMachine(
   emptyObject,
   emptyObject,
   emptyObject,
+  emptyObject,
 ).withConfig({
   services: {
     ...({} as OpenAaveStateMachineServices),
@@ -41,7 +42,9 @@ const openAaveStateMachine = createOpenAaveStateMachine(
 const ParametersView = ({
   parametersMachine,
 }: {
-  parametersMachine: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
+  parametersMachine:
+    | ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
+    | ActorRefFrom<TransactionParametersStateMachine<ManageAaveParameters>>
 }) => {
   const [state] = useActor(parametersMachine)
 
