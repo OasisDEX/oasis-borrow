@@ -1,4 +1,4 @@
-import { useActor } from '@xstate/react'
+import { useActor, useInterpret } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
@@ -15,12 +15,14 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
-import { OpenVaultAnimation } from 'theme/animations'
+import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
+import { addAutomationBotTriggerV2 } from '../../../../blockchain/calls/automationBot'
 import { AllowanceView } from '../../../stateMachines/allowance'
 import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from '../../../stateMachines/proxy'
+import { useAaveContext } from '../../AaveContextProvider'
 import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { ProxyType } from '../../common/StrategyConfigTypes'
@@ -63,6 +65,38 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
 
   return <SidebarSection {...sidebarSectionProps} />
 }
+
+function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+  const { stopLossTransactionStateMachine } = useAaveContext()
+  const { stateMachine } = useOpenAaveStateMachineContext()
+  const transactionService = useInterpret(
+    stopLossTransactionStateMachine(state.context.stopLossTxData!, addAutomationBotTriggerV2),
+    { parent: stateMachine },
+  )
+
+  transactionService.start()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    content: (
+      <Grid gap={3}>
+        <AddingStopLossAnimation />
+        <StrategyInformationContainer state={state} />
+      </Grid>
+    ),
+    primaryButton: {
+      steps: [state.context.currentStep, state.context.totalSteps],
+      isLoading: true,
+      disabled: true,
+      label: t('open-earn.aave.vault-form.confirm-btn'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+export const MemoizedStopLossInProgressStateView = React.memo(StopLossInProgressStateView)
 
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
@@ -344,7 +378,7 @@ export function SidebarOpenAaveVault() {
         <OpenAaveTransactionInProgressStateView state={state} send={send} isLoading={loading} />
       )
     case state.matches('frontend.txStopLossInProgress'):
-      return <>TODO</>
+      return <MemoizedStopLossInProgressStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txFailure'):
       return <OpenAaveFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):

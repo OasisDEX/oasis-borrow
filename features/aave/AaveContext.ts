@@ -26,6 +26,7 @@ import {
   getCreateDPMAccountTransactionMachine,
   getDPMAccountStateMachine,
 } from '../stateMachines/dpmAccount'
+import { getStopLossTransactionStateMachine } from '../stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { transactionContextService } from '../stateMachines/transaction'
 import { getAaveStEthYield } from './common'
 import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
@@ -168,6 +169,12 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
+  const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
   const dpmAccountTransactionMachine = getCreateDPMAccountTransactionMachine(
     txHelpers$,
     connectedContext$,
@@ -279,6 +286,7 @@ export function setupAaveContext({
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
+    stopLossTransactionStateMachine,
   }
 }
 
