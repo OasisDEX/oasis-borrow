@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { IStrategyInfo } from '../BaseAaveContext'
 
 export function getStrategyInfo$(
@@ -11,7 +11,7 @@ export function getStrategyInfo$(
     token,
   }: {
     token: string
-  }) => Observable<AaveReserveConfigurationData>,
+  }) => Observable<AaveV2ReserveConfigurationData>,
   collateralToken: string,
 ): Observable<IStrategyInfo> {
   return combineLatest(

@@ -1,18 +1,18 @@
 import { getNetworkId } from '@oasisdex/web3-context'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { AaveLendingPool } from 'types/web3-v1-contracts/aave-lending-pool'
+import { AaveV2LendingPool } from 'types/web3-v1-contracts/aave-v2-lending-pool'
 
 import { Context, NetworkIds } from './network'
 
 // TODO probably we would like to set here a block numbers of our aave deployment
-const aaveLendingPoolGenesisBlockMainnet = 11362579
-const aaveLendingPoolGenesisBlockGoerli = 7480475
+const aaveV2LendingPoolGenesisBlockMainnet = 11362579
+const aaveV2LendingPoolGenesisBlockGoerli = 7480475
 
 const networkMap = {
-  [NetworkIds.MAINNET]: aaveLendingPoolGenesisBlockMainnet,
-  [NetworkIds.HARDHAT]: aaveLendingPoolGenesisBlockMainnet,
-  [NetworkIds.GOERLI]: aaveLendingPoolGenesisBlockGoerli,
+  [NetworkIds.MAINNET]: aaveV2LendingPoolGenesisBlockMainnet,
+  [NetworkIds.HARDHAT]: aaveV2LendingPoolGenesisBlockMainnet,
+  [NetworkIds.GOERLI]: aaveV2LendingPoolGenesisBlockGoerli,
 }
 
 export interface Web3ContractEvent {
@@ -28,7 +28,7 @@ export interface Web3ContractEvent {
   raw: { data: string; topics: string[] }
 }
 
-export function getAavePositionLiquidation$(
+export function getAaveV2PositionLiquidation$(
   context$: Observable<Context>,
   proxyAddress: string,
 ): Observable<Web3ContractEvent[]> {
@@ -40,8 +40,8 @@ export function getAavePositionLiquidation$(
   const genesisBlock = networkMap[chainId]
 
   return context$.pipe(
-    switchMap(async ({ aaveLendingPool, contract }) => {
-      const aaveLendingPoolContract = contract<AaveLendingPool>(aaveLendingPool)
+    switchMap(async ({ aaveV2LendingPool, contract }) => {
+      const aaveLendingPoolContract = contract<AaveV2LendingPool>(aaveV2LendingPool)
 
       const contractCalls = Promise.all<Web3ContractEvent[], Web3ContractEvent[]>([
         aaveLendingPoolContract.getPastEvents('LiquidationCall', {

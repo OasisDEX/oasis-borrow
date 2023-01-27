@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 
 import { one } from '../../helpers/zero'
-import { getAaveOracleAssetPriceData } from '../calls/aave/aavePriceOracle'
+import { getAaveV2OracleAssetPriceData } from '../calls/aave/aaveV2PriceOracle'
 import { observe } from '../calls/observe'
 import { Context } from '../network'
 
@@ -22,7 +22,7 @@ export function createAaveOracleAssetPriceData$(
     return observe(
       refreshInterval$,
       context$,
-      getAaveOracleAssetPriceData,
+      getAaveV2OracleAssetPriceData,
       ({ token }) => token,
     )(args)
   }

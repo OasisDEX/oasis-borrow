@@ -4,9 +4,9 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
-import * as aaveLendingPool from './abi/aave-lending-pool.json'
-import * as aavePriceOracle from './abi/aave-price-oracle.json'
-import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
+import * as aaveV2LendingPool from './abi/aave-v2-lending-pool.json'
+import * as aaveV2PriceOracle from './abi/aave-v2-price-oracle.json'
+import * as aaveV2ProtocolDataProvider from './abi/aave-v2-protocol-data-provider.json'
 import * as accountFactory from './abi/account-factory.json'
 import * as accountGuard from './abi/account-guard.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
@@ -232,15 +232,15 @@ const protoMain = {
   aaveTokens: {
     STETH: mainnetAddresses['STETH'],
   } as Record<string, string>,
-  aaveProtocolDataProvider: contractDesc(
-    aaveProtocolDataProvider,
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_PROTOCOL_DATA_PROVIDER,
+    mainnetAddresses.AAVE_V2_PROTOCOL_DATA_PROVIDER,
   ),
-  aavePriceOracle: contractDesc(
-    aavePriceOracle,
+  aaveV2PriceOracle: contractDesc(
+    aaveV2PriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    mainnetAddresses.AAVE_PRICE_ORACLE,
+    mainnetAddresses.AAVE_V2_PRICE_ORACLE,
   ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(
@@ -250,7 +250,7 @@ const protoMain = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, mainnetAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveLendingPool: contractDesc(aaveLendingPool, mainnetAddresses.AAVE_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(aaveV2LendingPool, mainnetAddresses.AAVE_V2_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, mainnetAddresses.OPERATION_EXECUTOR),
   swapAddress: mainnetAddresses.SWAP,
   accountFactory: contractDesc(accountFactory, mainnetAddresses.ACCOUNT_FACTORY),
@@ -337,13 +337,13 @@ const kovan: NetworkConfig = {
   aaveTokens: {
     STETH: mainnetAddresses['STETH'],
   },
-  aaveProtocolDataProvider: contractDesc(
-    aaveProtocolDataProvider,
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x0',
   ),
-  aavePriceOracle: contractDesc(
-    aavePriceOracle,
+  aaveV2PriceOracle: contractDesc(
+    aaveV2PriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
     '0x',
   ),
@@ -351,7 +351,7 @@ const kovan: NetworkConfig = {
     USDCUSD: contractDesc(chainLinkPriceOracle, '0x'),
     ETHUSD: contractDesc(chainLinkPriceOracle, '0x'),
   },
-  aaveLendingPool: contractDesc(aaveLendingPool, '0x'),
+  aaveV2LendingPool: contractDesc(aaveV2LendingPool, '0x'),
   operationExecutor: contractDesc(
     operationExecutor,
     getConfig()?.publicRuntimeConfig.operationExecutorTemp,
@@ -443,15 +443,15 @@ const goerli: NetworkConfig = {
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
   aaveTokens: {},
-  aaveProtocolDataProvider: contractDesc(
-    aaveProtocolDataProvider,
+  aaveV2ProtocolDataProvider: contractDesc(
+    aaveV2ProtocolDataProvider,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    goerliAddresses.AAVE_PROTOCOL_DATA_PROVIDER,
+    goerliAddresses.AAVE_V2_PROTOCOL_DATA_PROVIDER,
   ),
-  aavePriceOracle: contractDesc(
-    aavePriceOracle,
+  aaveV2PriceOracle: contractDesc(
+    aaveV2PriceOracle,
     // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
-    goerliAddresses.AAVE_PRICE_ORACLE,
+    goerliAddresses.AAVE_V2_PRICE_ORACLE,
   ),
   chainlinkPriceOracle: {
     USDCUSD: contractDesc(
@@ -461,7 +461,7 @@ const goerli: NetworkConfig = {
     ),
     ETHUSD: contractDesc(chainLinkPriceOracle, goerliAddresses.CHAINLINK_ETH_USD_PRICE_FEED),
   },
-  aaveLendingPool: contractDesc(aaveLendingPool, goerliAddresses.AAVE_LENDING_POOL),
+  aaveV2LendingPool: contractDesc(aaveV2LendingPool, goerliAddresses.AAVE_V2_LENDING_POOL),
   operationExecutor: contractDesc(operationExecutor, goerliAddresses.OPERATION_EXECUTOR),
   swapAddress: goerliAddresses.SWAP,
   accountFactory: contractDesc(accountFactory, goerliAddresses.ACCOUNT_FACTORY),

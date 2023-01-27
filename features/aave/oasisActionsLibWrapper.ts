@@ -29,9 +29,9 @@ function getAddressesFromContext(context: Context) {
     USDC: context.tokens['USDC'].address,
     WBTC: context.tokens['WBTC'].address,
     chainlinkEthUsdPriceFeed: context.chainlinkPriceOracle['ETHUSD'].address,
-    aaveProtocolDataProvider: context.aaveProtocolDataProvider.address,
-    aavePriceOracle: context.aavePriceOracle.address,
-    aaveLendingPool: context.aaveLendingPool.address,
+    aaveProtocolDataProvider: context.aaveV2ProtocolDataProvider.address,
+    aavePriceOracle: context.aaveV2PriceOracle.address,
+    aaveLendingPool: context.aaveV2LendingPool.address,
     operationExecutor: context.operationExecutor.address,
   }
 }
