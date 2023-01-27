@@ -5,7 +5,7 @@ import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { Skeleton } from 'components/Skeleton'
 import { VaultHeadline, VaultHeadlineProps } from 'components/vault/VaultHeadline'
 import React from 'react'
-import { Container, Grid } from 'theme-ui'
+import { Container, Flex, Grid } from 'theme-ui'
 
 function ContentCardLoadingState() {
   return (
@@ -19,19 +19,32 @@ function ContentCardLoadingState() {
 
 function ContentFooterLoadingState() {
   return (
-    <Grid gap="12px" as="li" sx={{ width: '33.3%', mt: 3, mb: '20px', pr: 3 }}>
+    <Flex
+      as="li"
+      sx={{
+        gap: '12px',
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+        flexBasis: ['100%', null, null, '25%'],
+        p: 3,
+        pl: 0,
+        '&:nth-child(-n+3)': {
+          flexGrow: 1,
+        },
+      }}
+    >
       <Skeleton />
       <Skeleton width="33.3%" />
-    </Grid>
+    </Flex>
   )
 }
 
 function SidebarLoadingState() {
   return (
-    <Grid gap="12px" sx={{ '&:first-child': { mb: 3 } }}>
+    <Flex sx={{ gap: '12px', flexDirection: 'column', '&:first-child': { mb: 3 } }}>
       <Skeleton width="50%" />
       <Skeleton height="74px" />
-    </Grid>
+    </Flex>
   )
 }
 

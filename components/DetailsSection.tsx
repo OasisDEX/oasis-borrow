@@ -4,9 +4,11 @@ import { Box, Card, Flex, Heading } from 'theme-ui'
 import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
 
+type DetailsSectionButtons = (ButtonWithAction | ButtonWithActions)[]
+
 interface DetailsSectionProps {
   badge?: boolean
-  buttons?: (ButtonWithAction | ButtonWithActions)[]
+  buttons?: DetailsSectionButtons
   content: ReactNode
   footer?: ReactNode
   title?: ReactNode
@@ -50,7 +52,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
 
 interface DetailsSectionTitleProps {
   badge?: boolean
-  buttons?: (ButtonWithAction | ButtonWithActions)[]
+  buttons?: DetailsSectionButtons
   children: ReactNode
 }
 

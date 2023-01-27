@@ -13,7 +13,7 @@ export const tokens = {
 
 export const ajnaFormExternalSteps: AjnaStatusStep[] = [
   'allowance-collateral',
-  'allowance-collateral',
+  'allowance-quote',
   'proxy',
 ]
 
