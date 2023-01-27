@@ -8,18 +8,24 @@ import { VaultActionInput } from '../../../../components/vault/VaultActionInput'
 import { amountFromPrecision } from '../../../../blockchain/utils'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
+import { ManageCollateralActionsEnum } from '../../strategyConfig'
+import { formatCryptoBalance } from '../../../../helpers/formatters/format'
+import { MessageCard } from '../../../../components/MessageCard'
 
 export function DebtInput(props: SecondaryInputProps) {
   const { state, send } = props
 
+  const userInputDebt = state.context.userInput?.debtAmount
   let maxDebt = zero
 
   if (state.context.strategy) {
     maxDebt = amountFromPrecision(
-      state.context.strategy.simulation.position.maxDebtToBorrow,
+      state.context.strategy.simulation.position.maxDebtToBorrowWithCurrentCollateral,
       new BigNumber(18), // precision from lib for maxDebtToBorrow is normalised to 18
     )
   }
+
+  const amountDebtTooHigh = userInputDebt?.gt(maxDebt) || false
 
   const { t } = useTranslation()
 
@@ -27,12 +33,12 @@ export function DebtInput(props: SecondaryInputProps) {
     <Grid gap={3}>
       <VaultActionInput
         action={'Generate'}
-        amount={state.context.userInput?.debtAmount}
+        amount={userInputDebt}
         hasAuxiliary={true}
         auxiliaryAmount={
           state.context.userInput.debtAmount?.times(state.context.debtPrice || zero) || zero
         }
-        hasError={false}
+        hasError={amountDebtTooHigh}
         maxAmount={maxDebt}
         showMax={true}
         maxAmountLabel={t('max')}
@@ -46,6 +52,17 @@ export function DebtInput(props: SecondaryInputProps) {
         disabled={false}
         tokenUsdPrice={state.context.debtPrice}
       />
+      {amountDebtTooHigh && (
+        <MessageCard
+          messages={[
+            t('vault-errors.borrow-amount-exceeds-max', {
+              maxBorrowAmount: formatCryptoBalance(maxDebt),
+              token: state.context.tokens.debt,
+            }),
+          ]}
+          type="error"
+        />
+      )}
     </Grid>
   )
 }

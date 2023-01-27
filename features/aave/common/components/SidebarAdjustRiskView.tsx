@@ -14,6 +14,7 @@ import { one, zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
 import { SecondaryInputProps } from '../StrategyConfigTypes'
 import { StrategyInformationContainer } from './informationContainer'
+import { transitionHasMinConfigurableRiskRatio } from '../../oasisActionsLibWrapper'
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (
@@ -63,6 +64,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     onChainPosition,
   }: SecondaryInputProps) {
     const { t } = useTranslation()
+
+    transitionHasMinConfigurableRiskRatio(state.context.strategy)
 
     const simulation = state.context.strategy?.simulation
     const targetPosition = simulation?.position

@@ -1,5 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis-actions'
+import {
+  IPosition,
+  IPositionTransition,
+  ISimplePositionTransition,
+  OPERATION_NAMES,
+} from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -27,6 +32,7 @@ import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveContext, ManageAaveEvent, ManageAaveStateMachineState } from '../state'
+import { transitionHasSwap } from '../../oasisActionsLibWrapper'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
@@ -45,24 +51,29 @@ function isLocked(state: ManageAaveStateMachineState) {
 }
 
 function getAmountGetFromPositionAfterClose(
-  strategy: IPositionTransition | undefined,
+  strategy: IPositionTransition | ISimplePositionTransition | undefined,
   currentPosition: IPosition | undefined,
 ) {
   if (!strategy || !currentPosition) {
     return zero
   }
 
-  const fee =
-    strategy.simulation.swap.collectFeeFrom === 'targetToken'
-      ? strategy.simulation.swap.tokenFee
-      : zero // fee already accounted for in toTokenAmount
+  if (transitionHasSwap(strategy)) {
+    const fee =
+      strategy.simulation.swap.collectFeeFrom === 'targetToken'
+        ? strategy.simulation.swap.tokenFee
+        : zero // fee already accounted for in toTokenAmount
 
-  return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
+    return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
+  } else {
+    return zero
+  }
 }
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
-  const displayToken = state.context.strategy?.simulation.swap.targetToken || {
+  const displayToken = (transitionHasSwap(state.context.strategy) &&
+    state.context.strategy?.simulation.swap.targetToken) || {
     symbol: token,
     precision: 18,
   }

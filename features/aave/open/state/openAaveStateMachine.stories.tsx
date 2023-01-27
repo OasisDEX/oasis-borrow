@@ -10,7 +10,11 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { ProxyEvent, ProxyStateMachine } from '../../../stateMachines/proxy/state'
 import { TransactionStateMachine } from '../../../stateMachines/transaction'
 import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
-import { ManageAaveParameters, OpenAaveParameters } from '../../oasisActionsLibWrapper'
+import {
+  ManageAaveParameters,
+  OpenAaveParameters,
+  OpenDepositBorrowParameters,
+} from '../../oasisActionsLibWrapper'
 import {
   createOpenAaveStateMachine,
   OpenAaveEvent,
@@ -45,6 +49,7 @@ const ParametersView = ({
   parametersMachine:
     | ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
     | ActorRefFrom<TransactionParametersStateMachine<ManageAaveParameters>>
+    | ActorRefFrom<TransactionParametersStateMachine<OpenDepositBorrowParameters>>
 }) => {
   const [state] = useActor(parametersMachine)
 

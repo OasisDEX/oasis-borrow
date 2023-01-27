@@ -1,4 +1,4 @@
-import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
+import { IPosition, IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -17,6 +17,7 @@ import {
 import { PriceImpact } from './PriceImpact'
 import { SlippageInformation } from './SlippageInformation'
 import { TransactionTokenAmount } from './TransactionTokenAmount'
+import { transitionHasSwap } from '../../../oasisActionsLibWrapper'
 
 type OpenAaveInformationContainerProps = {
   state: {
@@ -29,7 +30,7 @@ type OpenAaveInformationContainerProps = {
       collateralPrice?: BigNumber
       tokenPrice?: BigNumber
       estimatedGasPrice?: HasGasEstimation
-      strategy?: IPositionTransition
+      strategy?: IPositionTransition | ISimplePositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
     }
@@ -41,7 +42,8 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
 
   const { strategy, currentPosition } = state.context
 
-  const simulationHasSwap = strategy?.simulation.swap?.toTokenAmount.gt(zero)
+  const simulationHasSwap =
+    transitionHasSwap(strategy) && strategy?.simulation.swap?.toTokenAmount.gt(zero)
 
   return strategy && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
@@ -68,10 +70,15 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
         transactionParameters={strategy}
         currentPosition={currentPosition}
       />
-      <FeesInformation
-        swap={strategy.simulation.swap}
-        estimatedGasPrice={state.context.estimatedGasPrice}
-      />
+      {simulationHasSwap && (
+        <FeesInformation
+          swap={strategy.simulation.swap}
+          estimatedGasPrice={state.context.estimatedGasPrice}
+        />
+      )}
+      {!simulationHasSwap && (
+        <FeesInformation estimatedGasPrice={state.context.estimatedGasPrice} />
+      )}
     </VaultChangesInformationContainer>
   ) : (
     <></>

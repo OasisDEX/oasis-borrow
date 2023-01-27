@@ -351,9 +351,18 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
         validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
           allDefined(userInput, effectiveProxyAddress, strategy),
-        canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
+        canOpenPosition: ({
+          tokenBalance,
+          userInput,
+          effectiveProxyAddress,
+          hasOpenedPosition,
+          strategy,
+        }) =>
           allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
-          tokenBalance!.gte(userInput.amount!),
+          tokenBalance!.gte(userInput.amount!) &&
+          userInput.debtAmount!.lte(
+            strategy!.simulation.position.maxDebtToBorrowWithCurrentCollateral,
+          ),
         isAllowanceNeeded,
       },
       actions: {
@@ -438,8 +447,6 @@ export function createOpenAaveStateMachine(
             )
         },
         updateContext: assign((_, event) => {
-          // if (event.type === 'GAS_PRICE_ESTIMATION_RECEIVED' || event.type === 'STRATEGY_RECEIVED')
-          //   recursiveLog(event, 'updatecontext event')
           return {
             ...event,
           }

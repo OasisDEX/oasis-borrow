@@ -1,4 +1,9 @@
-import { IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
+import {
+  IPositionTransition,
+  IRiskRatio,
+  ISimplePositionTransition,
+  ISimulatedTransition,
+} from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
@@ -16,7 +21,7 @@ import { HasGasEstimation } from '../../../../helpers/form'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { useHash } from '../../../../helpers/useHash'
 import { zero } from '../../../../helpers/zero'
-import { getFee } from '../../../aave/oasisActionsLibWrapper'
+import { getFee, transitionHasSwap } from '../../../aave/oasisActionsLibWrapper'
 import { AaveSimulateTitle } from '../../../aave/open/components/AaveSimulateTitle'
 import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
 import {
@@ -40,7 +45,7 @@ function SimulationSection({
   gasPrice,
   defaultRiskRatio,
 }: {
-  strategy?: IPositionTransition
+  strategy?: ISimplePositionTransition | IPositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
@@ -52,7 +57,10 @@ function SimulationSection({
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = userInputAmount || new BigNumber(100)
 
-  const swapFee = (strategy?.simulation.swap && getFee(strategy?.simulation.swap)) || zero
+  const swapFee = transitionHasSwap(strategy)
+    ? (strategy?.simulation.swap && getFee(strategy?.simulation.swap)) || zero
+    : zero
+
   const gasFee = gasPrice?.gasEstimationEth || zero
   const fees = swapFee.plus(gasFee)
   const riskRatio = strategy?.simulation.position.riskRatio || defaultRiskRatio

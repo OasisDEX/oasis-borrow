@@ -3,6 +3,7 @@ import {
   IPosition,
   IPositionTransition,
   IRiskRatio,
+  ISimulatedTransition,
   Position,
   strategies,
   ZERO,
@@ -453,7 +454,7 @@ export async function getOpenDepositBorrowParameters(
     amountDebtToBorrowInBaseUnit: amountToWei(borrowAmount, debtToken),
     positionType: 'Borrow' as PositionType,
   }
-  recursiveLog(args, 'args')
+
   const deps = {
     addresses: getAddressesFromContext(context),
     provider: context.rpcProvider,
@@ -487,4 +488,18 @@ export function getEmptyPosition(collateral: string, debt: string) {
       dustLimit: zero,
     },
   )
+}
+
+export function transitionHasSwap(
+  transition?: ISimplePositionTransition,
+): transition is IPositionTransition {
+  return !!transition && (transition.simulation as ISimulatedTransition).swap !== undefined
+}
+
+export function transitionHasMinConfigurableRiskRatio(
+  transition?: ISimplePositionTransition,
+): asserts transition is IPositionTransition {
+  if (!(!!transition && (transition.simulation as ISimulatedTransition).swap !== undefined)) {
+    throw new Error('transition is not for min configurable risk ratio')
+  }
 }

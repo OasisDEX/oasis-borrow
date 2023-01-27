@@ -36,15 +36,10 @@ export const callOperationExecutorWithDsProxy: TransactionDef<OperationExecutorT
 
 export const callOperationExecutorWithDpmProxy: TransactionDef<OperationExecutorTxMeta> = {
   call: (args, { contract }) => {
-    console.log('callOperationExecutorWithDpmProxy')
     return contract<AccountImplementation>(contractDesc(accountImplementation, args.proxyAddress))
       .methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
-    console.log('---- prepareArgs ----')
-    console.log(context.operationExecutor.address)
-    console.log(data)
-    data.amount = new BigNumber(20)
     return [context.operationExecutor.address, getCallData(data, context)]
   },
   options: ({ token, amount = zero }) =>
