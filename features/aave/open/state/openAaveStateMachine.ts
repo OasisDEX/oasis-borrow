@@ -531,7 +531,7 @@ export function createOpenAaveStateMachine(
                 parameters: {
                   ...baseParams,
                   collateralAmount: context.userInput.amount!,
-                  borrowAmount: context.userInput.debtAmount!,
+                  borrowAmount: context.userInput.debtAmount || zero,
                 } as OpenDepositBorrowParameters,
               }
             } else {
