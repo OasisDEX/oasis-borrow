@@ -7,6 +7,7 @@ import { VaultChangesInformationContainer } from '../../../../../components/vaul
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { zero } from '../../../../../helpers/zero'
 import { UserSettingsState } from '../../../../userSettings/userSettings'
+import { transitionHasSwap } from '../../../oasisActionsLibWrapper'
 import { FeesInformation } from './FeesInformation'
 import { LtvInformation } from './LtvInformation'
 import { MultiplyInformation } from './MultiplyInformation'
@@ -17,7 +18,6 @@ import {
 import { PriceImpact } from './PriceImpact'
 import { SlippageInformation } from './SlippageInformation'
 import { TransactionTokenAmount } from './TransactionTokenAmount'
-import { transitionHasSwap } from '../../../oasisActionsLibWrapper'
 
 type OpenAaveInformationContainerProps = {
   state: {

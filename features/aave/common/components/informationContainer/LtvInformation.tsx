@@ -1,4 +1,4 @@
-import { IPosition, IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
+import { IPosition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

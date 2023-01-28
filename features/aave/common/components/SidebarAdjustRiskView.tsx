@@ -1,9 +1,4 @@
-import {
-  IPositionTransition,
-  IRiskRatio,
-  ISimplePositionTransition,
-  RiskRatio,
-} from '@oasisdex/oasis-actions'
+import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
 import { WithArrow } from 'components/WithArrow'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
@@ -17,9 +12,9 @@ import { SidebarResetButton } from '../../../../components/vault/sidebar/Sidebar
 import { formatPercent } from '../../../../helpers/formatters/format'
 import { one, zero } from '../../../../helpers/zero'
 import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
+import { transitionHasMinConfigurableRiskRatio } from '../../oasisActionsLibWrapper'
 import { SecondaryInputProps } from '../StrategyConfigTypes'
 import { StrategyInformationContainer } from './informationContainer'
-import { transitionHasMinConfigurableRiskRatio } from '../../oasisActionsLibWrapper'
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (

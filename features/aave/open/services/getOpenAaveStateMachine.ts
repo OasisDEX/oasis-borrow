@@ -30,11 +30,7 @@ import {
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxyType } from '../../common/StrategyConfigTypes'
 import { AaveProtocolData } from '../../manage/services'
-import {
-  ManageAaveParameters,
-  OpenAaveParameters,
-  OpenDepositBorrowParameters,
-} from '../../oasisActionsLibWrapper'
+import { OpenAaveParameters, OpenDepositBorrowParameters } from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
 
 export function getOpenAavePositionStateMachineServices(

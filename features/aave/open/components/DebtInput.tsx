@@ -1,16 +1,15 @@
+import BigNumber from 'bignumber.js'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SecondaryInputProps } from '../../common/StrategyConfigTypes'
-import { zero } from '../../../../helpers/zero'
-import { handleNumericInput } from '../../../../helpers/input'
-import { VaultActionInput } from '../../../../components/vault/VaultActionInput'
 import { amountFromPrecision } from '../../../../blockchain/utils'
-import BigNumber from 'bignumber.js'
-import { useTranslation } from 'next-i18next'
-import { ManageCollateralActionsEnum } from '../../strategyConfig'
-import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { MessageCard } from '../../../../components/MessageCard'
+import { VaultActionInput } from '../../../../components/vault/VaultActionInput'
+import { formatCryptoBalance } from '../../../../helpers/formatters/format'
+import { handleNumericInput } from '../../../../helpers/input'
+import { zero } from '../../../../helpers/zero'
+import { SecondaryInputProps } from '../../common/StrategyConfigTypes'
 
 export function DebtInput(props: SecondaryInputProps) {
   const { state, send } = props

@@ -1,4 +1,4 @@
-import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
+import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { allDefined } from 'helpers/allDefined'

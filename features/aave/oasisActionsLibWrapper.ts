@@ -24,7 +24,6 @@ import {
   ISimplePositionTransition,
   PositionType,
 } from '@oasisdex/oasis-actions/lib/src/strategies/types'
-import { recursiveLog } from '../../helpers/recursiveLog'
 
 function getAddressesFromContext(context: Context) {
   return {

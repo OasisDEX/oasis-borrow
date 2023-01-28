@@ -1,9 +1,4 @@
-import {
-  IPositionTransition,
-  IRiskRatio,
-  ISimplePositionTransition,
-  ISimulatedTransition,
-} from '@oasisdex/oasis-actions'
+import { IPositionTransition, IRiskRatio, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { useAaveContext } from 'features/aave/AaveContextProvider'

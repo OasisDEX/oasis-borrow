@@ -1,4 +1,4 @@
-import { IPosition, IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
+import { IPosition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
 import { displayMultiple } from 'helpers/display-multiple'
 import { useTranslation } from 'next-i18next'

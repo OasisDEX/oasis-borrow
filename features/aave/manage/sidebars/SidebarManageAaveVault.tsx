@@ -30,9 +30,9 @@ import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
 import { isAllowanceNeeded } from '../../common/BaseAaveContext'
 import { StrategyInformationContainer } from '../../common/components/informationContainer'
+import { transitionHasSwap } from '../../oasisActionsLibWrapper'
 import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
 import { ManageAaveContext, ManageAaveEvent, ManageAaveStateMachineState } from '../state'
-import { transitionHasSwap } from '../../oasisActionsLibWrapper'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState

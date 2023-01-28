@@ -37,12 +37,7 @@ import {
   isAllowanceNeeded,
 } from '../../common/BaseAaveContext'
 import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
-import {
-  ManageAaveParameters,
-  OpenAaveParameters,
-  OpenDepositBorrowParameters,
-} from '../../oasisActionsLibWrapper'
-import { recursiveLog } from '../../../../helpers/recursiveLog'
+import { OpenAaveParameters, OpenDepositBorrowParameters } from '../../oasisActionsLibWrapper'
 
 export const totalStepsMap = {
   base: 2,

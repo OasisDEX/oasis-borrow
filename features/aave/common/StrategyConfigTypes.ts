@@ -1,4 +1,5 @@
 import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
@@ -6,7 +7,6 @@ import { Feature } from 'helpers/useFeatureToggle'
 import { AaveV2ReserveConfigurationData } from '../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { PreparedAaveReserveData } from '../helpers/aaveV2PrepareReserveData'
 import { BaseViewProps } from './BaseAaveContext'
-import BigNumber from 'bignumber.js'
 
 export enum ProxyType {
   DsProxy = 'DsProxy',
