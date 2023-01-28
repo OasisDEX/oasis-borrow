@@ -525,6 +525,7 @@ export function createOpenAaveStateMachine(
                 type: 'VARIABLES_RECEIVED',
                 parameters: {
                   ...baseParams,
+                  amount: context.userInput.amount!,
                   collateralAmount: context.userInput.amount!,
                   borrowAmount: context.userInput.debtAmount || zero,
                 } as OpenDepositBorrowParameters,
