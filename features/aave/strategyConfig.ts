@@ -19,6 +19,7 @@ import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { IStrategyConfig, ProductType, ProxyType } from './common/StrategyConfigTypes'
 import { DebtInput } from './open/components/DebtInput'
+import AaveBorrowManageComponent from '../borrow/aave/AaveBorrowManageComponent'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
@@ -138,9 +139,9 @@ export const strategies: Array<IStrategyConfig> = [
         headerOpen: AaveOpenHeader,
         headerManage: AaveManageHeader,
         headerView: AaveManageHeader,
-        simulateSection: AaveMultiplyManageComponent,
-        vaultDetailsManage: AaveMultiplyManageComponent,
-        vaultDetailsView: AaveMultiplyManageComponent,
+        simulateSection: AaveBorrowManageComponent,
+        vaultDetailsManage: AaveBorrowManageComponent,
+        vaultDetailsView: AaveBorrowManageComponent,
         secondaryInput: DebtInput,
         positionInfo: AaveMultiplyFaq,
         sidebarTitle: 'open-borrow.sidebar.title',
