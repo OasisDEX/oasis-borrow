@@ -577,13 +577,9 @@ export function createManageAaveStateMachine(
           }
           return undefined
         }),
-        updateContext: assign((_, event) => {
-          // if (event.type === 'GAS_PRICE_ESTIMATION_RECEIVED' || event.type === 'STRATEGY_RECEIVED')
-          //   recursiveLog(event, 'updatecontext event')
-          return {
-            ...event,
-          }
-        }),
+        updateContext: assign((_, event) => ({
+          ...event,
+        })),
         killAllowanceMachine: pure((context) => {
           if (context.refAllowanceStateMachine && context.refAllowanceStateMachine.stop) {
             context.refAllowanceStateMachine.stop()
