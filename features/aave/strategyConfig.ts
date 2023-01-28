@@ -30,7 +30,7 @@ export enum ManageDebtActionsEnum {
   PAYBACK_DEBT = 'payback-debt',
 }
 
-const supportedAaveBorrowCollateralTokens = ['ETH']
+const supportedAaveBorrowCollateralTokens = ['ETH', 'WBTC']
 
 export const strategies: Array<IStrategyConfig> = [
   {
