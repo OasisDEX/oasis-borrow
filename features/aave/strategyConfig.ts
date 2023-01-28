@@ -4,6 +4,7 @@ import { ViewPositionSectionComponent } from 'features/earn/aave/components/View
 import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 
+import { AaveBorrowManageComponent } from '../borrow/aave/AaveBorrowManageComponent'
 import { AaveEarnFaq } from '../content/faqs/aave/earn'
 import { AaveMultiplyFaq } from '../content/faqs/aave/multiply'
 import {
@@ -19,7 +20,6 @@ import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { IStrategyConfig, ProductType, ProxyType } from './common/StrategyConfigTypes'
 import { DebtInput } from './open/components/DebtInput'
-import AaveBorrowManageComponent from '../borrow/aave/AaveBorrowManageComponent'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',

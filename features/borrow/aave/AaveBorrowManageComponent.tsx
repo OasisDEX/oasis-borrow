@@ -1,3 +1,3 @@
-export default function AaveBorrowManageComponent() {
+export function AaveBorrowManageComponent() {
   return <>open/manage view goes here</>
 }

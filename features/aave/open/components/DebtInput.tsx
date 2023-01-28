@@ -9,9 +9,9 @@ import { VaultActionInput } from '../../../../components/vault/VaultActionInput'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { handleNumericInput } from '../../../../helpers/input'
 import { zero } from '../../../../helpers/zero'
+import { StrategyInformationContainer } from '../../common/components/informationContainer'
 import { SecondaryInputProps } from '../../common/StrategyConfigTypes'
 import { hasUserInteracted } from '../../helpers/hasUserInteracted'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
 
 export function DebtInput(props: SecondaryInputProps) {
   const { state, send } = props
