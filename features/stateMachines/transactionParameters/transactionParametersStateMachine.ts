@@ -162,9 +162,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         })),
       },
       services: {
-        getParameters: async (context) => {
-          return libraryCall(context.parameters!)
-        },
+        getParameters: async (context) => libraryCall(context.parameters!),
         estimateGas: ({ txHelper, parameters, strategy }) => {
           return txHelper!
             .estimateGas(callOperationExecutorWithDpmProxy, {
