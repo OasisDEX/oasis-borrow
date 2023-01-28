@@ -439,6 +439,7 @@ export async function getOpenDepositBorrowParameters(
     proxyType,
   } = blah
   checkContext(context, 'getOpenDepositBorrowParameters')
+
   const args = {
     slippage,
     collateralToken: {
@@ -463,9 +464,8 @@ export async function getOpenDepositBorrowParameters(
     isDPMProxy: proxyType === ProxyType.DpmProxy,
     proxyAddress,
   }
-  const blah2 = await strategies.aave.openDepositAndBorrowDebt(args, deps)
 
-  return blah2
+  return await strategies.aave.openDepositAndBorrowDebt(args, deps)
 }
 
 export function getEmptyPosition(collateral: string, debt: string) {
