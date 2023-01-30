@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Flex, Heading } from 'theme-ui'
 
 import {
@@ -20,7 +20,7 @@ export interface SidebarSectionHeaderDropdown {
 }
 
 export interface SidebarSectionHeaderProps {
-  title: string
+  title: ReactNode
   dropdown?: SidebarSectionHeaderDropdown
   headerButton?: SidebarSectionHeaderButton
   onSelect: (panel: string) => void
@@ -44,9 +44,13 @@ export function SidebarSectionHeader({
       }}
     >
       <Flex sx={{ minHeight: 40, alignItems: 'center' }}>
-        <Heading as="p" variant="boldParagraph2">
-          {title}
-        </Heading>
+        {typeof title === 'string' ? (
+          <Heading as="p" variant="boldParagraph2">
+            {title}
+          </Heading>
+        ) : (
+          title
+        )}
       </Flex>
       {dropdown ? (
         <SidebarSectionHeaderSelect onSelect={onSelect} {...dropdown} />
