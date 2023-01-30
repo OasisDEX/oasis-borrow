@@ -319,9 +319,6 @@ export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveSta
   const { t } = useTranslation()
   const { stopLossSidebarProps, automationContextProps } = getAaveStopLossData(state.context, send)
 
-  console.log('stopLossSidebarProps', stopLossSidebarProps)
-  console.log('automationContextProps', automationContextProps)
-
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (

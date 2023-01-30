@@ -82,21 +82,6 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
     stopLossLevel,
     collateralActive,
   } = extractStopLossDataInput(context)
-  console.table([
-    collateralToken,
-    debtToken,
-    positionRatio.toString(),
-    liquidationPrice.toString(),
-    debt.toString(),
-    lockedCollateral.toString(),
-    proxyAddress,
-    liquidationPenalty.toString(),
-    liquidationRatio.toString(),
-    debtTokenAddress,
-    collateralTokenAddress,
-    stopLossLevel.toString(),
-    collateralActive,
-  ])
 
   function preparedAddStopLossTriggerData(stopLossValue: BigNumber) {
     return {
