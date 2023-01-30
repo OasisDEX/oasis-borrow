@@ -1,8 +1,8 @@
 import { ActionPills } from 'components/ActionPills'
+import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentManageProps {
   panel: AjnaBorrowPanel
@@ -10,14 +10,14 @@ interface AjnaBorrowFormContentManageProps {
 
 export function AjnaBorrowFormContentManage({ panel }: AjnaBorrowFormContentManageProps) {
   const { t } = useTranslation()
-  const [active, setActive] = useState<AjnaBorrowAction>('deposit')
+  const [active, setActive] = useState<Exclude<AjnaBorrowAction, 'open'>>('deposit')
 
   useEffect(() => {
     setActive(panel === 'collateral' ? 'deposit' : 'generate')
   }, [panel])
 
   return (
-    <Grid gap={3}>
+    <>
       <ActionPills
         active={active}
         {...(panel === 'collateral'
@@ -50,7 +50,14 @@ export function AjnaBorrowFormContentManage({ panel }: AjnaBorrowFormContentMana
               ],
             })}
       />
-      Manage step on {panel} panel with {active} tab.
-    </Grid>
+      {
+        {
+          deposit: <AjnaBorrowFormContentDeposit />,
+          withdraw: <>withdraw</>,
+          generate: <>generate</>,
+          payback: <>payback</>,
+        }[active]
+      }
+    </>
   )
 }

@@ -1,14 +1,15 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
-import { AjnaBorrowFormContentSetup } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSetup'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey, getTextButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
+import { Grid } from 'theme-ui'
 
 export function AjnaBorrowFormContent() {
   const { t } = useTranslation()
@@ -41,12 +42,12 @@ export function AjnaBorrowFormContent() {
       },
     }),
     content: (
-      <>
+      <Grid gap={3}>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
-        {currentStep === 'setup' && <AjnaBorrowFormContentSetup />}
+        {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
         {currentStep === 'manage' && <AjnaBorrowFormContentManage panel={panel} />}
         {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
-      </>
+      </Grid>
     ),
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep, product })),
