@@ -1,4 +1,3 @@
-import { useFollowInitialization } from 'features/follow/common/useFollowInitialization'
 import { AssetsAndPositionsOverview } from 'features/vaultsOverview/containers/AssetsAndPositionsOverview'
 import { ConnectWalletPrompt } from 'features/vaultsOverview/containers/ConnectWalletPrompt'
 import { FollowedTable } from 'features/vaultsOverview/containers/FollowedTable'
@@ -13,9 +12,7 @@ import { VaultSuggestions } from './containers/VaultSuggestions'
 
 export function VaultsOverviewView({ address }: { address: string }) {
   const followVaultsEnabled = useFeatureToggle('FollowVaults')
-  if (followVaultsEnabled) {
-    useFollowInitialization({ isLimitReached: false })
-  }
+
   return (
     <Grid sx={{ flex: 1, zIndex: 1, gap: 4, mt: [0, 4], mb: 5 }} key={address}>
       <VaultOwnershipNotice address={address} />

@@ -6,7 +6,6 @@ import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
-import { useFollowInitialization } from 'features/follow/common/useFollowInitialization'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -31,8 +30,6 @@ export function DiscoverData({
 }: DiscoverDataProps) {
   const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { walletAddress } = useAccount()
-
-  useFollowInitialization({ isLimitReached: false })
 
   return (
     <Box sx={{ position: 'relative' }}>
