@@ -1,5 +1,5 @@
 import { useActor } from '@xstate/react'
-import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
@@ -16,7 +16,7 @@ import { Box, Card, Container, Grid } from 'theme-ui'
 import { AavePositionNoticesView } from '../../../notices/VaultsNoticesView'
 import { useAaveContext } from '../../AaveContextProvider'
 import { IStrategyConfig } from '../../common/StrategyConfigTypes'
-import { PreparedAaveReserveData } from '../../helpers/aavePrepareReserveData'
+import { PreparedAaveReserveData } from '../../helpers/aaveV2PrepareReserveData'
 import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
@@ -31,7 +31,7 @@ function AaveManageContainer({
   aaveReserveDataDebtToken,
   address,
 }: {
-  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveState: AaveV2ReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
   strategyConfig: IStrategyConfig
   address: string

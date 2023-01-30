@@ -1,20 +1,20 @@
 import BigNumber from 'bignumber.js'
 import {
-  AaveReserveDataParameters,
-  AaveReserveDataReply,
-} from 'blockchain/calls/aave/aaveProtocolDataProvider'
+  AaveV2ReserveDataParameters,
+  AaveV2ReserveDataReply,
+} from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { amountFromWei } from 'blockchain/utils'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
 import { zero } from '../../../helpers/zero'
 
-type PrepareAaveAvailableLiquidityProps = [AaveReserveDataReply, BigNumber[]]
+type PrepareAaveAvailableLiquidityProps = [AaveV2ReserveDataReply, BigNumber[]]
 
 export function prepareAaveAvailableLiquidityInUSDC$(
-  getAaveReserveData$: (token: AaveReserveDataParameters) => Observable<AaveReserveDataReply>,
+  getAaveReserveData$: (token: AaveV2ReserveDataParameters) => Observable<AaveV2ReserveDataReply>,
   getAaveAssetsPrices$: Observable<string[]>,
-  reserveDataToken: AaveReserveDataParameters,
+  reserveDataToken: AaveV2ReserveDataParameters,
 ): Observable<BigNumber> {
   return combineLatest(getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$).pipe(
     map(([reserveData, [USDC_ETH_price]]: PrepareAaveAvailableLiquidityProps) => {

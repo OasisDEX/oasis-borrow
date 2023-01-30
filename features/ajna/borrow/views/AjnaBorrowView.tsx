@@ -1,27 +1,24 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
+import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { ajnaExtensionTheme } from 'theme'
 import { Card, Container, Grid } from 'theme-ui'
 
-export function AjnaOpenBorrowView() {
+export function AjnaBorrowView() {
   const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
-  } = useAjnaProductContext()
+  } = useAjnaBorrowContext()
 
   return (
-    <Container variant="vaultPageContainer">
+    <Container variant="vaultPageContainerStatic">
       <VaultHeadline
-        header={t('ajna.borrow.open.headline.header', { collateralToken, quoteToken })}
-        token={[collateralToken, quoteToken]}
-        outline={{ size: 1, color: ajnaExtensionTheme.colors.interactive100 }}
-        label="/static/img/ajna-product-card-label.svg"
+        {...getAjnaBorrowHeadlineProps(collateralToken, quoteToken)}
         details={[
           {
             label: t('ajna.borrow.open.headline.current-market-price', { collateralToken }),
