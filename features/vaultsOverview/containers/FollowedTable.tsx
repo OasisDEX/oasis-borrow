@@ -41,7 +41,6 @@ export function FollowedTable({ address }: { address: string }) {
           const borrowPositions = getMakerBorrowPositions(followedList)
           const multiplyPositions = getMakerMultiplyPositions(followedList)
           const earnPositions = getMakerEarnPositions(followedList)
-          // const [isLimitReached, setIsLimitReached] = useState(false)
 
           return followedList.length ? (
             <DiscoverTableContainer
@@ -62,8 +61,6 @@ export function FollowedTable({ address }: { address: string }) {
                       follow: {
                         followerAddress: walletAddress,
                         chainId: context.chainId,
-                        // isLimitReached,
-                        // setIsLimitReached,
                       },
                     })}
                   />
@@ -82,8 +79,6 @@ export function FollowedTable({ address }: { address: string }) {
                       follow: {
                         followerAddress: walletAddress,
                         chainId: context.chainId,
-                        // isLimitReached,
-                        // setIsLimitReached,
                       },
                     })}
                   />
@@ -102,8 +97,6 @@ export function FollowedTable({ address }: { address: string }) {
                       follow: {
                         followerAddress: walletAddress,
                         chainId: context.chainId,
-                        // isLimitReached,
-                        // setIsLimitReached,
                       },
                     })}
                   />

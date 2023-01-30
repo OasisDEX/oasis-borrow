@@ -1,5 +1,6 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { NetworkIds } from 'blockchain/network'
+import { useFollowInitialization } from 'features/automation/follow/useFollowInitialization'
 import { DiscoverDataResponse } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
@@ -31,7 +32,7 @@ export function DiscoverData({
   const followVaultsEnabled = useFeatureToggle('FollowVaults')
   const { walletAddress } = useAccount()
 
-  // const [isLimitReached, setIsLimitReached] = useState(false)
+  useFollowInitialization({ isLimitReached: false })
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -48,8 +49,6 @@ export function DiscoverData({
               follow: {
                 followerAddress: walletAddress,
                 chainId: NetworkIds.MAINNET,
-                // isLimitReached,
-                // setIsLimitReached,
               },
             })}
             {...(followVaultsEnabled &&
@@ -57,8 +56,6 @@ export function DiscoverData({
                 follow: {
                   followerAddress: walletAddress,
                   chainId: NetworkIds.MAINNET,
-                  // isLimitReached,
-                  // setIsLimitReached,
                 },
               })}
             onBannerClick={(link) => {

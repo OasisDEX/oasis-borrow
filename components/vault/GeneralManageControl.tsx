@@ -28,7 +28,6 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   }, [])
 
   const vaultHistoryCheck = generalManageVaultData?.state.vaultHistory.length || undefined
-  // const [isLimitReached, setIsLimitReached] = useState(false)
 
   return (
     <WithErrorHandler error={[generalManageVaultError]}>
@@ -46,8 +45,6 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
                       followerAddress: account,
                       vaultId: id,
                       chainId: chainId,
-                      // isLimitReached,
-                      // setIsLimitReached,
                     }
                   : undefined
               }

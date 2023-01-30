@@ -24,8 +24,6 @@ export type FollowButtonControlProps = {
   short?: boolean
   sx?: SxStyleProp
   vaultId: BigNumber
-  // isLimitReached: boolean
-  // setIsLimitReached: (value: boolean) => void
 }
 
 export function FollowButtonControl({
@@ -34,9 +32,7 @@ export function FollowButtonControl({
   short,
   sx,
   vaultId,
-}: // isLimitReached,
-// setIsLimitReached,
-FollowButtonControlProps) {
+}: FollowButtonControlProps) {
   const { uiChanges } = useAppContext()
 
   const [isFollowing, setIsFollowing] = useState(false)
@@ -63,7 +59,6 @@ FollowButtonControlProps) {
     )
     setIsFollowing(currentFollowedVault !== undefined)
 
-    // setIsLimitReached(followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS)
     uiChanges.publish(FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE, {
       type: 'followed-vaults-limit-reached-change',
       isLimitReached: followedVaults.length >= LIMIT_OF_FOLLOWED_VAULTS,
@@ -90,7 +85,7 @@ FollowButtonControlProps) {
     <FollowButton
       isProcessing={isProcessing}
       isFollowing={isFollowing}
-      isLimitReached={isLimitReachedState.isLimitReached}
+      isLimitReached={isLimitReachedState?.isLimitReached || false}
       buttonClickHandler={buttonClickHandler}
       short={short}
       sx={sx}
