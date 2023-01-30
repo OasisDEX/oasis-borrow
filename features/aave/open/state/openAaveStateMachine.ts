@@ -422,7 +422,7 @@ export function createOpenAaveStateMachine(
           strategyConfig.type === 'Multiply' &&
           canOpenPosition({ userInput, hasOpenedPosition, tokenBalance, effectiveProxyAddress }),
         isAllowanceNeeded,
-        isStopLossSet: ({ stopLossSkipped }) => !stopLossSkipped,
+        isStopLossSet: ({ stopLossSkipped, stopLossLevel }) => !stopLossSkipped && !!stopLossLevel,
       },
       actions: {
         setRiskRatio: assign((context, event) => {
