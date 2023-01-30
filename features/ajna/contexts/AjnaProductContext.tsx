@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import {
   isExternalStep,
   isStepWithBack,
@@ -23,16 +23,18 @@ interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
   collateralPrice: BigNumber
   collateralToken: string
+  flow: AjnaFlow
   product: AjnaProduct
   quotePrice: BigNumber
   quoteToken: string
+  position: AjnaBorrowPosition
 }
 
-// external data, could be extended later by some stuff that comes from calculationsm, not directly from outside
-type AjnaBorrowEnvironment = AjnaBorrowContextProviderProps
+type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'position'>
 
+// temporary, interface will come from MPA
 interface AjnaBorrowPosition {
-  // ...
+  id?: string
 }
 
 interface AjnaBorrowSteps {
@@ -81,6 +83,7 @@ export function useAjnaBorrowContext(): AjnaBorrowContext {
 
 export function AjnaBorrowContextProvider({
   children,
+  position,
   ...props
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
   if (!isAppContextAvailable()) return null
@@ -126,7 +129,7 @@ export function AjnaBorrowContextProvider({
   const [context, setContext] = useState<AjnaBorrowContext>({
     environment: { ...props },
     form,
-    position: {},
+    position,
     steps: setupStepManager(),
     tx: setupTxManager(),
   })

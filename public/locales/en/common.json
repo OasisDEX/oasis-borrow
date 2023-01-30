@@ -2283,10 +2283,14 @@
       ]
     },
     "borrow": {
+      "common": {
+        "headline": {
+          "current-market-price": "Current Market Price"
+        }
+      },
       "open": {
         "headline": {
-          "header": "Borrow {{collateralToken}} against {{quoteToken}}",
-          "current-market-price": "Current Market Price"
+          "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
           "title": {
@@ -2295,6 +2299,11 @@
             "transaction": "Confirm your Ajna Position"
           },
           "confirm": "Review and confirm changes in your Ajna Position."
+        }
+      },
+      "manage": {
+        "headline": {
+          "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
         }
       }
     }
