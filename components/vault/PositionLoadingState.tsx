@@ -49,7 +49,7 @@ function SidebarLoadingState() {
 }
 
 export function PositionLoadingState({
-  header = <Skeleton width="300px" height={4} />,
+  header = <Skeleton width="300px" height={4} sx={{ mb: '10px' }} />,
   ...rest
 }: Omit<VaultHeadlineProps, 'details' | 'followButtonProps' | 'header' | 'loading'> & {
   header?: ReactNode
@@ -63,7 +63,7 @@ export function PositionLoadingState({
         count={3}
         cols={3}
         gap={4}
-        sx={{ mt: '22px', mb: '42px' }}
+        sx={{ mt: '12px', mb: '42px' }}
       />
       <Grid variant="vaultContainer">
         <DetailsSection
