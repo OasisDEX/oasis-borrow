@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { AaveAssetsPricesParameters } from 'blockchain/calls/aave/aavePriceOracle'
+import { AaveV2AssetsPricesParameters } from 'blockchain/calls/aave/aaveV2PriceOracle'
 import { Context } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { AaveProtocolData } from 'features/aave/manage/services'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
@@ -11,8 +11,8 @@ import {
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { zero } from 'helpers/zero'
-import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap } from 'rxjs/operators'
+import { combineLatest, EMPTY, Observable, of } from 'rxjs'
+import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
 import { Tickers } from '../../../blockchain/prices'
 import { amountFromPrecision } from '../../../blockchain/utils'
@@ -103,6 +103,7 @@ export type AavePosition = Position & {
   type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
   stopLossData?: StopLossTriggerData
+  fakePositionCreatedEvtForDsProxyUsers?: boolean
 }
 
 export function createPositions$(
@@ -130,7 +131,7 @@ type BuildPositionArgs = {
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>
-  getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>
+  getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: { token: string }) => Observable<BigNumber>
@@ -138,7 +139,7 @@ type BuildPositionArgs = {
 }
 
 function buildPosition(
-  positionCreatedEvent: PositionCreated,
+  positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
   positionId: string,
   context: Context,
   walletAddress: string,
@@ -211,6 +212,15 @@ function buildPosition(
 
         const isOwner = context.status === 'connected' && context.account === walletAddress
 
+        if (netValueUsd.eq(zero) && positionCreatedEvent.fakePositionCreatedEvtForDsProxyUsers) {
+        /*
+         * Used to filter out faked positions for dsProxy users where the user has not created a position yet.
+         * Is needed because our strategy config observable returns a fallback strategy which will show an empty position
+         * Unless we filter it out here
+         */
+        return EMPTY
+        }
+
         return {
           token: collateralToken,
           title: `${collateralToken}/${debtToken} AAVE`,
@@ -229,6 +239,7 @@ function buildPosition(
         }
       },
     ),
+    filter<Observable<AavePosition>>((position) => position !== EMPTY),
   )
 }
 
@@ -245,7 +256,7 @@ export function createAavePosition$(
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
-  getAaveAssetsPrices$: (args: AaveAssetsPricesParameters) => Observable<BigNumber[]>,
+  getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: {
     token: string
@@ -267,7 +278,9 @@ export function createAavePosition$(
   ).pipe(
     switchMap(([userProxiesData, dsProxyAddress, strategyConfig, context]) => {
       // if we have a DS proxy make a fake position created event so we can read any position out below
-      let dsFakeEvent: PositionCreated[] = []
+      let dsFakeEvent: Array<
+        PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean }
+      > = []
       if (dsProxyAddress && !userProxiesData.find((proxy) => proxy.proxy === dsProxyAddress)) {
         dsFakeEvent = [
           {
@@ -276,6 +289,7 @@ export function createAavePosition$(
             positionType: strategyConfig.type,
             proxyAddress: dsProxyAddress,
             protocol: 'AAVE',
+            fakePositionCreatedEvtForDsProxyUsers: true,
           },
         ]
 
@@ -295,23 +309,27 @@ export function createAavePosition$(
         }),
         switchMap((positionCreatedEvents) => {
           return combineLatest(
-            positionCreatedEvents.map((pce) => {
-              const userProxy = userProxiesData.find(
-                (userProxy) => userProxy.proxy === pce.proxyAddress,
-              )
-              if (!userProxy) {
-                throw new Error('nope')
-              }
+            positionCreatedEvents
+              .map((pce) => {
+                const userProxy = userProxiesData.find(
+                  (userProxy) => userProxy.proxy === pce.proxyAddress,
+                )
+                if (!userProxy) {
+                  throw new Error('nope')
+                }
 
-              return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
-                aaveProtocolData$,
-                getAaveAssetsPrices$,
-                tickerPrices$,
-                wrappedGetAaveReserveData$,
-                aaveAvailableLiquidityInUSDC$,
-                automationTriggersData$,
+                return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
+                  aaveProtocolData$,
+                  getAaveAssetsPrices$,
+                  tickerPrices$,
+                  wrappedGetAaveReserveData$,
+                  aaveAvailableLiquidityInUSDC$,
+                  automationTriggersData$,
+                })
               })
-            }),
+              .filter((position) => {
+                return position !== EMPTY
+              }),
           )
         }),
       )

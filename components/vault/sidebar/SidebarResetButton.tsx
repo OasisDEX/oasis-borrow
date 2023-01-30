@@ -5,10 +5,15 @@ import { Box, Button } from 'theme-ui'
 
 interface SidebarResetButtonProps {
   clear: () => void
+  color?: string
   disabled?: boolean
 }
 
-export function SidebarResetButton({ clear, disabled = false }: SidebarResetButtonProps) {
+export function SidebarResetButton({
+  clear,
+  color = 'interactive100',
+  disabled = false,
+}: SidebarResetButtonProps) {
   const { t } = useTranslation()
 
   return (
@@ -23,7 +28,7 @@ export function SidebarResetButton({ clear, disabled = false }: SidebarResetButt
           p: 0,
         }}
       >
-        <Icon name="refresh" size="16px" sx={{ mr: 2 }} />
+        <Icon name="refresh" size={16} sx={{ mr: 2 }} color={color} />
         {t('reset')}
       </Button>
     </Box>

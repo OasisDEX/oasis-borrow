@@ -154,6 +154,11 @@ export function AavePositionHeaderNoDetails({ strategyConfig }: AaveHeaderProps)
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.name]
   return (
-    <VaultHeadline header={t(tokenData.translationKey)} token={tokenData.tokenList} details={[]} />
+    <VaultHeadline
+      header={t(tokenData.translationKey)}
+      token={tokenData.tokenList}
+      details={[]}
+      shareButton
+    />
   )
 }

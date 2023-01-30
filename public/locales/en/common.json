@@ -406,6 +406,7 @@
     "updated": "updated"
   },
   "active-triggers": "active triggers",
+  "i-understand": "I understand ",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -2278,6 +2279,13 @@
       "collaterals-you-can-borrow": "Collaterals you can borrow",
       "annual-variable-rates": "Annual variable rates"
     },
+    "risk": {
+      "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
+      "bullet-points": [
+        "Its a new DeFi protocol.",
+        "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
+      ]
+    },
     "borrow": {
       "open": {
         "headline": {
@@ -2285,7 +2293,12 @@
           "current-market-price": "Current Market Price"
         },
         "form": {
-          "title": "Configure your Ajna Position"
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          },
+          "confirm": "Review and confirm changes in your Ajna Position."
         }
       }
     }

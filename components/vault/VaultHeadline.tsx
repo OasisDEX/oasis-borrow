@@ -1,11 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { Skeleton } from 'components/Skeleton'
 import {
   FollowButtonControl,
   FollowButtonControlProps,
 } from 'features/follow/common/FollowButtonControl'
-import { AppSpinner } from 'helpers/AppSpinner'
+import {
+  ShareButton,
+  twitterSharePositionText,
+  twitterSharePositionVia,
+} from 'features/follow/common/ShareButton'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -19,10 +24,7 @@ export type VaultHeadlineProps = {
   header: string
   label?: string
   loading?: boolean
-  outline?: {
-    color: string
-    size: number
-  }
+  shareButton?: boolean
   token: string[]
 }
 
@@ -32,11 +34,12 @@ export function VaultHeadline({
   header,
   label,
   loading = false,
-  outline,
+  shareButton,
   token,
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
+
   return (
     <Flex
       sx={{
@@ -58,19 +61,7 @@ export function VaultHeadline({
         }}
       >
         {tokenData instanceof Array && tokenData.length > 0 && (
-          <Box
-            sx={{
-              mr: 2,
-              ...(outline && {
-                filter: `
-                  drop-shadow(${outline.size}px ${outline.size}px 0 ${outline.color})
-                  drop-shadow(${outline.size}px -${outline.size}px 0 ${outline.color})
-                  drop-shadow(-${outline.size}px ${outline.size}px 0 ${outline.color})
-                  drop-shadow(-${outline.size}px -${outline.size}px 0 ${outline.color})
-                `,
-              }),
-            }}
-          >
+          <Box sx={{ mr: 2 }}>
             {tokenData.map(({ iconCircle }, iconIndex) => (
               <Icon
                 key={`VaultHeadlineIcon_${iconCircle}`}
@@ -88,8 +79,17 @@ export function VaultHeadline({
         )}
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
-        {followVaultEnabled && followButton && (
-          <FollowButtonControl {...followButton} sx={{ ml: 3 }} />
+        {followVaultEnabled && (
+          <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
+            {followButton && <FollowButtonControl {...followButton} />}
+            {shareButton && (
+              <ShareButton
+                text={twitterSharePositionText}
+                url={document.location.href.replace(document.location.hash, '')}
+                via={twitterSharePositionVia}
+              />
+            )}
+          </Flex>
         )}
       </Heading>
       <Flex
@@ -102,7 +102,7 @@ export function VaultHeadline({
           details.map((detail) => (
             <VaultHeadlineDetails {...detail} key={`VaultHeadlineDetails_${detail.label}`} />
           ))}
-        {loading && <AppSpinner variant="styles.spinner.large" />}
+        {loading && <Skeleton width="250px" height="24px" />}
       </Flex>
     </Flex>
   )
