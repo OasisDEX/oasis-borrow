@@ -6,7 +6,6 @@ import {
   FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   FollowedVaultsLimitReachedChange,
 } from 'features/automation/follow/followedVaultsLimitReached'
-import { useFollowInitialization } from 'features/automation/follow/useFollowInitialization'
 import { FollowButton } from 'features/follow/common/FollowButton'
 import {
   followVaultUsingApi,
@@ -77,10 +76,7 @@ export function FollowButtonControl({
       }
     }
   }
-  if (isLimitReachedState === undefined) {
-    useFollowInitialization({ isLimitReached: false })
-  }
-  console.log('isLimitReachedState', isLimitReachedState)
+
   return (
     <FollowButton
       isProcessing={isProcessing}
