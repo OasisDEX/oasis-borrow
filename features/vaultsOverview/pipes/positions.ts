@@ -213,12 +213,12 @@ function buildPosition(
         const isOwner = context.status === 'connected' && context.account === walletAddress
 
         if (netValueUsd.eq(zero) && positionCreatedEvent.fakePositionCreatedEvtForDsProxyUsers) {
-        /*
-         * Used to filter out faked positions for dsProxy users where the user has not created a position yet.
-         * Is needed because our strategy config observable returns a fallback strategy which will show an empty position
-         * Unless we filter it out here
-         */
-        return EMPTY
+          /*
+           * Used to filter out faked positions for dsProxy users where the user has not created a position yet.
+           * Is needed because our strategy config observable returns a fallback strategy which will show an empty position
+           * Unless we filter it out here
+           */
+          return EMPTY
         }
 
         return {
