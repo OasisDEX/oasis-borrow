@@ -1,4 +1,5 @@
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentSetup } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSetup'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
@@ -15,11 +16,12 @@ export function AjnaBorrowFormContent() {
   } = useAjnaBorrowContext()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(`ajna.${product}.open.form.title.${currentStep}`),
+    title: t(`ajna.${product}.common.form.title.${currentStep}`),
     content: (
       <>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
         {currentStep === 'setup' && <AjnaBorrowFormContentSetup />}
+        {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
         {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
       </>
     ),

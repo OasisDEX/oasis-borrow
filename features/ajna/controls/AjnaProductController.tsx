@@ -3,6 +3,7 @@ import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
+import { steps } from 'features/ajna/common/consts'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaBorrowContextProvider } from 'features/ajna/contexts/AjnaProductContext'
@@ -119,6 +120,7 @@ export function AjnaProductController({
                     product={_product}
                     quoteToken={_quoteToken}
                     quotePrice={_tokenPriceUSD[_quoteToken]}
+                    steps={steps[_product][flow]}
                   >
                     {_product === 'borrow' && <AjnaBorrowView />}
                   </AjnaBorrowContextProvider>

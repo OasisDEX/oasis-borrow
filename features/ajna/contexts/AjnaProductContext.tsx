@@ -28,9 +28,10 @@ interface AjnaBorrowContextProviderProps {
   quotePrice: BigNumber
   quoteToken: string
   position: AjnaBorrowPosition
+  steps: AjnaStatusStep[]
 }
 
-type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'position'>
+type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'position' | 'steps'>
 
 // temporary, interface will come from MPA
 interface AjnaBorrowPosition {
@@ -84,30 +85,30 @@ export function useAjnaBorrowContext(): AjnaBorrowContext {
 export function AjnaBorrowContextProvider({
   children,
   position,
+  steps,
   ...props
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
   const form = useAjnaBorrowFormReducto({})
-  const [currentStep, setCurrentStep] = useState<AjnaStatusStep>('risk')
+  const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txStatus, setTxStatus] = useState<TxStatus>()
-  const order: AjnaStatusStep[] = ['risk', 'setup', 'transaction']
 
   const setStep = (step: AjnaStatusStep) => {
     if (isBorrowStepValid({ currentStep, formState: form.state })) setCurrentStep(step)
     else throw new Error(`A state of current step in not valid.`)
   }
   const shiftStep = (direction: 'next' | 'prev') => {
-    const i = order.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
+    const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
 
-    if (order[i]) setCurrentStep(order[i])
+    if (steps[i]) setCurrentStep(steps[i])
     else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
   const setupStepManager = () => {
     return {
       currentStep,
-      order,
+      order: steps,
       isExternalStep: isExternalStep({ currentStep }),
       isStepWithBack: isStepWithBack({ currentStep }),
       isStepWithTransaction: isStepWithTransaction({ currentStep }),

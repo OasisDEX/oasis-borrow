@@ -2286,6 +2286,14 @@
       "common": {
         "headline": {
           "current-market-price": "Current Market Price"
+        },
+        "form": {
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          }
         }
       },
       "open": {
@@ -2293,11 +2301,6 @@
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
-          "title": {
-            "risk": "Things to know before opening an Ajna position",
-            "setup": "Configure your Ajna Position",
-            "transaction": "Confirm your Ajna Position"
-          },
           "confirm": "Review and confirm changes in your Ajna Position."
         }
       },
