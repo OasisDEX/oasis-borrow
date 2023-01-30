@@ -239,6 +239,7 @@ export function createOpenAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
+                  actions: ['updateAllowance'],
                   target: 'editing',
                 },
               },
@@ -551,6 +552,31 @@ export function createOpenAaveStateMachine(
         disableChangingAddresses: assign((_) => {
           return {
             blockSettingCalculatedAddresses: true,
+          }
+        }),
+        updateAllowance: assign((context, event) => {
+          const result = Object.entries(context.tokens).find(([_, token]) => event.token === token)
+          if (result === undefined) {
+            return {}
+          }
+
+          const [type] = result
+
+          if (context.allowance === undefined) {
+            return {
+              allowance: {
+                collateral: zero,
+                debt: zero,
+                deposit: zero,
+                [type]: event.amount,
+              },
+            }
+          }
+          return {
+            allowance: {
+              ...context.allowance,
+              [type]: event.amount,
+            },
           }
         }),
       },

@@ -22,10 +22,13 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
 
-  const oasisFeeDisplayInDebtToken = formatAmount(
-    amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
-    swap[swap.collectFeeFrom].symbol,
-  )
+  const oasisFeeDisplayInDebtToken = swap.tokenFee.isZero()
+    ? '0'
+    : formatAmount(
+        amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
+        swap[swap.collectFeeFrom].symbol,
+      )
+
   return (
     <>
       <VaultChangesInformationItem
