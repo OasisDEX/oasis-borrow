@@ -231,6 +231,7 @@ import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
 import {
   getCreateDPMAccountTransactionMachine,
   getDPMAccountStateMachine,
@@ -1322,6 +1323,12 @@ export function setupAppContext() {
     [LendingProtocol.AaveV2]: aaveV2,
     [LendingProtocol.AaveV3]: aaveV3,
   }
+
+  const allowanceStateMachine = getAllowanceStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
 
   return {
     web3Context$,

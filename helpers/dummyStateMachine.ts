@@ -1,5 +1,6 @@
 import { useInterpret } from '@xstate/react'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { from, Subject } from 'rxjs'
 import { createMachine, send } from 'xstate'
@@ -26,6 +27,29 @@ export function setupDpmContext(machine: DPMAccountStateMachine) {
   const parentService = useInterpret(dummyParent)
     .start()
     .onEvent((event) => {
+      if (event.type === 'DPM_ACCOUNT_CREATED') {
+        // @ts-ignore
+        createdDpmAccount.next(event.userDpmAccount)
+      }
+    })
+
+  const service = useInterpret(machine, { parent: parentService }).start()
+
+  const states$ = from(service)
+  return {
+    stateMachine: service,
+    states$,
+    dpmAccounts$: createdDpmAccount.asObservable(),
+  }
+}
+
+export function setupAllowanceContext(machine: AllowanceStateMachine) {
+  const createdDpmAccount = new Subject<UserDpmAccount>()
+  const parentService = useInterpret(dummyParent)
+    .start()
+    .onEvent((event) => {
+      console.log('AllowanceStateMachine event', event)
+
       if (event.type === 'DPM_ACCOUNT_CREATED') {
         // @ts-ignore
         createdDpmAccount.next(event.userDpmAccount)

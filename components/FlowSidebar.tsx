@@ -4,10 +4,11 @@ import {
   DPMAccountStateMachineEvents,
 } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useFlowState } from 'helpers/useFlowState'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
-import { ActorRefFrom, Sender, StateFrom } from 'xstate'
+import { Sender, StateFrom } from 'xstate'
 
 import { AppLink } from './Links'
 import { ListWithIcon } from './ListWithIcon'
@@ -19,11 +20,9 @@ import {
   VaultChangesInformationItem,
 } from './vault/VaultChangesInformation'
 
-export interface CreateDPMAccountViewProps {
-  machine: ActorRefFrom<DPMAccountStateMachine>
-  isConnected?: boolean
+export type CreateDPMAccountViewProps = {
   noConnectionContent?: JSX.Element
-}
+} & ReturnType<typeof useFlowState>
 
 interface InternalViewsProps {
   state: StateFrom<DPMAccountStateMachine>
@@ -74,7 +73,7 @@ function NoConnectionStateView({
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function InfoStateView({ state, send }: InternalViewsProps) {
+function DPMInfoStateView({ state, send }: InternalViewsProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -127,7 +126,7 @@ function InfoStateView({ state, send }: InternalViewsProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function InProgressView(_: InternalViewsProps) {
+function DPMInProgressView(_: InternalViewsProps) {
   const { t } = useTranslation()
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('dpm.create-flow.proxy-creating-screen.header'),
@@ -163,7 +162,7 @@ function InProgressView(_: InternalViewsProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function SuccessStateView({ send }: InternalViewsProps) {
+function DPMSuccessStateView({ send }: InternalViewsProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -202,22 +201,32 @@ function SuccessStateView({ send }: InternalViewsProps) {
 }
 
 export function FlowSidebar({
-  machine,
-  isConnected = false,
+  dpmMachine,
+  allowanceMachine,
+  isWalletConnected = false,
   noConnectionContent,
+  needsNewProxy,
 }: CreateDPMAccountViewProps) {
-  const [state, send] = useActor(machine)
+  const [dpmState, dpmSend] = useActor(dpmMachine)
+  const [allowanceState, allowanceSend] = useActor(allowanceMachine)
+
+  console.log('allowanceState', allowanceState.context)
 
   switch (true) {
-    case !isConnected:
+    case !isWalletConnected:
       return <NoConnectionStateView noConnectionContent={noConnectionContent} />
-    case state.matches('idle'):
-    case state.matches('txFailure'):
-      return <InfoStateView state={state} send={send} />
-    case state.matches('txInProgress'):
-      return <InProgressView state={state} send={send} />
-    case state.matches('txSuccess'):
-      return <SuccessStateView state={state} send={send} />
+    case dpmState.matches('idle') && needsNewProxy:
+    case dpmState.matches('txFailure') && needsNewProxy:
+      return <DPMInfoStateView state={dpmState} send={dpmSend} />
+    case dpmState.matches('txInProgress') && needsNewProxy:
+      return <DPMInProgressView state={dpmState} send={dpmSend} />
+    case dpmState.matches('txSuccess'):
+      return <DPMSuccessStateView state={dpmState} send={dpmSend} />
+    // case allowanceState.matches('idle'):
+    // case allowanceState.matches('txFailure'):
+    // case allowanceState.matches('txInProgress'):
+    // case allowanceState.matches('txSuccess'):
+    //   return <AllowanceView allowanceMachine={allowanceMachine} />
     default:
       return <></>
   }

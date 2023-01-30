@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import { FlowSidebar } from 'components/FlowSidebar'
 import { TabBar } from 'components/TabBar'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { Survey } from 'features/survey'
@@ -50,15 +51,13 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
   const { t } = useTranslation()
   const { stateMachine } = useOpenAaveStateMachineContext()
-  const { freeProxyAddress, dpmMachine, isConnected } = useFlowState({
-    onProxyReady: (freeProxyAddress) => {
-      console.log('wow onProxyReady', freeProxyAddress)
-    },
+  const [state, send] = useActor(stateMachine)
+  const PositionInfo = strategyConfig.viewComponents.positionInfo
+  const flowState = useFlowState({
+    amount: state.context.userInput.amount,
+    token: state.context.tokens.collateral,
   })
 
-  console.log('===============', { freeProxyAddress, dpmMachine, isConnected })
-  const [, send] = useActor(stateMachine)
-  const PositionInfo = strategyConfig.viewComponents.positionInfo
   return (
     <TabBar
       variant="underline"
@@ -70,6 +69,9 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
             <Grid variant="vaultContainer">
               <Box>
                 <SimulateSectionComponent config={strategyConfig} />
+                <Box sx={{ mt: 5 }}>
+                  <FlowSidebar {...flowState} />
+                </Box>
               </Box>
               <Box>{<SidebarOpenAaveVault />}</Box>
             </Grid>

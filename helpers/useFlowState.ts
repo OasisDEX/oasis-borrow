@@ -1,56 +1,112 @@
+import BigNumber from 'bignumber.js'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEffect, useState } from 'react'
+import { combineLatest } from 'rxjs'
+import { map } from 'rxjs/operators'
 
-import { setupDpmContext } from './dummyStateMachine'
+import { allDefined } from './allDefined'
+import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
 
-type useFlowStateProps = {
-  onProxyReady?: (onProxyReady: string) => void
+type UseFlowStateProps = {
+  amount?: BigNumber
+  token?: string
 }
 
-export function useFlowState({ onProxyReady }: useFlowStateProps) {
-  const [isConnected, setIsConnected] = useState<boolean>()
-  const [freeProxyAddress, setFreeProxyAddress] = useState<string>()
-  const { dpmAccountStateMachine, unconsumedDpmProxyForConnectedAccount$ } = useAppContext()
+export function useFlowState({ amount, token }: UseFlowStateProps) {
+  const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
+  const [walletAddress, setWalletAddress] = useState<string>()
+  const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
+  const [availableProxies, setAvailableProxies] = useState<string[]>([])
+  const {
+    dpmAccountStateMachine,
+    allowanceStateMachine,
+    userDpmProxies$,
+    proxyConsumed$,
+  } = useAppContext()
   const { context$ } = useAppContext()
-  const { stateMachine } = setupDpmContext(dpmAccountStateMachine)
-
-  function updateProxyValues(proxy: string) {
-    setFreeProxyAddress(proxy)
-    typeof onProxyReady === 'function' && onProxyReady(proxy)
-  }
+  const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)
+  const { stateMachine: allowanceMachine } = setupAllowanceContext(allowanceStateMachine)
 
   useEffect(() => {
-    const walletConnectionSubscription = context$.subscribe(({ status }) => {
-      setIsConnected(status === 'connected')
+    // wallet connection
+    const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
+      setWalletConnected(status === 'connected')
+      status === 'connected' && account && setWalletAddress(account)
     })
-    const proxyMachineSubscription = stateMachine.subscribe((state) => {
+    const proxyMachineSubscription = dpmMachine.subscribe((state) => {
       if (
         state.value === 'txSuccess' &&
         state.context.result?.proxy &&
-        freeProxyAddress !== state.context.result?.proxy
+        !availableProxies?.includes(state.context.result?.proxy)
       ) {
-        // new proxy created
-        updateProxyValues(state.context.result.proxy)
+        setAvailableProxies([...(availableProxies || []), state.context.result.proxy])
       }
     })
-    const currentFreeProxySubscription = unconsumedDpmProxyForConnectedAccount$.subscribe(
-      (data) => {
-        // unused proxy found
-        if (data?.proxy) {
-          updateProxyValues(data?.proxy)
-        }
-      },
-    )
     return () => {
-      proxyMachineSubscription.unsubscribe()
       walletConnectionSubscription.unsubscribe()
-      currentFreeProxySubscription.unsubscribe()
+      proxyMachineSubscription.unsubscribe()
     }
   }, [])
 
-  return {
-    dpmMachine: stateMachine,
-    freeProxyAddress,
-    isConnected,
+  useEffect(() => {
+    // list of (all) DPM proxies
+    if (!walletAddress) return
+    const userDpmProxies = userDpmProxies$(walletAddress).subscribe((userProxyList) => {
+      setUserProxyList(userProxyList)
+    })
+    return () => {
+      userDpmProxies.unsubscribe()
+    }
+  }, [walletAddress])
+
+  useEffect(() => {
+    // list of available DPM proxies (updated asynchronously)
+    if (!walletAddress || !userProxyList.length) return
+    const proxyListAvailabilityMap = combineLatest(
+      userProxyList.map((proxy) =>
+        proxyConsumed$(proxy.proxy).pipe(
+          map((hasOpenedPosition) => {
+            return { ...proxy, hasOpenedPosition }
+          }),
+        ),
+      ),
+    ).subscribe((availableProxies) => {
+      setAvailableProxies(
+        availableProxies
+          .filter(({ hasOpenedPosition }) => !hasOpenedPosition)
+          .map(({ proxy }) => proxy),
+      )
+    })
+    return () => {
+      proxyListAvailabilityMap.unsubscribe()
+    }
+  }, [walletAddress, userProxyList])
+
+  useEffect(() => {
+    // allowance handling
+    if (!availableProxies.length || !allDefined(walletAddress, amount, token)) return
+    console.log('allowance handling', { walletAddress, availableProxies, amount, token })
+    const allowanceMachineSubscription = allowanceMachine.subscribe((state) => {
+      console.log('allowanceMachineSubscription state', state)
+    })
+    return () => {
+      allowanceMachineSubscription.unsubscribe()
+    }
+  }, [walletAddress, availableProxies, amount, token])
+
+  const debug = {
+    dpmMachine,
+    allowanceMachine,
+    availableProxies,
+    needsNewProxy: !availableProxies.length,
+    isWalletConnected,
+    walletAddress,
+    amount,
+    token,
   }
+
+  // console.log('useFlowState debug', debug)
+
+  return debug
 }

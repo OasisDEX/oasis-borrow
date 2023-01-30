@@ -19,13 +19,13 @@ import {
 
 interface AllowanceViewProps {
   allowanceMachine: ActorRefFrom<AllowanceStateMachine>
-  steps: [number, number]
+  steps?: [number, number]
 }
 
 interface AllowanceViewStateProps {
   state: StateFrom<AllowanceStateMachine>
   send: Sender<AllowanceStateMachineEvent>
-  steps: [number, number]
+  steps?: [number, number]
 }
 
 function AllowanceInfoStateViewContent({
