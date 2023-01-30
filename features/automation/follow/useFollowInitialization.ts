@@ -3,7 +3,6 @@ import { FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE } from 'features/automation/follow
 import { useEffect } from 'react'
 
 export function useFollowInitialization({ isLimitReached }: { isLimitReached: boolean }) {
-  console.log('useFollowInitialization')
   const { uiChanges } = useAppContext()
   useEffect(() => {
     uiChanges.publish(FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE, {
@@ -11,6 +10,5 @@ export function useFollowInitialization({ isLimitReached }: { isLimitReached: bo
       isLimitReached,
     })
   }, [isLimitReached])
-  console.log('useFollowInitialization', isLimitReached)
   return isLimitReached
 }
