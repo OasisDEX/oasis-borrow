@@ -1,16 +1,4 @@
 import BigNumber from 'bignumber.js'
-import {
-  createAaveOracleAssetPriceData$,
-  createConvertToAaveOracleAssetPrice$,
-} from 'blockchain/aave/oracleAssetPriceData'
-import { getAaveV2AssetsPrices } from 'blockchain/calls/aave/aaveV2PriceOracle'
-import {
-  getAaveV2ReserveConfigurationData,
-  getAaveV2ReserveData,
-} from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
-import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
-import { observe } from 'blockchain/calls/observe'
-import { getGasEstimation$, getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
 import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
 import moment from 'moment'
@@ -18,14 +6,20 @@ import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
+import { getAaveV2AssetsPrices } from '../../blockchain/aave'
+import { getChainlinkOraclePrice } from '../../blockchain/calls/chainlink/chainlinkPriceOracle'
+import { observe } from '../../blockchain/calls/observe'
 import { TokenBalances } from '../../blockchain/tokens'
 import { UserDpmAccount } from '../../blockchain/userDpmProxies'
 import { AppContext } from '../../components/AppContext'
+import { LendingProtocol } from '../../lendingProtocols'
+import { prepareAaveTotalValueLocked$ } from '../../lendingProtocols/aave-v2/pipelines'
 import { getAllowanceStateMachine } from '../stateMachines/allowance'
 import {
   getCreateDPMAccountTransactionMachine,
   getDPMAccountStateMachine,
 } from '../stateMachines/dpmAccount'
+import { getGasEstimation$, getOpenProxyStateMachine } from '../stateMachines/proxy/pipelines'
 import { transactionContextService } from '../stateMachines/transaction'
 import { getAaveStEthYield } from './common'
 import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
@@ -36,23 +30,18 @@ import {
   getOpenAaveParametersMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
-import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
-import { createAaveV2PrepareReserveData$ } from './helpers/aaveV2PrepareReserveData'
+import { getOperationExecutorTransactionMachine } from './common/services/getTransactionMachine'
 import { getProxiesRelatedWithPosition$ } from './helpers/getProxiesRelatedWithPosition'
 import {
   getManageAavePositionStateMachineServices,
   getManageAaveStateMachine,
 } from './manage/services'
-import {
-  getOpenAavePositionStateMachineServices,
-  getOpenAaveStateMachine,
-  getOperationExecutorTransactionMachine,
-} from './open/services'
+import { getOpenAavePositionStateMachineServices, getOpenAaveStateMachine } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { supportedTokens } from './strategyConfig'
 import { PositionId } from './types'
 
-export function setupAaveContext({
+export function setupAaveV2Context({
   userSettings$,
   connectedContext$,
   proxyAddress$,
@@ -62,16 +51,24 @@ export function setupAaveContext({
   balance$,
   onEveryBlock$,
   context$,
-  aaveUserAccountData$,
   tokenPriceUSD$,
   allowance$,
-  aaveAvailableLiquidityInUSDC$,
   userDpmProxies$,
   userDpmProxy$,
   proxyConsumed$,
-  aaveProtocolData$,
   strategyConfig$,
+  protocols,
 }: AppContext) {
+  const {
+    aaveUserAccountData$,
+    aaveAvailableLiquidityInUSDC$,
+    aaveProtocolData$,
+    aaveReserveConfigurationData$,
+    wrappedGetAaveReserveData$,
+    convertToAaveOracleAssetPrice$,
+    aaveOracleAssetPriceData$,
+    getAaveReserveData$,
+  } = protocols[LendingProtocol.AaveV2]
   const chainlinkUSDCUSDOraclePrice$ = memoize(
     observe(onEveryBlock$, context$, getChainlinkOraclePrice('USDCUSD'), () => 'true'),
   )
@@ -91,24 +88,6 @@ export function setupAaveContext({
   const aaveSthEthYieldsQuery = memoize(
     curry(getAaveStEthYield)(disconnectedGraphQLClient$, moment()),
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
-  )
-  const wrappedGetAaveReserveData$ = memoize(
-    curry(createAaveV2PrepareReserveData$)(
-      observe(onEveryBlock$, context$, getAaveV2ReserveData, (args) => args.token),
-    ),
-  )
-  const aaveReserveConfigurationData$ = observe(
-    onEveryBlock$,
-    context$,
-    getAaveV2ReserveConfigurationData,
-    ({ token }) => token,
-  )
-  const aaveOracleAssetPriceData$ = memoize(
-    curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
-  )
-  const convertToAaveOracleAssetPrice$ = memoize(
-    curry(createConvertToAaveOracleAssetPrice$)(aaveOracleAssetPriceData$),
-    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
   )
 
   const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
@@ -242,13 +221,6 @@ export function setupAaveContext({
     depositBorrowAaveMachine,
   )
 
-  const getAaveReserveData$ = observe(
-    onEveryBlock$,
-    context$,
-    getAaveV2ReserveData,
-    (args) => args.token,
-  )
-
   const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV2AssetsPrices, (args) =>
     args.tokens.join(''),
   )
@@ -282,4 +254,4 @@ export function setupAaveContext({
   }
 }
 
-export type AaveContext = ReturnType<typeof setupAaveContext>
+export type AaveContext = ReturnType<typeof setupAaveV2Context>

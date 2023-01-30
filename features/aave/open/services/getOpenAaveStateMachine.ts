@@ -2,12 +2,12 @@ import BigNumber from 'bignumber.js'
 import {
   AaveV2UserAccountData,
   AaveV2UserAccountDataParameters,
-} from 'blockchain/calls/aave/aaveV2LendingPool'
+} from 'blockchain/aave/aaveV2LendingPool'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
-import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/aave'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
 import { Context } from '../../../../blockchain/network'
@@ -16,6 +16,7 @@ import { TokenBalances } from '../../../../blockchain/tokens'
 import { UserDpmAccount } from '../../../../blockchain/userDpmProxies'
 import { TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
+import { AaveProtocolData } from '../../../../lendingProtocols/aave-v2/pipelines'
 import { AllowanceStateMachine } from '../../../stateMachines/allowance'
 import { DPMAccountStateMachine } from '../../../stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
@@ -29,7 +30,6 @@ import {
 } from '../../common/BaseAaveContext'
 import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxyType } from '../../common/StrategyConfigTypes'
-import { AaveProtocolData } from '../../manage/services'
 import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
 

@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { AaveV2PriceOracle } from 'types/web3-v1-contracts/aave-v2-price-oracle'
 
-import { CallDef } from '../callsHelpers'
+import { CallDef } from '../calls/callsHelpers'
 export interface AaveV2AssetsPricesParameters {
   tokens: string[]
 }

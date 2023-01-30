@@ -9,10 +9,10 @@ import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
+import { PreparedAaveTotalValueLocked } from '../../../../lendingProtocols/aave-v2/pipelines'
 import { useAaveContext } from '../../../aave/AaveContextProvider'
 import { AaveStEthYieldsResponse } from '../../../aave/common'
 import { AaveHeaderProps, IStrategyConfig } from '../../../aave/common/StrategyConfigTypes'
-import { PreparedAaveTotalValueLocked } from '../../../aave/helpers/aavePrepareAaveTotalValueLocked'
 
 const tokenPairList = {
   stETHeth: {

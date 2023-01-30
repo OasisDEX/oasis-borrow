@@ -8,6 +8,7 @@ import { Context } from '../../../blockchain/network'
 import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
 import { HasGasEstimation } from '../../../helpers/form'
 import { zero } from '../../../helpers/zero'
+import { AaveProtocolData } from '../../../lendingProtocols/aave-v2/pipelines'
 import {
   AllowanceStateMachine,
   AllowanceStateMachineResponseEvent,
@@ -16,7 +17,6 @@ import { TransactionStateMachineResultEvents } from '../../stateMachines/transac
 import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../userSettings/userSettings'
 import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
-import { AaveProtocolData } from '../manage/services'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 
 type UserInput = {

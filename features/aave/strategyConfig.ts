@@ -1,9 +1,10 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
-import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 
+import { LendingProtocol } from '../../lendingProtocols'
 import { AaveEarnFaq } from '../content/faqs/aave/earn'
 import { AaveMultiplyFaq } from '../content/faqs/aave/multiply'
 import {
@@ -17,7 +18,7 @@ import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMul
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { IStrategyConfig, ProductType, ProxyType } from './common/StrategyConfigTypes'
+import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
@@ -54,6 +55,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: earnAdjustRiskSliderConfig.riskRatios,
     type: 'Earn',
+    protocol: LendingProtocol.AaveV2,
   },
   {
     name: 'ethusdc',
@@ -78,6 +80,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
+    protocol: LendingProtocol.AaveV2,
   },
   {
     name: 'stETHusdc',
@@ -102,6 +105,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
+    protocol: LendingProtocol.AaveV2,
   },
   {
     name: 'wBTCusdc',
@@ -126,6 +130,7 @@ export const strategies: Array<IStrategyConfig> = [
     },
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
+    protocol: LendingProtocol.AaveV2,
   },
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
@@ -151,8 +156,9 @@ export const strategies: Array<IStrategyConfig> = [
         deposit: collateral,
       },
       riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
-      featureToggle: 'AaveBorrow' as Feature,
-      type: 'Borrow' as ProductType,
+      featureToggle: 'AaveBorrow' as const,
+      type: 'Borrow' as const,
+      protocol: LendingProtocol.AaveV2,
     }
   }),
 ]

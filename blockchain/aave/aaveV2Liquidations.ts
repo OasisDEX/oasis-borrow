@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 import { AaveV2LendingPool } from 'types/web3-v1-contracts/aave-v2-lending-pool'
 
-import { Context, NetworkIds } from './network'
+import { Context, NetworkIds } from '../network'
 
 // TODO probably we would like to set here a block numbers of our aave deployment
 const aaveV2LendingPoolGenesisBlockMainnet = 11362579

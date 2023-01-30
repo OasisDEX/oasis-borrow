@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import {
   AaveV2ReserveDataParameters,
   AaveV2ReserveDataReply,
-} from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+} from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { amountFromRay, amountFromWei } from 'blockchain/utils'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'

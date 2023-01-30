@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 
-import { AaveV2LendingPool } from '../../../types/web3-v1-contracts/aave-v2-lending-pool'
-import { amountFromWei } from '../../utils'
-import { CallDef } from '../callsHelpers'
+import { AaveV2LendingPool } from '../../types/web3-v1-contracts/aave-v2-lending-pool'
+import { CallDef } from '../calls/callsHelpers'
+import { amountFromWei } from '../utils'
 
 export interface AaveV2UserAccountData {
   totalCollateralETH: BigNumber

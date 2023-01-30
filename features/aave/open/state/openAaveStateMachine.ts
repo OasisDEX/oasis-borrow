@@ -8,7 +8,7 @@ import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/aave'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,

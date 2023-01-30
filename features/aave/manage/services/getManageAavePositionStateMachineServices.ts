@@ -8,6 +8,7 @@ import { Tickers } from '../../../../blockchain/prices'
 import { TokenBalances } from '../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../components/AppContext'
 import { allDefined } from '../../../../helpers/allDefined'
+import { AaveProtocolData } from '../../../../lendingProtocols/aave-v2/pipelines'
 import { UserSettingsState } from '../../../userSettings/userSettings'
 import {
   IStrategyInfo,
@@ -18,7 +19,6 @@ import { getPricesFeed$ } from '../../common/services/getPricesFeed'
 import { ProxiesRelatedWithPosition } from '../../helpers/getProxiesRelatedWithPosition'
 import { PositionId } from '../../types'
 import { ManageAaveStateMachineServices } from '../state'
-import { AaveProtocolData } from './getAaveProtocolData'
 
 export function getManageAavePositionStateMachineServices(
   context$: Observable<Context>,

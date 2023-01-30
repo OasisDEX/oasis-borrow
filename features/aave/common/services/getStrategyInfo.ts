@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/aave'
 import { IStrategyInfo } from '../BaseAaveContext'
 
 export function getStrategyInfo$(

@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { AaveV2AssetsPricesParameters } from 'blockchain/calls/aave/aaveV2PriceOracle'
+import { AaveV2AssetsPricesParameters } from 'blockchain/aave/aaveV2PriceOracle'
 import { Context } from 'blockchain/network'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
-import { AaveProtocolData } from 'features/aave/manage/services'
 import { zero } from 'helpers/zero'
+import { AaveProtocolData, PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 import { combineLatest, EMPTY, Observable, of } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
 
