@@ -271,6 +271,11 @@ export const oasisBaseTheme = {
       position: 'relative',
       ...fadeInAnimation,
     },
+    vaultPageContainerStatic: {
+      variant: 'layout.vaultPageContainer',
+      opacity: 1,
+      animation: 'initial',
+    },
     announcement: {
       maxWidth: '792px',
       alignSelf: 'center',

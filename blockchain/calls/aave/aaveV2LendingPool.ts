@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 
-import { AaveLendingPool } from '../../../types/web3-v1-contracts/aave-lending-pool'
+import { AaveV2LendingPool } from '../../../types/web3-v1-contracts/aave-v2-lending-pool'
 import { amountFromWei } from '../../utils'
 import { CallDef } from '../callsHelpers'
 
-export interface AaveUserAccountData {
+export interface AaveV2UserAccountData {
   totalCollateralETH: BigNumber
   totalDebtETH: BigNumber
   availableBorrowsETH: BigNumber
@@ -13,18 +13,21 @@ export interface AaveUserAccountData {
   healthFactor: BigNumber
 }
 
-export interface AaveUserAccountDataParameters {
+export interface AaveV2UserAccountDataParameters {
   address: string
 }
 
-export type AaveUserConfigurationsParameters = {
+export type AaveV2UserConfigurationsParameters = {
   address: string
 }
-export type AaveConfigurationData = string[]
+export type AaveV2ConfigurationData = string[]
 
-export const getAaveUserAccountData: CallDef<AaveUserAccountDataParameters, AaveUserAccountData> = {
-  call: (args, { contract, aaveLendingPool }) => {
-    return contract<AaveLendingPool>(aaveLendingPool).methods.getUserAccountData
+export const getAaveV2UserAccountData: CallDef<
+  AaveV2UserAccountDataParameters,
+  AaveV2UserAccountData
+> = {
+  call: (args, { contract, aaveV2LendingPool }) => {
+    return contract<AaveV2LendingPool>(aaveV2LendingPool).methods.getUserAccountData
   },
   prepareArgs: ({ address }) => {
     return [address]
@@ -44,21 +47,21 @@ export const getAaveUserAccountData: CallDef<AaveUserAccountDataParameters, Aave
   },
 }
 
-export const getAaveUserConfiguration: CallDef<
-  AaveUserConfigurationsParameters,
-  AaveConfigurationData
+export const getAaveV2UserConfiguration: CallDef<
+  AaveV2UserConfigurationsParameters,
+  AaveV2ConfigurationData
 > = {
-  call: (args, { contract, aaveLendingPool }) => {
-    return contract<AaveLendingPool>(aaveLendingPool).methods.getUserConfiguration
+  call: (args, { contract, aaveV2LendingPool }) => {
+    return contract<AaveV2LendingPool>(aaveV2LendingPool).methods.getUserConfiguration
   },
   prepareArgs: ({ address }) => {
     return [address]
   },
 }
 
-export const getAaveReservesList: CallDef<void, AaveConfigurationData> = {
-  call: (args, { contract, aaveLendingPool }) => {
-    return contract<AaveLendingPool>(aaveLendingPool).methods.getReservesList
+export const getAaveV2ReservesList: CallDef<void, AaveV2ConfigurationData> = {
+  call: (args, { contract, aaveV2LendingPool }) => {
+    return contract<AaveV2LendingPool>(aaveV2LendingPool).methods.getReservesList
   },
   prepareArgs: () => {
     return []

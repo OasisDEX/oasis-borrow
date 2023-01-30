@@ -77,6 +77,7 @@ export function DsrView({
             value: potTotalValueLocked ? formatCryptoBalance(potTotalValueLocked) : 'n/a',
           },
         ]}
+        shareButton={netValue.gt(zero)}
       />
       <TabBar
         variant="underline"

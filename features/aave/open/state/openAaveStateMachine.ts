@@ -11,7 +11,7 @@ import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { addAutomationBotTriggerV2 } from '../../../../blockchain/calls/automationBot'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import {
@@ -64,7 +64,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
   blockSettingCalculatedAddresses?: boolean
-  reserveConfig?: AaveReserveConfigurationData
+  reserveConfig?: AaveV2ReserveConfigurationData
 }
 
 function getTransactionDef(context: OpenAaveContext): TransactionDef<OperationExecutorTxMeta> {
@@ -81,7 +81,7 @@ export type OpenAaveEvent =
   | { type: 'SET_AMOUNT'; amount?: BigNumber }
   | { type: 'NEXT_STEP' }
   | { type: 'UPDATE_META_INFO'; hasOpenedPosition: boolean }
-  | { type: 'RESERVE_CONFIG_UPDATED'; reserveConfig: AaveReserveConfigurationData }
+  | { type: 'RESERVE_CONFIG_UPDATED'; reserveConfig: AaveV2ReserveConfigurationData }
   | BaseAaveEvent
   | ProxyResultEvent
   | DMPAccountStateMachineResultEvents
@@ -258,6 +258,7 @@ export function createOpenAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
+                  actions: ['updateAllowance'],
                   target: 'editing',
                 },
               },
@@ -651,6 +652,31 @@ export function createOpenAaveStateMachine(
         disableChangingAddresses: assign((_) => {
           return {
             blockSettingCalculatedAddresses: true,
+          }
+        }),
+        updateAllowance: assign((context, event) => {
+          const result = Object.entries(context.tokens).find(([_, token]) => event.token === token)
+          if (result === undefined) {
+            return {}
+          }
+
+          const [type] = result
+
+          if (context.allowance === undefined) {
+            return {
+              allowance: {
+                collateral: zero,
+                debt: zero,
+                deposit: zero,
+                [type]: event.amount,
+              },
+            }
+          }
+          return {
+            allowance: {
+              ...context.allowance,
+              [type]: event.amount,
+            },
           }
         }),
         updateStopLossInitialState: assign(({ reserveConfig }) => {

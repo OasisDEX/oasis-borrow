@@ -12,9 +12,11 @@ import React from 'react'
 function AaveHeader({
   strategyConfig,
   headerLabelString,
+  shareButton,
 }: {
   strategyConfig: IStrategyConfig
   headerLabelString: string
+  shareButton?: boolean
 }) {
   const { t } = useTranslation()
   const { getAaveAssetsPrices$, chainlinkUSDCUSDOraclePrice$ } = useAaveContext()
@@ -53,6 +55,7 @@ function AaveHeader({
         token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
         loading={!positionTokenPrices}
         details={detailsList}
+        shareButton={shareButton}
       />
     </WithErrorHandler>
   )
@@ -63,5 +66,11 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
 }
 
 export function AaveManageHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
-  return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-view'} />
+  return (
+    <AaveHeader
+      strategyConfig={strategyConfig}
+      headerLabelString={'vault.header-aave-view'}
+      shareButton
+    />
+  )
 }

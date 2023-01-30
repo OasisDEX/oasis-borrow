@@ -1,12 +1,15 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
-import { AjnaOpenBorrowView } from 'features/ajna/borrow/views/AjnaOpenBorrowView'
+import { PositionLoadingState } from 'components/vault/PositionLoadingState'
+import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
+import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
-import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaProduct } from 'features/ajna/common/types'
+import { AjnaBorrowContextProvider } from 'features/ajna/contexts/AjnaProductContext'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
@@ -17,7 +20,7 @@ import React, { useMemo } from 'react'
 interface AjnaProductFlowPageProps {
   collateralToken: string
   quoteToken: string
-  product: string
+  product: AjnaProduct
 }
 
 function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProductFlowPageProps) {
@@ -35,30 +38,37 @@ function AjnaProductFlowPage({ collateralToken, quoteToken, product }: AjnaProdu
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(_tokenPriceUSD$)
 
   return (
-    <WithErrorHandler error={[balanceInfoError, tokenPriceUSDError]}>
-      <WithLoadingIndicator
-        value={[balanceInfoData, tokenPriceUSDData]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([{ collateralBalance }, tokenPriceUSD]) => (
-          <AjnaProductContextProvider
-            collateralBalance={collateralBalance}
-            collateralToken={collateralToken}
-            collateralPrice={tokenPriceUSD[collateralToken]}
-            quoteToken={quoteToken}
-            quotePrice={tokenPriceUSD[quoteToken]}
-          >
-            <WithWalletConnection>
-              <WithTermsOfService>
-                <WithWalletAssociatedRisk>
-                  <AjnaWrapper>{product === 'borrow' && <AjnaOpenBorrowView />}</AjnaWrapper>
-                </WithWalletAssociatedRisk>
-              </WithTermsOfService>
-            </WithWalletConnection>
-          </AjnaProductContextProvider>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <WithWalletConnection>
+      <WithTermsOfService>
+        <WithWalletAssociatedRisk>
+          <AjnaWrapper>
+            <WithErrorHandler error={[balanceInfoError, tokenPriceUSDError]}>
+              <WithLoadingIndicator
+                value={[balanceInfoData, tokenPriceUSDData]}
+                customLoader={
+                  <PositionLoadingState
+                    {...getAjnaBorrowHeadlineProps(collateralToken, quoteToken)}
+                  />
+                }
+              >
+                {([{ collateralBalance }, tokenPriceUSD]) => (
+                  <AjnaBorrowContextProvider
+                    collateralBalance={collateralBalance}
+                    collateralToken={collateralToken}
+                    collateralPrice={tokenPriceUSD[collateralToken]}
+                    product={product}
+                    quoteToken={quoteToken}
+                    quotePrice={tokenPriceUSD[quoteToken]}
+                  >
+                    {product === 'borrow' && <AjnaBorrowView />}
+                  </AjnaBorrowContextProvider>
+                )}
+              </WithLoadingIndicator>
+            </WithErrorHandler>
+          </AjnaWrapper>
+        </WithWalletAssociatedRisk>
+      </WithTermsOfService>
+    </WithWalletConnection>
   )
 }
 

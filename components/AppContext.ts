@@ -4,17 +4,17 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import { createAaveOracleAssetPriceData$ } from 'blockchain/aave/oracleAssetPriceData'
-import { getAavePositionLiquidation$ } from 'blockchain/aaveLiquidations'
+import { getAaveV2PositionLiquidation$ } from 'blockchain/aaveV2Liquidations'
 import {
-  getAaveReservesList,
-  getAaveUserAccountData,
-  getAaveUserConfiguration,
-} from 'blockchain/calls/aave/aaveLendingPool'
-import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
+  getAaveV2ReservesList,
+  getAaveV2UserAccountData,
+  getAaveV2UserConfiguration,
+} from 'blockchain/calls/aave/aaveV2LendingPool'
+import { getAaveV2AssetsPrices } from 'blockchain/calls/aave/aaveV2PriceOracle'
 import {
-  getAaveReserveData,
-  getAaveUserReserveData,
-} from 'blockchain/calls/aave/aaveProtocolDataProvider'
+  getAaveV2ReserveData,
+  getAaveV2UserReserveData,
+} from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import {
   AutomationBotAddTriggerData,
   AutomationBotV2AddTriggerData,
@@ -131,7 +131,7 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { prepareAaveAvailableLiquidityInUSDC$ } from 'features/aave/helpers/aavePrepareAvailableLiquidity'
-import { createAavePrepareReserveData$ } from 'features/aave/helpers/aavePrepareReserveData'
+import { createAaveV2PrepareReserveData$ } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
@@ -659,7 +659,7 @@ export function setupAppContext() {
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const aaveLiquidations$ = memoize(
-    curry(getAavePositionLiquidation$)(context$),
+    curry(getAaveV2PositionLiquidation$)(context$),
     (proxyAddress) => proxyAddress,
   )
 
@@ -967,14 +967,14 @@ export function setupAppContext() {
   const aaveUserAccountData$ = observe(
     onEveryBlock$,
     context$,
-    getAaveUserAccountData,
+    getAaveV2UserAccountData,
     (args) => args.address,
   )
 
   const proxyConsumed$ = memoize(curry(createProxyConsumed$)(context$))
 
-  const getAaveReserveData$ = observe(once$, context$, getAaveReserveData)
-  const getAaveAssetsPrices$ = observe(once$, context$, getAaveAssetsPrices)
+  const getAaveReserveData$ = observe(once$, context$, getAaveV2ReserveData)
+  const getAaveAssetsPrices$ = observe(once$, context$, getAaveV2AssetsPrices)
 
   const aaveAvailableLiquidityInUSDC$ = memoize(
     curry(prepareAaveAvailableLiquidityInUSDC$)(
@@ -985,9 +985,9 @@ export function setupAppContext() {
     ({ token }) => token,
   )
 
-  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
-  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveUserConfiguration)
-  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveReservesList)
+  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveV2UserReserveData)
+  const aaveUserConfiguration$ = observe(onEveryBlock$, context$, getAaveV2UserConfiguration)
+  const aaveReservesList$ = observe(onEveryBlock$, context$, getAaveV2ReservesList)
   const aaveOracleAssetPriceData$ = memoize(
     curry(createAaveOracleAssetPriceData$)(onEveryBlock$, context$),
   )
@@ -1039,8 +1039,8 @@ export function setupAppContext() {
   )
 
   const wrappedGetAaveReserveData$ = memoize(
-    curry(createAavePrepareReserveData$)(
-      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
+    curry(createAaveV2PrepareReserveData$)(
+      observe(onEveryBlock$, context$, getAaveV2ReserveData, (args) => args.token),
     ),
   )
 

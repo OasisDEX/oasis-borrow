@@ -3,11 +3,11 @@ import {
   createAaveOracleAssetPriceData$,
   createConvertToAaveOracleAssetPrice$,
 } from 'blockchain/aave/oracleAssetPriceData'
-import { getAaveAssetsPrices } from 'blockchain/calls/aave/aavePriceOracle'
+import { getAaveV2AssetsPrices } from 'blockchain/calls/aave/aaveV2PriceOracle'
 import {
-  getAaveReserveConfigurationData,
-  getAaveReserveData,
-} from 'blockchain/calls/aave/aaveProtocolDataProvider'
+  getAaveV2ReserveConfigurationData,
+  getAaveV2ReserveData,
+} from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { getChainlinkOraclePrice } from 'blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from 'blockchain/calls/observe'
 import { getGasEstimation$, getOpenProxyStateMachine } from 'features/stateMachines/proxy/pipelines'
@@ -38,7 +38,7 @@ import {
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { prepareAaveTotalValueLocked$ } from './helpers/aavePrepareAaveTotalValueLocked'
-import { createAavePrepareReserveData$ } from './helpers/aavePrepareReserveData'
+import { createAaveV2PrepareReserveData$ } from './helpers/aaveV2PrepareReserveData'
 import { getProxiesRelatedWithPosition$ } from './helpers/getProxiesRelatedWithPosition'
 import {
   getManageAavePositionStateMachineServices,
@@ -94,14 +94,14 @@ export function setupAaveContext({
     (riskRatio, fields) => JSON.stringify({ fields, riskRatio: riskRatio.multiple.toString() }),
   )
   const wrappedGetAaveReserveData$ = memoize(
-    curry(createAavePrepareReserveData$)(
-      observe(onEveryBlock$, context$, getAaveReserveData, (args) => args.token),
+    curry(createAaveV2PrepareReserveData$)(
+      observe(onEveryBlock$, context$, getAaveV2ReserveData, (args) => args.token),
     ),
   )
   const aaveReserveConfigurationData$ = observe(
     onEveryBlock$,
     context$,
-    getAaveReserveConfigurationData,
+    getAaveV2ReserveConfigurationData,
     ({ token }) => token,
   )
   const aaveOracleAssetPriceData$ = memoize(
@@ -253,11 +253,11 @@ export function setupAaveContext({
   const getAaveReserveData$ = observe(
     onEveryBlock$,
     context$,
-    getAaveReserveData,
+    getAaveV2ReserveData,
     (args) => args.token,
   )
 
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveAssetsPrices, (args) =>
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV2AssetsPrices, (args) =>
     args.tokens.join(''),
   )
 

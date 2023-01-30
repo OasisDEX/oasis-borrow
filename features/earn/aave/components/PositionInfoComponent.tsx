@@ -1,6 +1,6 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { AaveUserAccountData } from 'blockchain/calls/aave/aaveLendingPool'
+import { AaveV2UserAccountData } from 'blockchain/calls/aave/aaveV2LendingPool'
 import {
   DetailsSectionContentCard,
   DetailsSectionContentCardWrapper,
@@ -11,7 +11,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
@@ -35,7 +35,7 @@ type PositionInfoComponentProps = {
   aaveReserveDataDebtToken: PreparedAaveReserveData
   tokens: IStrategyConfig['tokens']
   oraclePrice: BigNumber
-  accountData: AaveUserAccountData
+  accountData: AaveV2UserAccountData
   apy?: BigNumber
   position?: IPosition
 }

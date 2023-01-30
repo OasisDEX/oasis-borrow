@@ -1,10 +1,10 @@
 import { useActor } from '@xstate/react'
-import { AaveReserveConfigurationData } from 'blockchain/calls/aave/aaveProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aavePrepareReserveData'
+import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
@@ -14,7 +14,7 @@ import React from 'react'
 import { Card, Grid } from 'theme-ui'
 
 interface AaveManageTabBarProps {
-  aaveReserveState: AaveReserveConfigurationData
+  aaveReserveState: AaveV2ReserveConfigurationData
   aaveReserveDataDebtToken: PreparedAaveReserveData
   strategyConfig: IStrategyConfig
 }

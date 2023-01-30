@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
-export interface AjnaProductFormState {
+export interface AjnaBorrowFormState {
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
@@ -20,12 +20,12 @@ interface AjnaBorrowFormActionsUpdateGenerate {
 }
 
 type AjnaBorrowFormAction = ReductoActions<
-  AjnaProductFormState,
+  AjnaBorrowFormState,
   AjnaBorrowFormActionsUpdateDeposit | AjnaBorrowFormActionsUpdateGenerate
 >
 
-export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaProductFormState>) {
-  const { dispatch, state, updateState } = useReducto<AjnaProductFormState, AjnaBorrowFormAction>({
+export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
+  const { dispatch, state, updateState } = useReducto<AjnaBorrowFormState, AjnaBorrowFormAction>({
     defaults: {
       depositAmount: undefined,
       depositAmountUSD: undefined,
@@ -33,7 +33,7 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaProductFormSta
       generateAmountUSD: undefined,
       ...rest,
     },
-    reducer: (state: AjnaProductFormState, action: AjnaBorrowFormAction) => {
+    reducer: (state: AjnaBorrowFormState, action: AjnaBorrowFormAction) => {
       switch (action.type) {
         case 'update-deposit':
           return {
