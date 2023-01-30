@@ -72,7 +72,7 @@ export function FollowButton({
         '&:disabled': {
           backgroundColor: 'neutral10',
           color: 'primary60',
-          pointerEvents: 'visible',
+          pointerEvents: 'auto',
         },
         '.star': {
           fill: isFollowing ? 'interactive100' : 'neutral10',
