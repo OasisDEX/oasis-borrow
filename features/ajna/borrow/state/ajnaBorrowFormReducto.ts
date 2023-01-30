@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { AjnaBorrowAction } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
+  action?: AjnaBorrowAction
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
@@ -18,19 +20,29 @@ interface AjnaBorrowFormActionsUpdateGenerate {
   generateAmount?: BigNumber
   generateAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsReset {
+  type: 'reset'
+}
 
 type AjnaBorrowFormAction = ReductoActions<
   AjnaBorrowFormState,
-  AjnaBorrowFormActionsUpdateDeposit | AjnaBorrowFormActionsUpdateGenerate
+  | AjnaBorrowFormActionsUpdateDeposit
+  | AjnaBorrowFormActionsUpdateGenerate
+  | AjnaBorrowFormActionsReset
 >
+
+export const ajnaBorrowDefault: AjnaBorrowFormState = {
+  action: undefined,
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  generateAmount: undefined,
+  generateAmountUSD: undefined,
+}
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
   const { dispatch, state, updateState } = useReducto<AjnaBorrowFormState, AjnaBorrowFormAction>({
     defaults: {
-      depositAmount: undefined,
-      depositAmountUSD: undefined,
-      generateAmount: undefined,
-      generateAmountUSD: undefined,
+      ...ajnaBorrowDefault,
       ...rest,
     },
     reducer: (state: AjnaBorrowFormState, action: AjnaBorrowFormAction) => {
@@ -47,6 +59,8 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             generateAmount: action.generateAmount,
             generateAmountUSD: action.generateAmountUSD,
           }
+        case 'reset':
+          return ajnaBorrowDefault
         default:
           return state
       }

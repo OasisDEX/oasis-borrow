@@ -14,22 +14,19 @@ export function AjnaBorrowFormContentSetup() {
     form: {
       dispatch,
       state: { depositAmount, depositAmountUSD, generateAmount, generateAmountUSD },
+      updateState,
     },
     environment: { collateralBalance, collateralPrice, collateralToken, quotePrice, quoteToken },
   } = useAjnaBorrowContext()
   const didMountRef = useRef(false)
 
-  const isEditing = depositAmount?.gt(0)
+  useEffect(() => {
+    updateState('action', 'open')
+  }, [])
 
   useEffect(() => {
     if (didMountRef.current) {
-      if (!depositAmount) {
-        dispatch({
-          type: 'update-generate',
-          generateAmount: undefined,
-          generateAmountUSD: undefined,
-        })
-      }
+      if (!depositAmount) dispatch({ type: 'reset' })
     } else didMountRef.current = true
   }, [depositAmount])
 
@@ -54,6 +51,7 @@ export function AjnaBorrowFormContentSetup() {
             depositAmount: n,
             depositAmountUSD: n ? n.times(collateralPrice) : undefined,
           })
+          if (!n) dispatch({ type: 'reset' })
         })}
         onAuxiliaryChange={handleNumericInput((n) => {
           dispatch({
@@ -94,17 +92,9 @@ export function AjnaBorrowFormContentSetup() {
           })
         })}
       />
-      {isEditing && (
+      {depositAmount?.gt(0) && (
         <>
-          <SidebarResetButton
-            clear={() => {
-              dispatch({
-                type: 'update-deposit',
-                depositAmount: undefined,
-                depositAmountUSD: undefined,
-              })
-            }}
-          />
+          <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
           <AjnaBorrowFormOrder />
         </>
       )}
