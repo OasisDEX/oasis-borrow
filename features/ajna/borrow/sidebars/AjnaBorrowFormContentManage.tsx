@@ -1,6 +1,8 @@
 import { ActionPills } from 'components/ActionPills'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
+import { AjnaBorrowFormContentGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentGenerate'
 import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
+import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
@@ -10,11 +12,15 @@ interface AjnaBorrowFormContentManageProps {
 
 export function AjnaBorrowFormContentManage({ panel }: AjnaBorrowFormContentManageProps) {
   const { t } = useTranslation()
+  const {
+    form: { updateState },
+  } = useAjnaBorrowContext()
   const [active, setActive] = useState<Exclude<AjnaBorrowAction, 'open'>>('deposit')
 
   useEffect(() => {
     setActive(panel === 'collateral' ? 'deposit' : 'generate')
   }, [panel])
+  useEffect(() => updateState('action', active), [active])
 
   return (
     <>
@@ -54,7 +60,7 @@ export function AjnaBorrowFormContentManage({ panel }: AjnaBorrowFormContentMana
         {
           deposit: <AjnaBorrowFormContentDeposit />,
           withdraw: <>withdraw</>,
-          generate: <>generate</>,
+          generate: <AjnaBorrowFormContentGenerate />,
           payback: <>payback</>,
         }[active]
       }

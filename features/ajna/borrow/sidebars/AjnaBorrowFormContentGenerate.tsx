@@ -7,19 +7,19 @@ import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFor
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
-export function AjnaBorrowFormContentDeposit() {
+export function AjnaBorrowFormContentGenerate() {
   const {
     form: {
       dispatch,
-      state: { depositAmount },
+      state: { generateAmount },
     },
   } = useAjnaBorrowContext()
 
   return (
     <>
-      <AjnaBorrowFormFieldDeposit />
-      <AjnaBorrowFormFieldGenerate isDisabled={!depositAmount || depositAmount?.lte(0)} />
-      {depositAmount?.gt(0) && (
+      <AjnaBorrowFormFieldGenerate />
+      <AjnaBorrowFormFieldDeposit isDisabled={!generateAmount || generateAmount?.lte(0)} />
+      {generateAmount?.gt(0) && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
           <AjnaBorrowFormOrder />
