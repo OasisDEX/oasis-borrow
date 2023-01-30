@@ -2,14 +2,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
 import {
-  FollowButtonControl,
-  FollowButtonControlProps,
-} from 'features/follow/common/FollowButtonControl'
-import {
   ShareButton,
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
+import {
+  FollowButtonControl,
+  FollowButtonControlProps,
+} from 'features/follow/controllers/FollowButtonControl'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'

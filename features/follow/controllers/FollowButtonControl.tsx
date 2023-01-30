@@ -1,12 +1,12 @@
 import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/automation/common/consts'
+import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import {
   FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   FollowedVaultsLimitReachedChange,
-} from 'features/automation/follow/followedVaultsLimitReached'
-import { FollowButton } from 'features/follow/common/FollowButton'
+} from 'features/follow/common/followedVaultsLimitReached'
+import { FollowButton } from 'features/follow/view/FollowButton'
 import {
   followVaultUsingApi,
   getFollowFromApi,

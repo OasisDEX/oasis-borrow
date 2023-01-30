@@ -1,5 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
-import { FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE } from 'features/automation/follow/followedVaultsLimitReached'
+import { FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE } from 'features/follow/common/followedVaultsLimitReached'
 import { useEffect } from 'react'
 
 export function useFollowInitialization({ isLimitReached }: { isLimitReached: boolean }) {

@@ -1,4 +1,4 @@
-import { useFollowInitialization } from 'features/automation/follow/useFollowInitialization'
+import { useFollowInitialization } from 'features/follow/common/useFollowInitialization'
 import { AssetsAndPositionsOverview } from 'features/vaultsOverview/containers/AssetsAndPositionsOverview'
 import { ConnectWalletPrompt } from 'features/vaultsOverview/containers/ConnectWalletPrompt'
 import { FollowedTable } from 'features/vaultsOverview/containers/FollowedTable'

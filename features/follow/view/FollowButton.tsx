@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import React from 'react'
 import { theme } from 'theme'
-import { Box, Button, Spinner, SxStyleProp } from 'theme-ui'
+import { Box, Button, Spinner, SxStyleProp, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface FollowButtonProps {
@@ -131,7 +131,7 @@ export function FollowButton({
       {isShort && isLimitReached && !isFollowing && displayTooltip && (
         <Tooltip
           sx={{
-            width: ['auto'],
+            width: 'auto',
             height: '27px',
             display: 'flex',
             alignItems: 'center',
@@ -139,18 +139,10 @@ export function FollowButton({
             top: '-100%',
           }}
         >
-          <Box
-            p={1}
-            sx={{
-              fontFamily: 'Inter',
-              fontStyle: 'normal',
-              fontSize: '12px',
-              fontWeight: 600,
-              whiteSpace: 'pre',
-              lineHeight: '20px',
-            }}
-          >
-            {t('followed-vaults-limit')}
+          <Box p={1}>
+            <Text as="p" variant="paragraph4">
+              {t('followed-vaults-limit')}
+            </Text>
           </Box>
         </Tooltip>
       )}

@@ -154,12 +154,6 @@ import {
   automationChangeFeatureReducer,
 } from 'features/automation/common/state/automationFeatureChange'
 import {
-  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
-  FollowedVaultsLimitReachedChange,
-  FollowedVaultsLimitReachedChangeAction,
-  followedVaultsLimitReachedChangeReducer,
-} from 'features/automation/follow/followedVaultsLimitReached'
-import {
   AUTO_TAKE_PROFIT_FORM_CHANGE,
   AutoTakeProfitFormChange,
   AutoTakeProfitFormChangeAction,
@@ -216,6 +210,12 @@ import {
 } from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
+import {
+  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+  FollowedVaultsLimitReachedChange,
+  FollowedVaultsLimitReachedChangeAction,
+  followedVaultsLimitReachedChangeReducer,
+} from 'features/follow/common/followedVaultsLimitReached'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import {
   TAB_CHANGE_SUBJECT,

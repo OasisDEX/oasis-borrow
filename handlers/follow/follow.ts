@@ -1,5 +1,5 @@
 import { PrismaClient, UsersWhoFollowVaults } from '@prisma/client'
-import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/automation/common/consts'
+import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'

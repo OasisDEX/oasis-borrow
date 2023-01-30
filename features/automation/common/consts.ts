@@ -14,7 +14,6 @@ export const maxUint256 = new BigNumber(
 )
 
 export const DEFAULT_DISTANCE_FROM_TRIGGER_TO_TARGET = 0.2
-export const LIMIT_OF_FOLLOWED_VAULTS = 30
 
 // values in %
 export const DEFAULT_AUTO_BS_MAX_SLIDER_VALUE = new BigNumber(500)

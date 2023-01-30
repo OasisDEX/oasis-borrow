@@ -1,12 +1,12 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { NetworkIds } from 'blockchain/network'
-import { useFollowInitialization } from 'features/automation/follow/useFollowInitialization'
 import { DiscoverDataResponse } from 'features/discover/api'
 import { DiscoverError } from 'features/discover/common/DiscoverError'
 import { DiscoverPreloader } from 'features/discover/common/DiscoverPreloader'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
 import { DiscoverBanner } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
+import { useFollowInitialization } from 'features/follow/common/useFollowInitialization'
 import { useAccount } from 'helpers/useAccount'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
@@ -45,12 +45,6 @@ export function DiscoverData({
             isSticky={isSticky}
             kind={kind}
             rows={response.rows}
-            {...(!!walletAddress && {
-              follow: {
-                followerAddress: walletAddress,
-                chainId: NetworkIds.MAINNET,
-              },
-            })}
             {...(followVaultsEnabled &&
               !!walletAddress && {
                 follow: {
