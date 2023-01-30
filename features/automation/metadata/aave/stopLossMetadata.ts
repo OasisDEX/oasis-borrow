@@ -29,6 +29,7 @@ import {
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatPercent } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 
 export const aaveOffsetFromMinAndMax = new BigNumber(0.05)
@@ -103,6 +104,8 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     triggersData: [executionParams],
     removeAllowance: getShouldRemoveAllowance(automationTriggersData),
   }
+
+  const aaveProtectionWriteEnabled = useFeatureToggle('AaveProtectionWrite')
 
   return {
     callbacks: {},
@@ -210,5 +213,6 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       addTrigger: addAutomationBotTriggerV2,
       removeTrigger: removeAutomationBotTriggerV2,
     },
+    featureWriteEnabled: aaveProtectionWriteEnabled,
   }
 }

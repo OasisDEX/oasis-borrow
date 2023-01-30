@@ -14,7 +14,6 @@ import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -73,7 +72,7 @@ function ZeroDebtProtectionBanner({
 }
 
 function getZeroDebtProtectionBannerProps({
-  stopLossWriteEnabled,
+  featureWriteEnabled,
   isVaultDebtZero,
   isVaultDebtBelowDustLimit,
   vaultHasNoProtection,
@@ -81,7 +80,7 @@ function getZeroDebtProtectionBannerProps({
   ratioParamTranslationKey,
   bannerStrategiesKey,
 }: {
-  stopLossWriteEnabled: boolean
+  featureWriteEnabled: boolean
   isVaultDebtZero: boolean
   isVaultDebtBelowDustLimit: boolean
   debtToken: string
@@ -89,7 +88,7 @@ function getZeroDebtProtectionBannerProps({
   bannerStrategiesKey: string
   vaultHasNoProtection?: boolean
 }): ZeroDebtProtectionBannerProps {
-  if (stopLossWriteEnabled) {
+  if (featureWriteEnabled) {
     if (isVaultDebtZero && vaultHasNoProtection) {
       return {
         header: 'protection.zero-debt-heading',
@@ -130,6 +129,7 @@ export function ProtectionControl() {
     metadata: {
       stopLossMetadata: {
         translations: { ratioParamTranslationKey, bannerStrategiesKey },
+        featureWriteEnabled,
       },
     },
     triggerData: { autoSellTriggerData, stopLossTriggerData },
@@ -137,8 +137,6 @@ export function ProtectionControl() {
   const [txHelpersData] = useObservable(txHelpers$)
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
-
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const vaultHasActiveTrigger =
     stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled
@@ -150,9 +148,7 @@ export function ProtectionControl() {
     >
       {() =>
         vaultHasActiveTrigger ||
-        (!debt.isZero() &&
-          debt.gt(debtFloor) &&
-          (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
+        (!debt.isZero() && debt.gt(debtFloor) && (vaultHasActiveTrigger || featureWriteEnabled)) ? (
           <DefaultVaultLayout
             detailsViewControl={<ProtectionDetailsControl />}
             editForm={<ProtectionFormControl txHelpers={txHelpersData} />}
@@ -166,7 +162,7 @@ export function ProtectionControl() {
           >
             <ZeroDebtProtectionBanner
               {...getZeroDebtProtectionBannerProps({
-                stopLossWriteEnabled,
+                featureWriteEnabled,
                 isVaultDebtZero: debt.isZero(),
                 isVaultDebtBelowDustLimit: debt.lte(debtFloor),
                 vaultHasNoProtection: !vaultHasActiveTrigger,

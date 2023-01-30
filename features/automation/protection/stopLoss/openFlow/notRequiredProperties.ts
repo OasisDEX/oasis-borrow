@@ -65,3 +65,7 @@ export const notRequiredAutomationContext = {
   protocol: ('' as unknown) as VaultProtocol,
   commonData: notRequiredCommonData,
 }
+
+export const notRequiredStopLossMetadata = {
+  featureWriteEnabled: false,
+}

@@ -418,7 +418,7 @@ export function createOpenAaveStateMachine(
           effectiveProxyAddress,
           hasOpenedPosition,
         }) =>
-          useFeatureToggle('AaveProtection') &&
+          useFeatureToggle('AaveProtectionWrite') &&
           strategyConfig.type === 'Multiply' &&
           canOpenPosition({ userInput, hasOpenedPosition, tokenBalance, effectiveProxyAddress }),
         isAllowanceNeeded,
@@ -453,7 +453,9 @@ export function createOpenAaveStateMachine(
           const allowance = isAllowanceNeeded(context)
           const proxy = !allDefined(context.effectiveProxyAddress)
           const optionalStopLoss =
-            useFeatureToggle('AaveProtection') && context.strategyConfig.type === 'Multiply' ? 1 : 0
+            useFeatureToggle('AaveProtectionWrite') && context.strategyConfig.type === 'Multiply'
+              ? 1
+              : 0
 
           const totalSteps =
             totalStepsMap.base +

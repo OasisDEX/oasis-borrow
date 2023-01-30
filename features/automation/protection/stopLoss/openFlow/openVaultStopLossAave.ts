@@ -20,6 +20,7 @@ import {
   notRequiredContracts,
   notRequiredMethods,
   notRequiredPositionData,
+  notRequiredStopLossMetadata,
   notRequiredValidations,
   notRequiredValues,
 } from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
@@ -191,6 +192,7 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
         ...notRequiredValues,
       },
       contracts: notRequiredContracts,
+      ...notRequiredStopLossMetadata,
     }
   }
 

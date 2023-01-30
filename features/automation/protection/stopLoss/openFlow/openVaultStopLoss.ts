@@ -19,6 +19,7 @@ import {
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
+import { notRequiredStopLossMetadata } from 'features/automation/protection/stopLoss/openFlow/notRequiredProperties'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import {
   StopLossFormChange,
@@ -218,6 +219,7 @@ export function getDataForStopLoss(
         addTrigger: addAutomationBotTrigger,
         removeTrigger: removeAutomationBotAggregatorTriggers,
       },
+      ...notRequiredStopLossMetadata,
     }
   }
 

@@ -23,6 +23,7 @@ export type Feature =
   | 'AaveBorrow'
   | 'FollowVaults'
   | 'AaveProtection'
+  | 'AaveProtectionWrite'
   | 'Ajna'
   | 'DaiSavingsRate'
 
@@ -46,6 +47,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveBorrow: false,
   FollowVaults: false,
   AaveProtection: false,
+  AaveProtectionWrite: false,
   Ajna: false,
   DaiSavingsRate: true,
 }
