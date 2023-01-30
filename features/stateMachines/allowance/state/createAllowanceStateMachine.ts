@@ -43,7 +43,12 @@ export interface AllowanceTxMeta extends TxMeta {
   amount: BigNumber
 }
 
-export type AllowanceStateMachineResponseEvent = { type: 'ALLOWANCE_SUCCESS' }
+export type AllowanceStateMachineResponseEvent = {
+  type: 'ALLOWANCE_SUCCESS'
+  amount: BigNumber
+  token: string
+  spender: string
+}
 
 export type AllowanceStateMachineEvent =
   | AllowanceStateMachineResponseEvent
@@ -138,7 +143,12 @@ export function createAllowanceStateMachine(
           }
           return undefined
         }),
-        sendAllowanceSetEvent: sendParent({ type: 'ALLOWANCE_SUCCESS' }),
+        sendAllowanceSetEvent: sendParent((context) => ({
+          type: 'ALLOWANCE_SUCCESS',
+          amount: getEffectiveAllowanceAmount(context),
+          token: context.token,
+          spender: context.spender,
+        })),
       },
     },
   )
