@@ -33,6 +33,31 @@ const supportedAaveBorrowCollateralTokens = ['ETH']
 
 export const strategies: Array<IStrategyConfig> = [
   {
+    urlSlug: 'wstETHeth',
+    name: 'wstETHeth',
+    proxyType: ProxyType.DpmProxy,
+    viewComponents: {
+      headerOpen: headerWithDetails(earnAdjustRiskSliderConfig.riskRatios.minimum),
+      headerManage: AavePositionHeaderNoDetails,
+      headerView: AavePositionHeaderNoDetails,
+      simulateSection: SimulateSectionComponent,
+      vaultDetailsManage: ManageSectionComponent,
+      vaultDetailsView: ViewPositionSectionComponent,
+      adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfig),
+      positionInfo: AaveEarnFaq,
+      sidebarTitle: 'open-earn.aave.vault-form.title',
+      sidebarButton: 'open-earn.aave.vault-form.open-btn',
+    },
+    tokens: {
+      collateral: 'WSTETH',
+      debt: 'ETH',
+      deposit: 'ETH',
+    },
+    riskRatios: earnAdjustRiskSliderConfig.riskRatios,
+    type: 'Earn',
+    protocol: LendingProtocol.AaveV3,
+  },
+  {
     urlSlug: 'stETHeth',
     name: 'stETHeth',
     proxyType: ProxyType.DpmProxy,
