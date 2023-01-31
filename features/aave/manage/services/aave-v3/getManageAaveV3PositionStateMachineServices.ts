@@ -3,24 +3,24 @@ import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
-import { Context } from '../../../../blockchain/network'
-import { Tickers } from '../../../../blockchain/prices'
-import { TokenBalances } from '../../../../blockchain/tokens'
-import { TxHelpers } from '../../../../components/AppContext'
-import { allDefined } from '../../../../helpers/allDefined'
-import { AaveProtocolData } from '../../../../lendingProtocols/aave-v2/pipelines'
-import { UserSettingsState } from '../../../userSettings/userSettings'
+import { Context } from '../../../../../blockchain/network'
+import { Tickers } from '../../../../../blockchain/prices'
+import { TokenBalances } from '../../../../../blockchain/tokens'
+import { TxHelpers } from '../../../../../components/AppContext'
+import { allDefined } from '../../../../../helpers/allDefined'
+import { AaveProtocolData } from '../../../../../lendingProtocols/aave-v3/pipelines'
+import { UserSettingsState } from '../../../../userSettings/userSettings'
 import {
   IStrategyInfo,
   StrategyTokenAllowance,
   StrategyTokenBalance,
-} from '../../common/BaseAaveContext'
-import { getPricesFeed$ } from '../../common/services/getPricesFeed'
-import { ProxiesRelatedWithPosition } from '../../helpers/getProxiesRelatedWithPosition'
-import { PositionId } from '../../types'
-import { ManageAaveStateMachineServices } from '../state'
+} from '../../../common/BaseAaveContext'
+import { getPricesFeed$ } from '../../../common/services/getPricesFeed'
+import { ProxiesRelatedWithPosition } from '../../../helpers/getProxiesRelatedWithPosition'
+import { PositionId } from '../../../types'
+import { ManageAaveStateMachineServices } from '../../state'
 
-export function getManageAavePositionStateMachineServices(
+export function getManageAaveV3PositionStateMachineServices(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   tokenBalances$: Observable<TokenBalances | undefined>,

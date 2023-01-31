@@ -23,12 +23,12 @@ const tokenPairList = {
 
 function AavePositionHeader({
   maxRisk,
-  strategyName,
+  strategy,
   aaveTVL,
   minimumRiskRatio,
 }: {
   maxRisk?: IRiskRatio
-  strategyName: string
+  strategy: IStrategyConfig
   aaveTVL?: PreparedAaveTotalValueLocked
   minimumRiskRatio: IRiskRatio
 }) {
@@ -37,7 +37,7 @@ function AavePositionHeader({
   const [minYields, setMinYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
   const [maxYields, setMaxYields] = useState<AaveStEthYieldsResponse | undefined>(undefined)
 
-  const { aaveSthEthYieldsQuery } = useAaveContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext(strategy.protocol)
 
   useEffect(() => {
     async function fetchYields() {
@@ -110,8 +110,8 @@ function AavePositionHeader({
 
   return (
     <VaultHeadline
-      header={t(tokenPairList[strategyName].translationKey)}
-      token={tokenPairList[strategyName].tokenList}
+      header={t(tokenPairList[strategy.name].translationKey)}
+      token={tokenPairList[strategy.name].tokenList}
       details={headlineDetails}
       loading={!aaveTVL?.totalValueLocked}
     />
@@ -124,7 +124,9 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }: {
     strategyConfig: IStrategyConfig
   }) {
-    const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext()
+    const { aaveTotalValueLocked$, aaveReserveConfigurationData$ } = useAaveContext(
+      strategyConfig.protocol,
+    )
     const [tvlState, tvlStateError] = useObservable(aaveTotalValueLocked$)
     const [aaveReserveConfigData, aaveReserveConfigDataError] = useObservable(
       aaveReserveConfigurationData$({ token: strategyConfig.tokens.collateral }),
@@ -139,7 +141,7 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
           {([_tvlState, _aaveReserveConfigData]) => (
             <AavePositionHeader
               maxRisk={new RiskRatio(_aaveReserveConfigData.ltv, RiskRatio.TYPE.LTV)}
-              strategyName={strategyConfig.name}
+              strategy={strategyConfig}
               aaveTVL={_tvlState}
               minimumRiskRatio={minimumRiskRatio}
             />

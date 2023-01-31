@@ -25,16 +25,16 @@ export interface AaveV2UserReserveData {
 }
 
 export type AaveV2ReserveDataReply = {
-  availableLiquidity: string
-  totalStableDebt: string
-  totalVariableDebt: string
-  liquidityRate: string
-  variableBorrowRate: string
-  stableBorrowRate: string
-  averageStableBorrowRate: string
-  liquidityIndex: string
-  variableBorrowIndex: string
-  lastUpdateTimestamp: string
+  availableLiquidity: BigNumber
+  totalStableDebt: BigNumber
+  totalVariableDebt: BigNumber
+  liquidityRate: BigNumber
+  variableBorrowRate: BigNumber
+  stableBorrowRate: BigNumber
+  averageStableBorrowRate: BigNumber
+  liquidityIndex: BigNumber
+  variableBorrowIndex: BigNumber
+  lastUpdateTimestamp: BigNumber
 }
 
 export const getAaveV2UserReserveData: CallDef<
@@ -81,6 +81,20 @@ export const getAaveV2ReserveData: CallDef<AaveV2ReserveDataParameters, AaveV2Re
   call: (_, { contract, aaveV2ProtocolDataProvider }) =>
     contract<AaveV2ProtocolDataProvider>(aaveV2ProtocolDataProvider).methods.getReserveData,
   prepareArgs: ({ token }, context) => [context.tokens[token].address],
+  postprocess: (result) => {
+    return {
+      availableLiquidity: new BigNumber(result.availableLiquidity.toString()),
+      totalStableDebt: new BigNumber(result.totalStableDebt.toString()),
+      totalVariableDebt: new BigNumber(result.totalVariableDebt.toString()),
+      liquidityRate: new BigNumber(result.liquidityRate.toString()),
+      variableBorrowRate: new BigNumber(result.variableBorrowRate.toString()),
+      stableBorrowRate: new BigNumber(result.stableBorrowRate.toString()),
+      averageStableBorrowRate: new BigNumber(result.averageStableBorrowRate.toString()),
+      liquidityIndex: new BigNumber(result.liquidityIndex.toString()),
+      variableBorrowIndex: new BigNumber(result.variableBorrowIndex.toString()),
+      lastUpdateTimestamp: new BigNumber(result.lastUpdateTimestamp.toString()),
+    }
+  },
 }
 
 export type AaveV2ReserveConfigurationData = {

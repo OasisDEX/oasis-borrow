@@ -4,6 +4,7 @@ import { useAppContext } from '../../components/AppContextProvider'
 import { WithChildren } from '../../helpers/types'
 import { LendingProtocol } from '../../lendingProtocols'
 import { AaveContext, setupAaveV2Context } from './AaveContext'
+import { setupAaveV3Context } from './SetupAaveV3Context'
 
 type AaveContexts = {
   [LendingProtocol.AaveV2]: AaveContext
@@ -33,7 +34,7 @@ export function AaveContextProvider({ children }: WithChildren) {
       const aaveV2Context = setupAaveV2Context(appContext)
 
       // for now it's the same as AaveV2
-      const aaveV3Context = setupAaveV2Context(appContext)
+      const aaveV3Context = setupAaveV3Context(appContext)
 
       setAaveContexts({
         [LendingProtocol.AaveV2]: aaveV2Context,

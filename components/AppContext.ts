@@ -289,6 +289,7 @@ import {
 } from '../features/aave/services/readPositionCreatedEvents'
 import { LendingProtocol } from '../lendingProtocols'
 import { getAaveV2Services } from '../lendingProtocols/aave-v2'
+import { getAaveV3Services } from '../lendingProtocols/aave-v3'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -559,6 +560,8 @@ export function setupAppContext() {
     refresh$: onEveryBlock$,
     once$,
   })
+
+  const aaveV3 = getAaveV3Services({ context$, refresh$: onEveryBlock$, once$ })
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
@@ -1311,6 +1314,7 @@ export function setupAppContext() {
 
   const protocols: ProtocolsServices = {
     [LendingProtocol.AaveV2]: aaveV2,
+    [LendingProtocol.AaveV3]: aaveV3,
   }
 
   return {
@@ -1402,6 +1406,7 @@ function ilkUrnAddressToString({ ilk, urnAddress }: { ilk: string; urnAddress: s
 
 export type ProtocolsServices = {
   [LendingProtocol.AaveV2]: ReturnType<typeof getAaveV2Services>
+  [LendingProtocol.AaveV3]: ReturnType<typeof getAaveV3Services>
 }
 
 export type DepreciatedServices = {

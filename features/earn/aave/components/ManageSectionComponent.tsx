@@ -32,6 +32,7 @@ export function ManageSectionComponent({
     amount: accountData?.totalCollateralETH,
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
+    strategy: strategyConfig,
   })
 
   if (!accountData?.totalDebtETH || !aaveReserveState?.liquidationThreshold || !oraclePrice) {

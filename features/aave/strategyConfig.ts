@@ -173,11 +173,16 @@ export function getAaveStrategy(strategyName: IStrategyConfig['name']) {
   return Object.values(strategies).filter(({ name }) => strategyName === name)
 }
 
-export function loadStrategyFromUrl(slug: string, positionType: string): IStrategyConfig {
+export function loadStrategyFromUrl(
+  slug: string,
+  protocol: string,
+  positionType: string,
+): IStrategyConfig {
   const strategy = strategies.find(
     (s) =>
       s.urlSlug.toUpperCase() === slug.toUpperCase() &&
-      s.type.toUpperCase() === positionType.toUpperCase(),
+      s.type.toUpperCase() === positionType.toUpperCase() &&
+      s.protocol.toUpperCase() === protocol.toUpperCase(),
   )
   if (!strategy) {
     throw new Error(`Strategy not found for slug: ${slug}`)

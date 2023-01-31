@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { AaveV3PoolDataProvider } from 'types/web3-v1-contracts/aave-v3-pool-data-provider'
 
-import { amountFromWei } from '../../utils'
-import { CallDef } from '../callsHelpers'
+import { CallDef } from '../calls/callsHelpers'
+import { amountFromWei } from '../utils'
 
 export interface AaveV3UserReserveDataParameters {
   token: string
@@ -25,6 +25,7 @@ export interface AaveV3UserReserveData {
 }
 
 export type AaveV3ReserveDataReply = {
+  availableLiquidity: BigNumber
   unbacked: BigNumber
   accruedToTreasuryScaled: BigNumber
   totalAToken: BigNumber
@@ -84,6 +85,7 @@ export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3Re
   prepareArgs: ({ token }, context) => [context.tokens[token].address],
   postprocess: (result) => {
     return {
+      availableLiquidity: new BigNumber(result.unbacked.toString()),
       unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
       totalAToken: new BigNumber(result.totalAToken.toString()),

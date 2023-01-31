@@ -106,6 +106,6 @@ function AaveOpenContainer({
 }
 
 export function AaveOpenView({ config }: { config: IStrategyConfig }) {
-  const { aaveStateMachine } = useAaveContext()
+  const { aaveStateMachine } = useAaveContext(config.protocol)
   return <AaveOpenContainer aaveStateMachine={aaveStateMachine} config={config} />
 }

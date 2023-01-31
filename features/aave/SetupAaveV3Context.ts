@@ -1,19 +1,19 @@
 import BigNumber from 'bignumber.js'
 import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
-import moment from 'moment'
+import moment from 'moment/moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-import { getAaveV2AssetsPrices } from '../../blockchain/aave'
+import { getAaveV3AssetsPrices } from '../../blockchain/aave-v3'
 import { getChainlinkOraclePrice } from '../../blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from '../../blockchain/calls/observe'
 import { TokenBalances } from '../../blockchain/tokens'
 import { UserDpmAccount } from '../../blockchain/userDpmProxies'
 import { AppContext } from '../../components/AppContext'
 import { LendingProtocol } from '../../lendingProtocols'
-import { prepareAaveTotalValueLocked$ } from '../../lendingProtocols/aave-v2/pipelines'
+import { prepareAaveTotalValueLocked$ } from '../../lendingProtocols/aave-v3/pipelines'
 import { getAllowanceStateMachine } from '../stateMachines/allowance'
 import {
   getCreateDPMAccountTransactionMachine,
@@ -36,12 +36,12 @@ import {
   getManageAaveStateMachine,
   getManageAaveV2PositionStateMachineServices,
 } from './manage/services'
-import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
+import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { supportedTokens } from './strategyConfig'
 import { PositionId } from './types'
 
-export function setupAaveV2Context({
+export function setupAaveV3Context({
   userSettings$,
   connectedContext$,
   proxyAddress$,
@@ -68,7 +68,7 @@ export function setupAaveV2Context({
     convertToAaveOracleAssetPrice$,
     aaveOracleAssetPriceData$,
     getAaveReserveData$,
-  } = protocols[LendingProtocol.AaveV2]
+  } = protocols[LendingProtocol.AaveV3]
   const chainlinkUSDCUSDOraclePrice$ = memoize(
     observe(onEveryBlock$, context$, getChainlinkOraclePrice('USDCUSD'), () => 'true'),
   )
@@ -174,7 +174,7 @@ export function setupAaveV2Context({
     switchMap(({ account }) => getAvailableDPMProxy(account)),
   )
 
-  const openAaveStateMachineServices = getOpenAaveV2PositionStateMachineServices(
+  const openAaveStateMachineServices = getOpenAaveV3PositionStateMachineServices(
     context$,
     txHelpers$,
     tokenBalances$,
@@ -221,7 +221,7 @@ export function setupAaveV2Context({
     depositBorrowAaveMachine,
   )
 
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV2AssetsPrices, (args) =>
+  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV3AssetsPrices, (args) =>
     args.tokens.join(''),
   )
 
@@ -253,5 +253,3 @@ export function setupAaveV2Context({
     dpmAccountStateMachine,
   }
 }
-
-export type AaveContext = ReturnType<typeof setupAaveV2Context>

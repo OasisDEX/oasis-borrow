@@ -128,7 +128,9 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const { aaveSTETHReserveConfigurationData, wrappedGetAaveReserveData$ } = useAaveContext()
+  const { aaveSTETHReserveConfigurationData, wrappedGetAaveReserveData$ } = useAaveContext(
+    strategyConfig.protocol,
+  )
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )

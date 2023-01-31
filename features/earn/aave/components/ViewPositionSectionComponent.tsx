@@ -27,6 +27,7 @@ export function ViewPositionSectionComponent({
     amount: accountData?.totalCollateralETH,
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
+    strategy: strategyConfig,
   })
 
   return (
