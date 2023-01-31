@@ -2298,6 +2298,11 @@
           "collateral-locked": "Collateral locked",
           "position-debt": "Position debt"
         },
+        "footer": {
+          "annual-net-borrow-cost": "Annual net borrow cost",
+          "available-to-borrow": "Available to borrow",
+          "available-to-withdraw": "Available to withdraw"
+        },
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
