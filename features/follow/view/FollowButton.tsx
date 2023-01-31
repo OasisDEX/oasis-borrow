@@ -1,10 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Tooltip } from 'components/Tooltip'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import React from 'react'
 import { theme } from 'theme'
-import { Box, Button, Spinner, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Spinner, SxStyleProp, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface FollowButtonProps {
@@ -29,16 +28,13 @@ export function FollowButton({
   const { t } = useTranslation()
   const [isHovering, setIsHovering] = useState(false)
   const isShort = useMediaQuery(`(max-width: ${theme.breakpoints[2]})`) || short
-  const [displayTooltip, setDisplayTooltip] = useState(false)
 
   const handleMouseOver = () => {
     setIsHovering(true)
-    setDisplayTooltip(true)
   }
 
   const handleMouseOut = () => {
     setIsHovering(false)
-    setDisplayTooltip(false)
   }
 
   return (
@@ -70,6 +66,9 @@ export function FollowButton({
             stroke: isFollowing ? 'interactive50' : 'primary100',
             strokeWidth: isFollowing ? 0 : '1.5px',
           },
+          '.tooltip': {
+            display: 'flex',
+          },
         },
         '&:disabled': {
           backgroundColor: 'neutral10',
@@ -85,6 +84,7 @@ export function FollowButton({
           strokeWidth: isFollowing ? 0 : '1px',
           transition: 'stroke 200ms, stroke-width 200ms, fill 200ms',
         },
+
         ...sx,
       }}
       onMouseOver={handleMouseOver}
@@ -133,23 +133,25 @@ export function FollowButton({
           )}
         </>
       )}
-      {isShort && isLimitReached && !isFollowing && displayTooltip && (
-        <Tooltip
+      {isShort && isLimitReached && !isFollowing && (
+        <Card
+          className="tooltip"
+          variant="cards.tooltip"
           sx={{
-            width: 'auto',
-            height: '27px',
-            display: 'flex',
-            alignItems: 'center',
             position: 'absolute',
+            alignItems: 'center',
             top: '-100%',
+            display: 'none',
+            width: 'auto',
+            px: 2,
+            py: 1,
+            lineHeight: '28px',
           }}
         >
-          <Box p={1}>
-            <Text as="p" variant="paragraph4">
-              {t('followed-vaults-limit')}
-            </Text>
-          </Box>
-        </Tooltip>
+          <Text as="p" variant="paragraph4">
+            {t('followed-vaults-limit')}
+          </Text>
+        </Card>
       )}
     </Button>
   )
