@@ -32,9 +32,7 @@ export function createBalancesArrayInfo$(
   tokens: string[],
   address: string | undefined,
 ): Observable<BigNumber[]> {
-  return combineLatest(
-    tokens.map((token) => address ? balance$(token, address) : of(zero)),
-  ).pipe(
+  return combineLatest(tokens.map((token) => (address ? balance$(token, address) : of(zero)))).pipe(
     map((balances) => balances),
   )
 }
