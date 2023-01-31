@@ -2287,6 +2287,10 @@
         "headline": {
           "current-market-price": "Current Market Price"
         },
+        "overview": {
+          "liquidation-price": "Liquidation Price",
+          "below-current-price": "{{belowCurrentPrice}} below current price"
+        },
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
