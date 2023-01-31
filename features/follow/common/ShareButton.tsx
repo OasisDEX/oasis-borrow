@@ -68,11 +68,12 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
           svg: {
             fill: 'primary60',
             transition: 'color 200ms',
-            marginRight: '4px',
+            marginRight: '3px',
+            marginTop: '1px',
           },
         }}
       >
-        <Icon name="share" size={16} />
+        <Icon name="share" size={17} />
       </Button>
     </AppLink>
   )
