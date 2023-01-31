@@ -56,6 +56,18 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
   const flowState = useFlowState({
     amount: state.context.userInput.amount,
     token: state.context.tokens.collateral,
+    onEverythingReady(params) {
+      // console.log('onEverythingReady', params)
+    },
+  })
+
+  console.log('flowState', {
+    availableProxies: flowState.availableProxies,
+    isAllowanceReady: flowState.isAllowanceReady,
+    isProxyReady: flowState.isProxyReady,
+    isWalletConnected: flowState.isWalletConnected,
+    token: flowState.token,
+    walletAddress: flowState.walletAddress,
   })
 
   return (

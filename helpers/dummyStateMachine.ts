@@ -5,6 +5,8 @@ import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/
 import { from, Subject } from 'rxjs'
 import { createMachine, send } from 'xstate'
 
+import { zero } from './zero'
+
 export const dummyParent = createMachine({
   schema: {
     events: {} as any,
@@ -44,24 +46,14 @@ export function setupDpmContext(machine: DPMAccountStateMachine) {
 }
 
 export function setupAllowanceContext(machine: AllowanceStateMachine) {
-  const createdDpmAccount = new Subject<UserDpmAccount>()
-  const parentService = useInterpret(dummyParent)
-    .start()
-    .onEvent((event) => {
-      console.log('AllowanceStateMachine event', event)
-
-      if (event.type === 'DPM_ACCOUNT_CREATED') {
-        // @ts-ignore
-        createdDpmAccount.next(event.userDpmAccount)
-      }
-    })
-
-  const service = useInterpret(machine, { parent: parentService }).start()
-
+  const parentService = useInterpret(dummyParent).start()
+  const service = useInterpret(machine, {
+    parent: parentService,
+    context: { minimumAmount: zero, token: 'ETH' },
+  }).start()
   const states$ = from(service)
   return {
     stateMachine: service,
     states$,
-    dpmAccounts$: createdDpmAccount.asObservable(),
   }
 }

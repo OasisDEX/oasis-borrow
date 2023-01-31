@@ -7,40 +7,56 @@ import { map } from 'rxjs/operators'
 
 import { allDefined } from './allDefined'
 import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
+import { zero } from './zero'
+
+type UserFlowStateReturnType = ReturnType<typeof useFlowState>
 
 type UseFlowStateProps = {
   amount?: BigNumber
   token?: string
+  onEverythingReady?: (params: {
+    availableProxies: UserFlowStateReturnType['availableProxies']
+    walletAddress: UserFlowStateReturnType['walletAddress']
+    amount: UserFlowStateReturnType['amount']
+    token: UserFlowStateReturnType['token']
+    isProxyReady: UserFlowStateReturnType['isProxyReady']
+    isWalletConnected: UserFlowStateReturnType['isWalletConnected']
+    isAllowanceReady: UserFlowStateReturnType['isAllowanceReady']
+  }) => void
 }
 
-export function useFlowState({ amount, token }: UseFlowStateProps) {
+export function useFlowState({ amount, token, onEverythingReady }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
   const [availableProxies, setAvailableProxies] = useState<string[]>([])
+  const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
+  const [isLoading, setLoading] = useState<boolean>(false)
   const {
     dpmAccountStateMachine,
     allowanceStateMachine,
     userDpmProxies$,
     proxyConsumed$,
+    allowanceForAccount$,
   } = useAppContext()
   const { context$ } = useAppContext()
   const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)
   const { stateMachine: allowanceMachine } = setupAllowanceContext(allowanceStateMachine)
 
+  // wallet connection + DPM proxy machine
   useEffect(() => {
-    // wallet connection
     const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
       setWalletConnected(status === 'connected')
       status === 'connected' && account && setWalletAddress(account)
     })
-    const proxyMachineSubscription = dpmMachine.subscribe((state) => {
+    const proxyMachineSubscription = dpmMachine.subscribe(({ value, context, event }) => {
       if (
-        state.value === 'txSuccess' &&
-        state.context.result?.proxy &&
-        !availableProxies?.includes(state.context.result?.proxy)
+        value === 'txSuccess' &&
+        context.result?.proxy &&
+        !availableProxies?.includes(context.result?.proxy) &&
+        event.type === 'CONTINUE'
       ) {
-        setAvailableProxies([...(availableProxies || []), state.context.result.proxy])
+        setAvailableProxies([...(availableProxies || []), context.result.proxy])
       }
     })
     return () => {
@@ -49,8 +65,8 @@ export function useFlowState({ amount, token }: UseFlowStateProps) {
     }
   }, [])
 
+  // list of (all) DPM proxies
   useEffect(() => {
-    // list of (all) DPM proxies
     if (!walletAddress) return
     const userDpmProxies = userDpmProxies$(walletAddress).subscribe((userProxyList) => {
       setUserProxyList(userProxyList)
@@ -60,8 +76,8 @@ export function useFlowState({ amount, token }: UseFlowStateProps) {
     }
   }, [walletAddress])
 
+  // list of AVAILABLE DPM proxies (updated asynchronously)
   useEffect(() => {
-    // list of available DPM proxies (updated asynchronously)
     if (!walletAddress || !userProxyList.length) return
     const proxyListAvailabilityMap = combineLatest(
       userProxyList.map((proxy) =>
@@ -83,30 +99,79 @@ export function useFlowState({ amount, token }: UseFlowStateProps) {
     }
   }, [walletAddress, userProxyList])
 
+  // allowance machine
   useEffect(() => {
-    // allowance handling
     if (!availableProxies.length || !allDefined(walletAddress, amount, token)) return
-    console.log('allowance handling', { walletAddress, availableProxies, amount, token })
-    const allowanceMachineSubscription = allowanceMachine.subscribe((state) => {
-      console.log('allowanceMachineSubscription state', state)
+    if (token === 'ETH') {
+      setLoading(false)
+      setAllowanceReady(true)
+      return
+    }
+    const spender = availableProxies[0] // probably needs further thoguht
+    allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
+      minimumAmount: amount,
+      token,
+      spender,
+    })
+    const allowanceSubscription = allowanceForAccount$(token!, spender).subscribe(
+      (allowanceData) => {
+        if (allowanceData) {
+          setLoading(false)
+          if (allowanceData.gt(zero) && allowanceData.gt(amount!)) {
+            setAllowanceReady(true)
+          } else {
+            setAllowanceReady(false)
+          }
+        }
+      },
+    )
+    const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
+      if (value === 'txSuccess' && context.allowanceType && event.type === 'CONTINUE') {
+        setAllowanceReady(true)
+      }
     })
     return () => {
       allowanceMachineSubscription.unsubscribe()
+      allowanceSubscription.unsubscribe()
     }
   }, [walletAddress, availableProxies, amount, token])
 
-  const debug = {
+  // wrapping up
+  useEffect(() => {
+    if (
+      isAllowanceReady &&
+      amount &&
+      token &&
+      availableProxies.length &&
+      typeof onEverythingReady === 'function'
+    ) {
+      onEverythingReady({
+        availableProxies,
+        walletAddress,
+        amount,
+        token,
+        isProxyReady: !!availableProxies.length,
+        isWalletConnected,
+        isAllowanceReady,
+      })
+    }
+  }, [isAllowanceReady, availableProxies, amount])
+
+  useEffect(() => {
+    setLoading(true)
+  }, [amount])
+
+  return {
     dpmMachine,
     allowanceMachine,
     availableProxies,
-    needsNewProxy: !availableProxies.length,
-    isWalletConnected,
     walletAddress,
     amount,
     token,
+    isProxyReady: !!availableProxies.length,
+    isWalletConnected,
+    isAllowanceReady,
+    isLoading, // just for the allowance loading state
+    isEverythingReady: isAllowanceReady, // just for convenience, allowance is always the last step
   }
-
-  // console.log('useFlowState debug', debug)
-
-  return debug
 }

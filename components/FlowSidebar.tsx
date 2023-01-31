@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import { AllowanceView } from 'features/stateMachines/allowance'
 import {
   DPMAccountStateMachine,
   DPMAccountStateMachineEvents,
@@ -201,33 +202,44 @@ function DPMSuccessStateView({ send }: InternalViewsProps) {
 }
 
 export function FlowSidebar({
+  noConnectionContent,
   dpmMachine,
   allowanceMachine,
   isWalletConnected = false,
-  noConnectionContent,
-  needsNewProxy,
+  token,
+  amount,
+  isProxyReady,
+  isAllowanceReady,
+  isLoading,
 }: CreateDPMAccountViewProps) {
   const [dpmState, dpmSend] = useActor(dpmMachine)
-  const [allowanceState, allowanceSend] = useActor(allowanceMachine)
+  const [allowanceState] = useActor(allowanceMachine)
+  const allowanceConsidered = token !== 'ETH' && amount
 
-  console.log('allowanceState', allowanceState.context)
-
-  switch (true) {
-    case !isWalletConnected:
-      return <NoConnectionStateView noConnectionContent={noConnectionContent} />
-    case dpmState.matches('idle') && needsNewProxy:
-    case dpmState.matches('txFailure') && needsNewProxy:
-      return <DPMInfoStateView state={dpmState} send={dpmSend} />
-    case dpmState.matches('txInProgress') && needsNewProxy:
-      return <DPMInProgressView state={dpmState} send={dpmSend} />
-    case dpmState.matches('txSuccess'):
-      return <DPMSuccessStateView state={dpmState} send={dpmSend} />
-    // case allowanceState.matches('idle'):
-    // case allowanceState.matches('txFailure'):
-    // case allowanceState.matches('txInProgress'):
-    // case allowanceState.matches('txSuccess'):
-    //   return <AllowanceView allowanceMachine={allowanceMachine} />
-    default:
-      return <></>
+  if (!isWalletConnected) {
+    return <NoConnectionStateView noConnectionContent={noConnectionContent} />
   }
+  if (!isProxyReady && !isAllowanceReady) {
+    switch (true) {
+      case dpmState.matches('idle'):
+      case dpmState.matches('txFailure'):
+        return <DPMInfoStateView state={dpmState} send={dpmSend} />
+      case dpmState.matches('txInProgress'):
+        return <DPMInProgressView state={dpmState} send={dpmSend} />
+      case dpmState.matches('txSuccess'):
+        return <DPMSuccessStateView state={dpmState} send={dpmSend} />
+    }
+  }
+  if (isProxyReady && !isAllowanceReady && allowanceConsidered) {
+    switch (true) {
+      case allowanceState.matches('idle'):
+      case allowanceState.matches('txFailure'):
+      case allowanceState.matches('txInProgress'):
+      case allowanceState.matches('txSuccess'):
+        return <AllowanceView allowanceMachine={allowanceMachine} isLoading={isLoading} />
+      default:
+        return <></>
+    }
+  }
+  return <></>
 }

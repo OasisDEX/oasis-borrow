@@ -1330,6 +1330,12 @@ export function setupAppContext() {
     commonTransactionServices,
   )
 
+  const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
+    (token: string, spender: string) =>
+      contextForAddress$.pipe(switchMap(({ account }) => allowance$(token, account, spender))),
+    (token, spender) => `${token}-${spender}`,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,

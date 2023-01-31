@@ -20,12 +20,14 @@ import {
 interface AllowanceViewProps {
   allowanceMachine: ActorRefFrom<AllowanceStateMachine>
   steps?: [number, number]
+  isLoading?: boolean
 }
 
 interface AllowanceViewStateProps {
   state: StateFrom<AllowanceStateMachine>
   send: Sender<AllowanceStateMachineEvent>
   steps?: [number, number]
+  isLoading?: boolean
 }
 
 function AllowanceInfoStateViewContent({
@@ -99,7 +101,7 @@ function AllowanceInfoStateViewContent({
   )
 }
 
-function AllowanceInfoStateView({ state, send, steps }: AllowanceViewStateProps) {
+function AllowanceInfoStateView({ state, send, steps, isLoading }: AllowanceViewStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -107,7 +109,7 @@ function AllowanceInfoStateView({ state, send, steps }: AllowanceViewStateProps)
     content: <AllowanceInfoStateViewContent state={state} send={send} />,
     primaryButton: {
       steps: steps,
-      isLoading: false,
+      isLoading,
       disabled: !state.can('NEXT_STEP'),
       label: t('approve-allowance'),
       action: () => send('NEXT_STEP'),
@@ -209,12 +211,14 @@ function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function AllowanceView({ allowanceMachine, steps }: AllowanceViewProps) {
+export function AllowanceView({ allowanceMachine, steps, isLoading }: AllowanceViewProps) {
   const [state, send] = useActor(allowanceMachine)
 
   switch (true) {
     case state.matches('idle'):
-      return <AllowanceInfoStateView state={state} send={send} steps={steps} />
+      return (
+        <AllowanceInfoStateView state={state} send={send} steps={steps} isLoading={isLoading} />
+      )
     case state.matches('txFailure'):
       return <AllowanceRetryStateView state={state} send={send} steps={steps} />
     case state.matches('txInProgress'):
