@@ -43,8 +43,8 @@ type AjnaBorrowFormAction = ReductoActions<
   | AjnaBorrowFormActionsUpdateDeposit
   | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsUpdateGenerate
-  | AjnaBorrowFormActionsReset
   | AjnaBorrowFormActionsUpdatePayback
+  | AjnaBorrowFormActionsReset
 >
 
 export const ajnaBorrowDefault: AjnaBorrowFormState = {

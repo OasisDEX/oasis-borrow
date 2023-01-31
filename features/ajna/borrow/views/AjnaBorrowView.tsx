@@ -22,6 +22,7 @@ export function AjnaBorrowView() {
       <VaultHeadline
         header=""
         {...getAjnaBorrowHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
+        {...(flow === 'manage' && { shareButton: true })}
         details={[
           {
             label: t('ajna.borrow.common.headline.current-market-price', { collateralToken }),
@@ -53,33 +54,37 @@ export function AjnaBorrowView() {
               </Grid>
             ),
           },
-          {
-            value: 'history',
-            label: t('system.history'),
-            content: (
-              <Flex
-                sx={{
-                  maxWidth: '600px',
-                  flexDirection: 'column',
-                  alignItems: ['flex-start', 'center'],
-                  mx: 'auto',
-                  pt: 5,
-                  textAlign: ['left', 'center'],
-                }}
-              >
-                <Image
-                  src={staticFilesRuntimeUrl('/static/img/no-positions.svg')}
-                  sx={{ alignSelf: 'center' }}
-                />
-                <Heading variant="boldParagraph2" sx={{ mt: 4, mb: 1 }}>
-                  {t('ajna.history.title')}
-                </Heading>
-                <Text as="p" variant="paragraph2" sx={{ m: 0, color: 'neutral80' }}>
-                  {t('ajna.history.notice')}
-                </Text>
-              </Flex>
-            ),
-          },
+          ...(flow === 'manage'
+            ? [
+                {
+                  value: 'history',
+                  label: t('system.history'),
+                  content: (
+                    <Flex
+                      sx={{
+                        maxWidth: '600px',
+                        flexDirection: 'column',
+                        alignItems: ['flex-start', 'center'],
+                        mx: 'auto',
+                        pt: 5,
+                        textAlign: ['left', 'center'],
+                      }}
+                    >
+                      <Image
+                        src={staticFilesRuntimeUrl('/static/img/no-positions.svg')}
+                        sx={{ alignSelf: 'center' }}
+                      />
+                      <Heading variant="boldParagraph2" sx={{ mt: 4, mb: 1 }}>
+                        {t('ajna.history.title')}
+                      </Heading>
+                      <Text as="p" variant="paragraph2" sx={{ m: 0, color: 'neutral80' }}>
+                        {t('ajna.history.notice')}
+                      </Text>
+                    </Flex>
+                  ),
+                },
+              ]
+            : []),
         ]}
       />
     </Container>
