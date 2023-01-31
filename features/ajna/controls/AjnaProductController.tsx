@@ -66,7 +66,7 @@ export function AjnaProductController({
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>
-        collateralTokenData && quoteTokenData
+        collateralTokenData && quoteTokenData && walletAddress
           ? balancesInfoArray$([collateralTokenData, quoteTokenData], walletAddress)
           : EMPTY,
       [collateralTokenData, walletAddress],
