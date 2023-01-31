@@ -12,16 +12,18 @@ import { Card, Container, Grid } from 'theme-ui'
 export function AjnaBorrowView() {
   const { t } = useTranslation()
   const {
-    environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
+    environment: { collateralPrice, collateralToken, flow, product, quotePrice, quoteToken },
+    position: { id },
   } = useAjnaBorrowContext()
 
   return (
     <Container variant="vaultPageContainerStatic">
       <VaultHeadline
-        {...getAjnaBorrowHeadlineProps(collateralToken, quoteToken)}
+        header=""
+        {...getAjnaBorrowHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
         details={[
           {
-            label: t('ajna.borrow.open.headline.current-market-price', { collateralToken }),
+            label: t('ajna.borrow.common.headline.current-market-price', { collateralToken }),
             value: `${formatCryptoBalance(
               collateralPrice.dividedBy(quotePrice),
             )} ${collateralToken}/${quoteToken}`,

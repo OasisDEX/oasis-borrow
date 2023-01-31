@@ -2283,18 +2283,30 @@
       ]
     },
     "borrow": {
-      "open": {
+      "common": {
         "headline": {
-          "header": "Borrow {{collateralToken}} against {{quoteToken}}",
           "current-market-price": "Current Market Price"
         },
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
             "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
             "transaction": "Confirm your Ajna Position"
-          },
+          }
+        }
+      },
+      "open": {
+        "headline": {
+          "header": "Borrow {{quoteToken}} against {{collateralToken}}"
+        },
+        "form": {
           "confirm": "Review and confirm changes in your Ajna Position."
+        }
+      },
+      "manage": {
+        "headline": {
+          "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
         }
       }
     }

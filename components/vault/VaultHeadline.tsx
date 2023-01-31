@@ -13,7 +13,7 @@ import {
 } from 'features/follow/common/ShareButton'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Flex, Image } from 'theme-ui'
 
 import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetails'
@@ -21,11 +21,11 @@ import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetail
 export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]
   followButton?: FollowButtonControlProps
-  header: string
+  header: ReactNode
   label?: string
   loading?: boolean
   shareButton?: boolean
-  token: string[]
+  token?: string[]
 }
 
 export function VaultHeadline({
@@ -35,7 +35,7 @@ export function VaultHeadline({
   label,
   loading = false,
   shareButton,
-  token,
+  token = [],
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
