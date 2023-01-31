@@ -74,7 +74,7 @@ export function SetDownsideProtectionInformation({
     : `${formatAmount(savingCompareToLiquidation.multipliedBy(executionPrice), 'USD')} ${debtToken}`
 
   const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
-  const closeVaultGasPrice = new BigNumber(200) // gwei
+  const closeVaultGasPrice = new BigNumber(50) // gwei
   const estimatedFeesWhenSlTriggered = formatFiatBalance(
     closeVaultGasEstimation
       .multipliedBy(closeVaultGasPrice)
