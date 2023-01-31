@@ -75,6 +75,7 @@ export function FollowButton({
           strokeWidth: isFollowing ? 0 : '1px',
           transition: 'stroke 200ms, stroke-width 200ms, fill 200ms',
         },
+        ...(isShort && { display: 'flex', alignItems: 'center', justifyContent: 'center' }),
         ...sx,
       }}
       onMouseOver={handleMouseOver}
