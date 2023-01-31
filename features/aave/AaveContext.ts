@@ -11,6 +11,7 @@ import { AppContext } from '../../components/AppContext'
 import { LendingProtocol } from '../../lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from '../../lendingProtocols/aave-v2/pipelines'
 import { getAaveStEthYield } from './common'
+import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -156,6 +157,16 @@ export function setupAaveV2Context(appContext: AppContext) {
     getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+  )
+
+  const getAvailableDPMProxy: (
+    walletAddress: string,
+  ) => Observable<UserDpmAccount | undefined> = memoize(
+    curry(getAvailableDPMProxy$)(userDpmProxies$, proxyConsumed$),
+  )
+
+  const unconsumedDpmProxyForConnectedAccount$ = contextForAddress$.pipe(
+    switchMap(({ account }) => getAvailableDPMProxy(account)),
   )
 
   return {

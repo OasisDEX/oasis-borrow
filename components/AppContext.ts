@@ -107,7 +107,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { getUserDpmProxies$, getUserDpmProxy$, UserDpmAccount } from 'blockchain/userDpmProxies'
+import { getUserDpmProxies$, getUserDpmProxy$ } from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
   createVault$,
