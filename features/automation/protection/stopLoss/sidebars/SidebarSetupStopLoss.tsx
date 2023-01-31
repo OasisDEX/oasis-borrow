@@ -72,7 +72,7 @@ export function SidebarSetupStopLoss({
       stopLossMetadata: {
         methods: { getExecutionPrice },
         validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
-        featureWriteEnabled,
+        stopLossWriteEnabled,
       },
     },
     positionData: { vaultType },
@@ -142,7 +142,7 @@ export function SidebarSetupStopLoss({
       dropdown,
       content: (
         <Grid gap={3}>
-          {featureWriteEnabled ? (
+          {stopLossWriteEnabled ? (
             <>
               {(stage === 'stopLossEditing' || stage === 'txFailure') && (
                 <>

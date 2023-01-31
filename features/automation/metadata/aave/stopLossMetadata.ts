@@ -213,6 +213,6 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       addTrigger: addAutomationBotTriggerV2,
       removeTrigger: removeAutomationBotTriggerV2,
     },
-    featureWriteEnabled: aaveProtectionWriteEnabled,
+    stopLossWriteEnabled: aaveProtectionWriteEnabled,
   }
 }

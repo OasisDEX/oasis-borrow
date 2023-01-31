@@ -72,7 +72,7 @@ function ZeroDebtProtectionBanner({
 }
 
 function getZeroDebtProtectionBannerProps({
-  featureWriteEnabled,
+  stopLossWriteEnabled,
   isVaultDebtZero,
   isVaultDebtBelowDustLimit,
   vaultHasNoProtection,
@@ -80,7 +80,7 @@ function getZeroDebtProtectionBannerProps({
   ratioParamTranslationKey,
   bannerStrategiesKey,
 }: {
-  featureWriteEnabled: boolean
+  stopLossWriteEnabled: boolean
   isVaultDebtZero: boolean
   isVaultDebtBelowDustLimit: boolean
   debtToken: string
@@ -88,7 +88,7 @@ function getZeroDebtProtectionBannerProps({
   bannerStrategiesKey: string
   vaultHasNoProtection?: boolean
 }): ZeroDebtProtectionBannerProps {
-  if (featureWriteEnabled) {
+  if (stopLossWriteEnabled) {
     if (isVaultDebtZero && vaultHasNoProtection) {
       return {
         header: 'protection.zero-debt-heading',
@@ -129,7 +129,7 @@ export function ProtectionControl() {
     metadata: {
       stopLossMetadata: {
         translations: { ratioParamTranslationKey, bannerStrategiesKey },
-        featureWriteEnabled,
+        stopLossWriteEnabled,
       },
     },
     triggerData: { autoSellTriggerData, stopLossTriggerData },
@@ -148,7 +148,9 @@ export function ProtectionControl() {
     >
       {() =>
         vaultHasActiveTrigger ||
-        (!debt.isZero() && debt.gt(debtFloor) && (vaultHasActiveTrigger || featureWriteEnabled)) ? (
+        (!debt.isZero() &&
+          debt.gt(debtFloor) &&
+          (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
           <DefaultVaultLayout
             detailsViewControl={<ProtectionDetailsControl />}
             editForm={<ProtectionFormControl txHelpers={txHelpersData} />}
@@ -162,7 +164,7 @@ export function ProtectionControl() {
           >
             <ZeroDebtProtectionBanner
               {...getZeroDebtProtectionBannerProps({
-                featureWriteEnabled,
+                stopLossWriteEnabled,
                 isVaultDebtZero: debt.isZero(),
                 isVaultDebtBelowDustLimit: debt.lte(debtFloor),
                 vaultHasNoProtection: !vaultHasActiveTrigger,

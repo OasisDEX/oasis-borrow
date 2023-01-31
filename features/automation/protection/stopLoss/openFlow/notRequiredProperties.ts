@@ -67,5 +67,5 @@ export const notRequiredAutomationContext = {
 }
 
 export const notRequiredStopLossMetadata = {
-  featureWriteEnabled: false,
+  stopLossWriteEnabled: false,
 }

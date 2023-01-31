@@ -229,6 +229,6 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
       addTrigger: addAutomationBotTrigger,
       removeTrigger: removeAutomationBotAggregatorTriggers,
     },
-    featureWriteEnabled: stopLossWriteEnabled,
+    stopLossWriteEnabled,
   }
 }

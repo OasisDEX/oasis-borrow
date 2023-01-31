@@ -115,7 +115,7 @@ export type StopLossMetadata = AutomationCommonMetadata<StopLossFormChange> & {
     removeTxData: AutomationRemoveTriggerData
   }
   contracts: AutomationContracts
-  featureWriteEnabled: boolean
+  stopLossWriteEnabled: boolean
 }
 
 export interface AutomationMetadata {
