@@ -63,11 +63,17 @@ export function AjnaProductController({
     }
   }, [id])
 
-  const [balanceInfoData, balanceInfoError] = useObservable(
+  const [collateralBalanceInfoData, collateralBalanceInfoError] = useObservable(
     useMemo(
       () => (collateralTokenData ? balanceInfo$(collateralTokenData, walletAddress) : EMPTY),
       [collateralTokenData, walletAddress],
     ),
+  )
+  const [quoteBalanceInfoData, quoteBalanceInfoError] = useObservable(
+    useMemo(() => (quoteTokenData ? balanceInfo$(quoteTokenData, walletAddress) : EMPTY), [
+      quoteTokenData,
+      walletAddress,
+    ]),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
@@ -84,13 +90,16 @@ export function AjnaProductController({
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <AjnaWrapper>
-            <WithErrorHandler error={[balanceInfoError, tokenPriceUSDError]}>
+            <WithErrorHandler
+              error={[collateralBalanceInfoError, quoteBalanceInfoError, tokenPriceUSDError]}
+            >
               <WithLoadingIndicator
                 value={[
                   productData,
                   collateralTokenData,
                   quoteTokenData,
-                  balanceInfoData,
+                  collateralBalanceInfoData,
+                  quoteBalanceInfoData,
                   tokenPriceUSDData,
                 ]}
                 customLoader={
@@ -110,6 +119,7 @@ export function AjnaProductController({
                   _collateralToken,
                   _quoteToken,
                   { collateralBalance },
+                  { collateralBalance: quoteBalance },
                   _tokenPriceUSD,
                 ]) => (
                   <AjnaBorrowContextProvider
@@ -119,6 +129,7 @@ export function AjnaProductController({
                     flow={flow}
                     position={{ id }}
                     product={_product}
+                    quoteBalance={quoteBalance}
                     quoteToken={_quoteToken}
                     quotePrice={_tokenPriceUSD[_quoteToken]}
                     steps={steps[_product][flow]}

@@ -25,6 +25,7 @@ interface AjnaBorrowContextProviderProps {
   collateralToken: string
   flow: AjnaFlow
   product: AjnaProduct
+  quoteBalance: BigNumber
   quotePrice: BigNumber
   quoteToken: string
   position: AjnaBorrowPosition
@@ -143,7 +144,7 @@ export function AjnaBorrowContextProvider({
       steps: setupStepManager(),
       tx: setupTxManager(),
     }))
-  }, [props.collateralBalance, form.state, currentStep, txStatus])
+  }, [props.collateralBalance, props.quoteBalance, form.state, currentStep, txStatus])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
 }

@@ -1,6 +1,7 @@
 import { ActionPills } from 'components/ActionPills'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentGenerate'
+import { AjnaBorrowFormContentWithdraw } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentWithdraw'
 import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
@@ -59,7 +60,7 @@ export function AjnaBorrowFormContentManage({ panel }: AjnaBorrowFormContentMana
       {
         {
           deposit: <AjnaBorrowFormContentDeposit />,
-          withdraw: <>withdraw</>,
+          withdraw: <AjnaBorrowFormContentWithdraw />,
           generate: <AjnaBorrowFormContentGenerate />,
           payback: <>payback</>,
         }[active]

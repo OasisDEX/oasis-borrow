@@ -8,6 +8,10 @@ export interface AjnaBorrowFormState {
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
   generateAmountUSD?: BigNumber
+  paybackAmount?: BigNumber
+  paybackAmountUSD?: BigNumber
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
 }
 
 interface AjnaBorrowFormActionsUpdateDeposit {
@@ -15,10 +19,20 @@ interface AjnaBorrowFormActionsUpdateDeposit {
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdateWithdraw {
+  type: 'update-withdraw'
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+}
 interface AjnaBorrowFormActionsUpdateGenerate {
   type: 'update-generate'
   generateAmount?: BigNumber
   generateAmountUSD?: BigNumber
+}
+interface AjnaBorrowFormActionsUpdatePayback {
+  type: 'update-payback'
+  paybackAmount?: BigNumber
+  paybackAmountUSD?: BigNumber
 }
 interface AjnaBorrowFormActionsReset {
   type: 'reset'
@@ -27,8 +41,10 @@ interface AjnaBorrowFormActionsReset {
 type AjnaBorrowFormAction = ReductoActions<
   AjnaBorrowFormState,
   | AjnaBorrowFormActionsUpdateDeposit
+  | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsUpdateGenerate
   | AjnaBorrowFormActionsReset
+  | AjnaBorrowFormActionsUpdatePayback
 >
 
 export const ajnaBorrowDefault: AjnaBorrowFormState = {
@@ -36,6 +52,10 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   depositAmountUSD: undefined,
   generateAmount: undefined,
   generateAmountUSD: undefined,
+  paybackAmount: undefined,
+  paybackAmountUSD: undefined,
+  withdrawAmount: undefined,
+  withdrawAmountUSD: undefined,
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
@@ -53,11 +73,23 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
           }
+        case 'update-withdraw':
+          return {
+            ...state,
+            withdrawAmount: action.withdrawAmount,
+            withdrawAmountUSD: action.withdrawAmountUSD,
+          }
         case 'update-generate':
           return {
             ...state,
             generateAmount: action.generateAmount,
             generateAmountUSD: action.generateAmountUSD,
+          }
+        case 'update-payback':
+          return {
+            ...state,
+            paybackAmount: action.paybackAmount,
+            paybackAmountUSD: action.paybackAmountUSD,
           }
         case 'reset':
           return ajnaBorrowDefault

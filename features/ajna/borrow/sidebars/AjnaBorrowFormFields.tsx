@@ -33,22 +33,18 @@ export function AjnaBorrowFormFieldDeposit({ isDisabled }: AjnaBorrowFormField) 
       maxAuxiliaryAmount={collateralBalance.times(collateralPrice)}
       maxAmountLabel={t('balance')}
       onChange={handleNumericInput((n) => {
-        if (n) {
-          dispatch({
-            type: 'update-deposit',
-            depositAmount: n,
-            depositAmountUSD: n.times(collateralPrice),
-          })
-        } else dispatch({ type: 'reset' })
+        dispatch({
+          type: 'update-deposit',
+          depositAmount: n,
+          depositAmountUSD: n?.times(collateralPrice),
+        })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
-        if (n) {
-          dispatch({
-            type: 'update-deposit',
-            depositAmount: n.dividedBy(collateralPrice),
-            depositAmountUSD: n,
-          })
-        } else dispatch({ type: 'reset' })
+        dispatch({
+          type: 'update-deposit',
+          depositAmount: n?.dividedBy(collateralPrice),
+          depositAmountUSD: n,
+        })
       })}
       onSetMax={() => {
         dispatch({
@@ -57,6 +53,43 @@ export function AjnaBorrowFormFieldDeposit({ isDisabled }: AjnaBorrowFormField) 
           depositAmountUSD: collateralBalance.times(collateralPrice),
         })
       }}
+    />
+  )
+}
+
+export function AjnaBorrowFormFieldWithdraw({ isDisabled }: AjnaBorrowFormField) {
+  const {
+    form: {
+      dispatch,
+      state: { withdrawAmount, withdrawAmountUSD },
+    },
+    environment: { collateralPrice, collateralToken },
+  } = useAjnaBorrowContext()
+
+  return (
+    <VaultActionInput
+      action="Withdraw"
+      currencyCode={collateralToken}
+      tokenUsdPrice={collateralPrice}
+      amount={withdrawAmount}
+      auxiliaryAmount={withdrawAmountUSD}
+      hasAuxiliary={true}
+      hasError={false}
+      disabled={isDisabled}
+      onChange={handleNumericInput((n) => {
+        dispatch({
+          type: 'update-withdraw',
+          withdrawAmount: n,
+          withdrawAmountUSD: n?.times(collateralPrice),
+        })
+      })}
+      onAuxiliaryChange={handleNumericInput((n) => {
+        dispatch({
+          type: 'update-withdraw',
+          withdrawAmount: n?.dividedBy(collateralPrice),
+          withdrawAmountUSD: n,
+        })
+      })}
     />
   )
 }
@@ -94,6 +127,56 @@ export function AjnaBorrowFormFieldGenerate({ isDisabled }: AjnaBorrowFormField)
           generateAmountUSD: n,
         })
       })}
+    />
+  )
+}
+
+export function AjnaBorrowFormFieldPayback({ isDisabled }: AjnaBorrowFormField) {
+  const { t } = useTranslation()
+  const {
+    form: {
+      dispatch,
+      state: { paybackAmount, paybackAmountUSD },
+    },
+    environment: { quoteBalance, quotePrice, quoteToken },
+  } = useAjnaBorrowContext()
+
+  return (
+    <VaultActionInput
+      action="Payback"
+      currencyCode={quoteToken}
+      tokenUsdPrice={quotePrice}
+      amount={paybackAmount}
+      auxiliaryAmount={paybackAmountUSD}
+      hasAuxiliary={true}
+      hasError={false}
+      disabled={isDisabled}
+      showMax={true}
+      // TODO: should be quoteBalance or total debt, whatever is lower, but debt is not yet available
+      maxAmount={quoteBalance}
+      maxAuxiliaryAmount={quoteBalance.times(quotePrice)}
+      maxAmountLabel={t('balance')}
+      onChange={handleNumericInput((n) => {
+        dispatch({
+          type: 'update-payback',
+          paybackAmount: n,
+          paybackAmountUSD: n?.times(quotePrice),
+        })
+      })}
+      onAuxiliaryChange={handleNumericInput((n) => {
+        dispatch({
+          type: 'update-payback',
+          paybackAmount: n?.dividedBy(quotePrice),
+          paybackAmountUSD: n,
+        })
+      })}
+      onSetMax={() => {
+        dispatch({
+          type: 'update-payback',
+          paybackAmount: quoteBalance,
+          paybackAmountUSD: quoteBalance.times(quotePrice),
+        })
+      }}
     />
   )
 }
