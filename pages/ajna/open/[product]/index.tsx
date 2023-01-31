@@ -1,5 +1,6 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { GenericSelect } from 'components/GenericSelect'
+import { HeaderSelector } from 'components/HeaderSelector'
 import { AppLink } from 'components/Links'
 import { products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
@@ -7,7 +8,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useState } from 'react'
-import { Box, Button, Flex, Heading } from 'theme-ui'
+import { Box, Button, Flex, Heading, Text } from 'theme-ui'
 
 interface AjnaProductSelectorPageProps {
   product: string
@@ -23,7 +24,17 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
     <WithConnection>
       <WithTermsOfService>
         <AjnaWrapper>
-          <Box sx={{ width: '100%', mt: '100px' }}>
+          <Box sx={{ width: '100%' }}>
+            <Box sx={{ textAlign: 'center' }}>
+              <Heading variant="header2" sx={{ mb: 3 }}>
+                Borrow against your
+                <HeaderSelector gradient={['#f154db', '#974eea']} />
+                exposure on Ajna
+              </Heading>
+              <Text variant="paragraph2" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
+                Select the crypto asset you want to borrow against your ETH
+              </Text>
+            </Box>
             <Heading>Ajna temporary {product} selector</Heading>
             <Flex sx={{ columnGap: 3, mt: 3 }}>
               <GenericSelect
