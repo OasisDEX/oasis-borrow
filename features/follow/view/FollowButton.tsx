@@ -75,6 +75,9 @@ export function FollowButton({
           backgroundColor: 'neutral10',
           color: 'primary60',
           pointerEvents: 'auto',
+          border: '1px solid #EAEAEA',
+          borderRadius: '16px',
+          boxShadow: 'none',
         },
         '.star': {
           fill: isFollowing ? 'interactive100' : 'neutral10',
