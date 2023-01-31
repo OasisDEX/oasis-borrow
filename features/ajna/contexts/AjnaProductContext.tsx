@@ -139,7 +139,11 @@ export function AjnaBorrowContextProvider({
   useEffect(() => {
     setContext((prev) => ({
       ...prev,
-      environment: { ...prev.environment, collateralBalance: props.collateralBalance },
+      environment: {
+        ...prev.environment,
+        collateralBalance: props.collateralBalance,
+        quoteBalance: props.quoteBalance,
+      },
       form: { ...prev.form, state: form.state },
       steps: setupStepManager(),
       tx: setupTxManager(),

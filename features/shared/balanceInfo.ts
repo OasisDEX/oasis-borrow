@@ -27,6 +27,18 @@ export function createBalanceInfo$(
   )
 }
 
+export function createBalancesArrayInfo$(
+  balance$: (token: string, address: string) => Observable<BigNumber>,
+  tokens: string[],
+  address: string | undefined,
+): Observable<BigNumber[]> {
+  return combineLatest(
+    tokens.map((token) => address ? balance$(token, address) : of(zero)),
+  ).pipe(
+    map((balances) => balances),
+  )
+}
+
 export interface BalanceInfoChange {
   kind: 'balanceInfo'
   balanceInfo: BalanceInfo

@@ -238,7 +238,11 @@ import {
   getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
 import { redirectState$ } from 'features/router/redirectState'
-import { BalanceInfo, createBalanceInfo$ } from 'features/shared/balanceInfo'
+import {
+  BalanceInfo,
+  createBalanceInfo$,
+  createBalancesArrayInfo$,
+} from 'features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
@@ -906,6 +910,8 @@ export function setupAppContext() {
     account: string | undefined,
   ) => Observable<BalanceInfo>
 
+  const balancesInfoArray$ = curry(createBalancesArrayInfo$)(balance$)
+
   const userSettings$ = createUserSettings$(
     checkUserSettingsLocalStorage$,
     saveUserSettingsLocalStorage$,
@@ -1388,6 +1394,7 @@ export function setupAppContext() {
     vault$,
     ilks$: ilksSupportedOnNetwork$,
     balance$,
+    balancesInfoArray$,
     accountBalances$,
     openVault$,
     manageVault$,

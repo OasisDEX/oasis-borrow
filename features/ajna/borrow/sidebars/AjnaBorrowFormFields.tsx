@@ -6,9 +6,10 @@ import React from 'react'
 
 interface AjnaBorrowFormField {
   isDisabled?: boolean
+  resetOnClear?: boolean
 }
 
-export function AjnaBorrowFormFieldDeposit({ isDisabled }: AjnaBorrowFormField) {
+export function AjnaBorrowFormFieldDeposit({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const { t } = useTranslation()
   const {
     form: {
@@ -33,11 +34,14 @@ export function AjnaBorrowFormFieldDeposit({ isDisabled }: AjnaBorrowFormField) 
       maxAuxiliaryAmount={collateralBalance.times(collateralPrice)}
       maxAmountLabel={t('balance')}
       onChange={handleNumericInput((n) => {
+        console.log(`n: ${n}`)
+        console.log(`resetOnClear: ${resetOnClear}`)
         dispatch({
           type: 'update-deposit',
           depositAmount: n,
           depositAmountUSD: n?.times(collateralPrice),
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatch({
@@ -45,6 +49,7 @@ export function AjnaBorrowFormFieldDeposit({ isDisabled }: AjnaBorrowFormField) 
           depositAmount: n?.dividedBy(collateralPrice),
           depositAmountUSD: n,
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onSetMax={() => {
         dispatch({
@@ -57,7 +62,7 @@ export function AjnaBorrowFormFieldDeposit({ isDisabled }: AjnaBorrowFormField) 
   )
 }
 
-export function AjnaBorrowFormFieldWithdraw({ isDisabled }: AjnaBorrowFormField) {
+export function AjnaBorrowFormFieldWithdraw({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const {
     form: {
       dispatch,
@@ -82,6 +87,7 @@ export function AjnaBorrowFormFieldWithdraw({ isDisabled }: AjnaBorrowFormField)
           withdrawAmount: n,
           withdrawAmountUSD: n?.times(collateralPrice),
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatch({
@@ -89,12 +95,13 @@ export function AjnaBorrowFormFieldWithdraw({ isDisabled }: AjnaBorrowFormField)
           withdrawAmount: n?.dividedBy(collateralPrice),
           withdrawAmountUSD: n,
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
     />
   )
 }
 
-export function AjnaBorrowFormFieldGenerate({ isDisabled }: AjnaBorrowFormField) {
+export function AjnaBorrowFormFieldGenerate({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const {
     form: {
       dispatch,
@@ -119,6 +126,7 @@ export function AjnaBorrowFormFieldGenerate({ isDisabled }: AjnaBorrowFormField)
           generateAmount: n,
           generateAmountUSD: n?.times(quotePrice),
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatch({
@@ -126,12 +134,13 @@ export function AjnaBorrowFormFieldGenerate({ isDisabled }: AjnaBorrowFormField)
           generateAmount: n?.dividedBy(quotePrice),
           generateAmountUSD: n,
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
     />
   )
 }
 
-export function AjnaBorrowFormFieldPayback({ isDisabled }: AjnaBorrowFormField) {
+export function AjnaBorrowFormFieldPayback({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const { t } = useTranslation()
   const {
     form: {
@@ -162,6 +171,7 @@ export function AjnaBorrowFormFieldPayback({ isDisabled }: AjnaBorrowFormField) 
           paybackAmount: n,
           paybackAmountUSD: n?.times(quotePrice),
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onAuxiliaryChange={handleNumericInput((n) => {
         dispatch({
@@ -169,6 +179,7 @@ export function AjnaBorrowFormFieldPayback({ isDisabled }: AjnaBorrowFormField) 
           paybackAmount: n?.dividedBy(quotePrice),
           paybackAmountUSD: n,
         })
+        if (!n && resetOnClear) dispatch({ type: 'reset' })
       })}
       onSetMax={() => {
         dispatch({

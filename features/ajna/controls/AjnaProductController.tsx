@@ -45,7 +45,7 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
-  const { balanceInfo$, tokenPriceUSD$ } = useAppContext()
+  const { balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
   const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
@@ -59,21 +59,18 @@ export function AjnaProductController({
     if (id) {
       setProductData('borrow')
       setCollateralTokenData('ETH')
-      setQuoteTokenData('USDC')
+      setQuoteTokenData('DAI')
     }
   }, [id])
 
-  const [collateralBalanceInfoData, collateralBalanceInfoError] = useObservable(
+  const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
-      () => (collateralTokenData ? balanceInfo$(collateralTokenData, walletAddress) : EMPTY),
+      () =>
+        collateralTokenData && quoteTokenData
+          ? balancesInfoArray$([collateralTokenData, quoteTokenData], walletAddress)
+          : EMPTY,
       [collateralTokenData, walletAddress],
     ),
-  )
-  const [quoteBalanceInfoData, quoteBalanceInfoError] = useObservable(
-    useMemo(() => (quoteTokenData ? balanceInfo$(quoteTokenData, walletAddress) : EMPTY), [
-      quoteTokenData,
-      walletAddress,
-    ]),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
@@ -90,16 +87,13 @@ export function AjnaProductController({
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <AjnaWrapper>
-            <WithErrorHandler
-              error={[collateralBalanceInfoError, quoteBalanceInfoError, tokenPriceUSDError]}
-            >
+            <WithErrorHandler error={[balancesInfoArrayError, tokenPriceUSDError]}>
               <WithLoadingIndicator
                 value={[
                   productData,
                   collateralTokenData,
                   quoteTokenData,
-                  collateralBalanceInfoData,
-                  quoteBalanceInfoData,
+                  balancesInfoArrayData,
                   tokenPriceUSDData,
                 ]}
                 customLoader={
@@ -118,8 +112,7 @@ export function AjnaProductController({
                   _product,
                   _collateralToken,
                   _quoteToken,
-                  { collateralBalance },
-                  { collateralBalance: quoteBalance },
+                  [collateralBalance, quoteBalance],
                   _tokenPriceUSD,
                 ]) => (
                   <AjnaBorrowContextProvider
