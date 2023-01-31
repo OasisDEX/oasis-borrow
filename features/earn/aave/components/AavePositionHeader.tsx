@@ -19,6 +19,10 @@ const tokenPairList = {
     translationKey: 'open-earn.aave.product-header.token-pair-list.aave-steth-eth',
     tokenList: ['AAVE', 'STETH', 'ETH'],
   },
+  wstETHeth: {
+    translationKey: 'open-earn.aave.product-header.token-pair-list.aave-wsteth-eth',
+    tokenList: ['AAVE', 'WSTETH', 'ETH'],
+  },
 } as Record<string, { translationKey: string; tokenList: string[] }>
 
 function AavePositionHeader({

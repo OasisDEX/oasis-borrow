@@ -14,8 +14,9 @@ import { loadStrategyFromUrl } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const collateralToken = ctx.query.collateralToken as string
+  const protocol = (ctx.query.protocol as string).replace(/-/g, '')
   try {
-    loadStrategyFromUrl(collateralToken, 'Borrow')
+    loadStrategyFromUrl(collateralToken, protocol, 'Borrow')
   } catch (e) {
     console.log(`could not load strategy '${collateralToken}' for route '${ctx.resolvedUrl}'`)
     return {
@@ -30,14 +31,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function OpenVault({ strategy }: { strategy: string }) {
+function OpenVault({ strategy, protocol }: { strategy: string; protocol: string }) {
   return (
     <AaveContextProvider>
       <WithConnection>
         <WithTermsOfService>
           <BackgroundLight />
           <DeferedContextProvider context={aaveContext}>
-            <AaveOpenView config={loadStrategyFromUrl(strategy, 'Borrow')} />
+            <AaveOpenView config={loadStrategyFromUrl(strategy, protocol, 'Borrow')} />
           </DeferedContextProvider>
           <Survey for="earn" />
         </WithTermsOfService>

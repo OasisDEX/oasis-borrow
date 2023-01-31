@@ -100,7 +100,9 @@ export function setupAaveV3Context({
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
-  const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
+  const earnCollateralsReserveData = {
+    WSTETH: aaveReserveConfigurationData$({ token: 'WSTETH' }),
+  } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
 
   const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
     (token: string, spender: string) =>
@@ -226,10 +228,10 @@ export function setupAaveV3Context({
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
-    getAaveReserveData$({ token: 'STETH' }),
+    getAaveReserveData$({ token: 'WSTETH' }),
     getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    getAaveAssetsPrices$({ tokens: ['USDC', 'WSTETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
   return {
@@ -245,7 +247,7 @@ export function setupAaveV3Context({
     getAaveAssetsPrices$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-    aaveSTETHReserveConfigurationData,
+    earnCollateralsReserveData,
     aaveAvailableLiquidityInUSDC$,
     aaveOracleAssetPriceData$,
     convertToAaveOracleAssetPrice$,

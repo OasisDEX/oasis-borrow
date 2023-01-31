@@ -11,50 +11,42 @@ export type PreparedAaveTotalValueLocked = {
 type PrepareAaveTVLProps = [AaveV3ReserveDataReply, AaveV3ReserveDataReply, BigNumber[]]
 
 export function prepareAaveTotalValueLocked$(
-  getAaveStEthReserveData$: Observable<AaveV3ReserveDataReply>,
+  getAaveWstEthReserveData$: Observable<AaveV3ReserveDataReply>,
   getAaveWEthReserveData$: Observable<AaveV3ReserveDataReply>,
   getAaveAssetsPrices$: Observable<string[]>,
 ): Observable<PreparedAaveTotalValueLocked> {
   return combineLatest(
-    getAaveStEthReserveData$,
+    getAaveWstEthReserveData$,
     getAaveWEthReserveData$,
     getAaveAssetsPrices$,
   ).pipe(
     map(
       ([
-        STETH_reserveData,
+        WSTETH_reserveData,
         ETH_reserveData,
-        [USDC_ETH_price, STETH_ETH_ratio],
+        [usdcEthPrice, wstEthEthRatio],
       ]: PrepareAaveTVLProps) => {
-        /*
-          The formula:
-          Steth_availableLiquidity* steth/usd -((weth_totalStableDebt + weth_totalVariableDebt)* eth/usd ) = total value locked
+        const ethUsdcPrice = new BigNumber(1).div(usdcEthPrice)
+        const wstethEthPrice = wstEthEthRatio.times(ethUsdcPrice)
 
-          Since AAVE doesn't provide the total value locked, we need to calculate it ourselves.
-          We need to get the total value locked in USD, so we need to convert the ETH and STETH values to USD.
-          There's no prices in USD in their oracle so im assuming 1 USDC = 1 USD
-        */
-        const ETH_USDC_price = new BigNumber(1).div(USDC_ETH_price) // price of one ETH in USDC
-        const STETH_USDC_price = STETH_ETH_ratio.times(ETH_USDC_price) // price of one STETH in USDC
-
-        const STETH_availableLiquidity = amountFromWei(
-          new BigNumber(STETH_reserveData.unbacked),
+        const wstEthAvailableLiqudity = amountFromWei(
+          new BigNumber(WSTETH_reserveData.availableLiquidity),
           'ETH',
-        ) // available liquidity in STETH
+        )
+
         const WETH_totalStableDebt = amountFromWei(
           new BigNumber(ETH_reserveData.totalStableDebt),
           'ETH',
-        ) // total stable debt in WETH
+        )
+
         const WETH_totalVariableDebt = amountFromWei(
           new BigNumber(ETH_reserveData.totalVariableDebt),
           'ETH',
-        ) // total variable debt in WETH
+        )
 
-        const STETH_USDC_availableLiquidity = STETH_availableLiquidity.times(STETH_USDC_price) // available liquidity in STETH in USDC
-        const USDC_WETH_debt = WETH_totalStableDebt.plus(WETH_totalVariableDebt).times(
-          ETH_USDC_price,
-        ) // total debt in WETH in USDC
-        const totalValueLocked = STETH_USDC_availableLiquidity.minus(USDC_WETH_debt) // total value locked in USDC
+        const availableLiquidityInUsdc = wstEthAvailableLiqudity.times(wstethEthPrice)
+        const wethTotalDebt = WETH_totalStableDebt.plus(WETH_totalVariableDebt).times(ethUsdcPrice) // total debt in WETH in USDC
+        const totalValueLocked = availableLiquidityInUsdc.minus(wethTotalDebt) // total value locked in USDC
 
         return {
           totalValueLocked,

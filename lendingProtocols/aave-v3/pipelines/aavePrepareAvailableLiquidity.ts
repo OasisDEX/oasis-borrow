@@ -15,7 +15,10 @@ export function prepareAaveAvailableLiquidityInUSDC$(
 ): Observable<BigNumber> {
   return combineLatest(getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$).pipe(
     map(([reserveData, [USDC_ETH_price]]: PrepareAaveAvailableLiquidityProps) => {
-      const availableLiquidityInETH = amountFromWei(new BigNumber(reserveData.unbacked), 'ETH')
+      const availableLiquidityInETH = amountFromWei(
+        new BigNumber(reserveData.availableLiquidity),
+        'ETH',
+      )
       const ETH_USDC_price = new BigNumber(1).div(USDC_ETH_price) // price of one ETH in USDC
       return availableLiquidityInETH.times(ETH_USDC_price)
     }),

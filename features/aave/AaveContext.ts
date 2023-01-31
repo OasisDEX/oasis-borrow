@@ -100,7 +100,9 @@ export function setupAaveV2Context({
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
-  const aaveSTETHReserveConfigurationData = aaveReserveConfigurationData$({ token: 'STETH' })
+  const earnCollateralsReserveData = {
+    STETH: aaveReserveConfigurationData$({ token: 'STETH' }),
+  } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
 
   const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
     (token: string, spender: string) =>
@@ -245,7 +247,7 @@ export function setupAaveV2Context({
     getAaveAssetsPrices$,
     chainlinkUSDCUSDOraclePrice$,
     chainLinkETHUSDOraclePrice$,
-    aaveSTETHReserveConfigurationData,
+    earnCollateralsReserveData,
     aaveAvailableLiquidityInUSDC$,
     aaveOracleAssetPriceData$,
     convertToAaveOracleAssetPrice$,

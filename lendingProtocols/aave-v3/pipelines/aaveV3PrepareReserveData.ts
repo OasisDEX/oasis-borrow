@@ -17,7 +17,7 @@ export function createAaveV3PrepareReserveData$(
   return aaveReserveData$({ token }).pipe(
     map((reserveData: AaveV3ReserveDataReply) => ({
       // TODO: if/when all things below are required from observe(aaveReserveData$), we can get rid of this file
-      availableLiquidity: amountFromWei(new BigNumber(reserveData.unbacked), token),
+      availableLiquidity: amountFromWei(new BigNumber(reserveData.availableLiquidity), token),
       liquidityRate: amountFromRay(new BigNumber(reserveData.liquidityRate)), // the current variable borrow rate. Expressed in ray
       variableBorrowRate: amountFromRay(new BigNumber(reserveData.variableBorrowRate)),
     })),

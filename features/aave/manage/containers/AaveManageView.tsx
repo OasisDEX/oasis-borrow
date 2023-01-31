@@ -128,13 +128,15 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const { aaveSTETHReserveConfigurationData, wrappedGetAaveReserveData$ } = useAaveContext(
+  const { earnCollateralsReserveData, wrappedGetAaveReserveData$ } = useAaveContext(
     strategyConfig.protocol,
   )
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(
+    earnCollateralsReserveData[strategyConfig.tokens.collateral],
+  )
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>
       <WithLoadingIndicator

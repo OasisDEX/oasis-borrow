@@ -82,10 +82,16 @@ export const getAaveV3UserReserveData: CallDef<
 export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3ReserveDataReply> = {
   call: (_, { contract, aaveV3PoolDataProvider }) =>
     contract<AaveV3PoolDataProvider>(aaveV3PoolDataProvider).methods.getReserveData,
-  prepareArgs: ({ token }, context) => [context.tokens[token].address],
+  prepareArgs: ({ token }, context) => {
+    return [context.tokens[token].address]
+  },
   postprocess: (result) => {
     return {
-      availableLiquidity: new BigNumber(result.unbacked.toString()),
+      availableLiquidity: new BigNumber(result.totalAToken.toString()).minus(
+        new BigNumber(result.totalStableDebt.toString()).plus(
+          new BigNumber(result.totalVariableDebt.toString()),
+        ),
+      ),
       unbacked: new BigNumber(result.unbacked.toString()),
       accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
       totalAToken: new BigNumber(result.totalAToken.toString()),

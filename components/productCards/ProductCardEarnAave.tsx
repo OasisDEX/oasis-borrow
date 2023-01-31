@@ -28,10 +28,12 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$ } = useAaveContext(
+  const { earnCollateralsReserveData, aaveAvailableLiquidityInUSDC$ } = useAaveContext(
     LendingProtocol.AaveV2,
   )
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(
+    earnCollateralsReserveData[strategy.tokens.collateral],
+  )
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )
