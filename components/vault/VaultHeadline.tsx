@@ -41,57 +41,59 @@ export function VaultHeadline({
   const followVaultEnabled = useFeatureToggle('FollowVaults')
 
   return (
-    <Flex
-      sx={{
-        flexDirection: ['column', 'column', null, 'row'],
-        justifyContent: 'space-between',
-        alignItems: ['flex-start', null, null, 'center'],
-        mb: 4,
-      }}
-    >
-      <Heading
-        as="h1"
-        variant="heading1"
+    <>
+      <Flex
         sx={{
-          display: 'flex',
-          fontWeight: 'semiBold',
-          fontSize: '28px',
-          color: 'primary100',
-          alignItems: 'center',
+          flexDirection: ['column', 'column', null, 'row'],
+          justifyContent: 'space-between',
+          alignItems: ['flex-start', null, null, 'center'],
+          mb: 4,
         }}
       >
-        {tokenData instanceof Array && tokenData.length > 0 && (
-          <Box sx={{ mr: 2 }}>
-            {tokenData.map(({ iconCircle }, iconIndex) => (
-              <Icon
-                key={`VaultHeadlineIcon_${iconCircle}`}
-                name={iconCircle}
-                size="32px"
-                sx={{
-                  verticalAlign: 'text-bottom',
-                  position: 'relative',
-                  zIndex: tokenData.length - iconIndex,
-                  mr: tokenData.length - 1 === iconIndex ? 0 : '-16px',
-                }}
-              />
-            ))}
-          </Box>
-        )}
-        {header}
-        {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
-        {followVaultEnabled && (
-          <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
-            {followButton && <FollowButtonControl {...followButton} />}
-            {shareButton && (
-              <ShareButton
-                text={twitterSharePositionText}
-                url={document.location.href.replace(document.location.hash, '')}
-                via={twitterSharePositionVia}
-              />
-            )}
-          </Flex>
-        )}
-      </Heading>
+        <Heading
+          as="h1"
+          variant="heading1"
+          sx={{
+            display: 'flex',
+            fontWeight: 'semiBold',
+            fontSize: '28px',
+            color: 'primary100',
+            alignItems: 'center',
+          }}
+        >
+          {tokenData instanceof Array && tokenData.length > 0 && (
+            <Box sx={{ mr: 2 }}>
+              {tokenData.map(({ iconCircle }, iconIndex) => (
+                <Icon
+                  key={`VaultHeadlineIcon_${iconCircle}`}
+                  name={iconCircle}
+                  size="32px"
+                  sx={{
+                    verticalAlign: 'text-bottom',
+                    position: 'relative',
+                    zIndex: tokenData.length - iconIndex,
+                    mr: tokenData.length - 1 === iconIndex ? 0 : '-16px',
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+          {header}
+          {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
+          {followVaultEnabled && (
+            <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
+              {followButton && <FollowButtonControl {...followButton} />}
+              {shareButton && (
+                <ShareButton
+                  text={twitterSharePositionText}
+                  url={document.location.href.replace(document.location.hash, '')}
+                  via={twitterSharePositionVia}
+                />
+              )}
+            </Flex>
+          )}
+        </Heading>
+      </Flex>
       <Flex
         sx={{
           mt: ['24px', null, null, 0],
@@ -104,6 +106,6 @@ export function VaultHeadline({
           ))}
         {loading && <Skeleton width="250px" height="24px" />}
       </Flex>
-    </Flex>
+    </>
   )
 }
