@@ -7,6 +7,7 @@ import {
   FollowedVaultsLimitReachedChange,
 } from 'features/follow/common/followedVaultsLimitReached'
 import { FollowButton } from 'features/follow/view/FollowButton'
+import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import {
   followVaultUsingApi,
   getFollowFromApi,
@@ -33,13 +34,11 @@ export function FollowButtonControl({
   vaultId,
 }: FollowButtonControlProps) {
   const { uiChanges } = useAppContext()
-
   const [isFollowing, setIsFollowing] = useState(false)
   const [isProcessing, setProcessing] = useState(true)
   const [isLimitReachedState] = useUIChanges<FollowedVaultsLimitReachedChange>(
     FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   )
-
   useEffect(() => {
     void getFollowFromApi(followerAddress)
       .then((resp) => {
@@ -76,15 +75,16 @@ export function FollowButtonControl({
       }
     }
   }
-
+  const isWalletConnected = accountIsConnectedValidator({ account: followerAddress })
   return (
     <FollowButton
       isProcessing={isProcessing}
       isFollowing={isFollowing}
-      isLimitReached={isLimitReachedState?.isLimitReached || false}
       buttonClickHandler={buttonClickHandler}
       short={short}
       sx={sx}
+      isLimitReached={isLimitReachedState?.isLimitReached || false}
+      isWalletConnected={isWalletConnected}
     />
   )
 
@@ -102,5 +102,6 @@ export function FollowButtonControl({
     const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
 
     handleGetFollowedVaults(followedVaults)
+    setIsFollowing(true)
   }
 }
