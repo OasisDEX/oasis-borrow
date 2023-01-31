@@ -9,7 +9,11 @@ export function AjnaTokensBanner() {
     <Banner
       title={t('ajna.borrow.common.banners.tokens.title')}
       description={t('ajna.borrow.common.banners.tokens.description')}
-      image={{ src: '/static/img/ajna-tokens-banner.svg', backgroundColor: '#FFEBF6', spacing: '12px' }}
+      image={{
+        src: '/static/img/ajna-tokens-banner.svg',
+        backgroundColor: '#FFEBF6',
+        spacing: '12px',
+      }}
       button={{
         text: t('ajna.borrow.common.banners.tokens.button'),
         action: () => {
