@@ -14,6 +14,7 @@ type UserFlowStateReturnType = ReturnType<typeof useFlowState>
 type UseFlowStateProps = {
   amount?: BigNumber
   token?: string
+  existingProxy?: string
   onEverythingReady?: (params: {
     availableProxies: UserFlowStateReturnType['availableProxies']
     walletAddress: UserFlowStateReturnType['walletAddress']
@@ -25,11 +26,18 @@ type UseFlowStateProps = {
   }) => void
 }
 
-export function useFlowState({ amount, token, onEverythingReady }: UseFlowStateProps) {
+export function useFlowState({
+  amount,
+  token,
+  onEverythingReady,
+  existingProxy,
+}: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
-  const [availableProxies, setAvailableProxies] = useState<string[]>([])
+  const [availableProxies, setAvailableProxies] = useState<string[]>(
+    existingProxy ? [existingProxy] : [],
+  )
   const [isAllowanceReady, setAllowanceReady] = useState<boolean>(false)
   const [isLoading, setLoading] = useState<boolean>(false)
   const {
@@ -49,6 +57,11 @@ export function useFlowState({ amount, token, onEverythingReady }: UseFlowStateP
       setWalletConnected(status === 'connected')
       status === 'connected' && account && setWalletAddress(account)
     })
+    if (existingProxy) {
+      return () => {
+        walletConnectionSubscription.unsubscribe()
+      }
+    }
     const proxyMachineSubscription = dpmMachine.subscribe(({ value, context, event }) => {
       if (
         value === 'txSuccess' &&
@@ -78,7 +91,7 @@ export function useFlowState({ amount, token, onEverythingReady }: UseFlowStateP
 
   // list of AVAILABLE DPM proxies (updated asynchronously)
   useEffect(() => {
-    if (!walletAddress || !userProxyList.length) return
+    if (!walletAddress || !userProxyList.length || existingProxy) return
     const proxyListAvailabilityMap = combineLatest(
       userProxyList.map((proxy) =>
         proxyConsumed$(proxy.proxy).pipe(

@@ -1,9 +1,7 @@
 import { useActor } from '@xstate/react'
-import { FlowSidebar } from 'components/FlowSidebar'
 import { TabBar } from 'components/TabBar'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { Survey } from 'features/survey'
-import { useFlowState } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Grid } from 'theme-ui'
@@ -51,24 +49,8 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
   const { t } = useTranslation()
   const { stateMachine } = useOpenAaveStateMachineContext()
-  const [state, send] = useActor(stateMachine)
+  const [, send] = useActor(stateMachine)
   const PositionInfo = strategyConfig.viewComponents.positionInfo
-  const flowState = useFlowState({
-    amount: state.context.userInput.amount,
-    token: state.context.tokens.collateral,
-    onEverythingReady(params) {
-      // console.log('onEverythingReady', params)
-    },
-  })
-
-  console.log('flowState', {
-    availableProxies: flowState.availableProxies,
-    isAllowanceReady: flowState.isAllowanceReady,
-    isProxyReady: flowState.isProxyReady,
-    isWalletConnected: flowState.isWalletConnected,
-    token: flowState.token,
-    walletAddress: flowState.walletAddress,
-  })
 
   return (
     <TabBar
@@ -81,9 +63,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
             <Grid variant="vaultContainer">
               <Box>
                 <SimulateSectionComponent config={strategyConfig} />
-                <Box sx={{ mt: 5 }}>
-                  <FlowSidebar {...flowState} />
-                </Box>
+                <Box sx={{ mt: 5 }}></Box>
               </Box>
               <Box>{<SidebarOpenAaveVault />}</Box>
             </Grid>
