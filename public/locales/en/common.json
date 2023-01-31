@@ -2289,7 +2289,10 @@
         },
         "overview": {
           "liquidation-price": "Liquidation Price",
-          "below-current-price": "{{belowCurrentPrice}} below current price"
+          "below-current-price": "{{belowCurrentPrice}} below current price",
+          "loan-to-value": "Loan to value",
+          "collateral-locked": "Collateral locked",
+          "position-debt": "Position debt"
         },
         "form": {
           "title": {
