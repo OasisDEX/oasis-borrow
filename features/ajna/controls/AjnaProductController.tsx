@@ -13,6 +13,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { EMPTY } from 'rxjs'
 

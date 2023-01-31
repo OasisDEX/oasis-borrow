@@ -40,11 +40,11 @@ interface AjnaBorrowPosition {
 
 interface AjnaBorrowSteps {
   currentStep: AjnaStatusStep
-  order: AjnaStatusStep[]
   isExternalStep: boolean
   isStepWithBack: boolean
   isStepWithTransaction: boolean
   isStepValid: boolean
+  steps: AjnaStatusStep[]
   txStatus?: TxStatus
   setStep: (step: AjnaStatusStep) => void
   setNextStep: () => void
@@ -108,7 +108,7 @@ export function AjnaBorrowContextProvider({
   const setupStepManager = () => {
     return {
       currentStep,
-      order: steps,
+      steps,
       isExternalStep: isExternalStep({ currentStep }),
       isStepWithBack: isStepWithBack({ currentStep }),
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
