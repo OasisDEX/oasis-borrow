@@ -68,6 +68,7 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
           svg: {
             fill: 'primary60',
             transition: 'color 200ms',
+            marginRight: '2px',
           },
         }}
       >
