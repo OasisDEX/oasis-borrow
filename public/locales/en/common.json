@@ -2282,6 +2282,10 @@
         "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
       ]
     },
+    "history": {
+      "title": "History is coming soon",
+      "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
+    },
     "borrow": {
       "common": {
         "headline": {

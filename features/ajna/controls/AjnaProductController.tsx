@@ -45,7 +45,7 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
-  const { balanceInfo$, tokenPriceUSD$ } = useAppContext()
+  const { balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
   const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
@@ -59,13 +59,16 @@ export function AjnaProductController({
     if (id) {
       setProductData('borrow')
       setCollateralTokenData('ETH')
-      setQuoteTokenData('USDC')
+      setQuoteTokenData('DAI')
     }
   }, [id])
 
-  const [balanceInfoData, balanceInfoError] = useObservable(
+  const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
-      () => (collateralTokenData ? balanceInfo$(collateralTokenData, walletAddress) : EMPTY),
+      () =>
+        collateralTokenData && quoteTokenData && walletAddress
+          ? balancesInfoArray$([collateralTokenData, quoteTokenData], walletAddress)
+          : EMPTY,
       [collateralTokenData, walletAddress],
     ),
   )
@@ -84,13 +87,13 @@ export function AjnaProductController({
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <AjnaWrapper>
-            <WithErrorHandler error={[balanceInfoError, tokenPriceUSDError]}>
+            <WithErrorHandler error={[balancesInfoArrayError, tokenPriceUSDError]}>
               <WithLoadingIndicator
                 value={[
                   productData,
                   collateralTokenData,
                   quoteTokenData,
-                  balanceInfoData,
+                  balancesInfoArrayData,
                   tokenPriceUSDData,
                 ]}
                 customLoader={
@@ -109,7 +112,7 @@ export function AjnaProductController({
                   _product,
                   _collateralToken,
                   _quoteToken,
-                  { collateralBalance },
+                  [collateralBalance, quoteBalance],
                   _tokenPriceUSD,
                 ]) => (
                   <AjnaBorrowContextProvider
@@ -119,6 +122,7 @@ export function AjnaProductController({
                     flow={flow}
                     position={{ id }}
                     product={_product}
+                    quoteBalance={quoteBalance}
                     quoteToken={_quoteToken}
                     quotePrice={_tokenPriceUSD[_quoteToken]}
                     steps={steps[_product][flow]}
