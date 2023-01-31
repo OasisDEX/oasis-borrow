@@ -1,5 +1,4 @@
 import { TriggerType } from '@oasisdex/automation'
-import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -14,6 +13,7 @@ import {
   getMaxToken,
   getSliderPercentageFill,
 } from 'features/automation/protection/stopLoss/helpers'
+import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
 import {
   notRequiredAaveTranslations,
   notRequiredAutomationContext,
@@ -32,40 +32,6 @@ import {
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { one, zero } from 'helpers/zero'
 import { Sender } from 'xstate'
-
-export function extractStopLossDataInput(context: OpenAaveContext) {
-  const collateralToken = context.tokens.collateral
-  const debtToken = context.tokens.debt
-
-  const debt = amountFromWei(
-    context.strategy?.simulation.position.debt.amount || zero,
-    context.strategy?.simulation.position.debt.precision,
-  )
-
-  const lockedCollateral = amountFromWei(
-    context.strategy?.simulation.position.collateral.amount || zero,
-    context.strategy?.simulation.position.collateral.precision,
-  )
-  const liquidationRatio =
-    context?.strategy?.simulation.position.category.liquidationThreshold || zero
-  const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
-
-  return {
-    collateralToken,
-    debtToken,
-    proxyAddress: context.effectiveProxyAddress,
-    positionRatio: context.strategy?.simulation.position.riskRatio.loanToValue || zero,
-    lockedCollateral,
-    debt,
-    liquidationPrice,
-    liquidationPenalty: context.strategyInfo?.liquidationBonus || zero,
-    liquidationRatio,
-    debtTokenAddress: context.web3Context!.tokens[debtToken].address,
-    collateralTokenAddress: context.web3Context!.tokens[collateralToken].address,
-    stopLossLevel: context.stopLossLevel || zero,
-    collateralActive: context.collateralActive || false,
-  }
-}
 
 export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenAaveEvent>) {
   const {
