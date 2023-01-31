@@ -7,9 +7,11 @@ import { ContentCardLoanToValue } from 'features/ajna/borrow/overview/ContentCar
 import { ContentCardPositionDebt } from 'features/ajna/borrow/overview/ContentCardPositionDebt'
 import { ContentFooterItemsBorrow } from 'features/ajna/borrow/overview/ContentFooterItemsBorrow'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Grid } from 'theme-ui'
 
 export function AjnaBorrowOverviewWrapper() {
   const { t } = useTranslation()
@@ -18,40 +20,43 @@ export function AjnaBorrowOverviewWrapper() {
   } = useAjnaBorrowContext()
 
   return (
-    <DetailsSection
-      title={t('system.overview')}
-      content={
-        <DetailsSectionContentCardWrapper>
-          <ContentCardLiquidationPrice
-            collateralToken={collateralToken}
-            quoteToken={quoteToken}
-            liquidationPrice={zero}
-            belowCurrentPrice={zero}
-          />
-          <ContentCardLoanToValue loanToValue={zero} />
-          <ContentCardCollateralLocked
-            collateralToken={collateralToken}
-            collateralLocked={zero}
-            collateralLockedUSD={zero.times(collateralPrice)}
-          />
-          <ContentCardPositionDebt
-            quoteToken={quoteToken}
-            positionDebt={zero}
-            positionDebtUSD={zero.times(quotePrice)}
-          />
-        </DetailsSectionContentCardWrapper>
-      }
-      footer={
-        <DetailsSectionFooterItemWrapper>
-          <ContentFooterItemsBorrow
-            collateralToken={collateralToken}
-            quoteToken={quoteToken}
-            cost={zero}
-            availableToBorrow={zero}
-            availableToWithdraw={zero}
-          />
-        </DetailsSectionFooterItemWrapper>
-      }
-    />
+    <Grid gap={2}>
+      <DetailsSection
+        title={t('system.overview')}
+        content={
+          <DetailsSectionContentCardWrapper>
+            <ContentCardLiquidationPrice
+              collateralToken={collateralToken}
+              quoteToken={quoteToken}
+              liquidationPrice={zero}
+              belowCurrentPrice={zero}
+            />
+            <ContentCardLoanToValue loanToValue={zero} />
+            <ContentCardCollateralLocked
+              collateralToken={collateralToken}
+              collateralLocked={zero}
+              collateralLockedUSD={zero.times(collateralPrice)}
+            />
+            <ContentCardPositionDebt
+              quoteToken={quoteToken}
+              positionDebt={zero}
+              positionDebtUSD={zero.times(quotePrice)}
+            />
+          </DetailsSectionContentCardWrapper>
+        }
+        footer={
+          <DetailsSectionFooterItemWrapper>
+            <ContentFooterItemsBorrow
+              collateralToken={collateralToken}
+              quoteToken={quoteToken}
+              cost={zero}
+              availableToBorrow={zero}
+              availableToWithdraw={zero}
+            />
+          </DetailsSectionFooterItemWrapper>
+        }
+      />
+      <AjnaTokensBanner />
+    </Grid>
   )
 }
