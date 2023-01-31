@@ -12,6 +12,7 @@ interface FollowButtonProps {
   isProcessing: boolean
   short?: boolean
   sx?: SxStyleProp
+  isWalletConnected?: boolean
 }
 
 export function FollowButton({
@@ -20,6 +21,7 @@ export function FollowButton({
   isProcessing,
   short,
   sx,
+  isWalletConnected,
 }: FollowButtonProps) {
   const { t } = useTranslation()
   const [isHovering, setIsHovering] = useState(false)
@@ -35,7 +37,7 @@ export function FollowButton({
 
   return (
     <Button
-      disabled={isProcessing}
+      disabled={isProcessing || !isWalletConnected}
       onClick={buttonClickHandler}
       sx={{
         position: 'relative',
