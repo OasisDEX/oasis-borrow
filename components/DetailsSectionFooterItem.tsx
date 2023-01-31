@@ -17,10 +17,10 @@ export function DetailsSectionFooterItemWrapper({ children }: { children: ReactN
     <Flex
       as="ul"
       sx={{
-        mx: -1,
         mt: [0, null, null, -3],
         mb: [0, null, null, -3],
-        p: 0,
+        px: '12px',
+        py: 0,
         flexWrap: 'wrap',
       }}
     >

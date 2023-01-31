@@ -2291,6 +2291,25 @@
         "headline": {
           "current-market-price": "Current Market Price"
         },
+        "overview": {
+          "liquidation-price": "Liquidation Price",
+          "below-current-price": "{{belowCurrentPrice}} below current price",
+          "loan-to-value": "Loan to value",
+          "collateral-locked": "Collateral locked",
+          "position-debt": "Position debt"
+        },
+        "footer": {
+          "annual-net-borrow-cost": "Annual net borrow cost",
+          "available-to-borrow": "Available to borrow",
+          "available-to-withdraw": "Available to withdraw"
+        },
+        "banners": {
+          "tokens": {
+            "title": "This positions earns AJNA tokens",
+            "description": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You wallet will automatically get AJNA token rewards.",
+            "button": "Read about AJNA token rewards"
+          }
+        },
         "form": {
           "title": {
             "risk": "Things to know before opening an Ajna position",
