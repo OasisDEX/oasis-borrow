@@ -65,18 +65,20 @@ export function FollowButton({
             fill: isFollowing ? 'interactive50' : 'neutral10',
             stroke: isFollowing ? 'interactive50' : 'primary100',
             strokeWidth: isFollowing ? 0 : '1.5px',
+            '&:disabled': {
+              fill: 'neutral10',
+              stroke: 'primary100',
+            },
           },
           '.tooltip': {
             display: 'flex',
           },
         },
         '&:disabled': {
-          backgroundColor: 'neutral10',
+          backgroundColor: 'neutral30',
           color: 'primary60',
           pointerEvents: 'auto',
           border: '1px solid #EAEAEA',
-          borderRadius: '16px',
-          boxShadow: 'none',
         },
         '.star': {
           fill: isFollowing ? 'interactive100' : 'neutral10',
