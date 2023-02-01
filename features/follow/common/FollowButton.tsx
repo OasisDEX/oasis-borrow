@@ -45,8 +45,8 @@ export function FollowButton({
         pr: isShort ? 0 : '12px',
         pl: isShort ? 0 : '30px',
         fontSize: 1,
-        width: isShort ? ['32px', null, null, '36px'] : 'auto',
-        height: isShort ? ['32px', null, null, '32px'] : 'auto',
+        width: isShort ? ['29px', null, null, '36px'] : 'auto',
+        height: isShort ? ['29px', null, null, '36px'] : 'auto',
         lineHeight: '26px',
         color: isFollowing ? 'primary100' : 'primary60',
         border: '1px solid',
@@ -75,7 +75,11 @@ export function FollowButton({
           strokeWidth: isFollowing ? 0 : '1px',
           transition: 'stroke 200ms, stroke-width 200ms, fill 200ms',
         },
-        ...(isShort && { display: 'flex', alignItems: 'center', justifyContent: 'center' }),
+        ...(isShort && {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }),
         ...sx,
       }}
       onMouseOver={handleMouseOver}
@@ -97,7 +101,19 @@ export function FollowButton({
           />
         ) : (
           <Box className="star">
-            <Icon name="star" size={isShort ? 14 : 12} />
+            <Icon
+              name="star"
+              size={isShort ? 14 : 12}
+              sx={{
+                ...(isShort && {
+                  position: 'absolute',
+                  // top: '1%',
+                  left: '-1px',
+                  // transform: 'translate(-10%, -1%)',
+                  marginTop: '1px',
+                }),
+              }}
+            />
           </Box>
         )}
       </Box>
