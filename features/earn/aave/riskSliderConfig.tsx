@@ -7,7 +7,7 @@ import {
   richFormattedBoundary,
 } from '../../aave/common/components/SidebarAdjustRiskView'
 
-export const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
+const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
     return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
   },
@@ -28,7 +28,7 @@ export const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
   },
 }
 
-export const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
+const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
     return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'WSTETH/ETH' })
   },
@@ -47,4 +47,9 @@ export const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
     minimum: new RiskRatio(new BigNumber('1.1'), RiskRatio.TYPE.MULITPLE),
     default: 'slightlyLessThanMaxRisk',
   },
+}
+
+export const adjustRiskSliders = {
+  stethEth: adjustRiskSliderConfigForStethEth,
+  wstethEth: adjustRiskSliderConfigForWstethEth,
 }

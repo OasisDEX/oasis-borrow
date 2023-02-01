@@ -13,10 +13,7 @@ import {
 } from '../earn/aave/components/AavePositionHeader'
 import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
 import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectionComponent'
-import {
-  adjustRiskSliderConfigForStethEth as earnAdjustRiskSliderConfigStEthEth,
-  adjustRiskSliderConfigForWstethEth as earnAdjustRiskSliderConfigWstethEth,
-} from '../earn/aave/riskSliderConfig'
+import { adjustRiskSliders } from '../earn/aave/riskSliderConfig'
 import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
 import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
@@ -40,13 +37,13 @@ export const strategies: Array<IStrategyConfig> = [
     name: 'wstETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
-      headerOpen: headerWithDetails(earnAdjustRiskSliderConfigWstethEth.riskRatios.minimum),
+      headerOpen: headerWithDetails(adjustRiskSliders.wstethEth.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
       headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
-      adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfigWstethEth),
+      adjustRiskView: adjustRiskView(adjustRiskSliders.wstethEth),
       positionInfo: AaveEarnFaq,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
@@ -56,7 +53,7 @@ export const strategies: Array<IStrategyConfig> = [
       debt: 'ETH',
       deposit: 'ETH',
     },
-    riskRatios: earnAdjustRiskSliderConfigWstethEth.riskRatios,
+    riskRatios: adjustRiskSliders.wstethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
   },
@@ -65,13 +62,13 @@ export const strategies: Array<IStrategyConfig> = [
     name: 'stETHeth',
     proxyType: ProxyType.DpmProxy,
     viewComponents: {
-      headerOpen: headerWithDetails(earnAdjustRiskSliderConfigStEthEth.riskRatios.minimum),
+      headerOpen: headerWithDetails(adjustRiskSliders.stethEth.riskRatios.minimum),
       headerManage: AavePositionHeaderNoDetails,
       headerView: AavePositionHeaderNoDetails,
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
-      adjustRiskView: adjustRiskView(earnAdjustRiskSliderConfigStEthEth),
+      adjustRiskView: adjustRiskView(adjustRiskSliders.stethEth),
       positionInfo: AaveEarnFaq,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
@@ -81,7 +78,7 @@ export const strategies: Array<IStrategyConfig> = [
       debt: 'ETH',
       deposit: 'ETH',
     },
-    riskRatios: earnAdjustRiskSliderConfigStEthEth.riskRatios,
+    riskRatios: adjustRiskSliders.stethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV2,
   },
