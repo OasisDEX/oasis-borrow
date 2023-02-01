@@ -39,7 +39,21 @@ export function VaultHeadline({
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
-
+  const headerWontFitInOneRow = (header as string).length > 17
+  const vaultDetails = (
+    <Flex
+      sx={{
+        mt: ['24px', null, null, 0],
+        flexDirection: ['column', 'row'],
+      }}
+    >
+      {!loading &&
+        details.map((detail) => (
+          <VaultHeadlineDetails {...detail} key={`VaultHeadlineDetails_${detail.label}`} />
+        ))}
+      {loading && <Skeleton width="250px" height="24px" />}
+    </Flex>
+  )
   return (
     <>
       <Flex
@@ -93,19 +107,9 @@ export function VaultHeadline({
             </Flex>
           )}
         </Heading>
+        {!headerWontFitInOneRow && vaultDetails}
       </Flex>
-      <Flex
-        sx={{
-          mt: ['24px', null, null, 0],
-          flexDirection: ['column', 'row'],
-        }}
-      >
-        {!loading &&
-          details.map((detail) => (
-            <VaultHeadlineDetails {...detail} key={`VaultHeadlineDetails_${detail.label}`} />
-          ))}
-        {loading && <Skeleton width="250px" height="24px" />}
-      </Flex>
+      {headerWontFitInOneRow && <>{vaultDetails}</>}
     </>
   )
 }
