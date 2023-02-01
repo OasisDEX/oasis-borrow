@@ -50,7 +50,6 @@ export function getStrategyConfig$(
               lastCreatedPosition.debtTokenSymbol,
             )
           }
-
           return undefined
       }
     }),

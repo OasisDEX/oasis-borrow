@@ -38,7 +38,7 @@ import {
 } from './manage/services'
 import { getOpenAaveStateMachine, getOpenAaveV2PositionStateMachineServices } from './open/services'
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
-import { supportedTokens } from './strategyConfig'
+import { getSupportedTokens } from './strategyConfig'
 import { PositionId } from './types'
 
 export function setupAaveV2Context({
@@ -114,7 +114,7 @@ export function setupAaveV2Context({
       balance$,
       aaveOracleAssetPriceData$,
       chainLinkETHUSDOraclePrice$,
-      supportedTokens,
+      getSupportedTokens(LendingProtocol.AaveV2),
     ),
   )
 

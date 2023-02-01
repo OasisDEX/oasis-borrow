@@ -231,13 +231,16 @@ export function loadStrategyFromTokens(
   return strategy
 }
 
-export const supportedTokens = Array.from(
-  new Set(
-    Object.values(strategies)
-      .map((strategy) => Object.values(strategy.tokens))
-      .flatMap((tokens) => tokens),
-  ),
-)
+export function getSupportedTokens(protocol: LendingProtocol) {
+  return Array.from(
+    new Set(
+      Object.values(strategies)
+        .filter(({ protocol: p }) => p === protocol)
+        .map((strategy) => Object.values(strategy.tokens))
+        .flatMap((tokens) => tokens),
+    ),
+  )
+}
 
 export function convertDefaultRiskRatioToActualRiskRatio(
   defaultRiskRatio: IStrategyConfig['riskRatios']['default'],
