@@ -29,7 +29,7 @@ type OpenAaveInformationContainerProps = {
       collateralPrice?: BigNumber
       tokenPrice?: BigNumber
       estimatedGasPrice?: HasGasEstimation
-      strategy?: IPositionTransition
+      transition?: IPositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
     }
@@ -39,37 +39,37 @@ type OpenAaveInformationContainerProps = {
 export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { strategy, currentPosition } = state.context
+  const { transition, currentPosition } = state.context
 
-  const simulationHasSwap = strategy?.simulation.swap.toTokenAmount.gt(zero)
+  const simulationHasSwap = transition?.simulation.swap.toTokenAmount.gt(zero)
 
-  return strategy && currentPosition ? (
+  return transition && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
       {simulationHasSwap && (
-        <TransactionTokenAmount {...state.context} transactionParameters={strategy} />
+        <TransactionTokenAmount {...state.context} transactionParameters={transition} />
       )}
-      {simulationHasSwap && <PriceImpact {...state.context} transactionParameters={strategy} />}
+      {simulationHasSwap && <PriceImpact {...state.context} transactionParameters={transition} />}
       {simulationHasSwap && <SlippageInformation {...state.context.userSettings!} />}
       <MultiplyInformation
         {...state.context}
-        transactionParameters={strategy}
+        transactionParameters={transition}
         currentPosition={currentPosition}
       />
       <OutstandingDebtInformation
         currentPosition={currentPosition}
-        newPosition={strategy.simulation.position}
+        newPosition={transition.simulation.position}
       />
       <TotalCollateralInformation
         currentPosition={currentPosition}
-        newPosition={strategy.simulation.position}
+        newPosition={transition.simulation.position}
       />
       <LtvInformation
         {...state.context}
-        transactionParameters={strategy}
+        transactionParameters={transition}
         currentPosition={currentPosition}
       />
       <FeesInformation
-        swap={strategy.simulation.swap}
+        swap={transition.simulation.swap}
         estimatedGasPrice={state.context.estimatedGasPrice}
       />
     </VaultChangesInformationContainer>
