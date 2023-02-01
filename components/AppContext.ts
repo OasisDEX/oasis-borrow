@@ -286,7 +286,15 @@ import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
 import {
@@ -1324,6 +1332,27 @@ export function setupAppContext() {
     [LendingProtocol.AaveV3]: aaveV3,
   }
 
+  const contextForAddress$ = connectedContext$.pipe(
+    distinctUntilKeyChanged('account'),
+    shareReplay(1),
+  )
+
+  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
+
+  const commonTransactionServices = transactionContextService(context$)
+
+  const dpmAccountTransactionMachine = getCreateDPMAccountTransactionMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
+  const dpmAccountStateMachine = getDPMAccountStateMachine(
+    txHelpers$,
+    gasEstimation$,
+    dpmAccountTransactionMachine,
+  )
+
   const allowanceStateMachine = getAllowanceStateMachine(
     txHelpers$,
     connectedContext$,
@@ -1412,6 +1441,12 @@ export function setupAppContext() {
     ownersPositionsList$,
     followedList$,
     protocols,
+    commonTransactionServices,
+    gasEstimation$,
+    dpmAccountStateMachine,
+    allowanceStateMachine,
+    allowanceForAccount$,
+    contextForAddress$,
   }
 }
 
