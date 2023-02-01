@@ -15,6 +15,7 @@ import { WithTermsOfService } from '../../features/termsOfService/TermsOfService
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
+import { LendingProtocol } from '../../lendingProtocols'
 import { BackgroundLight } from '../../theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -27,7 +28,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function WithStrategy(positionId: PositionId) {
-  const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext()
+  const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
+    LendingProtocol.AaveV3,
+  )
   const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId))
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
     proxiesRelatedWithPosition$(positionId),

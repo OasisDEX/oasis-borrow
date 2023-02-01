@@ -3,18 +3,18 @@ import { Observable, of } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 
 import { one } from '../../helpers/zero'
-import { getAaveV2OracleAssetPriceData } from '../calls/aave/aaveV2PriceOracle'
 import { observe } from '../calls/observe'
 import { Context } from '../network'
+import { getAaveV2OracleAssetPriceData } from './index'
 
-export interface AaveOracleAssertPriceArgs {
+export interface AaveV2OracleAssertPriceArgs {
   token: string
 }
 
-export function createAaveOracleAssetPriceData$(
+export function createAaveV2OracleAssetPriceData$(
   refreshInterval$: Observable<any>,
   context$: Observable<Context>,
-  args: AaveOracleAssertPriceArgs,
+  args: AaveV2OracleAssertPriceArgs,
 ) {
   if (args.token === 'ETH') {
     return of(one).pipe(shareReplay(1))
@@ -28,7 +28,7 @@ export function createAaveOracleAssetPriceData$(
   }
 }
 
-export function createConvertToAaveOracleAssetPrice$(
+export function createConvertToAaveV2OracleAssetPrice$(
   aaveOracleAssetPriceData$: (args: { token: string }) => Observable<BigNumber>,
   args: { token: string; amount: BigNumber },
 ) {

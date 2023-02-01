@@ -1851,7 +1851,8 @@
   "open-earn": {
     "product-header": {
       "token-pair-list": {
-        "aave-steth-eth": "AAVE stETH 质押杠杆"
+        "aave-steth-eth": "AAVE stETH 质押杠杆",
+        "aave-wsteth-eth": "Aave wstETH 质押杠杆"
       },
       "current-yield": "当前收益率",
       "90-day-avg-yield": "90 天平均收益率",

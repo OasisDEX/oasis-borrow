@@ -2,12 +2,12 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { AaveOracleAssertPriceArgs } from '../../../blockchain/aave/oracleAssetPriceData'
+import { AaveV2OracleAssertPriceArgs } from '../../../blockchain/aave'
 import { TokenBalances } from '../../../blockchain/tokens'
 
 export function getAaveSupportedTokenBalances$(
   balance$: (address: string, token: string) => Observable<BigNumber>,
-  aaveOraclePriceData$: (args: AaveOracleAssertPriceArgs) => Observable<BigNumber>,
+  aaveOraclePriceData$: (args: AaveV2OracleAssertPriceArgs) => Observable<BigNumber>,
   chainLinkPrice$: () => Observable<BigNumber>,
   tokens: string[],
   address: string,

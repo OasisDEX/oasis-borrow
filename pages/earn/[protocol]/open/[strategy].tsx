@@ -14,8 +14,10 @@ import { loadStrategyFromUrl } from '../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const strategy = ctx.query.strategy as string
+  const protocol = (ctx.query.protocol as string).replace(/-/g, '')
   try {
-    loadStrategyFromUrl(strategy, 'earn')
+    console.log(`loading strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
+    loadStrategyFromUrl(strategy, protocol, 'earn')
   } catch (e) {
     console.log(`could not load strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
     return {
@@ -26,18 +28,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
       strategy: strategy,
+      protocol: protocol,
     },
   }
 }
 
-function OpenVault({ strategy }: { strategy: string }) {
+function OpenVault({ strategy, protocol }: { strategy: string; protocol: string }) {
   return (
     <AaveContextProvider>
       <WithConnection>
         <WithTermsOfService>
           <BackgroundLight />
           <DeferedContextProvider context={aaveContext}>
-            <AaveOpenView config={loadStrategyFromUrl(strategy, 'earn')} />
+            <AaveOpenView config={loadStrategyFromUrl(strategy, protocol, 'earn')} />
           </DeferedContextProvider>
           <Survey for="earn" />
         </WithTermsOfService>

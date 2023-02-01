@@ -90,7 +90,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
-    const simulation = state.context.strategy?.simulation
+    const simulation = state.context.transition?.simulation
     const targetPosition = simulation?.position
 
     const maxRisk =
@@ -225,7 +225,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             withBullet={false}
           />
         ) : (
-          state.context.strategy &&
+          state.context.transition &&
           hasUserInteracted(state) && (
             <MessageCard
               messages={[
@@ -264,7 +264,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       content: sidebarContent,
       primaryButton: {
         ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.strategy,
+        disabled: viewLocked || primaryButton.disabled || !state.context.transition,
       },
       textButton, // this is going back button, no need to block it
       dropdown: dropdownConfig,

@@ -1,19 +1,19 @@
 import { BigNumber } from 'bignumber.js'
-import { AaveV3PoolDataProvider } from 'types/web3-v1-contracts/aave-v3-pool-data-provider'
 
-import { amountFromWei } from '../../utils'
-import { CallDef } from '../callsHelpers'
+import { AaveV2ProtocolDataProvider } from '../../types/web3-v1-contracts/aave-v2-protocol-data-provider'
+import { CallDef } from '../calls/callsHelpers'
+import { amountFromWei } from '../utils'
 
-export interface AaveV3UserReserveDataParameters {
+export interface AaveV2UserReserveDataParameters {
   token: string
   address: string
 }
 
-export interface AaveV3ReserveDataParameters {
-  token: AaveV3UserReserveDataParameters['token']
+export interface AaveV2ReserveDataParameters {
+  token: AaveV2UserReserveDataParameters['token']
 }
 
-export interface AaveV3UserReserveData {
+export interface AaveV2UserReserveData {
   currentATokenBalance: BigNumber
   currentStableDebt: BigNumber
   currentVariableDebt: BigNumber
@@ -24,10 +24,8 @@ export interface AaveV3UserReserveData {
   usageAsCollateralEnabled: boolean
 }
 
-export type AaveV3ReserveDataReply = {
-  unbacked: BigNumber
-  accruedToTreasuryScaled: BigNumber
-  totalAToken: BigNumber
+export type AaveV2ReserveDataReply = {
+  availableLiquidity: BigNumber
   totalStableDebt: BigNumber
   totalVariableDebt: BigNumber
   liquidityRate: BigNumber
@@ -39,12 +37,13 @@ export type AaveV3ReserveDataReply = {
   lastUpdateTimestamp: BigNumber
 }
 
-export const getAaveV3UserReserveData: CallDef<
-  AaveV3UserReserveDataParameters,
-  AaveV3UserReserveData
+export const getAaveV2UserReserveData: CallDef<
+  AaveV2UserReserveDataParameters,
+  AaveV2UserReserveData
 > = {
-  call: (args, { contract, aaveV3PoolDataProvider }) => {
-    return contract<AaveV3PoolDataProvider>(aaveV3PoolDataProvider).methods.getUserReserveData
+  call: (args, { contract, aaveV2ProtocolDataProvider }) => {
+    return contract<AaveV2ProtocolDataProvider>(aaveV2ProtocolDataProvider).methods
+      .getUserReserveData
   },
   prepareArgs: ({ token, address }, context) => {
     return [context.tokens[token].address, address]
@@ -78,15 +77,13 @@ export const getAaveV3UserReserveData: CallDef<
   },
 }
 
-export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3ReserveDataReply> = {
-  call: (_, { contract, aaveV3PoolDataProvider }) =>
-    contract<AaveV3PoolDataProvider>(aaveV3PoolDataProvider).methods.getReserveData,
+export const getAaveV2ReserveData: CallDef<AaveV2ReserveDataParameters, AaveV2ReserveDataReply> = {
+  call: (_, { contract, aaveV2ProtocolDataProvider }) =>
+    contract<AaveV2ProtocolDataProvider>(aaveV2ProtocolDataProvider).methods.getReserveData,
   prepareArgs: ({ token }, context) => [context.tokens[token].address],
   postprocess: (result) => {
     return {
-      unbacked: new BigNumber(result.unbacked.toString()),
-      accruedToTreasuryScaled: new BigNumber(result.accruedToTreasuryScaled.toString()),
-      totalAToken: new BigNumber(result.totalAToken.toString()),
+      availableLiquidity: new BigNumber(result.availableLiquidity.toString()),
       totalStableDebt: new BigNumber(result.totalStableDebt.toString()),
       totalVariableDebt: new BigNumber(result.totalVariableDebt.toString()),
       liquidityRate: new BigNumber(result.liquidityRate.toString()),
@@ -100,19 +97,19 @@ export const getAaveV3ReserveData: CallDef<AaveV3ReserveDataParameters, AaveV3Re
   },
 }
 
-export type AaveV3ReserveConfigurationData = {
+export type AaveV2ReserveConfigurationData = {
   ltv: BigNumber
   liquidationThreshold: BigNumber
   liquidationBonus: BigNumber
-  // .... could add more things here.  see https://etherscan.io/address/0x7B4EB56E7CD4b454BA8ff71E4518426369a138a3#readContract
+  // .... could add more things here.  see https://etherscan.io/address/0x057835ad21a177dbdd3090bb1cae03eacf78fc6d#readContract
 }
 
-export const getAaveV3ReserveConfigurationData: CallDef<
+export const getAaveV2ReserveConfigurationData: CallDef<
   { token: string },
-  AaveV3ReserveConfigurationData
+  AaveV2ReserveConfigurationData
 > = {
-  call: (args, { contract, aaveV3PoolDataProvider }) => {
-    return contract<AaveV3PoolDataProvider>(aaveV3PoolDataProvider).methods
+  call: (args, { contract, aaveV2ProtocolDataProvider }) => {
+    return contract<AaveV2ProtocolDataProvider>(aaveV2ProtocolDataProvider).methods
       .getReserveConfigurationData
   },
   prepareArgs: ({ token }, context) => {
