@@ -2,7 +2,7 @@ import { useActor } from '@xstate/react'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
-import { ActorRefFrom, Sender, State, StateFrom } from 'xstate'
+import { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
 import { AppLink } from '../../../components/Links'
 import { ListWithIcon } from '../../../components/ListWithIcon'
@@ -15,7 +15,6 @@ import {
 } from '../../../components/vault/VaultChangesInformation'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import {
-  DMPAccountStateMachineContext,
   DPMAccountStateMachine,
   DPMAccountStateMachineEvents,
 } from './state/createDPMAccountStateMachine'

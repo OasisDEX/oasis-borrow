@@ -1,11 +1,6 @@
 import { useActor } from '@xstate/react'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
-import {
-  DPMAccountStateMachine,
-  DPMAccountStateMachineEvents,
-} from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFlowState } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
