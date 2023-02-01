@@ -2,7 +2,7 @@ import { useInterpret } from '@xstate/react'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
-import { from, Subject } from 'rxjs'
+import { Subject } from 'rxjs'
 import { createMachine, send } from 'xstate'
 
 import { zero } from './zero'
