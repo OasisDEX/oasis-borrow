@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React, { useState } from 'react'
+import React, { RefObject, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
 interface HeaderSelectorOption {
@@ -14,17 +14,35 @@ interface HeaderSelectorOption {
 interface HeaderSelectorProps {
   gradient?: [string, string]
   options: HeaderSelectorOption[]
+  parentRef: RefObject<HTMLDivElement>
   onChange?: (selected: HeaderSelectorOption) => void
 }
 
-export function HeaderSelector({ gradient, options, onChange }: HeaderSelectorProps) {
+export function HeaderSelector({ gradient, options, parentRef, onChange }: HeaderSelectorProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
   const [selected, setSelected] = useState<HeaderSelectorOption>(options[0])
+  const [left, setLeft] = useState<number>(0)
   const ref = useOutsideElementClickHandler(() => setIsOpen(false))
+  const selectRef = useRef<HTMLDivElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  function setDropdownPosition() {
+    if (selectRef.current && dropdownRef.current && parentRef.current) {
+      const offset =
+        selectRef.current.offsetLeft -
+        Math.round((dropdownRef.current.offsetWidth - selectRef.current.offsetWidth) / 2)
+      const maxOffset = parentRef.current.offsetWidth - dropdownRef.current.offsetWidth
+
+      setLeft(Math.max(Math.min(offset, maxOffset), 0))
+    }
+  }
+
+  useEffect(setDropdownPosition, [selected])
 
   return (
-    <Box sx={{ position: 'relative', display: 'inline-flex', zIndex: 2 }} ref={ref}>
+    <Box sx={{ display: 'inline-flex', zIndex: 2 }} ref={ref}>
       <Flex
+        ref={selectRef}
         sx={{
           alignItems: 'center',
           mx: 2,
@@ -34,13 +52,17 @@ export function HeaderSelector({ gradient, options, onChange }: HeaderSelectorPr
           lineHeight: 'loose',
           cursor: 'pointer',
           color: gradient ? 'transparent' : 'interactive100',
+          userSelect: 'none',
           '&:hover': {
             '.withGradient': {
               backgroundPosition: '0 0',
             },
           },
         }}
-        onClick={toggleIsOpen}
+        onClick={() => {
+          toggleIsOpen()
+          setDropdownPosition()
+        }}
       >
         <Text
           as="span"
@@ -69,36 +91,36 @@ export function HeaderSelector({ gradient, options, onChange }: HeaderSelectorPr
       <Flex
         sx={{
           position: 'absolute',
-          top: '100%',
-          left: '0',
-          width: '400px',
-          mt: '12px',
-          p: 3,
-          fontFamily: 'body',
-          fontSize: 3,
-          fontWeight: 'regular',
-          lineHeight: 'body',
-          letterSpacing: 0,
-          textAlign: 'left',
-          bg: 'neutral10',
-          border: '1px solid',
-          borderColor: 'neutral20',
-          borderRadius: 'large',
-          boxShadow: 'buttonMenu',
-          opacity: isOpen ? 1 : 0,
-          transform: isOpen ? 'translateY(0)' : 'translateY(-5px)',
-          pointerEvents: isOpen ? 'auto' : 'none',
-          transition: 'opacity 200ms, transform 200ms',
+          left,
+          right: '-100%',
+          mt: '1.35em',
+          pointerEvents: 'none',
         }}
       >
         <Grid
+          ref={dropdownRef}
           as="ul"
           sx={{
             gap: 0,
             gridTemplateColumns: 'repeat(2,1fr )',
-            width: '100%',
+            mt: '12px',
+            p: 3,
+            bg: 'neutral10',
+            border: '1px solid',
+            borderColor: 'neutral20',
+            borderRadius: 'large',
+            boxShadow: 'buttonMenu',
+            opacity: isOpen ? 1 : 0,
+            transform: isOpen ? 'translateY(0)' : 'translateY(-5px)',
+            transition: 'opacity 200ms, transform 200ms',
             listStyle: 'none',
-            p: 0,
+            fontFamily: 'body',
+            fontSize: 3,
+            fontWeight: 'regular',
+            lineHeight: 'body',
+            letterSpacing: 0,
+            textAlign: 'left',
+            pointerEvents: isOpen ? 'auto' : 'none',
           }}
         >
           {options.map((option, i) => (
@@ -117,6 +139,7 @@ export function HeaderSelector({ gradient, options, onChange }: HeaderSelectorPr
                 },
               }}
               onClick={() => {
+                setIsOpen(false)
                 setSelected(option)
                 if (onChange) onChange(option)
               }}

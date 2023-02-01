@@ -2320,6 +2320,13 @@
         }
       },
       "open": {
+        "select": {
+          "heading": {
+            "pre": "Borrow against your",
+            "post": "exposure on Ajna"
+          },
+          "intro": "Select the crypto asset you want to borrow against your ETH"
+        },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },

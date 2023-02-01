@@ -6,8 +6,9 @@ import { ajnaTokens, products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Box, Button, Flex, Heading, Text } from 'theme-ui'
 
 interface AjnaProductSelectorPageProps {
@@ -15,6 +16,9 @@ interface AjnaProductSelectorPageProps {
 }
 
 function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
+  const { t } = useTranslation()
+  const ref = useRef<HTMLDivElement>(null)
+
   const pairs = tokens[product as keyof typeof tokens]
   const [collateralToken, setCollateralToken] = useState<string>()
   const [quoteToken, setQuoteToken] = useState<string>()
@@ -26,8 +30,8 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
         <AjnaWrapper>
           <Box sx={{ width: '100%' }}>
             <Box sx={{ textAlign: 'center' }}>
-              <Heading variant="header2" sx={{ mb: 3 }}>
-                Borrow against your
+              <Heading ref={ref} variant="header2" sx={{ position: 'relative', mb: 3, zIndex: 2 }}>
+                {t('ajna.borrow.open.select.heading.pre')}
                 <HeaderSelector
                   gradient={['#f154db', '#974eea']}
                   options={[
@@ -40,11 +44,12 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
                     ajnaTokens.mana,
                     ajnaTokens.matic,
                   ]}
+                  parentRef={ref}
                 />
-                exposure on Ajna
+                {t('ajna.borrow.open.select.heading.post')}
               </Heading>
               <Text variant="paragraph2" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
-                Select the crypto asset you want to borrow against your ETH
+                {t('ajna.borrow.open.select.intro')}
               </Text>
             </Box>
             <Heading>Ajna temporary {product} selector</Heading>
