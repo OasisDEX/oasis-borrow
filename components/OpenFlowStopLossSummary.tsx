@@ -37,7 +37,7 @@ export function OpenFlowStopLossSummary({
         }
       />
       <VaultChangesInformationItem
-        label={`${t('protection.dynamic-stop-loss')}`}
+        label={`${t('protection.dynamic-stop-loss-price')}`}
         value={<Flex>${formatAmount(dynamicStopLossPrice, 'USD')}</Flex>}
       />
     </>

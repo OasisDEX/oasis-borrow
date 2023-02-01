@@ -2,6 +2,7 @@ import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
+import { DimmedList } from 'components/DImmedList'
 import { OpenFlowStopLossSummary } from 'components/OpenFlowStopLossSummary'
 import { one, zero } from 'helpers/zero'
 import React from 'react'
@@ -32,10 +33,12 @@ export function OpenAaveStopLossInformation({
   })
 
   return (
-    <OpenFlowStopLossSummary
-      stopLossLevel={stopLossLevel}
-      dynamicStopLossPrice={dynamicStopLossPrice}
-      ratioTranslationKey="protection.stop-loss-ltv"
-    />
+    <DimmedList>
+      <OpenFlowStopLossSummary
+        stopLossLevel={stopLossLevel}
+        dynamicStopLossPrice={dynamicStopLossPrice}
+        ratioTranslationKey="protection.stop-loss-ltv"
+      />
+    </DimmedList>
   )
 }

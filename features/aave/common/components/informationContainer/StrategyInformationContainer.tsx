@@ -1,6 +1,5 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -33,10 +32,6 @@ type OpenAaveInformationContainerProps = {
       strategy?: IPositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
-      stopLossSkipped?: boolean
-      stopLossLevel?: BigNumber
-      currentStep?: number
-      dynamicStopLossPrice?: number
     }
   }
 }
@@ -44,7 +39,7 @@ type OpenAaveInformationContainerProps = {
 export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { strategy, currentPosition, stopLossSkipped, stopLossLevel, currentStep } = state.context
+  const { strategy, currentPosition } = state.context
 
   const simulationHasSwap = strategy?.simulation.swap.toTokenAmount.gt(zero)
 
@@ -77,9 +72,6 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
         swap={strategy.simulation.swap}
         estimatedGasPrice={state.context.estimatedGasPrice}
       />
-      {!stopLossSkipped && currentStep !== 1 && stopLossLevel && (
-        <OpenAaveStopLossInformation {...state.context} stopLossLevel={stopLossLevel} />
-      )}
     </VaultChangesInformationContainer>
   ) : (
     <></>

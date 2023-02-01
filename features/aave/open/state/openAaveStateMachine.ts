@@ -1,10 +1,14 @@
+import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress } from 'blockchain/config'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import { aaveOffsetFromMaxDuringOpenFLow } from 'features/automation/metadata/aave/stopLossMetadata'
+import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
+import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { canOpenPosition } from 'helpers/canOpenPosition'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
@@ -326,6 +330,17 @@ export function createOpenAaveStateMachine(
                 },
               },
             },
+            stopLossTxFailure: {
+              entry: ['killTransactionMachine'],
+              on: {
+                RETRY: {
+                  target: 'txStopLossInProgress',
+                },
+                BACK_TO_EDITING: {
+                  target: 'editing',
+                },
+              },
+            },
             txStopLoss: {
               on: {
                 NEXT_STEP: {
@@ -340,7 +355,7 @@ export function createOpenAaveStateMachine(
                   target: 'txSuccess',
                 },
                 TRANSACTION_FAILED: {
-                  target: 'txFailure',
+                  target: 'stopLossTxFailure',
                   actions: ['updateContext'],
                 },
               },
@@ -679,11 +694,31 @@ export function createOpenAaveStateMachine(
             },
           }
         }),
-        updateStopLossInitialState: assign(({ reserveConfig }) => {
+        updateStopLossInitialState: assign((context) => {
+          const {
+            proxyAddress,
+            debtTokenAddress,
+            collateralTokenAddress,
+          } = extractStopLossDataInput(context)
+          const stopLossLevel = context
+            .reserveConfig!.liquidationThreshold.minus(aaveOffsetFromMaxDuringOpenFLow)
+            .times(100)
+
           return {
-            stopLossLevel: reserveConfig!.liquidationThreshold
-              .minus(aaveOffsetFromMaxDuringOpenFLow)
-              .times(100),
+            stopLossLevel,
+            stopLossTxData: {
+              ...prepareStopLossTriggerDataV2(
+                proxyAddress!,
+                TriggerType.AaveStopLossToDebt,
+                false,
+                stopLossLevel,
+                debtTokenAddress!,
+                collateralTokenAddress!,
+              ),
+              replacedTriggerIds: [0],
+              replacedTriggersData: ['0x'],
+              kind: TxMetaKind.addTrigger,
+            } as AutomationAddTriggerData,
           }
         }),
       },
