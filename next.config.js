@@ -141,6 +141,21 @@ const conf = withBundleAnalyzer(
             destination: '/daiwallet/dashboard',
             permanent: true,
           },
+          {
+            source: '/multiply/aave/open/:strategy*',
+            destination: '/multiply/aave-v2/open/:strategy*',
+            permanent: true,
+          },
+          {
+            source: '/earn/aave/open/:strategy*',
+            destination: '/earn/aave-v2/open/:strategy*',
+            permanent: true,
+          },
+          {
+            source: '/aave/:vault*',
+            destination: '/aave-v2/:vault*',
+            permanent: true,
+          },
         ]
       },
       async headers() {

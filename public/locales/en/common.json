@@ -2109,7 +2109,8 @@
     "aave": {
       "product-header": {
         "token-pair-list": {
-          "aave-steth-eth": "Aave stETH yield multiple"
+          "aave-steth-eth": "Aave stETH yield multiple",
+          "aave-wsteth-eth": "Aave wstETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",

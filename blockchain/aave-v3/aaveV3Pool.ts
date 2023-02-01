@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 
-import { AaveV3Pool } from '../../../types/web3-v1-contracts/aave-v3-pool'
-import { amountFromWei } from '../../utils'
-import { CallDef } from '../callsHelpers'
+import { AaveV3Pool } from '../../types/web3-v1-contracts/aave-v3-pool'
+import { CallDef } from '../calls/callsHelpers'
+import { amountFromWei } from '../utils'
 
 export interface AaveV3UserAccountData {
   totalCollateralBase: BigNumber

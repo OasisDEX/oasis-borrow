@@ -3,8 +3,9 @@ import { ViewPositionSectionComponentProps } from 'features/earn/aave/components
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
 
-import { AaveV2ReserveConfigurationData } from '../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
-import { PreparedAaveReserveData } from '../helpers/aaveV2PrepareReserveData'
+import { AaveV2ReserveConfigurationData } from '../../../blockchain/aave'
+import { LendingProtocol } from '../../../lendingProtocols'
+import { PreparedAaveReserveData } from '../../../lendingProtocols/aave-v2/pipelines'
 import { AdjustRiskViewProps } from './components/SidebarAdjustRiskView'
 
 export enum ProxyType {
@@ -40,6 +41,7 @@ export interface IStrategyConfig {
     default: IRiskRatio | 'slightlyLessThanMaxRisk'
   }
   type: ProductType
+  protocol: LendingProtocol
   featureToggle?: Feature
 }
 

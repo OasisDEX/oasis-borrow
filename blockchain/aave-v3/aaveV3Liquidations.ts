@@ -1,18 +1,17 @@
 import { getNetworkId } from '@oasisdex/web3-context'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
-import { AaveV2LendingPool } from 'types/web3-v1-contracts/aave-v2-lending-pool'
+import { AaveV3Pool } from 'types/web3-v1-contracts/aave-v3-pool'
 
-import { Context, NetworkIds } from './network'
+import { Context, NetworkIds } from '../network'
 
-// TODO probably we would like to set here a block numbers of our aave deployment
-const aaveV2LendingPoolGenesisBlockMainnet = 11362579
-const aaveV2LendingPoolGenesisBlockGoerli = 7480475
+const aaveV3PoolGenesisBlockMainnet = 16291127
+const aaveV3PoolGenesisBlockGoerli = 8294332
 
 const networkMap = {
-  [NetworkIds.MAINNET]: aaveV2LendingPoolGenesisBlockMainnet,
-  [NetworkIds.HARDHAT]: aaveV2LendingPoolGenesisBlockMainnet,
-  [NetworkIds.GOERLI]: aaveV2LendingPoolGenesisBlockGoerli,
+  [NetworkIds.MAINNET]: aaveV3PoolGenesisBlockMainnet,
+  [NetworkIds.HARDHAT]: aaveV3PoolGenesisBlockMainnet,
+  [NetworkIds.GOERLI]: aaveV3PoolGenesisBlockGoerli,
 }
 
 export interface Web3ContractEvent {
@@ -28,7 +27,7 @@ export interface Web3ContractEvent {
   raw: { data: string; topics: string[] }
 }
 
-export function getAaveV2PositionLiquidation$(
+export function getAaveV3PositionLiquidation$(
   context$: Observable<Context>,
   proxyAddress: string,
 ): Observable<Web3ContractEvent[]> {
@@ -40,16 +39,16 @@ export function getAaveV2PositionLiquidation$(
   const genesisBlock = networkMap[chainId]
 
   return context$.pipe(
-    switchMap(async ({ aaveV2LendingPool, contract }) => {
-      const aaveLendingPoolContract = contract<AaveV2LendingPool>(aaveV2LendingPool)
+    switchMap(async ({ aaveV3Pool, contract }) => {
+      const pool = contract<AaveV3Pool>(aaveV3Pool)
 
       const contractCalls = Promise.all<Web3ContractEvent[], Web3ContractEvent[]>([
-        aaveLendingPoolContract.getPastEvents('LiquidationCall', {
+        pool.getPastEvents('LiquidationCall', {
           filter: { user: proxyAddress },
           fromBlock: genesisBlock,
           toBlock: 'latest',
         }),
-        aaveLendingPoolContract.getPastEvents('Deposit', {
+        pool.getPastEvents('Deposit', {
           filter: { onBehalfOf: proxyAddress },
           fromBlock: genesisBlock,
           toBlock: 'latest',

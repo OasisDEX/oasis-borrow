@@ -1,7 +1,7 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCard,
@@ -12,11 +12,11 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines/aaveV2PrepareReserveData'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'

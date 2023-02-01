@@ -1,10 +1,12 @@
-import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { useSimulationYields } from 'helpers/useSimulationYields'
 import React from 'react'
 
-import { PreparedAaveReserveData } from '../../../aave/helpers/aaveV2PrepareReserveData'
-import { AaveProtocolData } from '../../../aave/manage/services'
+import {
+  AaveProtocolData,
+  PreparedAaveReserveData,
+} from '../../../../lendingProtocols/aave-v2/pipelines'
 import { PositionInfoComponent } from './PositionInfoComponent'
 
 export type ViewPositionSectionComponentProps = {
@@ -25,6 +27,7 @@ export function ViewPositionSectionComponent({
     amount: accountData?.totalCollateralETH,
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
+    strategy: strategyConfig,
   })
 
   return (

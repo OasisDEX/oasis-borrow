@@ -1,5 +1,10 @@
 import BigNumber from 'bignumber.js'
 import mainnet from 'blockchain/addresses/mainnet.json'
+import { curry } from 'ramda'
+import { combineLatest, Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+
+import { AaveV2UserConfigurationsParameters } from '../../../blockchain/aave'
 
 const reserveNamesDictionary = Object.fromEntries(
   Object.entries(mainnet).map((mainnetEntry) => mainnetEntry.reverse()),
@@ -12,13 +17,33 @@ export type AaveUserConfigurationResult = {
   assetName: typeof mainnet[keyof typeof mainnet]
 }
 
+export type AaveUserConfigurationResults = AaveUserConfigurationResult[] & {
+  hasAssets: (
+    collateralToken: AaveUserConfigurationResult['assetName'],
+    debtToken: AaveUserConfigurationResult['assetName'],
+  ) => boolean
+}
+
+export function getAaveProxyConfiguration$(
+  userConfiguration: (args: AaveV2UserConfigurationsParameters) => Observable<string[]>,
+  reserveList: Observable<string[]>,
+  proxyAddress: string,
+): Observable<AaveUserConfigurationResults> {
+  return combineLatest(userConfiguration({ address: proxyAddress }), reserveList).pipe(
+    map(([aaveUserConfiguration, aaveReserveList]) =>
+      createAaveUserConfiguration(aaveUserConfiguration, aaveReserveList),
+    ),
+  )
+}
+
 export function createAaveUserConfiguration(
   aaveUserConfiguration?: string[],
   aaveReserveList?: string[],
   tokensDictionary: any = reserveNamesDictionary,
-): AaveUserConfigurationResult[] {
+): AaveUserConfigurationResults {
   // merges getreserveslist and getuserconfiguration
-  if (!aaveUserConfiguration?.length || !aaveReserveList?.length) return []
+  if (!aaveUserConfiguration?.length || !aaveReserveList?.length)
+    return Object.assign([], { hasAssets: () => false })
 
   // https://docs.aave.com/developers/v/2.0/the-core-protocol/lendingpool#getuserconfiguration
   let binaryString = String(new BigNumber(aaveUserConfiguration[0]).toString(2))
@@ -28,7 +53,7 @@ export function createAaveUserConfiguration(
     binaryString = '0' + binaryString
   }
 
-  return (
+  const results: AaveUserConfigurationResult[] =
     binaryString
       .match(/.{1,2}/g)
       ?.reverse() // reverse, cause we need to start from the end
@@ -45,7 +70,8 @@ export function createAaveUserConfiguration(
           },
       )
       .filter(Boolean) || []
-  )
+
+  return Object.assign(results, { hasAssets: curry(hasAssets)(results) })
 }
 
 export function hasAssets(

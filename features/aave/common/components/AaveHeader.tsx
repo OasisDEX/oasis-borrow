@@ -19,7 +19,9 @@ function AaveHeader({
   shareButton?: boolean
 }) {
   const { t } = useTranslation()
-  const { getAaveAssetsPrices$, chainlinkUSDCUSDOraclePrice$ } = useAaveContext()
+  const { getAaveAssetsPrices$, chainlinkUSDCUSDOraclePrice$ } = useAaveContext(
+    strategyConfig.protocol,
+  )
   const [positionTokenPrices, positionTokenPricesError] = useObservable(
     getAaveAssetsPrices$({
       tokens: [strategyConfig.tokens.debt, strategyConfig.tokens.collateral],

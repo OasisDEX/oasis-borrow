@@ -4,12 +4,12 @@ import {
   AaveV2ConfigurationData,
   AaveV2UserAccountData,
   AaveV2UserAccountDataParameters,
-} from 'blockchain/calls/aave/aaveV2LendingPool'
+} from 'blockchain/aave/aaveV2LendingPool'
 import {
   AaveV2ReserveConfigurationData,
   AaveV2UserReserveData,
   AaveV2UserReserveDataParameters,
-} from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+} from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
@@ -46,7 +46,7 @@ export function getAaveProtocolData$(
   ) => Observable<AaveV2UserAccountData>,
   aaveOracleAssetPriceData$: AaveOracleAssetPriceDataType,
   aaveUserConfiguration$: AaveUserConfigurationType,
-  aaveReservesList$: () => Observable<AaveV2ConfigurationData>,
+  aaveReservesList$: Observable<AaveV2ConfigurationData>,
   aaveOnChainPosition$: (
     collateralToken: string,
     debtToken: string,
@@ -61,7 +61,7 @@ export function getAaveProtocolData$(
     aaveUserAccountData$({ address: proxyAddress }),
     aaveOracleAssetPriceData$({ token: collateralToken }),
     aaveUserConfiguration$({ address: proxyAddress }),
-    aaveReservesList$(),
+    aaveReservesList$,
     aaveOnChainPosition$(collateralToken, debtToken, proxyAddress),
   ).pipe(
     map(
