@@ -9,16 +9,21 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-import { aaveContext, AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { loadStrategyFromUrl } from '../../../../features/aave/strategyConfig'
+import { aaveContext, AaveContextProvider } from '../../../../../features/aave/AaveContextProvider'
+import { loadStrategyFromUrl } from '../../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const collateralToken = ctx.query.collateralToken as string
-  const protocol = (ctx.query.protocol as string).replace(/-/g, '')
+  const strategy = ctx.query.strategy as string
+  const protocol = ctx.query.protocol as string
+  const version = ctx.query.version as string
+  const lendingProtocol = `${protocol}${version}`
+
+  console.log(lendingProtocol)
   try {
-    loadStrategyFromUrl(collateralToken, protocol, 'Borrow')
+    console.log(`loading strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
+    loadStrategyFromUrl(strategy, lendingProtocol, 'multiply')
   } catch (e) {
-    console.log(`could not load strategy '${collateralToken}' for route '${ctx.resolvedUrl}'`)
+    console.log(`could not load strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
     return {
       notFound: true,
     }
@@ -26,7 +31,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      strategy: collateralToken,
+      strategy: strategy,
+      protocol: lendingProtocol,
     },
   }
 }
@@ -38,7 +44,7 @@ function OpenVault({ strategy, protocol }: { strategy: string; protocol: string 
         <WithTermsOfService>
           <BackgroundLight />
           <DeferedContextProvider context={aaveContext}>
-            <AaveOpenView config={loadStrategyFromUrl(strategy, protocol, 'Borrow')} />
+            <AaveOpenView config={loadStrategyFromUrl(strategy, protocol, 'multiply')} />
           </DeferedContextProvider>
           <Survey for="earn" />
         </WithTermsOfService>
