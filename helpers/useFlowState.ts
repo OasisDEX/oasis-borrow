@@ -134,7 +134,7 @@ export function useFlowState({
       (allowanceData) => {
         if (allowanceData) {
           setLoading(false)
-          if (allowanceData.gt(zero) && allowanceData.gt(amount!)) {
+          if (allowanceData.gt(zero) && allowanceData.gte(amount!)) {
             setAllowanceReady(true)
           } else {
             setAllowanceReady(false)
