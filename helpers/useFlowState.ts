@@ -51,6 +51,8 @@ export function useFlowState({
   const { stateMachine: dpmMachine } = setupDpmContext(dpmAccountStateMachine)
   const { stateMachine: allowanceMachine } = setupAllowanceContext(allowanceStateMachine)
 
+  const isProxyReady = !!availableProxies.length
+
   // wallet connection + DPM proxy machine
   useEffect(() => {
     const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
@@ -114,7 +116,7 @@ export function useFlowState({
 
   // allowance machine
   useEffect(() => {
-    if (!availableProxies.length || !allDefined(walletAddress, amount, token)) return
+    if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
     if (token === 'ETH') {
       setLoading(false)
       setAllowanceReady(true)
@@ -123,6 +125,7 @@ export function useFlowState({
     const spender = availableProxies[0] // probably needs further thoguht
     allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
       minimumAmount: amount,
+      allowanceType: 'unlimited',
       token,
       spender,
     })
@@ -163,7 +166,7 @@ export function useFlowState({
         walletAddress,
         amount,
         token,
-        isProxyReady: !!availableProxies.length,
+        isProxyReady,
         isWalletConnected,
         isAllowanceReady,
       })
@@ -171,7 +174,9 @@ export function useFlowState({
   }, [isAllowanceReady, availableProxies, amount])
 
   useEffect(() => {
-    setLoading(true)
+    if (isProxyReady && allDefined(amount, token)) {
+      setLoading(true)
+    }
   }, [amount])
 
   return {
@@ -181,7 +186,7 @@ export function useFlowState({
     walletAddress,
     amount,
     token,
-    isProxyReady: !!availableProxies.length,
+    isProxyReady,
     isWalletConnected,
     isAllowanceReady,
     isLoading, // just for the allowance loading state

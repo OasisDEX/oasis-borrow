@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -40,10 +41,14 @@ function AllowanceInfoStateViewContent({
   const isMinimum = allowanceType === 'minimum'
   const isCustom = allowanceType === 'custom'
 
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
+
   return (
     <Grid gap={3}>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-        {t('vault-form.subtext.commonAllowance', { token })}
+        {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
       </Text>
       <Radio
         onChange={() => send({ type: 'SET_ALLOWANCE', allowanceType: 'unlimited' })}
