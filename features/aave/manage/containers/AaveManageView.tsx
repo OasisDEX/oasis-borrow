@@ -57,7 +57,9 @@ function AaveManageContainer({
   const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
 
   const nextPosition =
-    !isClosingPosition || hasCloseTokenSet ? state.context.strategy?.simulation.position : undefined
+    !isClosingPosition || hasCloseTokenSet
+      ? state.context.transition?.simulation.position
+      : undefined
 
   return (
     <AaveAutomationContext

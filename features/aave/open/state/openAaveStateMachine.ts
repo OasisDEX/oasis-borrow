@@ -336,8 +336,8 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
-        validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
-          allDefined(userInput, effectiveProxyAddress, strategy),
+        validTransactionParameters: ({ userInput, effectiveProxyAddress, transition }) =>
+          allDefined(userInput, effectiveProxyAddress, transition),
         canOpenPosition: ({ tokenBalance, userInput, effectiveProxyAddress, hasOpenedPosition }) =>
           allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
           tokenBalance!.gte(userInput.amount!),
@@ -385,7 +385,7 @@ export function createOpenAaveStateMachine(
             ...context.userInput,
             amount: event.amount,
           },
-          strategy: event.amount ? context.strategy : undefined,
+          strategy: event.amount ? context.transition : undefined,
         })),
         calculateAuxiliaryAmount: assign((context) => {
           return {

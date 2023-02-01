@@ -128,7 +128,7 @@ export function SimulateSectionComponent() {
   const simulationSectionProps = useSelector(stateMachine, (state) => {
     return {
       strategy: state.context.strategyConfig,
-      transition: state.context.strategy,
+      transition: state.context.transition,
       token: state.context.tokens.debt,
       userInputAmount: state.context.userInput.amount,
       gasPrice: state.context.estimatedGasPrice,
