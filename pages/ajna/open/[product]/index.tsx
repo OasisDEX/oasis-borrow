@@ -1,5 +1,5 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
-import { products } from 'features/ajna/common/consts'
+import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { AjnaSelectorController } from 'features/ajna/controls/AjnaSelectorController'
@@ -33,7 +33,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
   return {
     paths:
       locales
-        ?.map((locale) => products.map((item) => ({ params: { product: item }, locale })))
+        ?.map((locale) => ajnaProducts.map((item) => ({ params: { product: item }, locale })))
         .flat() ?? [],
     fallback: false,
   }
@@ -41,7 +41,7 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   return {
-    ...(!products.includes(params?.product as string) && { notFound: true }),
+    ...(!ajnaProducts.includes(params?.product as AjnaProduct) && { notFound: true }),
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
       ...params,

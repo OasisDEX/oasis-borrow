@@ -1,17 +1,9 @@
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 
 // TODO: add 'earn' and 'multiply' in distant future
-export const products = ['borrow']
+export const ajnaProducts: AjnaProduct[] = ['borrow']
 
 export const DEFAULT_SELECTED_TOKEN = 'ETH'
-
-export const tokens = {
-  borrow: {
-    ETH: ['DAI', 'USDC', 'LINK'],
-    WBTC: ['ETH', 'DAI', 'USDC', 'LINK'],
-    LINK: ['USDC', 'LINK'],
-  },
-}
 
 export const ajnaPairs: {
   [ProductKey in AjnaProduct]: {

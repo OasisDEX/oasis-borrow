@@ -5,7 +5,7 @@ import { useToggle } from 'helpers/useToggle'
 import React, { RefObject, useEffect, useRef, useState } from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
 
-interface HeaderSelectorOption {
+export interface HeaderSelectorOption {
   icon?: string
   label: string
   value: string
