@@ -14554,6 +14554,11 @@ eslint-plugin-no-only-tests@^2.4.0:
   resolved "https://registry.yarnpkg.com/eslint-plugin-no-only-tests/-/eslint-plugin-no-only-tests-2.4.0.tgz#7d565434aa7d16ccc7eea957c391d98f827332ca"
   integrity sha512-azP9PwQYfGtXJjW273nIxQH9Ygr+5/UyeW2wEjYoDtVYPI+WPKwbj0+qcAKYUXFZLRumq4HKkFaoDBAwBoXImQ==
 
+eslint-plugin-no-relative-import-paths@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-relative-import-paths/-/eslint-plugin-no-relative-import-paths-1.5.2.tgz#c35f2fd0bf2a6a57b268193ed7df63ff7000134e"
+  integrity sha512-wMlL+TVuDhKk1plP+w3L4Hc7+u89vUkrOYq6/0ARjcYqwc9/YaS9uEXNzaqAk+WLoEgakzNL5JgJJw6m4qd5zw==
+
 eslint-plugin-react@^7.22.0:
   version "7.22.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.22.0.tgz#3d1c542d1d3169c45421c1215d9470e341707269"
