@@ -47,15 +47,10 @@ export const notRequiredValidations: Pick<
 
 export const notRequiredValues: Pick<
   StopLossMetadata['values'],
-  | 'initialSlRatioWhenTriggerDoesntExist'
-  | 'triggerMaxToken'
-  | 'dynamicStopLossPrice'
-  | 'removeTxData'
-  | 'resetData'
+  'initialSlRatioWhenTriggerDoesntExist' | 'removeTxData' | 'resetData'
 > = {
   initialSlRatioWhenTriggerDoesntExist: zero,
-  triggerMaxToken: zero,
-  dynamicStopLossPrice: zero,
+
   removeTxData: {} as AutomationBotRemoveTriggersData,
   resetData: {} as StopLossResetData,
 }

@@ -5,7 +5,6 @@ import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSe
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
-import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -85,7 +84,7 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
 
 function StopLossTxStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const { stopLossLevel } = state.context
+  const { stopLossLevel, collateralActive } = state.context
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-vault-two-tx-second-step-title'),
@@ -94,7 +93,11 @@ function StopLossTxStateView({ state, send }: OpenAaveStateProps) {
         <StopLossTwoTxRequirement typeKey="position" />
         <CompleteBanner />
 
-        <OpenAaveStopLossInformation {...state.context} stopLossLevel={stopLossLevel!} />
+        <OpenAaveStopLossInformation
+          {...state.context}
+          stopLossLevel={stopLossLevel!}
+          collateralActive={!!collateralActive}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -112,14 +115,18 @@ function StopLossTxStateView({ state, send }: OpenAaveStateProps) {
 
 function StopLossTxFailureStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const { stopLossLevel } = state.context
+  const { stopLossLevel, collateralActive } = state.context
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('open-vault-two-tx-second-step-title'),
     content: (
       <Grid gap={3}>
         <StopLossTwoTxRequirement typeKey="position" />
-        <OpenAaveStopLossInformation {...state.context} stopLossLevel={stopLossLevel!} />
+        <OpenAaveStopLossInformation
+          {...state.context}
+          stopLossLevel={stopLossLevel!}
+          collateralActive={!!collateralActive}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -147,6 +154,7 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
         <OpenAaveStopLossInformation
           {...state.context}
           stopLossLevel={state.context.stopLossLevel!}
+          collateralActive={!!state.context.collateralActive}
         />
       </Grid>
     ),
@@ -372,7 +380,7 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
 
 export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
-  const { stopLossSidebarProps, automationContextProps } = getAaveStopLossData(state.context, send)
+  const { stopLossSidebarProps } = getAaveStopLossData(state.context, send)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
@@ -395,15 +403,13 @@ export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveSta
   }
 
   return (
-    <AutomationContextInput {...automationContextProps}>
-      <SidebarSection
-        {...sidebarSectionProps}
-        textButton={{
-          label: t('open-earn.aave.vault-form.back-to-editing'),
-          action: () => send('BACK_TO_EDITING'),
-        }}
-      />
-    </AutomationContextInput>
+    <SidebarSection
+      {...sidebarSectionProps}
+      textButton={{
+        label: t('open-earn.aave.vault-form.back-to-editing'),
+        action: () => send('BACK_TO_EDITING'),
+      }}
+    />
   )
 }
 

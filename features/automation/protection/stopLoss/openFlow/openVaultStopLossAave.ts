@@ -155,6 +155,8 @@ export function getAaveStopLossData(context: OpenAaveContext, send: Sender<OpenA
         collateralDuringLiquidation,
         sliderMax,
         sliderMin,
+        triggerMaxToken: maxToken,
+        dynamicStopLossPrice: executionPrice,
         ...notRequiredValues,
       },
       contracts: notRequiredContracts,
