@@ -188,10 +188,14 @@ export const strategies: Array<IStrategyConfig> = [
   }),
 ]
 
-export function aaveStrategiesList(filterProduct?: IStrategyConfig['type']): IStrategyConfig[] {
+export function aaveStrategiesList(
+  filterProduct?: IStrategyConfig['type'],
+  filterProtocol?: IStrategyConfig['protocol'],
+): IStrategyConfig[] {
   return Object.values(strategies)
     .filter(({ featureToggle }) => (featureToggle ? getFeatureToggle(featureToggle) : true))
     .filter(({ type }) => (filterProduct ? type === filterProduct : true))
+    .filter(({ protocol }) => (filterProtocol ? protocol === filterProtocol : true))
 }
 
 export function getAaveStrategy(strategyName: IStrategyConfig['name']) {

@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { LendingProtocol } from '../../lendingProtocols'
 import { aaveStrategiesList } from '../aave/strategyConfig'
 
 export function EarnView() {
@@ -27,7 +28,7 @@ export function EarnView() {
   )
   const daiSavingsRate = useFeatureToggle('DaiSavingsRate')
 
-  const aaveEarnStrategies = aaveStrategiesList('Earn').map((strategy) => {
+  const aaveEarnStrategies = aaveStrategiesList('Earn', LendingProtocol.AaveV2).map((strategy) => {
     const tokenConfig = getTokens([strategy.name])[0]
     return {
       tokenConfig,
