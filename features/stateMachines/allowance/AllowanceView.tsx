@@ -125,12 +125,19 @@ function AllowanceInfoStateView({ state, send, steps, isLoading }: AllowanceView
 
 function AllowanceInProgressStateViewContent({ state }: Pick<AllowanceViewStateProps, 'state'>) {
   const { t } = useTranslation()
-  const { token } = state.context
+  const { token, minimumAmount, allowanceType, amount } = state.context
+
+  const isUnlimited = allowanceType === 'unlimited'
+  const isMinimum = allowanceType === 'minimum'
+
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
 
   return (
     <Grid gap={3}>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-        {t('vault-form.subtext.commonAllowance', { token })}
+        {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
       </Text>
     </Grid>
   )
@@ -167,15 +174,22 @@ function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps)
 function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const [transactionState] = useActor(state.context.refTransactionMachine!)
-  const { token } = state.context
+  const { token, minimumAmount, allowanceType, amount } = state.context
   const { txHash, etherscanUrl } = transactionState.context
+
+  const isUnlimited = allowanceType === 'unlimited'
+  const isMinimum = allowanceType === 'minimum'
+
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: (
       <Grid gap={3}>
         <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-          {t('vault-form.subtext.commonAllowance', { token })}
+          {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
         </Text>
       </Grid>
     ),
@@ -201,14 +215,21 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
 
 function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
   const { t } = useTranslation()
-  const { token } = state.context
+  const { token, minimumAmount, allowanceType, amount } = state.context
+
+  const isUnlimited = allowanceType === 'unlimited'
+  const isMinimum = allowanceType === 'minimum'
+
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: (
       <Grid gap={3}>
         <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-          {t('vault-form.subtext.commonAllowance', { token })}
+          {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
         </Text>
       </Grid>
     ),
