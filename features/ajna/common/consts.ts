@@ -1,8 +1,9 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 
 // TODO: add 'earn' and 'multiply' in distant future
 export const products = ['borrow']
+
+export const DEFAULT_SELECTED_TOKEN = 'ETH'
 
 export const tokens = {
   borrow: {
@@ -12,15 +13,21 @@ export const tokens = {
   },
 }
 
-export const ajnaTokens = {
-  aave: { value: 'AAVE', label: 'AAVE', icon: getToken('AAVE').iconCircle },
-  eth: { value: 'ETH', label: 'ETH', icon: getToken('ETH').iconCircle },
-  link: { value: 'LINK', label: 'LINK', icon: getToken('LINK').iconCircle },
-  mana: { value: 'MANA', label: 'MANA', icon: getToken('MANA').iconCircle },
-  matic: { value: 'MATIC', label: 'MATIC', icon: getToken('MATIC').iconCircle },
-  renbtc: { value: 'renBTC', label: 'renBTC', icon: getToken('RENBTC').iconCircle },
-  wbtc: { value: 'WBTC', label: 'WBTC', icon: getToken('WBTC').iconCircle },
-  yfi: { value: 'YFI', label: 'YFI', icon: getToken('YFI').iconCircle },
+export const ajnaPairs: {
+  [ProductKey in AjnaProduct]: {
+    [key: string]: string[]
+  }
+} = {
+  borrow: {
+    DAI: ['ETH', 'RETH', 'WBTC'],
+    ETH: ['DAI', 'USDC'],
+    RETH: ['DAI', 'ETH'],
+    USDC: ['DAI', 'ETH', 'WSTETH', 'WBTC'],
+    WBTC: ['DAI', 'USDC'],
+    WSTETH: ['USDC', 'ETH'],
+  },
+  multiply: {},
+  earn: {},
 }
 
 export const steps: {

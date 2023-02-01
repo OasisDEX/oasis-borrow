@@ -12,15 +12,24 @@ interface HeaderSelectorOption {
 }
 
 interface HeaderSelectorProps {
+  defaultOption?: HeaderSelectorOption
   gradient?: [string, string]
   options: HeaderSelectorOption[]
   parentRef: RefObject<HTMLDivElement>
   onChange?: (selected: HeaderSelectorOption) => void
 }
 
-export function HeaderSelector({ gradient, options, parentRef, onChange }: HeaderSelectorProps) {
+export function HeaderSelector({
+  defaultOption,
+  gradient,
+  options,
+  parentRef,
+  onChange,
+}: HeaderSelectorProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
-  const [selected, setSelected] = useState<HeaderSelectorOption>(options[0])
+  const [selected, setSelected] = useState<HeaderSelectorOption>(
+    defaultOption && options.includes(defaultOption) ? defaultOption : options[0],
+  )
   const [left, setLeft] = useState<number>(0)
   const ref = useOutsideElementClickHandler(() => setIsOpen(false))
   const selectRef = useRef<HTMLDivElement>(null)
