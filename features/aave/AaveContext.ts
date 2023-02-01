@@ -11,7 +11,6 @@ import { AppContext } from '../../components/AppContext'
 import { LendingProtocol } from '../../lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from '../../lendingProtocols/aave-v2/pipelines'
 import { getAaveStEthYield } from './common'
-import { getAvailableDPMProxy$ } from './common/services/getAvailableDPMProxy'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,

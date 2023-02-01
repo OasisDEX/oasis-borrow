@@ -3,7 +3,7 @@ import { GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
-import { distinctUntilKeyChanged, map, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilKeyChanged, map, switchMap } from 'rxjs/operators'
 
 import { getChainlinkOraclePrice } from '../../blockchain/calls/chainlink/chainlinkPriceOracle'
 import { observe } from '../../blockchain/calls/observe'
