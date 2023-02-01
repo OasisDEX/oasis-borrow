@@ -107,7 +107,7 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
               },
             ]}
             button={{
-              link: `/earn/aave-v2/open/${cardData.symbol}`,
+              link: `/earn/aave/v2/open/${cardData.symbol}`,
               text: t('nav.earn'),
             }}
             background={cardData.background}

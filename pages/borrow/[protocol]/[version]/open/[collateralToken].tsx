@@ -9,26 +9,27 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-import { aaveContext, AaveContextProvider } from '../../../../features/aave/AaveContextProvider'
-import { loadStrategyFromUrl } from '../../../../features/aave/strategyConfig'
+import { aaveContext, AaveContextProvider } from '../../../../../features/aave/AaveContextProvider'
+import { loadStrategyFromUrl } from '../../../../../features/aave/strategyConfig'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const strategy = ctx.query.strategy as string
-  const protocol = (ctx.query.protocol as string).replace(/-/g, '')
+  const collateralToken = ctx.query.collateralToken as string
+  const protocol = ctx.query.protocol as string
+  const version = ctx.query.version as string
+  const lendingProtocol = `${protocol}${version}`
   try {
-    loadStrategyFromUrl(strategy, protocol, 'multiply')
+    loadStrategyFromUrl(collateralToken, lendingProtocol, 'Borrow')
   } catch (e) {
-    console.log(`could not load strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
+    console.log(`could not load strategy '${collateralToken}' for route '${ctx.resolvedUrl}'`)
     return {
       notFound: true,
     }
   }
-
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      strategy: strategy,
-      protocol: protocol,
+      strategy: collateralToken,
+      protocol: lendingProtocol,
     },
   }
 }
@@ -40,7 +41,7 @@ function OpenVault({ strategy, protocol }: { strategy: string; protocol: string 
         <WithTermsOfService>
           <BackgroundLight />
           <DeferedContextProvider context={aaveContext}>
-            <AaveOpenView config={loadStrategyFromUrl(strategy, protocol, 'multiply')} />
+            <AaveOpenView config={loadStrategyFromUrl(strategy, protocol, 'Borrow')} />
           </DeferedContextProvider>
           <Survey for="earn" />
         </WithTermsOfService>

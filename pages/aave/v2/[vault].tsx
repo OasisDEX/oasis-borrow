@@ -6,17 +6,17 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { WithConnection } from '../../components/connectWallet/ConnectWallet'
-import { AppLayout } from '../../components/Layouts'
-import { AaveContextProvider, useAaveContext } from '../../features/aave/AaveContextProvider'
-import { ManageAaveStateMachineContextProvider } from '../../features/aave/manage/containers/AaveManageStateMachineContext'
-import { PositionId } from '../../features/aave/types'
-import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
-import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
-import { LendingProtocol } from '../../lendingProtocols'
-import { BackgroundLight } from '../../theme/BackgroundLight'
+import { WithConnection } from '../../../components/connectWallet/ConnectWallet'
+import { AppLayout } from '../../../components/Layouts'
+import { AaveContextProvider, useAaveContext } from '../../../features/aave/AaveContextProvider'
+import { ManageAaveStateMachineContextProvider } from '../../../features/aave/manage/containers/AaveManageStateMachineContext'
+import { PositionId } from '../../../features/aave/types'
+import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
+import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from '../../../helpers/observableHook'
+import { LendingProtocol } from '../../../lendingProtocols'
+import { BackgroundLight } from '../../../theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -29,7 +29,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 function WithStrategy(positionId: PositionId) {
   const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
-    LendingProtocol.AaveV3,
+    LendingProtocol.AaveV2,
   )
   const [strategyConfig, strategyConfigError] = useObservable(strategyConfig$(positionId))
   const [proxiesRelatedWithPosition, proxiesRelatedWithPositionError] = useObservable(
