@@ -1,15 +1,25 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useToggle } from 'helpers/useToggle'
-import React from 'react'
-import { Box, Flex, Text } from 'theme-ui'
+import React, { useState } from 'react'
+import { Box, Flex, Grid, Text } from 'theme-ui'
+
+interface HeaderSelectorOption {
+  icon?: string
+  label: string
+  value: string
+}
 
 interface HeaderSelectorProps {
   gradient?: [string, string]
+  options: HeaderSelectorOption[]
+  onChange?: (selected: HeaderSelectorOption) => void
 }
 
-export function HeaderSelector({ gradient }: HeaderSelectorProps) {
+export function HeaderSelector({ gradient, options, onChange }: HeaderSelectorProps) {
   const [isOpen, toggleIsOpen, setIsOpen] = useToggle(false)
+  const [selected, setSelected] = useState<HeaderSelectorOption>(options[0])
   const ref = useOutsideElementClickHandler(() => setIsOpen(false))
 
   return (
@@ -46,10 +56,10 @@ export function HeaderSelector({ gradient }: HeaderSelectorProps) {
             }
           }
         >
-          ETH
+          {selected.label}
         </Text>
         <ExpandableArrow
-          direction={isOpen ? 'down' : 'up'}
+          direction={isOpen ? 'up' : 'down'}
           size={0.32}
           adaptSize
           color="neutral80"
@@ -61,6 +71,7 @@ export function HeaderSelector({ gradient }: HeaderSelectorProps) {
           position: 'absolute',
           top: '100%',
           left: '0',
+          width: '400px',
           mt: '12px',
           p: 3,
           fontFamily: 'body',
@@ -68,6 +79,7 @@ export function HeaderSelector({ gradient }: HeaderSelectorProps) {
           fontWeight: 'regular',
           lineHeight: 'body',
           letterSpacing: 0,
+          textAlign: 'left',
           bg: 'neutral10',
           border: '1px solid',
           borderColor: 'neutral20',
@@ -79,7 +91,43 @@ export function HeaderSelector({ gradient }: HeaderSelectorProps) {
           transition: 'opacity 200ms, transform 200ms',
         }}
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        <Grid
+          as="ul"
+          sx={{
+            gap: 0,
+            gridTemplateColumns: 'repeat(2,1fr )',
+            width: '100%',
+            listStyle: 'none',
+            p: 0,
+          }}
+        >
+          {options.map((option, i) => (
+            <Flex
+              key={i}
+              as="li"
+              sx={{
+                px: 3,
+                py: 2,
+                borderRadius: 'medium',
+                cursor: 'pointer',
+                transition: 'background-color 200ms',
+                alignItems: 'center',
+                '&:hover': {
+                  bg: 'neutral30',
+                },
+              }}
+              onClick={() => {
+                setSelected(option)
+                if (onChange) onChange(option)
+              }}
+            >
+              {option.icon && (
+                <Icon size={32} sx={{ flexShrink: 0, mr: '12px' }} name={option.icon} />
+              )}
+              {option.label}
+            </Flex>
+          ))}
+        </Grid>
       </Flex>
     </Box>
   )

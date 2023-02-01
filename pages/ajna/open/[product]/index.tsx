@@ -2,7 +2,7 @@ import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { GenericSelect } from 'components/GenericSelect'
 import { HeaderSelector } from 'components/HeaderSelector'
 import { AppLink } from 'components/Links'
-import { products, tokens } from 'features/ajna/common/consts'
+import { ajnaTokens, products, tokens } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetStaticPaths, GetStaticProps } from 'next'
@@ -28,7 +28,19 @@ function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
             <Box sx={{ textAlign: 'center' }}>
               <Heading variant="header2" sx={{ mb: 3 }}>
                 Borrow against your
-                <HeaderSelector gradient={['#f154db', '#974eea']} />
+                <HeaderSelector
+                  gradient={['#f154db', '#974eea']}
+                  options={[
+                    ajnaTokens.aave,
+                    ajnaTokens.renbtc,
+                    ajnaTokens.eth,
+                    ajnaTokens.wbtc,
+                    ajnaTokens.link,
+                    ajnaTokens.yfi,
+                    ajnaTokens.mana,
+                    ajnaTokens.matic,
+                  ]}
+                />
                 exposure on Ajna
               </Heading>
               <Text variant="paragraph2" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
