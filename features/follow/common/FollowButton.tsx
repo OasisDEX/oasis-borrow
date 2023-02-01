@@ -46,7 +46,7 @@ export function FollowButton({
         pl: isShort ? 0 : '30px',
         fontSize: 1,
         width: isShort ? ['32px', null, null, '36px'] : 'auto',
-        height: isShort ? ['32px', null, null, '36px'] : 'auto',
+        height: isShort ? ['32px', null, null, '32px'] : 'auto',
         lineHeight: '26px',
         color: isFollowing ? 'primary100' : 'primary60',
         border: '1px solid',
