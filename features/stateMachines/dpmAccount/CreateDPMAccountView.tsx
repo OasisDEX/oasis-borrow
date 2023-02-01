@@ -27,6 +27,7 @@ export interface CreateDPMAccountViewProps {
 interface InternalViewsProps {
   state: StateFrom<DPMAccountStateMachine>
   send: Sender<DPMAccountStateMachineEvents>
+  backButtonOnFirstStep?: boolean
 }
 
 function buttonInfoSettings({
@@ -45,7 +46,7 @@ function buttonInfoSettings({
   }
 }
 
-function InfoStateView({ state, send }: InternalViewsProps) {
+function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -93,6 +94,14 @@ function InfoStateView({ state, send }: InternalViewsProps) {
       disabled: false,
       ...buttonInfoSettings({ state, send }),
     },
+    textButton: backButtonOnFirstStep
+      ? {
+          action: () => {
+            send('GO_BACK')
+          },
+          label: t('go-back'),
+        }
+      : undefined,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
@@ -178,12 +187,18 @@ export function CreateDPMAccountView({ machine }: CreateDPMAccountViewProps) {
   return <CreateDPMAccountViewConsumed state={state} send={send} />
 }
 
-export function CreateDPMAccountViewConsumed({ state, send }: InternalViewsProps) {
+export function CreateDPMAccountViewConsumed({
+  state,
+  send,
+  backButtonOnFirstStep,
+}: InternalViewsProps) {
   // proxy component so I can use the below ones outside of the normal xstate flow
   switch (true) {
     case state.matches('idle'):
     case state.matches('txFailure'):
-      return <InfoStateView state={state} send={send} />
+      return (
+        <InfoStateView state={state} send={send} backButtonOnFirstStep={backButtonOnFirstStep} />
+      )
     case state.matches('txInProgress'):
       return <InProgressView state={state} send={send} />
     case state.matches('txSuccess'):

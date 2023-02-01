@@ -10,7 +10,7 @@ import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
 import { zero } from './zero'
 
 type UserFlowStateReturnType = ReturnType<typeof useFlowState>
-type FinalCallbackType = (params: {
+type CallbackType = (params: {
   availableProxies: UserFlowStateReturnType['availableProxies']
   walletAddress: UserFlowStateReturnType['walletAddress']
   amount: UserFlowStateReturnType['amount']
@@ -24,15 +24,19 @@ type UseFlowStateProps = {
   amount?: BigNumber
   token?: string
   existingProxy?: string
-  onEverythingReady?: FinalCallbackType
+  onEverythingReady?: CallbackType
+  onGoBack?: CallbackType
 }
 
 export function useFlowState({
   amount,
   token,
-  onEverythingReady,
   existingProxy,
+  onEverythingReady,
+  onGoBack,
 }: UseFlowStateProps) {
+  console.log('amount.toString()', amount?.toString())
+
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
@@ -66,6 +70,17 @@ export function useFlowState({
       }
     }
     const proxyMachineSubscription = dpmMachine.subscribe(({ value, context, event }) => {
+      if (event.type === 'GO_BACK' && typeof onGoBack === 'function') {
+        onGoBack({
+          availableProxies,
+          walletAddress,
+          amount,
+          token,
+          isProxyReady,
+          isWalletConnected,
+          isAllowanceReady,
+        })
+      }
       if (
         value === 'txSuccess' &&
         context.result?.proxy &&
@@ -143,6 +158,17 @@ export function useFlowState({
       },
     )
     const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
+      if (event.type === 'BACK' && typeof onGoBack === 'function') {
+        onGoBack({
+          availableProxies,
+          walletAddress,
+          amount,
+          token,
+          isProxyReady,
+          isWalletConnected,
+          isAllowanceReady,
+        })
+      }
       if (value === 'txSuccess' && context.allowanceType && event.type === 'CONTINUE') {
         setAllowanceReady(true)
       }

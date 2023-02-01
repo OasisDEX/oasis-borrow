@@ -21,6 +21,7 @@ interface AllowanceViewProps {
   allowanceMachine: ActorRefFrom<AllowanceStateMachine>
   steps?: [number, number]
   isLoading?: boolean
+  backButtonOnFirstStep?: boolean
 }
 
 interface AllowanceViewStateProps {
@@ -28,6 +29,7 @@ interface AllowanceViewStateProps {
   send: Sender<AllowanceStateMachineEvent>
   steps?: [number, number]
   isLoading?: boolean
+  backButtonOnFirstStep?: boolean
 }
 
 function AllowanceInfoStateViewContent({
@@ -105,7 +107,13 @@ function AllowanceInfoStateViewContent({
   )
 }
 
-function AllowanceInfoStateView({ state, send, steps, isLoading }: AllowanceViewStateProps) {
+function AllowanceInfoStateView({
+  state,
+  send,
+  steps,
+  isLoading,
+  backButtonOnFirstStep,
+}: AllowanceViewStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -118,6 +126,14 @@ function AllowanceInfoStateView({ state, send, steps, isLoading }: AllowanceView
       label: t('approve-allowance'),
       action: () => send('NEXT_STEP'),
     },
+    textButton: backButtonOnFirstStep
+      ? {
+          action: () => {
+            send('BACK')
+          },
+          label: t('go-back'),
+        }
+      : undefined,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
@@ -248,13 +264,24 @@ function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function AllowanceView({ allowanceMachine, steps, isLoading }: AllowanceViewProps) {
+export function AllowanceView({
+  allowanceMachine,
+  steps,
+  isLoading,
+  backButtonOnFirstStep,
+}: AllowanceViewProps) {
   const [state, send] = useActor(allowanceMachine)
 
   switch (true) {
     case state.matches('idle'):
       return (
-        <AllowanceInfoStateView state={state} send={send} steps={steps} isLoading={isLoading} />
+        <AllowanceInfoStateView
+          state={state}
+          send={send}
+          steps={steps}
+          isLoading={isLoading}
+          backButtonOnFirstStep={backButtonOnFirstStep}
+        />
       )
     case state.matches('txFailure'):
       return <AllowanceRetryStateView state={state} send={send} steps={steps} />

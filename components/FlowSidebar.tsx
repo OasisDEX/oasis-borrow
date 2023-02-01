@@ -7,45 +7,15 @@ import {
 } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFlowState } from 'helpers/useFlowState'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid, Image, Text } from 'theme-ui'
-import { Sender, StateFrom } from 'xstate'
+import { Grid, Text } from 'theme-ui'
 
-import { AppLink } from './Links'
-import { ListWithIcon } from './ListWithIcon'
 import { SidebarSection, SidebarSectionProps } from './sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from './sidebar/SidebarSectionFooter'
-import {
-  getEstimatedGasFeeTextOld,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from './vault/VaultChangesInformation'
 
 export type CreateDPMAccountViewProps = {
   noConnectionContent?: JSX.Element
 } & ReturnType<typeof useFlowState>
-
-interface InternalViewsProps {
-  state: StateFrom<DPMAccountStateMachine>
-  send: Sender<DPMAccountStateMachineEvents>
-}
-
-function buttonInfoSettings({
-  state,
-  send,
-}: InternalViewsProps): Pick<SidebarSectionFooterButtonSettings, 'label' | 'action'> {
-  const { t } = useTranslation()
-
-  const isRetry = state.matches('txFailure')
-
-  return {
-    label: isRetry
-      ? t('dpm.create-flow.welcome-screen.retry-create-button')
-      : t('dpm.create-flow.welcome-screen.create-button'),
-    action: isRetry ? () => send('RETRY') : () => send('START'),
-  }
-}
 
 function NoConnectionStateView({
   noConnectionContent,
@@ -99,7 +69,9 @@ export function FlowSidebar({
       case dpmState.matches('txFailure'):
       case dpmState.matches('txInProgress'):
       case dpmState.matches('txSuccess'):
-        return <CreateDPMAccountViewConsumed state={dpmState} send={dpmSend} />
+        return (
+          <CreateDPMAccountViewConsumed state={dpmState} send={dpmSend} backButtonOnFirstStep />
+        )
       default:
         return <></>
     }
@@ -110,7 +82,13 @@ export function FlowSidebar({
       case allowanceState.matches('txFailure'):
       case allowanceState.matches('txInProgress'):
       case allowanceState.matches('txSuccess'):
-        return <AllowanceView allowanceMachine={allowanceMachine} isLoading={isLoading} />
+        return (
+          <AllowanceView
+            allowanceMachine={allowanceMachine}
+            isLoading={isLoading}
+            backButtonOnFirstStep
+          />
+        )
       default:
         return <></>
     }
