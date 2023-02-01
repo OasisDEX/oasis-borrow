@@ -36,11 +36,8 @@ export function setupDpmContext(machine: DPMAccountStateMachine) {
     })
 
   const service = useInterpret(machine, { parent: parentService }).start()
-
-  const states$ = from(service)
   return {
     stateMachine: service,
-    states$,
     dpmAccounts$: createdDpmAccount.asObservable(),
   }
 }
@@ -51,9 +48,7 @@ export function setupAllowanceContext(machine: AllowanceStateMachine) {
     parent: parentService,
     context: { minimumAmount: zero, token: 'ETH' },
   }).start()
-  const states$ = from(service)
   return {
     stateMachine: service,
-    states$,
   }
 }

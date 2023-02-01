@@ -10,20 +10,21 @@ import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
 import { zero } from './zero'
 
 type UserFlowStateReturnType = ReturnType<typeof useFlowState>
+type FinalCallbackType = (params: {
+  availableProxies: UserFlowStateReturnType['availableProxies']
+  walletAddress: UserFlowStateReturnType['walletAddress']
+  amount: UserFlowStateReturnType['amount']
+  token: UserFlowStateReturnType['token']
+  isProxyReady: UserFlowStateReturnType['isProxyReady']
+  isWalletConnected: UserFlowStateReturnType['isWalletConnected']
+  isAllowanceReady: UserFlowStateReturnType['isAllowanceReady']
+}) => void
 
 type UseFlowStateProps = {
   amount?: BigNumber
   token?: string
   existingProxy?: string
-  onEverythingReady?: (params: {
-    availableProxies: UserFlowStateReturnType['availableProxies']
-    walletAddress: UserFlowStateReturnType['walletAddress']
-    amount: UserFlowStateReturnType['amount']
-    token: UserFlowStateReturnType['token']
-    isProxyReady: UserFlowStateReturnType['isProxyReady']
-    isWalletConnected: UserFlowStateReturnType['isWalletConnected']
-    isAllowanceReady: UserFlowStateReturnType['isAllowanceReady']
-  }) => void
+  onEverythingReady?: FinalCallbackType
 }
 
 export function useFlowState({
