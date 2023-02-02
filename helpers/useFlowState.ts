@@ -28,6 +28,8 @@ type UseFlowStateProps = {
   onGoBack?: CallbackType
 }
 
+type CallbacksType = UseFlowStateProps['onEverythingReady'] | UseFlowStateProps['onGoBack']
+
 export function useFlowState({
   amount,
   token,
@@ -56,6 +58,20 @@ export function useFlowState({
 
   const isProxyReady = !!availableProxies.length
 
+  const callBackIfDefined = (callback: CallbacksType) => {
+    if (typeof callback === 'function') {
+      callback({
+        availableProxies,
+        walletAddress,
+        amount,
+        token,
+        isProxyReady,
+        isWalletConnected,
+        isAllowanceReady,
+      })
+    }
+  }
+
   // wallet connection + DPM proxy machine
   useEffect(() => {
     const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
@@ -68,16 +84,8 @@ export function useFlowState({
       }
     }
     const proxyMachineSubscription = dpmMachine.subscribe(({ value, context, event }) => {
-      if (event.type === 'GO_BACK' && typeof onGoBack === 'function') {
-        onGoBack({
-          availableProxies,
-          walletAddress,
-          amount,
-          token,
-          isProxyReady,
-          isWalletConnected,
-          isAllowanceReady,
-        })
+      if (event.type === 'GO_BACK') {
+        callBackIfDefined(onGoBack)
       }
       if (
         value === 'txSuccess' &&
@@ -131,6 +139,12 @@ export function useFlowState({
   // allowance machine
   useEffect(() => {
     if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
+    if (!!token || !!amount || new BigNumber(amount || NaN).isNaN()) {
+      setLoading(false)
+      setAllowanceReady(false)
+      callBackIfDefined(onEverythingReady)
+      return
+    }
     if (token === 'ETH') {
       setLoading(false)
       setAllowanceReady(true)
@@ -156,16 +170,8 @@ export function useFlowState({
       },
     )
     const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
-      if (event.type === 'BACK' && typeof onGoBack === 'function') {
-        onGoBack({
-          availableProxies,
-          walletAddress,
-          amount,
-          token,
-          isProxyReady,
-          isWalletConnected,
-          isAllowanceReady,
-        })
+      if (event.type === 'BACK') {
+        callBackIfDefined(onGoBack)
       }
       if (value !== 'idle') {
         // do not update isAllowanceReady in the background if user started the allowance flow in the machine
@@ -183,22 +189,8 @@ export function useFlowState({
 
   // wrapping up
   useEffect(() => {
-    if (
-      isAllowanceReady &&
-      amount &&
-      token &&
-      availableProxies.length &&
-      typeof onEverythingReady === 'function'
-    ) {
-      onEverythingReady({
-        availableProxies,
-        walletAddress,
-        amount,
-        token,
-        isProxyReady,
-        isWalletConnected,
-        isAllowanceReady,
-      })
+    if (isAllowanceReady && amount && token && availableProxies.length) {
+      callBackIfDefined(onEverythingReady)
     }
   }, [isAllowanceReady, availableProxies, amount?.toString()])
 
