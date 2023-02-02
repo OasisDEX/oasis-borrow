@@ -76,6 +76,29 @@ export function FollowButtonControl({
     }
   }
   const isWalletConnected = accountIsConnectedValidator({ account: followerAddress })
+  async function unfollowVault(jwtToken: string) {
+    try {
+      await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
+      setIsFollowing(false)
+    } catch (e) {
+      console.error(e)
+    }
+    setProcessing(false)
+    uiChanges.publish(FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE, {
+      type: 'followed-vaults-limit-reached-change',
+      isLimitReached: false,
+    })
+  }
+
+  async function followVault(jwtToken: string) {
+    const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
+    try {
+      handleGetFollowedVaults(followedVaults)
+      setIsFollowing(true)
+    } catch (e) {
+      console.error(e)
+    }
+  }
   return (
     <FollowButton
       isProcessing={isProcessing}
@@ -87,21 +110,4 @@ export function FollowButtonControl({
       isWalletConnected={isWalletConnected}
     />
   )
-
-  async function unfollowVault(jwtToken: string) {
-    await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
-    setIsFollowing(false)
-    setProcessing(false)
-    uiChanges.publish(FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE, {
-      type: 'followed-vaults-limit-reached-change',
-      isLimitReached: false,
-    })
-  }
-
-  async function followVault(jwtToken: string) {
-    const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
-
-    handleGetFollowedVaults(followedVaults)
-    setIsFollowing(true)
-  }
 }
