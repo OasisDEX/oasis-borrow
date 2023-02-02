@@ -145,7 +145,7 @@ export function useFlowState({
     })
     const allowanceSubscription = allowanceForAccount$(token!, spender).subscribe(
       (allowanceData) => {
-        if (allowanceData) {
+        if (allowanceData && allowanceMachineSubscription) {
           setLoading(false)
           if (allowanceData.gt(zero) && allowanceData.gte(amount!)) {
             setAllowanceReady(true)
@@ -166,6 +166,10 @@ export function useFlowState({
           isWalletConnected,
           isAllowanceReady,
         })
+      }
+      if (value !== 'idle') {
+        // do not update isAllowanceReady in the background if user started the allowance flow in the machine
+        allowanceSubscription.unsubscribe()
       }
       if (value === 'txSuccess' && context.allowanceType && event.type === 'CONTINUE') {
         setAllowanceReady(true)
