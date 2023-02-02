@@ -21,7 +21,7 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
         marginBottom: 0,
         overflow: 'hidden',
         borderRadius: '50px',
-        maxWidth: ['400px', '530px'],
+        maxWidth: ['310px', '440px'],
         p: '3px 8px 3px 4px',
         '&:hover': {
           opacity: '80%',
