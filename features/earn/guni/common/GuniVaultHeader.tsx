@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
-import { FollowButtonControlProps } from 'features/follow/common/FollowButtonControl'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { YieldChange } from 'helpers/earn/calculations'
 import moment from 'moment'
