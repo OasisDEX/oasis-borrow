@@ -100,7 +100,7 @@ export function useFlowState({
       walletConnectionSubscription.unsubscribe()
       proxyMachineSubscription.unsubscribe()
     }
-  }, [])
+  }, [onGoBack])
 
   // list of (all) DPM proxies
   useEffect(() => {
@@ -185,14 +185,14 @@ export function useFlowState({
       allowanceMachineSubscription.unsubscribe()
       allowanceSubscription.unsubscribe()
     }
-  }, [walletAddress, availableProxies, amount?.toString(), token])
+  }, [walletAddress, availableProxies, amount?.toString(), token, onEverythingReady, onGoBack])
 
   // wrapping up
   useEffect(() => {
     if (isAllowanceReady && amount && token && availableProxies.length) {
       callBackIfDefined(onEverythingReady)
     }
-  }, [isAllowanceReady, availableProxies, amount?.toString()])
+  }, [isAllowanceReady, availableProxies, amount?.toString(), onEverythingReady])
 
   useEffect(() => {
     if (isProxyReady && allDefined(amount, token)) {
