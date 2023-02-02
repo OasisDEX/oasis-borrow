@@ -12,3 +12,9 @@ export type AjnaStatusStep =
   | 'allowance-collateral'
   | 'allowance-quote'
   | 'transaction'
+
+export type AjnaPairs = {
+  [ProductKey in AjnaProduct]: {
+    [key: string]: string[]
+  }
+}

@@ -254,10 +254,10 @@ export function DiscoverTableDataCell({
     >
       {!isValidElement(row[label]) ? (
         <DiscoverTableDataCellContent
-          label={label}
           follow={follow}
-          row={row}
+          label={label}
           onPositionClick={onPositionClick}
+          row={row}
         />
       ) : (
         row[label]
