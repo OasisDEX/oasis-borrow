@@ -18,6 +18,7 @@ type CallbackType = (params: {
   isProxyReady: UserFlowStateReturnType['isProxyReady']
   isWalletConnected: UserFlowStateReturnType['isWalletConnected']
   isAllowanceReady: UserFlowStateReturnType['isAllowanceReady']
+  asUserAction: boolean
 }) => void
 
 type UseFlowStateProps = {
@@ -38,6 +39,7 @@ export function useFlowState({
   onGoBack,
 }: UseFlowStateProps) {
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
+  const [asUserAction, setAsUserAction] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
   const [availableProxies, setAvailableProxies] = useState<string[]>(
@@ -68,6 +70,7 @@ export function useFlowState({
         isProxyReady,
         isWalletConnected,
         isAllowanceReady,
+        asUserAction,
       })
     }
   }
@@ -85,6 +88,7 @@ export function useFlowState({
     }
     const proxyMachineSubscription = dpmMachine.subscribe(({ value, context, event }) => {
       if (event.type === 'GO_BACK') {
+        setAsUserAction(true)
         callBackIfDefined(onGoBack)
       }
       if (
@@ -93,6 +97,7 @@ export function useFlowState({
         !availableProxies?.includes(context.result?.proxy) &&
         event.type === 'CONTINUE'
       ) {
+        setAsUserAction(true)
         setAvailableProxies([...(availableProxies || []), context.result.proxy])
       }
     })
@@ -162,6 +167,7 @@ export function useFlowState({
         if (allowanceData && allowanceMachineSubscription) {
           setLoading(false)
           if (allowanceData.gt(zero) && allowanceData.gte(amount!)) {
+            setAsUserAction(false)
             setAllowanceReady(true)
           } else {
             setAllowanceReady(false)
@@ -171,6 +177,7 @@ export function useFlowState({
     )
     const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
       if (event.type === 'BACK') {
+        setAsUserAction(true)
         callBackIfDefined(onGoBack)
       }
       if (value !== 'idle') {
@@ -178,6 +185,7 @@ export function useFlowState({
         allowanceSubscription.unsubscribe()
       }
       if (value === 'txSuccess' && context.allowanceType && event.type === 'CONTINUE') {
+        setAsUserAction(true)
         setAllowanceReady(true)
       }
     })
@@ -212,5 +220,6 @@ export function useFlowState({
     isAllowanceReady,
     isLoading, // just for the allowance loading state
     isEverythingReady: isAllowanceReady, // just for convenience, allowance is always the last step
+    asUserAction,
   }
 }
