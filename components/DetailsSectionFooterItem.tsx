@@ -1,3 +1,4 @@
+import { SystemStyleObject } from '@styled-system/css'
 import React, { ReactNode } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
@@ -29,7 +30,12 @@ export function DetailsSectionFooterItemWrapper({ children }: { children: ReactN
   )
 }
 
-export function DetailsSectionFooterItem({ title, value, change }: DetailsSectionFooterItemProps) {
+export function DetailsSectionFooterItem({
+  title,
+  value,
+  change,
+  sx = {},
+}: DetailsSectionFooterItemProps & { sx?: SystemStyleObject }) {
   return (
     <Flex
       as="li"
@@ -44,6 +50,7 @@ export function DetailsSectionFooterItem({ title, value, change }: DetailsSectio
           flexGrow: 1,
         },
         wordWrap: 'break-word',
+        ...sx,
       }}
     >
       <Text variant="paragraph4" color="neutral80" sx={{ mb: 1 }}>
