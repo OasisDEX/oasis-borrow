@@ -43,6 +43,8 @@ export function VaultHeadline({
   return (
     <Flex
       sx={{
+        flexWrap: 'wrap',
+        flexShrink: 0,
         flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'center'],
@@ -58,6 +60,7 @@ export function VaultHeadline({
           fontSize: '28px',
           color: 'primary100',
           alignItems: 'center',
+          whiteSpace: 'nowrap',
         }}
       >
         {tokenData instanceof Array && tokenData.length > 0 && (
@@ -80,7 +83,7 @@ export function VaultHeadline({
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
         {followVaultEnabled && (
-          <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
+          <Flex sx={{ flexWrap: 'wrap', flexShrink: 0, alignItems: 'center', columnGap: 2, ml: 3 }}>
             {followButton && <FollowButtonControl {...followButton} />}
             {shareButton && (
               <ShareButton
