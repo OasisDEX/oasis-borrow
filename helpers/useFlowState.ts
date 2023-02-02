@@ -141,15 +141,19 @@ export function useFlowState({
     }
   }, [walletAddress, userProxyList])
 
-  // allowance machine
+  // a case when proxy is ready and amount/token is not provided (skipping allowance)
   useEffect(() => {
     if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
-    if (!!token || !!amount || new BigNumber(amount || NaN).isNaN()) {
+    if (!token || !amount || new BigNumber(amount || NaN).isNaN()) {
       setLoading(false)
       setAllowanceReady(false)
       callBackIfDefined(onEverythingReady)
-      return
     }
+  }, [token, amount?.toString(), isProxyReady])
+
+  // allowance machine
+  useEffect(() => {
+    if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
     if (token === 'ETH') {
       setLoading(false)
       setAllowanceReady(true)
@@ -193,14 +197,14 @@ export function useFlowState({
       allowanceMachineSubscription.unsubscribe()
       allowanceSubscription.unsubscribe()
     }
-  }, [walletAddress, availableProxies, amount?.toString(), token, onEverythingReady, onGoBack])
+  }, [walletAddress, availableProxies, amount?.toString(), token, onGoBack])
 
   // wrapping up
   useEffect(() => {
     if (isAllowanceReady && amount && token && availableProxies.length) {
       callBackIfDefined(onEverythingReady)
     }
-  }, [isAllowanceReady, availableProxies, amount?.toString(), onEverythingReady])
+  }, [isAllowanceReady, availableProxies, amount?.toString()])
 
   useEffect(() => {
     if (isProxyReady && allDefined(amount, token)) {
