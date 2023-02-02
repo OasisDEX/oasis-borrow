@@ -12,6 +12,7 @@ import {
 } from '../../../../../components/vault/VaultChangesInformation'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { formatAmount } from '../../../../../helpers/formatters/format'
+import { zero } from '../../../../../helpers/zero'
 
 interface FeesInformationProps {
   estimatedGasPrice?: HasGasEstimation
@@ -22,20 +23,15 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
 
-  let oasisFeeDisplayInDebtToken
-
-  if (swap) {
-    if (swap.tokenFee.isZero()) {
-      oasisFeeDisplayInDebtToken = '0'
-    } else {
-      oasisFeeDisplayInDebtToken = formatAmount(
-        amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
-        swap[swap.collectFeeFrom].symbol,
-      ) + `${swap[swap.collectFeeFrom].symbol} +`
-    }
-  } else {
-    oasisFeeDisplayInDebtToken = '$0.00 +'
-  }
+  const oasisFeeDisplay =
+    swap && swap.tokenFee.gt(zero)
+      ? formatAmount(
+          amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
+          swap[swap.collectFeeFrom].symbol,
+        ) +
+        ' ' +
+        swap[swap.collectFeeFrom].symbol
+      : '0'
 
   return (
     <>
@@ -46,7 +42,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
             sx={{ alignItems: 'center', cursor: 'pointer' }}
             onClick={() => setShowBreakdown(!showBreakdown)}
           >
-            {oasisFeeDisplayInDebtToken}
+            {`${oasisFeeDisplay} + `}
             <Text ml={1}>
               {getEstimatedGasFeeTextOld(estimatedGasPrice, true, formatGasEstimationETH)}
             </Text>
@@ -63,7 +59,7 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
         <Grid pl={3} gap={2}>
           <VaultChangesInformationItem
             label={t('vault-changes.oasis-fee')}
-            value={oasisFeeDisplayInDebtToken}
+            value={oasisFeeDisplay}
           />
           <VaultChangesInformationItem
             label={t('max-gas-fee')}
