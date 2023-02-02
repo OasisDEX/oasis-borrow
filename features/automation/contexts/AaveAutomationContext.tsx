@@ -1,4 +1,4 @@
-import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { ManageAaveContext } from 'features/aave/manage/state'
 import { getAutomationAavePositionData } from 'features/automation/common/context/getAutomationAavePositionData'

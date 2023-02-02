@@ -8,7 +8,7 @@ import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/aave'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
@@ -248,6 +248,7 @@ export function createOpenAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
+                  actions: ['updateAllowance'],
                   target: 'editing',
                 },
               },
@@ -344,25 +345,25 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
-        validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
-          allDefined(userInput, effectiveProxyAddress, strategy),
+        validTransactionParameters: ({ userInput, effectiveProxyAddress, transition }) =>
+          allDefined(userInput, effectiveProxyAddress, transition),
         canOpenPosition: ({
           tokenBalance,
           userInput,
           effectiveProxyAddress,
           hasOpenedPosition,
-          strategy,
+                            transition,
         }) =>
           allDefined(
             tokenBalance,
             userInput.amount,
             effectiveProxyAddress,
             !hasOpenedPosition,
-            strategy,
+            transition,
           ) &&
           tokenBalance!.gte(userInput.amount!) &&
           (userInput.debtAmount || zero).lte(
-            strategy!.simulation.position.maxDebtToBorrowWithCurrentCollateral,
+            transition!.simulation.position.maxDebtToBorrowWithCurrentCollateral,
           ),
         isAllowanceNeeded,
       },
@@ -408,14 +409,14 @@ export function createOpenAaveStateMachine(
             ...context.userInput,
             amount: event.amount,
           },
-          strategy: event.amount ? context.strategy : undefined,
+          strategy: event.amount ? context.transition : undefined,
         })),
         setDebt: assign((context, event) => ({
           userInput: {
             ...context.userInput,
             debtAmount: event.debt,
           },
-          strategy: event.debt ? context.strategy : undefined,
+          transition: event.debt ? context.transition : undefined,
         })),
         calculateAuxiliaryAmount: assign((context) => {
           return {
@@ -617,6 +618,31 @@ export function createOpenAaveStateMachine(
         disableChangingAddresses: assign((_) => {
           return {
             blockSettingCalculatedAddresses: true,
+          }
+        }),
+        updateAllowance: assign((context, event) => {
+          const result = Object.entries(context.tokens).find(([_, token]) => event.token === token)
+          if (result === undefined) {
+            return {}
+          }
+
+          const [type] = result
+
+          if (context.allowance === undefined) {
+            return {
+              allowance: {
+                collateral: zero,
+                debt: zero,
+                deposit: zero,
+                [type]: event.amount,
+              },
+            }
+          }
+          return {
+            allowance: {
+              ...context.allowance,
+              [type]: event.amount,
+            },
           }
         }),
       },

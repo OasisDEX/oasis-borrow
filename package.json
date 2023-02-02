@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "5.17.0",
+  "version": "5.17.2",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=16.x"
@@ -226,6 +226,7 @@
     "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^7.10.0",
     "eslint-config-typestrict": "^1.0.0",
+    "eslint-plugin-deprecation": "^1.3.3",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-no-only-tests": "^2.4.0",
     "eslint-plugin-react": "^7.22.0",

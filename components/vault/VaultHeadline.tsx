@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
+import { Skeleton } from 'components/Skeleton'
 import {
   FollowButtonControl,
   FollowButtonControlProps,
@@ -10,10 +11,9 @@ import {
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
-import { AppSpinner } from 'helpers/AppSpinner'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Flex, Image } from 'theme-ui'
 
 import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetails'
@@ -21,15 +21,11 @@ import { HeadlineDetailsProp, VaultHeadlineDetails } from './VaultHeadlineDetail
 export type VaultHeadlineProps = {
   details: HeadlineDetailsProp[]
   followButton?: FollowButtonControlProps
-  header: string
+  header: ReactNode
   label?: string
   loading?: boolean
-  outline?: {
-    color: string
-    size: number
-  }
   shareButton?: boolean
-  token: string[]
+  token?: string[]
 }
 
 export function VaultHeadline({
@@ -38,9 +34,8 @@ export function VaultHeadline({
   header,
   label,
   loading = false,
-  outline,
   shareButton,
-  token,
+  token = [],
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
@@ -66,19 +61,7 @@ export function VaultHeadline({
         }}
       >
         {tokenData instanceof Array && tokenData.length > 0 && (
-          <Box
-            sx={{
-              mr: 2,
-              ...(outline && {
-                filter: `
-                  drop-shadow(${outline.size}px ${outline.size}px 0 ${outline.color})
-                  drop-shadow(${outline.size}px -${outline.size}px 0 ${outline.color})
-                  drop-shadow(-${outline.size}px ${outline.size}px 0 ${outline.color})
-                  drop-shadow(-${outline.size}px -${outline.size}px 0 ${outline.color})
-                `,
-              }),
-            }}
-          >
+          <Box sx={{ mr: 2 }}>
             {tokenData.map(({ iconCircle }, iconIndex) => (
               <Icon
                 key={`VaultHeadlineIcon_${iconCircle}`}
@@ -119,7 +102,7 @@ export function VaultHeadline({
           details.map((detail) => (
             <VaultHeadlineDetails {...detail} key={`VaultHeadlineDetails_${detail.label}`} />
           ))}
-        {loading && <AppSpinner variant="styles.spinner.large" />}
+        {loading && <Skeleton width="250px" height="24px" />}
       </Flex>
     </Flex>
   )

@@ -273,6 +273,7 @@ export function createManageAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
+                  actions: ['updateAllowance'],
                   target: ['reviewingAdjusting', '#manageAaveStateMachine.background.debouncing'],
                 },
               },
@@ -282,6 +283,7 @@ export function createManageAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
+                  actions: ['updateAllowance'],
                   target: ['manageDebt', '#manageAaveStateMachine.background.debouncingManage'],
                 },
               },
@@ -291,6 +293,7 @@ export function createManageAaveStateMachine(
               exit: ['killAllowanceMachine'],
               on: {
                 ALLOWANCE_SUCCESS: {
+                  actions: ['updateAllowance'],
                   target: [
                     'manageCollateral',
                     '#manageAaveStateMachine.background.debouncingManage',
@@ -437,11 +440,11 @@ export function createManageAaveStateMachine(
     },
     {
       guards: {
-        validTransactionParameters: ({ proxyAddress, strategy }) => {
-          return allDefined(proxyAddress, strategy)
+        validTransactionParameters: ({ proxyAddress, transition }) => {
+          return allDefined(proxyAddress, transition)
         },
-        validClosingTransactionParameters: ({ proxyAddress, strategy, manageTokenInput }) => {
-          return allDefined(proxyAddress, strategy, manageTokenInput?.closingToken)
+        validClosingTransactionParameters: ({ proxyAddress, transition, manageTokenInput }) => {
+          return allDefined(proxyAddress, transition, manageTokenInput?.closingToken)
         },
         canChangePosition: ({ web3Context, ownerAddress, currentPosition }) =>
           allDefined(web3Context, ownerAddress, currentPosition) &&
@@ -618,6 +621,31 @@ export function createManageAaveStateMachine(
           return {
             tokenBalance: event.balance.deposit.balance,
             tokenPrice: event.balance.deposit.price,
+          }
+        }),
+        updateAllowance: assign((context, event) => {
+          const result = Object.entries(context.tokens).find(([_, token]) => event.token === token)
+          if (result === undefined) {
+            return {}
+          }
+
+          const [type] = result
+
+          if (context.allowance === undefined) {
+            return {
+              allowance: {
+                collateral: zero,
+                debt: zero,
+                deposit: zero,
+                [type]: event.amount,
+              },
+            }
+          }
+          return {
+            allowance: {
+              ...context.allowance,
+              [type]: event.amount,
+            },
           }
         }),
       },

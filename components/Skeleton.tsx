@@ -69,11 +69,19 @@ function SkeletonLine({
   )
 }
 
-export function Skeleton({ cols = 1, count = 1, gap = 3, ...rest }: SkeletonProps) {
+export function Skeleton({ cols = 1, count = 1, gap = 3, width = '100%', ...rest }: SkeletonProps) {
+  const isPercentageWidth = typeof width === 'string' && width.endsWith('%')
+
   return (
-    <Grid gap={gap} sx={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+    <Grid
+      gap={gap}
+      sx={{
+        width: isPercentageWidth ? '100%' : width,
+        gridTemplateColumns: `repeat(${cols}, ${isPercentageWidth ? '1fr' : width})`,
+      }}
+    >
       {[...Array(count)].map((_item, i) => (
-        <SkeletonLine key={i} {...rest} />
+        <SkeletonLine key={i} width={width} {...rest} />
       ))}
     </Grid>
   )

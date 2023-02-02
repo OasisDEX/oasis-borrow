@@ -22,12 +22,20 @@ export function FeesInformation({ estimatedGasPrice, swap }: FeesInformationProp
   const { t } = useTranslation()
   const [showBreakdown, setShowBreakdown] = React.useState(false)
 
-  const oasisFeeDisplayInDebtToken = swap
-    ? formatAmount(
+  let oasisFeeDisplayInDebtToken
+
+  if (swap) {
+    if (swap.tokenFee.isZero()) {
+      oasisFeeDisplayInDebtToken = '0'
+    } else {
+      oasisFeeDisplayInDebtToken = formatAmount(
         amountFromWei(swap.tokenFee, swap[swap.collectFeeFrom].symbol),
         swap[swap.collectFeeFrom].symbol,
       ) + `${swap[swap.collectFeeFrom].symbol} +`
-    : '$0.00 +'
+    }
+  } else {
+    oasisFeeDisplayInDebtToken = '$0.00 +'
+  }
 
   return (
     <>

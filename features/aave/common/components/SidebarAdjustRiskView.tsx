@@ -64,10 +64,10 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     onChainPosition,
   }: SecondaryInputProps) {
     const { t } = useTranslation()
-    const strategy = state.context.strategy
+    const transition = state.context.transition
     const positionTransitionHasMinConfigurableRisk = transitionHasMinConfigurableRiskRatio(strategy)
 
-    const simulation = strategy?.simulation
+    const simulation = transition?.simulation
     const targetPosition = simulation?.position
 
     const maxRisk =
@@ -75,7 +75,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
 
     const minRisk = positionTransitionHasMinConfigurableRisk
       ? BigNumber.max(
-          strategy?.simulation?.minConfigurableRiskRatio.loanToValue,
+        transition?.simulation?.minConfigurableRiskRatio.loanToValue,
           viewConfig.riskRatios.minimum.loanToValue,
         )
       : viewConfig.riskRatios.minimum.loanToValue
@@ -201,7 +201,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             withBullet={false}
           />
         ) : (
-          state.context.strategy &&
+          state.context.transition &&
           hasUserInteracted(state) && (
             <MessageCard
               messages={[

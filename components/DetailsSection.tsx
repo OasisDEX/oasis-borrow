@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { PropsWithChildren, ReactNode } from 'react'
 import { Box, Card, Flex, Heading } from 'theme-ui'
 
 import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
 
+type DetailsSectionButtons = (ButtonWithAction | ButtonWithActions)[]
+
 interface DetailsSectionProps {
-  title?: string | JSX.Element
   badge?: boolean
-  buttons?: (ButtonWithAction | ButtonWithActions)[]
-  content: string | JSX.Element
-  footer?: string | JSX.Element
+  buttons?: DetailsSectionButtons
+  content: ReactNode
+  footer?: ReactNode
+  title?: ReactNode
 }
 
 export function DetailsSection({ title, badge, buttons, content, footer }: DetailsSectionProps) {
@@ -21,7 +23,9 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
       }}
     >
       {title && typeof title === 'string' && (
-        <TitleWrapper title={title} badge={badge} buttons={buttons} />
+        <DetailsSectionTitle badge={badge} buttons={buttons}>
+          {title}
+        </DetailsSectionTitle>
       )}
       {title && typeof title !== 'string' && title}
       <Box
@@ -46,13 +50,17 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
   )
 }
 
-interface TitleWrapperProps {
-  title: string
+interface DetailsSectionTitleProps {
   badge?: boolean
-  buttons?: (ButtonWithAction | ButtonWithActions)[]
+  buttons?: DetailsSectionButtons
+  children: ReactNode
 }
 
-function TitleWrapper({ title, badge, buttons }: TitleWrapperProps) {
+export function DetailsSectionTitle({
+  badge,
+  buttons,
+  children,
+}: PropsWithChildren<DetailsSectionTitleProps>) {
   return (
     <Flex
       sx={{
@@ -70,9 +78,13 @@ function TitleWrapper({ title, badge, buttons }: TitleWrapperProps) {
           height: '40px',
         }}
       >
-        <Heading as="p" variant="boldParagraph2">
-          {title}
-        </Heading>
+        {typeof children === 'string' ? (
+          <Heading as="p" variant="boldParagraph2">
+            {children}
+          </Heading>
+        ) : (
+          children
+        )}
         {badge !== undefined && <VaultTabTag isEnabled={badge} />}
       </Flex>
       {buttons && (

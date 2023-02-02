@@ -16,6 +16,7 @@ import { HasGasEstimation } from '../../../../helpers/form'
 import { formatCryptoBalance } from '../../../../helpers/formatters/format'
 import { useHash } from '../../../../helpers/useHash'
 import { zero } from '../../../../helpers/zero'
+import { IStrategyConfig } from '../../../aave/common/StrategyConfigTypes'
 import { getFee, transitionHasSwap } from '../../../aave/oasisActionsLibWrapper'
 import { AaveSimulateTitle } from '../../../aave/open/components/AaveSimulateTitle'
 import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
@@ -35,12 +36,14 @@ function mapSimulation(simulation?: Simulation): string[] {
 
 function SimulationSection({
   strategy,
+  transition,
   token,
   userInputAmount,
   gasPrice,
   defaultRiskRatio,
 }: {
-  strategy?: ISimplePositionTransition | IPositionTransition
+  strategy: IStrategyConfig
+  transition?: ISimplePositionTransition | IPositionTransition
   token: string
   userInputAmount?: BigNumber
   gasPrice?: HasGasEstimation
@@ -48,17 +51,16 @@ function SimulationSection({
 }) {
   const { t } = useTranslation()
   const [, setHash] = useHash<string>()
-  const { aaveSthEthYieldsQuery } = useAaveContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext(strategy.protocol)
   const [simulation, setSimulation] = useState<CalculateSimulationResult>()
   const amount = userInputAmount || new BigNumber(100)
 
-  const swapFee = transitionHasSwap(strategy)
-    ? (strategy?.simulation.swap && getFee(strategy?.simulation.swap)) || zero
+  const swapFee = transitionHasSwap(transition)
+    ? (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
     : zero
-
   const gasFee = gasPrice?.gasEstimationEth || zero
   const fees = swapFee.plus(gasFee)
-  const riskRatio = strategy?.simulation.position.riskRatio || defaultRiskRatio
+  const riskRatio = transition?.simulation.position.riskRatio || defaultRiskRatio
 
   useEffect(() => {
     aaveSthEthYieldsQuery(riskRatio, ['7Days', '30Days', '90Days', '1Year'])
@@ -127,7 +129,8 @@ export function SimulateSectionComponent() {
   const { stateMachine } = useOpenAaveStateMachineContext()
   const simulationSectionProps = useSelector(stateMachine, (state) => {
     return {
-      strategy: state.context.strategy,
+      strategy: state.context.strategyConfig,
+      transition: state.context.transition,
       token: state.context.tokens.debt,
       userInputAmount: state.context.userInput.amount,
       gasPrice: state.context.estimatedGasPrice,

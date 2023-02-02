@@ -29,7 +29,7 @@ export type TransactionParametersStateMachineContext<T extends BaseTransactionPa
 }
 
 export type TransactionParametersStateMachineResponseEvent =
-  | { type: 'STRATEGY_RECEIVED'; strategy?: IPositionTransition | ISimplePositionTransition }
+  | { type: 'STRATEGY_RECEIVED'; transition?: IPositionTransition | ISimplePositionTransition }
   | { type: 'ERROR_GETTING_STRATEGY' }
   | { type: 'GAS_ESTIMATION_RECEIVED'; estimatedGas: number }
   | { type: 'GAS_PRICE_ESTIMATION_RECEIVED'; estimatedGasPrice: HasGasEstimation }
@@ -145,7 +145,7 @@ export function createTransactionParametersStateMachine<T extends BaseTransactio
         sendStrategy: sendParent(
           (context): TransactionParametersStateMachineResponseEvent => ({
             type: 'STRATEGY_RECEIVED',
-            strategy: context.strategy!,
+            transition: context.strategy!,
           }),
         ),
         sendGasEstimation: sendParent(

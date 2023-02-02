@@ -1,6 +1,7 @@
 import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { FollowButton } from 'features/follow/common/FollowButton'
+import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import {
   followVaultUsingApi,
   getFollowFromApi,
@@ -59,6 +60,7 @@ export function FollowButtonControl({
       }
     }
   }
+  const isWalletConnected = accountIsConnectedValidator({ account: followerAddress })
   return (
     <FollowButton
       isProcessing={isProcessing}
@@ -66,6 +68,7 @@ export function FollowButtonControl({
       buttonClickHandler={buttonClickHandler}
       short={short}
       sx={sx}
+      isWalletConnected={isWalletConnected}
     />
   )
 

@@ -406,6 +406,7 @@
     "updated": "updated"
   },
   "active-triggers": "active triggers",
+  "i-understand": "I understand ",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -2109,7 +2110,8 @@
     "aave": {
       "product-header": {
         "token-pair-list": {
-          "aave-steth-eth": "Aave stETH yield multiple"
+          "aave-steth-eth": "Aave stETH yield multiple",
+          "aave-wsteth-eth": "Aave wstETH yield multiple"
         },
         "current-yield": "Current yield",
         "90-day-avg-yield": "90 Day Avg",
@@ -2281,14 +2283,61 @@
       "collaterals-you-can-borrow": "Collaterals you can borrow",
       "annual-variable-rates": "Annual variable rates"
     },
+    "risk": {
+      "intro": "Anja is a new money markets DeFi protocol. Benefiting from more competitive, market-driven parameters. A few things to note before opening a position on Ajna:",
+      "bullet-points": [
+        "Its a new DeFi protocol.",
+        "Depositing to Ajna pools has a 24 hours withdrawal penalty. This is done to avoid rapid changes in rates."
+      ]
+    },
+    "history": {
+      "title": "History is coming soon",
+      "notice": "We're currently building human readable history for Ajna. Check back in a few weeks to see your position history"
+    },
     "borrow": {
-      "open": {
+      "common": {
         "headline": {
-          "header": "Borrow {{collateralToken}} against {{quoteToken}}",
           "current-market-price": "Current Market Price"
         },
+        "overview": {
+          "liquidation-price": "Liquidation Price",
+          "below-current-price": "{{belowCurrentPrice}} below current price",
+          "loan-to-value": "Loan to value",
+          "collateral-locked": "Collateral locked",
+          "position-debt": "Position debt"
+        },
+        "footer": {
+          "annual-net-borrow-cost": "Annual net borrow cost",
+          "available-to-borrow": "Available to borrow",
+          "available-to-withdraw": "Available to withdraw"
+        },
+        "banners": {
+          "tokens": {
+            "title": "This positions earns AJNA tokens",
+            "description": "Opening this Ajna position on Oasis.app makes you eligible for AJNA token rewards. You wallet will automatically get AJNA token rewards.",
+            "button": "Read about AJNA token rewards"
+          }
+        },
         "form": {
-          "title": "Configure your Ajna Position"
+          "title": {
+            "risk": "Things to know before opening an Ajna position",
+            "setup": "Configure your Ajna Position",
+            "manage": "Manage your Ajna Position",
+            "transaction": "Confirm your Ajna Position"
+          }
+        }
+      },
+      "open": {
+        "headline": {
+          "header": "Borrow {{quoteToken}} against {{collateralToken}}"
+        },
+        "form": {
+          "confirm": "Review and confirm changes in your Ajna Position."
+        }
+      },
+      "manage": {
+        "headline": {
+          "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
         }
       }
     }

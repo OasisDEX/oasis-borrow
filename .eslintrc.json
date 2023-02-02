@@ -4,7 +4,7 @@
     "es6": true
   },
   "extends": ["typestrict"],
-  "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports"],
+  "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports", "deprecation"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json",
@@ -181,7 +181,8 @@
       }
     ],
     "yoda": ["error", "never"],
-    "no-only-tests/no-only-tests": "error"
+    "no-only-tests/no-only-tests": "error",
+    "deprecation/deprecation": "warn" // or "error" to have stricter rule
   },
   "overrides": [
     {
