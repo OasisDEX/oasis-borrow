@@ -1,8 +1,4 @@
-import {
-  ajnaFormExternalSteps,
-  ajnaFormStepsWithBack,
-  ajnaFormStepsWithTransaction,
-} from 'features/ajna/common/consts'
+import { ajnaFormExternalSteps, ajnaFormStepsWithTransaction } from 'features/ajna/common/consts'
 import { AjnaStatusStep } from 'features/ajna/common/types'
 
 export interface GeneralStepManager {
@@ -11,10 +7,6 @@ export interface GeneralStepManager {
 
 export function isExternalStep({ currentStep }: GeneralStepManager) {
   return ajnaFormExternalSteps.includes(currentStep)
-}
-
-export function isStepWithBack({ currentStep }: GeneralStepManager) {
-  return ajnaFormStepsWithBack.includes(currentStep)
 }
 
 export function isStepWithTransaction({ currentStep }: GeneralStepManager) {

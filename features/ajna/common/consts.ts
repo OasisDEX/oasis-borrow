@@ -17,7 +17,7 @@ export const steps: {
   }
 } = {
   borrow: {
-    open: ['risk', 'setup', 'dpm', 'transaction'],
+    open: ['risk', 'setup', 'transaction'],
     manage: ['manage', 'transaction'],
   },
   multiply: {
@@ -31,5 +31,4 @@ export const steps: {
 }
 
 export const ajnaFormExternalSteps: AjnaStatusStep[] = ['dpm']
-export const ajnaFormStepsWithBack: AjnaStatusStep[] = ['transaction']
 export const ajnaFormStepsWithTransaction: AjnaStatusStep[] = ['transaction']

@@ -4,11 +4,7 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
-import {
-  isExternalStep,
-  isStepWithBack,
-  isStepWithTransaction,
-} from 'features/ajna/contexts/ajnaStepManager'
+import { isExternalStep, isStepWithTransaction } from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
 import React, {
   Dispatch,
@@ -42,7 +38,6 @@ interface AjnaBorrowPosition {
 interface AjnaBorrowSteps {
   currentStep: AjnaStatusStep
   isExternalStep: boolean
-  isStepWithBack: boolean
   isStepWithTransaction: boolean
   isStepValid: boolean
   steps: AjnaStatusStep[]
@@ -122,7 +117,6 @@ export function AjnaBorrowContextProvider({
       currentStep,
       steps,
       isExternalStep: isExternalStep({ currentStep }),
-      isStepWithBack: isStepWithBack({ currentStep }),
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
       isStepValid: isBorrowStepValid({ currentStep, formState: form.state }),
       setStep,

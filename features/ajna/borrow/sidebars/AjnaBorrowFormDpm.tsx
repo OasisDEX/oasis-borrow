@@ -12,19 +12,15 @@ export function AjnaBorrowFormDpm() {
   const flowState = useFlowState({
     amount: new BigNumber(500),
     token: 'DAI',
-    onEverythingReady() {
-      setNextStep()
+    onEverythingReady(params) {
+      console.log(params)
+      // setNextStep(params)
     },
-    onGoBack() {
-      setPrevStep()
+    onGoBack(params) {
+      console.log(params)
+      // setPrevStep()
     },
   })
 
-  return (
-    <>
-      currentStep: {currentStep}
-      <button onClick={() => setPrevStep()}>back</button>
-      <FlowSidebar {...flowState} />
-    </>
-  )
+  return <FlowSidebar {...flowState} />
 }
