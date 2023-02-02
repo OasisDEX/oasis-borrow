@@ -91,8 +91,8 @@ export function FollowButtonControl({
   }
 
   async function followVault(jwtToken: string) {
-    const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
     try {
+      const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
       handleGetFollowedVaults(followedVaults)
       setIsFollowing(true)
     } catch (e) {
