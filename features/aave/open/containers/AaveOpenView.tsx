@@ -40,7 +40,7 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
       tokenPrice={state.context.tokenPrice}
       debtPrice={state.context.debtPrice}
       nextPosition={
-        hasUserInteracted(state) ? state.context.strategy?.simulation.position : undefined
+        hasUserInteracted(state) ? state.context.transition?.simulation.position : undefined
       }
     />
   )
@@ -106,6 +106,6 @@ function AaveOpenContainer({
 }
 
 export function AaveOpenView({ config }: { config: IStrategyConfig }) {
-  const { aaveStateMachine } = useAaveContext()
+  const { aaveStateMachine } = useAaveContext(config.protocol)
   return <AaveOpenContainer aaveStateMachine={aaveStateMachine} config={config} />
 }

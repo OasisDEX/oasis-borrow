@@ -11,11 +11,14 @@ import { useSimulationYields } from 'helpers/useSimulationYields'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { IStrategyConfig } from '../../features/aave/common/StrategyConfigTypes'
+import { LendingProtocol } from '../../lendingProtocols'
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
 
 type ProductCardEarnAaveProps = {
   cardData: TokenMetadataType
+  strategy: IStrategyConfig
 }
 
 const aaveEarnCalcValueBasis = {
@@ -23,10 +26,14 @@ const aaveEarnCalcValueBasis = {
   token: 'ETH',
 }
 
-export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
+export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
-  const { aaveSTETHReserveConfigurationData, aaveAvailableLiquidityInUSDC$ } = useAaveContext()
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
+  const { earnCollateralsReserveData, aaveAvailableLiquidityInUSDC$ } = useAaveContext(
+    LendingProtocol.AaveV2,
+  )
+  const [aaveReserveState, aaveReserveStateError] = useObservable(
+    earnCollateralsReserveData[strategy.tokens.collateral],
+  )
   const [aaveAvailableLiquidityETH, aaveAvailableLiquidityETHError] = useObservable(
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )
@@ -37,6 +44,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
     amount: aaveEarnCalcValueBasis.amount,
     riskRatio: maximumMultiple,
     fields: ['7Days', '90Days'],
+    strategy: strategy,
   })
 
   return (
@@ -99,7 +107,7 @@ export function ProductCardEarnAave({ cardData }: ProductCardEarnAaveProps) {
               },
             ]}
             button={{
-              link: `/earn/aave/open/${cardData.symbol}`,
+              link: `/earn/aave/v2/open/${cardData.symbol}`,
               text: t('nav.earn'),
             }}
             background={cardData.background}

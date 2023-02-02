@@ -43,7 +43,8 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
         {([_productCardsData]) => (
           <ProductCardsWrapper>
             {aaveStrategyCards.map((tokenData) => {
-              switch (getAaveStrategy(tokenData.symbol)[0].type) {
+              const aaveStrategy = getAaveStrategy(tokenData.symbol)[0]
+              switch (aaveStrategy.type) {
                 case 'Multiply':
                   return (
                     <ProductCardMultiplyAave
@@ -56,6 +57,7 @@ function ProductCardsContainer(props: ProductCardsContainerProps) {
                     <ProductCardEarnAave
                       cardData={tokenData}
                       key={`ProductCardEarnAave_${tokenData.symbol}`}
+                      strategy={aaveStrategy}
                     />
                   )
                 default:
