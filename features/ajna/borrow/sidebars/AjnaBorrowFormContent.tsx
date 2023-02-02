@@ -16,6 +16,7 @@ export function AjnaBorrowFormContent() {
   const {
     environment: { collateralToken, flow, product, quoteToken },
     steps: { currentStep, isStepValid, setNextStep, setStep },
+    tx: { isTxStarted, isTxError, isTxWaitingForApproval },
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
@@ -54,12 +55,14 @@ export function AjnaBorrowFormContent() {
       disabled: !isStepValid,
       action: setNextStep,
     },
-    ...(currentStep === 'transaction' && {
-      textButton: {
-        label: t('back-to-editing'),
-        action: () => setStep(flow === 'open' ? 'setup' : 'manage'),
-      },
-    }),
+    // TODO: think of a smart way of managing if this button should be visible
+    ...(currentStep === 'transaction' &&
+      (!isTxStarted || isTxWaitingForApproval || isTxError) && {
+        textButton: {
+          label: t('back-to-editing'),
+          action: () => setStep(flow === 'open' ? 'setup' : 'manage'),
+        },
+      }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
