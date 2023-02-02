@@ -35,8 +35,6 @@ export function useFlowState({
   onEverythingReady,
   onGoBack,
 }: UseFlowStateProps) {
-  console.log('amount.toString()', amount?.toString())
-
   const [isWalletConnected, setWalletConnected] = useState<boolean>(false)
   const [walletAddress, setWalletAddress] = useState<string>()
   const [userProxyList, setUserProxyList] = useState<UserDpmAccount[]>([])
@@ -177,7 +175,7 @@ export function useFlowState({
       allowanceMachineSubscription.unsubscribe()
       allowanceSubscription.unsubscribe()
     }
-  }, [walletAddress, availableProxies, amount, token])
+  }, [walletAddress, availableProxies, amount?.toString(), token])
 
   // wrapping up
   useEffect(() => {
@@ -198,13 +196,13 @@ export function useFlowState({
         isAllowanceReady,
       })
     }
-  }, [isAllowanceReady, availableProxies, amount])
+  }, [isAllowanceReady, availableProxies, amount?.toString()])
 
   useEffect(() => {
     if (isProxyReady && allDefined(amount, token)) {
       setLoading(true)
     }
-  }, [amount])
+  }, [amount?.toString()])
 
   return {
     dpmMachine,
