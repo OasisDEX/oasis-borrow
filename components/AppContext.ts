@@ -194,6 +194,12 @@ import {
 } from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
+import {
+  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+  FollowedVaultsLimitReachedChange,
+  FollowedVaultsLimitReachedChangeAction,
+  followedVaultsLimitReachedChangeReducer,
+} from 'features/follow/common/followedVaultsLimitReached'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import {
   TAB_CHANGE_SUBJECT,
@@ -231,6 +237,13 @@ import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
+import {
+  getCreateDPMAccountTransactionMachine,
+  getDPMAccountStateMachine,
+} from 'features/stateMachines/dpmAccount'
+import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
+import { transactionContextService } from 'features/stateMachines/transaction'
 import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
@@ -279,7 +292,15 @@ import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
 import {
@@ -291,7 +312,6 @@ import { LendingProtocol } from '../lendingProtocols'
 import { getAaveV2Services } from '../lendingProtocols/aave-v2'
 import { getAaveV3Services } from '../lendingProtocols/aave-v3'
 import curry from 'ramda/src/curry'
-
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -362,6 +382,7 @@ export type SupportedUIChangeType =
   | NotificationChange
   | TxPayloadChange
   | AutoTakeProfitFormChange
+  | FollowedVaultsLimitReachedChange
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
@@ -374,6 +395,7 @@ export type LegalUiChanges = {
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
   AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
+  FollowedVaultsLimitReachedChangeAction: FollowedVaultsLimitReachedChangeAction
 }
 
 export type UIChanges = {
@@ -474,7 +496,10 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
   uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
-
+  uiChangesSubject.configureSubject(
+    FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+    followedVaultsLimitReachedChangeReducer,
+  )
   return uiChangesSubject
 }
 
@@ -1317,6 +1342,39 @@ export function setupAppContext() {
     [LendingProtocol.AaveV3]: aaveV3,
   }
 
+  const contextForAddress$ = connectedContext$.pipe(
+    distinctUntilKeyChanged('account'),
+    shareReplay(1),
+  )
+
+  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
+
+  const commonTransactionServices = transactionContextService(context$)
+
+  const dpmAccountTransactionMachine = getCreateDPMAccountTransactionMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
+  const dpmAccountStateMachine = getDPMAccountStateMachine(
+    txHelpers$,
+    gasEstimation$,
+    dpmAccountTransactionMachine,
+  )
+
+  const allowanceStateMachine = getAllowanceStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
+  const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
+    (token: string, spender: string) =>
+      contextForAddress$.pipe(switchMap(({ account }) => allowance$(token, account, spender))),
+    (token, spender) => `${token}-${spender}`,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1393,6 +1451,12 @@ export function setupAppContext() {
     ownersPositionsList$,
     followedList$,
     protocols,
+    commonTransactionServices,
+    gasEstimation$,
+    dpmAccountStateMachine,
+    allowanceStateMachine,
+    allowanceForAccount$,
+    contextForAddress$,
   }
 }
 

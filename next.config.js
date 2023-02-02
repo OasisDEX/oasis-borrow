@@ -143,17 +143,22 @@ const conf = withBundleAnalyzer(
           },
           {
             source: '/multiply/aave/open/:strategy*',
-            destination: '/multiply/aave-v2/open/:strategy*',
+            destination: '/multiply/aave/v2/open/:strategy*',
             permanent: true,
           },
           {
             source: '/earn/aave/open/:strategy*',
-            destination: '/earn/aave-v2/open/:strategy*',
+            destination: '/earn/aave/v2/open/:strategy*',
             permanent: true,
           },
           {
-            source: '/aave/:vault*',
-            destination: '/aave-v2/:vault*',
+            source: '/aave/:vault(0x[a-fA-F0-9]{40}$)*',
+            destination: '/aave/v2/:vault*',
+            permanent: true,
+          },
+          {
+            source: '/aave/:vault(\\d{1,})*',
+            destination: '/aave/v2/:vault*',
             permanent: true,
           },
         ]

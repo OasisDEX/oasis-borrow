@@ -1,4 +1,5 @@
 import { useActor } from '@xstate/react'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -8,7 +9,6 @@ import { ActorRefFrom, Sender, StateFrom } from 'xstate'
 import { getToken } from '../../../blockchain/tokensMetadata'
 import { Radio } from '../../../components/forms/Radio'
 import { SidebarSection, SidebarSectionProps } from '../../../components/sidebar/SidebarSection'
-import { TxStatusCardProgress, TxStatusCardSuccess } from '../../../components/vault/TxStatusCard'
 import { BigNumberInput } from '../../../helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from '../../../helpers/formatters/format'
 import { handleNumericInput } from '../../../helpers/input'
@@ -19,13 +19,17 @@ import {
 
 interface AllowanceViewProps {
   allowanceMachine: ActorRefFrom<AllowanceStateMachine>
-  steps: [number, number]
+  steps?: [number, number]
+  isLoading?: boolean
+  backButtonOnFirstStep?: boolean
 }
 
 interface AllowanceViewStateProps {
   state: StateFrom<AllowanceStateMachine>
   send: Sender<AllowanceStateMachineEvent>
-  steps: [number, number]
+  steps?: [number, number]
+  isLoading?: boolean
+  backButtonOnFirstStep?: boolean
 }
 
 function AllowanceInfoStateViewContent({
@@ -38,10 +42,15 @@ function AllowanceInfoStateViewContent({
   const isUnlimited = allowanceType === 'unlimited'
   const isMinimum = allowanceType === 'minimum'
   const isCustom = allowanceType === 'custom'
+
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
+
   return (
     <Grid gap={3}>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-        {t('vault-form.subtext.commonAllowance', { token })}
+        {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
       </Text>
       <Radio
         onChange={() => send({ type: 'SET_ALLOWANCE', allowanceType: 'unlimited' })}
@@ -52,7 +61,6 @@ function AllowanceInfoStateViewContent({
           {t('unlimited-allowance')}
         </Text>
       </Radio>
-
       <Radio
         onChange={() => send({ type: 'SET_ALLOWANCE', allowanceType: 'minimum' })}
         name="allowance-open-form"
@@ -99,7 +107,13 @@ function AllowanceInfoStateViewContent({
   )
 }
 
-function AllowanceInfoStateView({ state, send, steps }: AllowanceViewStateProps) {
+function AllowanceInfoStateView({
+  state,
+  send,
+  steps,
+  isLoading,
+  backButtonOnFirstStep,
+}: AllowanceViewStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -107,36 +121,49 @@ function AllowanceInfoStateView({ state, send, steps }: AllowanceViewStateProps)
     content: <AllowanceInfoStateViewContent state={state} send={send} />,
     primaryButton: {
       steps: steps,
-      isLoading: false,
+      isLoading,
       disabled: !state.can('NEXT_STEP'),
       label: t('approve-allowance'),
       action: () => send('NEXT_STEP'),
     },
+    textButton: backButtonOnFirstStep
+      ? {
+          action: () => {
+            send('BACK')
+          },
+          label: t('go-back'),
+        }
+      : undefined,
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 
 function AllowanceInProgressStateViewContent({ state }: Pick<AllowanceViewStateProps, 'state'>) {
   const { t } = useTranslation()
-  const [transactionState] = useActor(state.context.refTransactionMachine!)
-  const { token } = state.context
-  const { txHash, etherscanUrl } = transactionState.context
+  const { token, minimumAmount, allowanceType, amount } = state.context
+
+  const isUnlimited = allowanceType === 'unlimited'
+  const isMinimum = allowanceType === 'minimum'
+
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
+
   return (
     <Grid gap={3}>
       <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-        {t('vault-form.subtext.commonAllowance', { token })}
+        {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
       </Text>
-      <TxStatusCardProgress
-        text={t('setting-allowance-for', { token })}
-        txHash={txHash!}
-        etherscan={etherscanUrl || ''}
-      />
     </Grid>
   )
 }
 
 function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps) {
   const { t } = useTranslation()
+  const { token } = state.context
+  const [transactionState] = useActor(state.context.refTransactionMachine!)
+  const { txHash, etherscanUrl } = transactionState.context
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
@@ -147,28 +174,39 @@ function AllowanceInProgressStateView({ state, steps }: AllowanceViewStateProps)
       disabled: true,
       label: t('approving-allowance'),
     },
+    status: [
+      {
+        type: 'progress',
+        text: t('setting-allowance-for', { token }),
+        etherscan: etherscanUrl || '',
+        txHash: txHash!,
+      },
+    ],
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 
 function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const [transactionState] = useActor(state.context.refTransactionMachine!)
-  const { token } = state.context
+  const { token, minimumAmount, allowanceType, amount } = state.context
   const { txHash, etherscanUrl } = transactionState.context
+
+  const isUnlimited = allowanceType === 'unlimited'
+  const isMinimum = allowanceType === 'minimum'
+
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: (
       <Grid gap={3}>
         <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-          {t('vault-form.subtext.commonAllowance', { token })}
+          {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
         </Text>
-        <TxStatusCardSuccess
-          text={t('setting-allowance-for', { token })}
-          txHash={txHash!}
-          etherscan={etherscanUrl || ''}
-        />
       </Grid>
     ),
     primaryButton: {
@@ -178,20 +216,36 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
       label: t('continue'),
       action: () => send('CONTINUE'),
     },
+    status: [
+      {
+        type: 'success',
+        text: t('setting-allowance-for', { token }),
+        etherscan: etherscanUrl || '',
+        txHash: txHash!,
+      },
+    ],
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 
 function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
   const { t } = useTranslation()
-  const { token } = state.context
+  const { token, minimumAmount, allowanceType, amount } = state.context
+
+  const isUnlimited = allowanceType === 'unlimited'
+  const isMinimum = allowanceType === 'minimum'
+
+  const allowanceAmountInfo = isUnlimited
+    ? t('unlimited-allowance')
+    : `${formatAmount(isMinimum ? minimumAmount : amount || zero, token)} ${token}`
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('vault-form.header.allowance', { token: state.context.token }),
     content: (
       <Grid gap={3}>
         <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
-          {t('vault-form.subtext.commonAllowance', { token })}
+          {t('vault-form.subtext.commonAllowance', { allowanceAmountInfo })}
         </Text>
       </Grid>
     ),
@@ -206,15 +260,29 @@ function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
       action: () => send('BACK'),
     },
   }
+
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function AllowanceView({ allowanceMachine, steps }: AllowanceViewProps) {
+export function AllowanceView({
+  allowanceMachine,
+  steps,
+  isLoading,
+  backButtonOnFirstStep,
+}: AllowanceViewProps) {
   const [state, send] = useActor(allowanceMachine)
 
   switch (true) {
     case state.matches('idle'):
-      return <AllowanceInfoStateView state={state} send={send} steps={steps} />
+      return (
+        <AllowanceInfoStateView
+          state={state}
+          send={send}
+          steps={steps}
+          isLoading={isLoading}
+          backButtonOnFirstStep={backButtonOnFirstStep}
+        />
+      )
     case state.matches('txFailure'):
       return <AllowanceRetryStateView state={state} send={send} steps={steps} />
     case state.matches('txInProgress'):

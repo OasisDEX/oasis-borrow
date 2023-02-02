@@ -44,6 +44,7 @@
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
   "back": "Back",
+  "go-back": "Go back",
   "ok": "OK",
   "back-to-editing": "Back to editing",
   "view-vault-link": "<0>View Vault -></0>",
@@ -89,6 +90,7 @@
   "unfollow": "Unfollow",
   "loading": "Loading",
   "following": "Following",
+  "followed-vaults-limit": "Follow Limit Reached",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -450,7 +452,7 @@
           "tabLabel": "Multiply on Oasis",
           "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
           "tabParaLinkContent": "See all Multiply collateral types →",
-          "aaveTabParaContent": "We've launched multiply functionality for Aave.",
+          "aaveTabParaContent": "We've launched Multiply for Aave.",
           "aaveTabParaLinkContent": "Read more →"
         },
         "earn": {
@@ -1370,7 +1372,7 @@
       "proxy-progress": "Read more on smart proxy in the <1>Knowledge Base</1>.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-      "commonAllowance": "Select a maximum allowance amount for your Smart DeFi Account. Your Smart Defi Account will be able to interact with up to:",
+      "commonAllowance": "Select a maximum allowance amount for your Smart DeFi Account. Your Smart Defi Account will be able to interact with up to: {{allowanceAmountInfo}}",
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
@@ -1613,7 +1615,7 @@
       "title": "Oasis Multiply",
       "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset.",
       "link": "Learn more about Multiply ->",
-      "aaveDescription": "We've launched multiply functionality for Aave.",
+      "aaveDescription": "We've launched Multiply for Aave.",
       "aaveLink": "Read more →"
     },
     "borrow": {
@@ -1994,7 +1996,7 @@
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
-    "banner": "We've launched multiply functionality for Aave. Read more here",
+    "banner": "We've launched Multiply for Aave. Read more here",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",

@@ -7,12 +7,12 @@ import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
 import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
-import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import {
   getTwitterShareUrl,
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
+import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'

@@ -3,10 +3,11 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import React from 'react'
 import { theme } from 'theme'
-import { Box, Button, Spinner, SxStyleProp } from 'theme-ui'
+import { Box, Button, Card, Spinner, SxStyleProp, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 interface FollowButtonProps {
+  isLimitReached: boolean
   buttonClickHandler: () => void
   isFollowing: boolean
   isProcessing: boolean
@@ -19,6 +20,7 @@ export function FollowButton({
   buttonClickHandler,
   isFollowing,
   isProcessing,
+  isLimitReached,
   short,
   sx,
   isWalletConnected,
@@ -37,7 +39,7 @@ export function FollowButton({
 
   return (
     <Button
-      disabled={isProcessing || !isWalletConnected}
+      disabled={isProcessing || (isLimitReached && !isFollowing) || !isWalletConnected}
       onClick={buttonClickHandler}
       sx={{
         position: 'relative',
@@ -64,10 +66,20 @@ export function FollowButton({
             stroke: isFollowing ? 'interactive50' : 'primary100',
             strokeWidth: isFollowing ? 0 : '1.5px',
           },
+          '.tooltip': {
+            display: 'flex',
+          },
         },
         '&:disabled': {
-          backgroundColor: 'neutral10',
+          backgroundColor: 'neutral30',
           color: 'primary60',
+          pointerEvents: 'auto',
+          border: '1px solid #EAEAEA',
+          '&:hover .star': {
+            fill: 'neutral10',
+            stroke: 'primary60',
+            strokeWidth: '1px',
+          },
         },
         '.star': {
           fill: isFollowing ? 'interactive100' : 'neutral10',
@@ -117,16 +129,48 @@ export function FollowButton({
           </Box>
         )}
       </Box>
+
       {!isShort && (
         <>
-          {isProcessing
-            ? t('loading')
-            : isHovering && isFollowing
-            ? t('unfollow')
-            : isFollowing
-            ? t('following')
-            : t('follow')}
+          {!isLimitReached &&
+            (isProcessing
+              ? t('loading')
+              : isHovering && isFollowing
+              ? t('unfollow')
+              : isFollowing
+              ? t('following')
+              : t('follow'))}
+
+          {t(
+            isLimitReached && !isFollowing
+              ? 'followed-vaults-limit'
+              : isLimitReached && isFollowing && !isHovering
+              ? 'following'
+              : isLimitReached && isFollowing && isHovering
+              ? 'unfollow'
+              : '',
+          )}
         </>
+      )}
+      {isShort && isLimitReached && !isFollowing && (
+        <Card
+          className="tooltip"
+          variant="cards.tooltip"
+          sx={{
+            position: 'absolute',
+            alignItems: 'center',
+            top: '-100%',
+            display: 'none',
+            width: 'auto',
+            px: 2,
+            py: 1,
+            lineHeight: '28px',
+          }}
+        >
+          <Text as="p" variant="paragraph4">
+            {t('followed-vaults-limit')}
+          </Text>
+        </Card>
       )}
     </Button>
   )

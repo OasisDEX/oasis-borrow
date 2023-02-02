@@ -4,7 +4,7 @@
     "es6": true
   },
   "extends": ["typestrict"],
-  "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports", "deprecation"],
+  "plugins": ["no-only-tests", "simple-import-sort", "import", "react", "unused-imports", "deprecation", "no-relative-import-paths"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json",
@@ -182,6 +182,10 @@
     ],
     "yoda": ["error", "never"],
     "no-only-tests/no-only-tests": "error",
+    "no-relative-import-paths/no-relative-import-paths": [
+      "warn",
+      { "allowSameFolder": true }
+    ],
     "deprecation/deprecation": "warn" // or "error" to have stricter rule
   },
   "overrides": [

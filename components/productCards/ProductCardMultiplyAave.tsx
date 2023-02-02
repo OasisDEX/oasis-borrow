@@ -87,7 +87,7 @@ export function ProductCardMultiplyAave({ cardData }: ProductCardMultiplyAavePro
       ]}
       floatingLabelText={t('product-card.tags.new')}
       button={{
-        link: `/multiply/aave-v2/open/${strategy.urlSlug}`,
+        link: `/multiply/aave/v2/open/${strategy.urlSlug}`,
         text: t('nav.multiply'),
       }}
       background={cardData.background}

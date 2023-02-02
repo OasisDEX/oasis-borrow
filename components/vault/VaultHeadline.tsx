@@ -3,14 +3,14 @@ import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
 import { Skeleton } from 'components/Skeleton'
 import {
-  FollowButtonControl,
-  FollowButtonControlProps,
-} from 'features/follow/common/FollowButtonControl'
-import {
   ShareButton,
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
+import {
+  FollowButtonControl,
+  FollowButtonControlProps,
+} from 'features/follow/controllers/FollowButtonControl'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { ReactNode } from 'react'

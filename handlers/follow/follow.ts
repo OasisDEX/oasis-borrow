@@ -1,4 +1,5 @@
 import { PrismaClient, UsersWhoFollowVaults } from '@prisma/client'
+import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
@@ -32,16 +33,20 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
     vault_id,
     vault_chain_id,
   }
-
-  await prisma.usersWhoFollowVaults.create({
-    data: userWhoFollowsVaultData,
-  })
-
   const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
     where: { user_address: usersAddressWhoJustFollowedVaultLowercased },
   })
 
-  return res.status(200).json(allVaultsFollowedByUser)
+  if (allVaultsFollowedByUser.length < LIMIT_OF_FOLLOWED_VAULTS) {
+    await prisma.usersWhoFollowVaults.create({
+      data: userWhoFollowsVaultData,
+    })
+    allVaultsFollowedByUser.push(userWhoFollowsVaultData)
+
+    return res.status(200).json(allVaultsFollowedByUser)
+  } else {
+    return res.status(422).json(allVaultsFollowedByUser)
+  }
 }
 
 export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
