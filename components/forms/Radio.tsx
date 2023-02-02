@@ -18,8 +18,8 @@ export function Radio({ children, checked, onChange, name }: React.PropsWithChil
         boxSizing: 'border-box',
         cursor: 'pointer',
         transition: `
-          border-color ease-in 0.2s,
-          box-shadow ease-in 0.2s`,
+          border-color 0.2s,
+          box-shadow 0.2s`,
         '&:hover': {
           borderColor: 'primary100',
           boxShadow: 'medium',

@@ -51,6 +51,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [, send] = useActor(stateMachine)
   const PositionInfo = strategyConfig.viewComponents.positionInfo
+
   return (
     <TabBar
       variant="underline"
@@ -62,6 +63,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
             <Grid variant="vaultContainer">
               <Box>
                 <SimulateSectionComponent config={strategyConfig} />
+                <Box sx={{ mt: 5 }}></Box>
               </Box>
               <Box>{<SidebarOpenAaveVault />}</Box>
             </Grid>
