@@ -58,7 +58,7 @@ export function useFlowState({
 
   const isProxyReady = !!availableProxies.length
 
-  const callBackIfDefined = (callback: CallbacksType) => {
+  function callBackIfDefined(callback: CallbacksType) {
     if (typeof callback === 'function') {
       callback({
         availableProxies,
