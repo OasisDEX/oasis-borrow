@@ -49,6 +49,7 @@ export function VaultHeadline({
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'center'],
         mb: 4,
+        rowGap: 3,
       }}
     >
       <Heading
