@@ -45,7 +45,7 @@ export const strategies: Array<IStrategyConfig> = [
       simulateSection: SimulateSectionComponent,
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
-      adjustRiskView: adjustRiskView(adjustRiskSliders.wstethEth),
+      secondaryInput: adjustRiskView(adjustRiskSliders.wstethEth),
       positionInfo: AaveEarnFaq,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',

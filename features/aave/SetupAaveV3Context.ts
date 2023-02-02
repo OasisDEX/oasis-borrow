@@ -16,6 +16,7 @@ import {
   getCloseAaveParametersMachine,
   getDepositBorrowAaveMachine,
   getOpenAaveParametersMachine,
+  getOpenDepositBorrowAaveMachine,
 } from './common/services/getParametersMachines'
 import { getStrategyInfo$ } from './common/services/getStrategyInfo'
 import { getCommonPartsFromAppContext } from './getCommonPartsFromAppContext'
@@ -99,6 +100,7 @@ export function setupAaveV3Context(appContext: AppContext) {
   const closeAaveParameters = getCloseAaveParametersMachine(txHelpers$, gasEstimation$)
   const adjustAaveParameters = getAdjustAaveParametersMachine(txHelpers$, gasEstimation$)
   const depositBorrowAaveMachine = getDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
+  const openDepositBorrowAaveMachine = getOpenDepositBorrowAaveMachine(txHelpers$, gasEstimation$)
 
   const openAaveStateMachineServices = getOpenAaveV3PositionStateMachineServices(
     context$,
@@ -132,6 +134,7 @@ export function setupAaveV3Context(appContext: AppContext) {
   const aaveStateMachine = getOpenAaveStateMachine(
     openAaveStateMachineServices,
     openAaveParameters,
+    openDepositBorrowAaveMachine,
     proxyStateMachine,
     dpmAccountStateMachine,
     allowanceStateMachine,

@@ -65,7 +65,9 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   }: SecondaryInputProps) {
     const { t } = useTranslation()
     const transition = state.context.transition
-    const positionTransitionHasMinConfigurableRisk = transitionHasMinConfigurableRiskRatio(strategy)
+    const positionTransitionHasMinConfigurableRisk = transitionHasMinConfigurableRiskRatio(
+      transition,
+    )
 
     const simulation = transition?.simulation
     const targetPosition = simulation?.position
@@ -75,7 +77,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
 
     const minRisk = positionTransitionHasMinConfigurableRisk
       ? BigNumber.max(
-        transition?.simulation?.minConfigurableRiskRatio.loanToValue,
+          transition?.simulation?.minConfigurableRiskRatio.loanToValue,
           viewConfig.riskRatios.minimum.loanToValue,
         )
       : viewConfig.riskRatios.minimum.loanToValue

@@ -526,7 +526,7 @@ export function SidebarManageAaveVault() {
           }
           primaryButton={{
             isLoading: loading(),
-            disabled: !state.can('ADJUST_POSITION') || isLocked(state) || !state.context.strategy,
+            disabled: !state.can('ADJUST_POSITION') || isLocked(state) || !state.context.transition,
             label: t('manage-earn.aave.vault-form.adjust-risk'),
             action: () => {
               send('ADJUST_POSITION')

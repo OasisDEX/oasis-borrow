@@ -19,9 +19,9 @@ export function DebtInput(props: SecondaryInputProps) {
   const userInputDebt = state.context.userInput?.debtAmount
   let maxDebt = zero
 
-  if (state.context.strategy) {
+  if (state.context.transition) {
     maxDebt = amountFromPrecision(
-      state.context.strategy.simulation.position.maxDebtToBorrowWithCurrentCollateral,
+      state.context.transition.simulation.position.maxDebtToBorrowWithCurrentCollateral,
       new BigNumber(18), // precision from lib for maxDebtToBorrow is normalised to 18
     )
   }
