@@ -34,8 +34,6 @@ export function AjnaBorrowFormFieldDeposit({ isDisabled, resetOnClear }: AjnaBor
       maxAuxiliaryAmount={collateralBalance.times(collateralPrice)}
       maxAmountLabel={t('balance')}
       onChange={handleNumericInput((n) => {
-        console.log(`n: ${n}`)
-        console.log(`resetOnClear: ${resetOnClear}`)
         dispatch({
           type: 'update-deposit',
           depositAmount: n,

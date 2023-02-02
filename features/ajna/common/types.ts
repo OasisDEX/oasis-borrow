@@ -8,7 +8,5 @@ export type AjnaStatusStep =
   | 'risk'
   | 'setup'
   | 'manage'
-  | 'proxy'
-  | 'allowance-collateral'
-  | 'allowance-quote'
+  | 'dpm'
   | 'transaction'

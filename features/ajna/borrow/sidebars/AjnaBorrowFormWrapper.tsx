@@ -1,23 +1,18 @@
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
+import { AjnaBorrowFormDpm } from 'features/ajna/borrow/sidebars/AjnaBorrowFormDpm'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
+import { Box } from 'theme-ui'
 
 export function AjnaBorrowFormWrapper() {
   const {
-    steps: { currentStep, isExternalStep },
+    steps: { isExternalStep },
   } = useAjnaBorrowContext()
 
   return (
-    <>
-      {!isExternalStep ? (
-        <AjnaBorrowFormContent />
-      ) : (
-        <>
-          {currentStep === 'proxy' && 'DPM external component'}
-          {currentStep === 'allowance-collateral' && 'Allowance for collateral external component'}
-          {currentStep === 'allowance-quote' && 'Allowance for quote external component'}
-        </>
-      )}
-    </>
+    <Box>
+      {!isExternalStep && <AjnaBorrowFormContent />}
+      <AjnaBorrowFormDpm />
+    </Box>
   )
 }

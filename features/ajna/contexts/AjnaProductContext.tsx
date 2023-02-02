@@ -95,6 +95,10 @@ export function AjnaBorrowContextProvider({
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txStatus, setTxStatus] = useState<TxStatus>()
 
+  useEffect(() => {
+    console.log(`currentStep was changed, new value: ${currentStep}`)
+  }, [currentStep])
+
   const setStep = (step: AjnaStatusStep) => {
     if (isBorrowStepValid({ currentStep, formState: form.state })) setCurrentStep(step)
     else throw new Error(`A state of current step in not valid.`)
@@ -102,8 +106,15 @@ export function AjnaBorrowContextProvider({
   const shiftStep = (direction: 'next' | 'prev') => {
     const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
 
-    if (steps[i]) setCurrentStep(steps[i])
-    else throw new Error(`A step with index ${i} does not exist in form flow.`)
+    console.log(`currentStep: ${currentStep}`)
+    console.log(`steps: ${steps}`)
+    console.log(`steps.indexOf(currentStep): ${steps.indexOf(currentStep)}`)
+    console.log(`i: ${i}`)
+
+    if (direction === 'next') {
+      if (steps[i]) setCurrentStep(steps[i])
+      else throw new Error(`A step with index ${i} does not exist in form flow.`)
+    }
   }
 
   const setupStepManager = () => {
