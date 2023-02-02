@@ -118,7 +118,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
           {t(`ajna.${product}.open.select.intro`)}
         </Text>
       </Box>
-      <DiscoverTableContainer title="Filters?">
+      <DiscoverTableContainer tableOnly>
         {rows.length > 0 && <DiscoverResponsiveTable rows={rows} skip={['icon']} />}
       </DiscoverTableContainer>
     </Box>

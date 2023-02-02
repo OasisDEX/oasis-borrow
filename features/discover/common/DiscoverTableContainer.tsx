@@ -4,8 +4,9 @@ import { Box, Heading } from 'theme-ui'
 export function DiscoverTableContainer({
   children,
   padded = false,
+  tableOnly,
   title,
-}: PropsWithChildren<{ padded?: boolean; title?: string }>) {
+}: PropsWithChildren<{ padded?: boolean; tableOnly?: boolean; title?: string }>) {
   return (
     <Box
       sx={{
@@ -13,6 +14,10 @@ export function DiscoverTableContainer({
         borderRadius: 'large',
         boxShadow: 'buttonMenu',
         ...(padded && { p: 4 }),
+        ...(tableOnly && {
+          pt: '12px',
+          overflow: 'hidden',
+        }),
       }}
     >
       {title && (
