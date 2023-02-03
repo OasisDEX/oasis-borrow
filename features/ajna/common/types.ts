@@ -15,10 +15,4 @@ export type AjnaStatusStep =
   | 'allowance-quote'
   | 'transaction'
 
-export type AjnaPairs = {
-  [ProductKey in AjnaProduct]: {
-    [key: string]: string[]
-  }
-}
-
 export type AjnaPoolPairs = keyof Context['ajnaPoolPairs']
