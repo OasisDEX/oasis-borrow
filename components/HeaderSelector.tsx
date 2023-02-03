@@ -111,7 +111,7 @@ export function HeaderSelector({
           as="ul"
           sx={{
             gap: 0,
-            gridTemplateColumns: 'repeat(2,1fr )',
+            gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)'],
             mt: '12px',
             p: 3,
             bg: 'neutral10',
