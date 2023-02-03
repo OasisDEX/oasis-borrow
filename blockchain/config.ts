@@ -268,9 +268,9 @@ const protoMain = {
     mainnetAddresses.AAVE_V3_POOL_DATA_PROVIDER,
   ),
   // TODO ajna addresses to be updated
-  ajnaPollInfo: contractDesc(ajnaPoolInfo, '0xD2D5e508C82EFc205cAFA4Ad969a4395Babce026'),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0xD2D5e508C82EFc205cAFA4Ad969a4395Babce026'),
   ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2b639Cc84e1Ad3aA92D4Ee7d2755A6ABEf300D72'),
-  ajnaPollPairs: {
+  ajnaPoolPairs: {
     'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
     'WETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
   },
@@ -381,9 +381,9 @@ const kovan: NetworkConfig = {
   aaveV3Pool: contractDesc(aaveV3Pool, '0x0'),
   aaveV3Oracle: contractDesc(aaveV3Oracle, '0x0'),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, '0x0'),
-  ajnaPollInfo: contractDesc(ajnaPoolInfo, '0x0'),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x0'),
   ajnaProxyActions: contractDesc(ajnaProxyActions, '0x0'),
-  ajnaPollPairs: {
+  ajnaPoolPairs: {
     'WBTC-USDC': contractDesc(ajnaPool, '0x0'),
     'WETH-USDC': contractDesc(ajnaPool, '0x0'),
   },
@@ -500,9 +500,9 @@ const goerli: NetworkConfig = {
     aaveV3PoolDataProvider,
     goerliAddresses.AAVE_V3_POOL_DATA_PROVIDER,
   ),
-  ajnaPollInfo: contractDesc(ajnaPoolInfo, '0x32DA971821E6d88FCcD9861EbaCF8590553A2aA8'),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x32DA971821E6d88FCcD9861EbaCF8590553A2aA8'),
   ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2010D2d932b467928313F86653b28E22A9d6889b'),
-  ajnaPollPairs: {
+  ajnaPoolPairs: {
     'WBTC-USDC': contractDesc(ajnaPool, '0xcCbD19488f4e63319c2f11e156ccfA26Ce99c657'),
     'WETH-USDC': contractDesc(ajnaPool, '0xEb39B597a4d1588ac7F50D2897AfD25CED7947EE'),
   },
