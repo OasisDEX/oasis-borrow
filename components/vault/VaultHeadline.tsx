@@ -61,11 +61,11 @@ export function VaultHeadline({
           fontSize: '28px',
           color: 'primary100',
           alignItems: 'center',
-          whiteSpace: 'nowrap',
+          wordBreak: 'break-word',
         }}
       >
         {tokenData instanceof Array && tokenData.length > 0 && (
-          <Box sx={{ mr: 2 }}>
+          <Box sx={{ mr: 2, flexShrink: 0 }}>
             {tokenData.map(({ iconCircle }, iconIndex) => (
               <Icon
                 key={`VaultHeadlineIcon_${iconCircle}`}
