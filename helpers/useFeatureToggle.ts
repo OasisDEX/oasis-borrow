@@ -21,6 +21,7 @@ export type Feature =
   | 'ReadOnlyAutoTakeProfit'
   | 'DiscoverOasis'
   | 'AaveBorrow'
+  | 'AaveV3EarnWSTETH'
   | 'FollowVaults'
   | 'AaveProtection'
   | 'Ajna'
@@ -44,6 +45,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: true,
   AaveBorrow: false,
+  AaveV3EarnWSTETH: false,
   FollowVaults: false,
   AaveProtection: false,
   Ajna: false,
