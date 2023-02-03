@@ -275,6 +275,7 @@ export function AaveMultiplyPositionData({
       footer={
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.position-debt')}
             value={`${formatPrecision(currentPositionThings.debt, 4)} ${
               currentPosition.debt.symbol
@@ -291,18 +292,26 @@ export function AaveMultiplyPositionData({
             }
           />
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.total-exposure', { token: currentPosition.collateral.symbol })}
-            value={`${formatAmount(currentPositionThings.totalExposure, 'ETH')} ETH`}
+            value={`${formatAmount(
+              currentPositionThings.totalExposure,
+              currentPosition.collateral.symbol,
+            )} ${currentPosition.collateral.symbol}`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.totalExposure.gt(currentPositionThings.totalExposure)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.totalExposure, 'ETH')} ETH ${t('after')}`,
+                value: `${formatAmount(
+                  nextPositionThings.totalExposure,
+                  currentPosition.collateral.symbol,
+                )} ${currentPosition.collateral.symbol} ${t('after')}`,
               }
             }
           />
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.multiple')}
             value={displayMultiple(currentPosition.riskRatio.multiple)}
             change={
@@ -317,6 +326,7 @@ export function AaveMultiplyPositionData({
             }
           />
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.buying-power')}
             value={`${formatPrecision(currentPositionThings.buyingPower, 2)} ${
               currentPosition.debt.symbol
