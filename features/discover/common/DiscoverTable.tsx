@@ -7,7 +7,7 @@ import { DiscoverBanner, DiscoverFollow } from 'features/discover/meta'
 import { DiscoverPages, DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment } from 'react'
+import React, { Fragment, isValidElement } from 'react'
 import { Box, Flex } from 'theme-ui'
 
 export interface DiscoverTableProps {
@@ -252,12 +252,16 @@ export function DiscoverTableDataCell({
         },
       }}
     >
-      <DiscoverTableDataCellContent
-        label={label}
-        follow={follow}
-        row={row}
-        onPositionClick={onPositionClick}
-      />
+      {!isValidElement(row[label]) ? (
+        <DiscoverTableDataCellContent
+          follow={follow}
+          label={label}
+          onPositionClick={onPositionClick}
+          row={row}
+        />
+      ) : (
+        row[label]
+      )}
     </Box>
   )
 }
