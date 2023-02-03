@@ -35,10 +35,6 @@ interface AjnaBorrowFormActionsUpdatePayback {
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
 }
-interface AjnaBorrowFormActionsUpdateProxyAddress {
-  type: 'update-proxy-address'
-  proxyAddress: string
-}
 interface AjnaBorrowFormActionsReset {
   type: 'reset'
 }
@@ -49,7 +45,6 @@ type AjnaBorrowFormAction = ReductoActions<
   | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsUpdateGenerate
   | AjnaBorrowFormActionsUpdatePayback
-  | AjnaBorrowFormActionsUpdateProxyAddress
   | AjnaBorrowFormActionsReset
 >
 
@@ -98,11 +93,6 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             ...state,
             paybackAmount: action.paybackAmount,
             paybackAmountUSD: action.paybackAmountUSD,
-          }
-        case 'update-proxy-address':
-          return {
-            ...state,
-            proxyAddress: action.proxyAddress,
           }
         case 'reset':
           return ajnaBorrowDefault
