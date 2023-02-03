@@ -42,8 +42,7 @@ function NoConnectionStateView({
 
 export function FlowSidebar({
   noConnectionContent,
-  dpmMachine,
-  allowanceMachine,
+  internals,
   isWalletConnected = false,
   token,
   amount,
@@ -51,8 +50,8 @@ export function FlowSidebar({
   isAllowanceReady,
   isLoading,
 }: CreateDPMAccountViewProps) {
-  const [dpmState, dpmSend] = useActor(dpmMachine)
-  const [allowanceState] = useActor(allowanceMachine)
+  const [dpmState, dpmSend] = useActor(internals.dpmMachine)
+  const [allowanceState] = useActor(internals.allowanceMachine)
   const allowanceConsidered = !!token && token !== 'ETH' && amount
 
   if (!isWalletConnected) {
@@ -79,7 +78,7 @@ export function FlowSidebar({
       case allowanceState.matches('txSuccess'):
         return (
           <AllowanceView
-            allowanceMachine={allowanceMachine}
+            allowanceMachine={internals.allowanceMachine}
             isLoading={isLoading}
             backButtonOnFirstStep
           />

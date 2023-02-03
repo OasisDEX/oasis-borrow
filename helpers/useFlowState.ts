@@ -213,8 +213,10 @@ export function useFlowState({
   }, [amount?.toString()])
 
   return {
-    dpmMachine,
-    allowanceMachine,
+    internals: {
+      dpmMachine,
+      allowanceMachine,
+    },
     availableProxies,
     walletAddress,
     amount,
