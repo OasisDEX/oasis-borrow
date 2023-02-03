@@ -1,4 +1,4 @@
-import { useRedirect } from 'helpers/useRedirect'
+import { AppLink } from 'components/Links'
 import React from 'react'
 import { Button, Spinner } from 'theme-ui'
 
@@ -14,37 +14,48 @@ export interface SidebarSectionFooterButtonProps {
 }
 
 export function SidebarSectionFooterButton({
+  hidden,
+  url,
+  ...rest
+}: SidebarSectionFooterButtonProps) {
+  return (
+    <>
+      {!hidden &&
+        (url ? (
+          <AppLink href={url} sx={{ display: 'block' }}>
+            <SidebarSectionFooterButtonIner {...rest} />
+          </AppLink>
+        ) : (
+          <SidebarSectionFooterButtonIner {...rest} />
+        ))}
+    </>
+  )
+}
+
+export function SidebarSectionFooterButtonIner({
   variant = 'primary',
   label,
   steps,
   disabled,
-  hidden,
   isLoading,
   action,
-  url,
-}: SidebarSectionFooterButtonProps) {
-  const { replace } = useRedirect()
-
+}: Omit<SidebarSectionFooterButtonProps, 'hidden' | 'url'>) {
   return (
-    <>
-      {!hidden && (
-        <Button
-          disabled={disabled}
-          variant={variant}
-          onClick={() => {
-            if (action) action()
-            if (url) replace(url)
-          }}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}
-          {label} {steps && `(${steps[0]}/${steps[1]})`}
-        </Button>
-      )}
-    </>
+    <Button
+      disabled={disabled}
+      variant={variant}
+      onClick={() => {
+        if (action) action()
+      }}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+      }}
+    >
+      {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}
+      {label} {steps && `(${steps[0]}/${steps[1]})`}
+    </Button>
   )
 }
