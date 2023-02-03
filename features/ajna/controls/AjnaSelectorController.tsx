@@ -2,11 +2,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
 import { AppLink } from 'components/Links'
-import {
-  ajnaPairs,
-  ajnaUnavailablePairs,
-  DEFAULT_SELECTED_TOKEN,
-} from 'features/ajna/common/consts'
+import { ajnaComingSoonPairs, ajnaPairs, DEFAULT_SELECTED_TOKEN } from 'features/ajna/common/consts'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
 import { DiscoverTableContainer } from 'features/discover/common/DiscoverTableContainer'
@@ -34,7 +30,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
   const ref = useRef<HTMLDivElement>(null)
   const options = uniq([
     ...Object.keys(ajnaPairs[product]),
-    ...Object.keys(ajnaUnavailablePairs[product]),
+    ...Object.keys(ajnaComingSoonPairs[product]),
   ])
     .sort()
     .map((token) => ({
@@ -70,8 +66,8 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
             ),
           }))
         : []),
-      ...(ajnaUnavailablePairs[product][selected.value]
-        ? ajnaUnavailablePairs[product][selected.value].map((asset) => ({
+      ...(ajnaComingSoonPairs[product][selected.value]
+        ? ajnaComingSoonPairs[product][selected.value].map((asset) => ({
             asset: (
               <DiscoverTableDataCellInactive>
                 <DiscoverTableDataCellAsset

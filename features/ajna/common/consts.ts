@@ -16,7 +16,7 @@ export const ajnaPairs: AjnaPairs = {
   multiply: {},
   earn: {},
 }
-export const ajnaUnavailablePairs: AjnaPairs = {
+export const ajnaComingSoonPairs: AjnaPairs = {
   borrow: {
     DAI: ['ETH', 'RETH', 'WBTC'],
     ETH: ['DAI'],
