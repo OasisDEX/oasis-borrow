@@ -10,13 +10,13 @@ import {
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ethNullAddress } from 'blockchain/config'
+import { Context, ContextConnected } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
+import { amountToWei } from 'blockchain/utils'
 import { providers } from 'ethers'
+import { getOneInchCall } from 'helpers/swap'
+import { zero } from 'helpers/zero'
 
-import { Context, ContextConnected } from '../../blockchain/network'
-import { getToken } from '../../blockchain/tokensMetadata'
-import { amountToWei } from '../../blockchain/utils'
-import { getOneInchCall } from '../../helpers/swap'
-import { zero } from '../../helpers/zero'
 import { ManageTokenInput } from './common/BaseAaveContext'
 import { ProxyType } from './common/StrategyConfigTypes'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyConfig'
@@ -503,3 +503,6 @@ export function transitionHasMinConfigurableRiskRatio(
     (transition.simulation as ISimulatedTransition).minConfigurableRiskRatio !== undefined
   )
 }
+
+// library works with a normalised precision of 18, and is sometimes exposed in the API.
+export const NORMALISED_PRECISION = new BigNumber(18)

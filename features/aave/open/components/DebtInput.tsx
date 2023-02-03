@@ -1,17 +1,16 @@
-import BigNumber from 'bignumber.js'
+import { amountFromPrecision } from 'blockchain/utils'
+import { MessageCard } from 'components/MessageCard'
+import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
+import { SecondaryInputProps } from 'features/aave/common/StrategyConfigTypes'
+import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
+import { NORMALISED_PRECISION } from 'features/aave/oasisActionsLibWrapper'
+import { formatCryptoBalance } from 'helpers/formatters/format'
+import { handleNumericInput } from 'helpers/input'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { amountFromPrecision } from '../../../../blockchain/utils'
-import { MessageCard } from '../../../../components/MessageCard'
-import { VaultActionInput } from '../../../../components/vault/VaultActionInput'
-import { formatCryptoBalance } from '../../../../helpers/formatters/format'
-import { handleNumericInput } from '../../../../helpers/input'
-import { zero } from '../../../../helpers/zero'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { SecondaryInputProps } from '../../common/StrategyConfigTypes'
-import { hasUserInteracted } from '../../helpers/hasUserInteracted'
 
 export function DebtInput(props: SecondaryInputProps) {
   const { state, send } = props
@@ -22,7 +21,7 @@ export function DebtInput(props: SecondaryInputProps) {
   if (state.context.transition) {
     maxDebt = amountFromPrecision(
       state.context.transition.simulation.position.maxDebtToBorrowWithCurrentCollateral,
-      new BigNumber(18), // precision from lib for maxDebtToBorrow is normalised to 18
+      NORMALISED_PRECISION, // precision from lib for maxDebtToBorrowWithCurrentCollateral is normalised to 18
     )
   }
 
