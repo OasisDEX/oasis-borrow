@@ -195,7 +195,9 @@
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
+        "action": "",
         "activity": "Activity",
+        "annual-fee": "Annual fee",
         "asset": "Vault",
         "cdp-id": "",
         "col-ratio": "Col. ratio",
@@ -205,13 +207,17 @@
         "earnings-to-date": "Earnings to date",
         "funding-cost": "Funding cost",
         "liquidation-price": "Liquidation price",
+        "liquidity-avaliable": "Liquidity avaliable",
         "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
+        "max-ltv": "Max LTV",
+        "min-position-size": "Min. position size",
         "net-usd-value": "Net value",
         "net-value": "Net value",
         "next-osm-price": "Next OSM price",
         "pnl": "P&L",
         "protection": "Protection",
+        "protocol": "Protocol",
         "status": "Status",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
@@ -2323,6 +2329,13 @@
         }
       },
       "open": {
+        "select": {
+          "heading": {
+            "pre": "Borrow against your",
+            "post": "exposure on Ajna"
+          },
+          "intro": "Select the crypto asset you want to borrow against your ETH"
+        },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },

@@ -1,4 +1,4 @@
-import { products, tokens } from 'features/ajna/common/consts'
+import { ajnaPairs, ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductController } from 'features/ajna/controls/AjnaProductController'
@@ -33,11 +33,11 @@ export const getStaticPaths: GetStaticPaths = async ({ locales }) => {
     paths:
       locales
         ?.map((locale) =>
-          products.map((product) =>
-            Object.keys(tokens[product as keyof typeof tokens]).map((collateralToken) =>
+          ajnaProducts.map((product) =>
+            Object.keys(ajnaPairs[product as keyof typeof ajnaPairs]).map((collateralToken) =>
               // TODO: update to formula that doesn't require @ts-ignore when final version of white-listing is available
               // @ts-ignore
-              tokens[product][collateralToken].map((quoteToken) => ({
+              ajnaPairs[product][collateralToken].map((quoteToken) => ({
                 locale,
                 params: { pair: `${collateralToken}-${quoteToken}`, product },
               })),
@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   const pair = (params?.pair as string).split('-')
 
   return {
-    ...(!products.includes(params?.product as string) && { notFound: true }),
+    ...(!ajnaProducts.includes(params?.product as AjnaProduct) && { notFound: true }),
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
       collateralToken: pair[0],

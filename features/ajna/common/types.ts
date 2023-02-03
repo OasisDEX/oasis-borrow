@@ -1,3 +1,5 @@
+import { Context } from 'blockchain/network'
+
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
 
@@ -12,3 +14,11 @@ export type AjnaStatusStep =
   | 'allowance-collateral'
   | 'allowance-quote'
   | 'transaction'
+
+export type AjnaPairs = {
+  [ProductKey in AjnaProduct]: {
+    [key: string]: string[]
+  }
+}
+
+export type AjnaPoolPairs = keyof Context['ajnaPoolPairs']

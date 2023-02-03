@@ -53,7 +53,7 @@ export function FlowSidebar({
 }: CreateDPMAccountViewProps) {
   const [dpmState, dpmSend] = useActor(dpmMachine)
   const [allowanceState] = useActor(allowanceMachine)
-  const allowanceConsidered = token !== 'ETH' && amount
+  const allowanceConsidered = !!token && token !== 'ETH' && amount
 
   if (!isWalletConnected) {
     return <NoConnectionStateView noConnectionContent={noConnectionContent} />
