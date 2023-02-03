@@ -12,3 +12,5 @@ export type AjnaStatusStep =
   | 'allowance-collateral'
   | 'allowance-quote'
   | 'transaction'
+
+export type AjnaPoolPairs = 'WETH-USDC' | 'WBTC-USDC'

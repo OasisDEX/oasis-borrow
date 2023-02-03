@@ -23,4 +23,5 @@ export enum TxMetaKind {
   dsrJoin = 'dsrJoin',
   dsrExit = 'dsrExit',
   dsrExitAll = 'dsrExitAll',
+  libraryCall = 'libraryCall',
 }

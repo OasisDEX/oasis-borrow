@@ -10,6 +10,7 @@ import {
   isStepWithTransaction,
 } from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
+import { TxDetails } from 'helpers/handleTransaction'
 import React, {
   Dispatch,
   PropsWithChildren,
@@ -28,6 +29,7 @@ interface AjnaBorrowContextProviderProps {
   quoteBalance: BigNumber
   quotePrice: BigNumber
   quoteToken: string
+  ethPrice: BigNumber
   position: AjnaBorrowPosition
   steps: AjnaStatusStep[]
 }
@@ -35,7 +37,7 @@ interface AjnaBorrowContextProviderProps {
 type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'position' | 'steps'>
 
 // temporary, interface will come from MPA
-interface AjnaBorrowPosition {
+export interface AjnaBorrowPosition {
   id?: string
 }
 
@@ -53,13 +55,14 @@ interface AjnaBorrowSteps {
 }
 
 interface AjnaBorrowTx {
-  txStatus?: TxStatus
   isTxError: boolean
   isTxStarted: boolean
   isTxWaitingForApproval: boolean
   isTxInProgress: boolean
   isTxSuccess: boolean
-  setTxStatus: Dispatch<SetStateAction<TxStatus | undefined>>
+  txDetails?: TxDetails
+  setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
+  setSimulation: Dispatch<SetStateAction<AjnaBorrowPosition | undefined>>
 }
 
 interface AjnaBorrowContext {
@@ -68,6 +71,7 @@ interface AjnaBorrowContext {
   position: AjnaBorrowPosition
   steps: AjnaBorrowSteps
   tx: AjnaBorrowTx
+  simulation?: AjnaBorrowPosition
 }
 
 const ajnaBorrowContext = React.createContext<AjnaBorrowContext | undefined>(undefined)
@@ -93,7 +97,8 @@ export function AjnaBorrowContextProvider({
 
   const form = useAjnaBorrowFormReducto({})
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
-  const [txStatus, setTxStatus] = useState<TxStatus>()
+  const [txDetails, setTxDetails] = useState<TxDetails>()
+  const [simulation, setSimulation] = useState<AjnaBorrowPosition>()
 
   const setStep = (step: AjnaStatusStep) => {
     if (isBorrowStepValid({ currentStep, formState: form.state })) setCurrentStep(step)
@@ -122,9 +127,10 @@ export function AjnaBorrowContextProvider({
 
   const setupTxManager = () => {
     return {
-      txStatus,
-      setTxStatus,
-      ...getTxStatuses(txStatus),
+      txDetails,
+      setTxDetails,
+      setSimulation,
+      ...getTxStatuses(txDetails?.txStatus),
     }
   }
 
@@ -147,8 +153,9 @@ export function AjnaBorrowContextProvider({
       form: { ...prev.form, state: form.state },
       steps: setupStepManager(),
       tx: setupTxManager(),
+      simulation,
     }))
-  }, [props.collateralBalance, props.quoteBalance, form.state, currentStep, txStatus])
+  }, [props.collateralBalance, props.quoteBalance, form.state, currentStep, txDetails, simulation])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
 }

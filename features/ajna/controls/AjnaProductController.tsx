@@ -76,7 +76,7 @@ export function AjnaProductController({
     useMemo(
       () =>
         collateralTokenData && quoteTokenData
-          ? tokenPriceUSD$([collateralTokenData, quoteTokenData])
+          ? tokenPriceUSD$([collateralTokenData, quoteTokenData, 'ETH'])
           : EMPTY,
       [collateralTokenData, quoteTokenData],
     ),
@@ -125,6 +125,7 @@ export function AjnaProductController({
                     quoteBalance={quoteBalance}
                     quoteToken={_quoteToken}
                     quotePrice={_tokenPriceUSD[_quoteToken]}
+                    ethPrice={_tokenPriceUSD.ETH}
                     steps={steps[_product][flow]}
                   >
                     {_product === 'borrow' && <AjnaBorrowView />}

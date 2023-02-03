@@ -4,6 +4,7 @@ import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/Ajna
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
 import { getPrimaryButtonLabelKey, getTextButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
@@ -15,9 +16,14 @@ export function AjnaBorrowFormContent() {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, flow, product, quoteToken },
+    form: {
+      state: { action },
+    },
     steps: { currentStep, isStepValid, isStepWithBack, setNextStep, setPrevStep },
   } = useAjnaBorrowContext()
 
+  // TODO use here proxyAddress from DPM state machine
+  const txHandler = useAjnaTxHandler({ proxyAddress: '0xF5C0D205a00A5F799E3CFC4AC2E71C326Dd12b76' })
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -52,7 +58,12 @@ export function AjnaBorrowFormContent() {
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep, product })),
       disabled: !isStepValid,
-      action: setNextStep,
+      action: async () => {
+        setNextStep()
+        if (action) {
+          txHandler()
+        }
+      },
     },
     ...(isStepWithBack && {
       textButton: {

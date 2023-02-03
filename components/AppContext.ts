@@ -3,6 +3,7 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -47,6 +48,7 @@ import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
+import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
 import { observe } from 'blockchain/calls/observe'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
@@ -120,6 +122,11 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
+import {
+  createProxyConsumed$,
+  createReadPositionCreatedEvents$,
+  getLastCreatedPositionForProxy$,
+} from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
@@ -282,6 +289,9 @@ import {
   supportedMultiplyIlks,
 } from 'helpers/productCards'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+import { getAaveV2Services } from 'lendingProtocols/aave-v2'
+import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
@@ -296,15 +306,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
-import {
-  createProxyConsumed$,
-  createReadPositionCreatedEvents$,
-  getLastCreatedPositionForProxy$,
-} from '../features/aave/services/readPositionCreatedEvents'
-import { LendingProtocol } from '../lendingProtocols'
-import { getAaveV2Services } from '../lendingProtocols/aave-v2'
-import { getAaveV3Services } from '../lendingProtocols/aave-v3'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -329,6 +330,7 @@ export type TxData =
   | AutomationBotRemoveTriggersData
   | OperationExecutorTxMeta
   | CreateDPMAccount
+  | OasisActionsTxData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>

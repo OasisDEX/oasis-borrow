@@ -2,6 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { TxDetails } from 'helpers/handleTransaction'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
@@ -11,13 +12,13 @@ export function AjnaBorrowFormContentTransaction() {
   const { t } = useTranslation()
   const {
     tx: {
-      txStatus,
-      setTxStatus,
       isTxStarted,
       isTxError,
       isTxWaitingForApproval,
       isTxInProgress,
       isTxSuccess,
+      txDetails,
+      setTxDetails,
     },
   } = useAjnaBorrowContext()
 
@@ -26,17 +27,19 @@ export function AjnaBorrowFormContentTransaction() {
       {/* temporary TX status selector */}
       <Flex sx={{ columnGap: 2 }}>
         Force TX status:
-        <select onChange={(e) => setTxStatus(e.target.value as TxStatus)}>
-          <option value={undefined} {...(!txStatus && { selected: true })}>
+        <select
+          onChange={(e) => setTxDetails({ txStatus: e.target.value as TxStatus } as TxDetails)}
+        >
+          <option value={undefined} {...(!txDetails?.txStatus && { selected: true })}>
             undefined
           </option>
           {(Object.keys(TxStatus) as Array<keyof typeof TxStatus>).map((status) => (
-            <option value={status} {...(status === txStatus && { selected: true })}>
+            <option value={status} {...(status === txDetails?.txStatus && { selected: true })}>
               {status}
             </option>
           ))}
         </select>
-        <button onClick={() => setTxStatus(undefined)}>Reset</button>
+        <button onClick={() => setTxDetails(undefined)}>Reset</button>
       </Flex>
       {(!isTxStarted || isTxWaitingForApproval || isTxError) && (
         <>
