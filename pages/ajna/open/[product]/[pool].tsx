@@ -1,3 +1,4 @@
+import { ajnaProducts } from 'features/ajna/common/consts'
 import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductController } from 'features/ajna/controls/AjnaProductController'
@@ -31,6 +32,7 @@ export async function getServerSideProps({ locale, query }: GetServerSidePropsCo
   const pool = (query.pool as string).split('-')
 
   return {
+    ...(!ajnaProducts.includes(query.product as AjnaProduct) && { notFound: true }),
     props: {
       ...(await serverSideTranslations(locale || 'en', ['common'])),
       collateralToken: pool[0],
