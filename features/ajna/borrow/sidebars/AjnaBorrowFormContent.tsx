@@ -76,12 +76,14 @@ export function AjnaBorrowFormContent() {
         ? {
             url: '/connect',
           }
-        : { action: async () => {
-            setNextStep()
-            if (action) {
-              txHandler()
-            }
-          } }),
+        : {
+            action: async () => {
+              setNextStep()
+              if (action) {
+                txHandler()
+              }
+            },
+          }),
     },
     ...(isStepWithBack && {
       textButton: {
