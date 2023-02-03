@@ -13,7 +13,7 @@ export interface OasisActionsTxData extends TxMeta {
   value: string
 }
 
-export const callLibraryWithDpmProxy: TransactionDef<OasisActionsTxData> = {
+export const callOasisActionsWithDpmProxy: TransactionDef<OasisActionsTxData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<AccountImplementation>(contractDesc(accountImplementation, proxyAddress))
       .methods['execute(address,bytes)']
