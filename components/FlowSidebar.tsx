@@ -1,9 +1,12 @@
 import { useActor } from '@xstate/react'
+import BigNumber from 'bignumber.js'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountViewConsumed } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
-import { useFlowState } from 'helpers/useFlowState'
+import { allDefined } from 'helpers/allDefined'
+import { callBackIfDefined } from 'helpers/callBackIfDefined'
+import { useFlowState, UseFlowStateCBParamsType, UseFlowStateCBType } from 'helpers/useFlowState'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Grid, Text } from 'theme-ui'
 
 import { SidebarSection, SidebarSectionProps } from './sidebar/SidebarSection'
@@ -42,18 +45,53 @@ function NoConnectionStateView({
 
 export function FlowSidebar({
   noConnectionContent,
-  dpmMachine,
-  allowanceMachine,
+  internals,
   isWalletConnected = false,
   token,
   amount,
   isProxyReady,
   isAllowanceReady,
   isLoading,
+  walletAddress,
+  availableProxies,
+  asUserAction,
+  onEverythingReady,
 }: CreateDPMAccountViewProps) {
-  const [dpmState, dpmSend] = useActor(dpmMachine)
-  const [allowanceState] = useActor(allowanceMachine)
-  const allowanceConsidered = token !== 'ETH' && amount
+  const [dpmState, dpmSend] = useActor(internals.dpmMachine)
+  const [allowanceState] = useActor(internals.allowanceMachine)
+  const allowanceConsidered = !!token && token !== 'ETH' && amount
+
+  const callbackParams = {
+    availableProxies,
+    walletAddress,
+    amount,
+    token,
+    isProxyReady,
+    isWalletConnected,
+    isAllowanceReady,
+    asUserAction,
+  }
+
+  // a case when proxy is ready and amount/token is not provided (skipping allowance)
+  useEffect(() => {
+    if (!isProxyReady || !allDefined(walletAddress, amount, token)) return
+    if (!token || !amount || new BigNumber(amount || NaN).isNaN()) {
+      callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(
+        callbackParams,
+        onEverythingReady,
+      )
+    }
+  }, [token, amount?.toString(), isProxyReady])
+
+  // wrapping up
+  useEffect(() => {
+    if (isAllowanceReady && amount && token && availableProxies.length) {
+      callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(
+        callbackParams,
+        onEverythingReady,
+      )
+    }
+  }, [isAllowanceReady, availableProxies, amount?.toString()])
 
   if (!isWalletConnected) {
     return <NoConnectionStateView noConnectionContent={noConnectionContent} />
@@ -79,7 +117,7 @@ export function FlowSidebar({
       case allowanceState.matches('txSuccess'):
         return (
           <AllowanceView
-            allowanceMachine={allowanceMachine}
+            allowanceMachine={internals.allowanceMachine}
             isLoading={isLoading}
             backButtonOnFirstStep
           />

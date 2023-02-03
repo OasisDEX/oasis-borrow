@@ -58,7 +58,10 @@ export function FollowedTable({ address }: { address: string }) {
                     skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                     {...(!!walletAddress && {
-                      follow: { followerAddress: walletAddress, chainId: context.chainId },
+                      follow: {
+                        followerAddress: walletAddress,
+                        chainId: context.chainId,
+                      },
                     })}
                   />
                 </>
@@ -73,7 +76,10 @@ export function FollowedTable({ address }: { address: string }) {
                     skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                     {...(!!walletAddress && {
-                      follow: { followerAddress: walletAddress, chainId: context.chainId },
+                      follow: {
+                        followerAddress: walletAddress,
+                        chainId: context.chainId,
+                      },
                     })}
                   />
                 </>
@@ -88,7 +94,10 @@ export function FollowedTable({ address }: { address: string }) {
                     skip={followTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                     {...(!!walletAddress && {
-                      follow: { followerAddress: walletAddress, chainId: context.chainId },
+                      follow: {
+                        followerAddress: walletAddress,
+                        chainId: context.chainId,
+                      },
                     })}
                   />
                 </>

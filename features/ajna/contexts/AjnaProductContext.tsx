@@ -37,6 +37,7 @@ interface AjnaBorrowPosition {
 
 interface AjnaBorrowSteps {
   currentStep: AjnaStatusStep
+  editingStep: Extract<AjnaStatusStep, 'setup' | 'manage'>
   isExternalStep: boolean
   isStepWithTransaction: boolean
   isStepValid: boolean
@@ -112,10 +113,11 @@ export function AjnaBorrowContextProvider({
     }
   }
 
-  const setupStepManager = () => {
+  const setupStepManager = (): AjnaBorrowSteps => {
     return {
       currentStep,
       steps,
+      editingStep: props.flow === 'open' ? 'setup' : 'manage',
       isExternalStep: isExternalStep({ currentStep }),
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
       isStepValid: isBorrowStepValid({ currentStep, formState: form.state }),
@@ -125,7 +127,7 @@ export function AjnaBorrowContextProvider({
     }
   }
 
-  const setupTxManager = () => {
+  const setupTxManager = (): AjnaBorrowTx => {
     return {
       txStatus,
       setTxStatus,

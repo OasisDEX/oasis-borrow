@@ -12,6 +12,9 @@ import * as aaveV3PoolDataProvider from './abi/aave-v3-pool-data-provider.json'
 import * as aaveV3Pool from './abi/aave-v3-pool.json'
 import * as accountFactory from './abi/account-factory.json'
 import * as accountGuard from './abi/account-guard.json'
+import * as ajnaPoolInfo from './abi/ajna-pool-info.json'
+import * as ajnaPool from './abi/ajna-pool.json'
+import * as ajnaProxyActions from './abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
@@ -264,6 +267,13 @@ const protoMain = {
     aaveV3PoolDataProvider,
     mainnetAddresses.AAVE_V3_POOL_DATA_PROVIDER,
   ),
+  // TODO ajna addresses to be updated
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0xD2D5e508C82EFc205cAFA4Ad969a4395Babce026'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2b639Cc84e1Ad3aA92D4Ee7d2755A6ABEf300D72'),
+  ajnaPoolPairs: {
+    'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
+    'ETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
+  },
 }
 
 export type NetworkConfig = typeof protoMain
@@ -371,6 +381,12 @@ const kovan: NetworkConfig = {
   aaveV3Pool: contractDesc(aaveV3Pool, '0x0'),
   aaveV3Oracle: contractDesc(aaveV3Oracle, '0x0'),
   aaveV3PoolDataProvider: contractDesc(aaveV3PoolDataProvider, '0x0'),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x0'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x0'),
+  ajnaPoolPairs: {
+    'WBTC-USDC': contractDesc(ajnaPool, '0x0'),
+    'ETH-USDC': contractDesc(ajnaPool, '0x0'),
+  },
 }
 
 const goerli: NetworkConfig = {
@@ -484,6 +500,12 @@ const goerli: NetworkConfig = {
     aaveV3PoolDataProvider,
     goerliAddresses.AAVE_V3_POOL_DATA_PROVIDER,
   ),
+  ajnaPoolInfo: contractDesc(ajnaPoolInfo, '0x32DA971821E6d88FCcD9861EbaCF8590553A2aA8'),
+  ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2010D2d932b467928313F86653b28E22A9d6889b'),
+  ajnaPoolPairs: {
+    'WBTC-USDC': contractDesc(ajnaPool, '0xcCbD19488f4e63319c2f11e156ccfA26Ce99c657'),
+    'ETH-USDC': contractDesc(ajnaPool, '0xEb39B597a4d1588ac7F50D2897AfD25CED7947EE'),
+  },
 }
 
 const hardhat: NetworkConfig = {
