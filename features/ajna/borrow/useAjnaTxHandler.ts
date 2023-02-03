@@ -1,6 +1,6 @@
 import { strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { callLibraryWithDpmProxy } from 'blockchain/calls/oasisActions'
+import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -12,7 +12,7 @@ import { AjnaBorrowPosition, useAjnaBorrowContext } from 'features/ajna/contexts
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
-import { ten } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
@@ -44,10 +44,10 @@ async function getTxDetails({
   rpcProvider: ethers.providers.Provider
 }): Promise<ActionData> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const { depositAmount, generateAmount, proxyAddress } = formState
+  const { depositAmount, generateAmount, paybackAmount, withdrawAmount, proxyAddress } = formState
 
-  const quotePrecision = getToken(quoteToken).precision
-  const collateralPrecision = getToken(collateralToken).precision
+  const debtTokenPrecision = getToken(quoteToken).precision
+  const collateralTokenPrecision = getToken(collateralToken).precision
   const defaultPromise: Promise<ActionData> = new Promise((resolve) => resolve({} as ActionData))
 
   const dependencies = {
@@ -57,37 +57,79 @@ async function getTxDetails({
     WETH: context.tokens.ETH.address,
   }
 
+  if (!proxyAddress) {
+    return defaultPromise
+  }
+
+  if (!context.ajnaPoolPairs[tokenPair]) {
+    throw new Error(`No pool for given token pair ${tokenPair}`)
+  }
+
+  const commonPayload = {
+    poolAddress: context.ajnaPoolPairs[tokenPair].address,
+    dpmProxyAddress: proxyAddress,
+    debtTokenPrecision,
+    collateralTokenPrecision,
+  }
+
+  // TODO hardcoded for now, but will be moved eventually to library
+  const price = new BigNumber(16821273)
+
   switch (formState.action) {
     case 'open':
-      if (!depositAmount || !generateAmount || !proxyAddress) {
+    case 'deposit': {
+      if (!depositAmount) {
         return defaultPromise
       }
-      return await strategies.ajna.open(
+      return await strategies.ajna[formState.action === 'open' ? 'open' : 'depositBorrow'](
         {
-          poolAddress: context.ajnaPoolPairs[tokenPair].address,
-          collateralAmount: depositAmount.times(ten.pow(collateralPrecision)),
-          debtAmount: generateAmount.times(ten.pow(quotePrecision)),
-          dpmProxyAddress: proxyAddress,
-          // TODO hardcoded for now, but will be moved eventually to library
-          price: new BigNumber(16821273),
+          ...commonPayload,
+          debtAmount: generateAmount || zero,
+          collateralAmount: depositAmount,
+          price,
         },
         dependencies,
       )
-    case 'deposit': {
-      // return await strategies.ajna.deposit({})
-      return defaultPromise
     }
     case 'withdraw': {
-      // return await strategies.ajna.withdraw({})
-      return defaultPromise
+      if (!withdrawAmount) {
+        return defaultPromise
+      }
+      return await strategies.ajna.paybackWithdraw(
+        {
+          ...commonPayload,
+          debtAmount: paybackAmount || zero,
+          collateralAmount: withdrawAmount,
+        },
+        dependencies,
+      )
     }
     case 'generate': {
-      // return await strategies.ajna.generate({})
-      return defaultPromise
+      if (!generateAmount) {
+        return defaultPromise
+      }
+      return await strategies.ajna.depositBorrow(
+        {
+          ...commonPayload,
+          debtAmount: generateAmount,
+          collateralAmount: depositAmount || zero,
+          price,
+        },
+        dependencies,
+      )
     }
     case 'payback': {
-      // return await strategies.ajna.payback({})
-      return defaultPromise
+      if (!paybackAmount) {
+        return defaultPromise
+      }
+      return await strategies.ajna.paybackWithdraw(
+        {
+          ...commonPayload,
+          debtAmount: paybackAmount,
+          collateralAmount: withdrawAmount || zero,
+        },
+        dependencies,
+      )
     }
     default:
       return defaultPromise
@@ -139,7 +181,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
 
   return () =>
     txHelpers
-      .sendWithGasEstimation(callLibraryWithDpmProxy, {
+      .sendWithGasEstimation(callOasisActionsWithDpmProxy, {
         kind: TxMetaKind.libraryCall,
         proxyAddress,
         ...txData,
