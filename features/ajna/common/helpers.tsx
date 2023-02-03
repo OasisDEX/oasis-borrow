@@ -14,12 +14,15 @@ export function getAjnaWithArrowColorScheme(): SxStyleProp {
   }
 }
 
-export function getPrimaryButtonLabelKey({ currentStep }: GetKeyMethodParams): string {
+export function getPrimaryButtonLabelKey({
+  currentStep,
+  walletAddress,
+}: GetKeyMethodParams & { walletAddress?: string }): string {
   switch (currentStep) {
     case 'risk':
       return 'i-understand'
     default:
-      return 'confirm'
+      return walletAddress ? 'confirm' : 'connect-wallet-button'
   }
 }
 

@@ -6,7 +6,7 @@ import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { kebabCase } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Fragment } from 'react'
+import React, { Fragment, isValidElement } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
 const fullWidthColumns = ['asset', 'cdpId']
@@ -104,12 +104,16 @@ export function DiscoverCard({
                 {t(`discover.table.header.${kebabCase(label)}`)}
               </Box>
             )}
-            <DiscoverTableDataCellContent
-              follow={follow}
-              label={label}
-              row={row}
-              onPositionClick={onPositionClick}
-            />
+            {!isValidElement(row[label]) ? (
+              <DiscoverTableDataCellContent
+                follow={follow}
+                label={label}
+                onPositionClick={onPositionClick}
+                row={row}
+              />
+            ) : (
+              row[label]
+            )}
           </Box>
         ))}
       </Grid>

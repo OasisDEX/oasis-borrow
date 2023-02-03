@@ -201,6 +201,12 @@ import {
 } from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
+import {
+  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+  FollowedVaultsLimitReachedChange,
+  FollowedVaultsLimitReachedChangeAction,
+  followedVaultsLimitReachedChangeReducer,
+} from 'features/follow/common/followedVaultsLimitReached'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import {
   TAB_CHANGE_SUBJECT,
@@ -307,7 +313,6 @@ import {
 } from 'rxjs/operators'
 
 import curry from 'ramda/src/curry'
-
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -379,6 +384,7 @@ export type SupportedUIChangeType =
   | NotificationChange
   | TxPayloadChange
   | AutoTakeProfitFormChange
+  | FollowedVaultsLimitReachedChange
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
@@ -391,6 +397,7 @@ export type LegalUiChanges = {
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
   AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
+  FollowedVaultsLimitReachedChangeAction: FollowedVaultsLimitReachedChangeAction
 }
 
 export type UIChanges = {
@@ -491,7 +498,10 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
   uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
-
+  uiChangesSubject.configureSubject(
+    FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+    followedVaultsLimitReachedChangeReducer,
+  )
   return uiChangesSubject
 }
 
