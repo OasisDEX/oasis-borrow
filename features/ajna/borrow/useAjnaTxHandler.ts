@@ -48,7 +48,7 @@ async function getTxDetails({
 
   const debtTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
-  const defaultPromise: Promise<ActionData> = new Promise((resolve) => resolve({} as ActionData))
+  const defaultPromise = Promise.resolve({} as ActionData)
 
   const dependencies = {
     provider: rpcProvider,
