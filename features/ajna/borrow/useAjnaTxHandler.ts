@@ -46,7 +46,7 @@ async function getTxDetails({
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const { depositAmount, generateAmount, paybackAmount, withdrawAmount, proxyAddress } = formState
 
-  const debtTokenPrecision = getToken(quoteToken).precision
+  const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
   const defaultPromise = Promise.resolve({} as ActionData)
 
@@ -68,7 +68,7 @@ async function getTxDetails({
   const commonPayload = {
     poolAddress: context.ajnaPoolPairs[tokenPair].address,
     dpmProxyAddress: proxyAddress,
-    debtTokenPrecision,
+    quoteTokenPrecision,
     collateralTokenPrecision,
   }
 
@@ -84,7 +84,7 @@ async function getTxDetails({
       return await strategies.ajna[formState.action === 'open' ? 'open' : 'depositBorrow'](
         {
           ...commonPayload,
-          debtAmount: generateAmount || zero,
+          quoteAmount: generateAmount || zero,
           collateralAmount: depositAmount,
           price,
         },
@@ -98,7 +98,7 @@ async function getTxDetails({
       return await strategies.ajna.paybackWithdraw(
         {
           ...commonPayload,
-          debtAmount: paybackAmount || zero,
+          quoteAmount: paybackAmount || zero,
           collateralAmount: withdrawAmount,
         },
         dependencies,
@@ -111,7 +111,7 @@ async function getTxDetails({
       return await strategies.ajna.depositBorrow(
         {
           ...commonPayload,
-          debtAmount: generateAmount,
+          quoteAmount: generateAmount,
           collateralAmount: depositAmount || zero,
           price,
         },
@@ -125,7 +125,7 @@ async function getTxDetails({
       return await strategies.ajna.paybackWithdraw(
         {
           ...commonPayload,
-          debtAmount: paybackAmount,
+          quoteAmount: paybackAmount,
           collateralAmount: withdrawAmount || zero,
         },
         dependencies,
