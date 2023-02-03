@@ -7,18 +7,32 @@ import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/
 import { getPrimaryButtonLabelKey, getTextButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 export function AjnaBorrowFormContent() {
   const { t } = useTranslation()
+  const { walletAddress } = useAccount()
   const {
     environment: { collateralToken, flow, product, quoteToken },
-    steps: { currentStep, isStepValid, isStepWithBack, setNextStep, setPrevStep },
+    steps: {
+      currentStep,
+      editingStep,
+      isStepValid,
+      isStepWithBack,
+      setNextStep,
+      setPrevStep,
+      setStep,
+    },
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
+
+  useEffect(() => {
+    if (!walletAddress && currentStep !== 'risk') setStep(editingStep)
+  }, [walletAddress])
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -50,9 +64,13 @@ export function AjnaBorrowFormContent() {
       </Grid>
     ),
     primaryButton: {
-      label: t(getPrimaryButtonLabelKey({ currentStep, product })),
-      disabled: !isStepValid,
-      action: setNextStep,
+      label: t(getPrimaryButtonLabelKey({ currentStep, product, walletAddress })),
+      disabled: !!walletAddress && !isStepValid,
+      ...(!walletAddress && currentStep === editingStep
+        ? {
+            url: '/connect',
+          }
+        : { action: setNextStep }),
     },
     ...(isStepWithBack && {
       textButton: {
