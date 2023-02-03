@@ -352,7 +352,7 @@ export function createOpenAaveStateMachine(
           userInput,
           effectiveProxyAddress,
           hasOpenedPosition,
-                            transition,
+          transition,
         }) =>
           allDefined(
             tokenBalance,
