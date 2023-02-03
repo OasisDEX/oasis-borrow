@@ -18,7 +18,6 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 interface AjnaTxHandlerInput {
   formState: AjnaBorrowFormState
-  proxyAddress: string
   collateralToken: string
   quoteToken: string
   context: Context
@@ -38,7 +37,6 @@ interface ActionData {
 async function getTxDetails({
   formState,
   rpcProvider,
-  proxyAddress,
   collateralToken,
   quoteToken,
   context,
@@ -46,7 +44,7 @@ async function getTxDetails({
   rpcProvider: ethers.providers.Provider
 }): Promise<ActionData> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const { depositAmount, generateAmount } = formState
+  const { depositAmount, generateAmount, proxyAddress } = formState
 
   const quotePrecision = getToken(quoteToken).precision
   const collateralPrecision = getToken(collateralToken).precision
@@ -54,19 +52,19 @@ async function getTxDetails({
 
   const dependencies = {
     provider: rpcProvider,
-    poolInfoAddress: context.ajnaPollInfo.address,
+    poolInfoAddress: context.ajnaPoolInfo.address,
     ajnaProxyActions: context.ajnaProxyActions.address,
     WETH: context.tokens.ETH.address,
   }
 
   switch (formState.action) {
     case 'open':
-      if (!depositAmount || !generateAmount) {
+      if (!depositAmount || !generateAmount || !proxyAddress) {
         return defaultPromise
       }
       return await strategies.ajna.open(
         {
-          poolAddress: context.ajnaPollPairs[tokenPair].address,
+          poolAddress: context.ajnaPoolPairs[tokenPair].address,
           collateralAmount: depositAmount.times(ten.pow(collateralPrecision)),
           debtAmount: generateAmount.times(ten.pow(quotePrecision)),
           dpmProxyAddress: proxyAddress,
@@ -98,7 +96,7 @@ async function getTxDetails({
 
 type AjnaTxHandler = () => void
 
-export function useAjnaTxHandler({ proxyAddress }: { proxyAddress?: string }): AjnaTxHandler {
+export function useAjnaTxHandler(): AjnaTxHandler {
   const { txHelpers$, context$ } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
@@ -108,14 +106,15 @@ export function useAjnaTxHandler({ proxyAddress }: { proxyAddress?: string }): A
     environment: { collateralToken, quoteToken, ethPrice },
   } = useAjnaBorrowContext()
 
-  const [txData, setTxData] = useState<TxData | null>(null)
+  const [txData, setTxData] = useState<TxData>()
+
+  const { proxyAddress } = state
 
   useEffect(() => {
     if (txHelpers && context && proxyAddress) {
       void getTxDetails({
         rpcProvider: context.rpcProvider,
         formState: state,
-        proxyAddress,
         collateralToken,
         quoteToken,
         context,

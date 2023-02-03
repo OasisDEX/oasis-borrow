@@ -18,22 +18,19 @@ export function AjnaBorrowFormContent() {
   const { walletAddress } = useAccount()
   const {
     environment: { collateralToken, flow, product, quoteToken },
-    form: {
-      state: { action },
-    },
     steps: {
       currentStep,
       editingStep,
       isStepValid,
       isStepWithBack,
+      isStepWithTransaction,
       setNextStep,
       setPrevStep,
       setStep,
     },
   } = useAjnaBorrowContext()
 
-  // TODO use here proxyAddress from DPM state machine
-  const txHandler = useAjnaTxHandler({ proxyAddress: '0xF5C0D205a00A5F799E3CFC4AC2E71C326Dd12b76' })
+  const txHandler = useAjnaTxHandler()
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
 
   useEffect(() => {
@@ -78,10 +75,8 @@ export function AjnaBorrowFormContent() {
           }
         : {
             action: async () => {
-              setNextStep()
-              if (action) {
-                txHandler()
-              }
+              if (isStepWithTransaction) txHandler()
+              else setNextStep()
             },
           }),
     },

@@ -12,6 +12,7 @@ export interface AjnaBorrowFormState {
   paybackAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
+  proxyAddress?: string
 }
 
 interface AjnaBorrowFormActionsUpdateDeposit {
@@ -34,6 +35,10 @@ interface AjnaBorrowFormActionsUpdatePayback {
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdateProxyAddress {
+  type: 'update-proxy-address'
+  proxyAddress: string
+}
 interface AjnaBorrowFormActionsReset {
   type: 'reset'
 }
@@ -44,6 +49,7 @@ type AjnaBorrowFormAction = ReductoActions<
   | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsUpdateGenerate
   | AjnaBorrowFormActionsUpdatePayback
+  | AjnaBorrowFormActionsUpdateProxyAddress
   | AjnaBorrowFormActionsReset
 >
 
@@ -56,6 +62,8 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   paybackAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+  // TODO once DPM implemented should be undefined as default
+  proxyAddress: '0xF5C0D205a00A5F799E3CFC4AC2E71C326Dd12b76',
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
@@ -90,6 +98,11 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             ...state,
             paybackAmount: action.paybackAmount,
             paybackAmountUSD: action.paybackAmountUSD,
+          }
+        case 'update-proxy-address':
+          return {
+            ...state,
+            proxyAddress: action.proxyAddress,
           }
         case 'reset':
           return ajnaBorrowDefault
