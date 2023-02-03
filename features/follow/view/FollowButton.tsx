@@ -47,8 +47,8 @@ export function FollowButton({
         pr: isShort ? 0 : '12px',
         pl: isShort ? 0 : '30px',
         fontSize: 1,
-        width: isShort ? ['29px', null, null, '36px'] : 'auto',
-        height: isShort ? ['29px', null, null, '36px'] : 'auto',
+        width: isShort ? ['32px', null, null, '36px'] : 'auto',
+        height: isShort ? ['32px', null, null, '36px'] : 'auto',
         lineHeight: '26px',
         color: isFollowing ? 'primary100' : 'primary60',
         border: '1px solid',
@@ -119,9 +119,6 @@ export function FollowButton({
               sx={{
                 ...(isShort && {
                   position: 'absolute',
-                  // top: '1%',
-                  left: '-1px',
-                  // transform: 'translate(-10%, -1%)',
                   marginTop: '1px',
                 }),
               }}
