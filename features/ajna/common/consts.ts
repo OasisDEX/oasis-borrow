@@ -30,8 +30,8 @@ export const steps: {
   }
 } = {
   borrow: {
-    open: ['risk', 'setup', 'transaction'],
-    manage: ['manage', 'transaction'],
+    open: ['risk', 'setup', 'dpm', 'transaction'],
+    manage: ['manage', 'dpm', 'transaction'],
   },
   multiply: {
     open: [],

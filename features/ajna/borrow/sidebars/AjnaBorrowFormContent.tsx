@@ -17,6 +17,9 @@ export function AjnaBorrowFormContent() {
   const { walletAddress } = useAccount()
   const {
     environment: { collateralToken, flow, product, quoteToken },
+    form: {
+      state: { dpmAddress },
+    },
     steps: { currentStep, editingStep, isStepValid, setNextStep, setStep },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval },
   } = useAjnaBorrowContext()
@@ -24,7 +27,8 @@ export function AjnaBorrowFormContent() {
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
 
   useEffect(() => {
-    if (!walletAddress && currentStep !== 'risk') setStep(editingStep)
+    // TODO: check why FlowComponent is setting walletAddress to undefined for a fraction of second
+    // if (!walletAddress && currentStep !== 'risk') setStep(editingStep)
   }, [walletAddress])
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -57,7 +61,7 @@ export function AjnaBorrowFormContent() {
       </Grid>
     ),
     primaryButton: {
-      label: t(getPrimaryButtonLabelKey({ currentStep, product, walletAddress })),
+      label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
       disabled: !!walletAddress && !isStepValid,
       ...(!walletAddress && currentStep === editingStep
         ? {
