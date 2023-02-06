@@ -4,10 +4,9 @@ import {
   AaveV2ReserveDataReply,
 } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { amountFromWei } from 'blockchain/utils'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
-
-import { zero } from '../../../helpers/zero'
 
 type PrepareAaveAvailableLiquidityProps = [AaveV2ReserveDataReply, BigNumber[]]
 
@@ -26,7 +25,7 @@ export function prepareAaveAvailableLiquidityInUSDC$(
       return availableLiquidityInETH.times(ETH_USDC_price)
     }),
     catchError((error) => {
-      console.log(`Can't get Aave available liquidity for ${reserveDataToken}`, error)
+      console.log(`Can't get Aave V2 available liquidity for ${reserveDataToken}`, error)
       return of(zero)
     }),
   )

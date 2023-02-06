@@ -1,15 +1,15 @@
+import { getAaveV2AssetsPrices } from 'blockchain/aave'
+import { observe } from 'blockchain/calls/observe'
+import { TokenBalances } from 'blockchain/tokens'
+import { AppContext } from 'components/AppContext'
+import { LendingProtocol } from 'lendingProtocols'
+import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
 import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { getAaveV2AssetsPrices } from '../../blockchain/aave'
-import { observe } from '../../blockchain/calls/observe'
-import { TokenBalances } from '../../blockchain/tokens'
-import { AppContext } from '../../components/AppContext'
-import { LendingProtocol } from '../../lendingProtocols'
-import { prepareAaveTotalValueLocked$ } from '../../lendingProtocols/aave-v2/pipelines'
 import { getAaveStEthYield } from './common'
 import {
   getAdjustAaveParametersMachine,

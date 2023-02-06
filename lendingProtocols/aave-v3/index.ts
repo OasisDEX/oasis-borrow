@@ -1,13 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { memoize } from 'lodash'
-import { curry } from 'ramda'
-import { from, Observable } from 'rxjs'
-import { shareReplay, switchMap } from 'rxjs/operators'
-
 import {
   createAaveV3OracleAssetPriceData$,
   createConvertToAaveV3OracleAssetPrice$,
   getAaveV3AssetsPrices,
+  getAaveV3OracleBaseCurrencyUnit,
   getAaveV3PositionLiquidation$,
   getAaveV3ReserveConfigurationData,
   getAaveV3ReserveData,
@@ -15,16 +11,21 @@ import {
   getAaveV3UserAccountData,
   getAaveV3UserConfiguration,
   getAaveV3UserReserveData,
-} from '../../blockchain/aave-v3'
-import { observe } from '../../blockchain/calls/observe'
-import { Context } from '../../blockchain/network'
-import { getOnChainPosition } from '../../features/aave/oasisActionsLibWrapper'
-import { LendingProtocol } from '../LendingProtocol'
+} from 'blockchain/aave-v3'
+import { observe } from 'blockchain/calls/observe'
+import { Context } from 'blockchain/network'
+import { getOnChainPosition } from 'features/aave/oasisActionsLibWrapper'
+import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
+import { memoize } from 'lodash'
+import { curry } from 'ramda'
+import { from, Observable } from 'rxjs'
+import { shareReplay, switchMap } from 'rxjs/operators'
+
 import {
   createAaveV3PrepareReserveData$,
   getAaveProtocolData$,
   getAaveProxyConfiguration$,
-  prepareAaveAvailableLiquidityInUSDC$,
+  prepareaaveAvailableLiquidityInUSDC$,
 } from './pipelines'
 
 interface AaveV3ServicesDependencies {
@@ -42,15 +43,16 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
     getAaveV3UserAccountData,
     (args) => args.address,
   )
-
+  const getAaveV3BaseCurrencyUnit$ = observe(once$, context$, getAaveV3OracleBaseCurrencyUnit)
   const getAaveReserveData$ = observe(once$, context$, getAaveV3ReserveData)
   const getAaveAssetsPrices$ = observe(once$, context$, getAaveV3AssetsPrices)
 
   const aaveAvailableLiquidityInUSDC$ = memoize(
-    curry(prepareAaveAvailableLiquidityInUSDC$)(
+    curry(prepareaaveAvailableLiquidityInUSDC$)(
       getAaveReserveData$,
       // @ts-expect-error
-      getAaveAssetsPrices$({ tokens: ['USDC'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+      getAaveAssetsPrices$({ tokens: ['WETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+      getAaveV3BaseCurrencyUnit$(),
     ),
     ({ token }) => token,
   )
