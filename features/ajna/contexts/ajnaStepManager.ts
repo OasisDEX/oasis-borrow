@@ -13,7 +13,7 @@ export function isNextStep({
   currentStep,
   step,
   steps,
-}: GeneralStepManager & { step: AjnaStatusStep, steps: AjnaStatusStep[] }) {
+}: GeneralStepManager & { step: AjnaStatusStep; steps: AjnaStatusStep[] }) {
   return steps.indexOf(step) > steps.indexOf(currentStep)
 }
 

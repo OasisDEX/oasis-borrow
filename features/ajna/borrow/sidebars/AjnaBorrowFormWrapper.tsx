@@ -3,7 +3,6 @@ import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowF
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useFlowState } from 'helpers/useFlowState'
 import React, { useEffect } from 'react'
-import { Box } from 'theme-ui'
 
 export function AjnaBorrowFormWrapper() {
   const {
@@ -33,12 +32,12 @@ export function AjnaBorrowFormWrapper() {
   }, [flowState.availableProxies])
 
   return (
-    <Box>
+    <>
       {!isExternalStep ? (
         <AjnaBorrowFormContent isAllowanceLoading={flowState.isLoading} />
       ) : (
         <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
       )}
-    </Box>
+    </>
   )
 }
