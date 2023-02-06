@@ -5,7 +5,7 @@ import { PositionId } from 'features/aave/types'
 import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators'
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
@@ -54,9 +54,5 @@ export function getStrategyConfig$(
       }
     }),
     distinctUntilChanged(isEqual),
-    tap((value) => {
-      console.log(`getStrategyConfig$ from source`)
-      console.log(value)
-    }),
   )
 }
