@@ -1,14 +1,14 @@
 import { useActor } from '@xstate/react'
-import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { TabBar } from 'components/TabBar'
 import { ProtectionControl } from 'components/vault/ProtectionControl'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { SidebarManageAaveVault } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid } from 'theme-ui'
@@ -46,7 +46,9 @@ export function AaveManageTabBar({
   const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
 
   const nextPosition =
-    !isClosingPosition || hasCloseTokenSet ? state.context.strategy?.simulation.position : undefined
+    !isClosingPosition || hasCloseTokenSet
+      ? state.context.transition?.simulation.position
+      : undefined
 
   return (
     <TabBar
