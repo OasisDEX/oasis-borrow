@@ -93,7 +93,7 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             paybackAmountUSD: action.paybackAmountUSD,
           }
         case 'reset':
-          return ajnaBorrowDefault
+          return { ...state, ...ajnaBorrowDefault }
         default:
           return state
       }

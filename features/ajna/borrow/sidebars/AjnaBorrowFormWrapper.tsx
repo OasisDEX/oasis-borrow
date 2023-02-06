@@ -12,7 +12,7 @@ export function AjnaBorrowFormWrapper() {
       state: { action, depositAmount, paybackAmount },
       updateState,
     },
-    steps: { currentStep, isExternalStep, setNextStep, setPrevStep },
+    steps: { currentStep, isExternalStep, setNextStep, setPrevStep, setStep },
   } = useAjnaBorrowContext()
 
   const flowState = useFlowState({
@@ -24,9 +24,20 @@ export function AjnaBorrowFormWrapper() {
       amount: paybackAmount,
       token: quoteToken,
     }),
-    onEverythingReady: () => setNextStep(),
-    onGoBack: () => setPrevStep(),
+    onEverythingReady: (params) => {
+      console.log('ready')
+      console.log(params)
+      // setNextStep()
+    },
+    onGoBack: (params) => {
+      console.log('goBack')
+      console.log(params)
+      setStep('setup')
+      // setPrevStep()
+    },
   })
+
+  console.log(flowState)
 
   useEffect(() => {
     if (flowState.availableProxies.length) updateState('dpmAddress', flowState.availableProxies[0])
