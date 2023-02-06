@@ -1,9 +1,7 @@
-import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { ajnaProducts } from 'features/ajna/common/consts'
-import { AjnaLayout, ajnaPageSeoTags, AjnaWrapper } from 'features/ajna/common/layout'
+import { AjnaLayout, ajnaPageSeoTags } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { AjnaSelectorController } from 'features/ajna/controls/AjnaSelectorController'
-import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -13,15 +11,7 @@ interface AjnaProductSelectorPageProps {
 }
 
 function AjnaProductSelectorPage({ product }: AjnaProductSelectorPageProps) {
-  return (
-    <WithConnection>
-      <WithTermsOfService>
-        <AjnaWrapper>
-          <AjnaSelectorController product={product} />
-        </AjnaWrapper>
-      </WithTermsOfService>
-    </WithConnection>
-  )
+  return <AjnaSelectorController product={product} />
 }
 
 AjnaProductSelectorPage.layout = AjnaLayout

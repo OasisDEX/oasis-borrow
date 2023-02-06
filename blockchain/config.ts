@@ -272,7 +272,7 @@ const protoMain = {
   ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2b639Cc84e1Ad3aA92D4Ee7d2755A6ABEf300D72'),
   ajnaPoolPairs: {
     'WBTC-USDC': contractDesc(ajnaPool, '0xa11a3BCeaD7f27a19dAaaf59BC0484f8440e93fe'),
-    'WETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
+    'ETH-USDC': contractDesc(ajnaPool, '0x0c9Bc4EFD40cCD0B6c6372CFa8b8562A940185C1'),
   },
 }
 
@@ -385,7 +385,7 @@ const kovan: NetworkConfig = {
   ajnaProxyActions: contractDesc(ajnaProxyActions, '0x0'),
   ajnaPoolPairs: {
     'WBTC-USDC': contractDesc(ajnaPool, '0x0'),
-    'WETH-USDC': contractDesc(ajnaPool, '0x0'),
+    'ETH-USDC': contractDesc(ajnaPool, '0x0'),
   },
 }
 
@@ -504,7 +504,7 @@ const goerli: NetworkConfig = {
   ajnaProxyActions: contractDesc(ajnaProxyActions, '0x2010D2d932b467928313F86653b28E22A9d6889b'),
   ajnaPoolPairs: {
     'WBTC-USDC': contractDesc(ajnaPool, '0xcCbD19488f4e63319c2f11e156ccfA26Ce99c657'),
-    'WETH-USDC': contractDesc(ajnaPool, '0xEb39B597a4d1588ac7F50D2897AfD25CED7947EE'),
+    'ETH-USDC': contractDesc(ajnaPool, '0xEb39B597a4d1588ac7F50D2897AfD25CED7947EE'),
   },
 }
 
