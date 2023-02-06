@@ -14,7 +14,6 @@ import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -130,6 +129,7 @@ export function ProtectionControl() {
     metadata: {
       stopLossMetadata: {
         translations: { ratioParamTranslationKey, bannerStrategiesKey },
+        stopLossWriteEnabled,
       },
     },
     triggerData: { autoSellTriggerData, stopLossTriggerData },
@@ -137,8 +137,6 @@ export function ProtectionControl() {
   const [txHelpersData] = useObservable(txHelpers$)
   const [stopLossState] = useUIChanges<StopLossFormChange>(STOP_LOSS_FORM_CHANGE)
   const [autoSellState] = useUIChanges<AutoBSFormChange>(AUTO_SELL_FORM_CHANGE)
-
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const vaultHasActiveTrigger =
     stopLossTriggerData.isStopLossEnabled || autoSellTriggerData.isTriggerEnabled

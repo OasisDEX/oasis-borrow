@@ -29,9 +29,11 @@ import {
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatPercent } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 
-const offsetFromMinAndMax = new BigNumber(0.05)
+export const aaveOffsetFromMinAndMax = new BigNumber(0.05)
+export const aaveOffsetFromMaxDuringOpenFLow = new BigNumber(0.1)
 
 export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
@@ -61,9 +63,9 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
   })
 
   const sliderMin = new BigNumber(
-    positionRatio.plus(offsetFromMinAndMax).times(100).toFixed(0, BigNumber.ROUND_UP),
+    positionRatio.plus(aaveOffsetFromMinAndMax).times(100).toFixed(0, BigNumber.ROUND_UP),
   )
-  const sliderMax = liquidationRatio.minus(offsetFromMinAndMax).times(100)
+  const sliderMax = liquidationRatio.minus(aaveOffsetFromMinAndMax).times(100)
 
   const initialSlRatioWhenTriggerDoesntExist = getStartingSlRatio({
     stopLossLevel: stopLossLevel,
@@ -102,6 +104,8 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
     triggersData: [executionParams],
     removeAllowance: getShouldRemoveAllowance(automationTriggersData),
   }
+
+  const aaveProtectionWriteEnabled = useFeatureToggle('AaveProtectionWrite')
 
   return {
     callbacks: {},
@@ -209,5 +213,6 @@ export function getAaveStopLossMetadata(context: ContextWithoutMetadata): StopLo
       addTrigger: addAutomationBotTriggerV2,
       removeTrigger: removeAutomationBotTriggerV2,
     },
+    stopLossWriteEnabled: aaveProtectionWriteEnabled,
   }
 }

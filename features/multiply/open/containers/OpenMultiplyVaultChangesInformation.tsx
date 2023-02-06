@@ -44,13 +44,18 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     marketPrice,
     stopLossSkipped,
     stopLossLevel,
-    ilkData,
+    ilkData: { liquidationRatio },
     afterLiquidationPrice,
     visitedStopLossStep,
   } = props
   const { t } = useTranslation()
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
+  const dynamicStopLossPrice =
+    afterLiquidationPrice && liquidationRatio
+      ? afterLiquidationPrice.div(liquidationRatio).times(stopLossLevel.div(100))
+      : zero
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
@@ -173,9 +178,9 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
       )}
       {stopLossWriteEnabled && visitedStopLossStep && !stopLossSkipped && (
         <OpenFlowStopLossSummary
+          ratioTranslationKey="protection.stop-loss-coll-ratio"
           stopLossLevel={stopLossLevel}
-          liquidationRatio={ilkData.liquidationRatio}
-          afterLiquidationPrice={afterLiquidationPrice}
+          dynamicStopLossPrice={dynamicStopLossPrice}
         />
       )}
     </VaultChangesInformationContainer>

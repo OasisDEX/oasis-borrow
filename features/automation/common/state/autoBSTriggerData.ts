@@ -40,7 +40,7 @@ function mapAutoBSTriggerData(autoBSTriggers: { triggerId: number; result: Resul
       targetCollRatio,
       minSellPrice,
       maxBuyPrice,
-      continous,
+      continuous,
       deviation,
       maxBaseFeeInGwei,
     } = trigger.result
@@ -63,7 +63,7 @@ function mapAutoBSTriggerData(autoBSTriggers: { triggerId: number; result: Resul
       maxBuyOrMinSellPrice: new BigNumber(maxBuyOrMinSellPrice.toString()).isEqualTo(maxUint256)
         ? maxUint256
         : new BigNumber(maxBuyOrMinSellPrice.toString()).div(new BigNumber(10).pow(18)),
-      continuous: continous,
+      continuous,
       deviation: new BigNumber(deviation.toString()).div(100),
       maxBaseFeeInGwei: maxBaseFeeInGwei
         ? new BigNumber(maxBaseFeeInGwei.toString())
