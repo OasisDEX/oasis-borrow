@@ -85,6 +85,7 @@ export function useFlowState({
       if (event.type === 'GO_BACK') {
         setAsUserAction(true)
         callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(callbackParams, onGoBack)
+        dpmMachine.send('GAS_COST_ESTIMATION')
       }
       if (
         value === 'txSuccess' &&

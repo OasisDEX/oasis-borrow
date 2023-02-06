@@ -4,7 +4,11 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
-import { isExternalStep, isStepWithTransaction } from 'features/ajna/contexts/ajnaStepManager'
+import {
+  isExternalStep,
+  isNextStep,
+  isStepWithTransaction,
+} from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
 import React, {
   Dispatch,
@@ -92,7 +96,11 @@ export function AjnaBorrowContextProvider({
   const [txStatus, setTxStatus] = useState<TxStatus>()
 
   const setStep = (step: AjnaStatusStep) => {
-    if (isBorrowStepValid({ currentStep, formState: form.state })) setCurrentStep(step)
+    if (
+      !isNextStep({ currentStep, step, steps }) ||
+      isBorrowStepValid({ currentStep, formState: form.state })
+    )
+      setCurrentStep(step)
     else throw new Error(`A state of current step in not valid.`)
   }
   const shiftStep = (direction: 'next' | 'prev') => {
