@@ -57,6 +57,13 @@ export type AllowanceStateMachineEvent =
   | { type: 'BACK' }
   | { type: 'CONTINUE' }
   | { type: 'SET_ALLOWANCE'; amount?: BigNumber; allowanceType: AllowanceType }
+  | {
+      type: 'SET_ALLOWANCE_CONTEXT'
+      minimumAmount: BigNumber
+      token: string
+      spender: string
+      allowanceType: AllowanceType
+    }
   | TransactionStateMachineResultEvents
 
 export function createAllowanceStateMachine(
@@ -83,6 +90,9 @@ export function createAllowanceStateMachine(
               target: 'txInProgress',
             },
             SET_ALLOWANCE: {
+              actions: ['updateContext'],
+            },
+            SET_ALLOWANCE_CONTEXT: {
               actions: ['updateContext'],
             },
           },

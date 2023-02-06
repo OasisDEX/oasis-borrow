@@ -9,11 +9,14 @@ import { ProductCardMultiplyMaker } from '../../components/productCards/ProductC
 import { ProductCardsFilter } from '../../components/productCards/ProductCardsFilter'
 import { ProductHeader } from '../../components/ProductHeader'
 import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import { LendingProtocol } from '../../lendingProtocols'
 
 export function MultiplyView() {
   const { t } = useTranslation()
   const tab = window.location.hash.replace(/^#/, '')
-  const aaveMultiplyStrategies = getTokens(aaveStrategiesList('Multiply').map(({ name }) => name))
+  const aaveMultiplyStrategies = getTokens(
+    aaveStrategiesList('Multiply', LendingProtocol.AaveV2).map(({ name }) => name),
+  )
 
   return (
     <Grid

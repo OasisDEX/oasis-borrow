@@ -1,6 +1,6 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { AaveV2UserAccountData } from 'blockchain/calls/aave/aaveV2LendingPool'
+import { AaveV2UserAccountData } from 'blockchain/aave/aaveV2LendingPool'
 import {
   DetailsSectionContentCard,
   DetailsSectionContentCardWrapper,
@@ -11,9 +11,9 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines/aaveV2PrepareReserveData'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'

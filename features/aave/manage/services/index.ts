@@ -1,3 +1,2 @@
-export * from './getManageAavePositionStateMachineServices'
+export * from './aave-v2/getManageAaveV2PositionStateMachineServices'
 export * from './getManageAaveStateMachine'
-export * from './getAaveProtocolData'

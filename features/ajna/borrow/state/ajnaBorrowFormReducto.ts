@@ -1,11 +1,17 @@
 import BigNumber from 'bignumber.js'
+import { AjnaBorrowAction } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
+  action?: AjnaBorrowAction
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
   generateAmountUSD?: BigNumber
+  paybackAmount?: BigNumber
+  paybackAmountUSD?: BigNumber
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
 }
 
 interface AjnaBorrowFormActionsUpdateDeposit {
@@ -13,24 +19,50 @@ interface AjnaBorrowFormActionsUpdateDeposit {
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdateWithdraw {
+  type: 'update-withdraw'
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+}
 interface AjnaBorrowFormActionsUpdateGenerate {
   type: 'update-generate'
   generateAmount?: BigNumber
   generateAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdatePayback {
+  type: 'update-payback'
+  paybackAmount?: BigNumber
+  paybackAmountUSD?: BigNumber
+}
+interface AjnaBorrowFormActionsReset {
+  type: 'reset'
+}
 
 type AjnaBorrowFormAction = ReductoActions<
   AjnaBorrowFormState,
-  AjnaBorrowFormActionsUpdateDeposit | AjnaBorrowFormActionsUpdateGenerate
+  | AjnaBorrowFormActionsUpdateDeposit
+  | AjnaBorrowFormActionsUpdateWithdraw
+  | AjnaBorrowFormActionsUpdateGenerate
+  | AjnaBorrowFormActionsUpdatePayback
+  | AjnaBorrowFormActionsReset
 >
+
+export const ajnaBorrowDefault: AjnaBorrowFormState = {
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  generateAmount: undefined,
+  generateAmountUSD: undefined,
+  paybackAmount: undefined,
+  paybackAmountUSD: undefined,
+  withdrawAmount: undefined,
+  withdrawAmountUSD: undefined,
+}
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
   const { dispatch, state, updateState } = useReducto<AjnaBorrowFormState, AjnaBorrowFormAction>({
     defaults: {
-      depositAmount: undefined,
-      depositAmountUSD: undefined,
-      generateAmount: undefined,
-      generateAmountUSD: undefined,
+      action: 'open',
+      ...ajnaBorrowDefault,
       ...rest,
     },
     reducer: (state: AjnaBorrowFormState, action: AjnaBorrowFormAction) => {
@@ -41,12 +73,26 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
           }
+        case 'update-withdraw':
+          return {
+            ...state,
+            withdrawAmount: action.withdrawAmount,
+            withdrawAmountUSD: action.withdrawAmountUSD,
+          }
         case 'update-generate':
           return {
             ...state,
             generateAmount: action.generateAmount,
             generateAmountUSD: action.generateAmountUSD,
           }
+        case 'update-payback':
+          return {
+            ...state,
+            paybackAmount: action.paybackAmount,
+            paybackAmountUSD: action.paybackAmountUSD,
+          }
+        case 'reset':
+          return ajnaBorrowDefault
         default:
           return state
       }

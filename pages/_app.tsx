@@ -14,6 +14,7 @@ import { CustomMDXLink } from 'components/Links'
 import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
+import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
 import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { appWithTranslation, i18n } from 'next-i18next'
@@ -183,10 +184,12 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                     <SharedUIProvider>
                       <GasEstimationContextProvider>
                         <NotificationSocketProvider>
-                          <Layout {...layoutProps}>
-                            <Component {...pageProps} />
-                            <CookieBanner setValue={setValue} value={value} />
-                          </Layout>
+                          <WithFollowVaults>
+                            <Layout {...layoutProps}>
+                              <Component {...pageProps} />
+                              <CookieBanner setValue={setValue} value={value} />
+                            </Layout>
+                          </WithFollowVaults>
                         </NotificationSocketProvider>
                       </GasEstimationContextProvider>
                     </SharedUIProvider>

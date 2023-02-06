@@ -73,13 +73,13 @@ function getAmountGetFromPositionAfterClose(
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
-  const displayToken = state.context.strategy?.simulation.swap.targetToken || {
+  const displayToken = state.context.transition?.simulation.swap.targetToken || {
     symbol: token,
     precision: 18,
   }
   const balance = formatCryptoBalance(
     amountFromWei(
-      getAmountGetFromPositionAfterClose(state.context.strategy, state.context.currentPosition),
+      getAmountGetFromPositionAfterClose(state.context.transition, state.context.currentPosition),
       displayToken.symbol,
     ),
   )
@@ -590,7 +590,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.strategy?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.transition?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />

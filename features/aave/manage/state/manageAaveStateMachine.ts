@@ -440,11 +440,11 @@ export function createManageAaveStateMachine(
     },
     {
       guards: {
-        validTransactionParameters: ({ proxyAddress, strategy }) => {
-          return allDefined(proxyAddress, strategy)
+        validTransactionParameters: ({ proxyAddress, transition }) => {
+          return allDefined(proxyAddress, transition)
         },
-        validClosingTransactionParameters: ({ proxyAddress, strategy, manageTokenInput }) => {
-          return allDefined(proxyAddress, strategy, manageTokenInput?.closingToken)
+        validClosingTransactionParameters: ({ proxyAddress, transition, manageTokenInput }) => {
+          return allDefined(proxyAddress, transition, manageTokenInput?.closingToken)
         },
         canChangePosition: ({ web3Context, ownerAddress, currentPosition }) =>
           allDefined(web3Context, ownerAddress, currentPosition) &&

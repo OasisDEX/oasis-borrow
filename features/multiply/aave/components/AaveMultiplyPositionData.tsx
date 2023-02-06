@@ -1,7 +1,7 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCard,
@@ -12,11 +12,11 @@ import {
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
-import { PreparedAaveReserveData } from 'features/aave/helpers/aaveV2PrepareReserveData'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
 import { zero } from 'helpers/zero'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines/aaveV2PrepareReserveData'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
@@ -251,6 +251,7 @@ export function AaveMultiplyPositionData({
       footer={
         <DetailsSectionFooterItemWrapper>
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.position-debt')}
             value={`${formatPrecision(currentPositionThings.debt, 4)} ${
               currentPosition.debt.symbol
@@ -267,18 +268,26 @@ export function AaveMultiplyPositionData({
             }
           />
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.total-exposure', { token: currentPosition.collateral.symbol })}
-            value={`${formatAmount(currentPositionThings.totalExposure, 'ETH')} ETH`}
+            value={`${formatAmount(
+              currentPositionThings.totalExposure,
+              currentPosition.collateral.symbol,
+            )} ${currentPosition.collateral.symbol}`}
             change={
               nextPositionThings && {
                 variant: nextPositionThings.totalExposure.gt(currentPositionThings.totalExposure)
                   ? 'positive'
                   : 'negative',
-                value: `${formatAmount(nextPositionThings.totalExposure, 'ETH')} ETH ${t('after')}`,
+                value: `${formatAmount(
+                  nextPositionThings.totalExposure,
+                  currentPosition.collateral.symbol,
+                )} ${currentPosition.collateral.symbol} ${t('after')}`,
               }
             }
           />
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.multiple')}
             value={displayMultiple(currentPosition.riskRatio.multiple)}
             change={
@@ -293,6 +302,7 @@ export function AaveMultiplyPositionData({
             }
           />
           <DetailsSectionFooterItem
+            sx={{ pr: 3 }}
             title={t('system.buying-power')}
             value={`${formatPrecision(currentPositionThings.buyingPower, 2)} ${
               currentPosition.debt.symbol

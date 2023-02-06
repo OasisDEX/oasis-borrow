@@ -4,7 +4,7 @@ import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFor
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid, Text } from 'theme-ui'
+import { Flex, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
 export function AjnaBorrowFormContentTransaction() {
@@ -22,7 +22,7 @@ export function AjnaBorrowFormContentTransaction() {
   } = useAjnaBorrowContext()
 
   return (
-    <Grid gap={3}>
+    <>
       {/* temporary TX status selector */}
       <Flex sx={{ columnGap: 2 }}>
         Force TX status:
@@ -61,6 +61,6 @@ export function AjnaBorrowFormContentTransaction() {
           <VaultChangesWithADelayCard />
         </>
       )}
-    </Grid>
+    </>
   )
 }

@@ -40,7 +40,7 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
       tokenPrice={state.context.tokenPrice}
       debtPrice={state.context.debtPrice}
       nextPosition={
-        hasUserInteracted(state) ? state.context.strategy?.simulation.position : undefined
+        hasUserInteracted(state) ? state.context.transition?.simulation.position : undefined
       }
     />
   )
@@ -51,6 +51,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
   const { stateMachine } = useOpenAaveStateMachineContext()
   const [, send] = useActor(stateMachine)
   const PositionInfo = strategyConfig.viewComponents.positionInfo
+
   return (
     <TabBar
       variant="underline"
@@ -62,6 +63,7 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
             <Grid variant="vaultContainer">
               <Box>
                 <SimulateSectionComponent config={strategyConfig} />
+                <Box sx={{ mt: 5 }}></Box>
               </Box>
               <Box>{<SidebarOpenAaveVault />}</Box>
             </Grid>
@@ -106,6 +108,6 @@ function AaveOpenContainer({
 }
 
 export function AaveOpenView({ config }: { config: IStrategyConfig }) {
-  const { aaveStateMachine } = useAaveContext()
+  const { aaveStateMachine } = useAaveContext(config.protocol)
   return <AaveOpenContainer aaveStateMachine={aaveStateMachine} config={config} />
 }
