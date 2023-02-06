@@ -803,6 +803,7 @@ export const trackingEvents = {
       txHash: string,
       network: string,
       walletType: ConnectionKind,
+      oasisFee: string,
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
@@ -812,6 +813,7 @@ export const trackingEvents = {
         txHash,
         network,
         walletType,
+        oasisFee,
         page: Pages.AdjustPosition,
         section: 'ConfirmVault',
       }
@@ -840,6 +842,7 @@ export const trackingEvents = {
       txHash: string,
       network: string,
       walletType: ConnectionKind,
+      oasisFee: string,
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
@@ -850,6 +853,7 @@ export const trackingEvents = {
         txHash,
         network,
         walletType,
+        oasisFee,
         page: Pages.OtherActions,
         section: 'ConfirmVault',
       }
@@ -877,6 +881,7 @@ export const trackingEvents = {
       closeTo: CloseVaultTo,
       txHash: string,
       network: string,
+      oasisFee: string,
       walletType: ConnectionKind,
     ) => {
       const eventBody = {
@@ -888,6 +893,7 @@ export const trackingEvents = {
         txHash,
         network,
         walletType,
+        oasisFee,
         page: Pages.CloseVault,
         section: 'ConfirmVault',
       }
