@@ -1,12 +1,12 @@
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { loadStrategyFromTokens } from 'features/aave/strategyConfig'
+import { PositionId } from 'features/aave/types'
+import { AaveUserConfigurationResults } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
-import { AaveUserConfigurationResults } from '../../../lendingProtocols/aave-v2/pipelines'
-import { IStrategyConfig } from '../common/StrategyConfigTypes'
-import { PositionCreated } from '../services/readPositionCreatedEvents'
-import { loadStrategyFromTokens } from '../strategyConfig'
-import { PositionId } from '../types'
 import { ProxiesRelatedWithPosition } from './getProxiesRelatedWithPosition'
 
 export function getStrategyConfig$(
