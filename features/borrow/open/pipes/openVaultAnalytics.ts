@@ -44,7 +44,6 @@ type OpenVaultConfirmTransaction = {
     collateralAmount: BigNumber
     daiAmount: BigNumber
     txHash: string
-    oasisFee: BigNumber
   }
 }
 
@@ -134,7 +133,6 @@ export function createOpenVaultAnalytics$(
         collateralAmount: depositAmount,
         daiAmount: generateAmount || zero,
         txHash: openTxHash,
-        oasisFee: //TODO ŁW
       },
     })),
     distinctUntilChanged(isEqual),
@@ -184,7 +182,6 @@ export function createOpenVaultAnalytics$(
                 event.value.txHash,
                 network,
                 walletType,
-                event.value.oasisFee.toString(),
               )
               break
             default:

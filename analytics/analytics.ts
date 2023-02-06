@@ -421,7 +421,7 @@ export const trackingEvents = {
     txHash: string,
     network: string,
     walletType: ConnectionKind,
-    oasisFee: string,
+    // oasisFee: string, TODO ŁW should be here, or no as it's borrow?
   ) => {
     const eventBody = {
       id: 'ConfirmTransaction',
@@ -435,7 +435,6 @@ export const trackingEvents = {
       walletType,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
-      oasisFee,
     }
 
     mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
@@ -765,6 +764,7 @@ export const trackingEvents = {
       txHash: string,
       network: string,
       walletType: ConnectionKind,
+      oasisFee: string,
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
@@ -777,6 +777,7 @@ export const trackingEvents = {
         network,
         walletType,
         page: Pages.OpenMultiply,
+        oasisFee,
         section: 'ConfirmVault',
       }
 

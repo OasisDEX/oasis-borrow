@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
 import { AccountDetails } from 'features/account/AccountData'
+import { formatAmount } from 'helpers/formatters/format'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
@@ -38,6 +39,7 @@ type OpenMultiplyVaultConfirmTransaction = {
     collateralAmount: BigNumber
     multiply: BigNumber
     txHash: string
+    oasisFee: string
   }
 }
 
@@ -109,13 +111,14 @@ export function createOpenMultiplyVaultAnalytics$(
 
   const openMultiplyVaultConfirmTransaction: Observable<OpenMultiplyVaultConfirmTransaction> = openVaultState$.pipe(
     filter((state) => state.stage === 'txInProgress'),
-    map(({ ilk, depositAmount, openTxHash, multiply }) => ({
+    map(({ ilk, depositAmount, openTxHash, multiply, oazoFee }) => ({
       kind: 'openMultiplyVaultConfirmTransaction',
       value: {
         ilk: ilk,
         collateralAmount: depositAmount,
         multiply: multiply?.toFixed(3),
         txHash: openTxHash,
+        oasisFee: `${formatAmount(oazoFee, 'DAI')} DAI`,
       },
     })),
     distinctUntilChanged(isEqual),
@@ -161,6 +164,7 @@ export function createOpenMultiplyVaultAnalytics$(
                 event.value.txHash,
                 network,
                 walletType,
+                event.value.oasisFee,
               )
               break
             default:
