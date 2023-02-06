@@ -421,6 +421,7 @@ export const trackingEvents = {
     txHash: string,
     network: string,
     walletType: ConnectionKind,
+    oasisFee: string,
   ) => {
     const eventBody = {
       id: 'ConfirmTransaction',
@@ -434,6 +435,7 @@ export const trackingEvents = {
       walletType,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
+      oasisFee,
     }
 
     mixpanelInternalAPI(EventTypes.ButtonClick, eventBody)
