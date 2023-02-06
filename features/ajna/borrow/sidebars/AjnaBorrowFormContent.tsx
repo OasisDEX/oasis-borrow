@@ -12,7 +12,11 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
-export function AjnaBorrowFormContent() {
+interface AjnaBorrowFormContentProps {
+  isAllowanceLoading?: boolean
+}
+
+export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
@@ -62,7 +66,8 @@ export function AjnaBorrowFormContent() {
     ),
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
-      disabled: !!walletAddress && !isStepValid,
+      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading),
+      isLoading: isAllowanceLoading,
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',
