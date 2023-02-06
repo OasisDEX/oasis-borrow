@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { LendingProtocol } from '../../lendingProtocols'
 import { aaveStrategiesList } from '../aave/strategyConfig'
 
 export function EarnView() {
@@ -27,7 +28,13 @@ export function EarnView() {
   )
   const daiSavingsRate = useFeatureToggle('DaiSavingsRate')
 
-  const aaveEarnStrategies = getTokens(aaveStrategiesList('Earn').map(({ name }) => name))
+  const aaveEarnStrategies = aaveStrategiesList('Earn', LendingProtocol.AaveV2).map((strategy) => {
+    const tokenConfig = getTokens([strategy.name])[0]
+    return {
+      tokenConfig,
+      strategy,
+    }
+  })
   return (
     <Grid
       sx={{
@@ -49,8 +56,12 @@ export function EarnView() {
         <WithLoadingIndicator value={[productCardsIlksData]} customLoader={<ProductCardsLoader />}>
           {([_productCardsIlksData]) => (
             <ProductCardsWrapper>
-              {aaveEarnStrategies.map((cardData) => (
-                <ProductCardEarnAave key={cardData.symbol} cardData={cardData} />
+              {aaveEarnStrategies.map(({ strategy, tokenConfig }) => (
+                <ProductCardEarnAave
+                  key={tokenConfig.symbol}
+                  cardData={tokenConfig}
+                  strategy={strategy}
+                />
               ))}
               {/* TODO move logic regarding dsr to productCardsData$ */}
               {daiSavingsRate && <ProductCardEarnDsr />}

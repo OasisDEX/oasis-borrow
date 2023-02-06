@@ -8,7 +8,7 @@ export function hasUserInteracted(state: { context: BaseAaveContext }) {
   return (
     ((state.context.userInput.riskRatio?.loanToValue ||
       state.context.protocolData?.position.riskRatio.loanToValue) &&
-      state.context.strategy?.simulation.position) ||
+      state.context.transition?.simulation.position) ||
     (state.context.userInput.amount && state.context.defaultRiskRatio?.multiple)
   )
 }

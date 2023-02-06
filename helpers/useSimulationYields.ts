@@ -5,18 +5,25 @@ import { calculateSimulation } from 'features/aave/open/services'
 import { useEffect, useState } from 'react'
 
 import { AaveStEthYieldsResponse, FilterYieldFieldsType } from '../features/aave/common'
+import { IStrategyConfig } from '../features/aave/common/StrategyConfigTypes'
 
 type useSimulationYieldsParams = {
   amount?: BigNumber
   riskRatio?: IRiskRatio
   fields: FilterYieldFieldsType[]
+  strategy: IStrategyConfig
 }
 
-export function useSimulationYields({ amount, riskRatio, fields }: useSimulationYieldsParams) {
+export function useSimulationYields({
+  amount,
+  riskRatio,
+  fields,
+  strategy,
+}: useSimulationYieldsParams) {
   const [simulations, setSimulations] = useState<
     ReturnType<typeof calculateSimulation> & { yields: AaveStEthYieldsResponse }
   >()
-  const { aaveSthEthYieldsQuery } = useAaveContext()
+  const { aaveSthEthYieldsQuery } = useAaveContext(strategy.protocol)
 
   useEffect(() => {
     if (riskRatio && amount && !simulations) {

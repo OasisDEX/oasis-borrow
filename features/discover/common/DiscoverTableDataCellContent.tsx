@@ -1,23 +1,24 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
+import { getPillColor } from 'components/navigation/NavigationBranding'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { DiscoverTableDataCellPill } from 'features/discover/common/DiscoverTableDataCellPill'
 import { discoverFiltersAssetItems } from 'features/discover/filters'
 import { parsePillAdditionalData } from 'features/discover/helpers'
 import { DiscoverFollow } from 'features/discover/meta'
 import { DiscoverTableRowData } from 'features/discover/types'
-import { FollowButtonControl } from 'features/follow/common/FollowButtonControl'
 import {
   getTwitterShareUrl,
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
+import { FollowButtonControl } from 'features/follow/controllers/FollowButtonControl'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Button, Flex, Text } from 'theme-ui'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath
@@ -49,34 +50,14 @@ export function DiscoverTableDataCellContent({
       )[0]
 
       return (
-        <Flex sx={{ alignItems: 'center' }}>
-          {follow && primitives.cdpId && (
-            <FollowButtonControl
-              chainId={follow.chainId}
-              followerAddress={follow.followerAddress}
-              vaultId={new BigNumber(primitives.cdpId)}
-              short
-              sx={{
-                position: ['absolute', null, null, 'relative'],
-                right: [0, null, null, 'auto'],
-                mr: ['24px', null, null, 4],
-              }}
-            />
-          )}
-          {(primitives.icon || (asset && asset.icon)) && (
-            <Icon size={44} name={(primitives.icon || asset.icon) as string} />
-          )}
-          <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
-            <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
-              {primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset}
-            </Text>
-            {primitives.cdpId && (
-              <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
-                {t('position')} #{primitives.cdpId}
-              </Text>
-            )}
-          </Flex>
-        </Flex>
+        <DiscoverTableDataCellAsset
+          asset={
+            (primitives.ilk ? primitives.ilk : asset ? asset.label : primitives.asset) as string
+          }
+          cdpId={primitives.cdpId as number}
+          follow={follow}
+          icon={(primitives.icon || asset.icon) as string}
+        />
       )
     case 'status':
       return (
@@ -218,4 +199,82 @@ export function DiscoverTableDataCellContent({
     default:
       return <>{primitives[label]}</>
   }
+}
+
+export function DiscoverTableDataCellInactive({ children }: PropsWithChildren<{}>) {
+  return <Text sx={{ color: 'neutral80' }}>{children}</Text>
+}
+
+export function DiscoverTableDataCellAsset({
+  asset,
+  cdpId,
+  inactive,
+  follow,
+  icon,
+}: {
+  asset: string
+  cdpId?: number
+  inactive?: string
+  follow?: DiscoverFollow
+  icon?: string
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <Flex sx={{ alignItems: 'center' }}>
+      {follow && cdpId && (
+        <FollowButtonControl
+          chainId={follow.chainId}
+          followerAddress={follow.followerAddress}
+          vaultId={new BigNumber(cdpId)}
+          short
+          sx={{
+            position: ['absolute', null, null, 'relative'],
+            right: [0, null, null, 'auto'],
+            mr: ['24px', null, null, 4],
+          }}
+        />
+      )}
+      {icon && <Icon size={44} name={icon} sx={{ ...(inactive && { opacity: 0.5 }) }} />}
+      <Flex sx={{ flexDirection: 'column', ml: '10px' }}>
+        <Text as="span" sx={{ fontSize: 4, fontWeight: 'semiBold' }}>
+          {asset}
+          {inactive && (
+            <Text as="span" sx={{ fontWeight: 'regular' }}>
+              {' '}
+              {inactive}
+            </Text>
+          )}
+        </Text>
+        {cdpId && (
+          <Text as="span" sx={{ fontSize: 2, color: 'neutral80', whiteSpace: 'pre' }}>
+            {t('position')} #{cdpId}
+          </Text>
+        )}
+      </Flex>
+    </Flex>
+  )
+}
+
+export function DiscoverTableDataCellProtocol({
+  children,
+  color,
+}: PropsWithChildren<{ color: string | [string, string] }>) {
+  return (
+    <Text
+      as="span"
+      sx={{
+        display: 'inline-block',
+        lineHeight: '26px',
+        px: '12px',
+        fontSize: 2,
+        fontWeight: 'regular',
+        color: 'neutral10',
+        borderRadius: 'mediumLarge',
+        background: getPillColor(color),
+      }}
+    >
+      {children}
+    </Text>
+  )
 }

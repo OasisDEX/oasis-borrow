@@ -44,7 +44,10 @@ export function DiscoverData({
             rows={response.rows}
             {...(followVaultsEnabled &&
               !!walletAddress && {
-                follow: { followerAddress: walletAddress, chainId: NetworkIds.MAINNET },
+                follow: {
+                  followerAddress: walletAddress,
+                  chainId: NetworkIds.MAINNET,
+                },
               })}
             onBannerClick={(link) => {
               trackingEvents.discover.clickedTableBanner(kind, link, userContext)

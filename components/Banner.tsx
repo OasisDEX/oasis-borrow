@@ -23,7 +23,12 @@ export type BannerProps = {
   title: string | ReactNode
   description: ReactNode | ReactNode[]
   button?: BannerButtonProps
-  image?: { src: string; backgroundColor?: string; backgroundColorEnd?: string }
+  image?: {
+    src: string
+    backgroundColor?: string
+    backgroundColorEnd?: string
+    spacing?: string | number
+  }
   sx?: SxProps
 }
 
@@ -89,7 +94,8 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
               flexShrink: 0,
               order: [-1, null, null, 0],
               width: ['auto', null, null, '36%'],
-              margin: [3, null, null, 0],
+              m: [3, null, null, 0],
+              ...(image.spacing && { p: image.spacing }),
               borderRadius: 'mediumLarge',
               background: image?.backgroundColorEnd
                 ? `linear-gradient(180deg, ${image?.backgroundColor} 0%, ${image?.backgroundColorEnd} 100%)`

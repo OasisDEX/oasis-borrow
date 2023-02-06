@@ -9,6 +9,7 @@ import { Context } from '../../../blockchain/network'
 import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
 import { HasGasEstimation } from '../../../helpers/form'
 import { zero } from '../../../helpers/zero'
+import { AaveProtocolData } from '../../../lendingProtocols/aave-v2/pipelines'
 import {
   AllowanceStateMachine,
   AllowanceStateMachineResponseEvent,
@@ -17,7 +18,6 @@ import { TransactionStateMachineResultEvents } from '../../stateMachines/transac
 import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
 import { UserSettingsState } from '../../userSettings/userSettings'
 import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
-import { AaveProtocolData } from '../manage/services'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 
 export type UserInput = {
@@ -109,7 +109,7 @@ export interface BaseAaveContext {
   currentStep: number
   totalSteps: number
 
-  strategy?: IPositionTransition
+  transition?: IPositionTransition
   estimatedGasPrice?: HasGasEstimation
   tokenBalance?: BigNumber
   allowance?: StrategyTokenAllowance
@@ -148,8 +148,8 @@ export function contextToTransactionParameters(context: BaseAaveContext): Operat
   const { token, amount } = getTxTokenAndAmount(context)
   return {
     kind: TxMetaKind.operationExecutor,
-    calls: context.strategy!.transaction.calls as any,
-    operationName: context.strategy!.transaction.operationName,
+    calls: context.transition!.transaction.calls as any,
+    operationName: context.transition!.transaction.operationName,
     proxyAddress: context.effectiveProxyAddress!,
     token,
     amount,

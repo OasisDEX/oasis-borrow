@@ -15,7 +15,7 @@ import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
 
-import { AaveV2ReserveConfigurationData } from '../../../../blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from '../../../../blockchain/aave'
 import { addAutomationBotTriggerV2 } from '../../../../blockchain/calls/automationBot'
 import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
 import {
@@ -424,8 +424,8 @@ export function createOpenAaveStateMachine(
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DsProxy && !context.connectedProxyAddress,
-        validTransactionParameters: ({ userInput, effectiveProxyAddress, strategy }) =>
-          allDefined(userInput, effectiveProxyAddress, strategy),
+        validTransactionParameters: ({ userInput, effectiveProxyAddress, transition }) =>
+          allDefined(userInput, effectiveProxyAddress, transition),
         canOpenPosition,
         canSetupStopLoss: ({
           strategyConfig,
@@ -487,7 +487,7 @@ export function createOpenAaveStateMachine(
             ...context.userInput,
             amount: event.amount,
           },
-          strategy: event.amount ? context.strategy : undefined,
+          strategy: event.amount ? context.transition : undefined,
         })),
         calculateAuxiliaryAmount: assign((context) => {
           return {

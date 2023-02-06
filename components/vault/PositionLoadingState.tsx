@@ -4,7 +4,7 @@ import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooter
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { Skeleton } from 'components/Skeleton'
 import { VaultHeadline, VaultHeadlineProps } from 'components/vault/VaultHeadline'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Container, Flex, Grid } from 'theme-ui'
 
 function ContentCardLoadingState() {
@@ -48,12 +48,15 @@ function SidebarLoadingState() {
   )
 }
 
-export function PositionLoadingState(
-  props: Omit<VaultHeadlineProps, 'details' | 'followButtonProps' | 'loading'>,
-) {
+export function PositionLoadingState({
+  header = <Skeleton width="300px" height={4} sx={{ mb: '10px' }} />,
+  ...rest
+}: Omit<VaultHeadlineProps, 'details' | 'followButtonProps' | 'header' | 'loading'> & {
+  header?: ReactNode
+}) {
   return (
     <Container variant="vaultPageContainer">
-      <VaultHeadline {...props} details={[]} loading={true} />
+      <VaultHeadline header={header} details={[]} loading={true} {...rest} />
       <Skeleton
         width="150px"
         height={4}

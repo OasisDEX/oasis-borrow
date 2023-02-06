@@ -1,18 +1,18 @@
 import { useActor } from '@xstate/react'
-import { AaveV2ReserveConfigurationData } from 'blockchain/calls/aave/aaveV2ProtocolDataProvider'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
+import { AavePositionNoticesView } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 import React from 'react'
 import { Box, Container } from 'theme-ui'
 
-import { AavePositionNoticesView } from '../../../notices/VaultsNoticesView'
-import { useAaveContext } from '../../AaveContextProvider'
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
-import { PreparedAaveReserveData } from '../../helpers/aaveV2PrepareReserveData'
 import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
@@ -69,11 +69,15 @@ export function AaveManagePositionView({
   address,
   strategyConfig,
 }: AaveManageViewPositionViewProps) {
-  const { aaveSTETHReserveConfigurationData, wrappedGetAaveReserveData$ } = useAaveContext()
+  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
+    strategyConfig.protocol,
+  )
   const [aaveReserveDataDebt, aaveReserveDataDebtError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )
-  const [aaveReserveState, aaveReserveStateError] = useObservable(aaveSTETHReserveConfigurationData)
+  const [aaveReserveState, aaveReserveStateError] = useObservable(
+    aaveReserveConfigurationData$({ token: strategyConfig.tokens.collateral }),
+  )
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveReserveDataDebtError]}>
       <WithLoadingIndicator

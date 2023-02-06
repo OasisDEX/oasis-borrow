@@ -25,7 +25,9 @@ export function AaveMultiplyManageComponent({
   strategyConfig,
   nextPosition,
 }: AaveMultiplyManageComponentProps) {
-  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext()
+  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
+    strategyConfig.protocol,
+  )
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )

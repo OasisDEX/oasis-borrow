@@ -1,24 +1,24 @@
 import { IPosition, IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { MessageCard } from 'components/MessageCard'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
+import { BaseViewProps } from 'features/aave/common/BaseAaveContext'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
 import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { ManageAaveEvent } from 'features/aave/manage/state'
+import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
+import { formatPercent } from 'helpers/formatters/format'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
-import { SliderValuePicker } from '../../../../components/dumb/SliderValuePicker'
-import { MessageCard } from '../../../../components/MessageCard'
-import { SidebarSection, SidebarSectionProps } from '../../../../components/sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
-import { SidebarResetButton } from '../../../../components/vault/sidebar/SidebarResetButton'
-import { formatPercent } from '../../../../helpers/formatters/format'
-import { one, zero } from '../../../../helpers/zero'
-import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liquidationPrice'
-import { BaseViewProps } from '../BaseAaveContext'
 import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents =
@@ -94,7 +94,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
   }: AdjustRiskViewProps) {
     const { t } = useTranslation()
 
-    const simulation = state.context.strategy?.simulation
+    const simulation = state.context.transition?.simulation
     const targetPosition = simulation?.position
 
     const maxRisk =
@@ -235,7 +235,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             withBullet={false}
           />
         ) : (
-          state.context.strategy &&
+          state.context.transition &&
           hasUserInteracted(state) && (
             <MessageCard
               messages={[
@@ -274,7 +274,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       content: sidebarContent,
       primaryButton: {
         ...primaryButton,
-        disabled: viewLocked || primaryButton.disabled || !state.context.strategy || stopLossError,
+        disabled:
+          viewLocked || primaryButton.disabled || !state.context.transition || stopLossError,
       },
       textButton, // this is going back button, no need to block it
       dropdown: dropdownConfig,

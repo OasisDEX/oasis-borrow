@@ -3,32 +3,35 @@ import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { amountFromWei } from 'blockchain/utils'
 import { ActionPills } from 'components/ActionPills'
 import { useAutomationContext } from 'components/AutomationContextProvider'
+import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import {
+  ManageAaveContext,
+  ManageAaveEvent,
+  ManageAaveStateMachineState,
+} from 'features/aave/manage/state'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
+import { AllowanceView } from 'features/stateMachines/allowance'
+import { allDefined } from 'helpers/allDefined'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { OpenVaultAnimation } from 'theme/animations'
 import { Sender } from 'xstate'
-
-import { amountFromWei } from '../../../../blockchain/utils'
-import { MessageCard } from '../../../../components/MessageCard'
-import { allDefined } from '../../../../helpers/allDefined'
-import { formatCryptoBalance } from '../../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { zero } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
-import { AllowanceView } from '../../../stateMachines/allowance'
-import { isAllowanceNeeded } from '../../common/BaseAaveContext'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveContext, ManageAaveEvent, ManageAaveStateMachineState } from '../state'
 
 export interface ManageAaveAutomation {
   stopLoss: {
@@ -73,13 +76,13 @@ function getAmountGetFromPositionAfterClose(
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
-  const displayToken = state.context.strategy?.simulation.swap.targetToken || {
+  const displayToken = state.context.transition?.simulation.swap.targetToken || {
     symbol: token,
     precision: 18,
   }
   const balance = formatCryptoBalance(
     amountFromWei(
-      getAmountGetFromPositionAfterClose(state.context.strategy, state.context.currentPosition),
+      getAmountGetFromPositionAfterClose(state.context.transition, state.context.currentPosition),
       displayToken.symbol,
     ),
   )
@@ -453,7 +456,7 @@ export function SidebarManageAaveVault() {
 
   const stopLossError =
     isStopLossEnabled &&
-    state.context.strategy?.simulation?.position.riskRatio.loanToValue.gte(stopLossLevel)
+    state.context.transition?.simulation?.position.riskRatio.loanToValue.gte(stopLossLevel)
 
   function loading(): boolean {
     return isLoading(state)
@@ -590,7 +593,7 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.strategy?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.transition?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
