@@ -24,23 +24,23 @@ export function extractStopLossDataInput(context: OpenAaveContext): AaveStopLoss
   const debtToken = context.tokens.debt
 
   const debt = amountFromWei(
-    context.strategy?.simulation.position.debt.amount || zero,
-    context.strategy?.simulation.position.debt.precision,
+    context.transition?.simulation.position.debt.amount || zero,
+    context.transition?.simulation.position.debt.precision,
   )
 
   const lockedCollateral = amountFromWei(
-    context.strategy?.simulation.position.collateral.amount || zero,
-    context.strategy?.simulation.position.collateral.precision,
+    context.transition?.simulation.position.collateral.amount || zero,
+    context.transition?.simulation.position.collateral.precision,
   )
   const liquidationRatio =
-    context?.strategy?.simulation.position.category.liquidationThreshold || zero
+    context?.transition?.simulation.position.category.liquidationThreshold || zero
   const liquidationPrice = debt.div(lockedCollateral.times(liquidationRatio)) || zero
 
   return {
     collateralToken,
     debtToken,
     proxyAddress: context.effectiveProxyAddress,
-    positionRatio: context.strategy?.simulation.position.riskRatio.loanToValue || zero,
+    positionRatio: context.transition?.simulation.position.riskRatio.loanToValue || zero,
     lockedCollateral,
     debt,
     liquidationPrice,

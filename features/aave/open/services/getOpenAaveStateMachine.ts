@@ -1,17 +1,17 @@
-import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
-import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { AllowanceStateMachine } from '../../../stateMachines/allowance'
-import { DPMAccountStateMachine } from '../../../stateMachines/dpmAccount/state/createDPMAccountStateMachine'
-import { ProxyStateMachine } from '../../../stateMachines/proxy/state'
-import { TransactionStateMachine } from '../../../stateMachines/transaction'
-import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
-import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
-import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from '../state'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
+import { AutomationTxData } from 'components/AppContext'
+import { OpenAaveParameters } from 'features/aave/oasisActionsLibWrapper'
+import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from 'features/aave/open/state'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
-} from '../../../automation/common/txDefinitions'
-import { AutomationTxData } from '../../../../components/AppContext'
+} from 'features/automation/common/txDefinitions'
+import { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
+import { ProxyStateMachine } from 'features/stateMachines/proxy/state'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
+import { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 
 export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,

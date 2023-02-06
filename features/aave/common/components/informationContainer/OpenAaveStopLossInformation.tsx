@@ -11,12 +11,12 @@ import React from 'react'
 
 interface OpenAaveStopLossInformationProps {
   stopLossLevel: BigNumber
-  strategy?: IPositionTransition
+  transition?: IPositionTransition
   collateralActive: boolean
 }
 
 export function OpenAaveStopLossInformation({
-  strategy,
+  transition,
   stopLossLevel,
   collateralActive,
 }: OpenAaveStopLossInformationProps) {
@@ -29,13 +29,13 @@ export function OpenAaveStopLossInformation({
   } = useAutomationContext()
 
   const debt = amountFromWei(
-    strategy?.simulation.position.debt.amount || zero,
-    strategy?.simulation.position.debt.precision,
+    transition?.simulation.position.debt.amount || zero,
+    transition?.simulation.position.debt.precision,
   )
 
   const lockedCollateral = amountFromWei(
-    strategy?.simulation.position.collateral.amount || zero,
-    strategy?.simulation.position.collateral.precision,
+    transition?.simulation.position.collateral.amount || zero,
+    transition?.simulation.position.collateral.precision,
   )
 
   const dynamicStopLossPrice = collateralPriceAtRatio({
