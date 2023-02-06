@@ -192,7 +192,7 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
   automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
-  automationBotV2: contractDesc(automationBotV2, '0x0Bb879563ce6BD7cf66d6906D6Cd754d7038572F'),
+  automationBotV2: contractDesc(automationBotV2, '0x8061c24823094E51e57A4a5cF8bEd3CCf09d316F'),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
     '0x5f1d184204775fBB351C4b2C61a2fD4aAbd3fB76',
@@ -519,7 +519,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: ' http://localhost:3001/v1',
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
