@@ -24,16 +24,8 @@ export function AjnaBorrowFormWrapper() {
       amount: paybackAmount,
       token: quoteToken,
     }),
-    onEverythingReady: (params) => {
-      console.log('ready')
-      console.log(params)
-      setNextStep()
-    },
-    onGoBack: (params) => {
-      console.log('goBack')
-      console.log(params)
-      setStep(editingStep)
-    },
+    onEverythingReady: () => setNextStep(),
+    onGoBack: () => setStep(editingStep),
   })
 
   useEffect(() => {
