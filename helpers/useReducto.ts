@@ -22,7 +22,7 @@ export function useReducto<S, R extends object>({
   }
 
   function updateState<K extends keyof S, V extends S[K]>(key: K, value: V) {
-    dispatch({ type: 'partial-update', state: { ...state, [key]: value } })
+    dispatch({ type: 'partial-update', state: { [key]: value } as Partial<S> })
   }
 
   const [state, dispatch] = useReducer(combinedReducer, defaults)
