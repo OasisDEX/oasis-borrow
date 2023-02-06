@@ -119,7 +119,7 @@ export function FollowButton({
               sx={{
                 ...(isShort && {
                   position: 'absolute',
-                  marginTop: '1px',
+                  marginTop: '2px',
                 }),
               }}
             />
