@@ -1,4 +1,4 @@
-import { strategies } from '@oasisdex/oasis-actions'
+import { strategies, views } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -44,11 +44,23 @@ async function getTxDetails({
   rpcProvider: ethers.providers.Provider
 }): Promise<ActionData> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const { depositAmount, generateAmount, paybackAmount, withdrawAmount, proxyAddress } = formState
+  const { depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress } = formState
+  const defaultPromise = Promise.resolve({} as ActionData)
+
+  if (!dpmAddress) {
+    return defaultPromise
+  }
+
+  const anjaPosition = await views.ajna.getPosition(
+    {
+      proxyAddress: dpmAddress,
+      poolAddress: context.ajnaPoolPairs[tokenPair].address,
+    },
+    { poolInfoAddress: context.ajnaPoolInfo.address, provider: rpcProvider },
+  )
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
-  const defaultPromise = Promise.resolve({} as ActionData)
 
   const dependencies = {
     provider: rpcProvider,
@@ -57,19 +69,16 @@ async function getTxDetails({
     WETH: context.tokens.ETH.address,
   }
 
-  if (!proxyAddress) {
-    return defaultPromise
-  }
-
   if (!context.ajnaPoolPairs[tokenPair]) {
     throw new Error(`No pool for given token pair ${tokenPair}`)
   }
 
   const commonPayload = {
     poolAddress: context.ajnaPoolPairs[tokenPair].address,
-    dpmProxyAddress: proxyAddress,
+    dpmProxyAddress: dpmAddress,
     quoteTokenPrecision,
     collateralTokenPrecision,
+    position: anjaPosition,
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
@@ -150,32 +159,36 @@ export function useAjnaTxHandler(): AjnaTxHandler {
 
   const [txData, setTxData] = useState<TxData>()
 
-  const { proxyAddress } = state
+  const { dpmAddress } = state
 
   useEffect(() => {
-    if (txHelpers && context && proxyAddress) {
+    if (txHelpers && context && dpmAddress) {
       void getTxDetails({
         rpcProvider: context.rpcProvider,
         formState: state,
         collateralToken,
         quoteToken,
         context,
-      }).then((data) => {
-        if ('tx' in data) {
-          setTxData(data.tx)
-          setSimulation(data.simulation)
-          // TODO update it once aave sl is deployed as interface has been changed
-          // uiChanges.publish(TX_DATA_CHANGE, {
-          //   type: 'add-trigger',
-          //   transaction: callLibraryWithDpmProxy,
-          //   data: data.tx.data,
-          // })
-        }
       })
+        .then((data) => {
+          if ('tx' in data) {
+            setTxData(data.tx)
+            setSimulation(data.simulation)
+            // TODO update it once aave sl is deployed as interface has been changed
+            // uiChanges.publish(TX_DATA_CHANGE, {
+            //   type: 'add-trigger',
+            //   transaction: callLibraryWithDpmProxy,
+            //   data: data.tx.data,
+            // })
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
   }, [state])
 
-  if (!txHelpers || !txData || !proxyAddress) {
+  if (!txHelpers || !txData || !dpmAddress) {
     return () => console.warn('no txHelpers or txData or proxyAddress')
   }
 
@@ -183,7 +196,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
     txHelpers
       .sendWithGasEstimation(callOasisActionsWithDpmProxy, {
         kind: TxMetaKind.libraryCall,
-        proxyAddress,
+        proxyAddress: dpmAddress,
         ...txData,
       })
       .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))

@@ -25,7 +25,7 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
     form: {
       state: { dpmAddress },
     },
-    steps: { currentStep, editingStep, isStepValid, setNextStep, isStepWithTransaction },
+    steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval },
   } = useAjnaBorrowContext()
 
@@ -69,17 +69,20 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
         ? {
             url: '/connect',
           }
-        : { action: setNextStep }),
+        : {
+            action: async () => {
+              if (isStepWithTransaction) {
+                txHandler()
+              } else setNextStep()
+            },
+          }),
     },
     // TODO: think of a smart way of managing if this button should be visible
     ...(currentStep === 'transaction' &&
       (!isTxStarted || isTxWaitingForApproval || isTxError) && {
         textButton: {
           label: t('back-to-editing'),
-          action: async () => {
-            if (isStepWithTransaction) txHandler()
-            else setNextStep()
-          },
+          action: () => setStep(editingStep),
         },
       }),
   }
