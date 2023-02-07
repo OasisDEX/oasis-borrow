@@ -1,3 +1,4 @@
+import { views } from '@oasisdex/oasis-actions'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -11,6 +12,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React from 'react'
@@ -45,7 +47,7 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
-  const { balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
+  const { balancesInfoArray$, context$, dpmPositionData$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
   const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
@@ -54,15 +56,7 @@ export function AjnaProductController({
   )
   const [quoteTokenData, setQuoteTokenData] = useState<string | undefined>(quoteToken)
 
-  // TODO: this part should be replaced with observable that loads data from below when ID is available
-  useEffect(() => {
-    if (id) {
-      setProductData('borrow')
-      setCollateralTokenData('ETH')
-      setQuoteTokenData('DAI')
-    }
-  }, [id])
-
+  const [context] = useObservable(context$)
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>
@@ -71,6 +65,9 @@ export function AjnaProductController({
           : EMPTY,
       [collateralTokenData, walletAddress],
     ),
+  )
+  const [dpmPositionArgsData] = useObservable(
+    useMemo(() => (id ? dpmPositionData$(getPositionIdentity(id)) : EMPTY), [id]),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
@@ -81,6 +78,30 @@ export function AjnaProductController({
       [collateralTokenData, quoteTokenData],
     ),
   )
+
+  useEffect(() => {
+    if (context && dpmPositionArgsData) {
+      void (async () => {
+        const position = await views.ajna.getPosition(
+          {
+            proxyAddress: dpmPositionArgsData.proxy,
+            poolAddress:
+              context.ajnaPoolPairs[
+                `${dpmPositionArgsData.collateralToken}-${dpmPositionArgsData.quoteToken}` as keyof typeof context.ajnaPoolPairs
+              ].address,
+          },
+          {
+            poolInfoAddress: context.ajnaPoolInfo.address,
+            provider: context.rpcProvider,
+          },
+        )
+
+        setProductData(dpmPositionArgsData.product.toLowerCase() as AjnaProduct)
+        setCollateralTokenData(dpmPositionArgsData.collateralToken)
+        setQuoteTokenData(dpmPositionArgsData.quoteToken)
+      })()
+    }
+  }, [dpmPositionArgsData])
 
   return (
     <WithConnection>
