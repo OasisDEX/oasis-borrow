@@ -510,7 +510,7 @@ export const trackingEvents = {
   },
 
   manageVaultDepositAmount: (
-    page: Pages.ManageCollateral | Pages.ManageDai, //TODO: ŁW on this Pages I'm not sure how to tell if it's borrow or multiply
+    page: Pages.ManageCollateral | Pages.ManageDai,
     amount: string,
     setMax: boolean,
   ) => {
