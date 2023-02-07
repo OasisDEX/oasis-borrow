@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
-import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
+import { isBorrowStepValid } from 'features/ajna/borrow/contexts/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import {

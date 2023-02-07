@@ -36,8 +36,8 @@ export function AjnaBorrowView() {
         variant="underline"
         sections={[
           {
-            value: 'setup',
-            label: t('setup'),
+            value: flow === 'manage' ? 'overview' : 'setup',
+            label: t(flow === 'manage' ? 'system.overview' : 'setup'),
             content: (
               <Grid variant="vaultContainer">
                 <AjnaBorrowOverviewWrapper />

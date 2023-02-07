@@ -15,9 +15,12 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { EMPTY } from 'rxjs'
+
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/src/helpers/ajna'
 
 interface AjnaProductControllerOpenFlow {
   collateralToken: string
@@ -47,9 +50,11 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
+  const { push } = useRouter()
   const { balancesInfoArray$, context$, dpmPositionData$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
+  const [positionData, setPositionData] = useState<AjnaPosition>()
   const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
   const [collateralTokenData, setCollateralTokenData] = useState<string | undefined>(
     collateralToken,
@@ -80,11 +85,16 @@ export function AjnaProductController({
   )
 
   useEffect(() => {
-    if (context && dpmPositionArgsData) {
+    if (
+      dpmPositionArgsData === null ||
+      (dpmPositionArgsData && dpmPositionArgsData.protocol !== 'Ajna')
+    )
+      void push('/404')
+    else if (context && dpmPositionArgsData) {
       setProductData(dpmPositionArgsData.product.toLowerCase() as AjnaProduct)
       setCollateralTokenData(dpmPositionArgsData.collateralToken)
       setQuoteTokenData(dpmPositionArgsData.quoteToken)
-  
+
       void views.ajna
         .getPosition(
           {
@@ -100,7 +110,7 @@ export function AjnaProductController({
           },
         )
         .then((position) => {
-          console.log(position)
+          setPositionData(position)
         })
     }
   }, [dpmPositionArgsData])
@@ -118,6 +128,7 @@ export function AjnaProductController({
                   quoteTokenData,
                   balancesInfoArrayData,
                   tokenPriceUSDData,
+                  ...(id ? [positionData] : []),
                 ]}
                 customLoader={
                   <PositionLoadingState
