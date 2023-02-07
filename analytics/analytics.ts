@@ -1,4 +1,5 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
+import { ProductType } from 'analytics/common'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getDiscoverMixpanelPage } from 'features/discover/helpers'
@@ -57,7 +58,6 @@ let mixpanel: MixpanelType = mixpanelBrowser
 
 mixpanel = enableMixpanelDevelopmentMode<MixpanelType>(mixpanel)
 
-const product = 'borrow'
 export const INPUT_DEBOUNCE_TIME = 800
 
 export enum Pages {
@@ -241,7 +241,7 @@ export function getMixpanelUserContext(language: string, context?: Context): Mix
 export const trackingEvents = {
   pageView: (location: string) => {
     const eventBody = {
-      product,
+      product: ProductType.BORROW,
       id: location,
     }
 
@@ -253,7 +253,7 @@ export const trackingEvents = {
       id: 'AccountChange',
       account,
       network,
-      product,
+      product: ProductType.BORROW,
       walletType,
     }
 
@@ -266,7 +266,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'SearchToken',
-      product,
+      product: ProductType.BORROW,
       page,
       query,
       section: 'SelectCollateral',
@@ -278,7 +278,7 @@ export const trackingEvents = {
   openVault: (page: Pages.LandingPage | Pages.OpenVaultOverview, ilk: string) => {
     const eventBody = {
       id: 'OpenVault',
-      product,
+      product: ProductType.BORROW,
       ilk,
       page,
       section: 'SelectCollateral',
@@ -290,7 +290,7 @@ export const trackingEvents = {
   createVaultDeposit: (firstCDP: boolean | undefined, amount: string) => {
     const eventBody = {
       id: 'Deposit',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       amount,
       page: Pages.VaultCreate,
@@ -303,7 +303,7 @@ export const trackingEvents = {
   createVaultGenerate: (firstCDP: boolean | undefined, amount: string) => {
     const eventBody = {
       id: 'Generate',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       amount,
       page: Pages.VaultCreate,
@@ -320,7 +320,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'SetupProxy',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       depositAmount,
       generateAmount,
@@ -334,7 +334,7 @@ export const trackingEvents = {
   createProxy: (firstCDP: boolean | undefined) => {
     const eventBody = {
       id: 'CreateProxy',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       page: Pages.VaultCreate,
       section: 'ProxyDeploy',
@@ -346,7 +346,7 @@ export const trackingEvents = {
   pickAllowance: (firstCDP: boolean | undefined, type: string, amount: string) => {
     const eventBody = {
       id: 'PickAllowance',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       type,
       amount,
@@ -360,7 +360,7 @@ export const trackingEvents = {
   setTokenAllowance: (firstCDP: boolean | undefined) => {
     const eventBody = {
       id: 'SetAllowance',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       page: Pages.VaultCreate,
       section: 'Configure',
@@ -372,7 +372,7 @@ export const trackingEvents = {
   approveAllowance: (firstCDP: boolean | undefined) => {
     const eventBody = {
       id: 'ApproveAllowance',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       page: Pages.VaultCreate,
       section: 'Allowance',
@@ -384,7 +384,7 @@ export const trackingEvents = {
   createVaultConfirm: (firstCDP: boolean | undefined) => {
     const eventBody = {
       id: 'Confirm',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       page: Pages.VaultCreate,
       section: 'CreateVault',
@@ -401,7 +401,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'Confirm',
-      product,
+      product: ProductType.BORROW,
       ilk,
       collateralAmount,
       daiAmount,
@@ -421,11 +421,10 @@ export const trackingEvents = {
     txHash: string,
     network: string,
     walletType: ConnectionKind,
-    // oasisFee: string, TODO ŁW should be here, or no as it's borrow?
   ) => {
     const eventBody = {
       id: 'ConfirmTransaction',
-      product,
+      product: ProductType.BORROW,
       ilk,
       collateralAmount,
       daiAmount,
@@ -443,7 +442,7 @@ export const trackingEvents = {
   confirmVaultEdit: (firstCDP: boolean | undefined) => {
     const eventBody = {
       id: 'EditVault',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       page: Pages.VaultCreate,
       section: 'ConfirmVault',
@@ -455,7 +454,7 @@ export const trackingEvents = {
   overviewManage: (vaultId: string, ilk: string) => {
     const eventBody = {
       id: 'Manage',
-      product,
+      product: ProductType.BORROW,
       vaultId,
       ilk,
       page: Pages.VaultsOverview,
@@ -468,7 +467,7 @@ export const trackingEvents = {
   createNewVault: (firstCDP: boolean | undefined) => {
     const eventBody = {
       id: 'createNewVault',
-      product,
+      product: ProductType.BORROW,
       firstCDP,
       section: 'NavBar',
     }
@@ -479,7 +478,7 @@ export const trackingEvents = {
   yourVaults: () => {
     const eventBody = {
       id: 'YourVaults',
-      product,
+      product: ProductType.BORROW,
       section: 'NavBar',
     }
 
@@ -489,7 +488,7 @@ export const trackingEvents = {
   switchToDai: (ControllerIsConnected: boolean) => {
     const eventBody = {
       id: 'SwitchToDai',
-      product,
+      product: ProductType.BORROW,
       ControllerIsConnected,
       page: Pages.ManageCollateral,
       section: 'Dai',
@@ -501,7 +500,7 @@ export const trackingEvents = {
   switchToCollateral: (ControllerIsConnected: boolean) => {
     const eventBody = {
       id: 'SwitchToCollateral',
-      product,
+      product: ProductType.BORROW,
       ControllerIsConnected,
       page: Pages.ManageDai,
       section: 'Collateral',
@@ -511,13 +510,13 @@ export const trackingEvents = {
   },
 
   manageVaultDepositAmount: (
-    page: Pages.ManageCollateral | Pages.ManageDai,
+    page: Pages.ManageCollateral | Pages.ManageDai, //TODO: ŁW on this Pages I'm not sure how to tell if it's borrow or multiply
     amount: string,
     setMax: boolean,
   ) => {
     const eventBody = {
       id: 'DepositAmount',
-      product,
+      product: ProductType.BORROW,
       page,
       amount,
       setMax,
@@ -533,7 +532,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'GenerateAmount',
-      product,
+      product: ProductType.BORROW,
       page,
       amount,
       setMax,
@@ -549,7 +548,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'WithdrawAmount',
-      product,
+      product: ProductType.BORROW,
       page,
       amount,
       setMax,
@@ -565,7 +564,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'PaybackAmount',
-      product,
+      product: ProductType.BORROW,
       page,
       amount,
       setMax,
@@ -577,7 +576,7 @@ export const trackingEvents = {
   manageVaultConfirmVaultEdit: () => {
     const eventBody = {
       id: 'EditVault',
-      product,
+      product: ProductType.BORROW,
       section: 'ConfirmVault',
     }
 
@@ -593,7 +592,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'Confirm',
-      product,
+      product: ProductType.BORROW,
       ilk,
       collateralAmount,
       daiAmount,
@@ -615,7 +614,7 @@ export const trackingEvents = {
   ) => {
     const eventBody = {
       id: 'ConfirmTransaction',
-      product,
+      product: ProductType.BORROW,
       ilk,
       collateralAmount,
       daiAmount,
@@ -632,7 +631,7 @@ export const trackingEvents = {
   manageCollateralPickAllowance: (type: string, amount: string) => {
     const eventBody = {
       id: 'PickAllowance',
-      product,
+      product: ProductType.BORROW,
       type,
       amount,
       page: Pages.ManageCollateral,
@@ -645,7 +644,7 @@ export const trackingEvents = {
   manageCollateralApproveAllowance: () => {
     const eventBody = {
       id: 'ApproveAllowance',
-      product,
+      product: ProductType.BORROW,
       page: Pages.ManageCollateral,
       section: 'Allowance',
     }
@@ -656,7 +655,7 @@ export const trackingEvents = {
   manageDaiPickAllowance: (type: string, amount: string) => {
     const eventBody = {
       id: 'PickAllowance',
-      product,
+      product: ProductType.BORROW,
       type,
       amount,
       page: Pages.ManageDai,
@@ -669,7 +668,7 @@ export const trackingEvents = {
   manageDaiApproveAllowance: () => {
     const eventBody = {
       id: 'ApproveAllowance',
-      product,
+      product: ProductType.BORROW,
       page: Pages.ManageDai,
       section: 'Allowance',
     }
@@ -681,7 +680,7 @@ export const trackingEvents = {
   manageCollateralDepositConfirm: () => {
     const eventBody = {
       id: 'Confirm',
-      product,
+      product: ProductType.BORROW,
       page: Pages.ManageCollateral,
       section: 'Deposit',
     }
@@ -693,7 +692,7 @@ export const trackingEvents = {
   manageCollateralWithdrawConfirm: () => {
     const eventBody = {
       id: 'Confirm',
-      product,
+      product: ProductType.BORROW,
       page: Pages.ManageCollateral,
       section: 'Withdraw',
     }
@@ -705,7 +704,7 @@ export const trackingEvents = {
   manageDaiGenerateConfirm: () => {
     const eventBody = {
       id: 'Confirm',
-      product,
+      product: ProductType.BORROW,
       page: Pages.ManageDai,
       section: 'Generate',
     }
@@ -717,7 +716,7 @@ export const trackingEvents = {
   manageDaiPaybackConfirm: () => {
     const eventBody = {
       id: 'Confirm',
-      product,
+      product: ProductType.BORROW,
       page: Pages.ManageDai,
       section: 'Payback',
     }
@@ -728,7 +727,7 @@ export const trackingEvents = {
   newsletterSubscribe: (section: 'Footer' | 'Homepage') => {
     const eventBody = {
       id: 'NewsletterSubscribe',
-      product,
+      product: ProductType.BORROW,
       section,
     }
 
@@ -744,7 +743,7 @@ export const trackingEvents = {
     ) => {
       const eventBody = {
         id: 'Confirm',
-        product,
+        product: ProductType.MULTIPLY,
         ilk,
         firstCDP,
         collAmount,
@@ -768,7 +767,7 @@ export const trackingEvents = {
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
-        product,
+        product: ProductType.MULTIPLY,
         ilk,
         firstCDP,
         collAmount,
@@ -787,7 +786,7 @@ export const trackingEvents = {
     adjustPositionConfirm: (ilk: string, multiply: string) => {
       const eventBody = {
         id: 'Confirm',
-        product,
+        product: ProductType.MULTIPLY,
         ilk,
         multiply,
         page: Pages.AdjustPosition,
@@ -807,7 +806,7 @@ export const trackingEvents = {
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
-        product,
+        product: ProductType.MULTIPLY,
         ilk,
         multiply,
         txHash,
@@ -824,7 +823,7 @@ export const trackingEvents = {
     otherActionsConfirm: (ilk: string, collateralAmount: string, daiAmount: string) => {
       const eventBody = {
         id: 'Confirm',
-        product,
+        product: ProductType.MULTIPLY,
         ilk,
         collateralAmount,
         daiAmount,
@@ -846,7 +845,7 @@ export const trackingEvents = {
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
-        product,
+        product: ProductType.MULTIPLY,
         ilk,
         collateralAmount,
         daiAmount,
@@ -864,7 +863,7 @@ export const trackingEvents = {
     closeVaultConfirm: (ilk: string, debt: string, closeTo: CloseVaultTo) => {
       const eventBody = {
         id: 'Confirm',
-        product,
+        product: ProductType.BORROW,
         ilk,
         debt,
         closeTo,
@@ -886,7 +885,7 @@ export const trackingEvents = {
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
-        product,
+        product: ProductType.MULTIPLY,
         ilk,
         debt,
         closeTo,
@@ -905,6 +904,7 @@ export const trackingEvents = {
     stETHOpenPositionDepositAmount: (depositAmount: BigNumber) => {
       const eventBody = {
         id: 'DepositAmount',
+        product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
@@ -914,6 +914,7 @@ export const trackingEvents = {
     stETHOpenPositionConfirmDeposit: (depositAmount: BigNumber) => {
       const eventBody = {
         id: 'ConfirmDeposit',
+        product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         page: Pages.OpenEarnSTETH,
         section: 'OpenPosition',
@@ -923,6 +924,7 @@ export const trackingEvents = {
     stETHOpenPositionMoveSlider: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
         id: 'MoveSlider',
+        product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
@@ -933,6 +935,7 @@ export const trackingEvents = {
     stETHOpenPositionConfirmRisk: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
         id: 'ConfirmRisk',
+        product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
@@ -943,6 +946,7 @@ export const trackingEvents = {
     stETHOpenPositionConfirmTransaction: (depositAmount: BigNumber, riskRatio: BigNumber) => {
       const eventBody = {
         id: 'ConfirmTransaction',
+        product: ProductType.EARN,
         depositAmount: depositAmount.toString(),
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.OpenEarnSTETH,
@@ -953,6 +957,7 @@ export const trackingEvents = {
     stETHAdjustRiskMoveSlider: (riskRatio: BigNumber) => {
       const eventBody = {
         id: 'MoveSlider',
+        product: ProductType.EARN,
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.ManageSTETH,
         section: 'AdjustRisk',
@@ -962,6 +967,7 @@ export const trackingEvents = {
     stETHAdjustRiskConfirmRisk: (riskRatio: BigNumber) => {
       const eventBody = {
         id: 'ConfirmRisk',
+        product: ProductType.EARN,
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.ManageSTETH,
         section: 'AdjustRisk',
@@ -971,6 +977,7 @@ export const trackingEvents = {
     stETHAdjustRiskConfirmTransaction: (riskRatio: BigNumber) => {
       const eventBody = {
         id: 'ConfirmTransaction',
+        product: ProductType.EARN,
         riskRatio: formatPrecision(riskRatio, 4),
         page: Pages.ManageSTETH,
         section: 'AdjustRisk',
@@ -980,6 +987,7 @@ export const trackingEvents = {
     stETHClosePositionConfirm: () => {
       const eventBody = {
         id: 'Confirm',
+        product: ProductType.EARN,
         page: Pages.ManageSTETH,
         section: 'ClosePosition',
       }
@@ -988,6 +996,7 @@ export const trackingEvents = {
     stETHClosePositionConfirmTransaction: () => {
       const eventBody = {
         id: 'ConfirmTransaction',
+        product: ProductType.EARN,
         page: Pages.ManageSTETH,
         section: 'ClosePosition',
       }
