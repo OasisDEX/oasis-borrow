@@ -12,8 +12,9 @@ import { AjnaBorrowPosition, useAjnaBorrowContext } from 'features/ajna/contexts
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
+import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 interface AjnaTxHandlerInput {
@@ -143,7 +144,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    form: { state },
+    form: { state, updateState },
     tx: { setTxDetails, setSimulation },
     environment: { collateralToken, quoteToken, ethPrice },
   } = useAjnaBorrowContext()
@@ -152,28 +153,44 @@ export function useAjnaTxHandler(): AjnaTxHandler {
 
   const { proxyAddress } = state
 
-  useEffect(() => {
-    if (txHelpers && context && proxyAddress) {
-      void getTxDetails({
-        rpcProvider: context.rpcProvider,
-        formState: state,
-        collateralToken,
-        quoteToken,
-        context,
-      }).then((data) => {
-        if ('tx' in data) {
-          setTxData(data.tx)
-          setSimulation(data.simulation)
-          // TODO update it once aave sl is deployed as interface has been changed
-          // uiChanges.publish(TX_DATA_CHANGE, {
-          //   type: 'add-trigger',
-          //   transaction: callLibraryWithDpmProxy,
-          //   data: data.tx.data,
-          // })
-        }
-      })
-    }
-  }, [state])
+  useDebouncedEffect(
+    () => {
+      if (txHelpers && context && proxyAddress) {
+        updateState('isLoading', true)
+        void getTxDetails({
+          rpcProvider: context.rpcProvider,
+          formState: state,
+          collateralToken,
+          quoteToken,
+          context,
+        })
+          .then((data) => {
+            updateState('isLoading', false)
+            if ('tx' in data) {
+              setTxData(data.tx)
+              setSimulation(data.simulation)
+              // TODO update it once aave sl is deployed as interface has been changed
+              // uiChanges.publish(TX_DATA_CHANGE, {
+              //   type: 'add-trigger',
+              //   transaction: callLibraryWithDpmProxy,
+              //   data: data.tx.data,
+              // })
+            }
+          })
+          .catch((error) => {
+            updateState('isLoading', false)
+            console.error(error)
+          })
+      }
+    },
+    [
+      state.depositAmount?.toString(),
+      state.generateAmount?.toString(),
+      state.withdrawAmount?.toString(),
+      state.paybackAmount?.toString(),
+    ],
+    250,
+  )
 
   if (!txHelpers || !txData || !proxyAddress) {
     return () => console.warn('no txHelpers or txData or proxyAddress')
