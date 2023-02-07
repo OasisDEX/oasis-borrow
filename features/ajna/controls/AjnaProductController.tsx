@@ -81,8 +81,12 @@ export function AjnaProductController({
 
   useEffect(() => {
     if (context && dpmPositionArgsData) {
-      void (async () => {
-        const position = await views.ajna.getPosition(
+      setProductData(dpmPositionArgsData.product.toLowerCase() as AjnaProduct)
+      setCollateralTokenData(dpmPositionArgsData.collateralToken)
+      setQuoteTokenData(dpmPositionArgsData.quoteToken)
+  
+      void views.ajna
+        .getPosition(
           {
             proxyAddress: dpmPositionArgsData.proxy,
             poolAddress:
@@ -95,11 +99,9 @@ export function AjnaProductController({
             provider: context.rpcProvider,
           },
         )
-
-        setProductData(dpmPositionArgsData.product.toLowerCase() as AjnaProduct)
-        setCollateralTokenData(dpmPositionArgsData.collateralToken)
-        setQuoteTokenData(dpmPositionArgsData.quoteToken)
-      })()
+        .then((position) => {
+          console.log(position)
+        })
     }
   }, [dpmPositionArgsData])
 
