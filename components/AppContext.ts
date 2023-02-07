@@ -3,6 +3,7 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
@@ -120,6 +121,11 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
+import {
+  createProxyConsumed$,
+  createReadPositionCreatedEvents$,
+  getLastCreatedPositionForProxy$,
+} from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
@@ -288,6 +294,9 @@ import {
   supportedMultiplyIlks,
 } from 'helpers/productCards'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+import { getAaveV2Services } from 'lendingProtocols/aave-v2'
+import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
@@ -302,15 +311,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
-import {
-  createProxyConsumed$,
-  createReadPositionCreatedEvents$,
-  getLastCreatedPositionForProxy$,
-} from '../features/aave/services/readPositionCreatedEvents'
-import { LendingProtocol } from '../lendingProtocols'
-import { getAaveV2Services } from '../lendingProtocols/aave-v2'
-import { getAaveV3Services } from '../lendingProtocols/aave-v3'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -999,7 +999,7 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
-  const aavePositions$ = memoize(
+  const aavePositionsV2$ = memoize(
     curry(createAavePosition$)(
       {
         dsProxy$: proxyAddress$,
@@ -1012,12 +1012,31 @@ export function setupAppContext() {
       context$,
       readPositionCreatedEvents$,
       aaveV2.aaveAvailableLiquidityInUSDC$,
-      strategyConfig$,
+      LendingProtocol.AaveV2,
+    ),
+  )
+
+  const aavePositionsV3$ = memoize(
+    curry(createAavePosition$)(
+      {
+        dsProxy$: proxyAddress$,
+        userDpmProxies$,
+      },
+      aaveV3.aaveProtocolData$,
+      aaveV3.getAaveAssetsPrices$,
+      tokenPriceUSD$,
+      aaveV3.wrappedGetAaveReserveData$,
+      context$,
+      readPositionCreatedEvents$,
+      aaveV3.aaveAvailableLiquidityInUSDC$,
+      LendingProtocol.AaveV3,
     ),
   )
 
   const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
-  const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
+  const positions$ = memoize(
+    curry(createPositions$)(makerPositions$, aavePositionsV2$, aavePositionsV3$),
+  )
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -1192,7 +1211,9 @@ export function setupAppContext() {
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$, aavePositions$))
+  const vaultsOverview$ = memoize(
+    curry(createVaultsOverview$)(positionsList$, aavePositionsV2$, aavePositionsV3$),
+  )
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
@@ -1320,7 +1341,7 @@ export function setupAppContext() {
   )
 
   const ownersPositionsList$ = memoize(
-    curry(createPositionsList$)(positionsList$, aavePositions$, dsr$),
+    curry(createPositionsList$)(positionsList$, aavePositionsV2$, aavePositionsV3$, dsr$),
   )
 
   const followedList$ = memoize(
@@ -1447,7 +1468,6 @@ export function setupAppContext() {
     potTotalValueLocked$,
     aaveProtocolData$: aaveV2.aaveProtocolData$,
     strategyConfig$,
-    readPositionCreatedEvents$,
     ownersPositionsList$,
     followedList$,
     protocols,

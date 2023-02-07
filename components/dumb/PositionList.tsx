@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink, AppLinkProps } from 'components/Links'
 import { StatefulTooltip } from 'components/Tooltip'
 import { checkIfVaultEmptyAndProtectionActive } from 'helpers/functions'
 import { WithChildren } from 'helpers/types'
@@ -7,8 +8,6 @@ import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
-
-import { AppLink, AppLinkProps } from '../Links'
 
 function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element | string }) {
   return (
@@ -159,7 +158,9 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
         }}
       >
         <Icon name={position.icon} size={[26, 42]} sx={{ mr: 2, flexShrink: 0 }} />{' '}
-        <Text>{position.ilk}</Text>
+        <Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} title={position.ilk}>
+          {position.ilk}
+        </Text>
       </Flex>
     ),
   }

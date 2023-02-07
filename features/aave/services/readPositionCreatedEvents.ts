@@ -1,13 +1,13 @@
+import positionCreatedAbi from 'blockchain/abi/position-created.json'
+import { Context } from 'blockchain/network'
+import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { utils } from 'ethers'
+import { LendingProtocol } from 'lendingProtocols'
 import { combineLatest, from, Observable } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
-
-import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
-import { Context } from '../../../blockchain/network'
-import { getTokenSymbolFromAddress } from '../../../blockchain/tokensMetadata'
-import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
-import { TypedEvent } from '../../../types/ethers-contracts/commons'
-import { PositionCreated as PositionCreatedContract } from '../../../types/ethers-contracts/PositionCreated'
+import { TypedEvent } from 'types/ethers-contracts/commons'
+import { PositionCreated as PositionCreatedContract } from 'types/ethers-contracts/PositionCreated'
 
 type PositionCreatedChainEvent = {
   collateralToken: string // address
@@ -21,7 +21,7 @@ export type PositionCreated = {
   collateralTokenSymbol: string
   debtTokenSymbol: string
   positionType: 'Borrow' | 'Multiply' | 'Earn'
-  protocol: string
+  protocol: LendingProtocol
   proxyAddress: string
 }
 
@@ -42,7 +42,10 @@ function getPositionCreatedEventForProxyAddress$(context: Context, proxyAddress:
   )
 }
 
-function mapEvent(positionCreatedEvents: Array<TypedEvent<Array<any>>>[], context: Context) {
+function mapEvents(
+  positionCreatedEvents: Array<TypedEvent<Array<any>>>[],
+  context: Context,
+): Array<PositionCreated> {
   return positionCreatedEvents
     .flatMap((events) => events)
     .filter((e) => e.event === 'CreatePosition')
@@ -50,6 +53,7 @@ function mapEvent(positionCreatedEvents: Array<TypedEvent<Array<any>>>[], contex
       const positionCreatedFromChain = (e.args as unknown) as PositionCreatedChainEvent
       return {
         ...positionCreatedFromChain,
+        protocol: extractLendingProtocolFromPositionCreatedEvent(positionCreatedFromChain),
         collateralTokenSymbol: getTokenSymbolFromAddress(
           context,
           positionCreatedFromChain.collateralToken,
@@ -57,6 +61,25 @@ function mapEvent(positionCreatedEvents: Array<TypedEvent<Array<any>>>[], contex
         debtTokenSymbol: getTokenSymbolFromAddress(context, positionCreatedFromChain.debtToken),
       }
     })
+}
+
+function extractLendingProtocolFromPositionCreatedEvent(
+  positionCreatedChainEvent: PositionCreatedChainEvent,
+): LendingProtocol {
+  if (
+    positionCreatedChainEvent.protocol === 'AAVE' ||
+    positionCreatedChainEvent.protocol === 'AaveV2'
+  ) {
+    return LendingProtocol.AaveV2
+  } else if (positionCreatedChainEvent.protocol === 'AAVE_V3') {
+    return LendingProtocol.AaveV3
+  }
+
+  throw new Error(
+    `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
+      positionCreatedChainEvent,
+    )}`,
+  )
 }
 
 export function getLastCreatedPositionForProxy$(
@@ -75,6 +98,7 @@ export function getLastCreatedPositionForProxy$(
       const positionCreatedFromChain = (event!.args as unknown) as PositionCreatedChainEvent
       return {
         ...positionCreatedFromChain,
+        protocol: extractLendingProtocolFromPositionCreatedEvent(positionCreatedFromChain),
         collateralTokenSymbol: getTokenSymbolFromAddress(
           context,
           positionCreatedFromChain.collateralToken,
@@ -85,11 +109,17 @@ export function getLastCreatedPositionForProxy$(
   )
 }
 
+export type ReadPositionCreatedEventsArgs = {
+  walletAddress: string
+  lendingProtocolFilter?: LendingProtocol
+}
+
 export function createReadPositionCreatedEvents$(
   context$: Observable<Context>,
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>,
-  walletAddress: string,
+  args: ReadPositionCreatedEventsArgs,
 ): Observable<Array<PositionCreated>> {
+  const { walletAddress, lendingProtocolFilter } = args
   return combineLatest(context$, userDpmProxies$(walletAddress)).pipe(
     switchMap(([context, dpmProxies]) => {
       return combineLatest(
@@ -99,8 +129,15 @@ export function createReadPositionCreatedEvents$(
           return getPositionCreatedEventForProxyAddress$(context, dpmProxy.proxy)
         }),
       ).pipe(
-        map((positionCreatedEvents) => {
-          return mapEvent(positionCreatedEvents, context)
+        map((positionCreatedEventsFromChain) => {
+          const mappedPositionCreatedEvents = mapEvents(
+            positionCreatedEventsFromChain,
+            context,
+          ).filter((pce) => {
+            // only include events for the requested lending protocol
+            return pce.protocol === lendingProtocolFilter
+          })
+          return mappedPositionCreatedEvents
         }),
       )
     }),

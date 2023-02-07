@@ -8,19 +8,20 @@ import {
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { Dsr } from 'features/dsr/utils/createDsr'
+import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { AavePosition } from './pipes/positions'
 import { MakerPositionDetails } from './pipes/positionsList'
 
 export interface PositionsList {
   makerPositions: MakerPositionDetails[]
   aavePositions: AavePosition[]
+  aaveV3Positions: AavePosition[]
   dsrPosition: Dsr
 }
 
@@ -30,14 +31,21 @@ export interface VaultsOverview {
 
 export function createPositionsList$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
-  aavePositions$: (address: string) => Observable<AavePosition[]>,
+  aavePositionsV2$: (address: string) => Observable<AavePosition[]>,
+  aavePositionsV3$: (address: string) => Observable<AavePosition[]>,
   dsr$: (address: string) => Observable<Dsr>,
   address: string,
 ): Observable<PositionsList> {
-  return combineLatest(makerPositions$(address), aavePositions$(address), dsr$(address)).pipe(
-    map(([makerPositions, aavePositions, dsrPosition]) => ({
+  return combineLatest(
+    makerPositions$(address),
+    aavePositionsV2$(address),
+    aavePositionsV3$(address),
+    dsr$(address),
+  ).pipe(
+    map(([makerPositions, aavePositions, aavePositionsV3, dsrPosition]) => ({
       makerPositions: makerPositions,
       aavePositions: aavePositions,
+      aaveV3Positions: aavePositionsV3,
       dsrPosition: dsrPosition,
     })),
   )
@@ -45,15 +53,21 @@ export function createPositionsList$(
 
 export function createVaultsOverview$(
   makerPositions$: (address: string) => Observable<MakerPositionDetails[]>,
-  aavePositions$: (address: string) => Observable<AavePosition[]>,
+  aavePositionsV2$: (address: string) => Observable<AavePosition[]>,
+  aavePositionsV3$: (address: string) => Observable<AavePosition[]>,
   address: string,
 ): Observable<VaultsOverview> {
-  return combineLatest(makerPositions$(address), aavePositions$(address)).pipe(
-    map(([makerPositions, aavePositions]) => {
+  return combineLatest(
+    makerPositions$(address),
+    aavePositionsV2$(address),
+    aavePositionsV3$(address),
+  ).pipe(
+    map(([makerPositions, aavePositionsV2, aavePositionsV3]) => {
       const makerVMs = mapToPositionVM(makerPositions)
-      const aaveVMs = mapAavePositions(aavePositions)
+      const aaveVMs = mapAavePositions(aavePositionsV2)
+      const aaveVMsV3 = mapAavePositions(aavePositionsV3)
       return {
-        positions: [...makerVMs, ...aaveVMs],
+        positions: [...makerVMs, ...aaveVMs, ...aaveVMsV3],
       }
     }),
   )
@@ -159,8 +173,8 @@ function mapToPositionVM(vaults: MakerPositionDetails[]): PositionVM[] {
   return [...borrowVMs, ...multiplyVMs, ...earnVMs]
 }
 
-function mapAavePositions(position: AavePosition[]): PositionVM[] {
-  return position.map((position) => {
+function mapAavePositions(positions: AavePosition[]): PositionVM[] {
+  return positions.map((position) => {
     if (position.type === 'multiply') {
       return {
         type: 'multiply' as const,
