@@ -87,7 +87,11 @@ export function FollowButton({
           strokeWidth: isFollowing ? 0 : '1px',
           transition: 'stroke 200ms, stroke-width 200ms, fill 200ms',
         },
-
+        ...(isShort && {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }),
         ...sx,
       }}
       onMouseOver={handleMouseOver}
@@ -109,7 +113,16 @@ export function FollowButton({
           />
         ) : (
           <Box className="star">
-            <Icon name="star" size={isShort ? 14 : 12} />
+            <Icon
+              name="star"
+              size={isShort ? 14 : 12}
+              sx={{
+                ...(isShort && {
+                  position: 'absolute',
+                  marginTop: '2px',
+                }),
+              }}
+            />
           </Box>
         )}
       </Box>

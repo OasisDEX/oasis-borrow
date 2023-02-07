@@ -1,13 +1,7 @@
 import { BigNumber } from 'bignumber.js'
-import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
-import _, { keyBy, sortBy } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap } from 'rxjs/operators'
-
-import { supportedIlks } from '../blockchain/config'
-import { IlkData } from '../blockchain/ilks'
-import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
+import { supportedIlks } from 'blockchain/config'
+import { IlkData } from 'blockchain/ilks'
+import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import {
   BTC_TOKENS,
   ETH_TOKENS,
@@ -15,7 +9,13 @@ import {
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
   TokenMetadataType,
-} from '../blockchain/tokensMetadata'
+} from 'blockchain/tokensMetadata'
+import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
+import { Feature, getFeatureToggle } from 'helpers/useFeatureToggle'
+import _, { keyBy, sortBy } from 'lodash'
+import { combineLatest, Observable, of } from 'rxjs'
+import { map, startWith, switchMap } from 'rxjs/operators'
+
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -292,7 +292,10 @@ export const productCardsConfig: {
         { strategy: 'stETHusdc' },
         { strategy: 'wBTCusdc' },
       ]),
-      earn: getAaveEnabledStrategies([{ strategy: 'stETHeth' }]),
+      earn: getAaveEnabledStrategies([
+        { strategy: 'wstETHeth', featureToggle: 'AaveV3EarnWSTETH' },
+        { strategy: 'stETHeth' },
+      ]),
     },
   },
   descriptionCustomKeys: {

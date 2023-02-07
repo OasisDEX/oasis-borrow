@@ -5,7 +5,7 @@ import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { utils } from 'ethers'
 import { LendingProtocol } from 'lendingProtocols'
 import { combineLatest, from, Observable } from 'rxjs'
-import { filter, map, startWith, switchMap } from 'rxjs/operators'
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import { TypedEvent } from 'types/ethers-contracts/commons'
 import { PositionCreated as PositionCreatedContract } from 'types/ethers-contracts/PositionCreated'
 
@@ -37,7 +37,7 @@ function getPositionCreatedEventForProxyAddress$(context: Context, proxyAddress:
         address: proxyAddress,
         topics: [utils.id('CreatePosition(address,string,string,address,address)')],
       },
-      16183119,
+      context.accountGuard.genesisBlock,
     ),
   )
 }
@@ -142,6 +142,7 @@ export function createReadPositionCreatedEvents$(
       )
     }),
     startWith([]),
+    shareReplay(1),
   )
 }
 

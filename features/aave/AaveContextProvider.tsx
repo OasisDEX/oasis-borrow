@@ -1,8 +1,8 @@
+import { useAppContext } from 'components/AppContextProvider'
+import { WithChildren } from 'helpers/types'
+import { LendingProtocol } from 'lendingProtocols'
 import React, { useContext, useEffect, useState } from 'react'
 
-import { useAppContext } from '../../components/AppContextProvider'
-import { WithChildren } from '../../helpers/types'
-import { LendingProtocol } from '../../lendingProtocols'
 import { AaveContext, setupAaveV2Context } from './AaveContext'
 import { setupAaveV3Context } from './SetupAaveV3Context'
 

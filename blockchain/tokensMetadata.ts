@@ -28,7 +28,7 @@ export interface TokenConfig {
   background: string
   digitsInstant?: number
   safeCollRatio?: number
-  protocol: 'maker' | 'aave'
+  protocol: 'maker' | 'aaveV2' | 'aaveV3'
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -36,7 +36,8 @@ export type CoinTag = ElementOf<typeof COIN_TAGS>
 
 export enum ProtocolLongNames {
   maker = 'Maker',
-  aave = 'Aave V2',
+  aaveV2 = 'Aave V2',
+  aaveV3 = 'Aave V3',
 }
 
 export const tokens: TokenConfig[] = [
@@ -704,7 +705,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
   },
   {
     symbol: 'stETHusdc',
@@ -721,7 +722,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_stETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
   },
   {
     symbol: 'ethusdc',
@@ -737,7 +738,7 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_ETH.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_ETH_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
   },
   {
     symbol: 'wBTCusdc',
@@ -754,7 +755,24 @@ export const tokens: TokenConfig[] = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_WBTC.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_WBTC_v2.gif'),
     tags: [],
-    protocol: 'aave',
+    protocol: 'aaveV2',
+  },
+  {
+    symbol: 'wstETHeth',
+    // copied from above, used as a placeholder for now
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'WSTETH / USDC',
+    icon: 'aave_wsteth_usdc',
+    iconCircle: 'aave_wsteth_usdc',
+    iconColor: 'aave_wsteth_usdc',
+    color: '#E2F7F9',
+    background: 'linear-gradient(160.47deg, #E2F7F9 0.35%, #D3F3F5 99.18%), #000000',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_STETH.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_STETH_v2.gif'),
+    tags: [],
+    protocol: 'aaveV3',
   },
   {
     symbol: 'RETH',
