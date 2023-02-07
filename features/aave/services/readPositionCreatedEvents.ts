@@ -1,13 +1,12 @@
+import positionCreatedAbi from 'blockchain/abi/position-created.json'
+import { Context } from 'blockchain/network'
+import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { utils } from 'ethers'
 import { combineLatest, from, Observable } from 'rxjs'
 import { filter, map, startWith, switchMap } from 'rxjs/operators'
-
-import positionCreatedAbi from '../../../blockchain/abi/position-created.json'
-import { Context } from '../../../blockchain/network'
-import { getTokenSymbolFromAddress } from '../../../blockchain/tokensMetadata'
-import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
-import { TypedEvent } from '../../../types/ethers-contracts/commons'
-import { PositionCreated as PositionCreatedContract } from '../../../types/ethers-contracts/PositionCreated'
+import { TypedEvent } from 'types/ethers-contracts/commons'
+import { PositionCreated as PositionCreatedContract } from 'types/ethers-contracts/PositionCreated'
 
 type PositionCreatedChainEvent = {
   collateralToken: string // address
@@ -37,7 +36,7 @@ function getPositionCreatedEventForProxyAddress$(context: Context, proxyAddress:
         address: proxyAddress,
         topics: [utils.id('CreatePosition(address,string,string,address,address)')],
       },
-      16183119,
+      context.genesisBlock,
     ),
   )
 }
