@@ -5,14 +5,14 @@ import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { PositionId, positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { PositionId, positionIdIsAddress } from 'features/aave/types'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { formatAddress } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -211,23 +211,24 @@ function buildPosition(
 
         const isOwner = context.status === 'connected' && context.account === walletAddress
 
-      return {
-        token: collateralToken,
-        title: `${collateralToken}/${debtToken} AAVE`,
-        url: `/aave/${positionId}`,
-        id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
-        netValue: netValueUsd,
-        multiple,
-        liquidationPrice,
-        fundingCost,
-        contentsUsd: netValueUsd,
-        isOwner,
-        lockedCollateral: collateralNotWei,
-        type: mappymap[positionCreatedEvent.positionType],
-        liquidity: liquidity,
-        stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
-      }
-    }),
+        return {
+          token: collateralToken,
+          title: `${collateralToken}/${debtToken} AAVE`,
+          url: `/aave/${positionId}`,
+          id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
+          netValue: netValueUsd,
+          multiple,
+          liquidationPrice,
+          fundingCost,
+          contentsUsd: netValueUsd,
+          isOwner,
+          lockedCollateral: collateralNotWei,
+          type: mappymap[positionCreatedEvent.positionType],
+          liquidity: liquidity,
+          stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
+        }
+      },
+    ),
   )
 }
 
