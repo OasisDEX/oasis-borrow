@@ -4,7 +4,7 @@ import { getTokenSymbolFromAddress } from 'blockchain/tokensMetadata'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { utils } from 'ethers'
 import { combineLatest, from, Observable } from 'rxjs'
-import { filter, map, startWith, switchMap } from 'rxjs/operators'
+import { filter, map, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import { TypedEvent } from 'types/ethers-contracts/commons'
 import { PositionCreated as PositionCreatedContract } from 'types/ethers-contracts/PositionCreated'
 
@@ -104,6 +104,7 @@ export function createReadPositionCreatedEvents$(
       )
     }),
     startWith([]),
+    shareReplay(1),
   )
 }
 

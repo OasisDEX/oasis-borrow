@@ -1,29 +1,43 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3ReserveDataParameters, AaveV3ReserveDataReply } from 'blockchain/aave-v3'
 import { amountFromWei } from 'blockchain/utils'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-import { zero } from '../../../helpers/zero'
+type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber[], BigNumber]
 
-type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber[]]
-
-export function prepareAaveAvailableLiquidityInUSDC$(
+export function prepareaaveAvailableLiquidityInUSDC$(
   getAaveReserveData$: (token: AaveV3ReserveDataParameters) => Observable<AaveV3ReserveDataReply>,
   getAaveAssetsPrices$: Observable<string[]>,
+  getAaveV3BaseCurrencyUnit$: Observable<BigNumber>,
   reserveDataToken: AaveV3ReserveDataParameters,
 ): Observable<BigNumber> {
-  return combineLatest(getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$).pipe(
-    map(([reserveData, [USDC_ETH_price]]: PrepareAaveAvailableLiquidityProps) => {
-      const availableLiquidityInETH = amountFromWei(
-        new BigNumber(reserveData.availableLiquidity),
-        'ETH',
-      )
-      const ETH_USDC_price = new BigNumber(1).div(USDC_ETH_price) // price of one ETH in USDC
-      return availableLiquidityInETH.times(ETH_USDC_price)
-    }),
+  // THIS IS NOT IN USDC, THIS IS IN USD
+  // Aave V3 Oracle prices are in USD
+  return combineLatest(
+    getAaveReserveData$(reserveDataToken),
+    getAaveAssetsPrices$,
+    getAaveV3BaseCurrencyUnit$,
+  ).pipe(
+    map(
+      ([
+        reserveData,
+        [USD_in_WETH_price],
+        baseCurrencyUnit,
+      ]: PrepareAaveAvailableLiquidityProps) => {
+        const availableLiquidityInETH = amountFromWei(
+          new BigNumber(reserveData.availableLiquidity),
+          'ETH',
+        )
+        return availableLiquidityInETH.times(USD_in_WETH_price.div(baseCurrencyUnit))
+      },
+    ),
     catchError((error) => {
-      console.log(`Can't get Aave available liquidity for ${reserveDataToken}`, error)
+      console.log(
+        `Can't get Aave V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
+        error,
+      )
       return of(zero)
     }),
   )
