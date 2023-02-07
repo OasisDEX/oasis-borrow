@@ -68,7 +68,7 @@ export function AjnaBorrowFormContent({
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
       disabled: !!walletAddress && (!isStepValid || isAllowanceLoading || isLoadingSimulation),
-      isLoading: (!!walletAddress && isAllowanceLoading) || isLoadingSimulation,
+      isLoading: !!walletAddress && (isAllowanceLoading || isLoadingSimulation),
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',
