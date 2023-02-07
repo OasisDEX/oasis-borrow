@@ -74,7 +74,7 @@ export function useFlowState({
   useEffect(() => {
     const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
       setWalletConnected(status === 'connected')
-      status === 'connected' && account && setWalletAddress(account)
+      setWalletAddress(status === 'connected' && account ? account : undefined)
     })
     if (existingProxy) {
       return () => {
