@@ -110,7 +110,7 @@ export function createPositions$(
 ): Observable<Position[]> {
   const _makerPositions$ = makerPositions$(address)
   const _aavePositionsV2$ = aavePositionsV2$(address)
-  const _aavePositionsV3$ = aavePositionsV2$(address)
+  const _aavePositionsV3$ = aavePositionsV3$(address)
   return combineLatest(_makerPositions$, _aavePositionsV2$, _aavePositionsV3$).pipe(
     map(([makerPositions, aavePositionsV2, aavePositionsV3]) => {
       return [...makerPositions, ...aavePositionsV2, ...aavePositionsV3]
@@ -211,7 +211,7 @@ function buildPosition(
           ? `/aave/v2/${positionId}`
           : `/aave/v3/${positionId}`
 
-      const title = `${collateralToken}/${debtToken} AAVE ${
+      const title = `${collateralToken}/${debtToken} Aave ${
         aaveProtocolVersion === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
       }`
 
