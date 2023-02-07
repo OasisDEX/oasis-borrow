@@ -74,6 +74,7 @@ export function useFlowState({
     minimumAmount: amount,
     allowanceType: 'unlimited',
     token,
+    error: undefined,
   }
   const spender = availableProxies[0] // probably needs further thoguht
 
@@ -175,17 +176,23 @@ export function useFlowState({
       },
     )
     const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
-      if (event.type === 'BACK') {
-        setAsUserAction(true)
-        callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(callbackParams, onGoBack)
-      }
-      if (
-        token &&
+      const inputChange =
         amount?.toString() &&
         (context.spender !== spender ||
           !context.minimumAmount?.eq(amount) ||
           context.token !== token)
-      ) {
+
+      if (event.type === 'BACK') {
+        !context.error &&
+          callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(callbackParams, onGoBack)
+        setAsUserAction(true)
+        allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
+          ...baseAllowanceContext,
+          allowanceType: context.allowanceType,
+          spender,
+        })
+      }
+      if (token && amount?.toString() && inputChange) {
         allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
           ...baseAllowanceContext,
           spender,
