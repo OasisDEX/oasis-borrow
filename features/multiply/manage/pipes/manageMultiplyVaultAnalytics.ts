@@ -129,6 +129,7 @@ export function createManageMultiplyVaultAnalytics$(
               debt: debt.toFixed(3),
               closeTo: closeVaultTo,
               txHash: manageTxHash,
+              oasisFee: `${formatAmount(oazoFee, 'DAI')} DAI`,
             },
           } as CloseVaultConfirmTransaction
         }

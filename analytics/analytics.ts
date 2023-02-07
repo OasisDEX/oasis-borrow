@@ -881,8 +881,8 @@ export const trackingEvents = {
       closeTo: CloseVaultTo,
       txHash: string,
       network: string,
-      oasisFee: string,
       walletType: ConnectionKind,
+      oasisFee: string,
     ) => {
       const eventBody = {
         id: 'ConfirmTransaction',
