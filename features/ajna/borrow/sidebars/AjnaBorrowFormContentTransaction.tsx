@@ -26,7 +26,9 @@ export function AjnaBorrowFormContentTransaction() {
       {/* temporary TX status selector */}
       <Flex sx={{ columnGap: 2 }}>
         Force TX status:
-        <select onChange={(e) => setTxDetails({ txStatus: e.target.value as TxStatus } as TxDetails)}>
+        <select
+          onChange={(e) => setTxDetails({ txStatus: e.target.value as TxStatus } as TxDetails)}
+        >
           <option value={undefined}>undefined</option>
           {(Object.keys(TxStatus) as Array<keyof typeof TxStatus>).map((status, i) => (
             <option key={i} value={status}>
