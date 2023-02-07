@@ -153,8 +153,8 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    form: { state, updateState },
-    tx: { setTxDetails, setSimulation },
+    form: { state },
+    tx: { setTxDetails, setSimulationData, setIsLoadingSimulation },
     environment: { collateralToken, quoteToken, ethPrice },
   } = useAjnaBorrowContext()
 
@@ -165,7 +165,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   useDebouncedEffect(
     () => {
       if (txHelpers && context && dpmAddress) {
-        updateState('isLoading', true)
+        setIsLoadingSimulation(true)
         void getTxDetails({
           rpcProvider: context.rpcProvider,
           formState: state,
@@ -174,19 +174,21 @@ export function useAjnaTxHandler(): AjnaTxHandler {
           context,
         })
           .then((data) => {
-            updateState('isLoading', false)
+            setIsLoadingSimulation(false)
+
             if ('tx' in data) {
               setTxData(data.tx)
-              setSimulation(data.simulation)
+              setSimulationData(data.simulation)
               // TODO update it once aave sl is deployed as interface has been changed
               // uiChanges.publish(TX_DATA_CHANGE, {
               //   type: 'add-trigger',
               //   transaction: callLibraryWithDpmProxy,
               //   data: data.tx.data,
               // })
-            }})
+            }
+          })
           .catch((error) => {
-            updateState('isLoading', false)
+            setIsLoadingSimulation(false)
             console.error(error)
           })
       }

@@ -13,7 +13,6 @@ export interface AjnaBorrowFormState {
   paybackAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  isLoading?: boolean
 }
 
 interface AjnaBorrowFormActionsUpdateDeposit {
@@ -58,7 +57,6 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   paybackAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
-  isLoading: false
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
