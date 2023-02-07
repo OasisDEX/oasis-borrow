@@ -175,17 +175,15 @@ export function useAjnaTxHandler(): AjnaTxHandler {
         })
           .then((data) => {
             setIsLoadingSimulation(false)
+            setTxData(data?.tx)
+            setSimulationData(data?.simulation)
 
-            if ('tx' in data) {
-              setTxData(data.tx)
-              setSimulationData(data.simulation)
-              // TODO update it once aave sl is deployed as interface has been changed
-              // uiChanges.publish(TX_DATA_CHANGE, {
-              //   type: 'add-trigger',
-              //   transaction: callLibraryWithDpmProxy,
-              //   data: data.tx.data,
-              // })
-            }
+            // TODO update it once aave sl is deployed as interface has been changed
+            // uiChanges.publish(TX_DATA_CHANGE, {
+            //   type: 'add-trigger',
+            //   transaction: callLibraryWithDpmProxy,
+            //   data: data.tx.data,
+            // })
           })
           .catch((error) => {
             setIsLoadingSimulation(false)
