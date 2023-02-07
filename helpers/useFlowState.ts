@@ -70,6 +70,12 @@ export function useFlowState({
     asUserAction,
   }
 
+  const baseAllowanceContext = {
+    minimumAmount: amount,
+    allowanceType: 'unlimited',
+    token,
+  }
+
   // wallet connection + DPM proxy machine
   useEffect(() => {
     const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
@@ -156,9 +162,7 @@ export function useFlowState({
     }
     const spender = availableProxies[0] // probably needs further thoguht
     allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
-      minimumAmount: amount,
-      allowanceType: 'unlimited',
-      token,
+      ...baseAllowanceContext,
       spender,
     })
     const allowanceSubscription = allowanceForAccount$(token!, spender).subscribe(
@@ -186,6 +190,10 @@ export function useFlowState({
       if (value === 'txSuccess' && context.allowanceType && event.type === 'CONTINUE') {
         setAsUserAction(true)
         setAllowanceReady(true)
+        allowanceMachine.send('RESET_ALLOWANCE_CONTEXT', {
+          ...baseAllowanceContext,
+          spender,
+        })
       }
     })
     return () => {
