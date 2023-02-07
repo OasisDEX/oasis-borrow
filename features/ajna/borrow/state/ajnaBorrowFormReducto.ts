@@ -4,6 +4,7 @@ import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
   action?: AjnaBorrowAction
+  dpmAddress?: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
@@ -12,7 +13,6 @@ export interface AjnaBorrowFormState {
   paybackAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
-  proxyAddress?: string
   isLoading?: boolean
 }
 
@@ -58,9 +58,7 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   paybackAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
-  // TODO once DPM implemented should be undefined as default
-  proxyAddress: '0xF5C0D205a00A5F799E3CFC4AC2E71C326Dd12b76',
-  isLoading: false,
+  isLoading: false
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
@@ -97,7 +95,7 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             paybackAmountUSD: action.paybackAmountUSD,
           }
         case 'reset':
-          return ajnaBorrowDefault
+          return { ...state, ...ajnaBorrowDefault }
         default:
           return state
       }

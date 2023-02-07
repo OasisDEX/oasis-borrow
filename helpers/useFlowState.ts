@@ -74,7 +74,7 @@ export function useFlowState({
   useEffect(() => {
     const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
       setWalletConnected(status === 'connected')
-      status === 'connected' && account && setWalletAddress(account)
+      setWalletAddress(status === 'connected' && account ? account : undefined)
     })
     if (existingProxy) {
       return () => {
@@ -85,6 +85,7 @@ export function useFlowState({
       if (event.type === 'GO_BACK') {
         setAsUserAction(true)
         callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(callbackParams, onGoBack)
+        dpmMachine.send('GAS_COST_ESTIMATION')
       }
       if (
         value === 'txSuccess' &&

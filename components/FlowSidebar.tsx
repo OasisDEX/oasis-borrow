@@ -103,7 +103,11 @@ export function FlowSidebar({
       case dpmState.matches('txInProgress'):
       case dpmState.matches('txSuccess'):
         return (
-          <CreateDPMAccountViewConsumed state={dpmState} send={dpmSend} backButtonOnFirstStep />
+          <CreateDPMAccountViewConsumed
+            state={dpmState}
+            send={dpmSend}
+            backButtonOnFirstStep="back-to-editing"
+          />
         )
       default:
         return <></>
@@ -119,7 +123,7 @@ export function FlowSidebar({
           <AllowanceView
             allowanceMachine={internals.allowanceMachine}
             isLoading={isLoading}
-            backButtonOnFirstStep
+            backButtonOnFirstStep="back-to-editing"
           />
         )
       default:
