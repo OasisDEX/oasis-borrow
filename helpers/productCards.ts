@@ -292,7 +292,10 @@ export const productCardsConfig: {
         { strategy: 'stETHusdc' },
         { strategy: 'wBTCusdc' },
       ]),
-      earn: getAaveEnabledStrategies([{ strategy: 'wstETHeth' }, { strategy: 'stETHeth' }]),
+      earn: getAaveEnabledStrategies([
+        { strategy: 'wstETHeth', featureToggle: 'AaveV3EarnWSTETH' },
+        { strategy: 'stETHeth' },
+      ]),
     },
   },
   descriptionCustomKeys: {
