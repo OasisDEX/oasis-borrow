@@ -23,7 +23,7 @@ export function getPrimaryButtonLabelKey({
     case 'risk':
       return 'i-understand'
     default:
-      if (dpmAddress) return 'confirm'
+      if (walletAddress && dpmAddress) return 'confirm'
       else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
       else return 'connect-wallet-button'
   }

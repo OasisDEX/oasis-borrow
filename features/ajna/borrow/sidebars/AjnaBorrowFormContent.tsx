@@ -9,7 +9,7 @@ import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
@@ -29,11 +29,6 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
-
-  useEffect(() => {
-    // TODO: check why FlowComponent is setting walletAddress to undefined for a fraction of second
-    // if (!walletAddress && currentStep !== 'risk') setStep(editingStep)
-  }, [walletAddress])
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -67,7 +62,7 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
       disabled: !!walletAddress && (!isStepValid || isAllowanceLoading),
-      isLoading: isAllowanceLoading,
+      isLoading: !!walletAddress && isAllowanceLoading,
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',
