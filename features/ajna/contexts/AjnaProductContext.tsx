@@ -62,7 +62,12 @@ interface AjnaBorrowTx {
   isTxSuccess: boolean
   txDetails?: TxDetails
   setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
-  setSimulation: Dispatch<SetStateAction<AjnaBorrowPosition | undefined>>
+  setSimulationData: Dispatch<SetStateAction<AjnaBorrowPosition | undefined>>
+  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
+  simulation?: {
+    isLoading: boolean
+    data?: AjnaBorrowPosition
+  }
 }
 
 interface AjnaBorrowContext {
@@ -71,7 +76,6 @@ interface AjnaBorrowContext {
   position: AjnaBorrowPosition
   steps: AjnaBorrowSteps
   tx: AjnaBorrowTx
-  simulation?: AjnaBorrowPosition
 }
 
 const ajnaBorrowContext = React.createContext<AjnaBorrowContext | undefined>(undefined)
@@ -98,7 +102,8 @@ export function AjnaBorrowContextProvider({
   const form = useAjnaBorrowFormReducto({})
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
-  const [simulation, setSimulation] = useState<AjnaBorrowPosition>()
+  const [simulationData, setSimulationData] = useState<AjnaBorrowPosition>()
+  const [isLoadingSimulation, setIsLoadingSimulation] = useState(false)
 
   const setStep = (step: AjnaStatusStep) => {
     if (
@@ -133,7 +138,12 @@ export function AjnaBorrowContextProvider({
     return {
       txDetails,
       setTxDetails,
-      setSimulation,
+      setSimulationData,
+      setIsLoadingSimulation,
+      simulation: {
+        data: simulationData,
+        isLoading: isLoadingSimulation,
+      },
       ...getTxStatuses(txDetails?.txStatus),
     }
   }
@@ -157,9 +167,16 @@ export function AjnaBorrowContextProvider({
       form: { ...prev.form, state: form.state },
       steps: setupStepManager(),
       tx: setupTxManager(),
-      simulation,
     }))
-  }, [props.collateralBalance, props.quoteBalance, form.state, currentStep, txDetails, simulation])
+  }, [
+    props.collateralBalance,
+    props.quoteBalance,
+    form.state,
+    currentStep,
+    txDetails,
+    simulationData,
+    isLoadingSimulation,
+  ])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
 }

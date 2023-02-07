@@ -4,7 +4,6 @@ import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/Ajna
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
-import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
@@ -14,10 +13,14 @@ import React, { useState } from 'react'
 import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
+  txHandler: () => void
   isAllowanceLoading?: boolean
 }
 
-export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormContentProps) {
+export function AjnaBorrowFormContent({
+  isAllowanceLoading,
+  txHandler,
+}: AjnaBorrowFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
@@ -26,11 +29,12 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
       state: { dpmAddress },
     },
     steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
-    tx: { isTxStarted, isTxError, isTxWaitingForApproval },
+    tx: { isTxStarted, isTxError, isTxWaitingForApproval, simulation },
   } = useAjnaBorrowContext()
 
-  const txHandler = useAjnaTxHandler()
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
+
+  const isLoadingSimulation = simulation?.isLoading
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -63,8 +67,8 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
     ),
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
-      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading),
-      isLoading: !!walletAddress && isAllowanceLoading,
+      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading || isLoadingSimulation),
+      isLoading: !!walletAddress && (isAllowanceLoading || isLoadingSimulation),
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',

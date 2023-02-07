@@ -12,8 +12,9 @@ import { AjnaBorrowPosition, useAjnaBorrowContext } from 'features/ajna/contexts
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
+import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 interface AjnaTxHandlerInput {
@@ -153,7 +154,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   const [context] = useObservable(context$)
   const {
     form: { state },
-    tx: { setTxDetails, setSimulation },
+    tx: { setTxDetails, setSimulationData, setIsLoadingSimulation },
     environment: { collateralToken, quoteToken, ethPrice },
   } = useAjnaBorrowContext()
 
@@ -161,32 +162,43 @@ export function useAjnaTxHandler(): AjnaTxHandler {
 
   const { dpmAddress } = state
 
-  useEffect(() => {
-    if (txHelpers && context && dpmAddress) {
-      void getTxDetails({
-        rpcProvider: context.rpcProvider,
-        formState: state,
-        collateralToken,
-        quoteToken,
-        context,
-      })
-        .then((data) => {
-          if ('tx' in data) {
-            setTxData(data.tx)
-            setSimulation(data.simulation)
+  useDebouncedEffect(
+    () => {
+      if (txHelpers && context && dpmAddress) {
+        setIsLoadingSimulation(true)
+        void getTxDetails({
+          rpcProvider: context.rpcProvider,
+          formState: state,
+          collateralToken,
+          quoteToken,
+          context,
+        })
+          .then((data) => {
+            setIsLoadingSimulation(false)
+            setTxData(data?.tx)
+            setSimulationData(data?.simulation)
+
             // TODO update it once aave sl is deployed as interface has been changed
             // uiChanges.publish(TX_DATA_CHANGE, {
             //   type: 'add-trigger',
             //   transaction: callLibraryWithDpmProxy,
             //   data: data.tx.data,
             // })
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    }
-  }, [state])
+          })
+          .catch((error) => {
+            setIsLoadingSimulation(false)
+            console.error(error)
+          })
+      }
+    },
+    [
+      state.depositAmount?.toString(),
+      state.generateAmount?.toString(),
+      state.withdrawAmount?.toString(),
+      state.paybackAmount?.toString(),
+    ],
+    250,
+  )
 
   if (!txHelpers || !txData || !dpmAddress) {
     return () => console.warn('no txHelpers or txData or proxyAddress')
