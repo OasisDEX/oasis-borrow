@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
 import { AccountDetails } from 'features/account/AccountData'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatOazoFee } from 'features/multiply/manage/utils'
 import { isEqual } from 'lodash'
 import { combineLatest, merge, Observable, zip } from 'rxjs'
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators'
@@ -118,7 +118,7 @@ export function createOpenMultiplyVaultAnalytics$(
         collateralAmount: depositAmount,
         multiply: multiply?.toFixed(3),
         txHash: openTxHash,
-        oasisFee: `${formatAmount(oazoFee, 'DAI')} DAI`,
+        oasisFee: formatOazoFee(oazoFee),
       },
     })),
     distinctUntilChanged(isEqual),

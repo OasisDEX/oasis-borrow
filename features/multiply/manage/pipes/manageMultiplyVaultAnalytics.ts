@@ -2,7 +2,7 @@ import { Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { merge, Observable } from 'rxjs'
@@ -105,7 +105,7 @@ export function createManageMultiplyVaultAnalytics$(
               ilk,
               multiply: afterMultiply.minus(multiply).toFixed(3),
               txHash: manageTxHash,
-              oasisFee: `${formatAmount(oazoFee, 'DAI')} DAI`,
+              oasisFee: formatOazoFee(oazoFee),
             },
           } as AdjustPositionConfirmTransaction
         } else if (otherAction !== 'closeVault') {
@@ -118,7 +118,7 @@ export function createManageMultiplyVaultAnalytics$(
               daiAmount:
                 generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
               txHash: manageTxHash,
-              oasisFee: `${formatAmount(oazoFee, 'DAI')} DAI`,
+              oasisFee: formatOazoFee(oazoFee),
             },
           } as OtherActionsConfirmTransaction
         } else {
@@ -129,7 +129,7 @@ export function createManageMultiplyVaultAnalytics$(
               debt: debt.toFixed(3),
               closeTo: closeVaultTo,
               txHash: manageTxHash,
-              oasisFee: `${formatAmount(oazoFee, 'DAI')} DAI`,
+              oasisFee: formatOazoFee(oazoFee),
             },
           } as CloseVaultConfirmTransaction
         }
