@@ -139,18 +139,18 @@
       "welcome-screen": {
         "header": "Create your Smart DeFi account",
         "create-button": "Create Smart DeFi account",
-        "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>",
+        "paragraph": "In order to open a position on Aave, you need a Smart DeFi account for each position. You can manage multiple positions by opening more accounts. Read more in the the <1>knowledge base</1>.",
         "retry-create-button": "Retry Create Smart DeFi account",
         "create-order-summary-heading": "Creating your Smart DeFi account"
       },
       "proxy-creating-screen": {
         "header": "Create your Smart DeFi account",
         "button": "Creating Smart DeFi account",
-        "paragraph": "Read more in the the <1>knowledge base</1>"
+        "paragraph": "Read more in the the <1>knowledge base</1>."
       },
       "proxy-created-screen": {
         "header": "Account successfully created",
-        "paragraph": "Your account has been successfully created. <1>Read more in the Knowledge Base</1>\""
+        "paragraph": "Your account has been successfully created, <1>read more in the Knowledge Base</1>."
       },
       "bullet-points": [
         "Multiple Aave positions with the same wallet",
@@ -1558,6 +1558,10 @@
         "title": "stETH/ETH Aave",
         "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to stETH."
       },
+      "wstETHeth": {
+        "title": "wstETH/ETH Aave",
+        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to wstETH."
+      },
       "stETHusdc": {
         "title": "Highest stETH multiple option",
         "description": "Maximise your stETH exposure with Aave and USDC."
@@ -1590,7 +1594,8 @@
       "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
     },
     "aave": {
-      "stETHeth": "Get up to {{value}} ETH exposure to stETH"
+      "stETHeth": "Get up to {{value}} ETH exposure to stETH",
+      "wstETHeth": "Get up to {{value}} ETH exposure to wstETH"
     }
   },
   "product-card-title": {

@@ -17,7 +17,6 @@ export function AjnaBorrowFormContentTransaction() {
       isTxWaitingForApproval,
       isTxInProgress,
       isTxSuccess,
-      txDetails,
       setTxDetails,
     },
   } = useAjnaBorrowContext()
@@ -27,14 +26,10 @@ export function AjnaBorrowFormContentTransaction() {
       {/* temporary TX status selector */}
       <Flex sx={{ columnGap: 2 }}>
         Force TX status:
-        <select
-          onChange={(e) => setTxDetails({ txStatus: e.target.value as TxStatus } as TxDetails)}
-        >
-          <option value={undefined} {...(!txDetails?.txStatus && { selected: true })}>
-            undefined
-          </option>
-          {(Object.keys(TxStatus) as Array<keyof typeof TxStatus>).map((status) => (
-            <option value={status} {...(status === txDetails?.txStatus && { selected: true })}>
+        <select onChange={(e) => setTxDetails({ txStatus: e.target.value as TxStatus } as TxDetails)}>
+          <option value={undefined}>undefined</option>
+          {(Object.keys(TxStatus) as Array<keyof typeof TxStatus>).map((status, i) => (
+            <option key={i} value={status}>
               {status}
             </option>
           ))}

@@ -6,7 +6,7 @@ import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowF
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import {
   isExternalStep,
-  isStepWithBack,
+  isNextStep,
   isStepWithTransaction,
 } from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
@@ -45,7 +45,6 @@ interface AjnaBorrowSteps {
   currentStep: AjnaStatusStep
   editingStep: Extract<AjnaStatusStep, 'setup' | 'manage'>
   isExternalStep: boolean
-  isStepWithBack: boolean
   isStepWithTransaction: boolean
   isStepValid: boolean
   steps: AjnaStatusStep[]
@@ -102,7 +101,11 @@ export function AjnaBorrowContextProvider({
   const [simulation, setSimulation] = useState<AjnaBorrowPosition>()
 
   const setStep = (step: AjnaStatusStep) => {
-    if (isBorrowStepValid({ currentStep, formState: form.state })) setCurrentStep(step)
+    if (
+      !isNextStep({ currentStep, step, steps }) ||
+      isBorrowStepValid({ currentStep, formState: form.state })
+    )
+      setCurrentStep(step)
     else throw new Error(`A state of current step in not valid.`)
   }
   const shiftStep = (direction: 'next' | 'prev') => {
@@ -118,7 +121,6 @@ export function AjnaBorrowContextProvider({
       steps,
       editingStep: props.flow === 'open' ? 'setup' : 'manage',
       isExternalStep: isExternalStep({ currentStep }),
-      isStepWithBack: isStepWithBack({ currentStep }),
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
       isStepValid: isBorrowStepValid({ currentStep, formState: form.state }),
       setStep,

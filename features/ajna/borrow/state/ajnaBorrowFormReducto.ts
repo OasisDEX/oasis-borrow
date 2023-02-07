@@ -4,6 +4,7 @@ import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
   action?: AjnaBorrowAction
+  dpmAddress?: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
@@ -95,7 +96,7 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             paybackAmountUSD: action.paybackAmountUSD,
           }
         case 'reset':
-          return ajnaBorrowDefault
+          return { ...state, ...ajnaBorrowDefault }
         default:
           return state
       }

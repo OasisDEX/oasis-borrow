@@ -16,13 +16,16 @@ export function getAjnaWithArrowColorScheme(): SxStyleProp {
 
 export function getPrimaryButtonLabelKey({
   currentStep,
+  dpmAddress,
   walletAddress,
-}: GetKeyMethodParams & { walletAddress?: string }): string {
+}: GetKeyMethodParams & { dpmAddress?: string; walletAddress?: string }): string {
   switch (currentStep) {
     case 'risk':
       return 'i-understand'
     default:
-      return walletAddress ? 'confirm' : 'connect-wallet-button'
+      if (walletAddress && dpmAddress) return 'confirm'
+      else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
+      else return 'connect-wallet-button'
   }
 }
 
