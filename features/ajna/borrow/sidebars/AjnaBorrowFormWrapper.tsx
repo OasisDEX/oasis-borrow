@@ -4,6 +4,7 @@ import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
+import { zero } from 'helpers/zero'
 import React, { useEffect } from 'react'
 
 export function AjnaBorrowFormWrapper() {
@@ -19,14 +20,14 @@ export function AjnaBorrowFormWrapper() {
   const txHandler = useAjnaTxHandler()
 
   const flowState = useFlowState({
-    ...((action === 'open' || action === 'deposit') && {
-      amount: depositAmount,
-      token: collateralToken,
-    }),
-    ...(action === 'payback' && {
-      amount: paybackAmount,
-      token: quoteToken,
-    }),
+    token: ['open', 'deposit', 'withdraw'].includes(action as string)
+      ? collateralToken
+      : quoteToken,
+    amount: ['open', 'deposit'].includes(action as string)
+      ? depositAmount
+      : action === 'payback'
+      ? paybackAmount
+      : zero,
     onEverythingReady: () => setNextStep(),
     onGoBack: () => setStep(editingStep),
   })
