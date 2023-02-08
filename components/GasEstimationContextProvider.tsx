@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { TxData } from 'components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { TX_DATA_CHANGE, TxPayloadChange } from 'helpers/gasEstimate'
 import { useObservable } from 'helpers/observableHook'
@@ -40,10 +41,12 @@ export function GasEstimationContextProvider({ children }: WithChildren) {
       return of(undefined)
     }
 
+    const transactionDef = txData!.transaction as TransactionDef<TxData>
+    const transactionData = txData.data
+
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) =>
-        estimateGas(txData!.transaction as TransactionDef<typeof txData.data>, txData.data),
+      ({ estimateGas }) => estimateGas(transactionDef, transactionData),
     )
   }, [txData])
 

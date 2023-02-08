@@ -18,6 +18,7 @@ interface ContentCardStopLossCollateralRatioProps {
   stopLossLevel: BigNumber
   afterStopLossLevel: BigNumber
   ratioParamTranslationKey: string
+  stopLossLevelCardFootnoteKey: string
   modalDescription: string
   belowCurrentPositionRatio: string
 }
@@ -54,6 +55,7 @@ export function ContentCardStopLossLevel({
   stopLossLevel,
   afterStopLossLevel,
   ratioParamTranslationKey,
+  stopLossLevelCardFootnoteKey,
   modalDescription,
   belowCurrentPositionRatio,
 }: ContentCardStopLossCollateralRatioProps) {
@@ -77,14 +79,16 @@ export function ContentCardStopLossLevel({
 
   const contentCardSettings: ContentCardProps = {
     title: t('protection.stop-loss-something', { value: t(ratioParamTranslationKey) }),
-    footnote: t('system.cards.stop-loss-collateral-ratio.footnote', {
-      amount: belowCurrentPositionRatio,
-      value: t(ratioParamTranslationKey),
-    }),
     modal: <ContentCardStopLossCollateralRatioModal {...contentCardModalSettings} />,
   }
 
-  if (isStopLossEnabled) contentCardSettings.value = formatted.stopLossLevel
+  if (isStopLossEnabled) {
+    contentCardSettings.value = formatted.stopLossLevel
+    contentCardSettings.footnote = t(stopLossLevelCardFootnoteKey, {
+      amount: belowCurrentPositionRatio,
+      value: t(ratioParamTranslationKey),
+    })
+  }
 
   if (isEditing)
     contentCardSettings.change = {

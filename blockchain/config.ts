@@ -16,6 +16,7 @@ import * as ajnaPoolInfo from './abi/ajna-pool-info.json'
 import * as ajnaPool from './abi/ajna-pool.json'
 import * as ajnaProxyActions from './abi/ajna-proxy-actions.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
+import * as automationBotV2 from './abi/automation-bot-v2.json'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
 import * as chainLinkPriceOracle from './abi/chainlink-price-oracle.json'
@@ -200,6 +201,7 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
   automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
+  automationBotV2: contractDesc(automationBotV2, '0x8061c24823094E51e57A4a5cF8bEd3CCf09d316F'),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
     '0x5f1d184204775fBB351C4b2C61a2fD4aAbd3fB76',
@@ -345,6 +347,7 @@ const kovan: NetworkConfig = {
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  automationBotV2: contractDesc(automationBotV2, '0x0'),
   automationBotAggregator: contractDesc(automationBotAggregator, '0x'), //TODO address ŁW
   serviceRegistry: '0x', // TODO: add address
   guniResolver: '0x',
@@ -462,6 +465,7 @@ const goerli: NetworkConfig = {
   guniResolver: '0x',
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
+  automationBotV2: contractDesc(automationBotV2, '0x0'),
   automationBotAggregator: contractDesc(
     automationBotAggregator,
     '0xeb3c922A805FAEEac8f311E1AdF34fBC518099ab',

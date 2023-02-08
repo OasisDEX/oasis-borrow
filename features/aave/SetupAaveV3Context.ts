@@ -2,6 +2,7 @@ import { getAaveV3AssetsPrices } from 'blockchain/aave-v3'
 import { observe } from 'blockchain/calls/observe'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
+import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { LendingProtocol } from 'lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { memoize } from 'lodash'
@@ -38,6 +39,8 @@ export function setupAaveV3Context(appContext: AppContext) {
     proxyConsumed$,
     strategyConfig$,
     protocols,
+    connectedContext$,
+    commonTransactionServices,
   } = appContext
 
   const {
@@ -129,6 +132,12 @@ export function setupAaveV3Context(appContext: AppContext) {
     allowanceForAccount$,
   )
 
+  const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
   const aaveStateMachine = getOpenAaveStateMachine(
     openAaveStateMachineServices,
     openAaveParameters,
@@ -136,6 +145,7 @@ export function setupAaveV3Context(appContext: AppContext) {
     dpmAccountStateMachine,
     allowanceStateMachine,
     operationExecutorTransactionMachine,
+    stopLossTransactionStateMachine,
   )
 
   const aaveManageStateMachine = getManageAaveStateMachine(

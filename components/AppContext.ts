@@ -3,9 +3,11 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import {
   AutomationBotAddTriggerData,
-  AutomationBotRemoveTriggerData,
+  AutomationBotV2AddTriggerData,
+  AutomationBotV2RemoveTriggerData,
 } from 'blockchain/calls/automationBot'
 import {
   AutomationBotAddAggregatorTriggerData,
@@ -120,6 +122,11 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
+import {
+  createProxyConsumed$,
+  createReadPositionCreatedEvents$,
+  getLastCreatedPositionForProxy$,
+} from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
@@ -288,6 +295,9 @@ import {
   supportedMultiplyIlks,
 } from 'helpers/productCards'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+import { getAaveV2Services } from 'lendingProtocols/aave-v2'
+import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
@@ -302,15 +312,6 @@ import {
   switchMap,
 } from 'rxjs/operators'
 
-import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
-import {
-  createProxyConsumed$,
-  createReadPositionCreatedEvents$,
-  getLastCreatedPositionForProxy$,
-} from '../features/aave/services/readPositionCreatedEvents'
-import { LendingProtocol } from '../lendingProtocols'
-import { getAaveV2Services } from '../lendingProtocols/aave-v2'
-import { getAaveV3Services } from '../lendingProtocols/aave-v3'
 import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
@@ -326,14 +327,22 @@ export type TxData =
   | CloseVaultData
   | OpenGuniMultiplyData
   | AutomationBotAddTriggerData
-  | AutomationBotRemoveTriggerData
+  | AutomationBotV2AddTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
   | OperationExecutorTxMeta
   | CreateDPMAccount
+
+export type AutomationTxData =
+  | AutomationBotAddTriggerData
+  | AutomationBotV2AddTriggerData
+  | AutomationBotAddAggregatorTriggerData
+  | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -999,18 +1008,25 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
+  const automationTriggersData$ = memoize(
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
+  )
+
   const aavePositions$ = memoize(
     curry(createAavePosition$)(
       {
         dsProxy$: proxyAddress$,
         userDpmProxies$,
       },
+      {
+        tickerPrices$: tokenPriceUSD$,
+        context$,
+        automationTriggersData$,
+        readPositionCreatedEvents$,
+      },
       aaveV2.aaveProtocolData$,
       aaveV2.getAaveAssetsPrices$,
-      tokenPriceUSD$,
       aaveV2.wrappedGetAaveReserveData$,
-      context$,
-      readPositionCreatedEvents$,
       aaveV2.aaveAvailableLiquidityInUSDC$,
       strategyConfig$,
     ),
@@ -1178,10 +1194,6 @@ export function setupAppContext() {
   const productCardsWithBalance$ = createProductCardsWithBalance$(
     ilksWithBalance$,
     oraclePriceDataLean$,
-  )
-
-  const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, vault$),
   )
 
   const vaultsHistoryAndValue$ = memoize(

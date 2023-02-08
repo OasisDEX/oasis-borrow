@@ -5,21 +5,19 @@ import {
   trackingEvents,
 } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
-import {
-  AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import {
   addAutomationTrigger,
   removeAutomationTrigger,
 } from 'features/automation/api/automationTxHandlers'
+import {
+  AutomationAddTriggerData,
+  AutomationRemoveTriggerData,
+} from 'features/automation/common/txDefinitions'
 import { AutomationPublishType, SidebarAutomationStages } from 'features/automation/common/types'
+import { AutomationContracts } from 'features/automation/metadata/types'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-import { useMemo } from 'react'
 
 export interface AutomationTxHandlerAnalytics {
   id: { add: AutomationEventIds; edit: AutomationEventIds; remove: AutomationEventIds }
@@ -41,7 +39,8 @@ interface TxHandlerParams {
 }
 
 interface GetAutomationFeatureTxHandlersParams {
-  addTxData: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
+  addTxData: AutomationAddTriggerData
+  removeTxData: AutomationRemoveTriggerData
   ethMarketPrice: BigNumber
   isAddForm: boolean
   isRemoveForm: boolean
@@ -57,23 +56,22 @@ interface GetAutomationFeatureTxHandlersParams {
   ilk: string
   analytics: AutomationTxHandlerAnalytics
   txHelpers?: TxHelpers
+  contracts?: AutomationContracts
 }
 
 interface AutomationFeatureTxHandlers {
   textButtonHandler: () => void
   txHandler: () => void
-  removeTxData: AutomationBotRemoveTriggersData
 }
 
 export function getAutomationFeatureTxHandlers({
   addTxData,
+  removeTxData,
   ethMarketPrice,
   isAddForm,
   isRemoveForm,
-  proxyAddress,
   publishType,
   resetData,
-  shouldRemoveAllowance,
   stage,
   textButtonHandlerExtension,
   triggersId,
@@ -82,6 +80,7 @@ export function getAutomationFeatureTxHandlers({
   ilk,
   positionRatio,
   analytics,
+  contracts,
 }: GetAutomationFeatureTxHandlersParams): AutomationFeatureTxHandlers {
   const { uiChanges } = useAppContext()
   const triggerEnabled = !!triggersId.filter((item) => item).length
@@ -91,16 +90,6 @@ export function getAutomationFeatureTxHandlers({
     ilk,
     collateralRatio: positionRatio.times(100).decimalPlaces(2, BigNumber.ROUND_DOWN).toString(),
   }
-
-  const removeTxData: AutomationBotRemoveTriggersData = useMemo(
-    () => ({
-      removeAllowance: shouldRemoveAllowance,
-      proxyAddress,
-      triggersId,
-      kind: TxMetaKind.removeTriggers,
-    }),
-    [shouldRemoveAllowance, proxyAddress, triggersId],
-  )
 
   function txHandler(options?: TxHandlerParams) {
     if (txHelpers) {
@@ -120,7 +109,14 @@ export function getAutomationFeatureTxHandlers({
         options?.callOnSuccess && options.callOnSuccess()
       } else {
         if (isAddForm) {
-          addAutomationTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, publishType)
+          addAutomationTrigger(
+            txHelpers,
+            addTxData,
+            uiChanges,
+            ethMarketPrice,
+            publishType,
+            contracts?.addTrigger,
+          )
 
           trackingEvents.automation.buttonClick(
             triggerEnabled ? analytics.id.edit : analytics.id.add,
@@ -130,7 +126,14 @@ export function getAutomationFeatureTxHandlers({
           )
         }
         if (isRemoveForm) {
-          removeAutomationTrigger(txHelpers, removeTxData, uiChanges, ethMarketPrice, publishType)
+          removeAutomationTrigger(
+            txHelpers,
+            removeTxData,
+            uiChanges,
+            ethMarketPrice,
+            publishType,
+            contracts?.removeTrigger,
+          )
 
           trackingEvents.automation.buttonClick(
             analytics.id.remove,
@@ -162,6 +165,5 @@ export function getAutomationFeatureTxHandlers({
   return {
     textButtonHandler,
     txHandler,
-    removeTxData,
   }
 }

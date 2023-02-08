@@ -8,6 +8,11 @@ import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId, positionIdIsAddress } from 'features/aave/types'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  extractStopLossData,
+  StopLossTriggerData,
+} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { formatAddress } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
@@ -96,6 +101,7 @@ export type AavePosition = Position & {
   isOwner: boolean
   type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
+  stopLossData?: StopLossTriggerData
   fakePositionCreatedEvtForDsProxyUsers?: boolean
 }
 
@@ -128,6 +134,7 @@ type BuildPositionArgs = {
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: { token: string }) => Observable<BigNumber>
+  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
 
 function buildPosition(
@@ -148,74 +155,80 @@ function buildPosition(
     observables.aaveAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
+    positionIdIsAddress(positionId)
+      ? of(undefined)
+      : observables.automationTriggersData$(new BigNumber(positionId)),
   ).pipe(
-    map(([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity]) => {
-      const {
-        position: {
-          riskRatio: { multiple },
-          debt,
-          collateral,
-          category: { liquidationThreshold },
-        },
-      } = protocolData
+    map(
+      ([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity, triggersData]) => {
+        const {
+          position: {
+            riskRatio: { multiple },
+            debt,
+            collateral,
+            category: { liquidationThreshold },
+          },
+        } = protocolData
 
-      const isDebtZero = debt.amount.isZero()
+        const isDebtZero = debt.amount.isZero()
 
-      const tickerCollateralTokenPriceInUsd = tickerPrices[collateral.symbol]
-      const tickerDebtTokenPriceInUsd = tickerPrices[debt.symbol]
+        const tickerCollateralTokenPriceInUsd = tickerPrices[collateral.symbol]
+        const tickerDebtTokenPriceInUsd = tickerPrices[debt.symbol]
 
-      const oracleCollateralTokenPriceInEth = assetPrices[0]
-      const oracleDebtTokenPriceInEth = assetPrices[1]
+        const oracleCollateralTokenPriceInEth = assetPrices[0]
+        const oracleDebtTokenPriceInEth = assetPrices[1]
 
-      const collateralToken = positionCreatedEvent.collateralTokenSymbol
-      const debtToken = positionCreatedEvent.debtTokenSymbol
+        const collateralToken = positionCreatedEvent.collateralTokenSymbol
+        const debtToken = positionCreatedEvent.debtTokenSymbol
 
-      const collateralNotWei = amountFromPrecision(
-        collateral.amount,
-        new BigNumber(collateral.precision),
-      )
-      const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
+        const collateralNotWei = amountFromPrecision(
+          collateral.amount,
+          new BigNumber(collateral.precision),
+        )
+        const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
 
-      const netValueInEthAccordingToOracle = collateralNotWei
-        .times(oracleCollateralTokenPriceInEth)
-        .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
+        const netValueInEthAccordingToOracle = collateralNotWei
+          .times(oracleCollateralTokenPriceInEth)
+          .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
 
-      const liquidationPrice = !isDebtZero
-        ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
-        : zero
+        const liquidationPrice = !isDebtZero
+          ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
+          : zero
 
-      const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
 
-      const fundingCost = !isDebtZero
-        ? debtNotWei
-            .times(oracleDebtTokenPriceInEth)
-            .div(netValueInEthAccordingToOracle)
-            .multipliedBy(variableBorrowRate)
-            .times(100)
-        : zero
+        const fundingCost = !isDebtZero
+          ? debtNotWei
+              .times(oracleDebtTokenPriceInEth)
+              .div(netValueInEthAccordingToOracle)
+              .multipliedBy(variableBorrowRate)
+              .times(100)
+          : zero
 
-      const netValueUsd = collateralNotWei
-        .times(tickerCollateralTokenPriceInUsd)
-        .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
+        const netValueUsd = collateralNotWei
+          .times(tickerCollateralTokenPriceInUsd)
+          .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
 
-      const isOwner = context.status === 'connected' && context.account === walletAddress
+        const isOwner = context.status === 'connected' && context.account === walletAddress
 
-      return {
-        token: collateralToken,
-        title: `${collateralToken}/${debtToken} AAVE`,
-        url: `/aave/${positionId}`,
-        id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
-        netValue: netValueUsd,
-        multiple,
-        liquidationPrice,
-        fundingCost,
-        contentsUsd: netValueUsd,
-        isOwner,
-        lockedCollateral: collateralNotWei,
-        type: mappymap[positionCreatedEvent.positionType],
-        liquidity: liquidity,
-      }
-    }),
+        return {
+          token: collateralToken,
+          title: `${collateralToken}/${debtToken} AAVE`,
+          url: `/aave/${positionId}`,
+          id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
+          netValue: netValueUsd,
+          multiple,
+          liquidationPrice,
+          fundingCost,
+          contentsUsd: netValueUsd,
+          isOwner,
+          lockedCollateral: collateralNotWei,
+          type: mappymap[positionCreatedEvent.positionType],
+          liquidity: liquidity,
+          stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
+        }
+      },
+    ),
   )
 }
 
@@ -262,22 +275,31 @@ function hasStethEthAaveV2DsProxyEarnPosition$(
 
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
+  environment: {
+    tickerPrices$: (tokens: string[]) => Observable<Tickers>
+    context$: Observable<Context>
+    automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
+    readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>
+  },
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
   getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>,
-  tickerPrices$: (tokens: string[]) => Observable<Tickers>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
-  context$: Observable<Context>,
-  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: {
     token: string
   }) => Observable<BigNumber>,
   getStrategyConfig$: (positionId: PositionId) => Observable<IStrategyConfig>,
   walletAddress: string,
 ): Observable<AavePosition[]> {
+  const {
+    context$,
+    tickerPrices$,
+    readPositionCreatedEvents$,
+    automationTriggersData$,
+  } = environment
   return combineLatest(
     proxyAddressesProvider.userDpmProxies$(walletAddress),
     hasStethEthAaveV2DsProxyEarnPosition$(proxyAddressesProvider, aaveProtocolData$, walletAddress),
@@ -312,12 +334,14 @@ export function createAavePosition$(
                 if (!userProxy) {
                   throw new Error('nope')
                 }
+
                 return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
                   aaveProtocolData$,
                   getAaveAssetsPrices$,
                   tickerPrices$,
                   wrappedGetAaveReserveData$,
                   aaveAvailableLiquidityInUSDC$,
+                  automationTriggersData$,
                 })
               }),
             )

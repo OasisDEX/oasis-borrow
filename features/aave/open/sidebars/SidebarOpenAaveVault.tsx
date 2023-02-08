@@ -1,20 +1,24 @@
 import { useActor } from '@xstate/react'
+import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
+import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
+import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Image } from 'theme-ui'
+import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
-import { MessageCard } from '../../../../components/MessageCard'
-import { SidebarSectionFooterButtonSettings } from '../../../../components/sidebar/SidebarSectionFooter'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { zero } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AllowanceView } from '../../../stateMachines/allowance'
 import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from '../../../stateMachines/proxy'
@@ -33,6 +37,16 @@ export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
 }
 
+function CompleteBanner() {
+  return (
+    <Box>
+      <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+        <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
+      </Flex>
+    </Box>
+  )
+}
+
 interface OpenAaveStateProps {
   readonly state: StateFrom<OpenAaveStateMachine>
   readonly send: Sender<OpenAaveEvent>
@@ -41,11 +55,18 @@ interface OpenAaveStateProps {
 
 function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
   const { t } = useTranslation()
+  const { stopLossSkipped, stopLossLevel } = state.context
+
+  const withStopLoss = stopLossLevel && !stopLossSkipped
+  const resolvedTitle = !withStopLoss
+    ? t(state.context.strategyConfig.viewComponents.sidebarTitle)
+    : t('open-vault-two-tx-first-step-title', { type: t('position') })
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    title: resolvedTitle,
     content: (
       <Grid gap={3}>
+        {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
         <OpenVaultAnimation />
         <StrategyInformationContainer state={state} />
       </Grid>
@@ -61,9 +82,104 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
+function StopLossTxStateView({ state, send }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+  const { stopLossLevel, collateralActive } = state.context
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('open-vault-two-tx-second-step-title'),
+    content: (
+      <Grid gap={3}>
+        <StopLossTwoTxRequirement typeKey="position" />
+        <CompleteBanner />
+
+        <OpenAaveStopLossInformation
+          {...state.context}
+          stopLossLevel={stopLossLevel!}
+          collateralActive={!!collateralActive}
+        />
+      </Grid>
+    ),
+    primaryButton: {
+      isLoading: false,
+      disabled: false,
+      action: () => {
+        send('NEXT_STEP')
+      },
+      label: t('set-up-stop-loss-tx'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+function StopLossTxFailureStateView({ state, send }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+  const { stopLossLevel, collateralActive } = state.context
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('open-vault-two-tx-second-step-title'),
+    content: (
+      <Grid gap={3}>
+        <StopLossTwoTxRequirement typeKey="position" />
+        <OpenAaveStopLossInformation
+          {...state.context}
+          stopLossLevel={stopLossLevel!}
+          collateralActive={!!collateralActive}
+        />
+      </Grid>
+    ),
+    primaryButton: {
+      isLoading: false,
+      disabled: false,
+      action: () => {
+        send('RETRY')
+      },
+      label: t('open-earn.aave.vault-form.retry-btn'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t('open-vault-two-tx-second-step-title'),
+    content: (
+      <Grid gap={3}>
+        <StopLossTwoTxRequirement typeKey="position" />
+        <AddingStopLossAnimation />
+        <OpenAaveStopLossInformation
+          {...state.context}
+          stopLossLevel={state.context.stopLossLevel!}
+          collateralActive={!!state.context.collateralActive}
+        />
+      </Grid>
+    ),
+    primaryButton: {
+      isLoading: true,
+      disabled: true,
+      label: t('set-up-stop-loss-tx'),
+    },
+  }
+
+  return <SidebarSection {...sidebarSectionProps} />
+}
+
+export const MemoizedStopLossInProgressStateView = React.memo(StopLossInProgressStateView)
+
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { push } = useRedirect()
+
+  const { stopLossSkipped, stopLossLevel } = state.context
+
+  const withStopLoss = stopLossLevel && !stopLossSkipped
+  const resolvedTitle = !withStopLoss
+    ? t(state.context.strategyConfig.viewComponents.sidebarTitle)
+    : t('open-vault-two-tx-first-step-title', { type: t('position') })
 
   const primaryButton = !isUserWalletConnected(state.context)
     ? {
@@ -82,9 +198,10 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
       }
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    title: resolvedTitle,
     content: (
       <Grid gap={3}>
+        {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
         <StrategyInformationContainer state={state} />
       </Grid>
     ),
@@ -248,11 +365,7 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
     title: t('open-earn.aave.vault-form.success-title'),
     content: (
       <Grid gap={3}>
-        <Box>
-          <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
-          </Flex>
-        </Box>
+        <CompleteBanner />
         <StrategyInformationContainer state={state} />
       </Grid>
     ),
@@ -263,6 +376,41 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
   }
 
   return <SidebarSection {...sidebarSectionProps} />
+}
+
+export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveStateProps) {
+  const { t } = useTranslation()
+  const { stopLossSidebarProps } = getAaveStopLossData(state.context, send)
+
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
+    content: (
+      <Grid gap={3}>
+        <SidebarAdjustStopLossEditingStage {...stopLossSidebarProps} />
+      </Grid>
+    ),
+    primaryButton: {
+      steps: [state.context.currentStep, state.context.totalSteps],
+      isLoading: isLoading(),
+      disabled: !state.can('NEXT_STEP'),
+      label: t('open-earn.aave.vault-form.confirm-btn'),
+      action: () => send('NEXT_STEP'),
+    },
+    headerButton: {
+      label: t('protection.continue-without-stop-loss'),
+      action: () => send({ type: 'SET_STOP_LOSS_SKIPPED', stopLossSkipped: true }),
+    },
+  }
+
+  return (
+    <SidebarSection
+      {...sidebarSectionProps}
+      textButton={{
+        label: t('open-earn.aave.vault-form.back-to-editing'),
+        action: () => send('BACK_TO_EDITING'),
+      }}
+    />
+  )
 }
 
 export function SidebarOpenAaveVault() {
@@ -292,14 +440,22 @@ export function SidebarOpenAaveVault() {
           steps={[state.context.currentStep, state.context.totalSteps]}
         />
       )
+    case state.matches('frontend.optionalStopLoss'):
+      return <AaveOpenPositionStopLoss state={state} send={send} isLoading={loading} />
     case state.matches('frontend.reviewing'):
       return <OpenAaveReviewingStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txInProgress'):
       return (
         <OpenAaveTransactionInProgressStateView state={state} send={send} isLoading={loading} />
       )
+    case state.matches('frontend.txStopLoss'):
+      return <StopLossTxStateView state={state} send={send} isLoading={loading} />
+    case state.matches('frontend.txStopLossInProgress'):
+      return <StopLossInProgressStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txFailure'):
       return <OpenAaveFailureStateView state={state} send={send} isLoading={loading} />
+    case state.matches('frontend.stopLossTxFailure'):
+      return <StopLossTxFailureStateView state={state} send={send} isLoading={loading} />
     case state.matches('frontend.txSuccess'):
       return <OpenAaveSuccessStateView state={state} send={send} isLoading={loading} />
     default: {

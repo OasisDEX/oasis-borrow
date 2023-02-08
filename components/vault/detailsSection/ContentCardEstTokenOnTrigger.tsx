@@ -17,7 +17,6 @@ interface ContentCardEstTokenOnTriggerProps {
   token: string
   debtToken: string
   liquidationPenalty: BigNumber
-  afterStopLossLevel: BigNumber
   triggerMaxToken: BigNumber
   collateralDuringLiquidation: BigNumber
   afterMaxToken: BigNumber
@@ -53,7 +52,6 @@ export function ContentCardEstTokenOnTrigger({
   token,
   debtToken,
   liquidationPenalty,
-  afterStopLossLevel,
   triggerMaxToken,
   afterMaxToken,
   collateralDuringLiquidation,
@@ -96,12 +94,13 @@ export function ContentCardEstTokenOnTrigger({
     modal: <ContentCardEstTokenOnTriggerModal {...contentCardModalSettings} />,
   }
 
-  if (isStopLossEnabled && !triggerMaxToken.isZero())
-    contentCardSettings.value = formatted.maxTokenOrDebtToken
-  if (!afterStopLossLevel.isZero() && !triggerMaxToken.isZero())
+  if (isStopLossEnabled && !triggerMaxToken.isZero()) {
     contentCardSettings.footnote = `${formatted.savingTokenOrDebtToken} ${t(
       'manage-multiply-vault.card.saving-comp-to-liquidation',
     )}`
+    contentCardSettings.value = formatted.maxTokenOrDebtToken
+  }
+
   if (isEditing)
     contentCardSettings.change = {
       value: `${t('manage-multiply-vault.card.up-to')} ${formatted.afterMaxTokenOrDebtToken} ${t(

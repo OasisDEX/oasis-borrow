@@ -34,6 +34,7 @@ export interface StopLossDetailsLayoutProps {
   dynamicStopLossPrice: BigNumber
   afterDynamicStopLossPrice: BigNumber
   ratioParamTranslationKey: string
+  stopLossLevelCardFootnoteKey: string
   detailCards?: StopLossMetadataDetailCards
 }
 
@@ -57,6 +58,7 @@ export function StopLossDetailsLayout({
   collateralDuringLiquidation,
   triggerMaxToken,
   ratioParamTranslationKey,
+  stopLossLevelCardFootnoteKey,
   detailCards,
 }: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
@@ -78,6 +80,7 @@ export function StopLossDetailsLayout({
                   stopLossLevel={stopLossLevel}
                   afterStopLossLevel={afterStopLossLevel}
                   ratioParamTranslationKey={ratioParamTranslationKey}
+                  stopLossLevelCardFootnoteKey={stopLossLevelCardFootnoteKey}
                   modalDescription={cardsConfig?.stopLossLevelCard.modalDescription}
                   belowCurrentPositionRatio={
                     cardsConfig?.stopLossLevelCard.belowCurrentPositionRatio
@@ -111,7 +114,6 @@ export function StopLossDetailsLayout({
                 token={token}
                 debtToken={debtToken}
                 liquidationPenalty={liquidationPenalty}
-                afterStopLossLevel={afterStopLossLevel}
                 afterMaxToken={afterMaxToken}
                 triggerMaxToken={triggerMaxToken}
                 collateralDuringLiquidation={collateralDuringLiquidation}

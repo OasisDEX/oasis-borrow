@@ -1,4 +1,6 @@
-import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
+import { Result } from '@ethersproject/abi'
+import { TriggerType } from '@oasisdex/automation'
+import { decodeTriggerDataAsJson } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import {
   AutomationEventIds,
@@ -37,19 +39,37 @@ import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useDebouncedCallback } from 'helpers/useDebouncedCallback'
 import { one, zero } from 'helpers/zero'
 
-export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
+export interface TriggerDataType {
+  triggerId: number
+  result: Result
+  executionParams: string
+  commandAddress: string
+}
+
+export function getTriggersByType(
+  triggers: TriggerRecord[],
+  triggerTypes: TriggerType[],
+): TriggerDataType[] {
   const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
 
   try {
     const decodedTriggers = triggers.map((trigger) => {
+      const result = decodeTriggerDataAsJson(
+        trigger.commandAddress,
+        networkId,
+        trigger.executionParams,
+      )
+
       return {
         triggerId: trigger.triggerId,
-        result: decodeTriggerData(trigger.commandAddress, networkId, trigger.executionParams),
+        result,
+        executionParams: trigger.executionParams,
+        commandAddress: trigger.commandAddress,
       }
     })
 
     return decodedTriggers.filter((decodedTrigger) => {
-      const triggerType = decodedTrigger.result[1]
+      const triggerType = Number(decodedTrigger.result.triggerType)
       return triggerTypes.includes(triggerType)
     })
   } catch (e) {
@@ -486,8 +506,8 @@ export function openFlowInitialStopLossLevel({
   return stopLossSliderMin.plus(DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE).times(100)
 }
 
-export function isSupportedAutomationTokenPair(token: string, debtToken: string) {
-  const joined = [token, debtToken].sort().join('-')
+export function isSupportedAutomationTokenPair(collateralToken: string, debtToken: string) {
+  const joined = [collateralToken, debtToken].join('-')
 
-  return aaveTokenPairsAllowedAutomation.flatMap((pair) => pair.sort().join('-')).includes(joined)
+  return aaveTokenPairsAllowedAutomation.map((pair) => pair.join('-')).includes(joined)
 }
