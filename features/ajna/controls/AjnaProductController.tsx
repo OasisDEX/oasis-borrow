@@ -11,9 +11,10 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import { zero } from 'helpers/zero'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { EMPTY } from 'rxjs'
@@ -46,7 +47,8 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
-  const { balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
+  const { push } = useRouter()
+  const { ajnaPosition$, balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
   const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
@@ -54,15 +56,6 @@ export function AjnaProductController({
     collateralToken,
   )
   const [quoteTokenData, setQuoteTokenData] = useState<string | undefined>(quoteToken)
-
-  // TODO: this part should be replaced with observable that loads data from below when ID is available
-  useEffect(() => {
-    if (id) {
-      setProductData('borrow')
-      setCollateralTokenData('ETH')
-      setQuoteTokenData('DAI')
-    }
-  }, [id])
 
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
@@ -72,6 +65,9 @@ export function AjnaProductController({
           : EMPTY,
       [collateralTokenData, walletAddress],
     ),
+  )
+  const [ajnaPositionData] = useObservable(
+    useMemo(() => (id ? ajnaPosition$(getPositionIdentity(id)) : EMPTY), [id]),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
@@ -83,24 +79,18 @@ export function AjnaProductController({
     ),
   )
 
-  const dummyAjnaPosition = {
-    collateralAmount: zero,
-    debtAmount: zero,
-    riskRatio: { loanToValue: zero, colRatio: zero, multiple: zero },
-    liquidationPrice: zero,
-    pool: {
-      poolAddress: '0xcCbD19488f4e63319c2f11e156ccfA26Ce99c657',
-      quoteToken: '0x6Fb5ef893d44F4f88026430d82d4ef269543cB23',
-      collateralToken: '0x7ccF0411c7932B99FC3704d68575250F032e3bB7',
-      lup: zero,
-      rate: zero,
-    },
-    owner: '0x0',
-    deposit: () => dummyAjnaPosition,
-    withdraw: () => dummyAjnaPosition,
-    borrow: () => dummyAjnaPosition,
-    payback: () => dummyAjnaPosition,
-  }
+  useEffect(() => {
+    if (
+      ajnaPositionData === null ||
+      (ajnaPositionData && ajnaPositionData.meta.protocol !== 'Ajna')
+    )
+      void push('/404')
+    else if (ajnaPositionData) {
+      setProductData(ajnaPositionData.meta.product.toLowerCase() as AjnaProduct)
+      setCollateralTokenData(ajnaPositionData.meta.collateralToken)
+      setQuoteTokenData(ajnaPositionData.meta.quoteToken)
+    }
+  }, [ajnaPositionData])
 
   return (
     <WithConnection>
@@ -115,6 +105,7 @@ export function AjnaProductController({
                   quoteTokenData,
                   balancesInfoArrayData,
                   tokenPriceUSDData,
+                  ...(id ? [ajnaPositionData] : []),
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -140,7 +131,7 @@ export function AjnaProductController({
                     collateralToken={_collateralToken}
                     collateralPrice={_tokenPriceUSD[_collateralToken]}
                     flow={flow}
-                    currentPosition={dummyAjnaPosition}
+                    currentPosition={ajnaPositionData}
                     id={id}
                     product={_product}
                     quoteBalance={quoteBalance}
@@ -148,6 +139,7 @@ export function AjnaProductController({
                     quotePrice={_tokenPriceUSD[_quoteToken]}
                     ethPrice={_tokenPriceUSD.ETH}
                     steps={steps[_product][flow]}
+                    {...(ajnaPositionData && { owner: ajnaPositionData.meta.user })}
                   >
                     {_product === 'borrow' && <AjnaBorrowView />}
                   </AjnaBorrowContextProvider>
