@@ -260,10 +260,7 @@ export function SidebarAdjustStopLossEditingStage({
             </Text>
             <Text as="p" variant="paragraph3">
               {t('protection.guarantee-factors')}{' '}
-              <AppLink
-                href="https://kb.oasis.app/help/stop-loss-protection"
-                sx={{ fontWeight: 'body' }}
-              >
+              <AppLink href="https://kb.oasis.app/help/automation" sx={{ fontWeight: 'body' }}>
                 {t('protection.learn-more-about-automation')}
               </AppLink>
             </Text>
