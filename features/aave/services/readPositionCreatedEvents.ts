@@ -36,7 +36,7 @@ function getPositionCreatedEventForProxyAddress$(context: Context, proxyAddress:
         address: proxyAddress,
         topics: [utils.id('CreatePosition(address,string,string,address,address)')],
       },
-      16183119,
+      context.accountGuard.genesisBlock,
     ),
   )
 }
