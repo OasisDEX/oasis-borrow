@@ -10,6 +10,7 @@ import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormRe
 import { AjnaPoolPairs } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
+import { CancellationPromiseToken, makeCancellablePromise } from 'helpers/cancellablePromis'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
@@ -171,19 +172,26 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   } = useAjnaBorrowContext()
 
   const [txData, setTxData] = useState<TxData>()
+  const [promiseToken, setPromiseToken] = useState<CancellationPromiseToken>()
   const { dpmAddress } = state
 
   useDebouncedEffect(
     () => {
       if (txHelpers && context && dpmAddress) {
+        promiseToken?.cancel()
+        const token = new CancellationPromiseToken()
+        setPromiseToken(token)
         setIsLoadingSimulation(true)
-        void getTxDetails({
-          rpcProvider: context.rpcProvider,
-          formState: state,
-          collateralToken,
-          quoteToken,
-          context,
-        })
+        makeCancellablePromise(
+          getTxDetails({
+            rpcProvider: context.rpcProvider,
+            formState: state,
+            collateralToken,
+            quoteToken,
+            context,
+          }),
+          token,
+        )
           .then((data) => {
             setTxData(data?.tx)
             setSimulation(data?.simulation.targetPosition)
