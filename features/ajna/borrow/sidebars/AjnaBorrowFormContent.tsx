@@ -24,7 +24,7 @@ export function AjnaBorrowFormContent({
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, product, quoteToken },
+    environment: { collateralToken, isOwner, flow, product, quoteToken },
     form: {
       state: { dpmAddress },
     },
@@ -80,6 +80,7 @@ export function AjnaBorrowFormContent({
               } else setNextStep()
             },
           }),
+      ...(walletAddress && !isOwner && currentStep === editingStep && { hidden: true }),
     },
     // TODO: think of a smart way of managing if this button should be visible
     ...(currentStep === 'transaction' &&

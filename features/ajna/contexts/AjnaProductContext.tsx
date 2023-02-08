@@ -154,7 +154,7 @@ export function AjnaBorrowContextProvider({
   }
 
   const [context, setContext] = useState<AjnaBorrowContext>({
-    environment: { ...props, isOwner: props.owner === walletAddress },
+    environment: { ...props, isOwner: props.owner === walletAddress || props.flow === 'open' },
     form,
     position,
     steps: setupStepManager(),
@@ -166,7 +166,7 @@ export function AjnaBorrowContextProvider({
       ...prev,
       environment: {
         ...prev.environment,
-        isOwner: props.owner === walletAddress,
+        isOwner: props.owner === walletAddress || props.flow === 'open',
         collateralBalance: props.collateralBalance,
         quoteBalance: props.quoteBalance,
       },
