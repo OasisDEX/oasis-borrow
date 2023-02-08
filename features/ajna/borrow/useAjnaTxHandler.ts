@@ -208,7 +208,6 @@ export function useAjnaTxHandler(): AjnaTxHandler {
             })
           })
           .catch((error) => {
-            setIsLoadingSimulation(false)
             console.error(error)
           })
       }
