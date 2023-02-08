@@ -131,7 +131,7 @@ export function AjnaProductController({
                     collateralToken={_collateralToken}
                     collateralPrice={_tokenPriceUSD[_collateralToken]}
                     flow={flow}
-                    currentPosition={ajnaPositionData}
+                    currentPosition={ajnaPositionData?.position}
                     id={id}
                     product={_product}
                     quoteBalance={quoteBalance}

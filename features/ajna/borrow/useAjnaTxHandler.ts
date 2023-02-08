@@ -26,7 +26,7 @@ interface AjnaTxHandlerInput {
   collateralToken: string
   quoteToken: string
   context: Context
-  currentPosition: AjnaPosition
+  currentPosition?: AjnaPosition
 }
 
 interface TxData {
@@ -85,7 +85,6 @@ async function getTxDetails({
     dpmProxyAddress: dpmAddress,
     quoteTokenPrecision,
     collateralTokenPrecision,
-    position: currentPosition,
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
@@ -93,11 +92,10 @@ async function getTxDetails({
 
   switch (formState.action) {
     case 'open':
-    case 'deposit': {
       if (!depositAmount) {
         return defaultPromise
       }
-      return strategies.ajna[formState.action === 'open' ? 'open' : 'depositBorrow'](
+      return strategies.ajna.open(
         {
           ...commonPayload,
           quoteAmount: generateAmount || zero,
@@ -106,9 +104,23 @@ async function getTxDetails({
         },
         dependencies,
       )
+    case 'deposit': {
+      if (!depositAmount || !currentPosition) {
+        return defaultPromise
+      }
+      return strategies.ajna.depositBorrow(
+        {
+          ...commonPayload,
+          quoteAmount: generateAmount || zero,
+          collateralAmount: depositAmount,
+          price,
+          position: currentPosition,
+        },
+        dependencies,
+      )
     }
     case 'withdraw': {
-      if (!withdrawAmount) {
+      if (!withdrawAmount || !currentPosition) {
         return defaultPromise
       }
       return strategies.ajna.paybackWithdraw(
@@ -116,12 +128,13 @@ async function getTxDetails({
           ...commonPayload,
           quoteAmount: paybackAmount || zero,
           collateralAmount: withdrawAmount,
+          position: currentPosition,
         },
         dependencies,
       )
     }
     case 'generate': {
-      if (!generateAmount) {
+      if (!generateAmount || !currentPosition) {
         return defaultPromise
       }
       return strategies.ajna.depositBorrow(
@@ -130,12 +143,13 @@ async function getTxDetails({
           quoteAmount: generateAmount,
           collateralAmount: depositAmount || zero,
           price,
+          position: currentPosition,
         },
         dependencies,
       )
     }
     case 'payback': {
-      if (!paybackAmount) {
+      if (!paybackAmount || !currentPosition) {
         return defaultPromise
       }
       return strategies.ajna.paybackWithdraw(
@@ -143,6 +157,7 @@ async function getTxDetails({
           ...commonPayload,
           quoteAmount: paybackAmount,
           collateralAmount: withdrawAmount || zero,
+          position: currentPosition,
         },
         dependencies,
       )
