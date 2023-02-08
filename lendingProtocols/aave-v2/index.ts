@@ -1,11 +1,9 @@
+import { getOnChainPosition } from 'actions/aave/oasisActionsLibWrapper'
 import BigNumber from 'bignumber.js'
-import { memoize } from 'lodash'
-import { from, Observable } from 'rxjs'
-import { shareReplay, switchMap } from 'rxjs/operators'
-
 import {
   createAaveV2OracleAssetPriceData$,
   createConvertToAaveV2OracleAssetPrice$,
+  getAaveV2AssetsPrices,
   getAaveV2PositionLiquidation$,
   getAaveV2ReserveConfigurationData,
   getAaveV2ReserveData,
@@ -13,12 +11,14 @@ import {
   getAaveV2UserAccountData,
   getAaveV2UserConfiguration,
   getAaveV2UserReserveData,
-} from '../../blockchain/aave'
-import { getAaveV2AssetsPrices } from '../../blockchain/aave'
-import { observe } from '../../blockchain/calls/observe'
-import { Context } from '../../blockchain/network'
-import { getOnChainPosition } from '../../features/aave/oasisActionsLibWrapper'
-import { LendingProtocol } from '../LendingProtocol'
+} from 'blockchain/aave'
+import { observe } from 'blockchain/calls/observe'
+import { Context } from 'blockchain/network'
+import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
+import { memoize } from 'lodash'
+import { from, Observable } from 'rxjs'
+import { shareReplay, switchMap } from 'rxjs/operators'
+
 import {
   createAaveV2PrepareReserveData$,
   getAaveProtocolData$,
@@ -68,7 +68,15 @@ export function getAaveV2Services({ context$, refresh$, once$ }: AaveV2ServicesD
     (collateralToken: string, debtToken: string, proxyAddress: string) => {
       return context$.pipe(
         switchMap((context) => {
-          return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
+          return from(
+            getOnChainPosition({
+              context,
+              proxyAddress,
+              collateralToken,
+              debtToken,
+              protocol: LendingProtocol.AaveV2,
+            }),
+          )
         }),
         shareReplay(1),
       )

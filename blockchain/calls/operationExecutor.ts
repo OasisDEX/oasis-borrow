@@ -5,11 +5,11 @@ import * as dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
+import { amountToWei } from 'blockchain/utils'
+import { zero } from 'helpers/zero'
 import { DsProxy, OperationExecutor } from 'types/ethers-contracts'
+import { AccountImplementation } from 'types/ethers-contracts'
 
-import { zero } from '../../helpers/zero'
-import { AccountImplementation } from '../../types/ethers-contracts/AccountImplementation'
-import { amountToWei } from '../utils'
 import { TxMetaKind } from './txMeta'
 
 export interface OperationExecutorTxMeta extends TxMeta {

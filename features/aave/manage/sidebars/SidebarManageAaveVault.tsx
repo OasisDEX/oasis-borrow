@@ -597,7 +597,8 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.transition?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.transition?.transaction.operationName ===
+        OPERATION_NAMES.aave.v2.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />

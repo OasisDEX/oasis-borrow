@@ -2,11 +2,19 @@ import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
+import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
+import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
+import { AllowanceView } from 'features/stateMachines/allowance'
+import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
+import { ProxyView } from 'features/stateMachines/proxy'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -19,14 +27,6 @@ import { Box, Flex, Grid, Image } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
-import { AllowanceView } from '../../../stateMachines/allowance'
-import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
-import { ProxyView } from '../../../stateMachines/proxy'
-import { isAllowanceNeeded } from '../../common/BaseAaveContext'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { ProxyType } from '../../common/StrategyConfigTypes'
-import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { OpenAaveEvent, OpenAaveStateMachine } from '../state'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
 function isLoading(state: StateFrom<OpenAaveStateMachine>) {
@@ -167,8 +167,6 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
 
   return <SidebarSection {...sidebarSectionProps} />
 }
-
-export const MemoizedStopLossInProgressStateView = React.memo(StopLossInProgressStateView)
 
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
