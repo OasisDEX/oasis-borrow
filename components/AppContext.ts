@@ -131,6 +131,8 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
+import { getAjnaPosition$ } from 'features/ajna/common/observables/getAjnaPosition'
+import { getDpmPositionData$ } from 'features/ajna/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -1389,6 +1391,16 @@ export function setupAppContext() {
     (token, spender) => `${token}-${spender}`,
   )
 
+  const dpmPositionData$ = memoize(
+    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+  )
+
+  const ajnaPosition$ = memoize(
+    curry(getAjnaPosition$)(context$, dpmPositionData$),
+    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1471,6 +1483,8 @@ export function setupAppContext() {
     allowanceStateMachine,
     allowanceForAccount$,
     contextForAddress$,
+    dpmPositionData$,
+    ajnaPosition$,
   }
 }
 
