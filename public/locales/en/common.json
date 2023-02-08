@@ -665,9 +665,10 @@
       "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
       "current-stop-loss-coll-ratio": "The current Stop-Loss Collateral Ratio is:",
       "stop-loss-coll-ratio-desc": "The Stop-Loss Collateral Ratio is the trigger point for executing the Stop-Loss on this Vault based on the Collateral Ratio at the next OSM price. Should the next OSM price take the current Vault Collateralisation Ratio below the Stop-Loss Collateral Ratio, then the Vault will be automatically closed.",
+      "stop-loss-ltv-desc": "The Stop-Loss Loan to Value (LTV) is the trigger point for executing the Stop-Loss for this vault based on it's LTV. If the Vault's LTV is equal to or higher than the Trigger LTV, then the stop-loss protection will execute and the vault will be automatically closed.",
       "dynamic-stop-price": "Dynamic Stop price",
       "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
-      "dynamic-stop-loss-price-desc": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss Collateralisation Ratio. The reason this price is dynamic is that the Stop-Loss trigger is based on a collateralisation ratio, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
+      "dynamic-stop-loss-price-desc": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss {{ratioParam}}. The reason this price is dynamic is that the Stop-Loss trigger is based on a {{ratioParam}}, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
       "current-dynamic-stop-loss-price": "The current Dynamic Stop-Loss Price is:",
       "max-token-on-stop-loss-trigger": "Est. {{token}} on Stop-Loss trigger",
       "max-token-on-stop-loss-trigger-desc": "The estimated {{token}} on Stop-Loss trigger is the approximate amount of {{token}} you can expect to get returned to the wallet when the Vault has been closed because of Stop-Loss. It is very difficult to give a perfect amount as it depends on several factors at the time of the Stop-Loss trigger, such as market price, available liquidity and gas costs. This calculation assumes a 2% difference from Trigger Price to Market Price. The amount saved compared to liquidation is based on the assumption of not paying a Liquidation Penalty, currently set to {{liquidationPenalty}}.",
@@ -707,7 +708,8 @@
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
-    "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH."
+    "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH.",
+    "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it below your Stop-Loss Loan to Value"
   },
   "aave-position-modal": {
     "liquidation-price": {
@@ -939,6 +941,7 @@
   "start-saving": "Start Saving",
   "system": {
     "asset": "Asset",
+    "vault": "Vault",
     "available-to-withdraw": "Available to Withdraw",
     "total-exposure": "Total {{token}} exposure",
     "exposure": "exposure",
@@ -1047,7 +1050,8 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} below {{value}}"
+        "footnote-below": "{{amount}} below {{value}}",
+        "footnote-above": "{{amount}} above {{value}}"
       },
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"
@@ -1324,8 +1328,8 @@
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
   "open-vault-deployment-confirming": "Vault created. Waiting for confirmations {{openVaultConfirmations}}/{{safeConfirmations}}",
   "set-up-stop-loss-tx": "Set up Stop-Loss transaction",
-  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the Vault and another to set up the Stop-Loss.",
-  "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
+  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the {{type}} and another to set up the Stop-Loss.",
+  "open-vault-two-tx-first-step-title": "Step 1/2: {{type}} being created",
   "open-vault-two-tx-second-step-title": "Step 2/2: Stop-Loss setup transaction",
   "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
   "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is completed",
@@ -1452,11 +1456,12 @@
     "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
     "dynamic-stop-loss": "Dynamic Stop-Loss",
     "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
+    "stop-loss-ltv": "Stop-Loss Loan to Value",
     "total-cost": "Total transaction cost",
     "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on Stop-Loss trigger",
-    "zero-debt-heading": "You need to Generate DAI before you can set up Automated Protection",
-    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic Stop-Loss or Auto-Sell Strategy on your vault based on the collateralization ratio. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
+    "zero-debt-heading": "You need to Generate {{debtToken}} before you can set up Automated Protection",
+    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic {{bannerStrategiesKey}} Strategy on your vault based on the {{ratioParamTranslationKey}}. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
     "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop-Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
@@ -1478,10 +1483,10 @@
     "stop-loss-triggered": "Stop-Loss triggered",
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
     "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop Loss event on the right.",
-    "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
+    "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your {{ratioParam}}.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
-    "sl-triggered-gas-estimation": "This fee represents the expected Gas Cost based on the current price of ETH and an assumed Gas Price of 200 GWEI.",
+    "sl-triggered-gas-estimation": "This fee represents the expected Gas Cost based on the current price of ETH and an assumed Gas Price of 50 GWEI.",
     "stop-loss-on": "Stop-Loss On",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
     "closed-vault-existing-sl-header": "Your vault is closed but stop-loss is still active",
@@ -1498,7 +1503,8 @@
     "unable-to-access-protection": "Unable to access Protection",
     "adding-new-triggers-disabled-description": "Due to extreme adversarial market conditions we have currently disabled setting up NEW Stop-Loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
     "stop-loss-something": "Stop-Loss {{value}}",
-    "current-stop-loss-something": "The current Stop-Loss {{value}} is:"
+    "current-stop-loss-something": "The current Stop-Loss {{value}} is:",
+    "stop-loss-or-auto-sell": "Stop-Loss or Auto-Sell"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1943,8 +1949,8 @@
     "confirmation-text": "Confirm your {{feature}} setup",
     "closed-vault-existing-trigger-header": "Your vault is closed but {{feature}} is still active",
     "closed-vault-existing-trigger-description": "You can cancel your existing {{feature}} here or deposit into your vault in overview tab",
-    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up {{feature}}",
-    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate Dai in overview tab",
+    "closed-vault-not-existing-trigger-header": "You need to generate {{debtToken}} before you can set up {{feature}}",
+    "closed-vault-not-existing-trigger-description": "To enable {{feature}} you need to generate {{debtToken}} in overview tab",
     "validation": {
       "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
       "has-more-debt-than-max-for-stop-loss": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20M DAI",

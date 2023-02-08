@@ -1,6 +1,7 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { formatAmount } from 'helpers/formatters/format'
 
 /**
  * Utility to calculate the total deposit or withdrawel amounts
@@ -88,4 +89,8 @@ export function calculateTotalGasFeeInEth(historyEvents: VaultHistoryEvent[]) {
 
 export function calculateCurrentPnLInUSD(pnl: BigNumber, netValueUSD: BigNumber) {
   return pnl.times(netValueUSD).dividedBy(pnl.plus(1))
+}
+
+export function formatOazoFee(oazoFee: BigNumber): string {
+  return `${formatAmount(oazoFee, 'USD')} DAI`
 }

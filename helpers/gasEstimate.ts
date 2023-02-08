@@ -1,49 +1,33 @@
-import {
-  addAutomationBotTrigger,
-  AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
-import {
-  addAutomationBotAggregatorTrigger,
-  AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { addAutomationBotAggregatorTrigger } from 'blockchain/calls/automationBotAggregator'
 import {
   AUTO_BUY_FORM_CHANGE,
   AUTO_SELL_FORM_CHANGE,
 } from 'features/automation/common/state/autoBSFormChange'
+import {
+  AutomationAddTriggerData,
+  AutomationAddTriggerTxDef,
+  AutomationRemoveTriggerData,
+  AutomationRemoveTriggerTxDef,
+} from 'features/automation/common/txDefinitions'
 import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
 import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
 export const TX_DATA_CHANGE = 'TX_DATA_CHANGE'
 
-interface AutoAddTriggerChange {
-  data: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
-  transaction:
-    | TransactionDef<AutomationBotAddTriggerData>
-    | TransactionDef<AutomationBotAddAggregatorTriggerData>
-}
-
-interface AutoRemoveTriggerChange {
-  data: AutomationBotRemoveTriggersData
-  transaction: TransactionDef<AutomationBotRemoveTriggersData>
-}
-
-export type TxPayloadChange = AutoAddTriggerChange | AutoRemoveTriggerChange | undefined
+export type TxPayloadChange =
+  | {
+      data: AutomationAddTriggerData | AutomationRemoveTriggerData
+      transaction: AutomationAddTriggerTxDef | AutomationRemoveTriggerTxDef
+    }
+  | undefined
 
 export type TxPayloadChangeAction =
   | {
-      type: 'add-trigger'
-      transaction:
-        | TransactionDef<AutomationBotAddTriggerData>
-        | TransactionDef<AutomationBotAddAggregatorTriggerData>
-      data: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
-    }
-  | {
-      type: 'remove-triggers'
-      transaction: TransactionDef<AutomationBotRemoveTriggersData>
-      data: AutomationBotRemoveTriggersData
+      type: 'tx-data'
+      transaction: AutomationAddTriggerTxDef | AutomationRemoveTriggerTxDef
+      data: AutomationAddTriggerData | AutomationRemoveTriggerData
     }
   | { type: 'reset' }
 
@@ -52,9 +36,7 @@ export function gasEstimationReducer(
   action: TxPayloadChangeAction,
 ): TxPayloadChange {
   switch (action.type) {
-    case 'add-trigger':
-      return { data: action.data, transaction: action.transaction }
-    case 'remove-triggers':
+    case 'tx-data':
       return { data: action.data, transaction: action.transaction }
     case 'reset':
       return undefined

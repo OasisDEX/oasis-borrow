@@ -31,7 +31,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
       stopLossMetadata: {
         detailCards,
         methods: { getMaxToken, getExecutionPrice },
-        translations: { ratioParamTranslationKey },
+        translations: { ratioParamTranslationKey, stopLossLevelCardFootnoteKey },
         values: {
           collateralDuringLiquidation,
           initialSlRatioWhenTriggerDoesntExist,
@@ -92,6 +92,7 @@ export function StopLossDetailsControl({ isStopLossActive }: StopLossDetailsCont
           })}
           positionRatio={positionRatio}
           ratioParamTranslationKey={ratioParamTranslationKey}
+          stopLossLevelCardFootnoteKey={stopLossLevelCardFootnoteKey}
           detailCards={detailCards}
           dynamicStopLossPrice={dynamicStopLossPrice}
           afterDynamicStopLossPrice={afterDynamicStopLossPrice}

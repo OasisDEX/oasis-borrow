@@ -6,7 +6,8 @@ import { BigNumber } from 'bignumber.js'
 import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import {
   AutomationBotAddTriggerData,
-  AutomationBotRemoveTriggerData,
+  AutomationBotV2AddTriggerData,
+  AutomationBotV2RemoveTriggerData,
 } from 'blockchain/calls/automationBot'
 import {
   AutomationBotAddAggregatorTriggerData,
@@ -327,15 +328,23 @@ export type TxData =
   | CloseVaultData
   | OpenGuniMultiplyData
   | AutomationBotAddTriggerData
-  | AutomationBotRemoveTriggerData
+  | AutomationBotV2AddTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
   | OperationExecutorTxMeta
   | CreateDPMAccount
   | OasisActionsTxData
+
+export type AutomationTxData =
+  | AutomationBotAddTriggerData
+  | AutomationBotV2AddTriggerData
+  | AutomationBotAddAggregatorTriggerData
+  | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -1001,18 +1010,25 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
+  const automationTriggersData$ = memoize(
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
+  )
+
   const aavePositions$ = memoize(
     curry(createAavePosition$)(
       {
         dsProxy$: proxyAddress$,
         userDpmProxies$,
       },
+      {
+        tickerPrices$: tokenPriceUSD$,
+        context$,
+        automationTriggersData$,
+        readPositionCreatedEvents$,
+      },
       aaveV2.aaveProtocolData$,
       aaveV2.getAaveAssetsPrices$,
-      tokenPriceUSD$,
       aaveV2.wrappedGetAaveReserveData$,
-      context$,
-      readPositionCreatedEvents$,
       aaveV2.aaveAvailableLiquidityInUSDC$,
       strategyConfig$,
     ),
@@ -1180,10 +1196,6 @@ export function setupAppContext() {
   const productCardsWithBalance$ = createProductCardsWithBalance$(
     ilksWithBalance$,
     oraclePriceDataLean$,
-  )
-
-  const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, vault$),
   )
 
   const vaultsHistoryAndValue$ = memoize(
