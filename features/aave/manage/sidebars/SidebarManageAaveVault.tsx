@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
 import { ActionPills } from 'components/ActionPills'
+import { MessageCard } from 'components/MessageCard'
 import { useAutomationContext } from 'components/AutomationContextProvider'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -13,6 +14,14 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import {
+  ManageAaveContext,
+  ManageAaveEvent,
+  ManageAaveStateMachineState,
+} from 'features/aave/manage/state'
+import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import {
   ManageAaveContext,
@@ -32,14 +41,6 @@ import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 import { Sender } from 'xstate'
-
-export interface ManageAaveAutomation {
-  stopLoss: {
-    isStopLossEnabled?: boolean
-    stopLossLevel?: BigNumber
-    stopLossError?: boolean
-  }
-}
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
@@ -124,10 +125,10 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
 }
 
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
+  if (context.currentPosition === undefined) {
+    return zero
+  }
   if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-    if (context.currentPosition === undefined) {
-      return zero
-    }
     const position = context.currentPosition
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
@@ -136,9 +137,10 @@ function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
       .times(position.category.maxLoanToValue)
       .minus(debt.times(context.debtPrice || zero))
   }
+
   const currentDebt = amountFromWei(
-    context.currentPosition?.debt.amount || zero,
-    context.currentPosition?.debt.symbol || '',
+    context.currentPosition.debtToPaybackAll,
+    context.currentPosition?.debt.symbol,
   )
 
   const currentBalance = context.balance?.debt?.balance || zero
