@@ -1,4 +1,4 @@
-import { views } from '@oasisdex/oasis-actions'
+
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
@@ -19,8 +19,6 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { EMPTY } from 'rxjs'
-
-import { AjnaPosition } from '@oasisdex/oasis-actions/lib/src/helpers/ajna'
 
 interface AjnaProductControllerOpenFlow {
   collateralToken: string
@@ -51,17 +49,15 @@ export function AjnaProductController({
   quoteToken,
 }: AjnaProductControllerProps) {
   const { push } = useRouter()
-  const { balancesInfoArray$, context$, dpmPositionData$, tokenPriceUSD$ } = useAppContext()
+  const { ajnaPosition$, balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
-  const [positionData, setPositionData] = useState<AjnaPosition>()
   const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
   const [collateralTokenData, setCollateralTokenData] = useState<string | undefined>(
     collateralToken,
   )
   const [quoteTokenData, setQuoteTokenData] = useState<string | undefined>(quoteToken)
 
-  const [context] = useObservable(context$)
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>
@@ -71,8 +67,8 @@ export function AjnaProductController({
       [collateralTokenData, walletAddress],
     ),
   )
-  const [dpmPositionData] = useObservable(
-    useMemo(() => (id ? dpmPositionData$(getPositionIdentity(id)) : EMPTY), [id]),
+  const [ajnaPositionData] = useObservable(
+    useMemo(() => (id ? ajnaPosition$(getPositionIdentity(id)) : EMPTY), [id]),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
@@ -85,32 +81,17 @@ export function AjnaProductController({
   )
 
   useEffect(() => {
-    if (dpmPositionData === null || (dpmPositionData && dpmPositionData.protocol !== 'Ajna'))
+    if (
+      ajnaPositionData === null ||
+      (ajnaPositionData && ajnaPositionData.meta.protocol !== 'Ajna')
+    )
       void push('/404')
-    else if (context && dpmPositionData) {
-      setProductData(dpmPositionData.product.toLowerCase() as AjnaProduct)
-      setCollateralTokenData(dpmPositionData.collateralToken)
-      setQuoteTokenData(dpmPositionData.quoteToken)
-
-      void views.ajna
-        .getPosition(
-          {
-            proxyAddress: dpmPositionData.proxy,
-            poolAddress:
-              context.ajnaPoolPairs[
-                `${dpmPositionData.collateralToken}-${dpmPositionData.quoteToken}` as keyof typeof context.ajnaPoolPairs
-              ].address,
-          },
-          {
-            poolInfoAddress: context.ajnaPoolInfo.address,
-            provider: context.rpcProvider,
-          },
-        )
-        .then((position) => {
-          setPositionData(position)
-        })
+    else if (ajnaPositionData) {
+      setProductData(ajnaPositionData.meta.product.toLowerCase() as AjnaProduct)
+      setCollateralTokenData(ajnaPositionData.meta.collateralToken)
+      setQuoteTokenData(ajnaPositionData.meta.quoteToken)
     }
-  }, [dpmPositionData])
+  }, [ajnaPositionData])
 
   return (
     <WithConnection>
@@ -125,7 +106,7 @@ export function AjnaProductController({
                   quoteTokenData,
                   balancesInfoArrayData,
                   tokenPriceUSDData,
-                  ...(id ? [positionData] : []),
+                  ...(id ? [ajnaPositionData] : []),
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -158,7 +139,7 @@ export function AjnaProductController({
                     quotePrice={_tokenPriceUSD[_quoteToken]}
                     ethPrice={_tokenPriceUSD.ETH}
                     steps={steps[_product][flow]}
-                    {...(dpmPositionData && { owner: dpmPositionData.user })}
+                    {...(ajnaPositionData && { owner: ajnaPositionData.meta.user })}
                   >
                     {_product === 'borrow' && <AjnaBorrowView />}
                   </AjnaBorrowContextProvider>

@@ -6,14 +6,14 @@ import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
-interface DpmPositionData extends UserDpmAccount {
+export interface DpmPositionData extends UserDpmAccount {
   collateralToken: string
   product: string
   protocol: string
   quoteToken: string
 }
 
-export function getDpmPositionData(
+export function getDpmPositionData$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated>,
   positionId: PositionId,
