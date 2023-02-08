@@ -10,7 +10,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 const { withSentryConfig } = require('@sentry/nextjs')
 const { publicRuntimeConfig } = require('./runtime.config.js')
@@ -23,15 +22,7 @@ const conf = withBundleAnalyzer(
   withPWA(
     withMDX({
       basePath,
-      typescript: {
-        // !! WARN !!
-        // Dangerously allow production builds to successfully complete even if
-        // your project has type errors.
-        // We do ythis for now to allow for staging deployments during the
-        // active development phase and are planning to remove this later
-        // !! WARN !!
-        ignoreBuildErrors: isProduction,
-      },
+      typescript: {},
       productionBrowserSourceMaps: true,
       cssModules: true,
       pageExtensions: ['mdx', 'tsx'],
