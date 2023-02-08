@@ -3,7 +3,7 @@ import { cacheObject } from 'helpers/api/cacheObject'
 import { tokenTickers } from 'helpers/api/tokenTickers'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-const getTicker = cacheObject(tokenTickers, 2 * 600)
+const getTicker = cacheObject(tokenTickers, 2 * 60)
 
 async function tokensPricesHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
