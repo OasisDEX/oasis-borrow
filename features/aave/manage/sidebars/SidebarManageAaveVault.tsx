@@ -197,7 +197,6 @@ function GetReviewingSidebarProps({
               items={[collateral, debt].map((token) => ({
                 id: token,
                 label: t('close-to', { token }),
-                disabled: token === collateral, // only close to debt is available ATM
                 action: () => curry(updateClosingAction)(token),
               }))}
             />
