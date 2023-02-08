@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
-import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
+import { isBorrowStepValid } from 'features/ajna/borrow/contexts/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import {
@@ -11,6 +11,7 @@ import {
 } from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
 import { TxDetails } from 'helpers/handleTransaction'
+import { useAccount } from 'helpers/useAccount'
 import React, {
   Dispatch,
   PropsWithChildren,
@@ -24,12 +25,13 @@ interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
   collateralPrice: BigNumber
   collateralToken: string
+  ethPrice: BigNumber
   flow: AjnaFlow
   product: AjnaProduct
   quoteBalance: BigNumber
   quotePrice: BigNumber
   quoteToken: string
-  ethPrice: BigNumber
+  owner?: string
   position: AjnaBorrowPosition
   steps: AjnaStatusStep[]
 }
@@ -45,8 +47,8 @@ interface AjnaBorrowSteps {
   currentStep: AjnaStatusStep
   editingStep: Extract<AjnaStatusStep, 'setup' | 'manage'>
   isExternalStep: boolean
-  isStepWithTransaction: boolean
   isStepValid: boolean
+  isStepWithTransaction: boolean
   steps: AjnaStatusStep[]
   txStatus?: TxStatus
   setStep: (step: AjnaStatusStep) => void
@@ -56,10 +58,10 @@ interface AjnaBorrowSteps {
 
 interface AjnaBorrowTx {
   isTxError: boolean
-  isTxStarted: boolean
-  isTxWaitingForApproval: boolean
   isTxInProgress: boolean
+  isTxStarted: boolean
   isTxSuccess: boolean
+  isTxWaitingForApproval: boolean
   txDetails?: TxDetails
   setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
   setSimulationData: Dispatch<SetStateAction<AjnaBorrowPosition | undefined>>
@@ -71,7 +73,9 @@ interface AjnaBorrowTx {
 }
 
 interface AjnaBorrowContext {
-  environment: AjnaBorrowEnvironment
+  environment: AjnaBorrowEnvironment & {
+    isOwner: boolean
+  }
   form: ReturnType<typeof useAjnaBorrowFormReducto>
   position: AjnaBorrowPosition
   steps: AjnaBorrowSteps
@@ -100,6 +104,7 @@ export function AjnaBorrowContextProvider({
   if (!isAppContextAvailable()) return null
 
   const form = useAjnaBorrowFormReducto({})
+  const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
   const [simulationData, setSimulationData] = useState<AjnaBorrowPosition>()
@@ -149,7 +154,7 @@ export function AjnaBorrowContextProvider({
   }
 
   const [context, setContext] = useState<AjnaBorrowContext>({
-    environment: { ...props },
+    environment: { ...props, isOwner: props.owner === walletAddress || props.flow === 'open' },
     form,
     position,
     steps: setupStepManager(),
@@ -161,6 +166,7 @@ export function AjnaBorrowContextProvider({
       ...prev,
       environment: {
         ...prev.environment,
+        isOwner: props.owner === walletAddress || props.flow === 'open',
         collateralBalance: props.collateralBalance,
         quoteBalance: props.quoteBalance,
       },

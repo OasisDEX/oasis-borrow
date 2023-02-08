@@ -11,8 +11,10 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { EMPTY } from 'rxjs'
@@ -45,7 +47,8 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
-  const { balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
+  const { push } = useRouter()
+  const { ajnaPosition$, balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
   const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
@@ -53,15 +56,6 @@ export function AjnaProductController({
     collateralToken,
   )
   const [quoteTokenData, setQuoteTokenData] = useState<string | undefined>(quoteToken)
-
-  // TODO: this part should be replaced with observable that loads data from below when ID is available
-  useEffect(() => {
-    if (id) {
-      setProductData('borrow')
-      setCollateralTokenData('ETH')
-      setQuoteTokenData('DAI')
-    }
-  }, [id])
 
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
@@ -72,6 +66,9 @@ export function AjnaProductController({
       [collateralTokenData, walletAddress],
     ),
   )
+  const [ajnaPositionData] = useObservable(
+    useMemo(() => (id ? ajnaPosition$(getPositionIdentity(id)) : EMPTY), [id]),
+  )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
       () =>
@@ -81,6 +78,19 @@ export function AjnaProductController({
       [collateralTokenData, quoteTokenData],
     ),
   )
+
+  useEffect(() => {
+    if (
+      ajnaPositionData === null ||
+      (ajnaPositionData && ajnaPositionData.meta.protocol !== 'Ajna')
+    )
+      void push('/404')
+    else if (ajnaPositionData) {
+      setProductData(ajnaPositionData.meta.product.toLowerCase() as AjnaProduct)
+      setCollateralTokenData(ajnaPositionData.meta.collateralToken)
+      setQuoteTokenData(ajnaPositionData.meta.quoteToken)
+    }
+  }, [ajnaPositionData])
 
   return (
     <WithConnection>
@@ -95,6 +105,7 @@ export function AjnaProductController({
                   quoteTokenData,
                   balancesInfoArrayData,
                   tokenPriceUSDData,
+                  ...(id ? [ajnaPositionData] : []),
                 ]}
                 customLoader={
                   <PositionLoadingState
@@ -127,6 +138,7 @@ export function AjnaProductController({
                     quotePrice={_tokenPriceUSD[_quoteToken]}
                     ethPrice={_tokenPriceUSD.ETH}
                     steps={steps[_product][flow]}
+                    {...(ajnaPositionData && { owner: ajnaPositionData.meta.user })}
                   >
                     {_product === 'borrow' && <AjnaBorrowView />}
                   </AjnaBorrowContextProvider>

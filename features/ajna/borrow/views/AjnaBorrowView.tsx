@@ -4,21 +4,38 @@ import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Container, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Card, Container, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 export function AjnaBorrowView() {
   const { t } = useTranslation()
+  const { walletAddress } = useAccount()
   const {
-    environment: { collateralPrice, collateralToken, flow, product, quotePrice, quoteToken },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      flow,
+      isOwner,
+      owner,
+      product,
+      quotePrice,
+      quoteToken,
+    },
     position: { id },
   } = useAjnaBorrowContext()
 
   return (
     <Container variant="vaultPageContainerStatic">
+      {!isOwner && (
+        <Box sx={{ mb: 4 }}>
+          <VaultOwnershipBanner controller={owner} account={walletAddress} />
+        </Box>
+      )}
       <VaultHeadline
         header=""
         {...getAjnaBorrowHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
@@ -36,8 +53,8 @@ export function AjnaBorrowView() {
         variant="underline"
         sections={[
           {
-            value: 'setup',
-            label: t('setup'),
+            value: flow === 'manage' ? 'overview' : 'setup',
+            label: t(flow === 'manage' ? 'system.overview' : 'setup'),
             content: (
               <Grid variant="vaultContainer">
                 <AjnaBorrowOverviewWrapper />

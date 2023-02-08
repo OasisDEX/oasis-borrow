@@ -70,7 +70,7 @@ export function VaultNotice({
                 {header}
               </Heading>
               {subheader && (
-                <Text variant="paragraph2" as="span" sx={{ wordBreak: 'normal' }}>
+                <Text variant="paragraph2" as="p" sx={{ wordBreak: 'normal' }}>
                   {subheader}
                 </Text>
               )}
@@ -158,9 +158,9 @@ export function VaultOwnershipBanner({
         !account ? (
           `${t('vault-notices.ownership.subheader1')}`
         ) : (
-          <Text>
+          <Text as="span">
             {t('vault-notices.ownership.subheader2')}{' '}
-            <AppLink href={`/owner/${account}`} target="_blank">
+            <AppLink href={`/owner/${account}`} target="_blank" sx={{ fontSize: 3 }}>
               {t('here')}
             </AppLink>
           </Text>
