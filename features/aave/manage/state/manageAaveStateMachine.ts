@@ -240,7 +240,7 @@ export function createManageAaveStateMachine(
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
                 },
               },
             },
@@ -263,7 +263,7 @@ export function createManageAaveStateMachine(
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
                 },
               },
             },
@@ -495,6 +495,7 @@ export function createManageAaveStateMachine(
             riskRatio: undefined,
           },
           strategy: undefined,
+          transition: undefined,
         })),
         riskRatioEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)

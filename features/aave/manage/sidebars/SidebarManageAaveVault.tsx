@@ -9,6 +9,7 @@ import { useAutomationContext } from 'components/AutomationContextProvider'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { Skeleton } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
@@ -76,14 +77,13 @@ function getAmountGetFromPositionAfterClose(
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
-  const displayToken = state.context.transition?.simulation.swap.targetToken || {
-    symbol: token,
-    precision: 18,
-  }
+  const closingToken = state.context.manageTokenInput!.closingToken!
+  // @ts-ignore
+  const isLoading = ['debouncingManage', 'loadingManage'].includes(state.value.background)
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountGetFromPositionAfterClose(state.context.transition, state.context.currentPosition),
-      displayToken.symbol,
+      closingToken,
     ),
   )
 
@@ -91,13 +91,17 @@ function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: str
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Flex>
         <Icon name={getToken(token).iconCircle} size={22} sx={{ mr: 1 }} />
-        <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
+        <Text variant="boldParagraph3" sx={{ color: 'neutral80', whiteSpace: 'pre' }}>
           {t('manage-earn.aave.vault-form.token-amount-after-closing', { token })}
         </Text>
       </Flex>
-      <Text variant="boldParagraph3">
-        {balance} {displayToken.symbol}
-      </Text>
+      {isLoading ? (
+        <Skeleton width={100} />
+      ) : (
+        <Text variant="boldParagraph3">
+          {balance} {closingToken}
+        </Text>
+      )}
     </Flex>
   )
 }
