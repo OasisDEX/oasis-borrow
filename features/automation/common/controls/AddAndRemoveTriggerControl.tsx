@@ -12,6 +12,7 @@ import {
   getAutomationFeatureTxHandlers,
 } from 'features/automation/common/state/automationFeatureTxHandlers'
 import {
+  addTransactionMap,
   AutomationAddTriggerData,
   AutomationRemoveTriggerData,
 } from 'features/automation/common/txDefinitions'
@@ -19,7 +20,7 @@ import { AutomationPublishType, SidebarAutomationStages } from 'features/automat
 import { AutomationContracts } from 'features/automation/metadata/types'
 import { AutoTakeProfitResetData } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
-import { addTransactionMap, TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { ReactElement, useEffect, useMemo } from 'react'
 
 export interface AddAndRemoveTxHandler {

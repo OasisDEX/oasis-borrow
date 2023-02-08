@@ -8,14 +8,17 @@ import { useAppContext } from 'components/AppContextProvider'
 import { ethers } from 'ethers'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaPoolPairs } from 'features/ajna/common/types'
-import { AjnaBorrowPosition, useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { zero } from 'helpers/zero'
 import { useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
+
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/src/helpers/ajna'
 
 interface AjnaTxHandlerInput {
   formState: AjnaBorrowFormState
@@ -31,8 +34,16 @@ interface TxData {
 }
 
 interface ActionData {
-  simulation: AjnaBorrowPosition
+  simulation: {
+    targetPosition: AjnaPosition
+    swap: any[]
+  }
   tx: TxData
+}
+
+export interface OasisActionCallData extends TxData {
+  kind: TxMetaKind.libraryCall
+  proxyAddress: string
 }
 
 async function getTxDetails({
@@ -149,17 +160,17 @@ async function getTxDetails({
 type AjnaTxHandler = () => void
 
 export function useAjnaTxHandler(): AjnaTxHandler {
-  const { txHelpers$, context$ } = useAppContext()
+  const { txHelpers$, context$, uiChanges } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
     form: { state },
-    tx: { setTxDetails, setSimulationData, setIsLoadingSimulation },
+    tx: { setTxDetails },
     environment: { collateralToken, quoteToken, ethPrice },
+    position: { setSimulation, setIsLoadingSimulation },
   } = useAjnaBorrowContext()
 
   const [txData, setTxData] = useState<TxData>()
-
   const { dpmAddress } = state
 
   useDebouncedEffect(
@@ -174,16 +185,19 @@ export function useAjnaTxHandler(): AjnaTxHandler {
           context,
         })
           .then((data) => {
-            setIsLoadingSimulation(false)
             setTxData(data?.tx)
-            setSimulationData(data?.simulation)
+            setSimulation(data?.simulation.targetPosition)
+            setIsLoadingSimulation(false)
 
-            // TODO update it once aave sl is deployed as interface has been changed
-            // uiChanges.publish(TX_DATA_CHANGE, {
-            //   type: 'add-trigger',
-            //   transaction: callLibraryWithDpmProxy,
-            //   data: data.tx.data,
-            // })
+            uiChanges.publish(TX_DATA_CHANGE, {
+              type: 'tx-data',
+              transaction: callOasisActionsWithDpmProxy,
+              data: {
+                kind: TxMetaKind.libraryCall,
+                proxyAddress: dpmAddress,
+                ...data?.tx,
+              },
+            })
           })
           .catch((error) => {
             setIsLoadingSimulation(false)

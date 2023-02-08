@@ -29,12 +29,11 @@ export function AjnaBorrowFormContent({
       state: { dpmAddress },
     },
     steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
-    tx: { isTxStarted, isTxError, isTxWaitingForApproval, simulation },
+    tx: { isTxStarted, isTxError, isTxWaitingForApproval },
+    position: { isSimulationLoading },
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
-
-  const isLoadingSimulation = simulation?.isLoading
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -67,8 +66,8 @@ export function AjnaBorrowFormContent({
     ),
     primaryButton: {
       label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
-      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading || isLoadingSimulation),
-      isLoading: !!walletAddress && (isAllowanceLoading || isLoadingSimulation),
+      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading || isSimulationLoading),
+      isLoading: !!walletAddress && (isAllowanceLoading || isSimulationLoading),
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',

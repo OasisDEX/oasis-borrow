@@ -13,6 +13,7 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { EMPTY } from 'rxjs'
@@ -82,6 +83,25 @@ export function AjnaProductController({
     ),
   )
 
+  const dummyAjnaPosition = {
+    collateralAmount: zero,
+    debtAmount: zero,
+    riskRatio: { loanToValue: zero, colRatio: zero, multiple: zero },
+    liquidationPrice: zero,
+    pool: {
+      poolAddress: '',
+      quoteToken: '',
+      collateralToken: '',
+      lup: zero,
+      rate: zero,
+    },
+    owner: '0x0',
+    deposit: () => dummyAjnaPosition,
+    withdraw: () => dummyAjnaPosition,
+    borrow: () => dummyAjnaPosition,
+    payback: () => dummyAjnaPosition,
+  }
+
   return (
     <WithConnection>
       <WithTermsOfService>
@@ -120,7 +140,8 @@ export function AjnaProductController({
                     collateralToken={_collateralToken}
                     collateralPrice={_tokenPriceUSD[_collateralToken]}
                     flow={flow}
-                    position={{ id }}
+                    currentPosition={dummyAjnaPosition}
+                    id={id}
                     product={_product}
                     quoteBalance={quoteBalance}
                     quoteToken={_quoteToken}
