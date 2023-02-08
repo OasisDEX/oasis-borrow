@@ -71,7 +71,7 @@ export function AjnaProductController({
       [collateralTokenData, walletAddress],
     ),
   )
-  const [dpmPositionArgsData] = useObservable(
+  const [dpmPositionData] = useObservable(
     useMemo(() => (id ? dpmPositionData$(getPositionIdentity(id)) : EMPTY), [id]),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
@@ -85,23 +85,20 @@ export function AjnaProductController({
   )
 
   useEffect(() => {
-    if (
-      dpmPositionArgsData === null ||
-      (dpmPositionArgsData && dpmPositionArgsData.protocol !== 'Ajna')
-    )
+    if (dpmPositionData === null || (dpmPositionData && dpmPositionData.protocol !== 'Ajna'))
       void push('/404')
-    else if (context && dpmPositionArgsData) {
-      setProductData(dpmPositionArgsData.product.toLowerCase() as AjnaProduct)
-      setCollateralTokenData(dpmPositionArgsData.collateralToken)
-      setQuoteTokenData(dpmPositionArgsData.quoteToken)
+    else if (context && dpmPositionData) {
+      setProductData(dpmPositionData.product.toLowerCase() as AjnaProduct)
+      setCollateralTokenData(dpmPositionData.collateralToken)
+      setQuoteTokenData(dpmPositionData.quoteToken)
 
       void views.ajna
         .getPosition(
           {
-            proxyAddress: dpmPositionArgsData.proxy,
+            proxyAddress: dpmPositionData.proxy,
             poolAddress:
               context.ajnaPoolPairs[
-                `${dpmPositionArgsData.collateralToken}-${dpmPositionArgsData.quoteToken}` as keyof typeof context.ajnaPoolPairs
+                `${dpmPositionData.collateralToken}-${dpmPositionData.quoteToken}` as keyof typeof context.ajnaPoolPairs
               ].address,
           },
           {
@@ -113,7 +110,7 @@ export function AjnaProductController({
           setPositionData(position)
         })
     }
-  }, [dpmPositionArgsData])
+  }, [dpmPositionData])
 
   return (
     <WithConnection>
@@ -161,6 +158,7 @@ export function AjnaProductController({
                     quotePrice={_tokenPriceUSD[_quoteToken]}
                     ethPrice={_tokenPriceUSD.ETH}
                     steps={steps[_product][flow]}
+                    {...(dpmPositionData && { owner: dpmPositionData.user })}
                   >
                     {_product === 'borrow' && <AjnaBorrowView />}
                   </AjnaBorrowContextProvider>
