@@ -89,9 +89,9 @@ export function AjnaProductController({
     riskRatio: { loanToValue: zero, colRatio: zero, multiple: zero },
     liquidationPrice: zero,
     pool: {
-      poolAddress: '',
-      quoteToken: '',
-      collateralToken: '',
+      poolAddress: '0xcCbD19488f4e63319c2f11e156ccfA26Ce99c657',
+      quoteToken: '0x6Fb5ef893d44F4f88026430d82d4ef269543cB23',
+      collateralToken: '0x7ccF0411c7932B99FC3704d68575250F032e3bB7',
       lup: zero,
       rate: zero,
     },
