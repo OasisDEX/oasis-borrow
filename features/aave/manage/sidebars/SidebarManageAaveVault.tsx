@@ -128,10 +128,10 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
 }
 
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
+  if (context.currentPosition === undefined) {
+    return zero
+  }
   if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-    if (context.currentPosition === undefined) {
-      return zero
-    }
     const position = context.currentPosition
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
@@ -140,9 +140,10 @@ function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
       .times(position.category.maxLoanToValue)
       .minus(debt.times(context.debtPrice || zero))
   }
+
   const currentDebt = amountFromWei(
-    context.currentPosition?.debt.amount || zero,
-    context.currentPosition?.debt.symbol || '',
+    context.currentPosition.debtToPaybackAll,
+    context.currentPosition?.debt.symbol,
   )
 
   const currentBalance = context.balance?.debt?.balance || zero
