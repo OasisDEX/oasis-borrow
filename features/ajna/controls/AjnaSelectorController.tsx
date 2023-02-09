@@ -33,23 +33,31 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [hash] = useHash()
-  const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const ref = useRef<HTMLDivElement>(null)
-  const options = uniq(
-    [...(context ? Object.keys(context.ajnaPoolPairs) : []), ...ajnaComingSoonPools].map(
-      (pool) => pool.split('-')[0],
-    ),
-  )
-    .sort()
-    .map((token) => ({
-      label: token,
-      value: token,
-      icon: getToken(token).iconCircle,
-    }))
+  const [options, setOptions] = useState<HeaderSelectorOption[]>(getOptions())
+  const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const defaultOption = options.filter((option) => option.value === defaultOptionValue)[0]
   const [selected, setSelected] = useState<HeaderSelectorOption>(defaultOption)
   // TODO: to be replaced with real data coming from observable
   const [rows, setRows] = useState<DiscoverTableRowData[]>([])
+
+  function getOptions(): HeaderSelectorOption[] {
+    return uniq(
+      [...(context ? Object.keys(context.ajnaPoolPairs) : []), ...ajnaComingSoonPools].map(
+        (pool) => pool.split('-')[0],
+      ),
+    )
+      .sort()
+      .map((token) => ({
+        label: token,
+        value: token,
+        icon: getToken(token).iconCircle,
+      }))
+  }
+
+  useEffect(() => {
+    setOptions(getOptions())
+  }, [context?.ajnaPoolPairs])
 
   useEffect(() => {
     setRows([
@@ -107,7 +115,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
           ),
         })),
     ])
-  }, [selected])
+  }, [selected, context?.ajnaPoolPairs])
 
   return (
     <WithConnection>
