@@ -9,7 +9,7 @@ export function DiscoverTableHeading({ children }: PropsWithChildren<{}>) {
       sx={{
         position: 'relative',
         px: ['24px', null, null, 4],
-        pt: [3, null, null, 4],
+        mt: [3, null, null, 4],
         pb: 3,
         borderBottom: '1px solid',
         borderColor: 'neutral20',

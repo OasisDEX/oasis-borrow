@@ -6,30 +6,30 @@ import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { allDefined } from './allDefined'
+import { callBackIfDefined } from './callBackIfDefined'
 import { setupAllowanceContext, setupDpmContext } from './dummyStateMachine'
 import { zero } from './zero'
 
-type UserFlowStateReturnType = ReturnType<typeof useFlowState>
-type CallbackType = (params: {
-  availableProxies: UserFlowStateReturnType['availableProxies']
-  walletAddress: UserFlowStateReturnType['walletAddress']
-  amount: UserFlowStateReturnType['amount']
-  token: UserFlowStateReturnType['token']
-  isProxyReady: UserFlowStateReturnType['isProxyReady']
-  isWalletConnected: UserFlowStateReturnType['isWalletConnected']
-  isAllowanceReady: UserFlowStateReturnType['isAllowanceReady']
+type UseFlowStateReturnType = ReturnType<typeof useFlowState>
+export type UseFlowStateCBParamsType = {
+  availableProxies: UseFlowStateReturnType['availableProxies']
+  walletAddress: UseFlowStateReturnType['walletAddress']
+  amount: UseFlowStateReturnType['amount']
+  token: UseFlowStateReturnType['token']
+  isProxyReady: UseFlowStateReturnType['isProxyReady']
+  isWalletConnected: UseFlowStateReturnType['isWalletConnected']
+  isAllowanceReady: UseFlowStateReturnType['isAllowanceReady']
   asUserAction: boolean
-}) => void
+}
+export type UseFlowStateCBType = (params: UseFlowStateCBParamsType) => void
 
 type UseFlowStateProps = {
   amount?: BigNumber
   token?: string
   existingProxy?: string
-  onEverythingReady?: CallbackType
-  onGoBack?: CallbackType
+  onEverythingReady?: UseFlowStateCBType
+  onGoBack?: UseFlowStateCBType
 }
-
-type CallbacksType = UseFlowStateProps['onEverythingReady'] | UseFlowStateProps['onGoBack']
 
 export function useFlowState({
   amount,
@@ -59,27 +59,30 @@ export function useFlowState({
   const { stateMachine: allowanceMachine } = setupAllowanceContext(allowanceStateMachine)
 
   const isProxyReady = !!availableProxies.length
-
-  function callBackIfDefined(callback: CallbacksType) {
-    if (typeof callback === 'function') {
-      callback({
-        availableProxies,
-        walletAddress,
-        amount,
-        token,
-        isProxyReady,
-        isWalletConnected,
-        isAllowanceReady,
-        asUserAction,
-      })
-    }
+  const callbackParams = {
+    availableProxies,
+    walletAddress,
+    amount,
+    token,
+    isProxyReady,
+    isWalletConnected,
+    isAllowanceReady,
+    asUserAction,
   }
+
+  const baseAllowanceContext = {
+    minimumAmount: amount,
+    allowanceType: 'unlimited',
+    token,
+    error: undefined,
+  }
+  const spender = availableProxies[0] // probably needs further thoguht
 
   // wallet connection + DPM proxy machine
   useEffect(() => {
     const walletConnectionSubscription = context$.subscribe(({ status, account }) => {
       setWalletConnected(status === 'connected')
-      status === 'connected' && account && setWalletAddress(account)
+      setWalletAddress(status === 'connected' && account ? account : undefined)
     })
     if (existingProxy) {
       return () => {
@@ -89,7 +92,8 @@ export function useFlowState({
     const proxyMachineSubscription = dpmMachine.subscribe(({ value, context, event }) => {
       if (event.type === 'GO_BACK') {
         setAsUserAction(true)
-        callBackIfDefined(onGoBack)
+        callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(callbackParams, onGoBack)
+        dpmMachine.send('GAS_COST_ESTIMATION')
       }
       if (
         value === 'txSuccess' &&
@@ -147,7 +151,6 @@ export function useFlowState({
     if (!token || !amount || new BigNumber(amount || NaN).isNaN()) {
       setLoading(false)
       setAllowanceReady(false)
-      callBackIfDefined(onEverythingReady)
     }
   }, [token, amount?.toString(), isProxyReady])
 
@@ -159,13 +162,6 @@ export function useFlowState({
       setAllowanceReady(true)
       return
     }
-    const spender = availableProxies[0] // probably needs further thoguht
-    allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
-      minimumAmount: amount,
-      allowanceType: 'unlimited',
-      token,
-      spender,
-    })
     const allowanceSubscription = allowanceForAccount$(token!, spender).subscribe(
       (allowanceData) => {
         if (allowanceData && allowanceMachineSubscription) {
@@ -180,9 +176,27 @@ export function useFlowState({
       },
     )
     const allowanceMachineSubscription = allowanceMachine.subscribe(({ value, context, event }) => {
+      const inputChange =
+        amount?.toString() &&
+        (context.spender !== spender ||
+          !context.minimumAmount?.eq(amount) ||
+          context.token !== token)
+
       if (event.type === 'BACK') {
+        !context.error &&
+          callBackIfDefined<UseFlowStateCBType, UseFlowStateCBParamsType>(callbackParams, onGoBack)
         setAsUserAction(true)
-        callBackIfDefined(onGoBack)
+        allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
+          ...baseAllowanceContext,
+          allowanceType: context.allowanceType,
+          spender,
+        })
+      }
+      if (token && amount?.toString() && inputChange) {
+        allowanceMachine.send('SET_ALLOWANCE_CONTEXT', {
+          ...baseAllowanceContext,
+          spender,
+        })
       }
       if (value !== 'idle') {
         // do not update isAllowanceReady in the background if user started the allowance flow in the machine
@@ -191,6 +205,10 @@ export function useFlowState({
       if (value === 'txSuccess' && context.allowanceType && event.type === 'CONTINUE') {
         setAsUserAction(true)
         setAllowanceReady(true)
+        allowanceMachine.send('RESET_ALLOWANCE_CONTEXT', {
+          ...baseAllowanceContext,
+          spender,
+        })
       }
     })
     return () => {
@@ -199,22 +217,11 @@ export function useFlowState({
     }
   }, [walletAddress, availableProxies, amount?.toString(), token, onGoBack])
 
-  // wrapping up
-  useEffect(() => {
-    if (isAllowanceReady && amount && token && availableProxies.length) {
-      callBackIfDefined(onEverythingReady)
-    }
-  }, [isAllowanceReady, availableProxies, amount?.toString()])
-
-  useEffect(() => {
-    if (isProxyReady && allDefined(amount, token)) {
-      setLoading(true)
-    }
-  }, [amount?.toString()])
-
   return {
-    dpmMachine,
-    allowanceMachine,
+    internals: {
+      dpmMachine,
+      allowanceMachine,
+    },
     availableProxies,
     walletAddress,
     amount,
@@ -225,5 +232,7 @@ export function useFlowState({
     isLoading, // just for the allowance loading state
     isEverythingReady: isAllowanceReady, // just for convenience, allowance is always the last step
     asUserAction,
+    onEverythingReady,
+    onGoBack,
   }
 }

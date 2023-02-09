@@ -13,7 +13,6 @@ export enum TxMetaKind {
   openGuni = 'openGuni',
   closeGuni = 'closeGuni',
   addTrigger = 'addTrigger',
-  removeTrigger = 'removeTrigger',
   removeTriggers = 'removeTriggers',
   claimReward = 'claimReward',
   claimReferralFees = 'claimReferralFees',

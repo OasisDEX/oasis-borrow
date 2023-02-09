@@ -2,6 +2,7 @@ import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { TokenMetadataType } from 'blockchain/tokensMetadata'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { displayMultiple } from 'helpers/display-multiple'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -11,8 +12,6 @@ import { useSimulationYields } from 'helpers/useSimulationYields'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { IStrategyConfig } from '../../features/aave/common/StrategyConfigTypes'
-import { LendingProtocol } from '../../lendingProtocols'
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { ProductCardsLoader } from './ProductCardsWrapper'
 
@@ -28,8 +27,9 @@ const aaveEarnCalcValueBasis = {
 
 export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveProps) {
   const { t } = useTranslation()
+
   const { earnCollateralsReserveData, aaveAvailableLiquidityInUSDC$ } = useAaveContext(
-    LendingProtocol.AaveV2,
+    strategy.protocol,
   )
   const [aaveReserveState, aaveReserveStateError] = useObservable(
     earnCollateralsReserveData[strategy.tokens.collateral],

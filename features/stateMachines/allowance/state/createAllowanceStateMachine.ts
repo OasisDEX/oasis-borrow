@@ -1,11 +1,13 @@
 import { TxMeta } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { maxUint256 } from 'blockchain/calls/erc20'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import {
+  TransactionStateMachine,
+  TransactionStateMachineResultEvents,
+} from 'features/stateMachines/transaction'
 import { ActorRefFrom, assign, createMachine, sendParent, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
-
-import { maxUint256 } from '../../../../blockchain/calls/erc20'
-import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
-import { TransactionStateMachine, TransactionStateMachineResultEvents } from '../../transaction'
 
 export type AllowanceType = 'unlimited' | 'custom' | 'minimum'
 export interface AllowanceStateMachineContext {
@@ -58,7 +60,7 @@ export type AllowanceStateMachineEvent =
   | { type: 'CONTINUE' }
   | { type: 'SET_ALLOWANCE'; amount?: BigNumber; allowanceType: AllowanceType }
   | {
-      type: 'SET_ALLOWANCE_CONTEXT'
+      type: 'SET_ALLOWANCE_CONTEXT' | 'RESET_ALLOWANCE_CONTEXT'
       minimumAmount: BigNumber
       token: string
       spender: string
@@ -127,6 +129,12 @@ export function createAllowanceStateMachine(
               actions: ['sendAllowanceSetEvent'],
             },
           },
+        },
+      },
+      on: {
+        RESET_ALLOWANCE_CONTEXT: {
+          actions: ['updateContext'],
+          target: 'idle',
         },
       },
     },

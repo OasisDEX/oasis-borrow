@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js'
 import { AaveBorrowManageComponent } from 'features/borrow/aave/AaveBorrowManageComponent'
 import { AaveEarnFaq } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
+import { AaveEarnFaq } from 'features/content/faqs/aave/earn'
+import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import {
   AavePositionHeaderNoDetails,
   headerWithDetails,
@@ -58,6 +60,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.wstethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3EarnWSTETH' as const,
   },
   {
     urlSlug: 'stETHeth',

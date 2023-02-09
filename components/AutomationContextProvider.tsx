@@ -73,6 +73,8 @@ export interface AutomationPositionData {
   positionRatio: BigNumber
   token: string
   vaultType: VaultType
+  debtTokenAddress?: string
+  collateralTokenAddress?: string
 }
 
 export interface AutomationContext {
@@ -192,7 +194,9 @@ export function AutomationContextProvider({
   })
 
   const { automationTriggersData$ } = useAppContext()
-  const autoTriggersData$ = automationTriggersData$(positionData.id)
+  const autoTriggersData$ = useMemo(() => automationTriggersData$(positionData.id), [
+    positionData.id.toNumber(),
+  ])
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   useStopLossStateInitialization({

@@ -35,16 +35,17 @@ interface ExtractAutoBSDataProps {
 
 function mapAutoBSTriggerData(autoBSTriggers: { triggerId: number; result: Result }[]) {
   return autoBSTriggers.map((trigger) => {
-    const [
-      ,
-      ,
+    const {
       execCollRatio,
       targetCollRatio,
-      maxBuyOrMinSellPrice,
+      minSellPrice,
+      maxBuyPrice,
       continuous,
       deviation,
       maxBaseFeeInGwei,
-    ] = trigger.result
+    } = trigger.result
+
+    const maxBuyOrMinSellPrice = maxBuyPrice || minSellPrice
 
     /*
      * TRANSFORMATION INFO:

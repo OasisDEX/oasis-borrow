@@ -29,10 +29,11 @@ export function StopLossCompleteInformation({
 }: StopLossCompleteInformationProps) {
   const { t } = useTranslation()
   const {
-    positionData: { token },
+    positionData: { token, debtToken },
     metadata: {
       stopLossMetadata: {
         methods: { getMaxToken, getExecutionPrice },
+        translations: { ratioParamTranslationKey },
       },
     },
   } = useAutomationContext()
@@ -41,14 +42,14 @@ export function StopLossCompleteInformation({
   const afterDynamicStopLossPrice = getExecutionPrice(stopLossState)
   const maxToken = getMaxToken(stopLossState)
 
-  const maxTokenOrDai = isCollateralActive
+  const maxTokenOrDebtToken = isCollateralActive
     ? `${formatAmount(maxToken, token)} ${token}`
-    : `${formatAmount(maxToken.multipliedBy(executionPrice), 'USD')} DAI`
+    : `${formatAmount(maxToken.multipliedBy(executionPrice), 'USD')} ${debtToken}`
 
   return (
     <VaultChangesInformationContainer title={t('protection.summary-of-protection')}>
       <VaultChangesInformationItem
-        label={`${t('protection.stop-loss-coll-ratio')}`}
+        label={`${t('system.stop-loss')} ${t(ratioParamTranslationKey)}`}
         value={
           <Flex>
             {formatPercent(stopLossState.stopLossLevel, {
@@ -64,9 +65,9 @@ export function StopLossCompleteInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-on-stop-loss-trigger', {
-          token: isCollateralActive ? token : 'DAI',
+          token: isCollateralActive ? token : debtToken,
         })}`}
-        value={<Flex>{maxTokenOrDai}</Flex>}
+        value={<Flex>{maxTokenOrDebtToken}</Flex>}
       />
       <VaultChangesInformationItem
         label={`${t('protection.total-cost')}`}

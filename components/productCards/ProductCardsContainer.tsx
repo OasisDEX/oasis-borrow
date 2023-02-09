@@ -1,4 +1,5 @@
 import { getTokens } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { ProductCardEarnDsr } from 'components/productCards/ProductCardEarnDsr'
 import { getAaveStrategy } from 'features/aave/strategyConfig'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -8,7 +9,6 @@ import { ProductCardData } from 'helpers/productCards'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
-import { useAppContext } from '../AppContextProvider'
 import { ProductCardBorrow } from './ProductCardBorrow'
 import { ProductCardEarnAave } from './ProductCardEarnAave'
 import { ProductCardEarnMaker } from './ProductCardEarnMaker'

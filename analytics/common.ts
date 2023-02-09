@@ -21,3 +21,9 @@ export const manageCookie: Record<CookieName, Switch> = {
     // todo: delete user data https://developer.mixpanel.com/docs/managing-personal-data
   },
 }
+
+export enum ProductType {
+  BORROW = 'borrow',
+  MULTIPLY = 'multiply',
+  EARN = 'earn',
+}

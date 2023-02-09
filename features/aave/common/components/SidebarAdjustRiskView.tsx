@@ -1,7 +1,20 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import { BigNumber } from 'bignumber.js'
+import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { MessageCard } from 'components/MessageCard'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
+import { BaseViewProps } from 'features/aave/common/BaseAaveContext'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
+import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
+import { ManageAaveEvent } from 'features/aave/manage/state'
+import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
+import { formatPercent } from 'helpers/formatters/format'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
@@ -15,6 +28,24 @@ import { getLiquidationPriceAccountingForPrecision } from '../../../shared/liqui
 import { transitionHasMinConfigurableRiskRatio } from '../../oasisActionsLibWrapper'
 import { SecondaryInputProps } from '../StrategyConfigTypes'
 import { StrategyInformationContainer } from './informationContainer'
+
+type RaisedEvents =
+  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
+  | ({
+      type: 'RESET_RISK_RATIO'
+    } & ManageAaveEvent)
+
+export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
+  primaryButton: SidebarSectionFooterButtonSettings
+  textButton: SidebarSectionFooterButtonSettings
+  viewLocked?: boolean // locks whole view
+  showWarring?: boolean // displays warning
+  onChainPosition?: IPosition
+  dropdownConfig?: SidebarSectionHeaderDropdown
+  title: string
+  automation?: ManageAaveAutomation
+  noSidebar?: boolean
+}
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (
@@ -62,7 +93,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     viewLocked = false,
     showWarring = false,
     onChainPosition,
-  }: SecondaryInputProps) {
+    automation,
+  }: AdjustRiskViewProps) {
     const { t } = useTranslation()
     const transition = state.context.transition
     const positionTransitionHasMinConfigurableRisk = transitionHasMinConfigurableRiskRatio(
@@ -117,6 +149,11 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       state.context.userInput.riskRatio?.loanToValue ||
       onChainPosition?.riskRatio.loanToValue ||
       state.context.defaultRiskRatio?.loanToValue
+
+    const stopLossError =
+      automation?.stopLoss.isStopLossEnabled &&
+      automation?.stopLoss.stopLossLevel &&
+      sliderValue?.gte(automation?.stopLoss.stopLossLevel)
 
     const sidebarContent = (
       <Grid gap={3}>
@@ -196,6 +233,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             </WithArrow>
           </Link>
         )}
+        {stopLossError && <StopLossAaveErrorMessage />}
         {showWarring ? (
           <MessageCard
             messages={[t('manage-earn-vault.has-asset-already')]}
@@ -234,5 +272,22 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       </Grid>
     )
     return sidebarContent
+    if (noSidebar) {
+      return sidebarContent
+    }
+
+    const sidebarSectionProps: SidebarSectionProps = {
+      title,
+      content: sidebarContent,
+      primaryButton: {
+        ...primaryButton,
+        disabled:
+          viewLocked || primaryButton.disabled || !state.context.transition || stopLossError,
+      },
+      textButton, // this is going back button, no need to block it
+      dropdown: dropdownConfig,
+    }
+
+    return <SidebarSection {...sidebarSectionProps} />
   }
 }

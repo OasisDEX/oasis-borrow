@@ -1,4 +1,10 @@
 import { useActor } from '@xstate/react'
+import { getToken } from 'blockchain/tokensMetadata'
+import { Radio } from 'components/forms/Radio'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { BigNumberInput } from 'helpers/BigNumberInput'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -6,12 +12,6 @@ import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 import { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
-import { getToken } from '../../../blockchain/tokensMetadata'
-import { Radio } from '../../../components/forms/Radio'
-import { SidebarSection, SidebarSectionProps } from '../../../components/sidebar/SidebarSection'
-import { BigNumberInput } from '../../../helpers/BigNumberInput'
-import { formatAmount, formatCryptoBalance } from '../../../helpers/formatters/format'
-import { handleNumericInput } from '../../../helpers/input'
 import {
   AllowanceStateMachine,
   AllowanceStateMachineEvent,
@@ -21,7 +21,7 @@ interface AllowanceViewProps {
   allowanceMachine: ActorRefFrom<AllowanceStateMachine>
   steps?: [number, number]
   isLoading?: boolean
-  backButtonOnFirstStep?: boolean
+  backButtonOnFirstStep?: boolean | string
 }
 
 interface AllowanceViewStateProps {
@@ -29,7 +29,7 @@ interface AllowanceViewStateProps {
   send: Sender<AllowanceStateMachineEvent>
   steps?: [number, number]
   isLoading?: boolean
-  backButtonOnFirstStep?: boolean
+  backButtonOnFirstStep?: boolean | string
 }
 
 function AllowanceInfoStateViewContent({
@@ -131,7 +131,7 @@ function AllowanceInfoStateView({
           action: () => {
             send('BACK')
           },
-          label: t('go-back'),
+          label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
         }
       : undefined,
   }
@@ -229,7 +229,7 @@ function AllowanceSuccessStateView({ state, send, steps }: AllowanceViewStatePro
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
+function AllowanceRetryStateView({ state, send, backButtonOnFirstStep }: AllowanceViewStateProps) {
   const { t } = useTranslation()
   const { token, minimumAmount, allowanceType, amount } = state.context
 
@@ -256,7 +256,7 @@ function AllowanceRetryStateView({ state, send }: AllowanceViewStateProps) {
       action: () => send('RETRY'),
     },
     textButton: {
-      label: t('edit-token-allowance', { token }),
+      label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
       action: () => send('BACK'),
     },
   }
@@ -284,7 +284,14 @@ export function AllowanceView({
         />
       )
     case state.matches('txFailure'):
-      return <AllowanceRetryStateView state={state} send={send} steps={steps} />
+      return (
+        <AllowanceRetryStateView
+          state={state}
+          send={send}
+          steps={steps}
+          backButtonOnFirstStep={backButtonOnFirstStep}
+        />
+      )
     case state.matches('txInProgress'):
       return <AllowanceInProgressStateView state={state} send={send} steps={steps} />
     case state.matches('txSuccess'):

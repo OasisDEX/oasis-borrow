@@ -1,20 +1,25 @@
 import BigNumber from 'bignumber.js'
 import { AaveV2AssetsPricesParameters } from 'blockchain/aave/aaveV2PriceOracle'
 import { Context } from 'blockchain/network'
+import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
+import { PositionId, positionIdIsAddress } from 'features/aave/types'
+import { TriggersData } from 'features/automation/api/automationTriggersData'
+import {
+  extractStopLossData,
+  StopLossTriggerData,
+} from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { formatAddress } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { AaveProtocolData, PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
-import { combineLatest, EMPTY, Observable, of } from 'rxjs'
-import { filter, map, startWith, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { map, startWith, switchMap } from 'rxjs/operators'
 
-import { Tickers } from '../../../blockchain/prices'
-import { amountFromPrecision } from '../../../blockchain/utils'
-import { formatAddress } from '../../../helpers/formatters/format'
-import { IStrategyConfig } from '../../aave/common/StrategyConfigTypes'
-import { PositionCreated } from '../../aave/services/readPositionCreatedEvents'
-import { PositionId, positionIdIsAddress } from '../../aave/types'
-import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
 import { Position } from './positionsOverviewSummary'
 
 function makerPositionName(vault: VaultWithType): string {
@@ -96,6 +101,7 @@ export type AavePosition = Position & {
   isOwner: boolean
   type: 'borrow' | 'multiply' | 'earn'
   liquidity: BigNumber
+  stopLossData?: StopLossTriggerData
   fakePositionCreatedEvtForDsProxyUsers?: boolean
 }
 
@@ -113,7 +119,7 @@ export function createPositions$(
   )
 }
 
-type ProxyAddresses = {
+type ProxyAddressesProvider = {
   dsProxy$: (walletAddress: string) => Observable<string | undefined>
   userDpmProxies$: (walletAddress: string) => Observable<UserDpmAccount[]>
 }
@@ -128,6 +134,7 @@ type BuildPositionArgs = {
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: { token: string }) => Observable<BigNumber>
+  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
 
 function buildPosition(
@@ -148,167 +155,200 @@ function buildPosition(
     observables.aaveAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
+    positionIdIsAddress(positionId)
+      ? of(undefined)
+      : observables.automationTriggersData$(new BigNumber(positionId)),
   ).pipe(
-    map(([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity]) => {
-      const {
-        position: {
-          riskRatio: { multiple },
-          debt,
-          collateral,
-          category: { liquidationThreshold },
-        },
-      } = protocolData
+    map(
+      ([protocolData, assetPrices, tickerPrices, preparedAaveReserve, liquidity, triggersData]) => {
+        const {
+          position: {
+            riskRatio: { multiple },
+            debt,
+            collateral,
+            category: { liquidationThreshold },
+          },
+        } = protocolData
 
-      const isDebtZero = debt.amount.isZero()
+        const isDebtZero = debt.amount.isZero()
 
-      const tickerCollateralTokenPriceInUsd = tickerPrices[collateral.symbol]
-      const tickerDebtTokenPriceInUsd = tickerPrices[debt.symbol]
+        const tickerCollateralTokenPriceInUsd = tickerPrices[collateral.symbol]
+        const tickerDebtTokenPriceInUsd = tickerPrices[debt.symbol]
 
-      const oracleCollateralTokenPriceInEth = assetPrices[0]
-      const oracleDebtTokenPriceInEth = assetPrices[1]
+        const oracleCollateralTokenPriceInEth = assetPrices[0]
+        const oracleDebtTokenPriceInEth = assetPrices[1]
 
-      const collateralToken = positionCreatedEvent.collateralTokenSymbol
-      const debtToken = positionCreatedEvent.debtTokenSymbol
+        const collateralToken = positionCreatedEvent.collateralTokenSymbol
+        const debtToken = positionCreatedEvent.debtTokenSymbol
 
-      const collateralNotWei = amountFromPrecision(
-        collateral.amount,
-        new BigNumber(collateral.precision),
+        const collateralNotWei = amountFromPrecision(
+          collateral.amount,
+          new BigNumber(collateral.precision),
+        )
+        const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
+
+        const netValueInEthAccordingToOracle = collateralNotWei
+          .times(oracleCollateralTokenPriceInEth)
+          .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
+
+        const liquidationPrice = !isDebtZero
+          ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
+          : zero
+
+        const variableBorrowRate = preparedAaveReserve.variableBorrowRate
+
+        const fundingCost = !isDebtZero
+          ? debtNotWei
+              .times(oracleDebtTokenPriceInEth)
+              .div(netValueInEthAccordingToOracle)
+              .multipliedBy(variableBorrowRate)
+              .times(100)
+          : zero
+
+        const netValueUsd = collateralNotWei
+          .times(tickerCollateralTokenPriceInUsd)
+          .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
+
+        const isOwner = context.status === 'connected' && context.account === walletAddress
+
+        return {
+          token: collateralToken,
+          title: `${collateralToken}/${debtToken} AAVE`,
+          url: `/aave/${positionId}`,
+          id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
+          netValue: netValueUsd,
+          multiple,
+          liquidationPrice,
+          fundingCost,
+          contentsUsd: netValueUsd,
+          isOwner,
+          lockedCollateral: collateralNotWei,
+          type: mappymap[positionCreatedEvent.positionType],
+          liquidity: liquidity,
+          stopLossData: triggersData ? extractStopLossData(triggersData) : undefined,
+        }
+      },
+    ),
+  )
+}
+
+type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCreated & {
+  fakePositionCreatedEvtForDsProxyUsers?: boolean
+}
+
+function hasStethEthAaveV2DsProxyEarnPosition$(
+  proxyAddressesProvider: ProxyAddressesProvider,
+  aaveProtocolData$: (
+    collateralToken: string,
+    debtToken: string,
+    address: string,
+  ) => Observable<AaveProtocolData>,
+  walletAddress: string,
+): Observable<FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition[]> {
+  return proxyAddressesProvider.dsProxy$(walletAddress).pipe(
+    switchMap((dsProxyAddress) => {
+      if (!dsProxyAddress) {
+        return of([])
+      }
+
+      return aaveProtocolData$('STETH', 'ETH', dsProxyAddress).pipe(
+        map((avp) => {
+          if (avp && avp.position.collateral.amount.gt(zero)) {
+            return [
+              {
+                collateralTokenSymbol: 'STETH',
+                debtTokenSymbol: 'ETH',
+                positionType: 'Earn',
+                protocol: 'AAVE',
+                proxyAddress: dsProxyAddress,
+                fakePositionCreatedEvtForDsProxyUsers: true,
+              },
+            ]
+          } else {
+            return []
+          }
+        }),
       )
-      const debtNotWei = amountFromPrecision(debt.amount, new BigNumber(debt.precision))
-
-      const netValueInEthAccordingToOracle = collateralNotWei
-        .times(oracleCollateralTokenPriceInEth)
-        .minus(debtNotWei.times(oracleDebtTokenPriceInEth))
-
-      const liquidationPrice = !isDebtZero
-        ? debtNotWei.div(collateralNotWei.times(liquidationThreshold))
-        : zero
-
-      const variableBorrowRate = preparedAaveReserve.variableBorrowRate
-
-      const fundingCost = !isDebtZero
-        ? debtNotWei
-            .times(oracleDebtTokenPriceInEth)
-            .div(netValueInEthAccordingToOracle)
-            .multipliedBy(variableBorrowRate)
-            .times(100)
-        : zero
-
-      const netValueUsd = collateralNotWei
-        .times(tickerCollateralTokenPriceInUsd)
-        .minus(debtNotWei.times(tickerDebtTokenPriceInUsd))
-
-      const isOwner = context.status === 'connected' && context.account === walletAddress
-
-      if (netValueUsd.eq(zero) && positionCreatedEvent.fakePositionCreatedEvtForDsProxyUsers) {
-        /*
-         * Used to filter out faked positions for dsProxy users where the user has not created a position yet.
-         * Is needed because our strategy config observable returns a fallback strategy which will show an empty position
-         * Unless we filter it out here
-         */
-        return EMPTY
-      }
-
-      return {
-        token: collateralToken,
-        title: `${collateralToken}/${debtToken} AAVE`,
-        url: `/aave/${positionId}`,
-        id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
-        netValue: netValueUsd,
-        multiple,
-        liquidationPrice,
-        fundingCost,
-        contentsUsd: netValueUsd,
-        isOwner,
-        lockedCollateral: collateralNotWei,
-        type: mappymap[positionCreatedEvent.positionType],
-        liquidity: liquidity,
-      }
     }),
-    filter<Observable<AavePosition>>((position) => position !== EMPTY),
   )
 }
 
 export function createAavePosition$(
-  proxyAddresses: ProxyAddresses,
+  proxyAddressesProvider: ProxyAddressesProvider,
+  environment: {
+    tickerPrices$: (tokens: string[]) => Observable<Tickers>
+    context$: Observable<Context>
+    automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
+    readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>
+  },
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
     address: string,
   ) => Observable<AaveProtocolData>,
   getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>,
-  tickerPrices$: (tokens: string[]) => Observable<Tickers>,
   wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
-  context$: Observable<Context>,
-  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>,
   aaveAvailableLiquidityInUSDC$: (reserveDataParameters: {
     token: string
   }) => Observable<BigNumber>,
   getStrategyConfig$: (positionId: PositionId) => Observable<IStrategyConfig>,
   walletAddress: string,
 ): Observable<AavePosition[]> {
+  const {
+    context$,
+    tickerPrices$,
+    readPositionCreatedEvents$,
+    automationTriggersData$,
+  } = environment
   return combineLatest(
-    proxyAddresses.userDpmProxies$(walletAddress),
-    proxyAddresses.dsProxy$(walletAddress),
-    getStrategyConfig$({ walletAddress }),
+    proxyAddressesProvider.userDpmProxies$(walletAddress),
+    hasStethEthAaveV2DsProxyEarnPosition$(proxyAddressesProvider, aaveProtocolData$, walletAddress),
     context$,
   ).pipe(
-    switchMap(([userProxiesData, dsProxyAddress, strategyConfig, context]) => {
-      // if we have a DS proxy make a fake position created event so we can read any position out below
-      let dsFakeEvent: Array<
-        PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean }
-      > = []
-      if (dsProxyAddress && !userProxiesData.find((proxy) => proxy.proxy === dsProxyAddress)) {
-        dsFakeEvent = [
-          {
-            collateralTokenSymbol: strategyConfig.tokens.collateral,
-            debtTokenSymbol: strategyConfig.tokens.debt,
-            positionType: strategyConfig.type,
-            proxyAddress: dsProxyAddress,
-            protocol: 'AAVE',
-            fakePositionCreatedEvtForDsProxyUsers: true,
-          },
+    switchMap(
+      ([dpmProxiesData, fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition, context]) => {
+        // if we have a DS proxy make a fake position created event so we can read any position out below
+        const userProxiesData = [
+          ...dpmProxiesData,
+          ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition.map((fakeEvent) => {
+            return {
+              user: walletAddress,
+              proxy: fakeEvent.proxyAddress,
+              vaultId: walletAddress,
+            }
+          }),
         ]
-
-        userProxiesData = [
-          ...userProxiesData,
-          {
-            user: walletAddress,
-            proxy: dsProxyAddress,
-            vaultId: walletAddress,
-          },
-        ]
-      }
-
-      return readPositionCreatedEvents$(walletAddress).pipe(
-        map((positionCreatedEvents) => {
-          return [...positionCreatedEvents, ...dsFakeEvent]
-        }),
-        switchMap((positionCreatedEvents) => {
-          return combineLatest(
-            positionCreatedEvents
-              .map((pce) => {
+        return readPositionCreatedEvents$(walletAddress).pipe(
+          map((positionCreatedEvents) => {
+            return [
+              ...positionCreatedEvents,
+              ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition,
+            ]
+          }),
+          switchMap((positionCreatedEvents) => {
+            return combineLatest(
+              positionCreatedEvents.map((pce) => {
                 const userProxy = userProxiesData.find(
                   (userProxy) => userProxy.proxy === pce.proxyAddress,
                 )
                 if (!userProxy) {
                   throw new Error('nope')
                 }
+
                 return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
                   aaveProtocolData$,
                   getAaveAssetsPrices$,
                   tickerPrices$,
                   wrappedGetAaveReserveData$,
                   aaveAvailableLiquidityInUSDC$,
+                  automationTriggersData$,
                 })
-              })
-              .filter((position) => {
-                return position !== EMPTY
               }),
-          )
-        }),
-      )
-    }),
+            )
+          }),
+        )
+      },
+    ),
     startWith([]),
   )
 }

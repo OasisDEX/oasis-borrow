@@ -1,12 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TokenConfig } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { AaveContextProvider, isAaveContextAvailable } from 'features/aave/AaveContextProvider'
-import React, { useState } from 'react'
-import { Box, Button, Flex, Text } from 'theme-ui'
-
-import { WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import {
   ilkToEntryToken,
   IlkTokenMap,
@@ -14,8 +12,10 @@ import {
   ProductCardData,
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
-} from '../../helpers/productCards'
-import { useAppContext } from '../AppContextProvider'
+} from 'helpers/productCards'
+import React, { useState } from 'react'
+import { Box, Button, Flex, Text } from 'theme-ui'
+
 import { ProductCardMultiplyAave } from './ProductCardMultiplyAave'
 import { ProductCardsSelect } from './ProductCardsSelect'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
@@ -121,7 +121,7 @@ export function ProductCardsFilter({
                 {otherStrategies
                   .filter(({ protocol, name }) => {
                     return (
-                      protocol === 'aave' &&
+                      protocol === 'aaveV2' &&
                       (name.toLocaleUpperCase().includes(currentFilter.toLocaleUpperCase()) ||
                         currentFilter.toLocaleUpperCase() === 'FEATURED')
                     )

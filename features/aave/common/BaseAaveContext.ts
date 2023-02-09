@@ -1,5 +1,6 @@
 import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
@@ -20,7 +21,7 @@ import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 import { ISimplePositionTransition } from '@oasisdex/oasis-actions/lib/src/strategies/types'
 
-type UserInput = {
+export type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
   debtAmount?: BigNumber
@@ -69,6 +70,12 @@ export type UpdateTokenActionValueType = {
   manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
 }
 
+type AaveOpenPositionWithStopLossEvents =
+  | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
+  | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
+  | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
+  | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
+
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
@@ -90,6 +97,7 @@ export type BaseAaveEvent =
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
   | { type: 'SET_DEBT'; debt: BigNumber }
+  | AaveOpenPositionWithStopLossEvents
 
 export interface BaseAaveContext {
   userInput: UserInput
@@ -124,6 +132,11 @@ export interface BaseAaveContext {
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
+
+  stopLossLevel?: BigNumber
+  collateralActive?: boolean
+  stopLossTxData?: AutomationAddTriggerData
+  stopLossSkipped?: boolean
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

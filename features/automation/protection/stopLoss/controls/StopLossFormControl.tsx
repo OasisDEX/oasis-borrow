@@ -34,10 +34,11 @@ export function StopLossFormControl({
     environmentData: { canInteract },
     metadata: {
       stopLossMetadata: {
-        values: { initialSlRatioWhenTriggerDoesntExist, resetData },
+        values: { initialSlRatioWhenTriggerDoesntExist, resetData, removeTxData },
+        contracts,
       },
     },
-    positionData: { id, debt, owner },
+    positionData: { debt },
     triggerData: { stopLossTriggerData },
   } = useAutomationContext()
 
@@ -75,16 +76,14 @@ export function StopLossFormControl({
   })
 
   const { addTxData, textButtonHandlerExtension } = getStopLossTxHandlers({
-    id,
-    owner,
     isAddForm,
     stopLossState,
-    stopLossTriggerData,
   })
 
   return (
     <AddAndRemoveTriggerControl
       addTxData={addTxData}
+      removeTxData={removeTxData}
       isActiveFlag={isStopLossActive}
       isAddForm={isAddForm}
       isEditing={isEditing}
@@ -110,6 +109,7 @@ export function StopLossFormControl({
             : CloseVaultToEnum.DAI,
         },
       }}
+      contracts={contracts}
     >
       {(textButtonHandler, txHandler) => (
         <SidebarSetupStopLoss
