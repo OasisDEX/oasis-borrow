@@ -13,6 +13,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { ContentCardLtv } from 'components/vault/detailsSection/ContentCardLtv'
 import { StopLossTriggeredBanner } from 'features/automation/protection/stopLoss/controls/StopLossTriggeredBanner'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { displayMultiple } from 'helpers/display-multiple'
 import { formatAmount, formatDecimalAsPercent, formatPrecision } from 'helpers/formatters/format'
 import { NaNIsZero } from 'helpers/nanIsZero'
@@ -30,7 +31,7 @@ type AaveMultiplyPositionDataProps = {
   collateralTokenReserveData: PreparedAaveReserveData
   debtTokenReserveData: PreparedAaveReserveData
   debtTokenReserveConfigurationData: AaveV2ReserveConfigurationData
-  aaveHistory: any[]
+  aaveHistory: VaultHistoryEvent[]
 }
 
 function calcViewValuesForPosition(
@@ -118,7 +119,7 @@ export function AaveMultiplyPositionData({
     .times(debtTokenPrice)
     .times(NaNIsZero(currentPositionThings.netBorrowCostPercentage))
 
-  const stopLossTriggered = aaveHistory[0].eventType === 'executed'
+  const stopLossTriggered = 'autoKind' in aaveHistory[0] && aaveHistory[0].eventType === 'executed'
 
   return (
     <Grid>
