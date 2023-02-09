@@ -14,14 +14,10 @@ export function AjnaBorrowFormOrder() {
     position: { currentPosition, simulation },
   } = useAjnaBorrowContext()
 
-  const collateralLocked = currentPosition?.collateralAmount || zero
-  const debtAmount = currentPosition?.debtAmount || zero
-  const ltv = currentPosition?.riskRatio.loanToValue || zero
-
   const formatted = {
-    collateralLocked: formatCryptoBalance(collateralLocked),
-    debt: formatCryptoBalance(debtAmount),
-    ltv: formatDecimalAsPercent(ltv),
+    collateralLocked: formatCryptoBalance(currentPosition.collateralAmount),
+    debt: formatCryptoBalance(currentPosition.debtAmount),
+    ltv: formatDecimalAsPercent(currentPosition.riskRatio.loanToValue),
     afterLtv: formatDecimalAsPercent(simulation?.riskRatio.loanToValue || zero),
     afterDebt: formatCryptoBalance(simulation?.debtAmount || zero),
     afterCollateralLocked: formatCryptoBalance(simulation?.collateralAmount || zero),
