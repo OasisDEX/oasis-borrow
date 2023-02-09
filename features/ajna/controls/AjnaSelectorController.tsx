@@ -21,7 +21,7 @@ import { useObservable } from 'helpers/observableHook'
 import { useHash } from 'helpers/useHash'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, Heading, Text } from 'theme-ui'
 
 interface AjnaSelectorControllerProps {
@@ -33,19 +33,23 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [hash] = useHash()
-  const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const ref = useRef<HTMLDivElement>(null)
-  const options = uniq(
-    [...(context ? Object.keys(context.ajnaPoolPairs) : []), ...ajnaComingSoonPools].map(
-      (pool) => pool.split('-')[0],
-    ),
+  const options = useMemo(
+    () =>
+      uniq(
+        [...(context ? Object.keys(context.ajnaPoolPairs) : []), ...ajnaComingSoonPools].map(
+          (pool) => pool.split('-')[0],
+        ),
+      )
+        .sort()
+        .map((token) => ({
+          label: token,
+          value: token,
+          icon: getToken(token).iconCircle,
+        })),
+    [context?.ajnaPoolPairs],
   )
-    .sort()
-    .map((token) => ({
-      label: token,
-      value: token,
-      icon: getToken(token).iconCircle,
-    }))
+  const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const defaultOption = options.filter((option) => option.value === defaultOptionValue)[0]
   const [selected, setSelected] = useState<HeaderSelectorOption>(defaultOption)
   // TODO: to be replaced with real data coming from observable
@@ -107,7 +111,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
           ),
         })),
     ])
-  }, [selected])
+  }, [selected, context?.ajnaPoolPairs])
 
   return (
     <WithConnection>
