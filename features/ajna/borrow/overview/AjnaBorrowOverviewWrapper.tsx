@@ -17,7 +17,11 @@ export function AjnaBorrowOverviewWrapper() {
   const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
+    position: { currentPosition, simulation },
   } = useAjnaBorrowContext()
+
+  const collateralLocked = currentPosition?.collateralAmount || zero
+  const debtAmount = currentPosition?.debtAmount || zero
 
   return (
     <Grid gap={2}>
@@ -31,16 +35,21 @@ export function AjnaBorrowOverviewWrapper() {
               liquidationPrice={zero}
               belowCurrentPrice={zero}
             />
-            <ContentCardLoanToValue loanToValue={zero} />
+            <ContentCardLoanToValue
+              loanToValue={currentPosition?.riskRatio.loanToValue || zero}
+              afterLoanToValue={simulation?.riskRatio.loanToValue}
+            />
             <ContentCardCollateralLocked
               collateralToken={collateralToken}
-              collateralLocked={zero}
-              collateralLockedUSD={zero.times(collateralPrice)}
+              collateralLocked={collateralLocked}
+              collateralLockedUSD={collateralLocked.times(collateralPrice)}
+              afterCollateralLocked={simulation?.collateralAmount}
             />
             <ContentCardPositionDebt
               quoteToken={quoteToken}
-              positionDebt={zero}
-              positionDebtUSD={zero.times(quotePrice)}
+              positionDebt={debtAmount}
+              positionDebtUSD={debtAmount.times(quotePrice)}
+              afterPositionDebt={simulation?.debtAmount}
             />
           </DetailsSectionContentCardWrapper>
         }

@@ -62,7 +62,7 @@ export function AjnaBorrowFormOrder() {
           secondaryValue: '10,000.00 USDC',
         },
         {
-          label: t('transaction-fee'),
+          label: t('system.max-transaction-cost'),
           value: <GasEstimation />,
         },
       ]}
