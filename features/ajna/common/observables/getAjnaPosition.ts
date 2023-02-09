@@ -42,14 +42,14 @@ export function getAjnaPosition$(
     switchMap(async ([context, dpmPositionData]) => {
       if (dpmPositionData && dpmPositionData.protocol !== 'Ajna') return null
 
-      const meta: DpmPositionData = positionId
+      const meta = positionId
         ? (dpmPositionData as DpmPositionData)
         : {
-            collateralToken: collateralToken,
-            product: product,
+            collateralToken,
+            product,
             protocol: 'Ajna',
             proxy: '0x0000000000000000000000000000000000000000',
-            quoteToken: quoteToken,
+            quoteToken,
             user: '0x0000000000000000000000000000000000000000',
             vaultId: '0',
           }
@@ -70,7 +70,7 @@ export function getAjnaPosition$(
         ),
         meta: {
           ...meta,
-          product: meta.product.toLowerCase() as AjnaProduct,
+          product: (meta.product as string).toLowerCase() as AjnaProduct,
         },
       }
     }),
