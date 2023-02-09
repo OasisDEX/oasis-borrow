@@ -8,6 +8,7 @@ import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -29,11 +30,12 @@ export function AjnaBorrowFormContent({
       state: { dpmAddress },
     },
     steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
-    tx: { isTxStarted, isTxError, isTxWaitingForApproval },
-    position: { isSimulationLoading },
+    tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxSuccess, isTxInProgress },
+    position: { isSimulationLoading, id },
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
+  const { push } = useRedirect()
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -65,15 +67,35 @@ export function AjnaBorrowFormContent({
       </Grid>
     ),
     primaryButton: {
-      label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
-      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading || isSimulationLoading),
-      isLoading: !!walletAddress && (isAllowanceLoading || isSimulationLoading),
+      label: t(
+        getPrimaryButtonLabelKey({
+          currentStep,
+          product,
+          dpmAddress,
+          walletAddress,
+          isTxSuccess,
+          isTxError,
+        }),
+      ),
+      disabled:
+        !!walletAddress &&
+        (!isStepValid ||
+          isAllowanceLoading ||
+          isSimulationLoading ||
+          isTxInProgress ||
+          isTxWaitingForApproval),
+      isLoading:
+        !!walletAddress &&
+        (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval),
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',
           }
         : {
             action: async () => {
+              if (isTxSuccess && id) {
+                push(`/ajna/position/${id}`)
+              }
               if (isStepWithTransaction) {
                 txHandler()
               } else setNextStep()
