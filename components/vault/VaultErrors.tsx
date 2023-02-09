@@ -33,7 +33,7 @@ export function VaultErrors({
   if (!errorMessages.length) return null
 
   function applyErrorMessageTranslation(message: VaultErrorMessage) {
-    const translate = (key: string, args?: Dictionary<any>) => t(`vault-errors.${key}`, args)
+    const translate = (key: string, args?: Dictionary<any>) => t(`vault-errors.${key}`, args || {})
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':
         return translate('deposit-amount-exceeds-collateral-balance')

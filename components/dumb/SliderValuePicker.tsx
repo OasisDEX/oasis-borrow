@@ -1,14 +1,15 @@
 import { Box, Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { TranslateStringType } from 'helpers/translateStringType'
 import React, { ReactNode } from 'react'
 import { Flex, SxStyleProp, useThemeUI } from 'theme-ui'
 
 export interface SliderValuePickerProps {
   sliderPercentageFill?: BigNumber
   leftBoundry: BigNumber
-  leftBoundryFormatter: (input: BigNumber) => ReactNode
+  leftBoundryFormatter: (input: BigNumber) => TranslateStringType | JSX.Element
   rightBoundry: BigNumber
-  rightBoundryFormatter: (input: BigNumber) => ReactNode
+  rightBoundryFormatter: (input: BigNumber) => TranslateStringType | JSX.Element
   onChange: (input: BigNumber) => void
   minBoundry: BigNumber
   maxBoundry: BigNumber
@@ -18,10 +19,10 @@ export interface SliderValuePickerProps {
   leftBoundryStyling?: SxStyleProp
   rightBoundryStyling?: SxStyleProp
   step: number
-  leftLabel?: ReactNode
   leftBottomLabel?: ReactNode
-  rightLabel?: ReactNode
   rightBottomLabel?: ReactNode
+  leftLabel?: TranslateStringType | JSX.Element
+  rightLabel?: TranslateStringType | JSX.Element
   direction?: 'rtl' | 'ltr'
   colorfulRanges?: string
 }

@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Card, Flex, Link, Spinner, Text } from 'theme-ui'
@@ -19,7 +20,7 @@ export interface SidebarSectionStatusProps {
   txHash: string
   etherscan: string
   type: SidebarSectionStatusTypes
-  description?: string
+  description?: TranslateStringType
   icon?: string
 }
 

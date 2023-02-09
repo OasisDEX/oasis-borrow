@@ -4,6 +4,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/formatters/format'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
+import { TranslateStringType } from 'helpers/translateStringType'
 import { one, zero } from 'helpers/zero'
 import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -50,17 +51,17 @@ interface VaultActionInputProps {
   showMin?: boolean
   onSetMin?: () => void
   minAmount?: BigNumber
-  minAmountLabel?: string
+  minAmountLabel?: TranslateStringType
 
   showMax?: boolean
   onSetMax?: () => void
   maxAmount?: BigNumber
-  maxAmountLabel?: string
+  maxAmountLabel?: TranslateStringType
 
   showToggle?: boolean
-  toggleOnLabel?: string
-  toggleOffLabel?: string
-  toggleOffPlaceholder?: string
+  toggleOnLabel?: TranslateStringType
+  toggleOffLabel?: TranslateStringType
+  toggleOffPlaceholder?: TranslateStringType
   onToggle?: (toggleStatus: boolean) => void
   defaultToggle?: boolean
 
