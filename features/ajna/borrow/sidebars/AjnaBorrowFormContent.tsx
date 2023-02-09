@@ -8,7 +8,6 @@ import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
-import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -35,7 +34,6 @@ export function AjnaBorrowFormContent({
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
-  const { push } = useRedirect()
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -91,11 +89,12 @@ export function AjnaBorrowFormContent({
         ? {
             url: '/connect',
           }
+        : isTxSuccess && id
+        ? {
+            url: `/ajna/position/${id}`,
+          }
         : {
             action: async () => {
-              if (isTxSuccess && id) {
-                push(`/ajna/position/${id}`)
-              }
               if (isStepWithTransaction) {
                 txHandler()
               } else setNextStep()

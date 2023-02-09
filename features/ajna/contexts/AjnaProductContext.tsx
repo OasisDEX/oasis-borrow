@@ -21,7 +21,7 @@ import React, {
   useState,
 } from 'react'
 
-import { AjnaPosition } from '@oasisdex/oasis-actions/lib/src/helpers/ajna'
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
 
 interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
@@ -35,7 +35,7 @@ interface AjnaBorrowContextProviderProps {
   quotePrice: BigNumber
   quoteToken: string
   owner: string
-  currentPosition?: AjnaPosition
+  currentPosition: AjnaPosition
   id?: string
   steps: AjnaStatusStep[]
 }
@@ -44,7 +44,7 @@ type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'currentPositi
 
 export interface AjnaBorrowPosition {
   id?: string
-  currentPosition?: AjnaPosition
+  currentPosition: AjnaPosition
   setSimulation: Dispatch<SetStateAction<AjnaPosition | undefined>>
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
   simulation?: AjnaPosition

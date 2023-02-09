@@ -19,14 +19,14 @@ import { zero } from 'helpers/zero'
 import { useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-import { AjnaPosition } from '@oasisdex/oasis-actions/lib/src/helpers/ajna'
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
 
 interface AjnaTxHandlerInput {
   formState: AjnaBorrowFormState
   collateralToken: string
   quoteToken: string
   context: Context
-  currentPosition?: AjnaPosition
+  currentPosition: AjnaPosition
 }
 
 interface TxData {
@@ -105,7 +105,7 @@ async function getTxDetails({
         dependencies,
       )
     case 'deposit': {
-      if (!depositAmount || !currentPosition) {
+      if (!depositAmount) {
         return defaultPromise
       }
       return strategies.ajna.depositBorrow(
@@ -120,7 +120,7 @@ async function getTxDetails({
       )
     }
     case 'withdraw': {
-      if (!withdrawAmount || !currentPosition) {
+      if (!withdrawAmount) {
         return defaultPromise
       }
       return strategies.ajna.paybackWithdraw(
@@ -134,7 +134,7 @@ async function getTxDetails({
       )
     }
     case 'generate': {
-      if (!generateAmount || !currentPosition) {
+      if (!generateAmount) {
         return defaultPromise
       }
       return strategies.ajna.depositBorrow(
@@ -149,7 +149,7 @@ async function getTxDetails({
       )
     }
     case 'payback': {
-      if (!paybackAmount || !currentPosition) {
+      if (!paybackAmount) {
         return defaultPromise
       }
       return strategies.ajna.paybackWithdraw(

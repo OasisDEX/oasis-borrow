@@ -13,6 +13,7 @@ export function AjnaBorrowFormContentGenerate() {
       dispatch,
       state: { generateAmount },
     },
+    position: { simulation },
   } = useAjnaBorrowContext()
 
   return (
@@ -22,7 +23,7 @@ export function AjnaBorrowFormContentGenerate() {
       {generateAmount?.gt(0) && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaBorrowFormOrder />
+          {simulation && <AjnaBorrowFormOrder />}
         </>
       )}
     </>
