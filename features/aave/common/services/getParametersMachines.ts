@@ -1,8 +1,4 @@
-import { Observable } from 'rxjs'
-
-import { TxHelpers } from '../../../../components/AppContext'
-import { HasGasEstimation } from '../../../../helpers/form'
-import { createTransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
+import { TxHelpers } from 'components/AppContext'
 import {
   AdjustAaveParameters,
   CloseAaveParameters,
@@ -12,7 +8,10 @@ import {
   getOpenAaveParameters,
   ManageAaveParameters,
   OpenAaveParameters,
-} from '../../oasisActionsLibWrapper'
+} from 'features/aave/oasisActionsLibWrapper'
+import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import { HasGasEstimation } from 'helpers/form'
+import { Observable } from 'rxjs'
 
 export function getOpenAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
