@@ -42,13 +42,17 @@ export function AjnaBorrowFormContent({
         disabled: currentStep !== 'manage',
         items: [
           {
-            label: t('system.manage-collateral-token', { token: collateralToken }),
+            label: t('system.manage-collateral-token', {
+              token: collateralToken,
+            }),
             shortLabel: collateralToken,
             icon: getToken(collateralToken).iconCircle,
             action: () => setPanel('collateral'),
           },
           {
-            label: t('system.manage-debt-token', { token: quoteToken }),
+            label: t('system.manage-debt-token', {
+              token: quoteToken,
+            }),
             shortLabel: quoteToken,
             icon: getToken(quoteToken).iconCircle,
             action: () => setPanel('quote'),
