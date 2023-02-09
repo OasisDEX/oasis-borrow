@@ -47,7 +47,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   DiscoverOasis: true,
   AaveBorrow: false,
   AaveV3EarnWSTETH: false,
-  FollowVaults: false,
+  FollowVaults: true,
   AaveProtection: false,
   AaveProtectionWrite: false,
   Ajna: false,

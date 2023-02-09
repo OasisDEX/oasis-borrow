@@ -65,6 +65,7 @@ export interface CloseAaveParameters {
   token: string
   amount: BigNumber
   proxyType: ProxyType
+  shouldCloseToCollateral: boolean
 }
 
 export interface AdjustAaveParameters {
@@ -86,6 +87,7 @@ export interface ManageAaveParameters {
   amount: BigNumber
   token?: string
   proxyType: ProxyType
+  shouldCloseToCollateral: boolean
 }
 
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
@@ -375,6 +377,7 @@ export async function getCloseAaveParameters({
   slippage,
   currentPosition,
   proxyType,
+  shouldCloseToCollateral,
 }: CloseAaveParameters): Promise<IPositionTransition> {
   checkContext(context, 'adjust position')
 
@@ -404,7 +407,7 @@ export async function getCloseAaveParameters({
     proxy: proxyAddress,
     user: context.account,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
-    shouldCloseToCollateral: false,
+    shouldCloseToCollateral,
   }
 
   return strategies.aave.close(stratArgs, stratDeps)
