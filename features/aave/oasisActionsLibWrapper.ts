@@ -9,13 +9,13 @@ import {
 } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { ethNullAddress } from 'blockchain/config'
+import { Context, ContextConnected } from 'blockchain/network'
+import { getToken } from 'blockchain/tokensMetadata'
+import { amountToWei } from 'blockchain/utils'
 import { providers } from 'ethers'
+import { getOneInchCall } from 'helpers/swap'
+import { zero } from 'helpers/zero'
 
-import { Context, ContextConnected } from '../../blockchain/network'
-import { getToken } from '../../blockchain/tokensMetadata'
-import { amountToWei } from '../../blockchain/utils'
-import { getOneInchCall } from '../../helpers/swap'
-import { zero } from '../../helpers/zero'
 import { ManageTokenInput } from './common/BaseAaveContext'
 import { ProxyType } from './common/StrategyConfigTypes'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from './strategyConfig'
@@ -65,6 +65,7 @@ export interface CloseAaveParameters {
   token: string
   amount: BigNumber
   proxyType: ProxyType
+  shouldCloseToCollateral: boolean
 }
 
 export interface AdjustAaveParameters {
@@ -86,6 +87,7 @@ export interface ManageAaveParameters {
   amount: BigNumber
   token?: string
   proxyType: ProxyType
+  shouldCloseToCollateral: boolean
 }
 
 function checkContext(context: Context, msg: string): asserts context is ContextConnected {
@@ -375,6 +377,7 @@ export async function getCloseAaveParameters({
   slippage,
   currentPosition,
   proxyType,
+  shouldCloseToCollateral,
 }: CloseAaveParameters): Promise<IPositionTransition> {
   checkContext(context, 'adjust position')
 
@@ -404,6 +407,7 @@ export async function getCloseAaveParameters({
     proxy: proxyAddress,
     user: context.account,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
+    shouldCloseToCollateral,
   }
 
   return strategies.aave.close(stratArgs, stratDeps)
