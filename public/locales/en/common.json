@@ -1942,6 +1942,7 @@
     "cancel-trigger": "Cancel {{feature}}",
     "trigger-executed-banner-title": "{{feature}} triggered",
     "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
+    "trigger-executed-banner-short-description": "Your {{feature}} was triggered on your Position.",
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
     "trigger-executed": "Your {{feature}} was triggered",

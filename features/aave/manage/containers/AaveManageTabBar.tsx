@@ -68,6 +68,7 @@ export function AaveManageTabBar({
                 tokenPrice={state.context.tokenPrice}
                 debtPrice={state.context.debtPrice}
                 nextPosition={nextPosition}
+                dpmProxy={state.context.effectiveProxyAddress}
               />
               <SidebarManageAaveVault />
             </Grid>

@@ -3,6 +3,7 @@ import { observe } from 'blockchain/calls/observe'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
+import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { LendingProtocol } from 'lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { memoize } from 'lodash'
@@ -41,6 +42,7 @@ export function setupAaveV3Context(appContext: AppContext) {
     protocols,
     connectedContext$,
     commonTransactionServices,
+    chainContext$,
   } = appContext
 
   const {
@@ -168,6 +170,8 @@ export function setupAaveV3Context(appContext: AppContext) {
     getAaveAssetsPrices$({ tokens: ['USDC', 'WSTETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
+  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
+
   return {
     aaveStateMachine,
     aaveManageStateMachine,
@@ -187,5 +191,6 @@ export function setupAaveV3Context(appContext: AppContext) {
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
+    aaveHistory$,
   }
 }

@@ -1469,6 +1469,7 @@ export function setupAppContext() {
     allowanceStateMachine,
     allowanceForAccount$,
     contextForAddress$,
+    chainContext$,
   }
 }
 
