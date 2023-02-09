@@ -1,18 +1,14 @@
-import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
-import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { AllowanceStateMachine } from '../../../stateMachines/allowance'
-import { TransactionStateMachine } from '../../../stateMachines/transaction'
-import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
-import {
-  AdjustAaveParameters,
-  CloseAaveParameters,
-  ManageAaveParameters,
-} from '../../oasisActionsLibWrapper'
+import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import {
   createManageAaveStateMachine,
   ManageAaveStateMachine,
   ManageAaveStateMachineServices,
-} from '../state'
+} from 'features/aave/manage/state'
+import { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
+import { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 
 export function getManageAaveStateMachine(
   services: ManageAaveStateMachineServices,

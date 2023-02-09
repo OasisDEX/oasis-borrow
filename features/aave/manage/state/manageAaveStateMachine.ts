@@ -1,4 +1,5 @@
 import { IPosition } from '@oasisdex/oasis-actions'
+import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
@@ -11,16 +12,12 @@ import {
   BaseAaveEvent,
   contextToTransactionParameters,
   isAllowanceNeeded,
+  IStrategyConfig,
   ManageTokenInput,
-} from 'features/aave/common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
+  ProxyType,
+} from 'features/aave/common'
+import { getTxTokenAndAmount } from 'features/aave/helpers'
 import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
-import {
-  AdjustAaveParameters,
-  CloseAaveParameters,
-  ManageAaveParameters,
-} from 'features/aave/oasisActionsLibWrapper'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { PositionId } from 'features/aave/types'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
@@ -529,6 +526,7 @@ export function createManageAaveStateMachine(
               proxyType: context.positionCreatedBy,
               shouldCloseToCollateral:
                 context.manageTokenInput?.closingToken === context.tokens.collateral,
+              positionType: context.strategyConfig.type,
             },
           }),
           { to: (context) => context.refParametersMachine! },
