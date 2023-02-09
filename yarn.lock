@@ -5631,15 +5631,14 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
-"@oasisdex/oasis-actions@0.1.16-rc.1":
-  version "0.1.16-rc.1"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.1.16-rc.1.tgz#38b8a7c5b5a8323391da67756cbebebb11877ed2"
-  integrity sha512-/vJRl9XFZ4Qs6sbPmqpdGYAq0vMCXGQ2By9VE2Zv4joEXpv1Ap1s9g2kO7r8UAhNrXYFPrCeNVIDL9/SsO7sfw==
+"@oasisdex/oasis-actions@0.1.17":
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.1.17.tgz#b6d6012318fdea4dcd415b54fdff462a83665e50"
+  integrity sha512-ONt+f+ULNrSK4HhfHVix1/6mbSCtywXJmMs5+vcjc1Yg5nhch9sT4ozaYv9Ut9U2x/FVLlZiQNFCoStUyhUL0w==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"
     lodash "^4.17.21"
-    ramda "^0.28.0"
     utility-types "^3.10.0"
 
 "@oasisdex/transactions@^0.1.0":
@@ -23123,11 +23122,6 @@ ramda@^0.27.1:
   version "0.27.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.1.tgz#66fc2df3ef873874ffc2da6aa8984658abacf5c9"
   integrity sha512-PgIdVpn5y5Yns8vqb8FzBUEYn98V3xcPgawAkkgj0YJ0qDsnHCiNmZYfOGMgOvoB0eWFLpYbhxUR3mxfDIMvpw==
-
-ramda@^0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.28.0.tgz#acd785690100337e8b063cab3470019be427cc97"
-  integrity sha512-9QnLuG/kPVgWvMQ4aODhsBUFKOUmnbUnsSXACv+NCQZcHbeb+v8Lodp8OVxtRULN1/xOyYLLaL6npE6dMq5QTA==
 
 randexp@0.4.6:
   version "0.4.6"

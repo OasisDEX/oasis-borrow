@@ -1,14 +1,14 @@
 import { IPosition } from '@oasisdex/oasis-actions'
 import { Flex } from '@theme-ui/components'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { amountFromWei } from '../../../../../blockchain/utils'
+import { amountFromWei } from 'blockchain/utils'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationItem,
-} from '../../../../../components/vault/VaultChangesInformation'
-import { formatAmount } from '../../../../../helpers/formatters/format'
+} from 'components/vault/VaultChangesInformation'
+import { formatAmount } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface DebtCollateralInformation {
   currentPosition: IPosition
@@ -16,8 +16,9 @@ interface DebtCollateralInformation {
 }
 
 function formatDebtAmount(pos: IPosition) {
+  const amount = pos.debt.amount.lt(zero) ? zero : pos.debt.amount
   return `${formatAmount(
-    amountFromWei(pos.debt.amount, pos.debt.symbol),
+    amountFromWei(amount, pos.debt.symbol),
     pos.debt.symbol === 'USDC' ? 'USD' : pos.debt.symbol,
   )} ${pos.debt.symbol}`
 }
