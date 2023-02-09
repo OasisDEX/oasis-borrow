@@ -218,17 +218,17 @@ function buildPosition(
         const isOwner = context.status === 'connected' && context.account === walletAddress
 
         const url =
-        aaveProtocolVersion === LendingProtocol.AaveV2
-          ? `/aave/v2/${positionId}`
-          : `/aave/v3/${positionId}`
+          aaveProtocolVersion === LendingProtocol.AaveV2
+            ? `/aave/v2/${positionId}`
+            : `/aave/v3/${positionId}`
 
-      const title = `${collateralToken}/${debtToken} Aave ${
-        aaveProtocolVersion === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
-      }`
+        const title = `${collateralToken}/${debtToken} Aave ${
+          aaveProtocolVersion === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
+        }`
 
-      return {
-        token: collateralToken,
-        title,
+        return {
+          token: collateralToken,
+          title,
           url: url,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
@@ -294,7 +294,9 @@ export function createAavePosition$(
     tickerPrices$: (tokens: string[]) => Observable<Tickers>
     context$: Observable<Context>
     automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
-    readPositionCreatedEvents$: (args: ReadPositionCreatedEventsArgs,) => Observable<PositionCreated[]>
+    readPositionCreatedEvents$: (
+      args: ReadPositionCreatedEventsArgs,
+    ) => Observable<PositionCreated[]>
   },
   aaveProtocolData$: (
     collateralToken: string,
@@ -359,14 +361,21 @@ export function createAavePosition$(
                   throw new Error('nope')
                 }
 
-                return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
-                  aaveProtocolData$,
-                  getAaveAssetsPrices$,
-                  tickerPrices$,
-                  wrappedGetAaveReserveData$,
-                  aaveAvailableLiquidityInUSDC$,
-                  automationTriggersData$,
-                })
+                return buildPosition(
+                  pce,
+                  userProxy.vaultId,
+                  context,
+                  walletAddress,
+                  {
+                    aaveProtocolData$,
+                    getAaveAssetsPrices$,
+                    tickerPrices$,
+                    wrappedGetAaveReserveData$,
+                    aaveAvailableLiquidityInUSDC$,
+                    automationTriggersData$,
+                  },
+                  aaveProtocolVersion,
+                )
               }),
             )
           }),
