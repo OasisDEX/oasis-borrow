@@ -35,6 +35,7 @@ interface TxData {
   value: string
 }
 
+// TODO use Strategy<AjnaPosition> from library once exported
 interface ActionData {
   simulation: {
     targetPosition: AjnaPosition
