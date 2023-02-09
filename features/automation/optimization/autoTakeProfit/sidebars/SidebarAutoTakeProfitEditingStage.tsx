@@ -97,8 +97,14 @@ export function SidebarAutoTakeProfitEditingStage({
   if (isVaultEmpty) {
     return (
       <SidebarFormInfo
-        title={t('automation.closed-vault-not-existing-trigger-header', { feature })}
-        description={t('automation.closed-vault-not-existing-trigger-description', { feature })}
+        title={t('automation.closed-vault-not-existing-trigger-header', {
+          feature,
+          debtToken: 'DAI',
+        })}
+        description={t('automation.closed-vault-not-existing-trigger-description', {
+          feature,
+          debtToken: 'DAI',
+        })}
       />
     )
   }

@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Box, Flex, Grid, Text } from '@theme-ui/components'
+import { Box, Flex, Text } from '@theme-ui/components'
+import { DimmedList } from 'components/DImmedList'
 import { GasEstimationContext } from 'components/GasEstimationContextProvider'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -56,7 +57,7 @@ export function VaultChangesInformationItem({
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
       {tooltip && tooltipOpen && (
-        <Tooltip sx={{ transform: 'translateY(60%)', top: -230, right: ['0px', 'auto'] }}>
+        <Tooltip sx={{ transform: 'translateY(-100%)', right: ['0px', 'auto'], top: '-5px' }}>
           {tooltip}
         </Tooltip>
       )}
@@ -74,21 +75,14 @@ export function VaultChangesInformationContainer({
   children,
 }: { title: string } & WithChildren) {
   return (
-    <Grid
-      as="ul"
-      sx={{
-        p: 3,
-        backgroundColor: 'neutral30',
-        borderRadius: 'medium',
-      }}
-    >
+    <DimmedList>
       <Box as="li" sx={{ listStyle: 'none' }}>
         <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
           {title}
         </Text>
       </Box>
       {children}
-    </Grid>
+    </DimmedList>
   )
 }
 

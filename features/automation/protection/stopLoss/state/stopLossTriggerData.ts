@@ -1,4 +1,3 @@
-import { Result } from '@ethersproject/abi'
 import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import {
@@ -7,7 +6,8 @@ import {
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { getTriggersByType } from 'features/automation/common/helpers'
+import { DEFAULT_MAX_BASE_FEE_IN_GWEI } from 'features/automation/common/consts'
+import { getTriggersByType, TriggerDataType } from 'features/automation/common/helpers'
 import { zero } from 'helpers/zero'
 
 export interface StopLossTriggerData {
@@ -15,29 +15,32 @@ export interface StopLossTriggerData {
   stopLossLevel: BigNumber
   isToCollateral: boolean
   triggerId: BigNumber
+  executionParams: string
 }
 
-function pickTriggerWithHighestStopLossLevel(
-  stopLossTriggersData: {
-    triggerId: number
-    result: Result
-  }[],
-) {
+function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataType[]) {
   const mappedStopLossTriggers = stopLossTriggersData.map((trigger) => {
-    const [, triggerType, stopLossLevel] = trigger.result
+    const { triggerType, ltv, collRatio } = trigger.result
+
+    const triggerTypeAsNumber = new BigNumber(triggerType).toNumber()
 
     return {
       triggerId: new BigNumber(trigger.triggerId),
       isStopLossEnabled: true,
-      stopLossLevel: new BigNumber(stopLossLevel.toString()).div(100),
+      stopLossLevel: new BigNumber((ltv || collRatio).toString()).div(100),
       isToCollateral:
-        new BigNumber(triggerType.toString()).toNumber() === TriggerType.StopLossToCollateral,
+        triggerTypeAsNumber === TriggerType.StopLossToCollateral ||
+        triggerTypeAsNumber === TriggerType.AaveStopLossToCollateral,
+      executionParams: trigger.executionParams,
     }
   })
 
-  return mappedStopLossTriggers.reduce((max, obj) =>
-    max.stopLossLevel.gt(obj.stopLossLevel) ? max : obj,
-  )
+  return mappedStopLossTriggers.reduce((acc, obj) => {
+    if (TriggerType.AaveStopLossToDebt || TriggerType.AaveStopLossToCollateral) {
+      return acc.stopLossLevel.lt(obj.stopLossLevel) ? acc : obj
+    }
+    return acc.stopLossLevel.gt(obj.stopLossLevel) ? acc : obj
+  })
 }
 
 export const defaultStopLossData = {
@@ -45,6 +48,7 @@ export const defaultStopLossData = {
   stopLossLevel: zero,
   triggerId: zero,
   isToCollateral: false,
+  executionParams: '0x',
 } as StopLossTriggerData
 
 export function extractStopLossData(
@@ -52,11 +56,12 @@ export function extractStopLossData(
   overwriteDefault?: StopLossTriggerData,
 ): StopLossTriggerData {
   const defaultState = overwriteDefault || defaultStopLossData
-
   if (data.triggers && data.triggers.length > 0) {
     const stopLossTriggersData = getTriggersByType(data.triggers, [
       TriggerType.StopLossToCollateral,
       TriggerType.StopLossToDai,
+      TriggerType.AaveStopLossToDebt,
+      TriggerType.AaveStopLossToCollateral,
     ])
 
     if (stopLossTriggersData.length) {
@@ -69,7 +74,7 @@ export function extractStopLossData(
   return defaultState
 }
 
-export function prepareStopLossTriggerData(
+function getBaseTriggerData(
   id: BigNumber,
   owner: string,
   isCloseToCollateral: boolean,
@@ -104,11 +109,36 @@ export function prepareAddStopLossTriggerData({
   stopLossLevel: BigNumber
   replacedTriggerId: number
 }): AutomationBotAddTriggerData {
-  const baseTriggerData = prepareStopLossTriggerData(id, owner, isCloseToCollateral, stopLossLevel)
+  const baseTriggerData = getBaseTriggerData(id, owner, isCloseToCollateral, stopLossLevel)
 
   return {
     ...baseTriggerData,
     replacedTriggerId,
     kind: TxMetaKind.addTrigger,
+  }
+}
+
+export function prepareStopLossTriggerDataV2(
+  owner: string,
+  triggerType: TriggerType,
+  isCloseToCollateral: boolean,
+  stopLossLevel: BigNumber,
+  debtTokenAddress: string,
+  tokenAddress: string,
+) {
+  const triggerData = encodeTriggerDataByType(CommandContractType.AaveStopLossCommand, [
+    owner, // proxy
+    triggerType, // triggerType
+    tokenAddress, // collateralToken
+    debtTokenAddress, // debtToken
+    stopLossLevel.toString(), // stop loss level
+    DEFAULT_MAX_BASE_FEE_IN_GWEI.toString(), // max gas fee
+  ])
+
+  return {
+    triggerTypes: [triggerType],
+    proxyAddress: owner,
+    triggersData: [triggerData],
+    continuous: [false],
   }
 }

@@ -7,6 +7,8 @@ import {
   PositionVM,
 } from 'components/dumb/PositionList'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { AutoBSTriggerData } from 'features/automation/common/state/autoBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { Dsr } from 'features/dsr/utils/createDsr'
 import { calculateMultiply } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
@@ -189,7 +191,13 @@ function mapAavePositions(positions: AavePosition[]): PositionVM[] {
           precision: 2,
         }),
         collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
-        automationEnabled: false,
+        automationEnabled: isAutomationEnabled(position),
+        protectionAmount: getProtectionAmount(position),
+        automationLinkProps: {
+          href: `/aave/${position.id}`,
+          hash: VaultViewMode.Protection,
+          internalInNewTab: false,
+        },
         editLinkProps: {
           href: position.url,
           hash: VaultViewMode.Overview,
@@ -230,16 +238,21 @@ function getPnl(vault: MakerPositionDetails): BigNumber {
   return calculatePNL(history, netValueUSD)
 }
 
-function isAutomationEnabled(position: MakerPositionDetails): boolean {
-  return position.stopLossData.isStopLossEnabled || position.autoSellData.isTriggerEnabled
+interface PositionWithProtection {
+  stopLossData?: StopLossTriggerData
+  autoSellData?: AutoBSTriggerData
 }
 
-function getProtectionAmount(position: MakerPositionDetails): string {
+function isAutomationEnabled(position: PositionWithProtection): boolean {
+  return !!(position.stopLossData?.isStopLossEnabled || position.autoSellData?.isTriggerEnabled)
+}
+
+function getProtectionAmount(position: PositionWithProtection): string {
   let protectionAmount = zero
 
-  if (position.stopLossData.stopLossLevel.gt(zero))
+  if (position.stopLossData?.stopLossLevel.gt(zero))
     protectionAmount = position.stopLossData.stopLossLevel.times(100)
-  else if (position.autoSellData.execCollRatio.gt(zero))
+  else if (position.autoSellData?.execCollRatio.gt(zero))
     protectionAmount = position.autoSellData.execCollRatio
 
   return formatPercent(protectionAmount)

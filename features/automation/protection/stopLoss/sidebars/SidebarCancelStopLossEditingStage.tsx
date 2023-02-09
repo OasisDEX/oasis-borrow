@@ -66,7 +66,13 @@ export function SidebarCancelStopLossEditingStage({
   const { t } = useTranslation()
   const {
     positionData: { liquidationPrice },
+    metadata: {
+      stopLossMetadata: {
+        translations: { ratioParamTranslationKey },
+      },
+    },
   } = useAutomationContext()
+
   return (
     <Grid>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
@@ -83,7 +89,8 @@ export function SidebarCancelStopLossEditingStage({
       <MessageCard
         messages={[
           <>
-            <strong>{t(`notice`)}</strong>: {t('protection.cancel-notice')}
+            <strong>{t(`notice`)}</strong>:{' '}
+            {t('protection.cancel-notice', { ratioParam: t(ratioParamTranslationKey) })}
           </>,
         ]}
         type="warning"

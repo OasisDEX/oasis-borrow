@@ -2,6 +2,7 @@ import { Tracker } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
+import { formatOazoFee } from 'features/multiply/manage/utils'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { merge, Observable } from 'rxjs'
@@ -23,6 +24,7 @@ type AdjustPositionConfirmTransaction = {
     ilk: string
     multiply: string
     txHash: string
+    oasisFee: string
   }
 }
 
@@ -42,6 +44,7 @@ type OtherActionsConfirmTransaction = {
     collateralAmount: BigNumber
     daiAmount: BigNumber
     txHash: string
+    oasisFee: string
   }
 }
 
@@ -62,6 +65,7 @@ type CloseVaultConfirmTransaction = {
     debt: string
     closeTo: CloseVaultTo
     txHash: string
+    oasisFee: string
   }
 }
 
@@ -92,6 +96,7 @@ export function createManageMultiplyVaultAnalytics$(
         generateAmount,
         paybackAmount,
         closeVaultTo,
+        oazoFee,
       }) => {
         if (originalEditingStage === 'adjustPosition') {
           return {
@@ -100,6 +105,7 @@ export function createManageMultiplyVaultAnalytics$(
               ilk,
               multiply: afterMultiply.minus(multiply).toFixed(3),
               txHash: manageTxHash,
+              oasisFee: formatOazoFee(oazoFee),
             },
           } as AdjustPositionConfirmTransaction
         } else if (otherAction !== 'closeVault') {
@@ -112,6 +118,7 @@ export function createManageMultiplyVaultAnalytics$(
               daiAmount:
                 generateAmount || (paybackAmount ? paybackAmount.times(new BigNumber(-1)) : zero),
               txHash: manageTxHash,
+              oasisFee: formatOazoFee(oazoFee),
             },
           } as OtherActionsConfirmTransaction
         } else {
@@ -122,6 +129,7 @@ export function createManageMultiplyVaultAnalytics$(
               debt: debt.toFixed(3),
               closeTo: closeVaultTo,
               txHash: manageTxHash,
+              oasisFee: formatOazoFee(oazoFee),
             },
           } as CloseVaultConfirmTransaction
         }
@@ -197,6 +205,7 @@ export function createManageMultiplyVaultAnalytics$(
                 event.value.txHash,
                 network,
                 walletType,
+                event.value.oasisFee,
               )
               break
             case 'otherActionsConfirm':
@@ -214,6 +223,7 @@ export function createManageMultiplyVaultAnalytics$(
                 event.value.txHash,
                 network,
                 walletType,
+                event.value.oasisFee,
               )
               break
             case 'closeVaultConfirm':
@@ -231,6 +241,7 @@ export function createManageMultiplyVaultAnalytics$(
                 event.value.txHash,
                 network,
                 walletType,
+                event.value.oasisFee,
               )
               break
             default:
