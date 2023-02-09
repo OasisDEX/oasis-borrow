@@ -25,13 +25,14 @@ interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
   collateralPrice: BigNumber
   collateralToken: string
+  dpmProxy?: string
   ethPrice: BigNumber
   flow: AjnaFlow
   product: AjnaProduct
   quoteBalance: BigNumber
   quotePrice: BigNumber
   quoteToken: string
-  owner?: string
+  owner: string
   position: AjnaBorrowPosition
   steps: AjnaStatusStep[]
 }

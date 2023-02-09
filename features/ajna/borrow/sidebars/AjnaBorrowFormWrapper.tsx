@@ -10,7 +10,7 @@ import React, { useEffect } from 'react'
 export function AjnaBorrowFormWrapper() {
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { dpmProxy, collateralToken, quoteToken },
     form: {
       state: { action, depositAmount, paybackAmount },
       updateState,
@@ -20,6 +20,7 @@ export function AjnaBorrowFormWrapper() {
   const txHandler = useAjnaTxHandler()
 
   const flowState = useFlowState({
+    ...(dpmProxy && { existingProxy: dpmProxy }),
     token: ['open', 'deposit', 'withdraw'].includes(action as string)
       ? collateralToken
       : quoteToken,
