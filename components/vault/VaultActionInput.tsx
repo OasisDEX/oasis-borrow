@@ -254,7 +254,7 @@ export function VaultActionInput({
               })}
               onChange={onChange}
               value={amount ? formatBigNumber(amount, currencyDigits) : ''}
-              placeholder={toggleResolved ? `0 ${tokenSymbol}` : toggleOffPlaceholder}
+              placeholder={toggleResolved ? `0 ${tokenSymbol}` : (toggleOffPlaceholder as string)}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
           ) : (
@@ -268,7 +268,9 @@ export function VaultActionInput({
               })}
               onChange={onAuxiliaryChange}
               value={auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : ''}
-              placeholder={toggleResolved ? `0 ${auxiliarySymbol}` : toggleOffPlaceholder}
+              placeholder={
+                toggleResolved ? `0 ${auxiliarySymbol}` : (toggleOffPlaceholder as string)
+              }
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
           )}
