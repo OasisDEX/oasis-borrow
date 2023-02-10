@@ -14,24 +14,15 @@ import { Box, Card, Container, Flex, Grid, Heading, Image, Text } from 'theme-ui
 
 export function AjnaBorrowView() {
   const { t } = useTranslation()
-  const { walletAddress } = useAccount()
+  const { contextIsLoaded, walletAddress } = useAccount()
   const {
-    environment: {
-      collateralPrice,
-      collateralToken,
-      flow,
-      isOwner,
-      owner,
-      product,
-      quotePrice,
-      quoteToken,
-    },
+    environment: { collateralPrice, collateralToken, flow, owner, product, quotePrice, quoteToken },
     position: { id },
   } = useAjnaBorrowContext()
 
   return (
     <Container variant="vaultPageContainerStatic">
-      {!isOwner && (
+      {contextIsLoaded && owner !== walletAddress && flow === 'manage' && (
         <Box sx={{ mb: 4 }}>
           <VaultOwnershipBanner controller={owner} account={walletAddress} />
         </Box>
