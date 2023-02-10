@@ -32,8 +32,12 @@ export function AjnaBorrowOverviewWrapper() {
             <ContentCardLiquidationPrice
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              liquidationPrice={zero}
-              belowCurrentPrice={zero}
+              liquidationPrice={currentPosition.liquidationPrice}
+              afterLiquidationPrice={simulation?.liquidationPrice}
+              belowCurrentPrice={currentPosition.liquidationPrice
+                .minus(collateralPrice)
+                .dividedBy(collateralPrice)
+                .absoluteValue()}
             />
             <ContentCardLoanToValue
               loanToValue={currentPosition.riskRatio.loanToValue}
@@ -59,8 +63,10 @@ export function AjnaBorrowOverviewWrapper() {
               collateralToken={collateralToken}
               quoteToken={quoteToken}
               cost={zero}
-              availableToBorrow={zero}
-              availableToWithdraw={zero}
+              availableToBorrow={currentPosition.debtAvailable}
+              afterAvailableToBorrow={simulation?.debtAvailable}
+              availableToWithdraw={currentPosition.collateralAvailable}
+              afterAvailableToWithdraw={simulation?.collateralAvailable}
             />
           </DetailsSectionFooterItemWrapper>
         }
