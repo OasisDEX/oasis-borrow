@@ -1,8 +1,11 @@
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
-import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
+import {
+  formatAmount,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+} from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -18,9 +21,20 @@ export function AjnaBorrowFormOrder() {
     collateralLocked: formatCryptoBalance(currentPosition.collateralAmount),
     debt: formatCryptoBalance(currentPosition.debtAmount),
     ltv: formatDecimalAsPercent(currentPosition.riskRatio.loanToValue),
-    afterLtv: formatDecimalAsPercent(simulation?.riskRatio.loanToValue || zero),
-    afterDebt: formatCryptoBalance(simulation?.debtAmount || zero),
-    afterCollateralLocked: formatCryptoBalance(simulation?.collateralAmount || zero),
+    liquidationPrice: formatCryptoBalance(currentPosition.liquidationPrice),
+    availableToBorrow: `${formatAmount(currentPosition.debtAvailable, quoteToken)}`,
+    availableToWithdraw: formatAmount(currentPosition.collateralAvailable, collateralToken),
+    afterLiquidationPrice:
+      simulation?.liquidationPrice && formatCryptoBalance(simulation.liquidationPrice),
+    afterLtv: simulation?.riskRatio && formatDecimalAsPercent(simulation.riskRatio.loanToValue),
+    afterDebt: simulation?.debtAmount && formatCryptoBalance(simulation.debtAmount),
+    afterCollateralLocked:
+      simulation?.collateralAmount && formatCryptoBalance(simulation.collateralAmount),
+    afterAvailableToBorrow:
+      simulation?.debtAvailable && formatAmount(simulation?.debtAvailable, quoteToken),
+    afterAvailableToWithdraw:
+      simulation?.collateralAvailable &&
+      formatAmount(simulation?.collateralAvailable, collateralToken),
   }
 
   return (
@@ -39,8 +53,8 @@ export function AjnaBorrowFormOrder() {
         },
         {
           label: t('system.liquidation-price'),
-          value: '0.00 USDC/ETH',
-          secondaryValue: '1,300.00 USDC/ETH',
+          value: `${formatted.liquidationPrice} ${quoteToken}/${collateralToken}`,
+          secondaryValue: `${formatted.afterLiquidationPrice} ${quoteToken}/${collateralToken}`,
         },
         {
           label: t('system.debt'),
@@ -49,13 +63,13 @@ export function AjnaBorrowFormOrder() {
         },
         {
           label: t('system.available-to-withdraw'),
-          value: '0.00 ETH',
-          secondaryValue: '5.00 ETH',
+          value: `${formatted.availableToWithdraw} ${collateralToken}`,
+          secondaryValue: `${formatted.afterAvailableToWithdraw} ${collateralToken}`,
         },
         {
           label: t('system.available-to-generate'),
-          value: '0 USDC',
-          secondaryValue: '10,000.00 USDC',
+          value: `${formatted.availableToBorrow} ${quoteToken}`,
+          secondaryValue: `${formatted.afterAvailableToBorrow} ${quoteToken}`,
         },
         {
           label: t('system.max-transaction-cost'),
