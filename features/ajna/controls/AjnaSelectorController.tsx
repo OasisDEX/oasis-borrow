@@ -100,9 +100,11 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
           liquidityAvaliable: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
           annualFee: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
           protocol: (
-            <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
-              Ajna
-            </DiscoverTableDataCellProtocol>
+            <DiscoverTableDataCellInactive>
+              <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
+                Ajna
+              </DiscoverTableDataCellProtocol>
+            </DiscoverTableDataCellInactive>
           ),
           action: (
             <Button className="discover-action" variant="tertiary" disabled={true}>
