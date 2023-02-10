@@ -1400,7 +1400,7 @@ export function setupAppContext() {
   )
 
   const ajnaPosition$ = memoize(
-    curry(getAjnaPosition$)(context$, dpmPositionData$),
+    curry(getAjnaPosition$)(context$, dpmPositionData$, onEveryBlock$),
     (ajnaPositionIdentification: GetAjnaPositionIdentification) => ajnaPositionIdentification,
   )
 

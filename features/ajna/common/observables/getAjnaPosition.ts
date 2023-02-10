@@ -36,9 +36,14 @@ interface AjnaPositionWithMeta {
 export function getAjnaPosition$(
   context$: Observable<Context>,
   dpmPositionData$: (positionId: PositionId) => Observable<DpmPositionData | null>,
+  onEveryBlock$: Observable<number>,
   { collateralToken, positionId, product, quoteToken }: GetAjnaPositionIdentification,
 ): Observable<AjnaPositionWithMeta | null> {
-  return combineLatest(context$, positionId ? dpmPositionData$(positionId) : of(undefined)).pipe(
+  return combineLatest(
+    context$,
+    positionId ? dpmPositionData$(positionId) : of(undefined),
+    onEveryBlock$,
+  ).pipe(
     switchMap(async ([context, dpmPositionData]) => {
       if (dpmPositionData && dpmPositionData.protocol !== 'Ajna') return null
 
