@@ -84,7 +84,20 @@ export function VaultHeadline({
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
         {followVaultEnabled && (
-          <Flex sx={{ flexWrap: 'wrap', flexShrink: 0, alignItems: 'center', columnGap: 2, ml: 3 }}>
+          <Flex
+            sx={{
+              flexWrap: 'wrap',
+              flexShrink: 0,
+              alignItems: 'center',
+              columnGap: 2,
+              ml: 3,
+              '&:hover': {
+                '.tooltip': {
+                  whiteSpace: 'nowrap',
+                },
+              },
+            }}
+          >
             {followButton && <FollowButtonControl {...followButton} />}
             {shareButton && (
               <ShareButton
