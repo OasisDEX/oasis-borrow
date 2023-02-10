@@ -1488,6 +1488,7 @@ export function setupAppContext() {
     contextForAddress$,
     dpmPositionData$,
     ajnaPosition$,
+    chainContext$,
   }
 }
 
