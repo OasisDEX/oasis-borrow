@@ -34,10 +34,9 @@ export function AjnaBorrowOverviewWrapper() {
               quoteToken={quoteToken}
               liquidationPrice={currentPosition.liquidationPrice}
               afterLiquidationPrice={simulation?.liquidationPrice}
-              belowCurrentPrice={currentPosition.liquidationPrice
-                .minus(collateralPrice)
-                .dividedBy(collateralPrice)
-                .absoluteValue()}
+              belowCurrentPrice={collateralPrice
+                .minus(currentPosition.liquidationPrice)
+                .dividedBy(collateralPrice)}
             />
             <ContentCardLoanToValue
               loanToValue={currentPosition.riskRatio.loanToValue}
