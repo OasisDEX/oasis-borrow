@@ -9,6 +9,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useSimulationYields } from 'helpers/useSimulationYields'
+import { LendingProtocol } from 'lendingProtocols'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -46,6 +47,8 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
     fields: ['7Days', '90Days'],
     strategy: strategy,
   })
+
+  const protocolVersion = strategy.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
 
   return (
     <WithErrorHandler error={[aaveReserveStateError, aaveAvailableLiquidityETHError]}>
@@ -107,7 +110,7 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
               },
             ]}
             button={{
-              link: `/earn/aave/v2/open/${cardData.symbol}`,
+              link: `/earn/aave/${protocolVersion}/open/${cardData.symbol}`,
               text: t('nav.earn'),
             }}
             background={cardData.background}

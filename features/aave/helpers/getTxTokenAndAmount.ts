@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { BaseAaveContext } from 'features/aave/common'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { zero } from 'helpers/zero'
-
-import { BaseAaveContext } from '../common/BaseAaveContext'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
 
 export function getTxTokenAndAmount(context: BaseAaveContext) {
   // FIX IT whole logic below should be happening in xstate machine probably, we should not do that here

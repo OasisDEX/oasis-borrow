@@ -276,8 +276,9 @@ export function AaveMultiplyPositionData({
                   variant: nextPositionThings.debt.gt(currentPositionThings.debt)
                     ? 'positive'
                     : 'negative',
-                  value: `${formatPrecision(nextPositionThings.debt, 4)} ${
-                    nextPosition.debt.symbol
+                  value: `${formatPrecision(nextPositionThings.debt.lt(zero) ? zero : nextPositionThings.debt,
+                  4,
+                    )} ${nextPosition.debt.symbol
                   } ${t('after')}`,
                 }
               }

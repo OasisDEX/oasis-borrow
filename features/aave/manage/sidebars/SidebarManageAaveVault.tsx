@@ -9,6 +9,7 @@ import { useAutomationContext } from 'components/AutomationContextProvider'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { Skeleton } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
 import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
@@ -76,14 +77,13 @@ function getAmountGetFromPositionAfterClose(
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
-  const displayToken = state.context.transition?.simulation.swap.targetToken || {
-    symbol: token,
-    precision: 18,
-  }
+  const closingToken = state.context.manageTokenInput!.closingToken!
+  // @ts-ignore
+  const isLoading = ['debouncingManage', 'loadingManage'].includes(state.value.background)
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountGetFromPositionAfterClose(state.context.transition, state.context.currentPosition),
-      displayToken.symbol,
+      closingToken,
     ),
   )
 
@@ -91,13 +91,17 @@ function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: str
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Flex>
         <Icon name={getToken(token).iconCircle} size={22} sx={{ mr: 1 }} />
-        <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
+        <Text variant="boldParagraph3" sx={{ color: 'neutral80', whiteSpace: 'pre' }}>
           {t('manage-earn.aave.vault-form.token-amount-after-closing', { token })}
         </Text>
       </Flex>
-      <Text variant="boldParagraph3">
-        {balance} {displayToken.symbol}
-      </Text>
+      {isLoading ? (
+        <Skeleton width={100} />
+      ) : (
+        <Text variant="boldParagraph3">
+          {balance} {closingToken}
+        </Text>
+      )}
     </Flex>
   )
 }
@@ -124,10 +128,10 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
 }
 
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
+  if (context.currentPosition === undefined) {
+    return zero
+  }
   if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-    if (context.currentPosition === undefined) {
-      return zero
-    }
     const position = context.currentPosition
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
@@ -136,9 +140,10 @@ function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
       .times(position.category.maxLoanToValue)
       .minus(debt.times(context.debtPrice || zero))
   }
+
   const currentDebt = amountFromWei(
-    context.currentPosition?.debt.amount || zero,
-    context.currentPosition?.debt.symbol || '',
+    context.currentPosition.debtToPaybackAll,
+    context.currentPosition?.debt.symbol,
   )
 
   const currentBalance = context.balance?.debt?.balance || zero
@@ -197,7 +202,6 @@ function GetReviewingSidebarProps({
               items={[collateral, debt].map((token) => ({
                 id: token,
                 label: t('close-to', { token }),
-                disabled: token === collateral, // only close to debt is available ATM
                 action: () => curry(updateClosingAction)(token),
               }))}
             />
@@ -593,7 +597,8 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.transition?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.transition?.transaction.operationName ===
+        OPERATION_NAMES.aave.v2.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />

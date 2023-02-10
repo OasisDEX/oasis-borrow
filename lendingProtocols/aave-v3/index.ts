@@ -1,3 +1,4 @@
+import { getOnChainPosition } from 'actions/aave/oasisActionsLibWrapper'
 import BigNumber from 'bignumber.js'
 import {
   createAaveV3OracleAssetPriceData$,
@@ -14,7 +15,6 @@ import {
 } from 'blockchain/aave-v3'
 import { observe } from 'blockchain/calls/observe'
 import { Context } from 'blockchain/network'
-import { getOnChainPosition } from 'features/aave/oasisActionsLibWrapper'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -68,7 +68,15 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
     (collateralToken: string, debtToken: string, proxyAddress: string) => {
       return context$.pipe(
         switchMap((context) => {
-          return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
+          return from(
+            getOnChainPosition({
+              context,
+              proxyAddress,
+              collateralToken,
+              debtToken,
+              protocol: LendingProtocol.AaveV3,
+            }),
+          )
         }),
         shareReplay(1),
       )

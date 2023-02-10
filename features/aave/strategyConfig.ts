@@ -16,9 +16,9 @@ import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
+import { IStrategyConfig, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
