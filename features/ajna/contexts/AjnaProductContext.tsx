@@ -174,6 +174,7 @@ export function AjnaBorrowContextProvider({
       },
       position: {
         ...prev.position,
+        currentPosition,
         simulation,
         isSimulationLoading,
       },
@@ -188,6 +189,7 @@ export function AjnaBorrowContextProvider({
     currentStep,
     txDetails,
     simulation,
+    currentPosition,
     isSimulationLoading,
   ])
 
