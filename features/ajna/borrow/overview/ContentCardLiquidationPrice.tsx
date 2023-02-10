@@ -47,7 +47,9 @@ export function ContentCardLiquidationPrice({
 
   if (afterLiquidationPrice !== undefined)
     contentCardSettings.change = {
-      value: `${formatted.afterLiquidationPrice} ${collateralToken}/${quoteToken} ${t('system.cards.common.after')}`,
+      value: `${formatted.afterLiquidationPrice} ${collateralToken}/${quoteToken} ${t(
+        'system.cards.common.after',
+      )}`,
       variant: changeVariant,
     }
 
