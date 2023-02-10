@@ -22,7 +22,7 @@ export function AjnaBorrowFormOrder() {
     debt: formatCryptoBalance(currentPosition.debtAmount),
     ltv: formatDecimalAsPercent(currentPosition.riskRatio.loanToValue),
     liquidationPrice: formatCryptoBalance(currentPosition.liquidationPrice),
-    availableToBorrow: `${formatAmount(currentPosition.debtAvailable, quoteToken)}`,
+    availableToBorrow: formatAmount(currentPosition.debtAvailable, quoteToken),
     availableToWithdraw: formatAmount(currentPosition.collateralAvailable, collateralToken),
     afterLiquidationPrice:
       simulation?.liquidationPrice && formatCryptoBalance(simulation.liquidationPrice),
