@@ -25,6 +25,7 @@ export function AjnaBorrowFormContent({
   const {
     environment: { collateralToken, isOwner, flow, product, quoteToken },
     form: {
+      dispatch,
       state: { dpmAddress, uiDropdown },
       updateState,
     },
@@ -48,6 +49,7 @@ export function AjnaBorrowFormContent({
             shortLabel: collateralToken,
             icon: getToken(collateralToken).iconCircle,
             action: () => {
+              dispatch({ type: 'reset' })
               updateState('uiDropdown', 'collateral')
               updateState('uiPill', 'deposit')
             },
@@ -60,6 +62,7 @@ export function AjnaBorrowFormContent({
             shortLabel: quoteToken,
             icon: getToken(quoteToken).iconCircle,
             action: () => {
+              dispatch({ type: 'reset' })
               updateState('uiDropdown', 'quote')
               updateState('uiPill', 'generate')
             },

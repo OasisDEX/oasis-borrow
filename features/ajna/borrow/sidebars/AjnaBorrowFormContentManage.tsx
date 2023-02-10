@@ -11,6 +11,7 @@ export function AjnaBorrowFormContentManage() {
   const { t } = useTranslation()
   const {
     form: {
+      dispatch,
       state: { uiDropdown, uiPill },
       updateState,
     },
@@ -26,12 +27,18 @@ export function AjnaBorrowFormContentManage() {
                 {
                   id: 'deposit',
                   label: t('vault-actions.deposit'),
-                  action: () => updateState('uiPill', 'deposit'),
+                  action: () => {
+                    dispatch({ type: 'reset' })
+                    updateState('uiPill', 'deposit')
+                  },
                 },
                 {
                   id: 'withdraw',
                   label: t('vault-actions.withdraw'),
-                  action: () => updateState('uiPill', 'withdraw'),
+                  action: () => {
+                    dispatch({ type: 'reset' })
+                    updateState('uiPill', 'withdraw')
+                  },
                 },
               ],
             }
@@ -40,12 +47,18 @@ export function AjnaBorrowFormContentManage() {
                 {
                   id: 'generate',
                   label: t('vault-actions.generate'),
-                  action: () => updateState('uiPill', 'generate'),
+                  action: () => {
+                    dispatch({ type: 'reset' })
+                    updateState('uiPill', 'generate')
+                  },
                 },
                 {
                   id: 'payback',
                   label: t('vault-actions.payback'),
-                  action: () => updateState('uiPill', 'payback'),
+                  action: () => {
+                    dispatch({ type: 'reset' })
+                    updateState('uiPill', 'payback')
+                  },
                 },
               ],
             })}
