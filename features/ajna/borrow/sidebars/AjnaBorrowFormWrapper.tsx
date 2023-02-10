@@ -1,5 +1,6 @@
 import { FlowSidebar } from 'components/FlowSidebar'
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
+import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
@@ -9,15 +10,17 @@ import React, { useEffect } from 'react'
 export function AjnaBorrowFormWrapper() {
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, quoteToken },
+    environment: { dpmProxy, collateralToken, quoteToken },
     form: {
       state: { action, depositAmount, paybackAmount },
       updateState,
     },
     steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
   } = useAjnaBorrowContext()
+  const txHandler = useAjnaTxHandler()
 
   const flowState = useFlowState({
+    ...(dpmProxy && { existingProxy: dpmProxy }),
     token: ['open', 'deposit', 'withdraw'].includes(action as string)
       ? collateralToken
       : quoteToken,
@@ -41,7 +44,7 @@ export function AjnaBorrowFormWrapper() {
   return (
     <>
       {!isExternalStep ? (
-        <AjnaBorrowFormContent isAllowanceLoading={flowState.isLoading} />
+        <AjnaBorrowFormContent isAllowanceLoading={flowState.isLoading} txHandler={txHandler} />
       ) : (
         <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
       )}

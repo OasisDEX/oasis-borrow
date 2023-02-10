@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -30,16 +30,13 @@ export function ContentCardLiquidationPrice({
   const formatted = {
     liquidationPrice: formatCryptoBalance(liquidationPrice),
     afterLiquidationPrice: afterLiquidationPrice && formatCryptoBalance(liquidationPrice),
-    belowCurrentPrice: formatPercent(belowCurrentPrice, { precision: 2 }),
+    belowCurrentPrice: formatDecimalAsPercent(belowCurrentPrice),
   }
 
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.borrow.common.overview.liquidation-price'),
     value: `${formatted.liquidationPrice}`,
     unit: `${collateralToken}/${quoteToken}`,
-    footnote: t('ajna.borrow.common.overview.below-current-price', {
-      belowCurrentPrice: formatted.belowCurrentPrice,
-    }),
   }
 
   if (afterLiquidationPrice !== undefined)
@@ -47,6 +44,12 @@ export function ContentCardLiquidationPrice({
       value: `${formatted.afterLiquidationPrice} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
+
+  if (liquidationPrice.isZero()) {
+    contentCardSettings.footnote = t('ajna.borrow.common.overview.below-current-price', {
+      belowCurrentPrice: formatted.belowCurrentPrice,
+    })
+  }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

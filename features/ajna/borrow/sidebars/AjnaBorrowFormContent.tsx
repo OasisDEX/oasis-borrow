@@ -13,19 +13,24 @@ import React, { useState } from 'react'
 import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
+  txHandler: () => void
   isAllowanceLoading?: boolean
 }
 
-export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormContentProps) {
+export function AjnaBorrowFormContent({
+  isAllowanceLoading,
+  txHandler,
+}: AjnaBorrowFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, product, quoteToken },
+    environment: { collateralToken, isOwner, flow, product, quoteToken },
     form: {
       state: { dpmAddress },
     },
-    steps: { currentStep, editingStep, isStepValid, setNextStep, setStep },
-    tx: { isTxStarted, isTxError, isTxWaitingForApproval },
+    steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
+    tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxSuccess, isTxInProgress },
+    position: { isSimulationLoading, id },
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
@@ -37,13 +42,17 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
         disabled: currentStep !== 'manage',
         items: [
           {
-            label: t('system.manage-collateral-token', { token: collateralToken }),
+            label: t('system.manage-collateral-token', {
+              token: collateralToken,
+            }),
             shortLabel: collateralToken,
             icon: getToken(collateralToken).iconCircle,
             action: () => setPanel('collateral'),
           },
           {
-            label: t('system.manage-debt-token', { token: quoteToken }),
+            label: t('system.manage-debt-token', {
+              token: quoteToken,
+            }),
             shortLabel: quoteToken,
             icon: getToken(quoteToken).iconCircle,
             action: () => setPanel('quote'),
@@ -60,14 +69,42 @@ export function AjnaBorrowFormContent({ isAllowanceLoading }: AjnaBorrowFormCont
       </Grid>
     ),
     primaryButton: {
-      label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
-      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading),
-      isLoading: !!walletAddress && isAllowanceLoading,
+      label: t(
+        getPrimaryButtonLabelKey({
+          currentStep,
+          product,
+          dpmAddress,
+          walletAddress,
+          isTxSuccess,
+          isTxError,
+        }),
+      ),
+      disabled:
+        !!walletAddress &&
+        (!isStepValid ||
+          isAllowanceLoading ||
+          isSimulationLoading ||
+          isTxInProgress ||
+          isTxWaitingForApproval),
+      isLoading:
+        !!walletAddress &&
+        (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval),
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',
           }
-        : { action: setNextStep }),
+        : isTxSuccess && id
+        ? {
+            url: `/ajna/position/${id}`,
+          }
+        : {
+            action: async () => {
+              if (isStepWithTransaction) {
+                txHandler()
+              } else setNextStep()
+            },
+          }),
+      ...(walletAddress && !isOwner && currentStep === editingStep && { hidden: true }),
     },
     // TODO: think of a smart way of managing if this button should be visible
     ...(currentStep === 'transaction' &&

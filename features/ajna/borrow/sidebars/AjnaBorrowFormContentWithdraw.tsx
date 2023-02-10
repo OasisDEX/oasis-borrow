@@ -13,6 +13,7 @@ export function AjnaBorrowFormContentWithdraw() {
       dispatch,
       state: { withdrawAmount },
     },
+    position: { simulation },
   } = useAjnaBorrowContext()
 
   return (
@@ -22,7 +23,7 @@ export function AjnaBorrowFormContentWithdraw() {
       {withdrawAmount?.gt(0) && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaBorrowFormOrder />
+          {simulation && <AjnaBorrowFormOrder />}
         </>
       )}
     </>
