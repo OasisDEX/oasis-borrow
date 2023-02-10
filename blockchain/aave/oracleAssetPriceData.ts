@@ -1,10 +1,10 @@
 import { BigNumber } from 'bignumber.js'
+import { observe } from 'blockchain/calls/observe'
+import { Context } from 'blockchain/network'
+import { one } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 
-import { one } from '../../helpers/zero'
-import { observe } from '../calls/observe'
-import { Context } from '../network'
 import { getAaveV2OracleAssetPriceData } from './index'
 
 export interface AaveV2OracleAssertPriceArgs {

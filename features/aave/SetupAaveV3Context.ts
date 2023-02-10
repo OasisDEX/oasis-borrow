@@ -6,13 +6,15 @@ import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopL
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { LendingProtocol } from 'lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
+import { ReserveConfigurationData } from 'lendingProtocols/common'
 import { memoize } from 'lodash'
 import moment from 'moment/moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { getAaveStEthYield } from './common'
+import { AaveContext } from './AaveContext'
+import { getAaveStEthYield, IStrategyConfig } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -29,7 +31,7 @@ import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } fr
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { getSupportedTokens } from './strategyConfig'
 
-export function setupAaveV3Context(appContext: AppContext) {
+export function setupAaveV3Context(appContext: AppContext): AaveContext {
   const {
     userSettings$,
     txHelpers$,
@@ -69,6 +71,7 @@ export function setupAaveV3Context(appContext: AppContext) {
     convertToAaveOracleAssetPrice$,
     aaveOracleAssetPriceData$,
     getAaveReserveData$,
+    getAaveV3BaseCurrencyUnit$,
   } = protocols[LendingProtocol.AaveV3]
 
   const aaveSthEthYieldsQuery = memoize(
@@ -78,7 +81,7 @@ export function setupAaveV3Context(appContext: AppContext) {
 
   const earnCollateralsReserveData = {
     WSTETH: aaveReserveConfigurationData$({ token: 'WSTETH' }),
-  } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
+  } as Record<string, Observable<ReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
@@ -98,6 +101,7 @@ export function setupAaveV3Context(appContext: AppContext) {
 
   const strategyInfo$ = memoize(
     curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
   const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$)
@@ -159,15 +163,26 @@ export function setupAaveV3Context(appContext: AppContext) {
     depositBorrowAaveMachine,
   )
 
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV3AssetsPrices, (args) =>
+  const getAaveAssetsPricesBase$ = observe(onEveryBlock$, context$, getAaveV3AssetsPrices, (args) =>
     args.tokens.join(''),
+  )
+
+  const getAaveAssetsPrices$ = memoize(
+    ({ tokens }: { tokens: string[] }) => {
+      return getAaveV3BaseCurrencyUnit$().pipe(
+        switchMap((baseCurrencyUnit) => getAaveAssetsPricesBase$({ tokens, baseCurrencyUnit })),
+      )
+    },
+    ({ tokens }) => tokens.join(''),
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'WSTETH' }),
     getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC', 'WSTETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    getAaveAssetsPrices$({
+      tokens: ['ETH', 'WSTETH'],
+    }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
   const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
