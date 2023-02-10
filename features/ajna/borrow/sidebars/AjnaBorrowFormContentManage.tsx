@@ -30,6 +30,7 @@ export function AjnaBorrowFormContentManage() {
                   action: () => {
                     dispatch({ type: 'reset' })
                     updateState('uiPill', 'deposit')
+                    updateState('action', 'deposit')
                   },
                 },
                 {
@@ -38,6 +39,7 @@ export function AjnaBorrowFormContentManage() {
                   action: () => {
                     dispatch({ type: 'reset' })
                     updateState('uiPill', 'withdraw')
+                    updateState('action', 'withdraw')
                   },
                 },
               ],
@@ -50,6 +52,7 @@ export function AjnaBorrowFormContentManage() {
                   action: () => {
                     dispatch({ type: 'reset' })
                     updateState('uiPill', 'generate')
+                    updateState('action', 'generate')
                   },
                 },
                 {
@@ -58,6 +61,7 @@ export function AjnaBorrowFormContentManage() {
                   action: () => {
                     dispatch({ type: 'reset' })
                     updateState('uiPill', 'payback')
+                    updateState('action', 'payback')
                   },
                 },
               ],

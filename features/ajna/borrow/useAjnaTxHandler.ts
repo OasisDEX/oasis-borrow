@@ -9,7 +9,7 @@ import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 export interface OasisActionCallData extends AjnaTxData {
@@ -32,14 +32,28 @@ export function useAjnaTxHandler(): AjnaTxHandler {
 
   const [txData, setTxData] = useState<AjnaTxData>()
   const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<AjnaActionData>>()
-  const { dpmAddress } = state
 
+  const { depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress } = state
+
+  useEffect(() => {
+    if (txHelpers) {
+      cancelablePromise?.cancel()
+      if (!depositAmount && !generateAmount && !paybackAmount && !withdrawAmount) {
+        setSimulation(undefined)
+        setIsLoadingSimulation(false)
+      } else {
+        setIsLoadingSimulation(true)
+      }
+    }
+  }, [
+    depositAmount?.toString(),
+    generateAmount?.toString(),
+    paybackAmount?.toString(),
+    withdrawAmount?.toString(),
+  ])
   useDebouncedEffect(
     () => {
       if (txHelpers && context && dpmAddress) {
-        cancelablePromise?.cancel()
-        setIsLoadingSimulation(true)
-
         const promise = cancelable(
           getAjnaParameters({
             rpcProvider: context.rpcProvider,
@@ -74,10 +88,10 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       }
     },
     [
-      state.depositAmount?.toString(),
-      state.generateAmount?.toString(),
-      state.withdrawAmount?.toString(),
-      state.paybackAmount?.toString(),
+      depositAmount?.toString(),
+      generateAmount?.toString(),
+      paybackAmount?.toString(),
+      withdrawAmount?.toString(),
     ],
     250,
   )

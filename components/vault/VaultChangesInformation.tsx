@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import { DimmedList } from 'components/DImmedList'
 import { GasEstimationContext } from 'components/GasEstimationContextProvider'
+import { Skeleton } from 'components/Skeleton'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
@@ -145,8 +146,6 @@ export function getEstimatedGasFeeTextOld(
 }
 
 export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, withBrackets = false) {
-  const { t } = useTranslation()
-
   if (!gasEstimation) {
     return 'n/a'
   }
@@ -158,13 +157,7 @@ export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, wit
 
   switch (status) {
     case GasEstimationStatus.calculating:
-      const textPending = t('pending')
-
-      return (
-        <Text as="span" sx={{ color: 'neutral80' }}>
-          {withBrackets ? `(${textPending})` : textPending}
-        </Text>
-      )
+      return <Skeleton width="100px" />
     case GasEstimationStatus.error:
     case undefined:
       return <EstimationError withBrackets={withBrackets} />
