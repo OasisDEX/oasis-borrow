@@ -58,7 +58,6 @@ export function AjnaBorrowOverviewWrapper() {
               collateralToken={collateralToken}
               quoteToken={quoteToken}
               cost={currentPosition.pool.rate}
-              afterCost={simulation?.pool.rate}
               availableToBorrow={currentPosition.debtAvailable}
               afterAvailableToBorrow={simulation?.debtAvailable}
               availableToWithdraw={currentPosition.collateralAvailable}
