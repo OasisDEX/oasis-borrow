@@ -11,13 +11,13 @@ import {
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { AutomationTxData, TxHelpers, UIChanges } from 'components/AppContext'
 import {
+  addTransactionMap,
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
   AutomationRemoveTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
 import { AutomationPublishType } from 'features/automation/common/types'
-import { addTransactionMap } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 

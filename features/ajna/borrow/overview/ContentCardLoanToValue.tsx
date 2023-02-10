@@ -4,7 +4,7 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { formatPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -22,8 +22,8 @@ export function ContentCardLoanToValue({
   const { t } = useTranslation()
 
   const formatted = {
-    loanToValue: formatPercent(loanToValue, { precision: 2 }),
-    afterLoanToValue: afterLoanToValue && formatPercent(afterLoanToValue, { precision: 2 }),
+    loanToValue: formatDecimalAsPercent(loanToValue),
+    afterLoanToValue: afterLoanToValue && formatDecimalAsPercent(afterLoanToValue),
   }
 
   const contentCardSettings: ContentCardProps = {

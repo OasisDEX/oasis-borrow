@@ -13,6 +13,7 @@ export function AjnaBorrowFormContentDeposit() {
       dispatch,
       state: { depositAmount },
     },
+    position: { simulation },
   } = useAjnaBorrowContext()
 
   return (
@@ -22,7 +23,7 @@ export function AjnaBorrowFormContentDeposit() {
       {depositAmount?.gt(0) && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaBorrowFormOrder />
+          {simulation && <AjnaBorrowFormOrder />}
         </>
       )}
     </>

@@ -42,7 +42,7 @@ export function GasEstimationContextProvider({ children }: WithChildren) {
     }
 
     const transactionDef = txData!.transaction as TransactionDef<TxData>
-    const transactionData = txData.data
+    const transactionData = txData.data as TxData
 
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },

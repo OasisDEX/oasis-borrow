@@ -1,15 +1,17 @@
-import { strategies, views } from '@oasisdex/oasis-actions'
+import { strategies } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
+import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { ethers } from 'ethers'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaPoolPairs } from 'features/ajna/common/types'
-import { AjnaBorrowPosition, useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
 import { useObservable } from 'helpers/observableHook'
 import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
@@ -17,11 +19,14 @@ import { zero } from 'helpers/zero'
 import { useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
+
 interface AjnaTxHandlerInput {
   formState: AjnaBorrowFormState
   collateralToken: string
   quoteToken: string
   context: Context
+  currentPosition: AjnaPosition
 }
 
 interface TxData {
@@ -30,9 +35,18 @@ interface TxData {
   value: string
 }
 
+// TODO use Strategy<AjnaPosition> from library once exported
 interface ActionData {
-  simulation: AjnaBorrowPosition
+  simulation: {
+    targetPosition: AjnaPosition
+    swap: any[]
+  }
   tx: TxData
+}
+
+export interface OasisActionCallData extends TxData {
+  kind: TxMetaKind.libraryCall
+  proxyAddress: string
 }
 
 async function getTxDetails({
@@ -41,6 +55,7 @@ async function getTxDetails({
   collateralToken,
   quoteToken,
   context,
+  currentPosition,
 }: AjnaTxHandlerInput & {
   rpcProvider: ethers.providers.Provider
 }): Promise<ActionData> {
@@ -51,14 +66,6 @@ async function getTxDetails({
   if (!dpmAddress) {
     return defaultPromise
   }
-
-  const anjaPosition = await views.ajna.getPosition(
-    {
-      proxyAddress: dpmAddress,
-      poolAddress: context.ajnaPoolPairs[tokenPair].address,
-    },
-    { poolInfoAddress: context.ajnaPoolInfo.address, provider: rpcProvider },
-  )
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
@@ -79,7 +86,6 @@ async function getTxDetails({
     dpmProxyAddress: dpmAddress,
     quoteTokenPrecision,
     collateralTokenPrecision,
-    position: anjaPosition,
   }
 
   // TODO hardcoded for now, but will be moved eventually to library
@@ -87,11 +93,10 @@ async function getTxDetails({
 
   switch (formState.action) {
     case 'open':
-    case 'deposit': {
       if (!depositAmount) {
         return defaultPromise
       }
-      return await strategies.ajna[formState.action === 'open' ? 'open' : 'depositBorrow'](
+      return strategies.ajna.open(
         {
           ...commonPayload,
           quoteAmount: generateAmount || zero,
@@ -100,16 +105,31 @@ async function getTxDetails({
         },
         dependencies,
       )
+    case 'deposit': {
+      if (!depositAmount) {
+        return defaultPromise
+      }
+      return strategies.ajna.depositBorrow(
+        {
+          ...commonPayload,
+          quoteAmount: generateAmount || zero,
+          collateralAmount: depositAmount,
+          price,
+          position: currentPosition,
+        },
+        dependencies,
+      )
     }
     case 'withdraw': {
       if (!withdrawAmount) {
         return defaultPromise
       }
-      return await strategies.ajna.paybackWithdraw(
+      return strategies.ajna.paybackWithdraw(
         {
           ...commonPayload,
           quoteAmount: paybackAmount || zero,
           collateralAmount: withdrawAmount,
+          position: currentPosition,
         },
         dependencies,
       )
@@ -118,12 +138,13 @@ async function getTxDetails({
       if (!generateAmount) {
         return defaultPromise
       }
-      return await strategies.ajna.depositBorrow(
+      return strategies.ajna.depositBorrow(
         {
           ...commonPayload,
           quoteAmount: generateAmount,
           collateralAmount: depositAmount || zero,
           price,
+          position: currentPosition,
         },
         dependencies,
       )
@@ -132,11 +153,12 @@ async function getTxDetails({
       if (!paybackAmount) {
         return defaultPromise
       }
-      return await strategies.ajna.paybackWithdraw(
+      return strategies.ajna.paybackWithdraw(
         {
           ...commonPayload,
           quoteAmount: paybackAmount,
           collateralAmount: withdrawAmount || zero,
+          position: currentPosition,
         },
         dependencies,
       )
@@ -149,41 +171,52 @@ async function getTxDetails({
 type AjnaTxHandler = () => void
 
 export function useAjnaTxHandler(): AjnaTxHandler {
-  const { txHelpers$, context$ } = useAppContext()
+  const { txHelpers$, context$, uiChanges } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
     form: { state },
-    tx: { setTxDetails, setSimulationData, setIsLoadingSimulation },
+    tx: { setTxDetails },
     environment: { collateralToken, quoteToken, ethPrice },
+    position: { currentPosition, setSimulation, setIsLoadingSimulation },
   } = useAjnaBorrowContext()
 
   const [txData, setTxData] = useState<TxData>()
-
+  const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<ActionData>>()
   const { dpmAddress } = state
 
   useDebouncedEffect(
     () => {
       if (txHelpers && context && dpmAddress) {
+        cancelablePromise?.cancel()
         setIsLoadingSimulation(true)
-        void getTxDetails({
-          rpcProvider: context.rpcProvider,
-          formState: state,
-          collateralToken,
-          quoteToken,
-          context,
-        })
-          .then((data) => {
-            setIsLoadingSimulation(false)
-            setTxData(data?.tx)
-            setSimulationData(data?.simulation)
 
-            // TODO update it once aave sl is deployed as interface has been changed
-            // uiChanges.publish(TX_DATA_CHANGE, {
-            //   type: 'add-trigger',
-            //   transaction: callLibraryWithDpmProxy,
-            //   data: data.tx.data,
-            // })
+        const promise = cancelable(
+          getTxDetails({
+            rpcProvider: context.rpcProvider,
+            formState: state,
+            collateralToken,
+            quoteToken,
+            context,
+            currentPosition,
+          }),
+        )
+        setCancelablePromise(promise)
+
+        promise
+          .then((data) => {
+            setTxData(data?.tx)
+            setSimulation(data?.simulation?.targetPosition)
+            setIsLoadingSimulation(false)
+            uiChanges.publish(TX_DATA_CHANGE, {
+              type: 'tx-data',
+              transaction: callOasisActionsWithDpmProxy,
+              data: {
+                kind: TxMetaKind.libraryCall,
+                proxyAddress: dpmAddress,
+                ...data?.tx,
+              },
+            })
           })
           .catch((error) => {
             setIsLoadingSimulation(false)

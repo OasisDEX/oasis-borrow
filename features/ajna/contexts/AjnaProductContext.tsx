@@ -21,6 +21,8 @@ import React, {
   useState,
 } from 'react'
 
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
+
 interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
   collateralPrice: BigNumber
@@ -33,15 +35,20 @@ interface AjnaBorrowContextProviderProps {
   quotePrice: BigNumber
   quoteToken: string
   owner: string
-  position: AjnaBorrowPosition
+  currentPosition: AjnaPosition
+  id?: string
   steps: AjnaStatusStep[]
 }
 
-type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'position' | 'steps'>
+type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'currentPosition' | 'steps'>
 
-// temporary, interface will come from MPA
 export interface AjnaBorrowPosition {
   id?: string
+  currentPosition: AjnaPosition
+  setSimulation: Dispatch<SetStateAction<AjnaPosition | undefined>>
+  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
+  simulation?: AjnaPosition
+  isSimulationLoading?: boolean
 }
 
 interface AjnaBorrowSteps {
@@ -65,12 +72,6 @@ interface AjnaBorrowTx {
   isTxWaitingForApproval: boolean
   txDetails?: TxDetails
   setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
-  setSimulationData: Dispatch<SetStateAction<AjnaBorrowPosition | undefined>>
-  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  simulation?: {
-    isLoading: boolean
-    data?: AjnaBorrowPosition
-  }
 }
 
 interface AjnaBorrowContext {
@@ -98,7 +99,8 @@ export function useAjnaBorrowContext(): AjnaBorrowContext {
 
 export function AjnaBorrowContextProvider({
   children,
-  position,
+  currentPosition,
+  id,
   steps,
   ...props
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
@@ -108,8 +110,8 @@ export function AjnaBorrowContextProvider({
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
-  const [simulationData, setSimulationData] = useState<AjnaBorrowPosition>()
-  const [isLoadingSimulation, setIsLoadingSimulation] = useState(false)
+  const [simulation, setSimulation] = useState<AjnaPosition>()
+  const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
 
   const setStep = (step: AjnaStatusStep) => {
     if (
@@ -144,12 +146,6 @@ export function AjnaBorrowContextProvider({
     return {
       txDetails,
       setTxDetails,
-      setSimulationData,
-      setIsLoadingSimulation,
-      simulation: {
-        data: simulationData,
-        isLoading: isLoadingSimulation,
-      },
       ...getTxStatuses(txDetails?.txStatus),
     }
   }
@@ -157,7 +153,12 @@ export function AjnaBorrowContextProvider({
   const [context, setContext] = useState<AjnaBorrowContext>({
     environment: { ...props, isOwner: props.owner === walletAddress || props.flow === 'open' },
     form,
-    position,
+    position: {
+      id,
+      currentPosition,
+      setIsLoadingSimulation,
+      setSimulation,
+    },
     steps: setupStepManager(),
     tx: setupTxManager(),
   })
@@ -171,6 +172,11 @@ export function AjnaBorrowContextProvider({
         collateralBalance: props.collateralBalance,
         quoteBalance: props.quoteBalance,
       },
+      position: {
+        ...prev.position,
+        simulation,
+        isSimulationLoading,
+      },
       form: { ...prev.form, state: form.state },
       steps: setupStepManager(),
       tx: setupTxManager(),
@@ -181,8 +187,8 @@ export function AjnaBorrowContextProvider({
     form.state,
     currentStep,
     txDetails,
-    simulationData,
-    isLoadingSimulation,
+    simulation,
+    isSimulationLoading,
   ])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>

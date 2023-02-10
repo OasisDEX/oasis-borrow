@@ -8,7 +8,6 @@ import { ContentCardPositionDebt } from 'features/ajna/borrow/overview/ContentCa
 import { ContentFooterItemsBorrow } from 'features/ajna/borrow/overview/ContentFooterItemsBorrow'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -17,6 +16,7 @@ export function AjnaBorrowOverviewWrapper() {
   const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken, quotePrice, quoteToken },
+    position: { currentPosition, simulation },
   } = useAjnaBorrowContext()
 
   return (
@@ -28,19 +28,27 @@ export function AjnaBorrowOverviewWrapper() {
             <ContentCardLiquidationPrice
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              liquidationPrice={zero}
-              belowCurrentPrice={zero}
+              liquidationPrice={currentPosition.liquidationPrice}
+              afterLiquidationPrice={simulation?.liquidationPrice}
+              belowCurrentPrice={collateralPrice
+                .minus(currentPosition.liquidationPrice)
+                .dividedBy(collateralPrice)}
             />
-            <ContentCardLoanToValue loanToValue={zero} />
+            <ContentCardLoanToValue
+              loanToValue={currentPosition.riskRatio.loanToValue}
+              afterLoanToValue={simulation?.riskRatio.loanToValue}
+            />
             <ContentCardCollateralLocked
               collateralToken={collateralToken}
-              collateralLocked={zero}
-              collateralLockedUSD={zero.times(collateralPrice)}
+              collateralLocked={currentPosition.collateralAmount}
+              collateralLockedUSD={currentPosition.collateralAmount.times(collateralPrice)}
+              afterCollateralLocked={simulation?.collateralAmount}
             />
             <ContentCardPositionDebt
               quoteToken={quoteToken}
-              positionDebt={zero}
-              positionDebtUSD={zero.times(quotePrice)}
+              positionDebt={currentPosition.debtAmount}
+              positionDebtUSD={currentPosition.debtAmount.times(quotePrice)}
+              afterPositionDebt={simulation?.debtAmount}
             />
           </DetailsSectionContentCardWrapper>
         }
@@ -49,9 +57,11 @@ export function AjnaBorrowOverviewWrapper() {
             <ContentFooterItemsBorrow
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              cost={zero}
-              availableToBorrow={zero}
-              availableToWithdraw={zero}
+              cost={currentPosition.pool.rate}
+              availableToBorrow={currentPosition.debtAvailable}
+              afterAvailableToBorrow={simulation?.debtAvailable}
+              availableToWithdraw={currentPosition.collateralAvailable}
+              afterAvailableToWithdraw={simulation?.collateralAvailable}
             />
           </DetailsSectionFooterItemWrapper>
         }

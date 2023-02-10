@@ -29,12 +29,11 @@ export function AjnaBorrowFormContent({
       state: { dpmAddress },
     },
     steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
-    tx: { isTxStarted, isTxError, isTxWaitingForApproval, simulation },
+    tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxSuccess, isTxInProgress },
+    position: { isSimulationLoading, id },
   } = useAjnaBorrowContext()
 
   const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
-
-  const isLoadingSimulation = simulation?.isLoading
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -43,13 +42,17 @@ export function AjnaBorrowFormContent({
         disabled: currentStep !== 'manage',
         items: [
           {
-            label: t('system.manage-collateral-token', { token: collateralToken }),
+            label: t('system.manage-collateral-token', {
+              token: collateralToken,
+            }),
             shortLabel: collateralToken,
             icon: getToken(collateralToken).iconCircle,
             action: () => setPanel('collateral'),
           },
           {
-            label: t('system.manage-debt-token', { token: quoteToken }),
+            label: t('system.manage-debt-token', {
+              token: quoteToken,
+            }),
             shortLabel: quoteToken,
             icon: getToken(quoteToken).iconCircle,
             action: () => setPanel('quote'),
@@ -66,12 +69,33 @@ export function AjnaBorrowFormContent({
       </Grid>
     ),
     primaryButton: {
-      label: t(getPrimaryButtonLabelKey({ currentStep, product, dpmAddress, walletAddress })),
-      disabled: !!walletAddress && (!isStepValid || isAllowanceLoading || isLoadingSimulation),
-      isLoading: !!walletAddress && (isAllowanceLoading || isLoadingSimulation),
+      label: t(
+        getPrimaryButtonLabelKey({
+          currentStep,
+          product,
+          dpmAddress,
+          walletAddress,
+          isTxSuccess,
+          isTxError,
+        }),
+      ),
+      disabled:
+        !!walletAddress &&
+        (!isStepValid ||
+          isAllowanceLoading ||
+          isSimulationLoading ||
+          isTxInProgress ||
+          isTxWaitingForApproval),
+      isLoading:
+        !!walletAddress &&
+        (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval),
       ...(!walletAddress && currentStep === editingStep
         ? {
             url: '/connect',
+          }
+        : isTxSuccess && id
+        ? {
+            url: `/ajna/position/${id}`,
           }
         : {
             action: async () => {

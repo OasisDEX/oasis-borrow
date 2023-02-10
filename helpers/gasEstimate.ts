@@ -1,33 +1,33 @@
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
-import { addAutomationBotAggregatorTrigger } from 'blockchain/calls/automationBotAggregator'
-import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-} from 'features/automation/common/state/autoBSFormChange'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
+import { OasisActionCallData } from 'features/ajna/borrow/useAjnaTxHandler'
 import {
   AutomationAddTriggerData,
   AutomationAddTriggerTxDef,
   AutomationRemoveTriggerData,
   AutomationRemoveTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
-import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 
 export const TX_DATA_CHANGE = 'TX_DATA_CHANGE'
 
 export type TxPayloadChange =
   | {
-      data: AutomationAddTriggerData | AutomationRemoveTriggerData
-      transaction: AutomationAddTriggerTxDef | AutomationRemoveTriggerTxDef
+      data: AutomationAddTriggerData | AutomationRemoveTriggerData | OasisActionCallData
+      transaction:
+        | AutomationAddTriggerTxDef
+        | AutomationRemoveTriggerTxDef
+        | TransactionDef<OasisActionsTxData>
     }
   | undefined
 
 export type TxPayloadChangeAction =
   | {
       type: 'tx-data'
-      transaction: AutomationAddTriggerTxDef | AutomationRemoveTriggerTxDef
-      data: AutomationAddTriggerData | AutomationRemoveTriggerData
+      transaction:
+        | AutomationAddTriggerTxDef
+        | AutomationRemoveTriggerTxDef
+        | TransactionDef<OasisActionsTxData>
+      data: AutomationAddTriggerData | AutomationRemoveTriggerData | OasisActionCallData
     }
   | { type: 'reset' }
 
@@ -43,12 +43,4 @@ export function gasEstimationReducer(
     default:
       return state
   }
-}
-
-export const addTransactionMap = {
-  [CONSTANT_MULTIPLE_FORM_CHANGE]: addAutomationBotAggregatorTrigger,
-  [AUTO_BUY_FORM_CHANGE]: addAutomationBotTrigger,
-  [AUTO_SELL_FORM_CHANGE]: addAutomationBotTrigger,
-  [STOP_LOSS_FORM_CHANGE]: addAutomationBotTrigger,
-  [AUTO_TAKE_PROFIT_FORM_CHANGE]: addAutomationBotTrigger,
 }

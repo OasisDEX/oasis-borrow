@@ -26,16 +26,21 @@ export function ContentCardCollateralLocked({
   const { t } = useTranslation()
 
   const formatted = {
-    loanToValue: formatAmount(collateralLocked, collateralToken),
-    afterCollateralLocked: afterCollateralLocked && formatAmount(collateralLocked, collateralToken),
+    collateralLocked: formatAmount(collateralLocked, collateralToken),
+    afterCollateralLocked:
+      afterCollateralLocked &&
+      `${formatAmount(afterCollateralLocked, collateralToken)} ${collateralToken}`,
     collateralLockedUSD: `$${formatAmount(collateralLockedUSD, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.borrow.common.overview.collateral-locked'),
-    value: formatted.loanToValue,
+    value: formatted.collateralLocked,
     unit: collateralToken,
-    footnote: formatted.collateralLockedUSD,
+  }
+
+  if (!collateralLocked.isZero()) {
+    contentCardSettings.footnote = formatted.collateralLockedUSD
   }
 
   if (afterCollateralLocked !== undefined)
