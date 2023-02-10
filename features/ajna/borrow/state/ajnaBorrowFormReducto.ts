@@ -50,7 +50,7 @@ type AjnaBorrowFormAction = ReductoActions<
   | AjnaBorrowFormActionsReset
 >
 
-export const ajnaBorrowDefault: AjnaBorrowFormState = {
+export const ajnaBorrowReset = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
@@ -59,6 +59,10 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   paybackAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+}
+
+export const ajnaBorrowDefault: AjnaBorrowFormState = {
+  ...ajnaBorrowReset,
   uiDropdown: 'collateral',
   uiPill: 'deposit',
 }
@@ -97,7 +101,7 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             paybackAmountUSD: action.paybackAmountUSD,
           }
         case 'reset':
-          return { ...state, ...ajnaBorrowDefault }
+          return { ...state, ...ajnaBorrowReset }
         default:
           return state
       }
