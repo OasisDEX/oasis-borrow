@@ -13,6 +13,7 @@ export function AjnaBorrowFormContentPayback() {
       dispatch,
       state: { paybackAmount },
     },
+    position: { simulation },
   } = useAjnaBorrowContext()
 
   return (
@@ -22,7 +23,7 @@ export function AjnaBorrowFormContentPayback() {
       {paybackAmount?.gt(0) && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaBorrowFormOrder />
+          {simulation && <AjnaBorrowFormOrder />}
         </>
       )}
     </>

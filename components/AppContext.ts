@@ -49,6 +49,7 @@ import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
+import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
 import { observe } from 'blockchain/calls/observe'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
@@ -130,6 +131,11 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
+import {
+  getAjnaPosition$,
+  GetAjnaPositionIdentification,
+} from 'features/ajna/common/observables/getAjnaPosition'
+import { getDpmPositionData$ } from 'features/ajna/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -336,6 +342,7 @@ export type TxData =
   | AutomationBotV2RemoveTriggerData
   | OperationExecutorTxMeta
   | CreateDPMAccount
+  | OasisActionsTxData
 
 export type AutomationTxData =
   | AutomationBotAddTriggerData
@@ -1387,6 +1394,16 @@ export function setupAppContext() {
     (token, spender) => `${token}-${spender}`,
   )
 
+  const dpmPositionData$ = memoize(
+    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+  )
+
+  const ajnaPosition$ = memoize(
+    curry(getAjnaPosition$)(context$, dpmPositionData$),
+    (ajnaPositionIdentification: GetAjnaPositionIdentification) => ajnaPositionIdentification,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1469,6 +1486,8 @@ export function setupAppContext() {
     allowanceStateMachine,
     allowanceForAccount$,
     contextForAddress$,
+    dpmPositionData$,
+    ajnaPosition$,
     chainContext$,
   }
 }

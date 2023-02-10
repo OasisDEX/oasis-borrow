@@ -5631,10 +5631,10 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
-"@oasisdex/oasis-actions@0.2.0-RC-1":
-  version "0.2.0-RC-1"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.0-RC-1.tgz#f033d8c6fe230f76f87135042399eb8c383fda06"
-  integrity sha512-OhmIuSLlihe8VROuUqiApbzxUU6fmcZH3zgKoDD5L9Re61M7EdTSjlG72RFIv4x+gIcLSzYRUIvpH7aR0DROnA==
+"@oasisdex/oasis-actions@0.2.1-RC.1":
+  version "0.2.1-RC.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.1-RC.1.tgz#9bee39fe43d7a26711519db9f403335c2ae632b3"
+  integrity sha512-RZT948YUF9tlzi7r5ZmpqfE9AqaNiLlRiKxYEKVj+LiEyGuk8mHMiP824nvw89Gybywfo38AIWKUCsaiQjIIUA==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"
@@ -12039,6 +12039,11 @@ camelize@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/camelize/-/camelize-1.0.0.tgz#164a5483e630fa4321e5af07020e531831b2609b"
   integrity sha1-FkpUg+Yw+kMh5a8HAg5TGDGyYJs=
+
+cancelable-promise@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/cancelable-promise/-/cancelable-promise-4.3.1.tgz#957b62382435e74dfb2a038517f53205e0c631c6"
+  integrity sha512-A/8PwLk/T7IJDfUdQ68NR24QHa8rIlnN/stiJEBo6dmVUkD4K14LswG0w3VwdeK/o7qOwRUR1k2MhK5Rpy2m7A==
 
 caniuse-lite@^1.0.30000748, caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001219, caniuse-lite@^1.0.30001283:
   version "1.0.30001419"

@@ -26,21 +26,25 @@ export function ContentCardPositionDebt({
   const { t } = useTranslation()
 
   const formatted = {
-    loanToValue: formatAmount(positionDebt, quoteToken),
-    afterCollateralLocked: afterPositionDebt && formatAmount(positionDebt, quoteToken),
-    collateralLockedUSD: `$${formatAmount(positionDebtUSD, 'USD')}`,
+    positionDebt: formatAmount(positionDebt, quoteToken),
+    afterPositionDebt:
+      afterPositionDebt && `${formatAmount(afterPositionDebt, quoteToken)} ${quoteToken}`,
+    positionDebtUSD: `$${formatAmount(positionDebtUSD, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
     title: t('ajna.borrow.common.overview.position-debt'),
-    value: formatted.loanToValue,
+    value: formatted.positionDebt,
     unit: quoteToken,
-    footnote: formatted.collateralLockedUSD,
+  }
+
+  if (!positionDebt.isZero()) {
+    contentCardSettings.footnote = formatted.positionDebtUSD
   }
 
   if (afterPositionDebt !== undefined)
     contentCardSettings.change = {
-      value: `${formatted.afterCollateralLocked} ${t('system.cards.common.after')}`,
+      value: `${formatted.afterPositionDebt} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
 
