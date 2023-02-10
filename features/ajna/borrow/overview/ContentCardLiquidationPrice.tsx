@@ -39,17 +39,19 @@ export function ContentCardLiquidationPrice({
     unit: `${collateralToken}/${quoteToken}`,
   }
 
-  if (afterLiquidationPrice !== undefined)
-    contentCardSettings.change = {
-      value: `${formatted.afterLiquidationPrice} ${t('system.cards.common.after')}`,
-      variant: changeVariant,
-    }
-
-  if (liquidationPrice.isZero()) {
+  if (!liquidationPrice.isZero()) {
     contentCardSettings.footnote = t('ajna.borrow.common.overview.below-current-price', {
       belowCurrentPrice: formatted.belowCurrentPrice,
     })
   }
+
+  if (afterLiquidationPrice !== undefined)
+    contentCardSettings.change = {
+      value: `${formatted.afterLiquidationPrice} ${collateralToken}/${quoteToken} ${t(
+        'system.cards.common.after',
+      )}`,
+      variant: changeVariant,
+    }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

@@ -5,11 +5,10 @@ import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaB
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
-import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
@@ -26,36 +25,47 @@ export function AjnaBorrowFormContent({
   const {
     environment: { collateralToken, isOwner, flow, product, quoteToken },
     form: {
-      state: { dpmAddress },
+      dispatch,
+      state: { dpmAddress, uiDropdown },
+      updateState,
     },
     steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxSuccess, isTxInProgress },
     position: { isSimulationLoading, id },
   } = useAjnaBorrowContext()
 
-  const [panel, setPanel] = useState<AjnaBorrowPanel>('collateral')
-
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
     ...(flow === 'manage' && {
       dropdown: {
+        forcePanel: uiDropdown,
         disabled: currentStep !== 'manage',
         items: [
           {
             label: t('system.manage-collateral-token', {
               token: collateralToken,
             }),
+            panel: 'collateral',
             shortLabel: collateralToken,
             icon: getToken(collateralToken).iconCircle,
-            action: () => setPanel('collateral'),
+            action: () => {
+              dispatch({ type: 'reset' })
+              updateState('uiDropdown', 'collateral')
+              updateState('uiPill', 'deposit')
+            },
           },
           {
             label: t('system.manage-debt-token', {
               token: quoteToken,
             }),
+            panel: 'quote',
             shortLabel: quoteToken,
             icon: getToken(quoteToken).iconCircle,
-            action: () => setPanel('quote'),
+            action: () => {
+              dispatch({ type: 'reset' })
+              updateState('uiDropdown', 'quote')
+              updateState('uiPill', 'generate')
+            },
           },
         ],
       },
@@ -64,7 +74,7 @@ export function AjnaBorrowFormContent({
       <Grid gap={3}>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
         {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
-        {currentStep === 'manage' && <AjnaBorrowFormContentManage panel={panel} />}
+        {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
         {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
       </Grid>
     ),

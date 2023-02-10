@@ -9,7 +9,6 @@ interface ContentFooterItemsBorrowProps {
   collateralToken: string
   quoteToken: string
   cost: BigNumber
-  afterCost?: BigNumber
   availableToBorrow: BigNumber
   afterAvailableToBorrow?: BigNumber
   availableToWithdraw: BigNumber
@@ -21,7 +20,6 @@ export function ContentFooterItemsBorrow({
   collateralToken,
   quoteToken,
   cost,
-  afterCost,
   availableToBorrow,
   afterAvailableToBorrow,
   availableToWithdraw,
@@ -32,7 +30,6 @@ export function ContentFooterItemsBorrow({
 
   const formatted = {
     cost: formatDecimalAsPercent(cost),
-    afterCost: afterCost && formatDecimalAsPercent(afterCost),
     availableToBorrow: `${formatAmount(availableToBorrow, collateralToken)}`,
     afterAvailableToBorrow:
       afterAvailableToBorrow && `${formatAmount(afterAvailableToBorrow, collateralToken)}`,
@@ -46,12 +43,6 @@ export function ContentFooterItemsBorrow({
       <DetailsSectionFooterItem
         title={t('ajna.borrow.common.footer.annual-net-borrow-cost')}
         value={formatted.cost}
-        {...(afterCost && {
-          change: {
-            value: `${formatted.afterCost} ${t('system.cards.common.after')}`,
-            variant: changeVariant,
-          },
-        })}
       />
       <DetailsSectionFooterItem
         title={t('ajna.borrow.common.footer.available-to-borrow')}

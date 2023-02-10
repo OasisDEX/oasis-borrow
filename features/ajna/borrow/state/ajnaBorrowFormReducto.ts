@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { AjnaBorrowAction } from 'features/ajna/common/types'
+import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
@@ -13,6 +13,8 @@ export interface AjnaBorrowFormState {
   paybackAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
+  uiDropdown: AjnaBorrowPanel
+  uiPill: Exclude<AjnaBorrowAction, 'open'>
 }
 
 interface AjnaBorrowFormActionsUpdateDeposit {
@@ -48,7 +50,7 @@ type AjnaBorrowFormAction = ReductoActions<
   | AjnaBorrowFormActionsReset
 >
 
-export const ajnaBorrowDefault: AjnaBorrowFormState = {
+export const ajnaBorrowReset = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
@@ -57,6 +59,12 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   paybackAmountUSD: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
+}
+
+export const ajnaBorrowDefault: AjnaBorrowFormState = {
+  ...ajnaBorrowReset,
+  uiDropdown: 'collateral',
+  uiPill: 'deposit',
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
@@ -93,7 +101,7 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             paybackAmountUSD: action.paybackAmountUSD,
           }
         case 'reset':
-          return { ...state, ...ajnaBorrowDefault }
+          return { ...state, ...ajnaBorrowReset }
         default:
           return state
       }
