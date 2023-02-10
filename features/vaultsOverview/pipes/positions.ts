@@ -1,13 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { AaveV2AssetsPricesParameters } from 'blockchain/aave/aaveV2PriceOracle'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
 import { UserDpmAccount } from 'blockchain/userDpmProxies'
 import { amountFromPrecision } from 'blockchain/utils'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { ProtocolsServices } from 'components/AppContext'
 import { PositionCreated } from 'features/aave/services/readPositionCreatedEvents'
-import { PositionId, positionIdIsAddress } from 'features/aave/types'
+import { positionIdIsAddress } from 'features/aave/types'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
 import {
   extractStopLossData,
@@ -16,11 +15,18 @@ import {
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { formatAddress } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { AaveProtocolData, PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
+import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
 import { Position } from './positionsOverviewSummary'
+
+type CreatePositionEnvironmentPropsType = {
+  tickerPrices$: (tokens: string[]) => Observable<Tickers>
+  context$: Observable<Context>
+  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
+  readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>
+}
 
 function makerPositionName(vault: VaultWithType): string {
   if (isMakerEarnPosition(vault)) {
@@ -125,17 +131,13 @@ type ProxyAddressesProvider = {
 }
 
 type BuildPositionArgs = {
-  aaveProtocolData$: (
-    collateralToken: string,
-    debtToken: string,
-    address: string,
-  ) => Observable<AaveProtocolData>
-  getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>
+  aaveV2: ProtocolsServices['AaveV2']
+  aaveV3: ProtocolsServices['AaveV3']
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
-  wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>
-  aaveAvailableLiquidityInUSDC$: (reserveDataParameters: { token: string }) => Observable<BigNumber>
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
+
+type OnChainAavePositionTypes = 'AAVE_V2' | 'AAVE_V3'
 
 function buildPosition(
   positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
@@ -145,14 +147,22 @@ function buildPosition(
   observables: BuildPositionArgs,
 ): Observable<AavePosition> {
   const { collateralTokenSymbol, debtTokenSymbol, proxyAddress } = positionCreatedEvent
+  const protocol = positionCreatedEvent.protocol as OnChainAavePositionTypes
+  const properAaveMethods = {
+    AAVE_V2: observables.aaveV2,
+    AAVE_V3: observables.aaveV3,
+  }[protocol as OnChainAavePositionTypes]
   return combineLatest(
-    observables.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-    observables.getAaveAssetsPrices$({
+    // using properAaveMethods.aaveProtocolData causes this to loose strict typings
+    protocol === 'AAVE_V2'
+      ? observables.aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
+      : observables.aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
+    properAaveMethods.getAaveAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
     observables.tickerPrices$([collateralTokenSymbol, debtTokenSymbol]),
-    observables.wrappedGetAaveReserveData$(debtTokenSymbol),
-    observables.aaveAvailableLiquidityInUSDC$({
+    properAaveMethods.wrappedGetAaveReserveData$(debtTokenSymbol),
+    properAaveMethods.aaveAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
     positionIdIsAddress(positionId)
@@ -214,7 +224,12 @@ function buildPosition(
         return {
           token: collateralToken,
           title: `${collateralToken}/${debtToken} AAVE`,
-          url: `/aave/${positionId}`,
+          url: `/aave/${
+            {
+              AAVE_V2: 'v2',
+              AAVE_V3: 'v3',
+            }[protocol]
+          }/${positionId}`,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
           multiple,
@@ -275,23 +290,9 @@ function hasStethEthAaveV2DsProxyEarnPosition$(
 
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
-  environment: {
-    tickerPrices$: (tokens: string[]) => Observable<Tickers>
-    context$: Observable<Context>
-    automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
-    readPositionCreatedEvents$: (wallet: string) => Observable<PositionCreated[]>
-  },
-  aaveProtocolData$: (
-    collateralToken: string,
-    debtToken: string,
-    address: string,
-  ) => Observable<AaveProtocolData>,
-  getAaveAssetsPrices$: (args: AaveV2AssetsPricesParameters) => Observable<BigNumber[]>,
-  wrappedGetAaveReserveData$: (token: string) => Observable<PreparedAaveReserveData>,
-  aaveAvailableLiquidityInUSDC$: (reserveDataParameters: {
-    token: string
-  }) => Observable<BigNumber>,
-  getStrategyConfig$: (positionId: PositionId) => Observable<IStrategyConfig>,
+  environment: CreatePositionEnvironmentPropsType,
+  aaveV2: ProtocolsServices['AaveV2'],
+  aaveV3: ProtocolsServices['AaveV3'],
   walletAddress: string,
 ): Observable<AavePosition[]> {
   const {
@@ -302,7 +303,11 @@ export function createAavePosition$(
   } = environment
   return combineLatest(
     proxyAddressesProvider.userDpmProxies$(walletAddress),
-    hasStethEthAaveV2DsProxyEarnPosition$(proxyAddressesProvider, aaveProtocolData$, walletAddress),
+    hasStethEthAaveV2DsProxyEarnPosition$(
+      proxyAddressesProvider,
+      aaveV2.aaveProtocolData$,
+      walletAddress,
+    ),
     context$,
   ).pipe(
     switchMap(
@@ -336,11 +341,9 @@ export function createAavePosition$(
                 }
 
                 return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
-                  aaveProtocolData$,
-                  getAaveAssetsPrices$,
+                  aaveV2,
+                  aaveV3,
                   tickerPrices$,
-                  wrappedGetAaveReserveData$,
-                  aaveAvailableLiquidityInUSDC$,
                   automationTriggersData$,
                 })
               }),
