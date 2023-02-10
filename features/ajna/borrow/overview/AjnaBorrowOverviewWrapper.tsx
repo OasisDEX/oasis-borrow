@@ -8,7 +8,6 @@ import { ContentCardPositionDebt } from 'features/ajna/borrow/overview/ContentCa
 import { ContentFooterItemsBorrow } from 'features/ajna/borrow/overview/ContentFooterItemsBorrow'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -58,7 +57,7 @@ export function AjnaBorrowOverviewWrapper() {
             <ContentFooterItemsBorrow
               collateralToken={collateralToken}
               quoteToken={quoteToken}
-              cost={zero}
+              cost={currentPosition.pool.rate}
               availableToBorrow={currentPosition.debtAvailable}
               afterAvailableToBorrow={simulation?.debtAvailable}
               availableToWithdraw={currentPosition.collateralAvailable}

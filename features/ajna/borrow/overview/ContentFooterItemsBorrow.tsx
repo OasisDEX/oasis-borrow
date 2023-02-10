@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatDecimalAsPercent, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -31,7 +31,7 @@ export function ContentFooterItemsBorrow({
   const { t } = useTranslation()
 
   const formatted = {
-    cost: formatPercent(cost, { precision: 2 }),
+    cost: formatDecimalAsPercent(cost),
     afterCost: afterCost && formatPercent(afterCost, { precision: 2 }),
     availableToBorrow: `${formatAmount(availableToBorrow, collateralToken)}`,
     afterAvailableToBorrow:
