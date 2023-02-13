@@ -147,3 +147,34 @@ export function getUserDpmProxy$(
     }),
   )
 }
+
+export function getPositionIdFromDpmProxy$(
+  context$: Observable<Context>,
+  dpmProxy?: string,
+): Observable<string | undefined> {
+  if (!dpmProxy) {
+    return of(undefined)
+  }
+
+  const chainId = getNetworkId() as NetworkIds
+  const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
+
+  return context$.pipe(
+    switchMap(async ({ accountFactory, contract }) => {
+      const accountFactoryContract = contract<AccountFactory>(accountFactory)
+
+      const event = await accountFactoryContract.getPastEvents('AccountCreated', {
+        filter: { proxy: dpmProxy },
+        fromBlock: accountFactoryGenesisBlock,
+        toBlock: 'latest',
+      })
+
+      if (!event.length) {
+        console.warn('No event found for proxy', dpmProxy)
+        return undefined
+      }
+
+      return event[0].returnValues.vaultId
+    }),
+  )
+}

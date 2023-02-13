@@ -110,7 +110,11 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { getUserDpmProxies$, getUserDpmProxy$ } from 'blockchain/userDpmProxies'
+import {
+  getPositionIdFromDpmProxy$,
+  getUserDpmProxies$,
+  getUserDpmProxy$,
+} from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
   createVault$,
@@ -696,6 +700,10 @@ export function setupAppContext() {
   )
 
   const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
+  const positionIdFromDpmProxy$ = memoize(
+    curry(getPositionIdFromDpmProxy$)(context$),
+    (dpmProxy) => dpmProxy,
+  )
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
@@ -1395,7 +1403,11 @@ export function setupAppContext() {
   )
 
   const dpmPositionData$ = memoize(
-    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+    curry(getDpmPositionData$)(
+      proxiesRelatedWithPosition$,
+      lastCreatedPositionForProxy$,
+      onEveryBlock$,
+    ),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
@@ -1489,6 +1501,7 @@ export function setupAppContext() {
     dpmPositionData$,
     ajnaPosition$,
     chainContext$,
+    positionIdFromDpmProxy$,
   }
 }
 

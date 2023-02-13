@@ -16,10 +16,11 @@ export interface DpmPositionData extends UserDpmAccount {
 export function getDpmPositionData$(
   proxiesForPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   lastCreatedPositionForProxy$: (proxyAddress: string) => Observable<PositionCreated>,
+  onEveryBlock$: Observable<number>,
   positionId: PositionId,
 ): Observable<DpmPositionData | null> {
-  return proxiesForPosition$(positionId).pipe(
-    switchMap(({ dpmProxy }) => {
+  return combineLatest(proxiesForPosition$(positionId), onEveryBlock$).pipe(
+    switchMap(([{ dpmProxy }]) => {
       return combineLatest(
         of(dpmProxy),
         dpmProxy ? lastCreatedPositionForProxy$(dpmProxy.proxy) : of(undefined),
