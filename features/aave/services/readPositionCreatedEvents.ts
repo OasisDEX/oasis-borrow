@@ -66,20 +66,21 @@ function mapEvent(
 function extractLendingProtocolFromPositionCreatedEvent(
   positionCreatedChainEvent: PositionCreatedChainEvent,
 ): LendingProtocol {
-  if (
-    positionCreatedChainEvent.protocol === 'AAVE' ||
-    positionCreatedChainEvent.protocol === 'AaveV2'
-  ) {
-    return LendingProtocol.AaveV2
-  } else if (positionCreatedChainEvent.protocol === 'AAVE_V3') {
-    return LendingProtocol.AaveV3
+  switch (positionCreatedChainEvent.protocol) {
+    case 'AAVE':
+    case 'AaveV2':
+      return LendingProtocol.AaveV2
+    case 'AAVE_V3':
+      return LendingProtocol.AaveV3
+    case 'Ajna':
+      return LendingProtocol.Ajna
+    default:
+      throw new Error(
+        `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
+          positionCreatedChainEvent,
+        )}`,
+      )
   }
-
-  throw new Error(
-    `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
-      positionCreatedChainEvent,
-    )}`,
-  )
 }
 
 export function getLastCreatedPositionForProxy$(
