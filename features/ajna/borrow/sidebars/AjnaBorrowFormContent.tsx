@@ -103,7 +103,7 @@ export function AjnaBorrowFormContent({
         ? {
             url: '/connect',
           }
-        : isTxSuccess && id
+        : isTxSuccess && flow === 'open'
         ? {
             url: `/ajna/position/${id}`,
           }
