@@ -15,6 +15,7 @@ import {
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { formatAddress } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
@@ -131,13 +132,16 @@ type ProxyAddressesProvider = {
 }
 
 type BuildPositionArgs = {
-  aaveV2: ProtocolsServices['AaveV2']
-  aaveV3: ProtocolsServices['AaveV3']
+  aaveV2: ProtocolsServices[LendingProtocol.AaveV2]
+  aaveV3: ProtocolsServices[LendingProtocol.AaveV3]
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
 
-type OnChainAavePositionTypes = 'AAVE_V2' | 'AAVE_V3'
+enum OnChainAavePositionTypes {
+  AAVE_V2 = 'AAVE_V2',
+  AAVE_V3 = 'AAVE_V3',
+}
 
 function buildPosition(
   positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
@@ -291,8 +295,8 @@ function hasStethEthAaveV2DsProxyEarnPosition$(
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
   environment: CreatePositionEnvironmentPropsType,
-  aaveV2: ProtocolsServices['AaveV2'],
-  aaveV3: ProtocolsServices['AaveV3'],
+  aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
+  aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
   walletAddress: string,
 ): Observable<AavePosition[]> {
   const {
