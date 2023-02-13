@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
 import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
   action?: AjnaBorrowAction
-  dpmAddress?: string
+  dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
@@ -63,6 +64,7 @@ export const ajnaBorrowReset = {
 
 export const ajnaBorrowDefault: AjnaBorrowFormState = {
   ...ajnaBorrowReset,
+  dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'collateral',
   uiPill: 'deposit',
 }

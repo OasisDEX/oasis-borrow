@@ -13,17 +13,16 @@ export function AjnaBorrowFormContentGenerate() {
       dispatch,
       state: { generateAmount },
     },
-    position: { simulation },
   } = useAjnaBorrowContext()
 
   return (
     <>
       <AjnaBorrowFormFieldGenerate resetOnClear />
       <AjnaBorrowFormFieldDeposit isDisabled={!generateAmount || generateAmount?.lte(0)} />
-      {generateAmount?.gt(0) && (
+      {generateAmount && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          {simulation && <AjnaBorrowFormOrder />}
+          <AjnaBorrowFormOrder />
         </>
       )}
     </>

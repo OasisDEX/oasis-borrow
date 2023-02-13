@@ -1,4 +1,5 @@
 import { FlowSidebar } from 'components/FlowSidebar'
+import { ethers } from 'ethers'
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
 import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
@@ -34,7 +35,12 @@ export function AjnaBorrowFormWrapper() {
   })
 
   useEffect(() => {
-    if (flowState.availableProxies.length) updateState('dpmAddress', flowState.availableProxies[0])
+    updateState(
+      'dpmAddress',
+      flowState.availableProxies.length
+        ? flowState.availableProxies[0]
+        : ethers.constants.AddressZero,
+    )
   }, [flowState.availableProxies])
   useEffect(() => {
     if (!walletAddress && steps.indexOf(currentStep) > steps.indexOf(editingStep))

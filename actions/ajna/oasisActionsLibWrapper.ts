@@ -19,7 +19,7 @@ interface AjnaTxHandlerInput {
 }
 
 export async function getAjnaParameters({
-  formState,
+  formState: { action, depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress },
   rpcProvider,
   collateralToken,
   quoteToken,
@@ -29,12 +29,7 @@ export async function getAjnaParameters({
   rpcProvider: ethers.providers.Provider
 }): Promise<AjnaActionData> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const { depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress } = formState
   const defaultPromise = Promise.resolve({} as AjnaActionData)
-
-  if (!dpmAddress) {
-    return defaultPromise
-  }
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
@@ -60,7 +55,7 @@ export async function getAjnaParameters({
   // TODO hardcoded for now, but will be moved eventually to library
   const price = new BigNumber(16821273)
 
-  switch (formState.action) {
+  switch (action) {
     case 'open':
       if (!depositAmount) {
         return defaultPromise
