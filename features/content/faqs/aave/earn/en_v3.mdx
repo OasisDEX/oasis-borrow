@@ -1,7 +1,7 @@
 import { FaqLayout } from '../../FaqLayout'
 
 export default ({ children }) => (
-  <FaqLayout learnMoreUrl="https://kb.oasis.app/help/what-you-should-know-about-steth">
+  <FaqLayout learnMoreUrl="https://kb.oasis.app/help/earn-with-steth-aave-v3-e-mode">
     {children}
   </FaqLayout>
 )
@@ -9,7 +9,7 @@ export default ({ children }) => (
 ##### Do I need to manage this Aave position?
 
 You need to monitor this position often to asses its liquidation risk and profitability. Changes in
-market conditions like the ratio of stETH/ETH or updates to the AAVE market could impact the
+market conditions like the ratio of stETH/ETH or updates to the AAVE v3 market could impact the
 returns. <a href="https://oasis.app" target="_blank">Oasis.app</a> will announce Governance changes
 from AAVE that affect this strategy. Since ETH interest rates are variable the profitability of this
 strategy changes with the demand to borrow ETH in AAVE.
@@ -17,7 +17,7 @@ strategy changes with the demand to borrow ETH in AAVE.
 ##### What are the risks?
 
 1. Liquidation risk: If the price of stETH measured in ETH goes down the position will be at risk of
-   liquidation. This could happen for multiple reasons, for example, users selling their STETH for
+   liquidation. This could happen for multiple reasons, for example, users selling their stETH for
    ETH to pursue other strategies, perceived or realized Lido execution risk, and lower general
    liquidity. If this price goes below the liquidation ratio the position will be liquidated.
 
@@ -41,9 +41,9 @@ strategy changes with the demand to borrow ETH in AAVE.
 ##### Where does the yield come from?
 
 The return comes first from the ETH staking yield provided by StETH. That yield is multiplied by
-increasing exposure to StETH by borrowing ETH. An ongoing cost of the variable ETH borrowing rate in
+increasing exposure to stETH by borrowing ETH. An ongoing cost of the variable ETH borrowing rate in
 AAVE must be continually paid. This means that the strategy remains profitable as long as the
-borrowing cost of ETH is lower than the returns from StETH.
+borrowing cost of ETH is lower than the returns from stETH.
 
 ##### Where is my capital?
 
@@ -54,11 +54,7 @@ which in turn gives it to the node operators that perform the validator duties f
 
 ##### How much does it cost?
 
-The Oasis.app fee is 0.20% of the amount swapped. This fee is paid on setup and on each strategy
-adjustment. This strategy pays interest on the ETH borrowed from AAVE. This variable fee is
-accounted for in the net APY, but it changes continually as the market demands more or less ETH.
-Users need to take into account gas costs related to the Ethereum network which vary with congestion
-and ETH price.
+The Oasis.app fee is 0.20% of the amount swapped to close or adjust position. The fee is waived on setup, you can start earning as soon as you open the position. This strategy pays interest on the ETH borrowed from AAVE. This variable fee is accounted for in the net APY, but it changes continually as the market demands more or less ETH. Users need to take into account gas costs related to the Ethereum network, which vary with congestion and ETH price.
 
 ##### Is this a short or long-term position?
 
