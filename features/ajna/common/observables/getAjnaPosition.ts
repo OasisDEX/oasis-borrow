@@ -1,5 +1,6 @@
 import { views } from '@oasisdex/oasis-actions'
 import { Context } from 'blockchain/network'
+import { ethers } from 'ethers'
 import { PositionId } from 'features/aave/types'
 import { DpmPositionData } from 'features/ajna/common/observables/getDpmPositionData'
 import { AjnaProduct } from 'features/ajna/common/types'
@@ -53,9 +54,9 @@ export function getAjnaPosition$(
             collateralToken,
             product,
             protocol: 'Ajna',
-            proxy: '0x0000000000000000000000000000000000000000',
+            proxy: ethers.constants.AddressZero,
             quoteToken,
-            user: '0x0000000000000000000000000000000000000000',
+            user: ethers.constants.AddressZero,
             vaultId: '0',
           }
 
