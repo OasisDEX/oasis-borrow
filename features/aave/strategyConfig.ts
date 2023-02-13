@@ -1,6 +1,6 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { AaveEarnFaq } from 'features/content/faqs/aave/earn'
+import { AaveEarnFaqV2, AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import {
   AavePositionHeaderNoDetails,
@@ -44,7 +44,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       adjustRiskView: adjustRiskView(adjustRiskSliders.wstethEth),
-      positionInfo: AaveEarnFaq,
+      positionInfo: AaveEarnFaqV3,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
@@ -70,7 +70,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       adjustRiskView: adjustRiskView(adjustRiskSliders.stethEth),
-      positionInfo: AaveEarnFaq,
+      positionInfo: AaveEarnFaqV2,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
