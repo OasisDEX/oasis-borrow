@@ -48,7 +48,6 @@ export function DiscoverTableDataCellContent({
       const asset = Object.values(discoverFiltersAssetItems).filter(
         (item) => item.value === primitives.asset,
       )[0]
-
       return (
         <DiscoverTableDataCellAsset
           asset={
@@ -56,7 +55,7 @@ export function DiscoverTableDataCellContent({
           }
           cdpId={primitives.cdpId as number}
           follow={follow}
-          icon={(primitives.icon || asset.icon) as string}
+          icon={(primitives?.icon || asset?.icon || '') as string}
         />
       )
     case 'status':
@@ -68,6 +67,9 @@ export function DiscoverTableDataCellContent({
         </DiscoverTableDataCellPill>
       )
     case 'activity':
+      console.log('row.activity', row.activity)
+      console.log('parsePillAdditionalData(i18n.language, row.activity)')
+      console.log(parsePillAdditionalData(i18n.language, row.activity))
       return (
         <DiscoverTableDataCellPill activity={row.activity}>
           {t(`discover.table.activity.${row.activity?.kind}`, {
