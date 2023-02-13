@@ -1039,11 +1039,8 @@ export function setupAppContext() {
         automationTriggersData$,
         readPositionCreatedEvents$,
       },
-      aaveV2.aaveProtocolData$,
-      aaveV2.getAaveAssetsPrices$,
-      aaveV2.wrappedGetAaveReserveData$,
-      aaveV2.aaveAvailableLiquidityInUSDC$,
-      strategyConfig$,
+      aaveV2,
+      aaveV3,
     ),
   )
 
