@@ -106,7 +106,9 @@ export function AjnaBorrowContextProvider({
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const form = useAjnaBorrowFormReducto({})
+  const form = useAjnaBorrowFormReducto({
+    action: props.flow === 'open' ? 'open' : 'deposit',
+  })
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
