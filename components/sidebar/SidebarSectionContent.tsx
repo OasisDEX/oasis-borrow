@@ -32,7 +32,10 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
         '&::-webkit-scrollbar-track': {
           my: '24px',
           mr: '10px',
-          backgroundColor: ref.current && ref.current.scrollHeight > ref.current.offsetHeight ? theme.colors.secondary60 : 'transparent',
+          backgroundColor:
+            ref.current && ref.current.scrollHeight > ref.current.offsetHeight
+              ? theme.colors.secondary60
+              : 'transparent',
           borderRadius: theme.radii.large,
         },
         overflowY: 'scroll',
