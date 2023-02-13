@@ -139,8 +139,6 @@ type BuildPositionArgs = {
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
 
-type TemporaryLendingProtocolUnion = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
-
 function buildPosition(
   positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
   positionId: string,
@@ -153,7 +151,7 @@ function buildPosition(
     [LendingProtocol.AaveV2]: observables.aaveV2,
     [LendingProtocol.AaveV3]: observables.aaveV3,
   }
-  const resolvedAaveServices = aaveServiceMap[protocol as TemporaryLendingProtocolUnion]
+  const resolvedAaveServices = aaveServiceMap[protocol]
   return combineLatest(
     // using properAaveMethods.aaveProtocolData causes this to lose strict typings
     protocol === LendingProtocol.AaveV2
@@ -234,7 +232,7 @@ function buildPosition(
             {
               [LendingProtocol.AaveV2]: 'v2',
               [LendingProtocol.AaveV3]: 'v3',
-            }[protocol as TemporaryLendingProtocolUnion]
+            }[protocol]
           }/${positionId}`,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
