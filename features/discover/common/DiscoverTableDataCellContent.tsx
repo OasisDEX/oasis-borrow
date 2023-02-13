@@ -55,7 +55,7 @@ export function DiscoverTableDataCellContent({
           }
           cdpId={primitives.cdpId as number}
           follow={follow}
-          icon={(primitives?.icon || asset?.icon || '') as string}
+          icon={(primitives?.icon || asset?.icon) as string}
         />
       )
     case 'status':
