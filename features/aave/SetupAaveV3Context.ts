@@ -1,5 +1,3 @@
-import { getAaveV3AssetsPrices } from 'blockchain/aave-v3'
-import { observe } from 'blockchain/calls/observe'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
@@ -71,7 +69,7 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     convertToAaveOracleAssetPrice$,
     aaveOracleAssetPriceData$,
     getAaveReserveData$,
-    getAaveV3BaseCurrencyUnit$,
+    getAaveAssetsPrices$,
   } = protocols[LendingProtocol.AaveV3]
 
   const aaveSthEthYieldsQuery = memoize(
@@ -161,19 +159,6 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     allowanceStateMachine,
     operationExecutorTransactionMachine,
     depositBorrowAaveMachine,
-  )
-
-  const getAaveAssetsPricesBase$ = observe(onEveryBlock$, context$, getAaveV3AssetsPrices, (args) =>
-    args.tokens.join(''),
-  )
-
-  const getAaveAssetsPrices$ = memoize(
-    ({ tokens }: { tokens: string[] }) => {
-      return getAaveV3BaseCurrencyUnit$().pipe(
-        switchMap((baseCurrencyUnit) => getAaveAssetsPricesBase$({ tokens, baseCurrencyUnit })),
-      )
-    },
-    ({ tokens }) => tokens.join(''),
   )
 
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(

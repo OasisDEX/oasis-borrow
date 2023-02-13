@@ -48,30 +48,9 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
   )
   const getAaveV3BaseCurrencyUnit$ = observe(once$, context$, getAaveV3OracleBaseCurrencyUnit)
   const getAaveReserveData$ = observe(once$, context$, getAaveV3ReserveData)
-  const getAaveAssetsPrices$ = observe(once$, context$, getAaveV3AssetsPrices)
 
   const getAaveV3EModeCategoryForAsset$ = observe(once$, context$, getAaveV3EModeCategoryForAsset)
   const getEModeCategoryData$ = observe(once$, context$, getEModeCategoryData)
-
-  const aaveAvailableLiquidityInUSDC$ = memoize(
-    curry(prepareaaveAvailableLiquidityInUSDC$)(
-      getAaveReserveData$,
-      // @ts-expect-error
-      getAaveAssetsPrices$({ tokens: ['WETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
-      getAaveV3BaseCurrencyUnit$(),
-    ),
-    ({ token }) => token,
-  )
-
-  const aaveUserReserveData$ = observe(refresh$, context$, getAaveV3UserReserveData)
-  const aaveUserConfiguration$ = observe(refresh$, context$, getAaveV3UserConfiguration)
-  const aaveReservesList$ = observe(refresh$, context$, getAaveV3ReservesList)()
-  const aaveOracleAssetPriceData$ = observe(
-    refresh$,
-    context$,
-    getAaveV3OracleAssetPriceData$,
-    ({ token }) => token,
-  )
 
   const aaveOracleAssetPriceWithBaseCurrencyUnit$: ({
     token,
@@ -85,6 +64,37 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
         }),
       )
     },
+    ({ token }) => token,
+  )
+
+  const getAaveAssetsPricesBase$ = observe(refresh$, context$, getAaveV3AssetsPrices, (args) =>
+    args.tokens.join(''),
+  )
+
+  const getAaveAssetsPrices$ = memoize(
+    ({ tokens }: { tokens: string[] }) => {
+      return getAaveV3BaseCurrencyUnit$().pipe(
+        switchMap((baseCurrencyUnit) => getAaveAssetsPricesBase$({ tokens, baseCurrencyUnit })),
+      )
+    },
+    ({ tokens }) => tokens.join(''),
+  )
+
+  const aaveAvailableLiquidityInUSDC$ = memoize(
+    curry(prepareaaveAvailableLiquidityInUSDC$)(
+      getAaveReserveData$,
+      getAaveAssetsPrices$({ tokens: ['WETH'] }),
+    ),
+    ({ token }) => token,
+  )
+
+  const aaveUserReserveData$ = observe(refresh$, context$, getAaveV3UserReserveData)
+  const aaveUserConfiguration$ = observe(refresh$, context$, getAaveV3UserConfiguration)
+  const aaveReservesList$ = observe(refresh$, context$, getAaveV3ReservesList)()
+  const aaveOracleAssetPriceData$ = observe(
+    refresh$,
+    context$,
+    getAaveV3OracleAssetPriceData$,
     ({ token }) => token,
   )
 
