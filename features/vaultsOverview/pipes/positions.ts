@@ -292,6 +292,9 @@ function getStethEthAaveV2DsProxyEarnPosition$(
   )
 }
 
+// TODO we will need proper handling for Ajna, filtered for now
+const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
+
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
   environment: CreatePositionEnvironmentPropsType,
@@ -336,21 +339,23 @@ export function createAavePosition$(
           }),
           switchMap((positionCreatedEvents) => {
             return combineLatest(
-              positionCreatedEvents.map((pce) => {
-                const userProxy = userProxiesData.find(
-                  (userProxy) => userProxy.proxy === pce.proxyAddress,
-                )
-                if (!userProxy) {
-                  throw new Error('nope')
-                }
+              positionCreatedEvents
+                .filter((event) => sumAaveArray.includes(event.protocol))
+                .map((pce) => {
+                  const userProxy = userProxiesData.find(
+                    (userProxy) => userProxy.proxy === pce.proxyAddress,
+                  )
+                  if (!userProxy) {
+                    throw new Error('nope')
+                  }
 
-                return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
-                  aaveV2,
-                  aaveV3,
-                  tickerPrices$,
-                  automationTriggersData$,
-                })
-              }),
+                  return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
+                    aaveV2,
+                    aaveV3,
+                    tickerPrices$,
+                    automationTriggersData$,
+                  })
+                }),
             )
           }),
         )
