@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { nullWalletAddress } from 'blockchain/config'
+import { ethers } from 'ethers'
 import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
@@ -64,7 +64,7 @@ export const ajnaBorrowReset = {
 
 export const ajnaBorrowDefault: AjnaBorrowFormState = {
   ...ajnaBorrowReset,
-  dpmAddress: nullWalletAddress,
+  dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'collateral',
   uiPill: 'deposit',
 }
