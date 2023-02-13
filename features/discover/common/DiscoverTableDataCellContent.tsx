@@ -67,9 +67,6 @@ export function DiscoverTableDataCellContent({
         </DiscoverTableDataCellPill>
       )
     case 'activity':
-      console.log('row.activity', row.activity)
-      console.log('parsePillAdditionalData(i18n.language, row.activity)')
-      console.log(parsePillAdditionalData(i18n.language, row.activity))
       return (
         <DiscoverTableDataCellPill activity={row.activity}>
           {t(`discover.table.activity.${row.activity?.kind}`, {
