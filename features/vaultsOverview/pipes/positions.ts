@@ -292,6 +292,9 @@ function getStethEthAaveV2DsProxyEarnPosition$(
   )
 }
 
+// TODO we will need proper handling for Ajna, filtered for now
+const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
+
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
   environment: CreatePositionEnvironmentPropsType,
@@ -337,8 +340,7 @@ export function createAavePosition$(
           switchMap((positionCreatedEvents) => {
             return combineLatest(
               positionCreatedEvents
-                // TODO we will need proper handling for Ajna, filtered for now
-                .filter((event) => (event.protocol as string) !== 'Ajna')
+                .filter((event) => sumAaveArray.includes(event.protocol))
                 .map((pce) => {
                   const userProxy = userProxiesData.find(
                     (userProxy) => userProxy.proxy === pce.proxyAddress,
