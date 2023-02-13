@@ -133,8 +133,8 @@ type ProxyAddressesProvider = {
 }
 
 type BuildPositionArgs = {
-  aaveV2: ProtocolsServices['AaveV2']
-  aaveV3: ProtocolsServices['AaveV3']
+  aaveV2: ProtocolsServices[LendingProtocol.AaveV2]
+  aaveV3: ProtocolsServices[LendingProtocol.AaveV3]
   tickerPrices$: (tokens: string[]) => Observable<Tickers>
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
@@ -295,8 +295,8 @@ function getStethEthAaveV2DsProxyEarnPosition$(
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
   environment: CreatePositionEnvironmentPropsType,
-  aaveV2: ProtocolsServices['AaveV2'],
-  aaveV3: ProtocolsServices['AaveV3'],
+  aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
+  aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
   walletAddress: string,
 ): Observable<AavePosition[]> {
   const {
