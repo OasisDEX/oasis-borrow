@@ -1,5 +1,4 @@
 import { ContractDesc } from '@oasisdex/web3-context'
-import {ethers} from 'ethers'
 import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
