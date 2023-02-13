@@ -72,7 +72,6 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
   const { dispatch, state, updateState } = useReducto<AjnaBorrowFormState, AjnaBorrowFormAction>({
     defaults: {
-      action: 'open',
       ...ajnaBorrowDefault,
       ...rest,
     },
