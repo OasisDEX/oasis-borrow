@@ -60,8 +60,13 @@ export function getAaveV2Services({ context$, refresh$, once$ }: AaveV2ServicesD
   const aaveUserReserveData$ = observe(refresh$, context$, getAaveV2UserReserveData)
   const aaveUserConfiguration$ = observe(refresh$, context$, getAaveV2UserConfiguration)
   const aaveReservesList$ = observe(refresh$, context$, getAaveV2ReservesList)()
-  const aaveOracleAssetPriceData$ = memoize(
+  const aaveOracleAssetPriceData$: ({
+    token,
+  }: {
+    token: string
+  }) => Observable<BigNumber> = memoize(
     curry(createAaveV2OracleAssetPriceData$)(refresh$, context$),
+    ({ token }) => token,
   )
 
   const getAaveOnChainPosition$ = memoize(
