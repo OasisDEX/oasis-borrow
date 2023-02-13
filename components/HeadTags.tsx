@@ -64,8 +64,6 @@ export function PageSEOTags({
     twitterImage,
   }
 
-  console.log('url', url)
-
   return (
     <Head>
       <title>{titleParams ? t(title, titleParams) : t(title)}</title>
