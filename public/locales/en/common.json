@@ -700,7 +700,7 @@
     "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed.",
     "pnl": "PnL {{value}} {{token}}",
     "ratio-history": "Ratio history",
-    "position-eth-debt": "Position ETH Debt",
+    "position-debt": "Position {{debtToken}} Debt",
     "liquidation-price-ratio": "Liquidation price ratio",
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
@@ -708,7 +708,7 @@
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
-    "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH.",
+    "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}.",
     "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it below your Stop-Loss Loan to Value"
   },
   "aave-position-modal": {
