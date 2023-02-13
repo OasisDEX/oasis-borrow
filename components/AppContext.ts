@@ -1403,11 +1403,7 @@ export function setupAppContext() {
   )
 
   const dpmPositionData$ = memoize(
-    curry(getDpmPositionData$)(
-      proxiesRelatedWithPosition$,
-      lastCreatedPositionForProxy$,
-      onEveryBlock$,
-    ),
+    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
