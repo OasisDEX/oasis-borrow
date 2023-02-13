@@ -249,6 +249,6 @@ export function convertDefaultRiskRatioToActualRiskRatio(
   ltv?: BigNumber,
 ) {
   return defaultRiskRatio === 'slightlyLessThanMaxRisk'
-    ? new RiskRatio(ltv?.times('0.999') || zero, RiskRatio.TYPE.LTV)
+    ? new RiskRatio(ltv?.times('0.99') || zero, RiskRatio.TYPE.LTV)
     : defaultRiskRatio
 }

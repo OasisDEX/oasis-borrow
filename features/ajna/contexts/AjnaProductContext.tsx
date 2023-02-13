@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { isAppContextAvailable } from 'components/AppContextProvider'
+import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/contexts/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
@@ -11,6 +11,7 @@ import {
 } from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
 import { TxDetails } from 'helpers/handleTransaction'
+import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React, {
   Dispatch,
@@ -18,6 +19,7 @@ import React, {
   SetStateAction,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 
@@ -106,7 +108,17 @@ export function AjnaBorrowContextProvider({
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const form = useAjnaBorrowFormReducto({})
+  const form = useAjnaBorrowFormReducto({
+    action: props.flow === 'open' ? 'open' : 'deposit',
+  })
+  const { positionIdFromDpmProxy$ } = useAppContext()
+
+  const _positionIdFromDpmProxy$ = useMemo(() => positionIdFromDpmProxy$(form.state.dpmAddress), [
+    form.state.dpmAddress,
+  ])
+  const [positionIdFromDpmProxy] = useObservable(_positionIdFromDpmProxy$)
+
+  const resolvedId = id && id !== '0' ? id : positionIdFromDpmProxy
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
@@ -174,6 +186,7 @@ export function AjnaBorrowContextProvider({
       },
       position: {
         ...prev.position,
+        id: resolvedId,
         currentPosition,
         simulation,
         isSimulationLoading,
@@ -190,6 +203,7 @@ export function AjnaBorrowContextProvider({
     txDetails,
     simulation,
     currentPosition,
+    resolvedId,
     isSimulationLoading,
   ])
 
