@@ -36,16 +36,15 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   const { depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress } = state
 
   useEffect(() => {
-    if (txHelpers) {
-      cancelablePromise?.cancel()
-      if (!depositAmount && !generateAmount && !paybackAmount && !withdrawAmount) {
-        setSimulation(undefined)
-        setIsLoadingSimulation(false)
-      } else {
-        setIsLoadingSimulation(true)
-      }
+    cancelablePromise?.cancel()
+    if (!depositAmount && !generateAmount && !paybackAmount && !withdrawAmount) {
+      setSimulation(undefined)
+      setIsLoadingSimulation(false)
+    } else {
+      setIsLoadingSimulation(true)
     }
   }, [
+    context?.rpcProvider,
     dpmAddress,
     depositAmount?.toString(),
     generateAmount?.toString(),
@@ -54,7 +53,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   ])
   useDebouncedEffect(
     () => {
-      if (txHelpers && context) {
+      if (context) {
         const promise = cancelable(
           getAjnaParameters({
             rpcProvider: context.rpcProvider,
@@ -89,6 +88,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       }
     },
     [
+      context?.rpcProvider,
       dpmAddress,
       depositAmount?.toString(),
       generateAmount?.toString(),
