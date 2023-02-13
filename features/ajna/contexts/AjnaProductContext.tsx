@@ -107,7 +107,7 @@ export function AjnaBorrowContextProvider({
   if (!isAppContextAvailable()) return null
 
   const form = useAjnaBorrowFormReducto({
-    action: props.flow === 'open' ? 'open' : 'deposit'
+    action: props.flow === 'open' ? 'open' : 'deposit',
   })
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
