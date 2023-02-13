@@ -15,7 +15,9 @@ import {
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { formatAddress } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
+import { LendingProtocol } from 'lendingProtocols'
+import { AaveProtocolData as AaveProtocolDataV2 } from 'lendingProtocols/aave-v2/pipelines'
+import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap } from 'rxjs/operators'
 
@@ -137,8 +139,6 @@ type BuildPositionArgs = {
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
 
-type OnChainAavePositionTypes = 'AAVE_V2' | 'AAVE_V3'
-
 function buildPosition(
   positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
   positionId: string,
@@ -146,23 +146,23 @@ function buildPosition(
   walletAddress: string,
   observables: BuildPositionArgs,
 ): Observable<AavePosition> {
-  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress } = positionCreatedEvent
-  const protocol = positionCreatedEvent.protocol as OnChainAavePositionTypes
-  const properAaveMethods = {
-    AAVE_V2: observables.aaveV2,
-    AAVE_V3: observables.aaveV3,
-  }[protocol as OnChainAavePositionTypes]
+  const { collateralTokenSymbol, debtTokenSymbol, proxyAddress, protocol } = positionCreatedEvent
+  const aaveServiceMap = {
+    [LendingProtocol.AaveV2]: observables.aaveV2,
+    [LendingProtocol.AaveV3]: observables.aaveV3,
+  }
+  const resolvedAaveServices = aaveServiceMap[protocol]
   return combineLatest(
-    // using properAaveMethods.aaveProtocolData causes this to loose strict typings
-    protocol === 'AAVE_V2'
+    // using properAaveMethods.aaveProtocolData causes this to lose strict typings
+    protocol === LendingProtocol.AaveV2
       ? observables.aaveV2.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress)
       : observables.aaveV3.aaveProtocolData$(collateralTokenSymbol, debtTokenSymbol, proxyAddress),
-    properAaveMethods.getAaveAssetsPrices$({
+    resolvedAaveServices.getAaveAssetsPrices$({
       tokens: [collateralTokenSymbol, debtTokenSymbol],
     }),
     observables.tickerPrices$([collateralTokenSymbol, debtTokenSymbol]),
-    properAaveMethods.wrappedGetAaveReserveData$(debtTokenSymbol),
-    properAaveMethods.aaveAvailableLiquidityInUSDC$({
+    resolvedAaveServices.wrappedGetAaveReserveData$(debtTokenSymbol),
+    resolvedAaveServices.aaveAvailableLiquidityInUSDC$({
       token: debtTokenSymbol,
     }),
     positionIdIsAddress(positionId)
@@ -178,7 +178,7 @@ function buildPosition(
             collateral,
             category: { liquidationThreshold },
           },
-        } = protocolData
+        } = protocolData as AaveProtocolDataV2 | AaveProtocolDataV3
 
         const isDebtZero = debt.amount.isZero()
 
@@ -221,13 +221,17 @@ function buildPosition(
 
         const isOwner = context.status === 'connected' && context.account === walletAddress
 
+        const title = `${collateralToken}/${debtToken} Aave ${
+          protocol === LendingProtocol.AaveV2 ? 'V2' : 'V3 Mainnet'
+        }`
+
         return {
           token: collateralToken,
-          title: `${collateralToken}/${debtToken} AAVE`,
+          title: title,
           url: `/aave/${
             {
-              AAVE_V2: 'v2',
-              AAVE_V3: 'v3',
+              [LendingProtocol.AaveV2]: 'v2',
+              [LendingProtocol.AaveV3]: 'v3',
             }[protocol]
           }/${positionId}`,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
@@ -251,13 +255,13 @@ type FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition = PositionCrea
   fakePositionCreatedEvtForDsProxyUsers?: boolean
 }
 
-function hasStethEthAaveV2DsProxyEarnPosition$(
+function getStethEthAaveV2DsProxyEarnPosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
     address: string,
-  ) => Observable<AaveProtocolData>,
+  ) => Observable<AaveProtocolDataV2>,
   walletAddress: string,
 ): Observable<FakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition[]> {
   return proxyAddressesProvider.dsProxy$(walletAddress).pipe(
@@ -274,7 +278,7 @@ function hasStethEthAaveV2DsProxyEarnPosition$(
                 collateralTokenSymbol: 'STETH',
                 debtTokenSymbol: 'ETH',
                 positionType: 'Earn',
-                protocol: 'AAVE',
+                protocol: LendingProtocol.AaveV2,
                 proxyAddress: dsProxyAddress,
                 fakePositionCreatedEvtForDsProxyUsers: true,
               },
@@ -303,7 +307,7 @@ export function createAavePosition$(
   } = environment
   return combineLatest(
     proxyAddressesProvider.userDpmProxies$(walletAddress),
-    hasStethEthAaveV2DsProxyEarnPosition$(
+    getStethEthAaveV2DsProxyEarnPosition$(
       proxyAddressesProvider,
       aaveV2.aaveProtocolData$,
       walletAddress,
