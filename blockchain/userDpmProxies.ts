@@ -2,7 +2,7 @@ import { getNetworkId } from '@oasisdex/web3-context'
 import { accountFactoryNetworkMap } from 'blockchain/dpm/accountFactory'
 import { accountGuardNetworkMap } from 'blockchain/dpm/accountGuard'
 import { Observable, of } from 'rxjs'
-import { shareReplay, switchMap } from 'rxjs/operators'
+import { first, shareReplay, switchMap } from 'rxjs/operators'
 import { AccountFactory } from 'types/web3-v1-contracts/account-factory'
 import { AccountGuard } from 'types/web3-v1-contracts/account-guard'
 
@@ -150,12 +150,8 @@ export function getUserDpmProxy$(
 
 export function getPositionIdFromDpmProxy$(
   context$: Observable<Context>,
-  dpmProxy?: string,
+  dpmProxy: string,
 ): Observable<string | undefined> {
-  if (!dpmProxy) {
-    return of(undefined)
-  }
-
   const chainId = getNetworkId() as NetworkIds
   const accountFactoryGenesisBlock = accountFactoryNetworkMap[chainId]
 
@@ -176,5 +172,6 @@ export function getPositionIdFromDpmProxy$(
 
       return event[0].returnValues.vaultId
     }),
+    first(),
   )
 }

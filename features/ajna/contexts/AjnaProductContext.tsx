@@ -111,10 +111,9 @@ export function AjnaBorrowContextProvider({
   const form = useAjnaBorrowFormReducto({})
   const { positionIdFromDpmProxy$ } = useAppContext()
 
-  const _positionIdFromDpmProxy$ = useMemo(
-    () => positionIdFromDpmProxy$(form.state.dpmAddress || ''),
-    [form.state.dpmAddress],
-  )
+  const _positionIdFromDpmProxy$ = useMemo(() => positionIdFromDpmProxy$(form.state.dpmAddress), [
+    form.state.dpmAddress,
+  ])
   const [positionIdFromDpmProxy] = useObservable(_positionIdFromDpmProxy$)
 
   const resolvedId = id && id !== '0' ? id : positionIdFromDpmProxy
