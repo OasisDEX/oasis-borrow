@@ -43,11 +43,11 @@ function getProtection({
   autoSellData,
 }: {
   stopLossData: StopLossTriggerData
-  autoSellData: AutoBSTriggerData
+  autoSellData?: AutoBSTriggerData
 }): number {
   return (stopLossData.stopLossLevel.gt(zero)
     ? stopLossData.stopLossLevel.times(100)
-    : autoSellData.execCollRatio.gt(zero)
+    : autoSellData?.execCollRatio.gt(zero)
     ? autoSellData.execCollRatio
     : zero
   ).toNumber()
@@ -165,7 +165,18 @@ export function getMakerEarnPositions(positions: MakerPositionDetails[]): Discov
 
 export function getAaveMultiplyPositions(positions: AavePosition[]): DiscoverTableRowData[] {
   return getAavePositionOfType(positions).multiply.map(
-    ({ fundingCost, id, liquidationPrice, multiple, netValue, title, token, url }) => {
+    ({
+      fundingCost,
+      id,
+      liquidationPrice,
+      multiple,
+      netValue,
+      title,
+      token,
+      url,
+      isOwner,
+      stopLossData,
+    }) => {
       return {
         icon: getToken(token).iconCircle,
         asset: title,
@@ -173,7 +184,7 @@ export function getAaveMultiplyPositions(positions: AavePosition[]): DiscoverTab
         currentMultiple: multiple.toNumber(),
         liquidationPrice: liquidationPrice.toNumber(),
         fundingCost: fundingCost.toNumber(),
-        protection: -1,
+        ...(isOwner && { protection: getProtection({ stopLossData: stopLossData! }) }),
         cdpId: id,
         url,
       }
@@ -188,7 +199,7 @@ export function getAaveEarnPositions(positions: AavePosition[]): DiscoverTableRo
         icon: getToken(token).iconCircle,
         asset: title,
         netUSDValue: netValue.toNumber(),
-        pnl: 'n/a',
+        pnl: 'Soon',
         liquidity: liquidity.toNumber(),
         liquidityToken: 'USDC',
         protection: -1,
@@ -214,7 +225,7 @@ export function getDsrPosition({
       icon: getToken('DAI').iconCircle,
       asset: 'DAI Savings Rate',
       netUSDValue: netValue.toNumber(),
-      pnl: 'n/a',
+      pnl: 'Soon',
       liquidity: 'Unlimited',
       protection: -1,
       url: `/earn/dsr/${address}`,

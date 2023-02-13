@@ -3,9 +3,11 @@ import { createWeb3Context$ } from '@oasisdex/web3-context'
 import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
+import { CreateDPMAccount } from 'blockchain/calls/accountFactory'
 import {
   AutomationBotAddTriggerData,
-  AutomationBotRemoveTriggerData,
+  AutomationBotV2AddTriggerData,
+  AutomationBotV2RemoveTriggerData,
 } from 'blockchain/calls/automationBot'
 import {
   AutomationBotAddAggregatorTriggerData,
@@ -47,6 +49,7 @@ import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
+import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
 import { observe } from 'blockchain/calls/observe'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
@@ -120,9 +123,19 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { getProxiesRelatedWithPosition$ } from 'features/aave/helpers/getProxiesRelatedWithPosition'
 import { getStrategyConfig$ } from 'features/aave/helpers/getStrategyConfig'
 import { hasActiveAavePositionOnDsProxy$ } from 'features/aave/helpers/hasActiveAavePositionOnDsProxy$'
+import {
+  createProxyConsumed$,
+  createReadPositionCreatedEvents$,
+  getLastCreatedPositionForProxy$,
+} from 'features/aave/services/readPositionCreatedEvents'
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
+import {
+  getAjnaPosition$,
+  GetAjnaPositionIdentification,
+} from 'features/ajna/common/observables/getAjnaPosition'
+import { getDpmPositionData$ } from 'features/ajna/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -194,6 +207,12 @@ import {
 } from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { followedVaults$ } from 'features/follow/api'
+import {
+  FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+  FollowedVaultsLimitReachedChange,
+  FollowedVaultsLimitReachedChangeAction,
+  followedVaultsLimitReachedChangeReducer,
+} from 'features/follow/common/followedVaultsLimitReached'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import {
   TAB_CHANGE_SUBJECT,
@@ -231,6 +250,13 @@ import { createCheckOasisCDPType$ } from 'features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from 'features/shared/jwt'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { getAllowanceStateMachine } from 'features/stateMachines/allowance'
+import {
+  getCreateDPMAccountTransactionMachine,
+  getDPMAccountStateMachine,
+} from 'features/stateMachines/dpmAccount'
+import { getGasEstimation$ } from 'features/stateMachines/proxy/pipelines'
+import { transactionContextService } from 'features/stateMachines/transaction'
 import { createTermsAcceptance$ } from 'features/termsOfService/termsAcceptance'
 import {
   checkAcceptanceFromApi$,
@@ -275,23 +301,24 @@ import {
   supportedMultiplyIlks,
 } from 'helpers/productCards'
 import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+import { getAaveV2Services } from 'lendingProtocols/aave-v2'
+import { getAaveV3Services } from 'lendingProtocols/aave-v3'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { equals } from 'ramda'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
-
-import { CreateDPMAccount } from '../blockchain/calls/accountFactory'
 import {
-  createProxyConsumed$,
-  createReadPositionCreatedEvents$,
-  getLastCreatedPositionForProxy$,
-} from '../features/aave/services/readPositionCreatedEvents'
-import { LendingProtocol } from '../lendingProtocols'
-import { getAaveV2Services } from '../lendingProtocols/aave-v2'
-import { getAaveV3Services } from '../lendingProtocols/aave-v3'
-import curry from 'ramda/src/curry'
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
+import curry from 'ramda/src/curry'
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -306,14 +333,23 @@ export type TxData =
   | CloseVaultData
   | OpenGuniMultiplyData
   | AutomationBotAddTriggerData
-  | AutomationBotRemoveTriggerData
+  | AutomationBotV2AddTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
   | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
   | OperationExecutorTxMeta
   | CreateDPMAccount
+  | OasisActionsTxData
+
+export type AutomationTxData =
+  | AutomationBotAddTriggerData
+  | AutomationBotV2AddTriggerData
+  | AutomationBotAddAggregatorTriggerData
+  | AutomationBotRemoveTriggersData
+  | AutomationBotV2RemoveTriggerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -362,6 +398,7 @@ export type SupportedUIChangeType =
   | NotificationChange
   | TxPayloadChange
   | AutoTakeProfitFormChange
+  | FollowedVaultsLimitReachedChange
 
 export type LegalUiChanges = {
   StopLossFormChange: StopLossFormChangeAction
@@ -374,6 +411,7 @@ export type LegalUiChanges = {
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
   AutoTakeProfitFormChange: AutoTakeProfitFormChangeAction
+  FollowedVaultsLimitReachedChangeAction: FollowedVaultsLimitReachedChangeAction
 }
 
 export type UIChanges = {
@@ -474,7 +512,10 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
   uiChangesSubject.configureSubject(AUTO_TAKE_PROFIT_FORM_CHANGE, autoTakeProfitFormChangeReducer)
-
+  uiChangesSubject.configureSubject(
+    FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
+    followedVaultsLimitReachedChangeReducer,
+  )
   return uiChangesSubject
 }
 
@@ -974,20 +1015,24 @@ export function setupAppContext() {
     (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
   )
 
+  const automationTriggersData$ = memoize(
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, proxiesRelatedWithPosition$),
+  )
+
   const aavePositions$ = memoize(
     curry(createAavePosition$)(
       {
         dsProxy$: proxyAddress$,
         userDpmProxies$,
       },
-      aaveV2.aaveProtocolData$,
-      aaveV2.getAaveAssetsPrices$,
-      tokenPriceUSD$,
-      aaveV2.wrappedGetAaveReserveData$,
-      context$,
-      readPositionCreatedEvents$,
-      aaveV2.aaveAvailableLiquidityInUSDC$,
-      strategyConfig$,
+      {
+        tickerPrices$: tokenPriceUSD$,
+        context$,
+        automationTriggersData$,
+        readPositionCreatedEvents$,
+      },
+      aaveV2,
+      aaveV3,
     ),
   )
 
@@ -1155,10 +1200,6 @@ export function setupAppContext() {
     oraclePriceDataLean$,
   )
 
-  const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, vault$),
-  )
-
   const vaultsHistoryAndValue$ = memoize(
     curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, refreshInterval),
   )
@@ -1317,6 +1358,49 @@ export function setupAppContext() {
     [LendingProtocol.AaveV3]: aaveV3,
   }
 
+  const contextForAddress$ = connectedContext$.pipe(
+    distinctUntilKeyChanged('account'),
+    shareReplay(1),
+  )
+
+  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
+
+  const commonTransactionServices = transactionContextService(context$)
+
+  const dpmAccountTransactionMachine = getCreateDPMAccountTransactionMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
+  const dpmAccountStateMachine = getDPMAccountStateMachine(
+    txHelpers$,
+    gasEstimation$,
+    dpmAccountTransactionMachine,
+  )
+
+  const allowanceStateMachine = getAllowanceStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
+  const allowanceForAccount$: (token: string, spender: string) => Observable<BigNumber> = memoize(
+    (token: string, spender: string) =>
+      contextForAddress$.pipe(switchMap(({ account }) => allowance$(token, account, spender))),
+    (token, spender) => `${token}-${spender}`,
+  )
+
+  const dpmPositionData$ = memoize(
+    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+  )
+
+  const ajnaPosition$ = memoize(
+    curry(getAjnaPosition$)(context$, dpmPositionData$, onEveryBlock$),
+    (ajnaPositionIdentification: GetAjnaPositionIdentification) => ajnaPositionIdentification,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1393,6 +1477,15 @@ export function setupAppContext() {
     ownersPositionsList$,
     followedList$,
     protocols,
+    commonTransactionServices,
+    gasEstimation$,
+    dpmAccountStateMachine,
+    allowanceStateMachine,
+    allowanceForAccount$,
+    contextForAddress$,
+    dpmPositionData$,
+    ajnaPosition$,
+    chainContext$,
   }
 }
 

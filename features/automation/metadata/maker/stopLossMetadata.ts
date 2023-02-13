@@ -1,11 +1,18 @@
 /* eslint-disable func-style */
 import BigNumber from 'bignumber.js'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import {
+  AutomationBotRemoveTriggersData,
+  removeAutomationBotAggregatorTriggers,
+} from 'blockchain/calls/automationBotAggregator'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import {
   DEFAULT_THRESHOLD_FROM_LOWEST_POSSIBLE_SL_VALUE,
   MIX_MAX_COL_RATIO_TRIGGER_OFFSET,
   NEXT_COLL_RATIO_OFFSET,
 } from 'features/automation/common/consts'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
 import {
   hasInsufficientEthFundsForTx,
   hasMoreDebtThanMaxForStopLoss,
@@ -27,13 +34,16 @@ import {
   getStartingSlRatio,
 } from 'features/automation/protection/stopLoss/helpers'
 import { StopLossResetData } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+import { prepareAddStopLossTriggerData } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { formatPercent } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopLossMetadata {
   const {
+    automationTriggersData,
     triggerData: {
       autoSellTriggerData,
-      stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel },
+      stopLossTriggerData: { isStopLossEnabled, isToCollateral, stopLossLevel, triggerId },
       constantMultipleTriggerData,
     },
     positionData: {
@@ -44,6 +54,8 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
       liquidationPenalty,
       lockedCollateral,
       debt,
+      id,
+      owner,
     },
   } = context
 
@@ -98,6 +110,15 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
     stopLossLevel: stopLossLevel.times(100),
   })
 
+  const removeTxData: AutomationBotRemoveTriggersData = {
+    removeAllowance: getShouldRemoveAllowance(automationTriggersData),
+    proxyAddress: owner,
+    triggersId: [triggerId.toNumber()],
+    kind: TxMetaKind.removeTriggers,
+  }
+
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
   return {
     callbacks: {},
     detailCards: {
@@ -143,12 +164,23 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
           min: sliderMin,
           max: sliderMax,
         }),
+      prepareAddStopLossTriggerData: ({ stopLossLevel, collateralActive }) => {
+        return prepareAddStopLossTriggerData({
+          id,
+          owner,
+          isCloseToCollateral: collateralActive,
+          stopLossLevel: stopLossLevel,
+          replacedTriggerId: triggerId.toNumber(),
+        })
+      },
     },
     settings: {
       sliderStep: 1,
     },
     translations: {
       ratioParamTranslationKey: 'system.collateral-ratio',
+      stopLossLevelCardFootnoteKey: 'system.cards.stop-loss-collateral-ratio.footnote-below',
+      bannerStrategiesKey: 'protection.stop-loss-or-auto-sell',
     },
     validation: {
       getAddErrors: ({ state: { stopLossLevel, txDetails } }) => ({
@@ -191,6 +223,12 @@ export function getMakerStopLossMetadata(context: ContextWithoutMetadata): StopL
       sliderMin,
       triggerMaxToken,
       dynamicStopLossPrice,
+      removeTxData,
     },
+    contracts: {
+      addTrigger: addAutomationBotTrigger,
+      removeTrigger: removeAutomationBotAggregatorTriggers,
+    },
+    stopLossWriteEnabled,
   }
 }

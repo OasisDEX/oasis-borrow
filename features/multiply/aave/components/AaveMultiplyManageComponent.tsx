@@ -16,6 +16,7 @@ export type AaveMultiplyManageComponentProps = {
   collateralPrice?: BigNumber
   tokenPrice?: BigNumber
   debtPrice?: BigNumber
+  dpmProxy?: string
 }
 
 export function AaveMultiplyManageComponent({
@@ -24,10 +25,15 @@ export function AaveMultiplyManageComponent({
   debtPrice,
   strategyConfig,
   nextPosition,
+  dpmProxy,
 }: AaveMultiplyManageComponentProps) {
-  const { wrappedGetAaveReserveData$, aaveReserveConfigurationData$ } = useAaveContext(
-    strategyConfig.protocol,
-  )
+  const {
+    wrappedGetAaveReserveData$,
+    aaveReserveConfigurationData$,
+    aaveHistory$,
+  } = useAaveContext(strategyConfig.protocol)
+  const _aaveHistory$ = aaveHistory$(dpmProxy!)
+  const [aaveHistory, aaveHistoryError] = useObservable(_aaveHistory$)
   const [debtTokenReserveData, debtTokenReserveDataError] = useObservable(
     wrappedGetAaveReserveData$(strategyConfig.tokens.debt),
   )
@@ -44,6 +50,7 @@ export function AaveMultiplyManageComponent({
         debtTokenReserveDataError,
         collateralTokenReserveDataError,
         debtTokenReserveConfigurationDataError,
+        aaveHistoryError,
       ]}
     >
       <WithLoadingIndicator
@@ -54,6 +61,7 @@ export function AaveMultiplyManageComponent({
           debtTokenReserveData,
           collateralTokenReserveData,
           debtTokenReserveConfigurationData,
+          aaveHistory,
         ]}
         customLoader={<AppSpinner />}
       >
@@ -64,6 +72,7 @@ export function AaveMultiplyManageComponent({
           _debtTokenReserveData,
           _collateralTokenReserveData,
           _debtTokenReserveConfigurationData,
+          _aaveHistory,
         ]) => {
           return (
             <AaveMultiplyPositionData
@@ -74,6 +83,7 @@ export function AaveMultiplyManageComponent({
               debtTokenReserveData={_debtTokenReserveData}
               debtTokenReserveConfigurationData={_debtTokenReserveConfigurationData}
               nextPosition={nextPosition}
+              aaveHistory={_aaveHistory}
             />
           )
         }}

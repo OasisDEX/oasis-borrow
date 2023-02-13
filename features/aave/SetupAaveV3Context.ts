@@ -1,15 +1,17 @@
+import { getAaveV3AssetsPrices } from 'blockchain/aave-v3'
+import { observe } from 'blockchain/calls/observe'
+import { TokenBalances } from 'blockchain/tokens'
+import { AppContext } from 'components/AppContext'
+import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
+import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { LendingProtocol } from 'lendingProtocols'
+import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { memoize } from 'lodash'
 import moment from 'moment/moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { getAaveV3AssetsPrices } from '../../blockchain/aave-v3'
-import { observe } from '../../blockchain/calls/observe'
-import { TokenBalances } from '../../blockchain/tokens'
-import { AppContext } from '../../components/AppContext'
-import { LendingProtocol } from '../../lendingProtocols'
-import { prepareAaveTotalValueLocked$ } from '../../lendingProtocols/aave-v3/pipelines'
 import { getAaveStEthYield } from './common'
 import {
   getAdjustAaveParametersMachine,
@@ -38,6 +40,9 @@ export function setupAaveV3Context(appContext: AppContext) {
     proxyConsumed$,
     strategyConfig$,
     protocols,
+    connectedContext$,
+    commonTransactionServices,
+    chainContext$,
   } = appContext
 
   const {
@@ -129,6 +134,12 @@ export function setupAaveV3Context(appContext: AppContext) {
     allowanceForAccount$,
   )
 
+  const stopLossTransactionStateMachine = getStopLossTransactionStateMachine(
+    txHelpers$,
+    connectedContext$,
+    commonTransactionServices,
+  )
+
   const aaveStateMachine = getOpenAaveStateMachine(
     openAaveStateMachineServices,
     openAaveParameters,
@@ -136,6 +147,7 @@ export function setupAaveV3Context(appContext: AppContext) {
     dpmAccountStateMachine,
     allowanceStateMachine,
     operationExecutorTransactionMachine,
+    stopLossTransactionStateMachine,
   )
 
   const aaveManageStateMachine = getManageAaveStateMachine(
@@ -158,6 +170,8 @@ export function setupAaveV3Context(appContext: AppContext) {
     getAaveAssetsPrices$({ tokens: ['USDC', 'WSTETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
+  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
+
   return {
     aaveStateMachine,
     aaveManageStateMachine,
@@ -177,5 +191,6 @@ export function setupAaveV3Context(appContext: AppContext) {
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
+    aaveHistory$,
   }
 }

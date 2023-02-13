@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { Skeleton } from 'components/Skeleton'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
-import { AppSpinner } from 'helpers/AppSpinner'
 import { ReactNode, useState } from 'react'
 import React from 'react'
 import { Box, Flex, Grid, Text } from 'theme-ui'
@@ -23,6 +23,10 @@ export interface ItemProps {
   dropdownValues?: DropDownValue[]
   isLoading?: boolean
   isHeading?: boolean
+}
+
+export function InfoSectionLoadingState() {
+  return <Skeleton width="88px" height="12px" dark />
 }
 
 // TODO: Add tooltip and loading state
@@ -89,7 +93,7 @@ export function Item({
           as="div"
         >
           {isLoading ? (
-            <AppSpinner />
+            <InfoSectionLoadingState />
           ) : (
             <>
               {value && <>{React.isValidElement(value) ? value : `${value}`}</>}

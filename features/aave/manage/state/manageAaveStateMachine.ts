@@ -1,40 +1,36 @@
 import { IPosition } from '@oasisdex/oasis-actions'
+import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
-import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
-import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
-import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
-
-import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
   callOperationExecutorWithDsProxy,
   OperationExecutorTxMeta,
-} from '../../../../blockchain/calls/operationExecutor'
-import { allDefined } from '../../../../helpers/allDefined'
-import { zero } from '../../../../helpers/zero'
-import { AllowanceStateMachine } from '../../../stateMachines/allowance'
-import { TransactionStateMachine } from '../../../stateMachines/transaction'
-import {
-  TransactionParametersStateMachine,
-  TransactionParametersStateMachineEvent,
-} from '../../../stateMachines/transactionParameters'
+} from 'blockchain/calls/operationExecutor'
 import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
   isAllowanceNeeded,
+  IStrategyConfig,
   ManageTokenInput,
-} from '../../common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
+  ProxyType,
+} from 'features/aave/common'
+import { getTxTokenAndAmount } from 'features/aave/helpers'
+import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
+import { PositionId } from 'features/aave/types'
+import { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
-  AdjustAaveParameters,
-  CloseAaveParameters,
-  ManageAaveParameters,
-} from '../../oasisActionsLibWrapper'
-import { PositionId } from '../../types'
-import { defaultManageTokenInputValues } from '../containers/AaveManageStateMachineContext'
+  TransactionParametersStateMachine,
+  TransactionParametersStateMachineEvent,
+} from 'features/stateMachines/transactionParameters'
+import { allDefined } from 'helpers/allDefined'
+import { zero } from 'helpers/zero'
+import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
+import { pure } from 'xstate/lib/actions'
+import { MachineOptionsFrom } from 'xstate/lib/types'
 
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
@@ -241,7 +237,7 @@ export function createManageAaveStateMachine(
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
                 },
               },
             },
@@ -264,7 +260,7 @@ export function createManageAaveStateMachine(
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
                 },
               },
             },
@@ -496,6 +492,7 @@ export function createManageAaveStateMachine(
             riskRatio: undefined,
           },
           strategy: undefined,
+          transition: undefined,
         })),
         riskRatioEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
@@ -527,6 +524,9 @@ export function createManageAaveStateMachine(
               currentPosition: context.currentPosition!,
               manageTokenInput: context.manageTokenInput,
               proxyType: context.positionCreatedBy,
+              shouldCloseToCollateral:
+                context.manageTokenInput?.closingToken === context.tokens.collateral,
+              positionType: context.strategyConfig.type,
             },
           }),
           { to: (context) => context.refParametersMachine! },
@@ -545,6 +545,8 @@ export function createManageAaveStateMachine(
                 proxyType: context.positionCreatedBy,
                 token,
                 amount,
+                shouldCloseToCollateral:
+                  context.manageTokenInput?.closingToken === context.tokens.collateral,
               },
             }
           },

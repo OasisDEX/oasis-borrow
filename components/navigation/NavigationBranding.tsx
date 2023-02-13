@@ -17,7 +17,7 @@ interface NavigationBrandingProps {
   pill?: NavigationBrandingPill
 }
 
-function getPillColor(color: NavigationBrandingPillColor) {
+export function getPillColor(color: NavigationBrandingPillColor) {
   return Array.isArray(color) ? `linear-gradient(90deg, ${color[0]} 0%, ${color[1]} 100%)` : color
 }
 

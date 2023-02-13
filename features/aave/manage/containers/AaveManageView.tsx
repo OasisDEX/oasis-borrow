@@ -1,23 +1,18 @@
 import { useActor } from '@xstate/react'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave/aaveV2ProtocolDataProvider'
-import { TabBar } from 'components/TabBar'
-import { ProtectionControl } from 'components/vault/ProtectionControl'
-import { isSupportedAutomationTokenPair } from 'features/automation/common/helpers'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { AaveManageTabBar } from 'features/aave/manage/containers/AaveManageTabBar'
 import { AaveAutomationContext } from 'features/automation/contexts/AaveAutomationContext'
+import { AavePositionNoticesView } from 'features/notices/VaultsNoticesView'
 import { Survey } from 'features/survey'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useTranslation } from 'next-i18next'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 import React from 'react'
-import { Box, Card, Container, Grid } from 'theme-ui'
+import { Box, Container } from 'theme-ui'
 
-import { PreparedAaveReserveData } from '../../../../lendingProtocols/aave-v2/pipelines'
-import { AavePositionNoticesView } from '../../../notices/VaultsNoticesView'
-import { useAaveContext } from '../../AaveContextProvider'
-import { IStrategyConfig } from '../../common/StrategyConfigTypes'
-import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { useManageAaveStateMachineContext } from './AaveManageStateMachineContext'
 
 interface AaveManageViewPositionViewProps {
@@ -36,30 +31,14 @@ function AaveManageContainer({
   strategyConfig: IStrategyConfig
   address: string
 }) {
-  const { t } = useTranslation()
   const Header = strategyConfig.viewComponents.headerManage
-  const VaultDetails = strategyConfig.viewComponents.vaultDetailsManage
-  const PositionInfo = strategyConfig.viewComponents.positionInfo
+
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const aaveProtection = useFeatureToggle('AaveProtection')
 
   if (!state.context.protocolData) {
     return null
   }
-
-  const {
-    tokens: { collateral: collateralToken, debt: debtToken },
-  } = state.context
-  const showAutomationTabs = isSupportedAutomationTokenPair(collateralToken, debtToken)
-
-  const isClosingPosition = state.matches('frontend.reviewingClosing')
-  const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
-
-  const nextPosition =
-    !isClosingPosition || hasCloseTokenSet
-      ? state.context.transition?.simulation.position
-      : undefined
 
   return (
     <AaveAutomationContext
@@ -75,50 +54,10 @@ function AaveManageContainer({
           <AavePositionNoticesView />
         </Box>
         <Header strategyConfig={strategyConfig} />
-        <TabBar
-          variant="underline"
-          sections={[
-            {
-              value: 'overview',
-              label: t('system.overview'),
-              content: (
-                <Grid variant="vaultContainer">
-                  <Box>
-                    <VaultDetails
-                      aaveReserveState={aaveReserveState}
-                      aaveReserveDataDebtToken={aaveReserveDataDebtToken}
-                      strategyConfig={strategyConfig}
-                      currentPosition={state.context.currentPosition}
-                      collateralPrice={state.context.collateralPrice}
-                      tokenPrice={state.context.tokenPrice}
-                      debtPrice={state.context.debtPrice}
-                      nextPosition={nextPosition}
-                    />
-                  </Box>
-                  <Box>{<SidebarManageAaveVault />}</Box>
-                </Grid>
-              ),
-            },
-            {
-              value: 'position-info',
-              label: t('system.position-info'),
-              content: (
-                <Card variant="faq">
-                  <PositionInfo />
-                </Card>
-              ),
-            },
-            ...(aaveProtection && showAutomationTabs
-              ? [
-                  {
-                    label: t('system.protection'),
-                    value: 'protection',
-                    tag: { include: true, active: false },
-                    content: <ProtectionControl />,
-                  },
-                ]
-              : []),
-          ]}
+        <AaveManageTabBar
+          strategyConfig={strategyConfig}
+          aaveReserveState={aaveReserveState}
+          aaveReserveDataDebtToken={aaveReserveDataDebtToken}
         />
         <Survey for="earn" />
       </Container>

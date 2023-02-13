@@ -29,6 +29,7 @@ export type DPMAccountStateMachineEvents =
   | { type: 'START' }
   | { type: 'RETRY' }
   | { type: 'CONTINUE' }
+  | { type: 'GO_BACK' }
   | { type: 'GAS_COST_ESTIMATION'; gasData: HasGasEstimation }
 
 export function createDPMAccountStateMachine(

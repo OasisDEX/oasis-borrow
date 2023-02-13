@@ -43,6 +43,8 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
     <AppLink href={link || getTwitterShareUrl(rest as ShareButtonPropsWithParts)}>
       <Button
         sx={{
+          display: 'flex',
+          justifyContent: 'center',
           height: '28px',
           width: '28px',
           pt: '2px',
@@ -64,12 +66,14 @@ export function ShareButton({ link, ...rest }: ShareButtonProps) {
             },
           },
           svg: {
-            color: 'primary60',
+            fill: 'primary60',
             transition: 'color 200ms',
+            marginRight: '3px',
+            marginTop: '1px',
           },
         }}
       >
-        <Icon name="share" size={12} />
+        <Icon name="share" size={17} />
       </Button>
     </AppLink>
   )

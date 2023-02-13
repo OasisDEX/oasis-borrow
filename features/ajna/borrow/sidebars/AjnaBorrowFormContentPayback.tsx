@@ -19,7 +19,7 @@ export function AjnaBorrowFormContentPayback() {
     <>
       <AjnaBorrowFormFieldPayback resetOnClear />
       <AjnaBorrowFormFieldWithdraw isDisabled={!paybackAmount || paybackAmount?.lte(0)} />
-      {paybackAmount?.gt(0) && (
+      {paybackAmount && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
           <AjnaBorrowFormOrder />

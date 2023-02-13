@@ -5591,10 +5591,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oasisdex/automation@1.2.5":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.2.5.tgz#478516be0e35d1132fc2b0b0f160825960e3c7e7"
-  integrity sha512-sfe3Miy7p3F1l6HzjNcSSqWD4sPf7yGtUOeD5hbRdDD45zbH9Y9npl39g+RmTJkpRuv8+ZOF2d8Jxrwy9biaxQ==
+"@oasisdex/automation@1.3.1-alpha.0":
+  version "1.3.1-alpha.0"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.3.1-alpha.0.tgz#706b06bcd594a5d18ec97bca32670b21a98980bb"
+  integrity sha512-XhEagBatH5fB+MAQFZNZELCubty8qqE+v7F9T+v4NTvmwuArlWwgFzxsFxAJmcicY8RiXn6snQCIPxk6gIR/dg==
   dependencies:
     ethers "^5.6.2"
 
@@ -5631,10 +5631,10 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
-"@oasisdex/oasis-actions@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.1.12.tgz#a330f6f5d3b27bb70c39ead844aade009111716f"
-  integrity sha512-0FA8ZdKoC8CqBYYtS+MZMSH78JB1D+9dx4/xEX2KuTVZtIFXsfC6IYOxa8e/QZZk0m9Z7EHSDKBMyD2bekBW0w==
+"@oasisdex/oasis-actions@0.2.1-RC.1":
+  version "0.2.1-RC.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.2.1-RC.1.tgz#9bee39fe43d7a26711519db9f403335c2ae632b3"
+  integrity sha512-RZT948YUF9tlzi7r5ZmpqfE9AqaNiLlRiKxYEKVj+LiEyGuk8mHMiP824nvw89Gybywfo38AIWKUCsaiQjIIUA==
   dependencies:
     bignumber.js "9.0.1"
     ethers "5.6.2"
@@ -12040,6 +12040,11 @@ camelize@^1.0.0:
   resolved "https://registry.yarnpkg.com/camelize/-/camelize-1.0.0.tgz#164a5483e630fa4321e5af07020e531831b2609b"
   integrity sha1-FkpUg+Yw+kMh5a8HAg5TGDGyYJs=
 
+cancelable-promise@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/cancelable-promise/-/cancelable-promise-4.3.1.tgz#957b62382435e74dfb2a038517f53205e0c631c6"
+  integrity sha512-A/8PwLk/T7IJDfUdQ68NR24QHa8rIlnN/stiJEBo6dmVUkD4K14LswG0w3VwdeK/o7qOwRUR1k2MhK5Rpy2m7A==
+
 caniuse-lite@^1.0.30000748, caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001219, caniuse-lite@^1.0.30001283:
   version "1.0.30001419"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001419.tgz"
@@ -14603,6 +14608,11 @@ eslint-plugin-no-only-tests@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-no-only-tests/-/eslint-plugin-no-only-tests-2.4.0.tgz#7d565434aa7d16ccc7eea957c391d98f827332ca"
   integrity sha512-azP9PwQYfGtXJjW273nIxQH9Ygr+5/UyeW2wEjYoDtVYPI+WPKwbj0+qcAKYUXFZLRumq4HKkFaoDBAwBoXImQ==
+
+eslint-plugin-no-relative-import-paths@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-no-relative-import-paths/-/eslint-plugin-no-relative-import-paths-1.5.2.tgz#c35f2fd0bf2a6a57b268193ed7df63ff7000134e"
+  integrity sha512-wMlL+TVuDhKk1plP+w3L4Hc7+u89vUkrOYq6/0ARjcYqwc9/YaS9uEXNzaqAk+WLoEgakzNL5JgJJw6m4qd5zw==
 
 eslint-plugin-react@^7.22.0:
   version "7.22.0"

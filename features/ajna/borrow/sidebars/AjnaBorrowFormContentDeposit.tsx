@@ -19,7 +19,7 @@ export function AjnaBorrowFormContentDeposit() {
     <>
       <AjnaBorrowFormFieldDeposit resetOnClear />
       <AjnaBorrowFormFieldGenerate isDisabled={!depositAmount || depositAmount?.lte(0)} />
-      {depositAmount?.gt(0) && (
+      {depositAmount && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
           <AjnaBorrowFormOrder />
