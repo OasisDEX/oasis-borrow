@@ -108,7 +108,9 @@ export function AjnaBorrowContextProvider({
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const form = useAjnaBorrowFormReducto({})
+  const form = useAjnaBorrowFormReducto({
+    action: props.flow === 'open' ? 'open' : 'deposit',
+  })
   const { positionIdFromDpmProxy$ } = useAppContext()
 
   const _positionIdFromDpmProxy$ = useMemo(() => positionIdFromDpmProxy$(form.state.dpmAddress), [
@@ -117,7 +119,6 @@ export function AjnaBorrowContextProvider({
   const [positionIdFromDpmProxy] = useObservable(_positionIdFromDpmProxy$)
 
   const resolvedId = id && id !== '0' ? id : positionIdFromDpmProxy
-
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
