@@ -73,7 +73,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
                 </DiscoverTableDataCellProtocol>
               ),
               action: (
-                <AppLink href={`/ajna/open/${product}/${selected.label}-${quote}`}>
+                <AppLink href={`/ajna/${product}/${selected.label}-${quote}`}>
                   <Button className="discover-action" variant="tertiary">
                     {t(`nav.${product}`)}
                   </Button>
