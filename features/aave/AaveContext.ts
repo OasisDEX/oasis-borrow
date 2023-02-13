@@ -12,7 +12,7 @@ import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { getAaveStEthYield } from './common'
+import { getAaveStEthYield, IStrategyConfig } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -98,6 +98,7 @@ export function setupAaveV2Context(appContext: AppContext) {
 
   const strategyInfo$ = memoize(
     curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
   const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$)
