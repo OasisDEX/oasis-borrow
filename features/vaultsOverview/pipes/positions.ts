@@ -139,6 +139,8 @@ type BuildPositionArgs = {
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>
 }
 
+type TemporaryLendingProtocolUnion = LendingProtocol.AaveV2 | LendingProtocol.AaveV3
+
 function buildPosition(
   positionCreatedEvent: PositionCreated & { fakePositionCreatedEvtForDsProxyUsers?: boolean },
   positionId: string,
@@ -151,7 +153,7 @@ function buildPosition(
     [LendingProtocol.AaveV2]: observables.aaveV2,
     [LendingProtocol.AaveV3]: observables.aaveV3,
   }
-  const resolvedAaveServices = aaveServiceMap[protocol]
+  const resolvedAaveServices = aaveServiceMap[protocol as TemporaryLendingProtocolUnion]
   return combineLatest(
     // using properAaveMethods.aaveProtocolData causes this to lose strict typings
     protocol === LendingProtocol.AaveV2
@@ -232,7 +234,7 @@ function buildPosition(
             {
               [LendingProtocol.AaveV2]: 'v2',
               [LendingProtocol.AaveV3]: 'v3',
-            }[protocol]
+            }[protocol as TemporaryLendingProtocolUnion]
           }/${positionId}`,
           id: positionIdIsAddress(positionId) ? formatAddress(positionId) : positionId,
           netValue: netValueUsd,
@@ -336,21 +338,24 @@ export function createAavePosition$(
           }),
           switchMap((positionCreatedEvents) => {
             return combineLatest(
-              positionCreatedEvents.map((pce) => {
-                const userProxy = userProxiesData.find(
-                  (userProxy) => userProxy.proxy === pce.proxyAddress,
-                )
-                if (!userProxy) {
-                  throw new Error('nope')
-                }
+              positionCreatedEvents
+                // TODO we will need proper handling for Ajna, filtered for now
+                .filter((event) => (event.protocol as string) !== 'Ajna')
+                .map((pce) => {
+                  const userProxy = userProxiesData.find(
+                    (userProxy) => userProxy.proxy === pce.proxyAddress,
+                  )
+                  if (!userProxy) {
+                    throw new Error('nope')
+                  }
 
-                return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
-                  aaveV2,
-                  aaveV3,
-                  tickerPrices$,
-                  automationTriggersData$,
-                })
-              }),
+                  return buildPosition(pce, userProxy.vaultId, context, walletAddress, {
+                    aaveV2,
+                    aaveV3,
+                    tickerPrices$,
+                    automationTriggersData$,
+                  })
+                }),
             )
           }),
         )

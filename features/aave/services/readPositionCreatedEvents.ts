@@ -73,7 +73,9 @@ function extractLendingProtocolFromPositionCreatedEvent(
     case 'AAVE_V3':
       return LendingProtocol.AaveV3
     case 'Ajna':
-      return LendingProtocol.Ajna
+      return 'Ajna' as LendingProtocol
+    // TODO we will need proper handling for Ajna, filtered for now
+    // return LendingProtocol.Ajna
     default:
       throw new Error(
         `Unrecognised protocol received from positionCreatedChainEvent ${JSON.stringify(
