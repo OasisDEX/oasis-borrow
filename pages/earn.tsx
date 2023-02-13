@@ -1,12 +1,12 @@
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
+import { PageSEOTags } from 'components/HeadTags'
+import { ProductPagesLayout } from 'components/Layouts'
 import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
+import { EarnView } from 'features/earn/EarnView'
 import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-
-import { WithConnection } from '../components/connectWallet/ConnectWallet'
-import { ProductPagesLayout } from '../components/Layouts'
-import { EarnView } from '../features/earn/EarnView'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -29,5 +29,9 @@ function EarnPage() {
 
 EarnPage.layout = ProductPagesLayout
 EarnPage.theme = 'Landing'
+
+EarnPage.seoTags = (
+  <PageSEOTags title="seo.earn.title" description="seo.earn.description" url="/earn" />
+)
 
 export default EarnPage

@@ -865,36 +865,36 @@
       "description": "Send us feedback, questions, or suggestions.",
       "title": "Contact"
     },
-    "dai": {
-      "description": "A short introduction to Dai, the smarter digital currency.",
-      "title": "Dai"
-    },
     "default": {
-      "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral",
-      "title": "Oasis.app"
+      "title": "Oasis.app",
+      "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral"
+    },
+    "dai": {
+      "title": "Oasis.app × Dai",
+      "description": "A short introduction to Dai, the smarter digital currency."
     },
     "support": {
-      "description": "All the answers to the most common questions.",
-      "title": "FAQs"
+      "title": "Oasis.app × FAQs",
+      "description": "All the answers to the most common questions."
     },
     "careers": {
-      "title": "Careers",
+      "title": "Oasis.app × Careers",
       "description": "We believe in talent. Join us to build the next generation of DeFi."
     },
     "about": {
-      "title": "About Us",
+      "title": "Oasis.app × About Us",
       "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
     },
     "referrals": {
-      "title": "Refer a friend and earn Dai",
+      "title": "Oasis.app × Refer a friend and earn Dai",
       "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
     },
     "brand-assets": {
-      "title": "Brand assets",
+      "title": "Oasis.app × Brand assets",
       "description": "Find here the Oasis.app Logo and graphics."
     },
     "security": {
-      "title": "Security",
+      "title": "Oasis.app × Security",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     },
     "discover": {
@@ -904,7 +904,20 @@
     "ajna": {
       "title": "Oasis.app × Ajna",
       "description": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
-    }
+    },
+    "multiply": {
+      "title": "Oasis.app × Multiply",
+      "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset."
+    },
+    "earn": {
+      "title": "Oasis.app × Earn",
+      "description": "Put your crypto assets to work today. Start generating the best yields."
+    },
+    "borrow": {
+      "title": "Oasis.app × Borrow",
+      "description": "Borrow Dai against your favorite crypto assets. Use the Dai however you like. Browse the featured, or select an asset to view our products."
+    },
+    "title-product-w-tokens": "{{product}} × {{token1}}/{{token2}}"
   },
   "set-allowance-for": "Set Allowance for {{token}}",
   "setting-allowance-for": "Setting Allowance for {{token}}",
