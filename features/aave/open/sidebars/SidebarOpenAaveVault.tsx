@@ -15,7 +15,6 @@ import { SidebarAdjustStopLossEditingStage } from 'features/automation/protectio
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
 import { ProxyView } from 'features/stateMachines/proxy'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -301,51 +300,39 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
-      <WithLoadingIndicator
-        // this loader seems to be pointless, but undefined tokenUsdPrice (below) breaks the proper decimals input so it needs to be there
-        value={[state.context.collateralPrice]}
-        customLoader={
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <AppSpinner size={24} />
-          </Box>
-        }
-      >
-        {() => (
-          <Grid gap={3}>
-            <SidebarOpenAaveVaultEditingState state={state} send={send} />
-            {state.context.tokenBalance && amountTooHigh && (
-              <MessageCard
-                messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
-                type="error"
-              />
-            )}
-            <AdjustRiskView
-              title={
-                state.context.strategyConfig.type === 'Earn'
-                  ? t('sidebar-titles.open-earn-position')
-                  : t('sidebar-titles.open-multiply-position')
-              }
-              state={state}
-              send={send}
-              isLoading={isLoading}
-              primaryButton={{
-                steps: [state.context.currentStep, state.context.totalSteps],
-                isLoading: isLoading(),
-                disabled: !state.can('NEXT_STEP'),
-                label: t(state.context.strategyConfig.viewComponents.sidebarButton),
-                action: () => send('NEXT_STEP'),
-              }}
-              textButton={{
-                label: t('open-earn.aave.vault-form.back-to-editing'),
-                action: () => send('BACK_TO_EDITING'),
-              }}
-              viewLocked={hasOpenedPosition}
-              showWarring={hasOpenedPosition}
-              noSidebar
-            />
-          </Grid>
+      <Grid gap={3}>
+        <SidebarOpenAaveVaultEditingState state={state} send={send} />
+        {state.context.tokenBalance && amountTooHigh && (
+          <MessageCard
+            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            type="error"
+          />
         )}
-      </WithLoadingIndicator>
+        <AdjustRiskView
+          title={
+            state.context.strategyConfig.type === 'Earn'
+              ? t('sidebar-titles.open-earn-position')
+              : t('sidebar-titles.open-multiply-position')
+          }
+          state={state}
+          send={send}
+          isLoading={isLoading}
+          primaryButton={{
+            steps: [state.context.currentStep, state.context.totalSteps],
+            isLoading: isLoading(),
+            disabled: !state.can('NEXT_STEP'),
+            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
+            action: () => send('NEXT_STEP'),
+          }}
+          textButton={{
+            label: t('open-earn.aave.vault-form.back-to-editing'),
+            action: () => send('BACK_TO_EDITING'),
+          }}
+          viewLocked={hasOpenedPosition}
+          showWarring={hasOpenedPosition}
+          noSidebar
+        />
+      </Grid>
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],

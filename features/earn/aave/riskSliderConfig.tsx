@@ -1,18 +1,17 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-
-import { formatBigNumber } from '../../../helpers/formatters/format'
 import {
   AdjustRiskViewConfig,
   richFormattedBoundary,
-} from '../../aave/common/components/SidebarAdjustRiskView'
+} from 'features/aave/common/components/SidebarAdjustRiskView'
+import { formatBigNumber } from 'helpers/formatters/format'
 
 const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
   liquidationPriceFormatter: (qty) => {
     return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
   },
   rightBoundary: {
-    valueExtractor: (data) => data?.oracleAssetPrice,
+    valueExtractor: (data) => data?.oraclesPricesRatio,
     formatter: (qty) => {
       return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'STETH/ETH' })
     },
@@ -33,7 +32,7 @@ const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
     return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'WSTETH/ETH' })
   },
   rightBoundary: {
-    valueExtractor: (data) => data?.oracleAssetPrice,
+    valueExtractor: (data) => data?.oraclesPricesRatio,
     formatter: (qty) => {
       return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'WSTETH/ETH' })
     },

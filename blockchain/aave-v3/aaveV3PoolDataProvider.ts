@@ -133,3 +133,15 @@ export const getAaveV3ReserveConfigurationData: CallDef<
     }
   },
 }
+
+export const getAaveV3EModeCategoryForAsset: CallDef<{ token: string }, BigNumber> = {
+  call: (args, { contract, aaveV3PoolDataProvider }) => {
+    return contract<AaveV3PoolDataProvider>(aaveV3PoolDataProvider).methods.getReserveEModeCategory
+  },
+  prepareArgs: ({ token }, context) => {
+    return [context.tokens[token].address]
+  },
+  postprocess: (result) => {
+    return new BigNumber(result)
+  },
+}
