@@ -1,4 +1,3 @@
-
 import { FlowSidebar } from 'components/FlowSidebar'
 import { ethers } from 'ethers'
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
