@@ -25,6 +25,10 @@ export interface ItemProps {
   isHeading?: boolean
 }
 
+export function InfoSectionLoadingState() {
+  return <Skeleton width="88px" height="12px" dark />
+}
+
 // TODO: Add tooltip and loading state
 // Note: Use this to phase out the VaultInformationContainer & VaultInformation components
 export function Item({
@@ -89,7 +93,7 @@ export function Item({
           as="div"
         >
           {isLoading ? (
-            <Skeleton width="100px" />
+            <InfoSectionLoadingState />
           ) : (
             <>
               {value && <>{React.isValidElement(value) ? value : `${value}`}</>}

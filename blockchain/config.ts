@@ -547,6 +547,7 @@ const hardhat: NetworkConfig = {
   cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
 }
 
+export const nullWalletAddress = '0x0000000000000000000000000000000000000000'
 export const ethNullAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 export const networksById = keyBy([main, kovan, hardhat, goerli], 'id')

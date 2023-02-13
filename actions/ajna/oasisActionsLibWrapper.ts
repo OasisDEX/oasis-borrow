@@ -31,10 +31,6 @@ export async function getAjnaParameters({
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
   const defaultPromise = Promise.resolve({} as AjnaActionData)
 
-  if (!dpmAddress) {
-    return defaultPromise
-  }
-
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision
 

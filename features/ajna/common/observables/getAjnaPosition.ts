@@ -1,4 +1,5 @@
 import { views } from '@oasisdex/oasis-actions'
+import { nullWalletAddress } from 'blockchain/config'
 import { Context } from 'blockchain/network'
 import { PositionId } from 'features/aave/types'
 import { DpmPositionData } from 'features/ajna/common/observables/getDpmPositionData'
@@ -53,9 +54,9 @@ export function getAjnaPosition$(
             collateralToken,
             product,
             protocol: 'Ajna',
-            proxy: '0x0000000000000000000000000000000000000000',
+            proxy: nullWalletAddress,
             quoteToken,
-            user: '0x0000000000000000000000000000000000000000',
+            user: nullWalletAddress,
             vaultId: '0',
           }
 

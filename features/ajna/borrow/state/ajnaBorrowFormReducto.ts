@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { nullWalletAddress } from 'blockchain/config'
 import { AjnaBorrowAction, AjnaBorrowPanel } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaBorrowFormState {
   action?: AjnaBorrowAction
-  dpmAddress?: string
+  dpmAddress: string
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
@@ -63,6 +64,7 @@ export const ajnaBorrowReset = {
 
 export const ajnaBorrowDefault: AjnaBorrowFormState = {
   ...ajnaBorrowReset,
+  dpmAddress: nullWalletAddress,
   uiDropdown: 'collateral',
   uiPill: 'deposit',
 }

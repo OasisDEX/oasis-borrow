@@ -46,6 +46,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       }
     }
   }, [
+    dpmAddress,
     depositAmount?.toString(),
     generateAmount?.toString(),
     paybackAmount?.toString(),
@@ -53,7 +54,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   ])
   useDebouncedEffect(
     () => {
-      if (txHelpers && context && dpmAddress) {
+      if (txHelpers && context) {
         const promise = cancelable(
           getAjnaParameters({
             rpcProvider: context.rpcProvider,
@@ -88,6 +89,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       }
     },
     [
+      dpmAddress,
       depositAmount?.toString(),
       generateAmount?.toString(),
       paybackAmount?.toString(),
