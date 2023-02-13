@@ -352,7 +352,8 @@ function ManageAaveReviewingStateView({
   const { t } = useTranslation()
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
-  const stopLossError = automation?.stopLoss?.stopLossError
+  // TODO validation suppressed for testing trigger execution
+  // const stopLossError = automation?.stopLoss?.stopLossError
 
   const label = allowanceNeeded
     ? t('set-allowance-for', {
@@ -364,7 +365,9 @@ function ManageAaveReviewingStateView({
     ...GetReviewingSidebarProps({ state, send, automation }),
     primaryButton: {
       isLoading: false,
-      disabled: !state.can('NEXT_STEP') || isLocked(state) || stopLossError,
+      disabled: !state.can('NEXT_STEP') || isLocked(state),
+      // TODO validation suppressed for testing trigger execution
+      // || stopLossError,
       label: label,
       action: () => send('NEXT_STEP'),
     },
