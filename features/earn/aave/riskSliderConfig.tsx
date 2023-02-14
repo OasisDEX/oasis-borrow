@@ -11,7 +11,7 @@ const adjustRiskSliderConfigForStethEth: AdjustRiskViewConfig = {
     return richFormattedBoundary({ value: formatBigNumber(qty, 2), unit: 'STETH/ETH' })
   },
   rightBoundary: {
-    valueExtractor: (data) => data?.oraclesPricesRatio,
+    valueExtractor: (data) => data?.oracleAssetPrice,
     formatter: (qty) => {
       return richFormattedBoundary({ value: formatBigNumber(qty, 4), unit: 'STETH/ETH' })
     },
@@ -44,7 +44,7 @@ const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
   },
   riskRatios: {
     minimum: new RiskRatio(new BigNumber('1.1'), RiskRatio.TYPE.MULITPLE),
-    default: 'slightlyLessThanMaxRisk',
+    default: new RiskRatio(new BigNumber(0.75), RiskRatio.TYPE.LTV),
   },
 }
 
