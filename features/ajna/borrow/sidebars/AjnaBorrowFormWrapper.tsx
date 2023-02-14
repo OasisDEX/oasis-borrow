@@ -50,7 +50,7 @@ export function AjnaBorrowFormWrapper() {
   return (
     <>
       {!isExternalStep ? (
-        <AjnaBorrowFormContent isAllowanceLoading={flowState.isLoading} txHandler={txHandler} />
+        <AjnaBorrowFormContent txHandler={txHandler} isAllowanceLoading={flowState.isLoading} />
       ) : (
         <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
       )}

@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { getAjnaBorrowStatus, getPrimaryButtonAction } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
@@ -13,26 +14,51 @@ import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
   txHandler: () => void
-  isAllowanceLoading?: boolean
+  isAllowanceLoading: boolean
 }
 
 export function AjnaBorrowFormContent({
-  isAllowanceLoading,
   txHandler,
+  isAllowanceLoading,
 }: AjnaBorrowFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, isOwner, flow, product, quoteToken },
+    environment: { collateralToken, flow, product, quoteToken, isOwner },
     form: {
       dispatch,
       state: { dpmAddress, uiDropdown },
       updateState,
     },
-    steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
-    tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxSuccess, isTxInProgress },
-    position: { isSimulationLoading, id },
+    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction, isStepValid },
+    tx: { isTxError, isTxSuccess, isTxWaitingForApproval, isTxStarted, isTxInProgress },
+    position: { id, isSimulationLoading },
   } = useAjnaBorrowContext()
+
+  async function buttonDefaultAction() {
+    if (isStepWithTransaction) {
+      txHandler()
+    } else setNextStep()
+  }
+
+  const {
+    isPrimaryButtonLoading,
+    isPrimaryButtonDisabled,
+    isPrimaryButtonHidden,
+    isTextButtonHidden,
+  } = getAjnaBorrowStatus({
+    walletAddress,
+    isStepValid,
+    isAllowanceLoading,
+    isSimulationLoading,
+    isTxInProgress,
+    isTxWaitingForApproval,
+    isTxError,
+    isTxStarted,
+    currentStep,
+    editingStep,
+    isOwner,
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -89,41 +115,25 @@ export function AjnaBorrowFormContent({
           isTxError,
         }),
       ),
-      disabled:
-        !!walletAddress &&
-        (!isStepValid ||
-          isAllowanceLoading ||
-          isSimulationLoading ||
-          isTxInProgress ||
-          isTxWaitingForApproval),
-      isLoading:
-        !!walletAddress &&
-        (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval),
-      ...(!walletAddress && currentStep === editingStep
-        ? {
-            url: '/connect',
-          }
-        : isTxSuccess && flow === 'open'
-        ? {
-            url: `/ajna/position/${id}`,
-          }
-        : {
-            action: async () => {
-              if (isStepWithTransaction) {
-                txHandler()
-              } else setNextStep()
-            },
-          }),
-      ...(walletAddress && !isOwner && currentStep === editingStep && { hidden: true }),
-    },
-    // TODO: think of a smart way of managing if this button should be visible
-    ...(currentStep === 'transaction' &&
-      (!isTxStarted || isTxWaitingForApproval || isTxError) && {
-        textButton: {
-          label: t('back-to-editing'),
-          action: () => setStep(editingStep),
-        },
+      disabled: isPrimaryButtonDisabled,
+      isLoading: isPrimaryButtonLoading,
+      hidden: isPrimaryButtonHidden,
+      ...getPrimaryButtonAction({
+        walletAddress,
+        currentStep,
+        editingStep,
+        isTxSuccess,
+        flow,
+        id,
+        buttonDefaultAction,
       }),
+    },
+    ...(!isTextButtonHidden && {
+      textButton: {
+        label: t('back-to-editing'),
+        action: () => setStep(editingStep),
+      },
+    }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
