@@ -175,9 +175,6 @@ export function createManageAaveStateMachine(
             CLOSE_POSITION: {
               target: '.loading',
             },
-            ADJUST_POSITION: {
-              target: '.loading',
-            },
           },
         },
         frontend: {
