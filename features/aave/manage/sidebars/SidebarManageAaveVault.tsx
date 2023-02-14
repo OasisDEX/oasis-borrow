@@ -59,9 +59,10 @@ function isLocked(state: ManageAaveStateMachineState) {
   return !(allDefined(ownerAddress, web3Context) && ownerAddress === web3Context!.account)
 }
 
-function getAmountGetFromPositionAfterClose(
+function getAmountReceivedAfterClose(
   strategy: IPositionTransition | undefined,
   currentPosition: IPosition | undefined,
+  isCloseToCollateral: boolean,
 ) {
   if (!strategy || !currentPosition) {
     return zero
@@ -72,17 +73,26 @@ function getAmountGetFromPositionAfterClose(
       ? strategy.simulation.swap.tokenFee
       : zero // fee already accounted for in toTokenAmount
 
+  if (isCloseToCollateral) {
+    return currentPosition.collateral.amount.minus(strategy.simulation.swap.fromTokenAmount)
+  }
+
   return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
 }
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
   const closingToken = state.context.manageTokenInput!.closingToken!
+  const isCloseToCollateral = closingToken === state.context.currentPosition?.collateral.symbol
   // @ts-ignore
   const isLoading = ['debouncingManage', 'loadingManage'].includes(state.value.background)
   const balance = formatCryptoBalance(
     amountFromWei(
-      getAmountGetFromPositionAfterClose(state.context.transition, state.context.currentPosition),
+      getAmountReceivedAfterClose(
+        state.context.transition,
+        state.context.currentPosition,
+        isCloseToCollateral,
+      ),
       closingToken,
     ),
   )
