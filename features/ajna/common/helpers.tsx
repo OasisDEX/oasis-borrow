@@ -1,6 +1,7 @@
 import { AjnaPoolData, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellContent'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import React from 'react'
 import { SxStyleProp } from 'theme-ui'
 
 interface GetKeyMethodParams {
