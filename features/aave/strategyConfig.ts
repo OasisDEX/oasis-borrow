@@ -16,7 +16,7 @@ import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
-import { IStrategyConfig, ProxyType } from './common'
+import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 
@@ -28,12 +28,6 @@ export enum ManageDebtActionsEnum {
   BORROW_DEBT = 'borrow-debt',
   PAYBACK_DEBT = 'payback-debt',
 }
-
-export type ManagePositionAvailableActions =
-  | 'adjust'
-  | 'manage-debt'
-  | 'manage-collateral'
-  | 'close'
 
 const allActionsAvailable: ManagePositionAvailableActions[] = [
   'adjust',

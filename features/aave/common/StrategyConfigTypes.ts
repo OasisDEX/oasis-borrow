@@ -1,6 +1,5 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
-import { ManagePositionAvailableActions } from 'features/aave/strategyConfig'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
@@ -15,6 +14,12 @@ export enum ProxyType {
 }
 
 export type ProductType = 'Multiply' | 'Earn' | 'Borrow'
+
+export type ManagePositionAvailableActions =
+  | 'adjust'
+  | 'manage-debt'
+  | 'manage-collateral'
+  | 'close'
 
 export interface IStrategyConfig {
   name: string
