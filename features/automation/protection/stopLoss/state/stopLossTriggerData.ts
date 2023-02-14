@@ -24,19 +24,30 @@ function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataTy
 
     const triggerTypeAsNumber = new BigNumber(triggerType).toNumber()
 
+    const isAutomationV2Trigger = [
+      TriggerType.AaveStopLossToDebt,
+      TriggerType.AaveStopLossToCollateral,
+    ].includes(triggerTypeAsNumber)
+
+    const resolvedDiv = isAutomationV2Trigger ? 10 ** 6 : 100
+
     return {
       triggerId: new BigNumber(trigger.triggerId),
       isStopLossEnabled: true,
-      stopLossLevel: new BigNumber((ltv || collRatio).toString()).div(100),
+      stopLossLevel: new BigNumber((ltv || collRatio).toString()).div(resolvedDiv),
       isToCollateral:
         triggerTypeAsNumber === TriggerType.StopLossToCollateral ||
         triggerTypeAsNumber === TriggerType.AaveStopLossToCollateral,
       executionParams: trigger.executionParams,
+      triggerType: triggerTypeAsNumber,
     }
   })
 
   return mappedStopLossTriggers.reduce((acc, obj) => {
-    if (TriggerType.AaveStopLossToDebt || TriggerType.AaveStopLossToCollateral) {
+    if (
+      obj.triggerType === TriggerType.AaveStopLossToDebt ||
+      obj.triggerType === TriggerType.AaveStopLossToCollateral
+    ) {
       return acc.stopLossLevel.lt(obj.stopLossLevel) ? acc : obj
     }
     return acc.stopLossLevel.gt(obj.stopLossLevel) ? acc : obj
@@ -131,7 +142,7 @@ export function prepareStopLossTriggerDataV2(
     triggerType, // triggerType
     tokenAddress, // collateralToken
     debtTokenAddress, // debtToken
-    stopLossLevel.toString(), // stop loss level
+    stopLossLevel.times(10 ** 6).toString(), // stop loss level
     DEFAULT_MAX_BASE_FEE_IN_GWEI.toString(), // max gas fee
   ])
 
