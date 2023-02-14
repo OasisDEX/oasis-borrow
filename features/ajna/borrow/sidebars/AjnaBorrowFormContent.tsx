@@ -37,7 +37,8 @@ export function AjnaBorrowFormContent({
 
   async function buttonDefaultAction() {
     if (isStepWithTransaction) {
-      txHandler()
+      if (isTxSuccess) setStep(editingStep)
+      else txHandler()
     } else setNextStep()
   }
 
@@ -107,6 +108,7 @@ export function AjnaBorrowFormContent({
     primaryButton: {
       label: t(
         getPrimaryButtonLabelKey({
+          flow,
           currentStep,
           product,
           dpmAddress,

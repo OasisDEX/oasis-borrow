@@ -1,12 +1,5 @@
-import { AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import { SxStyleProp } from 'theme-ui'
-
-interface GetKeyMethodParams {
-  currentStep: AjnaStatusStep
-  product: AjnaProduct
-  isTxSuccess: boolean
-  isTxError: boolean
-}
 
 export function getAjnaWithArrowColorScheme(): SxStyleProp {
   return {
@@ -19,27 +12,29 @@ export function getAjnaWithArrowColorScheme(): SxStyleProp {
 export function getPrimaryButtonLabelKey({
   currentStep,
   dpmAddress,
-  walletAddress,
-  isTxSuccess,
+  flow,
   isTxError,
-}: GetKeyMethodParams & { dpmAddress?: string; walletAddress?: string }): string {
+  isTxSuccess,
+  walletAddress,
+}: {
+  currentStep: AjnaStatusStep
+  dpmAddress?: string
+  flow: AjnaFlow
+  isTxError: boolean
+  isTxSuccess: boolean
+  product: AjnaProduct
+  walletAddress?: string
+}): string {
   switch (currentStep) {
     case 'risk':
       return 'i-understand'
     case 'transaction':
-      if (isTxSuccess) return 'system.go-to-position'
+      if (isTxSuccess && flow === 'open') return 'system.go-to-position'
       else if (isTxError) return 'retry'
       else return 'confirm'
     default:
       if (walletAddress && dpmAddress) return 'confirm'
       else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
       else return 'connect-wallet-button'
-  }
-}
-
-export function getTextButtonLabelKey({ currentStep }: GetKeyMethodParams): string {
-  switch (currentStep) {
-    default:
-      return 'back-to-editing'
   }
 }
