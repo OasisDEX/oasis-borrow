@@ -26,16 +26,22 @@ export function AjnaBorrowFormOrder() {
     availableToBorrow: formatAmount(currentPosition.debtAvailable, quoteToken),
     availableToWithdraw: formatAmount(currentPosition.collateralAvailable, collateralToken),
     afterLiquidationPrice:
-      simulation?.liquidationPrice && formatCryptoBalance(simulation.liquidationPrice),
-    afterLtv: simulation?.riskRatio && formatDecimalAsPercent(simulation.riskRatio.loanToValue),
-    afterDebt: simulation?.debtAmount && formatCryptoBalance(simulation.debtAmount),
+      simulation?.position.liquidationPrice &&
+      formatCryptoBalance(simulation?.position.liquidationPrice),
+    afterLtv:
+      simulation?.position.riskRatio &&
+      formatDecimalAsPercent(simulation?.position.riskRatio.loanToValue),
+    afterDebt:
+      simulation?.position.debtAmount && formatCryptoBalance(simulation?.position.debtAmount),
     afterCollateralLocked:
-      simulation?.collateralAmount && formatCryptoBalance(simulation.collateralAmount),
+      simulation?.position.collateralAmount &&
+      formatCryptoBalance(simulation?.position.collateralAmount),
     afterAvailableToBorrow:
-      simulation?.debtAvailable && formatAmount(simulation?.debtAvailable, quoteToken),
+      simulation?.position.debtAvailable &&
+      formatAmount(simulation?.position.debtAvailable, quoteToken),
     afterAvailableToWithdraw:
-      simulation?.collateralAvailable &&
-      formatAmount(simulation?.collateralAvailable, collateralToken),
+      simulation?.position.collateralAvailable &&
+      formatAmount(simulation?.position.collateralAvailable, collateralToken),
   }
 
   return (

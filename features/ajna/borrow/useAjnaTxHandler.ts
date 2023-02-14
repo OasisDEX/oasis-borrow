@@ -69,7 +69,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
         promise
           .then((data) => {
             setTxData(data?.tx)
-            setSimulation(data?.simulation?.targetPosition)
+            setSimulation(data?.simulation)
             setIsLoadingSimulation(false)
             uiChanges.publish(TX_DATA_CHANGE, {
               type: 'tx-data',

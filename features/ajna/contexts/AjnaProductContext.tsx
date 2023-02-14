@@ -1,4 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
+import { AjnaSimulationData } from 'actions/ajna'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/contexts/ajnaBorrowStepManager'
@@ -27,6 +28,7 @@ import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions
 
 interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
+  ethBalance: BigNumber
   collateralPrice: BigNumber
   collateralToken: string
   dpmProxy?: string
@@ -47,9 +49,9 @@ type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'currentPositi
 export interface AjnaBorrowPosition {
   id?: string
   currentPosition: AjnaPosition
-  setSimulation: Dispatch<SetStateAction<AjnaPosition | undefined>>
+  setSimulation: Dispatch<SetStateAction<AjnaSimulationData | undefined>>
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  simulation?: AjnaPosition
+  simulation?: AjnaSimulationData
   isSimulationLoading?: boolean
 }
 
@@ -122,7 +124,7 @@ export function AjnaBorrowContextProvider({
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
-  const [simulation, setSimulation] = useState<AjnaPosition>()
+  const [simulation, setSimulation] = useState<AjnaSimulationData>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
 
   const setStep = (step: AjnaStatusStep) => {

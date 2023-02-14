@@ -1,10 +1,12 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { getAjnaBorrowStatus, getPrimaryButtonAction } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { getAjnaBorrowValidations } from 'features/ajna/borrow/validations'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
@@ -24,16 +26,27 @@ export function AjnaBorrowFormContent({
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, product, quoteToken, isOwner },
+    environment: {
+      collateralToken,
+      flow,
+      product,
+      quoteToken,
+      isOwner,
+      collateralBalance,
+      ethPrice,
+      ethBalance,
+      quoteBalance,
+    },
     form: {
       dispatch,
-      state: { dpmAddress, uiDropdown },
+      state: { dpmAddress, uiDropdown, depositAmount, paybackAmount },
       updateState,
     },
     steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction, isStepValid },
-    tx: { isTxError, isTxSuccess, isTxWaitingForApproval, isTxStarted, isTxInProgress },
-    position: { id, isSimulationLoading },
+    tx: { isTxError, isTxSuccess, isTxWaitingForApproval, isTxStarted, isTxInProgress, txDetails },
+    position: { id, isSimulationLoading, simulation },
   } = useAjnaBorrowContext()
+  const gasEstimation = useGasEstimationContext()
 
   async function buttonDefaultAction() {
     if (isStepWithTransaction) {
@@ -58,6 +71,20 @@ export function AjnaBorrowFormContent({
     currentStep,
     editingStep,
     isOwner,
+  })
+
+  const { errors } = getAjnaBorrowValidations({
+    ethPrice,
+    ethBalance,
+    gasEstimationUsd: gasEstimation?.usdValue,
+    depositAmount,
+    paybackAmount,
+    quoteBalance,
+    collateralBalance,
+    simulationErrors: simulation?.errors,
+    simulationWarnings: simulation?.errors,
+    txError: txDetails?.txError,
+    collateralToken,
   })
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -115,7 +142,7 @@ export function AjnaBorrowFormContent({
           isTxError,
         }),
       ),
-      disabled: isPrimaryButtonDisabled,
+      disabled: isPrimaryButtonDisabled || !!errors.messages.length,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
       ...getPrimaryButtonAction({
