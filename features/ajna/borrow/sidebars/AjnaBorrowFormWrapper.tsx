@@ -1,5 +1,6 @@
 import { FlowSidebar } from 'components/FlowSidebar'
 import { ethers } from 'ethers'
+import { getAjnaBorrowStatus } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
 import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
@@ -11,12 +12,14 @@ import React, { useEffect } from 'react'
 export function AjnaBorrowFormWrapper() {
   const { walletAddress } = useAccount()
   const {
-    environment: { dpmProxy, collateralToken, quoteToken },
+    environment: { dpmProxy, collateralToken, quoteToken, isOwner },
     form: {
       state: { action, depositAmount, paybackAmount },
       updateState,
     },
-    steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
+    steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps, isStepValid },
+    tx: { isTxInProgress, isTxWaitingForApproval, isTxError, isTxStarted },
+    position: { isSimulationLoading },
   } = useAjnaBorrowContext()
   const txHandler = useAjnaTxHandler()
 
@@ -47,10 +50,30 @@ export function AjnaBorrowFormWrapper() {
       setStep(editingStep)
   }, [walletAddress])
 
+  const { isLoading, isDisabled, isButtonHidden, isTextButtonHidden } = getAjnaBorrowStatus({
+    walletAddress,
+    isStepValid,
+    isAllowanceLoading: flowState.isLoading,
+    isSimulationLoading,
+    isTxInProgress,
+    isTxWaitingForApproval,
+    isTxError,
+    isTxStarted,
+    currentStep,
+    editingStep,
+    isOwner,
+  })
+
   return (
     <>
       {!isExternalStep ? (
-        <AjnaBorrowFormContent isAllowanceLoading={flowState.isLoading} txHandler={txHandler} />
+        <AjnaBorrowFormContent
+          txHandler={txHandler}
+          isLoading={isLoading}
+          isDisabled={isDisabled}
+          isButtonHidden={isButtonHidden}
+          isTextButtonHidden={isTextButtonHidden}
+        />
       ) : (
         <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
       )}

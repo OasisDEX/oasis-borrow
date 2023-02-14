@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
 import { isBorrowStepValid } from 'features/ajna/borrow/contexts/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaEditingStep, AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import {
   isExternalStep,
   isNextStep,
@@ -55,7 +55,7 @@ export interface AjnaBorrowPosition {
 
 interface AjnaBorrowSteps {
   currentStep: AjnaStatusStep
-  editingStep: Extract<AjnaStatusStep, 'setup' | 'manage'>
+  editingStep: AjnaEditingStep
   isExternalStep: boolean
   isStepValid: boolean
   isStepWithTransaction: boolean

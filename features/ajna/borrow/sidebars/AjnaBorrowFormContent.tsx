@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { getPrimaryButtonAction } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
@@ -13,26 +14,38 @@ import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
   txHandler: () => void
-  isAllowanceLoading?: boolean
+  isLoading: boolean
+  isDisabled: boolean
+  isButtonHidden: boolean
+  isTextButtonHidden: boolean
 }
 
 export function AjnaBorrowFormContent({
-  isAllowanceLoading,
   txHandler,
+  isLoading,
+  isDisabled,
+  isButtonHidden,
+  isTextButtonHidden,
 }: AjnaBorrowFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, isOwner, flow, product, quoteToken },
+    environment: { collateralToken, flow, product, quoteToken },
     form: {
       dispatch,
       state: { dpmAddress, uiDropdown },
       updateState,
     },
-    steps: { currentStep, editingStep, isStepValid, setNextStep, setStep, isStepWithTransaction },
-    tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxSuccess, isTxInProgress },
-    position: { isSimulationLoading, id },
+    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction },
+    tx: { isTxError, isTxSuccess },
+    position: { id },
   } = useAjnaBorrowContext()
+
+  async function buttonDefaultAction() {
+    if (isStepWithTransaction) {
+      txHandler()
+    } else setNextStep()
+  }
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
@@ -89,41 +102,25 @@ export function AjnaBorrowFormContent({
           isTxError,
         }),
       ),
-      disabled:
-        !!walletAddress &&
-        (!isStepValid ||
-          isAllowanceLoading ||
-          isSimulationLoading ||
-          isTxInProgress ||
-          isTxWaitingForApproval),
-      isLoading:
-        !!walletAddress &&
-        (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval),
-      ...(!walletAddress && currentStep === editingStep
-        ? {
-            url: '/connect',
-          }
-        : isTxSuccess && flow === 'open'
-        ? {
-            url: `/ajna/position/${id}`,
-          }
-        : {
-            action: async () => {
-              if (isStepWithTransaction) {
-                txHandler()
-              } else setNextStep()
-            },
-          }),
-      ...(walletAddress && !isOwner && currentStep === editingStep && { hidden: true }),
-    },
-    // TODO: think of a smart way of managing if this button should be visible
-    ...(currentStep === 'transaction' &&
-      (!isTxStarted || isTxWaitingForApproval || isTxError) && {
-        textButton: {
-          label: t('back-to-editing'),
-          action: () => setStep(editingStep),
-        },
+      disabled: isDisabled,
+      isLoading: isLoading,
+      hidden: isButtonHidden,
+      ...getPrimaryButtonAction({
+        walletAddress,
+        currentStep,
+        editingStep,
+        isTxSuccess,
+        flow,
+        id,
+        buttonDefaultAction,
       }),
+    },
+    ...(!isTextButtonHidden && {
+      textButton: {
+        label: t('back-to-editing'),
+        action: () => setStep(editingStep),
+      },
+    }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
