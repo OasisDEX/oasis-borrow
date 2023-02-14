@@ -29,29 +29,29 @@ export function getAjnaBorrowHeadlineProps({
 }
 
 export function getAjnaBorrowStatus({
-  isStepValid,
-  isAllowanceLoading,
-  isTxInProgress,
-  isTxWaitingForApproval,
-  isTxStarted,
-  isTxError,
-  isOwner,
   currentStep,
   editingStep,
-  walletAddress,
+  isAllowanceLoading,
+  isOwner,
   isSimulationLoading,
+  isStepValid,
+  isTxError,
+  isTxInProgress,
+  isTxStarted,
+  isTxWaitingForApproval,
+  walletAddress,
 }: {
-  isStepValid: boolean
-  isAllowanceLoading: boolean
-  isTxInProgress: boolean
-  isTxWaitingForApproval: boolean
-  isTxStarted: boolean
-  isTxError: boolean
-  isOwner: boolean
   currentStep: AjnaStatusStep
   editingStep: AjnaEditingStep
-  walletAddress?: string
+  isAllowanceLoading: boolean
+  isOwner: boolean
   isSimulationLoading?: boolean
+  isStepValid: boolean
+  isTxError: boolean
+  isTxInProgress: boolean
+  isTxStarted: boolean
+  isTxWaitingForApproval: boolean
+  walletAddress?: string
 }) {
   const isPrimaryButtonDisabled =
     !!walletAddress &&
@@ -66,8 +66,7 @@ export function getAjnaBorrowStatus({
     (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
 
   const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
-  const isTextButtonHidden =
-    currentStep === 'transaction' && (!isTxStarted || isTxWaitingForApproval || isTxError)
+  const isTextButtonHidden = !(currentStep === 'transaction' && (!isTxStarted || isTxError))
 
   return {
     isPrimaryButtonLoading,

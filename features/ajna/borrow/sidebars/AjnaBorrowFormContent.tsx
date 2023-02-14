@@ -42,22 +42,22 @@ export function AjnaBorrowFormContent({
   }
 
   const {
-    isPrimaryButtonLoading,
     isPrimaryButtonDisabled,
     isPrimaryButtonHidden,
+    isPrimaryButtonLoading,
     isTextButtonHidden,
   } = getAjnaBorrowStatus({
-    walletAddress,
-    isStepValid,
-    isAllowanceLoading,
-    isSimulationLoading,
-    isTxInProgress,
-    isTxWaitingForApproval,
-    isTxError,
-    isTxStarted,
     currentStep,
     editingStep,
+    isAllowanceLoading,
     isOwner,
+    isSimulationLoading,
+    isStepValid,
+    isTxError,
+    isTxInProgress,
+    isTxStarted,
+    isTxWaitingForApproval,
+    walletAddress,
   })
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -128,12 +128,11 @@ export function AjnaBorrowFormContent({
         buttonDefaultAction,
       }),
     },
-    ...(!isTextButtonHidden && {
-      textButton: {
-        label: t('back-to-editing'),
-        action: () => setStep(editingStep),
-      },
-    }),
+    textButton: {
+      label: t('back-to-editing'),
+      action: () => setStep(editingStep),
+      hidden: isTextButtonHidden,
+    },
   }
 
   return <SidebarSection {...sidebarSectionProps} />
