@@ -164,6 +164,7 @@ export function AavePositionHeaderNoDetails({ strategyConfig }: AaveHeaderProps)
       header={t(tokenData.translationKey)}
       token={tokenData.tokenList}
       details={[]}
+      followButton
       shareButton
     />
   )

@@ -3,6 +3,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -12,10 +13,12 @@ import React from 'react'
 function AaveHeader({
   strategyConfig,
   headerLabelString,
+  followButton,
   shareButton,
 }: {
   strategyConfig: IStrategyConfig
   headerLabelString: string
+  followButton?: FollowButtonControlProps
   shareButton?: boolean
 }) {
   const { t } = useTranslation()
@@ -57,6 +60,7 @@ function AaveHeader({
         token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
         loading={!positionTokenPrices}
         details={detailsList}
+        followButton={followButton}
         shareButton={shareButton}
       />
     </WithErrorHandler>
@@ -72,6 +76,7 @@ export function AaveManageHeader({ strategyConfig }: { strategyConfig: IStrategy
     <AaveHeader
       strategyConfig={strategyConfig}
       headerLabelString={'vault.header-aave-view'}
+      followButton
       shareButton
     />
   )
