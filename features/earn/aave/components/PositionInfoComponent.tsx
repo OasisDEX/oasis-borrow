@@ -31,7 +31,6 @@ const getLiquidationPriceRatioColor = (ratio: BigNumber) => {
 
 type PositionInfoComponentProps = {
   aaveReserveDataDebtToken: PreparedAaveReserveData
-  oraclePrice: BigNumber
   apy?: BigNumber
   position: IPosition
 }
@@ -56,23 +55,24 @@ function formatPositionBalance(positionBalance: IPositionBalance): string {
 
 export const PositionInfoComponent = ({
   aaveReserveDataDebtToken,
-  oraclePrice,
   apy,
   position,
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
 
-  const netValueInCollateralToken = position.collateral.normalisedAmount.minus(
-    position.debt.normalisedAmount.div(position.oraclePriceForCollateralDebtExchangeRate),
-  )
+  const netValueInDebtToken = position.collateral.normalisedAmount
+    .times(position.oraclePriceForCollateralDebtExchangeRate)
+    .minus(position.debt.normalisedAmount)
 
-  const formattedNetValueInCollateralToken =
-    (position && amountFromWei(netValueInCollateralToken, position.collateral.symbol)) || zero
+  const formattedNetValueInDebtToken =
+    (position && amountFromWei(netValueInDebtToken, position.debt.symbol)) || zero
 
   const formattedCollateralValue = formatPositionBalance(position.collateral)
   const formattedDebtValue = formatPositionBalance(position.debt)
 
-  const belowCurrentRatio = oraclePrice.minus(position.liquidationPrice).times(100)
+  const belowCurrentRatio = position.oraclePriceForCollateralDebtExchangeRate
+    .minus(position.liquidationPrice)
+    .times(100)
 
   return (
     <DetailsSection
@@ -81,8 +81,8 @@ export const PositionInfoComponent = ({
         <DetailsSectionContentCardWrapper>
           <DetailsSectionContentCard
             title={t('net-value')}
-            value={formatBigNumber(formattedNetValueInCollateralToken, 2)}
-            unit={position.collateral.symbol}
+            value={formatBigNumber(formattedNetValueInDebtToken, 2)}
+            unit={position.debt.symbol}
             modal={
               <ManageSectionModal
                 heading={t('net-value')}
@@ -109,11 +109,8 @@ export const PositionInfoComponent = ({
                       <Box>{formattedDebtValue}</Box>
                       <Box>{t('net-value')}</Box>
                       <Box>
-                        {formatAmount(
-                          formattedNetValueInCollateralToken,
-                          position.collateral.symbol,
-                        )}{' '}
-                        {position.collateral.symbol}
+                        {formatAmount(formattedNetValueInDebtToken, position.debt.symbol)}{' '}
+                        {position.debt.symbol}
                       </Box>
                     </Grid>
                   </>
