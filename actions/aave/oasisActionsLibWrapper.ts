@@ -83,16 +83,10 @@ async function openAave(
     isDPMProxy: proxyType === ProxyType.DpmProxy,
   }
 
-  console.log(`dependencies:`, dependencies)
-
   switch (protocol) {
     case LendingProtocol.AaveV2:
       return await strategies.aave.v2.open(args, dependencies)
     case LendingProtocol.AaveV3:
-      console.log(`We are in Aave v3`)
-      const strategy = await strategies.aave.v3.open(args, dependencies)
-      console.log(`operation name:`, strategy.transaction.operationName)
-      console.log(`transaction:`, strategy.transaction.calls)
       return await strategies.aave.v3.open(args, dependencies)
   }
 }
@@ -142,7 +136,6 @@ export async function getOpenTransaction({
   } else {
     throw new Error('Token is neither collateral nor debt')
   }
-  console.log(`Trying to get a simulation for opening a positon.`)
   return openAave(
     slippage,
     riskRatio,
