@@ -13,14 +13,16 @@ export type AjnaEditingStep = Extract<AjnaStatusStep, 'setup' | 'manage'>
 
 export type AjnaPoolPairs = keyof Context['ajnaPoolPairs']
 
-export type AjnaPoolData = {[key in keyof Context['ajnaPoolPairs']]: {
-  '7DayNetApy': BigNumber
-  '90DayNetApy': BigNumber
-  annualFee: BigNumber
-  liquidityAvaliable: BigNumber
-  maxMultiply: BigNumber
-  maxLtv: BigNumber
-  minLtv: BigNumber
-  minPositionSize: BigNumber
-  tvl: BigNumber
-}}
+export type AjnaPoolData = {
+  [key in keyof Context['ajnaPoolPairs']]: {
+    '7DayNetApy': BigNumber
+    '90DayNetApy': BigNumber
+    annualFee: BigNumber
+    liquidityAvaliable: BigNumber
+    maxMultiply: BigNumber
+    maxLtv: BigNumber
+    minLtv: BigNumber
+    minPositionSize: BigNumber
+    tvl: BigNumber
+  }
+}
