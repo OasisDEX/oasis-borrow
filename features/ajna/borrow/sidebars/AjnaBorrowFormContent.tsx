@@ -1,6 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { getPrimaryButtonAction } from 'features/ajna/borrow/helpers'
+import { getAjnaBorrowStatus, getPrimaryButtonAction } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
@@ -14,31 +14,25 @@ import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
   txHandler: () => void
-  isPrimaryButtonLoading: boolean
-  isPrimaryButtonDisabled: boolean
-  isPrimaryButtonHidden: boolean
-  isTextButtonHidden: boolean
+  isAllowanceLoading: boolean
 }
 
 export function AjnaBorrowFormContent({
   txHandler,
-  isPrimaryButtonLoading,
-  isPrimaryButtonDisabled,
-  isPrimaryButtonHidden,
-  isTextButtonHidden,
+  isAllowanceLoading,
 }: AjnaBorrowFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, product, quoteToken },
+    environment: { collateralToken, flow, product, quoteToken, isOwner },
     form: {
       dispatch,
       state: { dpmAddress, uiDropdown },
       updateState,
     },
-    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction },
-    tx: { isTxError, isTxSuccess },
-    position: { id },
+    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction, isStepValid },
+    tx: { isTxError, isTxSuccess, isTxWaitingForApproval, isTxStarted, isTxInProgress },
+    position: { id, isSimulationLoading },
   } = useAjnaBorrowContext()
 
   async function buttonDefaultAction() {
@@ -46,6 +40,25 @@ export function AjnaBorrowFormContent({
       txHandler()
     } else setNextStep()
   }
+
+  const {
+    isPrimaryButtonLoading,
+    isPrimaryButtonDisabled,
+    isPrimaryButtonHidden,
+    isTextButtonHidden,
+  } = getAjnaBorrowStatus({
+    walletAddress,
+    isStepValid,
+    isAllowanceLoading,
+    isSimulationLoading,
+    isTxInProgress,
+    isTxWaitingForApproval,
+    isTxError,
+    isTxStarted,
+    currentStep,
+    editingStep,
+    isOwner,
+  })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
