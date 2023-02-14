@@ -50,7 +50,12 @@ export function AjnaBorrowFormWrapper() {
       setStep(editingStep)
   }, [walletAddress])
 
-  const { isLoading, isDisabled, isButtonHidden, isTextButtonHidden } = getAjnaBorrowStatus({
+  const {
+    isPrimaryButtonLoading,
+    isPrimaryButtonDisabled,
+    isPrimaryButtonHidden,
+    isTextButtonHidden,
+  } = getAjnaBorrowStatus({
     walletAddress,
     isStepValid,
     isAllowanceLoading: flowState.isLoading,
@@ -69,9 +74,9 @@ export function AjnaBorrowFormWrapper() {
       {!isExternalStep ? (
         <AjnaBorrowFormContent
           txHandler={txHandler}
-          isLoading={isLoading}
-          isDisabled={isDisabled}
-          isButtonHidden={isButtonHidden}
+          isPrimaryButtonLoading={isPrimaryButtonLoading}
+          isPrimaryButtonDisabled={isPrimaryButtonDisabled}
+          isPrimaryButtonHidden={isPrimaryButtonHidden}
           isTextButtonHidden={isTextButtonHidden}
         />
       ) : (

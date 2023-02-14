@@ -53,7 +53,7 @@ export function getAjnaBorrowStatus({
   walletAddress?: string
   isSimulationLoading?: boolean
 }) {
-  const isDisabled =
+  const isPrimaryButtonDisabled =
     !!walletAddress &&
     (!isStepValid ||
       isAllowanceLoading ||
@@ -61,18 +61,18 @@ export function getAjnaBorrowStatus({
       isTxInProgress ||
       isTxWaitingForApproval)
 
-  const isLoading =
+  const isPrimaryButtonLoading =
     !!walletAddress &&
     (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
 
-  const isButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
+  const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
   const isTextButtonHidden =
     currentStep === 'transaction' && (!isTxStarted || isTxWaitingForApproval || isTxError)
 
   return {
-    isLoading,
-    isDisabled,
-    isButtonHidden,
+    isPrimaryButtonLoading,
+    isPrimaryButtonDisabled,
+    isPrimaryButtonHidden,
     isTextButtonHidden,
   }
 }

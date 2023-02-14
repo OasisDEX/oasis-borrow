@@ -14,17 +14,17 @@ import { Grid } from 'theme-ui'
 
 interface AjnaBorrowFormContentProps {
   txHandler: () => void
-  isLoading: boolean
-  isDisabled: boolean
-  isButtonHidden: boolean
+  isPrimaryButtonLoading: boolean
+  isPrimaryButtonDisabled: boolean
+  isPrimaryButtonHidden: boolean
   isTextButtonHidden: boolean
 }
 
 export function AjnaBorrowFormContent({
   txHandler,
-  isLoading,
-  isDisabled,
-  isButtonHidden,
+  isPrimaryButtonLoading,
+  isPrimaryButtonDisabled,
+  isPrimaryButtonHidden,
   isTextButtonHidden,
 }: AjnaBorrowFormContentProps) {
   const { t } = useTranslation()
@@ -102,9 +102,9 @@ export function AjnaBorrowFormContent({
           isTxError,
         }),
       ),
-      disabled: isDisabled,
-      isLoading: isLoading,
-      hidden: isButtonHidden,
+      disabled: isPrimaryButtonDisabled,
+      isLoading: isPrimaryButtonLoading,
+      hidden: isPrimaryButtonHidden,
       ...getPrimaryButtonAction({
         walletAddress,
         currentStep,
