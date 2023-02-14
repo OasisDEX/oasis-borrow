@@ -647,6 +647,7 @@ export const tokens: TokenConfig[] = [
     icon: 'wsteth_circle_color',
     iconCircle: 'wsteth_circle_color',
     iconColor: 'wsteth_circle_color',
+    coinbaseTicker: 'coinbase-wrapped-staked-eth',
     coinGeckoTicker: 'wrapped-steth',
     coinGeckoId: 'wrapped-steth',
     color: '#ff077d',

@@ -2,6 +2,7 @@ import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
 import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
 import { ReserveConfigurationData } from 'lendingProtocols/common'
@@ -85,7 +86,7 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     curry(getAaveSupportedTokenBalances$)(
       balance$,
       aaveOracleAssetPriceData$,
-      chainLinkETHUSDOraclePrice$,
+      () => of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3),
     ),
   )
