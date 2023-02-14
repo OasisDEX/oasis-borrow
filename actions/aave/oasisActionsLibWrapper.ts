@@ -407,7 +407,6 @@ export async function getCloseAaveParameters({
     case LendingProtocol.AaveV2:
       return strategies.aave.v2.close(stratArgs, stratDeps)
     case LendingProtocol.AaveV3:
-      console.log(`We are in Aave v3`)
       return strategies.aave.v3.close(stratArgs, stratDeps)
   }
 }
