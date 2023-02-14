@@ -193,14 +193,17 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           }}
           rightLabel={t(viewConfig.rightBoundary.translationKey)}
           onChange={(ltv) => {
-            send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
+            send({
+              type: 'SET_RISK_RATIO',
+              riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV),
+            })
           }}
           minBoundry={minRisk}
           maxBoundry={maxRisk}
           lastValue={sliderValue || zero}
           disabled={viewLocked || !maxRisk}
           disabledVisually={viewLocked || !maxRisk}
-          step={0.01}
+          step={0.001}
           sliderPercentageFill={
             maxRisk && sliderValue
               ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))
