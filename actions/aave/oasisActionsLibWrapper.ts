@@ -376,6 +376,7 @@ export async function getCloseAaveParameters({
   currentPosition,
   proxyType,
   shouldCloseToCollateral,
+  protocol,
 }: CloseAaveParameters): Promise<IPositionTransition> {
   checkContext(context, 'adjust position')
 
@@ -389,12 +390,15 @@ export async function getCloseAaveParameters({
     precision: currentPosition.debt.precision,
   }
 
-  type closeParameters = Parameters<typeof strategies.aave.v2.close>
+  type closeParameters =
+    | Parameters<typeof strategies.aave.v2.close>
+    | Parameters<typeof strategies.aave.v3.close>
   const stratArgs: closeParameters[0] = {
     slippage,
     debtToken,
     collateralToken,
     collateralAmountLockedInProtocolInWei: currentPosition.collateral.amount.minus(1),
+    shouldCloseToCollateral,
   }
 
   const stratDeps: closeParameters[1] = {
@@ -405,10 +409,15 @@ export async function getCloseAaveParameters({
     proxy: proxyAddress,
     user: context.account,
     isDPMProxy: proxyType === ProxyType.DpmProxy,
-    shouldCloseToCollateral,
   }
 
-  return strategies.aave.v2.close(stratArgs, stratDeps)
+  switch (protocol) {
+    case LendingProtocol.AaveV2:
+      return strategies.aave.v2.close(stratArgs, stratDeps)
+    case LendingProtocol.AaveV3:
+      console.log(`We are in Aave v3`)
+      return strategies.aave.v3.close(stratArgs, stratDeps)
+  }
 }
 
 export function getEmptyPosition(collateral: string, debt: string) {

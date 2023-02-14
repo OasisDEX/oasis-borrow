@@ -2,6 +2,7 @@ import { IPosition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { ProxyType } from 'features/aave/common'
+import { LendingProtocol } from 'lendingProtocols'
 
 export interface CloseAaveParameters {
   context: Context
@@ -12,4 +13,5 @@ export interface CloseAaveParameters {
   amount: BigNumber
   proxyType: ProxyType
   shouldCloseToCollateral: boolean
+  protocol: LendingProtocol
 }
