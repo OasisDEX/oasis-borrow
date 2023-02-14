@@ -1,4 +1,4 @@
-import { IPosition } from '@oasisdex/oasis-actions'
+import { IPosition, TYPICAL_PRECISION } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { DetailsSection } from 'components/DetailsSection'
@@ -65,7 +65,7 @@ export const PositionInfoComponent = ({
     .minus(position.debt.normalisedAmount)
 
   const formattedNetValueInDebtToken =
-    (position && amountFromWei(netValueInDebtToken, position.debt.symbol)) || zero
+    (position && amountFromWei(netValueInDebtToken, TYPICAL_PRECISION)) || zero
 
   const formattedCollateralValue = formatPositionBalance(position.collateral)
   const formattedDebtValue = formatPositionBalance(position.debt)
