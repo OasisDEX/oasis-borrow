@@ -33,7 +33,7 @@ export function AjnaBorrowFormContentTransaction() {
       )}
       {isTxSuccess && (
         <>
-          <AjnaBorrowFormOrder />
+          <AjnaBorrowFormOrder cached />
           <VaultChangesWithADelayCard />
         </>
       )}

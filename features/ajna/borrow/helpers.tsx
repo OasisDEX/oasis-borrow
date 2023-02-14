@@ -28,7 +28,7 @@ export function getAjnaBorrowHeadlineProps({
   }
 }
 
-export function getAjnaBorrowStatus({
+export function getAjnaSidebarButtonsStatus({
   currentStep,
   editingStep,
   isAllowanceLoading,
@@ -69,42 +69,36 @@ export function getAjnaBorrowStatus({
   const isTextButtonHidden = !(currentStep === 'transaction' && (!isTxStarted || isTxError))
 
   return {
-    isPrimaryButtonLoading,
     isPrimaryButtonDisabled,
     isPrimaryButtonHidden,
+    isPrimaryButtonLoading,
     isTextButtonHidden,
   }
 }
 
-export function getPrimaryButtonAction({
-  walletAddress,
+export function getAjnaSidebarPrimaryButtonActions({
   currentStep,
+  defaultAction,
   editingStep,
-  isTxSuccess,
   flow,
   id,
-  buttonDefaultAction,
+  isTxSuccess,
+  walletAddress,
 }: {
-  walletAddress?: string
   currentStep: string
+  defaultAction: () => void
   editingStep: string
-  isTxSuccess: boolean
   flow: AjnaFlow
-  buttonDefaultAction: () => void
   id?: string
+  isTxSuccess: boolean
+  walletAddress?: string
 }) {
   switch (true) {
     case !walletAddress && currentStep === editingStep:
-      return {
-        url: '/connect',
-      }
+      return { url: '/connect' }
     case isTxSuccess && flow === 'open':
-      return {
-        url: `/ajna/position/${id}`,
-      }
+      return { url: `/ajna/position/${id}` }
     default:
-      return {
-        action: () => buttonDefaultAction(),
-      }
+      return { action: defaultAction }
   }
 }

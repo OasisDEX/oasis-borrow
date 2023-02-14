@@ -1,6 +1,9 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { getAjnaBorrowStatus, getPrimaryButtonAction } from 'features/ajna/borrow/helpers'
+import {
+  getAjnaSidebarButtonsStatus,
+  getAjnaSidebarPrimaryButtonActions,
+} from 'features/ajna/borrow/helpers'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
@@ -31,23 +34,23 @@ export function AjnaBorrowFormContent({
       updateState,
     },
     steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction, isStepValid },
-    tx: { isTxError, isTxSuccess, isTxWaitingForApproval, isTxStarted, isTxInProgress },
+    tx: {
+      isTxError,
+      isTxSuccess,
+      isTxWaitingForApproval,
+      isTxStarted,
+      isTxInProgress,
+      setTxDetails,
+    },
     position: { id, isSimulationLoading },
   } = useAjnaBorrowContext()
-
-  async function buttonDefaultAction() {
-    if (isStepWithTransaction) {
-      if (isTxSuccess) setStep(editingStep)
-      else txHandler()
-    } else setNextStep()
-  }
 
   const {
     isPrimaryButtonDisabled,
     isPrimaryButtonHidden,
     isPrimaryButtonLoading,
     isTextButtonHidden,
-  } = getAjnaBorrowStatus({
+  } = getAjnaSidebarButtonsStatus({
     currentStep,
     editingStep,
     isAllowanceLoading,
@@ -58,6 +61,31 @@ export function AjnaBorrowFormContent({
     isTxInProgress,
     isTxStarted,
     isTxWaitingForApproval,
+    walletAddress,
+  })
+  const primaryButtonLabel = getPrimaryButtonLabelKey({
+    flow,
+    currentStep,
+    product,
+    dpmAddress,
+    walletAddress,
+    isTxSuccess,
+    isTxError,
+  })
+  const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
+    defaultAction: async () => {
+      if (isStepWithTransaction) {
+        if (isTxSuccess) {
+          setTxDetails(undefined)
+          setStep(editingStep)
+        } else txHandler()
+      } else setNextStep()
+    },
+    currentStep,
+    editingStep,
+    flow,
+    id,
+    isTxSuccess,
     walletAddress,
   })
 
@@ -106,29 +134,11 @@ export function AjnaBorrowFormContent({
       </Grid>
     ),
     primaryButton: {
-      label: t(
-        getPrimaryButtonLabelKey({
-          flow,
-          currentStep,
-          product,
-          dpmAddress,
-          walletAddress,
-          isTxSuccess,
-          isTxError,
-        }),
-      ),
+      label: t(primaryButtonLabel),
       disabled: isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
-      ...getPrimaryButtonAction({
-        walletAddress,
-        currentStep,
-        editingStep,
-        isTxSuccess,
-        flow,
-        id,
-        buttonDefaultAction,
-      }),
+      ...primaryButtonActions,
     },
     textButton: {
       label: t('back-to-editing'),
