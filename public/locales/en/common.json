@@ -195,6 +195,8 @@
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
+        "7-day-net-apy": "7 day net APY",
+        "90-day-net-apy": "90 day net APY",
         "action": "",
         "activity": "Activity",
         "annual-fee": "Annual fee",
@@ -211,6 +213,7 @@
         "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
+        "min-ltv": "Min LTV",
         "min-position-size": "Min. position size",
         "net-usd-value": "Net value",
         "net-value": "Net value",
@@ -219,6 +222,7 @@
         "protection": "Protection",
         "protocol": "Protocol",
         "status": "Status",
+        "tvl": "TVL",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
       },

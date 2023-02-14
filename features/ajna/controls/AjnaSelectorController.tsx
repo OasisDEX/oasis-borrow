@@ -1,10 +1,11 @@
-import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
 import { AppLink } from 'components/Links'
 import { ajnaComingSoonPools, DEFAULT_SELECTED_TOKEN } from 'features/ajna/common/consts'
+import { ajnaPoolDummyData } from 'features/ajna/common/content'
+import { filterPoolData } from 'features/ajna/common/helpers'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
@@ -16,7 +17,6 @@ import {
 } from 'features/discover/common/DiscoverTableDataCellContent'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
-import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useHash } from 'helpers/useHash'
 import { uniq } from 'lodash'
@@ -63,10 +63,11 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
             .filter(([collateral]) => collateral === selected.value)
             .map(([, quote]) => ({
               asset: <DiscoverTableDataCellAsset asset={quote} icon={getToken(quote).iconCircle} />,
-              minPositionSize: `$${formatFiatBalance(new BigNumber(Math.random() * 1000))}`,
-              maxLTV: formatPercent(new BigNumber(Math.random() * 100), { precision: 2 }),
-              liquidityAvaliable: `$${formatFiatBalance(new BigNumber(Math.random() * 10000000))}`,
-              annualFee: formatPercent(new BigNumber(Math.random() * 10), { precision: 2 }),
+              ...filterPoolData({
+                data: ajnaPoolDummyData,
+                pair: `${selected.value}-${quote}`,
+                product,
+              }),
               protocol: (
                 <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
                   Ajna
@@ -95,10 +96,11 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
               />
             </DiscoverTableDataCellInactive>
           ),
-          minPositionSize: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          maxLTV: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          liquidityAvaliable: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          annualFee: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          ...filterPoolData({
+            data: ajnaPoolDummyData,
+            pair: `${selected.value}-${quote}`,
+            product,
+          }),
           protocol: (
             <DiscoverTableDataCellInactive>
               <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
