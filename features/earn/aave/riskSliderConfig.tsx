@@ -44,7 +44,7 @@ const adjustRiskSliderConfigForWstethEth: AdjustRiskViewConfig = {
   },
   riskRatios: {
     minimum: new RiskRatio(new BigNumber('1.1'), RiskRatio.TYPE.MULITPLE),
-    default: new RiskRatio(new BigNumber(0.75), RiskRatio.TYPE.LTV),
+    default: new RiskRatio(new BigNumber('7.5'), RiskRatio.TYPE.MULITPLE),
   },
 }
 

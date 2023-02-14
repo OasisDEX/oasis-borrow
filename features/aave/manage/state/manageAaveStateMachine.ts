@@ -181,8 +181,25 @@ export function createManageAaveStateMachine(
           },
         },
         frontend: {
-          initial: 'editing',
+          initial: 'initial',
           states: {
+            initial: {
+              entry: ['setInitialState'],
+              on: {
+                CLOSE_POSITION: {
+                  target: 'reviewingClosing',
+                },
+                ADJUST_POSITION: {
+                  target: 'editing',
+                },
+                MANAGE_DEBT: {
+                  target: 'manageDebt',
+                },
+                MANAGE_COLLATERAL: {
+                  target: 'manageCollateral',
+                },
+              },
+            },
             editing: {
               entry: ['reset', 'killCurrentParametersMachine', 'spawnAdjustParametersMachine'],
               on: {
@@ -232,6 +249,7 @@ export function createManageAaveStateMachine(
                   },
                 ],
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                 },
                 CLOSE_POSITION: {
@@ -255,6 +273,7 @@ export function createManageAaveStateMachine(
                   },
                 ],
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                 },
                 CLOSE_POSITION: {
@@ -319,6 +338,7 @@ export function createManageAaveStateMachine(
                   actions: ['closePositionTransactionEvent'],
                 },
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                   actions: ['reset', 'resetTokenActionValue'],
                 },
@@ -344,6 +364,7 @@ export function createManageAaveStateMachine(
                   target: 'txInProgress',
                 },
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                   actions: ['reset'],
                 },
@@ -389,6 +410,15 @@ export function createManageAaveStateMachine(
         },
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
+        },
+        BACK_TO_EDITING: {
+          cond: 'canAdjustPosition',
+          target: 'frontend.editing',
+          actions: ['reset'],
+        },
+        CLOSE_POSITION: {
+          target: ['frontend.reviewingClosing'],
+          actions: ['spawnCloseParametersMachine'],
         },
         MANAGE_COLLATERAL: {
           cond: 'canChangePosition',
@@ -446,6 +476,8 @@ export function createManageAaveStateMachine(
           allDefined(web3Context, ownerAddress, currentPosition) &&
           web3Context!.account === ownerAddress,
         isAllowanceNeeded,
+        canAdjustPosition: ({ strategyConfig }) =>
+          strategyConfig.availableActions.includes('adjust'),
       },
       actions: {
         resetTokenActionValue: assign((_) => ({
@@ -516,7 +548,10 @@ export function createManageAaveStateMachine(
             type: 'VARIABLES_RECEIVED',
             parameters: {
               amount: context.userInput.amount || zero,
-              riskRatio: context.userInput.riskRatio || context.currentPosition!.riskRatio,
+              riskRatio:
+                context.userInput.riskRatio ||
+                context.currentPosition?.riskRatio ||
+                context.strategyConfig.riskRatios.minimum,
               proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
               context: context.web3Context!,
@@ -654,6 +689,23 @@ export function createManageAaveStateMachine(
             },
           }
         }),
+        setInitialState: send(
+          (context) => {
+            const firstAction = context.strategyConfig.availableActions[0]
+
+            switch (firstAction) {
+              case 'adjust':
+                return { type: 'ADJUST_POSITION' }
+              case 'manage-collateral':
+                return { type: 'MANAGE_COLLATERAL' }
+              case 'manage-debt':
+                return { type: 'MANAGE_DEBT' }
+              case 'close':
+                return { type: 'CLOSE_POSITION' }
+            }
+          },
+          { delay: 0 },
+        ),
       },
     },
   )

@@ -16,7 +16,7 @@ import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
-import { IStrategyConfig, ProxyType } from './common'
+import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 
@@ -28,6 +28,13 @@ export enum ManageDebtActionsEnum {
   BORROW_DEBT = 'borrow-debt',
   PAYBACK_DEBT = 'payback-debt',
 }
+
+const allActionsAvailable: ManagePositionAvailableActions[] = [
+  'adjust',
+  'manage-debt',
+  'manage-collateral',
+  'close',
+]
 
 const supportedAaveBorrowCollateralTokens = ['ETH']
 
@@ -57,6 +64,7 @@ export const strategies: Array<IStrategyConfig> = [
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3EarnWSTETH' as const,
+    availableActions: ['close'],
   },
   {
     urlSlug: 'stETHeth',
@@ -82,6 +90,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.stethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'ethusdc',
@@ -107,6 +116,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'stETHusdc',
@@ -132,6 +142,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'wBTCusdc',
@@ -157,6 +168,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
@@ -185,6 +197,7 @@ export const strategies: Array<IStrategyConfig> = [
       featureToggle: 'AaveBorrow' as const,
       type: 'Borrow' as const,
       protocol: LendingProtocol.AaveV2,
+      availableActions: allActionsAvailable,
     }
   }),
 ]
