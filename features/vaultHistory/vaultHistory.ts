@@ -456,6 +456,33 @@ const triggerEventsQuery = gql`
   }
 `
 
+const triggerEventsQueryUsingProxy = gql`
+  query triggerEvents($proxyAddress: String) {
+    allTriggerEvents(
+      filter: { proxyAddress: { equalTo: $proxyAddress } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
+      nodes {
+        id
+        triggerId
+        cdpId
+        number
+        kind
+        eventType
+        hash
+        timestamp
+        triggerData
+        commandAddress
+        groupId
+        groupType
+        gasFee
+        ethPrice
+        proxyAddress
+      }
+    }
+  }
+`
+
 function parseBigNumbersFields(
   event: Partial<ReturnedEvent & ReturnedAutomationEvent>,
 ): VaultEvent {
@@ -519,6 +546,16 @@ async function getVaultAutomationHistory(
   id: BigNumber,
 ): Promise<ReturnedAutomationEvent[]> {
   const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
+  return triggersData.allTriggerEvents.nodes
+}
+
+async function getVaultAutomationV2History(
+  client: GraphQLClient,
+  proxyAddress: string,
+): Promise<ReturnedAutomationEvent[]> {
+  const triggersData = await client.request(triggerEventsQueryUsingProxy, {
+    proxyAddress: proxyAddress.toLowerCase(),
+  })
   return triggersData.allTriggerEvents.nodes
 }
 
@@ -586,6 +623,31 @@ export function createVaultHistory$(
         mapEventsToVaultEvents,
         map((events) => events.map((event) => ({ etherscan, ethtx, ...event, token }))),
         map(addReclaimFlag),
+        catchError(() => of([])),
+      )
+    }),
+  )
+}
+
+// Simplified history for now with only automation events (to get info about SL execution)
+export function createAaveHistory$(
+  context$: Observable<Context>,
+  onEveryBlock$: Observable<number>,
+  proxyAddress: string,
+): Observable<VaultHistoryEvent[]> {
+  const makeClient = memoize(
+    (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
+  )
+  return combineLatest(context$).pipe(
+    switchMap(([{ etherscan, cacheApi, ethtx }]) => {
+      return onEveryBlock$.pipe(
+        switchMap(() => {
+          const apiClient = makeClient(cacheApi)
+          return combineLatest(of([]), getVaultAutomationV2History(apiClient, proxyAddress))
+        }),
+        mapEventsToVaultEvents,
+        map((events) => events.map((event) => ({ etherscan, ethtx, ...event }))),
+        map((events) => mapAutomationEvents(events)),
         catchError(() => of([])),
       )
     }),

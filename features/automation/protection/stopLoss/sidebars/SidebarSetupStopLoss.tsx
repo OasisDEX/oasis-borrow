@@ -28,7 +28,6 @@ import {
 } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
 import { TAB_CHANGE_SUBJECT } from 'features/generalManageVault/TabChange'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -64,8 +63,6 @@ export function SidebarSetupStopLoss({
 
   isStopLossActive,
 }: SidebarSetupStopLossProps) {
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
-
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const automationContext = useAutomationContext()
@@ -75,6 +72,7 @@ export function SidebarSetupStopLoss({
       stopLossMetadata: {
         methods: { getExecutionPrice },
         validation: { getAddErrors, getAddWarnings, cancelErrors, cancelWarnings },
+        stopLossWriteEnabled,
       },
     },
     positionData: { vaultType },

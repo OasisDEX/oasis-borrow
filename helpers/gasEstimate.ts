@@ -1,49 +1,33 @@
-import {
-  addAutomationBotTrigger,
-  AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
-import {
-  addAutomationBotAggregatorTrigger,
-  AutomationBotAddAggregatorTriggerData,
-  AutomationBotRemoveTriggersData,
-} from 'blockchain/calls/automationBotAggregator'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
+import { OasisActionCallData } from 'features/ajna/borrow/useAjnaTxHandler'
 import {
-  AUTO_BUY_FORM_CHANGE,
-  AUTO_SELL_FORM_CHANGE,
-} from 'features/automation/common/state/autoBSFormChange'
-import { AUTO_TAKE_PROFIT_FORM_CHANGE } from 'features/automation/optimization/autoTakeProfit/state/autoTakeProfitFormChange'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/optimization/constantMultiple/state/constantMultipleFormChange'
-import { STOP_LOSS_FORM_CHANGE } from 'features/automation/protection/stopLoss/state/StopLossFormChange'
+  AutomationAddTriggerData,
+  AutomationAddTriggerTxDef,
+  AutomationRemoveTriggerData,
+  AutomationRemoveTriggerTxDef,
+} from 'features/automation/common/txDefinitions'
 
 export const TX_DATA_CHANGE = 'TX_DATA_CHANGE'
 
-interface AutoAddTriggerChange {
-  data: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
-  transaction:
-    | TransactionDef<AutomationBotAddTriggerData>
-    | TransactionDef<AutomationBotAddAggregatorTriggerData>
-}
-
-interface AutoRemoveTriggerChange {
-  data: AutomationBotRemoveTriggersData
-  transaction: TransactionDef<AutomationBotRemoveTriggersData>
-}
-
-export type TxPayloadChange = AutoAddTriggerChange | AutoRemoveTriggerChange | undefined
+export type TxPayloadChange =
+  | {
+      data: AutomationAddTriggerData | AutomationRemoveTriggerData | OasisActionCallData
+      transaction:
+        | AutomationAddTriggerTxDef
+        | AutomationRemoveTriggerTxDef
+        | TransactionDef<OasisActionsTxData>
+    }
+  | undefined
 
 export type TxPayloadChangeAction =
   | {
-      type: 'add-trigger'
+      type: 'tx-data'
       transaction:
-        | TransactionDef<AutomationBotAddTriggerData>
-        | TransactionDef<AutomationBotAddAggregatorTriggerData>
-      data: AutomationBotAddTriggerData | AutomationBotAddAggregatorTriggerData
-    }
-  | {
-      type: 'remove-triggers'
-      transaction: TransactionDef<AutomationBotRemoveTriggersData>
-      data: AutomationBotRemoveTriggersData
+        | AutomationAddTriggerTxDef
+        | AutomationRemoveTriggerTxDef
+        | TransactionDef<OasisActionsTxData>
+      data: AutomationAddTriggerData | AutomationRemoveTriggerData | OasisActionCallData
     }
   | { type: 'reset' }
 
@@ -52,21 +36,11 @@ export function gasEstimationReducer(
   action: TxPayloadChangeAction,
 ): TxPayloadChange {
   switch (action.type) {
-    case 'add-trigger':
-      return { data: action.data, transaction: action.transaction }
-    case 'remove-triggers':
+    case 'tx-data':
       return { data: action.data, transaction: action.transaction }
     case 'reset':
       return undefined
     default:
       return state
   }
-}
-
-export const addTransactionMap = {
-  [CONSTANT_MULTIPLE_FORM_CHANGE]: addAutomationBotAggregatorTrigger,
-  [AUTO_BUY_FORM_CHANGE]: addAutomationBotTrigger,
-  [AUTO_SELL_FORM_CHANGE]: addAutomationBotTrigger,
-  [STOP_LOSS_FORM_CHANGE]: addAutomationBotTrigger,
-  [AUTO_TAKE_PROFIT_FORM_CHANGE]: addAutomationBotTrigger,
 }

@@ -29,11 +29,16 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
     depositAmount,
     stopLossSkipped,
     stopLossLevel,
-    ilkData,
+    ilkData: { liquidationRatio },
     visitedStopLossStep,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+
+  const dynamicStopLossPrice =
+    afterLiquidationPrice && liquidationRatio
+      ? afterLiquidationPrice.div(liquidationRatio).times(stopLossLevel.div(100))
+      : zero
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
@@ -111,9 +116,9 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
       <VaultChangesInformationEstimatedGasFee {...props} />
       {stopLossWriteEnabled && visitedStopLossStep && !stopLossSkipped && (
         <OpenFlowStopLossSummary
+          ratioTranslationKey="protection.stop-loss-coll-ratio"
           stopLossLevel={stopLossLevel}
-          liquidationRatio={ilkData.liquidationRatio}
-          afterLiquidationPrice={afterLiquidationPrice}
+          dynamicStopLossPrice={dynamicStopLossPrice}
         />
       )}
     </VaultChangesInformationContainer>

@@ -1,6 +1,8 @@
 import { useActor } from '@xstate/react'
 import { TabBar } from 'components/TabBar'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
+import { AutomationContextInput } from 'features/automation/contexts/AutomationContextInput'
+import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { Survey } from 'features/survey'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -49,8 +51,11 @@ function SimulateSectionComponent({ config }: { config: IStrategyConfig }) {
 function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
   const { t } = useTranslation()
   const { stateMachine } = useOpenAaveStateMachineContext()
-  const [, send] = useActor(stateMachine)
+  const [state, send] = useActor(stateMachine)
   const PositionInfo = strategyConfig.viewComponents.positionInfo
+
+  const { automationContextProps } = getAaveStopLossData(state.context, send)
+
   return (
     <TabBar
       variant="underline"
@@ -62,8 +67,13 @@ function TabSectionComponent({ strategyConfig }: { strategyConfig: IStrategyConf
             <Grid variant="vaultContainer">
               <Box>
                 <SimulateSectionComponent config={strategyConfig} />
+                <Box sx={{ mt: 5 }}></Box>
               </Box>
-              <Box>{<SidebarOpenAaveVault />}</Box>
+              <Box>
+                <AutomationContextInput {...automationContextProps}>
+                  <SidebarOpenAaveVault />
+                </AutomationContextInput>
+              </Box>
             </Grid>
           ),
         },

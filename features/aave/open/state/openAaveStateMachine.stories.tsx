@@ -1,16 +1,16 @@
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
+import { OpenAaveParameters } from 'actions/aave/types/openAaveParameters'
 import BigNumber from 'bignumber.js'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
+import { ProxyEvent, ProxyStateMachine } from 'features/stateMachines/proxy/state'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
+import { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import React from 'react'
 import { Box, Button, Grid } from 'theme-ui'
 import { ActorRefFrom } from 'xstate'
 
-import { OperationExecutorTxMeta } from '../../../../blockchain/calls/operationExecutor'
-import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
-import { ProxyEvent, ProxyStateMachine } from '../../../stateMachines/proxy/state'
-import { TransactionStateMachine } from '../../../stateMachines/transaction'
-import { TransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
-import { OpenAaveParameters } from '../../oasisActionsLibWrapper'
 import {
   createOpenAaveStateMachine,
   OpenAaveEvent,
@@ -27,6 +27,7 @@ const hasGasEstimation: HasGasEstimation = {
 }
 
 const openAaveStateMachine = createOpenAaveStateMachine(
+  emptyObject,
   emptyObject,
   emptyObject,
   emptyObject,

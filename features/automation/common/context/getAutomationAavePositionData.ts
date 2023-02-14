@@ -15,12 +15,14 @@ export function getAutomationAavePositionData({
   vaultType = VaultType.Borrow,
 }: GetAutomationAavePositionDataParams): AutomationPositionData {
   const {
-    address,
     aaveReserveState: { liquidationBonus },
     strategyConfig,
     context: {
       tokens: { debt: debtToken, collateral: collateralToken },
       protocolData,
+      proxyAddress,
+      positionId: { vaultId },
+      web3Context,
     },
   } = aaveManageVault
   const ilkOrToken = strategyConfig.tokens?.collateral!
@@ -40,20 +42,22 @@ export function getAutomationAavePositionData({
   const liquidationPrice = positionDebt.div(lockedCollateral.times(liquidationThreshold)) || zero
 
   return {
-    positionRatio: loanToValue.decimalPlaces(4),
-    nextPositionRatio: loanToValue.decimalPlaces(4),
+    positionRatio: loanToValue.decimalPlaces(5),
+    nextPositionRatio: loanToValue.decimalPlaces(5),
     debt: positionDebt,
     debtFloor: dustLimit,
     debtOffset: zero,
-    id: new BigNumber(parseInt(address, 16)),
+    id: new BigNumber(vaultId!),
     ilk: ilkOrToken,
-    liquidationPenalty: liquidationBonus.div(10000),
+    liquidationPenalty: liquidationBonus,
     liquidationPrice,
     liquidationRatio: liquidationThreshold,
     lockedCollateral,
-    owner: address,
+    owner: proxyAddress!,
     token: collateralToken,
     debtToken: debtToken,
     vaultType,
+    debtTokenAddress: web3Context!.tokens[debtToken].address,
+    collateralTokenAddress: web3Context!.tokens[collateralToken].address,
   }
 }

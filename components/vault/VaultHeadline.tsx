@@ -3,14 +3,14 @@ import { Heading } from '@theme-ui/components'
 import { getTokens } from 'blockchain/tokensMetadata'
 import { Skeleton } from 'components/Skeleton'
 import {
-  FollowButtonControl,
-  FollowButtonControlProps,
-} from 'features/follow/common/FollowButtonControl'
-import {
   ShareButton,
   twitterSharePositionText,
   twitterSharePositionVia,
 } from 'features/follow/common/ShareButton'
+import {
+  FollowButtonControl,
+  FollowButtonControlProps,
+} from 'features/follow/controllers/FollowButtonControl'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { ReactNode } from 'react'
@@ -43,10 +43,13 @@ export function VaultHeadline({
   return (
     <Flex
       sx={{
+        flexWrap: 'wrap',
+        flexShrink: 0,
         flexDirection: ['column', 'column', null, 'row'],
         justifyContent: 'space-between',
         alignItems: ['flex-start', null, null, 'center'],
         mb: 4,
+        rowGap: 3,
       }}
     >
       <Heading
@@ -58,10 +61,11 @@ export function VaultHeadline({
           fontSize: '28px',
           color: 'primary100',
           alignItems: 'center',
+          wordBreak: 'break-word',
         }}
       >
         {tokenData instanceof Array && tokenData.length > 0 && (
-          <Box sx={{ mr: 2 }}>
+          <Box sx={{ mr: 2, flexShrink: 0 }}>
             {tokenData.map(({ iconCircle }, iconIndex) => (
               <Icon
                 key={`VaultHeadlineIcon_${iconCircle}`}
@@ -80,7 +84,20 @@ export function VaultHeadline({
         {header}
         {label && <Image src={staticFilesRuntimeUrl(label)} sx={{ ml: 3 }} />}
         {followVaultEnabled && (
-          <Flex sx={{ alignItems: 'center', columnGap: 2, ml: 3 }}>
+          <Flex
+            sx={{
+              flexWrap: 'wrap',
+              flexShrink: 0,
+              alignItems: 'center',
+              columnGap: 2,
+              ml: 3,
+              '&:hover': {
+                '.tooltip': {
+                  whiteSpace: 'nowrap',
+                },
+              },
+            }}
+          >
             {followButton && <FollowButtonControl {...followButton} />}
             {shareButton && (
               <ShareButton

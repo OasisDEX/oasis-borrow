@@ -4,6 +4,8 @@ import { SxStyleProp } from 'theme-ui'
 interface GetKeyMethodParams {
   currentStep: AjnaStatusStep
   product: AjnaProduct
+  isTxSuccess: boolean
+  isTxError: boolean
 }
 
 export function getAjnaWithArrowColorScheme(): SxStyleProp {
@@ -14,12 +16,24 @@ export function getAjnaWithArrowColorScheme(): SxStyleProp {
   }
 }
 
-export function getPrimaryButtonLabelKey({ currentStep }: GetKeyMethodParams): string {
+export function getPrimaryButtonLabelKey({
+  currentStep,
+  dpmAddress,
+  walletAddress,
+  isTxSuccess,
+  isTxError,
+}: GetKeyMethodParams & { dpmAddress?: string; walletAddress?: string }): string {
   switch (currentStep) {
     case 'risk':
       return 'i-understand'
+    case 'transaction':
+      if (isTxSuccess) return 'system.go-to-position'
+      else if (isTxError) return 'retry'
+      else return 'confirm'
     default:
-      return 'confirm'
+      if (walletAddress && dpmAddress) return 'confirm'
+      else if (walletAddress) return 'dpm.create-flow.welcome-screen.create-button'
+      else return 'connect-wallet-button'
   }
 }
 

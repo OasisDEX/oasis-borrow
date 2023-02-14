@@ -151,7 +151,7 @@ export function getSidebarTitle({
         openFlowWithStopLoss,
       })
 
-      return t(txInProgressKey)
+      return t(txInProgressKey, { type: t('system.vault') })
     case 'txWaitingForConfirmation':
     case 'txWaitingForApproval':
     case 'txFailure':

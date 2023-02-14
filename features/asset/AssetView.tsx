@@ -1,5 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
+import {
+  BorrowProductCardsContainer,
+  EarnProductCardsContainer,
+  MultiplyProductCardsContainer,
+} from 'components/productCards/ProductCardsContainer'
 import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
@@ -7,12 +12,6 @@ import { getAaveEnabledStrategies } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
-
-import {
-  BorrowProductCardsContainer,
-  EarnProductCardsContainer,
-  MultiplyProductCardsContainer,
-} from '../../components/productCards/ProductCardsContainer'
 
 const aaveAssets = {
   // not putting this to ASSETS_PAGES cause we need feature toggles

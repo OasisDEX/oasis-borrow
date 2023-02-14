@@ -1,4 +1,5 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
@@ -14,11 +15,7 @@ export function SidebarOpenBorrowVaultOpenStage(props: OpenVaultState) {
     case 'txInProgress':
       return (
         <>
-          {openFlowWithStopLoss && (
-            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-              {t('open-vault-two-tx-setup-requirement')}
-            </Text>
-          )}
+          {openFlowWithStopLoss && <StopLossTwoTxRequirement typeKey="system.vault" />}
           <OpenVaultAnimation />
         </>
       )

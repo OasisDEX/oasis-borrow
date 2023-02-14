@@ -1,24 +1,19 @@
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
+import { Tickers } from 'blockchain/prices'
+import { TokenBalances } from 'blockchain/tokens'
+import { TxHelpers } from 'components/AppContext'
+import { IStrategyInfo, StrategyTokenAllowance, StrategyTokenBalance } from 'features/aave/common'
+import { getPricesFeed$ } from 'features/aave/common/services/getPricesFeed'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
+import { PositionId } from 'features/aave/types'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { allDefined } from 'helpers/allDefined'
+import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable } from 'rxjs'
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
-
-import { Context } from '../../../../../blockchain/network'
-import { Tickers } from '../../../../../blockchain/prices'
-import { TokenBalances } from '../../../../../blockchain/tokens'
-import { TxHelpers } from '../../../../../components/AppContext'
-import { allDefined } from '../../../../../helpers/allDefined'
-import { AaveProtocolData } from '../../../../../lendingProtocols/aave-v2/pipelines'
-import { UserSettingsState } from '../../../../userSettings/userSettings'
-import {
-  IStrategyInfo,
-  StrategyTokenAllowance,
-  StrategyTokenBalance,
-} from '../../../common/BaseAaveContext'
-import { getPricesFeed$ } from '../../../common/services/getPricesFeed'
-import { ProxiesRelatedWithPosition } from '../../../helpers/getProxiesRelatedWithPosition'
-import { PositionId } from '../../../types'
-import { ManageAaveStateMachineServices } from '../../state'
 
 export function getManageAaveV2PositionStateMachineServices(
   context$: Observable<Context>,

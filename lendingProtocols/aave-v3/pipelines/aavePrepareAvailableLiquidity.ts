@@ -1,29 +1,32 @@
 import BigNumber from 'bignumber.js'
 import { AaveV3ReserveDataParameters, AaveV3ReserveDataReply } from 'blockchain/aave-v3'
 import { amountFromWei } from 'blockchain/utils'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-import { zero } from '../../../helpers/zero'
+type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber[], BigNumber]
 
-type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber[]]
-
-export function prepareAaveAvailableLiquidityInUSDC$(
+export function prepareaaveAvailableLiquidityInUSDC$(
   getAaveReserveData$: (token: AaveV3ReserveDataParameters) => Observable<AaveV3ReserveDataReply>,
-  getAaveAssetsPrices$: Observable<string[]>,
+  getAaveAssetsPrices$: Observable<BigNumber[]>,
   reserveDataToken: AaveV3ReserveDataParameters,
 ): Observable<BigNumber> {
+  // THIS IS NOT IN USDC, THIS IS IN USD
+  // Aave V3 Oracle prices are in USD
   return combineLatest(getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$).pipe(
-    map(([reserveData, [USDC_ETH_price]]: PrepareAaveAvailableLiquidityProps) => {
+    map(([reserveData, [USD_in_WETH_price]]: PrepareAaveAvailableLiquidityProps) => {
       const availableLiquidityInETH = amountFromWei(
         new BigNumber(reserveData.availableLiquidity),
         'ETH',
       )
-      const ETH_USDC_price = new BigNumber(1).div(USDC_ETH_price) // price of one ETH in USDC
-      return availableLiquidityInETH.times(ETH_USDC_price)
+      return availableLiquidityInETH.times(USD_in_WETH_price)
     }),
     catchError((error) => {
-      console.log(`Can't get Aave available liquidity for ${reserveDataToken}`, error)
+      console.log(
+        `Can't get Aave V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,
+        error,
+      )
       return of(zero)
     }),
   )

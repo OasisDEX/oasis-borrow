@@ -1,24 +1,24 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
-import { getFeatureToggle } from 'helpers/useFeatureToggle'
-import { zero } from 'helpers/zero'
-
-import { LendingProtocol } from '../../lendingProtocols'
-import { AaveEarnFaq } from '../content/faqs/aave/earn'
-import { AaveMultiplyFaq } from '../content/faqs/aave/multiply'
+import { AaveEarnFaqV2, AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
+import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import {
   AavePositionHeaderNoDetails,
   headerWithDetails,
-} from '../earn/aave/components/AavePositionHeader'
-import { ManageSectionComponent } from '../earn/aave/components/ManageSectionComponent'
-import { SimulateSectionComponent } from '../earn/aave/components/SimulateSectionComponent'
-import { adjustRiskSliders } from '../earn/aave/riskSliderConfig'
-import { AaveMultiplyManageComponent } from '../multiply/aave/components/AaveMultiplyManageComponent'
-import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from '../multiply/aave/riskSliderConfig'
+} from 'features/earn/aave/components/AavePositionHeader'
+import { ManageSectionComponent } from 'features/earn/aave/components/ManageSectionComponent'
+import { SimulateSectionComponent } from 'features/earn/aave/components/SimulateSectionComponent'
+import { ViewPositionSectionComponent } from 'features/earn/aave/components/ViewPositionSectionComponent'
+import { adjustRiskSliders } from 'features/earn/aave/riskSliderConfig'
+import { AaveMultiplyManageComponent } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
+import { adjustRiskSliderConfig as multiplyAdjustRiskSliderConfig } from 'features/multiply/aave/riskSliderConfig'
+import { getFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
+
+import { IStrategyConfig, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
 
 export enum ManageCollateralActionsEnum {
   DEPOSIT_COLLATERAL = 'deposit-collateral',
@@ -44,7 +44,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       adjustRiskView: adjustRiskView(adjustRiskSliders.wstethEth),
-      positionInfo: AaveEarnFaq,
+      positionInfo: AaveEarnFaqV3,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
@@ -56,6 +56,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.wstethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
+    featureToggle: 'AaveV3EarnWSTETH' as const,
   },
   {
     urlSlug: 'stETHeth',
@@ -69,7 +70,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       adjustRiskView: adjustRiskView(adjustRiskSliders.stethEth),
-      positionInfo: AaveEarnFaq,
+      positionInfo: AaveEarnFaqV2,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
@@ -248,6 +249,6 @@ export function convertDefaultRiskRatioToActualRiskRatio(
   ltv?: BigNumber,
 ) {
   return defaultRiskRatio === 'slightlyLessThanMaxRisk'
-    ? new RiskRatio(ltv?.times('0.999') || zero, RiskRatio.TYPE.LTV)
+    ? new RiskRatio(ltv?.times('0.99') || zero, RiskRatio.TYPE.LTV)
     : defaultRiskRatio
 }

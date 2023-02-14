@@ -1,19 +1,19 @@
 import { useActor } from '@xstate/react'
+import { AppLink } from 'components/Links'
+import { ListWithIcon } from 'components/ListWithIcon'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import {
+  getEstimatedGasFeeTextOld,
+  VaultChangesInformationContainer,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Image, Text } from 'theme-ui'
 import { ActorRefFrom, Sender, StateFrom } from 'xstate'
 
-import { AppLink } from '../../../components/Links'
-import { ListWithIcon } from '../../../components/ListWithIcon'
-import { SidebarSection, SidebarSectionProps } from '../../../components/sidebar/SidebarSection'
-import { SidebarSectionFooterButtonSettings } from '../../../components/sidebar/SidebarSectionFooter'
-import {
-  getEstimatedGasFeeTextOld,
-  VaultChangesInformationContainer,
-  VaultChangesInformationItem,
-} from '../../../components/vault/VaultChangesInformation'
-import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import {
   DPMAccountStateMachine,
   DPMAccountStateMachineEvents,
@@ -26,6 +26,7 @@ export interface CreateDPMAccountViewProps {
 interface InternalViewsProps {
   state: StateFrom<DPMAccountStateMachine>
   send: Sender<DPMAccountStateMachineEvents>
+  backButtonOnFirstStep?: boolean | string
 }
 
 function buttonInfoSettings({
@@ -44,7 +45,7 @@ function buttonInfoSettings({
   }
 }
 
-function InfoStateView({ state, send }: InternalViewsProps) {
+function InfoStateView({ state, send, backButtonOnFirstStep }: InternalViewsProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -92,13 +93,24 @@ function InfoStateView({ state, send }: InternalViewsProps) {
       disabled: false,
       ...buttonInfoSettings({ state, send }),
     },
+    textButton: backButtonOnFirstStep
+      ? {
+          action: () => {
+            send('GO_BACK')
+          },
+          label: t(typeof backButtonOnFirstStep === 'string' ? backButtonOnFirstStep : 'go-back'),
+        }
+      : undefined,
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function InProgressView(_: InternalViewsProps) {
+function InProgressView({ state }: InternalViewsProps) {
   const { t } = useTranslation()
+  const [transactionState] = useActor(state.context.refTransactionMachine!)
+  const { txHash, etherscanUrl } = transactionState.context
+
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('dpm.create-flow.proxy-creating-screen.header'),
     content: (
@@ -129,12 +141,22 @@ function InProgressView(_: InternalViewsProps) {
       disabled: true,
       label: t('dpm.create-flow.proxy-creating-screen.button'),
     },
+    status: [
+      {
+        type: 'progress',
+        text: t('dpm.create-flow.proxy-creating-screen.button'),
+        etherscan: etherscanUrl || '',
+        txHash: txHash!,
+      },
+    ],
   }
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function SuccessStateView({ send }: InternalViewsProps) {
+function SuccessStateView({ send, state }: InternalViewsProps) {
   const { t } = useTranslation()
+  const [transactionState] = useActor(state.context.refTransactionMachine!)
+  const { txHash, etherscanUrl } = transactionState.context
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('dpm.create-flow.proxy-created-screen.header'),
@@ -167,6 +189,14 @@ function SuccessStateView({ send }: InternalViewsProps) {
       label: t('continue'),
       action: () => send('CONTINUE'),
     },
+    status: [
+      {
+        type: 'success',
+        text: t('dpm.create-flow.proxy-creating-screen.button'),
+        etherscan: etherscanUrl || '',
+        txHash: txHash!,
+      },
+    ],
   }
   return <SidebarSection {...sidebarSectionProps} />
 }
@@ -174,10 +204,21 @@ function SuccessStateView({ send }: InternalViewsProps) {
 export function CreateDPMAccountView({ machine }: CreateDPMAccountViewProps) {
   const [state, send] = useActor(machine)
 
+  return <CreateDPMAccountViewConsumed state={state} send={send} />
+}
+
+export function CreateDPMAccountViewConsumed({
+  state,
+  send,
+  backButtonOnFirstStep,
+}: InternalViewsProps) {
+  // proxy component so I can use the below ones outside of the normal xstate flow
   switch (true) {
     case state.matches('idle'):
     case state.matches('txFailure'):
-      return <InfoStateView state={state} send={send} />
+      return (
+        <InfoStateView state={state} send={send} backButtonOnFirstStep={backButtonOnFirstStep} />
+      )
     case state.matches('txInProgress'):
       return <InProgressView state={state} send={send} />
     case state.matches('txSuccess'):

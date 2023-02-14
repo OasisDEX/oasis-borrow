@@ -1,25 +1,27 @@
 import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { ActorRefFrom, EventObject, Sender } from 'xstate'
-
-import { OperationExecutorTxMeta } from '../../../blockchain/calls/operationExecutor'
-import { TxMetaKind } from '../../../blockchain/calls/txMeta'
-import { Context } from '../../../blockchain/network'
-import { UserDpmAccount } from '../../../blockchain/userDpmProxies'
-import { HasGasEstimation } from '../../../helpers/form'
-import { zero } from '../../../helpers/zero'
-import { AaveProtocolData } from '../../../lendingProtocols/aave-v2/pipelines'
+import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { Context } from 'blockchain/network'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
+import { AutomationAddTriggerData } from 'features/automation/common/txDefinitions'
 import {
   AllowanceStateMachine,
   AllowanceStateMachineResponseEvent,
-} from '../../stateMachines/allowance'
-import { TransactionStateMachineResultEvents } from '../../stateMachines/transaction'
-import { TransactionParametersStateMachineResponseEvent } from '../../stateMachines/transactionParameters'
-import { UserSettingsState } from '../../userSettings/userSettings'
-import { getTxTokenAndAmount } from '../helpers/getTxTokenAndAmount'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from '../strategyConfig'
+} from 'features/stateMachines/allowance'
+import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
+import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { HasGasEstimation } from 'helpers/form'
+import { zero } from 'helpers/zero'
+import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
+import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
-type UserInput = {
+import { IStrategyConfig } from './StrategyConfigTypes'
+
+export type UserInput = {
   riskRatio?: IRiskRatio
   amount?: BigNumber
 }
@@ -30,9 +32,13 @@ export type ManageTokenInput = {
 }
 
 export type IStrategyInfo = {
-  oracleAssetPrice: BigNumber
+  oracleAssetPrice: {
+    collateral: BigNumber
+    debt: BigNumber
+    deposit: BigNumber
+  }
   liquidationBonus: BigNumber
-  collateralToken: string
+  tokens: IStrategyConfig['tokens']
 }
 
 export type StrategyTokenAllowance = {
@@ -67,6 +73,12 @@ export type UpdateTokenActionValueType = {
   manageTokenActionValue: ManageTokenInput['manageTokenActionValue']
 }
 
+type AaveOpenPositionWithStopLossEvents =
+  | { type: 'SET_STOP_LOSS_LEVEL'; stopLossLevel: BigNumber }
+  | { type: 'SET_COLLATERAL_ACTIVE'; collateralActive: boolean }
+  | { type: 'SET_STOP_LOSS_TX_DATA'; stopLossTxData: AutomationAddTriggerData }
+  | { type: 'SET_STOP_LOSS_SKIPPED'; stopLossSkipped: boolean }
+
 export type BaseAaveEvent =
   | { type: 'PRICES_RECEIVED'; collateralPrice: BigNumber; debtPrice: BigNumber }
   | { type: 'USER_SETTINGS_CHANGED'; userSettings: UserSettingsState }
@@ -87,6 +99,7 @@ export type BaseAaveEvent =
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
+  | AaveOpenPositionWithStopLossEvents
 
 export interface BaseAaveContext {
   userInput: UserInput
@@ -121,6 +134,11 @@ export interface BaseAaveContext {
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
+
+  stopLossLevel?: BigNumber
+  collateralActive?: boolean
+  stopLossTxData?: AutomationAddTriggerData
+  stopLossSkipped?: boolean
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {

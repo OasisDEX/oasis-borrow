@@ -3,34 +3,49 @@ import { IPosition, IPositionTransition, OPERATION_NAMES } from '@oasisdex/oasis
 import { useActor } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { amountFromWei } from 'blockchain/utils'
 import { ActionPills } from 'components/ActionPills'
+import { useAutomationContext } from 'components/AutomationContextProvider'
+import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
+import { Skeleton } from 'components/Skeleton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
+import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
+import { useManageAaveStateMachineContext } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import {
+  ManageAaveContext,
+  ManageAaveEvent,
+  ManageAaveStateMachineState,
+} from 'features/aave/manage/state'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
+import { AllowanceView } from 'features/stateMachines/allowance'
+import { allDefined } from 'helpers/allDefined'
+import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { curry } from 'ramda'
 import React from 'react'
 import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { OpenVaultAnimation } from 'theme/animations'
 import { Sender } from 'xstate'
 
-import { amountFromWei } from '../../../../blockchain/utils'
-import { MessageCard } from '../../../../components/MessageCard'
-import { allDefined } from '../../../../helpers/allDefined'
-import { formatCryptoBalance } from '../../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { zero } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
-import { AllowanceView } from '../../../stateMachines/allowance'
-import { isAllowanceNeeded } from '../../common/BaseAaveContext'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveContext, ManageAaveEvent, ManageAaveStateMachineState } from '../state'
+export interface ManageAaveAutomation {
+  stopLoss: {
+    isStopLossEnabled?: boolean
+    stopLossLevel?: BigNumber
+    stopLossError?: boolean
+  }
+}
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
   readonly send: Sender<ManageAaveEvent>
+  readonly automation?: ManageAaveAutomation
 }
 
 type WithDropdownConfig<T> = T & { dropdownConfig?: SidebarSectionHeaderDropdown }
@@ -62,14 +77,13 @@ function getAmountGetFromPositionAfterClose(
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
   const { t } = useTranslation()
-  const displayToken = state.context.transition?.simulation.swap.targetToken || {
-    symbol: token,
-    precision: 18,
-  }
+  const closingToken = state.context.manageTokenInput!.closingToken!
+  // @ts-ignore
+  const isLoading = ['debouncingManage', 'loadingManage'].includes(state.value.background)
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountGetFromPositionAfterClose(state.context.transition, state.context.currentPosition),
-      displayToken.symbol,
+      closingToken,
     ),
   )
 
@@ -77,13 +91,17 @@ function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: str
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Flex>
         <Icon name={getToken(token).iconCircle} size={22} sx={{ mr: 1 }} />
-        <Text variant="boldParagraph3" sx={{ color: 'neutral80' }}>
+        <Text variant="boldParagraph3" sx={{ color: 'neutral80', whiteSpace: 'pre' }}>
           {t('manage-earn.aave.vault-form.token-amount-after-closing', { token })}
         </Text>
       </Flex>
-      <Text variant="boldParagraph3">
-        {balance} {displayToken.symbol}
-      </Text>
+      {isLoading ? (
+        <Skeleton width={100} />
+      ) : (
+        <Text variant="boldParagraph3">
+          {balance} {closingToken}
+        </Text>
+      )}
     </Flex>
   )
 }
@@ -110,10 +128,10 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
 }
 
 function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
+  if (context.currentPosition === undefined) {
+    return zero
+  }
   if (context.manageTokenInput?.manageTokenAction === ManageDebtActionsEnum.BORROW_DEBT) {
-    if (context.currentPosition === undefined) {
-      return zero
-    }
     const position = context.currentPosition
     const collateral = amountFromWei(position.collateral.amount, position.collateral.symbol)
     const debt = amountFromWei(position.debt.amount, position.debt.symbol)
@@ -122,9 +140,10 @@ function calculateMaxDebtAmount(context: ManageAaveContext): BigNumber {
       .times(position.category.maxLoanToValue)
       .minus(debt.times(context.debtPrice || zero))
   }
+
   const currentDebt = amountFromWei(
-    context.currentPosition?.debt.amount || zero,
-    context.currentPosition?.debt.symbol || '',
+    context.currentPosition.debtToPaybackAll,
+    context.currentPosition?.debt.symbol,
   )
 
   const currentBalance = context.balance?.debt?.balance || zero
@@ -147,9 +166,11 @@ function calculateMaxCollateralAmount(context: ManageAaveContext): BigNumber {
 function GetReviewingSidebarProps({
   state,
   send,
+  automation,
 }: ManageAaveStateProps): Pick<SidebarSectionProps, 'title' | 'content'> {
   const { t } = useTranslation()
   const { collateral, debt } = state.context.tokens
+  const stopLossError = automation?.stopLoss.stopLossError
 
   const updateClosingAction = (closingToken: string) => {
     if (closingToken === state.context.manageTokenInput?.closingToken) return
@@ -181,7 +202,6 @@ function GetReviewingSidebarProps({
               items={[collateral, debt].map((token) => ({
                 id: token,
                 label: t('close-to', { token }),
-                disabled: token === collateral, // only close to debt is available ATM
                 action: () => curry(updateClosingAction)(token),
               }))}
             />
@@ -227,6 +247,7 @@ function GetReviewingSidebarProps({
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
+            {stopLossError && <StopLossAaveErrorMessage />}
             {amountCollateralTooHigh && (
               <MessageCard
                 messages={
@@ -281,6 +302,7 @@ function GetReviewingSidebarProps({
               onChange={handleNumericInput(updateTokenActionValue)}
               hasError={false}
             />
+            {stopLossError && <StopLossAaveErrorMessage />}
             {amountDebtTooHigh && (
               <MessageCard
                 messages={
@@ -325,10 +347,13 @@ function ManageAaveReviewingStateView({
   state,
   send,
   dropdownConfig,
+  automation,
 }: WithDropdownConfig<ManageAaveStateProps>) {
   const { t } = useTranslation()
 
   const allowanceNeeded = isAllowanceNeeded(state.context)
+  // TODO validation suppressed for testing trigger execution
+  // const stopLossError = automation?.stopLoss?.stopLossError
 
   const label = allowanceNeeded
     ? t('set-allowance-for', {
@@ -337,10 +362,12 @@ function ManageAaveReviewingStateView({
     : t('manage-earn.aave.vault-form.confirm-btn')
 
   const sidebarSectionProps: SidebarSectionProps = {
-    ...GetReviewingSidebarProps({ state, send }),
+    ...GetReviewingSidebarProps({ state, send, automation }),
     primaryButton: {
       isLoading: false,
       disabled: !state.can('NEXT_STEP') || isLocked(state),
+      // TODO validation suppressed for testing trigger execution
+      // || stopLossError,
       label: label,
       action: () => send('NEXT_STEP'),
     },
@@ -428,6 +455,15 @@ export function SidebarManageAaveVault() {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state, send] = useActor(stateMachine)
   const { t } = useTranslation()
+  const {
+    triggerData: {
+      stopLossTriggerData: { isStopLossEnabled, stopLossLevel },
+    },
+  } = useAutomationContext()
+
+  const stopLossError =
+    isStopLossEnabled &&
+    state.context.transition?.simulation?.position.riskRatio.loanToValue.gte(stopLossLevel)
 
   function loading(): boolean {
     return isLoading(state)
@@ -526,6 +562,12 @@ export function SidebarManageAaveVault() {
           }}
           viewLocked={isLocked(state)}
           dropdownConfig={dropdownConfig}
+          automation={{
+            stopLoss: {
+              isStopLossEnabled,
+              stopLossLevel,
+            },
+          }}
         />
       )
     case state.matches('frontend.allowanceSetting'):
@@ -542,14 +584,24 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.manageCollateral'):
     case state.matches('frontend.manageDebt'):
       return (
-        <ManageAaveReviewingStateView state={state} send={send} dropdownConfig={dropdownConfig} />
+        <ManageAaveReviewingStateView
+          state={state}
+          send={send}
+          dropdownConfig={dropdownConfig}
+          automation={{
+            stopLoss: {
+              stopLossError,
+            },
+          }}
+        />
       )
     case state.matches('frontend.txInProgress'):
       return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.transition?.transaction.operationName === OPERATION_NAMES.aave.CLOSE_POSITION:
+      state.context.transition?.transaction.operationName ===
+        OPERATION_NAMES.aave.v2.CLOSE_POSITION:
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
