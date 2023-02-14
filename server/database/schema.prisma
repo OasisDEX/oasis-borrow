@@ -219,15 +219,15 @@ model UsersWhoFollowVaults {
     vault_id        Int // relation scalar field (used in the `@relation` attribute above)
     vault_chain_id  Int
     protocol        Protocol
+    version         String?
 
-    @@id([user_address, vault_id, vault_chain_id])
+    @@id([user_address, vault_id, vault_chain_id, protocol])
     @@map("users_who_follow_vaults")
 }
 
 enum Protocol {
     maker
-    aavev2
-    aavev3
+    aave
     ajna
 
     @@map("protocol")
