@@ -1,6 +1,7 @@
 import { bannerGradientPresets } from 'components/Banner'
+import { AppLink } from 'components/Links'
 import { AutomationTriggeredBannerControl } from 'features/automation/common/controls/AutomationTriggeredBannerControl'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface StopLossTriggeredBannerProps {
@@ -17,7 +18,18 @@ export function StopLossTriggeredBanner({
     <AutomationTriggeredBannerControl
       sessionStorageKey="stopLossTriggeredBanner"
       title={t('automation.trigger-executed-banner-title', { feature })}
-      description={t(descriptionKey, { feature })}
+      description={
+        <Trans
+          i18nKey={descriptionKey}
+          values={{ feature }}
+          components={[
+            <AppLink
+              sx={{ fontSize: 'inherit' }}
+              href="https://kb.oasis.app/help/how-does-automated-stop-loss-work"
+            />,
+          ]}
+        />
+      }
       image={{
         src: '/static/img/setup-banner/stop-loss-triggered.svg',
         backgroundColor: bannerGradientPresets.stopLoss[0],
