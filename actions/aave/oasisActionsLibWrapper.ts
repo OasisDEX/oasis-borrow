@@ -1,7 +1,6 @@
 import {
   AAVEStrategyAddresses,
   AAVETokens,
-  AaveVersion,
   IPosition,
   IPositionTransition,
   IRiskRatio,
@@ -176,7 +175,7 @@ export async function getOnChainPosition({
         collateralToken: _collateralToken,
         debtToken: _debtToken,
       },
-      { addresses: getAddressesFromContext(context), provider, protocolVersion: AaveVersion.v2 },
+      { addresses: getAddressesFromContext(context), provider },
     )
   }
 
@@ -187,7 +186,7 @@ export async function getOnChainPosition({
         collateralToken: _collateralToken,
         debtToken: _debtToken,
       },
-      { addresses: getAddressesFromContext(context), provider, protocolVersion: AaveVersion.v3 },
+      { addresses: getAddressesFromContext(context), provider },
     )
   }
 
