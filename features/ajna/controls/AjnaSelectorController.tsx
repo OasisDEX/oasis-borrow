@@ -133,7 +133,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
                 {t(`ajna.${product}.open.select.heading.post`)}
               </Heading>
               <Text variant="paragraph2" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
-                {t(`ajna.${product}.open.select.intro`)}
+                {t(`ajna.${product}.open.select.intro`, { token: selected.value })}
               </Text>
             </Box>
             <DiscoverTableContainer tableOnly>

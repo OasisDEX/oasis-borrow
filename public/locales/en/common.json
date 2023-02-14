@@ -2349,18 +2349,35 @@
             "pre": "Borrow against your",
             "post": "exposure on Ajna"
           },
-          "intro": "Select the crypto asset you want to borrow against your ETH"
+          "intro": "Select the crypto asset you want to borrow against your {{token}}"
         },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
-          "confirm": "Review and confirm changes in your Ajna Position."
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
         }
       },
       "manage": {
         "headline": {
           "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
+        }
+      }
+    },
+    "earn": {
+      "open": {
+        "select": {
+          "heading": {
+            "pre": "Lend",
+            "post": "to Earn on Ajna"
+          },
+          "intro": "Select the crypto asset you want to earn for lending your {{token}}"
+        },
+        "headline": {
+          "header": "Lend {{quoteToken}} against {{collateralToken}}"
+        },
+        "form": {
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
         }
       }
     }
