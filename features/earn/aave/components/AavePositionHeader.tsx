@@ -2,21 +2,18 @@ import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
+import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { AaveStEthYieldsResponse } from 'features/aave/common'
+import { AaveHeaderProps, IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { createFollowButton } from 'features/aave/helpers/createFollowButton'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useAccount } from 'helpers/useAccount'
-import { useChainId } from 'helpers/useChainId'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { one } from 'helpers/zero'
+import { PreparedAaveTotalValueLocked } from 'lendingProtocols/aave-v2/pipelines'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
-
-import { PreparedAaveTotalValueLocked } from '../../../../lendingProtocols/aave-v2/pipelines'
-import { useAaveContext } from '../../../aave/AaveContextProvider'
-import { AaveStEthYieldsResponse } from '../../../aave/common'
-import { AaveHeaderProps, IStrategyConfig } from '../../../aave/common/StrategyConfigTypes'
 
 const tokenPairList = {
   stETHeth: {
@@ -160,24 +157,18 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }
 }
 
-export function AavePositionHeaderNoDetails({ strategyConfig }: AaveHeaderProps) {
+export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: AaveHeaderProps) {
   const { t } = useTranslation()
-  const followAaveVaultsEnabled = useFeatureToggle('FollowAAVEVaults')
+  console.log('AAVEPositionHeaderNoDetails')
   const tokenData = tokenPairList[strategyConfig.name]
-  const { walletAddress } = useAccount()
-  const chainId  = useChainId()
-  
-  const followButton = followAaveVaultsEnabled && walletAddress && chainId ? {
-    followerAddress: walletAddress,
-    vaultId: one, //TODO ŁW state.context.positionId
-    chainId,
-  } : undefined
+  const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)
+
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}
       token={tokenData.tokenList}
       details={[]}
-      followButton = {followButton}
+      followButton={followButton}
       shareButton
     />
   )

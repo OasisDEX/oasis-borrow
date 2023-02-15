@@ -2,7 +2,8 @@ import BigNumber from 'bignumber.js'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { AaveHeaderProps, IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount } from 'helpers/formatters/format'
@@ -52,6 +53,8 @@ function AaveHeader({
       },
     )
   }
+  console.log('inside AaveHeader')
+  console.log('followButton', followButton)
 
   return (
     <WithErrorHandler error={[positionTokenPricesError, chainlinkUSDCUSDPriceError]}>
@@ -71,12 +74,16 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
   return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
 }
 
-export function AaveManageHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
+export function AaveManageHeader({ strategyConfig, positionId }: AaveHeaderProps) {
+  console.log('manage header')
+
+  const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)
+
   return (
     <AaveHeader
       strategyConfig={strategyConfig}
       headerLabelString={'vault.header-aave-view'}
-      followButton
+      followButton={followButton}
       shareButton
     />
   )

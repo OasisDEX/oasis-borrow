@@ -1,5 +1,6 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
@@ -54,7 +55,7 @@ export interface IStrategyConfig {
 
 export type AaveHeaderProps = {
   strategyConfig: IStrategyConfig
-  positionId: number
+  positionId: PositionId
 }
 
 export type ManageSectionComponentProps = {
