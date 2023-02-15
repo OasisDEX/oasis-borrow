@@ -96,7 +96,7 @@ export function getAjnaBorrowValidations({
 export const ajnaDepositErrors = ['depositAmountExceedsCollateralBalance']
 export const ajnaCommonErrors = ['hasInsufficientEthFundsForTx']
 export const ajnaPaybackErrors = ['paybackAmountExceedsDebtTokenBalance']
-export const ajnaGenerateErrors = [] as string[]
+export const ajnaGenerateErrors = ['undercollateralized']
 export const ajnaWithdrawErrors = [] as string[]
 
 export const ajnaCommonWarnings = ['hasPotentialInsufficientEthFundsForTx']
