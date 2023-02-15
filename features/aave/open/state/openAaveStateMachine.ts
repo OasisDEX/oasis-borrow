@@ -200,9 +200,7 @@ export function createOpenAaveStateMachine(
                   {
                     target: '#openAaveStateMachine.background.debouncing',
                     // only call library greater-than-zero amount
-                    cond: (context, event) => {
-                      return !!(event.amount && event.amount.gt(0))
-                    },
+                    cond: 'userInputtedAmountGreaterThanZero',
                     actions: ['setAmount', 'calculateAuxiliaryAmount'],
                   },
                   // fall through to this next one if the amount is zero
@@ -431,6 +429,9 @@ export function createOpenAaveStateMachine(
     },
     {
       guards: {
+        userInputtedAmountGreaterThanZero: (context, event) => {
+          return !!(event.amount && event.amount.gt(0))
+        },
         shouldCreateDpmProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
