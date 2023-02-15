@@ -12,6 +12,7 @@ import {
 } from 'components/DetailsSectionFooterItem'
 import { AppLink } from 'components/Links'
 import { ManageSectionModal } from 'features/aave/manage/components'
+import { externalLinks } from 'helpers/externalLinks'
 import { formatAmount, formatBigNumber, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines/aaveV2PrepareReserveData'
@@ -146,10 +147,7 @@ export const PositionInfoComponent = ({
                   <Trans
                     i18nKey="manage-earn-vault.liquidation-price-ratio-modal-aave"
                     components={[
-                      <AppLink
-                        target="_blank"
-                        href="https://dune.com/chrisbduck/steth-eth-monitor"
-                      />,
+                      <AppLink target="_blank" href={externalLinks.stethHistory} />,
                       <br />,
                     ]}
                   />
@@ -159,7 +157,7 @@ export const PositionInfoComponent = ({
             customBackground={getLiquidationPriceRatioColor(belowCurrentRatio)}
             link={{
               label: t('manage-earn-vault.ratio-history'),
-              url: 'https://dune.com/dataalways/stETH-De-Peg', // should we move this url to a file? an env?
+              url: externalLinks.stethHistory,
             }}
           />
         </DetailsSectionContentCardWrapper>
