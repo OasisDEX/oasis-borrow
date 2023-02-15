@@ -203,12 +203,6 @@ export function createManageAaveStateMachine(
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: [
-                    'reset',
-                    'killCurrentParametersMachine',
-                    'spawnCloseParametersMachine',
-                    'requestParameters',
-                  ],
                 },
                 SET_RISK_RATIO: {
                   cond: 'canChangePosition',
