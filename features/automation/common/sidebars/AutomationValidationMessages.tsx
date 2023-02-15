@@ -1,16 +1,11 @@
-import { ValidationMessages, ValidationMessagesProps } from 'components/ValidationMessages'
+import { ValidationMessages, ValidationMessagesInput } from 'components/ValidationMessages'
 import React from 'react'
-
-type AutomationValidationMessagesProps = Pick<
-  ValidationMessagesProps,
-  'messages' | 'type' | 'additionalData'
->
 
 export function AutomationValidationMessages({
   messages,
   type,
   additionalData,
-}: AutomationValidationMessagesProps) {
+}: ValidationMessagesInput) {
   return (
     <ValidationMessages
       messages={messages}

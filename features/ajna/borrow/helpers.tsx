@@ -1,3 +1,4 @@
+import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { AjnaEditingStep, AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import { useTranslation } from 'next-i18next'
 
@@ -40,6 +41,7 @@ export function getAjnaSidebarButtonsStatus({
   isTxStarted,
   isTxWaitingForApproval,
   walletAddress,
+  errors,
 }: {
   currentStep: AjnaStatusStep
   editingStep: AjnaEditingStep
@@ -51,15 +53,17 @@ export function getAjnaSidebarButtonsStatus({
   isTxInProgress: boolean
   isTxStarted: boolean
   isTxWaitingForApproval: boolean
+  errors: ValidationMessagesInput
   walletAddress?: string
 }) {
   const isPrimaryButtonDisabled =
-    !!walletAddress &&
-    (!isStepValid ||
-      isAllowanceLoading ||
-      isSimulationLoading ||
-      isTxInProgress ||
-      isTxWaitingForApproval)
+    (!!walletAddress &&
+      (!isStepValid ||
+        isAllowanceLoading ||
+        isSimulationLoading ||
+        isTxInProgress ||
+        isTxWaitingForApproval)) ||
+    !!errors.messages.length
 
   const isPrimaryButtonLoading =
     !!walletAddress &&

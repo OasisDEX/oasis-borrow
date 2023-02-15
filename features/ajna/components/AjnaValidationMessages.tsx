@@ -1,16 +1,11 @@
-import { ValidationMessages, ValidationMessagesProps } from 'components/ValidationMessages'
+import { ValidationMessages, ValidationMessagesInput } from 'components/ValidationMessages'
 import React from 'react'
-
-export type AjnaValidationMessagesProps = Pick<
-  ValidationMessagesProps,
-  'messages' | 'type' | 'additionalData'
->
 
 export function AjnaValidationMessages({
   messages,
   type,
   additionalData,
-}: AjnaValidationMessagesProps) {
+}: ValidationMessagesInput) {
   return (
     <ValidationMessages
       messages={messages}

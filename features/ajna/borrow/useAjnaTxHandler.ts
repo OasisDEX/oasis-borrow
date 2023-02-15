@@ -13,8 +13,6 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
-
 export interface OasisActionCallData extends AjnaTxData {
   kind: TxMetaKind.libraryCall
   proxyAddress: string
@@ -121,7 +119,10 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
       .subscribe((txState) => {
         if (txState.status === TxStatus.WaitingForConfirmation)
-          setCachedPosition({ currentPosition, simulation: simulation.position as AjnaPosition })
+          setCachedPosition({
+            currentPosition,
+            simulation: simulation?.position,
+          })
         if (txState.status === TxStatus.Success) dispatch({ type: 'reset' })
         handleTransaction({ txState, ethPrice, setTxDetails })
       })

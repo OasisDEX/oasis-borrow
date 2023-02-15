@@ -47,7 +47,7 @@ interface AjnaBorrowContextProviderProps {
 type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'currentPosition' | 'steps'>
 type AjnaCachedPosition = {
   currentPosition: AjnaPosition
-  simulation: AjnaPosition
+  simulation?: AjnaPosition
 }
 
 export interface AjnaBorrowPosition {

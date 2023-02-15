@@ -1,6 +1,6 @@
 import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
-import { AjnaValidationMessagesProps } from 'features/ajna/components/AjnaValidationMessages'
+import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
 
@@ -11,7 +11,7 @@ function mapLocalValidation(item: { [key: string]: boolean }): AjnaValidationIte
 }
 
 function reduceValidations(
-  acc: AjnaValidationMessagesProps,
+  acc: ValidationMessagesInput,
   curr: AjnaValidationItem,
   type: 'error' | 'warning',
 ) {
@@ -25,13 +25,13 @@ function reduceValidations(
   }
 }
 
-const defaultErrors: AjnaValidationMessagesProps = {
+const defaultErrors: ValidationMessagesInput = {
   messages: [],
   type: 'error',
   additionalData: {},
 }
 
-const defaultWarnings: AjnaValidationMessagesProps = {
+const defaultWarnings: ValidationMessagesInput = {
   messages: [],
   type: 'warning',
   additionalData: {},
@@ -61,7 +61,7 @@ export function getAjnaBorrowValidations({
   simulationErrors?: AjnaValidationItem[]
   simulationWarnings?: AjnaValidationItem[]
   txError?: TxError
-}): { errors: AjnaValidationMessagesProps; warnings: AjnaValidationMessagesProps } {
+}): { errors: ValidationMessagesInput; warnings: ValidationMessagesInput } {
   const localErrors = {
     depositAmountExceedsCollateralBalance: !!depositAmount?.gt(collateralBalance),
     paybackAmountExceedsDebtTokenBalance: !!paybackAmount?.gt(quoteBalance),

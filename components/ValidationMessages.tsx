@@ -10,6 +10,11 @@ export interface ValidationMessagesProps {
   additionalData?: { [key: string]: string }
 }
 
+export type ValidationMessagesInput = Pick<
+  ValidationMessagesProps,
+  'messages' | 'type' | 'additionalData'
+>
+
 export function ValidationMessages({
   messages,
   type,
