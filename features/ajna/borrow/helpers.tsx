@@ -28,30 +28,30 @@ export function getAjnaBorrowHeadlineProps({
   }
 }
 
-export function getAjnaBorrowStatus({
-  isStepValid,
-  isAllowanceLoading,
-  isTxInProgress,
-  isTxWaitingForApproval,
-  isTxStarted,
-  isTxError,
-  isOwner,
+export function getAjnaSidebarButtonsStatus({
   currentStep,
   editingStep,
-  walletAddress,
+  isAllowanceLoading,
+  isOwner,
   isSimulationLoading,
+  isStepValid,
+  isTxError,
+  isTxInProgress,
+  isTxStarted,
+  isTxWaitingForApproval,
+  walletAddress,
 }: {
-  isStepValid: boolean
-  isAllowanceLoading: boolean
-  isTxInProgress: boolean
-  isTxWaitingForApproval: boolean
-  isTxStarted: boolean
-  isTxError: boolean
-  isOwner: boolean
   currentStep: AjnaStatusStep
   editingStep: AjnaEditingStep
-  walletAddress?: string
+  isAllowanceLoading: boolean
+  isOwner: boolean
   isSimulationLoading?: boolean
+  isStepValid: boolean
+  isTxError: boolean
+  isTxInProgress: boolean
+  isTxStarted: boolean
+  isTxWaitingForApproval: boolean
+  walletAddress?: string
 }) {
   const isPrimaryButtonDisabled =
     !!walletAddress &&
@@ -66,48 +66,39 @@ export function getAjnaBorrowStatus({
     (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
 
   const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
-  const isTextButtonHidden = !(
-    currentStep === 'transaction' &&
-    (!isTxStarted || isTxWaitingForApproval || isTxError)
-  )
+  const isTextButtonHidden = !(currentStep === 'transaction' && (!isTxStarted || isTxError))
 
   return {
-    isPrimaryButtonLoading,
     isPrimaryButtonDisabled,
     isPrimaryButtonHidden,
+    isPrimaryButtonLoading,
     isTextButtonHidden,
   }
 }
 
-export function getPrimaryButtonAction({
-  walletAddress,
+export function getAjnaSidebarPrimaryButtonActions({
   currentStep,
+  defaultAction,
   editingStep,
-  isTxSuccess,
   flow,
   id,
-  buttonDefaultAction,
+  isTxSuccess,
+  walletAddress,
 }: {
-  walletAddress?: string
   currentStep: string
+  defaultAction: () => void
   editingStep: string
-  isTxSuccess: boolean
   flow: AjnaFlow
-  buttonDefaultAction: () => void
   id?: string
+  isTxSuccess: boolean
+  walletAddress?: string
 }) {
   switch (true) {
     case !walletAddress && currentStep === editingStep:
-      return {
-        url: '/connect',
-      }
+      return { url: '/connect' }
     case isTxSuccess && flow === 'open':
-      return {
-        url: `/ajna/position/${id}`,
-      }
+      return { url: `/ajna/position/${id}` }
     default:
-      return {
-        action: () => buttonDefaultAction(),
-      }
+      return { action: defaultAction }
   }
 }
