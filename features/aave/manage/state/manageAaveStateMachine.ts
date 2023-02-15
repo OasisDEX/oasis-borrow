@@ -327,7 +327,13 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
-              entry: ['closePositionEvent'],
+              entry: [
+                'closePositionEvent',
+                'reset',
+                // 'killCurrentParametersMachine', -> including this breaks machine when selecting close from drop-down
+                'spawnCloseParametersMachine',
+                'requestParameters',
+              ],
               on: {
                 NEXT_STEP: {
                   cond: 'validClosingTransactionParameters',
