@@ -22,6 +22,17 @@ export function AjnaBorrowOverviewWrapper() {
   return (
     <Grid gap={2}>
       <DetailsSection
+        notification={{
+          closable: true,
+          icon: 'bell',
+          title: 'Warning your position is not earning any yield',
+          message: 'Your lending position is below the minimum yield bearing price',
+          link: {
+            label: 'Adjust lending price',
+            // url: '/',
+            action: () => alert('asd'),
+          }
+        }}
         title={t('system.overview')}
         content={
           <DetailsSectionContentCardWrapper>

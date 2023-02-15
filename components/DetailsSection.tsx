@@ -1,5 +1,7 @@
+import { Icon } from '@makerdao/dai-ui-icons'
+import { AppLink } from 'components/Links'
 import React, { PropsWithChildren, ReactNode } from 'react'
-import { Box, Card, Flex, Heading } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Text } from 'theme-ui'
 
 import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
@@ -12,41 +14,154 @@ interface DetailsSectionProps {
   content: ReactNode
   footer?: ReactNode
   title?: ReactNode
+  notification?: DetailsSectionNotificationProps
 }
 
-export function DetailsSection({ title, badge, buttons, content, footer }: DetailsSectionProps) {
+export function DetailsSection({
+  badge,
+  buttons,
+  content,
+  footer,
+  notification,
+  title,
+}: DetailsSectionProps) {
   return (
-    <Card
-      sx={{
-        p: 0,
-        border: 'lightMuted',
-      }}
-    >
-      {title && typeof title === 'string' && (
-        <DetailsSectionTitle badge={badge} buttons={buttons}>
-          {title}
-        </DetailsSectionTitle>
-      )}
-      {title && typeof title !== 'string' && title}
-      <Box
+    <Box>
+      {notification && <DetailsSectionNotification {...notification} />}
+      <Card
         sx={{
-          px: [3, null, '24px'],
-          py: '24px',
+          p: 0,
+          border: 'lightMuted',
+          ...(notification && {
+            pt: 2,
+            borderTop: 'none',
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+          }),
         }}
       >
-        {content}
-      </Box>
-      {footer && (
+        {title && typeof title === 'string' && (
+          <DetailsSectionTitle badge={badge} buttons={buttons}>
+            {title}
+          </DetailsSectionTitle>
+        )}
+        {title && typeof title !== 'string' && title}
         <Box
           sx={{
-            p: [3, null, '24px'],
-            borderTop: 'lightMuted',
+            px: [3, null, '24px'],
+            py: '24px',
           }}
         >
-          {footer}
+          {content}
         </Box>
+        {footer && (
+          <Box
+            sx={{
+              p: [3, null, '24px'],
+              borderTop: 'lightMuted',
+            }}
+          >
+            {footer}
+          </Box>
+        )}
+      </Card>
+    </Box>
+  )
+}
+
+interface DetailsSectionNotificationWithAction {
+  action: () => void
+  url?: never
+}
+interface DetailsSectionNotificationWithUrl {
+  action?: never
+  url: string
+}
+
+interface DetailsSectionNotificationProps {
+  closable?: boolean
+  icon?: string
+  link?: (DetailsSectionNotificationWithAction | DetailsSectionNotificationWithUrl) & {
+    label: string
+  }
+  message?: string
+  title: string
+}
+
+export function DetailsSectionNotification({
+  closable,
+  icon,
+  link,
+  message,
+  title,
+}: DetailsSectionNotificationProps) {
+  return (
+    <Flex
+      sx={{
+        columnGap: 3,
+        alignItems: 'center',
+        p: 3,
+        bg: 'warning100',
+        borderTopLeftRadius: 'roundish',
+        borderTopRightRadius: 'roundish',
+        color: 'neutral10',
+      }}
+    >
+      {icon && (
+        <Flex
+          sx={{
+            flexShrink: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 4,
+            height: 4,
+            borderRadius: 'ellipse',
+            bg: 'rgba(255, 255, 255, 0.2)',
+          }}
+        >
+          <Icon name={icon} size={16} />
+        </Flex>
       )}
-    </Card>
+      <Box>
+        <Text as="p" variant="boldParagraph2" sx={{ color: 'neutral10' }}>
+          {title}
+        </Text>
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral10' }}>
+          {message}
+        </Text>
+      </Box>
+      {(link || closable) && (
+        <Flex
+          sx={{
+            alignItems: 'center',
+            flexShrink: 0,
+            columnGap: 3,
+            ml: 'auto',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {link && (
+            <>
+              {link.url && (
+                <AppLink href={link.url} sx={{ color: 'neutral10' }}>
+                  {link.label}
+                </AppLink>
+              )}
+              {link.action && (
+                <Button variant="textual" sx={{ p: 0, color: 'neutral10' }} onClick={link.action}>
+                  {link.label}
+                </Button>
+              )}
+            </>
+          )}
+          {closable && (
+            <Button variant="unStyled" sx={{ mr: 2, p: 0, lineHeight: 0, }}>
+              <Icon name="close" />
+            </Button>
+          )}
+        </Flex>
+      )}
+    </Flex>
   )
 }
 
