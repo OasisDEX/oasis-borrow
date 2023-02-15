@@ -53,7 +53,12 @@ interface ManageAaveStateProps {
 type WithDropdownConfig<T> = T & { dropdownConfig?: SidebarSectionHeaderDropdown }
 
 function isLoading(state: ManageAaveStateMachineState) {
-  return state.matches('background.loading')
+  return (
+    state.matches('background.loading') ||
+    state.matches('background.debouncing') ||
+    state.matches('background.debouncingManage') ||
+    state.matches('background.loadingManage')
+  )
 }
 
 function isLocked(state: ManageAaveStateMachineState) {
@@ -98,12 +103,11 @@ function getAmountReceivedAfterClose(
   return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
 }
 
-function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {
+function BalanceAfterClose({ state }: ManageAaveStateProps) {
   const { t } = useTranslation()
   const closingToken = state.context.manageTokenInput!.closingToken!
   const isCloseToCollateral = closingToken === state.context.currentPosition?.collateral.symbol
-  // @ts-ignore
-  const isLoading = ['debouncingManage', 'loadingManage'].includes(state.value.background)
+
   const balance = formatCryptoBalance(
     amountFromWei(
       getAmountReceivedAfterClose(
@@ -118,12 +122,12 @@ function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: str
   return (
     <Flex sx={{ justifyContent: 'space-between' }}>
       <Flex>
-        <Icon name={getToken(token).iconCircle} size={22} sx={{ mr: 1 }} />
+        <Icon name={getToken(closingToken).iconCircle} size={22} sx={{ mr: 1 }} />
         <Text variant="boldParagraph3" sx={{ color: 'neutral80', whiteSpace: 'pre' }}>
-          {t('manage-earn.aave.vault-form.token-amount-after-closing', { token })}
+          {t('manage-earn.aave.vault-form.token-amount-after-closing', { token: closingToken })}
         </Text>
       </Flex>
-      {isLoading ? (
+      {isLoading(state) ? (
         <Skeleton width={100} />
       ) : (
         <Text variant="boldParagraph3">
@@ -230,14 +234,13 @@ function GetReviewingSidebarProps({
               items={[collateral, debt].map((token) => ({
                 id: token,
                 label: t('close-to', { token }),
-                disabled: token === collateral,
                 action: () => curry(updateClosingAction)(token),
               }))}
             />
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {t('manage-earn.aave.vault-form.close-description', { closeToToken })}
             </Text>
-            {closeToToken && <BalanceAfterClose state={state} send={send} token={closeToToken} />}
+            {closeToToken && <BalanceAfterClose state={state} send={send} />}
             {closeToToken && <StrategyInformationContainer state={state} />}
           </Grid>
         ),
@@ -634,8 +637,10 @@ export function SidebarManageAaveVault() {
     case state.matches('frontend.txFailure'):
       return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('frontend.txSuccess') &&
-      state.context.transition?.transaction.operationName ===
-        OPERATION_NAMES.aave.v2.CLOSE_POSITION:
+      (state.context.transition?.transaction.operationName ===
+        OPERATION_NAMES.aave.v2.CLOSE_POSITION ||
+        state.context.transition?.transaction.operationName ===
+          OPERATION_NAMES.aave.v3.CLOSE_POSITION):
       return <ManageAaveSuccessClosePositionStateView state={state} send={send} />
     case state.matches('frontend.txSuccess'):
       return <ManageAaveSuccessAdjustPositionStateView state={state} send={send} />
