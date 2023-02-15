@@ -1,6 +1,6 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
-import BigNumber from 'bignumber.js'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
+import { StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
@@ -26,8 +26,7 @@ type OpenAaveInformationContainerProps = {
         collateral: string
         deposit: string
       }
-      collateralPrice?: BigNumber
-      tokenPrice?: BigNumber
+      balance?: StrategyTokenBalance
       estimatedGasPrice?: HasGasEstimation
       transition?: IPositionTransition
       userSettings?: UserSettingsState
@@ -39,16 +38,22 @@ type OpenAaveInformationContainerProps = {
 export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { transition, currentPosition } = state.context
+  const { transition, currentPosition, balance } = state.context
 
   const simulationHasSwap = transition?.simulation.swap.toTokenAmount.gt(zero)
 
   return transition && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
-      {simulationHasSwap && (
-        <TransactionTokenAmount {...state.context} transactionParameters={transition} />
+      {simulationHasSwap && balance && (
+        <TransactionTokenAmount
+          {...state.context}
+          transactionParameters={transition}
+          balance={balance}
+        />
       )}
-      {simulationHasSwap && <PriceImpact {...state.context} transactionParameters={transition} />}
+      {simulationHasSwap && balance && (
+        <PriceImpact {...state.context} transactionParameters={transition} balance={balance} />
+      )}
       {simulationHasSwap && <SlippageInformation {...state.context.userSettings!} />}
       <MultiplyInformation
         {...state.context}

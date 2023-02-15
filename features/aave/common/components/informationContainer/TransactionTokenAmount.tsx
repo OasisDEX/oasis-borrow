@@ -1,28 +1,30 @@
 import { IPositionTransition } from '@oasisdex/oasis-actions'
 import { Flex, Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
+import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import { StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
 import { allDefined } from 'helpers/allDefined'
+import { AppSpinner } from 'helpers/AppSpinner'
+import { formatAmount, formatFiatBalance } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { amountFromWei } from '../../../../../blockchain/utils'
-import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
-import { AppSpinner } from '../../../../../helpers/AppSpinner'
-import { formatAmount, formatFiatBalance } from '../../../../../helpers/formatters/format'
-import { zero } from '../../../../../helpers/zero'
 
 interface BuyingTokenAmountProps {
   transactionParameters: IPositionTransition
   tokens: { collateral: string }
-  collateralPrice?: BigNumber
+  balance: StrategyTokenBalance
 }
 
 export function TransactionTokenAmount({
   transactionParameters,
   tokens,
-  collateralPrice,
+  balance,
 }: BuyingTokenAmountProps) {
   const { t } = useTranslation()
+  const {
+    collateral: { price: collateralPrice },
+  } = balance
 
   const { toTokenAmount, fromTokenAmount, targetToken } = transactionParameters.simulation.swap
 
