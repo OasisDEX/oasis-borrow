@@ -57,13 +57,12 @@ export function getAjnaSidebarButtonsStatus({
   walletAddress?: string
 }) {
   const isPrimaryButtonDisabled =
-    (!!walletAddress &&
-      (!isStepValid ||
-        isAllowanceLoading ||
-        isSimulationLoading ||
-        isTxInProgress ||
-        isTxWaitingForApproval)) ||
-    !!errors.messages.length
+    !!walletAddress &&
+    (!isStepValid ||
+      isAllowanceLoading ||
+      isSimulationLoading ||
+      isTxInProgress ||
+      isTxWaitingForApproval)
 
   const isPrimaryButtonLoading =
     !!walletAddress &&
