@@ -6,6 +6,7 @@ import {
   OPERATION_NAMES,
 } from '@oasisdex/oasis-actions'
 import { useActor } from '@xstate/react'
+import { transitionHasSwap } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { amountFromWei } from 'blockchain/utils'
@@ -27,7 +28,6 @@ import {
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
-import { transitionHasSwap } from 'features/aave/oasisActionsLibWrapper'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
@@ -83,8 +83,12 @@ function textButtonReturningToAdjust({
   return {}
 }
 
+// amount available after close is the amount of collateral, minus the amount of debt, minus any fees
+// if there is no swap, then there are no fees.  there is a swap if the position has debt and collateral
+// because we need to pay the debt back using the collateral
+
 function getAmountReceivedAfterClose(
-  strategy: IPositionTransition | undefined,
+  strategy: IPositionTransition | ISimplePositionTransition | undefined,
   currentPosition: IPosition | undefined,
   isCloseToCollateral: boolean,
 ) {
@@ -92,17 +96,26 @@ function getAmountReceivedAfterClose(
     return zero
   }
 
-  if (transitionHasSwap(strategy)) {
-    const fee =
-      strategy.simulation.swap.collectFeeFrom === 'targetToken'
-        ? strategy.simulation.swap.tokenFee
-        : zero // fee already accounted for in toTokenAmount
+  const { fee, fromTokenAmount, toTokenAmount } = transitionHasSwap(strategy)
+    ? {
+        fromTokenAmount: strategy.simulation.swap.fromTokenAmount,
+        toTokenAmount: strategy.simulation.swap.toTokenAmount,
+        fee:
+          strategy.simulation.swap.collectFeeFrom === 'targetToken'
+            ? strategy.simulation.swap.tokenFee
+            : zero, // fee already accounted for in toTokenAmount
+      }
+    : {
+        fromTokenAmount: zero,
+        toTokenAmount: zero,
+        fee: zero,
+      }
 
   if (isCloseToCollateral) {
-    return currentPosition.collateral.amount.minus(strategy.simulation.swap.fromTokenAmount)
+    return currentPosition.collateral.amount.minus(fromTokenAmount)
   }
 
-  return strategy.simulation.swap.toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
+  return toTokenAmount.minus(currentPosition.debt.amount).minus(fee)
 }
 
 function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: string }) {

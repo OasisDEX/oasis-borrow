@@ -5,4 +5,5 @@ export type {
   CloseAaveParameters,
   AdjustAaveParameters,
   ManageAaveParameters,
+  OpenAaveDepositBorrowParameters,
 } from './types'

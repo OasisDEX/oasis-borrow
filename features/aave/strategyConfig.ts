@@ -20,7 +20,6 @@ import { LendingProtocol } from 'lendingProtocols'
 import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
-import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
 import { DebtInput } from './open/components/DebtInput'
 
 export enum ManageCollateralActionsEnum {

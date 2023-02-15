@@ -1,6 +1,6 @@
 import { IPositionTransition, IRiskRatio, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
-import { getFee } from 'actions/aave'
+import { getFee, transitionHasSwap } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
@@ -11,24 +11,6 @@ import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { AaveSimulateTitle } from 'features/aave/open/components/AaveSimulateTitle'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
-import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
-import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
-import { Box } from 'theme-ui'
-
-import { Banner, bannerGradientPresets } from '../../../../components/Banner'
-import { DetailsSection } from '../../../../components/DetailsSection'
-import { DetailsSectionContentTable } from '../../../../components/DetailsSectionContentTable'
-import { DetailsSectionFooterItemWrapper } from '../../../../components/DetailsSectionFooterItem'
-import { ContentFooterItemsEarnSimulate } from '../../../../components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { HasGasEstimation } from '../../../../helpers/form'
-import { formatCryptoBalance } from '../../../../helpers/formatters/format'
-import { useHash } from '../../../../helpers/useHash'
-import { zero } from '../../../../helpers/zero'
-import { IStrategyConfig } from '../../../aave/common/StrategyConfigTypes'
-import { getFee, transitionHasSwap } from '../../../aave/oasisActionsLibWrapper'
-import { AaveSimulateTitle } from '../../../aave/open/components/AaveSimulateTitle'
-import { useOpenAaveStateMachineContext } from '../../../aave/open/containers/AaveOpenStateMachineContext'
 import {
   calculateSimulation,
   CalculateSimulationResult,
@@ -75,6 +57,7 @@ function SimulationSection({
   const swapFee = transitionHasSwap(transition)
     ? (transition?.simulation.swap && getFee(transition?.simulation.swap)) || zero
     : zero
+
   const gasFee = gasPrice?.gasEstimationEth || zero
   const fees = swapFee.plus(gasFee)
   const riskRatio = transition?.simulation.position.riskRatio || defaultRiskRatio

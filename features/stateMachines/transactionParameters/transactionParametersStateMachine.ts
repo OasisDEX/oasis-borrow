@@ -1,16 +1,14 @@
-import { IPositionTransition } from '@oasisdex/oasis-actions'
+import { IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { callOperationExecutorWithDpmProxy } from 'blockchain/calls/operationExecutor'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ethNullAddress } from 'blockchain/config'
+import { TxHelpers } from 'components/AppContext'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map } from 'rxjs/operators'
 import { actions, createMachine, sendParent } from 'xstate'
-
-import { callOperationExecutorWithDpmProxy } from '../../../blockchain/calls/operationExecutor'
-import { TxMetaKind } from '../../../blockchain/calls/txMeta'
-import { TxHelpers } from '../../../components/AppContext'
-import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
-import { ISimplePositionTransition } from '@oasisdex/oasis-actions/lib/src/strategies/types'
 
 const { assign } = actions
 

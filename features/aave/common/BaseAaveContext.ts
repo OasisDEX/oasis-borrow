@@ -1,4 +1,9 @@
-import { IPosition, IPositionTransition, IRiskRatio } from '@oasisdex/oasis-actions'
+import {
+  IPosition,
+  IPositionTransition,
+  IRiskRatio,
+  ISimplePositionTransition,
+} from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -20,7 +25,6 @@ import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
 import { ActorRefFrom, EventObject, Sender } from 'xstate'
 
 import { IStrategyConfig } from './StrategyConfigTypes'
-import { ISimplePositionTransition } from '@oasisdex/oasis-actions/lib/src/strategies/types'
 
 export type UserInput = {
   riskRatio?: IRiskRatio

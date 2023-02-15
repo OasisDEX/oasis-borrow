@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/oasis-actions'
-import { OpenAaveParameters } from 'actions/aave'
+import { OpenAaveDepositBorrowParameters, OpenAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
@@ -33,60 +33,15 @@ import { extractStopLossDataInput } from 'features/automation/protection/stopLos
 import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
 import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
-import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
-import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
-import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import {
-  callOperationExecutorWithDpmProxy,
-  callOperationExecutorWithDsProxy,
-  OperationExecutorTxMeta,
-} from 'blockchain/calls/operationExecutor'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { ethNullAddress } from 'blockchain/config'
-import { ContextConnected } from 'blockchain/network'
-import { AutomationTxData } from 'components/AppContext'
-import {
-  BaseAaveContext,
-  BaseAaveEvent,
-  contextToTransactionParameters,
-  isAllowanceNeeded,
-} from 'features/aave/common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
-import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
-import {
-  OpenAaveParameters,
-  OpenDepositBorrowParameters,
-} from 'features/aave/oasisActionsLibWrapper'
-import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
-import {
-  AutomationAddTriggerData,
-  AutomationAddTriggerTxDef,
-} from 'features/automation/common/txDefinitions'
-import { aaveOffsetFromMaxDuringOpenFLow } from 'features/automation/metadata/aave/stopLossMetadata'
-import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
-import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
-import { AllowanceStateMachine } from 'features/stateMachines/allowance'
-import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import {
   DMPAccountStateMachineResultEvents,
   DPMAccountStateMachine,
 } from 'features/stateMachines/dpmAccount/'
 import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
-} from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
-import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy/state'
-import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
   TransactionParametersStateMachine,
   TransactionParametersStateMachineEvent,
-} from 'features/stateMachines/transactionParameters'
-import { allDefined } from 'helpers/allDefined'
-import { canOpenPosition } from 'helpers/canOpenPosition'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { zero } from 'helpers/zero'
-import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
-import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
 } from 'features/stateMachines/transactionParameters'
 import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
@@ -109,7 +64,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?:
     | ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
-    | ActorRefFrom<TransactionParametersStateMachine<OpenDepositBorrowParameters>>
+    | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
   refStopLossMachine?: ActorRefFrom<TransactionStateMachine<AutomationTxData>>
   hasOpenedPosition?: boolean
   strategyConfig: IStrategyConfig
@@ -140,7 +95,7 @@ export type OpenAaveEvent =
 export function createOpenAaveStateMachine(
   openTransactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
   openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<
-    OpenDepositBorrowParameters
+    OpenAaveDepositBorrowParameters
   >,
   proxyStateMachine: ProxyStateMachine,
   dmpAccountStateMachine: DPMAccountStateMachine,
@@ -657,7 +612,7 @@ export function createOpenAaveStateMachine(
           (
             context,
           ): TransactionParametersStateMachineEvent<
-            OpenAaveParameters | OpenDepositBorrowParameters
+            OpenAaveParameters | OpenAaveDepositBorrowParameters
           > => {
             const baseParams = {
               // ethNullAddress just for the simulation, there is a guard for that
@@ -670,7 +625,7 @@ export function createOpenAaveStateMachine(
               slippage: context.userSettings!.slippage,
               proxyType: context.strategyConfig.proxyType,
               positionType: context.strategyConfig.type,
-              protocol: context.strategyConfig.protocol
+              protocol: context.strategyConfig.protocol,
             }
             if (context.strategyConfig.type === 'Borrow') {
               return {
@@ -680,7 +635,7 @@ export function createOpenAaveStateMachine(
                   amount: context.userInput.amount!,
                   collateralAmount: context.userInput.amount!,
                   borrowAmount: context.userInput.debtAmount || zero,
-                } as OpenDepositBorrowParameters,
+                } as OpenAaveDepositBorrowParameters,
               }
             } else {
               return {

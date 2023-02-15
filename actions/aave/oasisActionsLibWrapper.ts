@@ -4,6 +4,7 @@ import {
   IPosition,
   IPositionTransition,
   IRiskRatio,
+  ISimplePositionTransition,
   ISimulatedTransition,
   Position,
   strategies,
@@ -28,6 +29,7 @@ import {
   CloseAaveParameters,
   GetOnChainPositionParams,
   ManageAaveParameters,
+  OpenAaveDepositBorrowParameters,
   OpenAaveParameters,
 } from './types/'
 
@@ -412,19 +414,8 @@ export async function getCloseAaveParameters({
   }
 }
 
-export type OpenDepositBorrowParameters = {
-  context: Context
-  collateralToken: AAVETokens
-  debtToken: AAVETokens
-  slippage: BigNumber
-  collateralAmount: BigNumber
-  borrowAmount: BigNumber
-  proxyAddress: string
-  proxyType: ProxyType
-}
-
 export async function getOpenDepositBorrowParameters(
-  blah: OpenDepositBorrowParameters,
+  args: OpenAaveDepositBorrowParameters,
 ): Promise<ISimplePositionTransition> {
   const {
     context,
@@ -435,10 +426,10 @@ export async function getOpenDepositBorrowParameters(
     borrowAmount,
     proxyAddress,
     proxyType,
-  } = blah
+  } = args
   checkContext(context, 'getOpenDepositBorrowParameters')
 
-  const args = {
+  const libArgs = {
     slippage,
     collateralToken: {
       symbol: collateralToken,
@@ -450,7 +441,7 @@ export async function getOpenDepositBorrowParameters(
     },
     amountCollateralToDepositInBaseUnit: amountToWei(collateralAmount, collateralToken),
     amountDebtToBorrowInBaseUnit: amountToWei(borrowAmount, debtToken),
-    positionType: 'Borrow' as PositionType,
+    positionType: 'Borrow' as const,
   }
 
   const deps = {
@@ -463,7 +454,7 @@ export async function getOpenDepositBorrowParameters(
     proxyAddress,
   }
 
-  return await strategies.aave.openDepositAndBorrowDebt(args, deps)
+  return await strategies.aave.v2.openDepositAndBorrowDebt(libArgs, deps)
 }
 
 export function getEmptyPosition(collateral: string, debt: string) {

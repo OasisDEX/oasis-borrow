@@ -1,17 +1,8 @@
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
-import { OpenAaveParameters } from 'actions/aave/types/openAaveParameters'
+import { OpenAaveDepositBorrowParameters } from 'actions/aave'
+import { ManageAaveParameters, OpenAaveParameters } from 'actions/aave'
 import BigNumber from 'bignumber.js'
-import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
-import {
-  ManageAaveParameters,
-  OpenAaveParameters,
-  OpenDepositBorrowParameters,
-} from 'features/aave/oasisActionsLibWrapper'
-import { ProxyEvent, ProxyStateMachine } from 'features/stateMachines/proxy/state'
-import { TransactionStateMachine } from 'features/stateMachines/transaction'
-import { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { ProxyEvent, ProxyStateMachine } from 'features/stateMachines/proxy/state'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
@@ -56,7 +47,7 @@ const ParametersView = ({
   parametersMachine:
     | ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
     | ActorRefFrom<TransactionParametersStateMachine<ManageAaveParameters>>
-    | ActorRefFrom<TransactionParametersStateMachine<OpenDepositBorrowParameters>>
+    | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
 }) => {
   const [state] = useActor(parametersMachine)
 

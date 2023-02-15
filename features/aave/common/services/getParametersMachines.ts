@@ -4,11 +4,11 @@ import {
   getAdjustAaveParameters,
   getCloseAaveParameters,
   getManageAaveParameters,
-  getOpenAaveParameters,
   getOpenDepositBorrowParameters,
+  getOpenTransaction,
   ManageAaveParameters,
+  OpenAaveDepositBorrowParameters,
   OpenAaveParameters,
-  OpenDepositBorrowParameters,
 } from 'actions/aave'
 import { TxHelpers } from 'components/AppContext'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
@@ -73,6 +73,6 @@ export function getOpenDepositBorrowAaveMachine(
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
-    (parameters: OpenDepositBorrowParameters) => getOpenDepositBorrowParameters(parameters),
+    (parameters: OpenAaveDepositBorrowParameters) => getOpenDepositBorrowParameters(parameters),
   )
 }
