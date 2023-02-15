@@ -1,4 +1,5 @@
 import { IRiskRatio, RiskRatio } from '@oasisdex/oasis-actions'
+import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
@@ -160,7 +161,8 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
 export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: ManageAaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.name]
-  const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)
+  const { protocol } = strategyConfig
+  const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId, protocol.toLowerCase() as Protocol)
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}

@@ -1,8 +1,9 @@
+import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { IStrategyConfig,ManageAaveHeaderProps } from 'features/aave/common/StrategyConfigTypes'
+import { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/common/StrategyConfigTypes'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -73,7 +74,11 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
 }
 
 export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeaderProps) {
-  const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)
+  const { protocol } = strategyConfig
+  const followButton: FollowButtonControlProps | undefined = createFollowButton(
+    positionId,
+    protocol.toLowerCase() as Protocol,
+  )
 
   return (
     <AaveHeader

@@ -45,6 +45,7 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
                       followerAddress: account,
                       vaultId: id,
                       chainId: chainId,
+                      protocol: 'maker',
                     }
                   : undefined
               }
