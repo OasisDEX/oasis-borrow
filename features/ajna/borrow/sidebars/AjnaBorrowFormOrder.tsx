@@ -9,33 +9,37 @@ import {
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function AjnaBorrowFormOrder() {
+export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   const { t } = useTranslation()
 
   const {
     environment: { collateralToken, quoteToken },
-    position: { currentPosition, simulation },
+    position: { currentPosition, simulation, cachedPosition },
   } = useAjnaBorrowContext()
 
-  const isLoading = simulation === undefined
+  const positionData = cached && cachedPosition ? cachedPosition.currentPosition : currentPosition
+  const simulationData = cached && cachedPosition ? cachedPosition.simulation : simulation
+
+  const isLoading = !cached && simulation === undefined
   const formatted = {
-    collateralLocked: formatCryptoBalance(currentPosition.collateralAmount),
-    debt: formatCryptoBalance(currentPosition.debtAmount),
-    ltv: formatDecimalAsPercent(currentPosition.riskRatio.loanToValue),
-    liquidationPrice: formatCryptoBalance(currentPosition.liquidationPrice),
-    availableToBorrow: formatAmount(currentPosition.debtAvailable, quoteToken),
-    availableToWithdraw: formatAmount(currentPosition.collateralAvailable, collateralToken),
+    collateralLocked: formatCryptoBalance(positionData.collateralAmount),
+    debt: formatCryptoBalance(positionData.debtAmount),
+    ltv: formatDecimalAsPercent(positionData.riskRatio.loanToValue),
+    liquidationPrice: formatCryptoBalance(positionData.liquidationPrice),
+    availableToBorrow: formatAmount(positionData.debtAvailable, quoteToken),
+    availableToWithdraw: formatAmount(positionData.collateralAvailable, collateralToken),
     afterLiquidationPrice:
-      simulation?.liquidationPrice && formatCryptoBalance(simulation.liquidationPrice),
-    afterLtv: simulation?.riskRatio && formatDecimalAsPercent(simulation.riskRatio.loanToValue),
-    afterDebt: simulation?.debtAmount && formatCryptoBalance(simulation.debtAmount),
+      simulationData?.liquidationPrice && formatCryptoBalance(simulationData.liquidationPrice),
+    afterLtv:
+      simulationData?.riskRatio && formatDecimalAsPercent(simulationData.riskRatio.loanToValue),
+    afterDebt: simulationData?.debtAmount && formatCryptoBalance(simulationData.debtAmount),
     afterCollateralLocked:
-      simulation?.collateralAmount && formatCryptoBalance(simulation.collateralAmount),
+      simulationData?.collateralAmount && formatCryptoBalance(simulationData.collateralAmount),
     afterAvailableToBorrow:
-      simulation?.debtAvailable && formatAmount(simulation?.debtAvailable, quoteToken),
+      simulationData?.debtAvailable && formatAmount(simulationData?.debtAvailable, quoteToken),
     afterAvailableToWithdraw:
-      simulation?.collateralAvailable &&
-      formatAmount(simulation?.collateralAvailable, collateralToken),
+      simulationData?.collateralAvailable &&
+      formatAmount(simulationData?.collateralAvailable, collateralToken),
   }
 
   return (
