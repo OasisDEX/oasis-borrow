@@ -36,7 +36,6 @@ export function DetailsSection({
           p: 0,
           border: 'lightMuted',
           ...(notification && {
-            pt: 2,
             borderTop: 'none',
             borderTopLeftRadius: 0,
             borderTopRightRadius: 0,
