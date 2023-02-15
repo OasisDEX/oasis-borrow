@@ -25,13 +25,13 @@ function reduceValidations(
   }
 }
 
-const defaultErrors: ValidationMessagesInput = {
+export const defaultErrors: ValidationMessagesInput = {
   messages: [],
   type: 'error',
   additionalData: {},
 }
 
-const defaultWarnings: ValidationMessagesInput = {
+export const defaultWarnings: ValidationMessagesInput = {
   messages: [],
   type: 'warning',
   additionalData: {},

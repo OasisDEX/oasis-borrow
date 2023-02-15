@@ -1,4 +1,3 @@
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import {
   AjnaBorrowFormFieldDeposit,
@@ -12,7 +11,6 @@ import {
   ajnaDepositWarnings,
   ajnaGenerateErrors,
   ajnaGenerateWarnings,
-  getAjnaBorrowValidations,
 } from 'features/ajna/borrow/validations'
 import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
@@ -20,29 +18,12 @@ import React from 'react'
 
 export function AjnaBorrowFormContentDeposit() {
   const {
-    environment: { collateralBalance, ethPrice, ethBalance, collateralToken, quoteBalance },
     form: {
       dispatch,
-      state: { depositAmount, paybackAmount },
+      state: { depositAmount },
     },
-    tx: { txDetails },
-    position: { simulation },
+    validation: { errors, warnings },
   } = useAjnaBorrowContext()
-  const gasEstimation = useGasEstimationContext()
-
-  const { errors, warnings } = getAjnaBorrowValidations({
-    ethPrice,
-    ethBalance,
-    gasEstimationUsd: gasEstimation?.usdValue,
-    depositAmount,
-    paybackAmount,
-    collateralBalance,
-    quoteBalance,
-    simulationErrors: simulation?.errors,
-    simulationWarnings: simulation?.errors,
-    txError: txDetails?.txError,
-    collateralToken,
-  })
 
   return (
     <>

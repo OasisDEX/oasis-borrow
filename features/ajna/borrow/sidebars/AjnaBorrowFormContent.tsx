@@ -1,5 +1,4 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import {
   getAjnaSidebarButtonsStatus,
@@ -9,7 +8,6 @@ import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/Ajna
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
-import { getAjnaBorrowValidations } from 'features/ajna/borrow/validations'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
@@ -29,20 +27,10 @@ export function AjnaBorrowFormContent({
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: {
-      collateralToken,
-      flow,
-      product,
-      quoteToken,
-      isOwner,
-      collateralBalance,
-      ethPrice,
-      ethBalance,
-      quoteBalance,
-    },
+    environment: { collateralToken, flow, product, quoteToken, isOwner },
     form: {
       dispatch,
-      state: { dpmAddress, uiDropdown, depositAmount, paybackAmount },
+      state: { dpmAddress, uiDropdown },
       updateState,
     },
     steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction, isStepValid },
@@ -53,25 +41,10 @@ export function AjnaBorrowFormContent({
       isTxStarted,
       isTxInProgress,
       setTxDetails,
-      txDetails,
     },
-    position: { id, isSimulationLoading, simulation },
+    position: { id, isSimulationLoading },
+    validation: { errors },
   } = useAjnaBorrowContext()
-  const gasEstimation = useGasEstimationContext()
-
-  const { errors } = getAjnaBorrowValidations({
-    ethPrice,
-    ethBalance,
-    gasEstimationUsd: gasEstimation?.usdValue,
-    depositAmount,
-    paybackAmount,
-    quoteBalance,
-    collateralBalance,
-    simulationErrors: simulation?.errors,
-    simulationWarnings: simulation?.errors,
-    txError: txDetails?.txError,
-    collateralToken,
-  })
 
   const {
     isPrimaryButtonDisabled,
