@@ -35,6 +35,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       setSimulation,
       simulation,
     },
+    steps: { isExternalStep },
   } = useAjnaBorrowContext()
 
   const [txData, setTxData] = useState<AjnaTxData>()
@@ -60,7 +61,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   ])
   useDebouncedEffect(
     () => {
-      if (context) {
+      if (context && !isExternalStep) {
         const promise = cancelable(
           getAjnaParameters({
             rpcProvider: context.rpcProvider,
@@ -101,6 +102,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       generateAmount?.toString(),
       paybackAmount?.toString(),
       withdrawAmount?.toString(),
+      isExternalStep,
     ],
     250,
   )
