@@ -31,7 +31,8 @@ export function AjnaBorrowOverviewWrapper() {
             label: 'Adjust lending price',
             // url: '/',
             action: () => alert('asd'),
-          }
+          },
+          type: 'error'
         }}
         title={t('system.overview')}
         content={
