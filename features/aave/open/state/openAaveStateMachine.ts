@@ -196,10 +196,21 @@ export function createOpenAaveStateMachine(
             editing: {
               entry: ['resetCurrentStep', 'setTotalSteps', 'calculateEffectiveProxyAddress'],
               on: {
-                SET_AMOUNT: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: ['setAmount', 'calculateAuxiliaryAmount'],
-                },
+                SET_AMOUNT: [
+                  {
+                    target: '#openAaveStateMachine.background.debouncing',
+                    // only call library greater-than-zero amount
+                    cond: (context, event) => {
+                      return !!(event.amount && event.amount.gt(0))
+                    },
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                  // fall through to this next one if the amount is zero
+                  // (e.g. user is halfway through typing  "0.002")
+                  {
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                ],
                 SET_RISK_RATIO: {
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: 'setRiskRatio',
@@ -487,7 +498,7 @@ export function createOpenAaveStateMachine(
             ...context.userInput,
             amount: event.amount,
           },
-          strategy: event.amount ? context.transition : undefined,
+          strategy: event.amount && event.amount.gt(zero) ? context.transition : undefined,
         })),
         calculateAuxiliaryAmount: assign((context) => {
           return {
