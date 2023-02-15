@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { AaveV2OracleAssertPriceArgs } from 'blockchain/aave'
 import { TokenBalances } from 'blockchain/tokens'
-import { combineLatest, Observable } from 'rxjs'
+import { zero } from 'helpers/zero'
+import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 export function getAaveSupportedTokenBalances$(
@@ -9,11 +10,11 @@ export function getAaveSupportedTokenBalances$(
   aaveOraclePriceData$: (args: AaveV2OracleAssertPriceArgs) => Observable<BigNumber>,
   convertProtocolPriceToUsd: () => Observable<BigNumber>,
   tokens: string[],
-  address: string,
+  address: string | undefined,
 ): Observable<TokenBalances> {
   const tokensWithUserBalance$ = tokens.map((token) => {
     return combineLatest(
-      balance$(token, address),
+      address ? balance$(token, address) : of(zero),
       aaveOraclePriceData$({ token }),
       convertProtocolPriceToUsd(),
     ).pipe(
