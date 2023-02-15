@@ -29,11 +29,12 @@ function pickTriggerWithHighestStopLossLevel(stopLossTriggersData: TriggerDataTy
       TriggerType.AaveStopLossToCollateral,
     ].includes(triggerTypeAsNumber)
 
-    const resolvedDiv = isAutomationV2Trigger ? 10 ** 6 : 100
+    const resolvedDiv = isAutomationV2Trigger ? 10 ** 8 : 100
 
     return {
       triggerId: new BigNumber(trigger.triggerId),
       isStopLossEnabled: true,
+      // here SL is in the following format 1.9 -> 190%, 0.7 -> 70%
       stopLossLevel: new BigNumber((ltv || collRatio).toString()).div(resolvedDiv),
       isToCollateral:
         triggerTypeAsNumber === TriggerType.StopLossToCollateral ||
