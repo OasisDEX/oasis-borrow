@@ -12,8 +12,8 @@ import {
   ajnaWithdrawErrors,
   ajnaWithdrawWarnings,
 } from 'features/ajna/borrow/validations'
+import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
-import { AutomationValidationMessages } from 'features/automation/common/sidebars/AutomationValidationMessages'
 import React from 'react'
 
 export function AjnaBorrowFormContentWithdraw() {
@@ -28,22 +28,22 @@ export function AjnaBorrowFormContentWithdraw() {
   return (
     <>
       <AjnaBorrowFormFieldWithdraw resetOnClear />
-      <AutomationValidationMessages
+      <AjnaValidationMessages
         {...errors}
         messages={errors.messages.filter((message) => ajnaWithdrawErrors.includes(message))}
       />
-      <AutomationValidationMessages
+      <AjnaValidationMessages
         {...warnings}
         messages={warnings.messages.filter((message) => ajnaWithdrawWarnings.includes(message))}
       />
       <AjnaBorrowFormFieldPayback isDisabled={!withdrawAmount || withdrawAmount?.lte(0)} />
-      <AutomationValidationMessages
+      <AjnaValidationMessages
         {...errors}
         messages={errors.messages.filter((message) =>
           [...ajnaCommonErrors, ...ajnaPaybackErrors].includes(message),
         )}
       />
-      <AutomationValidationMessages
+      <AjnaValidationMessages
         {...warnings}
         messages={warnings.messages.filter((message) =>
           [...ajnaCommonWarnings, ...ajnaPaybackWarnings].includes(message),
