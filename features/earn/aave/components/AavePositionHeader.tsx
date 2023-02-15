@@ -159,10 +159,8 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
 
 export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: AaveHeaderProps) {
   const { t } = useTranslation()
-  console.log('AAVEPositionHeaderNoDetails')
   const tokenData = tokenPairList[strategyConfig.name]
   const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)
-
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}

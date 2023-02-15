@@ -6,7 +6,6 @@ import { useChainId } from "helpers/useChainId"
 import { useFeatureToggle } from "helpers/useFeatureToggle"
 
 export function createFollowButton(positionId: PositionId) {
-    console.log('create follow button')
     const followAaveVaultsEnabled = useFeatureToggle('FollowAAVEVaults')
     const { walletAddress: connectedWalletAddress } = useAccount()
     const chainId = useChainId()

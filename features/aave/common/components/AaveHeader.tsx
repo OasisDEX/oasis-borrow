@@ -53,8 +53,6 @@ function AaveHeader({
       },
     )
   }
-  console.log('inside AaveHeader')
-  console.log('followButton', followButton)
 
   return (
     <WithErrorHandler error={[positionTokenPricesError, chainlinkUSDCUSDPriceError]}>
@@ -75,8 +73,6 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
 }
 
 export function AaveManageHeader({ strategyConfig, positionId }: AaveHeaderProps) {
-  console.log('manage header')
-
   const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)
 
   return (
