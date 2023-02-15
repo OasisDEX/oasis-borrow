@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { AaveHeaderProps, IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { ManageAaveHeaderProps, IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -72,7 +72,7 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
   return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
 }
 
-export function AaveManageHeader({ strategyConfig, positionId }: AaveHeaderProps) {
+export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeaderProps) {
   const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)
 
   return (

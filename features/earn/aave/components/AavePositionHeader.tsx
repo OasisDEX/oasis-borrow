@@ -4,7 +4,7 @@ import { getPriceChangeColor } from 'components/vault/VaultDetails'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { AaveStEthYieldsResponse } from 'features/aave/common'
-import { AaveHeaderProps, IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { IStrategyConfig,ManageAaveHeaderProps } from 'features/aave/common/StrategyConfigTypes'
 import { createFollowButton } from 'features/aave/helpers/createFollowButton'
 import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -157,7 +157,7 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
   }
 }
 
-export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: AaveHeaderProps) {
+export function AavePositionHeaderNoDetails({ strategyConfig, positionId }: ManageAaveHeaderProps) {
   const { t } = useTranslation()
   const tokenData = tokenPairList[strategyConfig.name]
   const followButton: FollowButtonControlProps | undefined = createFollowButton(positionId)

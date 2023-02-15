@@ -28,8 +28,8 @@ export interface IStrategyConfig {
   proxyType: ProxyType
   viewComponents: {
     headerOpen: AaveHeader
-    headerManage: AaveHeader
-    headerView: AaveHeader
+    headerManage: ManageAaveHeader
+    headerView: ManageAaveHeader
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
@@ -52,9 +52,11 @@ export interface IStrategyConfig {
   protocol: LendingProtocol
   featureToggle?: Feature
 }
-
 export type AaveHeaderProps = {
   strategyConfig: IStrategyConfig
+}
+
+export type ManageAaveHeaderProps = AaveHeaderProps & {
   positionId: PositionId
 }
 
@@ -64,6 +66,7 @@ export type ManageSectionComponentProps = {
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
+type ManageAaveHeader = (props: ManageAaveHeaderProps) => JSX.Element
 type SimulateSection = (props: AaveMultiplyManageComponentProps) => JSX.Element
 type VaultDetails = (
   props: ManageSectionComponentProps &
