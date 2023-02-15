@@ -54,6 +54,7 @@ export interface IStrategyConfig {
 
 export type AaveHeaderProps = {
   strategyConfig: IStrategyConfig
+  positionId: number
 }
 
 export type ManageSectionComponentProps = {

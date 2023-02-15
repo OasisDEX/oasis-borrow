@@ -6,6 +6,10 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
+import { useChainId } from 'helpers/useChainId'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
@@ -158,13 +162,22 @@ export function headerWithDetails(minimumRiskRatio: IRiskRatio) {
 
 export function AavePositionHeaderNoDetails({ strategyConfig }: AaveHeaderProps) {
   const { t } = useTranslation()
+  const followAaveVaultsEnabled = useFeatureToggle('FollowAAVEVaults')
   const tokenData = tokenPairList[strategyConfig.name]
+  const { walletAddress } = useAccount()
+  const chainId  = useChainId()
+  
+  const followButton = followAaveVaultsEnabled && walletAddress && chainId ? {
+    followerAddress: walletAddress,
+    vaultId: one, //TODO ŁW state.context.positionId
+    chainId,
+  } : undefined
   return (
     <VaultHeadline
       header={t(tokenData.translationKey)}
       token={tokenData.tokenList}
       details={[]}
-      followButton
+      followButton = {followButton}
       shareButton
     />
   )
