@@ -1,4 +1,4 @@
-import { PrismaClient, UsersWhoFollowVaults } from '@prisma/client'
+import { PrismaClient, Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -19,10 +19,11 @@ export async function selectVaultsFollowedByAddress(
 const usersWhoFollowVaultsSchema = z.object({
   vault_id: z.number(),
   vault_chain_id: z.number(),
+  protocol: z.enum(['maker', 'aavev2', 'aavev3', 'ajna']),
 })
 
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
-  const { vault_id, vault_chain_id } = usersWhoFollowVaultsSchema.parse(req.body)
+  const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
@@ -32,6 +33,7 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
     user_address: usersAddressWhoJustFollowedVaultLowercased,
     vault_id,
     vault_chain_id,
+    protocol: protocol as Protocol,
   }
   const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
     where: { user_address: usersAddressWhoJustFollowedVaultLowercased },
@@ -50,7 +52,7 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
-  const { vault_id, vault_chain_id } = usersWhoFollowVaultsSchema.parse(req.body)
+  const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
@@ -60,6 +62,7 @@ export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
     user_address: usersAddressWhoJustUnfollowedVaultLowercased,
     vault_id,
     vault_chain_id,
+    protocol: protocol as Protocol,
   }
   await prisma.usersWhoFollowVaults
     .deleteMany({

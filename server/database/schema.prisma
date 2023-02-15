@@ -226,7 +226,8 @@ model UsersWhoFollowVaults {
 
 enum Protocol {
     maker
-    aave
+    aavev2
+    aavev3
     ajna
 
     @@map("protocol")
