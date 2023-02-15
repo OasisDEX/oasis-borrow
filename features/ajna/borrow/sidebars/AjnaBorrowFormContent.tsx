@@ -43,7 +43,6 @@ export function AjnaBorrowFormContent({
       setTxDetails,
     },
     position: { id, isSimulationLoading },
-    validation: { errors },
   } = useAjnaBorrowContext()
 
   const {
@@ -63,7 +62,6 @@ export function AjnaBorrowFormContent({
     isTxStarted,
     isTxWaitingForApproval,
     walletAddress,
-    errors,
   })
   const primaryButtonLabel = getPrimaryButtonLabelKey({
     flow,
