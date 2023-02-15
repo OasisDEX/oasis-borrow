@@ -327,7 +327,13 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
-              entry: ['closePositionEvent'],
+              entry: [
+                'closePositionEvent',
+                'reset',
+                'killCurrentParametersMachine',
+                'spawnCloseParametersMachine',
+                'requestParameters',
+              ],
               on: {
                 NEXT_STEP: {
                   cond: 'validClosingTransactionParameters',
