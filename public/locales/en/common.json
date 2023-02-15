@@ -195,6 +195,8 @@
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
+        "7-day-net-apy": "7 day net APY",
+        "90-day-net-apy": "90 day net APY",
         "action": "",
         "activity": "Activity",
         "annual-fee": "Annual fee",
@@ -211,6 +213,7 @@
         "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
+        "min-ltv": "Min LTV",
         "min-position-size": "Min. position size",
         "net-usd-value": "Net value",
         "net-value": "Net value",
@@ -219,6 +222,7 @@
         "protection": "Protection",
         "protocol": "Protocol",
         "status": "Status",
+        "tvl": "TVL",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
       },
@@ -2349,18 +2353,35 @@
             "pre": "Borrow against your",
             "post": "exposure on Ajna"
           },
-          "intro": "Select the crypto asset you want to borrow against your ETH"
+          "intro": "Select the crypto asset you want to borrow against your {{token}}"
         },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
-          "confirm": "Review and confirm changes in your Ajna Position."
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
         }
       },
       "manage": {
         "headline": {
           "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
+        }
+      }
+    },
+    "earn": {
+      "open": {
+        "select": {
+          "heading": {
+            "pre": "Lend",
+            "post": "to Earn on Ajna"
+          },
+          "intro": "Select the crypto asset you want to earn for lending your {{token}}"
+        },
+        "headline": {
+          "header": "Lend {{quoteToken}} against {{collateralToken}}"
+        },
+        "form": {
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
         }
       }
     },

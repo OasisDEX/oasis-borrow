@@ -653,10 +653,23 @@ export function createOpenAaveStateMachine(
           }
         }),
         setFallbackTokenPrice: assign((context, event) => {
+          // fallback if we don't have the tokenPrice - happens if no
+          // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
+          let fallbackPrice: BigNumber
+          switch (true) {
+            case context.tokens.deposit === context.tokens.collateral:
+              fallbackPrice = event.collateralPrice
+              break
+            case context.tokens.deposit === context.tokens.debt:
+              fallbackPrice = event.debtPrice
+              break
+            default:
+              throw new Error(
+                `could not set fallback price for deposit token ${context.tokens.deposit}`,
+              )
+          }
           return {
-            // fallback if we don't have the tokenPrice - happens if no
-            // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
-            tokenPrice: context.tokenPrice ? context.tokenPrice : event.collateralPrice,
+            tokenPrice: context.tokenPrice ? context.tokenPrice : fallbackPrice,
           }
         }),
         resetWalletValues: assign((context) => {

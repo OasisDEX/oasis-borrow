@@ -9,6 +9,7 @@ import { OpenVaultAnimation } from 'theme/animations'
 export function AjnaBorrowFormContentTransaction() {
   const { t } = useTranslation()
   const {
+    environment: { collateralToken, quoteToken },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxInProgress, isTxSuccess },
   } = useAjnaBorrowContext()
 
@@ -17,7 +18,7 @@ export function AjnaBorrowFormContentTransaction() {
       {(!isTxStarted || isTxWaitingForApproval || isTxError) && (
         <>
           <Text as="p" variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
-            {t('ajna.borrow.open.form.confirm')}
+            {t('ajna.borrow.open.form.confirm', { collateralToken, quoteToken })}
           </Text>
           <AjnaBorrowFormOrder />
         </>
