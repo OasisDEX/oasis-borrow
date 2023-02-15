@@ -710,7 +710,6 @@ export const tokens: TokenConfig[] = [
   },
   {
     symbol: 'stETHusdc',
-    // copied from above, used as a placeholder for now
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -743,7 +742,6 @@ export const tokens: TokenConfig[] = [
   },
   {
     symbol: 'wBTCusdc',
-    // copied from above, used as a placeholder for now
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -760,7 +758,6 @@ export const tokens: TokenConfig[] = [
   },
   {
     symbol: 'wstETHeth',
-    // copied from above, used as a placeholder for now
     precision: 18,
     digits: 5,
     digitsInstant: 2,
@@ -770,8 +767,8 @@ export const tokens: TokenConfig[] = [
     iconColor: 'aave_wsteth_usdc',
     color: '#E2F7F9',
     background: 'linear-gradient(160.47deg, #E2F7F9 0.35%, #D3F3F5 99.18%), #000000',
-    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_STETH.png'),
-    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_STETH_v2.gif'),
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/Aave_v3_stETH.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/AAVE_stETH_v3.gif'),
     tags: [],
     protocol: 'aaveV3',
   },
