@@ -1,12 +1,12 @@
 import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
+import { LendingProtocol } from 'lendingProtocols'
+import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 
-import { AaveV2ReserveConfigurationData } from '../../../blockchain/aave'
-import { LendingProtocol } from '../../../lendingProtocols'
-import { PreparedAaveReserveData } from '../../../lendingProtocols/aave-v2/pipelines'
 import { BaseViewProps } from './BaseAaveContext'
 
 export enum ProxyType {
@@ -59,6 +59,7 @@ export type SecondaryInputProps = BaseViewProps<EventsRaisedFromSecondaryInput> 
   viewLocked?: boolean // locks whole view
   showWarring?: boolean // displays warning
   onChainPosition?: IPosition
+  stopLossError?: boolean
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element

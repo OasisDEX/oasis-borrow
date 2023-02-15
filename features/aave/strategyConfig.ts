@@ -3,8 +3,6 @@ import BigNumber from 'bignumber.js'
 import { AaveBorrowManageComponent } from 'features/borrow/aave/AaveBorrowManageComponent'
 import { AaveEarnFaq } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
-import { AaveEarnFaq } from 'features/content/faqs/aave/earn'
-import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import {
   AavePositionHeaderNoDetails,
   headerWithDetails,

@@ -1,7 +1,10 @@
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { AutomationTxData } from 'components/AppContext'
-import { OpenAaveParameters } from 'features/aave/oasisActionsLibWrapper'
+import {
+  OpenAaveParameters,
+  OpenDepositBorrowParameters,
+} from 'features/aave/oasisActionsLibWrapper'
 import { createOpenAaveStateMachine, OpenAaveStateMachineServices } from 'features/aave/open/state'
 import {
   AutomationAddTriggerData,

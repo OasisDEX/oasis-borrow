@@ -24,6 +24,7 @@ import {
   ManageAaveEvent,
   ManageAaveStateMachineState,
 } from 'features/aave/manage/state'
+import { transitionHasSwap } from 'features/aave/oasisActionsLibWrapper'
 import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
 import { AllowanceView } from 'features/stateMachines/allowance'
 import { allDefined } from 'helpers/allDefined'
@@ -45,19 +46,6 @@ export interface ManageAaveAutomation {
     stopLossError?: boolean
   }
 }
-import { amountFromWei } from '../../../../blockchain/utils'
-import { MessageCard } from '../../../../components/MessageCard'
-import { allDefined } from '../../../../helpers/allDefined'
-import { formatCryptoBalance } from '../../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { zero } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
-import { AllowanceView } from '../../../stateMachines/allowance'
-import { isAllowanceNeeded } from '../../common/BaseAaveContext'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { transitionHasSwap } from '../../oasisActionsLibWrapper'
-import { useManageAaveStateMachineContext } from '../containers/AaveManageStateMachineContext'
-import { ManageAaveContext, ManageAaveEvent, ManageAaveStateMachineState } from '../state'
 
 interface ManageAaveStateProps {
   readonly state: ManageAaveStateMachineState
@@ -563,6 +551,7 @@ export function SidebarManageAaveVault() {
               isLoading={loading}
               send={send}
               viewLocked={isLocked(state)}
+              stopLossError={stopLossError}
             />
           }
           primaryButton={{
@@ -582,12 +571,6 @@ export function SidebarManageAaveVault() {
             },
           }}
           dropdown={dropdownConfig}
-          automation={{
-            stopLoss: {
-              isStopLossEnabled,
-              stopLossLevel,
-            },
-          }}
         />
       )
     case state.matches('frontend.allowanceSetting'):
