@@ -156,21 +156,6 @@ export function AjnaBorrowContextProvider({
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
   const [cachedPosition, setCachedPosition] = useState<AjnaCachedPosition>()
 
-  const setStep = (step: AjnaStatusStep) => {
-    if (
-      !isNextStep({ currentStep, step, steps }) ||
-      isBorrowStepValid({ currentStep, formState: form.state })
-    )
-      setCurrentStep(step)
-    else throw new Error(`A state of current step in not valid.`)
-  }
-  const shiftStep = (direction: 'next' | 'prev') => {
-    const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
-
-    if (steps[i]) setCurrentStep(steps[i])
-    else throw new Error(`A step with index ${i} does not exist in form flow.`)
-  }
-
   const { errors, warnings } = useMemo(
     () =>
       getAjnaBorrowValidations({
@@ -199,6 +184,21 @@ export function AjnaBorrowContextProvider({
       collateralToken,
     ],
   )
+
+  const setStep = (step: AjnaStatusStep) => {
+    if (
+      !isNextStep({ currentStep, step, steps }) ||
+      isBorrowStepValid({ currentStep, formState: form.state, errors })
+    )
+      setCurrentStep(step)
+    else throw new Error(`A state of current step in not valid.`)
+  }
+  const shiftStep = (direction: 'next' | 'prev') => {
+    const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
+
+    if (steps[i]) setCurrentStep(steps[i])
+    else throw new Error(`A step with index ${i} does not exist in form flow.`)
+  }
 
   const setupStepManager = (): AjnaBorrowSteps => {
     return {
