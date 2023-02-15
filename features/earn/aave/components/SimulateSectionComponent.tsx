@@ -1,7 +1,16 @@
 import { IPositionTransition, IRiskRatio, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { useSelector } from '@xstate/react'
+import { getFee } from 'actions/aave'
 import BigNumber from 'bignumber.js'
+import { Banner, bannerGradientPresets } from 'components/Banner'
+import { DetailsSection } from 'components/DetailsSection'
+import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { AaveSimulateTitle } from 'features/aave/open/components/AaveSimulateTitle'
+import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -24,7 +33,15 @@ import {
   calculateSimulation,
   CalculateSimulationResult,
   Simulation,
-} from '../../../aave/open/services'
+} from 'features/aave/open/services'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
+import { HasGasEstimation } from 'helpers/form'
+import { formatCryptoBalance } from 'helpers/formatters/format'
+import { useHash } from 'helpers/useHash'
+import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
+import React, { useEffect, useState } from 'react'
+import { Box } from 'theme-ui'
 
 function mapSimulation(simulation?: Simulation): string[] {
   if (!simulation) return [formatCryptoBalance(zero), formatCryptoBalance(zero)]

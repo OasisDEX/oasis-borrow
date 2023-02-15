@@ -1,8 +1,3 @@
-import { Observable } from 'rxjs'
-
-import { TxHelpers } from '../../../../components/AppContext'
-import { HasGasEstimation } from '../../../../helpers/form'
-import { createTransactionParametersStateMachine } from '../../../stateMachines/transactionParameters'
 import {
   AdjustAaveParameters,
   CloseAaveParameters,
@@ -14,7 +9,11 @@ import {
   ManageAaveParameters,
   OpenAaveParameters,
   OpenDepositBorrowParameters,
-} from '../../oasisActionsLibWrapper'
+} from 'actions/aave'
+import { TxHelpers } from 'components/AppContext'
+import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
+import { HasGasEstimation } from 'helpers/form'
+import { Observable } from 'rxjs'
 
 export function getOpenAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
@@ -23,7 +22,14 @@ export function getOpenAaveParametersMachine(
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
-    (parameters: OpenAaveParameters) => getOpenAaveParameters(parameters),
+    async (parameters: OpenAaveParameters) => {
+      try {
+        return await getOpenTransaction(parameters)
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
   )
 }
 

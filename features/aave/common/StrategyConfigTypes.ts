@@ -1,6 +1,8 @@
 import { IPosition, IRiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
@@ -15,6 +17,12 @@ export enum ProxyType {
 }
 
 export type ProductType = 'Multiply' | 'Earn' | 'Borrow'
+
+export type ManagePositionAvailableActions =
+  | 'adjust'
+  | 'manage-debt'
+  | 'manage-collateral'
+  | 'close'
 
 export interface IStrategyConfig {
   name: string
@@ -32,6 +40,7 @@ export interface IStrategyConfig {
     sidebarTitle: string
     sidebarButton: string
   }
+  availableActions: ManagePositionAvailableActions[]
   tokens: {
     collateral: string
     debt: string

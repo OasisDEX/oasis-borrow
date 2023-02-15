@@ -9,30 +9,19 @@ type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber[], 
 
 export function prepareaaveAvailableLiquidityInUSDC$(
   getAaveReserveData$: (token: AaveV3ReserveDataParameters) => Observable<AaveV3ReserveDataReply>,
-  getAaveAssetsPrices$: Observable<string[]>,
-  getAaveV3BaseCurrencyUnit$: Observable<BigNumber>,
+  getAaveAssetsPrices$: Observable<BigNumber[]>,
   reserveDataToken: AaveV3ReserveDataParameters,
 ): Observable<BigNumber> {
   // THIS IS NOT IN USDC, THIS IS IN USD
   // Aave V3 Oracle prices are in USD
-  return combineLatest(
-    getAaveReserveData$(reserveDataToken),
-    getAaveAssetsPrices$,
-    getAaveV3BaseCurrencyUnit$,
-  ).pipe(
-    map(
-      ([
-        reserveData,
-        [USD_in_WETH_price],
-        baseCurrencyUnit,
-      ]: PrepareAaveAvailableLiquidityProps) => {
-        const availableLiquidityInETH = amountFromWei(
-          new BigNumber(reserveData.availableLiquidity),
-          'ETH',
-        )
-        return availableLiquidityInETH.times(USD_in_WETH_price.div(baseCurrencyUnit))
-      },
-    ),
+  return combineLatest(getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$).pipe(
+    map(([reserveData, [USD_in_WETH_price]]: PrepareAaveAvailableLiquidityProps) => {
+      const availableLiquidityInETH = amountFromWei(
+        new BigNumber(reserveData.availableLiquidity),
+        'ETH',
+      )
+      return availableLiquidityInETH.times(USD_in_WETH_price)
+    }),
     catchError((error) => {
       console.log(
         `Can't get Aave V3 available liquidity for ${JSON.stringify(reserveDataToken, null, 2)}`,

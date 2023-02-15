@@ -49,6 +49,7 @@ import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { jugIlk } from 'blockchain/calls/jug'
 import { crvLdoRewardsEarned } from 'blockchain/calls/lidoCrvRewards'
 import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
+import { OasisActionsTxData } from 'blockchain/calls/oasisActions'
 import { observe } from 'blockchain/calls/observe'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
@@ -109,7 +110,11 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { getUserDpmProxies$, getUserDpmProxy$ } from 'blockchain/userDpmProxies'
+import {
+  getPositionIdFromDpmProxy$,
+  getUserDpmProxies$,
+  getUserDpmProxy$,
+} from 'blockchain/userDpmProxies'
 import {
   createStandardCdps$,
   createVault$,
@@ -130,6 +135,11 @@ import {
 import { PositionId } from 'features/aave/types'
 import { createAccountData } from 'features/account/AccountData'
 import { createTransactionManager } from 'features/account/transactionManager'
+import {
+  getAjnaPosition$,
+  GetAjnaPositionIdentification,
+} from 'features/ajna/common/observables/getAjnaPosition'
+import { getDpmPositionData$ } from 'features/ajna/common/observables/getDpmPositionData'
 import { createAutomationTriggersData } from 'features/automation/api/automationTriggersData'
 import {
   AUTO_BUY_FORM_CHANGE,
@@ -336,6 +346,7 @@ export type TxData =
   | AutomationBotV2RemoveTriggerData
   | OperationExecutorTxMeta
   | CreateDPMAccount
+  | OasisActionsTxData
 
 export type AutomationTxData =
   | AutomationBotAddTriggerData
@@ -689,6 +700,10 @@ export function setupAppContext() {
   )
 
   const userDpmProxy$ = memoize(curry(getUserDpmProxy$)(context$), (vaultId) => vaultId)
+  const positionIdFromDpmProxy$ = memoize(
+    curry(getPositionIdFromDpmProxy$)(context$),
+    (dpmProxy) => dpmProxy,
+  )
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
@@ -1024,11 +1039,8 @@ export function setupAppContext() {
         automationTriggersData$,
         readPositionCreatedEvents$,
       },
-      aaveV2.aaveProtocolData$,
-      aaveV2.getAaveAssetsPrices$,
-      aaveV2.wrappedGetAaveReserveData$,
-      aaveV2.aaveAvailableLiquidityInUSDC$,
-      strategyConfig$,
+      aaveV2,
+      aaveV3,
     ),
   )
 
@@ -1387,6 +1399,16 @@ export function setupAppContext() {
     (token, spender) => `${token}-${spender}`,
   )
 
+  const dpmPositionData$ = memoize(
+    curry(getDpmPositionData$)(proxiesRelatedWithPosition$, lastCreatedPositionForProxy$),
+    (positionId: PositionId) => `${positionId.walletAddress}-${positionId.vaultId}`,
+  )
+
+  const ajnaPosition$ = memoize(
+    curry(getAjnaPosition$)(context$, dpmPositionData$, onEveryBlock$),
+    (ajnaPositionIdentification: GetAjnaPositionIdentification) => ajnaPositionIdentification,
+  )
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -1469,6 +1491,10 @@ export function setupAppContext() {
     allowanceStateMachine,
     allowanceForAccount$,
     contextForAddress$,
+    dpmPositionData$,
+    ajnaPosition$,
+    chainContext$,
+    positionIdFromDpmProxy$,
   }
 }
 

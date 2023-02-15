@@ -195,6 +195,8 @@
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
+        "7-day-net-apy": "7 day net APY",
+        "90-day-net-apy": "90 day net APY",
         "action": "",
         "activity": "Activity",
         "annual-fee": "Annual fee",
@@ -211,6 +213,7 @@
         "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
+        "min-ltv": "Min LTV",
         "min-position-size": "Min. position size",
         "net-usd-value": "Net value",
         "net-value": "Net value",
@@ -219,6 +222,7 @@
         "protection": "Protection",
         "protocol": "Protocol",
         "status": "Status",
+        "tvl": "TVL",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
       },
@@ -700,7 +704,7 @@
     "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed.",
     "pnl": "PnL {{value}} {{token}}",
     "ratio-history": "Ratio history",
-    "position-eth-debt": "Position ETH Debt",
+    "position-debt": "Position {{debtToken}} Debt",
     "liquidation-price-ratio": "Liquidation price ratio",
     "liquidation-price-ratio-modal-aave": "The liquidation price ratio indicates to what price ratio stETH needs to drop in comparison to ETH in order to get liquidated on this position. If this comes within 5% it will be indicated as red, within 20% as orange, and above 20% as green. Liquidation results in a liquidation penalty. You can find the history of the ratio here: <0>Ratio history</0> <1/><1/> You can adjust your risk by using the adjust risk functionality.",
     "below-current-ratio": "({{percentage}} below current ratio)",
@@ -708,7 +712,7 @@
     "liquidation-threshold": "Liq Threshold: {{percentage}}",
     "has-asset-already": "There is an active Aave position open in this address. Therefore, you cannot open a stETH earn position. Close your Aave position first to continue.",
     "net-value-modal": "Net Value",
-    "net-value-calculation": "The current net value is calculated based on the oracle price of {{stETHPrice}} stETH/ETH.",
+    "net-value-calculation": "The current net value is calculated based on the oracle price of {{oraclePrice}} {{collateralSymbol}}/{{debtSymbol}}.",
     "after-ltv-ratio-below-stop-loss-ltv": "You cannot make adjustments to your position which take it below your Stop-Loss Loan to Value"
   },
   "aave-position-modal": {
@@ -946,6 +950,8 @@
     "total-exposure": "Total {{token}} exposure",
     "exposure": "exposure",
     "total-collateral": "Total collateral",
+    "max-transaction-cost": "Max transaction cost",
+    "debt": "Debt",
     "multiple": "Multiple",
     "est-break-even": "Est. break-even",
     "est-break-even-value": "{{days}} days",
@@ -958,6 +964,7 @@
     "collateral-locked": "Collateral Locked",
     "collateral-ratio": "Collateral Ratio",
     "collateralization-ratio": "Collateralization Ratio",
+    "go-to-position": "Go to position",
     "dai": "Dai",
     "dai-available": "Dai Available",
     "dai-debt": "Dai Debt",
@@ -1941,7 +1948,8 @@
     "update-trigger": "Update {{feature}}",
     "cancel-trigger": "Cancel {{feature}}",
     "trigger-executed-banner-title": "{{feature}} triggered",
-    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the fully summary of the {{feature}} event on the right.",
+    "trigger-executed-banner-description": "Your {{feature}} was triggered on your Vault. You can read the full summary of the {{feature}} event on the right.",
+    "trigger-executed-banner-short-description": "Your {{feature}} Protection was triggered on this Position. Find out more about how Stop-Loss Protection works <0>here</0>.",
     "summary": "{{feature}} summary",
     "what-happened-to-the-vault": "See below for a summary of what happened to the Vault.",
     "trigger-executed": "Your {{feature}} was triggered",
@@ -2352,18 +2360,35 @@
             "pre": "Borrow against your",
             "post": "exposure on Ajna"
           },
-          "intro": "Select the crypto asset you want to borrow against your ETH"
+          "intro": "Select the crypto asset you want to borrow against your {{token}}"
         },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
-          "confirm": "Review and confirm changes in your Ajna Position."
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
         }
       },
       "manage": {
         "headline": {
           "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
+        }
+      }
+    },
+    "earn": {
+      "open": {
+        "select": {
+          "heading": {
+            "pre": "Lend",
+            "post": "to Earn on Ajna"
+          },
+          "intro": "Select the crypto asset you want to earn for lending your {{token}}"
+        },
+        "headline": {
+          "header": "Lend {{quoteToken}} against {{collateralToken}}"
+        },
+        "form": {
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
         }
       }
     }

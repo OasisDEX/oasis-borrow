@@ -1,8 +1,10 @@
-import BigNumber from 'bignumber.js'
+import { getOnChainPosition } from 'actions/aave/oasisActionsLibWrapper'
+import { BigNumber } from 'bignumber.js'
 import {
-  createAaveV3OracleAssetPriceData$,
   createConvertToAaveV3OracleAssetPrice$,
   getAaveV3AssetsPrices,
+  getAaveV3EModeCategoryForAsset,
+  getAaveV3OracleAssetPriceData$,
   getAaveV3OracleBaseCurrencyUnit,
   getAaveV3PositionLiquidation$,
   getAaveV3ReserveConfigurationData,
@@ -11,10 +13,10 @@ import {
   getAaveV3UserAccountData,
   getAaveV3UserConfiguration,
   getAaveV3UserReserveData,
+  getEModeCategoryData,
 } from 'blockchain/aave-v3'
 import { observe } from 'blockchain/calls/observe'
 import { Context } from 'blockchain/network'
-import { getOnChainPosition } from 'features/aave/oasisActionsLibWrapper'
 import { LendingProtocol } from 'lendingProtocols/LendingProtocol'
 import { memoize } from 'lodash'
 import { curry } from 'ramda'
@@ -25,6 +27,7 @@ import {
   createAaveV3PrepareReserveData$,
   getAaveProtocolData$,
   getAaveProxyConfiguration$,
+  getReserveConfigurationDataWithEMode$,
   prepareaaveAvailableLiquidityInUSDC$,
 } from './pipelines'
 
@@ -45,14 +48,42 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
   )
   const getAaveV3BaseCurrencyUnit$ = observe(once$, context$, getAaveV3OracleBaseCurrencyUnit)
   const getAaveReserveData$ = observe(once$, context$, getAaveV3ReserveData)
-  const getAaveAssetsPrices$ = observe(once$, context$, getAaveV3AssetsPrices)
+
+  const getAaveV3EModeCategoryForAsset$ = observe(once$, context$, getAaveV3EModeCategoryForAsset)
+  const getEModeCategoryData$ = observe(once$, context$, getEModeCategoryData)
+
+  const aaveOracleAssetPriceWithBaseCurrencyUnit$: ({
+    token,
+  }: {
+    token: string
+  }) => Observable<BigNumber> = memoize(
+    ({ token }: { token: string }) => {
+      return getAaveV3BaseCurrencyUnit$().pipe(
+        switchMap((baseCurrencyUnit) => {
+          return aaveOracleAssetPriceData$({ token, baseCurrencyUnit })
+        }),
+      )
+    },
+    ({ token }) => token,
+  )
+
+  const getAaveAssetsPricesBase$ = observe(refresh$, context$, getAaveV3AssetsPrices, (args) =>
+    args.tokens.join(''),
+  )
+
+  const getAaveAssetsPrices$ = memoize(
+    ({ tokens }: { tokens: string[] }) => {
+      return getAaveV3BaseCurrencyUnit$().pipe(
+        switchMap((baseCurrencyUnit) => getAaveAssetsPricesBase$({ tokens, baseCurrencyUnit })),
+      )
+    },
+    ({ tokens }) => tokens.join(''),
+  )
 
   const aaveAvailableLiquidityInUSDC$ = memoize(
     curry(prepareaaveAvailableLiquidityInUSDC$)(
       getAaveReserveData$,
-      // @ts-expect-error
-      getAaveAssetsPrices$({ tokens: ['WETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
-      getAaveV3BaseCurrencyUnit$(),
+      getAaveAssetsPrices$({ tokens: ['WETH'] }),
     ),
     ({ token }) => token,
   )
@@ -60,15 +91,26 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
   const aaveUserReserveData$ = observe(refresh$, context$, getAaveV3UserReserveData)
   const aaveUserConfiguration$ = observe(refresh$, context$, getAaveV3UserConfiguration)
   const aaveReservesList$ = observe(refresh$, context$, getAaveV3ReservesList)()
-  const aaveOracleAssetPriceData$ = memoize(
-    curry(createAaveV3OracleAssetPriceData$)(refresh$, context$),
+  const aaveOracleAssetPriceData$ = observe(
+    refresh$,
+    context$,
+    getAaveV3OracleAssetPriceData$,
+    ({ token }) => token,
   )
 
   const getAaveOnChainPosition$ = memoize(
     (collateralToken: string, debtToken: string, proxyAddress: string) => {
       return context$.pipe(
         switchMap((context) => {
-          return from(getOnChainPosition({ context, proxyAddress, collateralToken, debtToken }))
+          return from(
+            getOnChainPosition({
+              context,
+              proxyAddress,
+              collateralToken,
+              debtToken,
+              protocol: LendingProtocol.AaveV3,
+            }),
+          )
         }),
         shareReplay(1),
       )
@@ -81,7 +123,7 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
     curry(getAaveProtocolData$)(
       aaveUserReserveData$,
       aaveUserAccountData$,
-      aaveOracleAssetPriceData$,
+      aaveOracleAssetPriceWithBaseCurrencyUnit$,
       aaveUserConfiguration$,
       aaveReservesList$,
       getAaveOnChainPosition$,
@@ -106,9 +148,18 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
     ({ token }) => token,
   )
 
+  const reserveConfigurationDataWithEMode$ = memoize(
+    curry(getReserveConfigurationDataWithEMode$)(
+      aaveReserveConfigurationData$,
+      getAaveV3EModeCategoryForAsset$,
+      getEModeCategoryData$,
+    ),
+    (args: { token: string }) => args.token,
+  )
+
   const convertToAaveOracleAssetPrice$ = memoize(
-    curry(createConvertToAaveV3OracleAssetPrice$)(aaveOracleAssetPriceData$),
-    (args: { token: string; amount: BigNumber }) => args.token + args.amount.toString(),
+    curry(createConvertToAaveV3OracleAssetPrice$)(aaveOracleAssetPriceWithBaseCurrencyUnit$),
+    (args: { token: string }) => args.token,
   )
 
   return {
@@ -120,9 +171,10 @@ export function getAaveV3Services({ context$, refresh$, once$ }: AaveV3ServicesD
     aaveProxyConfiguration$,
     wrappedGetAaveReserveData$,
     getAaveAssetsPrices$,
-    aaveReserveConfigurationData$,
+    aaveReserveConfigurationData$: reserveConfigurationDataWithEMode$,
     convertToAaveOracleAssetPrice$,
-    aaveOracleAssetPriceData$,
+    aaveOracleAssetPriceData$: aaveOracleAssetPriceWithBaseCurrencyUnit$,
     getAaveReserveData$,
+    getAaveV3BaseCurrencyUnit$,
   }
 }

@@ -2,12 +2,19 @@ import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
+import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
+import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { AllowanceView } from 'features/stateMachines/allowance'
+import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
+import { ProxyView } from 'features/stateMachines/proxy'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -19,14 +26,6 @@ import { Box, Flex, Grid, Image } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
-import { AllowanceView } from '../../../stateMachines/allowance'
-import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
-import { ProxyView } from '../../../stateMachines/proxy'
-import { isAllowanceNeeded } from '../../common/BaseAaveContext'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { ProxyType } from '../../common/StrategyConfigTypes'
-import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { OpenAaveEvent, OpenAaveStateMachine } from '../state'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
 function isLoading(state: StateFrom<OpenAaveStateMachine>) {
@@ -168,8 +167,6 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export const MemoizedStopLossInProgressStateView = React.memo(StopLossInProgressStateView)
-
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { push } = useRedirect()
@@ -303,34 +300,22 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
-      <WithLoadingIndicator
-        // this loader seems to be pointless, but undefined tokenUsdPrice (below) breaks the proper decimals input so it needs to be there
-        value={[state.context.collateralPrice]}
-        customLoader={
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <AppSpinner size={24} />
-          </Box>
-        }
-      >
-        {() => (
-          <Grid gap={3}>
-            <SidebarOpenAaveVaultEditingState state={state} send={send} />
-            {state.context.tokenBalance && amountTooHigh && (
-              <MessageCard
-                messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
-                type="error"
-              />
-            )}
-            <SecondaryInputComponent
-              state={state}
-              send={send}
-              isLoading={isLoading}
-              viewLocked={hasOpenedPosition}
-              showWarring={hasOpenedPosition}
-            />
-          </Grid>
+      <Grid gap={3}>
+        <SidebarOpenAaveVaultEditingState state={state} send={send} />
+        {state.context.tokenBalance && amountTooHigh && (
+          <MessageCard
+            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            type="error"
+          />
         )}
-      </WithLoadingIndicator>
+        <SecondaryInputComponent
+          state={state}
+          send={send}
+          isLoading={isLoading}
+          viewLocked={hasOpenedPosition}
+          showWarring={hasOpenedPosition}
+        />
+      </Grid>
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],

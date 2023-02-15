@@ -1,5 +1,9 @@
 import { IPosition, IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
+import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { HasGasEstimation } from 'helpers/form'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

@@ -1,7 +1,38 @@
 import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/oasis-actions'
+import { OpenAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
+import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
+import {
+  callOperationExecutorWithDpmProxy,
+  callOperationExecutorWithDsProxy,
+  OperationExecutorTxMeta,
+} from 'blockchain/calls/operationExecutor'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { ethNullAddress } from 'blockchain/config'
+import { ContextConnected } from 'blockchain/network'
+import { AutomationTxData } from 'components/AppContext'
+import {
+  BaseAaveContext,
+  BaseAaveEvent,
+  contextToTransactionParameters,
+  isAllowanceNeeded,
+} from 'features/aave/common/BaseAaveContext'
+import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { isUserWalletConnected } from 'features/aave/helpers'
+import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
+import {
+  AutomationAddTriggerData,
+  AutomationAddTriggerTxDef,
+} from 'features/automation/common/txDefinitions'
+import { aaveOffsetFromMaxDuringOpenFLow } from 'features/automation/metadata/aave/stopLossMetadata'
+import { extractStopLossDataInput } from 'features/automation/protection/stopLoss/openFlow/helpers'
+import { prepareStopLossTriggerDataV2 } from 'features/automation/protection/stopLoss/state/stopLossTriggerData'
+import { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { addAutomationBotTriggerV2 } from 'blockchain/calls/automationBot'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
@@ -39,6 +70,9 @@ import { createDPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
 import {
   DMPAccountStateMachineResultEvents,
   DPMAccountStateMachine,
+} from 'features/stateMachines/dpmAccount/'
+import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
 } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
 import { ProxyResultEvent, ProxyStateMachine } from 'features/stateMachines/proxy/state'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
@@ -50,6 +84,15 @@ import { allDefined } from 'helpers/allDefined'
 import { canOpenPosition } from 'helpers/canOpenPosition'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
+import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
+import { pure } from 'xstate/lib/actions'
+import { MachineOptionsFrom } from 'xstate/lib/types'
+} from 'features/stateMachines/transactionParameters'
+import { allDefined } from 'helpers/allDefined'
+import { canOpenPosition } from 'helpers/canOpenPosition'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
+import { LendingProtocol } from 'lendingProtocols'
 import { ActorRefFrom, assign, createMachine, send, spawn } from 'xstate'
 import { pure } from 'xstate/lib/actions'
 import { MachineOptionsFrom } from 'xstate/lib/types'
@@ -627,6 +670,7 @@ export function createOpenAaveStateMachine(
               slippage: context.userSettings!.slippage,
               proxyType: context.strategyConfig.proxyType,
               positionType: context.strategyConfig.type,
+              protocol: context.strategyConfig.protocol
             }
             if (context.strategyConfig.type === 'Borrow') {
               return {
@@ -686,9 +730,12 @@ export function createOpenAaveStateMachine(
 
           const contextConnected = (context.web3Context as any) as ContextConnected | undefined
 
+          const protocolVersion =
+            context.strategyConfig.protocol === LendingProtocol.AaveV2 ? 'v2' : 'v3'
+
           const address = shouldUseDpmProxy
-            ? `/aave/${context.userDpmAccount?.vaultId}`
-            : `/aave/${contextConnected?.account}`
+            ? `/aave/${protocolVersion}/${context.userDpmAccount?.vaultId}`
+            : `/aave/${protocolVersion}/${contextConnected?.account}`
 
           return {
             effectiveProxyAddress: proxyAddressToUse,
@@ -707,10 +754,23 @@ export function createOpenAaveStateMachine(
           }
         }),
         setFallbackTokenPrice: assign((context, event) => {
+          // fallback if we don't have the tokenPrice - happens if no
+          // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
+          let fallbackPrice: BigNumber
+          switch (true) {
+            case context.tokens.deposit === context.tokens.collateral:
+              fallbackPrice = event.collateralPrice
+              break
+            case context.tokens.deposit === context.tokens.debt:
+              fallbackPrice = event.debtPrice
+              break
+            default:
+              throw new Error(
+                `could not set fallback price for deposit token ${context.tokens.deposit}`,
+              )
+          }
           return {
-            // fallback if we don't have the tokenPrice - happens if no
-            // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
-            tokenPrice: context.tokenPrice ? context.tokenPrice : event.collateralPrice,
+            tokenPrice: context.tokenPrice ? context.tokenPrice : fallbackPrice,
           }
         }),
         resetWalletValues: assign((context) => {

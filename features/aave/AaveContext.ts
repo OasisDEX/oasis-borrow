@@ -3,6 +3,7 @@ import { observe } from 'blockchain/calls/observe'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
+import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
 import { LendingProtocol } from 'lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines'
 import { memoize } from 'lodash'
@@ -11,7 +12,7 @@ import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { getAaveStEthYield } from './common'
+import { getAaveStEthYield, IStrategyConfig } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -42,6 +43,7 @@ export function setupAaveV2Context(appContext: AppContext) {
     protocols,
     connectedContext$,
     commonTransactionServices,
+    chainContext$,
   } = appContext
 
   const {
@@ -97,6 +99,7 @@ export function setupAaveV2Context(appContext: AppContext) {
 
   const strategyInfo$ = memoize(
     curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
   const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$)
@@ -171,6 +174,8 @@ export function setupAaveV2Context(appContext: AppContext) {
     getAaveAssetsPrices$({ tokens: ['USDC', 'STETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
 
+  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
+
   return {
     aaveStateMachine,
     aaveManageStateMachine,
@@ -190,6 +195,7 @@ export function setupAaveV2Context(appContext: AppContext) {
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
+    aaveHistory$,
   }
 }
 

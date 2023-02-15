@@ -1,3 +1,4 @@
+import { OpenAaveParameters } from 'actions/aave'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { AutomationTxData } from 'components/AppContext'
@@ -11,8 +12,8 @@ import {
   AutomationAddTriggerTxDef,
 } from 'features/automation/common/txDefinitions'
 import { AllowanceStateMachine } from 'features/stateMachines/allowance'
-import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount/state/createDPMAccountStateMachine'
-import { ProxyStateMachine } from 'features/stateMachines/proxy/state'
+import { DPMAccountStateMachine } from 'features/stateMachines/dpmAccount'
+import { ProxyStateMachine } from 'features/stateMachines/proxy'
 import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import { TransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 

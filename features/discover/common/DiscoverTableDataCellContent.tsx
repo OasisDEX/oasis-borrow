@@ -19,7 +19,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React, { PropsWithChildren } from 'react'
-import { Button, Flex, Text } from 'theme-ui'
+import { Box, Button, Flex, Text } from 'theme-ui'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath
 
@@ -48,7 +48,6 @@ export function DiscoverTableDataCellContent({
       const asset = Object.values(discoverFiltersAssetItems).filter(
         (item) => item.value === primitives.asset,
       )[0]
-
       return (
         <DiscoverTableDataCellAsset
           asset={
@@ -56,7 +55,7 @@ export function DiscoverTableDataCellContent({
           }
           cdpId={primitives.cdpId as number}
           follow={follow}
-          icon={(primitives.icon || asset.icon) as string}
+          icon={(primitives?.icon || asset?.icon) as string}
         />
       )
     case 'status':
@@ -270,20 +269,17 @@ export function DiscoverTableDataCellProtocol({
   color,
 }: PropsWithChildren<{ color: string | [string, string] }>) {
   return (
-    <Text
-      as="span"
-      sx={{
-        display: 'inline-block',
-        lineHeight: '26px',
-        px: '12px',
-        fontSize: 2,
-        fontWeight: 'regular',
-        color: 'neutral10',
-        borderRadius: 'mediumLarge',
-        background: getPillColor(color),
-      }}
-    >
+    <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
+      <Box
+        sx={{
+          width: '10px',
+          height: '10px',
+          mr: 2,
+          borderRadius: 'ellipse',
+          background: getPillColor(color),
+        }}
+      />
       {children}
-    </Text>
+    </Flex>
   )
 }

@@ -34,9 +34,11 @@ type BoundaryConfig = {
   translationKey: string
   valueExtractor: ({
     oracleAssetPrice,
+    oraclesPricesRatio,
     ltv,
   }: {
     oracleAssetPrice: BigNumber
+    oraclesPricesRatio: BigNumber
     ltv: BigNumber
   }) => BigNumber
   formatter: (qty: BigNumber) => TokenDisplay
@@ -74,6 +76,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
     const simulation = transition?.simulation
     const targetPosition = simulation?.position
 
+    const strategyInfo = state.context.strategyInfo
+
     const maxRisk =
       targetPosition?.category.maxLoanToValue || onChainPosition?.category.maxLoanToValue || zero
 
@@ -90,7 +94,10 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       ? getLiquidationPriceAccountingForPrecision(onChainPosition)
       : zero
 
-    const oracleAssetPrice = state.context.strategyInfo?.oracleAssetPrice || zero
+    const oracleAssetPrice = strategyInfo?.oracleAssetPrice.collateral || zero
+    const oraclePriceCollateralToDebt = strategyInfo
+      ? strategyInfo.oracleAssetPrice.collateral.div(strategyInfo.oracleAssetPrice.debt)
+      : zero
 
     const priceMovementUntilLiquidationPercent = (
       (targetPosition
@@ -104,7 +111,7 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
       targetPosition &&
       priceMovementUntilLiquidationPercent.lte(warningPriceMovementPercentThreshold)
 
-    const collateralToken = state.context.strategyInfo?.collateralToken
+    const collateralToken = state.context.strategyInfo?.tokens.collateral
 
     const debtToken = state.context.tokens.debt
 
@@ -142,7 +149,8 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           rightBoundry={
             sliderValue
               ? viewConfig.rightBoundary.valueExtractor({
-                  oracleAssetPrice,
+                  oracleAssetPrice: oracleAssetPrice,
+                  oraclesPricesRatio: oraclePriceCollateralToDebt,
                   ltv: sliderValue,
                 })
               : one
@@ -156,14 +164,17 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
           }}
           rightLabel={t(viewConfig.rightBoundary.translationKey)}
           onChange={(ltv) => {
-            send({ type: 'SET_RISK_RATIO', riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV) })
+            send({
+              type: 'SET_RISK_RATIO',
+              riskRatio: new RiskRatio(ltv, RiskRatio.TYPE.LTV),
+            })
           }}
           minBoundry={minRisk}
           maxBoundry={maxRisk}
           lastValue={sliderValue || zero}
           disabled={viewLocked || !maxRisk}
           disabledVisually={viewLocked || !maxRisk}
-          step={0.01}
+          step={0.001}
           sliderPercentageFill={
             maxRisk && sliderValue
               ? sliderValue.minus(minRisk).times(100).dividedBy(maxRisk.minus(minRisk))

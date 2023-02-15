@@ -1,5 +1,5 @@
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
 
@@ -15,20 +15,11 @@ export interface SidebarSectionContentProps {
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
   const disableSidebarScrollEnabled = useFeatureToggle('DisableSidebarScroll')
-  const contanierRef = useRef<HTMLDivElement>(null)
-  const [overflowedConent, setOverflowedConent] = useState(false)
-
-  useEffect(() => {
-    if (contanierRef.current) {
-      const hasOverflowingChildren =
-        contanierRef.current.offsetHeight < contanierRef.current.scrollHeight
-      setOverflowedConent(hasOverflowingChildren)
-    }
-  })
+  const ref = useRef<HTMLDivElement>(null)
 
   return (
     <Box
-      ref={contanierRef}
+      ref={ref}
       sx={{
         '&::-webkit-scrollbar': {
           width: '6px',
@@ -41,14 +32,17 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
         '&::-webkit-scrollbar-track': {
           my: '24px',
           mr: '10px',
-          backgroundColor: theme.colors.secondary60,
+          backgroundColor:
+            ref.current && ref.current.scrollHeight > ref.current.offsetHeight
+              ? theme.colors.secondary60
+              : 'transparent',
           borderRadius: theme.radii.large,
         },
-        overflowY: 'auto',
+        overflowY: 'scroll',
         overflowX: 'hidden',
-        mr: overflowedConent ? '8px' : '0px',
+        mr: 2,
         p: '24px',
-        pr: overflowedConent ? '10px' : '24px',
+        pr: '10px',
         ...(!disableSidebarScrollEnabled && { maxHeight: 490 }),
       }}
     >

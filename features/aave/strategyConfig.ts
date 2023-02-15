@@ -1,7 +1,7 @@
 import { RiskRatio } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
 import { AaveBorrowManageComponent } from 'features/borrow/aave/AaveBorrowManageComponent'
-import { AaveEarnFaq } from 'features/content/faqs/aave/earn'
+import { AaveEarnFaqV2, AaveEarnFaqV3 } from 'features/content/faqs/aave/earn'
 import { AaveMultiplyFaq } from 'features/content/faqs/aave/multiply'
 import {
   AavePositionHeaderNoDetails,
@@ -17,6 +17,7 @@ import { getFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 
+import { IStrategyConfig, ManagePositionAvailableActions, ProxyType } from './common'
 import { AaveManageHeader, AaveOpenHeader } from './common/components/AaveHeader'
 import { adjustRiskView } from './common/components/SidebarAdjustRiskView'
 import { IStrategyConfig, ProxyType } from './common/StrategyConfigTypes'
@@ -30,6 +31,13 @@ export enum ManageDebtActionsEnum {
   BORROW_DEBT = 'borrow-debt',
   PAYBACK_DEBT = 'payback-debt',
 }
+
+const allActionsAvailable: ManagePositionAvailableActions[] = [
+  'adjust',
+  'manage-debt',
+  'manage-collateral',
+  'close',
+]
 
 const supportedAaveBorrowCollateralTokens = ['ETH', 'WBTC']
 
@@ -46,7 +54,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       secondaryInput: adjustRiskView(adjustRiskSliders.wstethEth),
-      positionInfo: AaveEarnFaq,
+      positionInfo: AaveEarnFaqV3,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
@@ -59,6 +67,7 @@ export const strategies: Array<IStrategyConfig> = [
     type: 'Earn',
     protocol: LendingProtocol.AaveV3,
     featureToggle: 'AaveV3EarnWSTETH' as const,
+    availableActions: ['close'],
   },
   {
     urlSlug: 'stETHeth',
@@ -72,7 +81,7 @@ export const strategies: Array<IStrategyConfig> = [
       vaultDetailsManage: ManageSectionComponent,
       vaultDetailsView: ViewPositionSectionComponent,
       secondaryInput: adjustRiskView(adjustRiskSliders.stethEth),
-      positionInfo: AaveEarnFaq,
+      positionInfo: AaveEarnFaqV2,
       sidebarTitle: 'open-earn.aave.vault-form.title',
       sidebarButton: 'open-earn.aave.vault-form.open-btn',
     },
@@ -84,6 +93,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: adjustRiskSliders.stethEth.riskRatios,
     type: 'Earn',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'ethusdc',
@@ -109,6 +119,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'stETHusdc',
@@ -134,6 +145,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
   {
     name: 'wBTCusdc',
@@ -159,6 +171,7 @@ export const strategies: Array<IStrategyConfig> = [
     riskRatios: multiplyAdjustRiskSliderConfig.riskRatios,
     type: 'Multiply',
     protocol: LendingProtocol.AaveV2,
+    availableActions: allActionsAvailable,
   },
 
   ...supportedAaveBorrowCollateralTokens.map((collateral) => {
@@ -187,6 +200,7 @@ export const strategies: Array<IStrategyConfig> = [
       featureToggle: 'AaveBorrow' as const,
       type: 'Borrow' as const,
       protocol: LendingProtocol.AaveV2,
+      availableActions: allActionsAvailable,
     }
   }),
 ]
@@ -251,6 +265,6 @@ export function convertDefaultRiskRatioToActualRiskRatio(
   ltv?: BigNumber,
 ) {
   return defaultRiskRatio === 'slightlyLessThanMaxRisk'
-    ? new RiskRatio(ltv?.times('0.999') || zero, RiskRatio.TYPE.LTV)
+    ? new RiskRatio(ltv?.times('0.99') || zero, RiskRatio.TYPE.LTV)
     : defaultRiskRatio
 }

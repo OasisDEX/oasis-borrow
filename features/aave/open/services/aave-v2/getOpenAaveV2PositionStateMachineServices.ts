@@ -1,29 +1,28 @@
 import BigNumber from 'bignumber.js'
-import { isEqual } from 'lodash'
-import { combineLatest, iif, Observable, of } from 'rxjs'
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
-
 import {
   AaveV2ReserveConfigurationData,
   AaveV2UserAccountData,
   AaveV2UserAccountDataParameters,
-} from '../../../../../blockchain/aave'
-import { Context } from '../../../../../blockchain/network'
-import { Tickers } from '../../../../../blockchain/prices'
-import { TokenBalances } from '../../../../../blockchain/tokens'
-import { UserDpmAccount } from '../../../../../blockchain/userDpmProxies'
-import { TxHelpers } from '../../../../../components/AppContext'
-import { allDefined } from '../../../../../helpers/allDefined'
-import { AaveProtocolData } from '../../../../../lendingProtocols/aave-v2/pipelines'
-import { UserSettingsState } from '../../../../userSettings/userSettings'
+} from 'blockchain/aave'
+import { Context } from 'blockchain/network'
+import { Tickers } from 'blockchain/prices'
+import { TokenBalances } from 'blockchain/tokens'
+import { UserDpmAccount } from 'blockchain/userDpmProxies'
+import { TxHelpers } from 'components/AppContext'
 import {
   IStrategyInfo,
   StrategyTokenAllowance,
   StrategyTokenBalance,
-} from '../../../common/BaseAaveContext'
-import { getPricesFeed$ } from '../../../common/services/getPricesFeed'
-import { ProxyType } from '../../../common/StrategyConfigTypes'
-import { OpenAaveStateMachineServices } from '../../state'
+} from 'features/aave/common/BaseAaveContext'
+import { getPricesFeed$ } from 'features/aave/common/services/getPricesFeed'
+import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { OpenAaveStateMachineServices } from 'features/aave/open/state'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { allDefined } from 'helpers/allDefined'
+import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
+import { isEqual } from 'lodash'
+import { combineLatest, iif, Observable, of } from 'rxjs'
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 export function getOpenAaveV2PositionStateMachineServices(
   context$: Observable<Context>,
@@ -35,7 +34,7 @@ export function getOpenAaveV2PositionStateMachineServices(
   ) => Observable<AaveV2UserAccountData>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
-  strategyInfo$: (collateralToken: string) => Observable<IStrategyInfo>,
+  strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
@@ -109,7 +108,7 @@ export function getOpenAaveV2PositionStateMachineServices(
       return pricesFeed$(context.tokens.collateral, context.tokens.debt)
     },
     strategyInfo$: (context) => {
-      return strategyInfo$(context.tokens.collateral).pipe(
+      return strategyInfo$(context.tokens).pipe(
         map((strategyInfo) => ({
           type: 'UPDATE_STRATEGY_INFO',
           strategyInfo,

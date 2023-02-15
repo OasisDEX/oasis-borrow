@@ -45,8 +45,12 @@ export function AaveManageTabBar({
   const isClosingPosition = state.matches('frontend.reviewingClosing')
   const hasCloseTokenSet = !!state.context.manageTokenInput?.closingToken
 
+  const adjustingTouched = state.matches('frontend.editing') && state.context.userInput.riskRatio
+  const manageTouched =
+    (state.matches('frontend.manageCollateral') || state.matches('frontend.manageDebt')) &&
+    state.context.manageTokenInput?.manageTokenActionValue
   const nextPosition =
-    !isClosingPosition || hasCloseTokenSet
+    adjustingTouched || manageTouched || (isClosingPosition && hasCloseTokenSet)
       ? state.context.transition?.simulation.position
       : undefined
 
@@ -68,6 +72,7 @@ export function AaveManageTabBar({
                 tokenPrice={state.context.tokenPrice}
                 debtPrice={state.context.debtPrice}
                 nextPosition={nextPosition}
+                dpmProxy={state.context.effectiveProxyAddress}
               />
               <SidebarManageAaveVault />
             </Grid>
