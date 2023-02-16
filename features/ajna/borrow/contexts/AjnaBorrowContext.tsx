@@ -11,6 +11,7 @@ import {
 } from 'features/ajna/borrow/validations'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useObservable } from 'helpers/observableHook'
+import { useAccount } from 'helpers/useAccount'
 import React, {
   Dispatch,
   PropsWithChildren,
@@ -69,6 +70,7 @@ export function AjnaBorrowContextProvider({
   children,
   position,
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
+  const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
   const {
     environment: { collateralBalance, collateralToken, ethBalance, ethPrice, flow, quoteBalance },
@@ -168,6 +170,7 @@ export function AjnaBorrowContextProvider({
     simulation,
     txDetails,
     warnings,
+    walletAddress,
   ])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>

@@ -135,7 +135,7 @@ export function AjnaProductContextProvider({
       steps: setupStepManager(),
       tx: setupTxManager(),
     }))
-  }, [collateralBalance, currentStep, quoteBalance, txDetails])
+  }, [collateralBalance, currentStep, quoteBalance, txDetails, walletAddress])
 
   return <ajnaProductContext.Provider value={context}>{children}</ajnaProductContext.Provider>
 }
