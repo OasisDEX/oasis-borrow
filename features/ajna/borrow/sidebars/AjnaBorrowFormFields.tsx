@@ -10,59 +10,6 @@ interface AjnaBorrowFormField {
   resetOnClear?: boolean
 }
 
-export function AjnaBorrowFormFieldDeposit({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
-  const { t } = useTranslation()
-  const {
-    environment: { collateralBalance, collateralPrice, collateralToken },
-  } = useAjnaProductContext()
-  const {
-    form: {
-      dispatch,
-      state: { depositAmount, depositAmountUSD },
-    },
-  } = useAjnaBorrowContext()
-
-  return (
-    <VaultActionInput
-      action="Deposit"
-      currencyCode={collateralToken}
-      tokenUsdPrice={collateralPrice}
-      amount={depositAmount}
-      auxiliaryAmount={depositAmountUSD}
-      hasAuxiliary={true}
-      hasError={false}
-      disabled={isDisabled}
-      showMax={true}
-      maxAmount={collateralBalance}
-      maxAuxiliaryAmount={collateralBalance.times(collateralPrice)}
-      maxAmountLabel={t('balance')}
-      onChange={handleNumericInput((n) => {
-        dispatch({
-          type: 'update-deposit',
-          depositAmount: n,
-          depositAmountUSD: n?.times(collateralPrice),
-        })
-        if (!n && resetOnClear) dispatch({ type: 'reset' })
-      })}
-      onAuxiliaryChange={handleNumericInput((n) => {
-        dispatch({
-          type: 'update-deposit',
-          depositAmount: n?.dividedBy(collateralPrice),
-          depositAmountUSD: n,
-        })
-        if (!n && resetOnClear) dispatch({ type: 'reset' })
-      })}
-      onSetMax={() => {
-        dispatch({
-          type: 'update-deposit',
-          depositAmount: collateralBalance,
-          depositAmountUSD: collateralBalance.times(collateralPrice),
-        })
-      }}
-    />
-  )
-}
-
 export function AjnaBorrowFormFieldWithdraw({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const {
     environment: { collateralPrice, collateralToken },
