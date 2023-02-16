@@ -92,9 +92,8 @@ export function setupAaveV3Context(appContext: AppContext): AaveContext {
     ),
   )
 
-  const tokenBalances$: Observable<TokenBalances | undefined> = context$.pipe(
+  const tokenBalances$: Observable<TokenBalances> = context$.pipe(
     switchMap(({ account }) => {
-      if (!account) return of(undefined)
       return aaveSupportedTokenBalances$(account)
     }),
   )

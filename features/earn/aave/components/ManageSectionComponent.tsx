@@ -22,20 +22,16 @@ export function ManageSectionComponent({
 }: ManageSectionComponentProps) {
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
-  const {
-    accountData,
-    oraclePrice, // STETH price data
-    position,
-  } = state.context.protocolData || {}
+  const { position } = state.context.protocolData || {}
 
   const simulations = useSimulationYields({
-    amount: accountData?.totalCollateralETH,
+    amount: position?.collateral.amount,
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
     strategy: strategyConfig,
   })
 
-  if (!position || !aaveReserveState?.liquidationThreshold || !oraclePrice) {
+  if (!position || !aaveReserveState?.liquidationThreshold) {
     return <AppSpinner />
   }
 
@@ -43,7 +39,6 @@ export function ManageSectionComponent({
     <PositionInfoComponent
       aaveReserveDataDebtToken={aaveReserveDataDebtToken}
       apy={simulations?.apy}
-      oraclePrice={oraclePrice}
       position={position}
     />
   )

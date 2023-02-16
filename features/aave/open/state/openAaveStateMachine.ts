@@ -19,9 +19,10 @@ import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
+  getSlippage,
   isAllowanceNeeded,
 } from 'features/aave/common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { isUserWalletConnected } from 'features/aave/helpers'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import {
@@ -67,7 +68,6 @@ export interface OpenAaveContext extends BaseAaveContext {
     | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
   refStopLossMachine?: ActorRefFrom<TransactionStateMachine<AutomationTxData>>
   hasOpenedPosition?: boolean
-  strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
   blockSettingCalculatedAddresses?: boolean
   reserveConfig?: AaveV2ReserveConfigurationData
@@ -201,10 +201,19 @@ export function createOpenAaveStateMachine(
             editing: {
               entry: ['resetCurrentStep', 'setTotalSteps', 'calculateEffectiveProxyAddress'],
               on: {
-                SET_AMOUNT: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: ['setAmount', 'calculateAuxiliaryAmount'],
-                },
+                SET_AMOUNT: [
+                  {
+                    target: '#openAaveStateMachine.background.debouncing',
+                    // only call library greater-than-zero amount
+                    cond: 'userInputtedAmountGreaterThanZero',
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                  // fall through to this next one if the amount is zero
+                  // (e.g. user is halfway through typing  "0.002")
+                  {
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                ],
                 SET_DEBT: {
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: ['setDebt'],
@@ -395,6 +404,10 @@ export function createOpenAaveStateMachine(
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
         },
+        USE_SLIPPAGE: {
+          target: ['background.debouncing'],
+          actions: 'updateContext',
+        },
         UPDATE_STRATEGY_INFO: {
           actions: 'updateContext',
         },
@@ -429,6 +442,9 @@ export function createOpenAaveStateMachine(
     },
     {
       guards: {
+        userInputtedAmountGreaterThanZero: (context, event) => {
+          return !!(event.amount && event.amount.gt(0))
+        },
         shouldCreateDpmProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
@@ -503,7 +519,7 @@ export function createOpenAaveStateMachine(
             ...context.userInput,
             amount: event.amount,
           },
-          strategy: event.amount ? context.transition : undefined,
+          strategy: event.amount && event.amount.gt(zero) ? context.transition : undefined,
         })),
         setDebt: assign((context, event) => ({
           userInput: {
@@ -622,7 +638,7 @@ export function createOpenAaveStateMachine(
               depositToken: context.tokens.deposit,
               token: context.tokens.deposit,
               context: context.web3Context!,
-              slippage: context.userSettings!.slippage,
+              slippage: getSlippage(context),
               proxyType: context.strategyConfig.proxyType,
               positionType: context.strategyConfig.type,
               protocol: context.strategyConfig.protocol,

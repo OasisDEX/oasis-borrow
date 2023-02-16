@@ -11,8 +11,8 @@ import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
+  getSlippage,
   isAllowanceNeeded,
-  IStrategyConfig,
   ManageTokenInput,
   ProxyType,
 } from 'features/aave/common'
@@ -40,7 +40,6 @@ type ActorFromTransactionParametersStateMachine =
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorFromTransactionParametersStateMachine
-  strategyConfig: IStrategyConfig
   positionId: PositionId
   proxyAddress?: string
   ownerAddress?: string
@@ -254,6 +253,10 @@ export function createManageAaveStateMachine(
                   target: 'reviewingClosing',
                   actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
                 },
+                USE_SLIPPAGE: {
+                  target: ['#manageAaveStateMachine.background.debouncingManage'],
+                  actions: 'updateContext',
+                },
               },
             },
             manageDebt: {
@@ -277,6 +280,10 @@ export function createManageAaveStateMachine(
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
                   actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+                USE_SLIPPAGE: {
+                  target: ['#manageAaveStateMachine.background.debouncingManage'],
+                  actions: 'updateContext',
                 },
               },
             },
@@ -327,7 +334,13 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
-              entry: ['closePositionEvent'],
+              entry: [
+                'closePositionEvent',
+                'reset',
+                // 'killCurrentParametersMachine', -> including this breaks machine when selecting close from drop-down
+                'spawnCloseParametersMachine',
+                'requestParameters',
+              ],
               on: {
                 NEXT_STEP: {
                   cond: 'validClosingTransactionParameters',
@@ -459,6 +472,10 @@ export function createManageAaveStateMachine(
           target: '#manageAaveStateMachine.background.debouncingManage',
           actions: ['updateTokenActionValue'],
         },
+        USE_SLIPPAGE: {
+          target: ['background.debouncing'],
+          actions: 'updateContext',
+        },
       },
     },
     {
@@ -552,7 +569,7 @@ export function createManageAaveStateMachine(
               proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
               context: context.web3Context!,
-              slippage: context.userSettings!.slippage,
+              slippage: getSlippage(context),
               currentPosition: context.currentPosition!,
               manageTokenInput: context.manageTokenInput,
               proxyType: context.positionCreatedBy,
@@ -574,7 +591,7 @@ export function createManageAaveStateMachine(
               parameters: {
                 proxyAddress: context.proxyAddress!,
                 context: context.web3Context!,
-                slippage: context.userSettings!.slippage,
+                slippage: getSlippage(context),
                 currentPosition: context.currentPosition!,
                 manageTokenInput: context.manageTokenInput,
                 proxyType: context.positionCreatedBy,

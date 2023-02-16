@@ -1,7 +1,9 @@
 import { IPosition, IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { transitionHasSwap } from 'actions/aave/oasisActionsLibWrapper'
-import BigNumber from 'bignumber.js'
+import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
+import { getSlippage, StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
@@ -27,31 +29,49 @@ type OpenAaveInformationContainerProps = {
         collateral: string
         deposit: string
       }
-      collateralPrice?: BigNumber
-      tokenPrice?: BigNumber
+      balance?: StrategyTokenBalance
       estimatedGasPrice?: HasGasEstimation
       transition?: IPositionTransition | ISimplePositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
+      strategyConfig: IStrategyConfig
+      getSlippageFrom: 'strategyConfig' | 'userSettings'
     }
   }
+  changeSlippageSource: (from: 'strategyConfig' | 'userSettings') => void
 }
 
-export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
+export function StrategyInformationContainer({
+  state,
+  changeSlippageSource,
+}: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
-  const { transition, currentPosition } = state.context
+  const { transition, currentPosition, balance } = state.context
 
   const simulationHasSwap =
     transitionHasSwap(transition) && transition?.simulation.swap?.toTokenAmount.gt(zero)
 
   return transition && currentPosition ? (
     <VaultChangesInformationContainer title={t('vault-changes.order-information')}>
-      {simulationHasSwap && (
-        <TransactionTokenAmount {...state.context} transactionParameters={transition} />
+      {simulationHasSwap && balance && (
+        <TransactionTokenAmount
+          {...state.context}
+          transactionParameters={transition}
+          balance={balance}
+        />
       )}
-      {simulationHasSwap && <PriceImpact {...state.context} transactionParameters={transition} />}
-      {simulationHasSwap && <SlippageInformation {...state.context.userSettings!} />}
+      {simulationHasSwap && balance && (
+        <PriceImpact {...state.context} transactionParameters={transition} balance={balance} />
+      )}
+      {simulationHasSwap && (
+        <SlippageInformation
+          slippage={getSlippage(state.context)}
+          isStrategyHasSlippage={state.context.strategyConfig.defaultSlippage !== undefined}
+          getSlippageFrom={state.context.getSlippageFrom}
+          changeSlippage={changeSlippageSource}
+        />
+      )}
       <MultiplyInformation
         {...state.context}
         transactionParameters={transition}

@@ -30,13 +30,18 @@ export function encodeArray(array: string[]): string {
   return ((ethAbi as unknown) as AbiCoder).encodeParameter('bytes[]', array)
 }
 
-export function amountToWei(amount: BigNumber, token: string): BigNumber {
-  const { precision } = getToken(token)
+type TokenOrPrecision = string | number
+
+export function amountToWei(amount: BigNumber, tokenOrPrecision: TokenOrPrecision): BigNumber {
+  const { precision } =
+    typeof tokenOrPrecision === 'string'
+      ? getToken(tokenOrPrecision)
+      : { precision: tokenOrPrecision }
   return amount.times(new BigNumber(10).pow(precision))
 }
 
-export function amountFromWei(amount: BigNumber, token: string): BigNumber {
-  const { precision } = getToken(token)
+export function amountFromWei(amount: BigNumber, token: TokenOrPrecision): BigNumber {
+  const { precision } = typeof token === 'string' ? getToken(token) : { precision: token }
   return amount.div(new BigNumber(10).pow(precision))
 }
 

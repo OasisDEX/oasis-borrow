@@ -9,7 +9,7 @@ import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v2/pipelines
 import { memoize } from 'lodash'
 import moment from 'moment'
 import { curry } from 'ramda'
-import { Observable, of } from 'rxjs'
+import { Observable } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { getAaveStEthYield, IStrategyConfig } from './common'
@@ -90,9 +90,8 @@ export function setupAaveV2Context(appContext: AppContext) {
     ),
   )
 
-  const tokenBalances$: Observable<TokenBalances | undefined> = context$.pipe(
+  const tokenBalances$: Observable<TokenBalances> = context$.pipe(
     switchMap(({ account }) => {
-      if (!account) return of(undefined)
       return aaveSupportedTokenBalances$(account)
     }),
   )

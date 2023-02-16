@@ -154,7 +154,7 @@ function BalanceAfterClose({ state, token }: ManageAaveStateProps & { token: str
   )
 }
 
-function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProps) {
+function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -162,7 +162,12 @@ function ManageAaveTransactionInProgressStateView({ state }: ManageAaveStateProp
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -258,7 +263,14 @@ function GetReviewingSidebarProps({
               {t('manage-earn.aave.vault-form.close-description', { closeToToken })}
             </Text>
             {closeToToken && <BalanceAfterClose state={state} send={send} token={closeToToken} />}
-            {closeToToken && <StrategyInformationContainer state={state} />}
+            {closeToToken && (
+              <StrategyInformationContainer
+                state={state}
+                changeSlippageSource={(from) => {
+                  send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+                }}
+              />
+            )}
           </Grid>
         ),
       }
@@ -313,7 +325,12 @@ function GetReviewingSidebarProps({
                 type="error"
               />
             )}
-            <StrategyInformationContainer state={state} />
+            <StrategyInformationContainer
+              state={state}
+              changeSlippageSource={(from) => {
+                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+              }}
+            />
           </Grid>
         ),
       }
@@ -373,7 +390,12 @@ function GetReviewingSidebarProps({
                 type="error"
               />
             )}
-            <StrategyInformationContainer state={state} />
+            <StrategyInformationContainer
+              state={state}
+              changeSlippageSource={(from) => {
+                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+              }}
+            />
           </Grid>
         ),
       }
@@ -385,7 +407,12 @@ function GetReviewingSidebarProps({
             <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {t('manage-earn.aave.vault-form.adjust-description')}
             </Text>
-            <StrategyInformationContainer state={state} />
+            <StrategyInformationContainer
+              state={state}
+              changeSlippageSource={(from) => {
+                send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+              }}
+            />
           </Grid>
         ),
       }
@@ -444,7 +471,7 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessAdjustPositionStateView({ state }: ManageAaveStateProps) {
+function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -456,7 +483,12 @@ function ManageAaveSuccessAdjustPositionStateView({ state }: ManageAaveStateProp
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -468,7 +500,7 @@ function ManageAaveSuccessAdjustPositionStateView({ state }: ManageAaveStateProp
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps) {
+function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -480,7 +512,12 @@ function ManageAaveSuccessClosePositionStateView({ state }: ManageAaveStateProps
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {

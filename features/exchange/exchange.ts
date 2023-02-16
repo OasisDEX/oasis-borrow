@@ -71,25 +71,7 @@ export function getTokenMetaData(
   }
 }
 
-export const defaultExchangeProtocols = [
-  'UNISWAP_V3',
-  'PMM1',
-  'PMM2',
-  'PMM3',
-  'PMM4',
-  'UNISWAP_V2',
-  'SUSHI',
-  'CURVE',
-  'CURVE_V2',
-  'PSM',
-  'WSTETH',
-  'BALANCER',
-  'BALANCER_V2',
-  'BALANCER_V2_WRAPPER',
-  'ST_ETH',
-  'WETH',
-  'ROCKET_POOL',
-]
+export const defaultExchangeProtocols = []
 
 export function getQuote$(
   dai: TokenMetadata,

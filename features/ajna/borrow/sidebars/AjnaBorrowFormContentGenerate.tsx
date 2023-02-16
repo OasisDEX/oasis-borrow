@@ -4,6 +4,7 @@ import {
   AjnaBorrowFormFieldGenerate,
 } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
 import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
+import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
@@ -13,6 +14,7 @@ export function AjnaBorrowFormContentGenerate() {
       dispatch,
       state: { generateAmount },
     },
+    validation: { errors, warnings },
   } = useAjnaBorrowContext()
 
   return (
@@ -22,6 +24,8 @@ export function AjnaBorrowFormContentGenerate() {
       {generateAmount && (
         <>
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
+          <AjnaValidationMessages {...errors} />
+          <AjnaValidationMessages {...warnings} />
           <AjnaBorrowFormOrder />
         </>
       )}

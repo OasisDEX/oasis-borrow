@@ -51,6 +51,7 @@ export interface IStrategyConfig {
   type: ProductType
   protocol: LendingProtocol
   featureToggle?: Feature
+  defaultSlippage?: BigNumber
 }
 
 export type AaveHeaderProps = {
