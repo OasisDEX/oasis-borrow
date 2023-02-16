@@ -76,7 +76,6 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
               }}
             >
               {heading}
-              {'\u00A0'}
               <Icon
                 key="arrow"
                 name="arrow_right"
