@@ -15,7 +15,6 @@ export async function selectVaultsFollowedByAddress(
 
   return results
 }
-
 const usersWhoFollowVaultsSchema = z.object({
   vault_id: z.number(),
   vault_chain_id: z.number(),
@@ -23,6 +22,12 @@ const usersWhoFollowVaultsSchema = z.object({
 })
 
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
+  const protocolFromBody = req.body.protocol.toLowerCase()
+  const protocolValues = Object.values(Protocol).map((value) => value.toString());
+  if (!protocolValues.includes(protocolFromBody)) {
+    return res.status(418).json({ error: `Protocol ${protocolFromBody} is not supported` })
+  }
+  
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
