@@ -91,6 +91,12 @@
   "loading": "Loading",
   "following": "Following",
   "followed-vaults-limit": "Follow Limit Reached",
+  "safer": "Safer",
+  "riskier": "Riskier",
+  "max-ltv": "Max LTV",
+  "total-value-locked": "Total value locked",
+  "position-apy": "Position APY",
+  "build-your-position": "Build your position",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -1576,7 +1582,7 @@
       },
       "wstETHeth": {
         "title": "wstETH/ETH Aave",
-        "description": "Enter with ETH, and get up to 10x multiples on stETH staking rewards."
+        "description": "Enter with ETH, and get up to 9.99x Multiple on stETH staking rewards."
       },
       "stETHusdc": {
         "title": "Highest stETH multiple option",
@@ -2024,7 +2030,7 @@
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
-    "banner": "New on Oasis Earn: 10x multiple on stETH with Aave v3. Read more here",
+    "banner": "New: Earn up to 9.9x stETH Yield on Oasis Earn. Read more here",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",
@@ -2388,10 +2394,34 @@
           "intro": "Select the crypto asset you want to earn for lending your {{token}}"
         },
         "headline": {
-          "header": "Lend {{quoteToken}} against {{collateralToken}}"
+          "header": "Lend {{collateralToken}} against {{quoteToken}}"
         },
         "form": {
-          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
+          "max-ltv-to-lend-at": "Max LTV to lend at",
+          "max-lending-price": "Max {{quoteToken}}/{{collateralToken}} lending price"
+        },
+        "simulation": {
+          "header1": "Duration",
+          "header2": "Earnings after fees",
+          "header3": "Net value",
+          "rowlabel1": "Projected earnings per day",
+          "rowlabel2": "Projected earnings per 30d",
+          "rowlabel3": "Projected earnings for 1 year",
+          "footnote1": "*Past performance is not indicative of future results."
+        }
+      },
+      "common": {
+        "ajna-faq": "Ajna FAQ",
+        "form": {
+          "title": {
+            "setup": "Lending ETH against USDC"
+          }
+        },
+        "headline": {
+          "current-yield": "Current yield",
+          "90-day-avg": "90 Day Avg",
+          "current-market-price": "Current Market Price"
         }
       }
     },

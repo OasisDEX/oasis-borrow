@@ -5,31 +5,44 @@ import {
   getAjnaSidebarButtonsStatus,
   getAjnaSidebarPrimaryButtonActions,
 } from 'features/ajna/borrow/helpers'
-import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
-import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
+import { AjnaStatusStep } from 'features/ajna/common/types'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-interface AjnaBorrowFormContentProps {
+interface AjnaEarnFormContentProps {
   txHandler: () => void
   isAllowanceLoading: boolean
 }
 
-export function AjnaBorrowFormContent({
-  txHandler,
-  isAllowanceLoading,
-}: AjnaBorrowFormContentProps) {
+// TODO potentially could be extracted as wrapper for earn and borrow form contents
+export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
+    form: {
+      dispatch,
+      state: { dpmAddress, uiDropdown },
+      updateState,
+    },
+    position: { resolvedId, isSimulationLoading },
+    validation: { isFormValid },
+  } = useAjnaBorrowContext() // TODO use earn context when available
+  const {
     environment: { collateralToken, flow, product, quoteToken, isOwner },
-    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction },
+    steps: {
+      // currentStep,
+      editingStep,
+      setNextStep,
+      setStep,
+      isStepWithTransaction,
+    },
     tx: {
       isTxError,
       isTxSuccess,
@@ -39,15 +52,8 @@ export function AjnaBorrowFormContent({
       setTxDetails,
     },
   } = useAjnaProductContext()
-  const {
-    form: {
-      dispatch,
-      state: { dpmAddress, uiDropdown },
-      updateState,
-    },
-    position: { isSimulationLoading, resolvedId },
-    validation: { isFormValid },
-  } = useAjnaBorrowContext()
+
+  const currentStep = 'setup' as AjnaStatusStep
 
   const {
     isPrimaryButtonDisabled,
@@ -58,9 +64,9 @@ export function AjnaBorrowFormContent({
     currentStep,
     editingStep,
     isAllowanceLoading,
-    isFormValid,
     isOwner,
     isSimulationLoading,
+    isFormValid,
     isTxError,
     isTxInProgress,
     isTxStarted,
@@ -132,8 +138,7 @@ export function AjnaBorrowFormContent({
     content: (
       <Grid gap={3}>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
-        {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
-        {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
+        {currentStep === 'setup' && <AjnaEarnFormContentDeposit />}
         {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
       </Grid>
     ),
