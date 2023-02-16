@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import {
   getAjnaSidebarButtonsStatus,
   getAjnaSidebarPrimaryButtonActions,
@@ -9,7 +10,7 @@ import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaB
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -28,12 +29,7 @@ export function AjnaBorrowFormContent({
   const { walletAddress } = useAccount()
   const {
     environment: { collateralToken, flow, product, quoteToken, isOwner },
-    form: {
-      dispatch,
-      state: { dpmAddress, uiDropdown },
-      updateState,
-    },
-    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction, isStepValid },
+    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction },
     tx: {
       isTxError,
       isTxSuccess,
@@ -42,7 +38,15 @@ export function AjnaBorrowFormContent({
       isTxInProgress,
       setTxDetails,
     },
-    position: { id, isSimulationLoading },
+  } = useAjnaProductContext()
+  const {
+    form: {
+      dispatch,
+      state: { dpmAddress, uiDropdown },
+      updateState,
+    },
+    position: { isSimulationLoading, resolvedId },
+    validation: { isFormValid },
   } = useAjnaBorrowContext()
 
   const {
@@ -54,9 +58,9 @@ export function AjnaBorrowFormContent({
     currentStep,
     editingStep,
     isAllowanceLoading,
+    isFormValid,
     isOwner,
     isSimulationLoading,
-    isStepValid,
     isTxError,
     isTxInProgress,
     isTxStarted,
@@ -84,7 +88,7 @@ export function AjnaBorrowFormContent({
     currentStep,
     editingStep,
     flow,
-    id,
+    resolvedId,
     isTxSuccess,
     walletAddress,
   })

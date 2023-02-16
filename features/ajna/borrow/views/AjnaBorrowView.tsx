@@ -3,7 +3,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -16,9 +16,8 @@ export function AjnaBorrowView() {
   const { t } = useTranslation()
   const { contextIsLoaded, walletAddress } = useAccount()
   const {
-    environment: { collateralPrice, collateralToken, flow, owner, product, quotePrice, quoteToken },
-    position: { id },
-  } = useAjnaBorrowContext()
+    environment: { collateralPrice, collateralToken, flow, id, owner, product, quotePrice, quoteToken },
+  } = useAjnaProductContext()
 
   return (
     <Container variant="vaultPageContainerStatic">

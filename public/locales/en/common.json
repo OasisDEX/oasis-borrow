@@ -2378,7 +2378,7 @@
           "intro": "Select the crypto asset you want to earn for lending your {{token}}"
         },
         "headline": {
-          "header": "Lend {{quoteToken}} against {{collateralToken}}"
+          "header": "Lend {{collateralToken}} against {{quoteToken}}"
         },
         "form": {
           "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."

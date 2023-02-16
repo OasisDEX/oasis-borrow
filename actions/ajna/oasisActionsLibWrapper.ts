@@ -15,7 +15,7 @@ interface AjnaTxHandlerInput {
   collateralToken: string
   quoteToken: string
   context: Context
-  currentPosition: AjnaPosition
+  position: AjnaPosition
 }
 
 export async function getAjnaParameters({
@@ -24,7 +24,7 @@ export async function getAjnaParameters({
   collateralToken,
   quoteToken,
   context,
-  currentPosition,
+  position,
 }: AjnaTxHandlerInput & {
   rpcProvider: ethers.providers.Provider
 }): Promise<AjnaActionData> {
@@ -79,7 +79,7 @@ export async function getAjnaParameters({
           quoteAmount: generateAmount || zero,
           collateralAmount: depositAmount,
           price,
-          position: currentPosition,
+          position,
         },
         dependencies,
       )
@@ -93,7 +93,7 @@ export async function getAjnaParameters({
           ...commonPayload,
           quoteAmount: paybackAmount || zero,
           collateralAmount: withdrawAmount,
-          position: currentPosition,
+          position,
         },
         dependencies,
       )
@@ -108,7 +108,7 @@ export async function getAjnaParameters({
           quoteAmount: generateAmount,
           collateralAmount: depositAmount || zero,
           price,
-          position: currentPosition,
+          position,
         },
         dependencies,
       )
@@ -122,7 +122,7 @@ export async function getAjnaParameters({
           ...commonPayload,
           quoteAmount: paybackAmount,
           collateralAmount: withdrawAmount || zero,
-          position: currentPosition,
+          position,
         },
         dependencies,
       )

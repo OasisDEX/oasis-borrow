@@ -1,12 +1,13 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
+import { AjnaBorrowContextProvider } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
 import { steps } from 'features/ajna/common/consts'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
-import { AjnaBorrowContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -118,27 +119,30 @@ export function AjnaProductController({
               >
                 {([ajnaPosition, [collateralBalance, quoteBalance, ethBalance], tokenPriceUSD]) =>
                   ajnaPosition ? (
-                    <AjnaBorrowContextProvider
+                    <AjnaProductContextProvider
                       collateralBalance={collateralBalance}
-                      ethBalance={ethBalance}
-                      collateralToken={ajnaPosition.meta.collateralToken}
                       collateralPrice={tokenPriceUSD[ajnaPosition.meta.collateralToken]}
+                      collateralToken={ajnaPosition.meta.collateralToken}
+                      {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
+                      ethBalance={ethBalance}
+                      ethPrice={tokenPriceUSD.ETH}
                       flow={flow}
-                      currentPosition={ajnaPosition.position}
                       id={id}
+                      owner={ajnaPosition.meta.user}
                       product={ajnaPosition.meta.product}
                       quoteBalance={quoteBalance}
-                      quoteToken={ajnaPosition.meta.quoteToken}
                       quotePrice={tokenPriceUSD[ajnaPosition.meta.quoteToken]}
-                      ethPrice={tokenPriceUSD.ETH}
+                      quoteToken={ajnaPosition.meta.quoteToken}
                       steps={steps[ajnaPosition.meta.product][flow]}
-                      owner={ajnaPosition.meta.user}
-                      {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
                     >
-                      {ajnaPosition.meta.product === 'borrow' && <AjnaBorrowView />}
-                    </AjnaBorrowContextProvider>
+                      {ajnaPosition.meta.product === 'borrow' && (
+                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
+                          <AjnaBorrowView />
+                        </AjnaBorrowContextProvider>
+                      )}
+                    </AjnaProductContextProvider>
                   ) : (
-                    <></>
+                    <>Earn UI placeholder</>
                   )
                 }
               </WithLoadingIndicator>

@@ -1,6 +1,7 @@
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -14,13 +15,15 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
 
   const {
     environment: { collateralToken, quoteToken },
-    position: { currentPosition, simulation, cachedPosition },
+  } = useAjnaProductContext()
+  const {
+    position: { cachedPosition, currentPosition },
   } = useAjnaBorrowContext()
 
-  const positionData = cached && cachedPosition ? cachedPosition.currentPosition : currentPosition
-  const simulationData = cached && cachedPosition ? cachedPosition.simulation : simulation?.position
+  const positionData = cached && cachedPosition ? cachedPosition.position : currentPosition.position
+  const simulationData = cached && cachedPosition ? cachedPosition.simulation : currentPosition.simulation
 
-  const isLoading = !cached && simulation === undefined
+  const isLoading = !cached && currentPosition.simulation === undefined
   const formatted = {
     collateralLocked: formatCryptoBalance(positionData.collateralAmount),
     debt: formatCryptoBalance(positionData.debtAmount),
