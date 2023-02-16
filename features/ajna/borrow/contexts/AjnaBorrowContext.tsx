@@ -79,7 +79,7 @@ export function AjnaBorrowContextProvider({
   } = useAjnaProductContext()
 
   const form = useAjnaBorrowFormReducto({
-    action: flow === 'open' ? 'open' : 'deposit',
+    action: flow === 'open' ? 'openBorrow' : 'depositBorrow',
   })
   const { positionIdFromDpmProxy$ } = useAppContext()
   const [positionIdFromDpmProxyData] = useObservable(

@@ -18,14 +18,14 @@ export function isBorrowFormValid({
     case 'setup':
     case 'manage':
       switch (action) {
-        case 'open':
-        case 'deposit':
+        case 'openBorrow':
+        case 'depositBorrow':
           return !!depositAmount?.gt(0)
-        case 'withdraw':
+        case 'withdrawBorrow':
           return !!withdrawAmount?.gt(0)
-        case 'generate':
+        case 'generateBorrow':
           return !!generateAmount?.gt(0)
-        case 'payback':
+        case 'paybackBorrow':
           return !!paybackAmount?.gt(0)
         default:
           return false

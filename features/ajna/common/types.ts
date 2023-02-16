@@ -4,8 +4,10 @@ import { Context } from 'blockchain/network'
 export type AjnaProduct = 'borrow' | 'earn' | 'multiply'
 export type AjnaFlow = 'open' | 'manage'
 
-export type AjnaBorrowAction = 'open' | 'deposit' | 'withdraw' | 'generate' | 'payback'
+export type AjnaBorrowAction = 'openBorrow' | 'depositBorrow' | 'withdrawBorrow' | 'generateBorrow' | 'paybackBorrow'
 export type AjnaBorrowPanel = 'collateral' | 'quote'
+
+export type AjnaEarnAction = 'openEarn' | 'depositEarn' | 'withdrawEarn'
 
 export type AjnaStatusStep = 'risk' | 'setup' | 'manage' | 'dpm' | 'transaction'
 

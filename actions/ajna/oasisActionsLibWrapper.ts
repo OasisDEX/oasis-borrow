@@ -56,7 +56,7 @@ export async function getAjnaParameters({
   const price = new BigNumber(16821273)
 
   switch (action) {
-    case 'open':
+    case 'openBorrow':
       if (!depositAmount) {
         return defaultPromise
       }
@@ -69,7 +69,7 @@ export async function getAjnaParameters({
         },
         dependencies,
       )
-    case 'deposit': {
+    case 'depositBorrow': {
       if (!depositAmount) {
         return defaultPromise
       }
@@ -84,7 +84,7 @@ export async function getAjnaParameters({
         dependencies,
       )
     }
-    case 'withdraw': {
+    case 'withdrawBorrow': {
       if (!withdrawAmount) {
         return defaultPromise
       }
@@ -98,7 +98,7 @@ export async function getAjnaParameters({
         dependencies,
       )
     }
-    case 'generate': {
+    case 'generateBorrow': {
       if (!generateAmount) {
         return defaultPromise
       }
@@ -113,7 +113,7 @@ export async function getAjnaParameters({
         dependencies,
       )
     }
-    case 'payback': {
+    case 'paybackBorrow': {
       if (!paybackAmount) {
         return defaultPromise
       }

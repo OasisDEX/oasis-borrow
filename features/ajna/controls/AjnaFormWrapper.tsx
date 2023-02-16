@@ -51,12 +51,12 @@ export function AjnaFormWrapper({
 
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),
-    token: ['open', 'deposit', 'withdraw'].includes(action as string)
+    token: ['openBorrow', 'depositBorrow', 'withdrawBorrow'].includes(action as string)
       ? collateralToken
       : quoteToken,
-    amount: ['open', 'deposit'].includes(action as string)
+    amount: ['openBorrow', 'depositBorrow'].includes(action as string)
       ? depositAmount
-      : action === 'payback'
+      : action === 'paybackBorrow'
       ? paybackAmount
       : zero,
     onEverythingReady: () => setNextStep(),

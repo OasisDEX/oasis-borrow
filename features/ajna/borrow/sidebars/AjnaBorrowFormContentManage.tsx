@@ -25,21 +25,21 @@ export function AjnaBorrowFormContentManage() {
           ? {
               items: [
                 {
-                  id: 'deposit',
+                  id: 'depositBorrow',
                   label: t('vault-actions.deposit'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'deposit')
-                    updateState('action', 'deposit')
+                    updateState('uiPill', 'depositBorrow')
+                    updateState('action', 'depositBorrow')
                   },
                 },
                 {
-                  id: 'withdraw',
+                  id: 'withdrawBorrow',
                   label: t('vault-actions.withdraw'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'withdraw')
-                    updateState('action', 'withdraw')
+                    updateState('uiPill', 'withdrawBorrow')
+                    updateState('action', 'withdrawBorrow')
                   },
                 },
               ],
@@ -47,21 +47,21 @@ export function AjnaBorrowFormContentManage() {
           : {
               items: [
                 {
-                  id: 'generate',
+                  id: 'generateBorrow',
                   label: t('vault-actions.generate'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'generate')
-                    updateState('action', 'generate')
+                    updateState('uiPill', 'generateBorrow')
+                    updateState('action', 'generateBorrow')
                   },
                 },
                 {
-                  id: 'payback',
+                  id: 'paybackAmount',
                   label: t('vault-actions.payback'),
                   action: () => {
                     dispatch({ type: 'reset' })
-                    updateState('uiPill', 'payback')
-                    updateState('action', 'payback')
+                    updateState('uiPill', 'paybackBorrow')
+                    updateState('action', 'paybackBorrow')
                   },
                 },
               ],
@@ -69,10 +69,10 @@ export function AjnaBorrowFormContentManage() {
       />
       {
         {
-          deposit: <AjnaBorrowFormContentDeposit />,
-          withdraw: <AjnaBorrowFormContentWithdraw />,
-          generate: <AjnaBorrowFormContentGenerate />,
-          payback: <AjnaBorrowFormContentPayback />,
+          depositBorrow: <AjnaBorrowFormContentDeposit />,
+          withdrawBorrow: <AjnaBorrowFormContentWithdraw />,
+          generateBorrow: <AjnaBorrowFormContentGenerate />,
+          paybackBorrow: <AjnaBorrowFormContentPayback />,
         }[uiPill]
       }
     </>

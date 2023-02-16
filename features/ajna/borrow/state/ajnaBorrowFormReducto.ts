@@ -15,18 +15,13 @@ export interface AjnaBorrowFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   uiDropdown: AjnaBorrowPanel
-  uiPill: Exclude<AjnaBorrowAction, 'open'>
+  uiPill: Exclude<AjnaBorrowAction, 'openBorrow'>
 }
 
 interface AjnaBorrowFormActionsUpdateDeposit {
   type: 'update-deposit'
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-}
-interface AjnaBorrowFormActionsUpdateWithdraw {
-  type: 'update-withdraw'
-  withdrawAmount?: BigNumber
-  withdrawAmountUSD?: BigNumber
 }
 interface AjnaBorrowFormActionsUpdateGenerate {
   type: 'update-generate'
@@ -38,6 +33,11 @@ interface AjnaBorrowFormActionsUpdatePayback {
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdateWithdraw {
+  type: 'update-withdraw'
+  withdrawAmount?: BigNumber
+  withdrawAmountUSD?: BigNumber
+}
 interface AjnaBorrowFormActionsReset {
   type: 'reset'
 }
@@ -45,9 +45,9 @@ interface AjnaBorrowFormActionsReset {
 export type AjnaBorrowFormAction = ReductoActions<
   AjnaBorrowFormState,
   | AjnaBorrowFormActionsUpdateDeposit
-  | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsUpdateGenerate
   | AjnaBorrowFormActionsUpdatePayback
+  | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsReset
 >
 
@@ -66,7 +66,7 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   ...ajnaBorrowReset,
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'collateral',
-  uiPill: 'deposit',
+  uiPill: 'depositBorrow',
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
@@ -83,12 +83,6 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             depositAmount: action.depositAmount,
             depositAmountUSD: action.depositAmountUSD,
           }
-        case 'update-withdraw':
-          return {
-            ...state,
-            withdrawAmount: action.withdrawAmount,
-            withdrawAmountUSD: action.withdrawAmountUSD,
-          }
         case 'update-generate':
           return {
             ...state,
@@ -100,6 +94,12 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             ...state,
             paybackAmount: action.paybackAmount,
             paybackAmountUSD: action.paybackAmountUSD,
+          }
+        case 'update-withdraw':
+          return {
+            ...state,
+            withdrawAmount: action.withdrawAmount,
+            withdrawAmountUSD: action.withdrawAmountUSD,
           }
         case 'reset':
           return { ...state, ...ajnaBorrowReset }

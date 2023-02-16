@@ -110,7 +110,7 @@ export function AjnaBorrowFormContent({
             action: () => {
               dispatch({ type: 'reset' })
               updateState('uiDropdown', 'collateral')
-              updateState('uiPill', 'deposit')
+              updateState('uiPill', 'depositBorrow')
             },
           },
           {
@@ -123,7 +123,7 @@ export function AjnaBorrowFormContent({
             action: () => {
               dispatch({ type: 'reset' })
               updateState('uiDropdown', 'quote')
-              updateState('uiPill', 'generate')
+              updateState('uiPill', 'generateBorrow')
             },
           },
         ],
