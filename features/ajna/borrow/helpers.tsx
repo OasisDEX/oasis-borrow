@@ -32,9 +32,9 @@ export function getAjnaSidebarButtonsStatus({
   currentStep,
   editingStep,
   isAllowanceLoading,
+  isFormValid,
   isOwner,
   isSimulationLoading,
-  isStepValid,
   isTxError,
   isTxInProgress,
   isTxStarted,
@@ -44,9 +44,9 @@ export function getAjnaSidebarButtonsStatus({
   currentStep: AjnaStatusStep
   editingStep: AjnaEditingStep
   isAllowanceLoading: boolean
+  isFormValid: boolean
   isOwner: boolean
   isSimulationLoading?: boolean
-  isStepValid: boolean
   isTxError: boolean
   isTxInProgress: boolean
   isTxStarted: boolean
@@ -55,7 +55,7 @@ export function getAjnaSidebarButtonsStatus({
 }) {
   const isPrimaryButtonDisabled =
     !!walletAddress &&
-    (!isStepValid ||
+    (!isFormValid ||
       isAllowanceLoading ||
       isSimulationLoading ||
       isTxInProgress ||
@@ -81,7 +81,7 @@ export function getAjnaSidebarPrimaryButtonActions({
   defaultAction,
   editingStep,
   flow,
-  id,
+  resolvedId,
   isTxSuccess,
   walletAddress,
 }: {
@@ -89,7 +89,7 @@ export function getAjnaSidebarPrimaryButtonActions({
   defaultAction: () => void
   editingStep: string
   flow: AjnaFlow
-  id?: string
+  resolvedId?: string
   isTxSuccess: boolean
   walletAddress?: string
 }) {
@@ -97,7 +97,7 @@ export function getAjnaSidebarPrimaryButtonActions({
     case !walletAddress && currentStep === editingStep:
       return { url: '/connect' }
     case isTxSuccess && flow === 'open':
-      return { url: `/ajna/position/${id}` }
+      return { url: `/ajna/position/${resolvedId}` }
     default:
       return { action: defaultAction }
   }

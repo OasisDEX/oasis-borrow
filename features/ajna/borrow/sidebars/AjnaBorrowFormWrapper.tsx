@@ -1,8 +1,9 @@
 import { FlowSidebar } from 'components/FlowSidebar'
 import { ethers } from 'ethers'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
 import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
@@ -12,12 +13,15 @@ export function AjnaBorrowFormWrapper() {
   const { walletAddress } = useAccount()
   const {
     environment: { dpmProxy, collateralToken, quoteToken },
+    steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
+  } = useAjnaProductContext()
+  const {
     form: {
       state: { action, depositAmount, paybackAmount },
       updateState,
     },
-    steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
   } = useAjnaBorrowContext()
+
   const txHandler = useAjnaTxHandler()
 
   const flowState = useFlowState({
