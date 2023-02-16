@@ -8,6 +8,7 @@ import { steps } from 'features/ajna/common/consts'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnView } from 'features/ajna/earn/views/AjnaEarnView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -138,6 +139,11 @@ export function AjnaProductController({
                       {ajnaPosition.meta.product === 'borrow' && (
                         <AjnaBorrowContextProvider position={ajnaPosition.position}>
                           <AjnaBorrowView />
+                        </AjnaBorrowContextProvider>
+                      )}
+                      {ajnaPosition.meta.product === 'earn' && (
+                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
+                          <AjnaEarnView />
                         </AjnaBorrowContextProvider>
                       )}
                     </AjnaProductContextProvider>

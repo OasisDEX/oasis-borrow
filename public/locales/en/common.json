@@ -91,6 +91,12 @@
   "loading": "Loading",
   "following": "Following",
   "followed-vaults-limit": "Follow Limit Reached",
+  "safer": "Safer",
+  "riskier": "Riskier",
+  "max-ltv": "Max LTV",
+  "total-value-locked": "Total value locked",
+  "position-apy": "Position APY",
+  "build-your-position": "Build your position",
   "contact": {
     "description": "Send us feedback, questions, or suggestions or below.",
     "label": {
@@ -2411,7 +2417,31 @@
           "header": "Lend {{collateralToken}} against {{quoteToken}}"
         },
         "form": {
-          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
+          "max-ltv-to-lend-at": "Max LTV to lend at",
+          "max-lending-price": "Max {{quoteToken}}/{{collateralToken}} lending price"
+        },
+        "simulation": {
+          "header1": "Duration",
+          "header2": "Earnings after fees",
+          "header3": "Net value",
+          "rowlabel1": "Projected earnings per day",
+          "rowlabel2": "Projected earnings per 30d",
+          "rowlabel3": "Projected earnings for 1 year",
+          "footnote1": "*Past performance is not indicative of future results."
+        }
+      },
+      "common": {
+        "ajna-faq": "Ajna FAQ",
+        "form": {
+          "title": {
+            "setup": "Lending ETH against USDC"
+          }
+        },
+        "headline": {
+          "current-yield": "Current yield",
+          "90-day-avg": "90 Day Avg",
+          "current-market-price": "Current Market Price"
         }
       }
     },

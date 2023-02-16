@@ -42,7 +42,7 @@ interface AjnaBorrowFormActionsReset {
   type: 'reset'
 }
 
-type AjnaBorrowFormAction = ReductoActions<
+export type AjnaBorrowFormAction = ReductoActions<
   AjnaBorrowFormState,
   | AjnaBorrowFormActionsUpdateDeposit
   | AjnaBorrowFormActionsUpdateWithdraw
