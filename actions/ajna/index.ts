@@ -1,2 +1,2 @@
 export * from './oasisActionsLibWrapper'
-export type { AjnaTxData, AjnaActionData } from './types'
+export type { AjnaTxData, AjnaActionData, AjnaSimulationData } from './types'

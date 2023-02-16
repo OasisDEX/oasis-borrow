@@ -29,26 +29,26 @@ export function AjnaBorrowOverviewWrapper() {
               collateralToken={collateralToken}
               quoteToken={quoteToken}
               liquidationPrice={currentPosition.liquidationPrice}
-              afterLiquidationPrice={simulation?.liquidationPrice}
+              afterLiquidationPrice={simulation?.position.liquidationPrice}
               belowCurrentPrice={collateralPrice
                 .minus(currentPosition.liquidationPrice)
                 .dividedBy(collateralPrice)}
             />
             <ContentCardLoanToValue
               loanToValue={currentPosition.riskRatio.loanToValue}
-              afterLoanToValue={simulation?.riskRatio.loanToValue}
+              afterLoanToValue={simulation?.position.riskRatio.loanToValue}
             />
             <ContentCardCollateralLocked
               collateralToken={collateralToken}
               collateralLocked={currentPosition.collateralAmount}
               collateralLockedUSD={currentPosition.collateralAmount.times(collateralPrice)}
-              afterCollateralLocked={simulation?.collateralAmount}
+              afterCollateralLocked={simulation?.position.collateralAmount}
             />
             <ContentCardPositionDebt
               quoteToken={quoteToken}
               positionDebt={currentPosition.debtAmount}
               positionDebtUSD={currentPosition.debtAmount.times(quotePrice)}
-              afterPositionDebt={simulation?.debtAmount}
+              afterPositionDebt={simulation?.position.debtAmount}
             />
           </DetailsSectionContentCardWrapper>
         }
@@ -59,9 +59,9 @@ export function AjnaBorrowOverviewWrapper() {
               quoteToken={quoteToken}
               cost={currentPosition.pool.rate}
               availableToBorrow={currentPosition.debtAvailable}
-              afterAvailableToBorrow={simulation?.debtAvailable}
+              afterAvailableToBorrow={simulation?.position.debtAvailable}
               availableToWithdraw={currentPosition.collateralAvailable}
-              afterAvailableToWithdraw={simulation?.collateralAvailable}
+              afterAvailableToWithdraw={simulation?.position.collateralAvailable}
             />
           </DetailsSectionFooterItemWrapper>
         }
