@@ -1,6 +1,7 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useTheme } from 'theme/useThemeUI'
 import { v4 as uuid } from 'uuid'
@@ -45,6 +46,7 @@ export function PageSEOTags({
   twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
   const { t } = useTranslation()
+  const { query } = useRouter()
 
   const OGImages = {
     '/borrow': {
@@ -64,9 +66,14 @@ export function PageSEOTags({
     twitterImage,
   }
 
+  const networkParameter = query.network as string
+
   return (
     <Head>
-      <title>{titleParams ? t(title, titleParams) : t(title)}</title>
+      <title>
+        {networkParameter ? { hardhat: '👷 ', goerli: '🌲 ' }[networkParameter] : ''}
+        {titleParams ? t(title, titleParams) : t(title)}
+      </title>
       <meta property="og:title" content={t(title)} />
       <meta property="twitter:title" content={t(title)} />
 

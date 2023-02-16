@@ -124,12 +124,13 @@ export function AaveOpenView({ config }: { config: IStrategyConfig }) {
       <PageSEOTags
         title="seo.title-product-w-tokens"
         titleParams={{
-          product: t('seo.multiply.title'),
+          product: t(`seo.${config.type.toLocaleLowerCase()}.title`),
+          protocol: config.protocol,
           token1: config.tokens.collateral,
           token2: config.tokens.debt,
         }}
         description="seo.multiply.description"
-        url="/multiply"
+        url={`/${config.type.toLocaleLowerCase()}`}
       />
       <AaveOpenContainer aaveStateMachine={aaveStateMachine} config={config} />
     </>
