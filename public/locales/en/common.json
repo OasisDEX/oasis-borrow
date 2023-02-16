@@ -2021,7 +2021,7 @@
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
-    "banner": "We've launched Multiply for Aave. Read more here",
+    "banner": "New on Oasis Earn: 10x multiple on stETH with Aave v3. Read more here",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",

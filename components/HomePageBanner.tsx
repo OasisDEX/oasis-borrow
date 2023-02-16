@@ -21,7 +21,7 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
         marginBottom: 0,
         overflow: 'hidden',
         borderRadius: '50px',
-        maxWidth: ['310px', '440px'],
+        maxWidth: ['353px', '440px'],
         p: '3px 8px 3px 4px',
         '&:hover': {
           opacity: '80%',
@@ -69,22 +69,14 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
           >
             <Text
               variant="text.paragraph3"
-              sx={{ zIndex: 1, fontWeight: 'semiBold', wordBreak: 'normal' }}
+              sx={{
+                zIndex: 1,
+                fontWeight: 'semiBold',
+                wordBreak: 'normal',
+              }}
             >
-              {`${heading.split('.')[0]}.`}
-            </Text>
-            <Flex>
-              <Text
-                variant="text.paragraph3"
-                sx={{
-                  zIndex: 1,
-                  fontWeight: 'semiBold',
-                  wordBreak: 'normal',
-                  whiteSpace: [null, 'pre'],
-                }}
-              >
-                {` ${heading.split('.')[1]}`}
-              </Text>
+              {heading}
+              {'\u00A0'}
               <Icon
                 key="arrow"
                 name="arrow_right"
@@ -92,12 +84,14 @@ export function HomePageBanner({ heading, link }: HomePageBannerProps) {
                 sx={{
                   position: 'relative',
                   ml: '4px',
+                  top: '0.35em',
+                  left: '0.3em',
                   transition: '0.2s',
                   color: 'black',
                   pr: 2,
                 }}
               />
-            </Flex>
+            </Text>
           </Flex>
         </Flex>
       </AppLink>
