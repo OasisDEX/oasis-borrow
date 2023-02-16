@@ -175,9 +175,6 @@ export function createManageAaveStateMachine(
             CLOSE_POSITION: {
               target: '.loading',
             },
-            ADJUST_POSITION: {
-              target: '.loading',
-            },
           },
         },
         frontend: {
@@ -330,7 +327,13 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
-              entry: ['closePositionEvent'],
+              entry: [
+                'closePositionEvent',
+                'reset',
+                // 'killCurrentParametersMachine', -> including this breaks machine when selecting close from drop-down
+                'spawnCloseParametersMachine',
+                'requestParameters',
+              ],
               on: {
                 NEXT_STEP: {
                   cond: 'validClosingTransactionParameters',
@@ -559,6 +562,7 @@ export function createManageAaveStateMachine(
               currentPosition: context.currentPosition!,
               manageTokenInput: context.manageTokenInput,
               proxyType: context.positionCreatedBy,
+              protocol: context.strategyConfig.protocol,
               shouldCloseToCollateral:
                 context.manageTokenInput?.closingToken === context.tokens.collateral,
               positionType: context.strategyConfig.type,
@@ -567,7 +571,9 @@ export function createManageAaveStateMachine(
           { to: (context) => context.refParametersMachine! },
         ),
         requestManageParameters: send(
-          (context): TransactionParametersStateMachineEvent<ManageAaveParameters> => {
+          (
+            context,
+          ): TransactionParametersStateMachineEvent<ManageAaveParameters | CloseAaveParameters> => {
             const { token, amount } = getTxTokenAndAmount(context)
             return {
               type: 'VARIABLES_RECEIVED',
@@ -580,6 +586,7 @@ export function createManageAaveStateMachine(
                 proxyType: context.positionCreatedBy,
                 token,
                 amount,
+                protocol: context.strategyConfig.protocol,
                 shouldCloseToCollateral:
                   context.manageTokenInput?.closingToken === context.tokens.collateral,
               },

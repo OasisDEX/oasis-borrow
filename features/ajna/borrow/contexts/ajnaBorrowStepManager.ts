@@ -1,11 +1,19 @@
+import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { GeneralStepManager } from 'features/ajna/contexts/ajnaStepManager'
 
 interface StepManagerWithBorrowForm extends GeneralStepManager {
   formState: AjnaBorrowFormState
+  errors?: ValidationMessagesInput
 }
 
-export function isBorrowStepValid({ currentStep, formState }: StepManagerWithBorrowForm) {
+export function isBorrowStepValid({ currentStep, formState, errors }: StepManagerWithBorrowForm) {
+  const isError = !!errors?.messages.length
+
+  if (isError) {
+    return false
+  }
+
   switch (currentStep) {
     case 'setup':
     case 'manage':

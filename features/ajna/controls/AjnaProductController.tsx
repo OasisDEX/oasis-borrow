@@ -71,7 +71,7 @@ export function AjnaProductController({
       () =>
         ajnaPositionData?.meta.collateralToken && ajnaPositionData?.meta.quoteToken
           ? balancesInfoArray$(
-              [ajnaPositionData.meta.collateralToken, ajnaPositionData.meta.quoteToken],
+              [ajnaPositionData.meta.collateralToken, ajnaPositionData.meta.quoteToken, 'ETH'],
               walletAddress || '',
             )
           : EMPTY,
@@ -116,10 +116,11 @@ export function AjnaProductController({
                   />
                 }
               >
-                {([ajnaPosition, [collateralBalance, quoteBalance], tokenPriceUSD]) =>
+                {([ajnaPosition, [collateralBalance, quoteBalance, ethBalance], tokenPriceUSD]) =>
                   ajnaPosition ? (
                     <AjnaBorrowContextProvider
                       collateralBalance={collateralBalance}
+                      ethBalance={ethBalance}
                       collateralToken={ajnaPosition.meta.collateralToken}
                       collateralPrice={tokenPriceUSD[ajnaPosition.meta.collateralToken]}
                       flow={flow}

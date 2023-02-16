@@ -1,3 +1,4 @@
+import { TxStatus } from '@oasisdex/transactions'
 import { AjnaActionData, AjnaTxData, getAjnaParameters } from 'actions/ajna'
 import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -24,10 +25,17 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    form: { state },
+    form: { dispatch, state },
     tx: { setTxDetails },
     environment: { collateralToken, quoteToken, ethPrice },
-    position: { currentPosition, setSimulation, setIsLoadingSimulation },
+    position: {
+      currentPosition,
+      setCachedPosition,
+      setIsLoadingSimulation,
+      setSimulation,
+      simulation,
+    },
+    steps: { isExternalStep },
   } = useAjnaBorrowContext()
 
   const [txData, setTxData] = useState<AjnaTxData>()
@@ -53,7 +61,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   ])
   useDebouncedEffect(
     () => {
-      if (context) {
+      if (context && !isExternalStep) {
         const promise = cancelable(
           getAjnaParameters({
             rpcProvider: context.rpcProvider,
@@ -68,8 +76,8 @@ export function useAjnaTxHandler(): AjnaTxHandler {
 
         promise
           .then((data) => {
-            setTxData(data?.tx)
-            setSimulation(data?.simulation?.targetPosition)
+            setTxData(data.tx)
+            setSimulation(data.simulation)
             setIsLoadingSimulation(false)
             uiChanges.publish(TX_DATA_CHANGE, {
               type: 'tx-data',
@@ -94,6 +102,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       generateAmount?.toString(),
       paybackAmount?.toString(),
       withdrawAmount?.toString(),
+      isExternalStep,
     ],
     250,
   )
@@ -110,5 +119,13 @@ export function useAjnaTxHandler(): AjnaTxHandler {
         ...txData,
       })
       .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-      .subscribe((txState) => handleTransaction({ txState, ethPrice, setTxDetails }))
+      .subscribe((txState) => {
+        if (txState.status === TxStatus.WaitingForConfirmation)
+          setCachedPosition({
+            currentPosition,
+            simulation: simulation?.position,
+          })
+        if (txState.status === TxStatus.Success) dispatch({ type: 'reset' })
+        handleTransaction({ txState, ethPrice, setTxDetails })
+      })
 }

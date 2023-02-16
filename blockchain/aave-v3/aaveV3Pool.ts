@@ -94,7 +94,7 @@ export const getEModeCategoryData: CallDef<
     return {
       ltv: new BigNumber(result.ltv.toString()).div(10000),
       liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000),
-      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).div(10000),
+      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10100 -> 100 -> -> 0.01
     }
   },
 }

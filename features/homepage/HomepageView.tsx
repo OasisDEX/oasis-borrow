@@ -12,6 +12,7 @@ import {
 } from 'components/productCards/ProductCardsContainer'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
+import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
@@ -24,8 +25,6 @@ import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
-
-import { NewsletterSection } from '../newsletter/NewsletterView'
 
 interface PillProps {
   label: string
@@ -123,6 +122,7 @@ export function HomepageView() {
 
   const referralsEnabled = useFeatureToggle('Referrals')
   const notificationsEnabled = useFeatureToggle('Notifications')
+  const aaveV3EarnWSTETHEnabled = useFeatureToggle('AaveV3EarnWSTETH')
   const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
@@ -152,18 +152,21 @@ export function HomepageView() {
         animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
       }}
     >
-      <Flex
-        sx={{
-          justifyContent: 'center',
-          mt: '80px',
-          mb: 0,
-        }}
-      >
-        <HomePageBanner
-          heading={t('ref.banner')}
-          link="https://blog.oasis.app/introducing-oasis-multiply-for-aave/"
-        />
-      </Flex>
+      {aaveV3EarnWSTETHEnabled && (
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            mt: '80px',
+            mb: 0,
+          }}
+        >
+          <HomePageBanner
+            heading={t('ref.banner')}
+            link="https://blog.oasis.app/expanding-earn-with-aave-v3/"
+          />
+        </Flex>
+      )}
+
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}

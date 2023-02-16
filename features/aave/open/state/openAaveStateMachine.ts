@@ -196,10 +196,19 @@ export function createOpenAaveStateMachine(
             editing: {
               entry: ['resetCurrentStep', 'setTotalSteps', 'calculateEffectiveProxyAddress'],
               on: {
-                SET_AMOUNT: {
-                  target: '#openAaveStateMachine.background.debouncing',
-                  actions: ['setAmount', 'calculateAuxiliaryAmount'],
-                },
+                SET_AMOUNT: [
+                  {
+                    target: '#openAaveStateMachine.background.debouncing',
+                    // only call library greater-than-zero amount
+                    cond: 'userInputtedAmountGreaterThanZero',
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                  // fall through to this next one if the amount is zero
+                  // (e.g. user is halfway through typing  "0.002")
+                  {
+                    actions: ['setAmount', 'calculateAuxiliaryAmount'],
+                  },
+                ],
                 SET_RISK_RATIO: {
                   target: '#openAaveStateMachine.background.debouncing',
                   actions: 'setRiskRatio',
@@ -420,6 +429,9 @@ export function createOpenAaveStateMachine(
     },
     {
       guards: {
+        userInputtedAmountGreaterThanZero: (context, event) => {
+          return !!(event.amount && event.amount.gt(0))
+        },
         shouldCreateDpmProxy: (context) =>
           context.strategyConfig.proxyType === ProxyType.DpmProxy && !context.userDpmAccount,
         shouldCreateDsProxy: (context) =>
@@ -487,7 +499,7 @@ export function createOpenAaveStateMachine(
             ...context.userInput,
             amount: event.amount,
           },
-          strategy: event.amount ? context.transition : undefined,
+          strategy: event.amount && event.amount.gt(zero) ? context.transition : undefined,
         })),
         calculateAuxiliaryAmount: assign((context) => {
           return {
@@ -653,10 +665,23 @@ export function createOpenAaveStateMachine(
           }
         }),
         setFallbackTokenPrice: assign((context, event) => {
+          // fallback if we don't have the tokenPrice - happens if no
+          // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
+          let fallbackPrice: BigNumber
+          switch (true) {
+            case context.tokens.deposit === context.tokens.collateral:
+              fallbackPrice = event.collateralPrice
+              break
+            case context.tokens.deposit === context.tokens.debt:
+              fallbackPrice = event.debtPrice
+              break
+            default:
+              throw new Error(
+                `could not set fallback price for deposit token ${context.tokens.deposit}`,
+              )
+          }
           return {
-            // fallback if we don't have the tokenPrice - happens if no
-            // wallet is connected (tokenBalance and tokenPrice are updated in SET_BALANCE)
-            tokenPrice: context.tokenPrice ? context.tokenPrice : event.collateralPrice,
+            tokenPrice: context.tokenPrice ? context.tokenPrice : fallbackPrice,
           }
         }),
         resetWalletValues: assign((context) => {

@@ -18,9 +18,10 @@ export function ViewPositionSectionComponent({
   aaveProtocolData,
   strategyConfig,
 }: ViewPositionSectionComponentProps) {
-  const { oraclePrice, position } = aaveProtocolData!
+  const { position } = aaveProtocolData!
 
   const simulations = useSimulationYields({
+    amount: position?.collateral.amount,
     riskRatio: position?.riskRatio,
     fields: ['7Days'],
     strategy: strategyConfig,
@@ -30,7 +31,6 @@ export function ViewPositionSectionComponent({
     <PositionInfoComponent
       aaveReserveDataDebtToken={aaveReserveDataDebtToken}
       apy={simulations?.apy}
-      oraclePrice={oraclePrice}
       position={position}
     />
   )

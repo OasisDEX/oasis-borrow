@@ -195,6 +195,8 @@
       "view-position": "View Position",
       "header": {
         "30-day-avg-apy": "30 day avg. APY",
+        "7-day-net-apy": "7 day net APY",
+        "90-day-net-apy": "90 day net APY",
         "action": "",
         "activity": "Activity",
         "annual-fee": "Annual fee",
@@ -211,6 +213,7 @@
         "liquidity": "Liquidity",
         "max-liquidation-amount": "Max liquidation amount",
         "max-ltv": "Max LTV",
+        "min-ltv": "Min LTV",
         "min-position-size": "Min. position size",
         "net-usd-value": "Net value",
         "net-value": "Net value",
@@ -219,6 +222,7 @@
         "protection": "Protection",
         "protocol": "Protocol",
         "status": "Status",
+        "tvl": "TVL",
         "variable": "Variable %",
         "vault-debt": "Vault debt"
       },
@@ -1569,7 +1573,7 @@
       },
       "wstETHeth": {
         "title": "wstETH/ETH Aave",
-        "description": "Earn on your ETH with increased staking rewards. Borrow ETH on Aave to get more exposure to wstETH."
+        "description": "Enter with ETH, and get up to 10x multiples on stETH staking rewards."
       },
       "stETHusdc": {
         "title": "Highest stETH multiple option",
@@ -2017,7 +2021,7 @@
     "coll-ratio-too-close-to-dust-limit": "Constant Multiple is not available as your current Col. Ratio is close to dust limit. Please <0>adjust your Col. Ratio</0> before using Constant Multiple."
   },
   "ref": {
-    "banner": "We've launched Multiply for Aave. Read more here",
+    "banner": "New on Oasis Earn: 10x multiple on stETH with Aave v3. Read more here",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",
@@ -2349,13 +2353,13 @@
             "pre": "Borrow against your",
             "post": "exposure on Ajna"
           },
-          "intro": "Select the crypto asset you want to borrow against your ETH"
+          "intro": "Select the crypto asset you want to borrow against your {{token}}"
         },
         "headline": {
           "header": "Borrow {{quoteToken}} against {{collateralToken}}"
         },
         "form": {
-          "confirm": "Review and confirm changes in your Ajna Position."
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Borrow Position you are opening."
         }
       },
       "manage": {
@@ -2363,6 +2367,30 @@
           "header": "Ajna {{quoteToken}} against {{collateralToken}} position #{{id}}"
         }
       }
+    },
+    "earn": {
+      "open": {
+        "select": {
+          "heading": {
+            "pre": "Lend",
+            "post": "to Earn on Ajna"
+          },
+          "intro": "Select the crypto asset you want to earn for lending your {{token}}"
+        },
+        "headline": {
+          "header": "Lend {{quoteToken}} against {{collateralToken}}"
+        },
+        "form": {
+          "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening."
+        }
+      }
+    },
+    "validations": {
+      "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+      "payback-amount-exceeds-debt-token-balance": "You cannot payback more than the amount of debt token in your wallet",
+      "has-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
+      "has-potential-insufficient-eth-funds-for-tx": "Your ETH balance is too low to pay for transaction",
+      "undercollateralized": "You are trying to generate too much debt in relation to the collateral being deposited."
     }
   }
 }

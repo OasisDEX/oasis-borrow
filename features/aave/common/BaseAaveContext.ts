@@ -116,11 +116,23 @@ export interface BaseAaveContext {
 
   transition?: IPositionTransition
   estimatedGasPrice?: HasGasEstimation
+  /**
+   * @deprecated no idea what token it is. use **balance.__token__.balance** instead
+   */
   tokenBalance?: BigNumber
   allowance?: StrategyTokenAllowance
   balance?: StrategyTokenBalance
+  /**
+   * @deprecated no idea what token it is 🤦‍. use **balance.{}.price** instead
+   */
   tokenPrice?: BigNumber
+  /**
+   * @deprecated use **balance.collateral.price** instead
+   */
   collateralPrice?: BigNumber
+  /**
+   * @deprecated use **balance.debt.price** instead
+   */
   debtPrice?: BigNumber
   auxiliaryAmount?: BigNumber
   connectedProxyAddress?: string
@@ -134,7 +146,6 @@ export interface BaseAaveContext {
   refAllowanceStateMachine?: ActorRefFrom<AllowanceStateMachine>
   transactionToken?: string
   defaultRiskRatio?: IRiskRatio
-
   stopLossLevel?: BigNumber
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
