@@ -23,8 +23,8 @@ const usersWhoFollowVaultsSchema = z.object({
 
 function handleUnsupportedProtocol(req: NextApiRequest, res: NextApiResponse) {
   const protocolFromBody = req.body.protocol.toLowerCase()
-  const protocolValues = Object.values(Protocol).map((value) => value.toString())
-  if (!protocolValues.includes(protocolFromBody)) {
+  const supportedProtocols = Object.values(Protocol).map((value) => value.toString())
+  if (!supportedProtocols.includes(protocolFromBody)) {
     return res.status(418).json({ error: `Protocol ${protocolFromBody} is not supported` })
   }
 }
