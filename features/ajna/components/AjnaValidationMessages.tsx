@@ -1,7 +1,7 @@
 import { ValidationMessages, ValidationMessagesInput } from 'components/ValidationMessages'
 import React from 'react'
 
-export function AutomationValidationMessages({
+export function AjnaValidationMessages({
   messages,
   type,
   additionalData,
@@ -11,7 +11,7 @@ export function AutomationValidationMessages({
       messages={messages}
       type={type}
       additionalData={additionalData}
-      translationRootKey="automation.validation"
+      translationRootKey="ajna.validations"
     />
   )
 }

@@ -18,7 +18,7 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   } = useAjnaBorrowContext()
 
   const positionData = cached && cachedPosition ? cachedPosition.currentPosition : currentPosition
-  const simulationData = cached && cachedPosition ? cachedPosition.simulation : simulation
+  const simulationData = cached && cachedPosition ? cachedPosition.simulation : simulation?.position
 
   const isLoading = !cached && simulation === undefined
   const formatted = {
@@ -36,10 +36,10 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
     afterCollateralLocked:
       simulationData?.collateralAmount && formatCryptoBalance(simulationData.collateralAmount),
     afterAvailableToBorrow:
-      simulationData?.debtAvailable && formatAmount(simulationData?.debtAvailable, quoteToken),
+      simulationData?.debtAvailable && formatAmount(simulationData.debtAvailable, quoteToken),
     afterAvailableToWithdraw:
       simulationData?.collateralAvailable &&
-      formatAmount(simulationData?.collateralAvailable, collateralToken),
+      formatAmount(simulationData.collateralAvailable, collateralToken),
   }
 
   return (

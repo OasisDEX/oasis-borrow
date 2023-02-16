@@ -23,6 +23,8 @@ function setupOpenAaveStateContext({
       currentStep: 1,
       totalSteps: 4,
       currentPosition: getEmptyPosition(config.tokens.collateral, config.tokens.debt),
+      getSlippageFrom:
+        effectiveStrategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
     }),
     { devTools: process.env.NODE_ENV !== 'production' },
   ).start()

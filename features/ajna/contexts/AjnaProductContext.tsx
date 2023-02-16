@@ -1,8 +1,16 @@
 import { TxStatus } from '@oasisdex/transactions'
+import { AjnaSimulationData } from 'actions/ajna'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { isBorrowStepValid } from 'features/ajna/borrow/contexts/ajnaBorrowStepManager'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
+import {
+  defaultErrors,
+  defaultWarnings,
+  getAjnaBorrowValidations,
+} from 'features/ajna/borrow/validations'
 import { AjnaEditingStep, AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import {
   isExternalStep,
@@ -27,6 +35,7 @@ import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions
 
 interface AjnaBorrowContextProviderProps {
   collateralBalance: BigNumber
+  ethBalance: BigNumber
   collateralPrice: BigNumber
   collateralToken: string
   dpmProxy?: string
@@ -45,7 +54,7 @@ interface AjnaBorrowContextProviderProps {
 type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'currentPosition' | 'steps'>
 type AjnaCachedPosition = {
   currentPosition: AjnaPosition
-  simulation: AjnaPosition
+  simulation?: AjnaPosition
 }
 
 export interface AjnaBorrowPosition {
@@ -55,8 +64,8 @@ export interface AjnaBorrowPosition {
   isSimulationLoading?: boolean
   setCachedPosition: Dispatch<SetStateAction<AjnaCachedPosition | undefined>>
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaPosition | undefined>>
-  simulation?: AjnaPosition
+  setSimulation: Dispatch<SetStateAction<AjnaSimulationData | undefined>>
+  simulation?: AjnaSimulationData
 }
 
 interface AjnaBorrowSteps {
@@ -90,6 +99,10 @@ interface AjnaBorrowContext {
   position: AjnaBorrowPosition
   steps: AjnaBorrowSteps
   tx: AjnaBorrowTx
+  validation: {
+    errors: ValidationMessagesInput
+    warnings: ValidationMessagesInput
+  }
 }
 
 const ajnaBorrowContext = React.createContext<AjnaBorrowContext | undefined>(undefined)
@@ -114,10 +127,21 @@ export function AjnaBorrowContextProvider({
 }: PropsWithChildren<AjnaBorrowContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
+  const {
+    flow,
+    collateralToken,
+    collateralBalance,
+    quoteBalance,
+    ethBalance,
+    ethPrice,
+    owner,
+  } = props
+
   const form = useAjnaBorrowFormReducto({
-    action: props.flow === 'open' ? 'open' : 'deposit',
+    action: flow === 'open' ? 'open' : 'deposit',
   })
   const { positionIdFromDpmProxy$ } = useAppContext()
+  const gasEstimation = useGasEstimationContext()
 
   const _positionIdFromDpmProxy$ = useMemo(() => positionIdFromDpmProxy$(form.state.dpmAddress), [
     form.state.dpmAddress,
@@ -128,14 +152,43 @@ export function AjnaBorrowContextProvider({
   const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
-  const [simulation, setSimulation] = useState<AjnaPosition>()
+  const [simulation, setSimulation] = useState<AjnaSimulationData>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
   const [cachedPosition, setCachedPosition] = useState<AjnaCachedPosition>()
+
+  const { errors, warnings } = useMemo(
+    () =>
+      getAjnaBorrowValidations({
+        ethPrice: ethPrice,
+        ethBalance: ethBalance,
+        gasEstimationUsd: gasEstimation?.usdValue,
+        depositAmount: form.state.depositAmount,
+        paybackAmount: form.state.paybackAmount,
+        collateralBalance: collateralBalance,
+        quoteBalance: quoteBalance,
+        simulationErrors: simulation?.errors,
+        simulationWarnings: simulation?.errors,
+        txError: txDetails?.txError,
+        collateralToken: collateralToken,
+      }),
+    [
+      ethPrice.toString(),
+      ethBalance.toString(),
+      gasEstimation?.usdValue.toString(),
+      form.state.depositAmount?.toString(),
+      form.state.paybackAmount?.toString(),
+      collateralBalance.toString(),
+      quoteBalance.toString(),
+      simulation?.errors,
+      txDetails?.txError,
+      collateralToken,
+    ],
+  )
 
   const setStep = (step: AjnaStatusStep) => {
     if (
       !isNextStep({ currentStep, step, steps }) ||
-      isBorrowStepValid({ currentStep, formState: form.state })
+      isBorrowStepValid({ currentStep, formState: form.state, errors })
     )
       setCurrentStep(step)
     else throw new Error(`A state of current step in not valid.`)
@@ -151,10 +204,10 @@ export function AjnaBorrowContextProvider({
     return {
       currentStep,
       steps,
-      editingStep: props.flow === 'open' ? 'setup' : 'manage',
+      editingStep: flow === 'open' ? 'setup' : 'manage',
       isExternalStep: isExternalStep({ currentStep }),
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
-      isStepValid: isBorrowStepValid({ currentStep, formState: form.state }),
+      isStepValid: isBorrowStepValid({ currentStep, formState: form.state, errors }),
       setStep,
       setNextStep: () => shiftStep('next'),
       setPrevStep: () => shiftStep('prev'),
@@ -170,7 +223,7 @@ export function AjnaBorrowContextProvider({
   }
 
   const [context, setContext] = useState<AjnaBorrowContext>({
-    environment: { ...props, isOwner: props.owner === walletAddress || props.flow === 'open' },
+    environment: { ...props, isOwner: owner === walletAddress || flow === 'open' },
     form,
     position: {
       id,
@@ -181,6 +234,10 @@ export function AjnaBorrowContextProvider({
     },
     steps: setupStepManager(),
     tx: setupTxManager(),
+    validation: {
+      errors: defaultErrors,
+      warnings: defaultWarnings,
+    },
   })
 
   useEffect(() => {
@@ -188,9 +245,9 @@ export function AjnaBorrowContextProvider({
       ...prev,
       environment: {
         ...prev.environment,
-        isOwner: props.owner === walletAddress || props.flow === 'open',
-        collateralBalance: props.collateralBalance,
-        quoteBalance: props.quoteBalance,
+        isOwner: owner === walletAddress || flow === 'open',
+        collateralBalance,
+        quoteBalance,
       },
       position: {
         ...prev.position,
@@ -203,10 +260,14 @@ export function AjnaBorrowContextProvider({
       form: { ...prev.form, state: form.state },
       steps: setupStepManager(),
       tx: setupTxManager(),
+      validation: {
+        errors,
+        warnings,
+      },
     }))
   }, [
-    props.collateralBalance,
-    props.quoteBalance,
+    collateralBalance,
+    quoteBalance,
     resolvedId,
     cachedPosition,
     currentPosition,
@@ -215,6 +276,8 @@ export function AjnaBorrowContextProvider({
     form.state,
     currentStep,
     txDetails,
+    errors,
+    warnings,
   ])
 
   return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
