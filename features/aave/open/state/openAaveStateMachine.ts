@@ -19,9 +19,10 @@ import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
+  getSlippage,
   isAllowanceNeeded,
 } from 'features/aave/common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { isUserWalletConnected } from 'features/aave/helpers'
 import { convertDefaultRiskRatioToActualRiskRatio } from 'features/aave/strategyConfig'
 import {
@@ -65,7 +66,6 @@ export interface OpenAaveContext extends BaseAaveContext {
   refParametersMachine?: ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
   refStopLossMachine?: ActorRefFrom<TransactionStateMachine<AutomationTxData>>
   hasOpenedPosition?: boolean
-  strategyConfig: IStrategyConfig
   positionRelativeAddress?: string
   blockSettingCalculatedAddresses?: boolean
   reserveConfig?: AaveV2ReserveConfigurationData
@@ -395,6 +395,10 @@ export function createOpenAaveStateMachine(
         GAS_PRICE_ESTIMATION_RECEIVED: {
           actions: 'updateContext',
         },
+        USE_SLIPPAGE: {
+          target: ['background.debouncing'],
+          actions: 'updateContext',
+        },
         UPDATE_STRATEGY_INFO: {
           actions: 'updateContext',
         },
@@ -600,7 +604,7 @@ export function createOpenAaveStateMachine(
                 depositToken: context.tokens.deposit,
                 token: context.tokens.deposit,
                 context: context.web3Context!,
-                slippage: context.userSettings!.slippage,
+                slippage: getSlippage(context),
                 proxyType: context.strategyConfig.proxyType,
                 positionType: context.strategyConfig.type,
                 protocol: context.strategyConfig.protocol,

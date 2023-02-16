@@ -13,7 +13,7 @@ import {
 } from 'features/stateMachines/allowance'
 import { TransactionStateMachineResultEvents } from 'features/stateMachines/transaction'
 import { TransactionParametersStateMachineResponseEvent } from 'features/stateMachines/transactionParameters'
-import { UserSettingsState } from 'features/userSettings/userSettings'
+import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
@@ -96,12 +96,14 @@ export type BaseAaveEvent =
   | { type: 'UPDATE_STRATEGY_INFO'; strategyInfo: IStrategyInfo }
   | { type: 'UPDATE_PROTOCOL_DATA'; protocolData: AaveProtocolData }
   | { type: 'UPDATE_ALLOWANCE'; allowance: StrategyTokenAllowance }
+  | { type: 'USE_SLIPPAGE'; getSlippageFrom: 'userSettings' | 'strategyConfig' }
   | TransactionParametersStateMachineResponseEvent
   | TransactionStateMachineResultEvents
   | AllowanceStateMachineResponseEvent
   | AaveOpenPositionWithStopLossEvents
 
 export interface BaseAaveContext {
+  strategyConfig: IStrategyConfig
   userInput: UserInput
   manageTokenInput?: ManageTokenInput
   tokens: {
@@ -150,6 +152,7 @@ export interface BaseAaveContext {
   collateralActive?: boolean
   stopLossTxData?: AutomationAddTriggerData
   stopLossSkipped?: boolean
+  getSlippageFrom: 'userSettings' | 'strategyConfig'
 }
 
 export type BaseViewProps<AaveEvent extends EventObject> = {
@@ -207,5 +210,17 @@ export function isAllowanceNeeded(context: BaseAaveContext): boolean {
     (context.userInput.amount || context.manageTokenInput?.manageTokenActionValue || zero).gt(
       allowance || zero,
     )
+  )
+}
+
+export function getSlippage(
+  context: Pick<BaseAaveContext, 'getSlippageFrom' | 'userSettings' | 'strategyConfig'>,
+) {
+  if (context.getSlippageFrom === 'userSettings') {
+    return context.userSettings?.slippage || SLIPPAGE_DEFAULT
+  }
+
+  return (
+    context.strategyConfig.defaultSlippage || context.userSettings?.slippage || SLIPPAGE_DEFAULT
   )
 }
