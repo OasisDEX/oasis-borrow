@@ -16,7 +16,16 @@ export function AjnaBorrowView() {
   const { t } = useTranslation()
   const { contextIsLoaded, walletAddress } = useAccount()
   const {
-    environment: { collateralPrice, collateralToken, flow, id, owner, product, quotePrice, quoteToken },
+    environment: {
+      collateralPrice,
+      collateralToken,
+      flow,
+      id,
+      owner,
+      product,
+      quotePrice,
+      quoteToken,
+    },
   } = useAjnaProductContext()
 
   return (

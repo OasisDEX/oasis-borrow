@@ -21,7 +21,8 @@ export function AjnaBorrowFormOrder({ cached = false }: { cached?: boolean }) {
   } = useAjnaBorrowContext()
 
   const positionData = cached && cachedPosition ? cachedPosition.position : currentPosition.position
-  const simulationData = cached && cachedPosition ? cachedPosition.simulation : currentPosition.simulation
+  const simulationData =
+    cached && cachedPosition ? cachedPosition.simulation : currentPosition.simulation
 
   const isLoading = !cached && currentPosition.simulation === undefined
   const formatted = {
