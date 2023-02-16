@@ -1,6 +1,5 @@
 import { IPosition, IPositionTransition, ISimplePositionTransition } from '@oasisdex/oasis-actions'
 import { transitionHasSwap } from 'actions/aave/oasisActionsLibWrapper'
-import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
 import { getSlippage, StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'

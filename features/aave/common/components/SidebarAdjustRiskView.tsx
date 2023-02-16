@@ -6,10 +6,8 @@ import { MessageCard } from 'components/MessageCard'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
 import { SecondaryInputProps } from 'features/aave/common/StrategyConfigTypes'
-import { BaseAaveEvent, BaseViewProps } from 'features/aave/common/BaseAaveContext'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
-import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
 import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
@@ -18,27 +16,6 @@ import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
 import { StrategyInformationContainer } from './informationContainer'
-
-type RaisedEvents =
-  | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | (
-      | {
-          type: 'RESET_RISK_RATIO'
-        }
-      | BaseAaveEvent
-    )
-
-export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
-  primaryButton: SidebarSectionFooterButtonSettings
-  textButton: SidebarSectionFooterButtonSettings
-  viewLocked?: boolean // locks whole view
-  showWarring?: boolean // displays warning
-  onChainPosition?: IPosition
-  dropdownConfig?: SidebarSectionHeaderDropdown
-  title: string
-  automation?: ManageAaveAutomation
-  noSidebar?: boolean
-}
 
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (

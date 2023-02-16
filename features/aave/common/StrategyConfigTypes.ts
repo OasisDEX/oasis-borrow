@@ -7,7 +7,7 @@ import { Feature } from 'helpers/useFeatureToggle'
 import { LendingProtocol } from 'lendingProtocols'
 import { PreparedAaveReserveData } from 'lendingProtocols/aave-v2/pipelines'
 
-import { BaseViewProps } from './BaseAaveContext'
+import { BaseAaveEvent, BaseViewProps } from './BaseAaveContext'
 
 export enum ProxyType {
   DsProxy = 'DsProxy',
@@ -86,5 +86,6 @@ type EventsRaisedFromSecondaryInput =
       type: 'RESET_RISK_RATIO'
     }
   | { type: 'SET_DEBT'; debt: BigNumber }
+  | BaseAaveEvent
 
 type PositionInfo = () => JSX.Element
