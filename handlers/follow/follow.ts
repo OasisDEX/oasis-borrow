@@ -21,13 +21,16 @@ const usersWhoFollowVaultsSchema = z.object({
   protocol: z.enum(['maker', 'aavev2', 'aavev3', 'ajna']),
 })
 
-export async function follow(req: NextApiRequest, res: NextApiResponse) {
+function handleUnsupportedProtocol(req: NextApiRequest, res: NextApiResponse) {
   const protocolFromBody = req.body.protocol.toLowerCase()
-  const protocolValues = Object.values(Protocol).map((value) => value.toString());
+  const protocolValues = Object.values(Protocol).map((value) => value.toString())
   if (!protocolValues.includes(protocolFromBody)) {
     return res.status(418).json({ error: `Protocol ${protocolFromBody} is not supported` })
   }
-  
+}
+
+export async function follow(req: NextApiRequest, res: NextApiResponse) {
+  handleUnsupportedProtocol(req, res)
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
@@ -57,6 +60,7 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
+  handleUnsupportedProtocol(req, res)
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
