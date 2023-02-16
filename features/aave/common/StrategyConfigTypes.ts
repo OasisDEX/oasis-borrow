@@ -1,4 +1,5 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { BigNumber } from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
@@ -50,6 +51,7 @@ export interface IStrategyConfig {
   type: ProductType
   protocol: LendingProtocol
   featureToggle?: Feature
+  defaultSlippage?: BigNumber
 }
 
 export type AaveHeaderProps = {

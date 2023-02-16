@@ -7,11 +7,10 @@ import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSe
 import { SidebarSectionHeaderDropdown } from 'components/sidebar/SidebarSectionHeader'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { WithArrow } from 'components/WithArrow'
-import { BaseViewProps } from 'features/aave/common/BaseAaveContext'
+import { BaseAaveEvent, BaseViewProps } from 'features/aave/common/BaseAaveContext'
 import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { StopLossAaveErrorMessage } from 'features/aave/manage/components/StopLossAaveErrorMessage'
 import { ManageAaveAutomation } from 'features/aave/manage/sidebars/SidebarManageAaveVault'
-import { ManageAaveEvent } from 'features/aave/manage/state'
 import { getLiquidationPriceAccountingForPrecision } from 'features/shared/liquidationPrice'
 import { formatPercent } from 'helpers/formatters/format'
 import { one, zero } from 'helpers/zero'
@@ -23,9 +22,12 @@ import { StrategyInformationContainer } from './informationContainer'
 
 type RaisedEvents =
   | { type: 'SET_RISK_RATIO'; riskRatio: IRiskRatio }
-  | ({
-      type: 'RESET_RISK_RATIO'
-    } & ManageAaveEvent)
+  | (
+      | {
+          type: 'RESET_RISK_RATIO'
+        }
+      | BaseAaveEvent
+    )
 
 export type AdjustRiskViewProps = BaseViewProps<RaisedEvents> & {
   primaryButton: SidebarSectionFooterButtonSettings
@@ -273,7 +275,14 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
             />
           )
         )}
-        {hasUserInteracted(state) && <StrategyInformationContainer state={state} />}
+        {hasUserInteracted(state) && (
+          <StrategyInformationContainer
+            state={state}
+            changeSlippageSource={(from) => {
+              send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+            }}
+          />
+        )}
       </Grid>
     )
     if (noSidebar) {
