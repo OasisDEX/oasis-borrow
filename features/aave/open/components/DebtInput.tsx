@@ -2,9 +2,7 @@ import { NORMALISED_PRECISION } from 'actions/aave'
 import { amountFromPrecision } from 'blockchain/utils'
 import { MessageCard } from 'components/MessageCard'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { SecondaryInputProps } from 'features/aave/common/StrategyConfigTypes'
-import { hasUserInteracted } from 'features/aave/helpers/hasUserInteracted'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
@@ -36,7 +34,8 @@ export function DebtInput(props: SecondaryInputProps) {
         amount={userInputDebt}
         hasAuxiliary={true}
         auxiliaryAmount={
-          state.context.userInput.debtAmount?.times(state.context.debtPrice || zero) || zero
+          state.context.userInput.debtAmount?.times(state.context.balance?.debt.price || zero) ||
+          zero
         }
         hasError={amountDebtTooHigh}
         maxAmount={maxDebt}
@@ -50,7 +49,7 @@ export function DebtInput(props: SecondaryInputProps) {
         })}
         currencyCode={state.context.tokens.debt}
         disabled={false}
-        tokenUsdPrice={state.context.debtPrice}
+        tokenUsdPrice={state.context.balance?.debt.price}
       />
       {amountDebtTooHigh && (
         <MessageCard
@@ -63,7 +62,6 @@ export function DebtInput(props: SecondaryInputProps) {
           type="error"
         />
       )}
-      {hasUserInteracted(state) && <StrategyInformationContainer state={state} />}
     </Grid>
   )
 }

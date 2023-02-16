@@ -7,6 +7,7 @@ import { StrategyInformationContainer } from 'features/aave/common/components/in
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
 import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
+import { hasUserInteracted } from 'features/aave/helpers'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
@@ -330,6 +331,14 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
           viewLocked={hasOpenedPosition}
           showWarring={hasOpenedPosition}
         />
+        {hasUserInteracted(state) && (
+          <StrategyInformationContainer
+            state={state}
+            changeSlippageSource={(from) => {
+              send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+            }}
+          />
+        )}
       </Grid>
     ),
     primaryButton: {

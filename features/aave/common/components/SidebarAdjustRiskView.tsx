@@ -15,8 +15,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Link, Text } from 'theme-ui'
 
-import { StrategyInformationContainer } from './informationContainer'
-
 export function richFormattedBoundary({ value, unit }: { value: string; unit: string }) {
   return (
     <>
@@ -243,14 +241,6 @@ export function adjustRiskView(viewConfig: AdjustRiskViewConfig) {
               type={isWarning ? 'warning' : 'ok'}
             />
           )
-        )}
-        {hasUserInteracted(state) && (
-          <StrategyInformationContainer
-            state={state}
-            changeSlippageSource={(from) => {
-              send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
-            }}
-          />
         )}
       </Grid>
     )
