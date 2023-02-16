@@ -2,31 +2,31 @@ import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { GeneralStepManager } from 'features/ajna/contexts/ajnaStepManager'
 
-interface StepManagerWithBorrowForm extends GeneralStepManager {
+interface IsBorrowFormValidParams extends GeneralStepManager {
   formState: AjnaBorrowFormState
   errors?: ValidationMessagesInput
 }
 
-export function isBorrowStepValid({ currentStep, formState, errors }: StepManagerWithBorrowForm) {
-  const isError = !!errors?.messages.length
-
-  if (isError) {
-    return false
-  }
+export function isBorrowFormValid({
+  currentStep,
+  formState: { action, generateAmount, depositAmount, paybackAmount, withdrawAmount },
+  errors,
+}: IsBorrowFormValidParams) {
+  if (errors && errors.messages.length > 0) return false
 
   switch (currentStep) {
     case 'setup':
     case 'manage':
-      switch (formState.action) {
+      switch (action) {
         case 'open':
         case 'deposit':
-          return !!formState.depositAmount?.gt(0)
+          return !!depositAmount?.gt(0)
         case 'withdraw':
-          return !!formState.withdrawAmount?.gt(0)
+          return !!withdrawAmount?.gt(0)
         case 'generate':
-          return !!formState.generateAmount?.gt(0)
+          return !!generateAmount?.gt(0)
         case 'payback':
-          return !!formState.paybackAmount?.gt(0)
+          return !!paybackAmount?.gt(0)
         default:
           return false
       }

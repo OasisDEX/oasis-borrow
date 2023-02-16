@@ -1,19 +1,18 @@
-import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { AjnaBorrowFormFieldGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
-import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import {
+  AjnaBorrowFormFieldGenerate,
+} from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
 import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
-import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormContentGenerate() {
   const {
     form: {
-      dispatch,
       state: { depositAmount, depositAmountUSD, generateAmount },
+      dispatch,
     },
     environment: { collateralBalance, collateralPrice, collateralToken },
-    validation: { errors, warnings },
   } = useAjnaBorrowContext()
 
   return (
@@ -28,14 +27,7 @@ export function AjnaBorrowFormContentGenerate() {
         depositAmountUSD={depositAmountUSD}
         dispatch={dispatch}
       />
-      {generateAmount && (
-        <>
-          <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaValidationMessages {...errors} />
-          <AjnaValidationMessages {...warnings} />
-          <AjnaBorrowFormOrder />
-        </>
-      )}
+      {generateAmount && <AjnaBorrowFormContentSummary />}
     </>
   )
 }

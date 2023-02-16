@@ -46,7 +46,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyAutoTakeProfit: false,
   DiscoverOasis: true,
   AaveBorrow: false,
-  AaveV3EarnWSTETH: false,
+  AaveV3EarnWSTETH: true,
   FollowVaults: true,
   AaveProtection: false,
   AaveProtectionWrite: false,

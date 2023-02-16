@@ -1,5 +1,6 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -11,11 +12,13 @@ interface AjnaBorrowFormField {
 
 export function AjnaBorrowFormFieldWithdraw({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const {
+    environment: { collateralPrice, collateralToken },
+  } = useAjnaProductContext()
+  const {
     form: {
       dispatch,
       state: { withdrawAmount, withdrawAmountUSD },
     },
-    environment: { collateralPrice, collateralToken },
   } = useAjnaBorrowContext()
 
   return (
@@ -50,11 +53,13 @@ export function AjnaBorrowFormFieldWithdraw({ isDisabled, resetOnClear }: AjnaBo
 
 export function AjnaBorrowFormFieldGenerate({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const {
+    environment: { quotePrice, quoteToken },
+  } = useAjnaProductContext()
+  const {
     form: {
       dispatch,
       state: { generateAmount, generateAmountUSD },
     },
-    environment: { quotePrice, quoteToken },
   } = useAjnaBorrowContext()
 
   return (
@@ -90,11 +95,13 @@ export function AjnaBorrowFormFieldGenerate({ isDisabled, resetOnClear }: AjnaBo
 export function AjnaBorrowFormFieldPayback({ isDisabled, resetOnClear }: AjnaBorrowFormField) {
   const { t } = useTranslation()
   const {
+    environment: { quoteBalance, quotePrice, quoteToken },
+  } = useAjnaProductContext()
+  const {
     form: {
       dispatch,
       state: { paybackAmount, paybackAmountUSD },
     },
-    environment: { quoteBalance, quotePrice, quoteToken },
   } = useAjnaBorrowContext()
 
   return (

@@ -4,7 +4,8 @@ import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -25,17 +26,18 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
-    form: { dispatch, state },
     tx: { setTxDetails },
     environment: { collateralToken, quoteToken, ethPrice },
+    steps: { isExternalStep },
+  } = useAjnaProductContext()
+  const {
+    form: { dispatch, state },
     position: {
-      currentPosition,
+      currentPosition: { position, simulation },
       setCachedPosition,
       setIsLoadingSimulation,
       setSimulation,
-      simulation,
     },
-    steps: { isExternalStep },
   } = useAjnaBorrowContext()
 
   const [txData, setTxData] = useState<AjnaTxData>()
@@ -69,7 +71,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
             collateralToken,
             quoteToken,
             context,
-            currentPosition,
+            position,
           }),
         )
         setCancelablePromise(promise)
@@ -122,8 +124,8 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       .subscribe((txState) => {
         if (txState.status === TxStatus.WaitingForConfirmation)
           setCachedPosition({
-            currentPosition,
-            simulation: simulation?.position,
+            position,
+            simulation,
           })
         if (txState.status === TxStatus.Success) dispatch({ type: 'reset' })
         handleTransaction({ txState, ethPrice, setTxDetails })
