@@ -7,6 +7,7 @@ import { steps } from 'features/ajna/common/consts'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaBorrowContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnView } from 'features/ajna/earn/views/AjnaEarnView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -136,6 +137,7 @@ export function AjnaProductController({
                       {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
                     >
                       {ajnaPosition.meta.product === 'borrow' && <AjnaBorrowView />}
+                      {ajnaPosition.meta.product === 'earn' && <AjnaEarnView />}
                     </AjnaBorrowContextProvider>
                   ) : (
                     <></>
