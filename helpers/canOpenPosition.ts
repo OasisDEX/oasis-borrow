@@ -19,7 +19,13 @@ export function canOpenPosition({
   transition?: IPositionTransition | ISimplePositionTransition
 }) {
   return (
-    allDefined(tokenBalance, userInput.amount, effectiveProxyAddress, !hasOpenedPosition) &&
+    allDefined(
+      tokenBalance,
+      userInput.amount,
+      effectiveProxyAddress,
+      !hasOpenedPosition,
+      transition,
+    ) &&
     tokenBalance!.gte(userInput.amount!) &&
     (userInput.debtAmount || zero).lte(
       transition!.simulation.position.maxDebtToBorrowWithCurrentCollateral,
