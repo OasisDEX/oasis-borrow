@@ -1,5 +1,5 @@
-import { useAppContext } from "components/AppContextProvider"
-import { useObservable } from "helpers/observableHook"
+import { useAppContext } from 'components/AppContextProvider'
+import { useObservable } from 'helpers/observableHook'
 
 export function useChainId(): number | undefined {
   const { context$ } = useAppContext()
