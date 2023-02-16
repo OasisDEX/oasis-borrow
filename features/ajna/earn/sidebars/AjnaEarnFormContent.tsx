@@ -1,5 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import {
   getAjnaSidebarButtonsStatus,
   getAjnaSidebarPrimaryButtonActions,
@@ -8,7 +9,7 @@ import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBor
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaStatusStep } from 'features/ajna/common/types'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -25,19 +26,22 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, product, quoteToken, isOwner },
     form: {
       dispatch,
       state: { dpmAddress, uiDropdown },
       updateState,
     },
+    position: { resolvedId, isSimulationLoading },
+    validation: { isFormValid },
+  } = useAjnaBorrowContext() // TODO use earn context when available
+  const {
+    environment: { collateralToken, flow, product, quoteToken, isOwner },
     steps: {
       // currentStep,
       editingStep,
       setNextStep,
       setStep,
       isStepWithTransaction,
-      isStepValid,
     },
     tx: {
       isTxError,
@@ -47,8 +51,7 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
       isTxInProgress,
       setTxDetails,
     },
-    position: { id, isSimulationLoading },
-  } = useAjnaBorrowContext() // TODO use earn context when available
+  } = useAjnaProductContext()
 
   const currentStep = 'setup' as AjnaStatusStep
 
@@ -63,7 +66,7 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
     isAllowanceLoading,
     isOwner,
     isSimulationLoading,
-    isStepValid,
+    isFormValid,
     isTxError,
     isTxInProgress,
     isTxStarted,
@@ -91,7 +94,7 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
     currentStep,
     editingStep,
     flow,
-    id,
+    resolvedId,
     isTxSuccess,
     walletAddress,
   })
