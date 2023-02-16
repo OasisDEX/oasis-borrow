@@ -39,13 +39,7 @@ export function VaultHeadline({
 }: VaultHeadlineProps) {
   const tokenData = getTokens(token)
   const followVaultEnabled = useFeatureToggle('FollowVaults')
-  const followAaveVaultsEnabled = useFeatureToggle('FollowAAVEVaults')
-  console.log('followAaveVaultsEnabled', followAaveVaultsEnabled)
-  console.log('follow button')
-  console.log(followButton?.chainId)
-  console.log(followButton?.followerAddress)
-  console.log(followButton?.vaultId)
-  
+
   return (
     <Flex
       sx={{
