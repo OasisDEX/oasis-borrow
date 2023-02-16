@@ -52,7 +52,7 @@ interface OpenAaveStateProps {
   isLoading: () => boolean
 }
 
-function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
+function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { stopLossSkipped, stopLossLevel } = state.context
 
@@ -67,7 +67,12 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
       <Grid gap={3}>
         {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
         <OpenVaultAnimation />
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -199,7 +204,12 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     content: (
       <Grid gap={3}>
         {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton,
@@ -223,7 +233,12 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
       <Grid gap={3}>
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -343,7 +358,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
+function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -351,7 +366,12 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
     content: (
       <Grid gap={3}>
         <CompleteBanner />
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {
