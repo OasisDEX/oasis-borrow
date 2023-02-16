@@ -6,10 +6,7 @@ import React, { useMemo, useState } from 'react'
 
 function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) {
   return predefinedSteps.reduce((prev, curr) => {
-    return Math.abs(curr.toNumber() - value.toNumber()) <
-      Math.abs(prev.toNumber() - value.toNumber())
-      ? curr
-      : prev
+    return curr.minus(value).abs().lt(prev.minus(value).abs()) ? curr : prev
   })
 }
 

@@ -1,14 +1,14 @@
-import {
-  AjnaEarnSlider,
-  ajnaSliderDefaults,
-  ajnaSliderHighRange,
-  ajnaSliderLowRange,
-} from 'components/AjnaEarnSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
 import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
 import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import {
+  AjnaEarnSlider,
+  ajnaSliderDefaults,
+  ajnaSliderHighRange,
+  ajnaSliderLowRange,
+} from 'features/ajna/earn/components/AjnaEarnSlider'
 import React from 'react'
 
 export function AjnaEarnFormContentDeposit() {
