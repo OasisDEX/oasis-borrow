@@ -15,6 +15,7 @@ import { LANDING_PILLS } from 'content/landing'
 import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { productCardsConfig } from 'helpers/productCards'
@@ -25,6 +26,8 @@ import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
+
+import { HomepageHeadline } from './common/HomepageHeadline'
 
 interface PillProps {
   label: string
@@ -288,6 +291,17 @@ export function HomepageView() {
       </Box>
       <Box>
         <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
+          Why use Oasis.app
+        </Text>
+        <HomepageHeadline
+          primaryText="Earn long term sustainable yields to compound your crypto capital:"
+          secondaryText="Oasis Earn"
+          ctaURL={INTERNAL_LINKS.earn}
+          ctaLabel="Open position"
+        />
+      </Box>
+      <Box>
+        <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
           {t('landing.info-cards.have-some-questions')}
         </Text>
         <Grid
@@ -323,19 +337,19 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.support.contact-whenever')}
             links={[
               {
-                href: 'https://kb.oasis.app/help/frequently-asked-questions',
+                href: `${EXTERNAL_LINKS.HELP}/frequently-asked-questions`,
                 text: t('landing.info-cards.support.faq'),
               },
               {
-                href: 'https://discord.gg/oasisapp',
+                href: EXTERNAL_LINKS.DISCORD,
                 text: t('landing.info-cards.support.discord'),
               },
               {
-                href: '/daiwallet/contact',
+                href: INTERNAL_LINKS.daiWalletContact,
                 text: t('landing.info-cards.support.contact-us'),
               },
               {
-                href: 'https://twitter.com/oasisdotapp',
+                href: EXTERNAL_LINKS.TWITTER,
                 text: t('landing.info-cards.support.twitter'),
               },
             ]}
@@ -366,7 +380,7 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.multiply.subtitle')}
             links={[
               {
-                href: '/multiply',
+                href: INTERNAL_LINKS.multiply,
                 text: t('landing.info-cards.multiply.open-vault'),
               },
             ]}
@@ -385,7 +399,7 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.borrow.choose-your-preferred-token')}
             links={[
               {
-                href: '/borrow',
+                href: INTERNAL_LINKS.borrow,
                 text: t('landing.info-cards.borrow.open-vault'),
               },
             ]}
@@ -400,7 +414,7 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.manage.make-actions')}
             links={[
               {
-                href: '/connect',
+                href: INTERNAL_LINKS.connect,
                 text: t('landing.info-cards.manage.connect-your-wallet'),
               },
             ]}
@@ -450,7 +464,7 @@ export function Hero({
         {subheading}
       </Text>
       <AppLink
-        href={isConnected ? '/' : '/connect'}
+        href={isConnected ? INTERNAL_LINKS.homepage : INTERNAL_LINKS.connect}
         variant="primary"
         sx={{
           display: 'flex',
