@@ -1,4 +1,5 @@
 import { PrismaClient, Protocol, UsersWhoFollowVaults } from '@prisma/client'
+import { NetworkIds } from 'blockchain/network'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -29,8 +30,16 @@ function handleUnsupportedProtocol(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
+function handleUnsupportedNetwork(req: NextApiRequest, res: NextApiResponse) {
+  const chainIdFromBody = req.body.vault_chain_id
+  if (!Object.values(NetworkIds).includes(chainIdFromBody)) {
+    return res.status(418).json({ error: `Chain with ID ${chainIdFromBody} is not supported` })
+  }
+}
+
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
   handleUnsupportedProtocol(req, res)
+  handleUnsupportedNetwork(req, res)
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
@@ -61,6 +70,7 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
 
 export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
   handleUnsupportedProtocol(req, res)
+  handleUnsupportedNetwork(req, res)
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
