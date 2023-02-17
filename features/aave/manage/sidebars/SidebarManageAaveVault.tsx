@@ -88,9 +88,36 @@ function textButtonReturningToAdjust({
   return {}
 }
 
-// amount available after close is the amount of collateral, minus the amount of debt, minus any fees
-// if there is no swap, then there are no fees.  there is a swap if the position has debt and collateral
-// because we need to pay the debt back using the collateral
+/*
+
+if closing to collateral, and there is debt on the position, then we are swapping from collateral to debt:
+
+1. take out collateral
+2. swap as much of it as we need to debt (fee)
+3. pay back the debt
+
+final position amount:
+    collateral in vault - collateral needed for swap from token
+
+if closing to collateral, no debt:
+- then there would be no swap, so no collateral needed for swap (zero)
+- formula the same
+
+if closing to debt, and there is debt on the position, then:
+
+1. withdraw all collateral
+2. swap it all to debt (fee)
+3. pay back debt
+
+final position amount:
+    amount from swap (- minus fee maybe) - debt in position
+
+if closing to debt, with no debt:
+- there will still be a swap
+- there is no debt in position
+- formula is the same
+
+ */
 
 function getAmountReceivedAfterClose(
   strategy: IPositionTransition | ISimplePositionTransition | undefined,

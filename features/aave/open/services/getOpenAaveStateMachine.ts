@@ -1,4 +1,4 @@
-import { OpenAaveDepositBorrowParameters, OpenAaveParameters } from 'actions/aave'
+import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { AutomationTxData } from 'components/AppContext'
@@ -15,7 +15,7 @@ import { TransactionParametersStateMachine } from 'features/stateMachines/transa
 
 export function getOpenAaveStateMachine(
   services: OpenAaveStateMachineServices,
-  openParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
+  openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
   openDepositBorrowParametersMachine: TransactionParametersStateMachine<
     OpenAaveDepositBorrowParameters
   >,
@@ -32,7 +32,7 @@ export function getOpenAaveStateMachine(
   ) => TransactionStateMachine<AutomationTxData>,
 ) {
   return createOpenAaveStateMachine(
-    openParametersMachine,
+    openMultiplyParametersMachine,
     openDepositBorrowParametersMachine,
     dsProxyMachine,
     dpmProxyMachine,

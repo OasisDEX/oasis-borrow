@@ -8,21 +8,21 @@ import {
   getOpenTransaction,
   ManageAaveParameters,
   OpenAaveDepositBorrowParameters,
-  OpenAaveParameters,
+  OpenMultiplyAaveParameters,
 } from 'actions/aave'
 import { TxHelpers } from 'components/AppContext'
 import { createTransactionParametersStateMachine } from 'features/stateMachines/transactionParameters'
 import { HasGasEstimation } from 'helpers/form'
 import { Observable } from 'rxjs'
 
-export function getOpenAaveParametersMachine(
+export function getOpenMultiplyAaveParametersMachine(
   txHelpers$: Observable<TxHelpers>,
   gasPriceEstimation$: (gas: number) => Observable<HasGasEstimation>,
 ) {
   return createTransactionParametersStateMachine(
     txHelpers$,
     gasPriceEstimation$,
-    async (parameters: OpenAaveParameters) => {
+    async (parameters: OpenMultiplyAaveParameters) => {
       try {
         return await getOpenTransaction(parameters)
       } catch (e) {

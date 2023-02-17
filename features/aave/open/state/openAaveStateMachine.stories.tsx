@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
 import { OpenAaveDepositBorrowParameters } from 'actions/aave'
-import { ManageAaveParameters, OpenAaveParameters } from 'actions/aave'
+import { ManageAaveParameters, OpenMultiplyAaveParameters } from 'actions/aave'
 import BigNumber from 'bignumber.js'
 import { OperationExecutorTxMeta } from 'blockchain/calls/operationExecutor'
 import { ProxyEvent, ProxyStateMachine } from 'features/stateMachines/proxy/state'
@@ -45,7 +45,7 @@ const ParametersView = ({
   parametersMachine,
 }: {
   parametersMachine:
-    | ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
+    | ActorRefFrom<TransactionParametersStateMachine<OpenMultiplyAaveParameters>>
     | ActorRefFrom<TransactionParametersStateMachine<ManageAaveParameters>>
     | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
 }) => {

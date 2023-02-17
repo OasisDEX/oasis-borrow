@@ -30,7 +30,7 @@ import {
   GetOnChainPositionParams,
   ManageAaveParameters,
   OpenAaveDepositBorrowParameters,
-  OpenAaveParameters,
+  OpenMultiplyAaveParameters,
 } from './types/'
 
 // todo: export from oasis-actions
@@ -105,7 +105,7 @@ export async function getOpenTransaction({
   proxyType,
   positionType,
   protocol,
-}: OpenAaveParameters): Promise<IPositionTransition> {
+}: OpenMultiplyAaveParameters): Promise<IPositionTransition> {
   const _collateralToken = {
     symbol: collateralToken as AAVETokens,
     precision: getToken(collateralToken).precision,

@@ -1,6 +1,6 @@
 export * from './oasisActionsLibWrapper'
 export type {
-  OpenAaveParameters,
+  OpenMultiplyAaveParameters,
   GetOnChainPositionParams,
   CloseAaveParameters,
   AdjustAaveParameters,

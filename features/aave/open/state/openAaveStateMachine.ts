@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { RiskRatio } from '@oasisdex/oasis-actions'
-import { OpenAaveDepositBorrowParameters, OpenAaveParameters } from 'actions/aave'
+import { OpenAaveDepositBorrowParameters, OpenMultiplyAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
@@ -64,7 +64,7 @@ export interface OpenAaveContext extends BaseAaveContext {
   refDpmAccountMachine?: ActorRefFrom<ReturnType<typeof createDPMAccountStateMachine>>
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?:
-    | ActorRefFrom<TransactionParametersStateMachine<OpenAaveParameters>>
+    | ActorRefFrom<TransactionParametersStateMachine<OpenMultiplyAaveParameters>>
     | ActorRefFrom<TransactionParametersStateMachine<OpenAaveDepositBorrowParameters>>
   refStopLossMachine?: ActorRefFrom<TransactionStateMachine<AutomationTxData>>
   hasOpenedPosition?: boolean
@@ -93,7 +93,7 @@ export type OpenAaveEvent =
   | DMPAccountStateMachineResultEvents
 
 export function createOpenAaveStateMachine(
-  openTransactionParametersMachine: TransactionParametersStateMachine<OpenAaveParameters>,
+  openMultiplyParametersMachine: TransactionParametersStateMachine<OpenMultiplyAaveParameters>,
   openDepositBorrowTransactionParametersMachine: TransactionParametersStateMachine<
     OpenAaveDepositBorrowParameters
   >,
@@ -590,10 +590,7 @@ export function createOpenAaveStateMachine(
             }
           } else {
             return {
-              refParametersMachine: spawn(
-                openTransactionParametersMachine,
-                'transactionParameters',
-              ),
+              refParametersMachine: spawn(openMultiplyParametersMachine, 'transactionParameters'),
             }
           }
         }),
@@ -628,7 +625,7 @@ export function createOpenAaveStateMachine(
           (
             context,
           ): TransactionParametersStateMachineEvent<
-            OpenAaveParameters | OpenAaveDepositBorrowParameters
+            OpenMultiplyAaveParameters | OpenAaveDepositBorrowParameters
           > => {
             const baseParams = {
               // ethNullAddress just for the simulation, there is a guard for that
@@ -663,7 +660,7 @@ export function createOpenAaveStateMachine(
                     context.userInput.riskRatio ||
                     context.defaultRiskRatio ||
                     new RiskRatio(zero, RiskRatio.TYPE.LTV),
-                } as OpenAaveParameters,
+                } as OpenMultiplyAaveParameters,
               }
             }
           },
