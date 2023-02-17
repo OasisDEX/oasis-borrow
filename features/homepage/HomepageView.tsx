@@ -24,7 +24,7 @@ import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useState } from 'react'
-import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
 import { HomepageHeadline } from './common/HomepageHeadline'
@@ -290,14 +290,98 @@ export function HomepageView() {
         />
       </Box>
       <Box>
-        <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
+        <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 6 }}>
           Why use Oasis.app
         </Text>
         <HomepageHeadline
-          primaryText="Earn long term sustainable yields to compound your crypto capital:"
+          primaryText="Earn long term sustainable yields to compound your crypto capital: "
           secondaryText="Oasis Earn"
           ctaURL={INTERNAL_LINKS.earn}
           ctaLabel="Open position"
+        />
+        <Grid columns={3} sx={{ mt: 5, mb: 7 }}>
+          <Card
+            sx={{
+              border: 'unset',
+              height: '390px',
+              width: '390px',
+              background: 'linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)',
+            }}
+          />
+          <Card
+            sx={{
+              border: 'unset',
+              height: '390px',
+              width: '390px',
+              background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+            }}
+          />
+          <Card
+            sx={{
+              border: 'unset',
+              height: '390px',
+              width: '390px',
+              background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)',
+            }}
+          />
+        </Grid>
+        <HomepageHeadline
+          primaryText="Get the most out your crypto without selling: "
+          secondaryText="Oasis Borrow"
+          ctaURL={INTERNAL_LINKS.borrow}
+          ctaLabel="Open position"
+        />
+        <Grid columns={3} sx={{ mt: 5 }}>
+          <Card
+            sx={{
+              border: 'unset',
+              height: '390px',
+              width: '390px',
+              background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%)',
+            }}
+          />
+          <Card
+            sx={{
+              border: 'unset',
+              height: '390px',
+              width: '390px',
+              background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+            }}
+          />
+          <Card
+            sx={{
+              border: 'unset',
+              height: '390px',
+              width: '390px',
+              background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+            }}
+          />
+        </Grid>
+        <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 7 }}>
+          <HomepageHeadline
+            primaryText="Optimize your risk & reward with one click: "
+            secondaryText="Oasis Multiply"
+            ctaURL={INTERNAL_LINKS.multiply}
+            ctaLabel="Open position"
+          />
+          <Card
+            sx={{
+              border: 'unset',
+              height: '390px',
+              width: '390px',
+              background: 'linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)',
+            }}
+          />
+        </Flex>
+        <HomepageHeadline
+          primaryText="Advanced automation tools can manage your positions for you: "
+          secondaryText="set and forget with confidence"
+        />
+        <HomepageHeadline
+          primaryText="Your funds, your choice: "
+          secondaryText="park your capital and stay in full control all the time, with no exceptions"
+          ctaURL={EXTERNAL_LINKS.HELP}
+          ctaLabel="Know more about security"
         />
       </Box>
       <Box>

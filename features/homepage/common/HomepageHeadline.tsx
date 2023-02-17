@@ -18,7 +18,7 @@ export const HomepageHeadline = ({
 }: HomePageHeadlineProps) => (
   <Box sx={{ maxWidth: '700px' }}>
     <Text variant="header3" sx={{ color: 'primary100' }}>
-      {primaryText} &nbsp;
+      {primaryText}
       <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>
         {secondaryText}
       </Text>
