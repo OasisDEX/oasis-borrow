@@ -1,7 +1,6 @@
 import { AjnaSimulationData } from 'actions/ajna'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
-import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { isBorrowFormValid } from 'features/ajna/borrow/contexts/isBorrowFormValid'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import {
@@ -9,18 +8,15 @@ import {
   defaultWarnings,
   getAjnaBorrowValidations,
 } from 'features/ajna/borrow/validations'
+import {
+  AjnaPositionSet,
+  AjnaProductPosition,
+  AjnaProductValidation,
+} from 'features/ajna/common/types'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
-import React, {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 
 import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
 
@@ -28,29 +24,9 @@ interface AjnaBorrowContextProviderProps {
   position: AjnaPosition
 }
 
-type AjnaBorrowPositionSet = {
-  position: AjnaPosition
-  simulation?: AjnaPosition
-}
-
-export interface AjnaBorrowPosition {
-  cachedPosition?: AjnaBorrowPositionSet
-  currentPosition: AjnaBorrowPositionSet
-  isSimulationLoading?: boolean
-  resolvedId?: string
-  setCachedPosition: Dispatch<SetStateAction<AjnaBorrowPositionSet | undefined>>
-  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaSimulationData | undefined>>
-}
-
-interface AjnaBorrowContext {
+type AjnaBorrowContext = AjnaProductValidation & {
   form: ReturnType<typeof useAjnaBorrowFormReducto>
-  position: AjnaBorrowPosition
-  validation: {
-    errors: ValidationMessagesInput
-    isFormValid: boolean
-    warnings: ValidationMessagesInput
-  }
+  position: AjnaProductPosition<AjnaPosition>
 }
 
 const ajnaBorrowContext = React.createContext<AjnaBorrowContext | undefined>(undefined)
@@ -86,9 +62,9 @@ export function AjnaBorrowContextProvider({
     useMemo(() => positionIdFromDpmProxy$(form.state.dpmAddress), [form.state.dpmAddress]),
   )
 
-  const [simulation, setSimulation] = useState<AjnaSimulationData>()
+  const [simulation, setSimulation] = useState<AjnaSimulationData<AjnaPosition>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
-  const [cachedPosition, setCachedPosition] = useState<AjnaBorrowPositionSet>()
+  const [cachedPosition, setCachedPosition] = useState<AjnaPositionSet<AjnaPosition>>()
 
   const { errors, warnings } = useMemo(
     () =>
