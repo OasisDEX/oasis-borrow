@@ -16,6 +16,15 @@ function CareerPage({ career }: { career: Career }) {
 
   return (
     <Box sx={{ width: '100%', mt: 4 }}>
+      <PageSEOTags
+        title="seo.title-single-token"
+        titleParams={{
+          product: t('seo.careers.title'),
+          token: `${career.title}, ${career.location}`,
+        }}
+        description="seo.careers.description"
+        url="/careers"
+      />
       <AppLink
         href="/careers"
         sx={{

@@ -28,7 +28,7 @@ function VaultsSummary({ address }: { address: string }) {
             title="seo.title-single-token"
             titleParams={{
               product: t('seo.owner.title'),
-              token: address,
+              token: `${address.slice(0, 7)}...`,
             }}
             description="seo.multiply.description"
             url={`/owner/${address}`}
