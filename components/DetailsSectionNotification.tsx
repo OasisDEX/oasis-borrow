@@ -78,7 +78,7 @@ export function DetailsSectionNotification({
                     bg: 'rgba(255, 255, 255, 0.2)',
                   }}
                 >
-                  <Icon name={icon} size={16} />
+                  <Icon name={icon} size={20} />
                 </Flex>
               )}
               <Box>
