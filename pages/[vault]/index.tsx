@@ -6,7 +6,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import NotFoundPage from 'pages/404'
+import NotFoundPage from 'pages/not-found'
 import React from 'react'
 import { Box } from 'theme-ui'
 
