@@ -2,9 +2,9 @@ import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
 import { AjnaBorrowContextProvider } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
 import { steps } from 'features/ajna/common/consts'
+import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
 import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
@@ -94,7 +94,7 @@ export function AjnaProductController({
     ),
   )
 
-  if (ajnaPositionData === null) void push('/404')
+  if (ajnaPositionData === null) void push('/not-found')
 
   return (
     <WithConnection>
@@ -108,7 +108,7 @@ export function AjnaProductController({
                 value={[ajnaPositionData, balancesInfoArrayData, tokenPriceUSDData]}
                 customLoader={
                   <PositionLoadingState
-                    {...getAjnaBorrowHeadlineProps({
+                    {...getAjnaHeadlineProps({
                       collateralToken: ajnaPositionData?.meta.collateralToken,
                       flow,
                       product: ajnaPositionData?.meta.product,

@@ -41,6 +41,11 @@
   "all": "All",
   "all-assets": "All Assets",
   "amount": "Amount",
+  "amount-to-lend": "Amount to Lend",
+  "amount-to-remaining-deposit": "Amount of Remaining Deposit",
+  "net-apy": "Net APY",
+  "lending-price": "Lending Price",
+  "max-ltv-to-lend-at": "Max LTV to lend at",
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
   "back": "Back",
@@ -867,40 +872,52 @@
   "send-to": "Send to",
   "sent": "Sent",
   "seo": {
-    "contact": {
-      "description": "Send us feedback, questions, or suggestions.",
-      "title": "Contact"
+    "owner": {
+      "title": "Owner - Oasis.app",
+      "description": "Page not found, sorry."
     },
-    "dai": {
-      "description": "A short introduction to Dai, the smarter digital currency.",
-      "title": "Dai"
+    "404": {
+      "title": "Page not found 🥹 - Oasis.app",
+      "description": "Page not found, sorry."
+    },
+    "contact": {
+      "title": "Contact - Oasis.app",
+      "description": "Send us feedback, questions, or suggestions."
     },
     "default": {
-      "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral",
-      "title": "Oasis.app"
+      "title": "Deploy your crypto into DeFi - Oasis.app",
+      "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+    },
+    "dai": {
+      "title": "Dai - Oasis.app",
+      "description": "A short introduction to Dai, the smarter digital currency."
     },
     "support": {
-      "description": "All the answers to the most common questions.",
-      "title": "FAQs"
+      "title": "FAQs - Oasis.app",
+      "description": "All the answers to the most common questions."
     },
     "careers": {
-      "title": "Careers",
+      "title": "Careers - Oasis.app",
       "description": "We believe in talent. Join us to build the next generation of DeFi."
     },
     "about": {
-      "title": "About Us",
+      "title": "About Us - Oasis.app",
       "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
     },
     "referrals": {
-      "title": "Refer a friend and earn Dai",
+      "title": "Refer a friend and earn Dai - Oasis.app",
       "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
     },
     "brand-assets": {
-      "title": "Brand assets",
+      "title": "Brand assets - Oasis.app",
       "description": "Find here the Oasis.app Logo and graphics."
     },
+    "assets": {
+      "title": "Assets - Oasis.app",
+      "description": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
+    },
     "security": {
-      "title": "Security",
+      "title": "Security - Oasis.app",
       "description": "Oasis.app is one of the oldest DeFi products with a rigorous approach to security. Users from all over the world trust us with billions of dollars of their funds."
     },
     "discover": {
@@ -910,7 +927,22 @@
     "ajna": {
       "title": "Oasis.app × Ajna",
       "description": "Anja is a new money markets DeFi protocol. Benefiting from more comeptitive, market-driven parameters."
-    }
+    },
+    "multiply": {
+      "title": "Multiply - Oasis.app",
+      "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset."
+    },
+    "earn": {
+      "title": "Earn - Oasis.app",
+      "description": "Put your crypto assets to work today. Start generating the best yields."
+    },
+    "borrow": {
+      "title": "Borrow - Oasis.app",
+      "description": "Borrow Dai against your favorite crypto assets. Use the Dai however you like. Browse the featured, or select an asset to view our products."
+    },
+    "title-single-token": "{{token}} - {{product}}",
+    "title-product-w-tokens": "{{token1}}/{{token2}} - {{protocol}} - {{product}}",
+    "title-dsr": "Dai Savings Rate Strategy - {{protocol}} - {{product}}"
   },
   "set-allowance-for": "Set Allowance for {{token}}",
   "setting-allowance-for": "Setting Allowance for {{token}}",

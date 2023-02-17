@@ -5,8 +5,7 @@ import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-// TODO update types to accept earn dispatch
-interface AjnaBorrowFormField {
+interface AjnaFormFieldDepositProps {
   collateralToken: string
   collateralBalance: BigNumber
   collateralPrice: BigNumber
@@ -26,7 +25,7 @@ export function AjnaFormFieldDeposit({
   collateralPrice,
   collateralBalance,
   dispatch,
-}: AjnaBorrowFormField) {
+}: AjnaFormFieldDepositProps) {
   const { t } = useTranslation()
 
   return (

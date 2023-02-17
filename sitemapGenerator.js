@@ -7,7 +7,7 @@ try {
     targetDirectory: 'public/',
     ignoredPaths: [
       '/api',
-      '404',
+      '/not-found',
       '/[address]',
       '/terms',
       '/privacy',

@@ -1,9 +1,9 @@
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { PageSEOTags } from 'components/HeadTags'
+import { ProductPagesLayout } from 'components/Layouts'
+import { MultiplyView } from 'features/multiply/MultiplyView'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-
-import { WithConnection } from '../components/connectWallet/ConnectWallet'
-import { ProductPagesLayout } from '../components/Layouts'
-import { MultiplyView } from '../features/multiply/MultiplyView'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -21,5 +21,9 @@ function MultiplyPage() {
 
 MultiplyPage.layout = ProductPagesLayout
 MultiplyPage.theme = 'Landing'
+
+MultiplyPage.seoTags = (
+  <PageSEOTags title="seo.multiply.title" description="seo.multiply.description" url="/multiply" />
+)
 
 export default MultiplyPage

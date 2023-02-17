@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
+import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaEarnOverviewWrapper } from 'features/ajna/earn/overview/AjnaEarnOverviewWrapper'
 import { AjnaEarnFormWrapper } from 'features/ajna/earn/sidebars/AjnaEarnFormWrapper'
@@ -32,7 +32,7 @@ export function AjnaEarnView() {
       )}
       <VaultHeadline
         header=""
-        {...getAjnaBorrowHeadlineProps({
+        {...getAjnaHeadlineProps({
           collateralToken,
           flow,
           id: resolvedId,

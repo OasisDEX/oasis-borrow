@@ -5,7 +5,7 @@ import {
   DetailsSectionFooterItem,
   DetailsSectionFooterItemWrapper,
 } from 'components/DetailsSectionFooterItem'
-import { AaveSimulateTitle } from 'features/aave/open/components/AaveSimulateTitle'
+import { SimulateTitle } from 'components/SimulateTitle'
 import { Simulation } from 'features/aave/open/services'
 import { DsrBanner } from 'features/dsr/components/DsrBanner'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -52,7 +52,7 @@ export function DsrSimulationSection({
   return (
     <>
       <DetailsSection
-        title={<AaveSimulateTitle token="DAI" depositAmount={amount} />}
+        title={<SimulateTitle token="DAI" depositAmount={amount} />}
         content={
           <>
             <DetailsSectionContentTable
