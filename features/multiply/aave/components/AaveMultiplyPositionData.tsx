@@ -123,7 +123,8 @@ export function AaveMultiplyPositionData({
     aaveHistory[0] &&
     'eventType' in aaveHistory[0] &&
     aaveHistory[0].eventType === 'executed' &&
-    aaveHistory[0].autoKind === 'aave-stop-loss'
+    aaveHistory[0].autoKind === 'aave-stop-loss' &&
+    currentPosition.debt.amount.isZero()
 
   return (
     <Grid>
