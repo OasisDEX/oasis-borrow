@@ -1,10 +1,9 @@
-
 import {
   DetailsSectionNotification,
-  DetailsSectionNotificationProps,
+  DetailsSectionNotificationItem,
 } from 'components/DetailsSectionNotification'
-import React, { PropsWithChildren, ReactNode } from 'react'
-import { Box,  Card, Flex, Heading } from 'theme-ui'
+import React, { PropsWithChildren, ReactNode, useState } from 'react'
+import { Box, Card, Flex, Heading } from 'theme-ui'
 
 import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
@@ -17,7 +16,7 @@ interface DetailsSectionProps {
   content: ReactNode
   footer?: ReactNode
   title?: ReactNode
-  notification?: DetailsSectionNotificationProps
+  notifications?: DetailsSectionNotificationItem[]
 }
 
 export function DetailsSection({
@@ -25,17 +24,24 @@ export function DetailsSection({
   buttons,
   content,
   footer,
-  notification,
+  notifications,
   title,
 }: DetailsSectionProps) {
+  const [openedNotifications, setOpenedNotifications] = useState<number>(notifications?.length || 0)
+
   return (
     <Box>
-      {notification && <DetailsSectionNotification {...notification} />}
+      {notifications && (
+        <DetailsSectionNotification
+          notifications={notifications}
+          onClose={() => setOpenedNotifications(openedNotifications - 1)}
+        />
+      )}
       <Card
         sx={{
           p: 0,
           border: 'lightMuted',
-          ...(notification && {
+          ...(openedNotifications > 0 && {
             borderTop: 'none',
             borderTopLeftRadius: 0,
             borderTopRightRadius: 0,
