@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { AaveSimulateTitle } from 'features/aave/open/components/AaveSimulateTitle'
+import { SimulateTitle } from 'components/SimulateTitle'
 import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
 import { ContentFooterItemsEarn } from 'features/ajna/earn/overview/ContentFooterItemsEarn'
 import { useTranslation } from 'next-i18next'
@@ -36,9 +36,7 @@ export function AjnaEarnOverviewWrapper() {
     <Grid gap={2}>
       <DetailsSection
         title={
-          // TODO this component is used outside of aave as well, generalize it
-          // styles are not inline with figma?
-          <AaveSimulateTitle
+          <SimulateTitle
             token={environment.collateralToken}
             depositAmount={form.state.depositAmount}
           />
