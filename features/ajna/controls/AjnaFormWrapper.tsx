@@ -3,17 +3,15 @@ import { FlowSidebar } from 'components/FlowSidebar'
 import { ethers } from 'ethers'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
-import { AjnaBorrowAction, AjnaEditingStep, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaBorrowAction, AjnaStatusStep } from 'features/ajna/common/types'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
-import React, { useEffect } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
 // TODO should accept earn teams as well
 interface AjnaFormWrapperProps {
-  dpmProxy?: string
-  collateralToken: string
-  quoteToken: string
   action?: AjnaBorrowAction
   depositAmount?: BigNumber
   paybackAmount?: BigNumber
@@ -21,33 +19,39 @@ interface AjnaFormWrapperProps {
     key: K,
     value: V,
   ) => void
-  currentStep: string
-  editingStep: AjnaEditingStep
-  isExternalStep: boolean
-  setNextStep: () => void
-  setStep: (step: AjnaStatusStep) => void
-  steps: string[]
-  children: (props: { txHandler: () => void; isAllowanceLoading: boolean }) => JSX.Element
+  children: ({
+    txHandler,
+    isAllowanceLoading,
+    currentStep,
+    dpmProxy,
+    collateralToken,
+    quoteToken,
+  }: {
+    txHandler: () => void
+    isAllowanceLoading: boolean
+    currentStep: AjnaStatusStep
+    dpmProxy?: string
+    collateralToken: string
+    quoteToken: string
+  }) => ReactNode
+  uiDropdown: any
+  resolvedId?: string
+  isSimulationLoading?: boolean
 }
 
 export function AjnaFormWrapper({
-  dpmProxy,
-  collateralToken,
-  quoteToken,
   action,
   depositAmount,
   paybackAmount,
   updateState,
-  currentStep,
-  editingStep,
-  isExternalStep,
-  setNextStep,
-  setStep,
-  steps,
-  children: Children,
+  children,
 }: AjnaFormWrapperProps) {
   const { walletAddress } = useAccount()
   const txHandler = useAjnaTxHandler()
+  const {
+    environment: { dpmProxy, collateralToken, quoteToken },
+    steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
+  } = useAjnaProductContext()
 
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),
@@ -79,7 +83,14 @@ export function AjnaFormWrapper({
   return (
     <>
       {!isExternalStep ? (
-        <Children txHandler={txHandler} isAllowanceLoading={flowState.isLoading} />
+        children({
+          txHandler,
+          isAllowanceLoading: flowState.isLoading,
+          currentStep,
+          dpmProxy,
+          collateralToken,
+          quoteToken,
+        })
       ) : (
         <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
       )}

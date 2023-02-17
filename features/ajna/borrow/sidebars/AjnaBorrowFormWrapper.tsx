@@ -1,63 +1,80 @@
-import { FlowSidebar } from 'components/FlowSidebar'
-import { ethers } from 'ethers'
+import { getToken } from 'blockchain/tokensMetadata'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaBorrowFormContent } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContent'
-import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
-import { useAccount } from 'helpers/useAccount'
-import { useFlowState } from 'helpers/useFlowState'
-import { zero } from 'helpers/zero'
-import React, { useEffect } from 'react'
+import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
+import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
+import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
+import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
+import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 export function AjnaBorrowFormWrapper() {
-  const { walletAddress } = useAccount()
-  const {
-    environment: { dpmProxy, collateralToken, quoteToken },
-    steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
-  } = useAjnaProductContext()
+  const { t } = useTranslation()
   const {
     form: {
-      state: { action, depositAmount, paybackAmount },
+      state: { action, depositAmount, paybackAmount, uiDropdown },
       updateState,
+      dispatch,
     },
+    position: { resolvedId, isSimulationLoading },
+    validation: { isFormValid },
   } = useAjnaBorrowContext()
 
-  const txHandler = useAjnaTxHandler()
-
-  const flowState = useFlowState({
-    ...(dpmProxy && { existingProxy: dpmProxy }),
-    token: ['open', 'deposit', 'withdraw'].includes(action as string)
-      ? collateralToken
-      : quoteToken,
-    amount: ['open', 'deposit'].includes(action as string)
-      ? depositAmount
-      : action === 'payback'
-      ? paybackAmount
-      : zero,
-    onEverythingReady: () => setNextStep(),
-    onGoBack: () => setStep(editingStep),
-  })
-
-  useEffect(() => {
-    updateState(
-      'dpmAddress',
-      flowState.availableProxies.length
-        ? flowState.availableProxies[0]
-        : ethers.constants.AddressZero,
-    )
-  }, [flowState.availableProxies])
-  useEffect(() => {
-    if (!walletAddress && steps.indexOf(currentStep) > steps.indexOf(editingStep))
-      setStep(editingStep)
-  }, [walletAddress])
-
   return (
-    <>
-      {!isExternalStep ? (
-        <AjnaBorrowFormContent txHandler={txHandler} isAllowanceLoading={flowState.isLoading} />
-      ) : (
-        <>{currentStep === 'dpm' && <FlowSidebar {...flowState} />}</>
+    <AjnaFormWrapper
+      action={action}
+      depositAmount={depositAmount}
+      paybackAmount={paybackAmount}
+      updateState={updateState}
+      uiDropdown={uiDropdown}
+      resolvedId={resolvedId}
+      isSimulationLoading={isSimulationLoading}
+    >
+      {({ txHandler, isAllowanceLoading, currentStep, dpmProxy, collateralToken, quoteToken }) => (
+        <AjnaFormContent
+          uiDropdown={uiDropdown}
+          dpmAddress={dpmProxy}
+          isSimulationLoading={isSimulationLoading}
+          txHandler={txHandler}
+          isAllowanceLoading={isAllowanceLoading}
+          isFormValid={isFormValid}
+          resolvedId={resolvedId}
+          dropdownItems={[
+            {
+              label: t('system.manage-collateral-token', {
+                token: collateralToken,
+              }),
+              panel: 'collateral',
+              shortLabel: collateralToken,
+              icon: getToken(collateralToken).iconCircle,
+              action: () => {
+                dispatch({ type: 'reset' })
+                updateState('uiDropdown', 'collateral')
+                updateState('uiPill', 'deposit')
+              },
+            },
+            {
+              label: t('system.manage-debt-token', {
+                token: quoteToken,
+              }),
+              panel: 'quote',
+              shortLabel: quoteToken,
+              icon: getToken(quoteToken).iconCircle,
+              action: () => {
+                dispatch({ type: 'reset' })
+                updateState('uiDropdown', 'quote')
+                updateState('uiPill', 'generate')
+              },
+            },
+          ]}
+        >
+          {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
+          {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
+          {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
+          {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
+        </AjnaFormContent>
       )}
-    </>
+    </AjnaFormWrapper>
   )
 }

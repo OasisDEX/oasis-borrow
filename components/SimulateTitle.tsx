@@ -2,17 +2,16 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
-import { zero } from '../../../../helpers/zero'
-
-interface AaveSimulateTitleProps {
+interface SimulateTitleProps {
   token?: string
   depositAmount?: BigNumber
 }
 
-export function AaveSimulateTitle({ token = 'ETH', depositAmount }: AaveSimulateTitleProps) {
+export function SimulateTitle({ token = 'ETH', depositAmount }: SimulateTitleProps) {
   const { iconCircle } = getToken(token)
 
   return (
@@ -22,6 +21,7 @@ export function AaveSimulateTitle({ token = 'ETH', depositAmount }: AaveSimulate
         px: [3, null, '24px'],
         py: '24px',
         borderBottom: 'lightMuted',
+        alignItems: 'center',
       }}
     >
       <Icon
@@ -37,8 +37,8 @@ export function AaveSimulateTitle({ token = 'ETH', depositAmount }: AaveSimulate
           as="h3"
           variant="heading3"
           sx={{
-            fontWeight: 'semiBold',
-            fontSize: '28px',
+            fontWeight: 'normal',
+            fontSize: '32px',
             color: 'primary100',
           }}
         >

@@ -1,8 +1,8 @@
 import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
-import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
+import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatCryptoBalance } from 'helpers/formatters/format'
@@ -37,7 +37,7 @@ export function AjnaBorrowView() {
       )}
       <VaultHeadline
         header=""
-        {...getAjnaBorrowHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
+        {...getAjnaHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[
           {
