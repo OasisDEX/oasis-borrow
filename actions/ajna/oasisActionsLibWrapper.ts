@@ -18,7 +18,7 @@ interface AjnaTxHandlerInput {
   position: AjnaPosition
 }
 
-export async function getAjnaParameters({
+export async function getAjnaParameters<P>({
   formState: { action, depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress },
   rpcProvider,
   collateralToken,
@@ -27,9 +27,9 @@ export async function getAjnaParameters({
   position,
 }: AjnaTxHandlerInput & {
   rpcProvider: ethers.providers.Provider
-}): Promise<AjnaActionData> {
+}): Promise<AjnaActionData<P>> {
   const tokenPair = `${collateralToken}-${quoteToken}` as AjnaPoolPairs
-  const defaultPromise = Promise.resolve({} as AjnaActionData)
+  const defaultPromise = Promise.resolve({} as AjnaActionData<P>)
 
   const quoteTokenPrecision = getToken(quoteToken).precision
   const collateralTokenPrecision = getToken(collateralToken).precision

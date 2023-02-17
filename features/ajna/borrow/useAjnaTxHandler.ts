@@ -6,6 +6,7 @@ import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnPosition } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -14,6 +15,8 @@ import { useDebouncedEffect } from 'helpers/useDebouncedEffect'
 import { useEffect, useState } from 'react'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
+
 export interface OasisActionCallData extends AjnaTxData {
   kind: TxMetaKind.libraryCall
   proxyAddress: string
@@ -21,7 +24,7 @@ export interface OasisActionCallData extends AjnaTxData {
 
 type AjnaTxHandler = () => void
 
-export function useAjnaTxHandler(): AjnaTxHandler {
+export function useAjnaTxHandler<P extends AjnaPosition & AjnaEarnPosition>(): AjnaTxHandler {
   const { txHelpers$, context$, uiChanges } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
@@ -41,7 +44,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
   } = useAjnaBorrowContext()
 
   const [txData, setTxData] = useState<AjnaTxData>()
-  const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<AjnaActionData>>()
+  const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<AjnaActionData<P>>>()
 
   const { depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress } = state
 
@@ -65,7 +68,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
     () => {
       if (context && !isExternalStep) {
         const promise = cancelable(
-          getAjnaParameters({
+          getAjnaParameters<P>({
             rpcProvider: context.rpcProvider,
             formState: state,
             collateralToken,

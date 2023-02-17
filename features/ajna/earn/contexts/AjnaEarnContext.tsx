@@ -17,7 +17,7 @@ import React, { PropsWithChildren, useContext, useEffect, useMemo, useState } fr
 import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
 
 // TODO: fake type just to see how different position types will behave
-type AjnaEarnPosition = Omit<AjnaPosition, 'debtAmount'> & { price: BigNumber }
+export type AjnaEarnPosition = Omit<AjnaPosition, 'debtAmount'> & { price: BigNumber }
 
 interface AjnaEarnContextProviderProps {
   position: AjnaEarnPosition
