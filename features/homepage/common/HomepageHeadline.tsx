@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import React from 'react'
 import { Box, Text } from 'theme-ui'
 
 type HomePageHeadlineProps = {
