@@ -1,16 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { AjnaBorrowFormAction } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
+import { AjnaEarnFormAction } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { Dispatch } from 'react'
 
 // TODO update types to accept earn dispatch
 interface AjnaBorrowFormField {
   collateralToken: string
   collateralBalance: BigNumber
   collateralPrice: BigNumber
-  dispatch: React.Dispatch<AjnaBorrowFormAction>
+  dispatch: Dispatch<AjnaBorrowFormAction> | Dispatch<AjnaEarnFormAction>
   isDisabled?: boolean
   resetOnClear?: boolean
   depositAmount?: BigNumber

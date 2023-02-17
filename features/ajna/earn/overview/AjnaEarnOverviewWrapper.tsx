@@ -3,7 +3,9 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { AaveSimulateTitle } from 'features/aave/open/components/AaveSimulateTitle'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
+import { useAjnaEarnContext } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { ContentFooterItemsEarn } from 'features/ajna/earn/overview/ContentFooterItemsEarn'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -11,26 +13,14 @@ import { Grid } from 'theme-ui'
 
 export function AjnaEarnOverviewWrapper() {
   const { t } = useTranslation()
-  // TODO use useAjnaEarnContext once available
-  // const {
-  //   environment: { collateralPrice, collateralToken },
-  //   position: { currentPosition, simulation },
-  // } = useAjnaEarnContext()
-  const { environment, simulation, form } = {
+  const {
+    environment: { collateralToken },
+  } = useAjnaProductContext()
+  const {
     form: {
-      state: {
-        depositAmount: new BigNumber(50),
-      },
+      state: { depositAmount },
     },
-    environment: { collateralPrice: new BigNumber(200), collateralToken: 'ETH' },
-    simulation: {
-      position: {
-        collateralAmount: new BigNumber(13),
-        apy: new BigNumber(12),
-        estimatedBreakEven: 25,
-      },
-    },
-  }
+  } = useAjnaEarnContext()
 
   return (
     <Grid gap={2}>
@@ -38,10 +28,7 @@ export function AjnaEarnOverviewWrapper() {
         title={
           // TODO this component is used outside of aave as well, generalize it
           // styles are not inline with figma?
-          <AaveSimulateTitle
-            token={environment.collateralToken}
-            depositAmount={form.state.depositAmount}
-          />
+          <AaveSimulateTitle token={collateralToken} depositAmount={depositAmount} />
         }
         content={
           <>
@@ -63,11 +50,9 @@ export function AjnaEarnOverviewWrapper() {
         footer={
           <DetailsSectionFooterItemWrapper>
             <ContentFooterItemsEarn
-              estimatedBreakEven={simulation?.position.estimatedBreakEven}
-              totalValueLocked={simulation?.position.collateralAmount.times(
-                environment.collateralPrice,
-              )}
-              apy={simulation?.position.apy}
+              estimatedBreakEven={25}
+              totalValueLocked={new BigNumber(12)}
+              apy={new BigNumber(13)}
             />
           </DetailsSectionFooterItemWrapper>
         }

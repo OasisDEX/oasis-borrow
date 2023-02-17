@@ -1,6 +1,5 @@
-import { getToken } from 'blockchain/tokensMetadata'
+
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import {
   getAjnaSidebarButtonsStatus,
   getAjnaSidebarPrimaryButtonActions,
@@ -10,6 +9,7 @@ import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaStatusStep } from 'features/ajna/common/types'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaEarnContext } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -26,23 +26,8 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    form: {
-      dispatch,
-      state: { dpmAddress, uiDropdown },
-      updateState,
-    },
-    position: { resolvedId, isSimulationLoading },
-    validation: { isFormValid },
-  } = useAjnaBorrowContext() // TODO use earn context when available
-  const {
-    environment: { collateralToken, flow, product, quoteToken, isOwner },
-    steps: {
-      // currentStep,
-      editingStep,
-      setNextStep,
-      setStep,
-      isStepWithTransaction,
-    },
+    environment: { flow, product, isOwner },
+    steps: { editingStep, setNextStep, setStep, isStepWithTransaction },
     tx: {
       isTxError,
       isTxSuccess,
@@ -52,6 +37,13 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
       setTxDetails,
     },
   } = useAjnaProductContext()
+  const {
+    form: {
+      state: { dpmAddress },
+    },
+    position: { resolvedId, isSimulationLoading },
+    validation: { isFormValid },
+  } = useAjnaEarnContext()
 
   const currentStep = 'setup' as AjnaStatusStep
 
@@ -101,40 +93,6 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(`ajna.${product}.common.form.title.${currentStep}`),
-    ...(flow === 'manage' && {
-      dropdown: {
-        forcePanel: uiDropdown,
-        disabled: currentStep !== 'manage',
-        items: [
-          {
-            label: t('system.manage-collateral-token', {
-              token: collateralToken,
-            }),
-            panel: 'collateral',
-            shortLabel: collateralToken,
-            icon: getToken(collateralToken).iconCircle,
-            action: () => {
-              dispatch({ type: 'reset' })
-              updateState('uiDropdown', 'collateral')
-              updateState('uiPill', 'depositBorrow')
-            },
-          },
-          {
-            label: t('system.manage-debt-token', {
-              token: quoteToken,
-            }),
-            panel: 'quote',
-            shortLabel: quoteToken,
-            icon: getToken(quoteToken).iconCircle,
-            action: () => {
-              dispatch({ type: 'reset' })
-              updateState('uiDropdown', 'quote')
-              updateState('uiPill', 'generateBorrow')
-            },
-          },
-        ],
-      },
-    }),
     content: (
       <Grid gap={3}>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
