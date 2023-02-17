@@ -1,4 +1,4 @@
-import { UsersWhoFollowVaults } from '@prisma/client'
+import { Protocol, UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
@@ -24,6 +24,7 @@ export type FollowButtonControlProps = {
   short?: boolean
   sx?: SxStyleProp
   vaultId: BigNumber
+  protocol: Protocol
 }
 
 export function FollowButtonControl({
@@ -32,6 +33,7 @@ export function FollowButtonControl({
   short,
   sx,
   vaultId,
+  protocol,
 }: FollowButtonControlProps) {
   const { uiChanges } = useAppContext()
   const [isFollowing, setIsFollowing] = useState(false)
@@ -78,7 +80,7 @@ export function FollowButtonControl({
   const isWalletConnected = accountIsConnectedValidator({ account: followerAddress })
   async function unfollowVault(jwtToken: string) {
     try {
-      await unfollowVaultUsingApi(vaultId, chainId, jwtToken)
+      await unfollowVaultUsingApi(vaultId, chainId, protocol, jwtToken)
       setIsFollowing(false)
     } catch (e) {
       console.error(e)
@@ -92,7 +94,7 @@ export function FollowButtonControl({
 
   async function followVault(jwtToken: string) {
     try {
-      const followedVaults = await followVaultUsingApi(vaultId, chainId, jwtToken)
+      const followedVaults = await followVaultUsingApi(vaultId, chainId, protocol, jwtToken)
       handleGetFollowedVaults(followedVaults)
       setIsFollowing(true)
     } catch (e) {
