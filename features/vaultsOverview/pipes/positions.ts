@@ -208,6 +208,7 @@ function buildAaveViewModel(
               .times(100)
           : zero
 
+        // Todo: move to lib
         const netValueInDebtToken = amountFromPrecision(
           position.collateral.normalisedAmount
             .times(position.oraclePriceForCollateralDebtExchangeRate)
