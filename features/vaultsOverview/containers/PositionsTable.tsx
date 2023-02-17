@@ -49,7 +49,7 @@ export function PositionsTable({ address }: { address: string }) {
             ...dsrPosition,
           ]
           const borrowPositions = getMakerBorrowPositions(ownersPositionsList.makerPositions)
-          const makerPositions = useMemo(() => {
+          const multiplyPositions = useMemo(() => {
             return [
               ...getMakerMultiplyPositions(ownersPositionsList.makerPositions),
               ...getAaveMultiplyPositions(ownersPositionsList.aavePositions),
@@ -79,13 +79,13 @@ export function PositionsTable({ address }: { address: string }) {
                   />
                 </>
               )}
-              {makerPositions.length > 0 && (
+              {multiplyPositions.length > 0 && (
                 <>
                   <DiscoverTableHeading>
-                    Oasis {t('nav.multiply')} ({makerPositions.length})
+                    Oasis {t('nav.multiply')} ({multiplyPositions.length})
                   </DiscoverTableHeading>
                   <DiscoverResponsiveTable
-                    rows={makerPositions}
+                    rows={multiplyPositions}
                     skip={positionsTableSkippedHeaders}
                     tooltips={positionsTableTooltips}
                   />

@@ -116,10 +116,10 @@ import {
   getUserDpmProxy$,
 } from 'blockchain/userDpmProxies'
 import {
+  createMakerVaultsFromIds$,
   createStandardCdps$,
   createVault$,
   createVaults$,
-  createVaultsFromIds$,
   decorateVaultsWithValue$,
   Vault,
 } from 'blockchain/vaults'
@@ -210,7 +210,7 @@ import {
   createMakerOracleTokenPricesForDates$,
 } from 'features/earn/makerOracleTokenPrices'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
-import { followedVaults$ } from 'features/follow/api'
+import { allFollowedPositions$ } from 'features/follow/api'
 import {
   FOLLOWED_VAULTS_LIMIT_REACHED_CHANGE,
   FollowedVaultsLimitReachedChange,
@@ -1212,11 +1212,11 @@ export function setupAppContext() {
     curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, refreshInterval),
   )
 
-  const positionsList$ = memoize(
+  const makerPositionsList$ = memoize(
     curry(createMakerPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$, aavePositions$))
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(makerPositionsList$, aavePositions$))
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
@@ -1335,8 +1335,8 @@ export function setupAppContext() {
     ),
   )
 
-  const vaultsFromId$ = memoize(
-    curry(createVaultsFromIds$)(onEveryBlock$, followedVaults$, vault$, chainContext$, [
+  const makerVaultsFromId$ = memoize(
+    curry(createMakerVaultsFromIds$)(onEveryBlock$, allFollowedPositions$, vault$, chainContext$, [
       charterCdps$,
       cropJoinCdps$,
       standardCdps$,
@@ -1344,17 +1344,17 @@ export function setupAppContext() {
   )
 
   const ownersPositionsList$ = memoize(
-    curry(createPositionsList$)(positionsList$, aavePositions$, dsr$),
+    curry(createPositionsList$)(makerPositionsList$, aavePositions$, dsr$),
   )
 
-  const followedList$ = memoize(
+  const followedMakerVaults$ = memoize(
     curry(createMakerPositionsList$)(
       context$,
       ilksWithBalance$,
       memoize(
         curry(vaultsWithHistory$)(
           chainContext$,
-          curry(decorateVaultsWithValue$)(vaultsFromId$, exchangeQuote$, userSettings$),
+          curry(decorateVaultsWithValue$)(makerVaultsFromId$, exchangeQuote$, userSettings$),
           refreshInterval,
         ),
       ),
@@ -1483,7 +1483,7 @@ export function setupAppContext() {
     strategyConfig$,
     readPositionCreatedEvents$,
     ownersPositionsList$,
-    followedList$,
+    followedList$: followedMakerVaults$,
     protocols,
     commonTransactionServices,
     gasEstimation$,

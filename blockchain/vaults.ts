@@ -81,7 +81,7 @@ export function createVaults$(
   )
 }
 
-export function createVaultsFromIds$(
+export function createMakerVaultsFromIds$(
   refreshInterval: Observable<number>,
   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
@@ -98,7 +98,7 @@ export function createVaultsFromIds$(
             : combineLatest(
                 followedVaults
                   .filter((vault) => vault.vault_chain_id === context.chainId)
-                  .filter((vault) => vault.protocol === 'maker') // TODO: ŁW - add support for other protocols
+                  .filter((vault) => vault.protocol === 'maker')
                   .map((followedVault) =>
                     vault$(new BigNumber(followedVault.vault_id), context.chainId),
                   ),
