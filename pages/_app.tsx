@@ -3,6 +3,10 @@ import { CacheProvider, Global } from '@emotion/core'
 import { MDXProvider } from '@mdx-js/react'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 import { Web3ReactProvider } from '@web3-react/core'
+import { adRollPixelScript } from 'analytics/adroll'
+import { trackingEvents } from 'analytics/analytics'
+import { LOCALSTORAGE_KEY } from 'analytics/common'
+import { mixpanelInit } from 'analytics/mixpanel'
 import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProxy'
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
@@ -15,9 +19,13 @@ import { NotificationSocketProvider } from 'components/NotificationSocketProvide
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { WithFollowVaults } from 'features/follow/view/WithFollowVaults'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { ModalProvider } from 'helpers/modalHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { loadFeatureToggles } from 'helpers/useFeatureToggle'
+import { useLocalStorage } from 'helpers/useLocalStorage'
 import { appWithTranslation, i18n } from 'next-i18next'
+import nextI18NextConfig from 'next-i18next.config.js'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -26,14 +34,6 @@ import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
 import Web3 from 'web3'
-
-import { adRollPixelScript } from '../analytics/adroll'
-import { trackingEvents } from '../analytics/analytics'
-import { LOCALSTORAGE_KEY } from '../analytics/common'
-import { mixpanelInit } from '../analytics/mixpanel'
-import { loadFeatureToggles } from '../helpers/useFeatureToggle'
-import { useLocalStorage } from '../helpers/useLocalStorage'
-import nextI18NextConfig from '../next-i18next.config.js'
 
 if (process.env.NODE_ENV !== 'production') {
   if (typeof window !== 'undefined') {
@@ -139,7 +139,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
     <PageSEOTags
       title="seo.default.title"
       description="seo.default.description"
-      url={router.pathname || '/'}
+      url={router.pathname || INTERNAL_LINKS.homepage}
     />
   )
 

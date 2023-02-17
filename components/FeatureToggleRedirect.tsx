@@ -1,3 +1,4 @@
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { Feature, useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRouter } from 'next/router'
 import React, { PropsWithChildren } from 'react'
@@ -10,7 +11,7 @@ export type FeatureToggleRedirectProps = {
 export function WithFeatureToggleRedirect({
   children,
   feature,
-  redirectUrl = '/',
+  redirectUrl = INTERNAL_LINKS.homepage,
 }: PropsWithChildren<FeatureToggleRedirectProps>) {
   const { replace } = useRouter()
   const featureEnabled = useFeatureToggle(feature)

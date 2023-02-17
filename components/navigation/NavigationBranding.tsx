@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { navigationBreakpoints } from 'components/navigation/Navigation'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React from 'react'
 import { Box, Image } from 'theme-ui'
@@ -21,7 +22,10 @@ export function getPillColor(color: NavigationBrandingPillColor) {
   return Array.isArray(color) ? `linear-gradient(90deg, ${color[0]} 0%, ${color[1]} 100%)` : color
 }
 
-export function NavigationBranding({ link = '/', pill }: NavigationBrandingProps) {
+export function NavigationBranding({
+  link = INTERNAL_LINKS.homepage,
+  pill,
+}: NavigationBrandingProps) {
   const isViewBelowS = useMediaQuery(`(max-width: ${navigationBreakpoints[0]})`)
 
   return (

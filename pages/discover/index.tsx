@@ -1,5 +1,5 @@
-import { DISCOVER_URL } from 'features/discover/helpers'
 import { discoverPagesMeta } from 'features/discover/meta'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { GetServerSidePropsContext } from 'next'
 import React from 'react'
 
@@ -13,7 +13,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     redirect: {
-      destination: `${DISCOVER_URL}/${defaultDiscoverPage.kind}${network}`,
+      destination: `${INTERNAL_LINKS.discover}/${defaultDiscoverPage.kind}${network}`,
       permanent: true,
     },
   }

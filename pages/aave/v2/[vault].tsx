@@ -7,6 +7,7 @@ import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/cont
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
 import { PositionId } from 'features/aave/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -93,7 +94,7 @@ function Position({ vault }: { vault: string }) {
     address !== undefined ? undefined : isNaN(Number(vault)) ? undefined : Number(vault)
 
   if (address === undefined && vaultId === undefined) {
-    void replace('/')
+    void replace(INTERNAL_LINKS.homepage)
   }
 
   return (

@@ -1,9 +1,9 @@
 import { MixpanelUserContext, trackingEvents } from 'analytics/analytics'
 import { GenericSelect } from 'components/GenericSelect'
 import { AppLink } from 'components/Links'
-import { DISCOVER_URL } from 'features/discover/helpers'
 import { DiscoverPageMeta, discoverPagesMeta } from 'features/discover/meta'
 import { DiscoverPages } from 'features/discover/types'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -23,7 +23,7 @@ export function DiscoverNavigation({ kind, userContext }: DiscoverNavigationProp
 
   const mobileLinks = discoverPagesMeta.map((item) => ({
     label: t(`discover.navigation.${item.kind}`),
-    value: `${DISCOVER_URL}/${item.kind}`,
+    value: `${INTERNAL_LINKS.discover}/${item.kind}`,
     kind: item.kind,
   }))
   const selectedLink = mobileLinks.filter((item) => item.kind === kind)[0]
@@ -87,7 +87,7 @@ export function DiscoverNavigationItem({
       }}
     >
       <AppLink
-        href={`${DISCOVER_URL}/${kind}`}
+        href={`${INTERNAL_LINKS.discover}/${kind}`}
         sx={{
           display: 'flex',
           flexDirection: 'column',

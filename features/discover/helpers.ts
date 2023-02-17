@@ -9,8 +9,6 @@ import {
 } from 'features/discover/types'
 import { timeAgo } from 'utils'
 
-export const DISCOVER_URL = '/discover'
-
 export function getDiscoverMixpanelPage(kind: DiscoverPages): Pages {
   switch (kind) {
     case DiscoverPages.HIGHEST_RISK_POSITIONS:

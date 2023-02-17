@@ -1,3 +1,4 @@
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import Head from 'next/head'
@@ -41,7 +42,7 @@ export function PageSEOTags({
   title,
   titleParams,
   description,
-  url = '/',
+  url = INTERNAL_LINKS.homepage,
   ogImage = 'og_default.png',
   twitterImage = 'twitter_preview_default.png',
 }: SEOTagsType) {
@@ -49,15 +50,15 @@ export function PageSEOTags({
   const { query } = useRouter()
 
   const OGImages = {
-    '/borrow': {
+    [INTERNAL_LINKS.borrow]: {
       ogImage: 'og_borrow.png',
       twitterImage: 'twitter_preview_borrow.png',
     },
-    '/multiply': {
+    [INTERNAL_LINKS.multiply]: {
       ogImage: 'og_multiply.png',
       twitterImage: 'twitter_preview_multiply.png',
     },
-    '/earn': {
+    [INTERNAL_LINKS.earn]: {
       ogImage: 'og_earn.png',
       twitterImage: 'twitter_preview_earn.png',
     },

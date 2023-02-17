@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import { useTranslation } from 'next-i18next'
@@ -23,7 +24,7 @@ function SecurityPage() {
       name: 'people',
       header: t('security.category.people.header'),
       description: t('security.category.people.description'),
-      links: [{ url: '/about', label: t('security.category.people.link-about') }],
+      links: [{ url: INTERNAL_LINKS.about, label: t('security.category.people.link-about') }],
     },
     {
       name: 'audit',
@@ -64,7 +65,7 @@ function SecurityPage() {
       name: 'shield',
       header: t('security.category.shield.header'),
       description: t('security.category.shield.description'),
-      links: [{ url: '/privacy', label: t('security.category.shield.link-privacy') }],
+      links: [{ url: INTERNAL_LINKS.privacy, label: t('security.category.shield.link-privacy') }],
     },
   ]
   return (

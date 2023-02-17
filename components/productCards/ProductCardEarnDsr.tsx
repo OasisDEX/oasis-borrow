@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { getYearlyRate } from 'features/dsr/helpers/dsrPot'
 import { redirectState$ } from 'features/router/redirectState'
+import { INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
@@ -9,8 +10,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { ProductCard, ProductCardProtocolLink } from './ProductCard'
-
-export const dsrLink = '/earn/dsr'
 
 export function ProductCardEarnDsr() {
   const { t } = useTranslation()
@@ -21,7 +20,7 @@ export function ProductCardEarnDsr() {
 
   function handleClick() {
     if (!connectedContext) {
-      redirectState$.next(dsrLink)
+      redirectState$.next(INTERNAL_LINKS.earnDSR)
     }
   }
 
@@ -33,7 +32,9 @@ export function ProductCardEarnDsr() {
 
   const earnUpTo = new BigNumber(100000).times(apy.decimalPlaces(5))
 
-  const link = connectedContext ? `${dsrLink}/${connectedContext.account}` : '/connect'
+  const link = connectedContext
+    ? `${INTERNAL_LINKS.earnDSR}/${connectedContext.account}`
+    : INTERNAL_LINKS.connect
 
   return (
     <ProductCard
