@@ -1,4 +1,3 @@
-
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import {
   getAjnaSidebarButtonsStatus,
