@@ -1,5 +1,11 @@
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { AjnaFlow, AjnaPoolData, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import {
+  AjnaFlow,
+  AjnaFormState,
+  AjnaPoolData,
+  AjnaProduct,
+  AjnaSidebarStep,
+} from 'features/ajna/common/types'
 import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellContent'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
@@ -144,7 +150,7 @@ export function isFormEmpty({
   state,
 }: {
   product: AjnaProduct
-  state: AjnaBorrowFormState | AjnaEarnFormState
+  state: AjnaFormState
 }): boolean {
   switch (product) {
     case 'borrow': {

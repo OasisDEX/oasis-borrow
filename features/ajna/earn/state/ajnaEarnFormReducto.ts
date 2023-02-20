@@ -23,13 +23,20 @@ interface AjnaEarnFormActionsUpdateWithdraw {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdateDpm {
+  type: 'update-dpm'
+  dpmAddress: string
+}
 interface AjnaEarnFormActionsReset {
   type: 'reset'
 }
 
 export type AjnaEarnFormAction = ReductoActions<
   AjnaEarnFormState,
-  AjnaEarnFormActionsUpdateDeposit | AjnaEarnFormActionsUpdateWithdraw | AjnaEarnFormActionsReset
+  | AjnaEarnFormActionsUpdateDeposit
+  | AjnaEarnFormActionsUpdateWithdraw
+  | AjnaBorrowFormActionsUpdateDpm
+  | AjnaEarnFormActionsReset
 >
 
 export const ajnaEarnReset = {
@@ -63,6 +70,11 @@ export function useAjnaEarnFormReducto({ ...rest }: Partial<AjnaEarnFormState>) 
             ...state,
             withdrawAmount: action.withdrawAmount,
             withdrawAmountUSD: action.withdrawAmountUSD,
+          }
+        case 'update-dpm':
+          return {
+            ...state,
+            dpmAddress: action.dpmAddress,
           }
         case 'reset':
           return { ...state, ...ajnaEarnReset, price: rest.price }

@@ -1,4 +1,4 @@
-import { AjnaSidebarEditingStep, AjnaFlow, AjnaSidebarStep } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaSidebarEditingStep, AjnaSidebarStep } from 'features/ajna/common/types'
 
 export function getAjnaSidebarButtonsStatus({
   currentStep,
@@ -32,6 +32,14 @@ export function getAjnaSidebarButtonsStatus({
       isSimulationLoading ||
       isTxInProgress ||
       isTxWaitingForApproval)
+
+  console.log('---')
+  console.log(`walletAddress: ${walletAddress}`)
+  console.log(`isFormValid: ${isFormValid}`)
+  console.log(`isAllowanceLoading: ${isAllowanceLoading}`)
+  console.log(`isSimulationLoading: ${isSimulationLoading}`)
+  console.log(`isTxInProgress: ${isTxInProgress}`)
+  console.log(`isTxWaitingForApproval: ${isTxWaitingForApproval}`)
 
   const isPrimaryButtonLoading =
     !!walletAddress &&

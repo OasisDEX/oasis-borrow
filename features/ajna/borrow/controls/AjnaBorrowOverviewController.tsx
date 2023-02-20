@@ -8,12 +8,12 @@ import { ContentCardPositionDebt } from 'features/ajna/borrow/overview/ContentCa
 import { ContentFooterItemsBorrow } from 'features/ajna/borrow/overview/ContentFooterItemsBorrow'
 import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
-import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
+import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBannerController'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-export function AjnaBorrowOverviewWrapper() {
+export function AjnaBorrowOverviewController() {
   const { t } = useTranslation()
   const {
     environment: { collateralPrice, collateralToken, quotePrice, quoteToken },

@@ -53,16 +53,6 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
           secondaryValue: `${formatted.afterAmountToLend} ${collateralToken}`,
           isLoading,
         },
-        ...(uiPill === 'withdraw'
-          ? [
-              {
-                label: t('amount-to-remaining-deposit'),
-                value: `${formatted.amountToLend} ${collateralToken}`,
-                secondaryValue: `${formatted.afterAmountToLend} ${collateralToken}`,
-                isLoading,
-              },
-            ]
-          : []),
         {
           label: t('net-apy'),
           value: formatted.netApy,

@@ -2,7 +2,7 @@ import { AjnaValidationItem } from 'actions/ajna/types'
 import BigNumber from 'bignumber.js'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import { AjnaFormState, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { TxError } from 'helpers/types'
@@ -18,7 +18,7 @@ interface GetAjnaBorrowValidationsParams {
   quoteBalance: BigNumber
   simulationErrors?: AjnaValidationItem[]
   simulationWarnings?: AjnaValidationItem[]
-  state: AjnaBorrowFormState | AjnaEarnFormState
+  state: AjnaFormState
   txError?: TxError
 }
 
@@ -78,14 +78,14 @@ function isFormValid({
         case 'setup':
         case 'manage':
           switch (action) {
-            case 'open':
-            case 'deposit':
+            case 'open-borrow':
+            case 'deposit-borrow':
               return !!depositAmount?.gt(0)
-            case 'withdraw':
+            case 'withdraw-borrow':
               return !!withdrawAmount?.gt(0)
-            case 'generate':
+            case 'generate-borrow':
               return !!generateAmount?.gt(0)
-            case 'payback':
+            case 'payback-borrow':
               return !!paybackAmount?.gt(0)
             default:
               return false
@@ -101,10 +101,10 @@ function isFormValid({
         case 'setup':
         case 'manage':
           switch (action) {
-            case 'openEarn':
-            case 'depositEarn':
+            case 'open-earn':
+            case 'deposit-earn':
               return !!depositAmount?.gt(0)
-            case 'withdrawEarn':
+            case 'withdraw-earn':
               return !!withdrawAmount?.gt(0)
             default:
               return false
@@ -166,7 +166,7 @@ export function getAjnaValidation({
   )
 
   return {
-    isFormValid: errors.messages.length > 0 && isFormValid({ currentStep, product, state }),
+    isFormValid: errors.messages.length === 0 && isFormValid({ currentStep, product, state }),
     errors,
     warnings,
   }

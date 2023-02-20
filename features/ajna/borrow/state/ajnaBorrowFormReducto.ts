@@ -15,7 +15,7 @@ export interface AjnaBorrowFormState {
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   uiDropdown: AjnaBorrowPanel
-  uiPill: Exclude<AjnaBorrowAction, 'open'>
+  uiPill: Exclude<AjnaBorrowAction, 'open-borrow'>
 }
 
 interface AjnaBorrowFormActionsUpdateDeposit {
@@ -38,6 +38,10 @@ interface AjnaBorrowFormActionsUpdatePayback {
   paybackAmount?: BigNumber
   paybackAmountUSD?: BigNumber
 }
+interface AjnaBorrowFormActionsUpdateDpm {
+  type: 'update-dpm'
+  dpmAddress: string
+}
 interface AjnaBorrowFormActionsReset {
   type: 'reset'
 }
@@ -48,6 +52,7 @@ export type AjnaBorrowFormAction = ReductoActions<
   | AjnaBorrowFormActionsUpdateWithdraw
   | AjnaBorrowFormActionsUpdateGenerate
   | AjnaBorrowFormActionsUpdatePayback
+  | AjnaBorrowFormActionsUpdateDpm
   | AjnaBorrowFormActionsReset
 >
 
@@ -66,7 +71,7 @@ export const ajnaBorrowDefault: AjnaBorrowFormState = {
   ...ajnaBorrowReset,
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'collateral',
-  uiPill: 'deposit',
+  uiPill: 'deposit-borrow',
 }
 
 export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormState>) {
@@ -100,6 +105,11 @@ export function useAjnaBorrowFormReducto({ ...rest }: Partial<AjnaBorrowFormStat
             ...state,
             paybackAmount: action.paybackAmount,
             paybackAmountUSD: action.paybackAmountUSD,
+          }
+        case 'update-dpm':
+          return {
+            ...state,
+            dpmAddress: action.dpmAddress,
           }
         case 'reset':
           return { ...state, ...ajnaBorrowReset }

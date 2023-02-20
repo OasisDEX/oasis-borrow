@@ -3,44 +3,33 @@ import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/Ajna
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
-import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
+import { AjnaFormView } from 'features/ajna/common/views/AjnaFormView'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
-import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function AjnaBorrowFormWrapper() {
+export function AjnaBorrowFormController() {
   const { t } = useTranslation()
   const {
+    environment: { collateralToken, flow, quoteToken },
+    steps: { currentStep },
+  } = useAjnaGeneralContext()
+  const {
     form: {
-      state: { action, depositAmount, paybackAmount, uiDropdown },
-      updateState,
       dispatch,
+      state: { uiDropdown },
+      updateState,
     },
-    position: { resolvedId, isSimulationLoading },
-    validation: { isFormValid },
   } = useAjnaProductContext('borrow')
 
   return (
-    <AjnaFormWrapper
-      action={action}
-      depositAmount={depositAmount}
-      paybackAmount={paybackAmount}
-      updateState={updateState}
-      uiDropdown={uiDropdown}
-      resolvedId={resolvedId}
-      isSimulationLoading={isSimulationLoading}
-    >
-      {({ txHandler, isAllowanceLoading, currentStep, dpmProxy, collateralToken, quoteToken }) => (
-        <AjnaFormContent
-          uiDropdown={uiDropdown}
-          dpmAddress={dpmProxy}
-          isSimulationLoading={isSimulationLoading}
-          txHandler={txHandler}
-          isAllowanceLoading={isAllowanceLoading}
-          isFormValid={isFormValid}
-          resolvedId={resolvedId}
-          dropdownItems={[
+    <AjnaFormView
+      {...(flow === 'manage' && {
+        dropdown: {
+          forcePanel: uiDropdown,
+          disabled: currentStep !== 'manage',
+          items: [
             {
               label: t('system.manage-collateral-token', {
                 token: collateralToken,
@@ -51,7 +40,7 @@ export function AjnaBorrowFormWrapper() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'collateral')
-                updateState('uiPill', 'deposit')
+                updateState('uiPill', 'deposit-borrow')
               },
             },
             {
@@ -64,17 +53,17 @@ export function AjnaBorrowFormWrapper() {
               action: () => {
                 dispatch({ type: 'reset' })
                 updateState('uiDropdown', 'quote')
-                updateState('uiPill', 'generate')
+                updateState('uiPill', 'generate-borrow')
               },
             },
-          ]}
-        >
-          {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
-          {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
-          {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
-          {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
-        </AjnaFormContent>
-      )}
-    </AjnaFormWrapper>
+          ],
+        },
+      })}
+    >
+      {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
+      {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
+      {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
+      {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
+    </AjnaFormView>
   )
 }

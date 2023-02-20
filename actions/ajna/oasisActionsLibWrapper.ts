@@ -4,10 +4,8 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ethers } from 'ethers'
-import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { AjnaPoolPairs } from 'features/ajna/common/types'
+import { AjnaFormState, AjnaPoolPairs } from 'features/ajna/common/types'
 import { AjnaEarnPosition } from 'features/ajna/earn/fakePosition'
-import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { zero } from 'helpers/zero'
 
 import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
@@ -17,7 +15,7 @@ interface AjnaTxHandlerInput {
   context: Context
   position: AjnaPosition | AjnaEarnPosition
   quoteToken: string
-  state: AjnaBorrowFormState | AjnaEarnFormState
+  state: AjnaFormState
 }
 
 export async function getAjnaParameters<P>({
@@ -62,8 +60,8 @@ export async function getAjnaParameters<P>({
   // intentionally allowed for fallthrough; if none of conditions are met, just go to default return
   /* eslint-disable no-fallthrough */
   switch (action) {
-    case 'open': {
-      const { depositAmount, generateAmount } = state as AjnaBorrowFormState
+    case 'open-borrow': {
+      const { depositAmount, generateAmount } = state
 
       if (depositAmount) {
         return strategies.ajna.open(
@@ -77,8 +75,8 @@ export async function getAjnaParameters<P>({
         )
       }
     }
-    case 'deposit': {
-      const { depositAmount, generateAmount } = state as AjnaBorrowFormState
+    case 'deposit-borrow': {
+      const { depositAmount, generateAmount } = state
 
       if (depositAmount) {
         return strategies.ajna.depositBorrow(
@@ -93,8 +91,8 @@ export async function getAjnaParameters<P>({
         )
       }
     }
-    case 'generate': {
-      const { depositAmount, generateAmount } = state as AjnaBorrowFormState
+    case 'generate-borrow': {
+      const { depositAmount, generateAmount } = state
 
       if (generateAmount) {
         return strategies.ajna.depositBorrow(
@@ -109,8 +107,8 @@ export async function getAjnaParameters<P>({
         )
       }
     }
-    case 'payback': {
-      const { paybackAmount, withdrawAmount } = state as AjnaBorrowFormState
+    case 'payback-borrow': {
+      const { paybackAmount, withdrawAmount } = state
 
       if (paybackAmount) {
         return strategies.ajna.paybackWithdraw(
@@ -124,8 +122,8 @@ export async function getAjnaParameters<P>({
         )
       }
     }
-    case 'withdraw': {
-      const { paybackAmount, withdrawAmount } = state as AjnaBorrowFormState
+    case 'withdraw-borrow': {
+      const { paybackAmount, withdrawAmount } = state
 
       if (withdrawAmount) {
         return strategies.ajna.paybackWithdraw(
@@ -140,9 +138,9 @@ export async function getAjnaParameters<P>({
       }
     }
     // Earn example
-    // case 'withdrawEarn': {
+    // case 'withdraw-earn': {
     //   const { price, withdrawAmount } = state as AjnaEarnFormState
-    //  
+    //
     //   if (withdrawAmount) {
     //     return strategies.ajna.paybackWithdraw(
     //       {
