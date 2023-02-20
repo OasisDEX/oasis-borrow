@@ -8,7 +8,7 @@ name: Deploy to AWS Production
 jobs:
   deploy:
     name: Deploy
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
       ECR_REPO_NAME: oasis-borrow-prod
