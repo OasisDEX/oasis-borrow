@@ -34,11 +34,11 @@ export const steps: {
     open: ['risk', 'setup', 'dpm', 'transaction'],
     manage: ['manage', 'dpm', 'transaction'],
   },
-  multiply: {
-    open: [],
-    manage: [],
-  },
   earn: {
+    open: ['risk', 'setup', 'dpm', 'transaction'],
+    manage: ['manage', 'dpm', 'transaction'],
+  },
+  multiply: {
     open: [],
     manage: [],
   },

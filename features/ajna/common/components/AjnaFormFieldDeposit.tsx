@@ -1,15 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { AjnaBorrowFormAction } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface AjnaFormFieldDepositProps {
-  collateralToken: string
-  collateralBalance: BigNumber
-  collateralPrice: BigNumber
-  dispatch: React.Dispatch<AjnaBorrowFormAction>
   isDisabled?: boolean
   resetOnClear?: boolean
   depositAmount?: BigNumber
@@ -19,14 +16,16 @@ interface AjnaFormFieldDepositProps {
 export function AjnaFormFieldDeposit({
   isDisabled,
   resetOnClear,
-  collateralToken,
   depositAmount,
   depositAmountUSD,
-  collateralPrice,
-  collateralBalance,
-  dispatch,
 }: AjnaFormFieldDepositProps) {
   const { t } = useTranslation()
+  const {
+    environment: { collateralBalance, collateralPrice, collateralToken, product },
+  } = useAjnaGeneralContext()
+  const {
+    form: { dispatch },
+  } = useAjnaProductContext(product)
 
   return (
     <VaultActionInput

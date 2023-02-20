@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import { AjnaEarnAction } from 'features/ajna/common/types'
+import { AjnaEarnAction, AjnaEarnPanel } from 'features/ajna/common/types'
 import { ReductoActions, useReducto } from 'helpers/useReducto'
 
 export interface AjnaEarnFormState {
@@ -11,6 +11,8 @@ export interface AjnaEarnFormState {
   price?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
+  uiDropdown: AjnaEarnPanel
+  uiPill: Exclude<AjnaEarnAction, 'open-earn'>
 }
 
 interface AjnaEarnFormActionsUpdateDeposit {
@@ -49,6 +51,8 @@ export const ajnaEarnReset = {
 export const ajnaEarnDefault: AjnaEarnFormState = {
   ...ajnaEarnReset,
   dpmAddress: ethers.constants.AddressZero,
+  uiDropdown: 'adjust',
+  uiPill: 'deposit-earn',
 }
 
 export function useAjnaEarnFormReducto({ ...rest }: Partial<AjnaEarnFormState>) {

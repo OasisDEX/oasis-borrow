@@ -2,7 +2,7 @@ import { Banner } from 'components/Banner'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-export function AjnaTokensBanner() {
+export function AjnaTokensBannerController() {
   const { t } = useTranslation()
 
   return (

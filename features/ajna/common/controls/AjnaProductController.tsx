@@ -9,6 +9,7 @@ import { AjnaProductContextProvider } from 'features/ajna/common/contexts/AjnaPr
 import { getAjnaHeadlineProps } from 'features/ajna/common/helpers/getAjnaHeadlineProps'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import { AjnaEarnPositionController } from 'features/ajna/earn/controls/AjnaEarnPositionController'
 import { ajnaPositionToAjnaEarnPosition } from 'features/ajna/earn/fakePosition'
 import { useAjnaEarnFormReducto } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -157,12 +158,12 @@ export function AjnaProductController({
                           position={ajnaPositionToAjnaEarnPosition(ajnaPosition.position)}
                           product={ajnaPosition.meta.product}
                         >
-                          <></>
+                          <AjnaEarnPositionController />
                         </AjnaProductContextProvider>
                       )}
                     </AjnaGeneralContextProvider>
                   ) : (
-                    <>Earn UI placeholder</>
+                    <></>
                   )
                 }
               </WithLoadingIndicator>

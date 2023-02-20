@@ -8,7 +8,7 @@ import { ContentCardPositionDebt } from 'features/ajna/borrow/overview/ContentCa
 import { ContentFooterItemsBorrow } from 'features/ajna/borrow/overview/ContentFooterItemsBorrow'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
-import { AjnaTokensBanner } from 'features/ajna/common/controls/AjnaTokensBannerController'
+import { AjnaTokensBannerController } from 'features/ajna/common/controls/AjnaTokensBannerController'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -71,7 +71,7 @@ export function AjnaBorrowOverviewController() {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      <AjnaTokensBanner />
+      <AjnaTokensBannerController />
     </Grid>
   )
 }
