@@ -12,7 +12,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
-export function AjnaBorrowView() {
+export function AjnaPositionView() {
   const { t } = useTranslation()
   const { contextIsLoaded, walletAddress } = useAccount()
   const {
@@ -40,6 +40,19 @@ export function AjnaBorrowView() {
         {...getAjnaHeadlineProps({ collateralToken, flow, id, product, quoteToken })}
         {...(flow === 'manage' && { shareButton: true })}
         details={[
+          ...(product === 'earn'
+            ? // TODO: replace with data from library
+              [
+                {
+                  label: t('ajna.earn.common.headline.current-yield', { collateralToken }),
+                  value: '21.37',
+                },
+                {
+                  label: t('ajna.earn.common.headline.90-day-avg', { collateralToken }),
+                  value: '11.50',
+                },
+              ]
+            : []),
           {
             label: t('ajna.borrow.common.headline.current-market-price', { collateralToken }),
             value: `${formatCryptoBalance(
@@ -56,8 +69,14 @@ export function AjnaBorrowView() {
             label: t(flow === 'manage' ? 'system.overview' : 'setup'),
             content: (
               <Grid variant="vaultContainer">
-                <AjnaBorrowOverviewWrapper />
-                <AjnaBorrowFormWrapper />
+                {product === 'borrow' && (
+                  <>
+                    <AjnaBorrowOverviewWrapper />
+                    <AjnaBorrowFormWrapper />
+                  </>
+                )}
+                {product === 'earn' && 'EARN UI'}
+                {product === 'multiply' && 'MULITPLY UI'}
               </Grid>
             ),
           },

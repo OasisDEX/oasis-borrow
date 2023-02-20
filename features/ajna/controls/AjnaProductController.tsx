@@ -1,16 +1,16 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import { AjnaBorrowContextProvider } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
 import { steps } from 'features/ajna/common/consts'
 import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
+import { AjnaPositionView } from 'features/ajna/common/views/AjnaBorrowView'
 import { AjnaGeneralContextProvider } from 'features/ajna/contexts/AjnaGeneralContext'
 import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
-import { AjnaEarnView } from 'features/ajna/earn/views/AjnaEarnView'
+import { ajnaPositionToAjnaEarnPosition } from 'features/ajna/earn/fakePosition'
+import { useAjnaEarnFormReducto } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -146,13 +146,19 @@ export function AjnaProductController({
                           position={ajnaPosition.position}
                           product={ajnaPosition.meta.product}
                         >
-                          <AjnaBorrowView />
+                          <AjnaPositionView />
                         </AjnaProductContextProvider>
                       )}
                       {ajnaPosition.meta.product === 'earn' && (
-                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
-                          <AjnaEarnView />
-                        </AjnaBorrowContextProvider>
+                        <AjnaProductContextProvider
+                          form={useAjnaEarnFormReducto({
+                            action: flow === 'open' ? 'openEarn' : 'depositEarn',
+                          })}
+                          position={ajnaPositionToAjnaEarnPosition(ajnaPosition.position)}
+                          product={ajnaPosition.meta.product}
+                        >
+                          <AjnaPositionView />
+                        </AjnaProductContextProvider>
                       )}
                     </AjnaGeneralContextProvider>
                   ) : (
