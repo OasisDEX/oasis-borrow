@@ -1,4 +1,6 @@
+import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { AjnaFlow, AjnaPoolData, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
+import { AjnaEarnFormState } from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellContent'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -134,5 +136,34 @@ export function getAjnaHeadlineProps({
         token: [collateralToken, quoteToken],
         label: '/static/img/ajna-product-card-label.svg',
       }),
+  }
+}
+
+export function isFormEmpty({
+  product,
+  state,
+}: {
+  product: AjnaProduct
+  state: AjnaBorrowFormState | AjnaEarnFormState
+}): boolean {
+  switch (product) {
+    case 'borrow': {
+      const {
+        depositAmount,
+        generateAmount,
+        paybackAmount,
+        withdrawAmount,
+      } = state as AjnaBorrowFormState
+
+      return !depositAmount && !generateAmount && !paybackAmount && !withdrawAmount
+    }
+    case 'earn': {
+      const { depositAmount, withdrawAmount } = state as AjnaEarnFormState
+
+      // TODO: add check if price is at its default or initial state
+      return !depositAmount && !withdrawAmount
+    }
+    case 'multiply':
+      return true
   }
 }

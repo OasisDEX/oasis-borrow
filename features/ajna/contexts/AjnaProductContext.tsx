@@ -52,9 +52,9 @@ interface AjnaProductContextPosition<P> {
   currentPosition: AjnaPositionSet<P>
   isSimulationLoading?: boolean
   resolvedId?: string
-  setCachedPosition: Dispatch<SetStateAction<AjnaPositionSet<P> | undefined>>
+  setCachedPosition: (positionSet: AjnaPositionSet<AjnaPosition | AjnaEarnPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<P> | undefined>>
+  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarnPosition> | undefined>>
 }
 
 interface AjnaProductContext<P, F> {
@@ -134,7 +134,7 @@ export function AjnaProductContextProvider({
       currentPosition: { position },
       isSimulationLoading,
       resolvedId: positionIdFromDpmProxyData,
-      setCachedPosition,
+      setCachedPosition: (positionSet) => setCachedPosition(positionSet),
       setIsLoadingSimulation,
       setSimulation,
     },

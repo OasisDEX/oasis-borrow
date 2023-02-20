@@ -4,8 +4,9 @@ import { callOasisActionsWithDpmProxy } from 'blockchain/calls/oasisActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import { isFormEmpty } from 'features/ajna/common/helpers'
 import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -19,15 +20,13 @@ export interface OasisActionCallData extends AjnaTxData {
   proxyAddress: string
 }
 
-type AjnaTxHandler = () => void
-
-export function useAjnaTxHandler(): AjnaTxHandler {
+export function useAjnaTxHandler(): () => void {
   const { txHelpers$, context$, uiChanges } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [context] = useObservable(context$)
   const {
     tx: { setTxDetails },
-    environment: { collateralToken, quoteToken, ethPrice },
+    environment: { collateralToken, ethPrice, quoteToken, product },
     steps: { isExternalStep },
   } = useAjnaGeneralContext()
   const {
@@ -38,40 +37,35 @@ export function useAjnaTxHandler(): AjnaTxHandler {
       setIsLoadingSimulation,
       setSimulation,
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext(product)
 
   const [txData, setTxData] = useState<AjnaTxData>()
-  const [cancelablePromise, setCancelablePromise] = useState<CancelablePromise<AjnaActionData>>()
+  const [cancelablePromise, setCancelablePromise] = useState<
+    CancelablePromise<AjnaActionData<typeof position>>
+  >()
 
-  const { depositAmount, generateAmount, paybackAmount, withdrawAmount, dpmAddress } = state
+  const { dpmAddress } = state
 
   useEffect(() => {
     cancelablePromise?.cancel()
-    if (!depositAmount && !generateAmount && !paybackAmount && !withdrawAmount) {
+    if (isFormEmpty({ product, state })) {
       setSimulation(undefined)
       setIsLoadingSimulation(false)
     } else {
       setIsLoadingSimulation(true)
     }
-  }, [
-    context?.rpcProvider,
-    dpmAddress,
-    depositAmount?.toString(),
-    generateAmount?.toString(),
-    paybackAmount?.toString(),
-    withdrawAmount?.toString(),
-  ])
+  }, [context?.rpcProvider, dpmAddress, state])
   useDebouncedEffect(
     () => {
       if (context && !isExternalStep) {
         const promise = cancelable(
-          getAjnaParameters({
-            rpcProvider: context.rpcProvider,
-            formState: state,
+          getAjnaParameters<typeof position>({
             collateralToken,
-            quoteToken,
             context,
             position,
+            quoteToken,
+            rpcProvider: context.rpcProvider,
+            state,
           }),
         )
         setCancelablePromise(promise)
@@ -97,15 +91,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
           })
       }
     },
-    [
-      context?.rpcProvider,
-      dpmAddress,
-      depositAmount?.toString(),
-      generateAmount?.toString(),
-      paybackAmount?.toString(),
-      withdrawAmount?.toString(),
-      isExternalStep,
-    ],
+    [context?.rpcProvider, dpmAddress, state, isExternalStep],
     250,
   )
 

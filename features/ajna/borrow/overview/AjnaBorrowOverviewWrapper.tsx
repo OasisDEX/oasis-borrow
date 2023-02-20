@@ -1,13 +1,13 @@
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { ContentCardCollateralLocked } from 'features/ajna/borrow/overview/ContentCardCollateralLocked'
 import { ContentCardLiquidationPrice } from 'features/ajna/borrow/overview/ContentCardLiquidationPrice'
 import { ContentCardLoanToValue } from 'features/ajna/borrow/overview/ContentCardLoanToValue'
 import { ContentCardPositionDebt } from 'features/ajna/borrow/overview/ContentCardPositionDebt'
 import { ContentFooterItemsBorrow } from 'features/ajna/borrow/overview/ContentFooterItemsBorrow'
 import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -22,7 +22,7 @@ export function AjnaBorrowOverviewWrapper() {
     position: {
       currentPosition: { position, simulation },
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <Grid gap={2}>

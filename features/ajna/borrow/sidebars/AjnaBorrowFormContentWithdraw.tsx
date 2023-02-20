@@ -1,9 +1,10 @@
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
 import {
   AjnaBorrowFormFieldPayback,
   AjnaBorrowFormFieldWithdraw,
 } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormContentWithdraw() {
@@ -11,7 +12,7 @@ export function AjnaBorrowFormContentWithdraw() {
     form: {
       state: { withdrawAmount },
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <>

@@ -1,10 +1,10 @@
 import { getToken } from 'blockchain/tokensMetadata'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -19,7 +19,7 @@ export function AjnaBorrowFormWrapper() {
     },
     position: { resolvedId, isSimulationLoading },
     validation: { isFormValid },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <AjnaFormWrapper

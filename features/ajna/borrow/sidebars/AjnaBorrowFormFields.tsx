@@ -1,6 +1,6 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -19,7 +19,7 @@ export function AjnaBorrowFormFieldWithdraw({ isDisabled, resetOnClear }: AjnaBo
       dispatch,
       state: { withdrawAmount, withdrawAmountUSD },
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <VaultActionInput
@@ -60,7 +60,7 @@ export function AjnaBorrowFormFieldGenerate({ isDisabled, resetOnClear }: AjnaBo
       dispatch,
       state: { generateAmount, generateAmountUSD },
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <VaultActionInput
@@ -102,7 +102,7 @@ export function AjnaBorrowFormFieldPayback({ isDisabled, resetOnClear }: AjnaBor
       dispatch,
       state: { paybackAmount, paybackAmountUSD },
     },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext('borrow')
 
   return (
     <VaultActionInput
