@@ -69,15 +69,13 @@ interface AjnaGeneralContext {
   tx: AjnaGeneralContextTx
 }
 
-const ajnaGeneralContext = React.createContext<AjnaGeneralContext | undefined>(
-  undefined,
-)
+const ajnaGeneralContext = React.createContext<AjnaGeneralContext | undefined>(undefined)
 
 export function useAjnaGeneralContext(): AjnaGeneralContext {
-  const ac = useContext(ajnaGeneralContext)
+  const context = useContext(ajnaGeneralContext)
 
-  if (!ac) throw new Error('AjnaGeneralContext not available!')
-  return ac
+  if (!context) throw new Error('AjnaGeneralContext not available!')
+  return context
 }
 
 export function AjnaGeneralContextProvider({
@@ -140,9 +138,5 @@ export function AjnaGeneralContextProvider({
     }))
   }, [collateralBalance, currentStep, quoteBalance, txDetails, walletAddress])
 
-  return (
-    <ajnaGeneralContext.Provider value={context}>
-      {children}
-    </ajnaGeneralContext.Provider>
-  )
+  return <ajnaGeneralContext.Provider value={context}>{children}</ajnaGeneralContext.Provider>
 }

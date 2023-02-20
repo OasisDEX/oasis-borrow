@@ -1,6 +1,6 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import { useAjnaProductDetailsContext } from 'features/ajna/contexts/AjnaProductDetailsContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductDetailsContext'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -8,7 +8,7 @@ import { Box, Heading, Text } from 'theme-ui'
 
 export function DiscoverWrapperWithIntro({ children }: WithChildren) {
   const { t } = useTranslation()
-  const context = useAjnaProductDetailsContext('borrow')
+  const context = useAjnaProductContext('borrow')
 
   console.log(context)
   console.log(context.position)
