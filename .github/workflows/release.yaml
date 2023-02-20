@@ -19,7 +19,7 @@ on:
 jobs:
   # This workflow contains a single job called "greet"
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     # The type of runner that the job will run on
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -27,7 +27,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Checkout
         uses: actions/checkout@v2
-        with: 
+        with:
           token: ${{ secrets.PAT }}
           fetch-depth: 0
       - name: 'Determine Release Type'
@@ -68,10 +68,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
       - name: Merge dev -> main
         run: |
-            git status
-            git pull
-            git fetch
-            git checkout main
-            git rebase dev
-            git push origin main
-            git status
+          git status
+          git pull
+          git fetch
+          git checkout main
+          git rebase dev
+          git push origin main
+          git status

@@ -2,7 +2,7 @@ name: Rollback Production
 
 on:
   workflow_dispatch:
-    branches: [ main ]
+    branches: [main]
     inputs:
       commit_hash:
         description: 'Enter the commit short hash from main branch you want to roll back to.'
@@ -18,10 +18,9 @@ jobs:
       SERVICE_NAME: oasis-borrow-prod
       CLUSTER_NAME: oasis-borrow-prod
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
-
       - name: Checkout Repo History
         uses: actions/checkout@v3
         with:
@@ -60,5 +59,6 @@ jobs:
           ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
       - name: Invalidate CloudFront
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_PROD }} --paths "/*"
-
+        run:
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_PROD }}
+          --paths "/*"
