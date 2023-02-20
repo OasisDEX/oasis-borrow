@@ -19,15 +19,17 @@ import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { productCardsConfig } from 'helpers/productCards'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { ReactNode, useEffect, useState } from 'react'
-import { Box, Card, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { slideInAnimation } from 'theme/animations'
 
 import { HomepageHeadline } from './common/HomepageHeadline'
+import { HomepagePromoBlock } from './common/HomepagePromoBlock'
 
 interface PillProps {
   label: string
@@ -300,29 +302,20 @@ export function HomepageView() {
           ctaLabel="Open position"
         />
         <Grid columns={3} sx={{ mt: 5, mb: 7 }}>
-          <Card
-            sx={{
-              border: 'unset',
-              height: '390px',
-              width: '390px',
-              background: 'linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)',
-            }}
+          <HomepagePromoBlock
+            title="Earn on the crypto assets you already own"
+            background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
+            image={staticFilesRuntimeUrl('/static/img/homepage/1_earn_on_assets.svg')}
           />
-          <Card
-            sx={{
-              border: 'unset',
-              height: '390px',
-              width: '390px',
-              background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-            }}
+          <HomepagePromoBlock
+            title="More predictable payoff with transparancy on fees and net APY’s"
+            background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+            image={staticFilesRuntimeUrl('/static/img/homepage/2_predictable_payoff.svg')}
           />
-          <Card
-            sx={{
-              border: 'unset',
-              height: '390px',
-              width: '390px',
-              background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)',
-            }}
+          <HomepagePromoBlock
+            title="Simple to use management tools and analytics"
+            background="linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%)"
+            image={staticFilesRuntimeUrl('/static/img/homepage/3_simple_management_tools.svg')}
           />
         </Grid>
         <HomepageHeadline
@@ -332,29 +325,23 @@ export function HomepageView() {
           ctaLabel="Open position"
         />
         <Grid columns={3} sx={{ mt: 5 }}>
-          <Card
-            sx={{
-              border: 'unset',
-              height: '390px',
-              width: '390px',
-              background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%)',
-            }}
+          <HomepagePromoBlock
+            title="Low borrowing costs"
+            background="linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%)"
+            image={staticFilesRuntimeUrl('/static/img/homepage/4_low_borrowing_cost.svg')}
+            height="360px"
           />
-          <Card
-            sx={{
-              border: 'unset',
-              height: '390px',
-              width: '390px',
-              background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-            }}
+          <HomepagePromoBlock
+            title="Ample liquidity from multiple Protocols"
+            background="linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)"
+            image={staticFilesRuntimeUrl('/static/img/homepage/5_ample_liquidity.svg')}
+            height="360px"
           />
-          <Card
-            sx={{
-              border: 'unset',
-              height: '390px',
-              width: '390px',
-              background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-            }}
+          <HomepagePromoBlock
+            title="Available for top tier crypto collateral"
+            background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+            image={staticFilesRuntimeUrl('/static/img/homepage/6_top_tier_collateral.svg')}
+            height="360px"
           />
         </Grid>
         <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mt: 7 }}>
@@ -364,19 +351,100 @@ export function HomepageView() {
             ctaURL={INTERNAL_LINKS.multiply}
             ctaLabel="Open position"
           />
-          <Card
-            sx={{
-              border: 'unset',
-              height: '390px',
-              width: '390px',
-              background: 'linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)',
-            }}
+          <HomepagePromoBlock
+            title="Take advantage of market volatility"
+            background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)"
+            image={staticFilesRuntimeUrl('/static/img/homepage/7_market_volatility_advantage.svg')}
           />
         </Flex>
+        <Grid columns={['1fr 2fr']} sx={{ mt: 3, mb: 7 }}>
+          <HomepagePromoBlock
+            title="Reduce the anxiety of liquidation with stop loss automation"
+            background="linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF"
+            image={staticFilesRuntimeUrl('/static/img/homepage/8_reduce_anxiety.svg')}
+          />
+          <HomepagePromoBlock
+            title={
+              <>
+                Increase the potential{' '}
+                <Text as="span" color="neutral80">
+                  profit
+                </Text>{' '}
+                and{' '}
+                <Text as="span" color="neutral80">
+                  payoff
+                </Text>{' '}
+                of your
+                <br />
+                crypto asset position
+              </>
+            }
+            background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
+            image={staticFilesRuntimeUrl('/static/img/homepage/9_profit_and_payoff.svg')}
+            width="100%"
+          />
+        </Grid>
         <HomepageHeadline
           primaryText="Advanced automation tools can manage your positions for you: "
           secondaryText="set and forget with confidence"
+          maxWidth="860px"
         />
+        <Grid columns={2} sx={{ mt: 5 }}>
+          <HomepagePromoBlock.Big background="linear-gradient(160.65deg, #FFE6F5 2.52%, #FFF2F6 101.43%)">
+            <Flex
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                height: '100%',
+              }}
+            >
+              <Text variant="header5" sx={{ my: '20px', mx: '12px' }}>
+                Get peace of mind with protection against liquidation and capital losses with
+                Stop-Loss and Auto-Sell.
+              </Text>
+              <Image
+                src={staticFilesRuntimeUrl('/static/img/homepage/10_peace_of_mind.svg')}
+                sx={{
+                  mx: 3,
+                  userSelect: 'none',
+                  pointerEvents: 'none',
+                  minWidth: '252px',
+                }}
+              />
+            </Flex>
+          </HomepagePromoBlock.Big>
+          <HomepagePromoBlock.Big background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF">
+            <Flex
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: 'column',
+                height: '100%',
+              }}
+            >
+              <Image
+                src={staticFilesRuntimeUrl('/static/img/homepage/11_no_hassle.svg')}
+                sx={{
+                  my: 3,
+                  userSelect: 'none',
+                  pointerEvents: 'none',
+                }}
+              />
+              <Text variant="header5" sx={{ mb: 3, mx: '12px', textAlign: 'center' }}>
+                Make position management less of a hassle with automated Buys, Sells and Take Profit
+              </Text>
+            </Flex>
+          </HomepagePromoBlock.Big>
+        </Grid>
+        <HomepagePromoBlock.Big
+          background="linear-gradient(90.65deg, #FCF1FE 1.31%, #FFF1F6 99.99%)"
+          height="128px"
+          sx={{ mt: 3 }}
+        >
+          <Text variant="header3" sx={{ textAlign: 'center' }}>
+            stats go here
+          </Text>
+        </HomepagePromoBlock.Big>
         <HomepageHeadline
           primaryText="Your funds, your choice: "
           secondaryText="park your capital and stay in full control all the time, with no exceptions"

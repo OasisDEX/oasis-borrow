@@ -6,6 +6,7 @@ import { Box, Text } from 'theme-ui'
 type HomePageHeadlineProps = {
   primaryText: string
   secondaryText: string
+  maxWidth?: string
   ctaURL?: string
   ctaLabel?: string
 }
@@ -15,8 +16,9 @@ export const HomepageHeadline = ({
   secondaryText,
   ctaURL,
   ctaLabel,
+  maxWidth = '700px',
 }: HomePageHeadlineProps) => (
-  <Box sx={{ maxWidth: '700px' }}>
+  <Box sx={{ maxWidth }}>
     <Text variant="header3" sx={{ color: 'primary100' }}>
       {primaryText}
       <Text as="span" variant="header3" sx={{ color: 'neutral80' }}>
