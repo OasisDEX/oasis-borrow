@@ -1,6 +1,5 @@
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { MewConnectConnector } from '@myetherwallet/mewconnect-connector'
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
 import {
   ConnectionKind,
@@ -21,9 +20,11 @@ import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSe
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
 import { AppLink } from 'components/Links'
 import { dsrLink } from 'components/productCards/ProductCardEarnDsr'
+import { SwitchNetworkModal, SwitchNetworkModalType } from 'components/SwitchNetworkModal'
 import { redirectState$ } from 'features/router/redirectState'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
+import { useModal } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
@@ -35,9 +36,6 @@ import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { UserWalletIconName } from 'theme/icons'
 import { assert } from 'ts-essentials'
-
-import { useModal } from '../../helpers/modalHook'
-import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
 
 export const AUTO_CONNECT = 'autoConnect'
 
@@ -122,9 +120,7 @@ export async function getConnector(
         dAppId: 'e0ac7d6b-a19b-4f61-928d-fb97b15c424a',
       })
     case 'myetherwallet':
-      return new MewConnectConnector({
-        url: rpcUrls[network],
-      })
+      throw new Error('MEW not allowed')
     case 'gnosisSafe':
       return new SafeAppConnector()
     case 'magicLink':
