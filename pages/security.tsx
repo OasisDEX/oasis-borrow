@@ -55,7 +55,7 @@ function SecurityPage() {
       description: t('security.category.bug.description'),
       links: [
         {
-          url: 'https://immunefi.com/bounty/oasis/',
+          url: 'https://immunefi.com/bounty/oasisapp/',
           label: t('security.category.bug.link-bug-bounty'),
         },
       ],
