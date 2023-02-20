@@ -56,7 +56,7 @@
     "@prisma/client": "^3.14.0",
     "@sentry/nextjs": "^6.17.7",
     "@storybook/storybook-deployer": "^2.8.11",
-    "@theme-ui/style-guide": "^0.15.5",
+    "@theme-ui/style-guide": "^0.3.5",
     "@typechain/ethers-v5": "^6.0.5",
     "cancelable-promise": "^4.3.1",
     "@typechain/web3-v1": "^2.0.0",
@@ -112,7 +112,7 @@
     "snowflake-sdk": "^1.6.10",
     "terser-webpack-plugin": "^5.3.1",
     "text-mask-addons": "^3.7.2",
-    "theme-ui": "^0.15.5",
+    "theme-ui": "^0.3.1",
     "ts-essentials": "^7.0.1",
     "ts-node": "^7.0.1",
     "typechain": "^4.0.3",
@@ -129,7 +129,8 @@
     "mixin-deep": "^1.3.2",
     "mkdirp": "^0.5.5",
     "set-value": "^2.0.1",
-    "webpack": "5"
+    "webpack": "5",
+    "@types/react": "^17.0.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.17.12",
@@ -177,7 +178,7 @@
     "@types/snowflake-sdk": "^1.6.7",
     "@types/socket.io-client": "^3.0.0",
     "@types/supertest": "^2.0.9",
-    "@types/theme-ui": "^0.6.0",
+    "@types/theme-ui": "^0.3.1",
     "@types/uuid": "^7.0.3",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
