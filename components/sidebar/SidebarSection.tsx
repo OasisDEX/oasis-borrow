@@ -12,8 +12,6 @@ export interface SidebarSectionProps
     Omit<SidebarSectionContentProps, 'activePanel'>,
     SidebarSectionFooterProps {}
 
-// here is a comment to make a new PR
-
 export function SidebarSection({
   title,
   dropdown,
