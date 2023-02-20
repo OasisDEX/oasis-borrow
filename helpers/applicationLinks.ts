@@ -19,10 +19,15 @@ export const INTERNAL_LINKS = {
 }
 
 export const EXTERNAL_LINKS = {
+  // NO ENDING SLASH thank you
   BLOG: 'https://blog.oasis.app',
   HELP: 'https://kb.oasis.app/help',
   CONTACT: 'https://kb.oasis.app/help/contact-us',
   TWITTER: 'https://twitter.com/oasisdotapp',
   DISCORD: 'https://discord.gg/oasisapp',
-  BUG_BOUNTY: 'https://immunefi.com/bounty/oasis/',
+  GITHUB: 'https://github.com/OasisDEX/oasis-borrow',
+  BUG_BOUNTY: 'https://immunefi.com/bounty/oasisapp',
+  VARIOUS: {
+    MERKLING: 'https://blog.ethereum.org/2015/11/15/merkling-in-ethereum',
+  },
 }

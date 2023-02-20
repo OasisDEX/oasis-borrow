@@ -2,14 +2,15 @@ import { isAppContextAvailable } from 'components/AppContextProvider'
 import { Footer } from 'components/Footer'
 import { AppHeader, ConnectPageHeader } from 'components/Header'
 import { AppLinkProps } from 'components/Links'
+import { EXTERNAL_LINKS } from 'helpers/applicationLinks'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
 import { Container, Flex, SxStyleProp } from 'theme-ui'
 import { Background } from 'theme/Background'
 import { BackgroundLight } from 'theme/BackgroundLight'
 import { BackgroundLighter } from 'theme/BackgroundLighter'
+import { ProductBackground } from 'theme/ProductBackground'
 
-import { ProductBackground } from '../theme/ProductBackground'
 import { Announcement } from './Announcement'
 import { ModalTrezorMetamaskEIP1559 } from './Modal'
 
@@ -69,8 +70,8 @@ export function WithAnnouncementLayout({
         <Container variant="announcement">
           <Announcement
             text="Welcome to the new Oasis.app. We are thrilled to have you here."
-            discordLink="https://discord.gg/oasisapp"
-            link="https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/"
+            discordLink={EXTERNAL_LINKS.DISCORD}
+            link={EXTERNAL_LINKS.VARIOUS.MERKLING}
             linkText="Check blog post"
           />
         </Container>

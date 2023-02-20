@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
-import { INTERNAL_LINKS } from 'helpers/applicationLinks'
+import { EXTERNAL_LINKS, INTERNAL_LINKS } from 'helpers/applicationLinks'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useScrollToTop } from 'helpers/useScrollToTop'
 import { useTranslation } from 'next-i18next'
@@ -56,7 +56,7 @@ function SecurityPage() {
       description: t('security.category.bug.description'),
       links: [
         {
-          url: 'https://immunefi.com/bounty/oasisapp/',
+          url: EXTERNAL_LINKS.BUG_BOUNTY,
           label: t('security.category.bug.link-bug-bounty'),
         },
       ],
