@@ -16,6 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
       - name: Cache YARN dependencies
         uses: actions/cache@v1
         with:
