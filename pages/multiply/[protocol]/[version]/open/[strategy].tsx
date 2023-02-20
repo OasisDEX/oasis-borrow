@@ -1,7 +1,9 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { DeferedContextProvider } from 'components/DeferedContextProvider'
 import { AppLayout } from 'components/Layouts'
+import { aaveContext, AaveContextProvider } from 'features/aave/AaveContextProvider'
 import { AaveOpenView } from 'features/aave/open/containers/AaveOpenView'
+import { loadStrategyFromUrl } from 'features/aave/strategyConfig'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
@@ -9,16 +11,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-import { aaveContext, AaveContextProvider } from '../../../../../features/aave/AaveContextProvider'
-import { loadStrategyFromUrl } from '../../../../../features/aave/strategyConfig'
-
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const strategy = ctx.query.strategy as string
   const protocol = ctx.query.protocol as string
   const version = ctx.query.version as string
   const lendingProtocol = `${protocol}${version}`
 
-  console.log(lendingProtocol)
   try {
     console.log(`loading strategy '${strategy}' for route '${ctx.resolvedUrl}'`)
     loadStrategyFromUrl(strategy, lendingProtocol, 'multiply')

@@ -6,10 +6,10 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { SimulateTitle } from 'components/SimulateTitle'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
 import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
-import { AaveSimulateTitle } from 'features/aave/open/components/AaveSimulateTitle'
 import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
 import {
   calculateSimulation,
@@ -76,7 +76,7 @@ function SimulationSection({
   return (
     <>
       <DetailsSection
-        title={<AaveSimulateTitle token={token} depositAmount={amount} />}
+        title={<SimulateTitle token={token} depositAmount={amount} />}
         content={
           <>
             <DetailsSectionContentTable

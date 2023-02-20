@@ -241,6 +241,7 @@ export function DiscoverTableDataCellAsset({
             right: [0, null, null, 'auto'],
             mr: ['24px', null, null, 4],
           }}
+          protocol={'maker'} //TODO ŁW - update when follow other protocols will be supported
         />
       )}
       {icon && <Icon size={44} name={icon} sx={{ ...(inactive && { opacity: 0.5 }) }} />}

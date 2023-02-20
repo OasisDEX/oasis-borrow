@@ -27,6 +27,7 @@ export type Feature =
   | 'AaveProtectionWrite'
   | 'Ajna'
   | 'DaiSavingsRate'
+  | 'FollowAAVEVaults'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -52,6 +53,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   AaveProtectionWrite: false,
   Ajna: false,
   DaiSavingsRate: true,
+  FollowAAVEVaults: false,
 }
 
 export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {

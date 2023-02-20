@@ -1,6 +1,7 @@
 import { AjnaFlow, AjnaPoolData, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
 import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellContent'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { SxStyleProp } from 'theme-ui'
 
@@ -90,5 +91,48 @@ export function filterPoolData({
     case 'multiply': {
       return {}
     }
+  }
+}
+
+export function resolveIfCachedPosition<T extends Pick<T, 'position' | 'simulation'>>({
+  cached,
+  cachedPosition,
+  currentPosition,
+}: {
+  cached: boolean
+  cachedPosition?: T
+  currentPosition: T
+}) {
+  return {
+    positionData: cached && cachedPosition ? cachedPosition.position : currentPosition.position,
+    simulationData:
+      cached && cachedPosition ? cachedPosition.simulation : currentPosition.simulation,
+  }
+}
+
+interface AjnaBorrowHeadlinePropsParams {
+  collateralToken?: string
+  flow: AjnaFlow
+  id?: string
+  product?: AjnaProduct
+  quoteToken?: string
+}
+
+export function getAjnaHeadlineProps({
+  collateralToken,
+  flow,
+  id,
+  product,
+  quoteToken,
+}: AjnaBorrowHeadlinePropsParams) {
+  const { t } = useTranslation()
+
+  return {
+    ...(collateralToken &&
+      quoteToken && {
+        header: t(`ajna.${product}.${flow}.headline.header`, { collateralToken, id, quoteToken }),
+        token: [collateralToken, quoteToken],
+        label: '/static/img/ajna-product-card-label.svg',
+      }),
   }
 }

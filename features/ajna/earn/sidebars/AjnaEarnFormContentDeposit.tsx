@@ -1,6 +1,5 @@
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
 import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
 import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
@@ -10,6 +9,7 @@ import {
   ajnaSliderHighRange,
   ajnaSliderLowRange,
 } from 'features/ajna/earn/components/AjnaEarnSlider'
+import { AjnaEarnFormOrder } from 'features/ajna/earn/sidebars/AjnaEarnFormOrder'
 import React from 'react'
 
 export function AjnaEarnFormContentDeposit() {
@@ -43,7 +43,7 @@ export function AjnaEarnFormContentDeposit() {
           <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
           <AjnaValidationMessages {...errors} />
           <AjnaValidationMessages {...warnings} />
-          <AjnaBorrowFormOrder />
+          <AjnaEarnFormOrder />
         </>
       )}
     </>

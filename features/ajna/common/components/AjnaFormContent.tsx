@@ -1,35 +1,55 @@
-import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import {
   getAjnaSidebarButtonsStatus,
   getAjnaSidebarPrimaryButtonActions,
 } from 'features/ajna/borrow/helpers'
-import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
-import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
-import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
-import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
+import { AjnaBorrowPanel } from 'features/ajna/common/types'
 import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Grid } from 'theme-ui'
 
-interface AjnaBorrowFormContentProps {
+export interface AjnaFormContentProps {
   txHandler: () => void
   isAllowanceLoading: boolean
+  dpmAddress?: string
+  uiDropdown: AjnaBorrowPanel // TODO is this common?
+  resolvedId?: string
+  isSimulationLoading?: boolean
+  isFormValid: boolean
+  dropdownItems: {
+    label: string
+    panel: string
+    shortLabel: string
+    icon: string
+    action: () => void
+  }[]
 }
 
-export function AjnaBorrowFormContent({
+export function AjnaFormContent({
   txHandler,
   isAllowanceLoading,
-}: AjnaBorrowFormContentProps) {
+  children,
+  dpmAddress,
+  uiDropdown,
+  resolvedId,
+  isSimulationLoading,
+  isFormValid,
+  dropdownItems,
+}: PropsWithChildren<AjnaFormContentProps>) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, product, quoteToken, isOwner },
-    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction },
+    environment: { flow, product, isOwner },
+    steps: {
+      currentStep: castedCurrentStep,
+      editingStep,
+      setNextStep,
+      setStep,
+      isStepWithTransaction,
+    },
     tx: {
       isTxError,
       isTxSuccess,
@@ -39,15 +59,9 @@ export function AjnaBorrowFormContent({
       setTxDetails,
     },
   } = useAjnaProductContext()
-  const {
-    form: {
-      dispatch,
-      state: { dpmAddress, uiDropdown },
-      updateState,
-    },
-    position: { isSimulationLoading, resolvedId },
-    validation: { isFormValid },
-  } = useAjnaBorrowContext()
+
+  // TODO remove it once earn context available
+  const currentStep = product === 'earn' ? 'setup' : castedCurrentStep
 
   const {
     isPrimaryButtonDisabled,
@@ -58,9 +72,9 @@ export function AjnaBorrowFormContent({
     currentStep,
     editingStep,
     isAllowanceLoading,
-    isFormValid,
     isOwner,
     isSimulationLoading,
+    isFormValid,
     isTxError,
     isTxInProgress,
     isTxStarted,
@@ -99,44 +113,10 @@ export function AjnaBorrowFormContent({
       dropdown: {
         forcePanel: uiDropdown,
         disabled: currentStep !== 'manage',
-        items: [
-          {
-            label: t('system.manage-collateral-token', {
-              token: collateralToken,
-            }),
-            panel: 'collateral',
-            shortLabel: collateralToken,
-            icon: getToken(collateralToken).iconCircle,
-            action: () => {
-              dispatch({ type: 'reset' })
-              updateState('uiDropdown', 'collateral')
-              updateState('uiPill', 'deposit')
-            },
-          },
-          {
-            label: t('system.manage-debt-token', {
-              token: quoteToken,
-            }),
-            panel: 'quote',
-            shortLabel: quoteToken,
-            icon: getToken(quoteToken).iconCircle,
-            action: () => {
-              dispatch({ type: 'reset' })
-              updateState('uiDropdown', 'quote')
-              updateState('uiPill', 'generate')
-            },
-          },
-        ],
+        items: dropdownItems,
       },
     }),
-    content: (
-      <Grid gap={3}>
-        {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
-        {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
-        {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
-        {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
-      </Grid>
-    ),
+    content: <Grid gap={3}>{children}</Grid>,
     primaryButton: {
       label: t(primaryButtonLabel),
       disabled: isPrimaryButtonDisabled,
