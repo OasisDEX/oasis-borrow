@@ -111,6 +111,7 @@ import {
   createCollateralTokens$,
 } from 'blockchain/tokens'
 import {
+  getDpmProxyFromPositionId$,
   getPositionIdFromDpmProxy$,
   getUserDpmProxies$,
   getUserDpmProxy$,
@@ -705,6 +706,9 @@ export function setupAppContext() {
     (dpmProxy) => dpmProxy,
   )
 
+  const proxyFromPositionId$ = memoize(curry(getDpmProxyFromPositionId$)(context$), (positionId) => { positionId })
+  
+  // TODO Ł aave proxies from position ids, aave positions from ids && proxies
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
   const tokenDecimals$ = observe(onEveryBlock$, chainContext$, tokenDecimals)

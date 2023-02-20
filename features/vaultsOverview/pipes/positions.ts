@@ -1,3 +1,4 @@
+import { UsersWhoFollowVaults } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
@@ -293,6 +294,22 @@ function getStethEthAaveV2DsProxyEarnPosition$(
 
 // TODO we will need proper handling for Ajna, filtered for now
 const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
+
+export function createAavePositionsFromIds$(
+  proxyAddressesProvider: ProxyAddressesProvider,
+  environment: CreatePositionEnvironmentPropsType,
+  aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
+  aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
+  followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
+): Observable<AavePosition> {
+  const {
+    context$,
+    tickerPrices$,
+    readPositionCreatedEvents$,
+    automationTriggersData$,
+  } = environment
+  return combineLatest()
+}
 
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
