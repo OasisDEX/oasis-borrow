@@ -8,14 +8,14 @@ import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-type PrepareAaveAvailableLiquidityProps = [AaveV2ReserveDataReply, BigNumber[]]
+type PrepareAaveAvailableLiquidityProps = [AaveV2ReserveDataReply, string[]]
 
 export function prepareAaveAvailableLiquidityInUSDC$(
   getAaveReserveData$: (token: AaveV2ReserveDataParameters) => Observable<AaveV2ReserveDataReply>,
   getAaveAssetsPrices$: Observable<string[]>,
   reserveDataToken: AaveV2ReserveDataParameters,
 ): Observable<BigNumber> {
-  return combineLatest(getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$).pipe(
+  return combineLatest([getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$]).pipe(
     map(([reserveData, [USDC_ETH_price]]: PrepareAaveAvailableLiquidityProps) => {
       const availableLiquidityInETH = amountFromWei(
         new BigNumber(reserveData.availableLiquidity),

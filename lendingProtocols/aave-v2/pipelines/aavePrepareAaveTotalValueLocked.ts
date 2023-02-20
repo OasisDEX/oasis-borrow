@@ -8,17 +8,17 @@ export type PreparedAaveTotalValueLocked = {
   totalValueLocked: BigNumber
 }
 
-type PrepareAaveTVLProps = [AaveV2ReserveDataReply, AaveV2ReserveDataReply, BigNumber[]]
+type PrepareAaveTVLProps = [AaveV2ReserveDataReply, AaveV2ReserveDataReply, string[]]
 
 export function prepareAaveTotalValueLocked$(
   getAaveStEthReserveData$: Observable<AaveV2ReserveDataReply>,
   getAaveWEthReserveData$: Observable<AaveV2ReserveDataReply>,
   getAaveAssetsPrices$: Observable<string[]>,
 ): Observable<PreparedAaveTotalValueLocked> {
-  return combineLatest(
+  return combineLatest([
     getAaveStEthReserveData$,
     getAaveWEthReserveData$,
-    getAaveAssetsPrices$,
+    getAaveAssetsPrices$]
   ).pipe(
     map(
       ([
@@ -35,7 +35,7 @@ export function prepareAaveTotalValueLocked$(
           There's no prices in USD in their oracle so im assuming 1 USDC = 1 USD
         */
         const ETH_USDC_price = new BigNumber(1).div(USDC_ETH_price) // price of one ETH in USDC
-        const STETH_USDC_price = STETH_ETH_ratio.times(ETH_USDC_price) // price of one STETH in USDC
+        const STETH_USDC_price = new BigNumber(STETH_ETH_ratio).times(ETH_USDC_price) // price of one STETH in USDC
 
         const STETH_availableLiquidity = amountFromWei(
           new BigNumber(STETH_reserveData.availableLiquidity),

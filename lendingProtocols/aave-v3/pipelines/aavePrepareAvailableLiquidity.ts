@@ -5,7 +5,7 @@ import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 
-type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber[], BigNumber]
+type PrepareAaveAvailableLiquidityProps = [AaveV3ReserveDataReply, BigNumber[]]
 
 export function prepareaaveAvailableLiquidityInUSDC$(
   getAaveReserveData$: (token: AaveV3ReserveDataParameters) => Observable<AaveV3ReserveDataReply>,
@@ -14,7 +14,7 @@ export function prepareaaveAvailableLiquidityInUSDC$(
 ): Observable<BigNumber> {
   // THIS IS NOT IN USDC, THIS IS IN USD
   // Aave V3 Oracle prices are in USD
-  return combineLatest(getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$).pipe(
+  return combineLatest([getAaveReserveData$(reserveDataToken), getAaveAssetsPrices$]).pipe(
     map(([reserveData, [USD_in_WETH_price]]: PrepareAaveAvailableLiquidityProps) => {
       const availableLiquidityInETH = amountFromWei(
         new BigNumber(reserveData.availableLiquidity),
