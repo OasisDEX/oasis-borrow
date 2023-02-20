@@ -1,9 +1,10 @@
 import { AjnaSimulationData } from 'actions/ajna'
 import { useAppContext } from 'components/AppContextProvider'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
 import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { defaultErrors, defaultWarnings } from 'features/ajna/borrow/validations'
 import { AjnaProduct } from 'features/ajna/common/types'
+import { getAjnaValidation } from 'features/ajna/common/validation'
 import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { AjnaEarnPosition } from 'features/ajna/earn/fakePosition'
 import { useAjnaEarnFormReducto } from 'features/ajna/earn/state/ajnaEarnFormReducto'
@@ -54,7 +55,9 @@ interface AjnaProductContextPosition<P> {
   resolvedId?: string
   setCachedPosition: (positionSet: AjnaPositionSet<AjnaPosition | AjnaEarnPosition>) => void
   setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
-  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarnPosition> | undefined>>
+  setSimulation: Dispatch<
+    SetStateAction<AjnaSimulationData<AjnaPosition | AjnaEarnPosition> | undefined>
+  >
 }
 
 interface AjnaProductContext<P, F> {
@@ -104,28 +107,51 @@ export function AjnaProductContextProvider({
   position,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const { walletAddress } = useAccount()
+  const gasEstimation = useGasEstimationContext()
   const { positionIdFromDpmProxy$ } = useAppContext()
   const {
-    environment: { collateralBalance, quoteBalance },
+    environment: { collateralBalance, collateralToken, ethBalance, ethPrice, quoteBalance },
     steps: { currentStep },
     tx: { txDetails },
   } = useAjnaGeneralContext()
-  const {
-    state: { dpmAddress },
-  } = form
+  const { state } = form
 
   const [positionIdFromDpmProxyData] = useObservable(
-    useMemo(() => positionIdFromDpmProxy$(dpmAddress), [dpmAddress]),
+    useMemo(() => positionIdFromDpmProxy$(state.dpmAddress), [state.dpmAddress]),
   )
 
   const [cachedPosition, setCachedPosition] = useState<AjnaPositionSet<typeof position>>()
   const [simulation, setSimulation] = useState<AjnaSimulationData<typeof position>>()
   const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
 
-  // TODO: replace with real validations
-  const errors = defaultErrors
-  const warnings = defaultWarnings
-  const isFormValid = true
+  const validation = useMemo(
+    () =>
+      getAjnaValidation({
+        collateralBalance,
+        collateralToken,
+        currentStep,
+        ethBalance,
+        ethPrice,
+        gasEstimationUsd: gasEstimation?.usdValue,
+        product,
+        quoteBalance,
+        simulationErrors: simulation?.errors,
+        simulationWarnings: simulation?.errors,
+        state,
+        txError: txDetails?.txError,
+      }),
+    [
+      collateralBalance.toNumber(),
+      collateralToken,
+      ethBalance.toNumber(),
+      ethPrice.toNumber(),
+      gasEstimation?.usdValue.toNumber(),
+      quoteBalance.toNumber(),
+      simulation?.errors,
+      state,
+      txDetails?.txError,
+    ],
+  )
 
   const [context, setContext] = useState<AjnaProductContext<typeof position, typeof form>>({
     form,
@@ -138,7 +164,7 @@ export function AjnaProductContextProvider({
       setIsLoadingSimulation,
       setSimulation,
     },
-    validation: { errors, isFormValid, warnings },
+    validation,
   })
 
   useEffect(() => {
@@ -155,13 +181,12 @@ export function AjnaProductContextProvider({
         isSimulationLoading,
         resolvedId: positionIdFromDpmProxyData,
       },
-      validation: { errors, isFormValid, warnings },
+      validation,
     }))
   }, [
     cachedPosition,
     collateralBalance,
     currentStep,
-    errors,
     form.state,
     isSimulationLoading,
     position,
@@ -169,7 +194,7 @@ export function AjnaProductContextProvider({
     quoteBalance,
     simulation,
     txDetails,
-    warnings,
+    validation,
     walletAddress,
   ])
 
