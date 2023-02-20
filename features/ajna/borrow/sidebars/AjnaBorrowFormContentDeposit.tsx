@@ -2,7 +2,7 @@ import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowCo
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
 import { AjnaBorrowFormFieldGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
 import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import React from 'react'
 
 export function AjnaBorrowFormContentDeposit() {

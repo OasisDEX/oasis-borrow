@@ -2,7 +2,7 @@ import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { resolveIfCachedPosition } from 'features/ajna/common/helpers'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import {
   formatAmount,
   formatCryptoBalance,

@@ -5,7 +5,7 @@ import {
 } from 'features/ajna/borrow/helpers'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'

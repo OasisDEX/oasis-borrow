@@ -1,6 +1,6 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'

@@ -9,7 +9,7 @@ import {
   defaultWarnings,
   getAjnaBorrowValidations,
 } from 'features/ajna/borrow/validations'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React, {

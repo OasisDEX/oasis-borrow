@@ -9,7 +9,7 @@ import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBor
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaSidebarStep } from 'features/ajna/common/types'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'

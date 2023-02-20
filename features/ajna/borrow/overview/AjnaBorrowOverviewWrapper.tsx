@@ -7,7 +7,7 @@ import { ContentCardLiquidationPrice } from 'features/ajna/borrow/overview/Conte
 import { ContentCardLoanToValue } from 'features/ajna/borrow/overview/ContentCardLoanToValue'
 import { ContentCardPositionDebt } from 'features/ajna/borrow/overview/ContentCardPositionDebt'
 import { ContentFooterItemsBorrow } from 'features/ajna/borrow/overview/ContentFooterItemsBorrow'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { AjnaTokensBanner } from 'features/ajna/controls/AjnaTokensBanner'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

@@ -1,15 +1,13 @@
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { isAppContextAvailable } from 'components/AppContextProvider'
-import {
-  AjnaFlow,
-  AjnaProduct,
-  AjnaSidebarEditingStep,
-  AjnaSidebarStep,
-} from 'features/ajna/common/types'
-import { isExternalStep, isStepWithTransaction } from 'features/ajna/contexts/ajnaStepManager'
-import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
-import { TxDetails } from 'helpers/handleTransaction'
+import { AjnaSimulationData } from 'actions/ajna'
+import { useAppContext } from 'components/AppContextProvider'
+import { ValidationMessagesInput } from 'components/ValidationMessages'
+import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
+import { defaultErrors, defaultWarnings } from 'features/ajna/borrow/validations'
+import { AjnaProduct } from 'features/ajna/common/types'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
+import { AjnaEarnPosition } from 'features/ajna/earn/fakePosition'
+import { useAjnaEarnFormReducto } from 'features/ajna/earn/state/ajnaEarnFormReducto'
+import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React, {
   Dispatch,
@@ -17,126 +15,178 @@ import React, {
   SetStateAction,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react'
 
-interface AjnaGeneralContextProviderProps {
-  collateralBalance: BigNumber
-  collateralPrice: BigNumber
-  collateralToken: string
-  dpmProxy?: string
-  ethBalance: BigNumber
-  ethPrice: BigNumber
-  flow: AjnaFlow
-  id?: string
-  owner: string
-  product: AjnaProduct
-  quoteBalance: BigNumber
-  quotePrice: BigNumber
-  quoteToken: string
-  steps: AjnaSidebarStep[]
+import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
+
+interface AjnaProductContextProviderPropsWithBorrow {
+  form: ReturnType<typeof useAjnaBorrowFormReducto>
+  position: AjnaPosition
+  product: 'borrow'
+}
+interface AjnaProductContextProviderPropsWithEarn {
+  form: ReturnType<typeof useAjnaEarnFormReducto>
+  position: AjnaEarnPosition
+  product: 'earn'
+}
+interface AjnaProductContextProviderPropsWithMultiply {
+  // TODO: to be replaced with useAjnaMultiplyFormReducto when availavble
+  form: ReturnType<typeof useAjnaBorrowFormReducto>
+  position: AjnaPosition
+  product: 'multiply'
+}
+type AjnaProductDetailsContextProviderProps =
+  | AjnaProductContextProviderPropsWithBorrow
+  | AjnaProductContextProviderPropsWithEarn
+  | AjnaProductContextProviderPropsWithMultiply
+
+interface AjnaPositionSet<P> {
+  position: P
+  simulation?: P
 }
 
-type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'>
-
-interface AjnaGeneralContextSteps {
-  currentStep: AjnaSidebarStep
-  editingStep: AjnaSidebarEditingStep
-  isExternalStep: boolean
-  isStepWithTransaction: boolean
-  steps: AjnaSidebarStep[]
-  txStatus?: TxStatus
-  setStep: (step: AjnaSidebarStep) => void
-  setNextStep: () => void
-  setPrevStep: () => void
+interface AjnaProductContextPosition<P> {
+  cachedPosition?: AjnaPositionSet<P>
+  currentPosition: AjnaPositionSet<P>
+  isSimulationLoading?: boolean
+  resolvedId?: string
+  setCachedPosition: Dispatch<SetStateAction<AjnaPositionSet<P> | undefined>>
+  setIsLoadingSimulation: Dispatch<SetStateAction<boolean>>
+  setSimulation: Dispatch<SetStateAction<AjnaSimulationData<P> | undefined>>
 }
 
-interface AjnaGeneralContextTx {
-  isTxError: boolean
-  isTxInProgress: boolean
-  isTxStarted: boolean
-  isTxSuccess: boolean
-  isTxWaitingForApproval: boolean
-  setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
-  txDetails?: TxDetails
-}
-
-interface AjnaGeneralContext {
-  environment: AjnaGeneralContextEnvironment & {
-    isOwner: boolean
+interface AjnaProductContext<P, F> {
+  form: F
+  position: AjnaProductContextPosition<P>
+  validation: {
+    errors: ValidationMessagesInput
+    isFormValid: boolean
+    warnings: ValidationMessagesInput
   }
-  steps: AjnaGeneralContextSteps
-  tx: AjnaGeneralContextTx
 }
 
-const ajnaGeneralContext = React.createContext<AjnaGeneralContext | undefined>(undefined)
+type AjnaProductContextWithBorrow = AjnaProductContext<
+  AjnaPosition,
+  ReturnType<typeof useAjnaBorrowFormReducto>
+>
+type AjnaProductContextWithEarn = AjnaProductContext<
+  AjnaEarnPosition,
+  ReturnType<typeof useAjnaEarnFormReducto>
+>
 
-export function useAjnaGeneralContext(): AjnaGeneralContext {
-  const context = useContext(ajnaGeneralContext)
+const ajnaBorrowContext = React.createContext<AjnaProductContextWithBorrow | undefined>(undefined)
+const ajnaEarnContext = React.createContext<AjnaProductContextWithEarn | undefined>(undefined)
 
-  if (!context) throw new Error('AjnaGeneralContext not available!')
-  return context
+type PickProductType<T extends AjnaProduct> = T extends 'borrow'
+  ? AjnaProductContextWithBorrow
+  : T extends 'earn'
+  ? AjnaProductContextWithEarn // TODO: Add AjnaProductContextWithMultiply
+  : never
+
+export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickProductType<T> {
+  const { environment } = useAjnaGeneralContext()
+  const context = product === 'borrow' ? useContext(ajnaBorrowContext) : useContext(ajnaEarnContext)
+
+  if (product !== environment.product)
+    throw new Error(
+      `AjnaGeneralContext and AjnaProductContext products doesn't match: ${environment.product}/${product}`,
+    )
+  if (!context) throw new Error('AjnaProductContext not available!')
+  return context as PickProductType<T>
 }
 
-export function AjnaGeneralContextProvider({
+export function AjnaProductContextProvider({
   children,
-  steps,
-  ...props
-}: PropsWithChildren<AjnaGeneralContextProviderProps>) {
-  if (!isAppContextAvailable()) return null
-
-  const { flow, collateralBalance, quoteBalance, owner } = props
+  form,
+  product,
+  position,
+}: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const { walletAddress } = useAccount()
-  const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
-  const [txDetails, setTxDetails] = useState<TxDetails>()
+  const { positionIdFromDpmProxy$ } = useAppContext()
+  const {
+    environment: { collateralBalance, quoteBalance },
+    steps: { currentStep },
+    tx: { txDetails },
+  } = useAjnaGeneralContext()
+  const {
+    state: { dpmAddress },
+  } = form
 
-  const shiftStep = (direction: 'next' | 'prev') => {
-    const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
+  const [positionIdFromDpmProxyData] = useObservable(
+    useMemo(() => positionIdFromDpmProxy$(dpmAddress), [dpmAddress]),
+  )
 
-    if (steps[i]) setCurrentStep(steps[i])
-    else throw new Error(`A step with index ${i} does not exist in form flow.`)
-  }
+  const [cachedPosition, setCachedPosition] = useState<AjnaPositionSet<typeof position>>()
+  const [simulation, setSimulation] = useState<AjnaSimulationData<typeof position>>()
+  const [isSimulationLoading, setIsLoadingSimulation] = useState(false)
 
-  const setupStepManager = (): AjnaGeneralContextSteps => {
-    return {
-      currentStep,
-      steps,
-      editingStep: flow === 'open' ? 'setup' : 'manage',
-      isExternalStep: isExternalStep({ currentStep }),
-      isStepWithTransaction: isStepWithTransaction({ currentStep }),
-      setStep: (step) => setCurrentStep(step),
-      setNextStep: () => shiftStep('next'),
-      setPrevStep: () => shiftStep('prev'),
-    }
-  }
+  // TODO: replace with real validations
+  const errors = defaultErrors
+  const warnings = defaultWarnings
+  const isFormValid = true
 
-  const setupTxManager = (): AjnaGeneralContextTx => {
-    return {
-      ...getTxStatuses(txDetails?.txStatus),
-      setTxDetails,
-      txDetails,
-    }
-  }
-
-  const [context, setContext] = useState<AjnaGeneralContext>({
-    environment: { ...props, isOwner: owner === walletAddress || flow === 'open' },
-    steps: setupStepManager(),
-    tx: setupTxManager(),
+  const [context, setContext] = useState<AjnaProductContext<typeof position, typeof form>>({
+    form,
+    position: {
+      cachedPosition,
+      currentPosition: { position },
+      isSimulationLoading,
+      resolvedId: positionIdFromDpmProxyData,
+      setCachedPosition,
+      setIsLoadingSimulation,
+      setSimulation,
+    },
+    validation: { errors, isFormValid, warnings },
   })
 
   useEffect(() => {
     setContext((prev) => ({
       ...prev,
-      environment: {
-        ...prev.environment,
-        isOwner: owner === walletAddress || flow === 'open',
-        collateralBalance,
-        quoteBalance,
+      form,
+      position: {
+        ...prev.position,
+        cachedPosition,
+        currentPosition: {
+          position,
+          simulation: simulation?.position,
+        },
+        isSimulationLoading,
+        resolvedId: positionIdFromDpmProxyData,
       },
-      steps: setupStepManager(),
-      tx: setupTxManager(),
+      validation: { errors, isFormValid, warnings },
     }))
-  }, [collateralBalance, currentStep, quoteBalance, txDetails, walletAddress])
+  }, [
+    cachedPosition,
+    collateralBalance,
+    currentStep,
+    errors,
+    form.state,
+    isSimulationLoading,
+    position,
+    positionIdFromDpmProxyData,
+    quoteBalance,
+    simulation,
+    txDetails,
+    warnings,
+    walletAddress,
+  ])
 
-  return <ajnaGeneralContext.Provider value={context}>{children}</ajnaGeneralContext.Provider>
+  switch (product) {
+    case 'borrow':
+      return (
+        <ajnaBorrowContext.Provider value={context as AjnaProductContextWithBorrow}>
+          {children}
+        </ajnaBorrowContext.Provider>
+      )
+    case 'earn':
+      return (
+        <ajnaEarnContext.Provider value={context as AjnaProductContextWithEarn}>
+          {children}
+        </ajnaEarnContext.Provider>
+      )
+    case 'multiply':
+      return <></>
+  }
 }

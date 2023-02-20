@@ -1,6 +1,6 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
