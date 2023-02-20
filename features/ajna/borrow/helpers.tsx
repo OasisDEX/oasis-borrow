@@ -1,4 +1,4 @@
-import { AjnaEditingStep, AjnaFlow, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaSidebarEditingStep, AjnaFlow, AjnaSidebarStep } from 'features/ajna/common/types'
 
 export function getAjnaSidebarButtonsStatus({
   currentStep,
@@ -13,8 +13,8 @@ export function getAjnaSidebarButtonsStatus({
   isTxWaitingForApproval,
   walletAddress,
 }: {
-  currentStep: AjnaStatusStep
-  editingStep: AjnaEditingStep
+  currentStep: AjnaSidebarStep
+  editingStep: AjnaSidebarEditingStep
   isAllowanceLoading: boolean
   isFormValid: boolean
   isOwner: boolean

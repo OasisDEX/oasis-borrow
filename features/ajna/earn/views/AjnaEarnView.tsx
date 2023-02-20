@@ -3,7 +3,7 @@ import { TabBar } from 'components/TabBar'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaEarnOverviewWrapper } from 'features/ajna/earn/overview/AjnaEarnOverviewWrapper'
 import { AjnaEarnFormWrapper } from 'features/ajna/earn/sidebars/AjnaEarnFormWrapper'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
@@ -21,7 +21,7 @@ export function AjnaEarnView() {
   } = useAjnaBorrowContext()
   const {
     environment: { collateralPrice, collateralToken, flow, owner, product, quotePrice, quoteToken },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
 
   return (
     <Container variant="vaultPageContainerStatic">

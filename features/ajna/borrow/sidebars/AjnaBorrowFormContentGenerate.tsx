@@ -2,7 +2,7 @@ import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowCo
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
 import { AjnaBorrowFormFieldGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
 import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormContentGenerate() {
@@ -14,7 +14,7 @@ export function AjnaBorrowFormContentGenerate() {
   } = useAjnaBorrowContext()
   const {
     environment: { collateralBalance, collateralPrice, collateralToken },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
 
   return (
     <>

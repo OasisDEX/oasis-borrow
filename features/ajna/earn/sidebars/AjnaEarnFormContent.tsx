@@ -8,8 +8,8 @@ import {
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
-import { AjnaStatusStep } from 'features/ajna/common/types'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaSidebarStep } from 'features/ajna/common/types'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -51,9 +51,9 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
       isTxInProgress,
       setTxDetails,
     },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
 
-  const currentStep = 'setup' as AjnaStatusStep
+  const currentStep = 'setup' as AjnaSidebarStep
 
   const {
     isPrimaryButtonDisabled,

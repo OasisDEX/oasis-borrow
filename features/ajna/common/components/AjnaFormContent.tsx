@@ -5,7 +5,7 @@ import {
 } from 'features/ajna/borrow/helpers'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaBorrowPanel } from 'features/ajna/common/types'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React, { PropsWithChildren } from 'react'
@@ -58,7 +58,7 @@ export function AjnaFormContent({
       isTxInProgress,
       setTxDetails,
     },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
 
   // TODO remove it once earn context available
   const currentStep = product === 'earn' ? 'setup' : castedCurrentStep

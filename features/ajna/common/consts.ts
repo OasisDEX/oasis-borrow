@@ -1,4 +1,4 @@
-import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 
 // TODO: add 'earn' and 'multiply' in distant future
 export const ajnaProducts: AjnaProduct[] = ['borrow', 'earn']
@@ -27,7 +27,7 @@ export const ajnaComingSoonPools = [
 
 export const steps: {
   [ProductKey in AjnaProduct]: {
-    [FlowKey in AjnaFlow]: AjnaStatusStep[]
+    [FlowKey in AjnaFlow]: AjnaSidebarStep[]
   }
 } = {
   borrow: {
@@ -44,5 +44,5 @@ export const steps: {
   },
 }
 
-export const ajnaFormExternalSteps: AjnaStatusStep[] = ['dpm']
-export const ajnaFormStepsWithTransaction: AjnaStatusStep[] = ['transaction']
+export const ajnaFormExternalSteps: AjnaSidebarStep[] = ['dpm']
+export const ajnaFormStepsWithTransaction: AjnaSidebarStep[] = ['transaction']

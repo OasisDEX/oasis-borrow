@@ -1,4 +1,4 @@
-import { AjnaFlow, AjnaPoolData, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaFlow, AjnaPoolData, AjnaProduct, AjnaSidebarStep } from 'features/ajna/common/types'
 import { DiscoverTableDataCellInactive } from 'features/discover/common/DiscoverTableDataCellContent'
 import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -21,7 +21,7 @@ export function getPrimaryButtonLabelKey({
   isTxSuccess,
   walletAddress,
 }: {
-  currentStep: AjnaStatusStep
+  currentStep: AjnaSidebarStep
   dpmAddress?: string
   flow: AjnaFlow
   isTxError: boolean

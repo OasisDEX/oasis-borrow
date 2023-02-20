@@ -2,7 +2,7 @@ import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { resolveIfCachedPosition } from 'features/ajna/common/helpers'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import { formatCryptoBalance, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -12,7 +12,7 @@ export function AjnaEarnFormOrder({ cached = false }: { cached?: boolean }) {
 
   const {
     environment: { collateralToken, quoteToken },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
   // TODO use earn context when available
   const {
     position: { cachedPosition, currentPosition },

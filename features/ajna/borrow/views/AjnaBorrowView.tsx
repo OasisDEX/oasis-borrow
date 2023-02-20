@@ -3,7 +3,7 @@ import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { AjnaBorrowOverviewWrapper } from 'features/ajna/borrow/overview/AjnaBorrowOverviewWrapper'
 import { AjnaBorrowFormWrapper } from 'features/ajna/borrow/sidebars/AjnaBorrowFormWrapper'
 import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import { VaultOwnershipBanner } from 'features/notices/VaultsNoticesView'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -26,7 +26,7 @@ export function AjnaBorrowView() {
       quotePrice,
       quoteToken,
     },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
 
   return (
     <Container variant="vaultPageContainerStatic">

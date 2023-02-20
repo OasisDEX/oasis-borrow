@@ -3,8 +3,8 @@ import { FlowSidebar } from 'components/FlowSidebar'
 import { ethers } from 'ethers'
 import { AjnaBorrowFormState } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaTxHandler } from 'features/ajna/borrow/useAjnaTxHandler'
-import { AjnaBorrowAction, AjnaStatusStep } from 'features/ajna/common/types'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaBorrowAction, AjnaSidebarStep } from 'features/ajna/common/types'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAccount } from 'helpers/useAccount'
 import { useFlowState } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
@@ -29,7 +29,7 @@ interface AjnaFormWrapperProps {
   }: {
     txHandler: () => void
     isAllowanceLoading: boolean
-    currentStep: AjnaStatusStep
+    currentStep: AjnaSidebarStep
     dpmProxy?: string
     collateralToken: string
     quoteToken: string
@@ -51,7 +51,7 @@ export function AjnaFormWrapper({
   const {
     environment: { dpmProxy, collateralToken, quoteToken },
     steps: { currentStep, editingStep, isExternalStep, setNextStep, setStep, steps },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
 
   const flowState = useFlowState({
     ...(dpmProxy && { existingProxy: dpmProxy }),

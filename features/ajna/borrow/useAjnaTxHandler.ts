@@ -5,7 +5,7 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { cancelable, CancelablePromise } from 'cancelable-promise'
 import { useAppContext } from 'components/AppContextProvider'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaProductContext'
 import { takeUntilTxState } from 'features/automation/api/automationTxHandlers'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { handleTransaction } from 'helpers/handleTransaction'
@@ -29,7 +29,7 @@ export function useAjnaTxHandler(): AjnaTxHandler {
     tx: { setTxDetails },
     environment: { collateralToken, quoteToken, ethPrice },
     steps: { isExternalStep },
-  } = useAjnaProductContext()
+  } = useAjnaGeneralContext()
   const {
     form: { dispatch, state },
     position: {

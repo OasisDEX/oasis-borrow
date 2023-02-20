@@ -1,8 +1,8 @@
 import { ajnaFormExternalSteps, ajnaFormStepsWithTransaction } from 'features/ajna/common/consts'
-import { AjnaStatusStep } from 'features/ajna/common/types'
+import { AjnaSidebarStep } from 'features/ajna/common/types'
 
 export interface GeneralStepManager {
-  currentStep: AjnaStatusStep
+  currentStep: AjnaSidebarStep
 }
 
 export function isExternalStep({ currentStep }: GeneralStepManager) {
@@ -13,7 +13,7 @@ export function isNextStep({
   currentStep,
   step,
   steps,
-}: GeneralStepManager & { step: AjnaStatusStep; steps: AjnaStatusStep[] }) {
+}: GeneralStepManager & { step: AjnaSidebarStep; steps: AjnaSidebarStep[] }) {
   return steps.indexOf(step) > steps.indexOf(currentStep)
 }
 

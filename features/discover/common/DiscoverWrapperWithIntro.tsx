@@ -1,5 +1,6 @@
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import { useAjnaProductDetailsContext } from 'features/ajna/contexts/AjnaProductDetailsContext'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -7,6 +8,12 @@ import { Box, Heading, Text } from 'theme-ui'
 
 export function DiscoverWrapperWithIntro({ children }: WithChildren) {
   const { t } = useTranslation()
+  const context = useAjnaProductDetailsContext('borrow')
+
+  console.log(context)
+  console.log(context.position)
+  console.log(context.position.foo)
+  console.log(context.position.borrow)
 
   return (
     <Box sx={{ width: '100%', mt: [0, 5] }}>

@@ -1,7 +1,12 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
-import { AjnaEditingStep, AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
+import {
+  AjnaFlow,
+  AjnaProduct,
+  AjnaSidebarEditingStep,
+  AjnaSidebarStep,
+} from 'features/ajna/common/types'
 import { isExternalStep, isStepWithTransaction } from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
 import { TxDetails } from 'helpers/handleTransaction'
@@ -15,7 +20,7 @@ import React, {
   useState,
 } from 'react'
 
-interface AjnaProductContextProviderProps {
+interface AjnaGeneralContextProviderProps {
   collateralBalance: BigNumber
   collateralPrice: BigNumber
   collateralToken: string
@@ -29,24 +34,24 @@ interface AjnaProductContextProviderProps {
   quoteBalance: BigNumber
   quotePrice: BigNumber
   quoteToken: string
-  steps: AjnaStatusStep[]
+  steps: AjnaSidebarStep[]
 }
 
-type AjnaProductEnvironment = Omit<AjnaProductContextProviderProps, 'steps'>
+type AjnaGeneralContextEnvironment = Omit<AjnaGeneralContextProviderProps, 'steps'>
 
-interface AjnaProductFlowSteps {
-  currentStep: AjnaStatusStep
-  editingStep: AjnaEditingStep
+interface AjnaGeneralContextSteps {
+  currentStep: AjnaSidebarStep
+  editingStep: AjnaSidebarEditingStep
   isExternalStep: boolean
   isStepWithTransaction: boolean
-  steps: AjnaStatusStep[]
+  steps: AjnaSidebarStep[]
   txStatus?: TxStatus
-  setStep: (step: AjnaStatusStep) => void
+  setStep: (step: AjnaSidebarStep) => void
   setNextStep: () => void
   setPrevStep: () => void
 }
 
-interface AjnaProductTx {
+interface AjnaGeneralContextTx {
   isTxError: boolean
   isTxInProgress: boolean
   isTxStarted: boolean
@@ -56,37 +61,35 @@ interface AjnaProductTx {
   txDetails?: TxDetails
 }
 
-interface AjnaProductContext {
-  environment: AjnaProductEnvironment & {
+interface AjnaGeneralContext {
+  environment: AjnaGeneralContextEnvironment & {
     isOwner: boolean
   }
-  steps: AjnaProductFlowSteps
-  tx: AjnaProductTx
+  steps: AjnaGeneralContextSteps
+  tx: AjnaGeneralContextTx
 }
 
-const ajnaProductContext = React.createContext<AjnaProductContext | undefined>(undefined)
+const ajnaGeneralContext = React.createContext<AjnaGeneralContext | undefined>(
+  undefined,
+)
 
-export function useAjnaProductContext(): AjnaProductContext {
-  const ac = useContext(ajnaProductContext)
+export function useAjnaGeneralContext(): AjnaGeneralContext {
+  const ac = useContext(ajnaGeneralContext)
 
-  if (!ac) {
-    throw new Error(
-      "AjnaProductContext not available! useAjnaProductContext can't be used serverside",
-    )
-  }
+  if (!ac) throw new Error('AjnaGeneralContext not available!')
   return ac
 }
 
-export function AjnaProductContextProvider({
+export function AjnaGeneralContextProvider({
   children,
   steps,
   ...props
-}: PropsWithChildren<AjnaProductContextProviderProps>) {
+}: PropsWithChildren<AjnaGeneralContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
   const { flow, collateralBalance, quoteBalance, owner } = props
   const { walletAddress } = useAccount()
-  const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
+  const [currentStep, setCurrentStep] = useState<AjnaSidebarStep>(steps[0])
   const [txDetails, setTxDetails] = useState<TxDetails>()
 
   const shiftStep = (direction: 'next' | 'prev') => {
@@ -96,7 +99,7 @@ export function AjnaProductContextProvider({
     else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
-  const setupStepManager = (): AjnaProductFlowSteps => {
+  const setupStepManager = (): AjnaGeneralContextSteps => {
     return {
       currentStep,
       steps,
@@ -109,7 +112,7 @@ export function AjnaProductContextProvider({
     }
   }
 
-  const setupTxManager = (): AjnaProductTx => {
+  const setupTxManager = (): AjnaGeneralContextTx => {
     return {
       ...getTxStatuses(txDetails?.txStatus),
       setTxDetails,
@@ -117,7 +120,7 @@ export function AjnaProductContextProvider({
     }
   }
 
-  const [context, setContext] = useState<AjnaProductContext>({
+  const [context, setContext] = useState<AjnaGeneralContext>({
     environment: { ...props, isOwner: owner === walletAddress || flow === 'open' },
     steps: setupStepManager(),
     tx: setupTxManager(),
@@ -137,5 +140,9 @@ export function AjnaProductContextProvider({
     }))
   }, [collateralBalance, currentStep, quoteBalance, txDetails, walletAddress])
 
-  return <ajnaProductContext.Provider value={context}>{children}</ajnaProductContext.Provider>
+  return (
+    <ajnaGeneralContext.Provider value={context}>
+      {children}
+    </ajnaGeneralContext.Provider>
+  )
 }
