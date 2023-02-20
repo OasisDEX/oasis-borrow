@@ -96,7 +96,7 @@ export function AjnaProductController({
     ),
   )
 
-  if (ajnaPositionData === null) void push('/404')
+  if (ajnaPositionData === null) void push('/not-found')
 
   return (
     <WithConnection>

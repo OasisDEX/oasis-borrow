@@ -61,6 +61,7 @@ export const PositionInfoComponent = ({
 }: PositionInfoComponentProps) => {
   const { t } = useTranslation()
 
+  // Todo: move to lib
   const netValueInDebtToken = position.collateral.normalisedAmount
     .times(position.oraclePriceForCollateralDebtExchangeRate)
     .minus(position.debt.normalisedAmount)
