@@ -1,4 +1,3 @@
-
 import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
 import {
   AjnaBorrowFormFieldPayback,
