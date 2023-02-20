@@ -1,17 +1,19 @@
-import { getAaveV3AssetsPrices } from 'blockchain/aave-v3'
-import { observe } from 'blockchain/calls/observe'
 import { TokenBalances } from 'blockchain/tokens'
 import { AppContext } from 'components/AppContext'
 import { getStopLossTransactionStateMachine } from 'features/stateMachines/stopLoss/getStopLossTransactionStateMachine'
+import { createAaveHistory$ } from 'features/vaultHistory/vaultHistory'
+import { one } from 'helpers/zero'
 import { LendingProtocol } from 'lendingProtocols'
 import { prepareAaveTotalValueLocked$ } from 'lendingProtocols/aave-v3/pipelines'
+import { ReserveConfigurationData } from 'lendingProtocols/common'
 import { memoize } from 'lodash'
 import moment from 'moment/moment'
 import { curry } from 'ramda'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { getAaveStEthYield } from './common'
+import { AaveContext } from './AaveContext'
+import { getAaveStEthYield, IStrategyConfig } from './common'
 import {
   getAdjustAaveParametersMachine,
   getCloseAaveParametersMachine,
@@ -28,7 +30,7 @@ import { getOpenAaveStateMachine, getOpenAaveV3PositionStateMachineServices } fr
 import { getAaveSupportedTokenBalances$ } from './services/getAaveSupportedTokenBalances'
 import { getSupportedTokens } from './strategyConfig'
 
-export function setupAaveV3Context(appContext: AppContext) {
+export function setupAaveV3Context(appContext: AppContext): AaveContext {
   const {
     userSettings$,
     txHelpers$,
@@ -41,6 +43,7 @@ export function setupAaveV3Context(appContext: AppContext) {
     protocols,
     connectedContext$,
     commonTransactionServices,
+    chainContext$,
   } = appContext
 
   const {
@@ -67,6 +70,7 @@ export function setupAaveV3Context(appContext: AppContext) {
     convertToAaveOracleAssetPrice$,
     aaveOracleAssetPriceData$,
     getAaveReserveData$,
+    getAaveAssetsPrices$,
   } = protocols[LendingProtocol.AaveV3]
 
   const aaveSthEthYieldsQuery = memoize(
@@ -76,26 +80,26 @@ export function setupAaveV3Context(appContext: AppContext) {
 
   const earnCollateralsReserveData = {
     WSTETH: aaveReserveConfigurationData$({ token: 'WSTETH' }),
-  } as Record<string, ReturnType<typeof aaveReserveConfigurationData$>>
+  } as Record<string, Observable<ReserveConfigurationData>>
 
   const aaveSupportedTokenBalances$ = memoize(
     curry(getAaveSupportedTokenBalances$)(
       balance$,
       aaveOracleAssetPriceData$,
-      chainLinkETHUSDOraclePrice$,
+      () => of(one), // aave v3 base is already in USD
       getSupportedTokens(LendingProtocol.AaveV3),
     ),
   )
 
-  const tokenBalances$: Observable<TokenBalances | undefined> = context$.pipe(
+  const tokenBalances$: Observable<TokenBalances> = context$.pipe(
     switchMap(({ account }) => {
-      if (!account) return of(undefined)
       return aaveSupportedTokenBalances$(account)
     }),
   )
 
   const strategyInfo$ = memoize(
     curry(getStrategyInfo$)(aaveOracleAssetPriceData$, aaveReserveConfigurationData$),
+    (tokens: IStrategyConfig['tokens']) => `${tokens.deposit}-${tokens.collateral}-${tokens.debt}`,
   )
 
   const openAaveParameters = getOpenAaveParametersMachine(txHelpers$, gasEstimation$)
@@ -157,16 +161,16 @@ export function setupAaveV3Context(appContext: AppContext) {
     depositBorrowAaveMachine,
   )
 
-  const getAaveAssetsPrices$ = observe(onEveryBlock$, context$, getAaveV3AssetsPrices, (args) =>
-    args.tokens.join(''),
-  )
-
   const aaveTotalValueLocked$ = curry(prepareAaveTotalValueLocked$)(
     getAaveReserveData$({ token: 'WSTETH' }),
     getAaveReserveData$({ token: 'ETH' }),
     // @ts-expect-error
-    getAaveAssetsPrices$({ tokens: ['USDC', 'WSTETH'] }), //this needs to be fixed in OasisDEX/transactions -> CallDef
+    getAaveAssetsPrices$({
+      tokens: ['ETH', 'WSTETH'],
+    }), //this needs to be fixed in OasisDEX/transactions -> CallDef
   )
+
+  const aaveHistory$ = memoize(curry(createAaveHistory$)(chainContext$, onEveryBlock$))
 
   return {
     aaveStateMachine,
@@ -187,5 +191,6 @@ export function setupAaveV3Context(appContext: AppContext) {
     convertToAaveOracleAssetPrice$,
     getAaveReserveData$,
     dpmAccountStateMachine,
+    aaveHistory$,
   }
 }

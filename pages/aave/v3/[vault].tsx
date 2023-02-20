@@ -1,22 +1,23 @@
+import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { PageSEOTags } from 'components/HeadTags'
+import { AppLayout } from 'components/Layouts'
 import { getAddress } from 'ethers/lib/utils'
+import { AaveContextProvider, useAaveContext } from 'features/aave/AaveContextProvider'
+import { ManageAaveStateMachineContextProvider } from 'features/aave/manage/containers/AaveManageStateMachineContext'
 import { AaveManagePositionView } from 'features/aave/manage/containers/AaveManageView'
+import { PositionId } from 'features/aave/types'
+import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
+import { LendingProtocol } from 'lendingProtocols'
 import { GetServerSidePropsContext } from 'next'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { WithConnection } from '../../../components/connectWallet/ConnectWallet'
-import { AppLayout } from '../../../components/Layouts'
-import { AaveContextProvider, useAaveContext } from '../../../features/aave/AaveContextProvider'
-import { ManageAaveStateMachineContextProvider } from '../../../features/aave/manage/containers/AaveManageStateMachineContext'
-import { PositionId } from '../../../features/aave/types'
-import { WithTermsOfService } from '../../../features/termsOfService/TermsOfService'
-import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../../helpers/observableHook'
-import { LendingProtocol } from '../../../lendingProtocols'
-import { BackgroundLight } from '../../../theme/BackgroundLight'
+import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -28,6 +29,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 function WithStrategy(positionId: PositionId) {
+  const { t } = useTranslation()
   const { strategyConfig$, aaveManageStateMachine, proxiesRelatedWithPosition$ } = useAaveContext(
     LendingProtocol.AaveV3,
   )
@@ -47,6 +49,17 @@ function WithStrategy(positionId: PositionId) {
             positionId={positionId}
             strategy={_strategyConfig}
           >
+            <PageSEOTags
+              title="seo.title-product-w-tokens"
+              titleParams={{
+                product: t(`seo.${_strategyConfig.type.toLocaleLowerCase()}.title`),
+                protocol: _strategyConfig.protocol,
+                token1: _strategyConfig.tokens.collateral,
+                token2: _strategyConfig.tokens.debt,
+              }}
+              description="seo.multiply.description"
+              url={`/aave/v3/${positionId}`}
+            />
             <Grid gap={0} sx={{ width: '100%' }}>
               <BackgroundLight />
               <AaveManagePositionView
@@ -80,7 +93,7 @@ function Position({ vault }: { vault: string }) {
     address !== undefined ? undefined : isNaN(Number(vault)) ? undefined : Number(vault)
 
   if (address === undefined && vaultId === undefined) {
-    void replace('/')
+    void replace('/not-found')
   }
 
   return (

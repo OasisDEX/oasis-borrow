@@ -1,15 +1,11 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
-import { isBorrowStepValid } from 'features/ajna/borrow/ajnaBorrowStepManager'
-import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
-import { AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
-import {
-  isExternalStep,
-  isNextStep,
-  isStepWithTransaction,
-} from 'features/ajna/contexts/ajnaStepManager'
+import { AjnaEditingStep, AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
+import { isExternalStep, isStepWithTransaction } from 'features/ajna/contexts/ajnaStepManager'
 import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
+import { TxDetails } from 'helpers/handleTransaction'
+import { useAccount } from 'helpers/useAccount'
 import React, {
   Dispatch,
   PropsWithChildren,
@@ -19,32 +15,30 @@ import React, {
   useState,
 } from 'react'
 
-interface AjnaBorrowContextProviderProps {
+interface AjnaProductContextProviderProps {
   collateralBalance: BigNumber
   collateralPrice: BigNumber
   collateralToken: string
+  dpmProxy?: string
+  ethBalance: BigNumber
+  ethPrice: BigNumber
   flow: AjnaFlow
+  id?: string
+  owner: string
   product: AjnaProduct
   quoteBalance: BigNumber
   quotePrice: BigNumber
   quoteToken: string
-  position: AjnaBorrowPosition
   steps: AjnaStatusStep[]
 }
 
-type AjnaBorrowEnvironment = Omit<AjnaBorrowContextProviderProps, 'position' | 'steps'>
+type AjnaProductEnvironment = Omit<AjnaProductContextProviderProps, 'steps'>
 
-// temporary, interface will come from MPA
-interface AjnaBorrowPosition {
-  id?: string
-}
-
-interface AjnaBorrowSteps {
+interface AjnaProductFlowSteps {
   currentStep: AjnaStatusStep
-  editingStep: Extract<AjnaStatusStep, 'setup' | 'manage'>
+  editingStep: AjnaEditingStep
   isExternalStep: boolean
   isStepWithTransaction: boolean
-  isStepValid: boolean
   steps: AjnaStatusStep[]
   txStatus?: TxStatus
   setStep: (step: AjnaStatusStep) => void
@@ -52,57 +46,49 @@ interface AjnaBorrowSteps {
   setPrevStep: () => void
 }
 
-interface AjnaBorrowTx {
-  txStatus?: TxStatus
+interface AjnaProductTx {
   isTxError: boolean
-  isTxStarted: boolean
-  isTxWaitingForApproval: boolean
   isTxInProgress: boolean
+  isTxStarted: boolean
   isTxSuccess: boolean
-  setTxStatus: Dispatch<SetStateAction<TxStatus | undefined>>
+  isTxWaitingForApproval: boolean
+  setTxDetails: Dispatch<SetStateAction<TxDetails | undefined>>
+  txDetails?: TxDetails
 }
 
-interface AjnaBorrowContext {
-  environment: AjnaBorrowEnvironment
-  form: ReturnType<typeof useAjnaBorrowFormReducto>
-  position: AjnaBorrowPosition
-  steps: AjnaBorrowSteps
-  tx: AjnaBorrowTx
+interface AjnaProductContext {
+  environment: AjnaProductEnvironment & {
+    isOwner: boolean
+  }
+  steps: AjnaProductFlowSteps
+  tx: AjnaProductTx
 }
 
-const ajnaBorrowContext = React.createContext<AjnaBorrowContext | undefined>(undefined)
+const ajnaProductContext = React.createContext<AjnaProductContext | undefined>(undefined)
 
-export function useAjnaBorrowContext(): AjnaBorrowContext {
-  const ac = useContext(ajnaBorrowContext)
+export function useAjnaProductContext(): AjnaProductContext {
+  const ac = useContext(ajnaProductContext)
 
   if (!ac) {
     throw new Error(
-      "AjnaBorrowContext not available! useAjnaBorrowContext can't be used serverside",
+      "AjnaProductContext not available! useAjnaProductContext can't be used serverside",
     )
   }
   return ac
 }
 
-export function AjnaBorrowContextProvider({
+export function AjnaProductContextProvider({
   children,
-  position,
   steps,
   ...props
-}: PropsWithChildren<AjnaBorrowContextProviderProps>) {
+}: PropsWithChildren<AjnaProductContextProviderProps>) {
   if (!isAppContextAvailable()) return null
 
-  const form = useAjnaBorrowFormReducto({})
+  const { flow, collateralBalance, quoteBalance, owner } = props
+  const { walletAddress } = useAccount()
   const [currentStep, setCurrentStep] = useState<AjnaStatusStep>(steps[0])
-  const [txStatus, setTxStatus] = useState<TxStatus>()
+  const [txDetails, setTxDetails] = useState<TxDetails>()
 
-  const setStep = (step: AjnaStatusStep) => {
-    if (
-      !isNextStep({ currentStep, step, steps }) ||
-      isBorrowStepValid({ currentStep, formState: form.state })
-    )
-      setCurrentStep(step)
-    else throw new Error(`A state of current step in not valid.`)
-  }
   const shiftStep = (direction: 'next' | 'prev') => {
     const i = steps.indexOf(currentStep) + (direction === 'next' ? 1 : -1)
 
@@ -110,32 +96,29 @@ export function AjnaBorrowContextProvider({
     else throw new Error(`A step with index ${i} does not exist in form flow.`)
   }
 
-  const setupStepManager = (): AjnaBorrowSteps => {
+  const setupStepManager = (): AjnaProductFlowSteps => {
     return {
       currentStep,
       steps,
-      editingStep: props.flow === 'open' ? 'setup' : 'manage',
+      editingStep: flow === 'open' ? 'setup' : 'manage',
       isExternalStep: isExternalStep({ currentStep }),
       isStepWithTransaction: isStepWithTransaction({ currentStep }),
-      isStepValid: isBorrowStepValid({ currentStep, formState: form.state }),
-      setStep,
+      setStep: (step) => setCurrentStep(step),
       setNextStep: () => shiftStep('next'),
       setPrevStep: () => shiftStep('prev'),
     }
   }
 
-  const setupTxManager = (): AjnaBorrowTx => {
+  const setupTxManager = (): AjnaProductTx => {
     return {
-      txStatus,
-      setTxStatus,
-      ...getTxStatuses(txStatus),
+      ...getTxStatuses(txDetails?.txStatus),
+      setTxDetails,
+      txDetails,
     }
   }
 
-  const [context, setContext] = useState<AjnaBorrowContext>({
-    environment: { ...props },
-    form,
-    position,
+  const [context, setContext] = useState<AjnaProductContext>({
+    environment: { ...props, isOwner: owner === walletAddress || flow === 'open' },
     steps: setupStepManager(),
     tx: setupTxManager(),
   })
@@ -145,14 +128,14 @@ export function AjnaBorrowContextProvider({
       ...prev,
       environment: {
         ...prev.environment,
-        collateralBalance: props.collateralBalance,
-        quoteBalance: props.quoteBalance,
+        isOwner: owner === walletAddress || flow === 'open',
+        collateralBalance,
+        quoteBalance,
       },
-      form: { ...prev.form, state: form.state },
       steps: setupStepManager(),
       tx: setupTxManager(),
     }))
-  }, [props.collateralBalance, props.quoteBalance, form.state, currentStep, txStatus])
+  }, [collateralBalance, currentStep, quoteBalance, txDetails, walletAddress])
 
-  return <ajnaBorrowContext.Provider value={context}>{children}</ajnaBorrowContext.Provider>
+  return <ajnaProductContext.Provider value={context}>{children}</ajnaProductContext.Provider>
 }

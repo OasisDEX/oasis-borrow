@@ -1,40 +1,36 @@
 import { IPosition } from '@oasisdex/oasis-actions'
+import { AdjustAaveParameters, CloseAaveParameters, ManageAaveParameters } from 'actions/aave'
 import { trackingEvents } from 'analytics/analytics'
-import { getTxTokenAndAmount } from 'features/aave/helpers/getTxTokenAndAmount'
-import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
-import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
-import { pure } from 'xstate/lib/actions'
-import { MachineOptionsFrom } from 'xstate/lib/types'
-
-import { TransactionDef } from '../../../../blockchain/calls/callsHelpers'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import {
   callOperationExecutorWithDpmProxy,
   callOperationExecutorWithDsProxy,
   OperationExecutorTxMeta,
-} from '../../../../blockchain/calls/operationExecutor'
-import { allDefined } from '../../../../helpers/allDefined'
-import { zero } from '../../../../helpers/zero'
-import { AllowanceStateMachine } from '../../../stateMachines/allowance'
-import { TransactionStateMachine } from '../../../stateMachines/transaction'
-import {
-  TransactionParametersStateMachine,
-  TransactionParametersStateMachineEvent,
-} from '../../../stateMachines/transactionParameters'
+} from 'blockchain/calls/operationExecutor'
 import {
   BaseAaveContext,
   BaseAaveEvent,
   contextToTransactionParameters,
+  getSlippage,
   isAllowanceNeeded,
   ManageTokenInput,
-} from '../../common/BaseAaveContext'
-import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
+  ProxyType,
+} from 'features/aave/common'
+import { getTxTokenAndAmount } from 'features/aave/helpers'
+import { defaultManageTokenInputValues } from 'features/aave/manage/containers/AaveManageStateMachineContext'
+import { ManageCollateralActionsEnum, ManageDebtActionsEnum } from 'features/aave/strategyConfig'
+import { PositionId } from 'features/aave/types'
+import { AllowanceStateMachine } from 'features/stateMachines/allowance'
+import { TransactionStateMachine } from 'features/stateMachines/transaction'
 import {
-  AdjustAaveParameters,
-  CloseAaveParameters,
-  ManageAaveParameters,
-} from '../../oasisActionsLibWrapper'
-import { PositionId } from '../../types'
-import { defaultManageTokenInputValues } from '../containers/AaveManageStateMachineContext'
+  TransactionParametersStateMachine,
+  TransactionParametersStateMachineEvent,
+} from 'features/stateMachines/transactionParameters'
+import { allDefined } from 'helpers/allDefined'
+import { zero } from 'helpers/zero'
+import { ActorRefFrom, assign, createMachine, send, spawn, StateFrom } from 'xstate'
+import { pure } from 'xstate/lib/actions'
+import { MachineOptionsFrom } from 'xstate/lib/types'
 
 type ActorFromTransactionParametersStateMachine =
   | ActorRefFrom<TransactionParametersStateMachine<CloseAaveParameters>>
@@ -44,7 +40,6 @@ type ActorFromTransactionParametersStateMachine =
 export interface ManageAaveContext extends BaseAaveContext {
   refTransactionMachine?: ActorRefFrom<TransactionStateMachine<OperationExecutorTxMeta>>
   refParametersMachine?: ActorFromTransactionParametersStateMachine
-  strategyConfig: IStrategyConfig
   positionId: PositionId
   proxyAddress?: string
   ownerAddress?: string
@@ -179,14 +174,28 @@ export function createManageAaveStateMachine(
             CLOSE_POSITION: {
               target: '.loading',
             },
-            ADJUST_POSITION: {
-              target: '.loading',
-            },
           },
         },
         frontend: {
-          initial: 'editing',
+          initial: 'initial',
           states: {
+            initial: {
+              entry: ['setInitialState'],
+              on: {
+                CLOSE_POSITION: {
+                  target: 'reviewingClosing',
+                },
+                ADJUST_POSITION: {
+                  target: 'editing',
+                },
+                MANAGE_DEBT: {
+                  target: 'manageDebt',
+                },
+                MANAGE_COLLATERAL: {
+                  target: 'manageCollateral',
+                },
+              },
+            },
             editing: {
               entry: ['reset', 'killCurrentParametersMachine', 'spawnAdjustParametersMachine'],
               on: {
@@ -236,12 +245,17 @@ export function createManageAaveStateMachine(
                   },
                 ],
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                 },
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+                USE_SLIPPAGE: {
+                  target: ['#manageAaveStateMachine.background.debouncingManage'],
+                  actions: 'updateContext',
                 },
               },
             },
@@ -259,12 +273,17 @@ export function createManageAaveStateMachine(
                   },
                 ],
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                 },
                 CLOSE_POSITION: {
                   cond: 'canChangePosition',
                   target: 'reviewingClosing',
-                  actions: ['killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                  actions: ['reset', 'killCurrentParametersMachine', 'spawnCloseParametersMachine'],
+                },
+                USE_SLIPPAGE: {
+                  target: ['#manageAaveStateMachine.background.debouncingManage'],
+                  actions: 'updateContext',
                 },
               },
             },
@@ -315,7 +334,13 @@ export function createManageAaveStateMachine(
               },
             },
             reviewingClosing: {
-              entry: ['closePositionEvent'],
+              entry: [
+                'closePositionEvent',
+                'reset',
+                // 'killCurrentParametersMachine', -> including this breaks machine when selecting close from drop-down
+                'spawnCloseParametersMachine',
+                'requestParameters',
+              ],
               on: {
                 NEXT_STEP: {
                   cond: 'validClosingTransactionParameters',
@@ -323,6 +348,7 @@ export function createManageAaveStateMachine(
                   actions: ['closePositionTransactionEvent'],
                 },
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                   actions: ['reset', 'resetTokenActionValue'],
                 },
@@ -348,6 +374,7 @@ export function createManageAaveStateMachine(
                   target: 'txInProgress',
                 },
                 BACK_TO_EDITING: {
+                  cond: 'canAdjustPosition',
                   target: 'editing',
                   actions: ['reset'],
                 },
@@ -394,6 +421,15 @@ export function createManageAaveStateMachine(
         UPDATE_ALLOWANCE: {
           actions: 'updateContext',
         },
+        BACK_TO_EDITING: {
+          cond: 'canAdjustPosition',
+          target: 'frontend.editing',
+          actions: ['reset'],
+        },
+        CLOSE_POSITION: {
+          target: ['frontend.reviewingClosing'],
+          actions: ['spawnCloseParametersMachine'],
+        },
         MANAGE_COLLATERAL: {
           cond: 'canChangePosition',
           target: 'frontend.manageCollateral',
@@ -436,6 +472,10 @@ export function createManageAaveStateMachine(
           target: '#manageAaveStateMachine.background.debouncingManage',
           actions: ['updateTokenActionValue'],
         },
+        USE_SLIPPAGE: {
+          target: ['background.debouncing'],
+          actions: 'updateContext',
+        },
       },
     },
     {
@@ -450,6 +490,8 @@ export function createManageAaveStateMachine(
           allDefined(web3Context, ownerAddress, currentPosition) &&
           web3Context!.account === ownerAddress,
         isAllowanceNeeded,
+        canAdjustPosition: ({ strategyConfig }) =>
+          strategyConfig.availableActions.includes('adjust'),
       },
       actions: {
         resetTokenActionValue: assign((_) => ({
@@ -496,6 +538,7 @@ export function createManageAaveStateMachine(
             riskRatio: undefined,
           },
           strategy: undefined,
+          transition: undefined,
         })),
         riskRatioEvent: (context) => {
           trackingEvents.earn.stETHAdjustRiskMoveSlider(context.userInput.riskRatio!.loanToValue)
@@ -519,32 +562,44 @@ export function createManageAaveStateMachine(
             type: 'VARIABLES_RECEIVED',
             parameters: {
               amount: context.userInput.amount || zero,
-              riskRatio: context.userInput.riskRatio || context.currentPosition!.riskRatio,
+              riskRatio:
+                context.userInput.riskRatio ||
+                context.currentPosition?.riskRatio ||
+                context.strategyConfig.riskRatios.minimum,
               proxyAddress: context.proxyAddress!,
               token: context.tokens.deposit,
               context: context.web3Context!,
-              slippage: context.userSettings!.slippage,
+              slippage: getSlippage(context),
               currentPosition: context.currentPosition!,
               manageTokenInput: context.manageTokenInput,
               proxyType: context.positionCreatedBy,
+              protocol: context.strategyConfig.protocol,
+              shouldCloseToCollateral:
+                context.manageTokenInput?.closingToken === context.tokens.collateral,
+              positionType: context.strategyConfig.type,
             },
           }),
           { to: (context) => context.refParametersMachine! },
         ),
         requestManageParameters: send(
-          (context): TransactionParametersStateMachineEvent<ManageAaveParameters> => {
+          (
+            context,
+          ): TransactionParametersStateMachineEvent<ManageAaveParameters | CloseAaveParameters> => {
             const { token, amount } = getTxTokenAndAmount(context)
             return {
               type: 'VARIABLES_RECEIVED',
               parameters: {
                 proxyAddress: context.proxyAddress!,
                 context: context.web3Context!,
-                slippage: context.userSettings!.slippage,
+                slippage: getSlippage(context),
                 currentPosition: context.currentPosition!,
                 manageTokenInput: context.manageTokenInput,
                 proxyType: context.positionCreatedBy,
                 token,
                 amount,
+                protocol: context.strategyConfig.protocol,
+                shouldCloseToCollateral:
+                  context.manageTokenInput?.closingToken === context.tokens.collateral,
               },
             }
           },
@@ -648,6 +703,23 @@ export function createManageAaveStateMachine(
             },
           }
         }),
+        setInitialState: send(
+          (context) => {
+            const firstAction = context.strategyConfig.availableActions[0]
+
+            switch (firstAction) {
+              case 'adjust':
+                return { type: 'ADJUST_POSITION' }
+              case 'manage-collateral':
+                return { type: 'MANAGE_COLLATERAL' }
+              case 'manage-debt':
+                return { type: 'MANAGE_DEBT' }
+              case 'close':
+                return { type: 'CLOSE_POSITION' }
+            }
+          },
+          { delay: 0 },
+        ),
       },
     },
   )

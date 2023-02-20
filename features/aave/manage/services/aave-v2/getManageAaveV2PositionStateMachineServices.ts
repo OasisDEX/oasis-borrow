@@ -1,24 +1,24 @@
 import BigNumber from 'bignumber.js'
-import { isEqual } from 'lodash'
-import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
-
-import { Context } from '../../../../../blockchain/network'
-import { Tickers } from '../../../../../blockchain/prices'
-import { TokenBalances } from '../../../../../blockchain/tokens'
-import { TxHelpers } from '../../../../../components/AppContext'
-import { allDefined } from '../../../../../helpers/allDefined'
-import { AaveProtocolData } from '../../../../../lendingProtocols/aave-v2/pipelines'
-import { UserSettingsState } from '../../../../userSettings/userSettings'
+import { Context } from 'blockchain/network'
+import { Tickers } from 'blockchain/prices'
+import { TokenBalances } from 'blockchain/tokens'
+import { TxHelpers } from 'components/AppContext'
 import {
+  IStrategyConfig,
   IStrategyInfo,
   StrategyTokenAllowance,
   StrategyTokenBalance,
-} from '../../../common/BaseAaveContext'
-import { getPricesFeed$ } from '../../../common/services/getPricesFeed'
-import { ProxiesRelatedWithPosition } from '../../../helpers/getProxiesRelatedWithPosition'
-import { PositionId } from '../../../types'
-import { ManageAaveStateMachineServices } from '../../state'
+} from 'features/aave/common'
+import { getPricesFeed$ } from 'features/aave/common/services/getPricesFeed'
+import { ProxiesRelatedWithPosition } from 'features/aave/helpers'
+import { ManageAaveStateMachineServices } from 'features/aave/manage/state'
+import { PositionId } from 'features/aave/types'
+import { UserSettingsState } from 'features/userSettings/userSettings'
+import { allDefined } from 'helpers/allDefined'
+import { AaveProtocolData } from 'lendingProtocols/aave-v2/pipelines'
+import { isEqual } from 'lodash'
+import { combineLatest, Observable } from 'rxjs'
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators'
 
 export function getManageAaveV2PositionStateMachineServices(
   context$: Observable<Context>,
@@ -28,7 +28,7 @@ export function getManageAaveV2PositionStateMachineServices(
   proxiesRelatedWithPosition$: (positionId: PositionId) => Observable<ProxiesRelatedWithPosition>,
   userSettings$: Observable<UserSettingsState>,
   prices$: (tokens: string[]) => Observable<Tickers>,
-  strategyInfo$: (collateralToken: string) => Observable<IStrategyInfo>,
+  strategyInfo$: (tokens: IStrategyConfig['tokens']) => Observable<IStrategyInfo>,
   aaveProtocolData$: (
     collateralToken: string,
     debtToken: string,
@@ -95,7 +95,7 @@ export function getManageAaveV2PositionStateMachineServices(
       return pricesFeed$(context.tokens.collateral, context.tokens.debt)
     },
     strategyInfo$: (context) => {
-      return strategyInfo$(context.tokens.collateral).pipe(
+      return strategyInfo$(context.tokens).pipe(
         map((strategyInfo) => ({
           type: 'UPDATE_STRATEGY_INFO',
           strategyInfo,

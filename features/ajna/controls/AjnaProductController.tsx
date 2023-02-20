@@ -1,26 +1,30 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
+import { AjnaBorrowContextProvider } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
 import { steps } from 'features/ajna/common/consts'
+import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
-import { AjnaBorrowContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnView } from 'features/ajna/earn/views/AjnaEarnView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { getPositionIdentity } from 'helpers/getPositionIdentity'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
+import { useRouter } from 'next/router'
 import React from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { EMPTY } from 'rxjs'
 
 interface AjnaProductControllerOpenFlow {
   collateralToken: string
   product: AjnaProduct
-  quoteToken?: string
+  quoteToken: string
   id?: never
 }
 
@@ -45,91 +49,108 @@ export function AjnaProductController({
   product,
   quoteToken,
 }: AjnaProductControllerProps) {
-  const { balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
+  const { push } = useRouter()
+  const { ajnaPosition$, balancesInfoArray$, tokenPriceUSD$ } = useAppContext()
   const { walletAddress } = useAccount()
 
-  const [productData, setProductData] = useState<AjnaProduct | undefined>(product)
-  const [collateralTokenData, setCollateralTokenData] = useState<string | undefined>(
-    collateralToken,
+  const [ajnaPositionData, ajnaPositionError] = useObservable(
+    useMemo(
+      () =>
+        ajnaPosition$(
+          id
+            ? { positionId: getPositionIdentity(id) }
+            : {
+                collateralToken: collateralToken as string,
+                product: product as string,
+                quoteToken: quoteToken as string,
+              },
+        ),
+      [id, collateralToken, product, quoteToken],
+    ),
   )
-  const [quoteTokenData, setQuoteTokenData] = useState<string | undefined>(quoteToken)
-
-  // TODO: this part should be replaced with observable that loads data from below when ID is available
-  useEffect(() => {
-    if (id) {
-      setProductData('borrow')
-      setCollateralTokenData('ETH')
-      setQuoteTokenData('DAI')
-    }
-  }, [id])
-
   const [balancesInfoArrayData, balancesInfoArrayError] = useObservable(
     useMemo(
       () =>
-        collateralTokenData && quoteTokenData
-          ? balancesInfoArray$([collateralTokenData, quoteTokenData], walletAddress || '')
+        ajnaPositionData?.meta.collateralToken && ajnaPositionData?.meta.quoteToken
+          ? balancesInfoArray$(
+              [ajnaPositionData.meta.collateralToken, ajnaPositionData.meta.quoteToken, 'ETH'],
+              walletAddress || '',
+            )
           : EMPTY,
-      [collateralTokenData, walletAddress],
+      [ajnaPositionData],
     ),
   )
   const [tokenPriceUSDData, tokenPriceUSDError] = useObservable(
     useMemo(
       () =>
-        collateralTokenData && quoteTokenData
-          ? tokenPriceUSD$([collateralTokenData, quoteTokenData])
+        ajnaPositionData?.meta.collateralToken && ajnaPositionData?.meta.quoteToken
+          ? tokenPriceUSD$([
+              ajnaPositionData.meta.collateralToken,
+              ajnaPositionData.meta.quoteToken,
+              'ETH',
+            ])
           : EMPTY,
-      [collateralTokenData, quoteTokenData],
+      [ajnaPositionData],
     ),
   )
+
+  if (ajnaPositionData === null) void push('/not-found')
 
   return (
     <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
           <AjnaWrapper>
-            <WithErrorHandler error={[balancesInfoArrayError, tokenPriceUSDError]}>
+            <WithErrorHandler
+              error={[ajnaPositionError, balancesInfoArrayError, tokenPriceUSDError]}
+            >
               <WithLoadingIndicator
-                value={[
-                  productData,
-                  collateralTokenData,
-                  quoteTokenData,
-                  balancesInfoArrayData,
-                  tokenPriceUSDData,
-                ]}
+                value={[ajnaPositionData, balancesInfoArrayData, tokenPriceUSDData]}
                 customLoader={
                   <PositionLoadingState
-                    {...getAjnaBorrowHeadlineProps({
-                      collateralToken: collateralTokenData,
+                    {...getAjnaHeadlineProps({
+                      collateralToken: ajnaPositionData?.meta.collateralToken,
                       flow,
-                      product: productData,
-                      quoteToken: quoteTokenData,
+                      product: ajnaPositionData?.meta.product,
+                      quoteToken: ajnaPositionData?.meta.quoteToken,
                       id,
                     })}
                   />
                 }
               >
-                {([
-                  _product,
-                  _collateralToken,
-                  _quoteToken,
-                  [collateralBalance, quoteBalance],
-                  _tokenPriceUSD,
-                ]) => (
-                  <AjnaBorrowContextProvider
-                    collateralBalance={collateralBalance}
-                    collateralToken={_collateralToken}
-                    collateralPrice={_tokenPriceUSD[_collateralToken]}
-                    flow={flow}
-                    position={{ id }}
-                    product={_product}
-                    quoteBalance={quoteBalance}
-                    quoteToken={_quoteToken}
-                    quotePrice={_tokenPriceUSD[_quoteToken]}
-                    steps={steps[_product][flow]}
-                  >
-                    {_product === 'borrow' && <AjnaBorrowView />}
-                  </AjnaBorrowContextProvider>
-                )}
+                {([ajnaPosition, [collateralBalance, quoteBalance, ethBalance], tokenPriceUSD]) =>
+                  ajnaPosition ? (
+                    <AjnaProductContextProvider
+                      collateralBalance={collateralBalance}
+                      collateralPrice={tokenPriceUSD[ajnaPosition.meta.collateralToken]}
+                      collateralToken={ajnaPosition.meta.collateralToken}
+                      {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
+                      ethBalance={ethBalance}
+                      ethPrice={tokenPriceUSD.ETH}
+                      flow={flow}
+                      id={id}
+                      owner={ajnaPosition.meta.user}
+                      product={ajnaPosition.meta.product}
+                      quoteBalance={quoteBalance}
+                      quotePrice={tokenPriceUSD[ajnaPosition.meta.quoteToken]}
+                      quoteToken={ajnaPosition.meta.quoteToken}
+                      steps={steps[ajnaPosition.meta.product][flow]}
+                    >
+                      {ajnaPosition.meta.product === 'borrow' && (
+                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
+                          <AjnaBorrowView />
+                        </AjnaBorrowContextProvider>
+                      )}
+                      {ajnaPosition.meta.product === 'earn' && (
+                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
+                          <AjnaEarnView />
+                        </AjnaBorrowContextProvider>
+                      )}
+                    </AjnaProductContextProvider>
+                  ) : (
+                    <>Earn UI placeholder</>
+                  )
+                }
               </WithLoadingIndicator>
             </WithErrorHandler>
           </AjnaWrapper>

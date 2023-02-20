@@ -1,8 +1,7 @@
 import { BigNumber } from 'bignumber.js'
+import { CallDef } from 'blockchain/calls/callsHelpers'
+import { amountFromWei } from 'blockchain/utils'
 import { AaveV3PoolDataProvider } from 'types/web3-v1-contracts/aave-v3-pool-data-provider'
-
-import { CallDef } from '../calls/callsHelpers'
-import { amountFromWei } from '../utils'
 
 export interface AaveV3UserReserveDataParameters {
   token: string
@@ -132,5 +131,17 @@ export const getAaveV3ReserveConfigurationData: CallDef<
       liquidationThreshold: new BigNumber(result.liquidationThreshold).div(10000), // 8100 -> 0.81
       liquidationBonus: new BigNumber(result.liquidationBonus).minus(10000).div(10000), // 10750 -> 750 -> -> 0.075
     }
+  },
+}
+
+export const getAaveV3EModeCategoryForAsset: CallDef<{ token: string }, BigNumber> = {
+  call: (args, { contract, aaveV3PoolDataProvider }) => {
+    return contract<AaveV3PoolDataProvider>(aaveV3PoolDataProvider).methods.getReserveEModeCategory
+  },
+  prepareArgs: ({ token }, context) => {
+    return [context.tokens[token].address]
+  },
+  postprocess: (result) => {
+    return new BigNumber(result)
   },
 }

@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
-
-import { AaveV3Pool } from '../../types/web3-v1-contracts/aave-v3-pool'
-import { CallDef } from '../calls/callsHelpers'
-import { amountFromWei } from '../utils'
+import { CallDef } from 'blockchain/calls/callsHelpers'
+import { amountFromWei } from 'blockchain/utils'
+import { AaveV3Pool } from 'types/web3-v1-contracts/aave-v3-pool'
 
 export interface AaveV3UserAccountData {
   totalCollateralBase: BigNumber
@@ -11,6 +10,16 @@ export interface AaveV3UserAccountData {
   currentLiquidationThreshold: BigNumber
   ltv: BigNumber
   healthFactor: BigNumber
+}
+
+export interface GetEModeCategoryDataParameters {
+  categoryId: BigNumber
+}
+
+export interface GetEModeCategoryDataResult {
+  ltv: BigNumber
+  liquidationThreshold: BigNumber
+  liquidationBonus: BigNumber
 }
 
 export interface AaveV3UserAccountDataParameters {
@@ -68,5 +77,24 @@ export const getAaveV3ReservesList: CallDef<void, AaveV3ConfigurationData> = {
   },
   prepareArgs: () => {
     return []
+  },
+}
+
+export const getEModeCategoryData: CallDef<
+  GetEModeCategoryDataParameters,
+  GetEModeCategoryDataResult
+> = {
+  call: (args, { contract, aaveV3Pool }) => {
+    return contract<AaveV3Pool>(aaveV3Pool).methods.getEModeCategoryData
+  },
+  prepareArgs: ({ categoryId }) => {
+    return [categoryId.toString()]
+  },
+  postprocess: (result) => {
+    return {
+      ltv: new BigNumber(result.ltv.toString()).div(10000),
+      liquidationThreshold: new BigNumber(result.liquidationThreshold.toString()).div(10000),
+      liquidationBonus: new BigNumber(result.liquidationBonus.toString()).minus(10000).div(10000), // 10100 -> 100 -> -> 0.01
+    }
   },
 }

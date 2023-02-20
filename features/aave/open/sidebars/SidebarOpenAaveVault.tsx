@@ -2,12 +2,19 @@ import { useActor } from '@xstate/react'
 import { MessageCard } from 'components/MessageCard'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarSectionFooterButtonSettings } from 'components/sidebar/SidebarSectionFooter'
+import { isAllowanceNeeded } from 'features/aave/common/BaseAaveContext'
+import { StrategyInformationContainer } from 'features/aave/common/components/informationContainer'
 import { OpenAaveStopLossInformation } from 'features/aave/common/components/informationContainer/OpenAaveStopLossInformation'
 import { StopLossTwoTxRequirement } from 'features/aave/common/components/StopLossTwoTxRequirement'
+import { ProxyType } from 'features/aave/common/StrategyConfigTypes'
 import { isUserWalletConnected } from 'features/aave/helpers/isUserWalletConnected'
+import { useOpenAaveStateMachineContext } from 'features/aave/open/containers/AaveOpenStateMachineContext'
+import { OpenAaveEvent, OpenAaveStateMachine } from 'features/aave/open/state'
 import { getAaveStopLossData } from 'features/automation/protection/stopLoss/openFlow/openVaultStopLossAave'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/stopLoss/sidebars/SidebarAdjustStopLossEditingStage'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { AllowanceView } from 'features/stateMachines/allowance'
+import { CreateDPMAccountView } from 'features/stateMachines/dpmAccount/CreateDPMAccountView'
+import { ProxyView } from 'features/stateMachines/proxy'
 import { getCustomNetworkParameter } from 'helpers/getCustomNetworkParameter'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -19,14 +26,6 @@ import { Box, Flex, Grid, Image } from 'theme-ui'
 import { AddingStopLossAnimation, OpenVaultAnimation } from 'theme/animations'
 import { Sender, StateFrom } from 'xstate'
 
-import { AllowanceView } from '../../../stateMachines/allowance'
-import { CreateDPMAccountView } from '../../../stateMachines/dpmAccount/CreateDPMAccountView'
-import { ProxyView } from '../../../stateMachines/proxy'
-import { isAllowanceNeeded } from '../../common/BaseAaveContext'
-import { StrategyInformationContainer } from '../../common/components/informationContainer'
-import { ProxyType } from '../../common/StrategyConfigTypes'
-import { useOpenAaveStateMachineContext } from '../containers/AaveOpenStateMachineContext'
-import { OpenAaveEvent, OpenAaveStateMachine } from '../state'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
 
 function isLoading(state: StateFrom<OpenAaveStateMachine>) {
@@ -53,7 +52,7 @@ interface OpenAaveStateProps {
   isLoading: () => boolean
 }
 
-function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
+function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { stopLossSkipped, stopLossLevel } = state.context
 
@@ -68,7 +67,12 @@ function OpenAaveTransactionInProgressStateView({ state }: OpenAaveStateProps) {
       <Grid gap={3}>
         {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
         <OpenVaultAnimation />
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -168,8 +172,6 @@ function StopLossInProgressStateView({ state }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export const MemoizedStopLossInProgressStateView = React.memo(StopLossInProgressStateView)
-
 function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStateProps) {
   const { t } = useTranslation()
   const { push } = useRedirect()
@@ -202,7 +204,12 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     content: (
       <Grid gap={3}>
         {withStopLoss && <StopLossTwoTxRequirement typeKey="position" />}
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton,
@@ -226,7 +233,12 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
       <Grid gap={3}>
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {
@@ -303,51 +315,39 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   const sidebarSectionProps: SidebarSectionProps = {
     title: t(state.context.strategyConfig.viewComponents.sidebarTitle),
     content: (
-      <WithLoadingIndicator
-        // this loader seems to be pointless, but undefined tokenUsdPrice (below) breaks the proper decimals input so it needs to be there
-        value={[state.context.collateralPrice]}
-        customLoader={
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <AppSpinner size={24} />
-          </Box>
-        }
-      >
-        {() => (
-          <Grid gap={3}>
-            <SidebarOpenAaveVaultEditingState state={state} send={send} />
-            {state.context.tokenBalance && amountTooHigh && (
-              <MessageCard
-                messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
-                type="error"
-              />
-            )}
-            <AdjustRiskView
-              title={
-                state.context.strategyConfig.type === 'Earn'
-                  ? t('sidebar-titles.open-earn-position')
-                  : t('sidebar-titles.open-multiply-position')
-              }
-              state={state}
-              send={send}
-              isLoading={isLoading}
-              primaryButton={{
-                steps: [state.context.currentStep, state.context.totalSteps],
-                isLoading: isLoading(),
-                disabled: !state.can('NEXT_STEP'),
-                label: t(state.context.strategyConfig.viewComponents.sidebarButton),
-                action: () => send('NEXT_STEP'),
-              }}
-              textButton={{
-                label: t('open-earn.aave.vault-form.back-to-editing'),
-                action: () => send('BACK_TO_EDITING'),
-              }}
-              viewLocked={hasOpenedPosition}
-              showWarring={hasOpenedPosition}
-              noSidebar
-            />
-          </Grid>
+      <Grid gap={3}>
+        <SidebarOpenAaveVaultEditingState state={state} send={send} />
+        {state.context.tokenBalance && amountTooHigh && (
+          <MessageCard
+            messages={[t('vault-errors.deposit-amount-exceeds-collateral-balance')]}
+            type="error"
+          />
         )}
-      </WithLoadingIndicator>
+        <AdjustRiskView
+          title={
+            state.context.strategyConfig.type === 'Earn'
+              ? t('sidebar-titles.open-earn-position')
+              : t('sidebar-titles.open-multiply-position')
+          }
+          state={state}
+          send={send}
+          isLoading={isLoading}
+          primaryButton={{
+            steps: [state.context.currentStep, state.context.totalSteps],
+            isLoading: isLoading(),
+            disabled: !state.can('NEXT_STEP'),
+            label: t(state.context.strategyConfig.viewComponents.sidebarButton),
+            action: () => send('NEXT_STEP'),
+          }}
+          textButton={{
+            label: t('open-earn.aave.vault-form.back-to-editing'),
+            action: () => send('BACK_TO_EDITING'),
+          }}
+          viewLocked={hasOpenedPosition}
+          showWarring={hasOpenedPosition}
+          noSidebar
+        />
+      </Grid>
     ),
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
@@ -358,7 +358,7 @@ function OpenAaveEditingStateView({ state, send, isLoading }: OpenAaveStateProps
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
+function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -366,7 +366,12 @@ function OpenAaveSuccessStateView({ state }: OpenAaveStateProps) {
     content: (
       <Grid gap={3}>
         <CompleteBanner />
-        <StrategyInformationContainer state={state} />
+        <StrategyInformationContainer
+          state={state}
+          changeSlippageSource={(from) => {
+            send({ type: 'USE_SLIPPAGE', getSlippageFrom: from })
+          }}
+        />
       </Grid>
     ),
     primaryButton: {

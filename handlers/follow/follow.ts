@@ -1,4 +1,5 @@
-import { PrismaClient, UsersWhoFollowVaults } from '@prisma/client'
+import { PrismaClient, Protocol, UsersWhoFollowVaults } from '@prisma/client'
+import { NetworkIds } from 'blockchain/network'
 import { LIMIT_OF_FOLLOWED_VAULTS } from 'features/follow/common/consts'
 import { getUserFromRequest } from 'handlers/signature-auth/getUserFromRequest'
 import { NextApiRequest, NextApiResponse } from 'next'
@@ -15,14 +16,31 @@ export async function selectVaultsFollowedByAddress(
 
   return results
 }
-
 const usersWhoFollowVaultsSchema = z.object({
   vault_id: z.number(),
   vault_chain_id: z.number(),
+  protocol: z.enum(['maker', 'aavev2', 'aavev3', 'ajna']),
 })
 
+function handleUnsupportedProtocol(req: NextApiRequest, res: NextApiResponse) {
+  const protocolFromBody = req.body.protocol.toLowerCase()
+  const supportedProtocols = Object.values(Protocol).map((value) => value.toString())
+  if (!supportedProtocols.includes(protocolFromBody)) {
+    return res.status(418).json({ error: `Protocol ${protocolFromBody} is not supported` })
+  }
+}
+
+function handleUnsupportedNetwork(req: NextApiRequest, res: NextApiResponse) {
+  const chainIdFromBody = req.body.vault_chain_id
+  if (!Object.values(NetworkIds).includes(chainIdFromBody)) {
+    return res.status(418).json({ error: `Chain with ID ${chainIdFromBody} is not supported` })
+  }
+}
+
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
-  const { vault_id, vault_chain_id } = usersWhoFollowVaultsSchema.parse(req.body)
+  handleUnsupportedProtocol(req, res)
+  handleUnsupportedNetwork(req, res)
+  const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
@@ -32,6 +50,7 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
     user_address: usersAddressWhoJustFollowedVaultLowercased,
     vault_id,
     vault_chain_id,
+    protocol: protocol as Protocol,
   }
   const allVaultsFollowedByUser = await prisma.usersWhoFollowVaults.findMany({
     where: { user_address: usersAddressWhoJustFollowedVaultLowercased },
@@ -50,7 +69,9 @@ export async function follow(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
-  const { vault_id, vault_chain_id } = usersWhoFollowVaultsSchema.parse(req.body)
+  handleUnsupportedProtocol(req, res)
+  handleUnsupportedNetwork(req, res)
+  const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' })
@@ -60,6 +81,7 @@ export async function unfollow(req: NextApiRequest, res: NextApiResponse) {
     user_address: usersAddressWhoJustUnfollowedVaultLowercased,
     vault_id,
     vault_chain_id,
+    protocol: protocol as Protocol,
   }
   await prisma.usersWhoFollowVaults
     .deleteMany({

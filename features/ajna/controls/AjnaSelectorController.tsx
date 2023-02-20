@@ -1,10 +1,11 @@
-import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { HeaderSelector, HeaderSelectorOption } from 'components/HeaderSelector'
 import { AppLink } from 'components/Links'
 import { ajnaComingSoonPools, DEFAULT_SELECTED_TOKEN } from 'features/ajna/common/consts'
+import { ajnaPoolDummyData } from 'features/ajna/common/content'
+import { filterPoolData } from 'features/ajna/common/helpers'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { DiscoverResponsiveTable } from 'features/discover/common/DiscoverResponsiveTable'
@@ -16,12 +17,11 @@ import {
 } from 'features/discover/common/DiscoverTableDataCellContent'
 import { DiscoverTableRowData } from 'features/discover/types'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
-import { formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useHash } from 'helpers/useHash'
 import { uniq } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, Heading, Text } from 'theme-ui'
 
 interface AjnaSelectorControllerProps {
@@ -33,19 +33,23 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [hash] = useHash()
-  const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const ref = useRef<HTMLDivElement>(null)
-  const options = uniq(
-    [...(context ? Object.keys(context.ajnaPoolPairs) : []), ...ajnaComingSoonPools].map(
-      (pool) => pool.split('-')[0],
-    ),
+  const options = useMemo(
+    () =>
+      uniq(
+        [...(context ? Object.keys(context.ajnaPoolPairs) : []), ...ajnaComingSoonPools].map(
+          (pool) => pool.split('-')[0],
+        ),
+      )
+        .sort()
+        .map((token) => ({
+          label: token,
+          value: token,
+          icon: getToken(token).iconCircle,
+        })),
+    [context?.ajnaPoolPairs],
   )
-    .sort()
-    .map((token) => ({
-      label: token,
-      value: token,
-      icon: getToken(token).iconCircle,
-    }))
+  const defaultOptionValue = hash.length ? hash.replace('#', '') : DEFAULT_SELECTED_TOKEN
   const defaultOption = options.filter((option) => option.value === defaultOptionValue)[0]
   const [selected, setSelected] = useState<HeaderSelectorOption>(defaultOption)
   // TODO: to be replaced with real data coming from observable
@@ -59,17 +63,18 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
             .filter(([collateral]) => collateral === selected.value)
             .map(([, quote]) => ({
               asset: <DiscoverTableDataCellAsset asset={quote} icon={getToken(quote).iconCircle} />,
-              minPositionSize: `$${formatFiatBalance(new BigNumber(Math.random() * 1000))}`,
-              maxLTV: formatPercent(new BigNumber(Math.random() * 100), { precision: 2 }),
-              liquidityAvaliable: `$${formatFiatBalance(new BigNumber(Math.random() * 10000000))}`,
-              annualFee: formatPercent(new BigNumber(Math.random() * 10), { precision: 2 }),
+              ...filterPoolData({
+                data: ajnaPoolDummyData,
+                pair: `${selected.value}-${quote}`,
+                product,
+              }),
               protocol: (
                 <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
                   Ajna
                 </DiscoverTableDataCellProtocol>
               ),
               action: (
-                <AppLink href={`/ajna/open/${product}/${selected.label}-${quote}`}>
+                <AppLink href={`/ajna/${product}/${selected.label}-${quote}`}>
                   <Button className="discover-action" variant="tertiary">
                     {t(`nav.${product}`)}
                   </Button>
@@ -91,14 +96,17 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
               />
             </DiscoverTableDataCellInactive>
           ),
-          minPositionSize: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          maxLTV: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          liquidityAvaliable: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
-          annualFee: <DiscoverTableDataCellInactive>n/a</DiscoverTableDataCellInactive>,
+          ...filterPoolData({
+            data: ajnaPoolDummyData,
+            pair: `${selected.value}-${quote}`,
+            product,
+          }),
           protocol: (
-            <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
-              Ajna
-            </DiscoverTableDataCellProtocol>
+            <DiscoverTableDataCellInactive>
+              <DiscoverTableDataCellProtocol color={['#f154db', '#974eea']}>
+                Ajna
+              </DiscoverTableDataCellProtocol>
+            </DiscoverTableDataCellInactive>
           ),
           action: (
             <Button className="discover-action" variant="tertiary" disabled={true}>
@@ -107,7 +115,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
           ),
         })),
     ])
-  }, [selected])
+  }, [selected, context?.ajnaPoolPairs])
 
   return (
     <WithConnection>
@@ -127,7 +135,7 @@ export function AjnaSelectorController({ product }: AjnaSelectorControllerProps)
                 {t(`ajna.${product}.open.select.heading.post`)}
               </Heading>
               <Text variant="paragraph2" sx={{ color: 'neutral80', maxWidth: 700, mx: 'auto' }}>
-                {t(`ajna.${product}.open.select.intro`)}
+                {t(`ajna.${product}.open.select.intro`, { token: selected.value })}
               </Text>
             </Box>
             <DiscoverTableContainer tableOnly>

@@ -412,6 +412,9 @@ export const productCardsConfig: {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
     },
+    wstETHeth: {
+      link: 'https://kb.oasis.app/help/earn-with-steth-aave-v3-e-mode',
+    },
   },
 }
 

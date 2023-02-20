@@ -1,9 +1,8 @@
 import { useInterpret } from '@xstate/react'
+import { getEmptyPosition } from 'actions/aave'
+import { IStrategyConfig, ProxyType } from 'features/aave/common'
+import { OpenAaveStateMachine } from 'features/aave/open/state'
 import React from 'react'
-
-import { IStrategyConfig, ProxyType } from '../../common/StrategyConfigTypes'
-import { getEmptyPosition } from '../../oasisActionsLibWrapper'
-import { OpenAaveStateMachine } from '../state'
 
 function setupOpenAaveStateContext({
   machine,
@@ -24,6 +23,8 @@ function setupOpenAaveStateContext({
       currentStep: 1,
       totalSteps: 4,
       currentPosition: getEmptyPosition(config.tokens.collateral, config.tokens.debt),
+      getSlippageFrom:
+        effectiveStrategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
     }),
     { devTools: process.env.NODE_ENV !== 'production' },
   ).start()

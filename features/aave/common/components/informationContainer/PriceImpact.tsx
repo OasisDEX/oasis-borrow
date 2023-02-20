@@ -1,32 +1,30 @@
 import { IPositionTransition } from '@oasisdex/oasis-actions'
-import { amountFromWei } from '@oasisdex/utils'
 import { Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
+import { amountFromWei } from 'blockchain/utils'
+import { VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import { StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
+import { calculatePriceImpact } from 'features/shared/priceImpact'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { VaultChangesInformationItem } from '../../../../../components/vault/VaultChangesInformation'
-import { formatCryptoBalance, formatPercent } from '../../../../../helpers/formatters/format'
-import { one, zero } from '../../../../../helpers/zero'
-import { calculatePriceImpact } from '../../../../shared/priceImpact'
 
 interface PriceImpactProps {
   tokens: {
     collateral: string
     debt: string
   }
-  collateralPrice?: BigNumber
-  debtPrice?: BigNumber
+  balance: StrategyTokenBalance
   transactionParameters: IPositionTransition
 }
 
-export function PriceImpact({
-  tokens,
-  transactionParameters,
-  debtPrice,
-  collateralPrice,
-}: PriceImpactProps) {
+export function PriceImpact({ tokens, transactionParameters, balance }: PriceImpactProps) {
   const { t } = useTranslation()
+
+  const {
+    collateral: { price: collateralPrice },
+    debt: { price: debtPrice },
+  } = balance
 
   const {
     toTokenAmount,
