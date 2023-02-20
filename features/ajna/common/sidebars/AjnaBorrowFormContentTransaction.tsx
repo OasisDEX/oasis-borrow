@@ -1,12 +1,12 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-export function AjnaBorrowFormContentTransaction() {
+export function AjnaFormContentTransaction() {
   const { t } = useTranslation()
   const {
     environment: { collateralToken, quoteToken },

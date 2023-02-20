@@ -2,13 +2,16 @@ import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { isAppContextAvailable } from 'components/AppContextProvider'
 import {
+  isExternalStep,
+  isStepWithTransaction,
+} from 'features/ajna/common/contexts/ajnaStepManager'
+import { getTxStatuses } from 'features/ajna/common/contexts/ajnaTxManager'
+import {
   AjnaFlow,
   AjnaProduct,
   AjnaSidebarEditingStep,
   AjnaSidebarStep,
 } from 'features/ajna/common/types'
-import { isExternalStep, isStepWithTransaction } from 'features/ajna/contexts/ajnaStepManager'
-import { getTxStatuses } from 'features/ajna/contexts/ajnaTxManager'
 import { TxDetails } from 'helpers/handleTransaction'
 import { useAccount } from 'helpers/useAccount'
 import React, {

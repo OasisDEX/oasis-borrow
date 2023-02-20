@@ -1,7 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
-import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
-import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { AjnaFormContentRisk } from 'features/ajna/common/sidebars/AjnaBorrowFormContentRisk'
+import { AjnaFormContentTransaction } from 'features/ajna/common/sidebars/AjnaBorrowFormContentTransaction'
 import { AjnaFormContent } from 'features/ajna/common/components/AjnaFormContent'
 import { AjnaFormWrapper } from 'features/ajna/controls/AjnaFormWrapper'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
@@ -68,11 +68,11 @@ export function AjnaEarnFormWrapper() {
             },
           ]}
         >
-          {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
+          {currentStep === 'risk' && <AjnaFormContentRisk />}
           {/*{currentStep === 'setup' && <AjnaEarnFormContentDeposit />}*/}
           {/*TODO use conditional rendering once earn context available*/}
           <AjnaEarnFormContentDeposit />
-          {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
+          {currentStep === 'transaction' && <AjnaFormContentTransaction />}
         </AjnaFormContent>
       )}
     </AjnaFormWrapper>

@@ -1,8 +1,8 @@
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { resolveIfCachedPosition } from 'features/ajna/common/helpers'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { resolveIfCachedPosition } from 'features/ajna/common/helpers/resolveIfCachedPosition'
 import {
   formatAmount,
   formatCryptoBalance,

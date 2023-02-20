@@ -2,15 +2,20 @@ import { AjnaFormState } from 'features/ajna/common/types'
 import { UseFlowStateProps } from 'helpers/useFlowState'
 import { zero } from 'helpers/zero'
 
+interface GetFlowStateConfigParams {
+  collateralToken: string
+  quoteToken: string
+  state: AjnaFormState
+}
+
 export function getFlowStateConfig({
   collateralToken,
   quoteToken,
   state,
-}: {
-  collateralToken: string
-  quoteToken: string
-  state: AjnaFormState
-}): { amount: UseFlowStateProps['amount']; token: UseFlowStateProps['token'] } {
+}: GetFlowStateConfigParams): {
+  amount: UseFlowStateProps['amount']
+  token: UseFlowStateProps['token']
+} {
   const { action } = state
 
   switch (action) {

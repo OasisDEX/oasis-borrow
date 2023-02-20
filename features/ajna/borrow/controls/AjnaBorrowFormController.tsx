@@ -1,11 +1,11 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
 import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
-import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
-import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
+import { AjnaFormContentRisk } from 'features/ajna/common/sidebars/AjnaBorrowFormContentRisk'
+import { AjnaFormContentTransaction } from 'features/ajna/common/sidebars/AjnaBorrowFormContentTransaction'
 import { AjnaFormView } from 'features/ajna/common/views/AjnaFormView'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -60,10 +60,10 @@ export function AjnaBorrowFormController() {
         },
       })}
     >
-      {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
+      {currentStep === 'risk' && <AjnaFormContentRisk />}
       {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
       {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
-      {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
+      {currentStep === 'transaction' && <AjnaFormContentTransaction />}
     </AjnaFormView>
   )
 }

@@ -5,7 +5,7 @@ import { AppLink } from 'components/Links'
 import { mobileLinkSx } from 'components/navigation/common'
 import { NavigationMenuPanelType } from 'components/navigation/NavigationMenuPanel'
 import { WithArrow } from 'components/WithArrow'
-import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers'
+import { getAjnaWithArrowColorScheme } from 'features/ajna/common/helpers/getAjnaWithArrowColorScheme'
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 

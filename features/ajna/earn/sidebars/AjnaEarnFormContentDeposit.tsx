@@ -2,7 +2,7 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
 import { AjnaValidationMessages } from 'features/ajna/components/AjnaValidationMessages'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import {
   AjnaEarnSlider,
   ajnaSliderDefaults,

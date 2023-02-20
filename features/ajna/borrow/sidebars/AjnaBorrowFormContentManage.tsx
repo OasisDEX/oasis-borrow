@@ -3,7 +3,7 @@ import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/Ajna
 import { AjnaBorrowFormContentGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentGenerate'
 import { AjnaBorrowFormContentPayback } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentPayback'
 import { AjnaBorrowFormContentWithdraw } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentWithdraw'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 

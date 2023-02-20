@@ -5,11 +5,11 @@ import {
   getAjnaSidebarButtonsStatus,
   getAjnaSidebarPrimaryButtonActions,
 } from 'features/ajna/borrow/helpers'
-import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
-import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
+import { AjnaFormContentRisk } from 'features/ajna/common/sidebars/AjnaBorrowFormContentRisk'
+import { AjnaFormContentTransaction } from 'features/ajna/common/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
 import { AjnaSidebarStep } from 'features/ajna/common/types'
-import { useAjnaGeneralContext } from 'features/ajna/contexts/AjnaGeneralContext'
+import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
@@ -137,9 +137,9 @@ export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnF
     }),
     content: (
       <Grid gap={3}>
-        {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
+        {currentStep === 'risk' && <AjnaFormContentRisk />}
         {currentStep === 'setup' && <AjnaEarnFormContentDeposit />}
-        {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
+        {currentStep === 'transaction' && <AjnaFormContentTransaction />}
       </Grid>
     ),
     primaryButton: {

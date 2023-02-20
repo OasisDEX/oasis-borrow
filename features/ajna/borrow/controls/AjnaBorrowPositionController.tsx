@@ -1,10 +1,10 @@
 import { AjnaBorrowFormController } from 'features/ajna/borrow/controls/AjnaBorrowFormController'
 import { AjnaBorrowOverviewController } from 'features/ajna/borrow/controls/AjnaBorrowOverviewController'
-import { AjnaPositionView } from 'features/ajna/common/views/AjnaPositionView'
 import {
   AjnaPositionViewHistoryPlaceholder,
   AjnaPositionViewInfoPlaceholder,
-} from 'features/ajna/components/AjnaPositionViewPlaceholders'
+} from 'features/ajna/common/components/AjnaPositionViewPlaceholders'
+import { AjnaPositionView } from 'features/ajna/common/views/AjnaPositionView'
 import React from 'react'
 import { Grid } from 'theme-ui'
 

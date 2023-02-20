@@ -3,7 +3,7 @@ import {
   AjnaBorrowFormFieldPayback,
   AjnaBorrowFormFieldWithdraw,
 } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
-import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaProductContext } from 'features/ajna/common/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormContentPayback() {
