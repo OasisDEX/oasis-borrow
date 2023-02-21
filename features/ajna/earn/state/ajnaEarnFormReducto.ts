@@ -46,7 +46,7 @@ export const ajnaEarnReset = {
   priceBucketUSD: undefined,
 }
 
-export const ajnaBorrowDefault: AjnaEarnFormState = {
+export const ajnaEarnDefault: AjnaEarnFormState = {
   ...ajnaEarnReset,
   dpmAddress: ethers.constants.AddressZero,
   uiDropdown: 'deposit',
@@ -56,7 +56,7 @@ export const ajnaBorrowDefault: AjnaEarnFormState = {
 export function useAjnaEarnFormReducto({ ...rest }: Partial<AjnaEarnFormState>) {
   const { dispatch, state, updateState } = useReducto<AjnaEarnFormState, AjnaEarnFormAction>({
     defaults: {
-      ...ajnaBorrowDefault,
+      ...ajnaEarnDefault,
       ...rest,
     },
     reducer: (state: AjnaEarnFormState, action: AjnaEarnFormAction) => {
