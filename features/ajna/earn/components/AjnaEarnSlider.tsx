@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { useAjnaEarnContext } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 function snapToPredefinedValues(value: BigNumber, predefinedSteps: BigNumber[]) {
   return predefinedSteps.reduce((prev, curr) => {
@@ -48,7 +49,6 @@ export const ajnaSliderDefaults = {
   min: new BigNumber(17775.14558),
   max: new BigNumber(35732.36916),
   maxLtv: new BigNumber(0.65),
-  defaultValue: new BigNumber(19251.74738),
   htp: new BigNumber(20035.42911),
   lup: new BigNumber(23038.19116),
   momp: new BigNumber(28979.25513),
@@ -60,7 +60,6 @@ export const ajnaSliderLowRange = {
   min: new BigNumber(17775.14558),
   max: new BigNumber(18133.32366),
   maxLtv: new BigNumber(0.65),
-  defaultValue: new BigNumber(17953.34141),
   htp: new BigNumber(17864.02131),
   lup: new BigNumber(17953.34141),
   momp: new BigNumber(18043.10812),
@@ -72,7 +71,6 @@ export const ajnaSliderHighRange = {
   min: new BigNumber(17775.14558),
   max: new BigNumber(190923.1374),
   maxLtv: new BigNumber(0.65),
-  defaultValue: new BigNumber(19251.74738),
   htp: new BigNumber(51683.31742),
   lup: new BigNumber(123711.8181),
   momp: new BigNumber(140140.2002),
@@ -84,7 +82,6 @@ interface AjnaEarnSliderProps {
   min: BigNumber
   max: BigNumber
   maxLtv: BigNumber
-  defaultValue: BigNumber
   htp: BigNumber
   lup: BigNumber
   momp: BigNumber
@@ -96,7 +93,6 @@ export function AjnaEarnSlider({
   min,
   max,
   maxLtv,
-  defaultValue,
   htp,
   lup,
   momp,
@@ -104,7 +100,12 @@ export function AjnaEarnSlider({
   collateralToken,
 }: AjnaEarnSliderProps) {
   const { t } = useTranslation()
-  const [value, setValue] = useState(defaultValue)
+  const {
+    form: {
+      updateState,
+      state: { priceBucketUSD },
+    },
+  } = useAjnaEarnContext()
 
   const predefinedSteps = useMemo(() => generateSteps(min, max), [min, max])
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
@@ -121,16 +122,16 @@ export function AjnaEarnSlider({
 
   function handleChange(v: BigNumber) {
     const newValue = snapToPredefinedValues(v, predefinedSteps)
-    return setValue(newValue)
+    updateState('priceBucketUSD', newValue)
   }
 
   return (
     <SliderValuePicker
-      lastValue={value}
+      lastValue={priceBucketUSD || htp}
       minBoundry={min}
       maxBoundry={max}
       step={1}
-      leftBoundry={value}
+      leftBoundry={priceBucketUSD || htp}
       rightBoundry={maxLtv}
       leftBoundryFormatter={(v) => `${t('price')} $${formatAmount(v, 'USD')}`}
       rightBoundryFormatter={(v) => `${t('max-ltv')} ${formatDecimalAsPercent(v)}`}
