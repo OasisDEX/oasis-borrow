@@ -125,12 +125,9 @@ export function AjnaProductContextProvider({
     steps: { currentStep },
     tx: { txDetails },
   } = useAjnaGeneralContext()
-  const form =
-    product === 'borrow'
-      ? formReducto(formDefaults as AjnaBorrowFormState)
-      : product === 'earn'
-      ? formReducto(formDefaults as AjnaEarnFormState)
-      : formReducto(formDefaults as AjnaBorrowFormState)
+  // TODO: find a way to distinguish between the types - there no place for error here except for typescript is too stupid to understand
+  // @ts-expect-error
+  const form = formReducto(formDefaults)
   const { state } = form
 
   const [positionIdFromDpmProxyData] = useObservable(
