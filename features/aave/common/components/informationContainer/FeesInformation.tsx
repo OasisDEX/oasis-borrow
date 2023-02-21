@@ -1,18 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Swap } from '@oasisdex/oasis-actions'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-
-import { amountFromWei } from '../../../../../blockchain/utils'
+import { amountFromWei } from 'blockchain/utils'
 import {
   formatGasEstimationETH,
   getEstimatedGasFeeTextOld,
   VaultChangesInformationItem,
-} from '../../../../../components/vault/VaultChangesInformation'
-import { HasGasEstimation } from '../../../../../helpers/form'
-import { formatAmount } from '../../../../../helpers/formatters/format'
-import { zero } from '../../../../../helpers/zero'
+} from 'components/vault/VaultChangesInformation'
+import { HasGasEstimation } from 'helpers/form'
+import { formatAmount } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface FeesInformationProps {
   estimatedGasPrice?: HasGasEstimation
