@@ -141,9 +141,10 @@ export function AjnaProductController({
                     >
                       {ajnaPosition.meta.product === 'borrow' && (
                         <AjnaProductContextProvider
-                          form={useAjnaBorrowFormReducto({
+                          formDefaults={{
                             action: flow === 'open' ? 'open-borrow' : 'deposit-borrow',
-                          })}
+                          }}
+                          formReducto={useAjnaBorrowFormReducto}
                           position={ajnaPosition.position}
                           product={ajnaPosition.meta.product}
                         >
@@ -152,9 +153,10 @@ export function AjnaProductController({
                       )}
                       {ajnaPosition.meta.product === 'earn' && (
                         <AjnaProductContextProvider
-                          form={useAjnaEarnFormReducto({
+                          formDefaults={{
                             action: flow === 'open' ? 'open-earn' : 'deposit-earn',
-                          })}
+                          }}
+                          formReducto={useAjnaEarnFormReducto}
                           position={ajnaPositionToAjnaEarnPosition(ajnaPosition.position)}
                           product={ajnaPosition.meta.product}
                         >

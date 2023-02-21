@@ -2,12 +2,18 @@ import { AjnaSimulationData } from 'actions/ajna'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { ValidationMessagesInput } from 'components/ValidationMessages'
-import { useAjnaBorrowFormReducto } from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
+import {
+  AjnaBorrowFormState,
+  useAjnaBorrowFormReducto,
+} from 'features/ajna/borrow/state/ajnaBorrowFormReducto'
 import { useAjnaGeneralContext } from 'features/ajna/common/contexts/AjnaGeneralContext'
 import { AjnaProduct } from 'features/ajna/common/types'
 import { getAjnaValidation } from 'features/ajna/common/validation'
 import { AjnaEarnPosition } from 'features/ajna/earn/fakePosition'
-import { useAjnaEarnFormReducto } from 'features/ajna/earn/state/ajnaEarnFormReducto'
+import {
+  AjnaEarnFormState,
+  useAjnaEarnFormReducto,
+} from 'features/ajna/earn/state/ajnaEarnFormReducto'
 import { useObservable } from 'helpers/observableHook'
 import { useAccount } from 'helpers/useAccount'
 import React, {
@@ -23,18 +29,21 @@ import React, {
 import { AjnaPosition } from '@oasisdex/oasis-actions/lib/packages/oasis-actions/src/helpers/ajna'
 
 interface AjnaProductContextProviderPropsWithBorrow {
-  form: ReturnType<typeof useAjnaBorrowFormReducto>
+  formReducto: typeof useAjnaBorrowFormReducto
+  formDefaults: Partial<AjnaBorrowFormState>
   position: AjnaPosition
   product: 'borrow'
 }
 interface AjnaProductContextProviderPropsWithEarn {
-  form: ReturnType<typeof useAjnaEarnFormReducto>
+  formReducto: typeof useAjnaEarnFormReducto
+  formDefaults: Partial<AjnaEarnFormState>
   position: AjnaEarnPosition
   product: 'earn'
 }
 interface AjnaProductContextProviderPropsWithMultiply {
   // TODO: to be replaced with useAjnaMultiplyFormReducto when availavble
-  form: ReturnType<typeof useAjnaBorrowFormReducto>
+  formReducto: typeof useAjnaBorrowFormReducto
+  formDefaults: Partial<AjnaBorrowFormState>
   position: AjnaPosition
   product: 'multiply'
 }
@@ -102,18 +111,26 @@ export function useAjnaProductContext<T extends AjnaProduct>(product: T): PickPr
 
 export function AjnaProductContextProvider({
   children,
-  form,
+  formDefaults,
+  formReducto,
   product,
   position,
 }: PropsWithChildren<AjnaProductDetailsContextProviderProps>) {
   const { walletAddress } = useAccount()
   const gasEstimation = useGasEstimationContext()
   const { positionIdFromDpmProxy$ } = useAppContext()
+
   const {
     environment: { collateralBalance, collateralToken, ethBalance, ethPrice, quoteBalance },
     steps: { currentStep },
     tx: { txDetails },
   } = useAjnaGeneralContext()
+  const form =
+    product === 'borrow'
+      ? formReducto(formDefaults as AjnaBorrowFormState)
+      : product === 'earn'
+      ? formReducto(formDefaults as AjnaEarnFormState)
+      : formReducto(formDefaults as AjnaBorrowFormState)
   const { state } = form
 
   const [positionIdFromDpmProxyData] = useObservable(

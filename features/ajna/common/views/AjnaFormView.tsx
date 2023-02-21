@@ -47,7 +47,6 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     position: { isSimulationLoading, resolvedId },
     validation: { isFormValid },
   } = useAjnaProductContext(product)
-  const { dpmAddress } = state
 
   const txHandler = useAjnaTxHandler()
 
@@ -80,7 +79,7 @@ export function AjnaFormView({ dropdown, children }: PropsWithChildren<AjnaFormV
     flow,
     currentStep,
     product,
-    dpmAddress,
+    hasDpmAddress: flowState.isProxyReady,
     walletAddress,
     isTxSuccess,
     isTxError,
