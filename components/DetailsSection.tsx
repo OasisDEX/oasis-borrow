@@ -1,4 +1,8 @@
-import React, { PropsWithChildren, ReactNode } from 'react'
+import {
+  DetailsSectionNotification,
+  DetailsSectionNotificationItem,
+} from 'components/DetailsSectionNotification'
+import React, { PropsWithChildren, ReactNode, useState } from 'react'
 import { Box, Card, Flex, Heading } from 'theme-ui'
 
 import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
@@ -12,44 +16,66 @@ interface DetailsSectionProps {
   content: ReactNode
   footer?: ReactNode
   title?: ReactNode
+  notifications?: DetailsSectionNotificationItem[]
 }
 
-export function DetailsSection({ title, badge, buttons, content, footer }: DetailsSectionProps) {
+export function DetailsSection({
+  badge,
+  buttons,
+  content,
+  footer,
+  notifications,
+  title,
+}: DetailsSectionProps) {
+  const [openedNotifications, setOpenedNotifications] = useState<number>(notifications?.length || 0)
+
   return (
-    <Card
-      sx={{
-        p: 0,
-        border: 'lightMuted',
-      }}
-    >
-      {title && typeof title === 'string' && (
-        <DetailsSectionTitle badge={badge} buttons={buttons}>
-          {title}
-        </DetailsSectionTitle>
+    <Box>
+      {notifications && (
+        <DetailsSectionNotification
+          notifications={notifications}
+          onClose={(opened) => setOpenedNotifications(opened)}
+        />
       )}
-      {title && typeof title !== 'string' && title}
-      <Box
+      <Card
         sx={{
-          px: [3, null, '24px'],
-          py: '24px',
+          p: 0,
+          border: 'lightMuted',
+          ...(openedNotifications > 0 && {
+            borderTop: 'none',
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+          }),
         }}
       >
-        {content}
-      </Box>
-      {footer && (
+        {title && typeof title === 'string' && (
+          <DetailsSectionTitle badge={badge} buttons={buttons}>
+            {title}
+          </DetailsSectionTitle>
+        )}
+        {title && typeof title !== 'string' && title}
         <Box
           sx={{
-            p: [3, null, '24px'],
-            borderTop: 'lightMuted',
+            px: [3, null, '24px'],
+            py: '24px',
           }}
         >
-          {footer}
+          {content}
         </Box>
-      )}
-    </Card>
+        {footer && (
+          <Box
+            sx={{
+              p: [3, null, '24px'],
+              borderTop: 'lightMuted',
+            }}
+          >
+            {footer}
+          </Box>
+        )}
+      </Card>
+    </Box>
   )
 }
-
 interface DetailsSectionTitleProps {
   badge?: boolean
   buttons?: DetailsSectionButtons
