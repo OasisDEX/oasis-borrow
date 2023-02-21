@@ -50,7 +50,7 @@
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/oasis-actions": "0.2.5",
-    "@oasisdex/transactions": "^0.1.0",
+    "@oasisdex/transactions": "^0.1.1-alpha.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
     "@prisma/client": "^3.14.0",
@@ -105,7 +105,6 @@
     "react-lottie": "^1.2.3",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.1",
-    "release-it": "^14.12.1",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",
@@ -235,6 +234,8 @@
     "ts-mockito": "^2.6.1",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "release-it": "^14.12.1",
+    "mock-local-storage": "^1.1.15"
   }
 }
