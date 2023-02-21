@@ -2424,7 +2424,7 @@
         "form": {
           "confirm": "Please review the details of the {{collateralToken}}/{{quoteToken}} Earn Position you are opening.",
           "max-ltv-to-lend-at": "Max LTV to lend at",
-          "max-lending-price": "Max {{quoteToken}}/{{collateralToken}} lending price"
+          "max-lending-price": "Max {{collateralToken}}/{{quoteToken}} lending price"
         },
         "simulation": {
           "header1": "Duration",
