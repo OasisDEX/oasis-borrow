@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { AppLink } from 'components/Links'
-import React, { useState } from 'react'
+import { kebabCase } from 'lodash'
+import React, { Fragment, useEffect, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
 type DetailsSectionNotificationType = 'error' | 'warning' | 'notice'
@@ -27,7 +28,7 @@ export interface DetailsSectionNotificationItem {
 
 interface DetailsSectionNotificationProps {
   notifications: DetailsSectionNotificationItem[]
-  onClose: () => void
+  onClose: (opened: number) => void
 }
 
 const notificationColors: { [key in DetailsSectionNotificationType]: string } = {
@@ -36,11 +37,27 @@ const notificationColors: { [key in DetailsSectionNotificationType]: string } = 
   warning: 'warning100',
 }
 
+function getSessionStorageKey(title: string): string {
+  return `notification-${kebabCase(title)}-${document.location.pathname}`
+}
+
 export function DetailsSectionNotification({
   onClose,
   notifications,
 }: DetailsSectionNotificationProps) {
   const [closedNotifications, setClosedNotifications] = useState<number[]>([])
+
+  notifications.forEach(({ title }, i) => {
+    if (
+      sessionStorage.getItem(getSessionStorageKey(title)) === 'true' &&
+      !closedNotifications.includes(i)
+    )
+      setClosedNotifications((prev) => [...prev, i])
+  })
+
+  useEffect(() => {
+    onClose(notifications.length - closedNotifications.length)
+  }, [closedNotifications])
 
   return (
     <Box
@@ -54,7 +71,7 @@ export function DetailsSectionNotification({
       }}
     >
       {notifications.map(({ closable, icon, link, message, title, type = 'notice' }, i) => (
-        <>
+        <Fragment key={getSessionStorageKey(title)}>
           {!closedNotifications.includes(i) && (
             <Flex
               as="li"
@@ -122,7 +139,7 @@ export function DetailsSectionNotification({
                       variant="unStyled"
                       sx={{ mr: 2, p: 0, lineHeight: 0 }}
                       onClick={() => {
-                        onClose()
+                        sessionStorage.setItem(getSessionStorageKey(title), 'true')
                         setClosedNotifications((prev) => [...prev, i])
                       }}
                     >
@@ -133,7 +150,7 @@ export function DetailsSectionNotification({
               )}
             </Flex>
           )}
-        </>
+        </Fragment>
       ))}
     </Box>
   )

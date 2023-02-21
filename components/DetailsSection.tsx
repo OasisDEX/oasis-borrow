@@ -34,7 +34,7 @@ export function DetailsSection({
       {notifications && (
         <DetailsSectionNotification
           notifications={notifications}
-          onClose={() => setOpenedNotifications(openedNotifications - 1)}
+          onClose={(opened) => setOpenedNotifications(opened)}
         />
       )}
       <Card
