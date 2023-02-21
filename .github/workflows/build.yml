@@ -34,6 +34,7 @@ jobs:
 
       - name: Typecheck
         run: yarn typecheck
+
 #  test-e2e:
 #    runs-on: ubuntu-latest
 #    steps:
@@ -60,6 +61,6 @@ jobs:
 #        run: yarn test:e2e
 
 # Few tips github actions
-# - name: Setup SSH debug session
-#   uses: mxschmitt/action-tmate@v2
+  # - name: Setup SSH debug session
+  #   uses: mxschmitt/action-tmate@v2
 

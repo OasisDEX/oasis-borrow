@@ -2,7 +2,7 @@ name: Rollback Production
 
 on:
   workflow_dispatch:
-    branches: [main]
+    branches: [ main ]
     inputs:
       commit_hash:
         description: 'Enter the commit short hash from main branch you want to roll back to.'
@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout Repo History
         uses: actions/checkout@v3
         with:
