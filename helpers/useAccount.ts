@@ -6,6 +6,7 @@ interface AccountState {
   amountOfPositions?: number
   isConnected: boolean
   walletAddress?: string
+  chainId?: number
 }
 
 export function useAccount(): AccountState {
@@ -18,5 +19,6 @@ export function useAccount(): AccountState {
     amountOfPositions: accountData?.numberOfVaults,
     isConnected: context?.status === 'connected',
     walletAddress: context?.account,
+    chainId: context?.chainId,
   }
 }

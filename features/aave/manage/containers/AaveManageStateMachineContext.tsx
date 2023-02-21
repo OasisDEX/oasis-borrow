@@ -34,6 +34,7 @@ function setupManageAaveStateContext({
       manageTokenInput: defaultManageTokenInputValues,
       positionCreatedBy: positionCreatedBy,
       positionId: positionId,
+      getSlippageFrom: strategy.defaultSlippage !== undefined ? 'strategyConfig' : 'userSettings',
     }),
     { devTools: env.NODE_ENV !== 'production' },
   ).start()

@@ -1,5 +1,7 @@
 import { IRiskRatio } from '@oasisdex/oasis-actions'
+import { BigNumber } from 'bignumber.js'
 import { AaveV2ReserveConfigurationData } from 'blockchain/aave'
+import { PositionId } from 'features/aave/types'
 import { ViewPositionSectionComponentProps } from 'features/earn/aave/components/ViewPositionSectionComponent'
 import { AaveMultiplyManageComponentProps } from 'features/multiply/aave/components/AaveMultiplyManageComponent'
 import { Feature } from 'helpers/useFeatureToggle'
@@ -27,8 +29,8 @@ export interface IStrategyConfig {
   proxyType: ProxyType
   viewComponents: {
     headerOpen: AaveHeader
-    headerManage: AaveHeader
-    headerView: AaveHeader
+    headerManage: ManageAaveHeader
+    headerView: ManageAaveHeader
     simulateSection: SimulateSection
     vaultDetailsManage: VaultDetails
     vaultDetailsView: VaultDetails
@@ -50,10 +52,14 @@ export interface IStrategyConfig {
   type: ProductType
   protocol: LendingProtocol
   featureToggle?: Feature
+  defaultSlippage?: BigNumber
 }
-
 export type AaveHeaderProps = {
   strategyConfig: IStrategyConfig
+}
+
+export type ManageAaveHeaderProps = AaveHeaderProps & {
+  positionId: PositionId
 }
 
 export type ManageSectionComponentProps = {
@@ -62,6 +68,7 @@ export type ManageSectionComponentProps = {
 }
 
 type AaveHeader = (props: AaveHeaderProps) => JSX.Element
+type ManageAaveHeader = (props: ManageAaveHeaderProps) => JSX.Element
 type SimulateSection = (props: AaveMultiplyManageComponentProps) => JSX.Element
 type VaultDetails = (
   props: ManageSectionComponentProps &

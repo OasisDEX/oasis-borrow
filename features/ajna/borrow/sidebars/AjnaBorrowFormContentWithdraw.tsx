@@ -1,16 +1,14 @@
-import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
 import {
   AjnaBorrowFormFieldPayback,
   AjnaBorrowFormFieldWithdraw,
 } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
-import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormContentWithdraw() {
   const {
     form: {
-      dispatch,
       state: { withdrawAmount },
     },
   } = useAjnaBorrowContext()
@@ -19,12 +17,7 @@ export function AjnaBorrowFormContentWithdraw() {
     <>
       <AjnaBorrowFormFieldWithdraw resetOnClear />
       <AjnaBorrowFormFieldPayback isDisabled={!withdrawAmount || withdrawAmount?.lte(0)} />
-      {withdrawAmount && (
-        <>
-          <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaBorrowFormOrder />
-        </>
-      )}
+      {withdrawAmount && <AjnaBorrowFormContentSummary />}
     </>
   )
 }

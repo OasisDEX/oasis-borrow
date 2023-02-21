@@ -1,6 +1,6 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
@@ -11,7 +11,7 @@ export function AjnaBorrowFormContentTransaction() {
   const {
     environment: { collateralToken, quoteToken },
     tx: { isTxStarted, isTxError, isTxWaitingForApproval, isTxInProgress, isTxSuccess },
-  } = useAjnaBorrowContext()
+  } = useAjnaProductContext()
 
   return (
     <>
@@ -34,7 +34,7 @@ export function AjnaBorrowFormContentTransaction() {
       )}
       {isTxSuccess && (
         <>
-          <AjnaBorrowFormOrder />
+          <AjnaBorrowFormOrder cached />
           <VaultChangesWithADelayCard />
         </>
       )}

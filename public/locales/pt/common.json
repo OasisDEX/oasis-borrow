@@ -537,7 +537,10 @@
     "third-party-fees": "3rd party protocol fees",
     "oasis-fee": "Oasis fee",
     "ltv": "LTV",
-    "outstanding-debt": "Outstanding debt"
+    "outstanding-debt": "Outstanding debt",
+    "slippage-info": "Slippage Limit sets the percentage you are willing to slip below the above shown buy/sell price. Lower slippage decreases potential losses, but increases chances of transaction failure. ",
+    "slippage-from-settings": "Use slippage from settings",
+    "slippage-from-strategy": "Use slippage from strategy"
   },
   "vault-changed": "Cofre alterado!",
   "vault-history": "Histório do Cofre",

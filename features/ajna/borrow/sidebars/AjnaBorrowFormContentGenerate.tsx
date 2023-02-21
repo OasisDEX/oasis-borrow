@@ -1,30 +1,34 @@
-import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import {
-  AjnaBorrowFormFieldDeposit,
-  AjnaBorrowFormFieldGenerate,
-} from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
-import { AjnaBorrowFormOrder } from 'features/ajna/borrow/sidebars/AjnaBorrowFormOrder'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import { AjnaBorrowFormContentSummary } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentSummary'
+import { AjnaBorrowFormFieldGenerate } from 'features/ajna/borrow/sidebars/AjnaBorrowFormFields'
+import { AjnaFormFieldDeposit } from 'features/ajna/common/components/AjnaFormFieldDeposit'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import React from 'react'
 
 export function AjnaBorrowFormContentGenerate() {
   const {
     form: {
+      state: { depositAmount, depositAmountUSD, generateAmount },
       dispatch,
-      state: { generateAmount },
     },
   } = useAjnaBorrowContext()
+  const {
+    environment: { collateralBalance, collateralPrice, collateralToken },
+  } = useAjnaProductContext()
 
   return (
     <>
       <AjnaBorrowFormFieldGenerate resetOnClear />
-      <AjnaBorrowFormFieldDeposit isDisabled={!generateAmount || generateAmount?.lte(0)} />
-      {generateAmount && (
-        <>
-          <SidebarResetButton clear={() => dispatch({ type: 'reset' })} />
-          <AjnaBorrowFormOrder />
-        </>
-      )}
+      <AjnaFormFieldDeposit
+        isDisabled={!generateAmount || generateAmount?.lte(0)}
+        collateralToken={collateralToken}
+        collateralBalance={collateralBalance}
+        collateralPrice={collateralPrice}
+        depositAmount={depositAmount}
+        depositAmountUSD={depositAmountUSD}
+        dispatch={dispatch}
+      />
+      {generateAmount && <AjnaBorrowFormContentSummary />}
     </>
   )
 }

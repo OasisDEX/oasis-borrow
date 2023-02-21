@@ -120,7 +120,11 @@ export function AaveMultiplyPositionData({
     .times(NaNIsZero(currentPositionThings.netBorrowCostPercentage))
 
   const stopLossTriggered =
-    aaveHistory[0] && 'autoKind' in aaveHistory[0] && aaveHistory[0].eventType === 'executed'
+    aaveHistory[0] &&
+    'eventType' in aaveHistory[0] &&
+    aaveHistory[0].eventType === 'executed' &&
+    aaveHistory[0].autoKind === 'aave-stop-loss' &&
+    currentPosition.debt.amount.isZero()
 
   return (
     <Grid>

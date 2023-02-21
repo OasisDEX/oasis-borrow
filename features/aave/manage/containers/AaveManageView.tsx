@@ -32,7 +32,6 @@ function AaveManageContainer({
   address: string
 }) {
   const Header = strategyConfig.viewComponents.headerManage
-
   const { stateMachine } = useManageAaveStateMachineContext()
   const [state] = useActor(stateMachine)
 
@@ -53,7 +52,7 @@ function AaveManageContainer({
         <Box mb={4}>
           <AavePositionNoticesView />
         </Box>
-        <Header strategyConfig={strategyConfig} />
+        <Header strategyConfig={strategyConfig} positionId={state.context.positionId} />
         <AaveManageTabBar
           strategyConfig={strategyConfig}
           aaveReserveState={aaveReserveState}

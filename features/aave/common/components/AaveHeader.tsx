@@ -1,8 +1,11 @@
+import { Protocol } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { VaultHeadline } from 'components/vault/VaultHeadline'
 import { HeadlineDetailsProp } from 'components/vault/VaultHeadlineDetails'
 import { useAaveContext } from 'features/aave/AaveContextProvider'
-import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
+import { IStrategyConfig, ManageAaveHeaderProps } from 'features/aave/common/StrategyConfigTypes'
+import { createFollowButton } from 'features/aave/helpers/createFollowButton'
+import { FollowButtonControlProps } from 'features/follow/controllers/FollowButtonControl'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -12,10 +15,12 @@ import React from 'react'
 function AaveHeader({
   strategyConfig,
   headerLabelString,
+  followButton,
   shareButton,
 }: {
   strategyConfig: IStrategyConfig
   headerLabelString: string
+  followButton?: FollowButtonControlProps
   shareButton?: boolean
 }) {
   const { t } = useTranslation()
@@ -57,6 +62,7 @@ function AaveHeader({
         token={[strategyConfig.tokens.collateral, strategyConfig.tokens.debt]}
         loading={!positionTokenPrices}
         details={detailsList}
+        followButton={followButton}
         shareButton={shareButton}
       />
     </WithErrorHandler>
@@ -67,11 +73,18 @@ export function AaveOpenHeader({ strategyConfig }: { strategyConfig: IStrategyCo
   return <AaveHeader strategyConfig={strategyConfig} headerLabelString={'vault.header-aave-open'} />
 }
 
-export function AaveManageHeader({ strategyConfig }: { strategyConfig: IStrategyConfig }) {
+export function AaveManageHeader({ strategyConfig, positionId }: ManageAaveHeaderProps) {
+  const { protocol } = strategyConfig
+  const followButton: FollowButtonControlProps | undefined = createFollowButton(
+    positionId,
+    protocol.toLowerCase() as Protocol,
+  )
+
   return (
     <AaveHeader
       strategyConfig={strategyConfig}
       headerLabelString={'vault.header-aave-view'}
+      followButton={followButton}
       shareButton
     />
   )

@@ -6,11 +6,20 @@ export interface AjnaTxData {
   value: string
 }
 
+export interface AjnaValidationItem {
+  name: string
+  data?: {[key: string]: string}
+}
+
+export interface AjnaSimulationData {
+  position: AjnaPosition
+  swap: any[]
+  errors: AjnaValidationItem[]
+  warnings: AjnaValidationItem[]
+}
+
 // TODO use Strategy<AjnaPosition> from library once exported
 export interface AjnaActionData {
-  simulation: {
-    targetPosition: AjnaPosition
-    swap: any[]
-  }
+  simulation: AjnaSimulationData
   tx: AjnaTxData
 }

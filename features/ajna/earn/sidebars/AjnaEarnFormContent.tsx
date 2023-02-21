@@ -1,63 +1,102 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { getAjnaBorrowStatus, getPrimaryButtonAction } from 'features/ajna/borrow/helpers'
-import { AjnaBorrowFormContentDeposit } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentDeposit'
-import { AjnaBorrowFormContentManage } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentManage'
+import { useAjnaBorrowContext } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
+import {
+  getAjnaSidebarButtonsStatus,
+  getAjnaSidebarPrimaryButtonActions,
+} from 'features/ajna/borrow/helpers'
 import { AjnaBorrowFormContentRisk } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentRisk'
 import { AjnaBorrowFormContentTransaction } from 'features/ajna/borrow/sidebars/AjnaBorrowFormContentTransaction'
 import { getPrimaryButtonLabelKey } from 'features/ajna/common/helpers'
-import { useAjnaBorrowContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaStatusStep } from 'features/ajna/common/types'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnFormContentDeposit } from 'features/ajna/earn/sidebars/AjnaEarnFormContentDeposit'
 import { useAccount } from 'helpers/useAccount'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-interface AjnaBorrowFormContentProps {
+interface AjnaEarnFormContentProps {
   txHandler: () => void
   isAllowanceLoading: boolean
 }
 
-export function AjnaBorrowFormContent({
-  txHandler,
-  isAllowanceLoading,
-}: AjnaBorrowFormContentProps) {
+// TODO potentially could be extracted as wrapper for earn and borrow form contents
+export function AjnaEarnFormContent({ txHandler, isAllowanceLoading }: AjnaEarnFormContentProps) {
   const { t } = useTranslation()
   const { walletAddress } = useAccount()
   const {
-    environment: { collateralToken, flow, product, quoteToken, isOwner },
     form: {
       dispatch,
       state: { dpmAddress, uiDropdown },
       updateState,
     },
-    steps: { currentStep, editingStep, setNextStep, setStep, isStepWithTransaction, isStepValid },
-    tx: { isTxError, isTxSuccess, isTxWaitingForApproval, isTxStarted, isTxInProgress },
-    position: { id, isSimulationLoading },
-  } = useAjnaBorrowContext()
+    position: { resolvedId, isSimulationLoading },
+    validation: { isFormValid },
+  } = useAjnaBorrowContext() // TODO use earn context when available
+  const {
+    environment: { collateralToken, flow, product, quoteToken, isOwner },
+    steps: {
+      // currentStep,
+      editingStep,
+      setNextStep,
+      setStep,
+      isStepWithTransaction,
+    },
+    tx: {
+      isTxError,
+      isTxSuccess,
+      isTxWaitingForApproval,
+      isTxStarted,
+      isTxInProgress,
+      setTxDetails,
+    },
+  } = useAjnaProductContext()
 
-  async function buttonDefaultAction() {
-    if (isStepWithTransaction) {
-      txHandler()
-    } else setNextStep()
-  }
+  const currentStep = 'setup' as AjnaStatusStep
 
   const {
-    isPrimaryButtonLoading,
     isPrimaryButtonDisabled,
     isPrimaryButtonHidden,
+    isPrimaryButtonLoading,
     isTextButtonHidden,
-  } = getAjnaBorrowStatus({
-    walletAddress,
-    isStepValid,
-    isAllowanceLoading,
-    isSimulationLoading,
-    isTxInProgress,
-    isTxWaitingForApproval,
-    isTxError,
-    isTxStarted,
+  } = getAjnaSidebarButtonsStatus({
     currentStep,
     editingStep,
+    isAllowanceLoading,
     isOwner,
+    isSimulationLoading,
+    isFormValid,
+    isTxError,
+    isTxInProgress,
+    isTxStarted,
+    isTxWaitingForApproval,
+    walletAddress,
+  })
+  const primaryButtonLabel = getPrimaryButtonLabelKey({
+    flow,
+    currentStep,
+    product,
+    dpmAddress,
+    walletAddress,
+    isTxSuccess,
+    isTxError,
+  })
+  const primaryButtonActions = getAjnaSidebarPrimaryButtonActions({
+    defaultAction: async () => {
+      if (isStepWithTransaction) {
+        if (isTxSuccess) {
+          setTxDetails(undefined)
+          setStep(editingStep)
+        } else txHandler()
+      } else setNextStep()
+    },
+    currentStep,
+    editingStep,
+    flow,
+    resolvedId,
+    isTxSuccess,
+    walletAddress,
   })
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -99,41 +138,22 @@ export function AjnaBorrowFormContent({
     content: (
       <Grid gap={3}>
         {currentStep === 'risk' && <AjnaBorrowFormContentRisk />}
-        {currentStep === 'setup' && <AjnaBorrowFormContentDeposit />}
-        {currentStep === 'manage' && <AjnaBorrowFormContentManage />}
+        {currentStep === 'setup' && <AjnaEarnFormContentDeposit />}
         {currentStep === 'transaction' && <AjnaBorrowFormContentTransaction />}
       </Grid>
     ),
     primaryButton: {
-      label: t(
-        getPrimaryButtonLabelKey({
-          currentStep,
-          product,
-          dpmAddress,
-          walletAddress,
-          isTxSuccess,
-          isTxError,
-        }),
-      ),
+      label: t(primaryButtonLabel),
       disabled: isPrimaryButtonDisabled,
       isLoading: isPrimaryButtonLoading,
       hidden: isPrimaryButtonHidden,
-      ...getPrimaryButtonAction({
-        walletAddress,
-        currentStep,
-        editingStep,
-        isTxSuccess,
-        flow,
-        id,
-        buttonDefaultAction,
-      }),
+      ...primaryButtonActions,
     },
-    ...(!isTextButtonHidden && {
-      textButton: {
-        label: t('back-to-editing'),
-        action: () => setStep(editingStep),
-      },
-    }),
+    textButton: {
+      label: t('back-to-editing'),
+      action: () => setStep(editingStep),
+      hidden: isTextButtonHidden,
+    },
   }
 
   return <SidebarSection {...sidebarSectionProps} />

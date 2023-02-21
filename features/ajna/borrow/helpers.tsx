@@ -1,61 +1,33 @@
-import { AjnaEditingStep, AjnaFlow, AjnaProduct, AjnaStatusStep } from 'features/ajna/common/types'
-import { useTranslation } from 'next-i18next'
+import { AjnaEditingStep, AjnaFlow, AjnaStatusStep } from 'features/ajna/common/types'
 
-interface AjnaBorrowHeadlinePropsParams {
-  collateralToken?: string
-  flow: AjnaFlow
-  id?: string
-  product?: AjnaProduct
-  quoteToken?: string
-}
-
-export function getAjnaBorrowHeadlineProps({
-  collateralToken,
-  flow,
-  id,
-  product,
-  quoteToken,
-}: AjnaBorrowHeadlinePropsParams) {
-  const { t } = useTranslation()
-
-  return {
-    ...(collateralToken &&
-      quoteToken && {
-        header: t(`ajna.${product}.${flow}.headline.header`, { collateralToken, id, quoteToken }),
-        token: [collateralToken, quoteToken],
-        label: '/static/img/ajna-product-card-label.svg',
-      }),
-  }
-}
-
-export function getAjnaBorrowStatus({
-  isStepValid,
-  isAllowanceLoading,
-  isTxInProgress,
-  isTxWaitingForApproval,
-  isTxStarted,
-  isTxError,
-  isOwner,
+export function getAjnaSidebarButtonsStatus({
   currentStep,
   editingStep,
-  walletAddress,
+  isAllowanceLoading,
+  isFormValid,
+  isOwner,
   isSimulationLoading,
+  isTxError,
+  isTxInProgress,
+  isTxStarted,
+  isTxWaitingForApproval,
+  walletAddress,
 }: {
-  isStepValid: boolean
-  isAllowanceLoading: boolean
-  isTxInProgress: boolean
-  isTxWaitingForApproval: boolean
-  isTxStarted: boolean
-  isTxError: boolean
-  isOwner: boolean
   currentStep: AjnaStatusStep
   editingStep: AjnaEditingStep
-  walletAddress?: string
+  isAllowanceLoading: boolean
+  isFormValid: boolean
+  isOwner: boolean
   isSimulationLoading?: boolean
+  isTxError: boolean
+  isTxInProgress: boolean
+  isTxStarted: boolean
+  isTxWaitingForApproval: boolean
+  walletAddress?: string
 }) {
   const isPrimaryButtonDisabled =
     !!walletAddress &&
-    (!isStepValid ||
+    (!isFormValid ||
       isAllowanceLoading ||
       isSimulationLoading ||
       isTxInProgress ||
@@ -66,46 +38,39 @@ export function getAjnaBorrowStatus({
     (isAllowanceLoading || isSimulationLoading || isTxInProgress || isTxWaitingForApproval)
 
   const isPrimaryButtonHidden = !!(walletAddress && !isOwner && currentStep === editingStep)
-  const isTextButtonHidden =
-    currentStep === 'transaction' && (!isTxStarted || isTxWaitingForApproval || isTxError)
+  const isTextButtonHidden = !(currentStep === 'transaction' && (!isTxStarted || isTxError))
 
   return {
-    isPrimaryButtonLoading,
     isPrimaryButtonDisabled,
     isPrimaryButtonHidden,
+    isPrimaryButtonLoading,
     isTextButtonHidden,
   }
 }
 
-export function getPrimaryButtonAction({
-  walletAddress,
+export function getAjnaSidebarPrimaryButtonActions({
   currentStep,
+  defaultAction,
   editingStep,
-  isTxSuccess,
   flow,
-  id,
-  buttonDefaultAction,
+  resolvedId,
+  isTxSuccess,
+  walletAddress,
 }: {
-  walletAddress?: string
   currentStep: string
+  defaultAction: () => void
   editingStep: string
-  isTxSuccess: boolean
   flow: AjnaFlow
-  buttonDefaultAction: () => void
-  id?: string
+  resolvedId?: string
+  isTxSuccess: boolean
+  walletAddress?: string
 }) {
   switch (true) {
     case !walletAddress && currentStep === editingStep:
-      return {
-        url: '/connect',
-      }
+      return { url: '/connect' }
     case isTxSuccess && flow === 'open':
-      return {
-        url: `/ajna/position/${id}`,
-      }
+      return { url: `/ajna/position/${resolvedId}` }
     default:
-      return {
-        action: () => buttonDefaultAction(),
-      }
+      return { action: defaultAction }
   }
 }

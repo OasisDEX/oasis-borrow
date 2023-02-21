@@ -1,6 +1,7 @@
 import { IPosition, IPositionTransition } from '@oasisdex/oasis-actions'
 import { VaultChangesInformationContainer } from 'components/vault/VaultChangesInformation'
-import { StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
+import { getSlippage, StrategyTokenBalance } from 'features/aave/common/BaseAaveContext'
+import { IStrategyConfig } from 'features/aave/common/StrategyConfigTypes'
 import { UserSettingsState } from 'features/userSettings/userSettings'
 import { HasGasEstimation } from 'helpers/form'
 import { zero } from 'helpers/zero'
@@ -31,11 +32,17 @@ type OpenAaveInformationContainerProps = {
       transition?: IPositionTransition
       userSettings?: UserSettingsState
       currentPosition?: IPosition
+      strategyConfig: IStrategyConfig
+      getSlippageFrom: 'strategyConfig' | 'userSettings'
     }
   }
+  changeSlippageSource: (from: 'strategyConfig' | 'userSettings') => void
 }
 
-export function StrategyInformationContainer({ state }: OpenAaveInformationContainerProps) {
+export function StrategyInformationContainer({
+  state,
+  changeSlippageSource,
+}: OpenAaveInformationContainerProps) {
   const { t } = useTranslation()
 
   const { transition, currentPosition, balance } = state.context
@@ -54,7 +61,14 @@ export function StrategyInformationContainer({ state }: OpenAaveInformationConta
       {simulationHasSwap && balance && (
         <PriceImpact {...state.context} transactionParameters={transition} balance={balance} />
       )}
-      {simulationHasSwap && <SlippageInformation {...state.context.userSettings!} />}
+      {simulationHasSwap && (
+        <SlippageInformation
+          slippage={getSlippage(state.context)}
+          isStrategyHasSlippage={state.context.strategyConfig.defaultSlippage !== undefined}
+          getSlippageFrom={state.context.getSlippageFrom}
+          changeSlippage={changeSlippageSource}
+        />
+      )}
       <MultiplyInformation
         {...state.context}
         transactionParameters={transition}

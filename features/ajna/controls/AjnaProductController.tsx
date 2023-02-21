@@ -1,12 +1,14 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { PositionLoadingState } from 'components/vault/PositionLoadingState'
-import { getAjnaBorrowHeadlineProps } from 'features/ajna/borrow/helpers'
+import { AjnaBorrowContextProvider } from 'features/ajna/borrow/contexts/AjnaBorrowContext'
 import { AjnaBorrowView } from 'features/ajna/borrow/views/AjnaBorrowView'
 import { steps } from 'features/ajna/common/consts'
+import { getAjnaHeadlineProps } from 'features/ajna/common/helpers'
 import { AjnaWrapper } from 'features/ajna/common/layout'
 import { AjnaFlow, AjnaProduct } from 'features/ajna/common/types'
-import { AjnaBorrowContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaProductContextProvider } from 'features/ajna/contexts/AjnaProductContext'
+import { AjnaEarnView } from 'features/ajna/earn/views/AjnaEarnView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from 'features/walletAssociatedRisk/WalletAssociatedRisk'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -71,7 +73,7 @@ export function AjnaProductController({
       () =>
         ajnaPositionData?.meta.collateralToken && ajnaPositionData?.meta.quoteToken
           ? balancesInfoArray$(
-              [ajnaPositionData.meta.collateralToken, ajnaPositionData.meta.quoteToken],
+              [ajnaPositionData.meta.collateralToken, ajnaPositionData.meta.quoteToken, 'ETH'],
               walletAddress || '',
             )
           : EMPTY,
@@ -92,7 +94,7 @@ export function AjnaProductController({
     ),
   )
 
-  if (ajnaPositionData === null) void push('/404')
+  if (ajnaPositionData === null) void push('/not-found')
 
   return (
     <WithConnection>
@@ -106,7 +108,7 @@ export function AjnaProductController({
                 value={[ajnaPositionData, balancesInfoArrayData, tokenPriceUSDData]}
                 customLoader={
                   <PositionLoadingState
-                    {...getAjnaBorrowHeadlineProps({
+                    {...getAjnaHeadlineProps({
                       collateralToken: ajnaPositionData?.meta.collateralToken,
                       flow,
                       product: ajnaPositionData?.meta.product,
@@ -116,28 +118,37 @@ export function AjnaProductController({
                   />
                 }
               >
-                {([ajnaPosition, [collateralBalance, quoteBalance], tokenPriceUSD]) =>
+                {([ajnaPosition, [collateralBalance, quoteBalance, ethBalance], tokenPriceUSD]) =>
                   ajnaPosition ? (
-                    <AjnaBorrowContextProvider
+                    <AjnaProductContextProvider
                       collateralBalance={collateralBalance}
-                      collateralToken={ajnaPosition.meta.collateralToken}
                       collateralPrice={tokenPriceUSD[ajnaPosition.meta.collateralToken]}
+                      collateralToken={ajnaPosition.meta.collateralToken}
+                      {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
+                      ethBalance={ethBalance}
+                      ethPrice={tokenPriceUSD.ETH}
                       flow={flow}
-                      currentPosition={ajnaPosition.position}
                       id={id}
+                      owner={ajnaPosition.meta.user}
                       product={ajnaPosition.meta.product}
                       quoteBalance={quoteBalance}
-                      quoteToken={ajnaPosition.meta.quoteToken}
                       quotePrice={tokenPriceUSD[ajnaPosition.meta.quoteToken]}
-                      ethPrice={tokenPriceUSD.ETH}
+                      quoteToken={ajnaPosition.meta.quoteToken}
                       steps={steps[ajnaPosition.meta.product][flow]}
-                      owner={ajnaPosition.meta.user}
-                      {...(flow === 'manage' && { dpmProxy: ajnaPosition.meta.proxy })}
                     >
-                      {ajnaPosition.meta.product === 'borrow' && <AjnaBorrowView />}
-                    </AjnaBorrowContextProvider>
+                      {ajnaPosition.meta.product === 'borrow' && (
+                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
+                          <AjnaBorrowView />
+                        </AjnaBorrowContextProvider>
+                      )}
+                      {ajnaPosition.meta.product === 'earn' && (
+                        <AjnaBorrowContextProvider position={ajnaPosition.position}>
+                          <AjnaEarnView />
+                        </AjnaBorrowContextProvider>
+                      )}
+                    </AjnaProductContextProvider>
                   ) : (
-                    <></>
+                    <>Earn UI placeholder</>
                   )
                 }
               </WithLoadingIndicator>

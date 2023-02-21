@@ -646,8 +646,9 @@ export function createAaveHistory$(
           return combineLatest(of([]), getVaultAutomationV2History(apiClient, proxyAddress))
         }),
         mapEventsToVaultEvents,
-        map((events) => events.map((event) => ({ etherscan, ethtx, ...event }))),
-        map((events) => mapAutomationEvents(events)),
+        map((events) =>
+          events.map((event) => ({ etherscan, ethtx, autoKind: event.kind, ...event })),
+        ),
         catchError(() => of([])),
       )
     }),

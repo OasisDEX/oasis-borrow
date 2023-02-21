@@ -39,7 +39,9 @@ export function ProductCardEarnAave({ cardData, strategy }: ProductCardEarnAaveP
     aaveAvailableLiquidityInUSDC$({ token: 'ETH' }),
   )
   const maximumMultiple =
-    aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
+    strategy.name === 'wstETHeth'
+      ? new RiskRatio(new BigNumber(9.99), RiskRatio.TYPE.MULITPLE)
+      : aaveReserveState?.ltv && new RiskRatio(aaveReserveState.ltv, RiskRatio.TYPE.LTV)
 
   const simulationYields = useSimulationYields({
     amount: aaveEarnCalcValueBasis.amount,
