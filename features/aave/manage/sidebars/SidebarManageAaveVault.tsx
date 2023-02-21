@@ -458,7 +458,6 @@ function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
 
 function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
-  console.log('ManageAaveSuccessAdjustPositionStateView')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('manage-earn.aave.vault-form.success-title'),
@@ -488,13 +487,6 @@ function ManageAaveSuccessAdjustPositionStateView({ state, send }: ManageAaveSta
 
 function ManageAaveSuccessClosePositionStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
-
-  console.log(
-    'ManageAaveSuccessClosePositionStateView',
-    `/${state.context.strategyConfig.type.toLocaleLowerCase()}/aave/open/${
-      state.context.strategyConfig.urlSlug
-    }`,
-  )
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: t('manage-earn.aave.vault-form.success-title'),
