@@ -195,7 +195,7 @@ function OpenAaveReviewingStateView({ state, send, isLoading }: OpenAaveStatePro
     : {
         steps: [state.context.currentStep, state.context.totalSteps] as [number, number],
         isLoading: isLoading(),
-        disabled: !state.can('NEXT_STEP'),
+        disabled: isLoading() || !state.can('NEXT_STEP'),
         label: t('open-earn.aave.vault-form.confirm-btn'),
         action: () => send('NEXT_STEP'),
       }
@@ -299,7 +299,7 @@ function EditingStateViewSidebarPrimaryButton({
 
   return {
     isLoading: isLoading(),
-    disabled: !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
+    disabled: isLoading() || !state.can('NEXT_STEP') || (!hasProxy && isProxyCreationDisabled),
     label,
     action: () => send('NEXT_STEP'),
   }
@@ -389,7 +389,7 @@ export function AaveOpenPositionStopLoss({ state, send, isLoading }: OpenAaveSta
     primaryButton: {
       steps: [state.context.currentStep, state.context.totalSteps],
       isLoading: isLoading(),
-      disabled: !state.can('NEXT_STEP'),
+      disabled: isLoading() || !state.can('NEXT_STEP'),
       label: t('open-earn.aave.vault-form.confirm-btn'),
       action: () => send('NEXT_STEP'),
     },
