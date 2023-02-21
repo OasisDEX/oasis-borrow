@@ -6,7 +6,6 @@ import {
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { TriggersData } from 'features/automation/api/automationTriggersData'
-import { DEFAULT_MAX_BASE_FEE_IN_GWEI } from 'features/automation/common/consts'
 import { getTriggersByType, TriggerDataType } from 'features/automation/common/helpers'
 import { zero } from 'helpers/zero'
 
@@ -144,7 +143,6 @@ export function prepareStopLossTriggerDataV2(
     tokenAddress, // collateralToken
     debtTokenAddress, // debtToken
     stopLossLevel.times(10 ** 6).toString(), // stop loss level
-    DEFAULT_MAX_BASE_FEE_IN_GWEI.toString(), // max gas fee
   ])
 
   return {
