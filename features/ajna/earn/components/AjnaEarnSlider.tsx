@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { useAjnaProductContext } from 'features/ajna/contexts/AjnaProductContext'
 import { useAjnaEarnContext } from 'features/ajna/earn/contexts/AjnaEarnContext'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -45,60 +46,7 @@ function convertSliderThresholds({
   }
 }
 
-export const ajnaSliderDefaults = {
-  min: new BigNumber(17775.14558),
-  max: new BigNumber(35732.36916),
-  maxLtv: new BigNumber(0.65),
-  htp: new BigNumber(20035.42911),
-  lup: new BigNumber(23038.19116),
-  momp: new BigNumber(28979.25513),
-  quoteToken: 'USDC',
-  collateralToken: 'ETH',
-}
-
-export const ajnaSliderLowRange = {
-  min: new BigNumber(17775.14558),
-  max: new BigNumber(18133.32366),
-  maxLtv: new BigNumber(0.65),
-  htp: new BigNumber(17864.02131),
-  lup: new BigNumber(17953.34141),
-  momp: new BigNumber(18043.10812),
-  quoteToken: 'USDC',
-  collateralToken: 'ETH',
-}
-
-export const ajnaSliderHighRange = {
-  min: new BigNumber(17775.14558),
-  max: new BigNumber(190923.1374),
-  maxLtv: new BigNumber(0.65),
-  htp: new BigNumber(51683.31742),
-  lup: new BigNumber(123711.8181),
-  momp: new BigNumber(140140.2002),
-  quoteToken: 'USDC',
-  collateralToken: 'ETH',
-}
-
-interface AjnaEarnSliderProps {
-  min: BigNumber
-  max: BigNumber
-  maxLtv: BigNumber
-  htp: BigNumber
-  lup: BigNumber
-  momp: BigNumber
-  quoteToken: string
-  collateralToken: string
-}
-
-export function AjnaEarnSlider({
-  min,
-  max,
-  maxLtv,
-  htp,
-  lup,
-  momp,
-  quoteToken,
-  collateralToken,
-}: AjnaEarnSliderProps) {
+export function AjnaEarnSlider() {
   const { t } = useTranslation()
   const {
     form: {
@@ -106,6 +54,20 @@ export function AjnaEarnSlider({
       state: { priceBucketUSD },
     },
   } = useAjnaEarnContext()
+
+  const {
+    environment: { collateralToken, quoteToken },
+  } = useAjnaProductContext()
+
+  // TODO this should be taken from position.currentPosition
+  const { min, max, maxLtv, htp, lup, momp } = {
+    min: new BigNumber(17775.14558),
+    max: new BigNumber(35732.36916),
+    maxLtv: new BigNumber(0.65),
+    htp: new BigNumber(20035.42911),
+    lup: new BigNumber(23038.19116),
+    momp: new BigNumber(28979.25513),
+  }
 
   const predefinedSteps = useMemo(() => generateSteps(min, max), [min, max])
   const { htpPercentage, lupPercentage, mompPercentage } = useMemo(
