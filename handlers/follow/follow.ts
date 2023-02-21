@@ -20,6 +20,8 @@ const usersWhoFollowVaultsSchema = z.object({
   vault_id: z.number(),
   vault_chain_id: z.number(),
   protocol: z.enum(['maker', 'aavev2', 'aavev3', 'ajna']),
+  proxy: z.string().optional(),
+  strategy: z.string().optional(),
 })
 
 function handleUnsupportedProtocol(req: NextApiRequest, res: NextApiResponse) {
@@ -36,10 +38,19 @@ function handleUnsupportedNetwork(req: NextApiRequest, res: NextApiResponse) {
     return res.status(418).json({ error: `Chain with ID ${chainIdFromBody} is not supported` })
   }
 }
-
+function validateAaveMandatoryFields(req: NextApiRequest, res: NextApiResponse) {
+  const protocolFromBody = req.body.protocol.toLowerCase()
+  if (protocolFromBody === 'aavev3' || protocolFromBody === 'aavev2') {
+    const { proxy, strategy } = req.body
+    if (!proxy || !strategy) {
+      return res.status(400).json({ error: 'Proxy and strategy are mandatory for Aave v3' })
+    }
+  }
+}
 export async function follow(req: NextApiRequest, res: NextApiResponse) {
   handleUnsupportedProtocol(req, res)
   handleUnsupportedNetwork(req, res)
+  validateAaveMandatoryFields(req, res)
   const { vault_id, vault_chain_id, protocol } = usersWhoFollowVaultsSchema.parse(req.body)
   const user = getUserFromRequest(req)
   if (!user) {

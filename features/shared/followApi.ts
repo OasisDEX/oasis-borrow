@@ -47,7 +47,7 @@ export function getFollowFromApi(address: string): Promise<UsersWhoFollowVaults[
       if (err.status === 404) {
         return [] as UsersWhoFollowVaults[]
       }
-      if (err.status === 422 || err.status === 418) {
+      if (err.status >= 400) {
         return err.json()
       }
       throw err
