@@ -52,6 +52,7 @@
   "connect-email": "通过邮件连接",
   "connect-error": "请授权本网站访问你的以太坊账户。",
   "connect-wallet": "通过钱包连接",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "connect-wallet-button": "连接钱包",
   "connect-with": " {{ connectionKind }}",
   "connect-install-metamask": "安装 Metamask",

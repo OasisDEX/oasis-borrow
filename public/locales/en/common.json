@@ -86,6 +86,7 @@
   "connect-email": "Connect with email",
   "connect-error": "Please authorize this website to access your Ethereum account.",
   "connect-wallet": "Connect a wallet",
+  "connect-wallet-out-of-support": "Discontinued - contact support",
   "see-products": "See products",
   "connect-wallet-button": "Connect Wallet",
   "connect-with": "{{ connectionKind }}",
