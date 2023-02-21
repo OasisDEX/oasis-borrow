@@ -1,4 +1,4 @@
-import { UsersWhoFollowVaults } from '@prisma/client'
+
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Tickers } from 'blockchain/prices'
@@ -20,7 +20,7 @@ import { LendingProtocol } from 'lendingProtocols'
 import { AaveProtocolData as AaveProtocolDataV2 } from 'lendingProtocols/aave-v2/pipelines'
 import { AaveProtocolData as AaveProtocolDataV3 } from 'lendingProtocols/aave-v3/pipelines'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap } from 'rxjs/operators'
+import { map, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { Position } from './positionsOverviewSummary'
 
@@ -294,22 +294,22 @@ function getStethEthAaveV2DsProxyEarnPosition$(
 
 // TODO we will need proper handling for Ajna, filtered for now
 const sumAaveArray = [LendingProtocol.AaveV2, LendingProtocol.AaveV3]
-
-export function createAavePositionsFromIds$(
-  proxyAddressesProvider: ProxyAddressesProvider,
-  environment: CreatePositionEnvironmentPropsType,
-  aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
-  aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
-  followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
-): Observable<AavePosition> {
-  const {
-    context$,
-    tickerPrices$,
-    readPositionCreatedEvents$,
-    automationTriggersData$,
-  } = environment
-  return combineLatest()
-}
+// TODO ŁW
+// export function createAavePositionsFromIds$(
+//   proxyAddressesProvider: ProxyAddressesProvider,
+//   environment: CreatePositionEnvironmentPropsType,
+//   aaveV2: ProtocolsServices[LendingProtocol.AaveV2],
+//   aaveV3: ProtocolsServices[LendingProtocol.AaveV3],
+//   followedVaults$: (address: string) => Observable<UsersWhoFollowVaults[]>,
+// ): Observable<AavePosition> {
+//   const {
+//     context$,
+//     tickerPrices$,
+//     readPositionCreatedEvents$,
+//     automationTriggersData$,
+//   } = environment
+//   return combineLatest()
+// }
 
 export function createAavePosition$(
   proxyAddressesProvider: ProxyAddressesProvider,
@@ -324,6 +324,8 @@ export function createAavePosition$(
     readPositionCreatedEvents$,
     automationTriggersData$,
   } = environment
+  console.log('createAavePosition$')
+  console.log(environment)
   return combineLatest(
     proxyAddressesProvider.userDpmProxies$(walletAddress),
     getStethEthAaveV2DsProxyEarnPosition$(
@@ -336,6 +338,13 @@ export function createAavePosition$(
     switchMap(
       ([dpmProxiesData, fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition, context]) => {
         // if we have a DS proxy make a fake position created event so we can read any position out below
+        tap(() =>{
+          console.log('dpmProxiesData' )
+          console.log(dpmProxiesData )
+          console.log('fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition')
+          console.log(fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition)
+        }
+        )
         const userProxiesData = [
           ...dpmProxiesData,
           ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition.map((fakeEvent) => {
@@ -348,6 +357,8 @@ export function createAavePosition$(
         ]
         return readPositionCreatedEvents$(walletAddress).pipe(
           map((positionCreatedEvents) => {
+            tap(() => { console.log('userProxiesData', userProxiesData)})
+            tap(() => { console.log('positionCreatedEvents', positionCreatedEvents)})
             return [
               ...positionCreatedEvents,
               ...fakePositionCreatedEventForStethEthAaveV2DsProxyEarnPosition,
@@ -358,6 +369,7 @@ export function createAavePosition$(
               positionCreatedEvents
                 .filter((event) => sumAaveArray.includes(event.protocol))
                 .map((pce) => {
+                  tap(() => { console.log('pce', pce)})
                   const userProxy = userProxiesData.find(
                     (userProxy) => userProxy.proxy === pce.proxyAddress,
                   )
