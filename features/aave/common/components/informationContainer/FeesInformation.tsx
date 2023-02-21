@@ -9,6 +9,7 @@ import {
 } from 'components/vault/VaultChangesInformation'
 import { HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
