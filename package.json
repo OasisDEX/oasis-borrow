@@ -3,7 +3,7 @@
   "version": "6.2.0",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=14.x <=16.x"
+    "node": ">=16.x <=18.x"
   },
   "scripts": {
     "start": "next dev",
@@ -78,7 +78,6 @@
     "dotenv-flow": "^3.1.0",
     "emotion": "^10.0.27",
     "emotion-server": "^10.0.27",
-    "eslint-plugin-no-relative-import-paths": "^1.5.2",
     "eth-sig-util": "^2.5.3",
     "express-basic-auth": "^1.2.0",
     "express-jwt": "^8.4.1",
@@ -179,8 +178,8 @@
     "@types/supertest": "^2.0.9",
     "@types/theme-ui": "^0.3.1",
     "@types/uuid": "^7.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
+    "@typescript-eslint/eslint-plugin": "4.15.0",
+    "@typescript-eslint/parser": "4.15.0",
     "@web3-react/types": "^6.0.7",
     "@xstate/cli": "^0.3.3",
     "@xstate/inspect": "^0.7.0",
@@ -208,6 +207,7 @@
     "eslint-plugin-sonarjs": "^0.5.0",
     "eslint-plugin-storybook": "^0.5.12",
     "eslint-plugin-unused-imports": "^0.1.2",
+    "eslint-plugin-no-relative-import-paths": "^1.5.2",
     "ethereum-types": "^3.3.3",
     "ethers": "5.6.2",
     "execa": "^1.0.0",
